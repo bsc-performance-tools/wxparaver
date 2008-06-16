@@ -26,7 +26,6 @@
 #include "wxparaverapp.h"
 
 ////@begin XPM images
-
 ////@end XPM images
 
 
@@ -85,21 +84,23 @@ void wxparaverApp::Init()
 bool wxparaverApp::OnInit()
 {    
 ////@begin wxparaverApp initialisation
-    // Remove the comment markers above and below this block
-    // to make permanent changes to the code.
+	// Remove the comment markers above and below this block
+	// to make permanent changes to the code.
 
 #if wxUSE_XPM
-    wxImage::AddHandler(new wxXPMHandler);
+	wxImage::AddHandler(new wxXPMHandler);
 #endif
 #if wxUSE_LIBPNG
-    wxImage::AddHandler(new wxPNGHandler);
+	wxImage::AddHandler(new wxPNGHandler);
 #endif
 #if wxUSE_LIBJPEG
-    wxImage::AddHandler(new wxJPEGHandler);
+	wxImage::AddHandler(new wxJPEGHandler);
 #endif
 #if wxUSE_GIF
-    wxImage::AddHandler(new wxGIFHandler);
+	wxImage::AddHandler(new wxGIFHandler);
 #endif
+	paraverMain* mainWindow = new paraverMain( NULL );
+	mainWindow->Show(true);
 ////@end wxparaverApp initialisation
 
     return true;
@@ -113,7 +114,7 @@ bool wxparaverApp::OnInit()
 int wxparaverApp::OnExit()
 {    
 ////@begin wxparaverApp cleanup
-    return wxApp::OnExit();
+	return wxApp::OnExit();
 ////@end wxparaverApp cleanup
 }
 

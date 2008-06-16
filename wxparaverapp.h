@@ -19,6 +19,7 @@
 
 ////@begin includes
 #include "wx/image.h"
+#include "paravermain.h"
 ////@end includes
 
 /*!
@@ -57,9 +58,11 @@ public:
     virtual int OnExit();
 
 ////@begin wxparaverApp event handler declarations
+
 ////@end wxparaverApp event handler declarations
 
 ////@begin wxparaverApp member function declarations
+
 ////@end wxparaverApp member function declarations
 
 ////@begin wxparaverApp member variables
