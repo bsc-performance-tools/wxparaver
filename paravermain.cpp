@@ -3,7 +3,7 @@
 // Purpose:     
 // Author:      Eloy Martinez
 // Modified by: 
-// Created:     Mon 16 Jun 2008 14:48:43 CEST
+// Created:     Wed 25 Jun 2008 15:58:35 CEST
 // RCS-ID:      
 // Copyright:   
 // Licence:     
@@ -43,6 +43,10 @@ IMPLEMENT_CLASS( paraverMain, wxFrame )
 BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
 ////@begin paraverMain event table entries
+  EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
+
+  EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
+
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
 ////@end paraverMain event table entries
@@ -77,6 +81,12 @@ bool paraverMain::Create( wxWindow* parent, wxWindowID id, const wxString& capti
 
   CreateControls();
 ////@end paraverMain creation
+
+  LocalKernel::init();
+  localKernel = new LocalKernel();
+  paraverConfig = ParaverConfig::getInstance();
+  paraverConfig->readParaverConfigFile();
+  
   return true;
 }
 
@@ -90,6 +100,10 @@ paraverMain::~paraverMain()
 ////@begin paraverMain destruction
   GetAuiManager().UnInit();
 ////@end paraverMain destruction
+
+  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
+    delete *it;
+  delete localKernel;
 }
 
 
@@ -122,6 +136,10 @@ void paraverMain::CreateControls()
 
   wxMenuBar* menuBar = new wxMenuBar;
   menuFile = new wxMenu;
+  menuFile->Append(wxID_OPEN, _("Load &Trace"), _T(""), wxITEM_NORMAL);
+  menuFile->AppendSeparator();
+  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration"), _T(""), wxITEM_NORMAL);
+  menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), _T(""), wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
   menuHelp = new wxMenu;
@@ -134,9 +152,9 @@ void paraverMain::CreateControls()
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
 
-  choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+  choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  treeWindowBrowser = new wxTreeCtrl( choiceWindowBrowser, ID_TREECTRL, wxDefaultPosition, wxDefaultSize, wxTR_SINGLE );
+  treeWindowBrowser = new wxTreeCtrl( choiceWindowBrowser, ID_TREEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxTR_SINGLE );
 
   choiceWindowBrowser->AddPage(treeWindowBrowser, _("All traces"));
 
@@ -146,6 +164,47 @@ void paraverMain::CreateControls()
   GetAuiManager().Update();
 
 ////@end paraverMain content construction
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_OPEN
+ */
+
+void paraverMain::OnOpenClick( wxCommandEvent& event )
+{
+  wxFileDialog dialog( this, "Load Trace", "", "", "*.prv", wxOPEN );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString path = dialog.GetPath();
+    loadedTraces.push_back( Trace::create( localKernel, path.fn_str() ) );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG
+ */
+
+void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
+{
+////@begin wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG in paraverMain.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG in paraverMain. 
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
+ */
+
+void paraverMain::OnExitClick( wxCommandEvent& event )
+{
+////@begin wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT in paraverMain.
+  // Before editing this code, remove the block markers.
+  Destroy();
+////@end wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT in paraverMain. 
 }
 
 
@@ -183,17 +242,3 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
   return wxNullIcon;
 ////@end paraverMain icon retrieval
 }
-
-
-/*!
- * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
- */
-
-void paraverMain::OnExitClick( wxCommandEvent& event )
-{
-////@begin wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT in paraverMain.
-  // Before editing this code, remove the block markers.
-  Destroy();
-////@end wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT in paraverMain. 
-}
-
