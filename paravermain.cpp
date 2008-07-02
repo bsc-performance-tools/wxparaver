@@ -184,7 +184,9 @@ void paraverMain::CreateControls()
 
 void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, "Load Trace", "", "", "*.prv", wxOPEN );
+  wxFileDialog dialog( this, "Load Trace", "", "", 
+    "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*", 
+    wxOPEN|wxFILE_MUST_EXIST );
   if( dialog.ShowModal() == wxID_OK )
   {
     Trace *tr = NULL;
@@ -221,7 +223,9 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, "Load Configuration", "", "", "*.cfg", wxOPEN );
+  wxFileDialog dialog( this, "Load Configuration", "", "",
+    "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*",
+    wxOPEN|wxFILE_MUST_EXIST );
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
