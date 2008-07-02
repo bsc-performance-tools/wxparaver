@@ -23,8 +23,8 @@
 #include "wx/frame.h"
 #include "wx/toolbar.h"
 #include "wx/choicebk.h"
-#include "wx/treectrl.h"
 ////@end includes
+#include "wx/treectrl.h"
 #include "trace.h"
 #include "localkernel.h"
 #include "paraverconfig.h"
@@ -36,7 +36,6 @@
 ////@begin forward declarations
 class wxMenu;
 class wxChoicebook;
-class wxTreeCtrl;
 ////@end forward declarations
 
 /*!
@@ -48,7 +47,6 @@ class wxTreeCtrl;
 #define ID_MENULOADCFG 10006
 #define ID_TOOLBAR 10003
 #define ID_CHOICEWINBROWSER 10002
-#define ID_TREEWINBROWSER 10001
 #define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
@@ -56,6 +54,22 @@ class wxTreeCtrl;
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, 0)
 ////@end control identifiers
 
+
+class TreeBrowserItemData: public wxTreeItemData
+{
+  public:
+    TreeBrowserItemData( const wxString& whichDesc ) :
+      desc( whichDesc )
+    {}
+    
+    const wxString& GetDesc() const
+    {
+      return desc;
+    }
+    
+  private:
+    wxString desc;
+};
 
 /*!
  * paraverMain class declaration
@@ -90,6 +104,9 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG
   void OnMenuloadcfgClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_MENULOADCFG
+  void OnMenuloadcfgUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
   void OnExitClick( wxCommandEvent& event );
 
@@ -103,11 +120,17 @@ public:
   vector<Trace *> GetLoadedTraces() const { return loadedTraces ; }
   void SetLoadedTraces(vector<Trace *> value) { loadedTraces = value ; }
 
-  LocalKernel* GetLocalKernel() const { return localKernel ; }
-  void SetLocalKernel(LocalKernel* value) { localKernel = value ; }
+  KernelConnection* GetLocalKernel() const { return localKernel ; }
+  void SetLocalKernel(KernelConnection* value) { localKernel = value ; }
 
   ParaverConfig* GetParaverConfig() const { return paraverConfig ; }
   void SetParaverConfig(ParaverConfig* value) { paraverConfig = value ; }
+
+  INT16 GetCurrentTrace() const { return currentTrace ; }
+  void SetCurrentTrace(INT16 value) { currentTrace = value ; }
+
+  wxImageList* GetImageList() const { return imageList ; }
+  void SetImageList(wxImageList* value) { imageList = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -125,11 +148,12 @@ public:
   wxMenu* menuHelp;
   wxToolBar* tbarMain;
   wxChoicebook* choiceWindowBrowser;
-  wxTreeCtrl* treeWindowBrowser;
 private:
   vector<Trace *> loadedTraces;
-  LocalKernel* localKernel;
+  KernelConnection* localKernel;
   ParaverConfig* paraverConfig;
+  INT16 currentTrace;
+  wxImageList* imageList;
 ////@end paraverMain member variables
 };
 

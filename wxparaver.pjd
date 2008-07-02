@@ -954,8 +954,10 @@
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"loadedTraces|vector&lt;Trace *&gt;|LoadedTraces||2|0|"</string>
-          <string name="variable-1">"localKernel|LocalKernel*|LocalKernel||2|0|"</string>
+          <string name="variable-1">"localKernel|KernelConnection*|LocalKernel||2|0|"</string>
           <string name="variable-2">"paraverConfig|ParaverConfig*|ParaverConfig||2|0|"</string>
+          <string name="variable-3">"currentTrace|INT16|CurrentTrace|-1|2|0|"</string>
+          <string name="variable-4">"imageList|wxImageList*|ImageList||2|0|"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
           <string name="proxy-Class">"paraverMain"</string>
@@ -1091,6 +1093,7 @@
                 <string name="created">"25/6/2008"</string>
                 <string name="proxy-type">"wbMenuItemProxy"</string>
                 <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnMenuloadcfgClick|NONE||paraverMain"</string>
+                <string name="event-handler-1">"wxEVT_UPDATE_UI|OnMenuloadcfgUpdate|NONE||paraverMain"</string>
                 <string name="proxy-Id name">"ID_MENULOADCFG"</string>
                 <long name="proxy-Id value">10006</long>
                 <string name="proxy-Label">"Load &amp;Configuration"</string>
@@ -1394,87 +1397,6 @@
             <long name="proxy-AUI floating y">-1</long>
             <long name="proxy-AUI floating width">-1</long>
             <long name="proxy-AUI floating height">-1</long>
-            <document>
-              <string name="title">"wxTreeCtrl: ID_TREEWINBROWSER"</string>
-              <string name="type">"dialog-control-document"</string>
-              <string name="filename">""</string>
-              <string name="icon-name">"treectrl"</string>
-              <long name="is-transient">0</long>
-              <long name="owns-file">1</long>
-              <long name="title-mode">0</long>
-              <long name="locked">0</long>
-              <string name="created">"16/6/2008"</string>
-              <string name="proxy-type">"wbTreeCtrlProxy"</string>
-              <string name="proxy-Id name">"ID_TREEWINBROWSER"</string>
-              <long name="proxy-Id value">10001</long>
-              <string name="proxy-Name">""</string>
-              <string name="proxy-Class">"wxTreeCtrl"</string>
-              <string name="proxy-Base class">"wxTreeCtrl"</string>
-              <bool name="proxy-External implementation">1</bool>
-              <bool name="proxy-Separate files">0</bool>
-              <string name="proxy-Implementation filename">""</string>
-              <string name="proxy-Header filename">""</string>
-              <string name="proxy-Member variable name">"treeWindowBrowser"</string>
-              <string name="proxy-Tab label">"All traces"</string>
-              <string name="proxy-Tab icon">""</string>
-              <string name="proxy-Help text">""</string>
-              <string name="proxy-Tooltip text">""</string>
-              <string name="proxy-Background colour">""</string>
-              <string name="proxy-Foreground colour">""</string>
-              <string name="proxy-Font">""</string>
-              <bool name="proxy-Hidden">0</bool>
-              <bool name="proxy-Enabled">1</bool>
-              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-              <string name="proxy-Data variable">""</string>
-              <string name="proxy-Data validator">""</string>
-              <string name="proxy-Data source">""</string>
-              <string name="proxy-Data class name">""</string>
-              <string name="proxy-Data class implementation filename">""</string>
-              <string name="proxy-Data class header filename">""</string>
-              <string name="proxy-Data class manager window">""</string>
-              <bool name="proxy-wxTR_EDIT_LABELS">0</bool>
-              <bool name="proxy-wxTR_NO_BUTTONS">0</bool>
-              <bool name="proxy-wxTR_HAS_BUTTONS ">0</bool>
-              <bool name="proxy-wxTR_TWIST_BUTTONS">0</bool>
-              <bool name="proxy-wxTR_NO_LINES">0</bool>
-              <bool name="proxy-wxTR_FULL_ROW_HIGHLIGHT">0</bool>
-              <bool name="proxy-wxTR_LINES_AT_ROOT">0</bool>
-              <bool name="proxy-wxTR_HIDE_ROOT">0</bool>
-              <bool name="proxy-wxTR_ROW_LINES">0</bool>
-              <bool name="proxy-wxTR_HAS_VARIABLE_ROW_HEIGHT">0</bool>
-              <bool name="proxy-wxTR_SINGLE">1</bool>
-              <bool name="proxy-wxTR_MULTIPLE">0</bool>
-              <bool name="proxy-wxTR_EXTENDED">0</bool>
-              <bool name="proxy-wxNO_BORDER">0</bool>
-              <bool name="proxy-wxSIMPLE_BORDER">0</bool>
-              <bool name="proxy-wxDOUBLE_BORDER">0</bool>
-              <bool name="proxy-wxSUNKEN_BORDER">0</bool>
-              <bool name="proxy-wxRAISED_BORDER">0</bool>
-              <bool name="proxy-wxSTATIC_BORDER">0</bool>
-              <bool name="proxy-wxWANTS_CHARS">0</bool>
-              <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
-              <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
-              <bool name="proxy-wxCLIP_CHILDREN">0</bool>
-              <string name="proxy-Custom styles">""</string>
-              <long name="proxy-X">-1</long>
-              <long name="proxy-Y">-1</long>
-              <long name="proxy-Width">-1</long>
-              <long name="proxy-Height">-1</long>
-              <string name="proxy-AlignH">"Centre"</string>
-              <string name="proxy-AlignV">"Centre"</string>
-              <long name="proxy-Stretch factor">1</long>
-              <long name="proxy-Border">5</long>
-              <bool name="proxy-wxLEFT">1</bool>
-              <bool name="proxy-wxRIGHT">1</bool>
-              <bool name="proxy-wxTOP">1</bool>
-              <bool name="proxy-wxBOTTOM">1</bool>
-              <bool name="proxy-wxSHAPED">0</bool>
-              <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-              <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-              <string name="proxy-Custom arguments">""</string>
-              <string name="proxy-Custom ctor arguments">""</string>
-              <string name="proxy-Event sources">""</string>
-            </document>
           </document>
         </document>
         <document>
@@ -1677,6 +1599,18 @@
         <long name="owns-file">1</long>
         <long name="title-mode">0</long>
         <long name="locked">1</long>
+        <document>
+          <string name="title">"table.xpm"</string>
+          <string name="type">"image-document"</string>
+          <string name="filename">"table.xpm"</string>
+          <string name="icon-name">"image"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">1</long>
+          <long name="title-mode">0</long>
+          <long name="locked">0</long>
+          <string name="created">"2/7/2008"</string>
+          <long name="zoom-level">100</long>
+        </document>
       </document>
     </document>
   </documents>

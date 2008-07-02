@@ -23,11 +23,16 @@
 ////@begin includes
 ////@end includes
 
+#include "wx/imaglist.h"
 #include "paravermain.h"
+#include "paraverkernelexception.h"
+#include "cfg.h"
+#include "histogram.h"
 
 ////@begin XPM images
 ////@end XPM images
 
+#include "table.xpm"
 
 /*!
  * paraverMain type definition
@@ -46,6 +51,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
 
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
+  EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
 
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
@@ -76,6 +82,9 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
 
 bool paraverMain::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  imageList = new wxImageList( 16, 16 );
+  imageList->Add( wxIcon( table_xpm ) );
+  
 ////@begin paraverMain creation
   wxFrame::Create( parent, id, caption, pos, size, style );
 
@@ -104,6 +113,8 @@ paraverMain::~paraverMain()
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
     delete *it;
   delete localKernel;
+  
+  delete imageList;
 }
 
 
@@ -114,11 +125,11 @@ paraverMain::~paraverMain()
 void paraverMain::Init()
 {
 ////@begin paraverMain member initialisation
+  currentTrace = -1;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
   choiceWindowBrowser = NULL;
-  treeWindowBrowser = NULL;
 ////@end paraverMain member initialisation
 }
 
@@ -154,16 +165,16 @@ void paraverMain::CreateControls()
 
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  treeWindowBrowser = new wxTreeCtrl( choiceWindowBrowser, ID_TREEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxTR_SINGLE );
-
-  choiceWindowBrowser->AddPage(treeWindowBrowser, _("All traces"));
-
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
     .Name(_T("auiWindowBrowser")).Caption(_T("Window browser")).Centre().DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   GetAuiManager().Update();
 
 ////@end paraverMain content construction
+  wxTreeCtrl* tmpTree = new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
+  tmpTree->SetImageList( imageList );
+  tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root" ) );
+  choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
 }
 
 
@@ -176,8 +187,30 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
   wxFileDialog dialog( this, "Load Trace", "", "", "*.prv", wxOPEN );
   if( dialog.ShowModal() == wxID_OK )
   {
+    Trace *tr = NULL;
     wxString path = dialog.GetPath();
-    loadedTraces.push_back( Trace::create( localKernel, path.fn_str() ) );
+    for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
+    {
+      if( (*it)->getFileName().compare( path.c_str() ) == 0 )
+        return;
+    }
+    
+    try
+    {
+      tr = Trace::create( localKernel, path.c_str() );
+      loadedTraces.push_back( tr );
+      currentTrace = loadedTraces.size() - 1;
+      wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, 
+        wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
+      newTree->SetImageList( imageList );
+      newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root" ) );
+      choiceWindowBrowser->AddPage( newTree, path );
+    }
+    catch( ParaverKernelException& ex )
+    {
+      wxMessageDialog message( this, ex.what(), "Error loading trace", wxOK );
+      message.ShowModal();
+    }
   }
 }
 
@@ -188,10 +221,41 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG in paraverMain.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG in paraverMain. 
+  wxFileDialog dialog( this, "Load Configuration", "", "", "*.cfg", wxOPEN );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString path = dialog.GetPath();
+    if( !CFGLoader::isCFGFile( path.c_str() ) )
+    {
+      wxString errMessage = path + " isn't a valid cfg.";
+      wxMessageDialog message( this, errMessage.c_str(), "Invalid file", wxOK );
+      message.ShowModal();
+    }
+    else
+    {
+      vector<Window *> newWindows;
+      vector<Histogram *> newHistograms;
+      
+      if( !CFGLoader::loadCFG( localKernel, path.c_str(), loadedTraces[ currentTrace ], newWindows, newHistograms ) )
+      {
+        wxString errMessage = path + " failed to load.";
+        wxMessageDialog message( this, errMessage.c_str(), "Loading error", wxOK );
+        message.ShowModal();
+      }
+      else
+      {
+        for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); it++ )
+        {
+          wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+          allTracesPage->AppendItem( allTracesPage->GetRootItem(), (*it)->getName(), 0, -1,
+            new TreeBrowserItemData( (*it)->getName() ) );
+          wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+          currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), 0, -1,
+            new TreeBrowserItemData( (*it)->getName() ) );
+        }
+      }
+    }
+  }
 }
 
 
@@ -242,3 +306,19 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
   return wxNullIcon;
 ////@end paraverMain icon retrieval
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_MENULOADCFG
+ */
+
+void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
+{
+  if( currentTrace == -1 )
+    menuFile->Enable( ID_MENULOADCFG, false );
+  else
+    menuFile->Enable( ID_MENULOADCFG, true );
+}
+
+
+
