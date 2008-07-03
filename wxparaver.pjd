@@ -1417,6 +1417,7 @@
           <string name="id-suffix">""</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
+          <string name="variable-0">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
           <string name="proxy-Id name">"ID_GHISTOGRAM"</string>
           <long name="proxy-Id value">10004</long>
           <string name="proxy-Class">"gHistogram"</string>
@@ -1532,7 +1533,7 @@
             <bool name="proxy-wxCLIP_CHILDREN">0</bool>
             <bool name="proxy-wxHSCROLL">1</bool>
             <bool name="proxy-wxVSCROLL">1</bool>
-            <bool name="proxy-wxALWAYS_SHOW_SB">0</bool>
+            <bool name="proxy-wxALWAYS_SHOW_SB">1</bool>
             <bool name="proxy-wxWS_EX_VALIDATE_RECURSIVELY">0</bool>
             <string name="proxy-Custom styles">""</string>
             <long name="proxy-X">-1</long>

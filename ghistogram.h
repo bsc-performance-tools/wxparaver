@@ -29,6 +29,7 @@
 ////@begin forward declarations
 class wxGrid;
 ////@end forward declarations
+class Histogram;
 
 /*!
  * Control identifiers
@@ -76,6 +77,9 @@ public:
 
 ////@begin gHistogram member function declarations
 
+  Histogram* GetHistogram() const { return myHistogram ; }
+  void SetHistogram(Histogram* value) { myHistogram = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -83,11 +87,15 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end gHistogram member function declarations
 
+  void execute();
+  
   /// Should we show tooltips?
   static bool ShowToolTips();
 
 ////@begin gHistogram member variables
   wxGrid* gridHisto;
+private:
+  Histogram* myHistogram;
 ////@end gHistogram member variables
 };
 

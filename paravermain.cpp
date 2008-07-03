@@ -28,6 +28,7 @@
 #include "paraverkernelexception.h"
 #include "cfg.h"
 #include "histogram.h"
+#include "ghistogram.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -173,7 +174,7 @@ void paraverMain::CreateControls()
 ////@end paraverMain content construction
   wxTreeCtrl* tmpTree = new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
   tmpTree->SetImageList( imageList );
-  tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root" ) );
+  tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", NULL ) );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
 }
 
@@ -205,7 +206,7 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
       wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, 
         wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
       newTree->SetImageList( imageList );
-      newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root" ) );
+      newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", NULL ) );
       choiceWindowBrowser->AddPage( newTree, path );
     }
     catch( ParaverKernelException& ex )
@@ -250,12 +251,19 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
       {
         for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); it++ )
         {
+          gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, (*it)->getName() );
+          
           wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
           allTracesPage->AppendItem( allTracesPage->GetRootItem(), (*it)->getName(), 0, -1,
-            new TreeBrowserItemData( (*it)->getName() ) );
+            new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
+            
           wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
           currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), 0, -1,
-            new TreeBrowserItemData( (*it)->getName() ) );
+            new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
+          
+          tmpHisto->SetHistogram( *it );
+          tmpHisto->Show();
+          tmpHisto->execute();
         }
       }
     }

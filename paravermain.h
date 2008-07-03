@@ -58,8 +58,8 @@ class wxChoicebook;
 class TreeBrowserItemData: public wxTreeItemData
 {
   public:
-    TreeBrowserItemData( const wxString& whichDesc ) :
-      desc( whichDesc )
+    TreeBrowserItemData( const wxString& whichDesc, wxWindow* whichWin ) :
+      desc( whichDesc ), myWindow( whichWin )
     {}
     
     const wxString& GetDesc() const
@@ -69,6 +69,8 @@ class TreeBrowserItemData: public wxTreeItemData
     
   private:
     wxString desc;
+    wxWindow* myWindow;
+    Histogram* myHisto;
 };
 
 /*!

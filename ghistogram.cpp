@@ -24,6 +24,7 @@
 ////@end includes
 
 #include "ghistogram.h"
+#include "histogram.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -97,6 +98,7 @@ gHistogram::~gHistogram()
 void gHistogram::Init()
 {
 ////@begin gHistogram member initialisation
+  myHistogram = NULL;
   gridHisto = NULL;
 ////@end gHistogram member initialisation
 }
@@ -111,7 +113,7 @@ void gHistogram::CreateControls()
 ////@begin gHistogram content construction
   gHistogram* itemFrame1 = this;
 
-  gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(200, 150)), wxHSCROLL|wxVSCROLL );
+  gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(200, 150)), wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   gridHisto->SetDefaultColSize(50);
   gridHisto->SetDefaultRowSize(25);
   gridHisto->SetColLabelSize(25);
@@ -121,6 +123,40 @@ void gHistogram::CreateControls()
 ////@end gHistogram content construction
 }
 
+
+void gHistogram::execute()
+{
+  if( myHistogram == NULL )
+    return;
+    
+  int rowLabelWidth = 0;
+  wxFont labelFont = gridHisto->GetLabelFont();
+  
+  myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
+  
+  gridHisto->BeginBatch();
+  gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
+  gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
+  gridHisto->AppendCols( myHistogram->getNumColumns() );
+  gridHisto->AppendRows( myHistogram->getNumRows() );
+  for( THistogramColumn iCol = 0; iCol < myHistogram->getNumColumns(); iCol++ )
+  {
+    gridHisto->SetColLabelValue( iCol, myHistogram->getColumnLabel( iCol ) );
+    for( TObjectOrder iRow = 0; iRow < myHistogram->getNumRows(); iRow++ )
+    {
+      int w, h;
+      gridHisto->GetTextExtent( myHistogram->getRowLabel( iCol ), &w, &h, NULL, NULL, &labelFont );
+      if( rowLabelWidth == 0 || rowLabelWidth < w )
+        rowLabelWidth = w;
+      gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+    }
+  }
+  
+  gridHisto->SetRowLabelSize( rowLabelWidth );
+  gridHisto->Fit();
+  gridHisto->AutoSize();
+  gridHisto->EndBatch();
+}
 
 /*!
  * Should we show tooltips?
