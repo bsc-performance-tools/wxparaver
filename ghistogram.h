@@ -88,6 +88,7 @@ public:
 ////@end gHistogram member function declarations
 
   void execute();
+  void fillGrid();
   
   /// Should we show tooltips?
   static bool ShowToolTips();

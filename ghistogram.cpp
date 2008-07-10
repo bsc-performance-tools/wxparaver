@@ -23,6 +23,7 @@
 ////@begin includes
 ////@end includes
 
+#include <sstream>
 #include "ghistogram.h"
 #include "histogram.h"
 
@@ -129,11 +130,26 @@ void gHistogram::execute()
   if( myHistogram == NULL )
     return;
     
+  myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
+
+  fillGrid();
+}
+
+
+void gHistogram::fillGrid()
+{
   int rowLabelWidth = 0;
   wxFont labelFont = gridHisto->GetLabelFont();
-  
-  myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
-  
+  bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+  UINT16 idStat;
+  if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
+    throw( exception() );
+  THistogramColumn curPlane;
+  if( commStat )
+    curPlane = myHistogram->getCommSelectedPlane();
+  else
+    curPlane = myHistogram->getSelectedPlane();
+    
   gridHisto->BeginBatch();
   gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
   gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
@@ -141,7 +157,17 @@ void gHistogram::execute()
   gridHisto->AppendRows( myHistogram->getNumRows() );
   for( THistogramColumn iCol = 0; iCol < myHistogram->getNumColumns(); iCol++ )
   {
-    gridHisto->SetColLabelValue( iCol, myHistogram->getColumnLabel( iCol ) );
+    if( commStat )
+    {
+      gridHisto->SetColLabelValue( iCol, myHistogram->getRowLabel( iCol ) );
+      myHistogram->setCommFirstCell( iCol, curPlane );
+    }
+    else
+    {
+      gridHisto->SetColLabelValue( iCol, myHistogram->getColumnLabel( iCol ) );
+      myHistogram->setFirstCell( iCol, curPlane );
+    }
+    
     for( TObjectOrder iRow = 0; iRow < myHistogram->getNumRows(); iRow++ )
     {
       int w, h;
@@ -149,6 +175,35 @@ void gHistogram::execute()
       if( rowLabelWidth == 0 || rowLabelWidth < w )
         rowLabelWidth = w;
       gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+      
+      if( commStat && myHistogram->endCommCell( iCol, curPlane ) ||
+          !commStat && myHistogram->endCell( iCol, curPlane ) )
+        gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
+      else
+      {
+        if( commStat )
+        {
+          if( myHistogram->getCommCurrentRow( iCol, curPlane ) == iRow )
+          {
+            ostringstream tmpStr;
+            tmpStr << myHistogram->getCommCurrentValue( iCol, idStat, curPlane );
+            gridHisto->SetCellValue( iRow, iCol, wxString( tmpStr.str() ) );
+            myHistogram->setCommNextCell( iCol, curPlane );
+          }
+          else gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
+        }
+        else
+        {
+          if( myHistogram->getCurrentRow( iCol, curPlane ) == iRow )
+          {
+            ostringstream tmpStr;
+            tmpStr << myHistogram->getCurrentValue( iCol, idStat, curPlane );
+            gridHisto->SetCellValue( iRow, iCol, wxString( tmpStr.str() ) );
+            myHistogram->setNextCell( iCol, curPlane );
+          }
+          else gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
+        }
+      }
     }
   }
   
@@ -157,7 +212,6 @@ void gHistogram::execute()
   gridHisto->AutoSize();
   gridHisto->EndBatch();
 }
-
 /*!
  * Should we show tooltips?
  */
