@@ -26,6 +26,7 @@
 #include <sstream>
 #include "ghistogram.h"
 #include "histogram.h"
+#include "labelconstructor.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -142,9 +143,11 @@ void gHistogram::fillGrid()
   wxFont labelFont = gridHisto->GetLabelFont();
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   UINT16 idStat;
+  THistogramColumn curPlane;
+  
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( exception() );
-  THistogramColumn curPlane;
+    
   if( commStat )
     curPlane = myHistogram->getCommSelectedPlane();
   else
@@ -171,6 +174,7 @@ void gHistogram::fillGrid()
     for( TObjectOrder iRow = 0; iRow < myHistogram->getNumRows(); iRow++ )
     {
       int w, h;
+      
       gridHisto->GetTextExtent( myHistogram->getRowLabel( iCol ), &w, &h, NULL, NULL, &labelFont );
       if( rowLabelWidth == 0 || rowLabelWidth < w )
         rowLabelWidth = w;
@@ -185,9 +189,10 @@ void gHistogram::fillGrid()
         {
           if( myHistogram->getCommCurrentRow( iCol, curPlane ) == iRow )
           {
-            ostringstream tmpStr;
-            tmpStr << myHistogram->getCommCurrentValue( iCol, idStat, curPlane );
-            gridHisto->SetCellValue( iRow, iCol, wxString( tmpStr.str() ) );
+            string tmpStr;
+            tmpStr = LabelConstructor::histoCellLabel( myHistogram,
+              myHistogram->getCommCurrentValue( iCol, idStat, curPlane ) );
+            gridHisto->SetCellValue( iRow, iCol, wxString( tmpStr ) );
             myHistogram->setCommNextCell( iCol, curPlane );
           }
           else gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
@@ -196,9 +201,10 @@ void gHistogram::fillGrid()
         {
           if( myHistogram->getCurrentRow( iCol, curPlane ) == iRow )
           {
-            ostringstream tmpStr;
-            tmpStr << myHistogram->getCurrentValue( iCol, idStat, curPlane );
-            gridHisto->SetCellValue( iRow, iCol, wxString( tmpStr.str() ) );
+            string tmpStr;
+            tmpStr = LabelConstructor::histoCellLabel( myHistogram,
+              myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
+            gridHisto->SetCellValue( iRow, iCol, wxString( tmpStr ) );
             myHistogram->setNextCell( iCol, curPlane );
           }
           else gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
