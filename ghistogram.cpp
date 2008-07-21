@@ -27,6 +27,7 @@
 #include "ghistogram.h"
 #include "histogram.h"
 #include "labelconstructor.h"
+#include "histogramtotals.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -157,7 +158,7 @@ void gHistogram::fillGrid()
   gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
   gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
   gridHisto->AppendCols( myHistogram->getNumColumns() );
-  gridHisto->AppendRows( myHistogram->getNumRows() );
+  gridHisto->AppendRows( myHistogram->getNumRows() + NUMTOTALS );
   for( THistogramColumn iCol = 0; iCol < myHistogram->getNumColumns(); iCol++ )
   {
     if( commStat )
@@ -210,6 +211,22 @@ void gHistogram::fillGrid()
           else gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
         }
       }
+    }
+    
+    HistogramTotals *histoTotals = myHistogram->getTotals( myHistogram->getCurrentStat() );
+    vector<TSemanticValue> totals;
+    histoTotals->getAll( totals, idStat, iCol, curPlane );
+
+    for( int i = 0; i < NUMTOTALS; i++ )
+    {
+      gridHisto->SetRowLabelValue( myHistogram->getNumRows() + i, "" );
+      if( totals[ 0 ] > 0.0 )
+      {
+        string tmpStr;
+        tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ] );
+        gridHisto->SetCellValue( myHistogram->getNumRows() + i, iCol, wxString( tmpStr ) );
+      }
+      else gridHisto->SetCellValue( myHistogram->getNumRows() + i, iCol, wxString( "-" ) );
     }
   }
   
