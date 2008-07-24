@@ -219,7 +219,8 @@ void gHistogram::fillGrid()
 
     for( int i = 0; i < NUMTOTALS; i++ )
     {
-      gridHisto->SetRowLabelValue( myHistogram->getNumRows() + i, "" );
+      gridHisto->SetRowLabelValue( myHistogram->getNumRows() + i, 
+        LabelConstructor::histoTotalLabel( (THistoTotals) i ) );
       if( totals[ 0 ] > 0.0 )
       {
         string tmpStr;
