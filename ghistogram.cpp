@@ -124,6 +124,8 @@ void gHistogram::CreateControls()
   gridHisto->CreateGrid(5, 5, wxGrid::wxGridSelectCells);
 
 ////@end gHistogram content construction
+  gridHisto->EnableEditing( false );
+  gridHisto->SetDefaultCellAlignment( wxALIGN_RIGHT, wxALIGN_CENTRE );
 }
 
 
@@ -155,10 +157,17 @@ void gHistogram::fillGrid()
     curPlane = myHistogram->getSelectedPlane();
     
   gridHisto->BeginBatch();
-  gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
-  gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
-  gridHisto->AppendCols( myHistogram->getNumColumns() );
-  gridHisto->AppendRows( myHistogram->getNumRows() + NUMTOTALS );
+  if( (THistogramColumn)gridHisto->GetNumberCols() != myHistogram->getNumColumns( myHistogram->getCurrentStat() ) )
+  {
+    gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
+    gridHisto->AppendCols( myHistogram->getNumColumns( myHistogram->getCurrentStat() ) );
+  }
+  if( gridHisto->GetNumberRows() != myHistogram->getNumRows() + NUMTOTALS + 1 )
+  {
+    gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
+    gridHisto->AppendRows( myHistogram->getNumRows() + NUMTOTALS + 1 );
+  }
+  
   for( THistogramColumn iCol = 0; iCol < myHistogram->getNumColumns(); iCol++ )
   {
     if( commStat )
@@ -217,17 +226,19 @@ void gHistogram::fillGrid()
     vector<TSemanticValue> totals;
     histoTotals->getAll( totals, idStat, iCol, curPlane );
 
+    gridHisto->SetRowLabelValue( myHistogram->getNumRows(), "" );
+    
     for( int i = 0; i < NUMTOTALS; i++ )
     {
-      gridHisto->SetRowLabelValue( myHistogram->getNumRows() + i, 
+      gridHisto->SetRowLabelValue( myHistogram->getNumRows() + i + 1, 
         LabelConstructor::histoTotalLabel( (THistoTotals) i ) );
       if( totals[ 0 ] > 0.0 )
       {
         string tmpStr;
         tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ] );
-        gridHisto->SetCellValue( myHistogram->getNumRows() + i, iCol, wxString( tmpStr ) );
+        gridHisto->SetCellValue( myHistogram->getNumRows() + i + 1, iCol, wxString( tmpStr ) );
       }
-      else gridHisto->SetCellValue( myHistogram->getNumRows() + i, iCol, wxString( "-" ) );
+      else gridHisto->SetCellValue( myHistogram->getNumRows() + i + 1, iCol, wxString( "-" ) );
     }
   }
   
