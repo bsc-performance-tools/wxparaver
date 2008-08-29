@@ -133,7 +133,7 @@ void gHistogram::execute()
 {
   if( myHistogram == NULL )
     return;
-    
+
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
 
   fillGrid();

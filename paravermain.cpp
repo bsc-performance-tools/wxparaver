@@ -27,7 +27,9 @@
 #include "paravermain.h"
 #include "paraverkernelexception.h"
 #include "cfg.h"
+#include "window.h"
 #include "histogram.h"
+#include "gtimeline.h"
 #include "ghistogram.h"
 
 ////@begin XPM images
@@ -249,6 +251,22 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
       }
       else
       {
+        for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); it++ )
+        {
+          gTimeline* tmpTimeline = new gTimeline( this, wxID_ANY, (*it)->getName() );
+
+          wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+          allTracesPage->AppendItem( allTracesPage->GetRootItem(), (*it)->getName(), -1, -1,
+            new TreeBrowserItemData( (*it)->getName(), tmpTimeline ) );
+            
+          wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+          currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), -1, -1,
+            new TreeBrowserItemData( (*it)->getName(), tmpTimeline ) );
+        
+          tmpTimeline->Show();
+          tmpTimeline->redraw();
+        }
+        
         for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); it++ )
         {
           gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, (*it)->getName() );
