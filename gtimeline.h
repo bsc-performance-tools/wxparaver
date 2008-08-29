@@ -1,0 +1,105 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        gtimeline.h
+// Purpose:     
+// Author:      Eloy Martinez
+// Modified by: 
+// Created:     Wed 27 Aug 2008 11:26:03 CEST
+// RCS-ID:      
+// Copyright:   
+// Licence:     
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef _GTIMELINE_H_
+#define _GTIMELINE_H_
+
+
+/*!
+ * Includes
+ */
+
+////@begin includes
+#include "wx/frame.h"
+////@end includes
+
+/*!
+ * Forward declarations
+ */
+
+////@begin forward declarations
+////@end forward declarations
+
+/*!
+ * Control identifiers
+ */
+
+////@begin control identifiers
+#define ID_GTIMELINE 10001
+#define ID_SCROLLEDWINDOW 10007
+#define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
+#define SYMBOL_GTIMELINE_TITLE _("gTimeline")
+#define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
+#define SYMBOL_GTIMELINE_SIZE wxSize(400, 300)
+#define SYMBOL_GTIMELINE_POSITION wxDefaultPosition
+////@end control identifiers
+
+
+/*!
+ * gTimeline class declaration
+ */
+
+class gTimeline: public wxFrame
+{    
+  DECLARE_CLASS( gTimeline )
+  DECLARE_EVENT_TABLE()
+
+public:
+  /// Constructors
+  gTimeline();
+  gTimeline( wxWindow* parent, wxWindowID id = SYMBOL_GTIMELINE_IDNAME, const wxString& caption = SYMBOL_GTIMELINE_TITLE, const wxPoint& pos = SYMBOL_GTIMELINE_POSITION, const wxSize& size = SYMBOL_GTIMELINE_SIZE, long style = SYMBOL_GTIMELINE_STYLE );
+
+  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_GTIMELINE_IDNAME, const wxString& caption = SYMBOL_GTIMELINE_TITLE, const wxPoint& pos = SYMBOL_GTIMELINE_POSITION, const wxSize& size = SYMBOL_GTIMELINE_SIZE, long style = SYMBOL_GTIMELINE_STYLE );
+
+  /// Destructor
+  ~gTimeline();
+
+  /// Initialises member variables
+  void Init();
+
+  /// Creates the controls and sizers
+  void CreateControls();
+
+////@begin gTimeline event handler declarations
+
+  /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
+  void OnPaint( wxPaintEvent& event );
+
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
+  void OnEraseBackground( wxEraseEvent& event );
+
+////@end gTimeline event handler declarations
+
+////@begin gTimeline member function declarations
+
+  wxBitmap GetBufferImage() const { return bufferImage ; }
+  void SetBufferImage(wxBitmap value) { bufferImage = value ; }
+
+  /// Retrieves bitmap resources
+  wxBitmap GetBitmapResource( const wxString& name );
+
+  /// Retrieves icon resources
+  wxIcon GetIconResource( const wxString& name );
+////@end gTimeline member function declarations
+
+  /// Should we show tooltips?
+  static bool ShowToolTips();
+
+  void redraw();
+
+////@begin gTimeline member variables
+  wxScrolledWindow* drawZone;
+  wxBitmap bufferImage;
+////@end gTimeline member variables
+};
+
+#endif
+  // _GTIMELINE_H_

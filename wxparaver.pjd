@@ -1574,6 +1574,7 @@
           <string name="id-suffix">""</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
+          <string name="variable-0">"bufferImage|wxBitmap|BufferImage||0|0|"</string>
           <string name="proxy-Id name">"ID_GTIMELINE"</string>
           <long name="proxy-Id value">10001</long>
           <string name="proxy-Class">"gTimeline"</string>
@@ -1664,7 +1665,6 @@
               <string name="proxy-type">"wbScrolledWindowProxy"</string>
               <string name="event-handler-0">"wxEVT_PAINT|OnPaint|NONE||gTimeline"</string>
               <string name="event-handler-1">"wxEVT_ERASE_BACKGROUND|OnEraseBackground|NONE||gTimeline"</string>
-              <string name="event-handler-2">"wxEVT_MOTION|OnMotion|NONE||gTimeline"</string>
               <string name="proxy-Id name">"ID_SCROLLEDWINDOW"</string>
               <long name="proxy-Id value">10007</long>
               <string name="proxy-Name">""</string>
