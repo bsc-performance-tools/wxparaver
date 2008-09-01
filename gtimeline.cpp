@@ -25,6 +25,7 @@
 
 #include <wx/dcbuffer.h>
 #include "gtimeline.h"
+#include "window.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -44,6 +45,8 @@ IMPLEMENT_CLASS( gTimeline, wxFrame )
 BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
 ////@begin gTimeline event table entries
+  EVT_SIZE( gTimeline::OnSize )
+
 ////@end gTimeline event table entries
 
 END_EVENT_TABLE()
@@ -98,6 +101,8 @@ gTimeline::~gTimeline()
 void gTimeline::Init()
 {
 ////@begin gTimeline member initialisation
+  ready = false;
+  myWindow = NULL;
   drawZone = NULL;
 ////@end gTimeline member initialisation
   bufferImage.Create( 1, 1 );
@@ -116,8 +121,7 @@ void gTimeline::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(100, 100)), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  drawZone->SetForegroundColour(wxColour(255, 0, 0));
+  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
   itemBoxSizer2->Add(drawZone, 1, wxGROW|wxALL, 5);
   drawZone->SetScrollbars(1, 1, 0, 0);
 
@@ -163,18 +167,21 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 ////@end gTimeline icon retrieval
 }
 
+
 void gTimeline::redraw()
 {
-  wxClientDC drawZoneDC( drawZone );
-  
-  bufferImage.Create( drawZoneDC.GetSize().GetWidth(), drawZoneDC.GetSize().GetHeight() );
+  ready = false;
+  bufferImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
   wxMemoryDC bufferDraw( bufferImage );
   
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
   bufferDraw.Clear();
-  bufferDraw.SetPen( wxPen( *wxRED, 1 ) );
-  bufferDraw.DrawLine( 0, 0, 50, 50 );
+  bufferDraw.SetPen( wxPen( *wxWHITE, 1 ) );
+  bufferDraw.DrawLine( 100, 3, 100, bufferImage.GetHeight() - 25 );
+  bufferDraw.DrawLine( 100, bufferImage.GetHeight() - 25, bufferImage.GetWidth() - 15, bufferImage.GetHeight() - 25 );
   bufferDraw.SelectObject(wxNullBitmap);
+  
+  ready = true;
 }
 
 
@@ -199,4 +206,16 @@ void gTimeline::OnPaint( wxPaintEvent& event )
 }
 
 
+
+
+/*!
+ * wxEVT_SIZE event handler for ID_GTIMELINE
+ */
+
+void gTimeline::OnSize( wxSizeEvent& event )
+{
+  if( ready )
+    redraw();
+  event.Skip();
+}
 

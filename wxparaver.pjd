@@ -1575,6 +1575,9 @@
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"bufferImage|wxBitmap|BufferImage||0|0|"</string>
+          <string name="variable-1">"ready|bool|Ready|false|2|0|"</string>
+          <string name="variable-2">"myWindow|Window*|MyWindow|NULL|2|0|"</string>
+          <string name="event-handler-0">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="proxy-Id name">"ID_GTIMELINE"</string>
           <long name="proxy-Id value">10001</long>
           <string name="proxy-Class">"gTimeline"</string>
@@ -1682,7 +1685,7 @@
               <string name="proxy-Help text">""</string>
               <string name="proxy-Tooltip text">""</string>
               <string name="proxy-Background colour">""</string>
-              <string name="proxy-Foreground colour">"FF0000"</string>
+              <string name="proxy-Foreground colour">""</string>
               <string name="proxy-Font">""</string>
               <bool name="proxy-Hidden">0</bool>
               <bool name="proxy-Enabled">1</bool>
@@ -1711,8 +1714,8 @@
               <string name="proxy-Custom styles">""</string>
               <long name="proxy-X">-1</long>
               <long name="proxy-Y">-1</long>
-              <long name="proxy-Width">100</long>
-              <long name="proxy-Height">100</long>
+              <long name="proxy-Width">-1</long>
+              <long name="proxy-Height">-1</long>
               <string name="proxy-AlignH">"Expand"</string>
               <string name="proxy-AlignV">"Centre"</string>
               <long name="proxy-Stretch factor">1</long>

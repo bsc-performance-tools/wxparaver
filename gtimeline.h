@@ -21,12 +21,14 @@
 #include "wx/frame.h"
 ////@end includes
 
+
 /*!
  * Forward declarations
  */
 
 ////@begin forward declarations
 ////@end forward declarations
+class Window;
 
 /*!
  * Control identifiers
@@ -70,6 +72,9 @@ public:
 
 ////@begin gTimeline event handler declarations
 
+  /// wxEVT_SIZE event handler for ID_GTIMELINE
+  void OnSize( wxSizeEvent& event );
+
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
   void OnPaint( wxPaintEvent& event );
 
@@ -82,6 +87,12 @@ public:
 
   wxBitmap GetBufferImage() const { return bufferImage ; }
   void SetBufferImage(wxBitmap value) { bufferImage = value ; }
+
+  bool GetReady() const { return ready ; }
+  void SetReady(bool value) { ready = value ; }
+
+  Window* GetWindow() const { return myWindow ; }
+  void SetWindow(Window* value) { myWindow = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -98,6 +109,9 @@ public:
 ////@begin gTimeline member variables
   wxScrolledWindow* drawZone;
   wxBitmap bufferImage;
+private:
+  bool ready;
+  Window* myWindow;
 ////@end gTimeline member variables
 };
 
