@@ -264,6 +264,7 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
             new TreeBrowserItemData( (*it)->getName(), tmpTimeline ) );
         
           tmpTimeline->SetWindow( *it );
+          tmpTimeline->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
           tmpTimeline->Show();
           tmpTimeline->redraw();
         }
@@ -281,6 +282,7 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
             new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
           
           tmpHisto->SetHistogram( *it );
+          tmpHisto->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
           tmpHisto->Show();
           tmpHisto->execute();
         }
