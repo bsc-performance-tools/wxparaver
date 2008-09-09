@@ -105,6 +105,7 @@ public:
   static bool ShowToolTips();
 
   void redraw();
+  void drawAxis( wxDC& dc );
 
 ////@begin gTimeline member variables
   wxScrolledWindow* drawZone;

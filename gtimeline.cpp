@@ -26,6 +26,7 @@
 #include <wx/dcbuffer.h>
 #include "gtimeline.h"
 #include "window.h"
+#include "labelconstructor.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -176,14 +177,22 @@ void gTimeline::redraw()
   
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
   bufferDraw.Clear();
-  bufferDraw.SetPen( wxPen( *wxWHITE, 1 ) );
-  bufferDraw.DrawLine( 100, 3, 100, bufferImage.GetHeight() - 25 );
-  bufferDraw.DrawLine( 100, bufferImage.GetHeight() - 25, bufferImage.GetWidth() - 15, bufferImage.GetHeight() - 25 );
+  drawAxis( bufferDraw );
   bufferDraw.SelectObject(wxNullBitmap);
   
   ready = true;
 }
 
+void gTimeline::drawAxis( wxDC& dc )
+{
+  dc.SetPen( wxPen( *wxWHITE, 1 ) );
+  dc.SetFont( wxFont( 9, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL ) );
+  dc.SetTextForeground( *wxWHITE );
+  dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects(), myWindow->getLevel(), 
+                                                   myWindow->getTrace() ) );
+  dc.DrawLine( 100, 3, 100, dc.GetSize().GetHeight() - 25 );
+  dc.DrawLine( 100, dc.GetSize().GetHeight() - 25, dc.GetSize().GetWidth() - 15, dc.GetSize().GetHeight() - 25 );
+}
 
 /*!
  * wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
