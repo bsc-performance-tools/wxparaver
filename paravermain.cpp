@@ -263,7 +263,7 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
           currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), -1, -1,
             new TreeBrowserItemData( (*it)->getName(), tmpTimeline ) );
         
-          tmpTimeline->SetWindow( *it );
+          tmpTimeline->SetMyWindow( *it );
           tmpTimeline->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
           tmpTimeline->Show();
           tmpTimeline->redraw();

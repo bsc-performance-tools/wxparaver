@@ -183,12 +183,15 @@ void gHistogram::fillGrid()
     
     for( TObjectOrder iRow = 0; iRow < myHistogram->getNumRows(); iRow++ )
     {
-      int w, h;
+      if( iCol == 0 )
+      {
+        int w, h;
       
-      gridHisto->GetTextExtent( myHistogram->getRowLabel( iCol ), &w, &h, NULL, NULL, &labelFont );
-      if( rowLabelWidth == 0 || rowLabelWidth < w )
-        rowLabelWidth = w;
-      gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+        gridHisto->GetTextExtent( myHistogram->getRowLabel( iRow ), &w, &h, NULL, NULL, &labelFont );
+        if( rowLabelWidth == 0 || rowLabelWidth < w )
+          rowLabelWidth = w;
+        gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+      }
       
       if( commStat && myHistogram->endCommCell( iCol, curPlane ) ||
           !commStat && myHistogram->endCell( iCol, curPlane ) )
@@ -242,7 +245,7 @@ void gHistogram::fillGrid()
     }
   }
   
-  gridHisto->SetRowLabelSize( rowLabelWidth );
+  gridHisto->SetRowLabelSize( rowLabelWidth + 4 );
   gridHisto->Fit();
   gridHisto->AutoSize();
   gridHisto->EndBatch();

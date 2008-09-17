@@ -53,6 +53,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 END_EVENT_TABLE()
 
 
+
 /*!
  * gTimeline constructors
  */
@@ -188,10 +189,29 @@ void gTimeline::drawAxis( wxDC& dc )
   dc.SetPen( wxPen( *wxWHITE, 1 ) );
   dc.SetFont( wxFont( 9, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL ) );
   dc.SetTextForeground( *wxWHITE );
-  dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects(), myWindow->getLevel(), 
-                                                   myWindow->getTrace() ) );
-  dc.DrawLine( 100, 3, 100, dc.GetSize().GetHeight() - 25 );
-  dc.DrawLine( 100, dc.GetSize().GetHeight() - 25, dc.GetSize().GetWidth() - 15, dc.GetSize().GetHeight() - 25 );
+  
+  // Get the text extent for the last object (probably the larger one)
+  wxSize labelExt = dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1, myWindow->getLevel(), 
+                                                                     myWindow->getTrace() ) );
+  
+  objectAxisPos = drawBorder + labelExt.GetWidth() + drawBorder;
+  timeAxisPos = dc.GetSize().GetHeight() - drawBorder;
+
+  dc.DrawLine( objectAxisPos, drawBorder, 
+               objectAxisPos, timeAxisPos );
+  dc.DrawLine( objectAxisPos, timeAxisPos,
+               dc.GetSize().GetWidth() - drawBorder, timeAxisPos );
+  
+  // Draw labels
+  double inc = (double)( timeAxisPos - drawBorder - labelExt.GetHeight() ) 
+               / (double)myWindow->getWindowLevelObjects();
+
+  for( TObjectOrder obj = 0; obj < myWindow->getWindowLevelObjects(); obj++ )
+  {
+    wxCoord y = ( (wxCoord) ( inc * ( obj + 0.5 ) ) ) + drawBorder;
+    dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
+                 drawBorder, y );
+  }
 }
 
 /*!

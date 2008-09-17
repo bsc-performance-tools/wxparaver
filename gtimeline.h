@@ -91,8 +91,14 @@ public:
   bool GetReady() const { return ready ; }
   void SetReady(bool value) { ready = value ; }
 
-  Window* GetWindow() const { return myWindow ; }
-  void SetWindow(Window* value) { myWindow = value ; }
+  Window* GetMyWindow() const { return myWindow ; }
+  void SetMyWindow(Window* value) { myWindow = value ; }
+
+  wxCoord GetObjectAxisPos() const { return objectAxisPos ; }
+  void SetObjectAxisPos(wxCoord value) { objectAxisPos = value ; }
+
+  wxCoord GetTimeAxisPos() const { return timeAxisPos ; }
+  void SetTimeAxisPos(wxCoord value) { timeAxisPos = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -113,7 +119,11 @@ public:
 private:
   bool ready;
   Window* myWindow;
+  wxCoord objectAxisPos;
+  wxCoord timeAxisPos;
 ////@end gTimeline member variables
+
+  static const wxCoord drawBorder = 5;
 };
 
 #endif
