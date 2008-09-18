@@ -108,6 +108,8 @@ void gTimeline::Init()
   drawZone = NULL;
 ////@end gTimeline member initialisation
   bufferImage.Create( 1, 1 );
+  objectFont = wxFont( 9, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  timeFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
 }
 
 
@@ -187,23 +189,27 @@ void gTimeline::redraw()
 void gTimeline::drawAxis( wxDC& dc )
 {
   dc.SetPen( wxPen( *wxWHITE, 1 ) );
-  dc.SetFont( wxFont( 9, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL ) );
   dc.SetTextForeground( *wxWHITE );
   
-  // Get the text extent for the last object (probably the larger one)
-  wxSize labelExt = dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1, myWindow->getLevel(), 
-                                                                     myWindow->getTrace() ) );
+  // Get the text extent for time label
+  dc.SetFont( timeFont );
+  wxSize timeExt = dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ) );
+  timeAxisPos = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
   
-  objectAxisPos = drawBorder + labelExt.GetWidth() + drawBorder;
-  timeAxisPos = dc.GetSize().GetHeight() - drawBorder;
-
+  // Get the text extent for the last object (probably the larger one)
+  dc.SetFont( objectFont );
+  wxSize objectExt = dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1, myWindow->getLevel(), 
+                                                                     myWindow->getTrace() ) );
+  objectAxisPos = drawBorder + objectExt.GetWidth() + drawBorder;
+  
+  // Draw axis lines
   dc.DrawLine( objectAxisPos, drawBorder, 
                objectAxisPos, timeAxisPos );
   dc.DrawLine( objectAxisPos, timeAxisPos,
                dc.GetSize().GetWidth() - drawBorder, timeAxisPos );
   
-  // Draw labels
-  double inc = (double)( timeAxisPos - drawBorder - labelExt.GetHeight() ) 
+  // Draw axis labels
+  double inc = (double)( timeAxisPos - drawBorder - objectExt.GetHeight() ) 
                / (double)myWindow->getWindowLevelObjects();
 
   for( TObjectOrder obj = 0; obj < myWindow->getWindowLevelObjects(); obj++ )
@@ -212,6 +218,10 @@ void gTimeline::drawAxis( wxDC& dc )
     dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
   }
+  
+  dc.SetFont( timeFont );
+  dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ),
+               objectAxisPos, timeAxisPos + drawBorder );
 }
 
 /*!

@@ -100,6 +100,12 @@ public:
   wxCoord GetTimeAxisPos() const { return timeAxisPos ; }
   void SetTimeAxisPos(wxCoord value) { timeAxisPos = value ; }
 
+  wxFont GetObjectFont() const { return objectFont ; }
+  void SetObjectFont(wxFont value) { objectFont = value ; }
+
+  wxFont GetTimeFont() const { return timeFont ; }
+  void SetTimeFont(wxFont value) { timeFont = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -121,6 +127,8 @@ private:
   Window* myWindow;
   wxCoord objectAxisPos;
   wxCoord timeAxisPos;
+  wxFont objectFont;
+  wxFont timeFont;
 ////@end gTimeline member variables
 
   static const wxCoord drawBorder = 5;
