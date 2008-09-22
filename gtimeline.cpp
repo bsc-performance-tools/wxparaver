@@ -222,6 +222,11 @@ void gTimeline::drawAxis( wxDC& dc )
   dc.SetFont( timeFont );
   dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ),
                objectAxisPos, timeAxisPos + drawBorder );
+  dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowEndTime(), myWindow->getTimeUnit() ),
+               dc.GetSize().GetWidth() -
+               ( dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->getWindowEndTime(), myWindow->getTimeUnit() ) )
+               .GetWidth() + drawBorder ),
+               timeAxisPos + drawBorder );
 }
 
 /*!
