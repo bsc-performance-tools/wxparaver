@@ -27,6 +27,7 @@
 #include "gtimeline.h"
 #include "window.h"
 #include "labelconstructor.h"
+#include "drawmode.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -181,6 +182,9 @@ void gTimeline::redraw()
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
   bufferDraw.Clear();
   drawAxis( bufferDraw );
+  myWindow->init( myWindow->getWindowBeginTime(), NOCREATE );
+  for( TObjectOrder obj = 0; obj < myWindow->getWindowLevelObjects(); obj++ )
+    drawRow( bufferDraw, obj );
   bufferDraw.SelectObject(wxNullBitmap);
   
   ready = true;
@@ -227,6 +231,22 @@ void gTimeline::drawAxis( wxDC& dc )
                ( dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->getWindowEndTime(), myWindow->getTimeUnit() ) )
                .GetWidth() + drawBorder ),
                timeAxisPos + drawBorder );
+}
+
+void gTimeline::drawRow( wxDC& dc, TObjectOrder row )
+{
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) / 
+                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+  vector<TSemanticValue> values;
+  
+  for( TTime currentTime = myWindow->getWindowBeginTime(); 
+       currentTime < myWindow->getWindowEndTime(); 
+       currentTime += timeStep )
+  {
+    values.clear();
+    
+    TSemanticValue valueToDraw = DrawMode::selectValue( values, myWindow->getDrawModeTime() );
+  }
 }
 
 /*!

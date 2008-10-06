@@ -20,7 +20,7 @@
 ////@begin includes
 #include "wx/frame.h"
 ////@end includes
-
+#include "paraverkerneltypes.h"
 
 /*!
  * Forward declarations
@@ -118,6 +118,7 @@ public:
 
   void redraw();
   void drawAxis( wxDC& dc );
+  void drawRow( wxDC& dc, TObjectOrder row );
 
 ////@begin gTimeline member variables
   wxScrolledWindow* drawZone;
