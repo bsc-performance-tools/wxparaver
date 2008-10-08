@@ -235,15 +235,25 @@ void gTimeline::drawAxis( wxDC& dc )
 
 void gTimeline::drawRow( wxDC& dc, TObjectOrder row )
 {
-  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) / 
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
   vector<TSemanticValue> values;
-  
-  for( TTime currentTime = myWindow->getWindowBeginTime(); 
-       currentTime < myWindow->getWindowEndTime(); 
+  printf("**************ROW %d*****************\n",row);
+  for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep; 
+       currentTime <= myWindow->getWindowEndTime(); 
        currentTime += timeStep )
   {
     values.clear();
+    
+    while( myWindow->getEndTime( row ) <= currentTime - timeStep )
+      myWindow->calcNext( row );
+      
+    values.push_back( myWindow->getValue( row ) );
+    while( myWindow->getEndTime( row ) < currentTime )
+    {
+      myWindow->calcNext( row );
+      values.push_back( myWindow->getValue( row ) );
+    }
     
     TSemanticValue valueToDraw = DrawMode::selectValue( values, myWindow->getDrawModeTime() );
   }
