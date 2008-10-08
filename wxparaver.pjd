@@ -1598,6 +1598,7 @@
           <string name="variable-4">"timeAxisPos|wxCoord|TimeAxisPos||2|0|"</string>
           <string name="variable-5">"objectFont|wxFont|ObjectFont||2|0|"</string>
           <string name="variable-6">"timeFont|wxFont|TimeFont||2|0|"</string>
+          <string name="variable-7">"objectPosList|vector&lt;wxCoord&gt;|ObjectPosList||2|0|"</string>
           <string name="event-handler-0">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="proxy-Id name">"ID_GTIMELINE"</string>
           <long name="proxy-Id value">10001</long>

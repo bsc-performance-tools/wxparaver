@@ -106,6 +106,9 @@ public:
   wxFont GetTimeFont() const { return timeFont ; }
   void SetTimeFont(wxFont value) { timeFont = value ; }
 
+  vector<wxCoord> GetObjectPosList() const { return objectPosList ; }
+  void SetObjectPosList(vector<wxCoord> value) { objectPosList = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -130,6 +133,7 @@ private:
   wxCoord timeAxisPos;
   wxFont objectFont;
   wxFont timeFont;
+  vector<wxCoord> objectPosList;
 ////@end gTimeline member variables
 
   static const wxCoord drawBorder = 5;

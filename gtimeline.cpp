@@ -215,10 +215,11 @@ void gTimeline::drawAxis( wxDC& dc )
   // Draw axis labels
   double inc = (double)( timeAxisPos - drawBorder - objectExt.GetHeight() ) 
                / (double)myWindow->getWindowLevelObjects();
-
+  objectPosList.clear();
   for( TObjectOrder obj = 0; obj < myWindow->getWindowLevelObjects(); obj++ )
   {
     wxCoord y = ( (wxCoord) ( inc * ( obj + 0.5 ) ) ) + drawBorder;
+    objectPosList.push_back( y );
     dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
   }
@@ -238,7 +239,8 @@ void gTimeline::drawRow( wxDC& dc, TObjectOrder row )
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
   vector<TSemanticValue> values;
-  printf("**************ROW %d*****************\n",row);
+  wxCoord timePos = objectAxisPos + 1;
+  wxCoord objectPos = objectPosList[row];
   for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep; 
        currentTime <= myWindow->getWindowEndTime(); 
        currentTime += timeStep )
@@ -256,6 +258,12 @@ void gTimeline::drawRow( wxDC& dc, TObjectOrder row )
     }
     
     TSemanticValue valueToDraw = DrawMode::selectValue( values, myWindow->getDrawModeTime() );
+    // Falta mirar si se esta en code color o gradient color
+    rgb colorToDraw = myWindow->getCodeColor().calcColor( valueToDraw, *myWindow );
+    dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+    dc.DrawLine( timePos, objectPos, timePos, objectPos + 5 );
+    
+    timePos++;
   }
 }
 
