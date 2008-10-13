@@ -265,8 +265,11 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
         
           tmpTimeline->SetMyWindow( *it );
           tmpTimeline->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
-          tmpTimeline->Show();
-          tmpTimeline->redraw();
+          if( (*it)->getShowWindow() )
+          {
+            tmpTimeline->Show();
+            tmpTimeline->redraw();
+          }
         }
         
         for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); it++ )

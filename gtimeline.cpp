@@ -259,7 +259,7 @@ void gTimeline::drawRow( wxDC& dc, TObjectOrder row )
     
     TSemanticValue valueToDraw = DrawMode::selectValue( values, myWindow->getDrawModeTime() );
     // Falta mirar si se esta en code color o gradient color
-    rgb colorToDraw = myWindow->getCodeColor().calcColor( valueToDraw, *myWindow );
+    rgb colorToDraw = myWindow->getGradientColor().calcColor( valueToDraw, *myWindow );
     dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
     dc.DrawLine( timePos, objectPos, timePos, objectPos + 5 );
     
