@@ -147,6 +147,9 @@ void gHistogram::fillGrid()
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   UINT16 idStat;
   THistogramColumn curPlane;
+  THistogramColumn numCols, numDrawCols;
+  TObjectOrder numRows, numDrawRows;
+  bool horizontal = myHistogram->getHorizontal();
   
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( exception() );
@@ -155,20 +158,33 @@ void gHistogram::fillGrid()
     curPlane = myHistogram->getCommSelectedPlane();
   else
     curPlane = myHistogram->getSelectedPlane();
-    
-  gridHisto->BeginBatch();
-  if( (THistogramColumn)gridHisto->GetNumberCols() != myHistogram->getNumColumns( myHistogram->getCurrentStat() ) )
+
+  numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+  numRows = myHistogram->getNumRows();
+  if( horizontal )
   {
-    gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
-    gridHisto->AppendCols( myHistogram->getNumColumns( myHistogram->getCurrentStat() ) );
+    numDrawCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+    numDrawRows = myHistogram->getNumRows();
   }
-  if( gridHisto->GetNumberRows() != myHistogram->getNumRows() + NUMTOTALS + 1 )
+  else
   {
-    gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
-    gridHisto->AppendRows( myHistogram->getNumRows() + NUMTOTALS + 1 );
+    numDrawCols = myHistogram->getNumRows();
+    numDrawRows = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
   }
   
-  for( THistogramColumn iCol = 0; iCol < myHistogram->getNumColumns(); iCol++ )
+  gridHisto->BeginBatch();
+  if( (THistogramColumn)gridHisto->GetNumberCols() != numDrawCols )
+  {
+    gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
+    gridHisto->AppendCols( numDrawCols );
+  }
+  if( gridHisto->GetNumberRows() != numDrawRows + NUMTOTALS + 1 )
+  {
+    gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
+    gridHisto->AppendRows( numDrawRows + NUMTOTALS + 1 );
+  }
+  
+  for( THistogramColumn iCol = 0; iCol < numCols; iCol++ )
   {
     if( commStat )
     {
@@ -177,25 +193,55 @@ void gHistogram::fillGrid()
     }
     else
     {
-      gridHisto->SetColLabelValue( iCol, myHistogram->getColumnLabel( iCol ) );
-      myHistogram->setFirstCell( iCol, curPlane );
-    }
-    
-    for( TObjectOrder iRow = 0; iRow < myHistogram->getNumRows(); iRow++ )
-    {
-      if( iCol == 0 )
+      if( horizontal )
+        gridHisto->SetColLabelValue( iCol, myHistogram->getColumnLabel( iCol ) );
+      else
       {
         int w, h;
       
-        gridHisto->GetTextExtent( myHistogram->getRowLabel( iRow ), &w, &h, NULL, NULL, &labelFont );
+        gridHisto->GetTextExtent( myHistogram->getColumnLabel( iCol ), &w, &h, NULL, NULL, &labelFont );
         if( rowLabelWidth == 0 || rowLabelWidth < w )
           rowLabelWidth = w;
-        gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+        gridHisto->SetRowLabelValue( iCol, myHistogram->getColumnLabel( iCol ) );
+      }
+      myHistogram->setFirstCell( iCol, curPlane );
+    }
+    
+    for( TObjectOrder iRow = 0; iRow < numRows; iRow++ )
+    {
+      if( horizontal )
+      {
+        if( iCol == 0 )
+        {
+          int w, h;
+      
+          gridHisto->GetTextExtent( myHistogram->getRowLabel( iRow ), &w, &h, NULL, NULL, &labelFont );
+          if( rowLabelWidth == 0 || rowLabelWidth < w )
+            rowLabelWidth = w;
+          gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+        }
+      }
+      else
+      {
+        gridHisto->SetColLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+      }
+      
+      THistogramColumn iDrawCol;
+      TObjectOrder iDrawRow;
+      if( horizontal )
+      {
+        iDrawCol = iCol;
+        iDrawRow = iRow;
+      }
+      else
+      {
+        iDrawCol = iRow;
+        iDrawRow = iCol;
       }
       
       if( commStat && myHistogram->endCommCell( iCol, curPlane ) ||
           !commStat && myHistogram->endCell( iCol, curPlane ) )
-        gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
+        gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
       else
       {
         if( commStat )
@@ -205,10 +251,10 @@ void gHistogram::fillGrid()
             string tmpStr;
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
               myHistogram->getCommCurrentValue( iCol, idStat, curPlane ) );
-            gridHisto->SetCellValue( iRow, iCol, wxString( tmpStr ) );
+            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( tmpStr ) );
             myHistogram->setCommNextCell( iCol, curPlane );
           }
-          else gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
+          else gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
         }
         else
         {
@@ -217,39 +263,63 @@ void gHistogram::fillGrid()
             string tmpStr;
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
               myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
-            gridHisto->SetCellValue( iRow, iCol, wxString( tmpStr ) );
+            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( tmpStr ) );
             myHistogram->setNextCell( iCol, curPlane );
           }
-          else gridHisto->SetCellValue( iRow, iCol, wxString( "-" ) );
+          else gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
         }
       }
     }
     
-    HistogramTotals *histoTotals = myHistogram->getTotals( myHistogram->getCurrentStat() );
-    vector<TSemanticValue> totals;
-    histoTotals->getAll( totals, idStat, iCol, curPlane );
-
-    gridHisto->SetRowLabelValue( myHistogram->getNumRows(), "" );
-    
-    for( int i = 0; i < NUMTOTALS; i++ )
-    {
-      gridHisto->SetRowLabelValue( myHistogram->getNumRows() + i + 1, 
-        LabelConstructor::histoTotalLabel( (THistoTotals) i ) );
-      if( totals[ 0 ] > 0.0 )
-      {
-        string tmpStr;
-        tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ] );
-        gridHisto->SetCellValue( myHistogram->getNumRows() + i + 1, iCol, wxString( tmpStr ) );
-      }
-      else gridHisto->SetCellValue( myHistogram->getNumRows() + i + 1, iCol, wxString( "-" ) );
-    }
+    gridHisto->SetRowLabelValue( numDrawRows, "" );
   }
   
-  gridHisto->SetRowLabelSize( rowLabelWidth + 4 );
+  fillTotals( rowLabelWidth, numDrawRows + 1, curPlane, idStat );
+  
+  gridHisto->SetRowLabelSize( rowLabelWidth + 5 );
   gridHisto->Fit();
   gridHisto->AutoSize();
   gridHisto->EndBatch();
 }
+
+void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat )
+{
+  THistogramColumn numDrawCols;
+  wxFont labelFont = gridHisto->GetLabelFont();
+  HistogramTotals *histoTotals = myHistogram->getTotals( myHistogram->getCurrentStat() );
+  
+  if( myHistogram->getHorizontal() )
+    numDrawCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+  else
+    numDrawCols = myHistogram->getNumRows();
+
+  for( THistogramColumn iCol = 0; iCol < numDrawCols; iCol++ )
+  {
+    vector<TSemanticValue> totals;
+    histoTotals->getAll( totals, idStat, iCol, curPlane );
+
+    for( int i = 0; i < NUMTOTALS; i++ )
+    {
+      int w,h;
+
+      gridHisto->GetTextExtent( LabelConstructor::histoTotalLabel( (THistoTotals) i ), 
+                                &w, &h, NULL, NULL, &labelFont );
+      if( rowLabelWidth == 0 || rowLabelWidth < w )
+        rowLabelWidth = w;
+      gridHisto->SetRowLabelValue( beginRow + i, 
+        LabelConstructor::histoTotalLabel( (THistoTotals) i ) );
+
+      if( totals[ 0 ] > 0.0 )
+      {
+        string tmpStr;
+        tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ] );
+        gridHisto->SetCellValue( beginRow + i, iCol, wxString( tmpStr ) );
+      }
+      else gridHisto->SetCellValue( beginRow + i, iCol, wxString( "-" ) );
+    }
+  }
+}
+
 /*!
  * Should we show tooltips?
  */

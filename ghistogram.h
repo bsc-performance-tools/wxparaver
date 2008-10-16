@@ -21,6 +21,7 @@
 #include "wx/frame.h"
 #include "wx/grid.h"
 ////@end includes
+#include "paraverkerneltypes.h"
 
 /*!
  * Forward declarations
@@ -89,6 +90,7 @@ public:
 
   void execute();
   void fillGrid();
+  void fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat );
   
   /// Should we show tooltips?
   static bool ShowToolTips();
