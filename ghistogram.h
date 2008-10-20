@@ -74,6 +74,9 @@ public:
 
 ////@begin gHistogram event handler declarations
 
+  /// wxEVT_IDLE event handler for ID_GHISTOGRAM
+  void OnIdle( wxIdleEvent& event );
+
 ////@end gHistogram event handler declarations
 
 ////@begin gHistogram member function declarations

@@ -47,6 +47,8 @@ IMPLEMENT_CLASS( gHistogram, wxFrame )
 BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 
 ////@begin gHistogram event table entries
+  EVT_IDLE( gHistogram::OnIdle )
+
 ////@end gHistogram event table entries
 
 END_EVENT_TABLE()
@@ -354,3 +356,18 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
   return wxNullIcon;
 ////@end gHistogram icon retrieval
 }
+
+
+/*!
+ * wxEVT_IDLE event handler for ID_GHISTOGRAM
+ */
+
+void gHistogram::OnIdle( wxIdleEvent& event )
+{
+  this->SetLabel( myHistogram->getName() );
+/*  if( myHistogram->getShowWindow() )
+    this->Show();
+  else
+    this->Show( false );*/
+}
+

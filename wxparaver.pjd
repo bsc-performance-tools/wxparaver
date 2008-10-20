@@ -1395,7 +1395,7 @@
             <bool name="proxy-AUI right dockable">1</bool>
             <bool name="proxy-AUI top dockable">1</bool>
             <bool name="proxy-AUI bottom dockable">1</bool>
-            <bool name="proxy-AUI close button">1</bool>
+            <bool name="proxy-AUI close button">0</bool>
             <bool name="proxy-AUI destroy on close">0</bool>
             <bool name="proxy-AUI resizable">1</bool>
             <bool name="proxy-AUI floatable">1</bool>
@@ -1499,7 +1499,7 @@
             <bool name="proxy-AUI right dockable">1</bool>
             <bool name="proxy-AUI top dockable">1</bool>
             <bool name="proxy-AUI bottom dockable">1</bool>
-            <bool name="proxy-AUI close button">1</bool>
+            <bool name="proxy-AUI close button">0</bool>
             <bool name="proxy-AUI destroy on close">0</bool>
             <bool name="proxy-AUI resizable">1</bool>
             <bool name="proxy-AUI floatable">1</bool>
@@ -1541,6 +1541,7 @@
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
+          <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||"</string>
           <string name="proxy-Id name">"ID_GHISTOGRAM"</string>
           <long name="proxy-Id value">10004</long>
           <string name="proxy-Class">"gHistogram"</string>
@@ -1706,6 +1707,7 @@
           <string name="variable-6">"timeFont|wxFont|TimeFont||2|0|"</string>
           <string name="variable-7">"objectPosList|vector&lt;wxCoord&gt;|ObjectPosList||2|0|"</string>
           <string name="event-handler-0">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
+          <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
           <string name="proxy-Id name">"ID_GTIMELINE"</string>
           <long name="proxy-Id value">10001</long>
           <string name="proxy-Class">"gTimeline"</string>
@@ -1741,7 +1743,7 @@
           <bool name="proxy-wxCLOSE_BOX">1</bool>
           <bool name="proxy-wxFRAME_TOOL_WINDOW">0</bool>
           <bool name="proxy-wxFRAME_FLOAT_ON_PARENT">0</bool>
-          <bool name="proxy-wxFRAME_NO_TASKBAR">0</bool>
+          <bool name="proxy-wxFRAME_NO_TASKBAR">1</bool>
           <bool name="proxy-wxSTAY_ON_TOP">0</bool>
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>

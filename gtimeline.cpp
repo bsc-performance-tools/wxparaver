@@ -48,6 +48,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
 ////@begin gTimeline event table entries
   EVT_SIZE( gTimeline::OnSize )
+  EVT_IDLE( gTimeline::OnIdle )
 
 ////@end gTimeline event table entries
 
@@ -298,5 +299,19 @@ void gTimeline::OnSize( wxSizeEvent& event )
   if( ready )
     redraw();
   event.Skip();
+}
+
+
+/*!
+ * wxEVT_IDLE event handler for ID_GTIMELINE
+ */
+
+void gTimeline::OnIdle( wxIdleEvent& event )
+{
+  this->SetLabel( myWindow->getName() );
+  if( myWindow->getShowWindow() )
+    this->Show();
+  else
+    this->Show( false );
 }
 
