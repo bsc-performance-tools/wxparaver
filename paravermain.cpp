@@ -60,6 +60,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
 ////@end paraverMain event table entries
 
+  EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
 END_EVENT_TABLE()
 
 
@@ -129,10 +130,13 @@ void paraverMain::Init()
 {
 ////@begin paraverMain member initialisation
   currentTrace = -1;
+  currentWindow = NULL;
+  currentHisto = NULL;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
   choiceWindowBrowser = NULL;
+  windowProperties = NULL;
 ////@end paraverMain member initialisation
 }
 
@@ -171,12 +175,16 @@ void paraverMain::CreateControls()
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
     .Name(_T("auiWindowBrowser")).Caption(_T("Window browser")).Centre().DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
+  windowProperties = new wxPropertyGrid( itemFrame1, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  itemFrame1->GetAuiManager().AddPane(windowProperties, wxAuiPaneInfo()
+    .Name(_T("auiWindowProperties")).Caption(_T("Window properties")).Centre().Position(1).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+
   GetAuiManager().Update();
 
 ////@end paraverMain content construction
   wxTreeCtrl* tmpTree = new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
   tmpTree->SetImageList( imageList );
-  tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", NULL ) );
+  tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
 }
 
@@ -208,7 +216,7 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
       wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, 
         wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
       newTree->SetImageList( imageList );
-      newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", NULL ) );
+      newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
       choiceWindowBrowser->AddPage( newTree, path );
     }
     catch( ParaverKernelException& ex )
@@ -358,3 +366,49 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
 
 
 
+
+
+/*!
+ * wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
+ */
+void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
+{
+  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+  
+  if( gHistogram *histo = itemData->getHistogram() )
+  {
+    currentHisto = histo->GetHistogram();
+    currentWindow = NULL;
+    updateHistogramProperties( currentHisto );
+  }
+  else if( gTimeline *timeline = itemData->getTimeline() )
+  {
+    currentHisto = NULL;
+    currentWindow = timeline->GetMyWindow();
+    updateTimelineProperties( currentWindow );
+  }
+}
+
+
+void paraverMain::updateTimelineProperties( Window *whichWindow )
+{
+  windowProperties->Freeze();
+  windowProperties->Clear();
+  
+  windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
+  
+  windowProperties->Refresh();
+  windowProperties->Thaw();
+}
+
+void paraverMain::updateHistogramProperties( Histogram *whichHisto )
+{
+  windowProperties->Freeze();
+  windowProperties->Clear();
+  
+  windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichHisto->getName() ) ) );
+  
+  windowProperties->Refresh();
+  windowProperties->Thaw();
+}

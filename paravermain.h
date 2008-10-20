@@ -24,6 +24,7 @@
 #include "wx/toolbar.h"
 #include "wx/choicebk.h"
 ////@end includes
+#include "wx/propgrid/propgrid.h"
 #include "wx/treectrl.h"
 #include "trace.h"
 #include "localkernel.h"
@@ -36,6 +37,7 @@
 ////@begin forward declarations
 class wxMenu;
 class wxChoicebook;
+class wxPropertyGrid;
 ////@end forward declarations
 
 /*!
@@ -47,19 +49,25 @@ class wxChoicebook;
 #define ID_MENULOADCFG 10006
 #define ID_TOOLBAR 10003
 #define ID_CHOICEWINBROWSER 10002
+#define ID_FOREIGN 10008
 #define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
-#define SYMBOL_PARAVERMAIN_SIZE wxDefaultSize
+#define SYMBOL_PARAVERMAIN_SIZE wxSize(-1, 300)
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, 0)
 ////@end control identifiers
 
+class gTimeline;
+class gHistogram;
 
 class TreeBrowserItemData: public wxTreeItemData
 {
   public:
-    TreeBrowserItemData( const wxString& whichDesc, wxWindow* whichWin ) :
-      desc( whichDesc ), myWindow( whichWin )
+    TreeBrowserItemData( const wxString& whichDesc, gTimeline* whichWin ) :
+      desc( whichDesc ), myTimeline( whichWin ), myHisto( NULL )
+    {}
+    TreeBrowserItemData( const wxString& whichDesc, gHistogram* whichHisto ) :
+      desc( whichDesc ), myTimeline( NULL ), myHisto( whichHisto )
     {}
     
     const wxString& GetDesc() const
@@ -67,10 +75,20 @@ class TreeBrowserItemData: public wxTreeItemData
       return desc;
     }
     
+    gTimeline *getTimeline() const
+    {
+      return myTimeline;
+    }
+    
+    gHistogram *getHistogram() const
+    {
+      return myHisto;
+    }
+    
   private:
     wxString desc;
-    wxWindow* myWindow;
-    Histogram* myHisto;
+    gTimeline* myTimeline;
+    gHistogram* myHisto;
 };
 
 /*!
@@ -114,6 +132,9 @@ public:
 
 ////@end paraverMain event handler declarations
 
+  /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
+  void OnTreeSelChanged( wxTreeEvent& event );
+  
 ////@begin paraverMain member function declarations
 
   /// Returns the AUI manager object
@@ -134,6 +155,12 @@ public:
   wxImageList* GetImageList() const { return imageList ; }
   void SetImageList(wxImageList* value) { imageList = value ; }
 
+  Window * GetCurrentWindow() const { return currentWindow ; }
+  void SetCurrentWindow(Window * value) { currentWindow = value ; }
+
+  Histogram * GetCurrentHisto() const { return currentHisto ; }
+  void SetCurrentHisto(Histogram * value) { currentHisto = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -150,13 +177,19 @@ public:
   wxMenu* menuHelp;
   wxToolBar* tbarMain;
   wxChoicebook* choiceWindowBrowser;
+  wxPropertyGrid* windowProperties;
 private:
   vector<Trace *> loadedTraces;
   KernelConnection* localKernel;
   ParaverConfig* paraverConfig;
   INT16 currentTrace;
   wxImageList* imageList;
+  Window * currentWindow;
+  Histogram * currentHisto;
 ////@end paraverMain member variables
+
+  void updateTimelineProperties( Window *whichWindow );
+  void updateHistogramProperties( Histogram *whichHisto );
 };
 
 #endif
