@@ -255,7 +255,7 @@
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Release"</string>
           <string name="Unicode mode">"ANSI"</string>
-          <string name="Shared mode">"Static"</string>
+          <string name="Shared mode">"Shared"</string>
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
@@ -1088,6 +1088,24 @@
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
+                <string name="title">"Previous Traces: wxID_RECENTTRACES"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menu"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"17/10/2008"</string>
+                <string name="proxy-type">"wbSubmenuProxy"</string>
+                <string name="proxy-Id name">"wxID_RECENTTRACES"</string>
+                <long name="proxy-Id value">10008</long>
+                <string name="proxy-Label">"Previous Traces"</string>
+                <string name="proxy-Help text">""</string>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
                 <string name="title">"------------"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
@@ -1121,6 +1139,24 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"Previous Configurations: wxID_RECENTCFGS"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menu"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"17/10/2008"</string>
+                <string name="proxy-type">"wbSubmenuProxy"</string>
+                <string name="proxy-Id name">"wxID_RECENTCFGS"</string>
+                <long name="proxy-Id value">10009</long>
+                <string name="proxy-Label">"Previous Configurations"</string>
+                <string name="proxy-Help text">""</string>
+                <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
@@ -1782,6 +1818,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>

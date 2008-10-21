@@ -160,8 +160,12 @@ void paraverMain::CreateControls()
   wxMenuBar* menuBar = new wxMenuBar;
   menuFile = new wxMenu;
   menuFile->Append(wxID_OPEN, _("Load &Trace"), _T(""), wxITEM_NORMAL);
+  wxMenu* itemMenu5 = new wxMenu;
+  menuFile->Append(wxID_RECENTTRACES, _("Previous Traces"), itemMenu5);
   menuFile->AppendSeparator();
   menuFile->Append(ID_MENULOADCFG, _("Load &Configuration"), _T(""), wxITEM_NORMAL);
+  wxMenu* itemMenu8 = new wxMenu;
+  menuFile->Append(wxID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), _T(""), wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));

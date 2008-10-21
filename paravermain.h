@@ -46,7 +46,9 @@ class wxPropertyGrid;
 
 ////@begin control identifiers
 #define ID_PARAVERMAIN 10000
+#define wxID_RECENTTRACES 10008
 #define ID_MENULOADCFG 10006
+#define wxID_RECENTCFGS 10009
 #define ID_TOOLBAR 10003
 #define ID_CHOICEWINBROWSER 10002
 #define ID_FOREIGN 10008

@@ -126,6 +126,7 @@ public:
   void drawAxis( wxDC& dc );
   void drawRow( wxDC& dc, TObjectOrder row );
 
+//  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
   wxScrolledWindow* drawZone;
   wxBitmap bufferImage;
