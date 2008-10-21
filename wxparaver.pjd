@@ -1323,6 +1323,7 @@
             <long name="locked">0</long>
             <string name="created">"16/6/2008"</string>
             <string name="proxy-type">"wbChoicebookProxy"</string>
+            <string name="event-handler-0">"wxEVT_UPDATE_UI|OnChoicewinbrowserUpdate|NONE||paraverMain"</string>
             <string name="proxy-Id name">"ID_CHOICEWINBROWSER"</string>
             <long name="proxy-Id value">10002</long>
             <string name="proxy-Name">""</string>
@@ -1572,7 +1573,7 @@
           <bool name="proxy-wxSYSTEM_MENU">1</bool>
           <bool name="proxy-wxMINIMIZE">0</bool>
           <bool name="proxy-wxMAXIMIZE">0</bool>
-          <bool name="proxy-wxMINIMIZE_BOX">1</bool>
+          <bool name="proxy-wxMINIMIZE_BOX">0</bool>
           <bool name="proxy-wxMAXIMIZE_BOX">1</bool>
           <bool name="proxy-wxCLOSE_BOX">1</bool>
           <bool name="proxy-wxFRAME_TOOL_WINDOW">0</bool>
@@ -1739,7 +1740,7 @@
           <bool name="proxy-wxMINIMIZE">0</bool>
           <bool name="proxy-wxMAXIMIZE">0</bool>
           <bool name="proxy-wxMINIMIZE_BOX">0</bool>
-          <bool name="proxy-wxMAXIMIZE_BOX">0</bool>
+          <bool name="proxy-wxMAXIMIZE_BOX">1</bool>
           <bool name="proxy-wxCLOSE_BOX">1</bool>
           <bool name="proxy-wxFRAME_TOOL_WINDOW">0</bool>
           <bool name="proxy-wxFRAME_FLOAT_ON_PARENT">0</bool>

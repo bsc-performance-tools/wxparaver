@@ -58,9 +58,14 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
+  EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
+
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
+  EVT_TREE_ITEM_ACTIVATED( wxID_ANY, paraverMain::OnTreeItemActivated )
+  
+  EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
 END_EVENT_TABLE()
 
 
@@ -364,8 +369,27 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
     menuFile->Enable( ID_MENULOADCFG, true );
 }
 
-
-
+/*!
+ * wxEVT_PG_CHANGED event handler for ID_FOREIGN
+ */
+void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
+{
+  wxPGProperty *property = event.GetProperty();
+  
+  if( !property )
+    return;
+    
+  const wxString& propName = property->GetName();
+  
+  if( propName == "Name" )
+  {
+    wxString tmpName = property->GetValue().GetString();
+    if( currentWindow != NULL )
+      currentWindow->setName( string( tmpName.c_str() ) );
+    else if( currentHisto != NULL )
+      currentHisto->setName( string( tmpName.c_str() ) );
+  }
+}
 
 
 /*!
@@ -390,6 +414,31 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   }
 }
 
+/*!
+ * wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
+ */
+void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
+{
+  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+  
+  if( gHistogram *histo = itemData->getHistogram() )
+  {
+    //Histogram *tmpHisto = histo->GetHistogram();
+    
+/*    currentHisto = histo->GetHistogram();
+    currentWindow = NULL;
+    updateHistogramProperties( currentHisto );*/
+  }
+  else if( gTimeline *timeline = itemData->getTimeline() )
+  {
+    Window *tmpWin = timeline->GetMyWindow();
+    tmpWin->setShowWindow( !tmpWin->getShowWindow() );
+/*    currentHisto = NULL;
+    currentWindow = timeline->GetMyWindow();
+    updateTimelineProperties( currentWindow );*/
+  }
+}
 
 void paraverMain::updateTimelineProperties( Window *whichWindow )
 {
@@ -411,4 +460,55 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   
   windowProperties->Refresh();
   windowProperties->Thaw();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
+ */
+
+void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
+{
+  for( unsigned int iPage = 0; iPage < choiceWindowBrowser->GetPageCount(); iPage++ )
+  {
+    wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( iPage );
+    wxTreeItemId root = currentTree->GetRootItem();
+    if( currentTree->ItemHasChildren( root ) )
+    {
+      wxTreeItemIdValue cookie;
+      wxTreeItemId currentChild = currentTree->GetFirstChild( root, cookie );
+      while( currentChild.IsOk() )
+      {
+        updateTreeItem( currentTree, currentChild );
+        currentChild = currentTree->GetNextChild( root, cookie );
+      }
+    }
+  }
+}
+
+void paraverMain::updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id )
+{
+  TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( id );
+  wxString tmpName;
+  if( gTimeline *tmpTimeline = itemData->getTimeline() )
+  {
+    tmpName = tmpTimeline->GetMyWindow()->getName();
+  }
+  else if( gHistogram *tmpHistogram = itemData->getHistogram() )
+  {
+    tmpName = tmpHistogram->GetHistogram()->getName();
+  }
+  if( tmpName != tree->GetItemText( id ) )
+    tree->SetItemText( id, tmpName );
+    
+  if( tree->ItemHasChildren( id ) )
+  {
+    wxTreeItemIdValue cookie;
+    wxTreeItemId currentChild = tree->GetFirstChild( id, cookie );
+    while( currentChild.IsOk() )
+    {
+      updateTreeItem( tree, currentChild );
+      currentChild = tree->GetNextChild( id, cookie );
+    }
+  }
 }

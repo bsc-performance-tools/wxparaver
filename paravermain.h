@@ -130,10 +130,19 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
   void OnExitClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
+  void OnChoicewinbrowserUpdate( wxUpdateUIEvent& event );
+
 ////@end paraverMain event handler declarations
 
   /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
   void OnTreeSelChanged( wxTreeEvent& event );
+  
+  /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
+  void OnTreeItemActivated( wxTreeEvent& event );
+  
+  /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
+  void OnPropertyGridChange( wxPropertyGridEvent& event );
   
 ////@begin paraverMain member function declarations
 
@@ -190,6 +199,7 @@ private:
 
   void updateTimelineProperties( Window *whichWindow );
   void updateHistogramProperties( Histogram *whichHisto );
+  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
 };
 
 #endif

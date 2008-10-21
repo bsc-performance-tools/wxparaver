@@ -139,6 +139,8 @@ void gHistogram::execute()
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
 
   fillGrid();
+  
+  this->Refresh();
 }
 
 
@@ -364,7 +366,7 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
 
 void gHistogram::OnIdle( wxIdleEvent& event )
 {
-  this->SetLabel( myHistogram->getName() );
+  this->SetTitle( myHistogram->getName() );
 /*  if( myHistogram->getShowWindow() )
     this->Show();
   else

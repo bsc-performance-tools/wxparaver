@@ -273,6 +273,7 @@ void gTimeline::drawRow( wxDC& dc, TObjectOrder row )
 
 void gTimeline::OnEraseBackground( wxEraseEvent& event )
 {
+  event.Skip();
 }
 
 
@@ -284,7 +285,10 @@ void gTimeline::OnPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( drawZone );
   
-  dc.DrawBitmap( bufferImage, 0, 0, false );
+  if( ready )
+  {
+    dc.DrawBitmap( bufferImage, 0, 0, false );
+  }
 }
 
 
@@ -308,9 +312,14 @@ void gTimeline::OnSize( wxSizeEvent& event )
 
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
-  this->SetLabel( myWindow->getName() );
+  this->SetTitle( myWindow->getName() );
+  
   if( myWindow->getShowWindow() )
+  {
     this->Show();
+    if( !ready )
+      redraw();
+  }
   else
     this->Show( false );
 }
