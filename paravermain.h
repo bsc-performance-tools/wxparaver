@@ -29,6 +29,7 @@
 #include "trace.h"
 #include "localkernel.h"
 #include "paraverconfig.h"
+#include "previousfiles.h"
 
 /*!
  * Forward declarations
@@ -123,6 +124,9 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_OPEN
   void OnOpenClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for wxID_RECENTTRACES
+  void OnRecenttracesUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG
   void OnMenuloadcfgClick( wxCommandEvent& event );
 
@@ -175,6 +179,12 @@ public:
   Histogram * GetCurrentHisto() const { return currentHisto ; }
   void SetCurrentHisto(Histogram * value) { currentHisto = value ; }
 
+  PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
+  void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
+
+  PreviousFiles * GetPreviousCFGs() const { return previousCFGs ; }
+  void SetPreviousCFGs(PreviousFiles * value) { previousCFGs = value ; }
+
   Window * GetLastWindow() const { return lastWindow ; }
   void SetLastWindow(Window * value) { lastWindow = value ; }
 
@@ -206,6 +216,8 @@ private:
   wxImageList* imageList;
   Window * currentWindow;
   Histogram * currentHisto;
+  PreviousFiles * previousTraces;
+  PreviousFiles * previousCFGs;
   Window * lastWindow;
   Histogram * lastHisto;
 ////@end paraverMain member variables

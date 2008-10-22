@@ -53,8 +53,12 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 ////@begin paraverMain event table entries
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
 
+  EVT_UPDATE_UI( wxID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
+
+  EVT_UPDATE_UI( wxID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
 
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
@@ -139,6 +143,8 @@ void paraverMain::Init()
   currentTrace = -1;
   currentWindow = NULL;
   currentHisto = NULL;
+  previousTraces = PreviousFiles::createPreviousTraces();
+  previousCFGs = PreviousFiles::createPreviousCFGs();
   lastWindow = NULL;
   lastHisto = NULL;
   menuFile = NULL;
@@ -375,9 +381,9 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
 void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
 {
   if( currentTrace == -1 )
-    menuFile->Enable( ID_MENULOADCFG, false );
+    event.Enable( false );
   else
-    menuFile->Enable( ID_MENULOADCFG, true );
+    event.Enable( true );
 }
 
 /*!
@@ -528,6 +534,30 @@ void paraverMain::updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id )
 
 
 /*!
+ * wxEVT_UPDATE_UI event handler for wxID_RECENTTRACES
+ */
+
+void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
+{
+  vector<string> v = previousTraces->getFiles(); 
+
+  wxMenu *menuTraces = (wxMenu *)event.GetEventObject();
+  int pos = 0;
+  int count = menuTraces->GetMenuItemCount();
+  
+  for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
+  {
+    if ( count > pos )
+      menuTraces->FindItemByPosition( pos )->SetItemLabel( wxT( (*it).c_str() ) );
+    else
+      menuTraces->Append( wxID_ANY, (*it).c_str() );
+      
+    pos++;
+  }
+}
+
+
+/*!
  * wxEVT_UPDATE_UI event handler for ID_FOREIGN
  */
 
@@ -544,4 +574,3 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
     updateTimelineProperties( currentWindow );
   }
 }
-
