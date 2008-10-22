@@ -1092,7 +1092,7 @@
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
-                <string name="title">"Previous Traces: wxID_RECENTTRACES"</string>
+                <string name="title">"Previous Traces: ID_RECENTTRACES"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"menu"</string>
@@ -1103,7 +1103,7 @@
                 <string name="created">"17/10/2008"</string>
                 <string name="proxy-type">"wbSubmenuProxy"</string>
                 <string name="event-handler-0">"wxEVT_UPDATE_UI|OnRecenttracesUpdate|NONE||paraverMain"</string>
-                <string name="proxy-Id name">"wxID_RECENTTRACES"</string>
+                <string name="proxy-Id name">"ID_RECENTTRACES"</string>
                 <long name="proxy-Id value">10008</long>
                 <string name="proxy-Label">"Previous Traces"</string>
                 <string name="proxy-Help text">""</string>
@@ -1147,7 +1147,7 @@
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
-                <string name="title">"Previous Configurations: wxID_RECENTCFGS"</string>
+                <string name="title">"Previous Configurations: ID_RECENTCFGS"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"menu"</string>
@@ -1158,7 +1158,7 @@
                 <string name="created">"17/10/2008"</string>
                 <string name="proxy-type">"wbSubmenuProxy"</string>
                 <string name="event-handler-0">"wxEVT_UPDATE_UI|OnMenuloadcfgUpdate|NONE||paraverMain"</string>
-                <string name="proxy-Id name">"wxID_RECENTCFGS"</string>
+                <string name="proxy-Id name">"ID_RECENTCFGS"</string>
                 <long name="proxy-Id value">10009</long>
                 <string name="proxy-Label">"Previous Configurations"</string>
                 <string name="proxy-Help text">""</string>
@@ -1473,7 +1473,7 @@
             <string name="proxy-type">"wbForeignCtrlProxy"</string>
             <string name="event-handler-0">"wxEVT_UPDATE_UI|OnForeignUpdate|NONE||paraverMain"</string>
             <string name="proxy-Id name">"ID_FOREIGN"</string>
-            <long name="proxy-Id value">10008</long>
+            <long name="proxy-Id value">10010</long>
             <string name="proxy-Name">""</string>
             <string name="proxy-Class">"wxPropertyGrid"</string>
             <string name="proxy-Base class">"wxPropertyGrid"</string>
@@ -1825,14 +1825,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>

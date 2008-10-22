@@ -53,12 +53,12 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 ////@begin paraverMain event table entries
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
 
-  EVT_UPDATE_UI( wxID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+  EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
 
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
 
-  EVT_UPDATE_UI( wxID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
+  EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
 
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
@@ -171,11 +171,11 @@ void paraverMain::CreateControls()
   menuFile = new wxMenu;
   menuFile->Append(wxID_OPEN, _("Load &Trace"), _T(""), wxITEM_NORMAL);
   wxMenu* itemMenu5 = new wxMenu;
-  menuFile->Append(wxID_RECENTTRACES, _("Previous Traces"), itemMenu5);
+  menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
   menuFile->AppendSeparator();
   menuFile->Append(ID_MENULOADCFG, _("Load &Configuration"), _T(""), wxITEM_NORMAL);
   wxMenu* itemMenu8 = new wxMenu;
-  menuFile->Append(wxID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
+  menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), _T(""), wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
@@ -205,6 +205,8 @@ void paraverMain::CreateControls()
   tmpTree->SetImageList( imageList );
   tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
+  for( int i = 0; i < PreviousFiles::SIZE; i++ )
+    itemMenu5->Append( wxID_ANY, "trace" );
 }
 
 
@@ -533,28 +535,6 @@ void paraverMain::updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id )
 }
 
 
-/*!
- * wxEVT_UPDATE_UI event handler for wxID_RECENTTRACES
- */
-
-void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
-{
-  vector<string> v = previousTraces->getFiles(); 
-
-  wxMenu *menuTraces = (wxMenu *)event.GetEventObject();
-  int pos = 0;
-  int count = menuTraces->GetMenuItemCount();
-  
-  for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
-  {
-    if ( count > pos )
-      menuTraces->FindItemByPosition( pos )->SetItemLabel( wxT( (*it).c_str() ) );
-    else
-      menuTraces->Append( wxID_ANY, (*it).c_str() );
-      
-    pos++;
-  }
-}
 
 
 /*!
@@ -574,3 +554,28 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
     updateTimelineProperties( currentWindow );
   }
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_RECENTTRACES
+ */
+
+void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
+{
+  vector<string> v = previousTraces->getFiles(); 
+
+  wxMenu *menuTraces = static_cast<wxMenu *>( event.GetEventObject() );
+  int pos = 0;
+  int count = menuTraces->GetMenuItemCount();
+  wxMenuItemList& menuItems = menuTraces->GetMenuItems();
+  wxMenuItemList::iterator menuIt = menuItems.begin();
+  
+  for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
+  {
+    printf("count = %i pos = %i\n", count, pos);
+    wxMenuItem *tmp = *menuIt;
+    tmp->SetItemLabel( wxT( (*it).c_str() ) );
+    pos++;
+  }
+}
+

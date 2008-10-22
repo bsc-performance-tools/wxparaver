@@ -47,12 +47,12 @@ class wxPropertyGrid;
 
 ////@begin control identifiers
 #define ID_PARAVERMAIN 10000
-#define wxID_RECENTTRACES 10008
+#define ID_RECENTTRACES 10008
 #define ID_MENULOADCFG 10006
-#define wxID_RECENTCFGS 10009
+#define ID_RECENTCFGS 10009
 #define ID_TOOLBAR 10003
 #define ID_CHOICEWINBROWSER 10002
-#define ID_FOREIGN 10008
+#define ID_FOREIGN 10010
 #define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
@@ -124,7 +124,7 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_OPEN
   void OnOpenClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for wxID_RECENTTRACES
+  /// wxEVT_UPDATE_UI event handler for ID_RECENTTRACES
   void OnRecenttracesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG
