@@ -135,6 +135,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_FOREIGN
+  void OnForeignUpdate( wxUpdateUIEvent& event );
+
 ////@end paraverMain event handler declarations
 
   /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
@@ -172,6 +175,12 @@ public:
   Histogram * GetCurrentHisto() const { return currentHisto ; }
   void SetCurrentHisto(Histogram * value) { currentHisto = value ; }
 
+  Window * GetLastWindow() const { return lastWindow ; }
+  void SetLastWindow(Window * value) { lastWindow = value ; }
+
+  Histogram * GetLastHisto() const { return lastHisto ; }
+  void SetLastHisto(Histogram * value) { lastHisto = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -197,6 +206,8 @@ private:
   wxImageList* imageList;
   Window * currentWindow;
   Histogram * currentHisto;
+  Window * lastWindow;
+  Histogram * lastHisto;
 ////@end paraverMain member variables
 
   void updateTimelineProperties( Window *whichWindow );

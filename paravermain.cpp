@@ -60,6 +60,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
 
+  EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
+
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -137,6 +139,8 @@ void paraverMain::Init()
   currentTrace = -1;
   currentWindow = NULL;
   currentHisto = NULL;
+  lastWindow = NULL;
+  lastHisto = NULL;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -411,13 +415,11 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   {
     currentHisto = histo->GetHistogram();
     currentWindow = NULL;
-    updateHistogramProperties( currentHisto );
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
     currentHisto = NULL;
     currentWindow = timeline->GetMyWindow();
-    updateTimelineProperties( currentWindow );
   }
 }
 
@@ -443,6 +445,9 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
 
 void paraverMain::updateTimelineProperties( Window *whichWindow )
 {
+  if( lastWindow == whichWindow && !whichWindow->getChanged() )
+    return;
+  lastWindow = whichWindow;
   windowProperties->Freeze();
   windowProperties->Clear();
   
@@ -454,10 +459,17 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
 
 void paraverMain::updateHistogramProperties( Histogram *whichHisto )
 {
+  if( lastHisto == whichHisto && !whichHisto->getChanged() )
+    return;
+  lastHisto = whichHisto;
   windowProperties->Freeze();
   windowProperties->Clear();
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichHisto->getName() ) ) );
+  // Statistic related properties
+  wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
+  windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
+  
   
   windowProperties->Refresh();
   windowProperties->Thaw();
@@ -513,3 +525,23 @@ void paraverMain::updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id )
     }
   }
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_FOREIGN
+ */
+
+void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
+{
+  if( currentHisto != NULL )
+  {
+    lastWindow = NULL;
+    updateHistogramProperties( currentHisto );
+  }
+  else if( currentWindow != NULL )
+  {
+    lastHisto = NULL;
+    updateTimelineProperties( currentWindow );
+  }
+}
+

@@ -977,6 +977,8 @@
           <string name="variable-4">"imageList|wxImageList*|ImageList||2|0|"</string>
           <string name="variable-5">"currentWindow|Window *|CurrentWindow|NULL|2|0|"</string>
           <string name="variable-6">"currentHisto|Histogram *|CurrentHisto|NULL|2|0|"</string>
+          <string name="variable-7">"lastWindow|Window *|LastWindow|NULL|2|0|"</string>
+          <string name="variable-8">"lastHisto|Histogram *|LastHisto|NULL|2|0|"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
           <string name="proxy-Class">"paraverMain"</string>
@@ -1465,6 +1467,7 @@
             <long name="locked">0</long>
             <string name="created">"20/10/2008"</string>
             <string name="proxy-type">"wbForeignCtrlProxy"</string>
+            <string name="event-handler-0">"wxEVT_UPDATE_UI|OnForeignUpdate|NONE||paraverMain"</string>
             <string name="proxy-Id name">"ID_FOREIGN"</string>
             <long name="proxy-Id value">10008</long>
             <string name="proxy-Name">""</string>
