@@ -367,9 +367,10 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
 void gHistogram::OnIdle( wxIdleEvent& event )
 {
   this->SetTitle( myHistogram->getName() );
-/*  if( myHistogram->getShowWindow() )
+  
+  if( myHistogram->getShowWindow() )
     this->Show();
   else
-    this->Show( false );*/
+    this->Show( false );
 }
 

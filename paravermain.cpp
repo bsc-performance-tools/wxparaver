@@ -303,7 +303,10 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
           
           tmpHisto->SetHistogram( *it );
           tmpHisto->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
-          tmpHisto->Show();
+          if( (*it)->getShowWindow() )
+          {
+            tmpHisto->Show();
+          }
           tmpHisto->execute();
         }
       }
@@ -428,19 +431,13 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
   
   if( gHistogram *histo = itemData->getHistogram() )
   {
-    //Histogram *tmpHisto = histo->GetHistogram();
-    
-/*    currentHisto = histo->GetHistogram();
-    currentWindow = NULL;
-    updateHistogramProperties( currentHisto );*/
+    Histogram *tmpHisto = histo->GetHistogram();
+    tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
     Window *tmpWin = timeline->GetMyWindow();
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
-/*    currentHisto = NULL;
-    currentWindow = timeline->GetMyWindow();
-    updateTimelineProperties( currentWindow );*/
   }
 }
 
