@@ -207,6 +207,7 @@ void paraverMain::CreateControls()
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
   for( int i = 0; i < PreviousFiles::SIZE; i++ )
     itemMenu5->Append( wxID_ANY, "trace" );
+  printf("%x\n",(unsigned int)itemMenu5);
 }
 
 
@@ -535,8 +536,6 @@ void paraverMain::updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id )
 }
 
 
-
-
 /*!
  * wxEVT_UPDATE_UI event handler for ID_FOREIGN
  */
@@ -562,20 +561,27 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
 {
-  vector<string> v = previousTraces->getFiles(); 
+  vector<string> v = previousTraces->getFiles();
 
-  wxMenu *menuTraces = static_cast<wxMenu *>( event.GetEventObject() );
-  int pos = 0;
-  int count = menuTraces->GetMenuItemCount();
+  wxMenuItem *tmpItem = menuFile->FindItem(ID_RECENTTRACES );
+  wxMenu *menuTraces = tmpItem->GetSubMenu();
+
   wxMenuItemList& menuItems = menuTraces->GetMenuItems();
   wxMenuItemList::iterator menuIt = menuItems.begin();
-  
+
   for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
   {
-    printf("count = %i pos = %i\n", count, pos);
     wxMenuItem *tmp = *menuIt;
     tmp->SetItemLabel( wxT( (*it).c_str() ) );
-    pos++;
+    tmp->Enable( true );
+    menuIt++;
+  }
+  
+  if( menuIt != menuItems.end() )
+  {
+    wxMenuItem *tmp = *menuIt;
+    menuTraces->Delete( tmp );
+    menuIt++;
   }
 }
 
