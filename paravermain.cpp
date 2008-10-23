@@ -406,6 +406,18 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     else if( currentHisto != NULL )
       currentHisto->setName( string( tmpName.c_str() ) );
   }
+  else if( propName == "Calculate all" )
+    currentHisto->setCalculateAll( property->GetValue().GetBool() );
+  else if( propName == "Type" )
+  {
+    if( property->GetValue().GetLong() == 0 )
+      currentHisto->setCurrentStat( currentHisto->getFirstCommStatistic() );
+    else
+      currentHisto->setCurrentStat( currentHisto->getFirstStatistic() );
+    currentHisto->setChanged( true );
+  }
+  else if( propName == "Statistic" )
+    currentHisto->setCurrentStat( string( property->GetDisplayedString().c_str() ) );
 }
 
 
@@ -453,6 +465,7 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
 {
   if( lastWindow == whichWindow && !whichWindow->getChanged() )
     return;
+  whichWindow->setChanged( false );
   lastWindow = whichWindow;
   windowProperties->Freeze();
   windowProperties->Clear();
@@ -467,6 +480,7 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
 {
   if( lastHisto == whichHisto && !whichHisto->getChanged() )
     return;
+  whichHisto->setChanged( false );
   lastHisto = whichHisto;
   windowProperties->Freeze();
   windowProperties->Clear();
@@ -475,7 +489,37 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
+  vector<string> tmpV;
+  wxArrayString tmpA;
+  wxArrayInt tmpAi;
+  whichHisto->getGroupsLabels( tmpV );
+  for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); it++ )
+    tmpA.Add( wxT( (*it).c_str() ) );
+  tmpAi.Add( 0 );
+  tmpAi.Add( 1 );
+  int selected;
+  if( whichHisto->itsCommunicationStat( whichHisto->getCurrentStat() ) )
+    selected = 0;
+  else
+    selected = 1;
+  windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Type"), wxPG_LABEL, tmpA, tmpAi, selected ) );
   
+  tmpV.clear();
+  tmpA.Clear();
+  tmpAi.Clear();
+  whichHisto->getStatisticsLabels( tmpV, selected );
+  int pos = 0;
+  selected = -1;
+  for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); it++ )
+  {
+    tmpA.Add( wxT( (*it).c_str() ) );
+    tmpAi.Add( pos );
+    if( (*it) == whichHisto->getCurrentStat() )
+      selected = pos;
+    pos++;
+  }
+  if( selected == -1 ) selected = 0;
+  windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Statistic"), wxPG_LABEL, tmpA, tmpAi, selected ) );
   
   windowProperties->Refresh();
   windowProperties->Thaw();
