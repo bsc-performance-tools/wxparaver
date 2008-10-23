@@ -49,6 +49,8 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 ////@begin gHistogram event table entries
   EVT_IDLE( gHistogram::OnIdle )
 
+  EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
+
 ////@end gHistogram event table entries
 
 END_EVENT_TABLE()
@@ -118,12 +120,16 @@ void gHistogram::CreateControls()
 ////@begin gHistogram content construction
   gHistogram* itemFrame1 = this;
 
+  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+  itemFrame1->SetSizer(itemBoxSizer2);
+
   gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(200, 150)), wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   gridHisto->SetDefaultColSize(50);
   gridHisto->SetDefaultRowSize(25);
   gridHisto->SetColLabelSize(25);
   gridHisto->SetRowLabelSize(50);
   gridHisto->CreateGrid(5, 5, wxGrid::wxGridSelectCells);
+  itemBoxSizer2->Add(gridHisto, 1, wxGROW|wxALL, 1);
 
 ////@end gHistogram content construction
   gridHisto->EnableEditing( false );
@@ -281,7 +287,6 @@ void gHistogram::fillGrid()
   fillTotals( rowLabelWidth, numDrawRows + 1, curPlane, idStat );
   
   gridHisto->SetRowLabelSize( rowLabelWidth + 5 );
-  gridHisto->Fit();
   gridHisto->AutoSize();
   gridHisto->EndBatch();
 }
@@ -372,5 +377,22 @@ void gHistogram::OnIdle( wxIdleEvent& event )
     this->Show();
   else
     this->Show( false );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
+ */
+
+void gHistogram::OnGridhistoUpdate( wxUpdateUIEvent& event )
+{
+  if( this->IsShown() )
+  {
+    if( myHistogram->getRedraw() )
+    {
+      myHistogram->setRedraw( false );
+      fillGrid();
+    }
+  }
 }
 

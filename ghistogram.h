@@ -77,6 +77,9 @@ public:
   /// wxEVT_IDLE event handler for ID_GHISTOGRAM
   void OnIdle( wxIdleEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
+  void OnGridhistoUpdate( wxUpdateUIEvent& event );
+
 ////@end gHistogram event handler declarations
 
 ////@begin gHistogram member function declarations

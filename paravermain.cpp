@@ -415,9 +415,13 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     else
       currentHisto->setCurrentStat( currentHisto->getFirstStatistic() );
     currentHisto->setChanged( true );
+    currentHisto->setRedraw( true );
   }
   else if( propName == "Statistic" )
+  {
     currentHisto->setCurrentStat( string( property->GetDisplayedString().c_str() ) );
+    currentHisto->setRedraw( true );
+  }
 }
 
 
@@ -471,6 +475,10 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
   windowProperties->Clear();
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
+  // Filter related properties
+  wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
+  wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
+  wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
   
   windowProperties->Refresh();
   windowProperties->Thaw();

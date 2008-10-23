@@ -127,7 +127,7 @@ void gTimeline::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxFULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN|wxHSCROLL|wxVSCROLL );
   itemBoxSizer2->Add(drawZone, 1, wxGROW|wxALL, 5);
   drawZone->SetScrollbars(1, 1, 0, 0);
 
