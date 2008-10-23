@@ -205,9 +205,6 @@ void paraverMain::CreateControls()
   tmpTree->SetImageList( imageList );
   tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
-  for( int i = 0; i < PreviousFiles::SIZE; i++ )
-    itemMenu5->Append( wxID_ANY, "trace" );
-  printf("%x\n",(unsigned int)itemMenu5);
 }
 
 
@@ -571,10 +568,14 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
 
   for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
   {
-    wxMenuItem *tmp = *menuIt;
-    tmp->SetItemLabel( wxT( (*it).c_str() ) );
-    tmp->Enable( true );
-    menuIt++;
+    if( menuIt == menuItems.end() )
+      menuTraces->Append( wxID_ANY, wxT( (*it).c_str() ) );
+    else
+    {
+      wxMenuItem *tmp = *menuIt;
+      tmp->SetItemLabel( wxT( (*it).c_str() ) );
+      menuIt++;
+    }
   }
   
   while( menuIt != menuItems.end() )
