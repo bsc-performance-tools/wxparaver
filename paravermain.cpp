@@ -577,7 +577,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
     menuIt++;
   }
   
-  if( menuIt != menuItems.end() )
+  while( menuIt != menuItems.end() )
   {
     wxMenuItem *tmp = *menuIt;
     menuTraces->Delete( tmp );
