@@ -660,7 +660,7 @@ void paraverMain::OnPreviousTracesClick( wxCommandEvent& event )
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();
     if ( currentId == eventId )
-      DoLoadTrace( tmp->GetItemLabelText().c_str() );
+      DoLoadTrace( tmp->GetLabelText(tmp->GetItemLabel()).c_str() );
   }
 }
 
