@@ -47,6 +47,7 @@ IMPLEMENT_CLASS( gTimeline, wxFrame )
 BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
 ////@begin gTimeline event table entries
+  EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_SIZE( gTimeline::OnSize )
   EVT_IDLE( gTimeline::OnIdle )
 
@@ -322,5 +323,15 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   }
   else
     this->Show( false );
+}
+
+
+/*!
+ * wxEVT_CLOSE_WINDOW event handler for ID_GTIMELINE
+ */
+
+void gTimeline::OnCloseWindow( wxCloseEvent& event )
+{
+  myWindow->setShowWindow( false );
 }
 

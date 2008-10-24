@@ -72,6 +72,9 @@ public:
 
 ////@begin gTimeline event handler declarations
 
+  /// wxEVT_CLOSE_WINDOW event handler for ID_GTIMELINE
+  void OnCloseWindow( wxCloseEvent& event );
+
   /// wxEVT_SIZE event handler for ID_GTIMELINE
   void OnSize( wxSizeEvent& event );
 

@@ -47,6 +47,7 @@ IMPLEMENT_CLASS( gHistogram, wxFrame )
 BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 
 ////@begin gHistogram event table entries
+  EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_IDLE( gHistogram::OnIdle )
 
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
@@ -394,5 +395,15 @@ void gHistogram::OnGridhistoUpdate( wxUpdateUIEvent& event )
       fillGrid();
     }
   }
+}
+
+
+/*!
+ * wxEVT_CLOSE_WINDOW event handler for ID_GHISTOGRAM
+ */
+
+void gHistogram::OnCloseWindow( wxCloseEvent& event )
+{
+  myHistogram->setShowWindow( false );
 }
 

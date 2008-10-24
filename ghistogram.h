@@ -74,6 +74,9 @@ public:
 
 ////@begin gHistogram event handler declarations
 
+  /// wxEVT_CLOSE_WINDOW event handler for ID_GHISTOGRAM
+  void OnCloseWindow( wxCloseEvent& event );
+
   /// wxEVT_IDLE event handler for ID_GHISTOGRAM
   void OnIdle( wxIdleEvent& event );
 

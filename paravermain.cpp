@@ -650,17 +650,18 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
 void paraverMain::OnPreviousTracesClick( wxCommandEvent& event )
 {
   int eventId = event.GetId();
+  int i = 0;
 
   wxMenuItem *item = menuFile->FindItem( ID_RECENTTRACES );
   wxMenu *menu = item->GetSubMenu();
   wxMenuItemList& menuItems = menu->GetMenuItems();
-  
   for ( wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end(); menuIt++ )
   {
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();
     if ( currentId == eventId )
-      DoLoadTrace( tmp->GetLabelText(tmp->GetItemLabel()).c_str() );
+      DoLoadTrace( previousTraces->getFiles()[i] );
+    i++;
   }
 }
 
@@ -668,7 +669,8 @@ void paraverMain::OnPreviousTracesClick( wxCommandEvent& event )
 void paraverMain::OnPreviousCFGsClick( wxCommandEvent& event )
 {
   int eventId = event.GetId();
-
+  int i = 0;
+  
   wxMenuItem *item = menuFile->FindItem( ID_RECENTCFGS );
   wxMenu *menu = item->GetSubMenu();
   wxMenuItemList& menuItems = menu->GetMenuItems();
@@ -678,7 +680,8 @@ void paraverMain::OnPreviousCFGsClick( wxCommandEvent& event )
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();
     if ( currentId == eventId )
-      DoLoadCFG( tmp->GetItemLabelText().c_str() );
+      DoLoadCFG( previousCFGs->getFiles()[i] );
+    i++;
   }
 }
 
