@@ -31,6 +31,7 @@
 #include "histogram.h"
 #include "gtimeline.h"
 #include "ghistogram.h"
+#include <wx/propgrid/advprops.h>
 
 ////@begin XPM images
 ////@end XPM images
@@ -473,12 +474,28 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
   lastWindow = whichWindow;
   windowProperties->Freeze();
   windowProperties->Clear();
+  wxArrayString tmpA;
+  wxArrayInt tmpAi;
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
   // Filter related properties
   wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
   wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
+  
   wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
+  wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
+                                                       new wxStringProperty( wxT("Event Type"), 
+                                                                             wxPG_LABEL,
+                                                                             wxT("<composed>") ) );
+  tmpA.Add(wxT("="));
+  tmpAi.Add(0);
+  windowProperties->AppendIn( eventFilterType, new wxEnumProperty( wxT("Function"), 
+                                                                   wxPG_LABEL, tmpA, tmpAi ) );
+  tmpA.Clear();
+  tmpA.Add(wxT("40000001"));
+  tmpA.Add(wxT("40000002"));
+  tmpA.Add(wxT("40000003"));
+  windowProperties->AppendIn( eventFilterType, new wxMultiChoiceProperty( wxT("Types"), wxPG_LABEL, tmpA, tmpA ) );
   
   windowProperties->Refresh();
   windowProperties->Thaw();
