@@ -152,7 +152,10 @@ public:
   
   /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
   void OnPropertyGridChange( wxPropertyGridEvent& event );
-  
+
+  void OnPreviousTracesClick( wxCommandEvent& event );
+  void OnPreviousCFGsClick( wxCommandEvent& event );
+
 ////@begin paraverMain member function declarations
 
   /// Returns the AUI manager object
@@ -225,6 +228,10 @@ private:
   void updateTimelineProperties( Window *whichWindow );
   void updateHistogramProperties( Histogram *whichHisto );
   void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
+  bool DoLoadTrace( const string &path );
+  bool DoLoadCFG( const string &path );
+
+
 };
 
 #endif

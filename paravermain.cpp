@@ -126,6 +126,27 @@ paraverMain::~paraverMain()
   GetAuiManager().UnInit();
 ////@end paraverMain destruction
 
+// DISCONNECTS
+  wxMenuItem *tmpItem2 = menuFile->FindItem( ID_RECENTTRACES );
+  wxMenu *menuTraces2 = tmpItem2->GetSubMenu();
+  wxMenuItemList& menuItems2 = menuTraces2->GetMenuItems();
+  for (wxMenuItemList::iterator menuIt = menuItems2.begin(); menuIt != menuItems2.end() ; menuIt++ )
+  {
+    wxMenuItem *tmp = *menuIt;
+    int id = tmp->GetId();
+    Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousTracesClick );
+  }
+
+  wxMenuItem *tmpItem = menuFile->FindItem( ID_RECENTCFGS );
+  wxMenu *menuCFGs = tmpItem->GetSubMenu();
+  wxMenuItemList& menuItems = menuCFGs->GetMenuItems();
+  for (wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end() ; menuIt++ )
+  {
+    wxMenuItem *tmp = *menuIt;
+    int id = tmp->GetId();
+    Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousCFGsClick );
+  }
+
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
     delete *it;
   delete localKernel;
@@ -208,59 +229,41 @@ void paraverMain::CreateControls()
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
 }
 
-
-/*!
- * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_OPEN
- */
-
-void paraverMain::OnOpenClick( wxCommandEvent& event )
+bool paraverMain::DoLoadTrace( const string &path )
 {
-  wxFileDialog dialog( this, "Load Trace", "", "", 
-    "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*", 
-    wxOPEN|wxFILE_MUST_EXIST );
-  if( dialog.ShowModal() == wxID_OK )
+  Trace *tr = NULL;
+  bool loaded = true;
+
+  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
   {
-    Trace *tr = NULL;
-    wxString path = dialog.GetPath();
-    for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
-    {
-      if( (*it)->getFileName().compare( path.c_str() ) == 0 )
-        return;
-    }
-    
-    try
-    {
-      tr = Trace::create( localKernel, path.c_str() );
-      loadedTraces.push_back( tr );
-      currentTrace = loadedTraces.size() - 1;
-      wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, 
-        wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
-      newTree->SetImageList( imageList );
-      newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
-      choiceWindowBrowser->AddPage( newTree, path );
-    }
-    catch( ParaverKernelException& ex )
-    {
-      wxMessageDialog message( this, ex.what(), "Error loading trace", wxOK );
-      message.ShowModal();
-    }
+    if( (*it)->getFileName().compare( path ) == 0 )
+      return true;
   }
+
+  try
+  {
+    tr = Trace::create( localKernel, path );
+    loadedTraces.push_back( tr );
+    currentTrace = loadedTraces.size() - 1;
+    wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, 
+      wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
+    newTree->SetImageList( imageList );
+    newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
+    choiceWindowBrowser->AddPage( newTree, path );
+    previousTraces->add( path );
+  }
+  catch( ParaverKernelException& ex )
+  {
+    loaded = false;
+    wxMessageDialog message( this, ex.what(), "Error loading trace", wxOK );
+    message.ShowModal();
+  }
+  return loaded; // tiene sentido?
 }
 
-
-/*!
- * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG
- */
-
-void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
+bool paraverMain::DoLoadCFG( const string &path )
 {
-  wxFileDialog dialog( this, "Load Configuration", "", "",
-    "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*",
-    wxOPEN|wxFILE_MUST_EXIST );
-  if( dialog.ShowModal() == wxID_OK )
-  {
-    wxString path = dialog.GetPath();
-    if( !CFGLoader::isCFGFile( path.c_str() ) )
+   if( !CFGLoader::isCFGFile( path ))
     {
       wxString errMessage = path + " isn't a valid cfg.";
       wxMessageDialog message( this, errMessage.c_str(), "Invalid file", wxOK );
@@ -271,7 +274,7 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
       vector<Window *> newWindows;
       vector<Histogram *> newHistograms;
       
-      if( !CFGLoader::loadCFG( localKernel, path.c_str(), loadedTraces[ currentTrace ], newWindows, newHistograms ) )
+      if( !CFGLoader::loadCFG( localKernel, path, loadedTraces[ currentTrace ], newWindows, newHistograms ) )
       {
         wxString errMessage = path + " failed to load.";
         wxMessageDialog message( this, errMessage.c_str(), "Loading error", wxOK );
@@ -320,9 +323,45 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
           }
           tmpHisto->execute();
         }
+        previousCFGs->add( path );
       }
     }
+    return true;
+}
+
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_OPEN
+ */
+
+void paraverMain::OnOpenClick( wxCommandEvent& event )
+{
+  wxFileDialog dialog( this, "Load Trace", "", "", 
+    "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*", 
+    wxOPEN|wxFILE_MUST_EXIST );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString path = dialog.GetPath();
+    DoLoadTrace( path.c_str() );
   }
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG
+ */
+
+void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
+{
+  wxFileDialog dialog( this, "Load Configuration", "", "",
+    "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*",
+    wxOPEN|wxFILE_MUST_EXIST );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString path = dialog.GetPath();
+    DoLoadCFG( path.c_str());
+   }
 }
 
 
@@ -372,19 +411,6 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end paraverMain icon retrieval
-}
-
-
-/*!
- * wxEVT_UPDATE_UI event handler for ID_MENULOADCFG
- */
-
-void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
-{
-  if( currentTrace == -1 )
-    event.Enable( false );
-  else
-    event.Enable( true );
 }
 
 /*!
@@ -621,6 +647,42 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
 }
 
 
+void paraverMain::OnPreviousTracesClick( wxCommandEvent& event )
+{
+  int eventId = event.GetId();
+
+  wxMenuItem *item = menuFile->FindItem( ID_RECENTTRACES );
+  wxMenu *menu = item->GetSubMenu();
+  wxMenuItemList& menuItems = menu->GetMenuItems();
+  
+  for ( wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end(); menuIt++ )
+  {
+    wxMenuItem *tmp = *menuIt;
+    int currentId = tmp->GetId();
+    if ( currentId == eventId )
+      DoLoadTrace( tmp->GetItemLabelText().c_str() );
+  }
+}
+
+
+void paraverMain::OnPreviousCFGsClick( wxCommandEvent& event )
+{
+  int eventId = event.GetId();
+
+  wxMenuItem *item = menuFile->FindItem( ID_RECENTCFGS );
+  wxMenu *menu = item->GetSubMenu();
+  wxMenuItemList& menuItems = menu->GetMenuItems();
+  
+  for ( wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end(); menuIt++ )
+  {
+    wxMenuItem *tmp = *menuIt;
+    int currentId = tmp->GetId();
+    if ( currentId == eventId )
+      DoLoadCFG( tmp->GetItemLabelText().c_str() );
+  }
+}
+
+
 /*!
  * wxEVT_UPDATE_UI event handler for ID_RECENTTRACES
  */
@@ -638,7 +700,13 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
   for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
   {
     if( menuIt == menuItems.end() )
-      menuTraces->Append( wxID_ANY, wxT( (*it).c_str() ) );
+    {
+      wxMenuItem *newItem = new wxMenuItem( menuTraces, wxID_ANY, wxT( (*it).c_str() ) );
+      menuTraces->Append( newItem );
+      Connect( newItem->GetId(),
+               wxEVT_COMMAND_MENU_SELECTED,
+               (wxObjectEventFunction)&paraverMain::OnPreviousTracesClick );
+    }
     else
     {
       wxMenuItem *tmp = *menuIt;
@@ -646,12 +714,61 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
       menuIt++;
     }
   }
-  
+/*
   while( menuIt != menuItems.end() )
   {
     wxMenuItem *tmp = *menuIt;
+    int id = tmp->GetId();
+    Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousTracesClick );
     menuTraces->Delete( tmp );
     menuIt++;
   }
+*/
 }
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_MENULOADCFG
+ */
 
+void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
+{
+  if( currentTrace == -1 )
+    event.Enable( false );
+  else
+    event.Enable( true );
+      
+  vector<string> v = previousCFGs->getFiles();
+
+  wxMenuItem *tmpItem = menuFile->FindItem( ID_RECENTCFGS );
+  wxMenu *menuCFGs = tmpItem->GetSubMenu();
+
+  wxMenuItemList& menuItems = menuCFGs->GetMenuItems();
+  wxMenuItemList::iterator menuIt = menuItems.begin();
+
+  for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
+  {
+    if( menuIt == menuItems.end() )
+    {
+      wxMenuItem *newItem = new wxMenuItem( menuCFGs, wxID_ANY, wxT( (*it).c_str() ) );
+      menuCFGs->Append( newItem );
+      Connect( newItem->GetId(),
+               wxEVT_COMMAND_MENU_SELECTED,
+              (wxObjectEventFunction)&paraverMain::OnPreviousCFGsClick );
+    }
+    else
+    {
+      wxMenuItem *tmp = *menuIt;
+      tmp->SetItemLabel( wxT( (*it).c_str() ) );
+      menuIt++;
+    }
+  }
+/* 
+  while( menuIt != menuItems.end() )
+  {
+    wxMenuItem *tmp = *menuIt;
+    int id = tmp->GetId();
+    Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousCFGsClick );
+    menuCFGs->Delete( tmp );
+    menuIt++;
+  }
+*/
+}
