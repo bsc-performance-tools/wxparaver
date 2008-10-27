@@ -22,12 +22,24 @@
 
 ////@begin includes
 ////@end includes
-
 #include <wx/dcbuffer.h>
 #include "gtimeline.h"
 #include "window.h"
 #include "labelconstructor.h"
 #include "drawmode.h"
+
+#define wxTEST_GRAPHICS 1
+
+#if wxTEST_GRAPHICS
+#include "wx/graphics.h"
+#if wxUSE_GRAPHICS_CONTEXT == 0
+#undef wxTEST_GRAPHICS
+#define wxTEST_GRAPHICS 0
+#endif
+#else
+#undef wxUSE_GRAPHICS_CONTEXT
+#define wxUSE_GRAPHICS_CONTEXT 0
+#endif
 
 ////@begin XPM images
 ////@end XPM images
@@ -132,7 +144,7 @@ void gTimeline::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxFULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN|wxHSCROLL|wxVSCROLL );
+  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
   itemBoxSizer2->Add(drawZone, 1, wxGROW|wxALL, 5);
   drawZone->SetScrollbars(1, 1, 0, 0);
 
@@ -186,6 +198,7 @@ void gTimeline::redraw()
 {
   ready = false;
   bufferImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
+  drawImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
   wxMemoryDC bufferDraw( bufferImage );
   
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
@@ -195,6 +208,8 @@ void gTimeline::redraw()
   for( TObjectOrder obj = 0; obj < myWindow->getWindowLevelObjects(); obj++ )
     drawRow( bufferDraw, obj );
   bufferDraw.SelectObject(wxNullBitmap);
+  bufferDraw.SelectObject( drawImage );
+  bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
   
   ready = true;
 }
@@ -297,10 +312,10 @@ void gTimeline::OnPaint( wxPaintEvent& event )
   wxPaintDC dc( drawZone );
   
   if( ready )
-    dc.DrawBitmap( bufferImage, 0, 0, false );
+    dc.DrawBitmap( drawImage, 0, 0, false );
 
-  if( zooming )
-    dc.DrawBitmap( zoomingImage, 0, 0, true );
+/*  if( zooming )
+    dc.DrawBitmap( zoomingImage, 0, 0, true );*/
 }
 
 
@@ -382,6 +397,7 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     myWindow->setWindowEndTime( ( timeStep * zoomEnd ) + myWindow->getWindowBeginTime() );
     myWindow->setWindowBeginTime( ( timeStep * zoomBegin ) + myWindow->getWindowBeginTime() );
     myWindow->setRedraw( true );
+    myWindow->setChanged( true );
   }
   zooming = false;
 }
@@ -413,24 +429,26 @@ void gTimeline::OnMotion( wxMouseEvent& event )
 {
   if( !zooming )
     return;
-  wxBitmap maskBM;
-  maskBM.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight(), 1 );
-  zoomingImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
-  wxMemoryDC dc( zoomingImage );
-  wxMemoryDC dcMask( maskBM );
-  dc.SetBackgroundMode( wxTRANSPARENT );
-  dc.SetBackground( *wxTRANSPARENT_BRUSH );
-  dc.Clear();
-  dcMask.Clear();
+    
+  wxMemoryDC memdc( drawImage );
+  memdc.SetBackgroundMode( wxTRANSPARENT );
+  memdc.SetBackground( *wxTRANSPARENT_BRUSH );
+  memdc.Clear();
+#ifdef __WXGTK__
+  wxGCDC dc( memdc );
+#else
+  wxDC& dc = memdc;
+#endif
   dc.SetPen( *wxWHITE_PEN );
-  dc.SetBrush( *wxTRANSPARENT_BRUSH/*wxBrush( wxColour( 255, 255, 255, 0 ) )*/ );
-  //dcMask.SetBrush( *wxWHITE_BRUSH );
+  dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 64 ) ) );
   
   long begin = zoomBegin > event.GetX() ? event.GetX() : zoomBegin;
+  if( begin < objectAxisPos )
+    begin = objectAxisPos;
   wxCoord width = zoomBegin > event.GetX() ? zoomBegin - event.GetX() : event.GetX() - zoomBegin;
+  
+  dc.DrawBitmap( bufferImage, 0, 0, false );
   dc.DrawRectangle( begin, drawBorder, width, timeAxisPos - drawBorder + 1 );
-  dcMask.DrawRectangle( begin, drawBorder, width, timeAxisPos - drawBorder + 1 );
-  zoomingImage.SetMask( new wxMask( maskBM ) );
   drawZone->Refresh();
 }
 

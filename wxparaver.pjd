@@ -229,7 +229,7 @@
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets build command">"if test ! -f $(WXWIN)/GCCBuildDebugGTK2DLL/config.log ; then /home/eloy/downloads/wxWidgets-2.8.7/configure  --with-gtk=2 --enable-debug --disable-unicode --disable-universal --disable-monolithic --enable-gui --enable-shared --enable-exceptions --without-odbc --without-opengl --enable-graphics-ctx; fi ; make"</string>
           <string name="wxWidgets clean command">"%AUTO%"</string>
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
@@ -1782,7 +1782,7 @@
           <string name="variable-9">"zooming|bool|Zooming|false|2|0|"</string>
           <string name="variable-10">"zoomBegin|long|ZoomBegin||2|0|"</string>
           <string name="variable-11">"zoomEnd|long|ZoomEnd||2|0|"</string>
-          <string name="variable-12">"zoomingImage|wxBitmap|ZoomingImage||0|0|"</string>
+          <string name="variable-12">"drawImage|wxBitmap|ZoomingImage||0|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
@@ -1917,7 +1917,7 @@
               <bool name="proxy-wxWANTS_CHARS">0</bool>
               <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
               <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">1</bool>
-              <bool name="proxy-wxCLIP_CHILDREN">1</bool>
+              <bool name="proxy-wxCLIP_CHILDREN">0</bool>
               <bool name="proxy-wxHSCROLL">1</bool>
               <bool name="proxy-wxVSCROLL">1</bool>
               <bool name="proxy-wxTAB_TRAVERSAL">0</bool>

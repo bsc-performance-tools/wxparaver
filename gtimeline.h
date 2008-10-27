@@ -139,8 +139,8 @@ public:
   long GetZoomEnd() const { return zoomEnd ; }
   void SetZoomEnd(long value) { zoomEnd = value ; }
 
-  wxBitmap GetZoomingImage() const { return zoomingImage ; }
-  void SetZoomingImage(wxBitmap value) { zoomingImage = value ; }
+  wxBitmap GetDrawImage() const { return drawImage ; }
+  void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -160,7 +160,7 @@ public:
 ////@begin gTimeline member variables
   wxScrolledWindow* drawZone;
   wxBitmap bufferImage;
-  wxBitmap zoomingImage;
+  wxBitmap drawImage;
 private:
   bool ready;
   Window* myWindow;
