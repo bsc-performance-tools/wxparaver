@@ -93,6 +93,9 @@ public:
   /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
   void OnLeftUp( wxMouseEvent& event );
 
+  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
+  void OnRightDown( wxMouseEvent& event );
+
   /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
   void OnMotion( wxMouseEvent& event );
 
@@ -139,6 +142,9 @@ public:
   long GetZoomEnd() const { return zoomEnd ; }
   void SetZoomEnd(long value) { zoomEnd = value ; }
 
+  wxMenu * GetPopUpMenu() const { return popUpMenu ; }
+  void SetPopUpMenu(wxMenu * value) { popUpMenu = value ; }
+
   wxBitmap GetDrawImage() const { return drawImage ; }
   void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
@@ -155,6 +161,9 @@ public:
   void redraw();
   void drawAxis( wxDC& dc );
   void drawRow( wxDC& dc, TObjectOrder row );
+
+void OnPopUpRightDown( void );
+
 
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
@@ -173,9 +182,18 @@ private:
   bool zooming;
   long zoomBegin;
   long zoomEnd;
+  wxMenu * popUpMenu;
 ////@end gTimeline member variables
 
   static const wxCoord drawBorder = 5;
+  
+  void OnPopUpClone();
+  void OnPopUpFitTimeScale();
+  void OnPopUpFitSemanticScale();
+  void OnPopUpCodeColor();
+  void OnPopUpGradientColor();
+
+  void BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler );
 };
 
 #endif

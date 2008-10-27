@@ -124,6 +124,7 @@ void gTimeline::Init()
   myWindow = NULL;
   objectHeight = 1;
   zooming = false;
+  popUpMenu = NULL;
   drawZone = NULL;
 ////@end gTimeline member initialisation
   bufferImage.Create( 1, 1 );
@@ -153,6 +154,7 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnMotion), NULL, this);
 ////@end gTimeline content construction
 }
@@ -421,6 +423,65 @@ void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
 }
 
 
+void gTimeline::OnPopUpClone()
+{
+  printf("CATCHED clone!\n");
+}
+void gTimeline::OnPopUpFitTimeScale()
+{
+  myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime() );
+  myWindow->setWindowBeginTime( 0 );
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+void gTimeline::OnPopUpFitSemanticScale()
+{
+  printf("CATCHED fit sem!\n");
+}
+void gTimeline::OnPopUpCodeColor()
+{
+  printf("CATCHED code color!\n");
+}
+void gTimeline::OnPopUpGradientColor()
+{
+  printf("CATCHED gradient color!\n");
+}
+
+void gTimeline::BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler )
+{
+  wxMenuItem *tmp = new wxMenuItem( popUp, wxID_ANY, title );
+  int tmpid = tmp->GetId();
+  popUp->Append(tmp);
+  popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, this );
+}
+
+/*!
+ * wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnRightDown( wxMouseEvent& event )
+{
+  if (popUpMenu == NULL)
+  {
+    popUpMenu = new wxMenu;
+
+//    BuildItem( popUpMenu, wxString("&Clone"), (wxObjectEventFunction)&gTimeline::OnPopUpClone);
+
+//    popUpMenu->AppendSeparator();
+    BuildItem( popUpMenu, wxString("Fit &Time Scale"), (wxObjectEventFunction)&gTimeline::OnPopUpFitTimeScale);
+    BuildItem( popUpMenu, wxString("Fit &Semantic Scale"), (wxObjectEventFunction)&gTimeline::OnPopUpFitSemanticScale);
+
+    popUpMenu->AppendSeparator();
+    BuildItem( popUpMenu, wxString("Code Color"), (wxObjectEventFunction)&gTimeline::OnPopUpCodeColor);
+    BuildItem( popUpMenu, wxString("Gradient Color"), (wxObjectEventFunction)&gTimeline::OnPopUpGradientColor);
+//    BuildItem( popUpMenu, wxString("Not Null Gradient Color"), (wxObjectEventFunction)&gTimeline::OnPopUpClone);
+  }
+
+  PopupMenu( popUpMenu, event.GetPosition());
+}
+
+
 /*!
  * wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
  */
@@ -451,4 +512,3 @@ void gTimeline::OnMotion( wxMouseEvent& event )
   dc.DrawRectangle( begin, drawBorder, width, timeAxisPos - drawBorder + 1 );
   drawZone->Refresh();
 }
-

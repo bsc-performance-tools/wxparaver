@@ -659,6 +659,7 @@ void paraverMain::OnPreviousTracesClick( wxCommandEvent& event )
   {
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();
+    printf("%s\n",tmp->GetLabelText(tmp->GetItemLabel()).c_str());
     if ( currentId == eventId )
       DoLoadTrace( previousTraces->getFiles()[i] );
     i++;

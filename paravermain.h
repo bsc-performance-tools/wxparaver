@@ -230,8 +230,6 @@ private:
   void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
   bool DoLoadCFG( const string &path );
-
-
 };
 
 #endif
