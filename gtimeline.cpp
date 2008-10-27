@@ -141,6 +141,7 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnMotion), NULL, this);
 ////@end gTimeline content construction
 }
 
@@ -296,9 +297,10 @@ void gTimeline::OnPaint( wxPaintEvent& event )
   wxPaintDC dc( drawZone );
   
   if( ready )
-  {
     dc.DrawBitmap( bufferImage, 0, 0, false );
-  }
+
+  if( zooming )
+    dc.DrawBitmap( zoomingImage, 0, 0, true );
 }
 
 
@@ -400,5 +402,35 @@ void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
       drawZone->Refresh();
     }
   }
+}
+
+
+/*!
+ * wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnMotion( wxMouseEvent& event )
+{
+  if( !zooming )
+    return;
+  wxBitmap maskBM;
+  maskBM.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight(), 1 );
+  zoomingImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
+  wxMemoryDC dc( zoomingImage );
+  wxMemoryDC dcMask( maskBM );
+  dc.SetBackgroundMode( wxTRANSPARENT );
+  dc.SetBackground( *wxTRANSPARENT_BRUSH );
+  dc.Clear();
+  dcMask.Clear();
+  dc.SetPen( *wxWHITE_PEN );
+  dc.SetBrush( *wxTRANSPARENT_BRUSH/*wxBrush( wxColour( 255, 255, 255, 0 ) )*/ );
+  //dcMask.SetBrush( *wxWHITE_BRUSH );
+  
+  long begin = zoomBegin > event.GetX() ? event.GetX() : zoomBegin;
+  wxCoord width = zoomBegin > event.GetX() ? zoomBegin - event.GetX() : event.GetX() - zoomBegin;
+  dc.DrawRectangle( begin, drawBorder, width, timeAxisPos - drawBorder + 1 );
+  dcMask.DrawRectangle( begin, drawBorder, width, timeAxisPos - drawBorder + 1 );
+  zoomingImage.SetMask( new wxMask( maskBM ) );
+  drawZone->Refresh();
 }
 

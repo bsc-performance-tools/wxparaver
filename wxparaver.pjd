@@ -1660,6 +1660,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -1774,6 +1782,7 @@
           <string name="variable-9">"zooming|bool|Zooming|false|2|0|"</string>
           <string name="variable-10">"zoomBegin|long|ZoomBegin||2|0|"</string>
           <string name="variable-11">"zoomEnd|long|ZoomEnd||2|0|"</string>
+          <string name="variable-12">"zoomingImage|wxBitmap|ZoomingImage||0|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
@@ -1869,7 +1878,8 @@
               <string name="event-handler-1">"wxEVT_ERASE_BACKGROUND|OnEraseBackground|NONE||gTimeline"</string>
               <string name="event-handler-2">"wxEVT_LEFT_DOWN|OnLeftDown|NONE||gTimeline"</string>
               <string name="event-handler-3">"wxEVT_LEFT_UP|OnLeftUp|NONE||gTimeline"</string>
-              <string name="event-handler-4">"wxEVT_UPDATE_UI|OnScrolledwindowUpdate|NONE||gTimeline"</string>
+              <string name="event-handler-4">"wxEVT_MOTION|OnMotion|NONE||gTimeline"</string>
+              <string name="event-handler-5">"wxEVT_UPDATE_UI|OnScrolledwindowUpdate|NONE||gTimeline"</string>
               <string name="proxy-Id name">"ID_SCROLLEDWINDOW"</string>
               <long name="proxy-Id value">10007</long>
               <string name="proxy-Name">""</string>

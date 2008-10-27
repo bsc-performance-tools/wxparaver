@@ -93,6 +93,9 @@ public:
   /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
   void OnLeftUp( wxMouseEvent& event );
 
+  /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
+  void OnMotion( wxMouseEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
   void OnScrolledwindowUpdate( wxUpdateUIEvent& event );
 
@@ -136,6 +139,9 @@ public:
   long GetZoomEnd() const { return zoomEnd ; }
   void SetZoomEnd(long value) { zoomEnd = value ; }
 
+  wxBitmap GetZoomingImage() const { return zoomingImage ; }
+  void SetZoomingImage(wxBitmap value) { zoomingImage = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -154,6 +160,7 @@ public:
 ////@begin gTimeline member variables
   wxScrolledWindow* drawZone;
   wxBitmap bufferImage;
+  wxBitmap zoomingImage;
 private:
   bool ready;
   Window* myWindow;
