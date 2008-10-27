@@ -87,6 +87,15 @@ public:
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
   void OnEraseBackground( wxEraseEvent& event );
 
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLEDWINDOW
+  void OnLeftDown( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
+  void OnLeftUp( wxMouseEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
+  void OnScrolledwindowUpdate( wxUpdateUIEvent& event );
+
 ////@end gTimeline event handler declarations
 
 ////@begin gTimeline member function declarations
@@ -115,6 +124,18 @@ public:
   vector<wxCoord> GetObjectPosList() const { return objectPosList ; }
   void SetObjectPosList(vector<wxCoord> value) { objectPosList = value ; }
 
+  int GetObjectHeight() const { return objectHeight ; }
+  void SetObjectHeight(int value) { objectHeight = value ; }
+
+  bool GetZooming() const { return zooming ; }
+  void SetZooming(bool value) { zooming = value ; }
+
+  long GetZoomBegin() const { return zoomBegin ; }
+  void SetZoomBegin(long value) { zoomBegin = value ; }
+
+  long GetZoomEnd() const { return zoomEnd ; }
+  void SetZoomEnd(long value) { zoomEnd = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -141,6 +162,10 @@ private:
   wxFont objectFont;
   wxFont timeFont;
   vector<wxCoord> objectPosList;
+  int objectHeight;
+  bool zooming;
+  long zoomBegin;
+  long zoomEnd;
 ////@end gTimeline member variables
 
   static const wxCoord drawBorder = 5;

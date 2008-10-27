@@ -51,6 +51,8 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_SIZE( gTimeline::OnSize )
   EVT_IDLE( gTimeline::OnIdle )
 
+  EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledwindowUpdate )
+
 ////@end gTimeline event table entries
 
 END_EVENT_TABLE()
@@ -108,6 +110,8 @@ void gTimeline::Init()
 ////@begin gTimeline member initialisation
   ready = false;
   myWindow = NULL;
+  objectHeight = 1;
+  zooming = false;
   drawZone = NULL;
 ////@end gTimeline member initialisation
   bufferImage.Create( 1, 1 );
@@ -135,6 +139,8 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnPaint), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnLeftDown), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnLeftUp), NULL, this);
 ////@end gTimeline content construction
 }
 
@@ -215,16 +221,19 @@ void gTimeline::drawAxis( wxDC& dc )
                dc.GetSize().GetWidth() - drawBorder, timeAxisPos );
   
   // Draw axis labels
-  double inc = (double)( timeAxisPos - drawBorder - objectExt.GetHeight() ) 
-               / (double)myWindow->getWindowLevelObjects();
+  wxCoord y;
+  double inc = (double)( timeAxisPos - drawBorder ) / (double)myWindow->getWindowLevelObjects();
+//  double inc = (double)( timeAxisPos - drawBorder - objectExt.GetHeight() ) 
+//               / (double)myWindow->getWindowLevelObjects();
   objectPosList.clear();
   for( TObjectOrder obj = 0; obj < myWindow->getWindowLevelObjects(); obj++ )
   {
-    wxCoord y = ( (wxCoord) ( inc * ( obj + 0.5 ) ) ) + drawBorder;
+    y = ( (wxCoord) ( inc * ( obj + 0.5 ) ) ) + drawBorder;
     objectPosList.push_back( y );
     dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
   }
+  objectHeight = timeAxisPos - y;
   
   dc.SetFont( timeFont );
   dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ),
@@ -262,7 +271,7 @@ void gTimeline::drawRow( wxDC& dc, TObjectOrder row )
     TSemanticValue valueToDraw = DrawMode::selectValue( values, myWindow->getDrawModeTime() );
     rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
     dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-    dc.DrawLine( timePos, objectPos, timePos, objectPos + 5 );
+    dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
     
     timePos++;
   }
@@ -333,5 +342,63 @@ void gTimeline::OnIdle( wxIdleEvent& event )
 void gTimeline::OnCloseWindow( wxCloseEvent& event )
 {
   myWindow->setShowWindow( false );
+}
+
+
+/*!
+ * wxEVT_LEFT_DOWN event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnLeftDown( wxMouseEvent& event )
+{
+  zooming = true;
+  zoomBegin = event.GetX();
+}
+
+
+/*!
+ * wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnLeftUp( wxMouseEvent& event )
+{
+  wxMemoryDC dc( bufferImage );
+  zoomEnd = event.GetX();
+  if( ready && zoomBegin != zoomEnd )
+  {
+    if( zoomEnd < zoomBegin )
+    {
+      long tmp = zoomEnd; zoomEnd = zoomBegin; zoomBegin = tmp;
+    }
+    if( zoomBegin < objectAxisPos )
+      zoomBegin = 0;
+    else
+      zoomBegin -= objectAxisPos;
+    zoomEnd -= objectAxisPos;
+    TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
+                     ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+    myWindow->setWindowEndTime( ( timeStep * zoomEnd ) + myWindow->getWindowBeginTime() );
+    myWindow->setWindowBeginTime( ( timeStep * zoomBegin ) + myWindow->getWindowBeginTime() );
+    myWindow->setRedraw( true );
+  }
+  zooming = false;
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
+{
+  if( this->IsShown() )
+  {
+    if( myWindow->getRedraw() )
+    {
+      myWindow->setRedraw( false );
+      redraw();
+      drawZone->Refresh();
+    }
+  }
 }
 

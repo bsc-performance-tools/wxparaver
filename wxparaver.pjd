@@ -1586,7 +1586,7 @@
           <long name="working-mode">0</long>
           <string name="variable-0">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gHistogram"</string>
-          <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||"</string>
+          <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gHistogram"</string>
           <string name="proxy-Id name">"ID_GHISTOGRAM"</string>
           <long name="proxy-Id value">10004</long>
           <string name="proxy-Class">"gHistogram"</string>
@@ -1770,6 +1770,10 @@
           <string name="variable-5">"objectFont|wxFont|ObjectFont||2|0|"</string>
           <string name="variable-6">"timeFont|wxFont|TimeFont||2|0|"</string>
           <string name="variable-7">"objectPosList|vector&lt;wxCoord&gt;|ObjectPosList||2|0|"</string>
+          <string name="variable-8">"objectHeight|int|ObjectHeight|1|2|0|"</string>
+          <string name="variable-9">"zooming|bool|Zooming|false|2|0|"</string>
+          <string name="variable-10">"zoomBegin|long|ZoomBegin||2|0|"</string>
+          <string name="variable-11">"zoomEnd|long|ZoomEnd||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
@@ -1863,6 +1867,9 @@
               <string name="proxy-type">"wbScrolledWindowProxy"</string>
               <string name="event-handler-0">"wxEVT_PAINT|OnPaint|NONE||gTimeline"</string>
               <string name="event-handler-1">"wxEVT_ERASE_BACKGROUND|OnEraseBackground|NONE||gTimeline"</string>
+              <string name="event-handler-2">"wxEVT_LEFT_DOWN|OnLeftDown|NONE||gTimeline"</string>
+              <string name="event-handler-3">"wxEVT_LEFT_UP|OnLeftUp|NONE||gTimeline"</string>
+              <string name="event-handler-4">"wxEVT_UPDATE_UI|OnScrolledwindowUpdate|NONE||gTimeline"</string>
               <string name="proxy-Id name">"ID_SCROLLEDWINDOW"</string>
               <long name="proxy-Id value">10007</long>
               <string name="proxy-Name">""</string>
