@@ -1660,6 +1660,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -1775,7 +1783,7 @@
           <string name="variable-10">"zoomBegin|long|ZoomBegin||2|0|"</string>
           <string name="variable-11">"zoomEnd|long|ZoomEnd||2|0|"</string>
           <string name="variable-12">"popUpMenu|wxMenu *|PopUpMenu|NULL|2|0|"</string>
-          <string name="variable-13">"drawImage|wxBitmap|ZoomingImage||0|0|"</string>
+          <string name="variable-13">"drawImage|wxBitmap|DrawImage||0|0|"</string>
           <string name="variable-14">"popUpMenuColor|wxMenu *|PopUpMenuColor||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
@@ -1904,10 +1912,10 @@
               <string name="proxy-Data class header filename">""</string>
               <string name="proxy-Data class manager window">""</string>
               <bool name="proxy-Fit to content">1</bool>
-              <bool name="proxy-wxNO_BORDER">0</bool>
+              <bool name="proxy-wxNO_BORDER">1</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
-              <bool name="proxy-wxSUNKEN_BORDER">1</bool>
+              <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
               <bool name="proxy-wxWANTS_CHARS">0</bool>
@@ -1927,7 +1935,7 @@
               <string name="proxy-AlignH">"Expand"</string>
               <string name="proxy-AlignV">"Centre"</string>
               <long name="proxy-Stretch factor">1</long>
-              <long name="proxy-Border">5</long>
+              <long name="proxy-Border">1</long>
               <bool name="proxy-wxLEFT">1</bool>
               <bool name="proxy-wxRIGHT">1</bool>
               <bool name="proxy-wxTOP">1</bool>

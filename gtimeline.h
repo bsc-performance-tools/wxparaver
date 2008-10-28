@@ -145,8 +145,8 @@ public:
   wxMenu * GetPopUpMenu() const { return popUpMenu ; }
   void SetPopUpMenu(wxMenu * value) { popUpMenu = value ; }
 
-  wxBitmap GetZoomingImage() const { return drawImage ; }
-  void SetZoomingImage(wxBitmap value) { drawImage = value ; }
+  wxBitmap GetDrawImage() const { return drawImage ; }
+  void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
   wxMenu * GetPopUpMenuColor() const { return popUpMenuColor ; }
   void SetPopUpMenuColor(wxMenu * value) { popUpMenuColor = value ; }

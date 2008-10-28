@@ -387,6 +387,12 @@ void gHistogram::OnIdle( wxIdleEvent& event )
 
 void gHistogram::OnGridhistoUpdate( wxUpdateUIEvent& event )
 {
+  if( myHistogram->getRecalc() )
+  {
+    myHistogram->setRecalc( false );
+    execute();
+  }
+    
   if( this->IsShown() )
   {
     if( myHistogram->getRedraw() )

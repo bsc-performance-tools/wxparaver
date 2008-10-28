@@ -145,8 +145,8 @@ void gTimeline::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
-  itemBoxSizer2->Add(drawZone, 1, wxGROW|wxALL, 5);
+  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
+  itemBoxSizer2->Add(drawZone, 1, wxGROW|wxALL, 1);
   drawZone->SetScrollbars(1, 1, 0, 0);
 
   // Connect events and objects
@@ -548,9 +548,12 @@ void gTimeline::OnMotion( wxMouseEvent& event )
   dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 64 ) ) );
   
   long begin = zoomBegin > event.GetX() ? event.GetX() : zoomBegin;
+  long end = zoomBegin < event.GetX() ? event.GetX() : zoomBegin;
   if( begin < objectAxisPos )
     begin = objectAxisPos;
-  wxCoord width = zoomBegin > event.GetX() ? zoomBegin - event.GetX() : event.GetX() - zoomBegin;
+  if( end < objectAxisPos )
+    end = objectAxisPos;
+  wxCoord width = end-begin;
   
   dc.DrawBitmap( bufferImage, 0, 0, false );
   dc.DrawRectangle( begin, drawBorder, width, timeAxisPos - drawBorder + 1 );

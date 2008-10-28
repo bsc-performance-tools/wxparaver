@@ -433,6 +433,34 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     else if( currentHisto != NULL )
       currentHisto->setName( string( tmpName.c_str() ) );
   }
+  else if( propName == "Begin time" )
+  {
+    double tmpValue = property->GetValue().GetDouble();
+    if( currentWindow != NULL )
+    {
+      currentWindow->setWindowBeginTime( tmpValue );
+      currentWindow->setRedraw( true );
+    }
+    else if( currentHisto != NULL )
+    {
+      currentHisto->setWindowBeginTime( tmpValue );
+      currentHisto->setRecalc( true );
+    }
+  }
+  else if( propName == "End time" )
+  {
+    double tmpValue = property->GetValue().GetDouble();
+    if( currentWindow != NULL )
+    {
+      currentWindow->setWindowEndTime( tmpValue );
+      currentWindow->setRedraw( true );
+    }
+    else if( currentHisto != NULL )
+    {
+      currentHisto->setWindowEndTime( tmpValue );
+      currentHisto->setRecalc( true );
+    }
+  }
   else if( propName == "Calculate all" )
     currentHisto->setCalculateAll( property->GetValue().GetBool() );
   else if( propName == "Type" )
@@ -504,13 +532,17 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
   wxArrayInt tmpAi;
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
+  windowProperties->Append( new wxFloatProperty( wxT("Begin time"), wxPG_LABEL, 
+                            wxT( whichWindow->getWindowBeginTime() ) ) );
+  windowProperties->Append( new wxFloatProperty( wxT("End time"), wxPG_LABEL, 
+                            wxT( whichWindow->getWindowEndTime() ) ) );
   // Filter related properties
   wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
   wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
   
   wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
   wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
-                                                       new wxStringProperty( wxT("Event Type"), 
+                                                       new wxStringProperty( wxT("Event type"), 
                                                                              wxPG_LABEL,
                                                                              wxT("<composed>") ) );
   tmpA.Add(wxT("="));
@@ -537,6 +569,10 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   windowProperties->Clear();
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichHisto->getName() ) ) );
+  windowProperties->Append( new wxFloatProperty( wxT("Begin time"), wxPG_LABEL, 
+                            wxT( whichHisto->getBeginTime() ) ) );
+  windowProperties->Append( new wxFloatProperty( wxT("End time"), wxPG_LABEL, 
+                            wxT( whichHisto->getEndTime() ) ) );
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
