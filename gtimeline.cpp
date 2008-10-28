@@ -62,13 +62,13 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_SIZE( gTimeline::OnSize )
   EVT_IDLE( gTimeline::OnIdle )
+  EVT_RIGHT_DOWN( gTimeline::OnRightDown )
 
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledwindowUpdate )
 
 ////@end gTimeline event table entries
 
 END_EVENT_TABLE()
-
 
 
 /*!
@@ -427,6 +427,8 @@ void gTimeline::OnPopUpClone()
 {
   printf("CATCHED clone!\n");
 }
+
+
 void gTimeline::OnPopUpFitTimeScale()
 {
   myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime() );
@@ -435,24 +437,62 @@ void gTimeline::OnPopUpFitTimeScale()
   myWindow->setChanged( true );
 }
 
+
 void gTimeline::OnPopUpFitSemanticScale()
 {
   printf("CATCHED fit sem!\n");
 }
+
+
 void gTimeline::OnPopUpCodeColor()
 {
-  printf("CATCHED code color!\n");
-}
-void gTimeline::OnPopUpGradientColor()
-{
-  printf("CATCHED gradient color!\n");
+  myWindow->setCodeColorMode();
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
 }
 
-void gTimeline::BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler )
+
+void gTimeline::OnPopUpGradientColor()
 {
-  wxMenuItem *tmp = new wxMenuItem( popUp, wxID_ANY, title );
+  myWindow->setGradientColorMode();
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+
+void gTimeline::BuildItem( wxMenu *popUp,
+                           const wxString &title,
+                           wxObjectEventFunction handler,
+                           ItemType itemType )
+{
+  wxMenuItem *tmp;
+
+  switch ( itemType )
+  {
+    case ITEMNORMAL:
+    {
+      tmp = new wxMenuItem( popUp, wxID_ANY, title, "", wxITEM_NORMAL );
+      break;
+    }
+    case ITEMRADIO:
+    {
+      tmp = new wxMenuItem( popUp, wxID_ANY, title, "", wxITEM_RADIO );
+      break;
+    }
+    case ITEMCHECK:
+    {
+      tmp = new wxMenuItem( popUp, wxID_ANY, title, "", wxITEM_CHECK );
+      break;
+    }
+    default:
+    {
+      tmp = new wxMenuItem( popUp, wxID_ANY, title, "", wxITEM_NORMAL );
+      break;
+    }
+  }
+  
   int tmpid = tmp->GetId();
-  popUp->Append(tmp);
+  popUp->Append( tmp );
   popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, this );
 }
 
@@ -465,16 +505,20 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
   if (popUpMenu == NULL)
   {
     popUpMenu = new wxMenu;
+    popUpMenuColor = new wxMenu;
 
-//    BuildItem( popUpMenu, wxString("&Clone"), (wxObjectEventFunction)&gTimeline::OnPopUpClone);
+//    BuildItem( popUpMenu, wxString("&Clone"), (wxObjectEventFunction)&gTimeline::OnPopUpClone, MENUITEM);
 
 //    popUpMenu->AppendSeparator();
-    BuildItem( popUpMenu, wxString("Fit &Time Scale"), (wxObjectEventFunction)&gTimeline::OnPopUpFitTimeScale);
-    BuildItem( popUpMenu, wxString("Fit &Semantic Scale"), (wxObjectEventFunction)&gTimeline::OnPopUpFitSemanticScale);
+    BuildItem( popUpMenu, wxString( "Fit &Time Scale" ), ( wxObjectEventFunction )&gTimeline::OnPopUpFitTimeScale, ITEMNORMAL );
+    BuildItem( popUpMenu, wxString( "Fit &Semantic Scale" ), ( wxObjectEventFunction )&gTimeline::OnPopUpFitSemanticScale, ITEMNORMAL );
 
     popUpMenu->AppendSeparator();
-    BuildItem( popUpMenu, wxString("Code Color"), (wxObjectEventFunction)&gTimeline::OnPopUpCodeColor);
-    BuildItem( popUpMenu, wxString("Gradient Color"), (wxObjectEventFunction)&gTimeline::OnPopUpGradientColor);
+    
+    BuildItem( popUpMenuColor, wxString( "Code Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpCodeColor, ITEMRADIO );
+    BuildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO );
+    popUpMenu->AppendSubMenu( popUpMenuColor, wxString( "Color" ));
+
 //    BuildItem( popUpMenu, wxString("Not Null Gradient Color"), (wxObjectEventFunction)&gTimeline::OnPopUpClone);
   }
 

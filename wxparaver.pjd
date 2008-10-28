@@ -229,7 +229,7 @@
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"if test ! -f $(WXWIN)/GCCBuildDebugGTK2DLL/config.log ; then /home/eloy/downloads/wxWidgets-2.8.7/configure  --with-gtk=2 --enable-debug --disable-unicode --disable-universal --disable-monolithic --enable-gui --enable-shared --enable-exceptions --without-odbc --without-opengl --enable-graphics-ctx; fi ; make"</string>
+          <string name="wxWidgets build command">"if test ! -f $(WXWIN)/GCCBuildDebugGTK2DLL/config.log ; then $(WXWIN)/configure  --with-gtk=2 --enable-debug --disable-unicode --disable-universal --disable-monolithic --enable-gui --enable-shared --enable-exceptions --without-odbc --without-opengl --enable-graphics-ctx; fi ; make"</string>
           <string name="wxWidgets clean command">"%AUTO%"</string>
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
@@ -1660,14 +1660,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -1784,9 +1776,11 @@
           <string name="variable-11">"zoomEnd|long|ZoomEnd||2|0|"</string>
           <string name="variable-12">"popUpMenu|wxMenu *|PopUpMenu|NULL|2|0|"</string>
           <string name="variable-13">"drawImage|wxBitmap|ZoomingImage||0|0|"</string>
+          <string name="variable-14">"popUpMenuColor|wxMenu *|PopUpMenuColor||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
+          <string name="event-handler-3">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>
           <string name="proxy-Id name">"ID_GTIMELINE"</string>
           <long name="proxy-Id value">10001</long>
           <string name="proxy-Class">"gTimeline"</string>

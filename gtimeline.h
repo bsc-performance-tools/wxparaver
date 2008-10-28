@@ -81,6 +81,9 @@ public:
   /// wxEVT_IDLE event handler for ID_GTIMELINE
   void OnIdle( wxIdleEvent& event );
 
+  /// wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE
+  void OnRightDown( wxMouseEvent& event );
+
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
   void OnPaint( wxPaintEvent& event );
 
@@ -93,14 +96,11 @@ public:
   /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
   void OnLeftUp( wxMouseEvent& event );
 
-  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
-  void OnRightDown( wxMouseEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
+  void OnScrolledwindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
   void OnMotion( wxMouseEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
-  void OnScrolledwindowUpdate( wxUpdateUIEvent& event );
 
 ////@end gTimeline event handler declarations
 
@@ -145,8 +145,11 @@ public:
   wxMenu * GetPopUpMenu() const { return popUpMenu ; }
   void SetPopUpMenu(wxMenu * value) { popUpMenu = value ; }
 
-  wxBitmap GetDrawImage() const { return drawImage ; }
-  void SetDrawImage(wxBitmap value) { drawImage = value ; }
+  wxBitmap GetZoomingImage() const { return drawImage ; }
+  void SetZoomingImage(wxBitmap value) { drawImage = value ; }
+
+  wxMenu * GetPopUpMenuColor() const { return popUpMenuColor ; }
+  void SetPopUpMenuColor(wxMenu * value) { popUpMenuColor = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -163,6 +166,8 @@ public:
   void drawRow( wxDC& dc, TObjectOrder row );
 
 void OnPopUpRightDown( void );
+
+  enum ItemType {ITEMNORMAL, ITEMRADIO, ITEMCHECK};
 
 
 //  void OnRightClick(wxMouseEvent& event);
@@ -183,6 +188,7 @@ private:
   long zoomBegin;
   long zoomEnd;
   wxMenu * popUpMenu;
+  wxMenu * popUpMenuColor;
 ////@end gTimeline member variables
 
   static const wxCoord drawBorder = 5;
@@ -193,7 +199,7 @@ private:
   void OnPopUpCodeColor();
   void OnPopUpGradientColor();
 
-  void BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler );
+  void BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler, ItemType type );
 };
 
 #endif
