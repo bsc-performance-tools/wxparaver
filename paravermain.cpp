@@ -32,6 +32,7 @@
 #include "gtimeline.h"
 #include "ghistogram.h"
 #include <wx/propgrid/advprops.h>
+#include "progresscontroller.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -75,6 +76,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
 END_EVENT_TABLE()
 
+
+wxProgressDialog *paraverMain::dialogProgress = NULL;
 
 /*!
  * paraverMain constructors
@@ -227,22 +230,33 @@ void paraverMain::CreateControls()
   tmpTree->SetImageList( imageList );
   tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
+  paraverMain::dialogProgress = new wxProgressDialog( wxT("Loading trace..."), wxT(""),numeric_limits<int>::max(),
+                                         this,
+                                         wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+  paraverMain::dialogProgress->Show( false );
 }
 
 bool paraverMain::DoLoadTrace( const string &path )
 {
   Trace *tr = NULL;
   bool loaded = true;
-
+  
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
   {
     if( (*it)->getFileName().compare( path ) == 0 )
       return true;
   }
 
+  ProgressController *progress = ProgressController::create( localKernel );
+  progress->setHandler( progressFunction );
+
   try
   {
-    tr = Trace::create( localKernel, path );
+    paraverMain::dialogProgress->Pulse( wxT( path.c_str() ) );
+    paraverMain::dialogProgress->Fit();
+    paraverMain::dialogProgress->Show();
+    tr = Trace::create( localKernel, path, progress );
+    
     loadedTraces.push_back( tr );
     currentTrace = loadedTraces.size() - 1;
     wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, 
@@ -258,6 +272,9 @@ bool paraverMain::DoLoadTrace( const string &path )
     wxMessageDialog message( this, ex.what(), "Error loading trace", wxOK );
     message.ShowModal();
   }
+  paraverMain::dialogProgress->Show( false );
+  delete progress;
+  
   return loaded; // tiene sentido?
 }
 
@@ -810,4 +827,11 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
     menuIt++;
   }
 */
+}
+
+void progressFunction( ProgressController *progress )
+{
+  int p = (int)floor( ( progress->getCurrentProgress()  * numeric_limits<int>::max() ) / progress->getEndLimit() );
+  paraverMain::dialogProgress->Update( p );
+//  app->Yield();
 }

@@ -18,6 +18,7 @@
  */
 
 #include <vector>
+#include <wx/progdlg.h>
 ////@begin includes
 #include "wx/aui/framemanager.h"
 #include "wx/frame.h"
@@ -40,6 +41,7 @@ class wxMenu;
 class wxChoicebook;
 class wxPropertyGrid;
 ////@end forward declarations
+class ProgressController;
 
 /*!
  * Control identifiers
@@ -204,6 +206,7 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
+  static wxProgressDialog *dialogProgress;
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
   wxMenu* menuFile;
@@ -224,13 +227,16 @@ private:
   Window * lastWindow;
   Histogram * lastHisto;
 ////@end paraverMain member variables
-
+  
   void updateTimelineProperties( Window *whichWindow );
   void updateHistogramProperties( Histogram *whichHisto );
   void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
   bool DoLoadCFG( const string &path );
 };
+
+void progressFunction( ProgressController *progress );
+  
 
 #endif
   // _PARAVERMAIN_H_
