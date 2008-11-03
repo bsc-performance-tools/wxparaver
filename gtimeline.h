@@ -21,6 +21,7 @@
 #include "wx/frame.h"
 ////@end includes
 #include "paraverkerneltypes.h"
+#include "recordlist.h"
 
 /*!
  * Forward declarations
@@ -151,6 +152,9 @@ public:
   wxMenu * GetPopUpMenuColor() const { return popUpMenuColor ; }
   void SetPopUpMenuColor(wxMenu * value) { popUpMenuColor = value ; }
 
+  wxBitmap GetCommImage() const { return commImage ; }
+  void SetCommImage(wxBitmap value) { commImage = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -163,7 +167,8 @@ public:
 
   void redraw();
   void drawAxis( wxDC& dc );
-  void drawRow( wxDC& dc, TObjectOrder row );
+  void drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder row );
+  void drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, TTime from, TTime to, TTime step, wxCoord pos );
 
 void OnPopUpRightDown( void );
 
@@ -175,6 +180,7 @@ void OnPopUpRightDown( void );
   wxScrolledWindow* drawZone;
   wxBitmap bufferImage;
   wxBitmap drawImage;
+  wxBitmap commImage;
 private:
   bool ready;
   Window* myWindow;
