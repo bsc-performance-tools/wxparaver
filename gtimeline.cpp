@@ -223,10 +223,13 @@ void gTimeline::redraw()
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
-  maskdc.DrawRectangle( 0, 0, objectAxisPos, drawZone->GetSize().GetHeight() );
+  maskdc.SetPen( *wxBLACK_PEN );
+  maskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
+  maskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
   wxMask *mask = new wxMask( commMask );
   commImage.SetMask( mask );
-  bufferDraw.DrawBitmap( commImage, 0, 0, true );
+  if( myWindow->getDrawCommLines() )
+    bufferDraw.DrawBitmap( commImage, 0, 0, true );
   
   ready = true;
 }
@@ -318,26 +321,22 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
 
 void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, TTime from, TTime to, TTime step, wxCoord pos )
 {
-/*#ifdef __WXGTK__
-  wxGCDC dc( commdc );
-#else*/
-  wxDC& dc = commdc;
-//#endif
   RecordList::iterator it = comms->begin();
   while( it != comms->end() && it->getTime() < from )
     it++;
   while( it != comms->end() && it->getTime() <= to )
   {
-    if( it->getType() & RECV )
+    if( it->getType() & RECV ||
+        ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() )
+      )
     {
       if( it->getType() & LOG )
-        dc.SetPen( wxPen( wxColour( 255, 255, 0 ), 1 ) );
+        commdc.SetPen( wxPen( wxColour( 255, 255, 0 ) ) );
       else if( it->getType() & PHY )
-        dc.SetPen( *wxRED_PEN );
+        commdc.SetPen( *wxRED_PEN );
       wxCoord posPartner = (wxCoord)floor( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * ( 1 / step ) );
       posPartner += objectAxisPos;
-      //printf("partner time %f\tpartner pos %d\n",it->getCommPartnerTime(),posPartner);
-      dc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject()],
+      commdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject()],
                    pos, objectPosList[it->getOrder()] );
       maskdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject()],
                        pos, objectPosList[it->getOrder()] );

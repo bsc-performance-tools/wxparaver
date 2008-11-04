@@ -178,8 +178,8 @@ public:
   wxImageList* GetImageList() const { return imageList ; }
   void SetImageList(wxImageList* value) { imageList = value ; }
 
-  Window * GetCurrentWindow() const { return currentWindow ; }
-  void SetCurrentWindow(Window * value) { currentWindow = value ; }
+  Window * GetCurrentTimeline() const { return currentTimeline ; }
+  void SetCurrentTimeline(Window * value) { currentTimeline = value ; }
 
   Histogram * GetCurrentHisto() const { return currentHisto ; }
   void SetCurrentHisto(Histogram * value) { currentHisto = value ; }
@@ -190,11 +190,14 @@ public:
   PreviousFiles * GetPreviousCFGs() const { return previousCFGs ; }
   void SetPreviousCFGs(PreviousFiles * value) { previousCFGs = value ; }
 
-  Window * GetLastWindow() const { return lastWindow ; }
-  void SetLastWindow(Window * value) { lastWindow = value ; }
+  Window * GetLastTimeline() const { return lastTimeline ; }
+  void SetLastTimeline(Window * value) { lastTimeline = value ; }
 
   Histogram * GetLastHisto() const { return lastHisto ; }
   void SetLastHisto(Histogram * value) { lastHisto = value ; }
+
+  wxWindow * GetCurrentWindow() const { return currentWindow ; }
+  void SetCurrentWindow(wxWindow * value) { currentWindow = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -220,12 +223,13 @@ private:
   ParaverConfig* paraverConfig;
   INT16 currentTrace;
   wxImageList* imageList;
-  Window * currentWindow;
+  Window * currentTimeline;
   Histogram * currentHisto;
   PreviousFiles * previousTraces;
   PreviousFiles * previousCFGs;
-  Window * lastWindow;
+  Window * lastTimeline;
   Histogram * lastHisto;
+  wxWindow * currentWindow;
 ////@end paraverMain member variables
   
   void updateTimelineProperties( Window *whichWindow );

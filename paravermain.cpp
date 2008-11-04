@@ -166,12 +166,13 @@ void paraverMain::Init()
 {
 ////@begin paraverMain member initialisation
   currentTrace = -1;
-  currentWindow = NULL;
+  currentTimeline = NULL;
   currentHisto = NULL;
   previousTraces = PreviousFiles::createPreviousTraces();
   previousCFGs = PreviousFiles::createPreviousCFGs();
-  lastWindow = NULL;
+  lastTimeline = NULL;
   lastHisto = NULL;
+  currentWindow = NULL;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -445,18 +446,18 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   if( propName == "Name" )
   {
     wxString tmpName = property->GetValue().GetString();
-    if( currentWindow != NULL )
-      currentWindow->setName( string( tmpName.c_str() ) );
+    if( currentTimeline != NULL )
+      currentTimeline->setName( string( tmpName.c_str() ) );
     else if( currentHisto != NULL )
       currentHisto->setName( string( tmpName.c_str() ) );
   }
   else if( propName == "Begin time" )
   {
     double tmpValue = property->GetValue().GetDouble();
-    if( currentWindow != NULL )
+    if( currentTimeline != NULL )
     {
-      currentWindow->setWindowBeginTime( tmpValue );
-      currentWindow->setRedraw( true );
+      currentTimeline->setWindowBeginTime( tmpValue );
+      currentTimeline->setRedraw( true );
     }
     else if( currentHisto != NULL )
     {
@@ -467,10 +468,10 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == "End time" )
   {
     double tmpValue = property->GetValue().GetDouble();
-    if( currentWindow != NULL )
+    if( currentTimeline != NULL )
     {
-      currentWindow->setWindowEndTime( tmpValue );
-      currentWindow->setRedraw( true );
+      currentTimeline->setWindowEndTime( tmpValue );
+      currentTimeline->setRedraw( true );
     }
     else if( currentHisto != NULL )
     {
@@ -508,12 +509,16 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   if( gHistogram *histo = itemData->getHistogram() )
   {
     currentHisto = histo->GetHistogram();
-    currentWindow = NULL;
+    currentTimeline = NULL;
+    if( histo->IsShown() )
+      histo->Raise();
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
     currentHisto = NULL;
-    currentWindow = timeline->GetMyWindow();
+    currentTimeline = timeline->GetMyWindow();
+    if( timeline->IsShown() )
+      timeline->Raise();
   }
 }
 
@@ -539,10 +544,10 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
 
 void paraverMain::updateTimelineProperties( Window *whichWindow )
 {
-  if( lastWindow == whichWindow && !whichWindow->getChanged() )
+  if( lastTimeline == whichWindow && !whichWindow->getChanged() )
     return;
   whichWindow->setChanged( false );
-  lastWindow = whichWindow;
+  lastTimeline = whichWindow;
   windowProperties->Freeze();
   windowProperties->Clear();
   wxArrayString tmpA;
@@ -689,13 +694,13 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
 {
   if( currentHisto != NULL )
   {
-    lastWindow = NULL;
+    lastTimeline = NULL;
     updateHistogramProperties( currentHisto );
   }
-  else if( currentWindow != NULL )
+  else if( currentTimeline != NULL )
   {
     lastHisto = NULL;
-    updateTimelineProperties( currentWindow );
+    updateTimelineProperties( currentTimeline );
   }
 }
 
@@ -831,7 +836,10 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
 
 void progressFunction( ProgressController *progress )
 {
-  int p = (int)floor( ( progress->getCurrentProgress()  * numeric_limits<int>::max() ) / progress->getEndLimit() );
+  int p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
   paraverMain::dialogProgress->Update( p );
 //  app->Yield();
 }
+
+
+

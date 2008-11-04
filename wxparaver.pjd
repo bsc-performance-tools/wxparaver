@@ -975,12 +975,13 @@
           <string name="variable-2">"paraverConfig|ParaverConfig*|ParaverConfig||2|0|"</string>
           <string name="variable-3">"currentTrace|INT16|CurrentTrace|-1|2|0|"</string>
           <string name="variable-4">"imageList|wxImageList*|ImageList||2|0|"</string>
-          <string name="variable-5">"currentWindow|Window *|CurrentWindow|NULL|2|0|"</string>
+          <string name="variable-5">"currentTimeline|Window *|CurrentTimeline|NULL|2|0|"</string>
           <string name="variable-6">"currentHisto|Histogram *|CurrentHisto|NULL|2|0|"</string>
           <string name="variable-7">"previousTraces|PreviousFiles *|PreviousTraces|PreviousFiles::createPreviousTraces()|2|0|"</string>
           <string name="variable-8">"previousCFGs|PreviousFiles *|PreviousCFGs|PreviousFiles::createPreviousCFGs()|2|0|"</string>
-          <string name="variable-9">"lastWindow|Window *|LastWindow|NULL|2|0|"</string>
+          <string name="variable-9">"lastTimeline|Window *|LastTimeline|NULL|2|0|"</string>
           <string name="variable-10">"lastHisto|Histogram *|LastHisto|NULL|2|0|"</string>
+          <string name="variable-11">"currentWindow|wxWindow *|CurrentWindow|NULL|2|0|"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
           <string name="proxy-Class">"paraverMain"</string>
