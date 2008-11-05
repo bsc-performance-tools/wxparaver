@@ -231,10 +231,6 @@ void paraverMain::CreateControls()
   tmpTree->SetImageList( imageList );
   tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
-  paraverMain::dialogProgress = new wxProgressDialog( wxT("Loading trace..."), wxT(""),numeric_limits<int>::max(),
-                                         this,
-                                         wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
-  paraverMain::dialogProgress->Show( false );
 }
 
 bool paraverMain::DoLoadTrace( const string &path )
@@ -253,6 +249,10 @@ bool paraverMain::DoLoadTrace( const string &path )
 
   try
   {
+    if( paraverMain::dialogProgress == NULL )
+      paraverMain::dialogProgress = new wxProgressDialog( wxT("Loading trace..."), wxT(""),numeric_limits<int>::max(),
+                                         this,
+                                         wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     paraverMain::dialogProgress->Pulse( wxT( path.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
