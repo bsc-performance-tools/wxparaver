@@ -567,15 +567,23 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
                                                        new wxStringProperty( wxT("Event type"), 
                                                                              wxPG_LABEL,
                                                                              wxT("<composed>") ) );
+
   tmpA.Add(wxT("="));
   tmpAi.Add(0);
   windowProperties->AppendIn( eventFilterType, new wxEnumProperty( wxT("Function"), 
                                                                    wxPG_LABEL, tmpA, tmpAi ) );
+
+  vector<TEventType> types;
+  whichWindow->getTrace()->getEventLabels().getTypes( types );
   tmpA.Clear();
-  tmpA.Add(wxT("40000001"));
-  tmpA.Add(wxT("40000002"));
-  tmpA.Add(wxT("40000003"));
-  windowProperties->AppendIn( eventFilterType, new wxMultiChoiceProperty( wxT("Types"), wxPG_LABEL, tmpA, tmpA ) );
+  tmpAi.Clear();
+  for( vector<TEventType>::iterator it = types.begin(); it != types.end(); it++ )
+  {
+    tmpAi.Add( (*it) );
+    tmpA.Add( wxString() << (*it) << " " << wxT( whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it) ).c_str() ) );
+  }
+  wxPGChoices typeChoices( tmpA, tmpAi );
+  windowProperties->AppendIn( eventFilterType, new wxMultiChoiceProperty( wxT("Types"), wxPG_LABEL, typeChoices ) );
   
   windowProperties->Refresh();
   windowProperties->Thaw();

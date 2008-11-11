@@ -124,15 +124,15 @@ void gHistogram::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(200, 150)), wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
+  gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   gridHisto->SetDefaultColSize(50);
   gridHisto->SetDefaultRowSize(25);
   gridHisto->SetColLabelSize(25);
   gridHisto->SetRowLabelSize(50);
-  gridHisto->CreateGrid(5, 5, wxGrid::wxGridSelectCells);
   itemBoxSizer2->Add(gridHisto, 1, wxGROW|wxALL, 1);
 
 ////@end gHistogram content construction
+  gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
   gridHisto->SetDefaultCellAlignment( wxALIGN_RIGHT, wxALIGN_CENTRE );
 }
@@ -186,12 +186,14 @@ void gHistogram::fillGrid()
   gridHisto->BeginBatch();
   if( (THistogramColumn)gridHisto->GetNumberCols() != numDrawCols )
   {
-    gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
+    if( gridHisto->GetNumberCols() > 0 )
+      gridHisto->DeleteCols( 0, gridHisto->GetNumberCols() );
     gridHisto->AppendCols( numDrawCols );
   }
   if( gridHisto->GetNumberRows() != numDrawRows + NUMTOTALS + 1 )
   {
-    gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
+    if( gridHisto->GetNumberRows() > 0 )
+      gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
     gridHisto->AppendRows( numDrawRows + NUMTOTALS + 1 );
   }
   
@@ -288,7 +290,8 @@ void gHistogram::fillGrid()
   fillTotals( rowLabelWidth, numDrawRows + 1, curPlane, idStat );
   
   gridHisto->SetRowLabelSize( rowLabelWidth + 5 );
-  gridHisto->AutoSize();
+  gridHisto->AutoSizeColumns();
+  gridHisto->AutoSizeRows();
   gridHisto->EndBatch();
 }
 
