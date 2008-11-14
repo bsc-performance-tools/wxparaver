@@ -252,8 +252,8 @@ void gHistogram::fillGrid()
         iDrawRow = iCol;
       }
       
-      if( commStat && myHistogram->endCommCell( iCol, curPlane ) ||
-          !commStat && myHistogram->endCell( iCol, curPlane ) )
+      if( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
+          ( !commStat && myHistogram->endCell( iCol, curPlane ) ) )
         gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
       else
       {
