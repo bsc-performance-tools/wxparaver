@@ -580,7 +580,9 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
   for( vector<TEventType>::iterator it = types.begin(); it != types.end(); it++ )
   {
     tmpAi.Add( (*it) );
-    tmpA.Add( wxString() << (*it) << " " << wxT( whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it) ).c_str() ) );
+    string tmpstr;
+    whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
+    tmpA.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
   }
   wxPGChoices typeChoices( tmpA, tmpAi );
   windowProperties->AppendIn( eventFilterType, new wxMultiChoiceProperty( wxT("Types"), wxPG_LABEL, typeChoices ) );
