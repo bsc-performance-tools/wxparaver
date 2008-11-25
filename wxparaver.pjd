@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <anthemion-project version="1.0.0.0" xmlns="http://www.anthemion.co.uk">
   <header>
-    <long name="name_counter">0</long>
+    <long name="name_counter">1</long>
     <string name="html_path">""</string>
     <string name="title">""</string>
     <string name="author">""</string>
@@ -2005,6 +2005,30 @@
           <long name="title-mode">1</long>
           <long name="locked">0</long>
           <string name="created">"16/6/2008"</string>
+          <string name="language">""</string>
+        </document>
+        <document>
+          <string name="title">"pg_extraprop.h"</string>
+          <string name="type">"source-editor-document"</string>
+          <string name="filename">"pg_extraprop.h"</string>
+          <string name="icon-name">"source-editor"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">1</long>
+          <long name="locked">0</long>
+          <string name="created">"24/11/2008"</string>
+          <string name="language">""</string>
+        </document>
+        <document>
+          <string name="title">"pg_extraprop.cpp"</string>
+          <string name="type">"source-editor-document"</string>
+          <string name="filename">"pg_extraprop.cpp"</string>
+          <string name="icon-name">"source-editor"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">1</long>
+          <long name="locked">0</long>
+          <string name="created">"24/11/2008"</string>
           <string name="language">""</string>
         </document>
       </document>

@@ -31,8 +31,10 @@
 #include "histogram.h"
 #include "gtimeline.h"
 #include "ghistogram.h"
-#include <wx/propgrid/advprops.h>
+//#include <wx/propgrid/advprops.h>
+#include "pg_extraprop.h"
 #include "progresscontroller.h"
+#include "loadedwindows.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -312,6 +314,7 @@ bool paraverMain::DoLoadCFG( const string &path )
           currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), -1, -1,
             new TreeBrowserItemData( (*it)->getName(), tmpTimeline ) );
         
+          LoadedWindows::getInstance()->add( *it );
           tmpTimeline->SetMyWindow( *it );
           tmpTimeline->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
           if( (*it)->getShowWindow() )
@@ -585,8 +588,12 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
     tmpA.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
   }
   wxPGChoices typeChoices( tmpA, tmpAi );
-  windowProperties->AppendIn( eventFilterType, new wxMultiChoiceProperty( wxT("Types"), wxPG_LABEL, typeChoices ) );
+  prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices );
+  windowProperties->AppendIn( eventFilterType, tmpEventProperty );
+  windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
   
+  windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );
+
   windowProperties->Refresh();
   windowProperties->Thaw();
 }
@@ -639,7 +646,36 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   }
   if( selected == -1 ) selected = 0;
   windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Statistic"), wxPG_LABEL, tmpA, tmpAi, selected ) );
+
+  // 3rd window related properties
+  wxPGId thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D") ) );
+  windowProperties->AppendIn( thirdWinCat, new wxBoolProperty( wxT("Activate 3D"), wxPG_LABEL, whichHisto->getThreeDimensions() ) );
+  vector<Window *> validWin;
+  Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
+                                                                 whichHisto->getDataWindow();
+  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, validWin );
+  tmpA.Clear();
+  tmpAi.Clear();
+  pos = 0;
+  selected = -1;
+  for( vector<Window *>::iterator it = validWin.begin(); it != validWin.end(); it++ )
+  {
+    tmpA.Add( wxT( (*it)->getName().c_str() ) );
+    tmpAi.Add( pos );
+    if( ( (*it) == whichHisto->getExtraControlWindow() ) ||
+        ( whichHisto->getExtraControlWindow() == NULL && (*it) == whichHisto->getControlWindow() ) )
+      selected = pos;
+    pos++;
+  }
+  wxEnumProperty *tmp3rdWin = new wxEnumProperty( wxT("3rd Window"), wxPG_LABEL, tmpA, tmpAi, selected );
+  windowProperties->AppendIn( thirdWinCat, tmp3rdWin );
   
+  if( !whichHisto->getThreeDimensions() )
+  {
+    tmp3rdWin ->SetFlagsFromString( "DISABLED" );
+  }
+  
+  windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );
   windowProperties->Refresh();
   windowProperties->Thaw();
 }
