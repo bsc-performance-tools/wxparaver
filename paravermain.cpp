@@ -276,9 +276,11 @@ bool paraverMain::DoLoadTrace( const string &path )
     message.ShowModal();
   }
   paraverMain::dialogProgress->Show( false );
+  delete paraverMain::dialogProgress;
+  paraverMain::dialogProgress = NULL;
   delete progress;
   
-  return loaded; // tiene sentido?
+  return loaded;
 }
 
 bool paraverMain::DoLoadCFG( const string &path )
@@ -482,6 +484,8 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       currentHisto->setRecalc( true );
     }
   }
+  
+  // Histogram related properties
   else if( propName == "Calculate all" )
     currentHisto->setCalculateAll( property->GetValue().GetBool() );
   else if( propName == "Type" )
@@ -498,6 +502,40 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentHisto->setCurrentStat( string( property->GetDisplayedString().c_str() ) );
     currentHisto->setRedraw( true );
   }
+  else if( propName == "Activate 3D" )
+  {
+    if( property->GetValueAsString() == wxT( "True" ) )
+      currentHisto->setExtraControlWindow( currentHisto->getControlWindow() );
+    else
+      currentHisto->clearExtraControlWindow();
+    currentHisto->setRecalc( true );
+  }
+  else if( propName == "3rd Window" )
+  {
+    currentHisto->setExtraControlWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
+    currentHisto->setRecalc( true );
+  }
+  else if( propName == "3DMinimum" )
+  {
+    currentHisto->setExtraControlMin( property->GetValue().GetDouble() );
+    currentHisto->setRecalc( true );
+  }
+  else if( propName == "3DMaximum" )
+  {
+    currentHisto->setExtraControlMax( property->GetValue().GetDouble() );
+    currentHisto->setRecalc( true );
+  }
+  else if( propName == "3DDelta" )
+  {
+    currentHisto->setExtraControlDelta( property->GetValue().GetDouble() );
+    currentHisto->setRecalc( true );
+  }
+  else if( propName == "Plane" )
+  {
+  }
+  
+  // Timeline related properties
+  
 }
 
 
@@ -650,29 +688,55 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   // 3rd window related properties
   wxPGId thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D") ) );
   windowProperties->AppendIn( thirdWinCat, new wxBoolProperty( wxT("Activate 3D"), wxPG_LABEL, whichHisto->getThreeDimensions() ) );
-  vector<Window *> validWin;
+  vector<TWindowID> validWin;
   Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
                                                                  whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, validWin );
   tmpA.Clear();
   tmpAi.Clear();
-  pos = 0;
   selected = -1;
-  for( vector<Window *>::iterator it = validWin.begin(); it != validWin.end(); it++ )
+  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); it++ )
   {
-    tmpA.Add( wxT( (*it)->getName().c_str() ) );
-    tmpAi.Add( pos );
-    if( ( (*it) == whichHisto->getExtraControlWindow() ) ||
-        ( whichHisto->getExtraControlWindow() == NULL && (*it) == whichHisto->getControlWindow() ) )
-      selected = pos;
-    pos++;
+    tmpA.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
+    tmpAi.Add( (*it) );
+    if( ( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getExtraControlWindow() ) ||
+        ( whichHisto->getExtraControlWindow() == NULL && 
+          LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getControlWindow() ) )
+      selected = (*it);
   }
   wxEnumProperty *tmp3rdWin = new wxEnumProperty( wxT("3rd Window"), wxPG_LABEL, tmpA, tmpAi, selected );
   windowProperties->AppendIn( thirdWinCat, tmp3rdWin );
+  wxFloatProperty *tmp3dMin = new wxFloatProperty( wxT("Minimum"), wxT("3DMinimum"), whichHisto->getExtraControlMin() );
+  windowProperties->AppendIn( thirdWinCat, tmp3dMin );
+  wxFloatProperty *tmp3dMax = new wxFloatProperty( wxT("Maximum"), wxT("3DMaximum"), whichHisto->getExtraControlMax() );
+  windowProperties->AppendIn( thirdWinCat, tmp3dMax );
+  wxFloatProperty *tmp3dDelta = new wxFloatProperty( wxT("Delta"), wxT("3DDelta"), whichHisto->getExtraControlDelta() );
+  windowProperties->AppendIn( thirdWinCat, tmp3dDelta );
+  tmpA.Clear();
+  tmpAi.Clear();
+  pos = 0;
+  selected = -1;
+  for( THistogramColumn i = 0; i < whichHisto->getNumPlanes(); i++ )
+  {
+    if( whichHisto->planeWithValues( i ) )
+    {
+      tmpA.Add( whichHisto->getPlaneLabel( i ) );
+      tmpAi.Add( pos );
+      if( pos == whichHisto->getSelectedPlane() )
+        selected = pos;
+    }
+    pos++;
+  }
+  wxEnumProperty *tmp3dPlane = new wxEnumProperty( wxT("Plane"), wxPG_LABEL, tmpA, tmpAi, selected );
+  windowProperties->AppendIn( thirdWinCat, tmp3dPlane );
   
   if( !whichHisto->getThreeDimensions() )
   {
-    tmp3rdWin ->SetFlagsFromString( "DISABLED" );
+    tmp3rdWin->SetFlagsFromString( "DISABLED" );
+    tmp3dMin->SetFlagsFromString( "DISABLED" );
+    tmp3dMax->SetFlagsFromString( "DISABLED" );
+    tmp3dDelta->SetFlagsFromString( "DISABLED" );
+    tmp3dPlane->SetFlagsFromString( "DISABLED" );
   }
   
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );

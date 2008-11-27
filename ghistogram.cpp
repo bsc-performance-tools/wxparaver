@@ -146,7 +146,7 @@ void gHistogram::execute()
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
 
   fillGrid();
-  
+
   this->Refresh();
 }
 
@@ -164,7 +164,7 @@ void gHistogram::fillGrid()
   
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( exception() );
-    
+
   if( commStat )
     curPlane = myHistogram->getCommSelectedPlane();
   else
@@ -182,7 +182,7 @@ void gHistogram::fillGrid()
     numDrawCols = myHistogram->getNumRows();
     numDrawRows = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
   }
-  
+
   gridHisto->BeginBatch();
   if( (THistogramColumn)gridHisto->GetNumberCols() != numDrawCols )
   {
@@ -196,7 +196,7 @@ void gHistogram::fillGrid()
       gridHisto->DeleteRows( 0, gridHisto->GetNumberRows() );
     gridHisto->AppendRows( numDrawRows + NUMTOTALS + 1 );
   }
-  
+
   for( THistogramColumn iCol = 0; iCol < numCols; iCol++ )
   {
     if( commStat )
@@ -219,7 +219,7 @@ void gHistogram::fillGrid()
       }
       myHistogram->setFirstCell( iCol, curPlane );
     }
-    
+
     for( TObjectOrder iRow = 0; iRow < numRows; iRow++ )
     {
       if( horizontal )
@@ -286,9 +286,9 @@ void gHistogram::fillGrid()
     
     gridHisto->SetRowLabelValue( numDrawRows, "" );
   }
-  
+
   fillTotals( rowLabelWidth, numDrawRows + 1, curPlane, idStat );
-  
+
   gridHisto->SetRowLabelSize( rowLabelWidth + 5 );
   gridHisto->AutoSizeColumns();
   gridHisto->AutoSizeRows();
@@ -328,7 +328,10 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
         tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ] );
         gridHisto->SetCellValue( beginRow + i, iCol, wxString( tmpStr ) );
       }
-      else gridHisto->SetCellValue( beginRow + i, iCol, wxString( "-" ) );
+      else
+      {
+        gridHisto->SetCellValue( beginRow + i, iCol, wxString( "-" ) );
+      }
     }
   }
 }
@@ -394,6 +397,7 @@ void gHistogram::OnGridhistoUpdate( wxUpdateUIEvent& event )
   {
     myHistogram->setRecalc( false );
     execute();
+    myHistogram->setChanged( true );
   }
     
   if( this->IsShown() )
