@@ -128,8 +128,8 @@ void gTimeline::Init()
   drawZone = NULL;
 ////@end gTimeline member initialisation
   bufferImage.Create( 1, 1 );
-  objectFont = wxFont( 9, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
-  timeFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  objectFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  timeFont = wxFont( 6, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
 }
 
 
@@ -258,7 +258,7 @@ void gTimeline::drawAxis( wxDC& dc )
   
   // Draw axis labels
   wxCoord y;
-  double inc = (double)( timeAxisPos - drawBorder ) / (double)myWindow->getWindowLevelObjects();
+  double inc = (double)( timeAxisPos - drawBorder - ( objectExt.GetHeight() * 0.5 ) ) / (double)myWindow->getWindowLevelObjects();
 //  double inc = (double)( timeAxisPos - drawBorder - objectExt.GetHeight() ) 
 //               / (double)myWindow->getWindowLevelObjects();
   objectPosList.clear();

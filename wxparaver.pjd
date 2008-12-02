@@ -186,7 +186,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"GCC"</string>
-          <bool name="dirty">0</bool>
+          <bool name="dirty">1</bool>
           <long name="makefile-last-written">4286447616</long>
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Debug"</string>
@@ -252,7 +252,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"GCC"</string>
-          <bool name="dirty">0</bool>
+          <bool name="dirty">1</bool>
           <long name="makefile-last-written">4286447616</long>
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Release"</string>
@@ -318,7 +318,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"GCC"</string>
-          <bool name="dirty">0</bool>
+          <bool name="dirty">1</bool>
           <long name="makefile-last-written">4286447616</long>
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Debug"</string>
@@ -384,7 +384,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"GCC"</string>
-          <bool name="dirty">0</bool>
+          <bool name="dirty">1</bool>
           <long name="makefile-last-written">4286447616</long>
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Release"</string>
@@ -1877,14 +1877,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
