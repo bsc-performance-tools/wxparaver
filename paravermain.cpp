@@ -532,6 +532,8 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   }
   else if( propName == "Plane" )
   {
+    currentHisto->setSelectedPlane( property->GetValue().GetLong() );
+    currentHisto->setRedraw( true );
   }
   
   // Timeline related properties
