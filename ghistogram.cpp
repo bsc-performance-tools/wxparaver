@@ -265,7 +265,7 @@ void gHistogram::fillGrid()
           {
             string tmpStr;
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
-              myHistogram->getCommCurrentValue( iCol, idStat, curPlane ) );
+              myHistogram->getCommCurrentValue( iCol, idStat, curPlane ), true );
             gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( tmpStr ) );
             myHistogram->setCommNextCell( iCol, curPlane );
           }
@@ -277,7 +277,7 @@ void gHistogram::fillGrid()
           {
             string tmpStr;
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
-              myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
+              myHistogram->getCurrentValue( iCol, idStat, curPlane ), true );
             gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( tmpStr ) );
             myHistogram->setNextCell( iCol, curPlane );
           }
@@ -327,7 +327,10 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
       if( totals[ 0 ] > 0.0 )
       {
         string tmpStr;
-        tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ] );
+        if( i == AVGDIVMAX )
+          tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ], false );
+        else
+          tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ], true );
         gridHisto->SetCellValue( beginRow + i, iCol, wxString( tmpStr ) );
       }
       else
