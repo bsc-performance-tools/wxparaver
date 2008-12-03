@@ -80,6 +80,9 @@ public:
   /// wxEVT_IDLE event handler for ID_GHISTOGRAM
   void OnIdle( wxIdleEvent& event );
 
+  /// wxEVT_GRID_RANGE_SELECT event handler for ID_GRIDHISTO
+  void OnRangeSelect( wxGridRangeSelectEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
   void OnGridhistoUpdate( wxUpdateUIEvent& event );
 

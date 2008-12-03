@@ -23,6 +23,7 @@
 ////@begin includes
 ////@end includes
 
+#include <wx/clipbrd.h>
 #include <sstream>
 #include "ghistogram.h"
 #include "histogram.h"
@@ -50,6 +51,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_IDLE( gHistogram::OnIdle )
 
+  EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
 
 ////@end gHistogram event table entries
@@ -421,4 +423,19 @@ void gHistogram::OnCloseWindow( wxCloseEvent& event )
 }
 
 
+
+
+/*!
+ * wxEVT_GRID_RANGE_SELECT event handler for ID_GRIDHISTO
+ */
+
+void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
+{
+  if (wxTheClipboard->Open())
+  {
+    wxGridCellCoords topLeft = event.GetTopLeftCoords();
+    wxTheClipboard->SetData( new wxTextDataObject( gridHisto->GetCellValue( topLeft ) ) );
+    wxTheClipboard->Close();
+  }
+}
 

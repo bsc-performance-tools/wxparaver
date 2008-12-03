@@ -123,6 +123,9 @@ public:
 
 ////@begin paraverMain event handler declarations
 
+  /// wxEVT_IDLE event handler for ID_PARAVERMAIN
+  void OnIdle( wxIdleEvent& event );
+
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_OPEN
   void OnOpenClick( wxCommandEvent& event );
 

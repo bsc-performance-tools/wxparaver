@@ -995,6 +995,7 @@
           <string name="variable-9">"lastTimeline|Window *|LastTimeline|NULL|2|0|"</string>
           <string name="variable-10">"lastHisto|Histogram *|LastHisto|NULL|2|0|"</string>
           <string name="variable-11">"currentWindow|wxWindow *|CurrentWindow|NULL|2|0|"</string>
+          <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
           <string name="proxy-Class">"paraverMain"</string>
@@ -1689,7 +1690,8 @@
               <long name="locked">0</long>
               <string name="created">"23/10/2008"</string>
               <string name="proxy-type">"wbGridProxy"</string>
-              <string name="event-handler-0">"wxEVT_UPDATE_UI|OnGridhistoUpdate|NONE||gHistogram"</string>
+              <string name="event-handler-0">"wxEVT_GRID_RANGE_SELECT|OnRangeSelect|NONE||gHistogram"</string>
+              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnGridhistoUpdate|NONE||gHistogram"</string>
               <string name="proxy-Id name">"ID_GRIDHISTO"</string>
               <long name="proxy-Id value">10005</long>
               <string name="proxy-Name">""</string>

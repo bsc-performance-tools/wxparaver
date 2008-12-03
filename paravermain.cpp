@@ -55,6 +55,8 @@ IMPLEMENT_CLASS( paraverMain, wxFrame )
 BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
 ////@begin paraverMain event table entries
+  EVT_IDLE( paraverMain::OnIdle )
+
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
 
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
@@ -777,13 +779,19 @@ void paraverMain::updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id )
   if( gTimeline *tmpTimeline = itemData->getTimeline() )
   {
     if( tmpTimeline->IsActive() )
+    {
+      currentWindow = tmpTimeline;
       tree->SelectItem( id );
+    }
     tmpName = tmpTimeline->GetMyWindow()->getName();
   }
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
     if( tmpHistogram->IsActive() )
+    {
+      currentWindow = tmpHistogram;
       tree->SelectItem( id );
+    }
     tmpName = tmpHistogram->GetHistogram()->getName();
   }
   if( tmpName != tree->GetItemText( id ) )
@@ -957,5 +965,23 @@ void progressFunction( ProgressController *progress )
 //  app->Yield();
 }
 
+/*!
+ * wxEVT_IDLE event handler for ID_PARAVERMAIN
+ */
 
+void paraverMain::OnIdle( wxIdleEvent& event )
+{
+  static bool raise = true;
+  
+  if( wxTheApp->IsActive() )
+  {
+    if( currentWindow != NULL && raise )
+    {
+      raise = false;
+      currentWindow->Raise();
+    }
+  }
+  else
+    raise = true;
+}
 
