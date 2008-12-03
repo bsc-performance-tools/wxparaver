@@ -420,3 +420,5 @@ void gHistogram::OnCloseWindow( wxCloseEvent& event )
   myHistogram->setShowWindow( false );
 }
 
+
+

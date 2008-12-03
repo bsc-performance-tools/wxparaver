@@ -776,10 +776,14 @@ void paraverMain::updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id )
   wxString tmpName;
   if( gTimeline *tmpTimeline = itemData->getTimeline() )
   {
+    if( tmpTimeline->IsActive() )
+      tree->SelectItem( id );
     tmpName = tmpTimeline->GetMyWindow()->getName();
   }
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
+    if( tmpHistogram->IsActive() )
+      tree->SelectItem( id );
     tmpName = tmpHistogram->GetHistogram()->getName();
   }
   if( tmpName != tree->GetItemText( id ) )
