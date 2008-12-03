@@ -60,7 +60,7 @@ class ProgressController;
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(-1, 400)
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, 0)
-////@end control identifiers
+////@end control identiparfiers
 
 class gTimeline;
 class gHistogram;
@@ -239,6 +239,9 @@ private:
   void updateHistogramProperties( Histogram *whichHisto );
   void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
+  wxTreeItemId BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
+                                     wxTreeCtrl *root2, wxTreeItemId idRoot2,
+                                     Window *window );
   bool DoLoadCFG( const string &path );
 };
 

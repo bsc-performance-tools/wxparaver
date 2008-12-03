@@ -231,7 +231,8 @@ void paraverMain::CreateControls()
   GetAuiManager().Update();
 
 ////@end paraverMain content construction
-  wxTreeCtrl* tmpTree = new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_SINGLE );
+  wxTreeCtrl* tmpTree = new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                        wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_LINES_AT_ROOT );
   tmpTree->SetImageList( imageList );
   tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
@@ -285,6 +286,36 @@ bool paraverMain::DoLoadTrace( const string &path )
   return loaded;
 }
 
+// precond window has no parents
+wxTreeItemId paraverMain::BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
+                                     wxTreeCtrl *root2, wxTreeItemId idRoot2,
+                                     Window *window )
+{
+  wxTreeItemId currentWindowId1, currentWindowId2;
+  TreeBrowserItemData *currentData;
+
+  gTimeline* tmpTimeline = new gTimeline( this, wxID_ANY, window->getName() );
+  tmpTimeline->SetMyWindow( window );
+  tmpTimeline->SetSize( window->getPosX(), window->getPosY(), window->getWidth(), window->getHeight() );
+  if( window->getShowWindow() )
+  {
+    tmpTimeline->Show();
+    tmpTimeline->redraw();
+  }
+
+  currentData =  new TreeBrowserItemData( window->getName(), tmpTimeline );
+  currentWindowId1 = root1->AppendItem( idRoot1, window->getName(), -1, -1, currentData );
+  currentWindowId2 = root2->AppendItem( idRoot2, window->getName(), -1, -1, currentData );
+
+  if ( window->getParent( 0 ) != NULL )
+  {
+    BuildTree( root1, currentWindowId1, root2, currentWindowId2, window->getParent( 0 ) );
+    BuildTree( root1, currentWindowId1, root2, currentWindowId2, window->getParent( 1 ) );
+  }
+}
+
+
+
 bool paraverMain::DoLoadCFG( const string &path )
 {
    if( !CFGLoader::isCFGFile( path ))
@@ -306,40 +337,28 @@ bool paraverMain::DoLoadCFG( const string &path )
       }
       else
       {
+        wxTreeItemId child;
         for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); it++ )
         {
-          gTimeline* tmpTimeline = new gTimeline( this, wxID_ANY, (*it)->getName() );
-
           wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-          allTracesPage->AppendItem( allTracesPage->GetRootItem(), (*it)->getName(), -1, -1,
-            new TreeBrowserItemData( (*it)->getName(), tmpTimeline ) );
-            
           wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
-          currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), -1, -1,
-            new TreeBrowserItemData( (*it)->getName(), tmpTimeline ) );
-        
-          LoadedWindows::getInstance()->add( *it );
-          tmpTimeline->SetMyWindow( *it );
-          tmpTimeline->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
-          if( (*it)->getShowWindow() )
-          {
-            tmpTimeline->Show();
-            tmpTimeline->redraw();
-          }
+
+          if ( (*it)->getChild() == NULL )
+            BuildTree( allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
         }
-        
+
         for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); it++ )
         {
           gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, (*it)->getName() );
-          
+
           wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
           allTracesPage->AppendItem( allTracesPage->GetRootItem(), (*it)->getName(), 0, -1,
             new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
-            
+
           wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
           currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), 0, -1,
             new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
-          
+
           tmpHisto->SetHistogram( *it );
           tmpHisto->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
           if( (*it)->getShowWindow() )
@@ -355,11 +374,9 @@ bool paraverMain::DoLoadCFG( const string &path )
 }
 
 
-
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_OPEN
  */
-
 void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
   wxFileDialog dialog( this, "Load Trace", "", "", 
@@ -386,7 +403,7 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
   {
     wxString path = dialog.GetPath();
     DoLoadCFG( path.c_str());
-   }
+  }
 }
 
 
