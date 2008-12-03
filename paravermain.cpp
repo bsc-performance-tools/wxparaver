@@ -287,9 +287,9 @@ bool paraverMain::DoLoadTrace( const string &path )
 }
 
 // precond window has no parents
-wxTreeItemId paraverMain::BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
-                                     wxTreeCtrl *root2, wxTreeItemId idRoot2,
-                                     Window *window )
+void paraverMain::BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
+                             wxTreeCtrl *root2, wxTreeItemId idRoot2,
+                             Window *window )
 {
   wxTreeItemId currentWindowId1, currentWindowId2;
   TreeBrowserItemData *currentData;

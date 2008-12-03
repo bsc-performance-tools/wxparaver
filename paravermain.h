@@ -239,9 +239,9 @@ private:
   void updateHistogramProperties( Histogram *whichHisto );
   void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
-  wxTreeItemId BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
-                                     wxTreeCtrl *root2, wxTreeItemId idRoot2,
-                                     Window *window );
+  void BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
+                  wxTreeCtrl *root2, wxTreeItemId idRoot2,
+                  Window *window );
   bool DoLoadCFG( const string &path );
 };
 
