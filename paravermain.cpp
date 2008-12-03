@@ -295,6 +295,7 @@ void paraverMain::BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
   TreeBrowserItemData *currentData;
 
   gTimeline* tmpTimeline = new gTimeline( this, wxID_ANY, window->getName() );
+  LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
   tmpTimeline->SetSize( window->getPosX(), window->getPosY(), window->getWidth(), window->getHeight() );
   if( window->getShowWindow() )
@@ -305,7 +306,7 @@ void paraverMain::BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
 
   currentData =  new TreeBrowserItemData( window->getName(), tmpTimeline );
   currentWindowId1 = root1->AppendItem( idRoot1, window->getName(), -1, -1, currentData );
-  currentWindowId2 = root2->AppendItem( idRoot2, window->getName(), -1, -1, currentData );
+  currentWindowId2 = root2->AppendItem( idRoot2, window->getName(), -1, -1, new TreeBrowserItemData( *currentData ) );
 
   if ( window->getParent( 0 ) != NULL )
   {
