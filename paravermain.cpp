@@ -623,7 +623,7 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
                             wxT( whichWindow->getWindowEndTime() ) ) );
   // Filter related properties
   wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
-  wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
+  //wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
   
   wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
   wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
