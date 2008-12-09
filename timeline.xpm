@@ -1,5 +1,5 @@
 /* XPM */
-static char * timeline_xpm[] = {
+static const char * timeline_xpm[] = {
 "16 16 6 1",
 " 	c None",
 ".	c #FFFFFF",
