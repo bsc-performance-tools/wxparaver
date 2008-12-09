@@ -40,7 +40,7 @@
 ////@end XPM images
 
 #include "table.xpm"
-
+#include "timeline.xpm"
 /*!
  * paraverMain type definition
  */
@@ -107,6 +107,8 @@ bool paraverMain::Create( wxWindow* parent, wxWindowID id, const wxString& capti
 {
   imageList = new wxImageList( 16, 16 );
   imageList->Add( wxIcon( table_xpm ) );
+  imageList->Add( wxIcon( timeline_xpm ) );
+
   
 ////@begin paraverMain creation
   wxFrame::Create( parent, id, caption, pos, size, style );
@@ -305,8 +307,8 @@ void paraverMain::BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
   }
 
   currentData =  new TreeBrowserItemData( window->getName(), tmpTimeline );
-  currentWindowId1 = root1->AppendItem( idRoot1, window->getName(), -1, -1, currentData );
-  currentWindowId2 = root2->AppendItem( idRoot2, window->getName(), -1, -1, new TreeBrowserItemData( *currentData ) );
+  currentWindowId1 = root1->AppendItem( idRoot1, window->getName(), 1, -1, currentData );
+  currentWindowId2 = root2->AppendItem( idRoot2, window->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
 
   if ( window->getParent( 0 ) != NULL )
   {
