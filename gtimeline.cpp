@@ -441,7 +441,11 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       zoomBegin = 0;
     else
       zoomBegin -= objectAxisPos;
+      
+    if( zoomEnd > dc.GetSize().GetWidth() - drawBorder )
+      zoomEnd = dc.GetSize().GetWidth() - drawBorder;
     zoomEnd -= objectAxisPos;
+
     TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                      ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
     myWindow->setWindowEndTime( ( timeStep * zoomEnd ) + myWindow->getWindowBeginTime() );
@@ -604,9 +608,9 @@ void gTimeline::OnMotion( wxMouseEvent& event )
   long end = zoomBegin < event.GetX() ? event.GetX() : zoomBegin;
   if( begin < objectAxisPos )
     begin = objectAxisPos;
-  if( end < objectAxisPos )
-    end = objectAxisPos;
-  wxCoord width = end-begin;
+  if( end > drawImage.GetWidth() - drawBorder )
+    end = drawImage.GetWidth() - drawBorder;
+  wxCoord width = end - begin;
   
   dc.DrawBitmap( bufferImage, 0, 0, false );
   if( myWindow->getDrawCommLines() )
