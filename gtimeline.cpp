@@ -511,7 +511,8 @@ void gTimeline::OnPopUpGradientColor()
 void gTimeline::BuildItem( wxMenu *popUp,
                            const wxString &title,
                            wxObjectEventFunction handler,
-                           ItemType itemType )
+                           ItemType itemType,
+                           bool checked )
 {
   wxMenuItem *tmp;
 
@@ -538,10 +539,14 @@ void gTimeline::BuildItem( wxMenu *popUp,
       break;
     }
   }
-  
+
   int tmpid = tmp->GetId();
   popUp->Append( tmp );
+  if ( tmp->IsCheckable() )
+    tmp->Check( checked );
+
   popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, this );
+
 }
 
 /*!
@@ -563,8 +568,8 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
 
     popUpMenu->AppendSeparator();
     
-    BuildItem( popUpMenuColor, wxString( "Code Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpCodeColor, ITEMRADIO );
-    BuildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO );
+    BuildItem( popUpMenuColor, wxString( "Code Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpCodeColor, ITEMRADIO, myWindow->IsCodeColorSet()  );
+    BuildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO, myWindow->IsGradientColorSet() );
     popUpMenu->AppendSubMenu( popUpMenuColor, wxString( "Color" ));
 
 //    BuildItem( popUpMenu, wxString("Not Null Gradient Color"), (wxObjectEventFunction)&gTimeline::OnPopUpClone);

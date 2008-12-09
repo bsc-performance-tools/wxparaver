@@ -205,7 +205,7 @@ private:
   void OnPopUpCodeColor();
   void OnPopUpGradientColor();
 
-  void BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler, ItemType type );
+  void BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler, ItemType type, bool checked = true );
 };
 
 #endif
