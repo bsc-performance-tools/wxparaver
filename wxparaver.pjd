@@ -88,7 +88,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Debug"</string>
+    <string name="configuration">"VC++ Debug"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"utf-8"</string>
     <string name="project_encoding">"utf-8"</string>
@@ -130,7 +130,7 @@
         <long name="locked">0</long>
         <string name="template-name">""</string>
         <bool name="dirty">1</bool>
-        <long name="makefile-last-written">3961587581</long>
+        <long name="makefile-last-written">-1</long>
         <string name="Compiler name">""</string>
         <string name="Build mode">"Debug"</string>
         <string name="Unicode mode">"ANSI"</string>
@@ -186,8 +186,8 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"GCC"</string>
-          <bool name="dirty">0</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <bool name="dirty">1</bool>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Debug"</string>
           <string name="Unicode mode">"ANSI"</string>
@@ -252,8 +252,8 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"GCC"</string>
-          <bool name="dirty">0</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <bool name="dirty">1</bool>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Release"</string>
           <string name="Unicode mode">"ANSI"</string>
@@ -318,8 +318,8 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"GCC"</string>
-          <bool name="dirty">0</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <bool name="dirty">1</bool>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Debug"</string>
           <string name="Unicode mode">"Unicode"</string>
@@ -384,8 +384,8 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"GCC"</string>
-          <bool name="dirty">0</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <bool name="dirty">1</bool>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"GCC"</string>
           <string name="Build mode">"Release"</string>
           <string name="Unicode mode">"Unicode"</string>
@@ -450,15 +450,15 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <bool name="dirty">0</bool>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
           <string name="Unicode mode">"ANSI"</string>
-          <string name="Shared mode">"Static"</string>
+          <string name="Shared mode">"Shared"</string>
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
-          <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Toolkit">"wxMSW"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
@@ -482,13 +482,13 @@
           <string name="Compiler lib path">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
-          <string name="Warnings">"%AUTO%"</string>
+          <string name="Warnings">"/W1"</string>
           <string name="Debug flags">"%AUTO%"</string>
           <string name="Extra compile flags">"%AUTO%"</string>
-          <string name="Libraries">"%AUTO%"</string>
-          <string name="Library path">"%AUTO%"</string>
+          <string name="Libraries">"wxmsw28d_richtext.lib wxmsw28d_aui.lib wxmsw28d_core.lib wxbase28d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxmsw28d_adv.lib wxmsw28d_html.lib wxmsw28d_xrc.lib wxbase28d_net.lib wxbase28d_xml.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib api.lib paraver-kernel.lib wxcode_msw28d_propgrid.lib"</string>
+          <string name="Library path">"$(WXWIN)/lib/vc_dll,../paraver-kernel/paraver-kernel-win32/Debug"</string>
           <string name="Linker flags">"%AUTO%"</string>
-          <string name="Include path">"%AUTO%"</string>
+          <string name="Include path">"$(WXWIN)/include,$(WXWIN)/contrib/include,$(WXWIN)/lib/vc_dll/mswd,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost_1_35_0"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
@@ -510,15 +510,15 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <bool name="dirty">0</bool>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
           <string name="Unicode mode">"ANSI"</string>
-          <string name="Shared mode">"Static"</string>
+          <string name="Shared mode">"Shared"</string>
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
-          <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Toolkit">"wxMSW"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
@@ -570,8 +570,8 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <bool name="dirty">0</bool>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
           <string name="Unicode mode">"Unicode"</string>
@@ -630,8 +630,8 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <bool name="dirty">0</bool>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
           <string name="Unicode mode">"Unicode"</string>
@@ -691,7 +691,7 @@
           <long name="locked">0</long>
           <string name="template-name">"MinGW"</string>
           <bool name="dirty">1</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"MinGW"</string>
           <string name="Build mode">"Debug"</string>
           <string name="Unicode mode">"ANSI"</string>
@@ -750,7 +750,7 @@
           <long name="locked">0</long>
           <string name="template-name">"MinGW"</string>
           <bool name="dirty">1</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"MinGW"</string>
           <string name="Build mode">"Release"</string>
           <string name="Unicode mode">"ANSI"</string>
@@ -809,7 +809,7 @@
           <long name="locked">0</long>
           <string name="template-name">"MinGW"</string>
           <bool name="dirty">1</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"MinGW"</string>
           <string name="Build mode">"Debug"</string>
           <string name="Unicode mode">"Unicode"</string>
@@ -868,7 +868,7 @@
           <long name="locked">0</long>
           <string name="template-name">"MinGW"</string>
           <bool name="dirty">1</bool>
-          <long name="makefile-last-written">3961587581</long>
+          <long name="makefile-last-written">-1</long>
           <string name="Compiler name">"MinGW"</string>
           <string name="Build mode">"Release"</string>
           <string name="Unicode mode">"Unicode"</string>
@@ -1675,6 +1675,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -1979,6 +1987,18 @@
           <long name="title-mode">1</long>
           <long name="locked">0</long>
           <string name="created">"16/6/2008"</string>
+          <string name="language">""</string>
+        </document>
+        <document>
+          <string name="title">"makefile.vc"</string>
+          <string name="type">"source-editor-document"</string>
+          <string name="filename">"makefile.vc"</string>
+          <string name="icon-name">"source-editor"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">1</long>
+          <long name="locked">0</long>
+          <string name="created">"11/12/2008"</string>
           <string name="language">""</string>
         </document>
         <document>
