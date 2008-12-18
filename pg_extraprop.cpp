@@ -23,13 +23,10 @@ prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
 {
     m_choices.Assign(choices);
     wxArrayString tmpArray;
-printf("GetCount %d\n",(int)value.GetCount());
+
     unsigned int i;
     for ( i=0; i<value.GetCount(); i++ )
-    {
-      printf("new value %s\n",wxString().Format("%d", value[i] ).c_str());
       tmpArray.Add( wxString().Format("%d", value[i] ) );
-    }
     SetValue(tmpArray);
 }
 

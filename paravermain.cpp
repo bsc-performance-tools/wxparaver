@@ -650,41 +650,46 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
                             wxT( whichWindow->getWindowBeginTime() ) ) );
   windowProperties->Append( new wxFloatProperty( wxT("End time"), wxPG_LABEL, 
                             wxT( whichWindow->getWindowEndTime() ) ) );
+
   // Filter related properties
-  wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
-  //wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
-  
-  wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
-  wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
-                                                       new wxStringProperty( wxT("Event type"), 
-                                                                             wxPG_LABEL,
-                                                                             wxT("<composed>") ) );
-
-  tmpA.Add(wxT("="));
-  tmpAi.Add(0);
-  windowProperties->AppendIn( eventFilterType, new wxEnumProperty( wxT("Function"), 
-                                                                   wxPG_LABEL, tmpA, tmpAi ) );
-
-  vector<TEventType> types;
-  whichWindow->getTrace()->getEventLabels().getTypes( types );
-  tmpA.Clear();
-  tmpAi.Clear();
-  for( vector<TEventType>::iterator it = types.begin(); it != types.end(); it++ )
+  if( whichWindow->getFilter() != NULL )
   {
-    tmpAi.Add( (*it) );
-    string tmpstr;
-    whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
-    tmpA.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
+    wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
+    //wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
+  
+    wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
+    wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
+                                                         new wxStringProperty( wxT("Event type"), 
+                                                                               wxPG_LABEL,
+                                                                               wxT("<composed>") ) );
+
+    tmpA.Add(wxT("="));
+    tmpAi.Add(0);
+    windowProperties->AppendIn( eventFilterType, new wxEnumProperty( wxT("Function"), 
+                                                                     wxPG_LABEL, tmpA, tmpAi ) );
+
+    vector<TEventType> types;
+    whichWindow->getTrace()->getEventLabels().getTypes( types );
+    tmpA.Clear();
+    tmpAi.Clear();
+    for( vector<TEventType>::iterator it = types.begin(); it != types.end(); it++ )
+    {
+      tmpAi.Add( (*it) );
+      string tmpstr;
+      whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
+      tmpA.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
+    }
+    wxPGChoices typeChoices( tmpA, tmpAi );
+    wxArrayInt values;
+    vector<TEventType> typesSel;
+    whichWindow->getFilter()->getEventType( typesSel );
+    for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); it++ )
+      values.Add( (*it ) );
+    prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices, values );
+    windowProperties->AppendIn( eventFilterType, tmpEventProperty );
+    windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
   }
-  wxPGChoices typeChoices( tmpA, tmpAi );
-  wxArrayInt values;
-  vector<TEventType> typesSel;
-  whichWindow->getFilter()->getEventType( typesSel );
-  for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); it++ )
-    values.Add( (*it ) );
-  prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices, values );
-  windowProperties->AppendIn( eventFilterType, tmpEventProperty );
-  windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
+  // END of Filter related properties
   
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );
 
