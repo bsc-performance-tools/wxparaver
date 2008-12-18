@@ -35,6 +35,7 @@
 #include "pg_extraprop.h"
 #include "progresscontroller.h"
 #include "loadedwindows.h"
+#include "filter.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -650,7 +651,12 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
     tmpA.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
   }
   wxPGChoices typeChoices( tmpA, tmpAi );
-  prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices );
+  wxArrayInt values;
+  vector<TEventType> typesSel;
+  whichWindow->getFilter()->getEventType( typesSel );
+  for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); it++ )
+    values.Add( (*it ) );
+  prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices, values );
   windowProperties->AppendIn( eventFilterType, tmpEventProperty );
   windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
   

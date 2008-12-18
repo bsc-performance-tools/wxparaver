@@ -23,9 +23,13 @@ prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
 {
     m_choices.Assign(choices);
     wxArrayString tmpArray;
+printf("GetCount %d\n",(int)value.GetCount());
     unsigned int i;
     for ( i=0; i<value.GetCount(); i++ )
+    {
+      printf("new value %s\n",wxString().Format("%d", value[i] ).c_str());
       tmpArray.Add( wxString().Format("%d", value[i] ) );
+    }
     SetValue(tmpArray);
 }
 
@@ -73,22 +77,22 @@ wxString prvEventTypeProperty::GetValueAsString( int ) const
 
 void prvEventTypeProperty::GenerateValueAsString()
 {
-    wxArrayInt values;
+//    const wxArrayInt& values = wxArrayIntFromVariant(GetValue());
 
-    values = GetValueAsArrayInt();
+//    values = GetValueAsArrayInt();
 
     wxString& tempStr = m_display;
-    unsigned int i;
-    unsigned int itemCount = values.GetCount();
+//    unsigned int i;
+//    unsigned int itemCount = values.GetCount();
 
     tempStr.Empty();
-
-    for ( i = 0; i < itemCount; i++ )
+    tempStr = GetValue().GetString();
+/*    for ( i = 0; i < itemCount; i++ )
     {
         tempStr.append( wxString().Format("%d", values[i] ) );
         if ( i < (itemCount-1) )
             tempStr.append ( wxT(" ") );
-    }
+    }*/
 }
 
 wxArrayInt prvEventTypeProperty::GetValueAsIndices() const
