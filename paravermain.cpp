@@ -140,7 +140,7 @@ paraverMain::~paraverMain()
   wxMenuItem *tmpItem2 = menuFile->FindItem( ID_RECENTTRACES );
   wxMenu *menuTraces2 = tmpItem2->GetSubMenu();
   wxMenuItemList& menuItems2 = menuTraces2->GetMenuItems();
-  for (wxMenuItemList::iterator menuIt = menuItems2.begin(); menuIt != menuItems2.end() ; menuIt++ )
+  for (wxMenuItemList::iterator menuIt = menuItems2.begin(); menuIt != menuItems2.end() ; ++menuIt )
   {
     wxMenuItem *tmp = *menuIt;
     int id = tmp->GetId();
@@ -150,14 +150,14 @@ paraverMain::~paraverMain()
   wxMenuItem *tmpItem = menuFile->FindItem( ID_RECENTCFGS );
   wxMenu *menuCFGs = tmpItem->GetSubMenu();
   wxMenuItemList& menuItems = menuCFGs->GetMenuItems();
-  for (wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end() ; menuIt++ )
+  for (wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end() ; ++menuIt )
   {
     wxMenuItem *tmp = *menuIt;
     int id = tmp->GetId();
     Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousCFGsClick );
   }
 
-  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
+  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     delete *it;
   delete localKernel;
   
@@ -246,7 +246,7 @@ bool paraverMain::DoLoadTrace( const string &path )
   Trace *tr = NULL;
   bool loaded = true;
   
-  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); it++ )
+  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
   {
     if( (*it)->getFileName().compare( path ) == 0 )
       return true;
@@ -342,7 +342,7 @@ bool paraverMain::DoLoadCFG( const string &path )
       else
       {
         wxTreeItemId child;
-        for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); it++ )
+        for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
         {
           wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
           wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
@@ -351,7 +351,7 @@ bool paraverMain::DoLoadCFG( const string &path )
             BuildTree( allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
         }
 
-        for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); it++ )
+        for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
         {
           gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, (*it)->getName() );
 
@@ -672,7 +672,7 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
     whichWindow->getTrace()->getEventLabels().getTypes( types );
     tmpA.Clear();
     tmpAi.Clear();
-    for( vector<TEventType>::iterator it = types.begin(); it != types.end(); it++ )
+    for( vector<TEventType>::iterator it = types.begin(); it != types.end(); ++it )
     {
       tmpAi.Add( (*it) );
       string tmpstr;
@@ -683,7 +683,7 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
     wxArrayInt values;
     vector<TEventType> typesSel;
     whichWindow->getFilter()->getEventType( typesSel );
-    for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); it++ )
+    for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
       values.Add( (*it ) );
     prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices, values );
     windowProperties->AppendIn( eventFilterType, tmpEventProperty );
@@ -718,7 +718,7 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   wxArrayString tmpA;
   wxArrayInt tmpAi;
   whichHisto->getGroupsLabels( tmpV );
-  for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); it++ )
+  for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
     tmpA.Add( wxT( (*it).c_str() ) );
   tmpAi.Add( 0 );
   tmpAi.Add( 1 );
@@ -735,7 +735,7 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   whichHisto->getStatisticsLabels( tmpV, selected );
   int pos = 0;
   selected = -1;
-  for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); it++ )
+  for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
   {
     tmpA.Add( wxT( (*it).c_str() ) );
     tmpAi.Add( pos );
@@ -755,7 +755,7 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   tmpA.Clear();
   tmpAi.Clear();
   selected = -1;
-  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); it++ )
+  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
     tmpA.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
     tmpAi.Add( (*it) );
@@ -778,7 +778,7 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   tmpA.Clear();
   tmpAi.Clear();
   selected = -1;
-  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); it++ )
+  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
     tmpA.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
     tmpAi.Add( (*it) );
@@ -798,7 +798,7 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   tmpA.Clear();
   tmpAi.Clear();
   selected = -1;
-  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); it++ )
+  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
     tmpA.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
     tmpAi.Add( (*it) );
@@ -936,7 +936,7 @@ void paraverMain::OnPreviousTracesClick( wxCommandEvent& event )
   wxMenuItem *item = menuFile->FindItem( ID_RECENTTRACES );
   wxMenu *menu = item->GetSubMenu();
   wxMenuItemList& menuItems = menu->GetMenuItems();
-  for ( wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end(); menuIt++ )
+  for ( wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end(); ++menuIt )
   {
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();
@@ -956,7 +956,7 @@ void paraverMain::OnPreviousCFGsClick( wxCommandEvent& event )
   wxMenu *menu = item->GetSubMenu();
   wxMenuItemList& menuItems = menu->GetMenuItems();
   
-  for ( wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end(); menuIt++ )
+  for ( wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end(); ++menuIt )
   {
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();
@@ -981,7 +981,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
   wxMenuItemList& menuItems = menuTraces->GetMenuItems();
   wxMenuItemList::iterator menuIt = menuItems.begin();
 
-  for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
+  for ( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
   {
     if( menuIt == menuItems.end() )
     {
@@ -995,7 +995,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
     {
       wxMenuItem *tmp = *menuIt;
       tmp->SetItemLabel( wxT( (*it).c_str() ) );
-      menuIt++;
+      ++menuIt;
     }
   }
 /*
@@ -1005,7 +1005,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
     int id = tmp->GetId();
     Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousTracesClick );
     menuTraces->Delete( tmp );
-    menuIt++;
+    ++menuIt;
   }
 */
 }
@@ -1028,7 +1028,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
   wxMenuItemList& menuItems = menuCFGs->GetMenuItems();
   wxMenuItemList::iterator menuIt = menuItems.begin();
 
-  for ( vector<string>::iterator it = v.begin(); it != v.end(); it++ )
+  for ( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
   {
     if( menuIt == menuItems.end() )
     {
@@ -1042,7 +1042,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
     {
       wxMenuItem *tmp = *menuIt;
       tmp->SetItemLabel( wxT( (*it).c_str() ) );
-      menuIt++;
+      ++menuIt;
     }
   }
 /* 
@@ -1052,7 +1052,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
     int id = tmp->GetId();
     Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousCFGsClick );
     menuCFGs->Delete( tmp );
-    menuIt++;
+    ++menuIt;
   }
 */
 }

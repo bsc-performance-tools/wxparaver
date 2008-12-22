@@ -323,7 +323,7 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, T
 {
   RecordList::iterator it = comms->begin();
   while( it != comms->end() && it->getTime() < from )
-    it++;
+    ++it;
   while( it != comms->end() && it->getTime() <= to )
   {
     if( it->getType() & RECV ||
@@ -341,7 +341,7 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, T
       maskdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject()],
                        pos, objectPosList[it->getOrder()] );
     }
-    it++;
+    ++it;
   }
   comms->erase( comms->begin(), it );
 }
