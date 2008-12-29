@@ -508,28 +508,28 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     }
   }
   // Control Window related properties
-  else if( propName == "Window" )
+  else if( propName == "ControlWindow" )
   {
     currentHisto->setControlWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "Minimum" )
+  else if( propName == "ControlMinimum" )
   {
     currentHisto->setControlMin( property->GetValue().GetDouble() );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "Maximum" )
+  else if( propName == "ControlMaximum" )
   {
     currentHisto->setControlMax( property->GetValue().GetDouble() );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "Delta" )
+  else if( propName == "ControlDelta" )
   {
     currentHisto->setControlDelta( property->GetValue().GetDouble() );
     currentHisto->setRecalc( true );
   }
 // Data Window related properties
-  else if( propName == "Data Window" )
+  else if( propName == "DataWindow" )
   {
     currentHisto->setDataWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
     currentHisto->setRecalc( true );
@@ -579,7 +579,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentHisto->setExtraControlDelta( property->GetValue().GetDouble() );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "Plane" )
+  else if( propName == "3DPlane" )
   {
     currentHisto->setSelectedPlane( property->GetValue().GetLong() );
     currentHisto->setRedraw( true );
@@ -642,8 +642,8 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
   lastTimeline = whichWindow;
   windowProperties->Freeze();
   windowProperties->Clear();
-  wxArrayString tmpA;
-  wxArrayInt tmpAi;
+  wxArrayString arrayStr;
+  wxArrayInt arrayInt;
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
   windowProperties->Append( new wxFloatProperty( wxT("Begin time"), wxPG_LABEL, 
@@ -663,23 +663,23 @@ void paraverMain::updateTimelineProperties( Window *whichWindow )
                                                                                wxPG_LABEL,
                                                                                wxT("<composed>") ) );
 
-    tmpA.Add(wxT("="));
-    tmpAi.Add(0);
+    arrayStr.Add(wxT("="));
+    arrayInt.Add(0);
     windowProperties->AppendIn( eventFilterType, new wxEnumProperty( wxT("Function"), 
-                                                                     wxPG_LABEL, tmpA, tmpAi ) );
+                                                                     wxPG_LABEL, arrayStr, arrayInt ) );
 
     vector<TEventType> types;
     whichWindow->getTrace()->getEventLabels().getTypes( types );
-    tmpA.Clear();
-    tmpAi.Clear();
+    arrayStr.Clear();
+    arrayInt.Clear();
     for( vector<TEventType>::iterator it = types.begin(); it != types.end(); ++it )
     {
-      tmpAi.Add( (*it) );
+      arrayInt.Add( (*it) );
       string tmpstr;
       whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
-      tmpA.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
+      arrayStr.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
     }
-    wxPGChoices typeChoices( tmpA, tmpAi );
+    wxPGChoices typeChoices( arrayStr, arrayInt );
     wxArrayInt values;
     vector<TEventType> typesSel;
     whichWindow->getFilter()->getEventType( typesSel );
@@ -715,36 +715,36 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
   vector<string> tmpV;
-  wxArrayString tmpA;
-  wxArrayInt tmpAi;
+  wxArrayString arrayStr;
+  wxArrayInt arrayInt;
   whichHisto->getGroupsLabels( tmpV );
   for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
-    tmpA.Add( wxT( (*it).c_str() ) );
-  tmpAi.Add( 0 );
-  tmpAi.Add( 1 );
+    arrayStr.Add( wxT( (*it).c_str() ) );
+  arrayInt.Add( 0 );
+  arrayInt.Add( 1 );
   int selected;
   if( whichHisto->itsCommunicationStat( whichHisto->getCurrentStat() ) )
     selected = 0;
   else
     selected = 1;
-  windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Type"), wxPG_LABEL, tmpA, tmpAi, selected ) );
+  windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Type"), wxPG_LABEL, arrayStr, arrayInt, selected ) );
   
   tmpV.clear();
-  tmpA.Clear();
-  tmpAi.Clear();
+  arrayStr.Clear();
+  arrayInt.Clear();
   whichHisto->getStatisticsLabels( tmpV, selected );
   int pos = 0;
   selected = -1;
   for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
   {
-    tmpA.Add( wxT( (*it).c_str() ) );
-    tmpAi.Add( pos );
+    arrayStr.Add( wxT( (*it).c_str() ) );
+    arrayInt.Add( pos );
     if( (*it) == whichHisto->getCurrentStat() )
       selected = pos;
     pos++;
   }
   if( selected == -1 ) selected = 0;
-  windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Statistic"), wxPG_LABEL, tmpA, tmpAi, selected ) );
+  windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Statistic"), wxPG_LABEL, arrayStr, arrayInt, selected ) );
 
   // Control Window related properties
   wxPGId ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control") ) );
@@ -752,22 +752,22 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
                                                                  whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, validWin );
-  tmpA.Clear();
-  tmpAi.Clear();
+  arrayStr.Clear();
+  arrayInt.Clear();
   selected = -1;
   for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
-    tmpA.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
-    tmpAi.Add( (*it) );
+    arrayStr.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
+    arrayInt.Add( (*it) );
     // Do we need this -if- here?
     if( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getControlWindow() )
       selected = (*it);
   }
-  wxEnumProperty *tmpCtrlWin = new wxEnumProperty( wxT("Window"), wxPG_LABEL, tmpA, tmpAi, selected );
+  wxEnumProperty *tmpCtrlWin = new wxEnumProperty( wxT("Window"), wxT("ControlWindow"), arrayStr, arrayInt, selected );
   windowProperties->AppendIn( ctrlCat, tmpCtrlWin );
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Minimum"), wxPG_LABEL, wxT( whichHisto->getControlMin() )));
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Maximum"), wxPG_LABEL, wxT( whichHisto->getControlMax() )));
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Delta"), wxPG_LABEL, wxT( whichHisto->getControlDelta() )));
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Minimum"), wxT("ControlMinimum"), wxT( whichHisto->getControlMin() )));
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Maximum"), wxT("ControlMaximum"), wxT( whichHisto->getControlMax() )));
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Delta"), wxT("ControlDelta"), wxT( whichHisto->getControlDelta() )));
 
   // Data Window related properties
   wxPGId dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data") ) );
@@ -775,17 +775,17 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
                                                     whichHisto->getExtraControlWindow(),
                                                     validWin );
-  tmpA.Clear();
-  tmpAi.Clear();
+  arrayStr.Clear();
+  arrayInt.Clear();
   selected = -1;
   for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
-    tmpA.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
-    tmpAi.Add( (*it) );
+    arrayStr.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
+    arrayInt.Add( (*it) );
     if( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getDataWindow() )
       selected = (*it);
   }
-  wxEnumProperty *tmpDataWin = new wxEnumProperty( wxT("Data Window"), wxPG_LABEL, tmpA, tmpAi, selected );
+  wxEnumProperty *tmpDataWin = new wxEnumProperty( wxT("Window"), wxT("DataWindow"), arrayStr, arrayInt, selected );
   windowProperties->AppendIn( dataCat, tmpDataWin );
 
   // 3rd window related properties
@@ -795,19 +795,19 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
                                                                  whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, validWin );
-  tmpA.Clear();
-  tmpAi.Clear();
+  arrayStr.Clear();
+  arrayInt.Clear();
   selected = -1;
   for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
-    tmpA.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
-    tmpAi.Add( (*it) );
+    arrayStr.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
+    arrayInt.Add( (*it) );
     if( ( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getExtraControlWindow() ) ||
         ( whichHisto->getExtraControlWindow() == NULL && 
           LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getControlWindow() ) )
       selected = (*it);
   }
-  wxEnumProperty *tmp3rdWin = new wxEnumProperty( wxT("3rd Window"), wxPG_LABEL, tmpA, tmpAi, selected );
+  wxEnumProperty *tmp3rdWin = new wxEnumProperty( wxT("3rd Window"), wxPG_LABEL, arrayStr, arrayInt, selected );
   windowProperties->AppendIn( thirdWinCat, tmp3rdWin );
   wxFloatProperty *tmp3dMin = new wxFloatProperty( wxT("Minimum"), wxT("3DMinimum"), whichHisto->getExtraControlMin() );
   windowProperties->AppendIn( thirdWinCat, tmp3dMin );
@@ -815,22 +815,22 @@ void paraverMain::updateHistogramProperties( Histogram *whichHisto )
   windowProperties->AppendIn( thirdWinCat, tmp3dMax );
   wxFloatProperty *tmp3dDelta = new wxFloatProperty( wxT("Delta"), wxT("3DDelta"), whichHisto->getExtraControlDelta() );
   windowProperties->AppendIn( thirdWinCat, tmp3dDelta );
-  tmpA.Clear();
-  tmpAi.Clear();
+  arrayStr.Clear();
+  arrayInt.Clear();
   pos = 0;
   selected = -1;
   for( THistogramColumn i = 0; i < whichHisto->getNumPlanes(); i++ )
   {
     if( whichHisto->planeWithValues( i ) )
     {
-      tmpA.Add( whichHisto->getPlaneLabel( i ) );
-      tmpAi.Add( pos );
+      arrayStr.Add( whichHisto->getPlaneLabel( i ) );
+      arrayInt.Add( pos );
       if( pos == whichHisto->getSelectedPlane() )
         selected = pos;
     }
     pos++;
   }
-  wxEnumProperty *tmp3dPlane = new wxEnumProperty( wxT("Plane"), wxPG_LABEL, tmpA, tmpAi, selected );
+  wxEnumProperty *tmp3dPlane = new wxEnumProperty( wxT("Plane"), wxT("3DPlane"), arrayStr, arrayInt, selected );
   windowProperties->AppendIn( thirdWinCat, tmp3dPlane );
 
   if( !whichHisto->getThreeDimensions() )
