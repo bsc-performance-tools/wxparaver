@@ -322,7 +322,7 @@ void paraverMain::BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
 
 bool paraverMain::DoLoadCFG( const string &path )
 {
-   if( !CFGLoader::isCFGFile( path ))
+    if( !CFGLoader::isCFGFile( path ))
     {
       wxString errMessage = path + " isn't a valid cfg.";
       wxMessageDialog message( this, errMessage.c_str(), "Invalid file", wxOK );
@@ -335,7 +335,7 @@ bool paraverMain::DoLoadCFG( const string &path )
       
       if( !CFGLoader::loadCFG( localKernel, path, loadedTraces[ currentTrace ], newWindows, newHistograms ) )
       {
-        wxString errMessage = path + " failed to load.";
+        wxString errMessage = path + " failed to load in:\n'" + CFGLoader::errorLine.c_str() + "'";
         wxMessageDialog message( this, errMessage.c_str(), "Loading error", wxOK );
         message.ShowModal();
       }
