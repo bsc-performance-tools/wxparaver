@@ -90,11 +90,29 @@ wxProgressDialog *paraverMain::dialogProgress = NULL;
 
 paraverMain::paraverMain()
 {
+  imageList = new wxImageList( 16, 16 );
+  imageList->Add( wxIcon( table_xpm ) );
+  imageList->Add( wxIcon( timeline_xpm ) );
+
+  LocalKernel::init();
+  localKernel = new LocalKernel();
+  paraverConfig = ParaverConfig::getInstance();
+  paraverConfig->readParaverConfigFile();
+
   Init();
 }
 
 paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  imageList = new wxImageList( 16, 16 );
+  imageList->Add( wxIcon( table_xpm ) );
+  imageList->Add( wxIcon( timeline_xpm ) );
+
+  LocalKernel::init();
+  localKernel = new LocalKernel();
+  paraverConfig = ParaverConfig::getInstance();
+  paraverConfig->readParaverConfigFile();
+
   Init();
   Create( parent, id, caption, pos, size, style );
 }
@@ -106,21 +124,11 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
 
 bool paraverMain::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
-  imageList = new wxImageList( 16, 16 );
-  imageList->Add( wxIcon( table_xpm ) );
-  imageList->Add( wxIcon( timeline_xpm ) );
-
-  
 ////@begin paraverMain creation
   wxFrame::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
 ////@end paraverMain creation
-
-  LocalKernel::init();
-  localKernel = new LocalKernel();
-  paraverConfig = ParaverConfig::getInstance();
-  paraverConfig->readParaverConfigFile();
 
   return true;
 }
