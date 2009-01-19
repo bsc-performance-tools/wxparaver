@@ -38,7 +38,7 @@ class Window;
 ////@begin control identifiers
 #define ID_GTIMELINE 10001
 #define ID_SCROLLEDWINDOW 10007
-#define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
+#define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
 #define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
 #define SYMBOL_GTIMELINE_SIZE wxSize(400, 300)
@@ -97,11 +97,11 @@ public:
   /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
   void OnLeftUp( wxMouseEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
-  void OnScrolledwindowUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
   void OnMotion( wxMouseEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
+  void OnScrolledwindowUpdate( wxUpdateUIEvent& event );
 
 ////@end gTimeline event handler declarations
 

@@ -1851,7 +1851,7 @@
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
           <bool name="proxy-wxWANTS_CHARS">0</bool>
           <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
-          <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+          <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">1</bool>
           <bool name="proxy-wxCLIP_CHILDREN">0</bool>
           <bool name="proxy-wxTAB_TRAVERSAL">0</bool>
           <bool name="proxy-wxWS_EX_VALIDATE_RECURSIVELY">0</bool>
@@ -1899,8 +1899,8 @@
               <string name="event-handler-2">"wxEVT_LEFT_DOWN|OnLeftDown|NONE||gTimeline"</string>
               <string name="event-handler-3">"wxEVT_LEFT_UP|OnLeftUp|NONE||gTimeline"</string>
               <string name="event-handler-4">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>
-              <string name="event-handler-5">"wxEVT_UPDATE_UI|OnScrolledwindowUpdate|NONE||gTimeline"</string>
-              <string name="event-handler-6">"wxEVT_MOTION|OnMotion|NONE||gTimeline"</string>
+              <string name="event-handler-5">"wxEVT_MOTION|OnMotion|NONE||gTimeline"</string>
+              <string name="event-handler-6">"wxEVT_UPDATE_UI|OnScrolledwindowUpdate|NONE||gTimeline"</string>
               <string name="proxy-Id name">"ID_SCROLLEDWINDOW"</string>
               <long name="proxy-Id value">10007</long>
               <string name="proxy-Name">""</string>
