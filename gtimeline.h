@@ -223,6 +223,8 @@ private:
   
   static const wxCoord drawBorder = 5;
   
+  void OnPopUpCopy();
+  void OnPopUpPaste();
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
   void OnPopUpFitSemanticScale();

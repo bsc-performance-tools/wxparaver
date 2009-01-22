@@ -264,7 +264,8 @@ void gTimeline::drawAxis( wxDC& dc )
   
   // Get the text extent for the last object (probably the larger one)
   dc.SetFont( objectFont );
-  wxSize objectExt = dc.GetTextExtent( LabelConstructor::objectLabel( maxObj - minObj + 1, myWindow->getLevel(), 
+  // +1!
+  wxSize objectExt = dc.GetTextExtent( LabelConstructor::objectLabel( maxObj - minObj, myWindow->getLevel(), 
                                                                      myWindow->getTrace() ) );
   objectAxisPos = drawBorder + objectExt.GetWidth() + drawBorder;
   
@@ -484,13 +485,11 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     if( !zoomXY )
     {
       // Use current zoom rows
-      cout << "OnLeftUp - Normal zoom." << endl;
       beginRow = zoomHistory->getSecondDimension().first;
       endRow = zoomHistory->getSecondDimension().second;
     }
     else
     {
-      cout << "OnLeftUp - Zoom XY." << endl;
       if( zoomEndY < zoomBeginY )
       {
         long tmp = zoomEndY; zoomEndY = zoomBeginY; zoomBeginY = tmp;
@@ -510,19 +509,6 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       double heightPerRow = (double)(( timeAxisPos - drawBorder ) / numObjects );
       beginRow = TObjectOrder( trunc( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
       endRow = TObjectOrder( trunc( (zoomEndY - drawBorder - 1) / heightPerRow ) );
-
-      cout << "rowStep       :" << heightPerRow << endl;
-      cout << "height        :" << dc.GetSize().GetHeight() << endl;
-      cout << "objectAxisPos :" << objectAxisPos  << endl;
-      cout << "drawBorder    :" << drawBorder  << endl;
-      cout << "timeAxisPos   :" << timeAxisPos << endl;
-      cout << "numObjects    :" << numObjects  << endl;
-
-      cout << "zoomBeginY    :" << zoomBeginY << endl;
-      cout << "zoomEndY      :" << zoomEndY   << endl;
-
-      cout << "beginRow      :" << beginRow << endl;
-      cout << "endRow        :" << endRow   << endl << endl;
     }
     
     TObjectOrder minObj = zoomHistory->getSecondDimension().first;
@@ -557,11 +543,22 @@ void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
 }
 
 
-void gTimeline::OnPopUpClone()
+void gTimeline::OnPopUpCopy()
 {
-  printf("CATCHED clone!\n");
+//  printf("CATCHED clone!\n");
 }
 
+
+void gTimeline::OnPopUpPaste()
+{
+//  printf("CATCHED clone!\n");
+}
+
+
+void gTimeline::OnPopUpClone()
+{
+//  printf("CATCHED clone!\n");
+}
 
 void gTimeline::OnPopUpFitTimeScale()
 {
@@ -596,8 +593,6 @@ void gTimeline::OnPopUpGradientColor()
 
 void gTimeline::OnPopUpUndoZoom( wxUpdateUIEvent& event )
 {
-//  wxMenuItem *menuItem = (wxMenuItem *)event.GetClientData();
-
   if ( !zoomHistory->emptyPrevZoom() )
   {
     zoomHistory->prevZoom();
@@ -605,14 +600,7 @@ void gTimeline::OnPopUpUndoZoom( wxUpdateUIEvent& event )
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-
-      // tmp->Enable( !checked );
-    //printf("client data %x\n", menuItem);
-    //menuItem->Enable( !zoomHistory->EmptyPrevZoom() );
-  }
-  else
-  {
-    cout << "EMPTY!!!" << endl;
+    popUpMenu->Enable( popUpMenu->FindItem( "Undo Zoom" ), !zoomHistory->emptyPrevZoom() );
   }
 }
 
@@ -625,6 +613,7 @@ void gTimeline::OnPopUpRedoZoom()
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
+    popUpMenu->Enable( popUpMenu->FindItem( "Redo Zoom" ), !zoomHistory->emptyNextZoom() );
   }
 }
 
@@ -680,11 +669,14 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
     popUpMenu = new wxMenu;
     popUpMenuColor = new wxMenu;
 
-//    BuildItem( popUpMenu, wxString("&Clone"), (wxObjectEventFunction)&gTimeline::OnPopUpClone, MENUITEM);
+    BuildItem( popUpMenu, wxString("Copy"), (wxObjectEventFunction)&gTimeline::OnPopUpCopy, ITEMNORMAL );
+    BuildItem( popUpMenu, wxString("Paste"), (wxObjectEventFunction)&gTimeline::OnPopUpPaste, ITEMNORMAL );
+    BuildItem( popUpMenu, wxString("Clone"), (wxObjectEventFunction)&gTimeline::OnPopUpClone, ITEMNORMAL );
 
-//    popUpMenu->AppendSeparator();
-    BuildItem( popUpMenu, wxString( "Undo Zoom" ), ( wxObjectEventFunction )&gTimeline::OnPopUpUndoZoom, ITEMNORMAL, zoomHistory->emptyPrevZoom() );
-    BuildItem( popUpMenu, wxString( "Redo Zoom" ), ( wxObjectEventFunction )&gTimeline::OnPopUpRedoZoom, ITEMNORMAL, zoomHistory->emptyNextZoom() );
+    popUpMenu->AppendSeparator();
+
+    BuildItem( popUpMenu, wxString( "Undo Zoom" ), ( wxObjectEventFunction )&gTimeline::OnPopUpUndoZoom, ITEMNORMAL );
+    BuildItem( popUpMenu, wxString( "Redo Zoom" ), ( wxObjectEventFunction )&gTimeline::OnPopUpRedoZoom, ITEMNORMAL );
 
     popUpMenu->AppendSeparator();
 
@@ -696,13 +688,18 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
     BuildItem( popUpMenuColor, wxString( "Code Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpCodeColor, ITEMRADIO, myWindow->IsCodeColorSet()  );
     BuildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO, myWindow->IsGradientColorSet() );
     popUpMenu->AppendSubMenu( popUpMenuColor, wxString( "Color" ));
-
-//    BuildItem( popUpMenu, wxString("Not Null Gradient Color"), (wxObjectEventFunction)&gTimeline::OnPopUpClone);
   }
 
-  PopupMenu( popUpMenu, event.GetPosition());
+  popUpMenu->Enable( popUpMenu->FindItem( "Undo Zoom" ), !zoomHistory->emptyPrevZoom() );
+  popUpMenu->Enable( popUpMenu->FindItem( "Redo Zoom" ), !zoomHistory->emptyNextZoom() );
   
-  //SetFocus();
+  // Remove these when operative
+  popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), false );
+  popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), false );
+  popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), false );
+  popUpMenu->Enable( popUpMenu->FindItem( "Fit &Semantic Scale" ), false );
+
+  PopupMenu( popUpMenu, event.GetPosition());
 }
 
 
