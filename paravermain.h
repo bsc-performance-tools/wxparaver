@@ -235,8 +235,6 @@ private:
   wxWindow * currentWindow;
 ////@end paraverMain member variables
   
-  void updateTimelineProperties( Window *whichWindow );
-  void updateHistogramProperties( Histogram *whichHisto );
   void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
   void BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
