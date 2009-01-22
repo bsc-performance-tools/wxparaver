@@ -281,7 +281,7 @@ void gTimeline::drawAxis( wxDC& dc )
   objectPosList.clear();
   for( TObjectOrder obj = minObj; obj <= maxObj; obj++ )
   {
-    y = ( (wxCoord) ( inc * ( obj + 0.5 ) ) ) + drawBorder;
+    y = ( (wxCoord) ( inc * ( obj - minObj + 0.5 ) ) ) + drawBorder;
     objectPosList.push_back( y );
     dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
@@ -304,7 +304,8 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
   vector<TSemanticValue> values;
   wxCoord timePos = objectAxisPos + 1;
-  wxCoord objectPos = objectPosList[row];
+  TObjectOrder minObj = zoomHistory->getSecondDimension().first;
+  wxCoord objectPos = objectPosList[row - minObj];
   for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep; 
        currentTime <= myWindow->getWindowEndTime(); 
        currentTime += timeStep )
@@ -448,10 +449,12 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
   wxMemoryDC dc( bufferImage );
   zoomEndX = event.GetX();
   zoomEndY = event.GetY();
+  zoomXY = event.ControlDown();
+  
   wxSize objectExt = dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1, myWindow->getLevel(), 
                                                                      myWindow->getTrace() ) );
 
-  if( ready && zoomBeginX != zoomEndX && zoomBeginY != zoomEndY )
+  if( ready && ( zoomBeginX != zoomEndX || zoomBeginY != zoomEndY ))
   {
     // TIME zoom limits
     if( zoomEndX < zoomBeginX )
@@ -522,7 +525,8 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       cout << "endRow        :" << endRow   << endl << endl;
     }
     
-    zoomHistory->addZoom( beginTimeX, endTimeX, beginRow, endRow );
+    TObjectOrder minObj = zoomHistory->getSecondDimension().first;
+    zoomHistory->addZoom( beginTimeX, endTimeX, beginRow + minObj, endRow + minObj );
 
     // Update window properties
     myWindow->setWindowBeginTime( beginTimeX );
@@ -725,7 +729,6 @@ void gTimeline::OnMotion( wxMouseEvent& event )
   dc.SetBrush( *wxTRANSPARENT_BRUSH );
 #endif
   dc.SetPen( *wxWHITE_PEN );
-  dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
 
   long beginX = zoomBeginX > event.GetX() ? event.GetX() : zoomBeginX;
   long beginY = drawBorder;
