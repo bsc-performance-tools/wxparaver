@@ -23,6 +23,8 @@
 #include "paraverkerneltypes.h"
 #include "recordlist.h"
 
+// TEMPLATES
+#include "zoomhistory.h"
 /*!
  * Forward declarations
  */
@@ -137,11 +139,11 @@ public:
   bool GetZooming() const { return zooming ; }
   void SetZooming(bool value) { zooming = value ; }
 
-  long GetZoomBegin() const { return zoomBegin ; }
-  void SetZoomBegin(long value) { zoomBegin = value ; }
+  long GetZoomBegin() const { return zoomBeginX ; }
+  void SetZoomBegin(long value) { zoomBeginX = value ; }
 
-  long GetZoomEnd() const { return zoomEnd ; }
-  void SetZoomEnd(long value) { zoomEnd = value ; }
+  long GetZoomEnd() const { return zoomEndX ; }
+  void SetZoomEnd(long value) { zoomEndX = value ; }
 
   wxMenu * GetPopUpMenu() const { return popUpMenu ; }
   void SetPopUpMenu(wxMenu * value) { popUpMenu = value ; }
@@ -154,6 +156,21 @@ public:
 
   wxBitmap GetCommImage() const { return commImage ; }
   void SetCommImage(wxBitmap value) { commImage = value ; }
+
+  bool GetZoomXY() const { return zoomXY ; }
+  void SetZoomXY(bool value) { zoomXY = value ; }
+
+  long GetZoomBeginY() const { return zoomBeginY ; }
+  void SetZoomBeginY(long value) { zoomBeginY = value ; }
+
+  long GetBeginRow() const { return beginRow ; }
+  void SetBeginRow(long value) { beginRow = value ; }
+
+  long GetEndRow() const { return endRow ; }
+  void SetEndRow(long value) { endRow = value ; }
+
+  long GetZoomEndY() const { return zoomEndY ; }
+  void SetZoomEndY(long value) { zoomEndY = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -191,12 +208,19 @@ private:
   vector<wxCoord> objectPosList;
   int objectHeight;
   bool zooming;
-  long zoomBegin;
-  long zoomEnd;
+  long zoomBeginX;
+  long zoomEndX;
   wxMenu * popUpMenu;
   wxMenu * popUpMenuColor;
+  bool zoomXY;
+  long zoomBeginY;
+  long beginRow;
+  long endRow;
+  long zoomEndY;
 ////@end gTimeline member variables
 
+  ZoomHistory<TTime, TObjectOrder> *zoomHistory;
+  
   static const wxCoord drawBorder = 5;
   
   void OnPopUpClone();
@@ -204,6 +228,8 @@ private:
   void OnPopUpFitSemanticScale();
   void OnPopUpCodeColor();
   void OnPopUpGradientColor();
+  void OnPopUpUndoZoom( wxUpdateUIEvent& event  );
+  void OnPopUpRedoZoom();
 
   void BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler, ItemType type, bool checked = true );
 };
