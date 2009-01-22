@@ -572,7 +572,8 @@ void gTimeline::OnPopUpFitTimeScale()
 
 void gTimeline::OnPopUpFitSemanticScale()
 {
-  printf("CATCHED fit sem!\n");
+  // problem! computes for all the rows!!
+  myWindow->computeYScale();
 }
 
 
@@ -697,7 +698,7 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
   popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), false );
   popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), false );
   popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), false );
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit &Semantic Scale" ), false );
+  popUpMenu->Enable( popUpMenu->FindItem( "Fit &Semantic Scale" ), true );
 
   PopupMenu( popUpMenu, event.GetPosition());
 }
