@@ -472,20 +472,15 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                      ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
-    TTime endTimeX = ( timeStep * zoomEndX ) + myWindow->getWindowBeginTime();
-    TTime beginTimeX = ( timeStep * zoomBeginX ) + myWindow->getWindowBeginTime();
+    TTime endTime = ( timeStep * zoomEndX ) + myWindow->getWindowBeginTime();
+    TTime beginTime = ( timeStep * zoomBeginX ) + myWindow->getWindowBeginTime();
 
     // ROW zoom limits
-    TObjectOrder beginRow;
-    TObjectOrder endRow;
+    TObjectOrder beginRow = zoomHistory->getSecondDimension().first;
+    TObjectOrder endRow = zoomHistory->getSecondDimension().second;
+    TObjectOrder minObj = 0;
 
-    if( !zoomXY )
-    {
-      // Use current zoom rows
-      beginRow = zoomHistory->getSecondDimension().first;
-      endRow = zoomHistory->getSecondDimension().second;
-    }
-    else
+    if( zoomXY )
     {
       if( zoomEndY < zoomBeginY )
       {
@@ -506,14 +501,15 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
       beginRow = TObjectOrder( trunc( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
       endRow = TObjectOrder( trunc( (zoomEndY - drawBorder - 1) / heightPerRow ) );
+  
+      minObj = zoomHistory->getSecondDimension().first;
     }
     
-    TObjectOrder minObj = zoomHistory->getSecondDimension().first;
-    zoomHistory->addZoom( beginTimeX, endTimeX, beginRow + minObj, endRow + minObj );
+    zoomHistory->addZoom( beginTime, endTime, beginRow + minObj, endRow + minObj );
 
     // Update window properties
-    myWindow->setWindowBeginTime( beginTimeX );
-    myWindow->setWindowEndTime( endTimeX );
+    myWindow->setWindowBeginTime( beginTime );
+    myWindow->setWindowEndTime( endTime );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
