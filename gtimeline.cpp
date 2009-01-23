@@ -452,9 +452,6 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
   
-  wxSize objectExt = dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1, myWindow->getLevel(), 
-                                                                     myWindow->getTrace() ) );
-
   if( ready && ( zoomBeginX != zoomEndX || zoomBeginY != zoomEndY ))
   {
     // TIME zoom limits
@@ -506,7 +503,7 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
 
       TObjectOrder numObjects = zoomHistory->getSecondDimension().second - zoomHistory->getSecondDimension().first + 1;
 
-      double heightPerRow = (double)(( timeAxisPos - drawBorder ) / numObjects );
+      double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
       beginRow = TObjectOrder( trunc( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
       endRow = TObjectOrder( trunc( (zoomEndY - drawBorder - 1) / heightPerRow ) );
     }
