@@ -25,6 +25,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   windowProperties->Clear();
   wxArrayString arrayStr;
   wxArrayInt arrayInt;
+  int selected, pos;
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
   windowProperties->Append( new wxFloatProperty( wxT("Begin time"), wxPG_LABEL, 
@@ -45,9 +46,22 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                                wxT("<composed>") ) );
     eventFilterType->SetFlagsFromString( "DISABLED" );
     
-    arrayStr.Add(wxT("="));
-    arrayInt.Add(0);
-    wxEnumProperty *typeFunction = new wxEnumProperty( wxT("Function"), wxPG_LABEL, arrayStr, arrayInt );
+    vector<string> filterFunctions;
+    whichWindow->getFilter()->getAllFilterFunctions( filterFunctions );
+    arrayStr.Clear();
+    arrayInt.Clear();
+    pos = 0;
+    selected = -1;
+    for( vector<string>::iterator it = filterFunctions.begin();
+         it != filterFunctions.end(); ++it )
+    {
+      arrayStr.Add( wxT( (*it).c_str() ) );
+      arrayInt.Add( pos );
+      if( (*it) == whichWindow->getFilter()->getEventTypeFunction() )
+        selected = pos;
+      pos++;
+    }
+    wxEnumProperty *typeFunction = new wxEnumProperty( wxT("Function"), wxPG_LABEL, arrayStr, arrayInt, selected );
     windowProperties->AppendIn( eventFilterType, typeFunction );
     typeFunction->SetFlagsFromString( "DISABLED" );
 
@@ -71,7 +85,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices, values );
     windowProperties->AppendIn( eventFilterType, tmpEventProperty );
     windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
-    tmpEventProperty->SetFlagsFromString( "DISABLED" );
+    //tmpEventProperty->SetFlagsFromString( "DISABLED" );
   }
   // END of Filter related properties
   

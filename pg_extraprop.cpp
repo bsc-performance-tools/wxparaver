@@ -147,9 +147,17 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
 
         wxArrayString strings = m_value.GetArrayString();
         wxArrayString extraStrings;
+        wxArrayInt values;
+        for( unsigned int idx = 0; idx < strings.GetCount(); idx++ )
+        {
+          long tmpLong;
+          strings[ idx ].ToLong( &tmpLong );
+          values.Add( m_choices.Index( tmpLong ) );
+        }
 
-        dlg.SetSelections(m_choices.GetIndicesForStrings(strings, &extraStrings));
-
+        //dlg.SetSelections(m_choices.GetIndicesForStrings(strings, &extraStrings));
+        dlg.SetSelections(values);
+        
         if ( dlg.ShowModal() == wxID_OK && choiceCount )
         {
             int userStringMode = GetAttributeAsLong(wxT("UserStringMode"), 0);
