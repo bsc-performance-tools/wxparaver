@@ -29,10 +29,7 @@ class prvEventTypeProperty: public wxPGProperty
 
     virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
 
-    wxArrayInt GetValueAsArrayInt() const
-    {
-        return m_choices.GetValuesForStrings(m_value.GetArrayString());
-    }
+    wxArrayInt GetValueAsArrayInt() const;
 
   protected:
 

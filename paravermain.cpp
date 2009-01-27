@@ -479,7 +479,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     return;
     
   const wxString& propName = property->GetName();
-  
+
   if( propName == "Name" )
   {
     wxString tmpName = property->GetValue().GetString();
@@ -595,7 +595,22 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   }
   
   // Timeline related properties
-  
+  else if( propName == "Event type.TypeFunction" )
+  {
+    currentTimeline->getFilter()->setEventTypeFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Event type.Types" )
+  {
+    Filter *filter = currentTimeline->getFilter();
+    if( filter == NULL ) return;
+    filter->clearEventTypes();
+    wxArrayInt value = ( (prvEventTypeProperty *) property )->GetValueAsArrayInt();
+    for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
+      filter->insertEventType( value[ idx ] );
+    
+    currentTimeline->setRedraw( true );
+  }
 }
 
 

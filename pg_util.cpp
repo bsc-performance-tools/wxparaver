@@ -61,9 +61,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         selected = pos;
       pos++;
     }
-    wxEnumProperty *typeFunction = new wxEnumProperty( wxT("Function"), wxPG_LABEL, arrayStr, arrayInt, selected );
+    wxEnumProperty *typeFunction = new wxEnumProperty( wxT("Function"), wxT("TypeFunction"), arrayStr, arrayInt, selected );
     windowProperties->AppendIn( eventFilterType, typeFunction );
-    typeFunction->SetFlagsFromString( "DISABLED" );
 
     vector<TEventType> types;
     whichWindow->getTrace()->getEventLabels().getTypes( types );

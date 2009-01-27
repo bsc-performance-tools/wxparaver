@@ -152,10 +152,14 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
         {
           long tmpLong;
           strings[ idx ].ToLong( &tmpLong );
-          values.Add( m_choices.Index( tmpLong ) );
+          int tmpValue = m_choices.Index( tmpLong );
+          if( tmpValue != -1 )
+            values.Add( tmpValue );
+          else
+            extraStrings.Add( strings[ idx ] );
         }
 
-        //dlg.SetSelections(m_choices.GetIndicesForStrings(strings, &extraStrings));
+        //m_choices.GetIndicesForStrings(strings, &extraStrings);
         dlg.SetSelections(values);
         
         if ( dlg.ShowModal() == wxID_OK && choiceCount )
@@ -174,20 +178,22 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
             unsigned int n;
             if ( userStringMode == 1 )
             {
-                for (n=0;n<extraStrings.size();n++)
-                    value.push_back(extraStrings[n]);
+                for ( n=0; n<extraStrings.size(); n++ )
+                    value.push_back( extraStrings[ n ] );
             }
 
             unsigned int i;
             for ( i=0; i<arrInt.GetCount(); i++ )
-                value.Add(m_choices.GetLabel(arrInt.Item(i)));
+                value.Add( wxString() << m_choices.GetValue( arrInt.Item( i ) ) );
 
             if ( userStringMode == 2 )
             {
                 for (n=0;n<extraStrings.size();n++)
-                    value.push_back(extraStrings[n]);
+                    value.push_back( extraStrings[ n ] );
             }
 
+            value.Sort();
+            
             variant = WXVARIANT(value);
 
             SetValueInEvent(variant);
@@ -220,4 +226,19 @@ bool prvEventTypeProperty::StringToValue( wxVariant& variant, const wxString& te
     variant = v;
 
     return true;
+}
+
+wxArrayInt prvEventTypeProperty::GetValueAsArrayInt() const
+{
+  wxArrayInt retValue;
+  wxArrayString strValues = m_value.GetArrayString();
+  
+  for( unsigned int idx = 0; idx < strValues.GetCount(); idx++ )
+  {
+    long tmpInt;
+    strValues[ idx ].ToLong( &tmpInt );
+    retValue.Add( tmpInt );
+  }
+    
+  return retValue;
 }
