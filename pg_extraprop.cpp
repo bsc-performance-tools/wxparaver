@@ -74,22 +74,8 @@ wxString prvEventTypeProperty::GetValueAsString( int ) const
 
 void prvEventTypeProperty::GenerateValueAsString()
 {
-//    const wxArrayInt& values = wxArrayIntFromVariant(GetValue());
-
-//    values = GetValueAsArrayInt();
-
-    wxString& tempStr = m_display;
-//    unsigned int i;
-//    unsigned int itemCount = values.GetCount();
-
-    tempStr.Empty();
+    wxString &tempStr = m_display;
     tempStr = GetValue().GetString();
-/*    for ( i = 0; i < itemCount; i++ )
-    {
-        tempStr.append( wxString().Format("%d", values[i] ) );
-        if ( i < (itemCount-1) )
-            tempStr.append ( wxT(" ") );
-    }*/
 }
 
 wxArrayInt prvEventTypeProperty::GetValueAsIndices() const
@@ -159,7 +145,6 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
             extraStrings.Add( strings[ idx ] );
         }
 
-        //m_choices.GetIndicesForStrings(strings, &extraStrings);
         dlg.SetSelections(values);
         
         if ( dlg.ShowModal() == wxID_OK && choiceCount )
@@ -217,10 +202,10 @@ bool prvEventTypeProperty::StringToValue( wxVariant& variant, const wxString& te
 
     int userStringMode = GetAttributeAsLong(wxT("UserStringMode"), 0);
 
-    WX_PG_TOKENIZER2_BEGIN(text,wxT('"'))
+    WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
         if ( userStringMode > 0 || (m_choices.IsOk() && m_choices.Index( token ) != wxNOT_FOUND) )
             arr.Add(token);
-    WX_PG_TOKENIZER2_END()
+    WX_PG_TOKENIZER1_END()
 
     wxVariant v( WXVARIANT(arr) );
     variant = v;
