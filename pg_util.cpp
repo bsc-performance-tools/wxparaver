@@ -85,6 +85,50 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     windowProperties->AppendIn( eventFilterType, tmpEventProperty );
     windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
     //tmpEventProperty->SetFlagsFromString( "DISABLED" );
+    
+    arrayStr.Clear();
+    arrayInt.Clear();
+    arrayStr.Add( "And" );
+    arrayStr.Add( "Or" );
+    arrayInt.Add( 0 );
+    arrayInt.Add( 1 );
+    if( whichWindow->getFilter()->getOpTypeValue() )
+      selected = 0;
+    else
+      selected = 1;
+    wxEnumProperty *typeValueOp = new wxEnumProperty( wxT("Type/Value Op"), wxPG_LABEL, 
+                                  arrayStr, arrayInt, selected );
+    windowProperties->AppendIn( eventFilterCat, typeValueOp );
+
+    wxPGId eventFilterValue = windowProperties->AppendIn( eventFilterCat, 
+                                                          new wxStringProperty( wxT("Event value"), 
+                                                                                wxPG_LABEL,
+                                                                                wxT("<composed>") ) );
+    eventFilterValue->SetFlagsFromString( "DISABLED" );
+    
+    arrayStr.Clear();
+    arrayInt.Clear();
+    pos = 0;
+    selected = -1;
+    for( vector<string>::iterator it = filterFunctions.begin();
+         it != filterFunctions.end(); ++it )
+    {
+      arrayStr.Add( wxT( (*it).c_str() ) );
+      arrayInt.Add( pos );
+      if( (*it) == whichWindow->getFilter()->getEventValueFunction() )
+        selected = pos;
+      pos++;
+    }
+    wxEnumProperty *valueFunction = new wxEnumProperty( wxT("Function"), wxT("ValueFunction"), arrayStr, arrayInt, selected );
+    windowProperties->AppendIn( eventFilterValue, valueFunction );
+
+    arrayStr.Clear();
+    vector<TEventValue> valuesSel;
+    whichWindow->getFilter()->getEventValue( valuesSel );
+    for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); it++ )
+      arrayStr.Add( wxString() << (*it) );
+    wxArrayStringProperty *valueProperty = new wxArrayStringProperty( wxT("Values"), wxPG_LABEL, arrayStr );
+    windowProperties->AppendIn( eventFilterValue, valueProperty );
   }
   // END of Filter related properties
   
