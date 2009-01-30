@@ -197,7 +197,6 @@ void paraverMain::Init()
 ////@end paraverMain member initialisation
 }
 
-
 /*!
  * Control creation for paraverMain
  */

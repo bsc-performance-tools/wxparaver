@@ -22,6 +22,8 @@
 ////@end includes
 #include "paraverkerneltypes.h"
 #include "recordlist.h"
+#include "copypaste.h"
+
 
 // TEMPLATES
 #include "zoomhistory.h"
@@ -172,6 +174,15 @@ public:
   long GetZoomEndY() const { return zoomEndY ; }
   void SetZoomEndY(long value) { zoomEndY = value ; }
 
+  wxMenu * GetPopUpMenuPaste() const { return popUpMenuPaste ; }
+  void SetPopUpMenuPaste(wxMenu * value) { popUpMenuPaste = value ; }
+
+  wxMenu * GetPopUpMenuPasteFilter() const { return popUpMenuPasteFilter ; }
+  void SetPopUpMenuPasteFilter(wxMenu * value) { popUpMenuPasteFilter = value ; }
+
+  wxMultiChoiceDialog * GetPopUpMenuPasteDialog() const { return popUpMenuPasteDialog ; }
+  void SetPopUpMenuPasteDialog(wxMultiChoiceDialog * value) { popUpMenuPasteDialog = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -217,6 +228,9 @@ private:
   long beginRow;
   long endRow;
   long zoomEndY;
+  wxMenu * popUpMenuPaste;
+  wxMenu * popUpMenuPasteFilter;
+  wxMultiChoiceDialog * popUpMenuPasteDialog;
 ////@end gTimeline member variables
 
   ZoomHistory<TTime, TObjectOrder> *zoomHistory;
@@ -225,6 +239,22 @@ private:
   
   void OnPopUpCopy();
   void OnPopUpPaste();
+  void OnPopUpPasteSpecial();
+
+  void OnPopUpPasteTime();
+  void OnPopUpPasteObjects();
+  void OnPopUpPasteSize();
+  void OnPopUpPasteFilterAll();
+  void OnPopUpPasteFilterCommunications();
+  void OnPopUpPasteFilterEvents();
+
+  void pasteTime();
+  void pasteObjects();
+  void pasteSize();
+  void pasteFilterAll();
+  void pasteFilterCommunications();
+  void pasteFilterEvents();
+
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
   void OnPopUpFitSemanticScale();

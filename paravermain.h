@@ -58,9 +58,10 @@ class ProgressController;
 #define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
-#define SYMBOL_PARAVERMAIN_SIZE wxSize(-1, 400)
+#define SYMBOL_PARAVERMAIN_SIZE wxSize(100, 500)
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, 0)
-////@end control identiparfiers
+////@end control identifiers
+
 
 class gTimeline;
 class gHistogram;
@@ -234,6 +235,7 @@ private:
   Histogram * lastHisto;
   wxWindow * currentWindow;
 ////@end paraverMain member variables
+  
   
   void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
