@@ -96,7 +96,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       selected = 0;
     else
       selected = 1;
-    wxEnumProperty *typeValueOp = new wxEnumProperty( wxT("Type/Value Op"), wxPG_LABEL, 
+    wxEnumProperty *typeValueOp = new wxEnumProperty( wxT("Type/Value Op"), wxT("TypeValueOp"), 
                                   arrayStr, arrayInt, selected );
     windowProperties->AppendIn( eventFilterCat, typeValueOp );
 

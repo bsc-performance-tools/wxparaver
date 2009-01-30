@@ -603,11 +603,40 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == "Event type.Types" )
   {
     Filter *filter = currentTimeline->getFilter();
-    if( filter == NULL ) return;
     filter->clearEventTypes();
     wxArrayInt value = ( (prvEventTypeProperty *) property )->GetValueAsArrayInt();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
       filter->insertEventType( value[ idx ] );
+    
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "TypeValueOp" )
+  {
+    long op = property->GetValue().GetLong();
+    Filter *filter = currentTimeline->getFilter();
+    if( op == 0 )
+      filter->setOpTypeValueAnd();
+    else if( op == 1 )
+      filter->setOpTypeValueOr();
+      
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Event value.ValueFunction" )
+  {
+    currentTimeline->getFilter()->setEventValueFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Event value.Values" )
+  {
+    Filter *filter = currentTimeline->getFilter();
+    filter->clearEventValues();
+    wxArrayString value = property->GetValue().GetArrayString();
+    for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
+    {
+      long tmpLong;
+      value[ idx ].ToLong( &tmpLong );
+      filter->insertEventValue( tmpLong );
+    }
     
     currentTimeline->setRedraw( true );
   }
