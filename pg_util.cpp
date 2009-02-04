@@ -36,18 +36,130 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   // Filter related properties
   if( whichWindow->getFilter() != NULL )
   {
+    vector<string> filterFunctions;
+    whichWindow->getFilter()->getAllFilterFunctions( filterFunctions );
+
     wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
-    //wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
-  
+    
+    // ---------------------------- COMMUNICATION FILTER ---------------------------
+    wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
+
+    // Comm Tag
+    wxPGId commFilterTag = windowProperties->AppendIn( commFilterCat, 
+                                                       new wxStringProperty( wxT("Comm tag"),
+                                                                             wxPG_LABEL,
+                                                                             wxT("<composed>") ) );
+    commFilterTag->SetFlagsFromString( "DISABLED" );
+
+    arrayStr.Clear();
+    arrayInt.Clear();
+    pos = 0;
+    selected = -1;
+    for( vector<string>::iterator it = filterFunctions.begin();
+         it != filterFunctions.end(); ++it )
+    {
+      arrayStr.Add( wxT( (*it).c_str() ) );
+      arrayInt.Add( pos );
+      if( (*it) == whichWindow->getFilter()->getCommTagFunction() )
+        selected = pos;
+      pos++;
+    }
+    wxEnumProperty *tagFunction = new wxEnumProperty( wxT("Function"), wxT("TagFunction"), arrayStr, arrayInt, selected );
+    windowProperties->AppendIn( commFilterTag, tagFunction );
+
+    arrayStr.Clear();
+    vector<TCommTag> tagSel;
+    whichWindow->getFilter()->getCommTag( tagSel );
+    for( vector<TCommTag>::iterator it = tagSel.begin(); it != tagSel.end(); it++ )
+      arrayStr.Add( wxString() << (*it) );
+    wxArrayStringProperty *tagProperty = new wxArrayStringProperty( wxT("Tag"), wxPG_LABEL, arrayStr );
+    windowProperties->AppendIn( commFilterTag, tagProperty );
+
+    arrayStr.Clear();
+    arrayInt.Clear();
+    arrayStr.Add( "And" );
+    arrayStr.Add( "Or" );
+    arrayInt.Add( 0 );
+    arrayInt.Add( 1 );
+    if( whichWindow->getFilter()->getOpTagSize() )
+      selected = 0;
+    else
+      selected = 1;
+    wxEnumProperty *tagSizeOp = new wxEnumProperty( wxT("Tag/Size Op"), wxT("TagSizeOp"), 
+                                arrayStr, arrayInt, selected );
+    windowProperties->AppendIn( commFilterCat, tagSizeOp );
+
+    // Comm Size
+    wxPGId commFilterSize = windowProperties->AppendIn( commFilterCat, 
+                                                        new wxStringProperty( wxT("Comm size"), 
+                                                                               wxPG_LABEL,
+                                                                               wxT("<composed>") ) );
+    commFilterSize->SetFlagsFromString( "DISABLED" );
+
+    arrayStr.Clear();
+    arrayInt.Clear();
+    pos = 0;
+    selected = -1;
+    for( vector<string>::iterator it = filterFunctions.begin();
+         it != filterFunctions.end(); ++it )
+    {
+      arrayStr.Add( wxT( (*it).c_str() ) );
+      arrayInt.Add( pos );
+      if( (*it) == whichWindow->getFilter()->getCommSizeFunction() )
+        selected = pos;
+      pos++;
+    }
+    wxEnumProperty *sizeFunction = new wxEnumProperty( wxT("Function"), wxT("SizeFunction"), arrayStr, arrayInt, selected );
+    windowProperties->AppendIn( commFilterSize, sizeFunction );
+
+    arrayStr.Clear();
+    vector<TCommSize> sizeSel;
+    whichWindow->getFilter()->getCommSize( sizeSel );
+    for( vector<TCommSize>::iterator it = sizeSel.begin(); it != sizeSel.end(); it++ )
+      arrayStr.Add( wxString() << (*it) );
+    wxArrayStringProperty *sizeProperty = new wxArrayStringProperty( wxT("Size"), wxPG_LABEL, arrayStr );
+    windowProperties->AppendIn( commFilterSize, sizeProperty );
+    
+    // Comm BandWidth
+    wxPGId commFilterBW = windowProperties->AppendIn( commFilterCat, 
+                                                      new wxStringProperty( wxT("Comm bandwidth"), 
+                                                                            wxPG_LABEL,
+                                                                            wxT("<composed>") ) );
+    commFilterBW->SetFlagsFromString( "DISABLED" );
+
+    arrayStr.Clear();
+    arrayInt.Clear();
+    pos = 0;
+    selected = -1;
+    for( vector<string>::iterator it = filterFunctions.begin();
+         it != filterFunctions.end(); ++it )
+    {
+      arrayStr.Add( wxT( (*it).c_str() ) );
+      arrayInt.Add( pos );
+      if( (*it) == whichWindow->getFilter()->getBandWidthFunction() )
+        selected = pos;
+      pos++;
+    }
+    wxEnumProperty *bwFunction = new wxEnumProperty( wxT("Function"), wxT("BWFunction"), arrayStr, arrayInt, selected );
+    windowProperties->AppendIn( commFilterBW, bwFunction );
+
+    arrayStr.Clear();
+    vector<TSemanticValue> bwSel;
+    whichWindow->getFilter()->getBandWidth( bwSel );
+    for( vector<TSemanticValue>::iterator it = bwSel.begin(); it != bwSel.end(); it++ )
+      arrayStr.Add( wxString() << (*it) );
+    wxArrayStringProperty *bwProperty = new wxArrayStringProperty( wxT("Bandwidth"), wxPG_LABEL, arrayStr );
+    windowProperties->AppendIn( commFilterBW, bwProperty );
+
+    // -------------------------------- EVENT FILTER -------------------------------
     wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
+    // Event Type
     wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
                                                          new wxStringProperty( wxT("Event type"), 
                                                                                wxPG_LABEL,
                                                                                wxT("<composed>") ) );
     eventFilterType->SetFlagsFromString( "DISABLED" );
     
-    vector<string> filterFunctions;
-    whichWindow->getFilter()->getAllFilterFunctions( filterFunctions );
     arrayStr.Clear();
     arrayInt.Clear();
     pos = 0;
@@ -100,6 +212,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   arrayStr, arrayInt, selected );
     windowProperties->AppendIn( eventFilterCat, typeValueOp );
 
+    // Event Value
     wxPGId eventFilterValue = windowProperties->AppendIn( eventFilterCat, 
                                                           new wxStringProperty( wxT("Event value"), 
                                                                                 wxPG_LABEL,
