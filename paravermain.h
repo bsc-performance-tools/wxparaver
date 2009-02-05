@@ -142,6 +142,9 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
   void OnExitClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
+  void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserUpdate( wxUpdateUIEvent& event );
 

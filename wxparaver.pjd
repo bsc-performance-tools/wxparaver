@@ -1380,7 +1380,8 @@
             <long name="locked">0</long>
             <string name="created">"16/6/2008"</string>
             <string name="proxy-type">"wbChoicebookProxy"</string>
-            <string name="event-handler-0">"wxEVT_UPDATE_UI|OnChoicewinbrowserUpdate|NONE||paraverMain"</string>
+            <string name="event-handler-0">"wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED|OnChoicewinbrowserPageChanged|NONE||paraverMain"</string>
+            <string name="event-handler-1">"wxEVT_UPDATE_UI|OnChoicewinbrowserUpdate|NONE||paraverMain"</string>
             <string name="proxy-Id name">"ID_CHOICEWINBROWSER"</string>
             <long name="proxy-Id value">10002</long>
             <string name="proxy-Name">""</string>

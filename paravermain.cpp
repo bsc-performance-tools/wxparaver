@@ -70,6 +70,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
+  EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
 
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
@@ -1007,5 +1008,19 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   }
   else
     raise = true;
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
+ */
+
+void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
+{
+  int selPage = event.GetSelection();
+  if( selPage == 0 )
+    currentTrace = loadedTraces.size() - 1;
+  else
+    currentTrace = selPage - 1;
 }
 
