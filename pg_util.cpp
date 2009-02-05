@@ -44,12 +44,17 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     // ---------------------------- COMMUNICATION FILTER ---------------------------
     wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
 
+    windowProperties->AppendIn( commFilterCat, 
+        new wxBoolProperty( wxT("Logical"), wxPG_LABEL, whichWindow->getFilter()->getLogical() ) );
+    windowProperties->AppendIn( commFilterCat, 
+        new wxBoolProperty( wxT("Physical"), wxPG_LABEL, whichWindow->getFilter()->getPhysical() ) );
+        
     // Comm Tag
     wxPGId commFilterTag = windowProperties->AppendIn( commFilterCat, 
                                                        new wxStringProperty( wxT("Comm tag"),
                                                                              wxPG_LABEL,
                                                                              wxT("<composed>") ) );
-    commFilterTag->SetFlagsFromString( "DISABLED" );
+    commFilterTag->SetFlagsFromString( "DISABLED|COLLAPSED" );
 
     arrayStr.Clear();
     arrayInt.Clear();
@@ -94,7 +99,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                         new wxStringProperty( wxT("Comm size"), 
                                                                                wxPG_LABEL,
                                                                                wxT("<composed>") ) );
-    commFilterSize->SetFlagsFromString( "DISABLED" );
+    commFilterSize->SetFlagsFromString( "DISABLED|COLLAPSED" );
 
     arrayStr.Clear();
     arrayInt.Clear();
@@ -125,7 +130,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                       new wxStringProperty( wxT("Comm bandwidth"), 
                                                                             wxPG_LABEL,
                                                                             wxT("<composed>") ) );
-    commFilterBW->SetFlagsFromString( "DISABLED" );
+    commFilterBW->SetFlagsFromString( "DISABLED|COLLAPSED" );
 
     arrayStr.Clear();
     arrayInt.Clear();
@@ -158,7 +163,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                          new wxStringProperty( wxT("Event type"), 
                                                                                wxPG_LABEL,
                                                                                wxT("<composed>") ) );
-    eventFilterType->SetFlagsFromString( "DISABLED" );
+    eventFilterType->SetFlagsFromString( "DISABLED|COLLAPSED" );
     
     arrayStr.Clear();
     arrayInt.Clear();
@@ -196,7 +201,6 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices, values );
     windowProperties->AppendIn( eventFilterType, tmpEventProperty );
     windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
-    //tmpEventProperty->SetFlagsFromString( "DISABLED" );
     
     arrayStr.Clear();
     arrayInt.Clear();
@@ -217,7 +221,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                           new wxStringProperty( wxT("Event value"), 
                                                                                 wxPG_LABEL,
                                                                                 wxT("<composed>") ) );
-    eventFilterValue->SetFlagsFromString( "DISABLED" );
+    eventFilterValue->SetFlagsFromString( "DISABLED|COLLAPSED" );
     
     arrayStr.Clear();
     arrayInt.Clear();

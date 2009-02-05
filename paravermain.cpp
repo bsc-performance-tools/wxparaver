@@ -594,6 +594,84 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   }
   
   // Timeline related properties
+  else if( propName == "Logical" )
+  {
+    currentTimeline->getFilter()->setLogical( property->GetValue().GetBool() );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Physical" )
+  {
+    currentTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm tag.TagFunction" )
+  {
+    currentTimeline->getFilter()->setCommTagFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm tag.Tag" )
+  {
+    Filter *filter = currentTimeline->getFilter();
+    filter->clearCommTags();
+    wxArrayString value = property->GetValue().GetArrayString();
+    for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
+    {
+      long tmpLong;
+      value[ idx ].ToLong( &tmpLong );
+      filter->insertCommTag( tmpLong );
+    }
+    
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "TagSizeOp" )
+  {
+    long op = property->GetValue().GetLong();
+    Filter *filter = currentTimeline->getFilter();
+    if( op == 0 )
+      filter->setOpTagSizeAnd();
+    else if( op == 1 )
+      filter->setOpTagSizeOr();
+      
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm size.SizeFunction" )
+  {
+    currentTimeline->getFilter()->setCommSizeFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm size.Size" )
+  {
+    Filter *filter = currentTimeline->getFilter();
+    filter->clearCommSizes();
+    wxArrayString value = property->GetValue().GetArrayString();
+    for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
+    {
+      long tmpLong;
+      value[ idx ].ToLong( &tmpLong );
+      filter->insertCommSize( tmpLong );
+    }
+    
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm bandwidth.BWFunction" )
+  {
+    currentTimeline->getFilter()->setBandWidthFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm bandwidth.Bandwidth" )
+  {
+    Filter *filter = currentTimeline->getFilter();
+    filter->clearBandWidth();
+    wxArrayString value = property->GetValue().GetArrayString();
+    for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
+    {
+      double tmpDouble;
+      value[ idx ].ToDouble( &tmpDouble );
+      filter->insertBandWidth( tmpDouble );
+    }
+    
+    currentTimeline->setRedraw( true );
+  }
   else if( propName == "Event type.TypeFunction" )
   {
     currentTimeline->getFilter()->setEventTypeFunction( string( property->GetDisplayedString().c_str() ) );
