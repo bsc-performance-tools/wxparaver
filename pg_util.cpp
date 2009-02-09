@@ -76,7 +76,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     vector<TObjectOrder> fromSel;
     whichWindow->getFilter()->getCommFrom( fromSel );
     for( vector<TObjectOrder>::iterator it = fromSel.begin(); it != fromSel.end(); it++ )
-      arrayStr.Add( wxString() << (*it) );
+      arrayStr.Add( wxString() << ( (*it) + 1 ) );
     wxArrayStringProperty *fromProperty = new wxArrayStringProperty( wxT("From"), wxPG_LABEL, arrayStr );
     windowProperties->AppendIn( commFilterFrom, fromProperty );
 
@@ -121,7 +121,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     vector<TObjectOrder> toSel;
     whichWindow->getFilter()->getCommTo( toSel );
     for( vector<TObjectOrder>::iterator it = toSel.begin(); it != toSel.end(); it++ )
-      arrayStr.Add( wxString() << (*it) );
+      arrayStr.Add( wxString() << ( (*it) + 1 ) );
     wxArrayStringProperty *toProperty = new wxArrayStringProperty( wxT("To"), wxPG_LABEL, arrayStr );
     windowProperties->AppendIn( commFilterTo, toProperty );
 

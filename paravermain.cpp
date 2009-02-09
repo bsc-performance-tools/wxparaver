@@ -605,6 +605,55 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
     currentTimeline->setRedraw( true );
   }
+  else if( propName == "Comm from.FromFunction" )
+  {
+    currentTimeline->getFilter()->setCommFromFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm from.From" )
+  {
+    Filter *filter = currentTimeline->getFilter();
+    filter->clearCommFrom();
+    wxArrayString value = property->GetValue().GetArrayString();
+    for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
+    {
+      long tmpLong;
+      value[ idx ].ToLong( &tmpLong );
+      filter->insertCommFrom( tmpLong - 1 );
+    }
+    
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "FromToOp" )
+  {
+    long op = property->GetValue().GetLong();
+    Filter *filter = currentTimeline->getFilter();
+    if( op == 0 )
+      filter->setOpFromToAnd();
+    else if( op == 1 )
+      filter->setOpFromToOr();
+      
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm to.ToFunction" )
+  {
+    currentTimeline->getFilter()->setCommToFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Comm to.To" )
+  {
+    Filter *filter = currentTimeline->getFilter();
+    filter->clearCommTo();
+    wxArrayString value = property->GetValue().GetArrayString();
+    for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
+    {
+      long tmpLong;
+      value[ idx ].ToLong( &tmpLong );
+      filter->insertCommTo( tmpLong - 1 );
+    }
+    
+    currentTimeline->setRedraw( true );
+  }
   else if( propName == "Comm tag.TagFunction" )
   {
     currentTimeline->getFilter()->setCommTagFunction( string( property->GetDisplayedString().c_str() ) );
