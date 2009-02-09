@@ -617,8 +617,8 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
     {
-      long tmpLong;
-      value[ idx ].ToLong( &tmpLong );
+      long long tmpLong;
+      value[ idx ].ToLongLong( &tmpLong );
       filter->insertCommTag( tmpLong );
     }
     
@@ -647,8 +647,8 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
     {
-      long tmpLong;
-      value[ idx ].ToLong( &tmpLong );
+      long long tmpLong;
+      value[ idx ].ToLongLong( &tmpLong );
       filter->insertCommSize( tmpLong );
     }
     
@@ -711,8 +711,8 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
     {
-      long tmpLong;
-      value[ idx ].ToLong( &tmpLong );
+      unsigned long long tmpLong;
+      value[ idx ].ToULongLong( &tmpLong );
       filter->insertEventValue( tmpLong );
     }
     
