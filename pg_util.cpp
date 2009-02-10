@@ -325,6 +325,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
 void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whichHisto )
 {
+  wxArrayString arrayStr;
+  wxArrayInt arrayInt;
+  int selected, pos;
+  
   whichHisto->setChanged( false );
   windowProperties->Freeze();
   windowProperties->Clear();
@@ -337,15 +341,13 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
+  
   vector<string> tmpV;
-  wxArrayString arrayStr;
-  wxArrayInt arrayInt;
   whichHisto->getGroupsLabels( tmpV );
   for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
     arrayStr.Add( wxT( (*it).c_str() ) );
   arrayInt.Add( 0 );
   arrayInt.Add( 1 );
-  int selected;
   if( whichHisto->itsCommunicationStat( whichHisto->getCurrentStat() ) )
     selected = 0;
   else
@@ -356,7 +358,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   arrayStr.Clear();
   arrayInt.Clear();
   whichHisto->getStatisticsLabels( tmpV, selected );
-  int pos = 0;
+  pos = 0;
   selected = -1;
   for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
   {
