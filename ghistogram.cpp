@@ -389,6 +389,11 @@ void gHistogram::OnIdle( wxIdleEvent& event )
     this->Show();
   else
     this->Show( false );
+    
+  myHistogram->setPosX( this->GetPosition().x );
+  myHistogram->setPosY( this->GetPosition().y );
+  myHistogram->setWidth( this->GetSize().GetWidth() );
+  myHistogram->setHeight( this->GetSize().GetHeight() );
 }
 
 

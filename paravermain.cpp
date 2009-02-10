@@ -68,6 +68,9 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
 
+  EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
+  EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
+
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
@@ -211,13 +214,15 @@ void paraverMain::CreateControls()
 
   wxMenuBar* menuBar = new wxMenuBar;
   menuFile = new wxMenu;
-  menuFile->Append(wxID_OPEN, _("Load &Trace"), _T(""), wxITEM_NORMAL);
+  menuFile->Append(wxID_OPEN, _("Load &Trace..."), _T(""), wxITEM_NORMAL);
   wxMenu* itemMenu5 = new wxMenu;
   menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration"), _T(""), wxITEM_NORMAL);
+  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), _T(""), wxITEM_NORMAL);
   wxMenu* itemMenu8 = new wxMenu;
   menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
+  menuFile->AppendSeparator();
+  menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), _T(""), wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), _T(""), wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
@@ -394,7 +399,7 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
   wxFileDialog dialog( this, "Load Trace", "", "", 
     "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*", 
-    wxOPEN|wxFILE_MUST_EXIST );
+    wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
@@ -411,7 +416,7 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
   wxFileDialog dialog( this, "Load Configuration", "", "",
     "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*",
-    wxOPEN|wxFILE_MUST_EXIST );
+    wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
@@ -1071,5 +1076,42 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
     currentTrace = loadedTraces.size() - 1;
   else
     currentTrace = selPage - 1;
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVECFG
+ */
+
+void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
+{
+  wxFileDialog dialog( this, "Save Configuration", "", "",
+    "Paraver configuration file (*.cfg)|*.cfg",
+    wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString path = dialog.GetPath();
+    vector<Window *> windows;
+    vector<Histogram *> histograms;
+    if( currentTimeline != NULL )
+      windows.push_back( currentTimeline );
+    else if( currentHisto != NULL )
+      histograms.push_back( currentHisto );
+
+    CFGLoader::saveCFG( path.c_str(), windows, histograms );
+  }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_MENUSAVECFG
+ */
+
+void paraverMain::OnMenusavecfgUpdate( wxUpdateUIEvent& event )
+{
+  if( currentTimeline != NULL || currentHisto != NULL )
+    event.Enable( true );
+  else
+    event.Enable( false );
 }
 

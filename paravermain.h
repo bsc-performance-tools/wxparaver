@@ -52,6 +52,7 @@ class ProgressController;
 #define ID_RECENTTRACES 10008
 #define ID_MENULOADCFG 10006
 #define ID_RECENTCFGS 10009
+#define ID_MENUSAVECFG 10011
 #define ID_TOOLBAR 10003
 #define ID_CHOICEWINBROWSER 10002
 #define ID_FOREIGN 10010
@@ -138,6 +139,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_MENULOADCFG
   void OnMenuloadcfgUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVECFG
+  void OnMenusavecfgClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_MENUSAVECFG
+  void OnMenusavecfgUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
   void OnExitClick( wxCommandEvent& event );

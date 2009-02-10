@@ -416,6 +416,11 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   }
   else
     this->Show( false );
+    
+  myWindow->setPosX( this->GetPosition().x );
+  myWindow->setPosY( this->GetPosition().y );
+  myWindow->setWidth( this->GetSize().GetWidth() );
+  myWindow->setHeight( this->GetSize().GetHeight() );
 }
 
 

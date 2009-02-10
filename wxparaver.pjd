@@ -1085,7 +1085,7 @@
               <string name="proxy-Member variable name">"menuFile"</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               <document>
-                <string name="title">"Load &amp;Trace: wxID_OPEN"</string>
+                <string name="title">"Load &amp;Trace...: wxID_OPEN"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"menuitem"</string>
@@ -1098,7 +1098,7 @@
                 <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnOpenClick|NONE||paraverMain"</string>
                 <string name="proxy-Id name">"wxID_OPEN"</string>
                 <long name="proxy-Id value">5000</long>
-                <string name="proxy-Label">"Load &amp;Trace"</string>
+                <string name="proxy-Label">"Load &amp;Trace..."</string>
                 <string name="proxy-Kind">"Normal"</string>
                 <bool name="proxy-Checked">0</bool>
                 <bool name="proxy-Enabled">1</bool>
@@ -1139,7 +1139,7 @@
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
-                <string name="title">"Load &amp;Configuration: ID_MENULOADCFG"</string>
+                <string name="title">"Load &amp;Configuration...: ID_MENULOADCFG"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"menuitem"</string>
@@ -1153,7 +1153,7 @@
                 <string name="event-handler-1">"wxEVT_UPDATE_UI|OnMenuloadcfgUpdate|NONE||paraverMain"</string>
                 <string name="proxy-Id name">"ID_MENULOADCFG"</string>
                 <long name="proxy-Id value">10006</long>
-                <string name="proxy-Label">"Load &amp;Configuration"</string>
+                <string name="proxy-Label">"Load &amp;Configuration..."</string>
                 <string name="proxy-Kind">"Normal"</string>
                 <bool name="proxy-Checked">0</bool>
                 <bool name="proxy-Enabled">1</bool>
@@ -1190,6 +1190,42 @@
                 <long name="title-mode">0</long>
                 <long name="locked">0</long>
                 <string name="created">"23/6/2008"</string>
+                <string name="proxy-type">"wbMenuSeparatorProxy"</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"&amp;Save Configuration...: ID_MENUSAVECFG"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"10/2/2009"</string>
+                <string name="proxy-type">"wbMenuItemProxy"</string>
+                <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnMenusavecfgClick|NONE||paraverMain"</string>
+                <string name="event-handler-1">"wxEVT_UPDATE_UI|OnMenusavecfgUpdate|NONE||paraverMain"</string>
+                <string name="proxy-Id name">"ID_MENUSAVECFG"</string>
+                <long name="proxy-Id value">10011</long>
+                <string name="proxy-Label">"&amp;Save Configuration..."</string>
+                <string name="proxy-Kind">"Normal"</string>
+                <bool name="proxy-Checked">0</bool>
+                <bool name="proxy-Enabled">1</bool>
+                <string name="proxy-Help text">""</string>
+                <string name="proxy-Bitmap">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              </document>
+              <document>
+                <string name="title">"------------"</string>
+                <string name="type">"dialog-control-document"</string>
+                <string name="filename">""</string>
+                <string name="icon-name">"menuitem"</string>
+                <long name="is-transient">0</long>
+                <long name="owns-file">1</long>
+                <long name="title-mode">0</long>
+                <long name="locked">0</long>
+                <string name="created">"10/2/2009"</string>
                 <string name="proxy-type">"wbMenuSeparatorProxy"</string>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
