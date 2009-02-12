@@ -18,11 +18,12 @@ class gPasteWindowProperties
     static gPasteWindowProperties *pasteWindowProperties;
 
     ~gPasteWindowProperties();
-   
+
     static gPasteWindowProperties *getInstance();
     
     void copy( gTimeline* whichTimeline );
     void copy( gHistogram* whichHistogram );
+
     void paste( gTimeline* whichTimeline, const string property = "All" );
     void paste( gHistogram* whichHistogram, const string property = "All" );
 
@@ -40,10 +41,10 @@ class gPasteWindowProperties
     map < const string, vector< vector < vector< bool > > > > allowed;
 
     gPasteWindowProperties();
-    bool seekAllowedPaste( const string property, int destiny, Trace *destinyTrace );
 
     void commonMenuSettings( );
     void commonTimeSettings( TRecordTime destinyTraceEndTime );
+    bool seekAllowedPaste( const string property, int destiny, Trace *destinyTrace );
 };
 
 #endif // _COPYPASTE_H_

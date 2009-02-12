@@ -20,7 +20,7 @@ class gPopUpMenu
 
     void Enable( const string tag );
     void Enable( const string tag, bool enable );
-    void Show();
+
     wxMenu *GetPopUpMenu() { return popUpMenu; };
 //    void Check( const string tag, bool checked );
     string GetOption( int position );

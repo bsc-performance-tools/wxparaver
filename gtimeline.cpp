@@ -544,15 +544,12 @@ void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
 void gTimeline::OnPopUpCopy()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
-//  popUpMenu->Enable( "Time" );
 }
 
 
 void gTimeline::OnPopUpPaste()
 {
 //  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
-//  myWindow->setRedraw( true );
-//  myWindow->setChanged( true );
 }
 
 

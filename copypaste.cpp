@@ -13,7 +13,10 @@ void gPasteWindowProperties::commonMenuSettings( )
   for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
     for ( int origin = TIMELINE; origin <= HISTOGRAM; origin++ )
       for ( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
+      {
         allowed["Paste"][trace][origin][destiny] = true;
+        allowed["Paste Special..."][trace][origin][destiny] = true;
+      }
 
   // Timeline/histogram different Menu properties
   if ( timeline != NULL )
@@ -99,7 +102,7 @@ gPasteWindowProperties::gPasteWindowProperties()
   option[DIFF_TRACE][HISTOGRAM][TIMELINE] = true;
   option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
   allowed["Time"] = option;
-  
+  allowed["Copy"] = option;
   // Policy : Allow paste size between different type of windows and different traces
 /*
   option[SAME_TRACE][TIMELINE][TIMELINE] = true;
@@ -141,13 +144,13 @@ gPasteWindowProperties::gPasteWindowProperties()
 /*
   option[SAME_TRACE][TIMELINE][TIMELINE] = true;
   option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[SAME_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = true;
+  option[SAME_TRACE][TIMELINE][HISTOGRAM] = false;
+  option[SAME_TRACE][HISTOGRAM][TIMELINE] = false;
+  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = false;
   option[DIFF_TRACE][TIMELINE][TIMELINE] = true;
-  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
+  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = false;
+  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = false;
+  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = false;
 */
   allowed["Filter"] = option;
 
@@ -201,13 +204,15 @@ gPasteWindowProperties::gPasteWindowProperties()
       }
 */
   allowed["Paste"] = option;
+  allowed["Paste Special..."] = option;
 }
 
-// PUBLIC 
 
+// PUBLIC 
 gPasteWindowProperties::~gPasteWindowProperties()
 {
 }
+
 
 gPasteWindowProperties *gPasteWindowProperties::getInstance()
 {
@@ -216,17 +221,20 @@ gPasteWindowProperties *gPasteWindowProperties::getInstance()
   return gPasteWindowProperties::pasteWindowProperties;
 }
 
+
 void gPasteWindowProperties::copy( gTimeline* whichTimeline )
 {
   timeline = whichTimeline;
   histogram = NULL;
 }
 
+
 void gPasteWindowProperties::copy( gHistogram* whichHistogram )
 {
   timeline = NULL;
   histogram = whichHistogram;
 }
+
 
 void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string property )
 {
@@ -302,21 +310,12 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     else if ( property == "Objects" )
     {
     }
-    else if ( property == "Communications" )
-    {
-    }
-    else if ( property == "Events" )
-    {
-    }
-    else if ( property == "Filter All" )
-    {
-    }
     else
     {
     }
   }
-
 }
+
 
 void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string property )
 {
@@ -335,15 +334,6 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
       whichHistogram->SetSize( width, height );
     }
     else if ( property == "Objects" )
-    {
-    }
-    else if ( property == "Communications" )
-    {
-    }
-    else if ( property == "Events" )
-    {
-    }
-    else if ( property == "Filter All" )
     {
     }
     else
@@ -367,20 +357,12 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     else if ( property == "Objects" )
     {
     }
-    else if ( property == "Communications" )
-    {
-    }
-    else if ( property == "Events" )
-    {
-    }
-    else if ( property == "Filter All" )
-    {
-    }
     else
     {
     }
   }
 }
+
 
 bool gPasteWindowProperties::allowPaste( gTimeline *whichTimeline, const string property )
 {
