@@ -22,6 +22,10 @@
 #include "wx/grid.h"
 ////@end includes
 #include "paraverkerneltypes.h"
+#include "popupmenu.h"
+#include "copypaste.h"
+// TEMPLATES
+#include "zoomhistory.h"
 
 /*!
  * Forward declarations
@@ -80,6 +84,12 @@ public:
   /// wxEVT_IDLE event handler for ID_GHISTOGRAM
   void OnIdle( wxIdleEvent& event );
 
+  /// wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
+  void OnCellRightClick( wxGridEvent& event );
+
+  /// wxEVT_GRID_LABEL_RIGHT_CLICK event handler for ID_GRIDHISTO
+  void OnLabelRightClick( wxGridEvent& event );
+
   /// wxEVT_GRID_RANGE_SELECT event handler for ID_GRIDHISTO
   void OnRangeSelect( wxGridRangeSelectEvent& event );
 
@@ -92,6 +102,9 @@ public:
 
   Histogram* GetHistogram() const { return myHistogram ; }
   void SetHistogram(Histogram* value) { myHistogram = value ; }
+
+  gPopUpMenu * GetPopUpMenu() const { return popUpMenu ; }
+  void SetPopUpMenu(gPopUpMenu * value) { popUpMenu = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -107,11 +120,35 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
+
+  // Pop Up Menu Methods
+  void OnPopUpCopy();
+  void OnPopUpPaste();
+  void OnPopUpPasteSpecial();
+  void OnPopUpPasteTime();
+  void OnPopUpPasteObjects();
+  void OnPopUpPasteSize();
+  void OnPopUpPasteFilterAll();
+  void OnPopUpPasteFilterCommunications();
+  void OnPopUpPasteFilterEvents();
+  void OnPopUpClone();
+  void OnPopUpFitTimeScale();
+  void OnPopUpFitSemanticScale();
+//  void OnPopUpCodeColor();
+//  void OnPopUpGradientColor();
+  void OnPopUpUndoZoom( wxUpdateUIEvent& event  );
+  void OnPopUpRedoZoom();
+
+
 ////@begin gHistogram member variables
   wxGrid* gridHisto;
 private:
   Histogram* myHistogram;
+  gPopUpMenu * popUpMenu;
 ////@end gHistogram member variables
+  void updateHistogram();
+
+//  ZoomHistory<TTime, TObjectOrder> *zoomHistory;
 };
 
 #endif

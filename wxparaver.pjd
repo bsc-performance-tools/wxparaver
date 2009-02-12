@@ -163,7 +163,6 @@
         <string name="Optimizations">"%AUTO%"</string>
         <string name="Warnings">"%AUTO%"</string>
         <string name="Debug flags">"%AUTO%"</string>
-        <string name="Extra compile flags">"%AUTO%"</string>
         <string name="Libraries">"%AUTO%"</string>
         <string name="Library path">"%AUTO%"</string>
         <string name="Linker flags">"%AUTO%"</string>
@@ -223,7 +222,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"-lwxcode_gtk2d_propgrid-2.8 -lparaver-kernel -lcfg -lapi `$(WXWIN)/GCCBuildDebugGTK2DLL/wx-config --inplace --exec-prefix=&quot;$(WXWIN)/GCCBuildDebugGTK2DLL&quot; --libs`"</string>
           <string name="Library path">"../paraver-kernel"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -289,7 +287,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -355,7 +352,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -421,7 +417,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -484,7 +479,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"/W1"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"wxmsw28d_richtext.lib wxmsw28d_aui.lib wxmsw28d_core.lib wxbase28d.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxmsw28d_adv.lib wxmsw28d_html.lib wxmsw28d_xrc.lib wxbase28d_net.lib wxbase28d_xml.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib api.lib paraver-kernel.lib wxcode_msw28d_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"$(WXWIN)/lib/vc_dll,../paraver-kernel/paraver-kernel-win32/Debug"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -544,7 +538,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -604,7 +597,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -664,7 +656,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -724,7 +715,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -783,7 +773,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -842,7 +831,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -901,7 +889,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -1637,6 +1624,7 @@
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
+          <string name="variable-1">"popUpMenu|gPopUpMenu *|PopUpMenu||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gHistogram"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gHistogram"</string>
           <string name="proxy-Id name">"ID_GHISTOGRAM"</string>
@@ -1712,14 +1700,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -1735,8 +1715,10 @@
               <long name="locked">0</long>
               <string name="created">"23/10/2008"</string>
               <string name="proxy-type">"wbGridProxy"</string>
-              <string name="event-handler-0">"wxEVT_GRID_RANGE_SELECT|OnRangeSelect|NONE||gHistogram"</string>
-              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnGridhistoUpdate|NONE||gHistogram"</string>
+              <string name="event-handler-0">"wxEVT_GRID_CELL_RIGHT_CLICK|OnCellRightClick|NONE||gHistogram"</string>
+              <string name="event-handler-1">"wxEVT_GRID_LABEL_RIGHT_CLICK|OnLabelRightClick|NONE||gHistogram"</string>
+              <string name="event-handler-2">"wxEVT_GRID_RANGE_SELECT|OnRangeSelect|NONE||gHistogram"</string>
+              <string name="event-handler-3">"wxEVT_UPDATE_UI|OnGridhistoUpdate|NONE||gHistogram"</string>
               <string name="proxy-Id name">"ID_GRIDHISTO"</string>
               <long name="proxy-Id value">10005</long>
               <string name="proxy-Name">""</string>
@@ -1835,18 +1817,14 @@
           <string name="variable-9">"zooming|bool|Zooming|false|2|0|"</string>
           <string name="variable-10">"zoomBeginX|long|ZoomBegin||2|0|"</string>
           <string name="variable-11">"zoomEndX|long|ZoomEnd||2|0|"</string>
-          <string name="variable-12">"popUpMenu|wxMenu *|PopUpMenu|NULL|2|0|"</string>
+          <string name="variable-12">"popUpMenu|gPopUpMenu *|PopUpMenu|NULL|2|0|"</string>
           <string name="variable-13">"drawImage|wxBitmap|DrawImage||0|0|"</string>
-          <string name="variable-14">"popUpMenuColor|wxMenu *|PopUpMenuColor||2|0|"</string>
-          <string name="variable-15">"commImage|wxBitmap|CommImage||0|0|"</string>
-          <string name="variable-16">"zoomXY|bool|ZoomXY||2|0|"</string>
-          <string name="variable-17">"zoomBeginY|long|ZoomBeginY||2|0|"</string>
-          <string name="variable-18">"beginRow|long|BeginRow||2|0|"</string>
-          <string name="variable-19">"endRow|long|EndRow||2|0|"</string>
-          <string name="variable-20">"zoomEndY|long|ZoomEndY||2|0|"</string>
-          <string name="variable-21">"popUpMenuPaste|wxMenu *|PopUpMenuPaste||2|0|"</string>
-          <string name="variable-22">"popUpMenuPasteFilter|wxMenu *|PopUpMenuPasteFilter||2|0|"</string>
-          <string name="variable-23">"popUpMenuPasteDialog|wxMultiChoiceDialog *|PopUpMenuPasteDialog||2|0|"</string>
+          <string name="variable-14">"commImage|wxBitmap|CommImage||0|0|"</string>
+          <string name="variable-15">"zoomXY|bool|ZoomXY||2|0|"</string>
+          <string name="variable-16">"zoomBeginY|long|ZoomBeginY||2|0|"</string>
+          <string name="variable-17">"beginRow|long|BeginRow||2|0|"</string>
+          <string name="variable-18">"endRow|long|EndRow||2|0|"</string>
+          <string name="variable-19">"zoomEndY|long|ZoomEndY||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
@@ -1924,14 +1902,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -2076,6 +2046,30 @@
           <long name="title-mode">1</long>
           <long name="locked">0</long>
           <string name="created">"11/12/2008"</string>
+          <string name="language">""</string>
+        </document>
+        <document>
+          <string name="title">"popupmenu.cpp"</string>
+          <string name="type">"source-editor-document"</string>
+          <string name="filename">"popupmenu.cpp"</string>
+          <string name="icon-name">"source-editor"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">1</long>
+          <long name="locked">0</long>
+          <string name="created">"9/2/2009"</string>
+          <string name="language">""</string>
+        </document>
+        <document>
+          <string name="title">"popupmenu.h"</string>
+          <string name="type">"source-editor-document"</string>
+          <string name="filename">"popupmenu.h"</string>
+          <string name="icon-name">"source-editor"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">1</long>
+          <long name="locked">0</long>
+          <string name="created">"9/2/2009"</string>
           <string name="language">""</string>
         </document>
         <document>

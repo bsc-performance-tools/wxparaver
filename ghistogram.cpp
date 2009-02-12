@@ -51,6 +51,8 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_IDLE( gHistogram::OnIdle )
 
+  EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
+  EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
   EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
 
@@ -111,6 +113,7 @@ void gHistogram::Init()
   myHistogram = NULL;
   gridHisto = NULL;
 ////@end gHistogram member initialisation
+  popUpMenu = NULL;
 }
 
 
@@ -396,12 +399,7 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   myHistogram->setHeight( this->GetSize().GetHeight() );
 }
 
-
-/*!
- * wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
- */
-
-void gHistogram::OnGridhistoUpdate( wxUpdateUIEvent& event )
+void gHistogram::updateHistogram()
 {
   if( myHistogram->getRecalc() )
   {
@@ -418,6 +416,16 @@ void gHistogram::OnGridhistoUpdate( wxUpdateUIEvent& event )
       fillGrid();
     }
   }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
+ */
+
+void gHistogram::OnGridhistoUpdate( wxUpdateUIEvent& event )
+{
+  updateHistogram();
 }
 
 
@@ -447,3 +455,105 @@ void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
   }
 }
 
+void gHistogram::OnPopUpCopy()
+{
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
+}
+
+void gHistogram::OnPopUpPaste()
+{
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
+}
+
+void gHistogram::OnPopUpPasteSpecial()
+{
+  if ( popUpMenu->OkPressed() )
+  {
+    wxArrayInt selections = popUpMenu->GetSelections();
+    if ( selections.GetCount() > 0 )
+    {
+      bool recalc = false;
+      for ( size_t i = 0; i < selections.GetCount(); i++ )
+      {
+        if ( popUpMenu->GetOption( selections[i] ) == "Time" )
+          recalc = true;
+        gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, popUpMenu->GetOption( selections[i] ) );
+      }
+
+      if ( recalc )
+        myHistogram->setRecalc( true );
+      updateHistogram();
+    }
+  }
+
+}
+
+void gHistogram::OnPopUpPasteTime()
+{
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Time" );
+  myHistogram->setRecalc( true );
+  updateHistogram();
+}
+
+void gHistogram::OnPopUpPasteObjects(){}
+void gHistogram::OnPopUpPasteSize()
+{
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
+  updateHistogram();
+}
+
+void gHistogram::OnPopUpPasteFilterAll(){}
+void gHistogram::OnPopUpPasteFilterCommunications(){}
+void gHistogram::OnPopUpPasteFilterEvents(){}
+void gHistogram::OnPopUpClone(){}
+void gHistogram::OnPopUpFitTimeScale()
+{
+  myHistogram->setWindowBeginTime( 0 );
+  myHistogram->setWindowEndTime( myHistogram->getControlWindow()->getTrace()->getEndTime() );
+//  zoomHistory->addZoom( 0, myHistogram->getControlWindow()->getTrace()->getEndTime() );
+  myHistogram->setRecalc( true );
+  updateHistogram();
+}
+void gHistogram::OnPopUpFitSemanticScale(){}
+//void gHistogram::OnPopUpCodeColor(){}
+//void gHistogram::OnPopUpGradientColor(){}
+void gHistogram::OnPopUpUndoZoom( wxUpdateUIEvent& event  ){}
+void gHistogram::OnPopUpRedoZoom(){}
+
+
+
+
+
+
+
+
+/*!
+ * wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
+ */
+
+void gHistogram::OnCellRightClick( wxGridEvent& event )
+{
+  if ( popUpMenu == NULL )
+    popUpMenu = new gPopUpMenu( this );
+
+//  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
+//  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
+
+  PopupMenu( popUpMenu->GetPopUpMenu(), event.GetPosition());
+}
+
+
+/*!
+ * wxEVT_GRID_LABEL_RIGHT_CLICK event handler for ID_GRIDHISTO
+ */
+
+void gHistogram::OnLabelRightClick( wxGridEvent& event )
+{
+  if ( popUpMenu == NULL )
+    popUpMenu = new gPopUpMenu( this );
+
+//  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
+//  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
+
+  PopupMenu( popUpMenu->GetPopUpMenu(), event.GetPosition());
+}

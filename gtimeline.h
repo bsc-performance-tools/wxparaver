@@ -20,8 +20,13 @@
 ////@begin includes
 #include "wx/frame.h"
 ////@end includes
+#include "wx/choicdlg.h"
+#include "wx/dcmemory.h"
+#include "wx/scrolwin.h"
+
 #include "paraverkerneltypes.h"
 #include "recordlist.h"
+#include "popupmenu.h"
 #include "copypaste.h"
 
 
@@ -34,7 +39,6 @@
 ////@begin forward declarations
 ////@end forward declarations
 class Window;
-
 /*!
  * Control identifiers
  */
@@ -147,14 +151,11 @@ public:
   long GetZoomEnd() const { return zoomEndX ; }
   void SetZoomEnd(long value) { zoomEndX = value ; }
 
-  wxMenu * GetPopUpMenu() const { return popUpMenu ; }
-  void SetPopUpMenu(wxMenu * value) { popUpMenu = value ; }
+  gPopUpMenu * GetPopUpMenu() const { return popUpMenu ; }
+  void SetPopUpMenu(gPopUpMenu * value) { popUpMenu = value ; }
 
   wxBitmap GetDrawImage() const { return drawImage ; }
   void SetDrawImage(wxBitmap value) { drawImage = value ; }
-
-  wxMenu * GetPopUpMenuColor() const { return popUpMenuColor ; }
-  void SetPopUpMenuColor(wxMenu * value) { popUpMenuColor = value ; }
 
   wxBitmap GetCommImage() const { return commImage ; }
   void SetCommImage(wxBitmap value) { commImage = value ; }
@@ -174,15 +175,6 @@ public:
   long GetZoomEndY() const { return zoomEndY ; }
   void SetZoomEndY(long value) { zoomEndY = value ; }
 
-  wxMenu * GetPopUpMenuPaste() const { return popUpMenuPaste ; }
-  void SetPopUpMenuPaste(wxMenu * value) { popUpMenuPaste = value ; }
-
-  wxMenu * GetPopUpMenuPasteFilter() const { return popUpMenuPasteFilter ; }
-  void SetPopUpMenuPasteFilter(wxMenu * value) { popUpMenuPasteFilter = value ; }
-
-  wxMultiChoiceDialog * GetPopUpMenuPasteDialog() const { return popUpMenuPasteDialog ; }
-  void SetPopUpMenuPasteDialog(wxMultiChoiceDialog * value) { popUpMenuPasteDialog = value ; }
-
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -198,10 +190,25 @@ public:
   void drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder row );
   void drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, TTime from, TTime to, TTime step, wxCoord pos );
 
-void OnPopUpRightDown( void );
+  void OnPopUpRightDown( void );
 
-  enum ItemType {ITEMNORMAL, ITEMRADIO, ITEMCHECK};
-
+  // Pop Up Menu Methods
+  void OnPopUpCopy();
+  void OnPopUpPaste();
+  void OnPopUpPasteSpecial();
+  void OnPopUpPasteTime();
+  void OnPopUpPasteObjects();
+  void OnPopUpPasteSize();
+  void OnPopUpPasteFilterAll();
+  void OnPopUpPasteFilterCommunications();
+  void OnPopUpPasteFilterEvents();
+  void OnPopUpClone();
+  void OnPopUpFitTimeScale();
+  void OnPopUpFitSemanticScale();
+  void OnPopUpCodeColor();
+  void OnPopUpGradientColor();
+  void OnPopUpUndoZoom( wxUpdateUIEvent& event  );
+  void OnPopUpRedoZoom();
 
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
@@ -221,49 +228,17 @@ private:
   bool zooming;
   long zoomBeginX;
   long zoomEndX;
-  wxMenu * popUpMenu;
-  wxMenu * popUpMenuColor;
+  gPopUpMenu * popUpMenu;
   bool zoomXY;
   long zoomBeginY;
   long beginRow;
   long endRow;
   long zoomEndY;
-  wxMenu * popUpMenuPaste;
-  wxMenu * popUpMenuPasteFilter;
-  wxMultiChoiceDialog * popUpMenuPasteDialog;
 ////@end gTimeline member variables
 
   ZoomHistory<TTime, TObjectOrder> *zoomHistory;
   
   static const wxCoord drawBorder = 5;
-  
-  void OnPopUpCopy();
-  void OnPopUpPaste();
-  void OnPopUpPasteSpecial();
-
-  void OnPopUpPasteTime();
-  void OnPopUpPasteObjects();
-  void OnPopUpPasteSize();
-  void OnPopUpPasteFilterAll();
-  void OnPopUpPasteFilterCommunications();
-  void OnPopUpPasteFilterEvents();
-
-  void pasteTime();
-  void pasteObjects();
-  void pasteSize();
-  void pasteFilterAll();
-  void pasteFilterCommunications();
-  void pasteFilterEvents();
-
-  void OnPopUpClone();
-  void OnPopUpFitTimeScale();
-  void OnPopUpFitSemanticScale();
-  void OnPopUpCodeColor();
-  void OnPopUpGradientColor();
-  void OnPopUpUndoZoom( wxUpdateUIEvent& event  );
-  void OnPopUpRedoZoom();
-
-  void BuildItem( wxMenu *popUp, const wxString &title, wxObjectEventFunction handler, ItemType type, bool checked = true );
 };
 
 #endif

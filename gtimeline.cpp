@@ -27,7 +27,6 @@
 #include "window.h"
 #include "labelconstructor.h"
 #include "drawmode.h"
-
 #include "zoomhistory.cpp"
 
 #define wxTEST_GRAPHICS 1
@@ -135,7 +134,8 @@ void gTimeline::Init()
   bufferImage.Create( 1, 1 );
   objectFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
   timeFont = wxFont( 6, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
-  
+
+  popUpMenu = NULL;  // initialized on Right Click Down.
   zoomHistory = new ZoomHistory<TTime,TObjectOrder>();
 }
 
@@ -543,20 +543,16 @@ void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnPopUpCopy()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->setTime( myWindow->getWindowBeginTime(),
-                                                                         myWindow->getWindowEndTime() );
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->setRow( zoomHistory->getSecondDimension().first,
-                                                                        zoomHistory->getSecondDimension().second );
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), true );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Time" ), true );
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
+//  popUpMenu->Enable( "Time" );
 }
 
 
 void gTimeline::OnPopUpPaste()
 {
-  myWindow->setWindowBeginTime( gPasteWindowProperties::pasteWindowProperties->getInstance()->getBeginTime());
-  myWindow->setRedraw( true );
-  myWindow->setChanged( true );
+//  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
+//  myWindow->setRedraw( true );
+//  myWindow->setChanged( true );
 }
 
 
@@ -592,81 +588,63 @@ void gTimeline::OnPopUpCodeColor()
 }
 
 
-void gTimeline::pasteTime()
-{
-  myWindow->setWindowBeginTime( gPasteWindowProperties::pasteWindowProperties->getInstance()->getBeginTime());
-  myWindow->setWindowEndTime( gPasteWindowProperties::pasteWindowProperties->getInstance()->getEndTime());
-}
-
-
-void gTimeline::pasteObjects()
-{
-}
-
-
-void gTimeline::pasteSize()
-{
-}
-
-void gTimeline::pasteFilterAll()
-{
-}
-
-void gTimeline::pasteFilterCommunications()
-{
-}
-void gTimeline::pasteFilterEvents()
-{
-}
-
 void gTimeline::OnPopUpPasteTime()
 {
-  pasteTime();
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Time" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
 void gTimeline::OnPopUpPasteObjects()
 {
-  pasteObjects();
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
-
 void gTimeline::OnPopUpPasteSize()
 {
-  pasteSize();
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
   myWindow->setRedraw( true );
-  myWindow->setChanged( true );
+  myWindow->setChanged( true ); //?
 }
 
 void gTimeline::OnPopUpPasteFilterAll()
 {
-  pasteFilterCommunications();
-  pasteFilterEvents();
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Events" );
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Communications" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
 void gTimeline::OnPopUpPasteFilterCommunications()
 {
-  pasteFilterCommunications();
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Communications" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
 void gTimeline::OnPopUpPasteFilterEvents()
 {
-  pasteFilterEvents();
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Events" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
 void gTimeline::OnPopUpPasteSpecial()
 {
-  if ( popUpMenuPasteDialog->ShowModal() == wxID_OK )
-    printf("HOLA");
+  if ( popUpMenu->OkPressed() )
+  {
+    wxArrayInt selections = popUpMenu->GetSelections();
+    if ( selections.GetCount() > 0 )
+    {
+      for ( size_t i = 0; i < selections.GetCount(); i++ )
+        gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, popUpMenu->GetOption( selections[i] ) );
+
+      myWindow->setRedraw( true );
+      myWindow->setChanged( true );
+    }
+  }
 }
 
 void gTimeline::OnPopUpGradientColor()
@@ -685,7 +663,7 @@ void gTimeline::OnPopUpUndoZoom( wxUpdateUIEvent& event )
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-    popUpMenu->Enable( popUpMenu->FindItem( "Undo Zoom" ), !zoomHistory->emptyPrevZoom() );
+    popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom());
   }
 }
 
@@ -698,50 +676,10 @@ void gTimeline::OnPopUpRedoZoom()
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-    popUpMenu->Enable( popUpMenu->FindItem( "Redo Zoom" ), !zoomHistory->emptyNextZoom() );
+    popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom());
   }
 }
 
-void gTimeline::BuildItem( wxMenu *popUp,
-                           const wxString &title,
-                           wxObjectEventFunction handler,
-                           ItemType itemType,
-                           bool checked )
-{
-  wxMenuItem *tmp;
-
-  switch ( itemType )
-  {
-    case ITEMNORMAL:
-    {
-      tmp = new wxMenuItem( popUp, wxID_ANY, title, "", wxITEM_NORMAL );
-      break;
-    }
-    case ITEMRADIO:
-    {
-      tmp = new wxMenuItem( popUp, wxID_ANY, title, "", wxITEM_RADIO );
-      break;
-    }
-    case ITEMCHECK:
-    {
-      tmp = new wxMenuItem( popUp, wxID_ANY, title, "", wxITEM_CHECK );
-      break;
-    }
-    default:
-    {
-      tmp = new wxMenuItem( popUp, wxID_ANY, title, "", wxITEM_NORMAL );
-      break;
-    }
-  }
-
-  int tmpid = tmp->GetId();
-  popUp->Append( tmp );
-  if ( tmp->IsCheckable() )
-    tmp->Check( checked );
-
-//  popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, tmp, this );
-  popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, this );
-}
 
 /*!
  * wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
@@ -749,76 +687,13 @@ void gTimeline::BuildItem( wxMenu *popUp,
 
 void gTimeline::OnRightDown( wxMouseEvent& event )
 {
-  if (popUpMenu == NULL)
-  {
-    popUpMenu = new wxMenu;
-    popUpMenuColor = new wxMenu;
-    popUpMenuPaste = new wxMenu;
-    popUpMenuPasteFilter = new wxMenu;
+  if ( popUpMenu == NULL )
+    popUpMenu = new gPopUpMenu( this );
 
-    BuildItem( popUpMenu, wxString("Copy"), (wxObjectEventFunction)&gTimeline::OnPopUpCopy, ITEMNORMAL );
-    
-    BuildItem( popUpMenuPaste, wxString("Time"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteTime, ITEMNORMAL );
-    BuildItem( popUpMenuPaste, wxString("Objects"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteObjects, ITEMNORMAL );
-    BuildItem( popUpMenuPaste, wxString("Size"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteSize, ITEMNORMAL );
-    
-    BuildItem( popUpMenuPasteFilter, wxString("All"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterAll, ITEMNORMAL );
-    BuildItem( popUpMenuPasteFilter, wxString("Communications"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterCommunications, ITEMNORMAL );
-    BuildItem( popUpMenuPasteFilter, wxString("Events"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterEvents, ITEMNORMAL );
-    popUpMenuPaste->AppendSubMenu( popUpMenuPasteFilter, wxString( "Filter" ));
-    popUpMenu->AppendSubMenu( popUpMenuPaste, wxString( "Paste" ));
+  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
+  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
-    BuildItem( popUpMenu, wxString("Paste Special..."), (wxObjectEventFunction)&gTimeline::OnPopUpPasteSpecial, ITEMNORMAL );
-    BuildItem( popUpMenu, wxString("Clone"), (wxObjectEventFunction)&gTimeline::OnPopUpClone, ITEMNORMAL );
-
-    popUpMenu->AppendSeparator();
-
-    BuildItem( popUpMenu, wxString( "Undo Zoom" ), ( wxObjectEventFunction )&gTimeline::OnPopUpUndoZoom, ITEMNORMAL );
-    BuildItem( popUpMenu, wxString( "Redo Zoom" ), ( wxObjectEventFunction )&gTimeline::OnPopUpRedoZoom, ITEMNORMAL );
-
-    popUpMenu->AppendSeparator();
-
-    BuildItem( popUpMenu, wxString( "Fit &Time Scale" ), ( wxObjectEventFunction )&gTimeline::OnPopUpFitTimeScale, ITEMNORMAL );
-    BuildItem( popUpMenu, wxString( "Fit &Semantic Scale" ), ( wxObjectEventFunction )&gTimeline::OnPopUpFitSemanticScale, ITEMNORMAL );
-
-    popUpMenu->AppendSeparator();
-    
-    BuildItem( popUpMenuColor, wxString( "Code Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpCodeColor, ITEMRADIO, myWindow->IsCodeColorSet()  );
-    BuildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO, myWindow->IsGradientColorSet() );
-    popUpMenu->AppendSubMenu( popUpMenuColor, wxString( "Color" ));
-
-    wxArrayString choices;
-    choices.Add(wxT("Time"));
-    choices.Add(wxT("Objects"));
-    choices.Add(wxT("Size"));
-    choices.Add(wxT("Filter:Communications"));
-    choices.Add(wxT("Filter:Events"));
-    popUpMenuPasteDialog = new wxMultiChoiceDialog( this,
-                                                    wxT( "Select pasted properties:" ),
-                                                    wxT("Paste Special"),
-                                                    choices);
-    // Remove these when operative
-    popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), true );
-
-    popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Time" ), false );
-    popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Size" ), false );
-    popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Objects" ), false );
-    popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Filter" ), false);
-    popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "All" ), false);
-    popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "Communications" ), false);
-    popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "Events" ), false);
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), false );
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ), false );
-
-    popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), false );
-
-    popUpMenu->Enable( popUpMenu->FindItem( "Fit &Semantic Scale" ), true );
-  }
-
-  popUpMenu->Enable( popUpMenu->FindItem( "Undo Zoom" ), !zoomHistory->emptyPrevZoom() );
-  popUpMenu->Enable( popUpMenu->FindItem( "Redo Zoom" ), !zoomHistory->emptyNextZoom() );
-  
-  PopupMenu( popUpMenu, event.GetPosition());
+  PopupMenu( popUpMenu->GetPopUpMenu(), event.GetPosition());
 }
 
 

@@ -1,6 +1,16 @@
-#include "window.h"
+#ifndef _COPYPASTE_H_ 
+#define _COPYPASTE_H_
+
 #include <map>
 using namespace std;
+
+#include "window.h"
+#include "histogram.h"
+#include "gtimeline.h"
+#include "ghistogram.h"
+
+class gTimeline;
+class gHistogram;
 
 class gPasteWindowProperties
 {
@@ -11,24 +21,29 @@ class gPasteWindowProperties
    
     static gPasteWindowProperties *getInstance();
     
-    void setTime( TTime bTime, TTime eTime );
-    TTime getBeginTime( ) const { return beginTime; }
-    TTime getEndTime( ) const { return endTime; }
+    void copy( gTimeline* whichTimeline );
+    void copy( gHistogram* whichHistogram );
+    void paste( gTimeline* whichTimeline, const string property = "All" );
+    void paste( gHistogram* whichHistogram, const string property = "All" );
 
-    void setRow( TObjectOrder bRow, TObjectOrder eRow );
-    TObjectOrder getBeginRow( ) const { return beginRow; }
-    TObjectOrder getEndRow( ) const { return endRow; }
-
-    bool allowPaste( const string tag );
+    bool allowPaste( gTimeline* whichTimeline, const string tag );
+    bool allowPaste( gHistogram* whichHistogram, const string tag );
 
   private:
+    #define SAME_TRACE 0
+    #define DIFF_TRACE 1
+    #define TIMELINE 0
+    #define HISTOGRAM 1
+
+    gTimeline  *timeline;
+    gHistogram *histogram;
+    map < const string, vector< vector < vector< bool > > > > allowed;
+
     gPasteWindowProperties();
-    
-    // ?? static gPasteWindowProperties *pasteWindowProperties;
-    
-    // Common Window Properties
-    map < const string, bool > active;
-    TTime beginTime, endTime;
-    TObjectOrder beginRow, endRow;
+    bool seekAllowedPaste( const string property, int destiny, Trace *destinyTrace );
+
+    void commonMenuSettings( );
+    void commonTimeSettings( TRecordTime destinyTraceEndTime );
 };
 
+#endif // _COPYPASTE_H_
