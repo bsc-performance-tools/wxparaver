@@ -49,13 +49,13 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
   {
     for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       for( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
-        allowed["Time"][trace][source][destiny] = allowed["Time"][trace][source][destiny] && false;
+        allowed["Time"][trace][source][destiny] = false;
   }
   else
   {
     for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       for( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
-        allowed["Time"][trace][source][destiny] = allowed["Time"][trace][source][destiny] || true;
+        allowed["Time"][trace][source][destiny] = true;
   }
 }
 
