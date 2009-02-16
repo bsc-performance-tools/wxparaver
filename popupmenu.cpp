@@ -47,10 +47,52 @@ void gPopUpMenu::BuildItem( wxMenu *popUp,
     popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, timeline );
 }
 
+void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
+{
+  gPasteWindowProperties* sharedProperties = gPasteWindowProperties::pasteWindowProperties->getInstance();
+
+  popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), true );
+
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Time" ), sharedProperties->allowPaste( timeline, "Time") );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Size" ), sharedProperties->allowPaste( timeline, "Size")  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Objects" ), sharedProperties->allowPaste( timeline, "Objects")  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Filter" ), sharedProperties->allowPaste( timeline, "Filter") );
+  
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "All" ), sharedProperties->allowPaste( timeline, "All") );
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "Communications" ), sharedProperties->allowPaste( timeline, "Communications") );
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "Events" ), sharedProperties->allowPaste( timeline, "Events") );
+
+  popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), sharedProperties->allowPaste( timeline, "Paste") );
+  popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ), sharedProperties->allowPaste( timeline, "Paste Special...") );
+
+  popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), sharedProperties->allowPaste( timeline, "Clone") );
+
+  popUpMenu->Enable( popUpMenu->FindItem( "Fit Time Scale" ), sharedProperties->allowPaste( timeline, "Fit Time Scale") );
+  popUpMenu->Enable( popUpMenu->FindItem( "Fit Semantic Scale" ), sharedProperties->allowPaste( timeline, "Fit Semantic Scale") );
+}
+
+void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
+{
+  gPasteWindowProperties* sharedProperties = gPasteWindowProperties::pasteWindowProperties->getInstance();
+
+  popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), true );
+
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Time" ), sharedProperties->allowPaste( histogram, "Time") );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Size" ), sharedProperties->allowPaste( histogram, "Size")  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Objects" ), sharedProperties->allowPaste( histogram, "Objects")  );
+
+  popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), sharedProperties->allowPaste( histogram, "Paste") );
+  popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ), sharedProperties->allowPaste( histogram, "Paste Special") );
+  popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), sharedProperties->allowPaste( histogram, "Clone") );
+  popUpMenu->Enable( popUpMenu->FindItem( "Fit Time Scale" ), sharedProperties->allowPaste( histogram, "Fit Time Scale") );
+  popUpMenu->Enable( popUpMenu->FindItem( "Fit Semantic Scale" ), sharedProperties->allowPaste( histogram, "Fit Semantic Scale") );
+}
+
 
 gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 {
   timeline = whichTimeline;
+  histogram = NULL;
 
   popUpMenu = new wxMenu;
   popUpMenuColor = new wxMenu;
@@ -99,30 +141,12 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
                                                   choices);
   // Remove these when operative
 
-  gPasteWindowProperties* sharedProperties = gPasteWindowProperties::pasteWindowProperties->getInstance();
-
-  popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), true );
-
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Time" ), sharedProperties->allowPaste( timeline, "Time") );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Size" ), sharedProperties->allowPaste( timeline, "Size")  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Objects" ), sharedProperties->allowPaste( timeline, "Objects")  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Filter" ), sharedProperties->allowPaste( timeline, "Filter") );
-  
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "All" ), sharedProperties->allowPaste( timeline, "All") );
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "Communications" ), sharedProperties->allowPaste( timeline, "Communications") );
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "Events" ), sharedProperties->allowPaste( timeline, "Events") );
-
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), sharedProperties->allowPaste( timeline, "Paste") );
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ), sharedProperties->allowPaste( timeline, "Paste Special...") );
-
-  popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), sharedProperties->allowPaste( timeline, "Clone") );
-
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit Time Scale" ), sharedProperties->allowPaste( timeline, "Fit Time Scale") );
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit Semantic Scale" ), sharedProperties->allowPaste( timeline, "Fit Semantic Scale") );
+  enableMenu( timeline );
 }
 
 gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 {
+  timeline = NULL;
   histogram = whichHistogram;
 
   popUpMenu = new wxMenu;
@@ -158,62 +182,55 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
                                                   wxT( "Select pasted properties:" ),
                                                   wxT("Paste Special"),
                                                   choices);
-  // Remove these when operative
-
-  gPasteWindowProperties* sharedProperties = gPasteWindowProperties::pasteWindowProperties->getInstance();
-
-  popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), true );
-
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Time" ), sharedProperties->allowPaste( histogram, "Time") );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Size" ), sharedProperties->allowPaste( histogram, "Size")  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Objects" ), sharedProperties->allowPaste( histogram, "Objects")  );
-
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), sharedProperties->allowPaste( histogram, "Paste") );
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ), sharedProperties->allowPaste( histogram, "Paste Special") );
-  popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), sharedProperties->allowPaste( histogram, "Clone") );
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit Time Scale" ), sharedProperties->allowPaste( histogram, "Fit Time Scale") );
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit Semantic Scale" ), sharedProperties->allowPaste( histogram, "Fit Semantic Scale") );
+  enableMenu( histogram );
 }
 
-void gPopUpMenu::Enable( const string tag )
+void gPopUpMenu::Enable( const string tag, bool checkPaste )
 {
   if ( timeline == NULL )
   {
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
-                       gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, "Paste" ));
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
-                       gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, "Paste Special..." ));
-
+    if ( checkPaste )
+    {
+      popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, "Paste" ));
+      popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, "Paste Special..." ));
+    }
     popUpMenu->Enable( popUpMenu->FindItem( tag ), gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, tag ));
   }
   else
   {
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
-                       gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, "Paste" ));
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
-                       gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, "Paste Special..." ));
+    if ( checkPaste )
+    {
+      popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, "Paste" ));
+      popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, "Paste Special..." ));
 
+    }
     popUpMenu->Enable( popUpMenu->FindItem( tag ), gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, tag ));
   }
-
 }
 
 
-void gPopUpMenu::Enable( const string tag, bool enable )
+void gPopUpMenu::Enable( const string tag, bool checkPaste, bool enable )
 {
-  if ( timeline == NULL )
+  if ( checkPaste )
   {
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
-                       gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, "Paste" ));
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
-                       gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, "Paste Special..." ));
-  }
-  else
-  {
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
-                       gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, "Paste" ));
-    popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
-                       gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, "Paste Special..." ));
+    if ( timeline == NULL )
+    {
+      popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, "Paste" ));
+      popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( histogram, "Paste Special..." ));
+    }
+    else
+    {
+      popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, "Paste" ));
+      popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->allowPaste( timeline, "Paste Special..." ));
+    }
   }
 
   popUpMenu->Enable( popUpMenu->FindItem( tag ), enable );
@@ -231,12 +248,12 @@ void gPopUpMenu::Check( const string tag, bool checked )
 
 string gPopUpMenu::GetOption( int position )
 {
-  if ( choices[ position ].c_str() == "Filter:Communications")
-    return string("Communications");
-  else if ( choices[ position ].c_str() == "Filter:Events")
-    return string("Events");
+  if ( choices[ position ].compare( "Filter:Communications" ))
+    return string( "Communications" );
+  else if ( choices[ position ].compare( "Filter:Events" ))
+    return string( "Events" );
   else  
-    return choices[ position ].c_str();
+    return string( choices[ position ] );
 }
 
 

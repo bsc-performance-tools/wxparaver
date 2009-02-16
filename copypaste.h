@@ -36,6 +36,7 @@ class gPasteWindowProperties
     #define TIMELINE 0
     #define HISTOGRAM 1
 
+    
     gTimeline  *timeline;
     gHistogram *histogram;
     map < const string, vector< vector < vector< bool > > > > allowed;

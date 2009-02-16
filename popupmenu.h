@@ -18,8 +18,11 @@ class gPopUpMenu
     gPopUpMenu( gHistogram *whichHistogram );
     ~gPopUpMenu();
 
-    void Enable( const string tag );
-    void Enable( const string tag, bool enable );
+    void Enable( const string tag, bool checkPaste );
+    void Enable( const string tag, bool checkPaste, bool enable );
+
+    void enableMenu( gTimeline *whichTimeline );
+    void enableMenu( gHistogram *whichHistogram );
 
     wxMenu *GetPopUpMenu() { return popUpMenu; };
 //    void Check( const string tag, bool checked );
@@ -39,6 +42,7 @@ class gPopUpMenu
 
     wxArrayString choices;
     wxMultiChoiceDialog * popUpMenuPasteDialog;
+
 
     void BuildItem( wxMenu *popUp,
                     const wxString &title,

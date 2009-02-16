@@ -544,12 +544,13 @@ void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
 void gTimeline::OnPopUpCopy()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
+  popUpMenu->enableMenu( this );
 }
 
 
 void gTimeline::OnPopUpPaste()
 {
-//  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
 }
 
 
@@ -660,7 +661,7 @@ void gTimeline::OnPopUpUndoZoom( wxUpdateUIEvent& event )
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-    popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom());
+    popUpMenu->Enable( "Undo Zoom", false, !zoomHistory->emptyPrevZoom());
   }
 }
 
@@ -673,7 +674,7 @@ void gTimeline::OnPopUpRedoZoom()
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-    popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom());
+    popUpMenu->Enable( "Redo Zoom", false, !zoomHistory->emptyNextZoom());
   }
 }
 
@@ -687,8 +688,8 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
   if ( popUpMenu == NULL )
     popUpMenu = new gPopUpMenu( this );
 
-  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
-  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
+  popUpMenu->Enable( "Undo Zoom", false, !zoomHistory->emptyPrevZoom() );
+  popUpMenu->Enable( "Redo Zoom", false, !zoomHistory->emptyNextZoom() );
 
   PopupMenu( popUpMenu->GetPopUpMenu(), event.GetPosition());
 }

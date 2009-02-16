@@ -1,5 +1,8 @@
 #include "copypaste.h"
 #include "trace.h"
+
+//#include <iostream>
+//using namespace std;
 //IDEA undo copy, undo paste
 
 gPasteWindowProperties* gPasteWindowProperties::pasteWindowProperties = NULL;
@@ -8,8 +11,6 @@ gPasteWindowProperties* gPasteWindowProperties::pasteWindowProperties = NULL;
 
 void gPasteWindowProperties::commonMenuSettings( )
 {
-  // Common Menu properties
-
   for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
     for ( int origin = TIMELINE; origin <= HISTOGRAM; origin++ )
       for ( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
@@ -21,9 +22,6 @@ void gPasteWindowProperties::commonMenuSettings( )
   // Timeline/histogram different Menu properties
   if ( timeline != NULL )
   {
-  //  if ()
-  
-  
   }
   else
   {
@@ -85,7 +83,7 @@ gPasteWindowProperties::gPasteWindowProperties()
 {
   timeline = NULL;
   histogram = NULL;
-  
+
   // Something more ingenous?
   vector< bool > destiny( 2 , false );
   vector < vector< bool > > source( 2, destiny );
@@ -380,6 +378,7 @@ bool gPasteWindowProperties::allowPaste( gTimeline *whichTimeline, const string 
 
 bool gPasteWindowProperties::allowPaste( gHistogram *whichHistogram, const string property )
 {
+
   if ( timeline == NULL && histogram == NULL )
     return false;
   else if ( allowed.count( property ) == 0 )
