@@ -18,17 +18,19 @@ class gPopUpMenu
     gPopUpMenu( gHistogram *whichHistogram );
     ~gPopUpMenu();
 
-    void Enable( const string tag, bool checkPaste );
-    void Enable( const string tag, bool checkPaste, bool enable );
+    void enablePaste( const string tag, bool checkPaste );
+    void enable( const string tag, bool enable );
+    void enable( const string tag );
+    void disable( const string tag );
 
     void enableMenu( gTimeline *whichTimeline );
     void enableMenu( gHistogram *whichHistogram );
 
-    wxMenu *GetPopUpMenu() { return popUpMenu; };
+    wxMenu *getPopUpMenu() { return popUpMenu; };
 //    void Check( const string tag, bool checked );
-    string GetOption( int position );
-    bool OkPressed( );
-    wxArrayInt GetSelections();
+    string getOption( int position );
+    bool okPressed( );
+    wxArrayInt getSelections();
 
 
   private:
@@ -43,8 +45,7 @@ class gPopUpMenu
     wxArrayString choices;
     wxMultiChoiceDialog * popUpMenuPasteDialog;
 
-
-    void BuildItem( wxMenu *popUp,
+    void buildItem( wxMenu *popUp,
                     const wxString &title,
                     wxObjectEventFunction handler,
                     ItemType itemType,

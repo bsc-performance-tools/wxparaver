@@ -550,7 +550,7 @@ void gTimeline::OnPopUpCopy()
 
 void gTimeline::OnPopUpPaste()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
+//  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
 }
 
 
@@ -631,13 +631,13 @@ void gTimeline::OnPopUpPasteFilterEvents()
 
 void gTimeline::OnPopUpPasteSpecial()
 {
-  if ( popUpMenu->OkPressed() )
+  if ( popUpMenu->okPressed() )
   {
-    wxArrayInt selections = popUpMenu->GetSelections();
+    wxArrayInt selections = popUpMenu->getSelections();
     if ( selections.GetCount() > 0 )
     {
       for ( size_t i = 0; i < selections.GetCount(); i++ )
-        gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, popUpMenu->GetOption( selections[i] ) );
+        gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, popUpMenu->getOption( selections[i] ) );
 
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
@@ -661,7 +661,7 @@ void gTimeline::OnPopUpUndoZoom( wxUpdateUIEvent& event )
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-    popUpMenu->Enable( "Undo Zoom", false, !zoomHistory->emptyPrevZoom());
+    popUpMenu->enable( "Undo Zoom", !zoomHistory->emptyPrevZoom());
   }
 }
 
@@ -674,7 +674,7 @@ void gTimeline::OnPopUpRedoZoom()
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-    popUpMenu->Enable( "Redo Zoom", false, !zoomHistory->emptyNextZoom());
+    popUpMenu->enable( "Redo Zoom", !zoomHistory->emptyNextZoom());
   }
 }
 
@@ -688,10 +688,10 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
   if ( popUpMenu == NULL )
     popUpMenu = new gPopUpMenu( this );
 
-  popUpMenu->Enable( "Undo Zoom", false, !zoomHistory->emptyPrevZoom() );
-  popUpMenu->Enable( "Redo Zoom", false, !zoomHistory->emptyNextZoom() );
+  popUpMenu->enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
+  popUpMenu->enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
-  PopupMenu( popUpMenu->GetPopUpMenu(), event.GetPosition());
+  PopupMenu( popUpMenu->getPopUpMenu(), event.GetPosition());
 }
 
 

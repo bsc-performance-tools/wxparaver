@@ -407,7 +407,7 @@ void gHistogram::updateHistogram()
     execute();
     myHistogram->setChanged( true );
   }
-    
+
   if( this->IsShown() )
   {
     if( myHistogram->getRedraw() )
@@ -439,8 +439,6 @@ void gHistogram::OnCloseWindow( wxCloseEvent& event )
 }
 
 
-
-
 /*!
  * wxEVT_GRID_RANGE_SELECT event handler for ID_GRIDHISTO
  */
@@ -458,26 +456,27 @@ void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
 void gHistogram::OnPopUpCopy()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
+  popUpMenu->enableMenu( this );
 }
 
 void gHistogram::OnPopUpPaste()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
+//  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
 }
 
 void gHistogram::OnPopUpPasteSpecial()
 {
-  if ( popUpMenu->OkPressed() )
+  if ( popUpMenu->okPressed() )
   {
-    wxArrayInt selections = popUpMenu->GetSelections();
+    wxArrayInt selections = popUpMenu->getSelections();
     if ( selections.GetCount() > 0 )
     {
       bool recalc = false;
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
-        if ( popUpMenu->GetOption( selections[i] ) == "Time" )
+        if ( popUpMenu->getOption( selections[i] ) == "Time" )
           recalc = true;
-        gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, popUpMenu->GetOption( selections[i] ) );
+        gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, popUpMenu->getOption( selections[i] ) );
       }
 
       if ( recalc )
@@ -539,7 +538,7 @@ void gHistogram::OnCellRightClick( wxGridEvent& event )
 //  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
 //  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
-  PopupMenu( popUpMenu->GetPopUpMenu(), event.GetPosition());
+  PopupMenu( popUpMenu->getPopUpMenu(), event.GetPosition());
 }
 
 
@@ -555,5 +554,5 @@ void gHistogram::OnLabelRightClick( wxGridEvent& event )
 //  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
 //  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
-  PopupMenu( popUpMenu->GetPopUpMenu(), event.GetPosition());
+  PopupMenu( popUpMenu->getPopUpMenu(), event.GetPosition());
 }

@@ -24,11 +24,11 @@ class gPasteWindowProperties
     void copy( gTimeline* whichTimeline );
     void copy( gHistogram* whichHistogram );
 
-    void paste( gTimeline* whichTimeline, const string property = "All" );
-    void paste( gHistogram* whichHistogram, const string property = "All" );
+    void paste( gTimeline* whichTimeline, const string property );
+    void paste( gHistogram* whichHistogram, const string property );
 
-    bool allowPaste( gTimeline* whichTimeline, const string tag );
-    bool allowPaste( gHistogram* whichHistogram, const string tag );
+    bool isAllowed( gTimeline* whichTimeline, const string tag );
+    bool isAllowed( gHistogram* whichHistogram, const string tag );
 
   private:
     #define SAME_TRACE 0
@@ -36,7 +36,6 @@ class gPasteWindowProperties
     #define TIMELINE 0
     #define HISTOGRAM 1
 
-    
     gTimeline  *timeline;
     gHistogram *histogram;
     map < const string, vector< vector < vector< bool > > > > allowed;
@@ -45,7 +44,7 @@ class gPasteWindowProperties
 
     void commonMenuSettings( );
     void commonTimeSettings( TRecordTime destinyTraceEndTime );
-    bool seekAllowedPaste( const string property, int destiny, Trace *destinyTrace );
+    bool seekAllowed( const string property, int destiny, Trace *destinyTrace );
 };
 
 #endif // _COPYPASTE_H_

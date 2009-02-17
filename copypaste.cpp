@@ -7,7 +7,6 @@
 
 gPasteWindowProperties* gPasteWindowProperties::pasteWindowProperties = NULL;
 
-// PRIVATE 
 
 void gPasteWindowProperties::commonMenuSettings( )
 {
@@ -27,6 +26,7 @@ void gPasteWindowProperties::commonMenuSettings( )
   {
   }
 }
+
 
 void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
 {
@@ -60,7 +60,8 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
   }
 }
 
-bool gPasteWindowProperties::seekAllowedPaste( const string property, int destiny, Trace *destinyTrace )
+
+bool gPasteWindowProperties::seekAllowed( const string property, int destiny, Trace *destinyTrace )
 {
   if ( timeline != NULL )
   {
@@ -89,58 +90,31 @@ gPasteWindowProperties::gPasteWindowProperties()
   vector < vector< bool > > source( 2, destiny );
   vector< vector < vector< bool > > > option( 2, source );
 
-  // Policy : Allow paste times between different kind of windows and different traces
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[SAME_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = true;
-  option[DIFF_TRACE][TIMELINE][TIMELINE] = true;
-  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
-  allowed["Time"] = option;
-  allowed["Copy"] = option;
-  // Policy : Allow paste size between different type of windows and different traces
-/*
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[SAME_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = true;
-  option[DIFF_TRACE][TIMELINE][TIMELINE] = true;
-  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
-*/
+  // Policy : Allow paste option between different kind of windows and different traces
   for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
     for ( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
       for ( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         option[trace][copy][paste] = true;
+
+  allowed["Time"] = option;
+  allowed["Copy"] = option;
   allowed["Size"] = option;
 
+  // Policy : Don't allow initial paste
   for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
     for ( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
       for ( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         option[trace][copy][paste] = false;
+  allowed["Objects"] = option; // due to not being implemented yet
+  allowed["Paste"] = option;
+  allowed["Paste Special..."] = option;
+  allowed["Filter"] = option;
+  allowed["Filter All"] = option;
+  allowed["Communications"] = option;
+  allowed["Events"] = option;
 
-  // Policy : Allow paste times between different windows and differente traces.
+  // Policy : Selective paste
 /*
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[SAME_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = true;
-  option[DIFF_TRACE][TIMELINE][TIMELINE] = true;
-  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
-*/
-  allowed["Objects"] = option;
-
-  // Policy : Allow paste times between different windows and differente traces.
-/*
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
   option[SAME_TRACE][TIMELINE][TIMELINE] = true;
   option[SAME_TRACE][TIMELINE][HISTOGRAM] = false;
   option[SAME_TRACE][HISTOGRAM][TIMELINE] = false;
@@ -149,64 +123,15 @@ gPasteWindowProperties::gPasteWindowProperties()
   option[DIFF_TRACE][TIMELINE][HISTOGRAM] = false;
   option[DIFF_TRACE][HISTOGRAM][TIMELINE] = false;
   option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = false;
-*/
+
   allowed["Filter"] = option;
-
-  // Policy : Allow paste times between different windows and differente traces.
-/*
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[SAME_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = true;
-  option[DIFF_TRACE][TIMELINE][TIMELINE] = true;
-  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
-*/
   allowed["Filter All"] = option;
-
-  // Policy : Allow paste times between different windows and differente traces.
-/*
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[SAME_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = true;
-  option[DIFF_TRACE][TIMELINE][TIMELINE] = true;
-  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
-*/
   allowed["Communications"] = option;
-
-  // Policy : Allow paste times between different windows and differente traces.
-/*
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][TIMELINE] = true;
-  option[SAME_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[SAME_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = true;
-  option[DIFF_TRACE][TIMELINE][TIMELINE] = true;
-  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = true;
-  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = true;
-  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
-*/
   allowed["Events"] = option;
-/*
-  for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
-    for ( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
-      for ( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
-      {
-        option[trace][copy][paste] = false;
-      }
 */
-  allowed["Paste"] = option;
-  allowed["Paste Special..."] = option;
 }
 
 
-// PUBLIC 
 gPasteWindowProperties::~gPasteWindowProperties()
 {
 }
@@ -362,30 +287,30 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
 }
 
 
-bool gPasteWindowProperties::allowPaste( gTimeline *whichTimeline, const string property )
+bool gPasteWindowProperties::isAllowed( gTimeline *whichTimeline, const string property )
 {
   if ( timeline == NULL && histogram == NULL )
     return false;
-  else if ( allowed.count( property ) == 0 )
-    return false;
+//  else if ( allowed.count( property ) == 0 )
+//    return false;
 
   commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
   commonMenuSettings();
 
-  return seekAllowedPaste( property, TIMELINE, whichTimeline->GetMyWindow()->getTrace() );
+  return seekAllowed( property, TIMELINE, whichTimeline->GetMyWindow()->getTrace() );
 }
 
 
-bool gPasteWindowProperties::allowPaste( gHistogram *whichHistogram, const string property )
+bool gPasteWindowProperties::isAllowed( gHistogram *whichHistogram, const string property )
 {
 
   if ( timeline == NULL && histogram == NULL )
     return false;
-  else if ( allowed.count( property ) == 0 )
-    return false;
+//  else if ( allowed.count( property ) == 0 )
+//    return false;
 
   commonTimeSettings( whichHistogram->GetHistogram()->getControlWindow()->getTrace()->getEndTime() );
   commonMenuSettings();
 
-  return seekAllowedPaste( property, HISTOGRAM, whichHistogram->GetHistogram()->getControlWindow()->getTrace() );
+  return seekAllowed( property, HISTOGRAM, whichHistogram->GetHistogram()->getControlWindow()->getTrace() );
 }
