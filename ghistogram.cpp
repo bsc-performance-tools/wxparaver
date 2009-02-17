@@ -494,7 +494,12 @@ void gHistogram::OnPopUpPasteTime()
   updateHistogram();
 }
 
-void gHistogram::OnPopUpPasteObjects(){}
+void gHistogram::OnPopUpPasteObjects()
+{
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
+  updateHistogram();
+}
+
 void gHistogram::OnPopUpPasteSize()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );

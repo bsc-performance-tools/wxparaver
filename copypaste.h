@@ -9,6 +9,22 @@ using namespace std;
 #include "gtimeline.h"
 #include "ghistogram.h"
 
+#define ST_COPY             "Copy"
+#define ST_PASTE            "Paste"
+#define ST_PASTE_SPECIAL    "Paste Special..."
+#define ST_TIME             "Time"
+#define ST_SIZE             "Size"
+#define ST_OBJECTS          "Objects"
+#define ST_FILTER           "Filter"
+#define ST_FILTER_COMMS     "Communications"
+#define ST_FILTER_COMMS_XT  "Filter:Communications"
+#define ST_FILTER_EVENTS    "Events"
+#define ST_FILTER_EVENTS_XT "Filter:Events"
+#define ST_FILTER_ALL       "All"
+#define ST_CLONE            "Clone"
+#define ST_FIT_TIME         "Fit Time Scale"
+#define ST_FIT_SEMANTIC     "Fit Semantic Scale"
+
 class gTimeline;
 class gHistogram;
 
