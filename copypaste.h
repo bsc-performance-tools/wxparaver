@@ -60,6 +60,7 @@ class gPasteWindowProperties
 
     void commonMenuSettings( );
     void commonTimeSettings( TRecordTime destinyTraceEndTime );
+    void commonFilterSettings( gTimeline *whichTimeline );
     bool seekAllowed( const string property, int destiny, Trace *destinyTrace );
 };
 

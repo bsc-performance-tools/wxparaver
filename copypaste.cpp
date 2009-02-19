@@ -1,5 +1,7 @@
 #include "copypaste.h"
 #include "trace.h"
+#include "filter.h"
+
 
 //#include <iostream>
 //using namespace std;
@@ -60,6 +62,34 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
   }
 }
 
+void gPasteWindowProperties::commonFilterSettings( gTimeline *whichTimeline )
+{
+  if ( timeline != NULL )
+  {
+    if ( timeline->GetMyWindow()->isDerivedWindow() ||
+         whichTimeline ->GetMyWindow()->isDerivedWindow() )
+    {
+      for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+      {
+        allowed["Filter"][trace][TIMELINE][TIMELINE] = false;
+        allowed["Filter All"][trace][TIMELINE][TIMELINE] = false;
+        allowed["Communications"][trace][TIMELINE][TIMELINE] = false;
+        allowed["Events"][trace][TIMELINE][TIMELINE] = false;
+      }
+    }
+    else
+    {
+      for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+      {
+        allowed["Filter"][trace][TIMELINE][TIMELINE] = true;
+        allowed["Filter All"][trace][TIMELINE][TIMELINE] = true;
+        allowed["Communications"][trace][TIMELINE][TIMELINE] = true;
+        allowed["Events"][trace][TIMELINE][TIMELINE] = true;
+      }
+    }
+  }
+}
+
 
 bool gPasteWindowProperties::seekAllowed( const string property, int destiny, Trace *destinyTrace )
 {
@@ -108,13 +138,8 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed["Objects"] = option; // due to not being implemented yet
   allowed[ST_PASTE] = option;
   allowed["Paste Special..."] = option;
-  allowed["Filter"] = option;
-  allowed["Filter All"] = option;
-  allowed["Communications"] = option;
-  allowed["Events"] = option;
 
   // Policy : Selective paste
-/*
   option[SAME_TRACE][TIMELINE][TIMELINE] = true;
   option[SAME_TRACE][TIMELINE][HISTOGRAM] = false;
   option[SAME_TRACE][HISTOGRAM][TIMELINE] = false;
@@ -128,7 +153,6 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed["Filter All"] = option;
   allowed["Communications"] = option;
   allowed["Events"] = option;
-*/
 }
 
 
@@ -195,12 +219,19 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     }
     else if ( property == "Communications" )
     {
+      cout << "gPasteWindowProperties::paste (timeline) communications" << endl;
+      timeline->GetMyWindow()->getFilter()->copyCommunicationsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
     else if ( property == "Events" )
     {
+      cout << "gPasteWindowProperties::paste (timeline) events" << endl;
+      timeline->GetMyWindow()->getFilter()->copyEventsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
     else if ( property == "Filter All" )
     {
+      cout << "gPasteWindowProperties::paste (timeline) all" << endl;
+      timeline->GetMyWindow()->getFilter()->copyEventsSection( whichTimeline->GetMyWindow()->getFilter() );
+      timeline->GetMyWindow()->getFilter()->copyCommunicationsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
     else
     {
@@ -294,7 +325,10 @@ bool gPasteWindowProperties::isAllowed( gTimeline *whichTimeline, const string p
 //  else if ( allowed.count( property ) == 0 )
 //    return false;
 
+  cout << "gPasteWindowProperties::isAllowed (timeline) property:" << property << endl;
+
   commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
+  commonFilterSettings( whichTimeline );
   commonMenuSettings();
 
   return seekAllowed( property, TIMELINE, whichTimeline->GetMyWindow()->getTrace() );

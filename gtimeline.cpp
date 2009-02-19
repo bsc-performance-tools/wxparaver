@@ -604,7 +604,7 @@ void gTimeline::OnPopUpPasteSize()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
   myWindow->setRedraw( true );
-  myWindow->setChanged( true ); //?
+//  myWindow->setChanged( true ); //?
 }
 
 void gTimeline::OnPopUpPasteFilterAll()
