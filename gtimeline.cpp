@@ -547,13 +547,6 @@ void gTimeline::OnPopUpCopy()
   popUpMenu->enableMenu( this );
 }
 
-
-void gTimeline::OnPopUpPaste()
-{
-//  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
-}
-
-
 void gTimeline::OnPopUpClone()
 {
 //  printf("CATCHED clone!\n");

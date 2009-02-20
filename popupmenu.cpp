@@ -52,24 +52,24 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
 {
   gPasteWindowProperties* sharedProperties = gPasteWindowProperties::pasteWindowProperties->getInstance();
 
-  popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), true );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_COPY ), true );
 
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Time" ), sharedProperties->isAllowed( timeline, "Time") );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Size" ), sharedProperties->isAllowed( timeline, "Size")  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Objects" ), sharedProperties->isAllowed( timeline, "Objects")  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Filter" ), sharedProperties->isAllowed( timeline, "Filter") );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_TIME ), sharedProperties->isAllowed( timeline, ST_TIME) );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_SIZE ), sharedProperties->isAllowed( timeline, ST_SIZE)  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_OBJECTS ), sharedProperties->isAllowed( timeline, ST_OBJECTS)  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_FILTER ), sharedProperties->isAllowed( timeline, ST_FILTER) );
   
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "All" ), sharedProperties->isAllowed( timeline, "Filter All") );
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "Communications" ), sharedProperties->isAllowed( timeline, "Communications") );
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( "Events" ), sharedProperties->isAllowed( timeline, "Events") );
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_ALL ), sharedProperties->isAllowed( timeline, ST_FILTER_ALL) );
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_COMMS ), sharedProperties->isAllowed( timeline, ST_FILTER_COMMS) );
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_EVENTS ), sharedProperties->isAllowed( timeline, ST_FILTER_EVENTS) );
 
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), sharedProperties->isAllowed( timeline, "Paste") );
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ), sharedProperties->isAllowed( timeline, "Paste Special...") );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ), sharedProperties->isAllowed( timeline, ST_PASTE) );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ), sharedProperties->isAllowed( timeline, ST_PASTE_SPECIAL) );
 
-  popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), false ); // when implemented, set to true
+  popUpMenu->Enable( popUpMenu->FindItem( ST_CLONE ), false ); // when implemented, set to true
 
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit Time Scale" ), true );
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit Semantic Scale" ), true );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_TIME ), true );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_SEMANTIC ), true );
 }
 
 
@@ -77,18 +77,18 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 {
   gPasteWindowProperties* sharedProperties = gPasteWindowProperties::pasteWindowProperties->getInstance();
 
-  popUpMenu->Enable( popUpMenu->FindItem( "Copy" ), true );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_COPY ), true );
 
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Time" ), sharedProperties->isAllowed( histogram, "Time") );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Size" ), sharedProperties->isAllowed( histogram, "Size")  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( "Objects" ), sharedProperties->isAllowed( histogram, "Objects")  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_TIME ), sharedProperties->isAllowed( histogram, ST_TIME) );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_SIZE ), sharedProperties->isAllowed( histogram, ST_SIZE)  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_OBJECTS ), sharedProperties->isAllowed( histogram, ST_OBJECTS)  );
 
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste" ), sharedProperties->isAllowed( histogram, "Paste") );
-  popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ), sharedProperties->isAllowed( histogram, "Paste Special...") );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ), sharedProperties->isAllowed( histogram, ST_PASTE) );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ), sharedProperties->isAllowed( histogram, ST_PASTE_SPECIAL) );
   
-  popUpMenu->Enable( popUpMenu->FindItem( "Clone" ), false ); // when implemented, set to true
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit Time Scale" ), true );
-  popUpMenu->Enable( popUpMenu->FindItem( "Fit Semantic Scale" ), true );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_CLONE ), false ); // when implemented, set to true
+  popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_TIME ), true );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_SEMANTIC ), true );
 }
 
 
@@ -102,20 +102,20 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
 
-  buildItem( popUpMenu, wxString("Copy"), (wxObjectEventFunction)&gTimeline::OnPopUpCopy, ITEMNORMAL );
+  buildItem( popUpMenu, wxString(ST_COPY), (wxObjectEventFunction)&gTimeline::OnPopUpCopy, ITEMNORMAL );
 
-  buildItem( popUpMenuPaste, wxString("Time"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteTime, ITEMNORMAL );
-  buildItem( popUpMenuPaste, wxString("Objects"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteObjects, ITEMNORMAL );
-  buildItem( popUpMenuPaste, wxString("Size"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteSize, ITEMNORMAL );
+  buildItem( popUpMenuPaste, wxString(ST_TIME), (wxObjectEventFunction)&gTimeline::OnPopUpPasteTime, ITEMNORMAL );
+  buildItem( popUpMenuPaste, wxString(ST_OBJECTS), (wxObjectEventFunction)&gTimeline::OnPopUpPasteObjects, ITEMNORMAL );
+  buildItem( popUpMenuPaste, wxString(ST_SIZE), (wxObjectEventFunction)&gTimeline::OnPopUpPasteSize, ITEMNORMAL );
 
-  buildItem( popUpMenuPasteFilter, wxString("All"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterAll, ITEMNORMAL );
-  buildItem( popUpMenuPasteFilter, wxString("Communications"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterCommunications, ITEMNORMAL );
-  buildItem( popUpMenuPasteFilter, wxString("Events"), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterEvents, ITEMNORMAL );
-  popUpMenuPaste->AppendSubMenu( popUpMenuPasteFilter, wxString( "Filter" ));
-  popUpMenu->AppendSubMenu( popUpMenuPaste, wxString( "Paste" ));
+  buildItem( popUpMenuPasteFilter, wxString(ST_FILTER_ALL), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterAll, ITEMNORMAL );
+  buildItem( popUpMenuPasteFilter, wxString(ST_FILTER_COMMS), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterCommunications, ITEMNORMAL );
+  buildItem( popUpMenuPasteFilter, wxString(ST_FILTER_EVENTS), (wxObjectEventFunction)&gTimeline::OnPopUpPasteFilterEvents, ITEMNORMAL );
+  popUpMenuPaste->AppendSubMenu( popUpMenuPasteFilter, wxString( ST_FILTER ));
+  popUpMenu->AppendSubMenu( popUpMenuPaste, wxString( ST_PASTE ));
 
-  buildItem( popUpMenu, wxString("Paste Special..."), (wxObjectEventFunction)&gTimeline::OnPopUpPasteSpecial, ITEMNORMAL );
-  buildItem( popUpMenu, wxString("Clone"), (wxObjectEventFunction)&gTimeline::OnPopUpClone, ITEMNORMAL );
+  buildItem( popUpMenu, wxString(ST_PASTE_SPECIAL), (wxObjectEventFunction)&gTimeline::OnPopUpPasteSpecial, ITEMNORMAL );
+  buildItem( popUpMenu, wxString(ST_CLONE), (wxObjectEventFunction)&gTimeline::OnPopUpClone, ITEMNORMAL );
 
   popUpMenu->AppendSeparator();
 
@@ -124,8 +124,8 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   popUpMenu->AppendSeparator();
 
-  buildItem( popUpMenu, wxString( "Fit Time Scale" ), ( wxObjectEventFunction )&gTimeline::OnPopUpFitTimeScale, ITEMNORMAL );
-  buildItem( popUpMenu, wxString( "Fit Semantic Scale" ), ( wxObjectEventFunction )&gTimeline::OnPopUpFitSemanticScale, ITEMNORMAL );
+  buildItem( popUpMenu, wxString( ST_FIT_TIME ), ( wxObjectEventFunction )&gTimeline::OnPopUpFitTimeScale, ITEMNORMAL );
+  buildItem( popUpMenu, wxString( ST_FIT_SEMANTIC ), ( wxObjectEventFunction )&gTimeline::OnPopUpFitSemanticScale, ITEMNORMAL );
 
   popUpMenu->AppendSeparator();
 
@@ -133,11 +133,11 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO, timeline->GetMyWindow()->IsGradientColorSet() );
   popUpMenu->AppendSubMenu( popUpMenuColor, wxString( "Color" ));
 
-  choices.Add(wxT("Time"));
-  choices.Add(wxT("Objects"));
-  choices.Add(wxT("Size"));
-  choices.Add(wxT("Filter:Communications"));
-  choices.Add(wxT("Filter:Events"));
+  choices.Add(wxT(ST_TIME));
+  choices.Add(wxT(ST_OBJECTS));
+  choices.Add(wxT(ST_SIZE));
+  choices.Add(wxT(ST_FILTER_COMMS_XT));
+  choices.Add(wxT(ST_FILTER_EVENTS_XT));
   popUpMenuPasteDialog = new wxMultiChoiceDialog( timeline,
                                                   wxT( "Select pasted properties:" ),
                                                   wxT("Paste Special"),
@@ -156,16 +156,16 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
 
-  buildItem( popUpMenu, wxString("Copy"), (wxObjectEventFunction)&gHistogram::OnPopUpCopy, ITEMNORMAL );
+  buildItem( popUpMenu, wxString(ST_COPY), (wxObjectEventFunction)&gHistogram::OnPopUpCopy, ITEMNORMAL );
 
-  buildItem( popUpMenuPaste, wxString("Time"), (wxObjectEventFunction)&gHistogram::OnPopUpPasteTime, ITEMNORMAL );
-  buildItem( popUpMenuPaste, wxString("Objects"), (wxObjectEventFunction)&gHistogram::OnPopUpPasteObjects, ITEMNORMAL );
-  buildItem( popUpMenuPaste, wxString("Size"), (wxObjectEventFunction)&gHistogram::OnPopUpPasteSize, ITEMNORMAL );
+  buildItem( popUpMenuPaste, wxString(ST_TIME), (wxObjectEventFunction)&gHistogram::OnPopUpPasteTime, ITEMNORMAL );
+  buildItem( popUpMenuPaste, wxString(ST_OBJECTS), (wxObjectEventFunction)&gHistogram::OnPopUpPasteObjects, ITEMNORMAL );
+  buildItem( popUpMenuPaste, wxString(ST_SIZE), (wxObjectEventFunction)&gHistogram::OnPopUpPasteSize, ITEMNORMAL );
 
-  popUpMenu->AppendSubMenu( popUpMenuPaste, wxString( "Paste" ));
+  popUpMenu->AppendSubMenu( popUpMenuPaste, wxString( ST_PASTE ));
 
-  buildItem( popUpMenu, wxString("Paste Special..."), (wxObjectEventFunction)&gHistogram::OnPopUpPasteSpecial, ITEMNORMAL );
-  buildItem( popUpMenu, wxString("Clone"), (wxObjectEventFunction)&gHistogram::OnPopUpClone, ITEMNORMAL );
+  buildItem( popUpMenu, wxString(ST_PASTE_SPECIAL), (wxObjectEventFunction)&gHistogram::OnPopUpPasteSpecial, ITEMNORMAL );
+  buildItem( popUpMenu, wxString(ST_CLONE), (wxObjectEventFunction)&gHistogram::OnPopUpClone, ITEMNORMAL );
 
   popUpMenu->AppendSeparator();
 
@@ -174,12 +174,12 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   popUpMenu->AppendSeparator();
 
-  buildItem( popUpMenu, wxString( "Fit Time Scale" ), ( wxObjectEventFunction )&gHistogram::OnPopUpFitTimeScale, ITEMNORMAL );
-  buildItem( popUpMenu, wxString( "Fit Semantic Scale" ), ( wxObjectEventFunction )&gHistogram::OnPopUpFitSemanticScale, ITEMNORMAL );
+  buildItem( popUpMenu, wxString( ST_FIT_TIME ), ( wxObjectEventFunction )&gHistogram::OnPopUpFitTimeScale, ITEMNORMAL );
+  buildItem( popUpMenu, wxString( ST_FIT_SEMANTIC ), ( wxObjectEventFunction )&gHistogram::OnPopUpFitSemanticScale, ITEMNORMAL );
 
-  choices.Add(wxT("Time"));
-  choices.Add(wxT("Objects"));
-  choices.Add(wxT("Size"));
+  choices.Add(wxT(ST_TIME));
+  choices.Add(wxT(ST_OBJECTS));
+  choices.Add(wxT(ST_SIZE));
   popUpMenuPasteDialog = new wxMultiChoiceDialog( histogram,
                                                   wxT( "Select pasted properties:" ),
                                                   wxT("Paste Special"),
@@ -194,10 +194,10 @@ void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
   {
     if ( checkPaste )
     {
-      popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
-                         gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, "Paste" ));
-      popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
-                         gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, "Paste Special..." ));
+      popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, ST_PASTE ));
+      popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, ST_PASTE_SPECIAL ));
     }
     popUpMenu->Enable( popUpMenu->FindItem( tag ), gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, tag ));
   }
@@ -205,10 +205,10 @@ void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
   {
     if ( checkPaste )
     {
-      popUpMenu->Enable( popUpMenu->FindItem( "Paste" ),
-                         gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, "Paste" ));
-      popUpMenu->Enable( popUpMenu->FindItem( "Paste Special..." ),
-                         gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, "Paste Special..." ));
+      popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, ST_PASTE ));
+      popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ),
+                         gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, ST_PASTE_SPECIAL ));
 
     }
     popUpMenu->Enable( popUpMenu->FindItem( tag ), gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, tag ));
@@ -236,10 +236,10 @@ void gPopUpMenu::disable( const string tag )
 
 string gPopUpMenu::getOption( int position )
 {
-  if ( choices[ position ].compare( "Filter:Communications" ))
-    return string( "Communications" );
-  else if ( choices[ position ].compare( "Filter:Events" ))
-    return string( "Events" );
+  if ( choices[ position ].compare( ST_FILTER_COMMS_XT ))
+    return string( ST_FILTER_COMMS );
+  else if ( choices[ position ].compare( ST_FILTER_EVENTS_XT ))
+    return string( ST_FILTER_EVENTS );
   else  
     return string( choices[ position ] );
 }

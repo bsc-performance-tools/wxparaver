@@ -17,7 +17,7 @@ void gPasteWindowProperties::commonMenuSettings( )
       for ( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
       {
         allowed[ST_PASTE][trace][origin][destiny] = true;
-        allowed["Paste Special..."][trace][origin][destiny] = true;
+        allowed[ST_PASTE_SPECIAL][trace][origin][destiny] = true;
       }
 
   // Timeline/histogram different Menu properties
@@ -52,13 +52,13 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
   {
     for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       for( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
-        allowed["Time"][trace][source][destiny] = false;
+        allowed[ST_TIME][trace][source][destiny] = false;
   }
   else
   {
     for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       for( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
-        allowed["Time"][trace][source][destiny] = true;
+        allowed[ST_TIME][trace][source][destiny] = true;
   }
 }
 
@@ -71,20 +71,20 @@ void gPasteWindowProperties::commonFilterSettings( gTimeline *whichTimeline )
     {
       for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       {
-        allowed["Filter"][trace][TIMELINE][TIMELINE] = false;
-        allowed["Filter All"][trace][TIMELINE][TIMELINE] = false;
-        allowed["Communications"][trace][TIMELINE][TIMELINE] = false;
-        allowed["Events"][trace][TIMELINE][TIMELINE] = false;
+        allowed[ST_FILTER][trace][TIMELINE][TIMELINE] = false;
+        allowed[ST_FILTER_ALL][trace][TIMELINE][TIMELINE] = false;
+        allowed[ST_FILTER_COMMS][trace][TIMELINE][TIMELINE] = false;
+        allowed[ST_FILTER_EVENTS][trace][TIMELINE][TIMELINE] = false;
       }
     }
     else
     {
       for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       {
-        allowed["Filter"][trace][TIMELINE][TIMELINE] = true;
-        allowed["Filter All"][trace][TIMELINE][TIMELINE] = true;
-        allowed["Communications"][trace][TIMELINE][TIMELINE] = true;
-        allowed["Events"][trace][TIMELINE][TIMELINE] = true;
+        allowed[ST_FILTER][trace][TIMELINE][TIMELINE] = true;
+        allowed[ST_FILTER_ALL][trace][TIMELINE][TIMELINE] = true;
+        allowed[ST_FILTER_COMMS][trace][TIMELINE][TIMELINE] = true;
+        allowed[ST_FILTER_EVENTS][trace][TIMELINE][TIMELINE] = true;
       }
     }
   }
@@ -126,20 +126,20 @@ gPasteWindowProperties::gPasteWindowProperties()
       for ( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         option[trace][copy][paste] = true;
 
-  allowed["Time"] = option;
-  allowed["Copy"] = option;
-  allowed["Size"] = option;
+  allowed[ST_TIME] = option;
+  allowed[ST_COPY] = option;
+  allowed[ST_SIZE] = option;
 
   // Policy : Don't allow initial paste
   for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
     for ( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
       for ( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         option[trace][copy][paste] = false;
-  allowed["Objects"] = option; // due to not being implemented yet
+  allowed[ST_OBJECTS] = option; // due to not being implemented yet
   allowed[ST_PASTE] = option;
-  allowed["Paste Special..."] = option;
+  allowed[ST_PASTE_SPECIAL] = option;
 
-  // Policy : Selective paste
+  // Policy : Selective paste for FILTER options
   option[SAME_TRACE][TIMELINE][TIMELINE] = true;
   option[SAME_TRACE][TIMELINE][HISTOGRAM] = false;
   option[SAME_TRACE][HISTOGRAM][TIMELINE] = false;
@@ -149,10 +149,10 @@ gPasteWindowProperties::gPasteWindowProperties()
   option[DIFF_TRACE][HISTOGRAM][TIMELINE] = false;
   option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = false;
 
-  allowed["Filter"] = option;
-  allowed["Filter All"] = option;
-  allowed["Communications"] = option;
-  allowed["Events"] = option;
+  allowed[ST_FILTER] = option;
+  allowed[ST_FILTER_ALL] = option;
+  allowed[ST_FILTER_COMMS] = option;
+  allowed[ST_FILTER_EVENTS] = option;
 }
 
 
@@ -192,7 +192,7 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
   if ( timeline != NULL )
   {
     // paste timeline -> timeline
-    if ( property == "Time" )
+    if ( property == ST_TIME )
     {
       TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
       TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
@@ -208,28 +208,28 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       else
         whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
     }
-    else if ( property == "Size" )
+    else if ( property == ST_SIZE )
     {
       int width, height;
       timeline->GetSize( &width, &height);
       whichTimeline->SetSize( width, height );
     }
-    else if ( property == "Objects" )
+    else if ( property == ST_OBJECTS )
     {
     }
-    else if ( property == "Communications" )
+    else if ( property == ST_FILTER_COMMS )
     {
-      cout << "gPasteWindowProperties::paste (timeline) communications" << endl;
+//      cout << "gPasteWindowProperties::paste (timeline) communications" << endl;
       timeline->GetMyWindow()->getFilter()->copyCommunicationsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
-    else if ( property == "Events" )
+    else if ( property == ST_FILTER_EVENTS )
     {
-      cout << "gPasteWindowProperties::paste (timeline) events" << endl;
+//      cout << "gPasteWindowProperties::paste (timeline) events" << endl;
       timeline->GetMyWindow()->getFilter()->copyEventsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
-    else if ( property == "Filter All" )
+    else if ( property == ST_FILTER_ALL )
     {
-      cout << "gPasteWindowProperties::paste (timeline) all" << endl;
+//      cout << "gPasteWindowProperties::paste (timeline) all" << endl;
       timeline->GetMyWindow()->getFilter()->copyEventsSection( whichTimeline->GetMyWindow()->getFilter() );
       timeline->GetMyWindow()->getFilter()->copyCommunicationsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
@@ -240,7 +240,7 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
   else
   {
     // paste histogram -> timeline
-    if ( property == "Time" )
+    if ( property == ST_TIME )
     {
       TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
       TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
@@ -255,13 +255,13 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       else
         whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
     }
-    else if ( property == "Size" )
+    else if ( property == ST_SIZE )
     {
       int width, height;
       histogram->GetSize( &width, &height);
       whichTimeline->SetSize( width, height );
     }
-    else if ( property == "Objects" )
+    else if ( property == ST_OBJECTS )
     {
     }
     else
@@ -276,18 +276,18 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
   if ( timeline != NULL )
   {
     // paste timeline -> histogram
-    if ( property == "Time" )
+    if ( property == ST_TIME )
     {
       whichHistogram->GetHistogram()->setWindowBeginTime( timeline->GetMyWindow()->getWindowBeginTime() );
       whichHistogram->GetHistogram()->setWindowEndTime( timeline->GetMyWindow()->getWindowEndTime() );
     }
-    else if ( property == "Size" )
+    else if ( property == ST_SIZE )
     {
       int width, height;
       timeline->GetSize( &width, &height);
       whichHistogram->SetSize( width, height );
     }
-    else if ( property == "Objects" )
+    else if ( property == ST_OBJECTS )
     {
     }
     else
@@ -297,18 +297,18 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
   else
   {
     // paste histogram -> histogram
-    if ( property == "Time" )
+    if ( property == ST_TIME )
     {
       whichHistogram->GetHistogram()->setWindowBeginTime( histogram->GetHistogram()->getBeginTime() );
       whichHistogram->GetHistogram()->setWindowEndTime( histogram->GetHistogram()->getBeginTime() );
     }
-    else if ( property == "Size" )
+    else if ( property == ST_SIZE )
     {
       int width, height;
       histogram->GetSize( &width, &height);
       whichHistogram->SetSize( width, height );
     }
-    else if ( property == "Objects" )
+    else if ( property == ST_OBJECTS )
     {
     }
     else
@@ -325,7 +325,7 @@ bool gPasteWindowProperties::isAllowed( gTimeline *whichTimeline, const string p
 //  else if ( allowed.count( property ) == 0 )
 //    return false;
 
-  cout << "gPasteWindowProperties::isAllowed (timeline) property:" << property << endl;
+//  cout << "gPasteWindowProperties::isAllowed (timeline) property:" << property << endl;
 
   commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
   commonFilterSettings( whichTimeline );
