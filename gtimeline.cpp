@@ -248,6 +248,7 @@ void gTimeline::redraw()
   ready = true;
 }
 
+
 void gTimeline::drawAxis( wxDC& dc )
 {
   dc.SetPen( wxPen( *wxWHITE, 1 ) );
@@ -299,6 +300,7 @@ void gTimeline::drawAxis( wxDC& dc )
                timeAxisPos + drawBorder );
 }
 
+
 void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder row )
 {
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
@@ -338,6 +340,7 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
   }
 }
 
+
 void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, TTime from, TTime to, TTime step, wxCoord pos )
 {
   RecordList::iterator it = comms->begin();
@@ -365,10 +368,10 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, T
   comms->erase( comms->begin(), it );
 }
 
+
 /*!
  * wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
  */
-
 void gTimeline::OnEraseBackground( wxEraseEvent& event )
 {
   //event.Skip();
@@ -378,7 +381,6 @@ void gTimeline::OnEraseBackground( wxEraseEvent& event )
 /*!
  * wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
  */
-
 void gTimeline::OnPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( drawZone );
@@ -391,7 +393,6 @@ void gTimeline::OnPaint( wxPaintEvent& event )
 /*!
  * wxEVT_SIZE event handler for ID_GTIMELINE
  */
-
 void gTimeline::OnSize( wxSizeEvent& event )
 {
   if( ready )
@@ -403,7 +404,6 @@ void gTimeline::OnSize( wxSizeEvent& event )
 /*!
  * wxEVT_IDLE event handler for ID_GTIMELINE
  */
-
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
   this->SetTitle( myWindow->getName() );
@@ -416,7 +416,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   }
   else
     this->Show( false );
-    
+
   myWindow->setPosX( this->GetPosition().x );
   myWindow->setPosY( this->GetPosition().y );
   myWindow->setWidth( this->GetSize().GetWidth() );
@@ -427,7 +427,6 @@ void gTimeline::OnIdle( wxIdleEvent& event )
 /*!
  * wxEVT_CLOSE_WINDOW event handler for ID_GTIMELINE
  */
-
 void gTimeline::OnCloseWindow( wxCloseEvent& event )
 {
   myWindow->setShowWindow( false );
@@ -437,7 +436,6 @@ void gTimeline::OnCloseWindow( wxCloseEvent& event )
 /*!
  * wxEVT_LEFT_DOWN event handler for ID_SCROLLEDWINDOW
  */
-
 void gTimeline::OnLeftDown( wxMouseEvent& event )
 {
   zooming = true;
@@ -449,14 +447,13 @@ void gTimeline::OnLeftDown( wxMouseEvent& event )
 /*!
  * wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
  */
-
 void gTimeline::OnLeftUp( wxMouseEvent& event )
 {
   wxMemoryDC dc( bufferImage );
   zoomEndX = event.GetX();
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
-  
+
   if( ready && ( zoomBeginX != zoomEndX || zoomBeginY != zoomEndY ))
   {
     // TIME zoom limits
@@ -472,7 +469,7 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     if( zoomEndX > dc.GetSize().GetWidth() - drawBorder )
       zoomEndX = dc.GetSize().GetWidth() - drawBorder;
     zoomEndX -= objectAxisPos;
-  
+
     // Detect begin and end TIME
     TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                      ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
@@ -509,7 +506,7 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
   
       minObj = zoomHistory->getSecondDimension().first;
     }
-    
+
     zoomHistory->addZoom( beginTime, endTime, beginRow + minObj, endRow + minObj );
 
     // Update window properties
@@ -526,7 +523,6 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
 /*!
  * wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
  */
-
 void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
 {
   if( this->IsShown() )
@@ -547,10 +543,12 @@ void gTimeline::OnPopUpCopy()
   popUpMenu->enableMenu( this );
 }
 
+
 void gTimeline::OnPopUpClone()
 {
 //  printf("CATCHED clone!\n");
 }
+
 
 void gTimeline::OnPopUpFitTimeScale()
 {
@@ -586,6 +584,7 @@ void gTimeline::OnPopUpPasteTime()
   myWindow->setChanged( true );
 }
 
+
 void gTimeline::OnPopUpPasteObjects()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
@@ -593,12 +592,14 @@ void gTimeline::OnPopUpPasteObjects()
   myWindow->setChanged( true );
 }
 
+
 void gTimeline::OnPopUpPasteSize()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
   myWindow->setRedraw( true );
 //  myWindow->setChanged( true ); //?
 }
+
 
 void gTimeline::OnPopUpPasteFilterAll()
 {
@@ -608,6 +609,7 @@ void gTimeline::OnPopUpPasteFilterAll()
   myWindow->setChanged( true );
 }
 
+
 void gTimeline::OnPopUpPasteFilterCommunications()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Communications" );
@@ -615,12 +617,14 @@ void gTimeline::OnPopUpPasteFilterCommunications()
   myWindow->setChanged( true );
 }
 
+
 void gTimeline::OnPopUpPasteFilterEvents()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Events" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
+
 
 void gTimeline::OnPopUpPasteSpecial()
 {
@@ -638,12 +642,14 @@ void gTimeline::OnPopUpPasteSpecial()
   }
 }
 
+
 void gTimeline::OnPopUpGradientColor()
 {
   myWindow->setGradientColorMode();
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
+
 
 void gTimeline::OnPopUpUndoZoom( wxUpdateUIEvent& event )
 {
@@ -657,6 +663,7 @@ void gTimeline::OnPopUpUndoZoom( wxUpdateUIEvent& event )
     popUpMenu->enable( "Undo Zoom", !zoomHistory->emptyPrevZoom());
   }
 }
+
 
 void gTimeline::OnPopUpRedoZoom()
 {
@@ -675,7 +682,6 @@ void gTimeline::OnPopUpRedoZoom()
 /*!
  * wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
  */
-
 void gTimeline::OnRightDown( wxMouseEvent& event )
 {
   if ( popUpMenu == NULL )
@@ -692,7 +698,6 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
 /*!
  * wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
  */
-
 void gTimeline::OnMotion( wxMouseEvent& event )
 {
   if( !zooming )

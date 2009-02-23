@@ -2,7 +2,6 @@
 #include "trace.h"
 #include "filter.h"
 
-
 //#include <iostream>
 //using namespace std;
 //IDEA undo copy, undo paste
@@ -61,6 +60,7 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
         allowed[ST_TIME][trace][source][destiny] = true;
   }
 }
+
 
 void gPasteWindowProperties::commonFilterSettings( gTimeline *whichTimeline )
 {
@@ -197,7 +197,6 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
       TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
 
-      // Time paste
       if ( sourceBeginTime < destinyTraceBeginTime )
         whichTimeline->GetMyWindow()->setWindowBeginTime( destinyTraceBeginTime );
       else
@@ -219,17 +218,14 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     }
     else if ( property == ST_FILTER_COMMS )
     {
-//      cout << "gPasteWindowProperties::paste (timeline) communications" << endl;
       timeline->GetMyWindow()->getFilter()->copyCommunicationsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
     else if ( property == ST_FILTER_EVENTS )
     {
-//      cout << "gPasteWindowProperties::paste (timeline) events" << endl;
       timeline->GetMyWindow()->getFilter()->copyEventsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
     else if ( property == ST_FILTER_ALL )
     {
-//      cout << "gPasteWindowProperties::paste (timeline) all" << endl;
       timeline->GetMyWindow()->getFilter()->copyEventsSection( whichTimeline->GetMyWindow()->getFilter() );
       timeline->GetMyWindow()->getFilter()->copyCommunicationsSection( whichTimeline->GetMyWindow()->getFilter() );
     }
@@ -323,8 +319,6 @@ bool gPasteWindowProperties::isAllowed( gTimeline *whichTimeline, const string p
 {
   if ( timeline == NULL && histogram == NULL )
     return false;
-//  else if ( allowed.count( property ) == 0 )
-//    return false;
 
   if ( property == ST_TIME )
     commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
@@ -334,7 +328,7 @@ bool gPasteWindowProperties::isAllowed( gTimeline *whichTimeline, const string p
        property == ST_FILTER_EVENTS ||
        property == ST_FILTER_COMMS )
     commonFilterSettings( whichTimeline );
-  
+
   commonMenuSettings();
 
   return seekAllowed( property, TIMELINE, whichTimeline->GetMyWindow()->getTrace() );
@@ -346,8 +340,6 @@ bool gPasteWindowProperties::isAllowed( gHistogram *whichHistogram, const string
 
   if ( timeline == NULL && histogram == NULL )
     return false;
-//  else if ( allowed.count( property ) == 0 )
-//    return false;
 
   if ( property == ST_TIME )
     commonTimeSettings( whichHistogram->GetHistogram()->getControlWindow()->getTrace()->getEndTime() );
