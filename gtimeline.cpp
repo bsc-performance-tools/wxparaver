@@ -684,6 +684,7 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
   popUpMenu->enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
   popUpMenu->enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
+  popUpMenu->enableMenu( this );
   PopupMenu( popUpMenu->getPopUpMenu(), event.GetPosition());
 }
 

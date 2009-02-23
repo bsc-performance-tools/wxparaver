@@ -266,6 +266,7 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     }
     else
     {
+      cout << "*** UNKNOWN PROPERTY!!! ***" << endl;
     }
   }
 }
@@ -325,10 +326,15 @@ bool gPasteWindowProperties::isAllowed( gTimeline *whichTimeline, const string p
 //  else if ( allowed.count( property ) == 0 )
 //    return false;
 
-//  cout << "gPasteWindowProperties::isAllowed (timeline) property:" << property << endl;
-
-  commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
-  commonFilterSettings( whichTimeline );
+  if ( property == ST_TIME )
+    commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
+  
+  if ( property == ST_FILTER ||
+       property == ST_FILTER_ALL ||
+       property == ST_FILTER_EVENTS ||
+       property == ST_FILTER_COMMS )
+    commonFilterSettings( whichTimeline );
+  
   commonMenuSettings();
 
   return seekAllowed( property, TIMELINE, whichTimeline->GetMyWindow()->getTrace() );
@@ -343,7 +349,9 @@ bool gPasteWindowProperties::isAllowed( gHistogram *whichHistogram, const string
 //  else if ( allowed.count( property ) == 0 )
 //    return false;
 
-  commonTimeSettings( whichHistogram->GetHistogram()->getControlWindow()->getTrace()->getEndTime() );
+  if ( property == ST_TIME )
+    commonTimeSettings( whichHistogram->GetHistogram()->getControlWindow()->getTrace()->getEndTime() );
+    
   commonMenuSettings();
 
   return seekAllowed( property, HISTOGRAM, whichHistogram->GetHistogram()->getControlWindow()->getTrace() );

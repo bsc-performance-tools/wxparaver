@@ -54,17 +54,17 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
 
   popUpMenu->Enable( popUpMenu->FindItem( ST_COPY ), true );
 
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_TIME ), sharedProperties->isAllowed( timeline, ST_TIME) );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_SIZE ), sharedProperties->isAllowed( timeline, ST_SIZE)  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_OBJECTS ), sharedProperties->isAllowed( timeline, ST_OBJECTS)  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_FILTER ), sharedProperties->isAllowed( timeline, ST_FILTER) );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_TIME ), sharedProperties->isAllowed( whichTimeline, ST_TIME) );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_SIZE ), sharedProperties->isAllowed( whichTimeline, ST_SIZE)  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_OBJECTS ), sharedProperties->isAllowed( whichTimeline, ST_OBJECTS)  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_FILTER ), sharedProperties->isAllowed( whichTimeline, ST_FILTER) );
   
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_ALL ), sharedProperties->isAllowed( timeline, ST_FILTER_ALL) );
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_COMMS ), sharedProperties->isAllowed( timeline, ST_FILTER_COMMS) );
-  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_EVENTS ), sharedProperties->isAllowed( timeline, ST_FILTER_EVENTS) );
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_ALL ), sharedProperties->isAllowed( whichTimeline, ST_FILTER_ALL) );
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_COMMS ), sharedProperties->isAllowed( whichTimeline, ST_FILTER_COMMS) );
+  popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( ST_FILTER_EVENTS ), sharedProperties->isAllowed( whichTimeline, ST_FILTER_EVENTS) );
 
-  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ), sharedProperties->isAllowed( timeline, ST_PASTE) );
-  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ), sharedProperties->isAllowed( timeline, ST_PASTE_SPECIAL) );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ), sharedProperties->isAllowed( whichTimeline, ST_PASTE) );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ), sharedProperties->isAllowed( whichTimeline, ST_PASTE_SPECIAL) );
 
   popUpMenu->Enable( popUpMenu->FindItem( ST_CLONE ), false ); // when implemented, set to true
 
@@ -79,12 +79,12 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 
   popUpMenu->Enable( popUpMenu->FindItem( ST_COPY ), true );
 
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_TIME ), sharedProperties->isAllowed( histogram, ST_TIME) );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_SIZE ), sharedProperties->isAllowed( histogram, ST_SIZE)  );
-  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_OBJECTS ), sharedProperties->isAllowed( histogram, ST_OBJECTS)  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_TIME ), sharedProperties->isAllowed( whichHistogram, ST_TIME) );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_SIZE ), sharedProperties->isAllowed( whichHistogram, ST_SIZE)  );
+  popUpMenuPaste->Enable( popUpMenuPaste->FindItem( ST_OBJECTS ), sharedProperties->isAllowed( whichHistogram, ST_OBJECTS)  );
 
-  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ), sharedProperties->isAllowed( histogram, ST_PASTE) );
-  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ), sharedProperties->isAllowed( histogram, ST_PASTE_SPECIAL) );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ), sharedProperties->isAllowed( whichHistogram, ST_PASTE) );
+  popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ), sharedProperties->isAllowed( whichHistogram, ST_PASTE_SPECIAL) );
   
   popUpMenu->Enable( popUpMenu->FindItem( ST_CLONE ), false ); // when implemented, set to true
   popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_TIME ), true );
@@ -192,6 +192,7 @@ void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
 {
   if ( timeline == NULL )
   {
+
     if ( checkPaste )
     {
       popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ),
