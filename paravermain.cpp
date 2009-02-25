@@ -37,6 +37,7 @@
 #include "loadedwindows.h"
 #include "filter.h"
 #include "pg_util.h"
+#include "saveconfigurationdialog.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -1085,20 +1086,30 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
 
 void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, "Save Configuration", "", "",
-    "Paraver configuration file (*.cfg)|*.cfg",
-    wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
-  if( dialog.ShowModal() == wxID_OK )
+  SaveOptions options;
+  vector<Window *> timelines;
+  vector<Histogram *> histograms;
+  SaveConfigurationDialog saveDialog( this );
+  
+  saveDialog.SetOptions( options );
+  LoadedWindows::getInstance()->getAll( timelines );
+  saveDialog.SetTimelines( timelines );
+  saveDialog.SetHistograms( histograms );
+  
+  if( saveDialog.ShowModal() == wxID_OK )
   {
-    wxString path = dialog.GetPath();
-    vector<Window *> windows;
-    vector<Histogram *> histograms;
-    if( currentTimeline != NULL )
-      windows.push_back( currentTimeline );
-    else if( currentHisto != NULL )
-      histograms.push_back( currentHisto );
+    timelines = saveDialog.GetTimelines();
+    histograms = saveDialog.GetHistograms();
+    options = saveDialog.GetOptions();
+    wxFileDialog dialog( this, "Save Configuration", "", "",
+      "Paraver configuration file (*.cfg)|*.cfg",
+      wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
+    if( dialog.ShowModal() == wxID_OK )
+    {
+      wxString path = dialog.GetPath();
 
-    CFGLoader::saveCFG( path.c_str(), windows, histograms );
+      CFGLoader::saveCFG( path.c_str(), options, timelines, histograms );
+    }
   }
 }
 
