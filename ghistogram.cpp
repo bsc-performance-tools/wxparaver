@@ -474,9 +474,13 @@ void gHistogram::OnPopUpPasteSpecial()
       bool recalc = false;
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
-        if ( popUpMenu->getOption( selections[i] ) == "Time" )
-          recalc = true;
-        gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, popUpMenu->getOption( selections[i] ) );
+        gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+        if ( pasteActions->isAllowed( this, popUpMenu->getOption( selections[i] )) )
+        {
+          if ( popUpMenu->getOption( selections[i] ) == "Time" )
+            recalc = true;
+          pasteActions->paste( this, popUpMenu->getOption( selections[i] ) );
+        }
       }
 
       if ( recalc )

@@ -634,7 +634,11 @@ void gTimeline::OnPopUpPasteSpecial()
     if ( selections.GetCount() > 0 )
     {
       for ( size_t i = 0; i < selections.GetCount(); i++ )
-        gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, popUpMenu->getOption( selections[i] ) );
+      {
+        gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+        if ( pasteActions->isAllowed( this, popUpMenu->getOption( selections[i] )) )
+          pasteActions->paste( this, popUpMenu->getOption( selections[i] ) );
+      }
 
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
