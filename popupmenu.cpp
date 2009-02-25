@@ -92,6 +92,44 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 }
 
 
+void gPopUpMenu::createPasteSpecialDialog( gTimeline * whichTimeline )
+{
+  if ( popUpMenuPasteDialog == NULL )
+  {
+    gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+
+    choices.Empty();
+
+    if ( pasteActions->isAllowed( whichTimeline, string(ST_TIME) ) )
+      choices.Add(wxT(ST_TIME));
+      
+    if ( pasteActions->isAllowed( whichTimeline, string(ST_OBJECTS) ) )
+      choices.Add(wxT(ST_OBJECTS));
+      
+    if ( pasteActions->isAllowed( whichTimeline, string(ST_SIZE) ) )
+      choices.Add(wxT(ST_SIZE));
+      
+    if ( pasteActions->isAllowed( whichTimeline, string(ST_FILTER_COMMS) ) )
+      choices.Add(wxT(ST_FILTER_COMMS_XT));
+      
+    if ( pasteActions->isAllowed( whichTimeline, string(ST_FILTER_EVENTS) ) )
+      choices.Add(wxT(ST_FILTER_EVENTS_XT));
+
+    popUpMenuPasteDialog = new wxMultiChoiceDialog( whichTimeline,
+                                                    wxT( "Select properties to paste:" ),
+                                                    wxT("Paste Special"),
+                                                    choices );
+  }
+}
+
+
+void gPopUpMenu::deletePasteSpecialDialog( )
+{
+  delete popUpMenuPasteDialog;
+  popUpMenuPasteDialog = NULL;
+}
+
+
 gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 {
   timeline = whichTimeline;
@@ -101,7 +139,8 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuColor = new wxMenu;
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
-
+  popUpMenuPasteDialog = NULL;
+  
   buildItem( popUpMenu, wxString(ST_COPY), (wxObjectEventFunction)&gTimeline::OnPopUpCopy, ITEMNORMAL );
 
   buildItem( popUpMenuPaste, wxString(ST_TIME), (wxObjectEventFunction)&gTimeline::OnPopUpPasteTime, ITEMNORMAL );
@@ -133,15 +172,8 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO, timeline->GetMyWindow()->IsGradientColorSet() );
   popUpMenu->AppendSubMenu( popUpMenuColor, wxString( "Color" ));
 
-  choices.Add(wxT(ST_TIME));
-  choices.Add(wxT(ST_OBJECTS));
-  choices.Add(wxT(ST_SIZE));
-  choices.Add(wxT(ST_FILTER_COMMS_XT));
-  choices.Add(wxT(ST_FILTER_EVENTS_XT));
-  popUpMenuPasteDialog = new wxMultiChoiceDialog( timeline,
-                                                  wxT( "Select pasted properties:" ),
-                                                  wxT("Paste Special"),
-                                                  choices);
+
+  createPasteSpecialDialog( timeline );
   enableMenu( timeline );
 }
 
@@ -155,6 +187,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuColor = new wxMenu;
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
+  popUpMenuPasteDialog = NULL;
 
   buildItem( popUpMenu, wxString(ST_COPY), (wxObjectEventFunction)&gHistogram::OnPopUpCopy, ITEMNORMAL );
 
@@ -181,7 +214,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   choices.Add(wxT(ST_OBJECTS));
   choices.Add(wxT(ST_SIZE));
   popUpMenuPasteDialog = new wxMultiChoiceDialog( histogram,
-                                                  wxT( "Select pasted properties:" ),
+                                                  wxT( "Select properties to paste:" ),
                                                   wxT("Paste Special"),
                                                   choices);
   enableMenu( histogram );
@@ -192,7 +225,6 @@ void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
 {
   if ( timeline == NULL )
   {
-
     if ( checkPaste )
     {
       popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ),

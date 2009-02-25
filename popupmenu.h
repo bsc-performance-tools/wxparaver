@@ -32,6 +32,9 @@ class gPopUpMenu
     bool okPressed( );
     wxArrayInt getSelections();
 
+    void createPasteSpecialDialog( gTimeline * whichTimeline );
+    void deletePasteSpecialDialog( );
+
 
   private:
     gTimeline *timeline;

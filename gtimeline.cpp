@@ -628,6 +628,8 @@ void gTimeline::OnPopUpPasteFilterEvents()
 
 void gTimeline::OnPopUpPasteSpecial()
 {
+  popUpMenu->createPasteSpecialDialog( this );
+
   if ( popUpMenu->okPressed() )
   {
     wxArrayInt selections = popUpMenu->getSelections();
@@ -644,6 +646,8 @@ void gTimeline::OnPopUpPasteSpecial()
       myWindow->setChanged( true );
     }
   }
+
+  popUpMenu->deletePasteSpecialDialog();
 }
 
 
