@@ -370,6 +370,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         {
           gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, (*it)->getName() );
 
+          LoadedWindows::getInstance()->add( (*it) );
           wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
           allTracesPage->AppendItem( allTracesPage->GetRootItem(), (*it)->getName(), 0, -1,
             new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
@@ -1093,6 +1094,7 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
   
   saveDialog.SetOptions( options );
   LoadedWindows::getInstance()->getAll( timelines );
+  LoadedWindows::getInstance()->getAll( histograms );
   saveDialog.SetTimelines( timelines );
   saveDialog.SetHistograms( histograms );
   
