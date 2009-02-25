@@ -267,8 +267,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   optRelativeBegin->SetValue( options.windowBeginTimeRelative );
   optRelativeEnd->SetValue( options.windowScaleRelative );
   optComputeSemantic->SetValue( options.windowComputeYMaxOnLoad );
-//  radioAllTrace;
-//  radioAllWindow;
+  radioAllTrace->SetValue( options.histoAllTrace );
   optComputeLimits->SetValue( options.histoComputeYScale );
   optComputeGradient->SetValue( options.histoComputeGradient );
 
@@ -297,8 +296,7 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   options.windowBeginTimeRelative = optRelativeBegin->GetValue();
   options.windowScaleRelative = optRelativeEnd->GetValue();
   options.windowComputeYMaxOnLoad = optComputeSemantic->GetValue();
-//  radioAllTrace;
-//  radioAllWindow;
+  options.histoAllTrace = radioAllTrace->GetValue();
   options.histoComputeYScale = optComputeLimits->GetValue();
   options.histoComputeGradient = optComputeGradient->GetValue();
   options.description = textDescription->GetValue().c_str();
