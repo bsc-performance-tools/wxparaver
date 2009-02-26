@@ -172,7 +172,6 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO, timeline->GetMyWindow()->IsGradientColorSet() );
   popUpMenu->AppendSubMenu( popUpMenuColor, wxString( "Color" ));
 
-
   createPasteSpecialDialog( timeline );
   enableMenu( timeline );
 }
@@ -220,6 +219,14 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   enableMenu( histogram );
 }
 
+gPopUpMenu::~gPopUpMenu()
+{
+  delete popUpMenu;
+  delete popUpMenuColor;
+  delete popUpMenuPaste;
+  delete popUpMenuPasteFilter;
+  delete popUpMenuPasteDialog;
+}
 
 void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
 {
