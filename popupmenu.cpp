@@ -172,7 +172,6 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, wxString( "Gradient Color" ), ( wxObjectEventFunction )&gTimeline::OnPopUpGradientColor, ITEMRADIO, timeline->GetMyWindow()->IsGradientColorSet() );
   popUpMenu->AppendSubMenu( popUpMenuColor, wxString( "Color" ));
 
-  createPasteSpecialDialog( timeline );
   enableMenu( timeline );
 }
 
