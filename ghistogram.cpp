@@ -170,6 +170,9 @@ void gHistogram::fillGrid()
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( exception() );
 
+  if( myHistogram->getComputeGradient() )
+    myHistogram->recalcGradientLimits();
+    
   if( commStat )
     curPlane = myHistogram->getCommSelectedPlane();
   else
@@ -270,6 +273,13 @@ void gHistogram::fillGrid()
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
               myHistogram->getCommCurrentValue( iCol, idStat, curPlane ), true );
             gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( tmpStr ) );
+            if( myHistogram->getShowColor() )
+            {
+              rgb tmpCol = myHistogram->calcGradientColor( 
+                myHistogram->getCommCurrentValue( iCol, idStat, curPlane ) );
+              gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, 
+                                                  wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+            }
             myHistogram->setCommNextCell( iCol, curPlane );
           }
           else gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
@@ -282,6 +292,13 @@ void gHistogram::fillGrid()
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
               myHistogram->getCurrentValue( iCol, idStat, curPlane ), true );
             gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( tmpStr ) );
+            if( myHistogram->getShowColor() )
+            {
+              rgb tmpCol = myHistogram->calcGradientColor( 
+                myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
+              gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, 
+                                                  wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+            }
             myHistogram->setNextCell( iCol, curPlane );
           }
           else gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
