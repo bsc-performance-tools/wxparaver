@@ -348,25 +348,29 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
 
 void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, TTime from, TTime to, TTime step, wxCoord pos )
 {
+  TObjectOrder minObj = zoomHistory->getSecondDimension().first;
+  TObjectOrder maxObj = zoomHistory->getSecondDimension().second;
   RecordList::iterator it = comms->begin();
+  step = ( 1 / step );
   while( it != comms->end() && it->getTime() < from )
     ++it;
   while( it != comms->end() && it->getTime() <= to )
   {
-    if( it->getType() & RECV ||
-        ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() )
+    if( it->getCommPartnerObject() >= minObj && it->getCommPartnerObject() <= maxObj &&
+        ( it->getType() & RECV ||
+          ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
       )
     {
       if( it->getType() & LOG )
         commdc.SetPen( wxPen( wxColour( 255, 255, 0 ) ) );
       else if( it->getType() & PHY )
         commdc.SetPen( *wxRED_PEN );
-      wxCoord posPartner = (wxCoord)floor( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * ( 1 / step ) );
+      wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
       posPartner += objectAxisPos;
-      commdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject()],
-                   pos, objectPosList[it->getOrder()] );
-      maskdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject()],
-                       pos, objectPosList[it->getOrder()] );
+      commdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() - minObj],
+                   pos, objectPosList[it->getOrder() - minObj] );
+      maskdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() - minObj],
+                       pos, objectPosList[it->getOrder() - minObj] );
     }
     ++it;
   }
