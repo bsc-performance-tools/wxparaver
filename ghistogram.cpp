@@ -112,6 +112,7 @@ void gHistogram::Init()
 ////@begin gHistogram member initialisation
   myHistogram = NULL;
   gridHisto = NULL;
+  zoomHisto = NULL;
 ////@end gHistogram member initialisation
   popUpMenu = NULL;
 }
@@ -136,6 +137,11 @@ void gHistogram::CreateControls()
   gridHisto->SetRowLabelSize(50);
   itemBoxSizer2->Add(gridHisto, 1, wxGROW|wxALL, 1);
 
+  zoomHisto = new wxScrolledWindow( itemFrame1, ID_ZOOMHISTO, wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(100, 100)), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+  zoomHisto->Show(false);
+  itemBoxSizer2->Add(zoomHisto, 1, wxGROW|wxALL, 1);
+  zoomHisto->SetScrollbars(1, 1, 0, 0);
+
 ////@end gHistogram content construction
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
@@ -150,7 +156,10 @@ void gHistogram::execute()
 
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
 
-  fillGrid();
+  if( myHistogram->getZoom() )
+    fillZoom();
+  else
+    fillGrid();
 
   this->Refresh();
 }
@@ -166,6 +175,9 @@ void gHistogram::fillGrid()
   THistogramColumn numCols, numDrawCols;
   TObjectOrder numRows, numDrawRows;
   bool horizontal = myHistogram->getHorizontal();
+  
+  gridHisto->Show( true );
+  zoomHisto->Show( false );
   
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( exception() );
@@ -317,6 +329,13 @@ void gHistogram::fillGrid()
   gridHisto->EndBatch();
 }
 
+void gHistogram::fillZoom()
+{
+  gridHisto->Show( false );
+  zoomHisto->Show( true );
+
+}
+
 void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat )
 {
   THistogramColumn numDrawCols;
@@ -430,7 +449,10 @@ void gHistogram::updateHistogram()
     if( myHistogram->getRedraw() )
     {
       myHistogram->setRedraw( false );
-      fillGrid();
+      if( myHistogram->getZoom() )
+        fillZoom();
+      else
+        fillGrid();
     }
   }
 }

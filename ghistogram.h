@@ -43,6 +43,7 @@ class Histogram;
 ////@begin control identifiers
 #define ID_GHISTOGRAM 10004
 #define ID_GRIDHISTO 10005
+#define ID_ZOOMHISTO 10023
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
 #define SYMBOL_GHISTOGRAM_TITLE _("gHistogram")
 #define SYMBOL_GHISTOGRAM_IDNAME ID_GHISTOGRAM
@@ -115,6 +116,7 @@ public:
 
   void execute();
   void fillGrid();
+  void fillZoom();
   void fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat );
   
   /// Should we show tooltips?
@@ -142,6 +144,7 @@ public:
 
 ////@begin gHistogram member variables
   wxGrid* gridHisto;
+  wxScrolledWindow* zoomHisto;
 private:
   Histogram* myHistogram;
   gPopUpMenu * popUpMenu;

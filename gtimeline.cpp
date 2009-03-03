@@ -278,17 +278,22 @@ void gTimeline::drawAxis( wxDC& dc )
 
   // Draw axis labels
   wxCoord y;
-  double inc = (double)( timeAxisPos - drawBorder - ( objectExt.GetHeight() * 0.5 ) ) / (double)( maxObj - minObj + 1);
-
+//  double inc = (double)( timeAxisPos - drawBorder - ( objectExt.GetHeight() * 0.5 ) ) / (double)( maxObj - minObj + 1);
+  double inc = (double)( timeAxisPos - drawBorder ) / (double)( maxObj - minObj + 1 );
+  
   objectPosList.clear();
   for( TObjectOrder obj = minObj; obj <= maxObj; obj++ )
   {
-    y = ( (wxCoord) ( inc * ( obj - minObj + 0.5 ) ) ) + drawBorder;
+    //y = ( (wxCoord) ( inc * ( obj - minObj + 0.5 ) ) ) + drawBorder;
+    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
+    if( inc * 0.25 > 1.0 )
+      y += (wxCoord)( inc * 0.25 );
     objectPosList.push_back( y );
     dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
   }
-  objectHeight = timeAxisPos - y;
+  objectHeight = (wxCoord)( inc * 0.75 );
+  if( objectHeight < 1 ) objectHeight = 1;
   
   dc.SetFont( timeFont );
   dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ),
