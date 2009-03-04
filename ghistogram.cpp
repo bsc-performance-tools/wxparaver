@@ -392,8 +392,8 @@ void gHistogram::fillZoom()
     else
       myHistogram->setFirstCell( iCol, curPlane );
 
-    bufferDraw.SetBrush( wxBrush( *wxGREY_BRUSH ) );
-    bufferDraw.SetPen( wxPen( *wxTRANSPARENT_PEN ) );
+    bufferDraw.SetBrush( *wxGREY_BRUSH );
+    bufferDraw.SetPen( *wxTRANSPARENT_PEN );
     bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight );
     bufferDraw.DrawRectangle( 0, 0, cellWidth, bufferDraw.GetSize().GetHeight() );
     
@@ -422,7 +422,7 @@ void gHistogram::fillZoom()
             rgb tmpCol = myHistogram->calcGradientColor( 
               myHistogram->getCommCurrentValue( iCol, idStat, curPlane ) );
             bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-            bufferDraw.DrawRectangle( ( iDrawCol + 1 ) * cellWidth, ( iDrawRow + 1 ) * cellHeight,
+            bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
                                       rint( cellWidth ), rint( cellHeight ) );
             myHistogram->setCommNextCell( iCol, curPlane );
           }
@@ -434,7 +434,7 @@ void gHistogram::fillZoom()
             rgb tmpCol = myHistogram->calcGradientColor( 
               myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
             bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-            bufferDraw.DrawRectangle( ( iDrawCol + 1 ) * cellWidth, ( iDrawRow + 1 ) * cellHeight,
+            bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
                                       rint( cellWidth ), rint( cellHeight ) );
             myHistogram->setNextCell( iCol, curPlane );
           }
@@ -443,6 +443,20 @@ void gHistogram::fillZoom()
     }
   }
   zoomHisto->Thaw();
+  
+  bufferDraw.SetPen( *wxBLACK_PEN );
+  bufferDraw.SetBrush( *wxTRANSPARENT_BRUSH );
+  bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), bufferDraw.GetSize().GetHeight() );
+  if( cellHeight > 3.0 )
+  {
+    for( TObjectOrder iRow = 0; iRow < numDrawRows; ++iRow )
+     bufferDraw.DrawLine( 0, ( iRow + 1 ) * cellHeight, bufferDraw.GetSize().GetWidth(), ( iRow + 1 ) * cellHeight );
+  }
+  if( cellWidth > 3.0 )
+  {
+    for( TObjectOrder iCol = 0; iCol < numDrawCols; ++iCol )
+     bufferDraw.DrawLine( ( iCol + 1 ) * cellWidth, 0, ( iCol + 1 ) * cellWidth, bufferDraw.GetSize().GetHeight() );
+  }
   
   ready = true;
 }
