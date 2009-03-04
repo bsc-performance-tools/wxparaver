@@ -32,6 +32,7 @@
  */
 
 ////@begin forward declarations
+class wxBoxSizer;
 class wxGrid;
 ////@end forward declarations
 class Histogram;
@@ -42,8 +43,8 @@ class Histogram;
 
 ////@begin control identifiers
 #define ID_GHISTOGRAM 10004
-#define ID_GRIDHISTO 10005
 #define ID_ZOOMHISTO 10023
+#define ID_GRIDHISTO 10005
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
 #define SYMBOL_GHISTOGRAM_TITLE _("gHistogram")
 #define SYMBOL_GHISTOGRAM_IDNAME ID_GHISTOGRAM
@@ -85,6 +86,15 @@ public:
   /// wxEVT_IDLE event handler for ID_GHISTOGRAM
   void OnIdle( wxIdleEvent& event );
 
+  /// wxEVT_SIZE event handler for ID_ZOOMHISTO
+  void OnZoomSize( wxSizeEvent& event );
+
+  /// wxEVT_PAINT event handler for ID_ZOOMHISTO
+  void OnPaint( wxPaintEvent& event );
+
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_ZOOMHISTO
+  void OnEraseBackground( wxEraseEvent& event );
+
   /// wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
   void OnCellRightClick( wxGridEvent& event );
 
@@ -106,6 +116,12 @@ public:
 
   gPopUpMenu * GetPopUpMenu() const { return popUpMenu ; }
   void SetPopUpMenu(gPopUpMenu * value) { popUpMenu = value ; }
+
+  bool GetReady() const { return ready ; }
+  void SetReady(bool value) { ready = value ; }
+
+  wxBitmap GetZoomImage() const { return zoomImage ; }
+  void SetZoomImage(wxBitmap value) { zoomImage = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -143,11 +159,14 @@ public:
 
 
 ////@begin gHistogram member variables
-  wxGrid* gridHisto;
+  wxBoxSizer* mainSizer;
   wxScrolledWindow* zoomHisto;
+  wxGrid* gridHisto;
 private:
   Histogram* myHistogram;
   gPopUpMenu * popUpMenu;
+  bool ready;
+  wxBitmap zoomImage;
 ////@end gHistogram member variables
   void updateHistogram();
 

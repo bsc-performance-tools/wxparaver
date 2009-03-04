@@ -111,8 +111,10 @@ void gHistogram::Init()
 {
 ////@begin gHistogram member initialisation
   myHistogram = NULL;
-  gridHisto = NULL;
+  ready = false;
+  mainSizer = NULL;
   zoomHisto = NULL;
+  gridHisto = NULL;
 ////@end gHistogram member initialisation
   popUpMenu = NULL;
 }
@@ -127,21 +129,24 @@ void gHistogram::CreateControls()
 ////@begin gHistogram content construction
   gHistogram* itemFrame1 = this;
 
-  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-  itemFrame1->SetSizer(itemBoxSizer2);
+  mainSizer = new wxBoxSizer(wxVERTICAL);
+  itemFrame1->SetSizer(mainSizer);
+
+  zoomHisto = new wxScrolledWindow( itemFrame1, ID_ZOOMHISTO, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
+  mainSizer->Add(zoomHisto, 1, wxGROW|wxALL, 1);
+  zoomHisto->SetScrollbars(1, 1, 0, 0);
 
   gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   gridHisto->SetDefaultColSize(50);
   gridHisto->SetDefaultRowSize(25);
   gridHisto->SetColLabelSize(25);
   gridHisto->SetRowLabelSize(50);
-  itemBoxSizer2->Add(gridHisto, 1, wxGROW|wxALL, 1);
+  mainSizer->Add(gridHisto, 1, wxGROW|wxALL, 1);
 
-  zoomHisto = new wxScrolledWindow( itemFrame1, ID_ZOOMHISTO, wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(100, 100)), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
-  zoomHisto->Show(false);
-  itemBoxSizer2->Add(zoomHisto, 1, wxGROW|wxALL, 1);
-  zoomHisto->SetScrollbars(1, 1, 0, 0);
-
+  // Connect events and objects
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_SIZE, wxSizeEventHandler(gHistogram::OnZoomSize), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_PAINT, wxPaintEventHandler(gHistogram::OnPaint), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), NULL, this);
 ////@end gHistogram content construction
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
@@ -161,6 +166,8 @@ void gHistogram::execute()
   else
     fillGrid();
 
+  ready = true;
+  
   this->Refresh();
 }
 
@@ -176,8 +183,9 @@ void gHistogram::fillGrid()
   TObjectOrder numRows, numDrawRows;
   bool horizontal = myHistogram->getHorizontal();
   
-  gridHisto->Show( true );
   zoomHisto->Show( false );
+  gridHisto->Show( true );
+  mainSizer->Layout();
   
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( exception() );
@@ -331,9 +339,112 @@ void gHistogram::fillGrid()
 
 void gHistogram::fillZoom()
 {
+  bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+  UINT16 idStat;
+  THistogramColumn curPlane;
+  THistogramColumn numCols, numDrawCols;
+  TObjectOrder numRows, numDrawRows;
+  bool horizontal = myHistogram->getHorizontal();
+  double cellWidth, cellHeight;
+
   gridHisto->Show( false );
   zoomHisto->Show( true );
+  mainSizer->Layout();
+  
+  ready = false;
+  zoomImage.Create( zoomHisto->GetSize().GetWidth(), zoomHisto->GetSize().GetHeight() );
+  wxMemoryDC bufferDraw( zoomImage );
+  bufferDraw.SetBackground( wxBrush( *wxLIGHT_GREY_BRUSH ) );
+  bufferDraw.Clear();
 
+  if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
+    throw( exception() );
+
+  if( myHistogram->getComputeGradient() )
+    myHistogram->recalcGradientLimits();
+    
+  if( commStat )
+    curPlane = myHistogram->getCommSelectedPlane();
+  else
+    curPlane = myHistogram->getSelectedPlane();
+
+  numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+  numRows = myHistogram->getNumRows();
+  if( horizontal )
+  {
+    numDrawCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+    numDrawRows = myHistogram->getNumRows();
+  }
+  else
+  {
+    numDrawCols = myHistogram->getNumRows();
+    numDrawRows = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+  }
+
+  cellWidth = (double)( zoomHisto->GetSize().GetWidth() ) / (double)( numDrawCols + 1 );
+  cellHeight = (double)( zoomHisto->GetSize().GetHeight() ) / (double)( numDrawRows + 1 );
+  
+  zoomHisto->Freeze();
+  for( THistogramColumn iCol = 0; iCol < numCols; iCol++ )
+  {
+    if( commStat )
+      myHistogram->setCommFirstCell( iCol, curPlane );
+    else
+      myHistogram->setFirstCell( iCol, curPlane );
+
+    bufferDraw.SetBrush( wxBrush( *wxGREY_BRUSH ) );
+    bufferDraw.SetPen( wxPen( *wxTRANSPARENT_PEN ) );
+    bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight );
+    bufferDraw.DrawRectangle( 0, 0, cellWidth, bufferDraw.GetSize().GetHeight() );
+    
+    for( TObjectOrder iRow = 0; iRow < numRows; iRow++ )
+    {
+      THistogramColumn iDrawCol;
+      TObjectOrder iDrawRow;
+      if( horizontal )
+      {
+        iDrawCol = iCol;
+        iDrawRow = iRow;
+      }
+      else
+      {
+        iDrawCol = iRow;
+        iDrawRow = iCol;
+      }
+      
+      if( !( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
+             ( !commStat && myHistogram->endCell( iCol, curPlane ) ) ) )
+      {
+        if( commStat )
+        {
+          if( myHistogram->getCommCurrentRow( iCol, curPlane ) == iRow )
+          {
+            rgb tmpCol = myHistogram->calcGradientColor( 
+              myHistogram->getCommCurrentValue( iCol, idStat, curPlane ) );
+            bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+            bufferDraw.DrawRectangle( ( iDrawCol + 1 ) * cellWidth, ( iDrawRow + 1 ) * cellHeight,
+                                      rint( cellWidth ), rint( cellHeight ) );
+            myHistogram->setCommNextCell( iCol, curPlane );
+          }
+        }
+        else
+        {
+          if( myHistogram->getCurrentRow( iCol, curPlane ) == iRow )
+          {
+            rgb tmpCol = myHistogram->calcGradientColor( 
+              myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
+            bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+            bufferDraw.DrawRectangle( ( iDrawCol + 1 ) * cellWidth, ( iDrawRow + 1 ) * cellHeight,
+                                      rint( cellWidth ), rint( cellHeight ) );
+            myHistogram->setNextCell( iCol, curPlane );
+          }
+        }
+      }
+    }
+  }
+  zoomHisto->Thaw();
+  
+  ready = true;
 }
 
 void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat )
@@ -604,3 +715,39 @@ void gHistogram::OnLabelRightClick( wxGridEvent& event )
 
   PopupMenu( popUpMenu->getPopUpMenu(), event.GetPosition());
 }
+
+
+/*!
+ * wxEVT_SIZE event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnZoomSize( wxSizeEvent& event )
+{
+  if( ready && myHistogram->getZoom() )
+    fillZoom();
+  event.Skip();
+}
+
+
+/*!
+ * wxEVT_ERASE_BACKGROUND event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnEraseBackground( wxEraseEvent& event )
+{
+//  event.Skip();
+}
+
+
+/*!
+ * wxEVT_PAINT event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnPaint( wxPaintEvent& event )
+{
+  wxPaintDC dc( zoomHisto );
+  
+  if( ready )
+    dc.DrawBitmap( zoomImage, 0, 0, false );
+}
+
