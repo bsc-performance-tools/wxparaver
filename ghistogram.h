@@ -95,6 +95,9 @@ public:
   /// wxEVT_ERASE_BACKGROUND event handler for ID_ZOOMHISTO
   void OnEraseBackground( wxEraseEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_ZOOMHISTO
+  void OnZoomhistoUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
   void OnCellRightClick( wxGridEvent& event );
 

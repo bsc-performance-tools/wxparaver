@@ -51,6 +51,8 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_IDLE( gHistogram::OnIdle )
 
+  EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
+
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
   EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
   EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
@@ -282,7 +284,10 @@ void gHistogram::fillGrid()
       
       if( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
           ( !commStat && myHistogram->endCell( iCol, curPlane ) ) )
+      {
         gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
+        gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
+      }
       else
       {
         if( commStat )
@@ -300,9 +305,14 @@ void gHistogram::fillGrid()
               gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, 
                                                   wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
             }
+            else gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
             myHistogram->setCommNextCell( iCol, curPlane );
           }
-          else gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
+          else
+          {
+            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
+            gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
+          }
         }
         else
         {
@@ -319,9 +329,14 @@ void gHistogram::fillGrid()
               gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, 
                                                   wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
             }
+            else gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
             myHistogram->setNextCell( iCol, curPlane );
           }
-          else gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
+          else
+          {
+            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
+            gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
+          }
         }
       }
     }
@@ -568,8 +583,7 @@ void gHistogram::updateHistogram()
     execute();
     myHistogram->setChanged( true );
   }
-
-  if( this->IsShown() )
+  else if( this->IsShown() )
   {
     if( myHistogram->getRedraw() )
     {
@@ -763,5 +777,15 @@ void gHistogram::OnPaint( wxPaintEvent& event )
   
   if( ready )
     dc.DrawBitmap( zoomImage, 0, 0, false );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnZoomhistoUpdate( wxUpdateUIEvent& event )
+{
+  updateHistogram();
 }
 
