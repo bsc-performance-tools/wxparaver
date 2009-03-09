@@ -31,6 +31,9 @@
 #include "histogramtotals.h"
 
 ////@begin XPM images
+#include "histo_zoom.xpm"
+#include "histo_color.xpm"
+#include "histo_horvert.xpm"
 ////@end XPM images
 
 
@@ -57,6 +60,15 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
   EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
+
+  EVT_MENU( ID_TOOLZOOM, gHistogram::OnToolzoomClick )
+  EVT_UPDATE_UI( ID_TOOLZOOM, gHistogram::OnToolzoomUpdate )
+
+  EVT_MENU( ID_TOOLGRADIENT, gHistogram::OnToolgradientClick )
+  EVT_UPDATE_UI( ID_TOOLGRADIENT, gHistogram::OnToolgradientUpdate )
+
+  EVT_MENU( ID_TOOLHORIZVERT, gHistogram::OnToolhorizvertClick )
+  EVT_UPDATE_UI( ID_TOOLHORIZVERT, gHistogram::OnToolhorizvertUpdate )
 
 ////@end gHistogram event table entries
 
@@ -144,6 +156,19 @@ void gHistogram::CreateControls()
   gridHisto->SetColLabelSize(25);
   gridHisto->SetRowLabelSize(50);
   mainSizer->Add(gridHisto, 1, wxGROW|wxALL, 1);
+
+  wxToolBar* itemToolBar5 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_TOOLBAR1 );
+  wxBitmap itemtool6Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
+  wxBitmap itemtool6BitmapDisabled;
+  itemToolBar5->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
+  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
+  wxBitmap itemtool7BitmapDisabled;
+  itemToolBar5->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
+  wxBitmap itemtool8Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
+  wxBitmap itemtool8BitmapDisabled;
+  itemToolBar5->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
+  itemToolBar5->Realize();
+  itemFrame1->SetToolBar(itemToolBar5);
 
   // Connect events and objects
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_SIZE, wxSizeEventHandler(gHistogram::OnZoomSize), NULL, this);
@@ -457,7 +482,6 @@ void gHistogram::fillZoom()
       }
     }
   }
-  zoomHisto->Thaw();
   
   bufferDraw.SetPen( *wxBLACK_PEN );
   bufferDraw.SetBrush( *wxTRANSPARENT_BRUSH );
@@ -473,6 +497,8 @@ void gHistogram::fillZoom()
      bufferDraw.DrawLine( ( iCol + 1 ) * cellWidth, 0, ( iCol + 1 ) * cellWidth, bufferDraw.GetSize().GetHeight() );
   }
   
+  zoomHisto->Thaw();
+  zoomHisto->Refresh();
   ready = true;
 }
 
@@ -538,6 +564,21 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin gHistogram bitmap retrieval
   wxUnusedVar(name);
+  if (name == _T("histo_zoom.xpm"))
+  {
+    wxBitmap bitmap( histo_zoom_xpm);
+    return bitmap;
+  }
+  else if (name == _T("histo_color.xpm"))
+  {
+    wxBitmap bitmap( color_xpm);
+    return bitmap;
+  }
+  else if (name == _T("histo_horvert.xpm"))
+  {
+    wxBitmap bitmap( horvert_xpm);
+    return bitmap;
+  }
   return wxNullBitmap;
 ////@end gHistogram bitmap retrieval
 }
@@ -787,5 +828,68 @@ void gHistogram::OnPaint( wxPaintEvent& event )
 void gHistogram::OnZoomhistoUpdate( wxUpdateUIEvent& event )
 {
   updateHistogram();
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLZOOM
+ */
+
+void gHistogram::OnToolzoomClick( wxCommandEvent& event )
+{
+  myHistogram->setZoom( event.IsChecked() );
+  myHistogram->setRedraw( true );
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLGRADIENT
+ */
+
+void gHistogram::OnToolgradientClick( wxCommandEvent& event )
+{
+  myHistogram->setShowColor( event.IsChecked() );
+  myHistogram->setRedraw( true );
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLHORIZVERT
+ */
+
+void gHistogram::OnToolhorizvertClick( wxCommandEvent& event )
+{
+  myHistogram->setHorizontal( event.IsChecked() );
+  myHistogram->setRedraw( true );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOLZOOM
+ */
+
+void gHistogram::OnToolzoomUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myHistogram->getZoom() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOLGRADIENT
+ */
+
+void gHistogram::OnToolgradientUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myHistogram->getShowColor() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOLHORIZVERT
+ */
+
+void gHistogram::OnToolhorizvertUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myHistogram->getHorizontal() );
 }
 

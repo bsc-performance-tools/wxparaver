@@ -20,6 +20,7 @@
 ////@begin includes
 #include "wx/frame.h"
 #include "wx/grid.h"
+#include "wx/toolbar.h"
 ////@end includes
 #include "paraverkerneltypes.h"
 #include "popupmenu.h"
@@ -45,6 +46,10 @@ class Histogram;
 #define ID_GHISTOGRAM 10004
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
+#define ID_TOOLBAR1 10024
+#define ID_TOOLZOOM 10025
+#define ID_TOOLGRADIENT 10026
+#define ID_TOOLHORIZVERT 10027
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
 #define SYMBOL_GHISTOGRAM_TITLE _("gHistogram")
 #define SYMBOL_GHISTOGRAM_IDNAME ID_GHISTOGRAM
@@ -109,6 +114,24 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
   void OnGridhistoUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLZOOM
+  void OnToolzoomClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOLZOOM
+  void OnToolzoomUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLGRADIENT
+  void OnToolgradientClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOLGRADIENT
+  void OnToolgradientUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLHORIZVERT
+  void OnToolhorizvertClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOLHORIZVERT
+  void OnToolhorizvertUpdate( wxUpdateUIEvent& event );
 
 ////@end gHistogram event handler declarations
 
