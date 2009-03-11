@@ -174,6 +174,7 @@ void gHistogram::CreateControls()
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_SIZE, wxSizeEventHandler(gHistogram::OnZoomSize), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_PAINT, wxPaintEventHandler(gHistogram::OnPaint), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
 ////@end gHistogram content construction
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
@@ -497,6 +498,7 @@ void gHistogram::fillZoom()
      bufferDraw.DrawLine( ( iCol + 1 ) * cellWidth, 0, ( iCol + 1 ) * cellWidth, bufferDraw.GetSize().GetHeight() );
   }
   
+  bufferDraw.SelectObject(wxNullBitmap);
   zoomHisto->Thaw();
   zoomHisto->Refresh();
   ready = true;
@@ -891,5 +893,18 @@ void gHistogram::OnToolgradientUpdate( wxUpdateUIEvent& event )
 void gHistogram::OnToolhorizvertUpdate( wxUpdateUIEvent& event )
 {
   event.Check( myHistogram->getHorizontal() );
+}
+
+
+/*!
+ * wxEVT_MOTION event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnMotion( wxMouseEvent& event )
+{
+////@begin wxEVT_MOTION event handler for ID_ZOOMHISTO in gHistogram.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_MOTION event handler for ID_ZOOMHISTO in gHistogram. 
 }
 

@@ -315,6 +315,89 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     windowProperties->AppendIn( eventFilterValue, valueProperty );
   }
   // END of Filter related properties
+
+  wxPGId semanticCat = windowProperties->Append( new wxPropertyCategory( wxT("Semantic") ) );
+  windowProperties->AppendIn( semanticCat,
+                              new wxStringProperty( wxT("Top Compose 1"),
+                              wxPG_LABEL,
+                              wxT( whichWindow->getLevelFunction( TOPCOMPOSE1 ) ) ) );
+  windowProperties->AppendIn( semanticCat,
+                              new wxStringProperty( wxT("Top Compose 2"),
+                              wxPG_LABEL,
+                              wxT( whichWindow->getLevelFunction( TOPCOMPOSE2 ) ) ) );
+  if( whichWindow->isDerivedWindow() )
+  {
+    windowProperties->AppendIn( semanticCat,
+                                new wxStringProperty( wxT("Derived"),
+                                wxPG_LABEL,
+                                wxT( whichWindow->getLevelFunction( DERIVED ) ) ) );
+  }
+  else
+  {
+    TWindowLevel level = whichWindow->getLevel();
+    if( level >= WORKLOAD && level <= THREAD )
+    {
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Compose Worload"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( COMPOSEWORKLOAD ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Worload"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( WORKLOAD ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Compose Appl"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( COMPOSEAPPLICATION ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Application"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( APPLICATION ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Compose Task"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( COMPOSETASK ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Task"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( TASK ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Compose Thread"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( COMPOSETHREAD ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Thread"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( THREAD ) ) ) );
+    }
+    else if( level >= SYSTEM && level <= CPU )
+    {
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Compose System"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( COMPOSESYSTEM ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("System"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( SYSTEM ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Compose Node"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( COMPOSENODE ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Node"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( NODE ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("Compose CPU"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( COMPOSECPU ) ) ) );
+      windowProperties->AppendIn( semanticCat,
+                                  new wxStringProperty( wxT("CPU"),
+                                  wxPG_LABEL,
+                                  wxT( whichWindow->getLevelFunction( CPU ) ) ) );
+    }
+  }
   
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );
 

@@ -100,6 +100,9 @@ public:
   /// wxEVT_ERASE_BACKGROUND event handler for ID_ZOOMHISTO
   void OnEraseBackground( wxEraseEvent& event );
 
+  /// wxEVT_MOTION event handler for ID_ZOOMHISTO
+  void OnMotion( wxMouseEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_ZOOMHISTO
   void OnZoomhistoUpdate( wxUpdateUIEvent& event );
 
