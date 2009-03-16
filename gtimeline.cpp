@@ -28,6 +28,7 @@
 #include "labelconstructor.h"
 #include "drawmode.h"
 #include "zoomhistory.cpp"
+#include "loadedwindows.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -75,16 +76,19 @@ END_EVENT_TABLE()
 /*!
  * gTimeline constructors
  */
-
+//class paraverMain;
+#include "paravermain.h"
 gTimeline::gTimeline()
 {
   Init();
+  parent = NULL;
 }
 
-gTimeline::gTimeline( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+gTimeline::gTimeline( wxWindow* whichParent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
-  Create( parent, id, caption, pos, size, style );
+  Create( whichParent, id, caption, pos, size, style );
+  parent = whichParent;
 }
 
 
@@ -524,6 +528,7 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
+
   zooming = false;
   zoomXY = false;
 }
@@ -555,7 +560,27 @@ void gTimeline::OnPopUpCopy()
 
 void gTimeline::OnPopUpClone()
 {
-//  printf("CATCHED clone!\n");
+  string clonedName = myWindow->getName() + string("_clone");
+  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, clonedName );
+  Window *clonedWindow = myWindow->clone();
+  clonedWindow->setName( clonedName );
+  clonedTimeline->SetMyWindow( clonedWindow );
+
+  delete clonedTimeline->zoomHistory;
+  clonedTimeline->zoomHistory = zoomHistory->clone();
+  
+  int width, height;
+  GetSize( &width, &height);
+  clonedTimeline->SetSize( width, height );
+
+  LoadedWindows::getInstance()->add( clonedWindow );
+  appendTimeline2Tree( clonedTimeline, clonedWindow );
+
+  if( myWindow->getShowWindow() )
+  {
+    clonedTimeline->Show();
+    clonedTimeline->redraw();
+  }
 }
 
 

@@ -197,6 +197,8 @@ private:
   bool ready;
   wxBitmap zoomImage;
 ////@end gHistogram member variables
+  wxWindow *parent; // for clone
+
   void updateHistogram();
 
 //  ZoomHistory<TTime, TObjectOrder> *zoomHistory;

@@ -66,7 +66,7 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
   popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ), sharedProperties->isAllowed( whichTimeline, ST_PASTE) );
   popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ), sharedProperties->isAllowed( whichTimeline, ST_PASTE_SPECIAL) );
 
-  popUpMenu->Enable( popUpMenu->FindItem( ST_CLONE ), false ); // when implemented, set to true
+  popUpMenu->Enable( popUpMenu->FindItem( ST_CLONE ), true );
 
   popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_TIME ), true );
   popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_SEMANTIC ), true );
@@ -85,8 +85,8 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 
   popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE ), sharedProperties->isAllowed( whichHistogram, ST_PASTE) );
   popUpMenu->Enable( popUpMenu->FindItem( ST_PASTE_SPECIAL ), sharedProperties->isAllowed( whichHistogram, ST_PASTE_SPECIAL) );
-  
-  popUpMenu->Enable( popUpMenu->FindItem( ST_CLONE ), false ); // when implemented, set to true
+
+  popUpMenu->Enable( popUpMenu->FindItem( ST_CLONE ), true );
   popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_TIME ), true );
   popUpMenu->Enable( popUpMenu->FindItem( ST_FIT_SEMANTIC ), true );
 }

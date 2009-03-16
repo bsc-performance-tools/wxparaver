@@ -16,7 +16,6 @@
 /*!
  * Includes
  */
-
 ////@begin includes
 #include "wx/frame.h"
 ////@end includes
@@ -28,7 +27,6 @@
 #include "recordlist.h"
 #include "popupmenu.h"
 #include "copypaste.h"
-
 
 // TEMPLATES
 #include "zoomhistory.h"
@@ -235,10 +233,10 @@ private:
   long zoomEndY;
 ////@end gTimeline member variables
 
+  wxWindow *parent;
   ZoomHistory<TTime, TObjectOrder> *zoomHistory;
   
   static const wxCoord drawBorder = 5;
 };
 
-#endif
-  // _GTIMELINE_H_
+#endif  // _GTIMELINE_H_

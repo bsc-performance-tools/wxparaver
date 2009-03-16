@@ -29,6 +29,8 @@
 #include "histogram.h"
 #include "labelconstructor.h"
 #include "histogramtotals.h"
+#include "loadedwindows.h"
+#include "windows_tree.h"
 
 ////@begin XPM images
 #include "histo_zoom.xpm"
@@ -88,6 +90,7 @@ gHistogram::gHistogram( wxWindow* parent, wxWindowID id, const wxString& caption
 {
   Init();
   Create( parent, id, caption, pos, size, style );
+  this->parent = parent;
 }
 
 
@@ -102,6 +105,8 @@ bool gHistogram::Create( wxWindow* parent, wxWindowID id, const wxString& captio
 
   CreateControls();
 ////@end gHistogram creation
+  this->parent = parent;
+
   return true;
 }
 
@@ -131,6 +136,7 @@ void gHistogram::Init()
   gridHisto = NULL;
 ////@end gHistogram member initialisation
   popUpMenu = NULL;
+  parent = NULL;
 }
 
 
@@ -424,7 +430,7 @@ void gHistogram::fillZoom()
 
   cellWidth = (double)( zoomHisto->GetSize().GetWidth() ) / (double)( numDrawCols + 1 );
   cellHeight = (double)( zoomHisto->GetSize().GetHeight() ) / (double)( numDrawRows + 1 );
-  
+
   zoomHisto->Freeze();
   for( THistogramColumn iCol = 0; iCol < numCols; iCol++ )
   {
@@ -437,7 +443,7 @@ void gHistogram::fillZoom()
     bufferDraw.SetPen( *wxTRANSPARENT_PEN );
     bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight );
     bufferDraw.DrawRectangle( 0, 0, cellWidth, bufferDraw.GetSize().GetHeight() );
-    
+
     for( TObjectOrder iRow = 0; iRow < numRows; iRow++ )
     {
       THistogramColumn iDrawCol;
@@ -734,7 +740,25 @@ void gHistogram::OnPopUpPasteSize()
 void gHistogram::OnPopUpPasteFilterAll(){}
 void gHistogram::OnPopUpPasteFilterCommunications(){}
 void gHistogram::OnPopUpPasteFilterEvents(){}
-void gHistogram::OnPopUpClone(){}
+
+void gHistogram::OnPopUpClone()
+{
+  string clonedName = myHistogram->getName() + string("_clone");
+  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, clonedName );
+  Histogram *clonedHistogram = myHistogram->clone();
+  clonedHistogram->setName( clonedName );
+  clonedGHistogram->myHistogram = clonedHistogram;
+  clonedGHistogram->ready = ready;
+  LoadedWindows::getInstance()->add( clonedHistogram );
+  appendHistogram2Tree( clonedGHistogram );
+
+  clonedGHistogram->SetSize( myHistogram->getPosX(),  myHistogram->getPosY(),
+                     myHistogram->getWidth(), myHistogram->getHeight() );
+
+  clonedGHistogram->execute();
+}
+
+
 void gHistogram::OnPopUpFitTimeScale()
 {
   myHistogram->setWindowBeginTime( 0 );
@@ -748,12 +772,6 @@ void gHistogram::OnPopUpFitSemanticScale(){}
 //void gHistogram::OnPopUpGradientColor(){}
 void gHistogram::OnPopUpUndoZoom( wxUpdateUIEvent& event  ){}
 void gHistogram::OnPopUpRedoZoom(){}
-
-
-
-
-
-
 
 
 /*!

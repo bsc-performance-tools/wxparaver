@@ -31,7 +31,7 @@
 #include "localkernel.h"
 #include "paraverconfig.h"
 #include "previousfiles.h"
-
+#include "windows_tree.h"
 /*!
  * Forward declarations
  */
@@ -222,8 +222,11 @@ public:
 
   /// Should we show tooltips?
   static bool ShowToolTips();
+  void refreshTree( gTimeline *whichTimeline, Window *window );
 
   static wxProgressDialog *dialogProgress;
+  static paraverMain* myParaverMain;  // for update tree of windows
+  
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
   wxMenu* menuFile;
@@ -247,11 +250,13 @@ private:
 ////@end paraverMain member variables
   
   
-  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
+//  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
+/*
   void BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
                   wxTreeCtrl *root2, wxTreeItemId idRoot2,
                   Window *window );
+*/
   bool DoLoadCFG( const string &path );
 };
 
