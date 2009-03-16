@@ -134,6 +134,7 @@ void gHistogram::Init()
   mainSizer = NULL;
   zoomHisto = NULL;
   gridHisto = NULL;
+  histoStatus = NULL;
 ////@end gHistogram member initialisation
   popUpMenu = NULL;
   parent = NULL;
@@ -163,18 +164,22 @@ void gHistogram::CreateControls()
   gridHisto->SetRowLabelSize(50);
   mainSizer->Add(gridHisto, 1, wxGROW|wxALL, 1);
 
-  wxToolBar* itemToolBar5 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_TOOLBAR1 );
-  wxBitmap itemtool6Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
-  wxBitmap itemtool6BitmapDisabled;
-  itemToolBar5->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
-  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
+  histoStatus = new wxStatusBar( itemFrame1, ID_HISTOSTATUS, wxST_SIZEGRIP|wxNO_BORDER );
+  histoStatus->SetFieldsCount(1);
+  mainSizer->Add(histoStatus, 0, wxGROW, 5);
+
+  wxToolBar* itemToolBar6 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_TOOLBAR1 );
+  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
   wxBitmap itemtool7BitmapDisabled;
-  itemToolBar5->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
-  wxBitmap itemtool8Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
+  itemToolBar6->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
+  wxBitmap itemtool8Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
   wxBitmap itemtool8BitmapDisabled;
-  itemToolBar5->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
-  itemToolBar5->Realize();
-  itemFrame1->SetToolBar(itemToolBar5);
+  itemToolBar6->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
+  wxBitmap itemtool9Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
+  wxBitmap itemtool9BitmapDisabled;
+  itemToolBar6->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
+  itemToolBar6->Realize();
+  itemFrame1->SetToolBar(itemToolBar6);
 
   // Connect events and objects
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_SIZE, wxSizeEventHandler(gHistogram::OnZoomSize), NULL, this);

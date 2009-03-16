@@ -159,31 +159,31 @@ void SaveConfigurationDialog::CreateControls()
 
   wxStaticBox* itemStaticBoxSizer11Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Timeline options"));
   wxStaticBoxSizer* itemStaticBoxSizer11 = new wxStaticBoxSizer(itemStaticBoxSizer11Static, wxVERTICAL);
-  itemBoxSizer10->Add(itemStaticBoxSizer11, 1, wxGROW|wxALL, 5);
+  itemBoxSizer10->Add(itemStaticBoxSizer11, 3, wxGROW|wxALL, 5);
 
   optRelativeBegin = new wxCheckBox( itemDialog1, ID_CHECKBEGIN, _("Relative begin time"), wxDefaultPosition, wxDefaultSize, 0 );
   optRelativeBegin->SetValue(false);
-  itemStaticBoxSizer11->Add(optRelativeBegin, 1, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
+  itemStaticBoxSizer11->Add(optRelativeBegin, 1, wxALIGN_LEFT|wxALL, 5);
 
   optRelativeEnd = new wxCheckBox( itemDialog1, ID_CHECKEND, _("Relative end time"), wxDefaultPosition, wxDefaultSize, 0 );
   optRelativeEnd->SetValue(false);
-  itemStaticBoxSizer11->Add(optRelativeEnd, 1, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
+  itemStaticBoxSizer11->Add(optRelativeEnd, 1, wxALIGN_LEFT|wxALL, 5);
 
   optComputeSemantic = new wxCheckBox( itemDialog1, ID_CHECKSEMANTIC, _("Compute semantic scale"), wxDefaultPosition, wxDefaultSize, 0 );
   optComputeSemantic->SetValue(false);
-  itemStaticBoxSizer11->Add(optComputeSemantic, 1, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
+  itemStaticBoxSizer11->Add(optComputeSemantic, 1, wxALIGN_LEFT|wxALL, 5);
 
   wxStaticBox* itemStaticBoxSizer15Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Histogram options"));
   wxStaticBoxSizer* itemStaticBoxSizer15 = new wxStaticBoxSizer(itemStaticBoxSizer15Static, wxVERTICAL);
-  itemBoxSizer10->Add(itemStaticBoxSizer15, 1, wxGROW|wxALL, 5);
+  itemBoxSizer10->Add(itemStaticBoxSizer15, 5, wxGROW|wxALL, 5);
 
   radioAllTrace = new wxRadioButton( itemDialog1, ID_RADIOALLTRACE, _("All trace"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioAllTrace->SetValue(false);
-  itemStaticBoxSizer15->Add(radioAllTrace, 1, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
+  itemStaticBoxSizer15->Add(radioAllTrace, 1, wxALIGN_LEFT|wxALL, 5);
 
   radioAllWindow = new wxRadioButton( itemDialog1, ID_RADIOALLWINDOW, _("All window"), wxDefaultPosition, wxDefaultSize, 0 );
   radioAllWindow->SetValue(false);
-  itemStaticBoxSizer15->Add(radioAllWindow, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  itemStaticBoxSizer15->Add(radioAllWindow, 1, wxGROW|wxALL, 5);
 
   wxStaticLine* itemStaticLine18 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemStaticBoxSizer15->Add(itemStaticLine18, 1, wxGROW|wxLEFT|wxRIGHT, 5);

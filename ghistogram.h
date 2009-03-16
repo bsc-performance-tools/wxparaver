@@ -20,6 +20,7 @@
 ////@begin includes
 #include "wx/frame.h"
 #include "wx/grid.h"
+#include "wx/statusbr.h"
 #include "wx/toolbar.h"
 ////@end includes
 #include "paraverkerneltypes.h"
@@ -35,6 +36,7 @@
 ////@begin forward declarations
 class wxBoxSizer;
 class wxGrid;
+class wxStatusBar;
 ////@end forward declarations
 class Histogram;
 
@@ -46,6 +48,7 @@ class Histogram;
 #define ID_GHISTOGRAM 10004
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
+#define ID_HISTOSTATUS 10028
 #define ID_TOOLBAR1 10024
 #define ID_TOOLZOOM 10025
 #define ID_TOOLGRADIENT 10026
@@ -191,6 +194,7 @@ public:
   wxBoxSizer* mainSizer;
   wxScrolledWindow* zoomHisto;
   wxGrid* gridHisto;
+  wxStatusBar* histoStatus;
 private:
   Histogram* myHistogram;
   gPopUpMenu * popUpMenu;
