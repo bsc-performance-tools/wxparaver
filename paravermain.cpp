@@ -255,12 +255,6 @@ void paraverMain::CreateControls()
 
 ////@end paraverMain content construction
   wxTreeCtrl* tmpTree = createTree( imageList );
-/*
-  wxTreeCtrl* tmpTree = new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxTR_HAS_BUTTONS |wxTR_HIDE_ROOT|wxTR_LINES_AT_ROOT|wxTR_SINGLE );
-  tmpTree->SetImageList( imageList );
-  tmpTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
-*/
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
 }
 
@@ -292,12 +286,6 @@ bool paraverMain::DoLoadTrace( const string &path )
     loadedTraces.push_back( tr );
     currentTrace = loadedTraces.size() - 1;
     wxTreeCtrl *newTree = createTree( imageList );
-    /*
-    wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, 
-      wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_LINES_AT_ROOT|wxTR_SINGLE );
-    newTree->SetImageList( imageList );
-    newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
-    */
     choiceWindowBrowser->AddPage( newTree, path );
     previousTraces->add( path );
   }
@@ -314,46 +302,6 @@ bool paraverMain::DoLoadTrace( const string &path )
   
   return loaded;
 }
-/*
-void paraverMain::refreshTree( gTimeline *whichTimeline, Window *window )
-{
-  wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-  wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
-  TreeBrowserItemData *currentData =  new TreeBrowserItemData( window->getName(), whichTimeline );
-  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( allTracesPage->GetRootItem(), window->getName(), 1, -1, currentData );
-  wxTreeItemId currentWindowId2 = currentPage->AppendItem( currentPage->GetRootItem(), window->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
-}
-
-
-void paraverMain::BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
-                             wxTreeCtrl *root2, wxTreeItemId idRoot2,
-                             Window *window )
-{
-  wxTreeItemId currentWindowId1, currentWindowId2;
-  TreeBrowserItemData *currentData;
-
-  gTimeline* tmpTimeline = new gTimeline( this, wxID_ANY, window->getName() );
-  LoadedWindows::getInstance()->add( window );
-  tmpTimeline->SetMyWindow( window );
-  tmpTimeline->SetSize( window->getPosX(), window->getPosY(), window->getWidth(), window->getHeight() );
-  if( window->getShowWindow() )
-  {
-    tmpTimeline->Show();
-    tmpTimeline->redraw();
-  }
-
-  currentData =  new TreeBrowserItemData( window->getName(), tmpTimeline );
-  currentWindowId1 = root1->AppendItem( idRoot1, window->getName(), 1, -1, currentData );
-  currentWindowId2 = root2->AppendItem( idRoot2, window->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
-
-  if ( window->getParent( 0 ) != NULL )
-  {
-    BuildTree( root1, currentWindowId1, root2, currentWindowId2, window->getParent( 0 ) );
-    BuildTree( root1, currentWindowId1, root2, currentWindowId2, window->getParent( 1 ) );
-  }
-}
-
-*/
 
 bool paraverMain::DoLoadCFG( const string &path )
 {
@@ -394,15 +342,6 @@ bool paraverMain::DoLoadCFG( const string &path )
 
           appendHistogram2Tree( tmpHisto );
           LoadedWindows::getInstance()->add( (*it) );
-          /*
-          wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-          allTracesPage->AppendItem( allTracesPage->GetRootItem(), (*it)->getName(), 0, -1,
-            new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
-
-          wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
-          currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), 0, -1,
-            new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
-          */
 
           tmpHisto->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
           if( (*it)->getShowWindow() )
@@ -862,16 +801,13 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   {
     wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( iPage );
     wxTreeItemId root = currentTree->GetRootItem();
-/*    if( currentTree->ItemHasChildren( root ) )
-    {*/
-      wxTreeItemIdValue cookie;
-      wxTreeItemId currentChild = currentTree->GetFirstChild( root, cookie );
-      while( currentChild.IsOk() )
-      {
-        updateTreeItem( currentTree, currentChild, allWindows, allHistograms, currentWindow );
-        currentChild = currentTree->GetNextChild( root, cookie );
-      }
-/*    }*/
+    wxTreeItemIdValue cookie;
+    wxTreeItemId currentChild = currentTree->GetFirstChild( root, cookie );
+    while( currentChild.IsOk() )
+    {
+      updateTreeItem( currentTree, currentChild, allWindows, allHistograms, currentWindow );
+      currentChild = currentTree->GetNextChild( root, cookie );
+    }
   }
    // add pending window or histogram
   for( vector<Window *>::iterator it = allWindows.begin(); it != allWindows.end(); ++it )
@@ -889,15 +825,6 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
     tmpHisto->SetHistogram( *it );
 
     appendHistogram2Tree( tmpHisto );
-/*
-    wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-    allTracesPage->AppendItem( allTracesPage->GetRootItem(), (*it)->getName(), 0, -1,
-                               new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
-
-    wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
-    currentPage->AppendItem( currentPage->GetRootItem(), (*it)->getName(), 0, -1,
-                             new TreeBrowserItemData( (*it)->getName(), tmpHisto ) );
-*/
   }
 }
 
@@ -999,16 +926,6 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
       ++menuIt;
     }
   }
-/*
-  while( menuIt != menuItems.end() )
-  {
-    wxMenuItem *tmp = *menuIt;
-    int id = tmp->GetId();
-    Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousTracesClick );
-    menuTraces->Delete( tmp );
-    ++menuIt;
-  }
-*/
 }
 /*!
  * wxEVT_UPDATE_UI event handler for ID_MENULOADCFG
@@ -1046,16 +963,6 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
       ++menuIt;
     }
   }
-/* 
-  while( menuIt != menuItems.end() )
-  {
-    wxMenuItem *tmp = *menuIt;
-    int id = tmp->GetId();
-    Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnPreviousCFGsClick );
-    menuCFGs->Delete( tmp );
-    ++menuIt;
-  }
-*/
 }
 
 void progressFunction( ProgressController *progress )

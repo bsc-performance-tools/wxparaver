@@ -3,6 +3,7 @@
 #include "gtimeline.h"
 #include "ghistogram.h"
 #include "paravermain.h"
+
 wxTreeCtrl * createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
@@ -13,13 +14,7 @@ wxTreeCtrl * createTree( wxImageList *imageList )
   
   return newTree;
 }
-/*
-void appendItem( INT16 currentTrace, )
-{
-  wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
 
-}
-*/
 void appendTimeline2Tree( gTimeline *whichTimeline, Window *window )
 {
   // Refresh tree in current page and always in global page
@@ -41,11 +36,11 @@ void appendHistogram2Tree( gHistogram *ghistogram )
 
   wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 ); // Global page
   wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
-                                                             ghistogram->GetHistogram()->getName(), 1, -1,
+                                                             ghistogram->GetHistogram()->getName(), 0, -1,
                                                              currentData );
   wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
   wxTreeItemId currentWindowId2 = currentPage->AppendItem( currentPage->GetRootItem(),
-                                                           ghistogram->GetHistogram()->getName(), 1, -1,
+                                                           ghistogram->GetHistogram()->getName(), 0, -1,
                                                            new TreeBrowserItemData( *currentData ) );
 }
 
