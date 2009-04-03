@@ -480,23 +480,6 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Task"),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
-      pos = 0;
-      selected = -1;
-      for( vector<string>::iterator it = composeFunctions.begin();
-           it != composeFunctions.end(); ++it )
-      {
-        if( (*it) == whichWindow->getLevelFunction( COMPOSETHREAD ) )
-          selected = pos;
-        ++pos;
-      }
-      windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose Thread"),
-                                  wxPG_LABEL,
-                                  arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
-      windowProperties->AppendIn( semanticCat,
-                                  new wxStringProperty( wxT("Thread"),
-                                  wxPG_LABEL,
-                                  wxT( whichWindow->getLevelFunction( THREAD ) ) ) );
     }
     else if( level >= SYSTEM && level <= CPU )
     {
@@ -565,11 +548,62 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Compose CPU"),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+                                  
+      pos = 0;
+      selected = -1;
+      arrayStr.Clear();
+      arrayInt.Clear();
+      vector<string> cpuFunctions;
+      whichWindow->getAllSemanticFunctions( CPU_GROUP, cpuFunctions );
+      for( vector<string>::iterator it = cpuFunctions.begin();
+           it != cpuFunctions.end(); ++it )
+      {
+        arrayStr.Add( wxT( (*it).c_str() ) );
+        arrayInt.Add( pos );
+        if( (*it) == whichWindow->getLevelFunction( COMPOSECPU ) )
+          selected = pos;
+        ++pos;
+      }
       windowProperties->AppendIn( semanticCat,
-                                  new wxStringProperty( wxT("CPU"),
+                                  new wxEnumProperty( wxT("CPU"),
                                   wxPG_LABEL,
-                                  wxT( whichWindow->getLevelFunction( CPU ) ) ) );
+                                  arrayStr, arrayInt, selected ) );
     }
+    pos = 0;
+    selected = -1;
+    for( vector<string>::iterator it = composeFunctions.begin();
+         it != composeFunctions.end(); ++it )
+    {
+      if( (*it) == whichWindow->getLevelFunction( COMPOSETHREAD ) )
+        selected = pos;
+      ++pos;
+    }
+    windowProperties->AppendIn( semanticCat,
+                                new wxEnumProperty( wxT("Compose Thread"),
+                                wxPG_LABEL,
+                                arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+
+    vector<vector<string> > threadFunctions;
+    vector<string> levels;
+    levels.push_back( "State" );
+    threadFunctions.push_back( vector<string>() );
+    whichWindow->getAllSemanticFunctions( STATE_GROUP, threadFunctions[ 0 ] );
+    levels.push_back( "Event" );
+    threadFunctions.push_back( vector<string>() );
+    whichWindow->getAllSemanticFunctions( EVENT_GROUP, threadFunctions[ 1 ] );
+    levels.push_back( "Communication" );
+    threadFunctions.push_back( vector<string>() );
+    whichWindow->getAllSemanticFunctions( COMM_GROUP, threadFunctions[ 2 ] );
+    levels.push_back( "Object" );
+    threadFunctions.push_back( vector<string>() );
+    whichWindow->getAllSemanticFunctions( OBJECT_GROUP, threadFunctions[ 3 ] );
+    
+    windowProperties->AppendIn( semanticCat,
+                                new prvSemanticThreadProperty( wxT("Thread"),
+                                wxPG_LABEL,
+                                levels,
+                                threadFunctions,
+                                wxT( whichWindow->getLevelFunction( THREAD ) ) ) );
   }
   // END of Semantic related properties
   

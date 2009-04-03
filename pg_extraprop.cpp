@@ -12,6 +12,10 @@
 #include "pg_extraprop.h"
 #include <wx/choicdlg.h>
 
+/**********************************************************
+ **       prvEventTypeProperty
+ **********************************************************/
+
 WX_PG_IMPLEMENT_PROPERTY_CLASS( prvEventTypeProperty, wxPGProperty,
                                 wxArrayInt, const wxArrayInt&, TextCtrlAndButton )
 
@@ -227,3 +231,126 @@ wxArrayInt prvEventTypeProperty::GetValueAsArrayInt() const
     
   return retValue;
 }
+
+
+
+/**********************************************************
+ **       prvSemanticThreadProperty
+ **********************************************************/
+
+SemanticMenu::SemanticMenu( const vector<string>& levels,
+                            const vector<vector<string> >& functions,
+                            const wxString& value,
+                            prvSemanticThreadProperty *prop )
+                            : myProperty( prop )
+{
+  int idMenu = 0;
+  
+  for( unsigned int i = 0; i < levels.size(); ++i )
+  {
+    subMenus.push_back( new wxMenu() );
+    for( vector<string>::const_iterator it = functions[ i ].begin(); 
+         it != functions[ i ].end(); ++it )
+    {
+      wxString tmpStr( (*it).c_str() );
+      subMenus[ i ]->AppendCheckItem( idMenu, tmpStr );
+      if( tmpStr == value )
+      {
+        subMenus[ i ]->Check( idMenu, true );
+        currentItemID = idMenu;
+      }
+      else
+        subMenus[ i ]->Check( idMenu, false );
+      ++idMenu;
+    }
+    subMenus[ i ]->Connect( wxEVT_COMMAND_MENU_SELECTED, 
+                            wxCommandEventHandler( SemanticMenu::OnMenu ),
+                            NULL,
+                            this );
+    myMenu.Append( i, levels[ i ].c_str(), subMenus[ i ] );
+  }
+}
+
+SemanticMenu::~SemanticMenu()
+{
+  for( vector<wxMenu *>::iterator it = subMenus.begin(); it != subMenus.end(); ++it )
+    delete *it;
+}
+
+void SemanticMenu::OnMenu( wxCommandEvent& event )
+{
+  wxMenuItem *lastItem;
+  int itemMenu = 0;
+  bool stop = false;
+  
+  for( vector<wxMenu *>::iterator it = subMenus.begin();
+       it != subMenus.end(); ++it )
+  {
+    if( ( lastItem = (*it)->FindItem( currentItemID ) ) != NULL )
+    {
+      if( !lastItem->IsChecked() )
+        lastItem->Check( true );
+      else
+        lastItem->Check( false );
+      break;
+    }
+  }
+  for( vector<wxMenu *>::iterator it = subMenus.begin();
+       it != subMenus.end(); ++it )
+  {
+    for( unsigned int i = 0; i < (*it)->GetMenuItemCount(); ++i )
+    {
+      if( (*it)->IsChecked( itemMenu ) )
+      {
+        currentItemID = itemMenu;
+        stop = true;
+        myProperty->SetValueInEvent( wxString( (*it)->GetLabelText( itemMenu ) ) );
+        break;
+      }
+      ++itemMenu;
+    }
+    if( stop ) break;
+  }
+}
+
+void SemanticMenu::PopupMenu( wxWindow *onWindow )
+{
+  onWindow->PopupMenu( &myMenu );
+}
+
+
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvSemanticThreadProperty, wxPGProperty,
+                                wxString, wxString&, TextCtrlAndButton )
+
+prvSemanticThreadProperty::prvSemanticThreadProperty( const wxString& label,
+                                                      const wxString& name,
+                                                      const vector<string>& levels,
+                                                      const vector<vector<string> >& functions,
+                                                      const wxString& value )
+                                                        : wxPGProperty(label,name)
+{
+  SetValue( value );
+  
+  myMenu = new SemanticMenu( levels, functions, value, this );
+}
+
+prvSemanticThreadProperty::~prvSemanticThreadProperty()
+{
+}
+
+bool prvSemanticThreadProperty::OnEvent( wxPropertyGrid* propgrid,
+                                         wxWindow* WXUNUSED(primary),
+                                         wxEvent& event )
+{
+  if ( propgrid->IsMainButtonEvent(event) )
+  {
+    myMenu->PopupMenu( propgrid );
+  }
+  return true;
+}
+
+wxString prvSemanticThreadProperty::GetValueAsString( int ) const
+{
+  return GetValue().GetString();
+}
+
