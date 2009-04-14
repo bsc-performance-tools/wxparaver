@@ -18,6 +18,27 @@
 #include "filter.h"
 #include "loadedwindows.h"
 
+void semanticFunctionParameter( wxPropertyGrid* windowProperties,
+                                Window *whichWindow,
+                                wxPGId category,
+                                TWindowLevel functionLevel )
+{
+  for( TParamIndex paramIdx = 0; paramIdx < whichWindow->getFunctionNumParam( functionLevel ); ++paramIdx )
+  {
+    wxArrayString valuesStr;
+    wxString propName( "Param" );
+    propName << " " << paramIdx << " " << functionLevel;
+    TParamValue values = whichWindow->getFunctionParam( functionLevel, paramIdx );
+    for( TParamValue::iterator it = values.begin(); it != values.end(); ++it )
+      valuesStr.Add( wxString() << (*it) );
+    wxArrayStringProperty *parameterProp = new wxArrayStringProperty( 
+                                              wxT(whichWindow->getFunctionParamName( functionLevel, paramIdx ).c_str()), 
+                                              propName, 
+                                              valuesStr );
+    windowProperties->AppendIn( category, parameterProp );
+  }
+}
+                                
 void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWindow )
 {
   whichWindow->setChanged( false );
@@ -40,7 +61,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   windowProperties->Append( new wxFloatProperty( wxT("End time"), wxPG_LABEL, 
                             wxT( whichWindow->getWindowEndTime() ) ) );
 
+  //-------------------------------------------------------------------------
   // Filter related properties
+  //-------------------------------------------------------------------------
   if( filter != NULL )
   {
     vector<string> filterFunctions;
@@ -320,7 +343,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   }
   // END of Filter related properties
 
+  //-------------------------------------------------------------------------
   // Semantic related properties
+  //-------------------------------------------------------------------------
+  TParamValue pValues;
   wxPGId semanticCat = windowProperties->Append( new wxPropertyCategory( wxT("Semantic") ) );
 
   vector<string> composeFunctions;
@@ -348,6 +374,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                               new wxEnumProperty( wxT("Top Compose 1"),
                               wxPG_LABEL,
                               arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+  semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TOPCOMPOSE1 );
 
   pos = 0;
   selected = -1;
@@ -362,6 +389,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                               new wxEnumProperty( wxT("Top Compose 2"),
                               wxPG_LABEL,
                               arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+  semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TOPCOMPOSE2 );
 
   if( whichWindow->isDerivedWindow() )
   {
@@ -384,6 +412,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                 new wxEnumProperty( wxT("Derived"),
                                 wxPG_LABEL,
                                 arrayStr, arrayInt, selected ) );
+    semanticFunctionParameter( windowProperties, whichWindow, semanticCat, DERIVED );
   }
   else
   {
@@ -415,6 +444,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Compose Worload"),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEWORKLOAD );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = notThreadFunctions.begin();
@@ -428,6 +459,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Worload"),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, WORKLOAD );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = composeFunctions.begin();
@@ -441,6 +474,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Compose Appl"),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEAPPLICATION );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = notThreadFunctions.begin();
@@ -454,6 +489,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Application"),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, APPLICATION );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = composeFunctions.begin();
@@ -467,6 +504,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Compose Task"),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETASK );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = notThreadFunctions.begin();
@@ -480,6 +519,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Task"),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TASK );
     }
     else if( level >= SYSTEM && level <= CPU )
     {
@@ -496,6 +536,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Compose System"),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSESYSTEM );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = notThreadFunctions.begin();
@@ -509,6 +551,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("System"),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, SYSTEM );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = composeFunctions.begin();
@@ -522,6 +566,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Compose Node"),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSENODE );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = notThreadFunctions.begin();
@@ -535,6 +581,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("Node"),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, NODE );
+      
       pos = 0;
       selected = -1;
       for( vector<string>::iterator it = composeFunctions.begin();
@@ -549,6 +597,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
                                   
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSECPU );
+      
       pos = 0;
       selected = -1;
       arrayStr.Clear();
@@ -560,7 +610,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       {
         arrayStr.Add( wxT( (*it).c_str() ) );
         arrayInt.Add( pos );
-        if( (*it) == whichWindow->getLevelFunction( COMPOSECPU ) )
+        if( (*it) == whichWindow->getLevelFunction( CPU ) )
           selected = pos;
         ++pos;
       }
@@ -568,6 +618,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                   new wxEnumProperty( wxT("CPU"),
                                   wxPG_LABEL,
                                   arrayStr, arrayInt, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, CPU );
     }
     pos = 0;
     selected = -1;
@@ -582,6 +633,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                 new wxEnumProperty( wxT("Compose Thread"),
                                 wxPG_LABEL,
                                 arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+    semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETHREAD );
 
     vector<vector<string> > threadFunctions;
     vector<string> levels;
@@ -604,6 +656,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                 levels,
                                 threadFunctions,
                                 wxT( whichWindow->getLevelFunction( THREAD ) ) ) );
+    semanticFunctionParameter( windowProperties, whichWindow, semanticCat, THREAD );
   }
   // END of Semantic related properties
   

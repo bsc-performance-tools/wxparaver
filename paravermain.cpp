@@ -741,88 +741,127 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentTimeline->setLevelFunction( TOPCOMPOSE1, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Top Compose 2" )
   {
     currentTimeline->setLevelFunction( TOPCOMPOSE2, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Derived" )
   {
     currentTimeline->setLevelFunction( DERIVED, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Compose Worload" )
   {
     currentTimeline->setLevelFunction( COMPOSEWORKLOAD, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Worload" )
   {
     currentTimeline->setLevelFunction( WORKLOAD, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Compose Appl" )
   {
     currentTimeline->setLevelFunction( COMPOSEAPPLICATION, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Application" )
   {
     currentTimeline->setLevelFunction( APPLICATION, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Compose Task" )
   {
     currentTimeline->setLevelFunction( COMPOSETASK, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Task" )
   {
     currentTimeline->setLevelFunction( TASK, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Compose System" )
   {
     currentTimeline->setLevelFunction( COMPOSESYSTEM, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "System" )
   {
     currentTimeline->setLevelFunction( SYSTEM, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Compose Node" )
   {
     currentTimeline->setLevelFunction( COMPOSENODE, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Node" )
   {
     currentTimeline->setLevelFunction( NODE, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Compose CPU" )
   {
     currentTimeline->setLevelFunction( COMPOSECPU, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "CPU" )
   {
     currentTimeline->setLevelFunction( CPU, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Compose Thread" )
   {
     currentTimeline->setLevelFunction( COMPOSETHREAD, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == "Thread" )
   {
     currentTimeline->setLevelFunction( THREAD, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
-
+  else if( propName.BeforeFirst( ' ' ) == "Param" )
+  {
+    wxString paramData = propName.AfterFirst( ' ' );
+    TParamIndex paramIdx;
+    TWindowLevel functionLevel;
+    unsigned long tmpLong;
+    
+    paramData.BeforeFirst( ' ' ).ToULong( &tmpLong );
+    paramIdx = tmpLong;
+    paramData.AfterFirst( ' ' ).ToULong( &tmpLong );
+    functionLevel = (TWindowLevel)tmpLong;
+    
+    wxArrayString valuesStr = property->GetValue().GetArrayString();
+    TParamValue values;
+    for( unsigned int idx = 0; idx < valuesStr.GetCount(); idx++ )
+    {
+      double tmpDouble;
+      valuesStr[ idx ].ToDouble( &tmpDouble );
+      values.push_back( tmpDouble );
+    }
+    currentTimeline->setFunctionParam( functionLevel, paramIdx, values );
+    currentTimeline->setRedraw( true );
+  }
 }
 
 
