@@ -19,6 +19,8 @@
 ////@begin includes
 #include "wx/frame.h"
 ////@end includes
+#include <wx/treebase.h>
+
 #include "wx/choicdlg.h"
 #include "wx/dcmemory.h"
 #include "wx/scrolwin.h"
@@ -206,6 +208,11 @@ public:
   void OnPopUpGradientColor();
   void OnPopUpUndoZoom( wxUpdateUIEvent& event  );
   void OnPopUpRedoZoom();
+  
+  gTimeline *clone( Window *clonedWindow,
+                    wxWindow *parent,
+                    wxTreeItemId idRoot1, 
+                    wxTreeItemId idRoot2 );
 
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables

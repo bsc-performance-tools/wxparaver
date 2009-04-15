@@ -742,10 +742,6 @@ void gHistogram::OnPopUpPasteSize()
   updateHistogram();
 }
 
-void gHistogram::OnPopUpPasteFilterAll(){}
-void gHistogram::OnPopUpPasteFilterCommunications(){}
-void gHistogram::OnPopUpPasteFilterEvents(){}
-
 void gHistogram::OnPopUpClone()
 {
   string clonedName = myHistogram->getName() + string("_clone");
@@ -753,7 +749,7 @@ void gHistogram::OnPopUpClone()
   Histogram *clonedHistogram = myHistogram->clone();
   clonedHistogram->setName( clonedName );
   clonedGHistogram->myHistogram = clonedHistogram;
-  clonedGHistogram->ready = ready;
+  clonedGHistogram->ready = false;
   LoadedWindows::getInstance()->add( clonedHistogram );
   appendHistogram2Tree( clonedGHistogram );
 

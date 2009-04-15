@@ -178,9 +178,6 @@ public:
   void OnPopUpPasteTime();
   void OnPopUpPasteObjects();
   void OnPopUpPasteSize();
-  void OnPopUpPasteFilterAll();
-  void OnPopUpPasteFilterCommunications();
-  void OnPopUpPasteFilterEvents();
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
   void OnPopUpFitSemanticScale();

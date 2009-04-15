@@ -44,10 +44,83 @@ void appendHistogram2Tree( gHistogram *ghistogram )
                                                            new TreeBrowserItemData( *currentData ) );
 }
 
+wxTreeCtrl *getAllTracesTree()
+{
+  wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
+  
+  return (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+}
+
+wxTreeCtrl *getSelectedTraceTree()
+{
+  wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
+  INT16 currentTrace = paraverMain::myParaverMain->GetCurrentTrace();
+
+  return (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+}
+
+
+wxTreeItemId getItemId( wxTreeItemId item, gTimeline *wanted, bool &found )
+{
+  wxTreeItemIdValue cookie;
+
+  found = false;
+
+  wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( item, cookie );
+  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( item );
+  
+  while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  {
+    if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline() == wanted )
+    {
+      item = itemCurrent;
+      found = true;
+    }
+    else
+    {
+      item = getItemId( itemCurrent, wanted, found );
+      if( !found )
+        itemCurrent = getAllTracesTree()->GetNextChild( item, cookie );
+    }
+  }
+  
+  if( !found && itemLast.IsOk() )
+  {
+  printf("estamos mirando el ultimo\n");
+    if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline() == wanted )
+    {
+      item = itemLast;
+      found = true;
+    }
+    else
+    {
+      item = getItemId( itemLast, wanted, found );
+    }
+  }
+  
+  return item;
+}
+
+
+// precond : current is a derived gTimeline
+void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
+{
+  // find item for given current gTimeline.
+  bool found;
+  wxTreeItemId item = getItemId( getAllTracesTree()->GetRootItem(), current, found );
+printf("current %x\tfound %d\n",(unsigned int)current,found);
+  // fill vector with parents
+  wxTreeItemIdValue cookie;
+  parents.push_back(((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( getAllTracesTree()->GetFirstChild( item, cookie ))))->getTimeline());
+  parents.push_back(((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( getAllTracesTree()->GetNextChild( item, cookie ) )))->getTimeline());
+}
+
+
 void BuildTree( wxWindow *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
-                Window *window )
+                Window *window,
+                string nameSuffix )
 {
   wxTreeItemId currentWindowId1, currentWindowId2;
   TreeBrowserItemData *currentData;

@@ -23,6 +23,7 @@
 ////@begin includes
 ////@end includes
 #include <wx/dcbuffer.h>
+
 #include "gtimeline.h"
 #include "window.h"
 #include "labelconstructor.h"
@@ -558,29 +559,70 @@ void gTimeline::OnPopUpCopy()
 }
 
 
-void gTimeline::OnPopUpClone()
+// simple windows can let this method do the entire work passing a NULL clonedWindow
+// derived windows must pass existing clonedWindow, because Window::clone is recursive
+gTimeline *gTimeline::clone( Window *clonedWindow,
+                             wxWindow *parent,
+                             wxTreeItemId idRoot1, 
+                             wxTreeItemId idRoot2 )
 {
-  string clonedName = myWindow->getName() + string("_clone");
-  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, clonedName );
-  Window *clonedWindow = myWindow->clone();
-  clonedWindow->setName( clonedName );
+  if ( clonedWindow == NULL )
+    clonedWindow = myWindow->clone(); // recursive clone
+
+  // create empty gTimeline and assign window
+  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ) );
   clonedTimeline->SetMyWindow( clonedWindow );
 
-  delete clonedTimeline->zoomHistory;
-  clonedTimeline->zoomHistory = zoomHistory->clone();
-  
+  // clone zoom history
+/*  delete clonedTimeline->zoomHistory;
+  clonedTimeline->zoomHistory = zoomHistory->clone();*/
+
+  // copy gTimeline dimensions
   int width, height;
-  GetSize( &width, &height);
+//  GetSize( &width, &height);
+  width = clonedWindow->getWidth();
+  height = clonedWindow->getHeight();
   clonedTimeline->SetSize( width, height );
 
+  // add to loaded windows list
   LoadedWindows::getInstance()->add( clonedWindow );
-  appendTimeline2Tree( clonedTimeline, clonedWindow );
+
+  wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
+  INT16 currentTrace = paraverMain::myParaverMain->GetCurrentTrace();
+  wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 ); // Global page
+  wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
+
+  TreeBrowserItemData *currentData =  new TreeBrowserItemData( clonedWindow->getName(), clonedTimeline );
+  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( idRoot1, clonedWindow->getName(), 1, -1, currentData );
+  wxTreeItemId currentWindowId2 = currentPage->AppendItem( idRoot2, clonedWindow->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
 
   if( myWindow->getShowWindow() )
   {
     clonedTimeline->Show();
     clonedTimeline->redraw();
   }
+  else
+    clonedTimeline->Show(false);
+
+  // if derived, clone parents
+  if ( clonedWindow->isDerivedWindow() )
+  {
+//    vector< gTimeline * > gParents;
+//    getParentGTimeline( this, gParents );
+
+    clone( clonedWindow->getParent( 0 ), parent, currentWindowId1, currentWindowId2 );
+    clone( clonedWindow->getParent( 1 ), parent, currentWindowId1, currentWindowId2 );
+  }
+
+  return clonedTimeline;
+}
+
+
+void gTimeline::OnPopUpClone()
+{
+//  Window *clonedWindow = myWindow->clone();
+  gTimeline *clonedTimeline = clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree()->GetRootItem());
+  //appendTimeline2Tree( clonedTimeline, clonedWindow );
 }
 
 
