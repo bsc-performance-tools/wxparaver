@@ -32,7 +32,7 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
     for( TParamValue::iterator it = values.begin(); it != values.end(); ++it )
       valuesStr.Add( wxString() << (*it) );
     wxArrayStringProperty *parameterProp = new wxArrayStringProperty( 
-                                              wxT(whichWindow->getFunctionParamName( functionLevel, paramIdx ).c_str()), 
+                                              wxString(_("   ")) + _(whichWindow->getFunctionParamName( functionLevel, paramIdx ).c_str()), 
                                               propName, 
                                               valuesStr );
     windowProperties->AppendIn( category, parameterProp );
