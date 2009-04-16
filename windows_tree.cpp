@@ -108,7 +108,7 @@ void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
   // find item for given current gTimeline.
   bool found;
   wxTreeItemId item = getItemId( getAllTracesTree()->GetRootItem(), current, found );
-printf("current %x\tfound %d\n",(unsigned int)current,found);
+
   // fill vector with parents
   wxTreeItemIdValue cookie;
   parents.push_back(((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( getAllTracesTree()->GetFirstChild( item, cookie ))))->getTimeline());

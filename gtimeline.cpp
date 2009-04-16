@@ -620,9 +620,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
 
 void gTimeline::OnPopUpClone()
 {
-//  Window *clonedWindow = myWindow->clone();
-  gTimeline *clonedTimeline = clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree()->GetRootItem());
-  //appendTimeline2Tree( clonedTimeline, clonedWindow );
+  clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree()->GetRootItem());
 }
 
 
