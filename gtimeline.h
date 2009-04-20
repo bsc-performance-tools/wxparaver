@@ -151,9 +151,6 @@ public:
   long GetZoomEnd() const { return zoomEndX ; }
   void SetZoomEnd(long value) { zoomEndX = value ; }
 
-  gPopUpMenu * GetPopUpMenu() const { return popUpMenu ; }
-  void SetPopUpMenu(gPopUpMenu * value) { popUpMenu = value ; }
-
   wxBitmap GetDrawImage() const { return drawImage ; }
   void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
@@ -232,7 +229,6 @@ private:
   bool zooming;
   long zoomBeginX;
   long zoomEndX;
-  gPopUpMenu * popUpMenu;
   bool zoomXY;
   long zoomBeginY;
   long beginRow;

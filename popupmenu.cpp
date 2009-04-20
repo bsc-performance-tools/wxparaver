@@ -1,7 +1,8 @@
 #include "popupmenu.h"
 #include "copypaste.h"
 #include <wx/event.h>
-
+#include <iostream>
+using namespace std;
 void gPopUpMenu::buildItem( wxMenu *popUp,
                             const wxString &title,
                             wxObjectEventFunction handler,
@@ -221,10 +222,6 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 gPopUpMenu::~gPopUpMenu()
 {
   delete popUpMenu;
-  delete popUpMenuColor;
-  delete popUpMenuPaste;
-  delete popUpMenuPasteFilter;
-  delete popUpMenuPasteDialog;
 }
 
 void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
