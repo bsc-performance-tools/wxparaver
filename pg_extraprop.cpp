@@ -272,10 +272,7 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
 }
 
 SemanticMenu::~SemanticMenu()
-{
-  for( vector<wxMenu *>::iterator it = subMenus.begin(); it != subMenus.end(); ++it )
-    delete *it;
-}
+{}
 
 void SemanticMenu::OnMenu( wxCommandEvent& event )
 {
