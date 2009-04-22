@@ -91,11 +91,11 @@ public:
   /// wxEVT_CLOSE_WINDOW event handler for ID_GHISTOGRAM
   void OnCloseWindow( wxCloseEvent& event );
 
+  /// wxEVT_SIZE event handler for ID_GHISTOGRAM
+  void OnSize( wxSizeEvent& event );
+
   /// wxEVT_IDLE event handler for ID_GHISTOGRAM
   void OnIdle( wxIdleEvent& event );
-
-  /// wxEVT_SIZE event handler for ID_ZOOMHISTO
-  void OnZoomSize( wxSizeEvent& event );
 
   /// wxEVT_PAINT event handler for ID_ZOOMHISTO
   void OnPaint( wxPaintEvent& event );
