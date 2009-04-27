@@ -238,13 +238,17 @@ wxArrayInt prvEventTypeProperty::GetValueAsArrayInt() const
  **       prvSemanticThreadProperty
  **********************************************************/
 
+BEGIN_EVENT_TABLE( SemanticMenu, wxMenu )
+  EVT_MENU_RANGE( 1, 200, SemanticMenu::OnMenu )
+END_EVENT_TABLE()
+
 SemanticMenu::SemanticMenu( const vector<string>& levels,
                             const vector<vector<string> >& functions,
                             const wxString& value,
                             prvSemanticThreadProperty *prop )
                             : myProperty( prop )
 {
-  int idMenu = 0;
+  int idMenu = 1;
   
   for( unsigned int i = 0; i < levels.size(); ++i )
   {
@@ -277,7 +281,7 @@ SemanticMenu::~SemanticMenu()
 void SemanticMenu::OnMenu( wxCommandEvent& event )
 {
   wxMenuItem *lastItem;
-  int itemMenu = 0;
+  int itemMenu = 1;
   bool stop = false;
   
   for( vector<wxMenu *>::iterator it = subMenus.begin();

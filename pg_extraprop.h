@@ -59,6 +59,8 @@ class prvSemanticThreadProperty;
 
 class SemanticMenu: public wxMenu
 {
+  DECLARE_EVENT_TABLE()
+
   public:
     SemanticMenu()
     {}

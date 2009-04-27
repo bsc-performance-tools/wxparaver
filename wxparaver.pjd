@@ -1734,7 +1734,8 @@
               <string name="event-handler-0">"wxEVT_PAINT|OnPaint|NONE||gHistogram"</string>
               <string name="event-handler-1">"wxEVT_ERASE_BACKGROUND|OnEraseBackground|NONE||gHistogram"</string>
               <string name="event-handler-2">"wxEVT_MOTION|OnMotion|NONE||gHistogram"</string>
-              <string name="event-handler-3">"wxEVT_UPDATE_UI|OnZoomhistoUpdate|NONE||gHistogram"</string>
+              <string name="event-handler-3">"wxEVT_CONTEXT_MENU|OnZoomContextMenu|NONE||gHistogram"</string>
+              <string name="event-handler-4">"wxEVT_UPDATE_UI|OnZoomhistoUpdate|NONE||gHistogram"</string>
               <string name="proxy-Id name">"ID_ZOOMHISTO"</string>
               <long name="proxy-Id value">10023</long>
               <string name="proxy-Name">""</string>
@@ -2135,6 +2136,7 @@
           <string name="variable-16">"beginRow|long|BeginRow||2|0|"</string>
           <string name="variable-17">"endRow|long|EndRow||2|0|"</string>
           <string name="variable-18">"zoomEndY|long|ZoomEndY||2|0|"</string>
+          <string name="variable-19">"popUpMenu|gPopUpMenu|PopupMenu||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>

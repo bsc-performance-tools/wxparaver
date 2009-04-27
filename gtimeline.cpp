@@ -554,7 +554,6 @@ void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
 void gTimeline::OnPopUpCopy()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
-  //popUpMenu->enableMenu( this );
 }
 
 
@@ -578,7 +577,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
 
   // copy gTimeline dimensions
   int width, height;
-//  GetSize( &width, &height);
+
   width = clonedWindow->getWidth();
   height = clonedWindow->getHeight();
   clonedTimeline->SetSize( width, height );
@@ -646,7 +645,6 @@ void gTimeline::OnPopUpCodeColor()
 {
   myWindow->setCodeColorMode();
   myWindow->setRedraw( true );
-  myWindow->setChanged( true );
 }
 
 
@@ -662,7 +660,6 @@ void gTimeline::OnPopUpPasteObjects()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
   myWindow->setRedraw( true );
-  myWindow->setChanged( true );
 }
 
 
@@ -670,7 +667,6 @@ void gTimeline::OnPopUpPasteSize()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
   myWindow->setRedraw( true );
-//  myWindow->setChanged( true ); //?
 }
 
 
@@ -701,18 +697,20 @@ void gTimeline::OnPopUpPasteFilterEvents()
 
 void gTimeline::OnPopUpPasteSpecial()
 {
-/*  popUpMenu->createPasteSpecialDialog( this );
+  wxArrayString choices;
+  
+  wxMultiChoiceDialog *dialog = gPopUpMenu::createPasteSpecialDialog( choices, this );
 
-  if ( popUpMenu->okPressed() )
+  if ( dialog->ShowModal() == wxID_OK )
   {
-    wxArrayInt selections = popUpMenu->getSelections();
+    wxArrayInt selections = dialog->GetSelections();
     if ( selections.GetCount() > 0 )
     {
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
         gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
-        if ( pasteActions->isAllowed( this, popUpMenu->getOption( selections[i] )) )
-          pasteActions->paste( this, popUpMenu->getOption( selections[i] ) );
+        if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
+          pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );
       }
 
       myWindow->setRedraw( true );
@@ -720,7 +718,7 @@ void gTimeline::OnPopUpPasteSpecial()
     }
   }
 
-  popUpMenu->deletePasteSpecialDialog();*/
+  delete dialog;
 }
 
 
@@ -728,7 +726,6 @@ void gTimeline::OnPopUpGradientColor()
 {
   myWindow->setGradientColorMode();
   myWindow->setRedraw( true );
-  myWindow->setChanged( true );
 }
 
 
@@ -741,7 +738,6 @@ void gTimeline::OnPopUpUndoZoom( wxUpdateUIEvent& event )
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-    //popUpMenu->enable( "Undo Zoom", !zoomHistory->emptyPrevZoom());
   }
 }
 
@@ -755,7 +751,6 @@ void gTimeline::OnPopUpRedoZoom()
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-    //popUpMenu->enable( "Redo Zoom", !zoomHistory->emptyNextZoom());
   }
 }
 
@@ -765,24 +760,13 @@ void gTimeline::OnPopUpRedoZoom()
  */
 void gTimeline::OnRightDown( wxMouseEvent& event )
 {
-/*
-  if ( popUpMenu == NULL )
-    popUpMenu = new gPopUpMenu( this );
-
-  popUpMenu->enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
-  popUpMenu->enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
-
-  popUpMenu->enableMenu( this );
-  PopupMenu( popUpMenu->getPopUpMenu(), event.GetPosition());
-*/
   gPopUpMenu popUpMenu( this );
-
+  
   popUpMenu.enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
   popUpMenu.enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
   popUpMenu.enableMenu( this );
   PopupMenu( popUpMenu.getPopUpMenu() );
-  cout << "OnRightDown end" << endl;
 }
 
 

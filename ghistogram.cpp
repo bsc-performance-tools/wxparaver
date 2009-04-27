@@ -194,6 +194,7 @@ void gHistogram::CreateControls()
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_PAINT, wxPaintEventHandler(gHistogram::OnPaint), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
 ////@end gHistogram content construction
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
@@ -704,20 +705,24 @@ void gHistogram::OnPopUpPaste()
 
 void gHistogram::OnPopUpPasteSpecial()
 {
-  if ( popUpMenu->okPressed() )
+  wxArrayString choices;
+  
+  wxMultiChoiceDialog *dialog = gPopUpMenu::createPasteSpecialDialog( choices, this );
+
+  if ( dialog->ShowModal() == wxID_OK )
   {
-    wxArrayInt selections = popUpMenu->getSelections();
+    wxArrayInt selections = dialog->GetSelections();
     if ( selections.GetCount() > 0 )
     {
       bool recalc = false;
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
         gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
-        if ( pasteActions->isAllowed( this, popUpMenu->getOption( selections[i] )) )
+        if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
         {
-          if ( popUpMenu->getOption( selections[i] ) == "Time" )
+          if ( gPopUpMenu::getOption( choices, selections[i] ) == "Time" )
             recalc = true;
-          pasteActions->paste( this, popUpMenu->getOption( selections[i] ) );
+          pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );
         }
       }
 
@@ -727,6 +732,7 @@ void gHistogram::OnPopUpPasteSpecial()
     }
   }
 
+  delete dialog;
 }
 
 void gHistogram::OnPopUpPasteTime()
@@ -787,13 +793,11 @@ void gHistogram::OnPopUpRedoZoom(){}
 
 void gHistogram::OnCellRightClick( wxGridEvent& event )
 {
-  if ( popUpMenu == NULL )
-    popUpMenu = new gPopUpMenu( this );
-
+  gPopUpMenu popUpMenu( this );
 //  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
 //  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
-  PopupMenu( popUpMenu->getPopUpMenu(), event.GetPosition());
+  PopupMenu( popUpMenu.getPopUpMenu() );
 }
 
 
@@ -803,13 +807,12 @@ void gHistogram::OnCellRightClick( wxGridEvent& event )
 
 void gHistogram::OnLabelRightClick( wxGridEvent& event )
 {
-  if ( popUpMenu == NULL )
-    popUpMenu = new gPopUpMenu( this );
-
+  gPopUpMenu popUpMenu( this );
+  
 //  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
 //  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
-  PopupMenu( popUpMenu->getPopUpMenu(), event.GetPosition());
+  PopupMenu( popUpMenu.getPopUpMenu() );
 }
 
 
@@ -933,5 +936,17 @@ void gHistogram::OnSize( wxSizeEvent& event )
   if( ready && myHistogram->getZoom() )
     fillZoom();
   event.Skip();
+}
+
+
+/*!
+ * wxEVT_CONTEXT_MENU event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnZoomContextMenu( wxContextMenuEvent& event )
+{
+  gPopUpMenu popUpMenu( this );
+  
+  PopupMenu( popUpMenu.getPopUpMenu() );
 }
 

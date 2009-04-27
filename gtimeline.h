@@ -172,6 +172,9 @@ public:
   long GetZoomEndY() const { return zoomEndY ; }
   void SetZoomEndY(long value) { zoomEndY = value ; }
 
+  gPopUpMenu GetPopupMenu() const { return popUpMenu ; }
+  void SetPopupMenu(gPopUpMenu value) { popUpMenu = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -234,6 +237,7 @@ private:
   long beginRow;
   long endRow;
   long zoomEndY;
+  gPopUpMenu popUpMenu;
 ////@end gTimeline member variables
 
   wxWindow *parent;

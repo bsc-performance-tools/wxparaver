@@ -106,6 +106,9 @@ public:
   /// wxEVT_MOTION event handler for ID_ZOOMHISTO
   void OnMotion( wxMouseEvent& event );
 
+  /// wxEVT_CONTEXT_MENU event handler for ID_ZOOMHISTO
+  void OnZoomContextMenu( wxContextMenuEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_ZOOMHISTO
   void OnZoomhistoUpdate( wxUpdateUIEvent& event );
 

@@ -14,6 +14,9 @@ class gHistogram;
 class gPopUpMenu
 {
   public:
+    gPopUpMenu() 
+    {}
+    
     gPopUpMenu( gTimeline *whichTimeline );
     gPopUpMenu( gHistogram *whichHistogram );
     ~gPopUpMenu();
@@ -27,14 +30,10 @@ class gPopUpMenu
     void enableMenu( gHistogram *whichHistogram );
 
     wxMenu *getPopUpMenu() { return popUpMenu; };
-//    void Check( const string tag, bool checked );
-    string getOption( int position );
-    bool okPressed( );
-    wxArrayInt getSelections();
 
-    void createPasteSpecialDialog( gTimeline * whichTimeline );
-    void deletePasteSpecialDialog( );
-
+    static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gHistogram *whichHistogram );
+    static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gTimeline * whichTimeline );
+    static string getOption( wxArrayString& choices, int position );
 
   private:
     gTimeline *timeline;
@@ -44,9 +43,6 @@ class gPopUpMenu
     wxMenu * popUpMenuColor;
     wxMenu * popUpMenuPaste;
     wxMenu * popUpMenuPasteFilter;
-
-    wxArrayString choices;
-    wxMultiChoiceDialog * popUpMenuPasteDialog;
 
     void buildItem( wxMenu *popUp,
                     const wxString &title,
