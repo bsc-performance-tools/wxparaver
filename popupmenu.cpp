@@ -95,8 +95,6 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 
 wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choices, gHistogram *whichHistogram )
 {
-  wxMultiChoiceDialog *popUpMenuPasteDialog;
-
   choices.Empty();
   
   choices.Add(wxT(STR_TIME));
@@ -110,9 +108,9 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
 
 wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choices, gTimeline *whichTimeline )
 {
-  wxMultiChoiceDialog *popUpMenuPasteDialog;
-
+  choices.Empty();
   gPasteWindowProperties *pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+  
   if ( pasteActions->isAllowed( whichTimeline, string(STR_TIME) ) )
     choices.Add(wxT(STR_TIME));
 
