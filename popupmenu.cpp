@@ -43,9 +43,17 @@ void gPopUpMenu::buildItem( wxMenu *popUp,
 //  popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, tmp, this );
 
   if ( timeline == NULL )
+#ifdef WIN32
     popUpMenu->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, histogram );
+#else
+    popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, histogram );
+#endif
   else
+#ifdef WIN32
     popUpMenu->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, timeline );
+#else
+    popUp->Connect(tmpid, wxEVT_COMMAND_MENU_SELECTED, handler, NULL, timeline );
+#endif
 }
 
 
