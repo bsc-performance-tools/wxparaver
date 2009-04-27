@@ -267,7 +267,7 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
                             wxCommandEventHandler( SemanticMenu::OnMenu ),
                             NULL,
                             this );
-    myMenu.Append( i, levels[ i ].c_str(), subMenus[ i ] );
+    Append( i, levels[ i ].c_str(), subMenus[ i ] );
   }
 }
 
@@ -312,7 +312,7 @@ void SemanticMenu::OnMenu( wxCommandEvent& event )
 
 void SemanticMenu::PopupMenu( wxWindow *onWindow )
 {
-  onWindow->PopupMenu( &myMenu );
+  onWindow->PopupMenu( this );
 }
 
 

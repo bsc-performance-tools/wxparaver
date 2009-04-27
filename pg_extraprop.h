@@ -57,7 +57,7 @@ class prvEventTypeProperty: public wxPGProperty
  **********************************************************/
 class prvSemanticThreadProperty;
 
-class SemanticMenu: public wxEvtHandler
+class SemanticMenu: public wxMenu
 {
   public:
     SemanticMenu()
@@ -73,7 +73,6 @@ class SemanticMenu: public wxEvtHandler
     
   private:
     prvSemanticThreadProperty *myProperty;
-    wxMenu myMenu;
     vector<wxMenu *> subMenus;
     int currentItemID;
 };
