@@ -708,6 +708,7 @@ void gTimeline::OnPopUpPasteSpecial()
     {
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
+      printf("%d\n",selections[i]);
         gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
         if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
           pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );

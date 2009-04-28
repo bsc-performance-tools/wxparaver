@@ -15,7 +15,9 @@ class gPopUpMenu
 {
   public:
     gPopUpMenu() 
-    {}
+    {
+      popUpMenu = NULL;
+    }
     
     gPopUpMenu( gTimeline *whichTimeline );
     gPopUpMenu( gHistogram *whichHistogram );

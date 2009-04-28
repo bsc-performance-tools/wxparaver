@@ -222,7 +222,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
 gPopUpMenu::~gPopUpMenu()
 {
-  delete popUpMenu;
+  if( popUpMenu != NULL )
+    delete popUpMenu;
 }
 
 void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
@@ -273,9 +274,9 @@ void gPopUpMenu::disable( const string tag )
 
 string gPopUpMenu::getOption( wxArrayString& choices, int position )
 {
-  if ( choices[ position ].compare( STR_FILTER_COMMS_XT ))
+  if ( choices[ position ].Cmp( STR_FILTER_COMMS_XT ) == 0 )
     return string( STR_FILTER_COMMS );
-  else if ( choices[ position ].compare( STR_FILTER_EVENTS_XT ))
+  else if ( choices[ position ].Cmp( STR_FILTER_EVENTS_XT ) == 0 )
     return string( STR_FILTER_EVENTS );
   else  
     return string( choices[ position ] );
