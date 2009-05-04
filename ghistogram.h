@@ -23,6 +23,7 @@
 #include "wx/statusbr.h"
 #include "wx/toolbar.h"
 ////@end includes
+#include "wx/timer.h"
 #include "paraverkerneltypes.h"
 #include "popupmenu.h"
 #include "copypaste.h"
@@ -158,6 +159,21 @@ public:
   wxBitmap GetZoomImage() const { return zoomImage ; }
   void SetZoomImage(wxBitmap value) { zoomImage = value ; }
 
+  wxTimer * GetTimerZoom() const { return timerZoom ; }
+  void SetTimerZoom(wxTimer * value) { timerZoom = value ; }
+
+  double GetLastPosZoomX() const { return lastPosZoomX ; }
+  void SetLastPosZoomX(double value) { lastPosZoomX = value ; }
+
+  double GetLastPosZoomY() const { return lastPosZoomY ; }
+  void SetLastPosZoomY(double value) { lastPosZoomY = value ; }
+
+  double GetZoomCellWidth() const { return zoomCellWidth ; }
+  void SetZoomCellWidth(double value) { zoomCellWidth = value ; }
+
+  double GetZoomCellHeight() const { return zoomCellHeight ; }
+  void SetZoomCellHeight(double value) { zoomCellHeight = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -200,11 +216,17 @@ private:
   gPopUpMenu * popUpMenu;
   bool ready;
   wxBitmap zoomImage;
+  wxTimer * timerZoom;
+  double lastPosZoomX;
+  double lastPosZoomY;
+  double zoomCellWidth;
+  double zoomCellHeight;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
 
   void updateHistogram();
-
+  void OnTimerZoom( wxTimerEvent& event );
+  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
 //  ZoomHistory<TTime, TObjectOrder> *zoomHistory;
 };
 

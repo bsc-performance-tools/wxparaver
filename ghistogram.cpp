@@ -82,7 +82,9 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_UPDATE_UI( ID_TOOLHORIZVERT, gHistogram::OnToolhorizvertUpdate )
 
 ////@end gHistogram event table entries
-
+  
+  EVT_TIMER( wxID_ANY, gHistogram::OnTimerZoom )
+  
 END_EVENT_TABLE()
 
 
@@ -140,6 +142,9 @@ void gHistogram::Init()
 ////@begin gHistogram member initialisation
   myHistogram = NULL;
   ready = false;
+  timerZoom = new wxTimer( this );
+  lastPosZoomX = 0;
+  lastPosZoomY = 0;
   mainSizer = NULL;
   zoomHisto = NULL;
   gridHisto = NULL;
@@ -406,7 +411,8 @@ void gHistogram::fillZoom()
   THistogramColumn numCols, numDrawCols;
   TObjectOrder numRows, numDrawRows;
   bool horizontal = myHistogram->getHorizontal();
-  double cellWidth, cellHeight;
+  double& cellWidth = zoomCellWidth;
+  double& cellHeight = zoomCellHeight;
 
   gridHisto->Show( false );
   zoomHisto->Show( true );
@@ -920,10 +926,10 @@ void gHistogram::OnToolhorizvertUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnMotion( wxMouseEvent& event )
 {
-////@begin wxEVT_MOTION event handler for ID_ZOOMHISTO in gHistogram.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_MOTION event handler for ID_ZOOMHISTO in gHistogram. 
+  lastPosZoomX = event.GetX();
+  lastPosZoomY = event.GetY();
+  if( ready )
+    timerZoom->Start( 250, true );
 }
 
 
@@ -950,3 +956,67 @@ void gHistogram::OnZoomContextMenu( wxContextMenuEvent& event )
   PopupMenu( popUpMenu.getPopUpMenu() );
 }
 
+void gHistogram::OnTimerZoom( wxTimerEvent& event )
+{
+  wxString text;
+  
+  THistogramColumn column = myHistogram->getHorizontal() ? floor( lastPosZoomX / zoomCellWidth ) :
+                                                           floor( lastPosZoomY / zoomCellHeight );
+  TObjectOrder row = myHistogram->getHorizontal() ? floor( lastPosZoomY / zoomCellHeight ) :
+                                                    floor( lastPosZoomX / zoomCellWidth );
+  if( row > 0 )
+    text << _( myHistogram->getRowLabel( row - 1 ).c_str() )
+         << _( "  " );
+
+  if( column > 0 )
+    text << _( myHistogram->getColumnLabel( column - 1 ).c_str() )
+         << _( "  " );
+  
+  if( row > 0 && column > 0 )
+  {
+    TSemanticValue value = getZoomSemanticValue( column - 1, row - 1 );
+    text << _( LabelConstructor::histoCellLabel( myHistogram, 
+                                                 value, 
+                                                 myHistogram->getShowUnits() ).c_str() );
+  }
+  
+  
+  histoStatus->SetStatusText( text );
+}
+
+TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const
+{
+  THistogramColumn plane;
+  TSemanticValue value = 0.0;
+  UINT16 idStat;
+  myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
+  
+  if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
+  {
+    plane = myHistogram->getCommSelectedPlane();
+    if( myHistogram->planeCommWithValues( plane ) )
+    {
+      myHistogram->setCommFirstCell( column, plane );
+      while( myHistogram->getCommCurrentRow( column, plane ) < row )
+        myHistogram->setCommNextCell( column, plane );
+      
+      if( myHistogram->getCommCurrentRow( column, plane ) == row )
+        value = myHistogram->getCommCurrentValue( column, idStat, plane );
+    }
+  }
+  else
+  {
+    plane = myHistogram->getSelectedPlane();
+    if( myHistogram->planeWithValues( plane ) )
+    {
+      myHistogram->setFirstCell( column, plane );
+      while( myHistogram->getCurrentRow( column, plane ) < row )
+        myHistogram->setNextCell( column, plane );
+      
+      if( myHistogram->getCurrentRow( column, plane ) == row )
+        value = myHistogram->getCurrentValue( column, idStat, plane );
+    }
+  }
+  
+  return value;
+}
