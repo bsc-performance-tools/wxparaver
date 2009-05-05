@@ -789,7 +789,7 @@ void gHistogram::OnPopUpFitTimeScale()
 void gHistogram::OnPopUpFitSemanticScale(){}
 //void gHistogram::OnPopUpCodeColor(){}
 //void gHistogram::OnPopUpGradientColor(){}
-void gHistogram::OnPopUpUndoZoom( wxUpdateUIEvent& event  ){}
+void gHistogram::OnPopUpUndoZoom(){}
 void gHistogram::OnPopUpRedoZoom(){}
 
 
@@ -803,7 +803,7 @@ void gHistogram::OnCellRightClick( wxGridEvent& event )
 //  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
 //  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
-  PopupMenu( popUpMenu.getPopUpMenu() );
+  PopupMenu( &popUpMenu );
 }
 
 
@@ -818,7 +818,7 @@ void gHistogram::OnLabelRightClick( wxGridEvent& event )
 //  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
 //  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
-  PopupMenu( popUpMenu.getPopUpMenu() );
+  PopupMenu( &popUpMenu );
 }
 
 
@@ -953,7 +953,7 @@ void gHistogram::OnZoomContextMenu( wxContextMenuEvent& event )
 {
   gPopUpMenu popUpMenu( this );
   
-  PopupMenu( popUpMenu.getPopUpMenu() );
+  PopupMenu( &popUpMenu );
 }
 
 void gHistogram::OnTimerZoom( wxTimerEvent& event )

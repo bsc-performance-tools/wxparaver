@@ -171,8 +171,8 @@ public:
   double GetZoomCellWidth() const { return zoomCellWidth ; }
   void SetZoomCellWidth(double value) { zoomCellWidth = value ; }
 
-  double GetZoomCellHeight() const { return zoomCellHeight ; }
-  void SetZoomCellHeight(double value) { zoomCellHeight = value ; }
+  double GetZommCellHeight() const { return zoomCellHeight ; }
+  void SetZommCellHeight(double value) { zoomCellHeight = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -202,7 +202,7 @@ public:
   void OnPopUpFitSemanticScale();
 //  void OnPopUpCodeColor();
 //  void OnPopUpGradientColor();
-  void OnPopUpUndoZoom( wxUpdateUIEvent& event  );
+  void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();
 
 

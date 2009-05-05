@@ -163,7 +163,6 @@
         <string name="Optimizations">"%AUTO%"</string>
         <string name="Warnings">"%AUTO%"</string>
         <string name="Debug flags">"%AUTO%"</string>
-        <string name="Extra compile flags">"%AUTO%"</string>
         <string name="Libraries">"%AUTO%"</string>
         <string name="Library path">"%AUTO%"</string>
         <string name="Linker flags">"%AUTO%"</string>
@@ -223,7 +222,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"-lwxcode_gtk2d_propgrid-2.8 -lparaver-kernel -lcfg -lapi `$(WXWIN)/GCCBuildDebugGTK2DLL/wx-config --inplace --exec-prefix=&quot;$(WXWIN)/GCCBuildDebugGTK2DLL&quot; --libs`"</string>
           <string name="Library path">"../paraver-kernel"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -289,15 +287,14 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
-          <string name="Libraries">"%AUTO%"</string>
-          <string name="Library path">"%AUTO%"</string>
+          <string name="Libraries">"-lwxcode_gtk2_propgrid-2.8 -lparaver-kernel -lcfg -lapi `$(WXWIN)/GCCBuildReleaseGTK2DLL/wx-config --inplace --exec-prefix=&quot;$(WXWIN)/GCCBuildReleaseGTK2DLL&quot; --libs`"</string>
+          <string name="Library path">"../paraver-kernel"</string>
           <string name="Linker flags">"%AUTO%"</string>
-          <string name="Include path">"%AUTO%"</string>
+          <string name="Include path">"-I../common-files -I../paraver-kernel -I../paraver-kernel/api `$(WXWIN)/GCCBuildReleaseGTK2DLL/wx-config --inplace --cxxflags`"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets build command">"if test ! -f $(WXWIN)/GCCBuildReleaseGTK2DLL/config.log ; then $(WXWIN)/configure  --with-gtk=2 --disable-unicode --disable-universal --disable-monolithic --enable-gui --enable-shared --enable-exceptions --without-odbc --without-opengl --enable-graphics-ctx; fi ; make"</string>
           <string name="wxWidgets clean command">"%AUTO%"</string>
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
@@ -355,7 +352,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -421,7 +417,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -484,7 +479,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"/W1"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28d_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Debug"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -544,7 +538,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"/W3"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Release"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -604,7 +597,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -664,7 +656,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -724,7 +715,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -783,7 +773,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -842,7 +831,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -901,7 +889,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -1721,6 +1708,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">"mainSizer"</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -2141,7 +2136,6 @@
           <string name="variable-16">"beginRow|long|BeginRow||2|0|"</string>
           <string name="variable-17">"endRow|long|EndRow||2|0|"</string>
           <string name="variable-18">"zoomEndY|long|ZoomEndY||2|0|"</string>
-          <string name="variable-19">"popUpMenu|gPopUpMenu|PopupMenu||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
@@ -2219,14 +2213,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
