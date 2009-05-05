@@ -218,16 +218,16 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     }
     else if ( property == STR_FILTER_COMMS )
     {
-      timeline->GetMyWindow()->getFilter()->copyCommunicationsSection( whichTimeline->GetMyWindow()->getFilter() );
+      whichTimeline->GetMyWindow()->getFilter()->copyCommunicationsSection( timeline->GetMyWindow()->getFilter() );
     }
     else if ( property == STR_FILTER_EVENTS )
     {
-      timeline->GetMyWindow()->getFilter()->copyEventsSection( whichTimeline->GetMyWindow()->getFilter() );
+      whichTimeline->GetMyWindow()->getFilter()->copyEventsSection( timeline->GetMyWindow()->getFilter() );
     }
     else if ( property == STR_FILTER_ALL )
     {
-      timeline->GetMyWindow()->getFilter()->copyEventsSection( whichTimeline->GetMyWindow()->getFilter() );
-      timeline->GetMyWindow()->getFilter()->copyCommunicationsSection( whichTimeline->GetMyWindow()->getFilter() );
+      whichTimeline->GetMyWindow()->getFilter()->copyEventsSection( timeline->GetMyWindow()->getFilter() );
+      whichTimeline->GetMyWindow()->getFilter()->copyCommunicationsSection( timeline->GetMyWindow()->getFilter() );
     }
     else
     {
