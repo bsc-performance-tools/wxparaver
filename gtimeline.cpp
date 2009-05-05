@@ -517,6 +517,8 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
       endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
   
+      if( endRow > numObjects )
+        endRow = numObjects - 1;
       minObj = zoomHistory->getSecondDimension().first;
     }
 
