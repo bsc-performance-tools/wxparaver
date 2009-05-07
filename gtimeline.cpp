@@ -282,23 +282,29 @@ void gTimeline::drawAxis( wxDC& dc )
 
   // Draw axis labels
   wxCoord y;
-//  double inc = (double)( timeAxisPos - drawBorder - ( objectExt.GetHeight() * 0.5 ) ) / (double)( maxObj - minObj + 1);
   double inc = (double)( timeAxisPos - drawBorder ) / (double)( maxObj - minObj + 1 );
   
   objectPosList.clear();
   for( TObjectOrder obj = minObj; obj <= maxObj; obj++ )
   {
-    //y = ( (wxCoord) ( inc * ( obj - minObj + 0.5 ) ) ) + drawBorder;
-    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
-    if( inc * 0.25 > 1.0 )
-      y += (wxCoord)( inc * 0.25 );
+/*    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
+    if( ( inc * 0.10 ) >= 2.0 )
+      y += (wxCoord)( inc * 0.10 );*/
+    if( ( inc * 0.25 ) >= 2.0 )
+      y = ( (wxCoord) ( ( inc * 1.25 ) * ( obj - minObj ) ) ) + drawBorder;
+    else
+      y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
     objectPosList.push_back( y );
     dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
   }
-  objectHeight = (wxCoord)( inc * 0.75 );
-  if( objectHeight < 1 ) objectHeight = 1;
-  
+  if( ( inc * 0.25 ) >= 2.0 )
+    objectHeight = (wxCoord)floor( inc * 0.75 );
+  else
+    objectHeight = (wxCoord)floor(inc);
+    
+  if( objectHeight <= 1 ) objectHeight = 2;
+
   dc.SetFont( timeFont );
   dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ),
                objectAxisPos, timeAxisPos + drawBorder );
@@ -343,8 +349,10 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
     TSemanticValue valueToDraw = DrawMode::selectValue( values, myWindow->getDrawModeTime() );
     rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
     dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-    dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
-    
+    if( objectPos + objectHeight < timeAxisPos )
+      dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
+    else
+      dc.DrawLine( timePos, objectPos, timePos, timeAxisPos - 1 );
     timePos++;
   }
 }
