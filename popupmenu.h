@@ -26,6 +26,7 @@ class gHistogram;
 #define ID_MENU_FIT_SEMANTIC    30012
 #define ID_MENU_CODE_COLOR      30013
 #define ID_MENU_GRADIENT_COLOR  30014
+#define ID_MENU_NOT_NULL_GRADIENT_COLOR  30015
 
 class gPopUpMenu : public wxMenu
 {
@@ -67,6 +68,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuFitSemantic( wxCommandEvent& event);
     void OnMenuCodeColor( wxCommandEvent& event);
     void OnMenuGradientColor( wxCommandEvent& event);
+    void OnMenuNotNullGradientColor( wxCommandEvent& event);
 
   private:
     gTimeline *timeline;

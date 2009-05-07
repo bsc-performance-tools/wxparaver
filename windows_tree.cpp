@@ -1,3 +1,5 @@
+#include <wx/event.h>
+
 #include "windows_tree.h"
 #include "loadedwindows.h"
 #include "gtimeline.h"
@@ -86,7 +88,6 @@ wxTreeItemId getItemId( wxTreeItemId item, gTimeline *wanted, bool &found )
   
   if( !found && itemLast.IsOk() )
   {
-  printf("estamos mirando el ultimo\n");
     if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline() == wanted )
     {
       item = itemLast;
@@ -137,7 +138,9 @@ void BuildTree( wxWindow *parent,
 
   currentData =  new TreeBrowserItemData( window->getName(), tmpTimeline );
   currentWindowId1 = root1->AppendItem( idRoot1, window->getName(), 1, -1, currentData );
+//  root1->Connect( currentWindowId1, wxEVT_TREE_ITEM_RIGHT_CLICK, gTimeline::treePopUpHook );
   currentWindowId2 = root2->AppendItem( idRoot2, window->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
+
 
   if ( window->getParent( 0 ) != NULL )
   {

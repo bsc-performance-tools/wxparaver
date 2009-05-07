@@ -735,9 +735,16 @@ void gTimeline::OnPopUpPasteSpecial()
 void gTimeline::OnPopUpGradientColor()
 {
   myWindow->setGradientColorMode();
+  myWindow->getGradientColor().allowOutOfScale( true );
   myWindow->setRedraw( true );
 }
 
+void gTimeline::OnPopUpNotNullGradientColor()
+{
+  myWindow->setGradientColorMode();
+  myWindow->getGradientColor().allowOutOfScale( false );
+  myWindow->setRedraw( true );
+}
 
 void gTimeline::OnPopUpUndoZoom()
 {
@@ -834,4 +841,15 @@ void gTimeline::OnMotion( wxMouseEvent& event )
   dc.DrawRectangle( beginX, beginY, width, height );
 
   drawZone->Refresh();
+}
+
+void gTimeline::treePopUpHook()
+{
+  gPopUpMenu popUpMenu( this );
+  
+  popUpMenu.enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
+  popUpMenu.enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
+
+  popUpMenu.enableMenu( this );
+  PopupMenu( &popUpMenu );
 }

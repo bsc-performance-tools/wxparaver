@@ -20,6 +20,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_FIT_SEMANTIC, gPopUpMenu::OnMenuFitSemantic )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
+  EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
 END_EVENT_TABLE()
 
 
@@ -191,6 +192,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   buildItem( popUpMenuColor, wxString( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->IsCodeColorSet() );
   buildItem( popUpMenuColor, wxString( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->IsGradientColorSet() );
+  buildItem( popUpMenuColor, wxString( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->IsNotNullGradientColorSet() );
   AppendSubMenu( popUpMenuColor, wxString( "Color" ));
 
   enableMenu( timeline );
@@ -396,4 +398,9 @@ void gPopUpMenu::OnMenuGradientColor( wxCommandEvent& event)
     timeline->OnPopUpGradientColor();
 }
 
+void gPopUpMenu::OnMenuNotNullGradientColor( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpNotNullGradientColor();
+}
 

@@ -203,6 +203,7 @@ public:
   void OnPopUpFitSemanticScale();
   void OnPopUpCodeColor();
   void OnPopUpGradientColor();
+  void OnPopUpNotNullGradientColor();
   void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();
   
@@ -210,6 +211,8 @@ public:
                     wxWindow *parent,
                     wxTreeItemId idRoot1, 
                     wxTreeItemId idRoot2 );
+
+  void treePopUpHook();
 
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
