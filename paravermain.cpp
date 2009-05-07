@@ -93,6 +93,8 @@ paraverMain* paraverMain::myParaverMain = NULL;
 
 wxProgressDialog *paraverMain::dialogProgress = NULL;
 
+wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
+
 /*!
  * paraverMain constructors
  */
@@ -126,6 +128,8 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
   
   Init();
   Create( parent, id, caption, pos, size, style );
+  
+  defaultTitleBarSize = GetSize() - GetClientSize();
 }
 
 

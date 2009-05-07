@@ -569,20 +569,20 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   if ( clonedWindow == NULL )
     clonedWindow = myWindow->clone(); // recursive clone
 
-  // create empty gTimeline and assign window
-  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ) );
+  // create empty gTimeline and assign window with same dimensions
+  wxSize titleBarSize = GetSize() - GetClientSize();
+  if ( titleBarSize.GetHeight() == 0 )
+    titleBarSize = paraverMain::defaultTitleBarSize;
+  wxPoint position =  wxPoint( GetPosition().x + titleBarSize.GetHeight(),
+                               GetPosition().y + titleBarSize.GetHeight() );
+  wxSize size = wxSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
+
+  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
   clonedTimeline->SetMyWindow( clonedWindow );
 
   // clone zoom history
 /*  delete clonedTimeline->zoomHistory;
   clonedTimeline->zoomHistory = zoomHistory->clone();*/
-
-  // copy gTimeline dimensions
-  int width, height;
-
-  width = clonedWindow->getWidth();
-  height = clonedWindow->getHeight();
-  clonedTimeline->SetSize( width, height );
 
   // add to loaded windows list
   LoadedWindows::getInstance()->add( clonedWindow );

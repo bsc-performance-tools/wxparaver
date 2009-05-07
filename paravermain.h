@@ -226,6 +226,7 @@ public:
 
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
+  static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height
   
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
@@ -248,8 +249,8 @@ private:
   Histogram * lastHisto;
   wxWindow * currentWindow;
 ////@end paraverMain member variables
-  
-  
+
+
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
 /*

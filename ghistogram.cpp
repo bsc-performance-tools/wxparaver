@@ -25,6 +25,7 @@
 
 #include <wx/clipbrd.h>
 #include <sstream>
+#include <iostream>
 #include "ghistogram.h"
 #include "histogram.h"
 #include "labelconstructor.h"
@@ -762,17 +763,22 @@ void gHistogram::OnPopUpPasteSize()
 
 void gHistogram::OnPopUpClone()
 {
-  string clonedName = myHistogram->getName() + string("_clone");
-  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, clonedName );
   Histogram *clonedHistogram = myHistogram->clone();
-  clonedHistogram->setName( clonedName );
+  string clonedName = clonedHistogram->getName();
+
+  wxSize titleBarSize = GetSize() - GetClientSize();
+  if ( titleBarSize.GetHeight() == 0 )
+    titleBarSize = paraverMain::defaultTitleBarSize;
+
+  wxPoint position =  wxPoint( this->GetPosition().x + titleBarSize.GetHeight(),
+                               this->GetPosition().y + titleBarSize.GetHeight() );
+  wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
+  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, clonedName, position, size );
+
   clonedGHistogram->myHistogram = clonedHistogram;
   clonedGHistogram->ready = false;
   LoadedWindows::getInstance()->add( clonedHistogram );
   appendHistogram2Tree( clonedGHistogram );
-
-  clonedGHistogram->SetSize( myHistogram->getPosX(),  myHistogram->getPosY(),
-                     myHistogram->getWidth(), myHistogram->getHeight() );
 
   clonedGHistogram->execute();
 }
@@ -786,6 +792,7 @@ void gHistogram::OnPopUpFitTimeScale()
   myHistogram->setRecalc( true );
   updateHistogram();
 }
+
 void gHistogram::OnPopUpFitSemanticScale(){}
 //void gHistogram::OnPopUpCodeColor(){}
 //void gHistogram::OnPopUpGradientColor(){}
