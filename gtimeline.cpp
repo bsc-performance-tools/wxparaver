@@ -287,21 +287,18 @@ void gTimeline::drawAxis( wxDC& dc )
   objectPosList.clear();
   for( TObjectOrder obj = minObj; obj <= maxObj; obj++ )
   {
-/*    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
-    if( ( inc * 0.10 ) >= 2.0 )
-      y += (wxCoord)( inc * 0.10 );*/
-    if( ( inc * 0.25 ) >= 2.0 )
-      y = ( (wxCoord) ( ( inc * 1.25 ) * ( obj - minObj ) ) ) + drawBorder;
-    else
-      y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
+//    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
+    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
+    if( ( inc * 0.25 ) >= 1.0 )
+      y += (wxCoord)( inc * 0.25 );
     objectPosList.push_back( y );
     dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
   }
-  if( ( inc * 0.25 ) >= 2.0 )
-    objectHeight = (wxCoord)floor( inc * 0.75 );
+  if( ( inc * 0.25 ) >= 1.0 )
+    objectHeight = (wxCoord)inc * 0.75;
   else
-    objectHeight = (wxCoord)floor(inc);
+    objectHeight = (wxCoord)inc;
     
   if( objectHeight <= 1 ) objectHeight = 2;
 
