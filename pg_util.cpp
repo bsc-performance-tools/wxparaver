@@ -61,6 +61,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   windowProperties->Append( new wxFloatProperty( wxT("End time"), wxPG_LABEL, 
                             wxT( whichWindow->getWindowEndTime() ) ) );
 
+  windowProperties->Append( new wxFloatProperty( wxT("Semantic Minimum"), wxPG_LABEL,
+                            wxT( whichWindow->getMinimumY() ) ) );
+  windowProperties->Append( new wxFloatProperty( wxT("Semantic Maximum"), wxPG_LABEL,
+                            wxT( whichWindow->getMaximumY() ) ) );
   //-------------------------------------------------------------------------
   // Filter related properties
   //-------------------------------------------------------------------------

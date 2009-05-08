@@ -490,6 +490,18 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       currentHisto->setRecalc( true );
     }
   }
+  else if( propName == "Semantic Minimum" )
+  {
+    double tmpValue = property->GetValue().GetDouble();
+    currentTimeline->setMinimumY( tmpValue );
+    currentTimeline->setRedraw( true );
+  }
+  else if( propName == "Semantic Maximum" )
+  {
+    double tmpValue = property->GetValue().GetDouble();
+    currentTimeline->setMaximumY( tmpValue );
+    currentTimeline->setRedraw( true );
+  }
   // Control Window related properties
   else if( propName == "ControlWindow" )
   {
