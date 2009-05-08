@@ -206,7 +206,13 @@ public:
   void OnPopUpNotNullGradientColor();
   void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();
-  
+  void OnPopUpDrawModeTimeLast();
+  void OnPopUpDrawModeTimeRandom();
+  void OnPopUpDrawModeTimeRandomNotZero();
+  void OnPopUpDrawModeTimeMaximum();
+  void OnPopUpDrawModeTimeMinimumNotZero();
+  void OnPopUpDrawModeTimeAverage();
+
   gTimeline *clone( Window *clonedWindow,
                     wxWindow *parent,
                     wxTreeItemId idRoot1, 

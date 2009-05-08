@@ -354,6 +354,7 @@ bool paraverMain::DoLoadCFG( const string &path )
           }
           tmpHisto->execute();
         }
+
         previousCFGs->add( path );
       }
     }
@@ -1176,8 +1177,8 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     if( dialog.ShowModal() == wxID_OK )
     {
       wxString path = dialog.GetPath();
-
       CFGLoader::saveCFG( path.c_str(), options, timelines, histograms );
+      previousCFGs->add( path.c_str() );
     }
   }
 }

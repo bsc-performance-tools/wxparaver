@@ -743,6 +743,42 @@ void gTimeline::OnPopUpNotNullGradientColor()
   myWindow->setRedraw( true );
 }
 
+void gTimeline::OnPopUpDrawModeTimeLast()
+{
+  myWindow->setDrawModeTime( DRAW_LAST );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeTimeRandom()
+{
+  myWindow->setDrawModeTime( DRAW_RANDOM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeTimeRandomNotZero()
+{
+  myWindow->setDrawModeTime( DRAW_RANDNOTZERO );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeTimeMaximum()
+{
+  myWindow->setDrawModeTime( DRAW_MAXIMUM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeTimeMinimumNotZero()
+{
+  myWindow->setDrawModeTime( DRAW_MINNOTZERO );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeTimeAverage()
+{
+  myWindow->setDrawModeTime( DRAW_AVERAGE );
+  myWindow->setRedraw( true );
+}
+
 void gTimeline::OnPopUpUndoZoom()
 {
   if ( !zoomHistory->emptyPrevZoom() )
@@ -767,6 +803,11 @@ void gTimeline::OnPopUpRedoZoom()
     myWindow->setChanged( true );
   }
 }
+
+
+
+
+
 
 
 /*!

@@ -21,6 +21,12 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
   EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
+  EVT_MENU( ID_MENU_DRAWMODE_LAST, gPopUpMenu::OnMenuDrawModeTimeLast )
+  EVT_MENU( ID_MENU_DRAWMODE_RANDOM, gPopUpMenu::OnMenuDrawModeTimeRandom )
+  EVT_MENU( ID_MENU_DRAWMODE_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeRandomNotZero )
+  EVT_MENU( ID_MENU_DRAWMODE_MAXIMUM, gPopUpMenu::OnMenuDrawModeTimeMaximum )
+  EVT_MENU( ID_MENU_DRAWMODE_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero )
+  EVT_MENU( ID_MENU_DRAWMODE_AVERAGE, gPopUpMenu::OnMenuDrawModeTimeAverage )
 END_EVENT_TABLE()
 
 
@@ -162,6 +168,8 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuColor = new wxMenu;
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
+  popUpMenuDrawMode = new wxMenu;
+  popUpMenuDrawModeTime = new wxMenu;
   
   buildItem( this, wxString(STR_COPY), ITEMNORMAL, NULL, ID_MENU_COPY );
 
@@ -194,6 +202,17 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, wxString( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->IsGradientColorSet() );
   buildItem( popUpMenuColor, wxString( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->IsNotNullGradientColorSet() );
   AppendSubMenu( popUpMenuColor, wxString( "Color" ));
+
+  buildItem( popUpMenuDrawModeTime, wxString( "Last" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeLast, ID_MENU_DRAWMODE_LAST, timeline->GetMyWindow()->getDrawModeTime() == DRAW_LAST);
+  buildItem( popUpMenuDrawModeTime, wxString( "Random" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandom, ID_MENU_DRAWMODE_RANDOM, timeline->GetMyWindow()->getDrawModeTime() == DRAW_RANDOM );
+  buildItem( popUpMenuDrawModeTime, wxString( "Random not zero" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandomNotZero, ID_MENU_DRAWMODE_RANDOM_NOT_ZERO, timeline->GetMyWindow()->getDrawModeTime() == DRAW_RANDNOTZERO );
+  buildItem( popUpMenuDrawModeTime, wxString( "Maximum" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMaximum, ID_MENU_DRAWMODE_MAXIMUM, timeline->GetMyWindow()->getDrawModeTime() == DRAW_MAXIMUM );
+  buildItem( popUpMenuDrawModeTime, wxString( "Minimum not zero" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero, ID_MENU_DRAWMODE_MINIMUM_NOT_ZERO, timeline->GetMyWindow()->getDrawModeTime() == DRAW_MINNOTZERO );
+  buildItem( popUpMenuDrawModeTime, wxString( "Average" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverage, ID_MENU_DRAWMODE_AVERAGE, timeline->GetMyWindow()->getDrawModeTime() == DRAW_AVERAGE );
+
+  popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeTime, wxString( "Time" ));
+  AppendSubMenu( popUpMenuDrawMode, wxString( "Drawmode" ));
+//  popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeTime, wxString( "Objects" ));
 
   enableMenu( timeline );
 }
@@ -402,5 +421,41 @@ void gPopUpMenu::OnMenuNotNullGradientColor( wxCommandEvent& event)
 {
   if ( timeline != NULL )
     timeline->OnPopUpNotNullGradientColor();
+}
+
+void gPopUpMenu::OnMenuDrawModeTimeLast( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeTimeLast();
+}
+
+void gPopUpMenu::OnMenuDrawModeTimeRandom( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeTimeRandom();
+}
+
+void gPopUpMenu::OnMenuDrawModeTimeRandomNotZero( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeTimeRandomNotZero();
+}
+
+void gPopUpMenu::OnMenuDrawModeTimeMaximum( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeTimeMaximum();
+}
+
+void gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeTimeMinimumNotZero();
+}
+
+void gPopUpMenu::OnMenuDrawModeTimeAverage( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeTimeAverage();
 }
 
