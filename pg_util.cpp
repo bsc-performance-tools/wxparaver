@@ -83,10 +83,12 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     }
 
     wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
+    filterCat->SetFlagsFromString( "COLLAPSED" );
     
     // ---------------------------- COMMUNICATION FILTER ---------------------------
     wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
-
+    commFilterCat->SetFlagsFromString( "COLLAPSED" );
+    
     windowProperties->AppendIn( commFilterCat, 
         new wxBoolProperty( wxT("Logical"), wxPG_LABEL, filter->getLogical() ) );
     windowProperties->AppendIn( commFilterCat, 
@@ -262,6 +264,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
     // -------------------------------- EVENT FILTER -------------------------------
     wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
+    eventFilterCat->SetFlagsFromString( "COLLAPSED" );
     // Event Type
     wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
                                                          new wxStringProperty( wxT("Event type"), 
@@ -352,7 +355,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   //-------------------------------------------------------------------------
   TParamValue pValues;
   wxPGId semanticCat = windowProperties->Append( new wxPropertyCategory( wxT("Semantic") ) );
-
+  semanticCat->SetFlagsFromString( "COLLAPSED" );
+  
   vector<string> composeFunctions;
   whichWindow->getAllSemanticFunctions( COMPOSE_GROUP, composeFunctions );
   arrayComposeFunctions.Clear();
@@ -688,6 +692,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
                             wxT( whichHisto->getEndTime() ) ) );
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
+  statCat->SetFlagsFromString( "COLLAPSED" );
+  
   windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
   
   vector<string> tmpV;
@@ -721,6 +727,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   // Control Window related properties
   wxPGId ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control") ) );
+  ctrlCat->SetFlagsFromString( "COLLAPSED" );
+  
   vector<TWindowID> validWin;
   Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
                                                                  whichHisto->getDataWindow();
@@ -744,6 +752,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   // Data Window related properties
   wxPGId dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data") ) );
+  dataCat->SetFlagsFromString( "COLLAPSED" );
+  
   validWin.clear();  //  vector<TWindowID> validWin;
   LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
                                                     whichHisto->getExtraControlWindow(),
@@ -763,6 +773,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   // 3rd window related properties
   wxPGId thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D") ) );
+  thirdWinCat->SetFlagsFromString( "COLLAPSED" );
+  
   windowProperties->AppendIn( thirdWinCat, new wxBoolProperty( wxT("Activate 3D"), wxPG_LABEL, whichHisto->getThreeDimensions() ) );
   validWin.clear();
   dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
