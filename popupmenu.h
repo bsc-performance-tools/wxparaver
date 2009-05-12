@@ -11,28 +11,34 @@ enum ItemType {ITEMNORMAL, ITEMRADIO, ITEMCHECK};
 class gTimeline;
 class gHistogram;
 
-#define ID_MENU_COPY                      30000
-#define ID_MENU_TIME                      30001
-#define ID_MENU_OBJECTS                   30002
-#define ID_MENU_SIZE                      30003
-#define ID_MENU_FILTER_ALL                30004
-#define ID_MENU_FILTER_COMMS              30005
-#define ID_MENU_FILTER_EVENTS             30006
-#define ID_MENU_PASTE_SPECIAL             30007
-#define ID_MENU_CLONE                     30008
-#define ID_MENU_UNDO_ZOOM                 30009
-#define ID_MENU_REDO_ZOOM                 30010
-#define ID_MENU_FIT_TIME                  30011
-#define ID_MENU_FIT_SEMANTIC              30012
-#define ID_MENU_CODE_COLOR                30013
-#define ID_MENU_GRADIENT_COLOR            30014
-#define ID_MENU_NOT_NULL_GRADIENT_COLOR   30015
-#define ID_MENU_DRAWMODE_LAST             30016
-#define ID_MENU_DRAWMODE_RANDOM           30017
-#define ID_MENU_DRAWMODE_RANDOM_NOT_ZERO  30018
-#define ID_MENU_DRAWMODE_MAXIMUM          30019
-#define ID_MENU_DRAWMODE_MINIMUM_NOT_ZERO 30020
-#define ID_MENU_DRAWMODE_AVERAGE          30021
+#define ID_MENU_COPY                              30000
+#define ID_MENU_TIME                              30001
+#define ID_MENU_OBJECTS                           30002
+#define ID_MENU_SIZE                              30003
+#define ID_MENU_FILTER_ALL                        30004
+#define ID_MENU_FILTER_COMMS                      30005
+#define ID_MENU_FILTER_EVENTS                     30006
+#define ID_MENU_PASTE_SPECIAL                     30007
+#define ID_MENU_CLONE                             30008
+#define ID_MENU_UNDO_ZOOM                         30009
+#define ID_MENU_REDO_ZOOM                         30010
+#define ID_MENU_FIT_TIME                          30011
+#define ID_MENU_FIT_SEMANTIC                      30012
+#define ID_MENU_CODE_COLOR                        30013
+#define ID_MENU_GRADIENT_COLOR                    30014
+#define ID_MENU_NOT_NULL_GRADIENT_COLOR           30015
+#define ID_MENU_DRAWMODE_TIME_LAST                30016
+#define ID_MENU_DRAWMODE_TIME_MAXIMUM             30017
+#define ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO    30018
+#define ID_MENU_DRAWMODE_TIME_RANDOM              30019
+#define ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO     30020
+#define ID_MENU_DRAWMODE_TIME_AVERAGE             30021
+#define ID_MENU_DRAWMODE_OBJECTS_LAST             30022
+#define ID_MENU_DRAWMODE_OBJECTS_MAXIMUM          30023
+#define ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO 30024
+#define ID_MENU_DRAWMODE_OBJECTS_RANDOM           30025
+#define ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO  30026
+#define ID_MENU_DRAWMODE_OBJECTS_AVERAGE          30027
 
 
 class gPopUpMenu : public wxMenu
@@ -73,15 +79,24 @@ class gPopUpMenu : public wxMenu
     void OnMenuRedoZoom( wxCommandEvent& event);
     void OnMenuFitTime( wxCommandEvent& event);
     void OnMenuFitSemantic( wxCommandEvent& event);
+    
     void OnMenuCodeColor( wxCommandEvent& event);
     void OnMenuGradientColor( wxCommandEvent& event);
     void OnMenuNotNullGradientColor( wxCommandEvent& event);
+
     void OnMenuDrawModeTimeLast( wxCommandEvent& event);
     void OnMenuDrawModeTimeRandom( wxCommandEvent& event);
     void OnMenuDrawModeTimeRandomNotZero( wxCommandEvent& event);
     void OnMenuDrawModeTimeMaximum( wxCommandEvent& event);
     void OnMenuDrawModeTimeMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeTimeAverage( wxCommandEvent& event);
+
+    void OnMenuDrawModeObjectsLast( wxCommandEvent& event);
+    void OnMenuDrawModeObjectsRandom( wxCommandEvent& event);
+    void OnMenuDrawModeObjectsRandomNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeObjectsMaximum( wxCommandEvent& event);
+    void OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeObjectsAverage( wxCommandEvent& event);
 
   private:
     gTimeline *timeline;
@@ -92,6 +107,7 @@ class gPopUpMenu : public wxMenu
     wxMenu * popUpMenuPasteFilter;
     wxMenu * popUpMenuDrawMode;
     wxMenu * popUpMenuDrawModeTime;
+    wxMenu * popUpMenuDrawModeObjects;
 
     void buildItem( wxMenu *popUp,
                     const wxString &title,

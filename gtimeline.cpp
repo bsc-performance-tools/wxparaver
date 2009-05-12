@@ -795,6 +795,42 @@ void gTimeline::OnPopUpDrawModeTimeAverage()
   myWindow->setRedraw( true );
 }
 
+void gTimeline::OnPopUpDrawModeObjectsLast()
+{
+  myWindow->setDrawModeObject( DRAW_LAST );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeObjectsRandom()
+{
+  myWindow->setDrawModeObject( DRAW_RANDOM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeObjectsRandomNotZero()
+{
+  myWindow->setDrawModeObject( DRAW_RANDNOTZERO );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeObjectsMaximum()
+{
+  myWindow->setDrawModeObject( DRAW_MAXIMUM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeObjectsMinimumNotZero()
+{
+  myWindow->setDrawModeObject( DRAW_MINNOTZERO );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeObjectsAverage()
+{
+  myWindow->setDrawModeObject( DRAW_AVERAGE );
+  myWindow->setRedraw( true );
+}
+
 void gTimeline::OnPopUpUndoZoom()
 {
   if ( !zoomHistory->emptyPrevZoom() )

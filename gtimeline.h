@@ -206,12 +206,20 @@ public:
   void OnPopUpNotNullGradientColor();
   void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();
+  
   void OnPopUpDrawModeTimeLast();
   void OnPopUpDrawModeTimeRandom();
   void OnPopUpDrawModeTimeRandomNotZero();
   void OnPopUpDrawModeTimeMaximum();
   void OnPopUpDrawModeTimeMinimumNotZero();
   void OnPopUpDrawModeTimeAverage();
+
+  void OnPopUpDrawModeObjectsLast();
+  void OnPopUpDrawModeObjectsRandom();
+  void OnPopUpDrawModeObjectsRandomNotZero();
+  void OnPopUpDrawModeObjectsMaximum();
+  void OnPopUpDrawModeObjectsMinimumNotZero();
+  void OnPopUpDrawModeObjectsAverage();
 
   gTimeline *clone( Window *clonedWindow,
                     wxWindow *parent,

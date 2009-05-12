@@ -21,12 +21,18 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
   EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
-  EVT_MENU( ID_MENU_DRAWMODE_LAST, gPopUpMenu::OnMenuDrawModeTimeLast )
-  EVT_MENU( ID_MENU_DRAWMODE_RANDOM, gPopUpMenu::OnMenuDrawModeTimeRandom )
-  EVT_MENU( ID_MENU_DRAWMODE_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeRandomNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_MAXIMUM, gPopUpMenu::OnMenuDrawModeTimeMaximum )
-  EVT_MENU( ID_MENU_DRAWMODE_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_AVERAGE, gPopUpMenu::OnMenuDrawModeTimeAverage )
+  EVT_MENU( ID_MENU_DRAWMODE_TIME_LAST, gPopUpMenu::OnMenuDrawModeTimeLast )
+  EVT_MENU( ID_MENU_DRAWMODE_TIME_MAXIMUM, gPopUpMenu::OnMenuDrawModeTimeMaximum )
+  EVT_MENU( ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero )
+  EVT_MENU( ID_MENU_DRAWMODE_TIME_RANDOM, gPopUpMenu::OnMenuDrawModeTimeRandom )
+  EVT_MENU( ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeRandomNotZero )
+  EVT_MENU( ID_MENU_DRAWMODE_TIME_AVERAGE, gPopUpMenu::OnMenuDrawModeTimeAverage )
+  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_LAST, gPopUpMenu::OnMenuDrawModeObjectsLast )
+  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_MAXIMUM, gPopUpMenu::OnMenuDrawModeObjectsMaximum )
+  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero )
+  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_RANDOM, gPopUpMenu::OnMenuDrawModeObjectsRandom )
+  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero )
+  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_AVERAGE, gPopUpMenu::OnMenuDrawModeObjectsAverage )
 END_EVENT_TABLE()
 
 
@@ -170,7 +176,8 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuPasteFilter = new wxMenu;
   popUpMenuDrawMode = new wxMenu;
   popUpMenuDrawModeTime = new wxMenu;
-  
+  popUpMenuDrawModeObjects = new wxMenu;
+
   buildItem( this, wxString(STR_COPY), ITEMNORMAL, NULL, ID_MENU_COPY );
 
   buildItem( popUpMenuPaste, wxString(STR_TIME), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuTime, ID_MENU_TIME );
@@ -203,20 +210,86 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, wxString( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->IsNotNullGradientColorSet() );
   AppendSubMenu( popUpMenuColor, wxString( "Color" ));
 
-  buildItem( popUpMenuDrawModeTime, wxString( "Last" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeLast, ID_MENU_DRAWMODE_LAST, timeline->GetMyWindow()->getDrawModeTime() == DRAW_LAST);
-  buildItem( popUpMenuDrawModeTime, wxString( "Random" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandom, ID_MENU_DRAWMODE_RANDOM, timeline->GetMyWindow()->getDrawModeTime() == DRAW_RANDOM );
-  buildItem( popUpMenuDrawModeTime, wxString( "Random not zero" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandomNotZero, ID_MENU_DRAWMODE_RANDOM_NOT_ZERO, timeline->GetMyWindow()->getDrawModeTime() == DRAW_RANDNOTZERO );
-  buildItem( popUpMenuDrawModeTime, wxString( "Maximum" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMaximum, ID_MENU_DRAWMODE_MAXIMUM, timeline->GetMyWindow()->getDrawModeTime() == DRAW_MAXIMUM );
-  buildItem( popUpMenuDrawModeTime, wxString( "Minimum not zero" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero, ID_MENU_DRAWMODE_MINIMUM_NOT_ZERO, timeline->GetMyWindow()->getDrawModeTime() == DRAW_MINNOTZERO );
-  buildItem( popUpMenuDrawModeTime, wxString( "Average" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverage, ID_MENU_DRAWMODE_AVERAGE, timeline->GetMyWindow()->getDrawModeTime() == DRAW_AVERAGE );
+  buildItem( popUpMenuDrawModeTime,
+             wxString( "Last" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeLast,
+             ID_MENU_DRAWMODE_TIME_LAST,
+             timeline->GetMyWindow()->getDrawModeTime() == DRAW_LAST );
+  buildItem( popUpMenuDrawModeTime,
+             wxString( "Maximum" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMaximum,
+             ID_MENU_DRAWMODE_TIME_MAXIMUM,
+             timeline->GetMyWindow()->getDrawModeTime() == DRAW_MAXIMUM );
+  buildItem( popUpMenuDrawModeTime,
+             wxString( "Minimum not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero,
+             ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO,
+             timeline->GetMyWindow()->getDrawModeTime() == DRAW_MINNOTZERO );
+  buildItem( popUpMenuDrawModeTime,
+             wxString( "Random" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandom,
+             ID_MENU_DRAWMODE_TIME_RANDOM,
+             timeline->GetMyWindow()->getDrawModeTime() == DRAW_RANDOM );
+  buildItem( popUpMenuDrawModeTime,
+             wxString( "Random not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandomNotZero,
+             ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO,
+             timeline->GetMyWindow()->getDrawModeTime() == DRAW_RANDNOTZERO );
+  buildItem( popUpMenuDrawModeTime,
+             wxString( "Average" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverage,
+             ID_MENU_DRAWMODE_TIME_AVERAGE,
+             timeline->GetMyWindow()->getDrawModeTime() == DRAW_AVERAGE );
+
+  buildItem( popUpMenuDrawModeObjects,
+             wxString( "Last" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsLast,
+             ID_MENU_DRAWMODE_OBJECTS_LAST,
+             timeline->GetMyWindow()->getDrawModeObject() == DRAW_LAST );
+  buildItem( popUpMenuDrawModeObjects,
+             wxString( "Maximum" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMaximum,
+             ID_MENU_DRAWMODE_OBJECTS_MAXIMUM,
+             timeline->GetMyWindow()->getDrawModeObject() == DRAW_MAXIMUM );
+  buildItem( popUpMenuDrawModeObjects,
+             wxString( "Minimum not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero,
+             ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO,
+             timeline->GetMyWindow()->getDrawModeObject() == DRAW_MINNOTZERO );
+  buildItem( popUpMenuDrawModeObjects,
+             wxString( "Random" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsRandom,
+             ID_MENU_DRAWMODE_OBJECTS_RANDOM,
+             timeline->GetMyWindow()->getDrawModeObject() == DRAW_RANDOM );
+  buildItem( popUpMenuDrawModeObjects,
+             wxString( "Random not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero,
+             ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO,
+             timeline->GetMyWindow()->getDrawModeObject() == DRAW_RANDNOTZERO );
+  buildItem( popUpMenuDrawModeObjects,
+             wxString( "Average" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverage,
+             ID_MENU_DRAWMODE_OBJECTS_AVERAGE,
+             timeline->GetMyWindow()->getDrawModeObject() == DRAW_AVERAGE );
 
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeTime, wxString( "Time" ));
+  popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeObjects, wxString( "Objects" ));
   AppendSubMenu( popUpMenuDrawMode, wxString( "Drawmode" ));
-//  popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeTime, wxString( "Objects" ));
 
   enableMenu( timeline );
 }
-
 
 gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 {
@@ -459,3 +532,38 @@ void gPopUpMenu::OnMenuDrawModeTimeAverage( wxCommandEvent& event)
     timeline->OnPopUpDrawModeTimeAverage();
 }
 
+void gPopUpMenu::OnMenuDrawModeObjectsLast( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeObjectsLast();
+}
+
+void gPopUpMenu::OnMenuDrawModeObjectsRandom( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeObjectsRandom();
+}
+
+void gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeObjectsRandomNotZero();
+}
+
+void gPopUpMenu::OnMenuDrawModeObjectsMaximum( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeObjectsMaximum();
+}
+
+void gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeObjectsMinimumNotZero();
+}
+
+void gPopUpMenu::OnMenuDrawModeObjectsAverage( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeObjectsAverage();
+}
