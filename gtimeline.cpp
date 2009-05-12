@@ -236,8 +236,15 @@ void gTimeline::redraw()
   TObjectOrder minObj = zoomHistory->getSecondDimension().first;
   TObjectOrder maxObj = zoomHistory->getSecondDimension().second;
   
-  for( TObjectOrder obj = minObj; obj <= maxObj; obj++ )
-    drawRow( bufferDraw, commdc, maskdc, obj );
+  for( TObjectOrder obj = minObj; obj <= maxObj; ++obj )
+  {
+    TObjectOrder firstObj = obj;
+    TObjectOrder lastObj = firstObj;
+    while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
+      ++lastObj;
+    obj = lastObj;
+    drawRow( bufferDraw, commdc, maskdc, firstObj, lastObj );
+  }
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
@@ -313,37 +320,45 @@ void gTimeline::drawAxis( wxDC& dc )
 }
 
 
-void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder row )
+void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder firstRow, TObjectOrder lastRow )
 {
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
-  vector<TSemanticValue> values;
+  vector<TSemanticValue> timeValues;
+  vector<TSemanticValue> rowValues;
   wxCoord timePos = objectAxisPos + 1;
   TObjectOrder minObj = zoomHistory->getSecondDimension().first;
-  wxCoord objectPos = objectPosList[row - minObj];
+  wxCoord objectPos = objectPosList[firstRow - minObj];
+  
   for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep; 
        currentTime <= myWindow->getWindowEndTime(); 
        currentTime += timeStep )
   {
-    values.clear();
+    rowValues.clear();
     
-    while( myWindow->getEndTime( row ) <= currentTime - timeStep )
-      myWindow->calcNext( row );
-      
-    values.push_back( myWindow->getValue( row ) );
-    RecordList *rl = myWindow->getRecordList( row );
-    if( rl != NULL )
-      drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos );
-    while( myWindow->getEndTime( row ) < currentTime )
+    for( TObjectOrder row = firstRow; row <= lastRow; ++row )
     {
-      myWindow->calcNext( row );
-      values.push_back( myWindow->getValue( row ) );
-      rl = myWindow->getRecordList( row );
+      timeValues.clear();
+      
+      while( myWindow->getEndTime( row ) <= currentTime - timeStep )
+        myWindow->calcNext( row );
+      
+      timeValues.push_back( myWindow->getValue( row ) );
+      RecordList *rl = myWindow->getRecordList( row );
       if( rl != NULL )
         drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos );
-    }
+      while( myWindow->getEndTime( row ) < currentTime )
+      {
+        myWindow->calcNext( row );
+        timeValues.push_back( myWindow->getValue( row ) );
+        rl = myWindow->getRecordList( row );
+        if( rl != NULL )
+          drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos );
+      }
     
-    TSemanticValue valueToDraw = DrawMode::selectValue( values, myWindow->getDrawModeTime() );
+      rowValues.push_back( DrawMode::selectValue( timeValues, myWindow->getDrawModeTime() ) );
+    }
+    TSemanticValue valueToDraw = DrawMode::selectValue( rowValues, myWindow->getDrawModeObject() );
     rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
     dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
     if( objectPos + objectHeight < timeAxisPos )
