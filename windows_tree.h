@@ -21,7 +21,8 @@ wxTreeCtrl *getSelectedTraceTree();
 void appendTimeline2Tree( gTimeline *whichTimeline, Window *window );
 void appendHistogram2Tree( gHistogram *ghistogram );
 
-wxTreeItemId getItemId( wxTreeItemId item, gTimeline *wanted, bool &found );
+wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found );
+gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found );
 void getParentGTimeline( gTimeline *current, vector< gTimeline * > & children );
 
 void BuildTree( wxWindow *parent,

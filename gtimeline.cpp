@@ -13,7 +13,7 @@
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+#pragma hdrstopclo
 #endif
 
 #ifndef WX_PRECOMP
@@ -589,7 +589,8 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   if ( clonedWindow == NULL )
     clonedWindow = myWindow->clone(); // recursive clone
 
-  // create empty gTimeline and assign window with same dimensions
+  // Create empty gTimeline and assign window with same dimensions.
+  // Shifts position right and down.
   wxSize titleBarSize = GetSize() - GetClientSize();
   if ( titleBarSize.GetHeight() == 0 )
     titleBarSize = paraverMain::defaultTitleBarSize;

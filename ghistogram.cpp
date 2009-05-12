@@ -766,6 +766,8 @@ void gHistogram::OnPopUpClone()
   Histogram *clonedHistogram = myHistogram->clone();
   string clonedName = clonedHistogram->getName();
 
+  // Create empty gHistogram and assign window with same dimensions.
+  // Shifts position right and down.
   wxSize titleBarSize = GetSize() - GetClientSize();
   if ( titleBarSize.GetHeight() == 0 )
     titleBarSize = paraverMain::defaultTitleBarSize;
@@ -774,12 +776,60 @@ void gHistogram::OnPopUpClone()
                                this->GetPosition().y + titleBarSize.GetHeight() );
   wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
   gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, clonedName, position, size );
-
   clonedGHistogram->myHistogram = clonedHistogram;
+
   clonedGHistogram->ready = false;
+
   LoadedWindows::getInstance()->add( clonedHistogram );
   appendHistogram2Tree( clonedGHistogram );
+  
+  // Window clone
+  bool found = false;
+  gTimeline *controlGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(),
+                                                        GetHistogram()->getControlWindow(),
+                                                        found );
+  if ( found )
+    controlGTimeline->clone( clonedHistogram->getControlWindow(),
+                             parent,
+                             getAllTracesTree()->GetRootItem(),
+                             getSelectedTraceTree()->GetRootItem() );
+  else
+    cout << "ERROR! NOT FOUND ORIGINAL CONTROL WINDOW OF HISTOGRAM!" << endl;
+    
+  if ( GetHistogram()->getDataWindow() != GetHistogram()->getControlWindow() )
+  {
+    found = false;
+    gTimeline *dataGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(),
+                                                       GetHistogram()->getDataWindow(),
+                                                       found );
+    if ( found )
+      dataGTimeline->clone( clonedHistogram->getDataWindow(),
+                            parent,
+                            getAllTracesTree()->GetRootItem(),
+                            getSelectedTraceTree()->GetRootItem() );
+    else
+      cout << "ERROR! NOT FOUND ORIGINAL DATA WINDOW OF HISTOGRAM!" << endl;
+  }
 
+  if ( GetHistogram()->getExtraControlWindow() != NULL &&
+       GetHistogram()->getExtraControlWindow() != GetHistogram()->getControlWindow() &&
+       GetHistogram()->getExtraControlWindow() != GetHistogram()->getDataWindow() )
+  {
+    found = false;
+    gTimeline *extraControlGTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(),
+                                                               GetHistogram()->getExtraControlWindow(),
+                                                               found );
+    if ( found )
+      extraControlGTimeline->clone( clonedHistogram->getExtraControlWindow(),
+                                    parent,
+                                    getAllTracesTree()->GetRootItem(),
+                                    getSelectedTraceTree()->GetRootItem() );
+    else
+#warning TODO: Gui Exception class inherited from ParaverKernelException
+      cout << "ERROR! NOT FOUND ORIGINAL EXTRA CONTROL WINDOW OF HISTOGRAM!" << endl;
+  }
+
+  // Finally, execute
   clonedGHistogram->execute();
 }
 
@@ -794,8 +844,6 @@ void gHistogram::OnPopUpFitTimeScale()
 }
 
 void gHistogram::OnPopUpFitSemanticScale(){}
-//void gHistogram::OnPopUpCodeColor(){}
-//void gHistogram::OnPopUpGradientColor(){}
 void gHistogram::OnPopUpUndoZoom(){}
 void gHistogram::OnPopUpRedoZoom(){}
 

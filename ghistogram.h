@@ -200,8 +200,6 @@ public:
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
   void OnPopUpFitSemanticScale();
-//  void OnPopUpCodeColor();
-//  void OnPopUpGradientColor();
   void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();
 

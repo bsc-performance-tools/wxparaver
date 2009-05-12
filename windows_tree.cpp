@@ -62,27 +62,27 @@ wxTreeCtrl *getSelectedTraceTree()
 }
 
 
-wxTreeItemId getItemId( wxTreeItemId item, gTimeline *wanted, bool &found )
+wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found )
 {
   wxTreeItemIdValue cookie;
 
   found = false;
 
-  wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( item, cookie );
-  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( item );
+  wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
+  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( root );
   
   while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
     if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline() == wanted )
     {
-      item = itemCurrent;
+      root = itemCurrent;
       found = true;
     }
     else
     {
-      item = getItemId( itemCurrent, wanted, found );
+      root = getItemIdFromGTimeline( itemCurrent, wanted, found );
       if( !found )
-        itemCurrent = getAllTracesTree()->GetNextChild( item, cookie );
+        itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
     }
   }
   
@@ -90,25 +90,65 @@ wxTreeItemId getItemId( wxTreeItemId item, gTimeline *wanted, bool &found )
   {
     if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline() == wanted )
     {
-      item = itemLast;
+      root = itemLast;
       found = true;
     }
     else
     {
-      item = getItemId( itemLast, wanted, found );
+      root = getItemIdFromGTimeline( itemLast, wanted, found );
     }
   }
   
-  return item;
+  return root;
 }
 
+gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found )
+{
+  gTimeline *retgt = NULL;
+  wxTreeItemIdValue cookie;
+
+  found = false;
+
+  wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
+  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( root );
+  
+  while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  {
+    if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline()->GetMyWindow() == wanted )
+    {
+      retgt = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline();
+      found = true;
+    }
+    else
+    {
+      retgt = getGTimelineFromWindow( itemCurrent, wanted, found );
+      if( !found )
+        itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
+    }
+  }
+  
+  if( !found && itemLast.IsOk() )
+  {
+    if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline()->GetMyWindow() == wanted )
+    {
+      retgt = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline();
+      found = true;
+    }
+    else
+    {
+      retgt = getGTimelineFromWindow( itemLast, wanted, found );
+    }
+  }
+  
+  return retgt;
+}
 
 // precond : current is a derived gTimeline
 void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
 {
   // find item for given current gTimeline.
   bool found;
-  wxTreeItemId item = getItemId( getAllTracesTree()->GetRootItem(), current, found );
+  wxTreeItemId item = getItemIdFromGTimeline( getAllTracesTree()->GetRootItem(), current, found );
 
   // fill vector with parents
   wxTreeItemIdValue cookie;
