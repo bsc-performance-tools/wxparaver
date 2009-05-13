@@ -281,7 +281,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     if( paraverMain::dialogProgress == NULL )
       paraverMain::dialogProgress = new wxProgressDialog( wxT("Loading trace..."), wxT(""),numeric_limits<int>::max(),
                                          this,
-                                         wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+                                         wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     paraverMain::dialogProgress->Pulse( wxT( path.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
@@ -1110,7 +1110,8 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
 void progressFunction( ProgressController *progress )
 {
   int p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
-  paraverMain::dialogProgress->Update( p );
+  if( !paraverMain::dialogProgress->Update( p ) )
+    progress->setStop( true );
 //  app->Yield();
 }
 

@@ -341,7 +341,7 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
        currentTime += timeStep )
   {
     rowValues.clear();
-    
+
     for( TObjectOrder row = firstRow; row <= lastRow; ++row )
     {
       timeValues.clear();
