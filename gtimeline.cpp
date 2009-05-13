@@ -292,22 +292,28 @@ void gTimeline::drawAxis( wxDC& dc )
   double inc = (double)( timeAxisPos - drawBorder ) / (double)( maxObj - minObj + 1 );
   
   objectPosList.clear();
+  objectHeight = 1;
   for( TObjectOrder obj = minObj; obj <= maxObj; obj++ )
   {
 //    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
     y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
     if( ( inc * 0.25 ) >= 1.0 )
+    {
+      if( obj > minObj ) objectHeight < ( y - objectPosList[ obj - minObj - 1 ] ) * 0.75 ? 
+                          objectHeight = ( y - objectPosList[ obj - minObj - 1 ] ) * 0.75 :
+                          objectHeight = objectHeight;
       y += (wxCoord)( inc * 0.25 );
+    }
+    else
+    {
+      if( obj > minObj ) objectHeight < ( y - objectPosList[ obj - minObj - 1 ] ) ? 
+                          objectHeight = ( y - objectPosList[ obj - minObj - 1 ] ) :
+                          objectHeight = objectHeight;
+    }
     objectPosList.push_back( y );
     dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
   }
-  if( ( inc * 0.25 ) >= 1.0 )
-    objectHeight = (wxCoord)inc * 0.75;
-  else
-    objectHeight = (wxCoord)inc;
-    
-  if( objectHeight <= 1 ) objectHeight = 2;
 
   dc.SetFont( timeFont );
   dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ),
