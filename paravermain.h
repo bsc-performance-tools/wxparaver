@@ -165,6 +165,7 @@ public:
   
   /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
   void OnTreeItemActivated( wxTreeEvent& event );
+  void OnTreeRightClick( wxTreeEvent& event );
   
   /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
   void OnPropertyGridChange( wxPropertyGridEvent& event );

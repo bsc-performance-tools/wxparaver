@@ -203,6 +203,7 @@ public:
   void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();
 
+  void rightDownManager();
 
 ////@begin gHistogram member variables
   wxBoxSizer* mainSizer;

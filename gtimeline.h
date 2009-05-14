@@ -226,7 +226,7 @@ public:
                     wxTreeItemId idRoot1, 
                     wxTreeItemId idRoot2 );
 
-  void treePopUpHook();
+  void rightDownManager();
 
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables

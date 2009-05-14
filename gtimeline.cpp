@@ -863,15 +863,7 @@ void gTimeline::OnPopUpRedoZoom()
 }
 
 
-
-
-
-
-
-/*!
- * wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
- */
-void gTimeline::OnRightDown( wxMouseEvent& event )
+void gTimeline::rightDownManager()
 {
   gPopUpMenu popUpMenu( this );
   
@@ -880,6 +872,15 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
 
   popUpMenu.enableMenu( this );
   PopupMenu( &popUpMenu );
+}
+
+
+/*!
+ * wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
+ */
+void gTimeline::OnRightDown( wxMouseEvent& event )
+{
+  rightDownManager();
 }
 
 
@@ -937,15 +938,4 @@ void gTimeline::OnMotion( wxMouseEvent& event )
   dc.DrawRectangle( beginX, beginY, width, height );
 
   drawZone->Refresh();
-}
-
-void gTimeline::treePopUpHook()
-{
-  gPopUpMenu popUpMenu( this );
-  
-  popUpMenu.enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
-  popUpMenu.enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
-
-  popUpMenu.enableMenu( this );
-  PopupMenu( &popUpMenu );
 }

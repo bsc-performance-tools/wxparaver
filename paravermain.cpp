@@ -84,7 +84,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
   EVT_TREE_ITEM_ACTIVATED( wxID_ANY, paraverMain::OnTreeItemActivated )
-  
+  EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, paraverMain::OnTreeRightClick)
   EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
 END_EVENT_TABLE()
 
@@ -925,6 +925,23 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
   }
 }
+
+void paraverMain::OnTreeRightClick( wxTreeEvent& event )
+{
+  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+  
+  if( gHistogram *histo = itemData->getHistogram() )
+  {
+    histo->rightDownManager();
+  }
+  else if( gTimeline *timeline = itemData->getTimeline() )
+  {
+    timeline->rightDownManager();
+  }
+}
+
+
 
 
 /*!

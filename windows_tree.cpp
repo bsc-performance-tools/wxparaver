@@ -17,35 +17,6 @@ wxTreeCtrl * createTree( wxImageList *imageList )
   return newTree;
 }
 
-void appendTimeline2Tree( gTimeline *whichTimeline, Window *window )
-{
-  // Refresh tree in current page and always in global page
-  wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
-  INT16 currentTrace = paraverMain::myParaverMain->GetCurrentTrace();
-  wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 ); // Global page
-  wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
-  TreeBrowserItemData *currentData =  new TreeBrowserItemData( window->getName(), whichTimeline );
-  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( allTracesPage->GetRootItem(), window->getName(), 1, -1, currentData );
-  wxTreeItemId currentWindowId2 = currentPage->AppendItem( currentPage->GetRootItem(), window->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
-}
-
-void appendHistogram2Tree( gHistogram *ghistogram )
-{
-  // Refresh tree in current page and always in global page
-  wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
-  INT16 currentTrace = paraverMain::myParaverMain->GetCurrentTrace();
-  TreeBrowserItemData *currentData =  new TreeBrowserItemData( ghistogram->GetHistogram()->getName(), ghistogram );
-
-  wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 ); // Global page
-  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
-                                                             ghistogram->GetHistogram()->getName(), 0, -1,
-                                                             currentData );
-  wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
-  wxTreeItemId currentWindowId2 = currentPage->AppendItem( currentPage->GetRootItem(),
-                                                           ghistogram->GetHistogram()->getName(), 0, -1,
-                                                           new TreeBrowserItemData( *currentData ) );
-}
-
 wxTreeCtrl *getAllTracesTree()
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
@@ -60,6 +31,37 @@ wxTreeCtrl *getSelectedTraceTree()
 
   return (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
 }
+
+
+
+
+void appendTimeline2Tree( gTimeline *whichTimeline, Window *window )
+{
+  // Refresh tree in current page and always in global page
+  wxTreeCtrl *allTracesPage = getAllTracesTree();
+  wxTreeCtrl *currentPage = getSelectedTraceTree();
+  TreeBrowserItemData *currentData =  new TreeBrowserItemData( window->getName(), whichTimeline );
+
+  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( allTracesPage->GetRootItem(), window->getName(), 1, -1, currentData );
+  wxTreeItemId currentWindowId2 = currentPage->AppendItem( currentPage->GetRootItem(), window->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
+}
+
+
+void appendHistogram2Tree( gHistogram *ghistogram )
+{
+  // Refresh tree in current page and always in global page
+  wxTreeCtrl *allTracesPage = getAllTracesTree();
+  wxTreeCtrl *currentPage = getSelectedTraceTree();
+  TreeBrowserItemData *currentData =  new TreeBrowserItemData( ghistogram->GetHistogram()->getName(), ghistogram );
+
+  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
+                                                             ghistogram->GetHistogram()->getName(), 0, -1,
+                                                             currentData );
+  wxTreeItemId currentWindowId2 = currentPage->AppendItem( currentPage->GetRootItem(),
+                                                           ghistogram->GetHistogram()->getName(), 0, -1,
+                                                           new TreeBrowserItemData( *currentData ) );
+}
+
 
 
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found )
@@ -156,7 +158,6 @@ void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
   parents.push_back(((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( getAllTracesTree()->GetNextChild( item, cookie ) )))->getTimeline());
 }
 
-
 void BuildTree( wxWindow *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
@@ -178,9 +179,7 @@ void BuildTree( wxWindow *parent,
 
   currentData =  new TreeBrowserItemData( window->getName(), tmpTimeline );
   currentWindowId1 = root1->AppendItem( idRoot1, window->getName(), 1, -1, currentData );
-//  root1->Connect( currentWindowId1, wxEVT_TREE_ITEM_RIGHT_CLICK, gTimeline::treePopUpHook );
   currentWindowId2 = root2->AppendItem( idRoot2, window->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
-
 
   if ( window->getParent( 0 ) != NULL )
   {

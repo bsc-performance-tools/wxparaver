@@ -848,17 +848,22 @@ void gHistogram::OnPopUpUndoZoom(){}
 void gHistogram::OnPopUpRedoZoom(){}
 
 
-/*!
- * wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
- */
-
-void gHistogram::OnCellRightClick( wxGridEvent& event )
+void gHistogram::rightDownManager()
 {
   gPopUpMenu popUpMenu( this );
 //  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
 //  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
 
   PopupMenu( &popUpMenu );
+}
+
+/*!
+ * wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
+ */
+
+void gHistogram::OnCellRightClick( wxGridEvent& event )
+{
+  rightDownManager();
 }
 
 
@@ -868,12 +873,7 @@ void gHistogram::OnCellRightClick( wxGridEvent& event )
 
 void gHistogram::OnLabelRightClick( wxGridEvent& event )
 {
-  gPopUpMenu popUpMenu( this );
-  
-//  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
-//  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
-
-  PopupMenu( &popUpMenu );
+  rightDownManager();
 }
 
 
@@ -1006,9 +1006,7 @@ void gHistogram::OnSize( wxSizeEvent& event )
 
 void gHistogram::OnZoomContextMenu( wxContextMenuEvent& event )
 {
-  gPopUpMenu popUpMenu( this );
-  
-  PopupMenu( &popUpMenu );
+  rightDownManager();
 }
 
 void gHistogram::OnTimerZoom( wxTimerEvent& event )
