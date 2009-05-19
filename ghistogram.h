@@ -184,7 +184,6 @@ public:
   void execute();
   void fillGrid();
   void fillZoom();
-  void fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat );
   
   /// Should we show tooltips?
   static bool ShowToolTips();
@@ -227,6 +226,8 @@ private:
   void OnTimerZoom( wxTimerEvent& event );
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
 //  ZoomHistory<TTime, TObjectOrder> *zoomHistory;
+  void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, wxMemoryDC& bufferDraw );
+  void fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat );
 };
 
 #endif

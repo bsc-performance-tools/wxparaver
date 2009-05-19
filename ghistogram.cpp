@@ -410,11 +410,11 @@ void gHistogram::fillZoom()
   UINT16 idStat;
   THistogramColumn curPlane;
   THistogramColumn numCols, numDrawCols;
-  TObjectOrder numRows, numDrawRows;
+  TObjectOrder numDrawRows;
   bool horizontal = myHistogram->getHorizontal();
   double& cellWidth = zoomCellWidth;
   double& cellHeight = zoomCellHeight;
-
+  
   gridHisto->Show( false );
   zoomHisto->Show( true );
   mainSizer->Layout();
@@ -437,7 +437,6 @@ void gHistogram::fillZoom()
     curPlane = myHistogram->getSelectedPlane();
 
   numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
-  numRows = myHistogram->getNumRows();
   if( horizontal )
   {
     numDrawCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
@@ -464,50 +463,20 @@ void gHistogram::fillZoom()
     bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight );
     bufferDraw.DrawRectangle( 0, 0, cellWidth, bufferDraw.GetSize().GetHeight() );
 
-    for( TObjectOrder iRow = 0; iRow < numRows; iRow++ )
+    THistogramColumn beginCol = iCol;
+    THistogramColumn endCol = beginCol;
+    if( horizontal )
     {
-      THistogramColumn iDrawCol;
-      TObjectOrder iDrawRow;
-      if( horizontal )
-      {
-        iDrawCol = iCol;
-        iDrawRow = iRow;
-      }
-      else
-      {
-        iDrawCol = iRow;
-        iDrawRow = iCol;
-      }
-      
-      if( !( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
-             ( !commStat && myHistogram->endCell( iCol, curPlane ) ) ) )
-      {
-        if( commStat )
-        {
-          if( myHistogram->getCommCurrentRow( iCol, curPlane ) == iRow )
-          {
-            rgb tmpCol = myHistogram->calcGradientColor( 
-              myHistogram->getCommCurrentValue( iCol, idStat, curPlane ) );
-            bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-            bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
-                                      rint( cellWidth ), rint( cellHeight ) );
-            myHistogram->setCommNextCell( iCol, curPlane );
-          }
-        }
-        else
-        {
-          if( myHistogram->getCurrentRow( iCol, curPlane ) == iRow )
-          {
-            rgb tmpCol = myHistogram->calcGradientColor( 
-              myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
-            bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-            bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
-                                      rint( cellWidth ), rint( cellHeight ) );
-            myHistogram->setNextCell( iCol, curPlane );
-          }
-        }
-      }
+      while( ( endCol + 1 ) <= numCols && ( endCol + 2 ) * cellWidth == ( beginCol + 1 ) * cellWidth )
+        ++endCol;
     }
+    else
+    {
+      while( ( endCol + 1 ) <= numCols && ( endCol + 2 ) * cellHeight == ( beginCol + 1 ) * cellHeight )
+        ++endCol;
+    }
+    
+    drawColumn( beginCol, endCol, bufferDraw );
   }
   
   bufferDraw.SetPen( *wxBLACK_PEN );
@@ -527,6 +496,91 @@ void gHistogram::fillZoom()
   bufferDraw.SelectObject(wxNullBitmap);
   zoomHisto->Refresh();
   ready = true;
+}
+
+void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn,
+                             wxMemoryDC& bufferDraw )
+{
+  TObjectOrder numRows = myHistogram->getNumRows();
+  bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+  bool horizontal = myHistogram->getHorizontal();
+  double& cellWidth = zoomCellWidth;
+  double& cellHeight = zoomCellHeight;
+  UINT16 idStat;
+  THistogramColumn curPlane;
+  vector<TSemanticValue> valuesColumns;
+  vector<TSemanticValue> valuesObjects;
+
+  if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
+    throw( exception() );
+
+  if( commStat )
+    curPlane = myHistogram->getCommSelectedPlane();
+  else
+    curPlane = myHistogram->getSelectedPlane();
+
+  for( TObjectOrder iRow = 0; iRow < numRows; iRow++ )
+  {
+    if( iRow == 0 || 
+        ( horizontal && rint( iRow * cellHeight ) == rint( ( iRow + 1 ) * cellHeight ) ) ||
+        ( !horizontal && rint( iRow * cellWidth ) == rint( ( iRow + 1 ) * cellWidth ) )
+      )
+      valuesObjects.clear();
+      
+    for( THistogramColumn iCol = beginColumn; iCol <= endColumn; ++iCol )
+    {
+      valuesColumns.clear();
+      
+      if( !( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
+            ( !commStat && myHistogram->endCell( iCol, curPlane ) ) ) )
+      {
+        if( commStat )
+        {
+          if( myHistogram->getCommCurrentRow( iCol, curPlane ) == iRow )
+          {
+            valuesColumns.push_back( myHistogram->getCommCurrentValue( iCol, idStat, curPlane ) );
+            myHistogram->setCommNextCell( iCol, curPlane );
+          }
+        }
+        else
+        {
+          if( myHistogram->getCurrentRow( iCol, curPlane ) == iRow )
+          {
+            valuesColumns.push_back( myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
+            myHistogram->setNextCell( iCol, curPlane );
+          }
+        }
+      }
+    }
+    if( valuesColumns.begin() != valuesColumns.end() )
+      valuesObjects.push_back( DrawMode::selectValue( valuesColumns, myHistogram->getDrawModeColumns() ) );
+    if( valuesObjects.begin() != valuesObjects.end() &&
+        ( iRow == numRows || 
+          ( horizontal && rint( ( iRow + 1 ) * cellHeight ) != rint( ( iRow + 2 ) * cellHeight ) ) ||
+          ( !horizontal && rint( ( iRow + 1 ) * cellWidth ) != rint( ( iRow + 2 ) * cellWidth ) )
+        )
+      )
+    {
+      THistogramColumn iDrawCol;
+      TObjectOrder iDrawRow;
+      if( horizontal )
+      {
+        iDrawCol = beginColumn;
+        iDrawRow = iRow;
+      }
+      else
+      {
+        iDrawCol = iRow;
+        iDrawRow = beginColumn;
+      }
+      rgb tmpCol = myHistogram->calcGradientColor( 
+                     DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() ) );
+      bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+      bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
+                                cellWidth < 1.0 ? 1 : rint( cellWidth ),
+                                cellHeight < 1.0 ? 1 : rint( cellHeight ) );
+    }
+  }
 }
 
 void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat )
