@@ -1646,7 +1646,7 @@
           <string name="variable-7">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
           <string name="variable-8">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gHistogram"</string>
-          <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||"</string>
+          <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gHistogram"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gHistogram"</string>
           <string name="proxy-Id name">"ID_GHISTOGRAM"</string>
           <long name="proxy-Id value">10004</long>
@@ -1721,14 +1721,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">"mainSizer"</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>

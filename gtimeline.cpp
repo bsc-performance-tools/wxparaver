@@ -209,6 +209,8 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 void gTimeline::redraw()
 {
+  wxString winTitle = GetTitle();
+  SetTitle( winTitle + _(" (Working...)") );
   if ( zoomHistory->isEmpty() )
     zoomHistory->addZoom( myWindow->getWindowBeginTime(), myWindow->getWindowEndTime(),
                           0, myWindow->getWindowLevelObjects() - 1 );
@@ -257,6 +259,7 @@ void gTimeline::redraw()
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
   
   ready = true;
+  SetTitle( winTitle );
 }
 
 
@@ -295,7 +298,6 @@ void gTimeline::drawAxis( wxDC& dc )
   objectHeight = 1;
   for( TObjectOrder obj = minObj; obj <= maxObj; obj++ )
   {
-//    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
     y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
     if( ( inc * 0.25 ) >= 1.0 )
     {

@@ -449,7 +449,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose Worload"),
+                                  new wxEnumProperty( wxT("Compose Workload"),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEWORKLOAD );
@@ -464,7 +464,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Worload"),
+                                  new wxEnumProperty( wxT("Workload"),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, WORKLOAD );

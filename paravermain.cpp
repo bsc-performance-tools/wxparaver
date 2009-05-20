@@ -772,13 +772,13 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Compose Worload" )
+  else if( propName == "Compose Workload" )
   {
     currentTimeline->setLevelFunction( COMPOSEWORKLOAD, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Worload" )
+  else if( propName == "Workload" )
   {
     currentTimeline->setLevelFunction( WORKLOAD, string( property->GetDisplayedString().c_str() ) );
     currentTimeline->setRedraw( true );

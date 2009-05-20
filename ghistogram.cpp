@@ -212,7 +212,10 @@ void gHistogram::execute()
 {
   if( myHistogram == NULL )
     return;
-
+  wxString winTitle = GetTitle();
+  SetTitle( winTitle + _(" (Working...)") );
+  Update();
+  
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
 
   if( myHistogram->getZoom() )
@@ -221,8 +224,10 @@ void gHistogram::execute()
     fillGrid();
 
   ready = true;
-  
+
   this->Refresh();
+
+  SetTitle( winTitle );
 }
 
 
@@ -685,7 +690,7 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
 void gHistogram::OnIdle( wxIdleEvent& event )
 {
   this->SetTitle( myHistogram->getName() );
-  
+
   if( myHistogram->getShowWindow() )
     this->Show();
   else
@@ -709,11 +714,17 @@ void gHistogram::updateHistogram()
   {
     if( myHistogram->getRedraw() )
     {
+      wxString winTitle = GetTitle();
+      SetTitle( winTitle + _(" (Working...)") );
+      Update();
+      
       myHistogram->setRedraw( false );
       if( myHistogram->getZoom() )
         fillZoom();
       else
         fillGrid();
+
+      SetTitle( winTitle );
     }
   }
 }
@@ -1038,7 +1049,7 @@ void gHistogram::OnMotion( wxMouseEvent& event )
   lastPosZoomX = event.GetX();
   lastPosZoomY = event.GetY();
   if( ready )
-    timerZoom->Start( 250, true );
+    timerZoom->Start( 100, true );
 }
 
 
@@ -1049,7 +1060,15 @@ void gHistogram::OnMotion( wxMouseEvent& event )
 void gHistogram::OnSize( wxSizeEvent& event )
 {
   if( ready && myHistogram->getZoom() )
+  {
+    wxString winTitle = GetTitle();
+    SetTitle( winTitle + _(" (Working...)") );
+    Update();
+    
     fillZoom();
+    
+    SetTitle( winTitle );
+  }
   event.Skip();
 }
 
