@@ -202,6 +202,27 @@ public:
   void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();
 
+  void OnPopUpDrawModeSemanticLast();
+  void OnPopUpDrawModeSemanticRandom();
+  void OnPopUpDrawModeSemanticRandomNotZero();
+  void OnPopUpDrawModeSemanticMaximum();
+  void OnPopUpDrawModeSemanticMinimumNotZero();
+  void OnPopUpDrawModeSemanticAverage();
+
+  void OnPopUpDrawModeObjectsLast();
+  void OnPopUpDrawModeObjectsRandom();
+  void OnPopUpDrawModeObjectsRandomNotZero();
+  void OnPopUpDrawModeObjectsMaximum();
+  void OnPopUpDrawModeObjectsMinimumNotZero();
+  void OnPopUpDrawModeObjectsAverage();
+
+  void OnPopUpDrawModeBothLast();
+  void OnPopUpDrawModeBothRandom();
+  void OnPopUpDrawModeBothRandomNotZero();
+  void OnPopUpDrawModeBothMaximum();
+  void OnPopUpDrawModeBothMinimumNotZero();
+  void OnPopUpDrawModeBothAverage();
+
   void rightDownManager();
 
 ////@begin gHistogram member variables

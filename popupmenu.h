@@ -39,6 +39,12 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_OBJECTS_RANDOM           30025
 #define ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO  30026
 #define ID_MENU_DRAWMODE_OBJECTS_AVERAGE          30027
+#define ID_MENU_DRAWMODE_BOTH_LAST                30028
+#define ID_MENU_DRAWMODE_BOTH_MAXIMUM             30029
+#define ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO    30030
+#define ID_MENU_DRAWMODE_BOTH_RANDOM              30031
+#define ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO     30032
+#define ID_MENU_DRAWMODE_BOTH_AVERAGE             30033
 
 
 class gPopUpMenu : public wxMenu
@@ -98,6 +104,13 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeObjectsAverage( wxCommandEvent& event);
 
+    void OnMenuDrawModeBothLast( wxCommandEvent& event);
+    void OnMenuDrawModeBothRandom( wxCommandEvent& event);
+    void OnMenuDrawModeBothRandomNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeBothMaximum( wxCommandEvent& event);
+    void OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeBothAverage( wxCommandEvent& event);
+
   private:
     gTimeline *timeline;
     gHistogram *histogram;
@@ -108,6 +121,7 @@ class gPopUpMenu : public wxMenu
     wxMenu * popUpMenuDrawMode;
     wxMenu * popUpMenuDrawModeTime;
     wxMenu * popUpMenuDrawModeObjects;
+    wxMenu * popUpMenuDrawModeBoth;
 
     void buildItem( wxMenu *popUp,
                     const wxString &title,

@@ -221,6 +221,13 @@ public:
   void OnPopUpDrawModeObjectsMinimumNotZero();
   void OnPopUpDrawModeObjectsAverage();
 
+  void OnPopUpDrawModeBothLast();
+  void OnPopUpDrawModeBothRandom();
+  void OnPopUpDrawModeBothRandomNotZero();
+  void OnPopUpDrawModeBothMaximum();
+  void OnPopUpDrawModeBothMinimumNotZero();
+  void OnPopUpDrawModeBothAverage();
+
   gTimeline *clone( Window *clonedWindow,
                     wxWindow *parent,
                     wxTreeItemId idRoot1, 

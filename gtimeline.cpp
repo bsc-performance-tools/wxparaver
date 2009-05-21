@@ -839,6 +839,48 @@ void gTimeline::OnPopUpDrawModeObjectsAverage()
   myWindow->setRedraw( true );
 }
 
+void gTimeline::OnPopUpDrawModeBothLast()
+{
+  myWindow->setDrawModeObject( DRAW_LAST );
+  myWindow->setDrawModeTime( DRAW_LAST );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeBothRandom()
+{
+  myWindow->setDrawModeObject( DRAW_RANDOM );
+  myWindow->setDrawModeTime( DRAW_RANDOM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeBothRandomNotZero()
+{
+  myWindow->setDrawModeObject( DRAW_RANDNOTZERO );
+  myWindow->setDrawModeTime( DRAW_RANDNOTZERO );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeBothMaximum()
+{
+  myWindow->setDrawModeObject( DRAW_MAXIMUM );
+  myWindow->setDrawModeTime( DRAW_MAXIMUM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeBothMinimumNotZero()
+{
+  myWindow->setDrawModeObject( DRAW_MINNOTZERO );
+  myWindow->setDrawModeTime( DRAW_MINNOTZERO );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeBothAverage()
+{
+  myWindow->setDrawModeObject( DRAW_AVERAGE );
+  myWindow->setDrawModeTime( DRAW_AVERAGE );
+  myWindow->setRedraw( true );
+}
+
 void gTimeline::OnPopUpUndoZoom()
 {
   if ( !zoomHistory->emptyPrevZoom() )
