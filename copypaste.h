@@ -46,6 +46,9 @@ class gPasteWindowProperties
     bool isAllowed( gTimeline* whichTimeline, const string tag );
     bool isAllowed( gHistogram* whichHistogram, const string tag );
 
+    TRecordTime getBeginTime();
+    TRecordTime getEndTime();
+
   private:
     #define SAME_TRACE 0
     #define DIFF_TRACE 1

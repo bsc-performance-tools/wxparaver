@@ -348,3 +348,21 @@ bool gPasteWindowProperties::isAllowed( gHistogram *whichHistogram, const string
 
   return seekAllowed( property, HISTOGRAM, whichHistogram->GetHistogram()->getControlWindow()->getTrace() );
 }
+
+
+TRecordTime gPasteWindowProperties::getBeginTime()
+{
+  if ( timeline != NULL )
+    return timeline->GetMyWindow()->getWindowBeginTime();
+
+  return histogram->GetHistogram()->getBeginTime();
+}
+
+TRecordTime gPasteWindowProperties::getEndTime()
+{
+  if ( timeline != NULL )
+    return timeline->GetMyWindow()->getWindowEndTime();
+
+  return histogram->GetHistogram()->getEndTime();
+}
+

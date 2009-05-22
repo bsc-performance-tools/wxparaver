@@ -425,7 +425,7 @@ void gTimeline::OnEraseBackground( wxEraseEvent& event )
 void gTimeline::OnPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( drawZone );
-  
+
   if( ready )
     dc.DrawBitmap( drawImage, 0, 0, false );
 }
@@ -681,7 +681,9 @@ void gTimeline::OnPopUpCodeColor()
 
 void gTimeline::OnPopUpPasteTime()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Time" );
+  gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+  pasteActions->paste( this, "Time" );
+  zoomHistory->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
