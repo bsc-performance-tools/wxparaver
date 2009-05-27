@@ -1,7 +1,10 @@
 #include "popupmenu.h"
 #include "copypaste.h"
+#include "labelconstructor.h"
+#include "window.h"
 #include <wx/event.h>
 #include <iostream>
+
 using namespace std;
 
 BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
@@ -33,6 +36,8 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_RANDOM, gPopUpMenu::OnMenuDrawModeObjectsRandom )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_AVERAGE, gPopUpMenu::OnMenuDrawModeObjectsAverage )
+  EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
+
 END_EVENT_TABLE()
 
 
@@ -163,6 +168,37 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
                                   wxT( "Select properties to paste:" ),
                                   wxT("Paste Special"),
                                   choices );
+}
+
+
+wxMultiChoiceDialog *gPopUpMenu::createRowSelectionDialog( wxArrayString& choices, gTimeline *whichTimeline )
+{
+  choices.Empty();
+
+  vector< bool > selectedRow;
+  whichTimeline->GetMyWindow()->getSelectedRows( selectedRow );
+
+  // Build full rows list
+  for ( vector< bool >::iterator row = selectedRow.begin(); row != selectedRow.end(); row++ )
+    choices.Add( wxT( LabelConstructor::objectLabel( *row,
+                                                     whichTimeline->GetMyWindow()->getLevel(),
+                                                     whichTimeline->GetMyWindow()->getTrace())));
+
+  wxMultiChoiceDialog *myDialog = new wxMultiChoiceDialog( whichTimeline,
+                                                         wxT( "Select visible rows:" ),
+                                                         wxT("Rows Selection"),
+                                                         choices );
+
+  vector< TObjectOrder > selectedIndex;
+  whichTimeline->GetMyWindow()->getSelectedRowSet( selectedIndex );
+
+  wxArrayInt arrayIndex;
+  for ( vector< TObjectOrder>::iterator index = selectedIndex.begin(); index != selectedIndex.end(); ++index )
+    arrayIndex.Add( (int)*index );
+  
+  myDialog->SetSelections( arrayIndex );
+
+  return myDialog;
 }
 
 
@@ -332,6 +368,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeObjects, wxString( "Objects" ));
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeBoth, wxString( "Both" ));
   AppendSubMenu( popUpMenuDrawMode, wxString( "Drawmode" ));
+
+  AppendSeparator();
+  buildItem( this, wxString( "Select Rows" ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
+
 
   enableMenu( timeline );
 }
@@ -809,4 +849,10 @@ void gPopUpMenu::OnMenuDrawModeBothAverage( wxCommandEvent& event)
     timeline->OnPopUpDrawModeBothAverage();
   else if( histogram != NULL )
     histogram->OnPopUpDrawModeBothAverage();
+}
+
+void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpRowSelection();
 }

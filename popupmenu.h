@@ -45,7 +45,7 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_BOTH_RANDOM              30031
 #define ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO     30032
 #define ID_MENU_DRAWMODE_BOTH_AVERAGE             30033
-
+#define ID_MENU_ROW_SELECTION                     30034
 
 class gPopUpMenu : public wxMenu
 {
@@ -70,6 +70,7 @@ class gPopUpMenu : public wxMenu
 
     static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gHistogram *whichHistogram );
     static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gTimeline * whichTimeline );
+    static wxMultiChoiceDialog *createRowSelectionDialog( wxArrayString& choices, gTimeline *whichTimeline );
     static string getOption( wxArrayString& choices, int position );
 
     void OnMenuCopy( wxCommandEvent& event);
@@ -110,6 +111,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeBothMaximum( wxCommandEvent& event);
     void OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeBothAverage( wxCommandEvent& event);
+
+    void OnMenuRowSelection( wxCommandEvent& event);
 
   private:
     gTimeline *timeline;

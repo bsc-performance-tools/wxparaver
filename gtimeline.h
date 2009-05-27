@@ -228,6 +228,8 @@ public:
   void OnPopUpDrawModeBothMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
 
+  void OnPopUpRowSelection();
+
   gTimeline *clone( Window *clonedWindow,
                     wxWindow *parent,
                     wxTreeItemId idRoot1, 

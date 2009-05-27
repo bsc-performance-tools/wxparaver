@@ -755,6 +755,38 @@ void gTimeline::OnPopUpPasteSpecial()
 }
 
 
+void gTimeline::OnPopUpRowSelection()
+{
+  wxArrayString choices;
+  
+  wxMultiChoiceDialog *dialog = gPopUpMenu::createRowSelectionDialog( choices, this );
+
+  if ( dialog->ShowModal() == wxID_OK )
+  {
+    wxArrayInt selections = dialog->GetSelections();
+    if ( selections.GetCount() > 0 )
+    {
+      vector< bool > selected;
+      myWindow->getSelectedRows( selected );
+      selected.assign( selected.size(), false );
+
+      vector< TObjectOrder > selectedSet;
+      myWindow->getSelectedRowSet( selectedSet );
+
+      for ( vector< TObjectOrder >::iterator row = selectedSet.begin(); row != selectedSet.end(); row++ )
+        selected[ *row ] = true;
+
+      myWindow->setSelectedRows( selected );
+
+      myWindow->setRedraw( true );
+      myWindow->setChanged( true );
+    }
+  }
+
+  delete dialog;
+}
+
+
 void gTimeline::OnPopUpGradientColor()
 {
   myWindow->setGradientColorMode();
