@@ -179,8 +179,8 @@ wxMultiChoiceDialog *gPopUpMenu::createRowSelectionDialog( wxArrayString& choice
   whichTimeline->GetMyWindow()->getSelectedRows( selectedRow );
 
   // Build full rows list
-  for ( vector< bool >::iterator row = selectedRow.begin(); row != selectedRow.end(); row++ )
-    choices.Add( wxT( LabelConstructor::objectLabel( *row,
+  for ( size_t row = (size_t)0; row < selectedRow.size(); ++row )
+    choices.Add( wxT( LabelConstructor::objectLabel( (TObjectOrder)row,
                                                      whichTimeline->GetMyWindow()->getLevel(),
                                                      whichTimeline->GetMyWindow()->getTrace())));
 
