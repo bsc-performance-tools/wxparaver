@@ -2055,6 +2055,41 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
+              <string name="title">"Open Control Window: ID_TOOL"</string>
+              <string name="type">"dialog-control-document"</string>
+              <string name="filename">""</string>
+              <string name="icon-name">"menuitem"</string>
+              <long name="is-transient">0</long>
+              <long name="owns-file">1</long>
+              <long name="title-mode">0</long>
+              <long name="locked">0</long>
+              <string name="created">"28/5/2009"</string>
+              <string name="proxy-type">"wbToolBarButtonProxy"</string>
+              <string name="proxy-Id name">"ID_TOOL"</string>
+              <long name="proxy-Id value">10029</long>
+              <string name="proxy-Bitmap">"timeline.xpm"</string>
+              <string name="proxy-Bitmap (disabled)">""</string>
+              <string name="proxy-Label">"Open Control Window"</string>
+              <string name="proxy-Kind">"Normal"</string>
+              <bool name="proxy-Enabled">1</bool>
+              <string name="proxy-Tooltip">"Open Control Window"</string>
+              <string name="proxy-Help text">""</string>
+              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+            </document>
+            <document>
+              <string name="title">"----------"</string>
+              <string name="type">"dialog-control-document"</string>
+              <string name="filename">""</string>
+              <string name="icon-name">"menuitem"</string>
+              <long name="is-transient">0</long>
+              <long name="owns-file">1</long>
+              <long name="title-mode">0</long>
+              <long name="locked">0</long>
+              <string name="created">"28/5/2009"</string>
+              <string name="proxy-type">"wbToolBarSeparatorProxy"</string>
+              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+            </document>
+            <document>
               <string name="title">"Gradient: ID_TOOLGRADIENT"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
@@ -3910,6 +3945,18 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="created">"5/3/2009"</string>
+          <long name="zoom-level">100</long>
+        </document>
+        <document>
+          <string name="title">"timeline.xpm"</string>
+          <string name="type">"image-document"</string>
+          <string name="filename">"timeline.xpm"</string>
+          <string name="icon-name">"image"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">0</long>
+          <long name="locked">0</long>
+          <string name="created">"28/5/2009"</string>
           <long name="zoom-level">100</long>
         </document>
       </document>

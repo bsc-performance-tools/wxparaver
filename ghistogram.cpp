@@ -35,6 +35,7 @@
 
 ////@begin XPM images
 #include "histo_zoom.xpm"
+#include "timeline.xpm"
 #include "histo_color.xpm"
 #include "histo_horvert.xpm"
 ////@end XPM images
@@ -187,12 +188,16 @@ void gHistogram::CreateControls()
   wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
   wxBitmap itemtool7BitmapDisabled;
   itemToolBar6->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
-  wxBitmap itemtool8Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
+  wxBitmap itemtool8Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
   wxBitmap itemtool8BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
-  wxBitmap itemtool9Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
-  wxBitmap itemtool9BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
+  itemToolBar6->AddTool(ID_TOOL, _("Open Control Window"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
+  itemToolBar6->AddSeparator();
+  wxBitmap itemtool10Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
+  wxBitmap itemtool10BitmapDisabled;
+  itemToolBar6->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
+  wxBitmap itemtool11Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
+  wxBitmap itemtool11BitmapDisabled;
+  itemToolBar6->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
   itemToolBar6->Realize();
   itemFrame1->SetToolBar(itemToolBar6);
 
@@ -658,6 +663,11 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   if (name == _T("histo_zoom.xpm"))
   {
     wxBitmap bitmap( histo_zoom_xpm);
+    return bitmap;
+  }
+  else if (name == _T("timeline.xpm"))
+  {
+    wxBitmap bitmap( timeline_xpm);
     return bitmap;
   }
   else if (name == _T("histo_color.xpm"))
