@@ -11,7 +11,6 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
 #ifdef __BORLANDC__
 #pragma hdrstopclo
 #endif
@@ -766,17 +765,11 @@ void gTimeline::OnPopUpRowSelection()
     wxArrayInt selections = dialog->GetSelections();
     if ( selections.GetCount() > 0 )
     {
-      vector< bool > selected;
-      myWindow->getSelectedRows( selected );
-      selected.assign( selected.size(), false );
-
       vector< TObjectOrder > selectedSet;
-      myWindow->getSelectedRowSet( selectedSet );
+      for ( size_t row = (size_t)0; row < (size_t)selections.GetCount(); ++row )
+        selectedSet.push_back( (TObjectOrder)selections[0] );
 
-      for ( vector< TObjectOrder >::iterator row = selectedSet.begin(); row != selectedSet.end(); row++ )
-        selected[ *row ] = true;
-
-      myWindow->setSelectedRows( selected );
+      myWindow->setSelectedRows( selectedSet );
 
       myWindow->setRedraw( true );
       myWindow->setChanged( true );

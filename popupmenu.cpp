@@ -190,7 +190,7 @@ wxMultiChoiceDialog *gPopUpMenu::createRowSelectionDialog( wxArrayString& choice
                                                          choices );
 
   vector< TObjectOrder > selectedIndex;
-  whichTimeline->GetMyWindow()->getSelectedRowSet( selectedIndex );
+  whichTimeline->GetMyWindow()->getSelectedRows( selectedIndex );
 
   wxArrayInt arrayIndex;
   for ( vector< TObjectOrder>::iterator index = selectedIndex.begin(); index != selectedIndex.end(); ++index )
