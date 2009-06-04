@@ -633,7 +633,8 @@ void gTimeline::OnPopUpCopy()
 gTimeline *gTimeline::clone( Window *clonedWindow,
                              wxWindow *parent,
                              wxTreeItemId idRoot1, 
-                             wxTreeItemId idRoot2 )
+                             wxTreeItemId idRoot2,
+                             bool mustRedraw )
 {
   if ( clonedWindow == NULL )
     clonedWindow = myWindow->clone(); // recursive clone
@@ -666,13 +667,18 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( idRoot1, clonedWindow->getName(), 1, -1, currentData );
   wxTreeItemId currentWindowId2 = currentPage->AppendItem( idRoot2, clonedWindow->getName(), 1, -1, new TreeBrowserItemData( *currentData ) );
 
-  if( myWindow->getShowWindow() )
+  if( mustRedraw )
   {
-    clonedTimeline->Show();
-    clonedTimeline->redraw();
+    if( myWindow->getShowWindow() )
+    {
+      clonedTimeline->Show();
+      clonedTimeline->redraw();
+    }
+    else
+      clonedTimeline->Show(false);
   }
   else
-    clonedTimeline->Show(false);
+    clonedWindow->setShowWindow( false );
 
   // if derived, clone parents
   if ( clonedWindow->isDerivedWindow() )
@@ -680,8 +686,8 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
 //    vector< gTimeline * > gParents;
 //    getParentGTimeline( this, gParents );
 
-    clone( clonedWindow->getParent( 0 ), parent, currentWindowId1, currentWindowId2 );
-    clone( clonedWindow->getParent( 1 ), parent, currentWindowId1, currentWindowId2 );
+    clone( clonedWindow->getParent( 0 ), parent, currentWindowId1, currentWindowId2, mustRedraw );
+    clone( clonedWindow->getParent( 1 ), parent, currentWindowId1, currentWindowId2, mustRedraw );
   }
 
   return clonedTimeline;

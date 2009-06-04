@@ -33,6 +33,19 @@
 #include "loadedwindows.h"
 #include "windows_tree.h"
 
+#define wxTEST_GRAPHICS 1
+
+#if wxTEST_GRAPHICS
+#include "wx/graphics.h"
+#if wxUSE_GRAPHICS_CONTEXT == 0
+#undef wxTEST_GRAPHICS
+#define wxTEST_GRAPHICS 0
+#endif
+#else
+#undef wxUSE_GRAPHICS_CONTEXT
+#define wxUSE_GRAPHICS_CONTEXT 0
+#endif
+
 ////@begin XPM images
 #include "histo_zoom.xpm"
 #include "timeline.xpm"
@@ -76,6 +89,9 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 
   EVT_MENU( ID_TOOLZOOM, gHistogram::OnToolzoomClick )
   EVT_UPDATE_UI( ID_TOOLZOOM, gHistogram::OnToolzoomUpdate )
+
+  EVT_MENU( ID_TOOL_OPEN_CONTROL_WINDOW, gHistogram::OnToolOpenControlWindowClick )
+  EVT_UPDATE_UI( ID_TOOL_OPEN_CONTROL_WINDOW, gHistogram::OnToolOpenControlWindowUpdate )
 
   EVT_MENU( ID_TOOLGRADIENT, gHistogram::OnToolgradientClick )
   EVT_UPDATE_UI( ID_TOOLGRADIENT, gHistogram::OnToolgradientUpdate )
@@ -147,6 +163,8 @@ void gHistogram::Init()
   timerZoom = new wxTimer( this );
   lastPosZoomX = 0;
   lastPosZoomY = 0;
+  openControlActivated = false;
+  openControlDragging = false;
   mainSizer = NULL;
   zoomHisto = NULL;
   gridHisto = NULL;
@@ -190,7 +208,7 @@ void gHistogram::CreateControls()
   itemToolBar6->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
   wxBitmap itemtool8Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
   wxBitmap itemtool8BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOL, _("Open Control Window"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
+  itemToolBar6->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
   itemToolBar6->AddSeparator();
   wxBitmap itemtool10Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
   wxBitmap itemtool10BitmapDisabled;
@@ -204,6 +222,8 @@ void gHistogram::CreateControls()
   // Connect events and objects
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_PAINT, wxPaintEventHandler(gHistogram::OnPaint), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
 ////@end gHistogram content construction
@@ -431,6 +451,7 @@ void gHistogram::fillZoom()
   
   ready = false;
   zoomImage.Create( zoomHisto->GetSize().GetWidth(), zoomHisto->GetSize().GetHeight() );
+  drawImage.Create( zoomHisto->GetSize().GetWidth(), zoomHisto->GetSize().GetHeight() );
   wxMemoryDC bufferDraw( zoomImage );
   bufferDraw.SetBackground( wxBrush( *wxLIGHT_GREY_BRUSH ) );
   bufferDraw.Clear();
@@ -503,7 +524,9 @@ void gHistogram::fillZoom()
      bufferDraw.DrawLine( ( iCol + 1 ) * cellWidth, 0, ( iCol + 1 ) * cellWidth, bufferDraw.GetSize().GetHeight() );
   }
   
-  bufferDraw.SelectObject(wxNullBitmap);
+  bufferDraw.SelectObject( wxNullBitmap );
+  bufferDraw.SelectObject( drawImage );
+  bufferDraw.DrawBitmap( zoomImage, 0, 0, false );
   zoomHisto->Refresh();
   ready = true;
 }
@@ -1093,7 +1116,7 @@ void gHistogram::OnPaint( wxPaintEvent& event )
   wxPaintDC dc( zoomHisto );
   
   if( ready )
-    dc.DrawBitmap( zoomImage, 0, 0, false );
+    dc.DrawBitmap( drawImage, 0, 0, false );
 }
 
 
@@ -1180,6 +1203,34 @@ void gHistogram::OnMotion( wxMouseEvent& event )
   lastPosZoomY = event.GetY();
   if( ready )
     timerZoom->Start( 100, true );
+
+  if( openControlDragging )
+  {
+    wxMemoryDC memdc( drawImage );
+    memdc.SetBackgroundMode( wxTRANSPARENT );
+    memdc.SetBackground( *wxTRANSPARENT_BRUSH );
+    memdc.Clear();
+#ifdef __WXGTK__
+    wxGCDC dc( memdc );
+    dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
+#else
+    wxDC& dc = memdc;
+    dc.SetBrush( *wxTRANSPARENT_BRUSH );
+#endif
+    dc.SetPen( *wxWHITE_PEN );
+
+    long beginX = zoomPointBegin.x > event.GetX() ? event.GetX() : zoomPointBegin.x;
+    long endX = zoomPointBegin.x < event.GetX() ? event.GetX() : zoomPointBegin.x;
+    long beginY = zoomPointBegin.y > event.GetY() ? event.GetY() : zoomPointBegin.y;
+    long endY = zoomPointBegin.y < event.GetY() ? event.GetY() : zoomPointBegin.y;
+    wxCoord width = endX - beginX;
+    wxCoord height = endY - beginY;
+    
+    dc.DrawBitmap( zoomImage, 0, 0, false );
+    dc.DrawRectangle( beginX, beginY, width, height );
+
+    zoomHisto->Refresh();
+  }
 }
 
 
@@ -1236,7 +1287,6 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
                                                  myHistogram->getShowUnits() ).c_str() );
   }
   
-  
   histoStatus->SetStatusText( text );
 }
 
@@ -1253,10 +1303,12 @@ TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjec
     if( myHistogram->planeCommWithValues( plane ) )
     {
       myHistogram->setCommFirstCell( column, plane );
-      while( myHistogram->getCommCurrentRow( column, plane ) < row )
+      while( !myHistogram->endCommCell( column, plane ) &&
+             myHistogram->getCommCurrentRow( column, plane ) < row )
         myHistogram->setCommNextCell( column, plane );
       
-      if( myHistogram->getCommCurrentRow( column, plane ) == row )
+      if( !myHistogram->endCommCell( column, plane ) &&
+          myHistogram->getCommCurrentRow( column, plane ) == row )
         value = myHistogram->getCommCurrentValue( column, idStat, plane );
     }
   }
@@ -1266,13 +1318,260 @@ TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjec
     if( myHistogram->planeWithValues( plane ) )
     {
       myHistogram->setFirstCell( column, plane );
-      while( myHistogram->getCurrentRow( column, plane ) < row )
+      while( !myHistogram->endCell( column, plane ) &&
+             myHistogram->getCurrentRow( column, plane ) < row )
         myHistogram->setNextCell( column, plane );
       
-      if( myHistogram->getCurrentRow( column, plane ) == row )
+      if( !myHistogram->endCell( column, plane ) &&
+          myHistogram->getCurrentRow( column, plane ) == row )
         value = myHistogram->getCurrentValue( column, idStat, plane );
     }
   }
   
   return value;
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_OPEN_CONTROL_WINDOW
+ */
+
+void gHistogram::OnToolOpenControlWindowClick( wxCommandEvent& event )
+{
+  openControlActivated = true;
+  zoomHisto->SetCursor( *wxCROSS_CURSOR );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_OPEN_CONTROL_WINDOW
+ */
+
+void gHistogram::OnToolOpenControlWindowUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( myHistogram->getZoom() );
+}
+
+
+/*!
+ * wxEVT_LEFT_DOWN event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnLeftDown( wxMouseEvent& event )
+{
+  if( openControlActivated )
+  {
+    openControlActivated= false;
+    openControlDragging = true;
+    zoomPointBegin = event.GetPosition();
+  }
+}
+
+
+/*!
+ * wxEVT_LEFT_UP event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnLeftUp( wxMouseEvent& event )
+{
+  if( openControlDragging )
+  {
+    openControlDragging = false;
+    zoomPointEnd = event.GetPosition();
+    zoomHisto->SetCursor( wxNullCursor );
+
+    if( zoomPointEnd == zoomPointBegin )
+      return;
+
+    wxMemoryDC memdc( drawImage );
+    memdc.SetBackgroundMode( wxTRANSPARENT );
+    memdc.SetBackground( *wxTRANSPARENT_BRUSH );
+    memdc.Clear();
+    memdc.DrawBitmap( zoomImage, 0, 0, false );
+    
+    zoomHisto->Refresh();
+    
+    int xBegin, xEnd, yBegin, yEnd;
+    if( zoomPointBegin.x < zoomPointEnd.x )
+    {
+      xBegin = zoomPointBegin.x;
+      xEnd = zoomPointEnd.x;
+    }
+    else
+    {
+      xBegin = zoomPointEnd.x;
+      xEnd = zoomPointBegin.x;
+    }
+
+    if( zoomPointBegin.y < zoomPointEnd.y )
+    {
+      yBegin = zoomPointBegin.y;
+      yEnd = zoomPointEnd.y;
+    }
+    else
+    {
+      yBegin = zoomPointEnd.y;
+      yEnd = zoomPointBegin.y;
+    }
+    
+    THistogramColumn columnBegin, columnEnd;
+    TObjectOrder objectBegin, objectEnd;
+    openControlGetParameters( xBegin, xEnd, yBegin, yEnd,
+                              columnBegin, columnEnd, objectBegin, objectEnd );
+    openControlWindow( columnBegin, columnEnd, objectBegin, objectEnd );
+  }
+}
+
+void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
+                                           THistogramColumn& columnBegin, THistogramColumn& columnEnd,
+                                           TObjectOrder& objectBegin, TObjectOrder& objectEnd )
+{
+  columnBegin = myHistogram->getHorizontal() ? floor( xBegin / zoomCellWidth ) :
+                                               floor( yBegin / zoomCellHeight );
+  if( columnBegin > 0 ) --columnBegin;
+  columnEnd = myHistogram->getHorizontal() ? floor( xEnd / zoomCellWidth ) :
+                                             floor( yEnd / zoomCellHeight );
+  if( columnEnd > 0 ) --columnEnd;
+  objectBegin = myHistogram->getHorizontal() ? floor( yBegin / zoomCellHeight ) :
+                                               floor( xBegin / zoomCellWidth );
+  if( objectBegin > 0 ) --objectBegin;
+  objectEnd = myHistogram->getHorizontal() ? floor( yEnd / zoomCellHeight ) :
+                                             floor( xEnd / zoomCellWidth );
+  if( objectEnd > 0 ) --objectEnd;
+}
+
+void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
+                                    TObjectOrder objectBegin, TObjectOrder objectEnd )
+{
+  bool found;
+  gTimeline *tmpControlWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), 
+                                                        myHistogram->getControlWindow(),
+                                                        found );
+  if( !found )
+    throw exception();
+    
+  gTimeline *openWindow = NULL;
+  Window *controlCloned = myHistogram->getControlWindow()->clone();
+  THistogramLimit min = myHistogram->getControlMin();
+  THistogramLimit max = myHistogram->getControlMax();
+  THistogramLimit delta = myHistogram->getControlDelta();
+  TWindowLevel onLevel = controlCloned->getFirstFreeCompose();
+
+  if ( ( ( columnEnd * delta ) + min + delta ) >= max )
+    controlCloned->setLevelFunction( onLevel, "Select Range" );
+  else
+    controlCloned->setLevelFunction( onLevel, "Select Range [)" );
+      
+  TParamValue param;
+  if( ( ( columnEnd * delta ) + min + delta ) >= max )
+    param.push_back( max );
+  else
+    param.push_back( ( columnEnd * delta ) + min + delta );
+  controlCloned->setFunctionParam( onLevel, 0, param );
+
+  param.clear();
+  param.push_back( ( columnBegin * delta ) + min );
+  controlCloned->setFunctionParam( onLevel, 1, param );
+
+  string name = controlCloned->getName();
+  name = name.substr( 0, name.find_last_of( '.' ) );
+  stringstream tmpStr;
+  tmpStr << name << " 2DZoom range [" << ( columnBegin * delta ) + min << ",";
+  if ( ( ( columnEnd * delta ) + min + delta ) >= max )
+    tmpStr << max << "]";
+  else
+    tmpStr << ( columnEnd * delta ) + min + delta << ")";
+  controlCloned->setName( tmpStr.str() );
+
+  controlCloned->setWindowBeginTime( myHistogram->getBeginTime() );
+  controlCloned->setWindowEndTime( myHistogram->getEndTime() );
+
+  if( myHistogram->getThreeDimensions() )
+  {
+    Window *extraControlCloned = myHistogram->getExtraControlWindow()->clone();
+
+    THistogramLimit extraMin = myHistogram->getExtraControlMin();
+    THistogramLimit extraMax = myHistogram->getExtraControlMax();
+    THistogramLimit extraDelta = myHistogram->getExtraControlDelta();
+    onLevel = extraControlCloned->getFirstFreeCompose();
+    UINT32 plane;
+    if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
+      plane = myHistogram->getCommSelectedPlane();
+    else
+      plane = myHistogram->getSelectedPlane();
+
+    if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
+      extraControlCloned->setLevelFunction( onLevel, "Is In Range" );
+    else
+      extraControlCloned->setLevelFunction( onLevel, "Is In Range [)" );
+      
+    TParamValue param;
+    if( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
+      param.push_back( extraMax );
+    else
+      param.push_back( ( plane * extraDelta ) + extraMin + extraDelta );
+    extraControlCloned->setFunctionParam( onLevel, 0, param );
+
+    param.clear();
+    param.push_back( ( plane * extraDelta ) + extraMin );
+    extraControlCloned->setFunctionParam( onLevel, 1, param );
+
+    string name = extraControlCloned->getName();
+    name = name.substr( 0, name.find_last_of( '.' ) );
+    stringstream tmpStr;
+    tmpStr << name << " 3DZoom Mask range [" << ( plane * extraDelta ) + min << ",";
+    if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
+      tmpStr << extraMax << "]";
+    else
+        tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
+    extraControlCloned->setName( tmpStr.str() );
+
+    extraControlCloned->setWindowBeginTime( myHistogram->getBeginTime() );
+    extraControlCloned->setWindowEndTime( myHistogram->getEndTime() );
+    
+    controlCloned->setShowWindow( false );
+    extraControlCloned->setShowWindow( false );
+    Window *productWin = Window::create( controlCloned->getKernel(), controlCloned, extraControlCloned );
+    
+    productWin->setLevelFunction( DERIVED, "product" );
+    tmpStr.str( "" );
+    tmpStr << name << " 3DZoom ranges [" << ( columnBegin * delta ) + min << ",";
+    if ( ( ( columnEnd * delta ) + min + delta ) >= max )
+      tmpStr << max << "]";
+    else
+        tmpStr << ( columnEnd * delta ) + min + delta << ")";
+    tmpStr << "/[" << ( plane * extraDelta ) + extraMin << ",";
+    if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
+      tmpStr << extraMax << "]";
+    else
+        tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
+    productWin->setName( tmpStr.str() );
+    
+    productWin->setWindowBeginTime( myHistogram->getBeginTime() );
+    productWin->setWindowEndTime( myHistogram->getEndTime() );
+    
+    productWin->setPosX( controlCloned->getPosX() );
+    productWin->setPosY( controlCloned->getPosY() );
+    productWin->setWidth( controlCloned->getWidth() );
+    productWin->setHeight( controlCloned->getHeight() );
+    
+    openWindow = tmpControlWindow->clone( productWin, 
+                                          parent,
+                                          getAllTracesTree()->GetRootItem(),
+                                          getSelectedTraceTree()->GetRootItem(),
+                                          false );
+  }
+  else
+  {
+    openWindow = tmpControlWindow->clone( controlCloned, 
+                                          parent,
+                                          getAllTracesTree()->GetRootItem(),
+                                          getSelectedTraceTree()->GetRootItem(),
+                                          false );
+  }
+  
+  if( openWindow != NULL )
+    openWindow->GetMyWindow()->setShowWindow( true );
+  else
+    throw exception();
 }

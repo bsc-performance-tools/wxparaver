@@ -233,8 +233,9 @@ public:
 
   gTimeline *clone( Window *clonedWindow,
                     wxWindow *parent,
-                    wxTreeItemId idRoot1, 
-                    wxTreeItemId idRoot2 );
+                    wxTreeItemId idRoot1,
+                    wxTreeItemId idRoot2,
+                    bool mustRedraw = true );
 
   void rightDownManager();
 

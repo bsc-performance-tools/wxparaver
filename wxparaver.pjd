@@ -1645,6 +1645,11 @@
           <string name="variable-6">"lastPosZoomY|double|LastPosZoomY|0|2|0|"</string>
           <string name="variable-7">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
           <string name="variable-8">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
+          <string name="variable-9">"openControlActivated|bool|OpenControlActivated|false|2|0|"</string>
+          <string name="variable-10">"zoomPointBegin|wxPoint|ZoomPointBegin||2|0|"</string>
+          <string name="variable-11">"zoomPointEnd|wxPoint|ZoomPointEnd||2|0|"</string>
+          <string name="variable-12">"drawImage|wxBitmap|DrawImage||2|0|"</string>
+          <string name="variable-13">"openControlDragging|bool|OpenControlDragging|false|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gHistogram"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gHistogram"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gHistogram"</string>
@@ -1738,9 +1743,11 @@
               <string name="proxy-type">"wbScrolledWindowProxy"</string>
               <string name="event-handler-0">"wxEVT_PAINT|OnPaint|NONE||gHistogram"</string>
               <string name="event-handler-1">"wxEVT_ERASE_BACKGROUND|OnEraseBackground|NONE||gHistogram"</string>
-              <string name="event-handler-2">"wxEVT_MOTION|OnMotion|NONE||gHistogram"</string>
-              <string name="event-handler-3">"wxEVT_CONTEXT_MENU|OnZoomContextMenu|NONE||gHistogram"</string>
-              <string name="event-handler-4">"wxEVT_UPDATE_UI|OnZoomhistoUpdate|NONE||gHistogram"</string>
+              <string name="event-handler-2">"wxEVT_LEFT_DOWN|OnLeftDown|NONE||gHistogram"</string>
+              <string name="event-handler-3">"wxEVT_LEFT_UP|OnLeftUp|NONE||gHistogram"</string>
+              <string name="event-handler-4">"wxEVT_MOTION|OnMotion|NONE||gHistogram"</string>
+              <string name="event-handler-5">"wxEVT_CONTEXT_MENU|OnZoomContextMenu|NONE||gHistogram"</string>
+              <string name="event-handler-6">"wxEVT_UPDATE_UI|OnZoomhistoUpdate|NONE||gHistogram"</string>
               <string name="proxy-Id name">"ID_ZOOMHISTO"</string>
               <long name="proxy-Id value">10023</long>
               <string name="proxy-Name">""</string>
@@ -2042,7 +2049,7 @@
               <string name="created">"5/3/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolzoomClick|NONE||gHistogram"</string>
-              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolzoomUpdate|NONE||"</string>
+              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolzoomUpdate|NONE||gHistogram"</string>
               <string name="proxy-Id name">"ID_TOOLZOOM"</string>
               <long name="proxy-Id value">10025</long>
               <string name="proxy-Bitmap">"histo_zoom.xpm"</string>
@@ -2055,7 +2062,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Open Control Window: ID_TOOL"</string>
+              <string name="title">"Open Control Window: ID_TOOL_OPEN_CONTROL_WINDOW"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -2065,7 +2072,9 @@
               <long name="locked">0</long>
               <string name="created">"28/5/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
-              <string name="proxy-Id name">"ID_TOOL"</string>
+              <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenControlWindowClick|NONE||gHistogram"</string>
+              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolOpenControlWindowUpdate|NONE||gHistogram"</string>
+              <string name="proxy-Id name">"ID_TOOL_OPEN_CONTROL_WINDOW"</string>
               <long name="proxy-Id value">10029</long>
               <string name="proxy-Bitmap">"timeline.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
@@ -2253,6 +2262,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>

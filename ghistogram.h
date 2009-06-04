@@ -52,7 +52,7 @@ class Histogram;
 #define ID_HISTOSTATUS 10028
 #define ID_TOOLBAR1 10024
 #define ID_TOOLZOOM 10025
-#define ID_TOOL 10029
+#define ID_TOOL_OPEN_CONTROL_WINDOW 10029
 #define ID_TOOLGRADIENT 10026
 #define ID_TOOLHORIZVERT 10027
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
@@ -105,6 +105,12 @@ public:
   /// wxEVT_ERASE_BACKGROUND event handler for ID_ZOOMHISTO
   void OnEraseBackground( wxEraseEvent& event );
 
+  /// wxEVT_LEFT_DOWN event handler for ID_ZOOMHISTO
+  void OnLeftDown( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_UP event handler for ID_ZOOMHISTO
+  void OnLeftUp( wxMouseEvent& event );
+
   /// wxEVT_MOTION event handler for ID_ZOOMHISTO
   void OnMotion( wxMouseEvent& event );
 
@@ -131,6 +137,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_TOOLZOOM
   void OnToolzoomUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_OPEN_CONTROL_WINDOW
+  void OnToolOpenControlWindowClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_OPEN_CONTROL_WINDOW
+  void OnToolOpenControlWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLGRADIENT
   void OnToolgradientClick( wxCommandEvent& event );
@@ -174,6 +186,21 @@ public:
 
   double GetZommCellHeight() const { return zoomCellHeight ; }
   void SetZommCellHeight(double value) { zoomCellHeight = value ; }
+
+  bool GetOpenControlActivated() const { return openControlActivated ; }
+  void SetOpenControlActivated(bool value) { openControlActivated = value ; }
+
+  wxPoint GetZoomPointBegin() const { return zoomPointBegin ; }
+  void SetZoomPointBegin(wxPoint value) { zoomPointBegin = value ; }
+
+  wxPoint GetZoomPointEnd() const { return zoomPointEnd ; }
+  void SetZoomPointEnd(wxPoint value) { zoomPointEnd = value ; }
+
+  wxBitmap GetDrawImage() const { return drawImage ; }
+  void SetDrawImage(wxBitmap value) { drawImage = value ; }
+
+  bool GetOpenControlDragging() const { return openControlDragging ; }
+  void SetOpenControlDragging(bool value) { openControlDragging = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -241,6 +268,11 @@ private:
   double lastPosZoomY;
   double zoomCellWidth;
   double zoomCellHeight;
+  bool openControlActivated;
+  wxPoint zoomPointBegin;
+  wxPoint zoomPointEnd;
+  wxBitmap drawImage;
+  bool openControlDragging;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
 
@@ -250,6 +282,11 @@ private:
 //  ZoomHistory<TTime, TObjectOrder> *zoomHistory;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, wxMemoryDC& bufferDraw );
   void fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat );
+  void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
+                                 THistogramColumn& columnBegin, THistogramColumn& columnEnd,
+                                 TObjectOrder& objectBegin, TObjectOrder& objectEnd );
+  void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
+                          TObjectOrder objectBegin, TObjectOrder objectEnd );
 };
 
 #endif
