@@ -410,6 +410,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( this, wxString( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
   buildItem( this, wxString( STR_FIT_SEMANTIC ), ITEMNORMAL, NULL, ID_MENU_FIT_SEMANTIC );
 
+  AppendSeparator();
+  
   buildItem( popUpMenuDrawModeTime,
              wxString( "Last" ),
              ITEMRADIO,

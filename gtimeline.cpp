@@ -212,7 +212,7 @@ void gTimeline::redraw()
 {
   wxString winTitle = GetTitle();
   SetTitle( winTitle + _(" (Working...)") );
-
+  
   // Get selected rows
   vector< TObjectOrder > selected;
   myWindow->getSelectedRows( selected );
