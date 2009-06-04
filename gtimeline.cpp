@@ -23,6 +23,8 @@
 ////@end includes
 #include <wx/dcbuffer.h>
 
+#include <algorithm>
+
 #include "gtimeline.h"
 #include "window.h"
 #include "labelconstructor.h"
@@ -210,9 +212,18 @@ void gTimeline::redraw()
 {
   wxString winTitle = GetTitle();
   SetTitle( winTitle + _(" (Working...)") );
+
+  // Get selected rows
+  vector< TObjectOrder > selected;
+  myWindow->getSelectedRows( selected );
+//  TObjectOrder minObj = selected.front();
+  TObjectOrder maxObj = selected.back();
+//  TObjectOrder numObjs = selected.size();
   if ( zoomHistory->isEmpty() )
+  {
     zoomHistory->addZoom( myWindow->getWindowBeginTime(), myWindow->getWindowEndTime(),
-                          0, myWindow->getWindowLevelObjects() - 1 );
+                          selected );
+  }
   ready = false;
   bufferImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
   drawImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
@@ -234,16 +245,17 @@ void gTimeline::redraw()
   drawAxis( bufferDraw );
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS );
   
-  TObjectOrder minObj = zoomHistory->getSecondDimension().first;
-  TObjectOrder maxObj = zoomHistory->getSecondDimension().second;
-  
-  for( TObjectOrder obj = minObj; obj <= maxObj; ++obj )
+  // Drawmode: Group objects with same wxCoord in objectPosList
+  for( vector< TObjectOrder >::iterator obj = selected.begin(); obj != selected.end(); ++obj )
   {
-    TObjectOrder firstObj = obj;
+    TObjectOrder firstObj = *obj;
     TObjectOrder lastObj = firstObj;
     while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
+    {
       ++lastObj;
-    obj = lastObj;
+      ++obj;
+    }
+    //obj = lastObj;
     drawRow( bufferDraw, commdc, maskdc, firstObj, lastObj );
   }
   bufferDraw.SelectObject(wxNullBitmap);
@@ -273,14 +285,18 @@ void gTimeline::drawAxis( wxDC& dc )
   timeAxisPos = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
 
   // Compute number of objects
-  TObjectOrder minObj = zoomHistory->getSecondDimension().first;
-  TObjectOrder maxObj = zoomHistory->getSecondDimension().second;
-  
+  vector< TObjectOrder > selected;
+  zoomHistory->getSecondDimension( selected );
+//  TObjectOrder minObj = selected.front();
+//  TObjectOrder maxObj = selected.back();
+  TObjectOrder numObjects = selected.size();
+
   // Get the text extent for the last object (probably the larger one)
   dc.SetFont( objectFont );
   // +1!
-  wxSize objectExt = dc.GetTextExtent( LabelConstructor::objectLabel( maxObj - minObj, myWindow->getLevel(), 
-                                                                     myWindow->getTrace() ) );
+  wxSize objectExt = dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1,
+                                                                      myWindow->getLevel(), 
+                                                                      myWindow->getTrace() ) );
   objectAxisPos = drawBorder + objectExt.GetWidth() + drawBorder;
   
   // Draw axis lines
@@ -291,29 +307,35 @@ void gTimeline::drawAxis( wxDC& dc )
 
   // Draw axis labels
   wxCoord y;
-  double inc = (double)( timeAxisPos - drawBorder ) / (double)( maxObj - minObj + 1 );
+  double inc = (double)( timeAxisPos - drawBorder ) / (double)( numObjects );
   
   objectPosList.clear();
   objectHeight = 1;
-  for( TObjectOrder obj = minObj; obj <= maxObj; obj++ )
+  vector< TObjectOrder >::iterator it = selected.begin();
+
+  // for every object
+  for( TObjectOrder obj = (TObjectOrder)0; obj < numObjects; obj++ )
   {
-    y = ( (wxCoord) ( inc * ( obj - minObj ) ) ) + drawBorder;
+    y = ( (wxCoord) ( inc * ( obj ) ) ) + drawBorder;
     if( ( inc * 0.25 ) >= 1.0 )
     {
-      if( obj > minObj ) objectHeight < ( y - objectPosList[ obj - minObj - 1 ] ) * 0.75 ? 
-                          objectHeight = ( y - objectPosList[ obj - minObj - 1 ] ) * 0.75 :
-                          objectHeight = objectHeight;
+      if( obj > (TObjectOrder)0 ) objectHeight < ( y - objectPosList[ obj - 1 ] ) * 0.75 ? 
+                    objectHeight = ( y - objectPosList[ obj - 1 ] ) * 0.75 :
+                    objectHeight = objectHeight;
       y += (wxCoord)( inc * 0.25 );
     }
     else
     {
-      if( obj > minObj ) objectHeight < ( y - objectPosList[ obj - minObj - 1 ] ) ? 
-                          objectHeight = ( y - objectPosList[ obj - minObj - 1 ] ) :
-                          objectHeight = objectHeight;
+      if( obj > (TObjectOrder)0 ) objectHeight < ( y - objectPosList[ obj - 1 ] ) ? 
+                    objectHeight = ( y - objectPosList[ obj - 1 ] ) :
+                    objectHeight = objectHeight;
     }
     objectPosList.push_back( y );
-    dc.DrawText( LabelConstructor::objectLabel( obj, myWindow->getLevel(), myWindow->getTrace() ),
+    dc.DrawText( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
+
+    // next selected row
+    it++;
   }
 
   dc.SetFont( timeFont );
@@ -334,31 +356,38 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
   vector<TSemanticValue> timeValues;
   vector<TSemanticValue> rowValues;
   wxCoord timePos = objectAxisPos + 1;
-  TObjectOrder minObj = zoomHistory->getSecondDimension().first;
-  wxCoord objectPos = objectPosList[firstRow - minObj];
-  
+
+  // Get selected rows
+  vector< TObjectOrder > selected;
+  zoomHistory->getSecondDimension( selected );
+  TObjectOrder minObj = selected.front();
+
+  wxCoord objectPos = objectPosList[ firstRow - minObj ];
+
   for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep; 
        currentTime <= myWindow->getWindowEndTime(); 
        currentTime += timeStep )
   {
     rowValues.clear();
 
-    for( TObjectOrder row = firstRow; row <= lastRow; ++row )
+    vector<TObjectOrder>::iterator first = find( selected.begin(), selected.end(), firstRow );
+    vector<TObjectOrder>::iterator last  = find( selected.begin(), selected.end(), lastRow );
+    for( vector<TObjectOrder>::iterator row = first; row <= last; row++ )
     {
       timeValues.clear();
       
-      while( myWindow->getEndTime( row ) <= currentTime - timeStep )
-        myWindow->calcNext( row );
+      while( myWindow->getEndTime( *row ) <= currentTime - timeStep )
+        myWindow->calcNext( *row );
       
-      timeValues.push_back( myWindow->getValue( row ) );
-      RecordList *rl = myWindow->getRecordList( row );
+      timeValues.push_back( myWindow->getValue( *row ) );
+      RecordList *rl = myWindow->getRecordList( *row );
       if( rl != NULL )
         drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos );
-      while( myWindow->getEndTime( row ) < currentTime )
+      while( myWindow->getEndTime( *row ) < currentTime )
       {
-        myWindow->calcNext( row );
-        timeValues.push_back( myWindow->getValue( row ) );
-        rl = myWindow->getRecordList( row );
+        myWindow->calcNext( *row );
+        timeValues.push_back( myWindow->getValue( *row ) );
+        rl = myWindow->getRecordList( *row );
         if( rl != NULL )
           drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos );
       }
@@ -377,17 +406,25 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
 }
 
 
-void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, TTime from, TTime to, TTime step, wxCoord pos )
+void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, 
+                          TTime from, TTime to, TTime step, wxCoord pos )
 {
-  TObjectOrder minObj = zoomHistory->getSecondDimension().first;
-  TObjectOrder maxObj = zoomHistory->getSecondDimension().second;
+  // Get selected rows
+  vector< TObjectOrder > selected;
+  zoomHistory->getSecondDimension( selected );
+  TObjectOrder minObj = selected.front();
+//  TObjectOrder maxObj = selected.back();
+
   RecordList::iterator it = comms->begin();
   step = ( 1 / step );
   while( it != comms->end() && it->getTime() < from )
     ++it;
   while( it != comms->end() && it->getTime() <= to )
   {
-    if( it->getCommPartnerObject() >= minObj && it->getCommPartnerObject() <= maxObj &&
+    vector<TObjectOrder>::iterator partnerObject = find( selected.begin(), selected.end(),
+                                                         it->getCommPartnerObject() );
+
+    if( partnerObject != selected.end() &&
         ( it->getType() & RECV ||
           ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
       )
@@ -399,7 +436,7 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, T
       wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
       posPartner += objectAxisPos;
       commdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() - minObj],
-                   pos, objectPosList[it->getOrder() - minObj] );
+                       pos, objectPosList[it->getOrder() - minObj] );
       maskdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() - minObj],
                        pos, objectPosList[it->getOrder() - minObj] );
     }
@@ -518,9 +555,11 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     TTime beginTime = ( timeStep * zoomBeginX ) + myWindow->getWindowBeginTime();
 
     // ROW zoom limits
-    TObjectOrder beginRow = zoomHistory->getSecondDimension().first;
-    TObjectOrder endRow = zoomHistory->getSecondDimension().second;
-    TObjectOrder minObj = 0;
+    vector< TObjectOrder > selected;
+    zoomHistory->getSecondDimension( selected );
+    TObjectOrder beginRow = 0;
+    TObjectOrder numObjects = selected.size();
+    TObjectOrder endRow = numObjects - 1;
 
     if( zoomXY )
     {
@@ -538,22 +577,25 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       if( zoomEndY < drawBorder )
         zoomEndY = drawBorder;
 
-      TObjectOrder numObjects = zoomHistory->getSecondDimension().second - zoomHistory->getSecondDimension().first + 1;
-
       double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
       beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
       endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
   
       if( endRow > numObjects )
         endRow = numObjects - 1;
-      minObj = zoomHistory->getSecondDimension().first;
     }
+    
+    vector<TObjectOrder> newSelection;
+    for( size_t row = beginRow; row <= endRow; row++ )
+      newSelection.push_back( selected[ row ] );
 
-    zoomHistory->addZoom( beginTime, endTime, beginRow + minObj, endRow + minObj );
+    zoomHistory->addZoom( beginTime, endTime, newSelection );
 
     // Update window properties
     myWindow->setWindowBeginTime( beginTime );
     myWindow->setWindowEndTime( endTime );
+    myWindow->setSelectedRows( newSelection );
+    
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
@@ -765,14 +807,21 @@ void gTimeline::OnPopUpRowSelection()
     wxArrayInt selections = dialog->GetSelections();
     if ( selections.GetCount() > 0 )
     {
-      vector< TObjectOrder > selectedSet;
-      for ( size_t row = (size_t)0; row < (size_t)selections.GetCount(); ++row )
-        selectedSet.push_back( (TObjectOrder)selections[0] );
+      vector< TObjectOrder > newSelection;
+      for ( size_t row = (size_t)0; row < (size_t)selections.GetCount(); row++ )
+        newSelection.push_back( (TObjectOrder)selections[ row ] );
 
-      myWindow->setSelectedRows( selectedSet );
+      vector< TObjectOrder > previousSelection;
+      myWindow->getSelectedRows( previousSelection );
 
-      myWindow->setRedraw( true );
-      myWindow->setChanged( true );
+      if ( ( previousSelection.size() != newSelection.size() ) ||
+           !equal( previousSelection.begin(), previousSelection.end(), newSelection.begin() ) )
+      {
+        myWindow->setSelectedRows( newSelection );
+        zoomHistory->addZoom( newSelection );
+        myWindow->setRedraw( true );
+        myWindow->setChanged( true );
+      }
     }
   }
 
@@ -915,6 +964,11 @@ void gTimeline::OnPopUpUndoZoom()
     zoomHistory->prevZoom();
     myWindow->setWindowBeginTime( zoomHistory->getFirstDimension().first );
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
+
+    vector< TObjectOrder > selected;
+    zoomHistory->getSecondDimension( selected );
+    myWindow->setSelectedRows( selected );
+
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
@@ -928,6 +982,11 @@ void gTimeline::OnPopUpRedoZoom()
     zoomHistory->nextZoom();
     myWindow->setWindowBeginTime( zoomHistory->getFirstDimension().first );
     myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
+
+    vector< TObjectOrder > selected;
+    zoomHistory->getSecondDimension( selected );
+    myWindow->setSelectedRows( selected );
+
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }

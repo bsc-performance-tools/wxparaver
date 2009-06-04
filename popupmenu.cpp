@@ -193,7 +193,7 @@ wxMultiChoiceDialog *gPopUpMenu::createRowSelectionDialog( wxArrayString& choice
   whichTimeline->GetMyWindow()->getSelectedRows( selectedIndex );
 
   wxArrayInt arrayIndex;
-  for ( vector< TObjectOrder>::iterator index = selectedIndex.begin(); index != selectedIndex.end(); ++index )
+  for ( vector< TObjectOrder>::iterator index = selectedIndex.begin(); index != selectedIndex.end(); index++ )
     arrayIndex.Add( (int)*index );
   
   myDialog->SetSelections( arrayIndex );

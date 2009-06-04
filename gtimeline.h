@@ -185,7 +185,8 @@ public:
   void redraw();
   void drawAxis( wxDC& dc );
   void drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder firstRow, TObjectOrder lastRow );
-  void drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, TTime from, TTime to, TTime step, wxCoord pos );
+  void drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
+                 TTime from, TTime to, TTime step, wxCoord pos );
 
   void OnPopUpRightDown( void );
 
