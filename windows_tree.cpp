@@ -10,9 +10,10 @@ wxTreeCtrl * createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
   wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_LINES_AT_ROOT|wxTR_SINGLE );
+                                         wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_SINGLE );
+  newTree->SetWindowStyle( wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_SINGLE );
   newTree->SetImageList( imageList );
-  newTree->AddRoot( wxT( "Root" ), 0, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
+  newTree->AddRoot( wxT( "Root" ), -1, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
   
   return newTree;
 }
