@@ -282,7 +282,27 @@ bool paraverMain::DoLoadTrace( const string &path )
       paraverMain::dialogProgress = new wxProgressDialog( wxT("Loading trace..."), wxT(""),numeric_limits<int>::max(),
                                          this,
                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
-    paraverMain::dialogProgress->Pulse( wxT( path.c_str() ) );
+    string reducePath;
+    if( path.length() > 40 )
+    {
+#ifdef WIN32
+      string file = path.substr( path.find_last_of( '\\' ) );
+      string tmp = path.substr( 0, path.find_last_of( '\\' ) );
+      reducePath = "/..." + path.substr( tmp.find_last_of( '\\' ),
+                                         tmp.length() - tmp.find_last_of( '\\' ) )
+                   + file;
+#else
+      string file = path.substr( path.find_last_of( '/' ) );
+      string tmp = path.substr( 0, path.find_last_of( '/' ) );
+      reducePath = "/..." + path.substr( tmp.find_last_of( '/' ),
+                                         tmp.length() - tmp.find_last_of( '/' ) )
+                   + file;
+#endif
+    }
+    else
+      reducePath = path;
+    reducePath += "\t";
+    paraverMain::dialogProgress->Pulse( wxT( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
     tr = Trace::create( localKernel, path, progress );
