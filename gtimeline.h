@@ -265,7 +265,6 @@ private:
 ////@end gTimeline member variables
 
   wxWindow *parent;
-  ZoomHistory<TTime, TObjectOrder> *zoomHistory;
   
   static const wxCoord drawBorder = 5;
 };

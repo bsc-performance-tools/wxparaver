@@ -163,7 +163,6 @@
         <string name="Optimizations">"%AUTO%"</string>
         <string name="Warnings">"%AUTO%"</string>
         <string name="Debug flags">"%AUTO%"</string>
-        <string name="Extra compile flags">"%AUTO%"</string>
         <string name="Libraries">"%AUTO%"</string>
         <string name="Library path">"%AUTO%"</string>
         <string name="Linker flags">"%AUTO%"</string>
@@ -223,7 +222,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% -lwxcode_gtk2d_propgrid-2.8 -lparaver-kernel -lcfg -lapi"</string>
           <string name="Library path">"../paraver-kernel"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -289,7 +287,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% -lwxcode_gtk2_propgrid-2.8 -lparaver-kernel -lcfg -lapi"</string>
           <string name="Library path">"../paraver-kernel"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -355,7 +352,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -421,7 +417,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -484,7 +479,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"/W1"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28d_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Debug"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -544,7 +538,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"/W3"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Release"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -604,7 +597,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -664,7 +656,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -724,7 +715,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -783,7 +773,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -842,7 +831,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -901,7 +889,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>

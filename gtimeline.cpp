@@ -29,7 +29,6 @@
 #include "window.h"
 #include "labelconstructor.h"
 #include "drawmode.h"
-#include "zoomhistory.cpp"
 #include "loadedwindows.h"
 
 #define wxTEST_GRAPHICS 1
@@ -117,7 +116,6 @@ gTimeline::~gTimeline()
 {
 ////@begin gTimeline destruction
 ////@end gTimeline destruction
-  delete zoomHistory;
 }
 
 
@@ -139,9 +137,6 @@ void gTimeline::Init()
   bufferImage.Create( 1, 1 );
   objectFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
   timeFont = wxFont( 6, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
-
-//  popUpMenu = NULL;  // initialized on Right Click Down.
-  zoomHistory = new ZoomHistory<TTime,TObjectOrder>();
 }
 
 
@@ -214,16 +209,14 @@ void gTimeline::redraw()
   SetTitle( winTitle + _(" (Working...)") );
   
   // Get selected rows
-  vector< TObjectOrder > selected;
-  myWindow->getSelectedRows( selected );
-//  TObjectOrder minObj = selected.front();
+  vector<TObjectOrder> selected;
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+  myWindow->getSelectedRows( selected, beginRow, endRow );
+  TObjectOrder numObjects = selected.size();
+  TObjectOrder minObj = selected.front();
   TObjectOrder maxObj = selected.back();
-//  TObjectOrder numObjs = selected.size();
-  if ( zoomHistory->isEmpty() )
-  {
-    zoomHistory->addZoom( myWindow->getWindowBeginTime(), myWindow->getWindowEndTime(),
-                          selected );
-  }
+
   ready = false;
   bufferImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
   drawImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
@@ -252,10 +245,9 @@ void gTimeline::redraw()
     TObjectOrder lastObj = firstObj;
     while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
     {
-      ++lastObj;
       ++obj;
+      lastObj = *obj;
     }
-    //obj = lastObj;
     drawRow( bufferDraw, commdc, maskdc, firstObj, lastObj );
   }
   bufferDraw.SelectObject(wxNullBitmap);
@@ -284,12 +276,14 @@ void gTimeline::drawAxis( wxDC& dc )
   wxSize timeExt = dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ) );
   timeAxisPos = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
 
-  // Compute number of objects
-  vector< TObjectOrder > selected;
-  zoomHistory->getSecondDimension( selected );
-//  TObjectOrder minObj = selected.front();
-//  TObjectOrder maxObj = selected.back();
+  // Get selected rows
+  vector<TObjectOrder> selected;
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+  myWindow->getSelectedRows( selected, beginRow, endRow );
   TObjectOrder numObjects = selected.size();
+  TObjectOrder minObj = selected.front();
+  TObjectOrder maxObj = selected.back();
 
   // Get the text extent for the last object (probably the larger one)
   dc.SetFont( objectFont );
@@ -308,8 +302,9 @@ void gTimeline::drawAxis( wxDC& dc )
   // Draw axis labels
   wxCoord y;
   double inc = (double)( timeAxisPos - drawBorder ) / (double)( numObjects );
-  
+
   objectPosList.clear();
+  objectPosList.insert( objectPosList.begin(), myWindow->getWindowLevelObjects(), 0 );
   objectHeight = 1;
   vector< TObjectOrder >::iterator it = selected.begin();
 
@@ -330,12 +325,12 @@ void gTimeline::drawAxis( wxDC& dc )
                     objectHeight = ( y - objectPosList[ obj - 1 ] ) :
                     objectHeight = objectHeight;
     }
-    objectPosList.push_back( y );
+    objectPosList[ selected[ obj ] ] = y;
     dc.DrawText( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ),
                  drawBorder, y );
 
     // next selected row
-    it++;
+    ++it;
   }
 
   dc.SetFont( timeFont );
@@ -358,11 +353,15 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
   wxCoord timePos = objectAxisPos + 1;
 
   // Get selected rows
-  vector< TObjectOrder > selected;
-  zoomHistory->getSecondDimension( selected );
-  TObjectOrder minObj = selected.front();
+  vector<TObjectOrder> selected;
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+  myWindow->getSelectedRows( selected, beginRow, endRow );
 
-  wxCoord objectPos = objectPosList[ firstRow - minObj ];
+  vector<TObjectOrder>::iterator first = find( selected.begin(), selected.end(), firstRow );
+  vector<TObjectOrder>::iterator last  = find( selected.begin(), selected.end(), lastRow );
+
+  wxCoord objectPos = objectPosList[ firstRow ];
 
   for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep; 
        currentTime <= myWindow->getWindowEndTime(); 
@@ -370,15 +369,13 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
   {
     rowValues.clear();
 
-    vector<TObjectOrder>::iterator first = find( selected.begin(), selected.end(), firstRow );
-    vector<TObjectOrder>::iterator last  = find( selected.begin(), selected.end(), lastRow );
-    for( vector<TObjectOrder>::iterator row = first; row <= last; row++ )
+    for( vector<TObjectOrder>::iterator row = first; row <= last; ++row )
     {
       timeValues.clear();
-      
+
       while( myWindow->getEndTime( *row ) <= currentTime - timeStep )
         myWindow->calcNext( *row );
-      
+
       timeValues.push_back( myWindow->getValue( *row ) );
       RecordList *rl = myWindow->getRecordList( *row );
       if( rl != NULL )
@@ -410,10 +407,13 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
                           TTime from, TTime to, TTime step, wxCoord pos )
 {
   // Get selected rows
-  vector< TObjectOrder > selected;
-  zoomHistory->getSecondDimension( selected );
+  vector<TObjectOrder> selected;
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+  myWindow->getSelectedRows( selected, beginRow, endRow );
+  TObjectOrder numObjects = selected.size();
   TObjectOrder minObj = selected.front();
-//  TObjectOrder maxObj = selected.back();
+  TObjectOrder maxObj = selected.back();
 
   RecordList::iterator it = comms->begin();
   step = ( 1 / step );
@@ -435,10 +435,10 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
         commdc.SetPen( *wxRED_PEN );
       wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
       posPartner += objectAxisPos;
-      commdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() - minObj],
-                       pos, objectPosList[it->getOrder() - minObj] );
-      maskdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() - minObj],
-                       pos, objectPosList[it->getOrder() - minObj] );
+      commdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() -minObj],
+                       pos, objectPosList[it->getOrder() -minObj] );
+      maskdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() ],
+                       pos, objectPosList[it->getOrder() -minObj] );
     }
     ++it;
   }
@@ -555,11 +555,9 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     TTime beginTime = ( timeStep * zoomBeginX ) + myWindow->getWindowBeginTime();
 
     // ROW zoom limits
-    vector< TObjectOrder > selected;
-    zoomHistory->getSecondDimension( selected );
-    TObjectOrder beginRow = 0;
-    TObjectOrder numObjects = selected.size();
-    TObjectOrder endRow = numObjects - 1;
+    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+    TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+
 
     if( zoomXY )
     {
@@ -577,25 +575,26 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       if( zoomEndY < drawBorder )
         zoomEndY = drawBorder;
 
+      vector<TObjectOrder> selected;
+      myWindow->getSelectedRows( selected, beginRow, endRow );
+      TObjectOrder numObjects = selected.size();
       double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
       beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
       endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
   
       if( endRow > numObjects )
         endRow = numObjects - 1;
-    }
-    
-    vector<TObjectOrder> newSelection;
-    for( size_t row = beginRow; row <= endRow; row++ )
-      newSelection.push_back( selected[ row ] );
 
-    zoomHistory->addZoom( beginTime, endTime, newSelection );
+      beginRow = selected[ beginRow ];
+      endRow   = selected[ endRow ];
+    }
+
+    myWindow->addZoom( beginTime, endTime, beginRow, endRow );
 
     // Update window properties
     myWindow->setWindowBeginTime( beginTime );
     myWindow->setWindowEndTime( endTime );
-    myWindow->setSelectedRows( newSelection );
-    
+
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
@@ -651,10 +650,6 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
   clonedTimeline->SetMyWindow( clonedWindow );
 
-  // clone zoom history
-/*  delete clonedTimeline->zoomHistory;
-  clonedTimeline->zoomHistory = zoomHistory->clone();*/
-
   // add to loaded windows list
   LoadedWindows::getInstance()->add( clonedWindow );
 
@@ -704,7 +699,7 @@ void gTimeline::OnPopUpFitTimeScale()
 {
   myWindow->setWindowBeginTime( 0 );
   myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime() );
-  zoomHistory->addZoom( 0, myWindow->getTrace()->getEndTime() );
+  myWindow->addZoom( 0, myWindow->getTrace()->getEndTime() );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -730,7 +725,7 @@ void gTimeline::OnPopUpPasteTime()
 {
   gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
   pasteActions->paste( this, "Time" );
-  zoomHistory->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
+  myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -824,7 +819,6 @@ void gTimeline::OnPopUpRowSelection()
            !equal( previousSelection.begin(), previousSelection.end(), newSelection.begin() ) )
       {
         myWindow->setSelectedRows( newSelection );
-        zoomHistory->addZoom( newSelection );
         myWindow->setRedraw( true );
         myWindow->setChanged( true );
       }
@@ -965,15 +959,11 @@ void gTimeline::OnPopUpDrawModeBothAverage()
 
 void gTimeline::OnPopUpUndoZoom()
 {
-  if ( !zoomHistory->emptyPrevZoom() )
+  if ( !myWindow->emptyPrevZoom() )
   {
-    zoomHistory->prevZoom();
-    myWindow->setWindowBeginTime( zoomHistory->getFirstDimension().first );
-    myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
-
-    vector< TObjectOrder > selected;
-    zoomHistory->getSecondDimension( selected );
-    myWindow->setSelectedRows( selected );
+    myWindow->prevZoom();
+    myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
+    myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
 
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
@@ -983,15 +973,11 @@ void gTimeline::OnPopUpUndoZoom()
 
 void gTimeline::OnPopUpRedoZoom()
 {
-  if ( !zoomHistory->emptyNextZoom() )
+  if ( !myWindow->emptyNextZoom() )
   {
-    zoomHistory->nextZoom();
-    myWindow->setWindowBeginTime( zoomHistory->getFirstDimension().first );
-    myWindow->setWindowEndTime( zoomHistory->getFirstDimension().second );
-
-    vector< TObjectOrder > selected;
-    zoomHistory->getSecondDimension( selected );
-    myWindow->setSelectedRows( selected );
+    myWindow->nextZoom();
+    myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
+    myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
 
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
@@ -1003,8 +989,8 @@ void gTimeline::rightDownManager()
 {
   gPopUpMenu popUpMenu( this );
   
-  popUpMenu.enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
-  popUpMenu.enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
+  popUpMenu.enable( "Undo Zoom", !myWindow->emptyPrevZoom() );
+  popUpMenu.enable( "Redo Zoom", !myWindow->emptyNextZoom() );
 
   popUpMenu.enableMenu( this );
   PopupMenu( &popUpMenu );
