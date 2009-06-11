@@ -440,10 +440,10 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
         commdc.SetPen( *wxRED_PEN );
       wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
       posPartner += objectAxisPos;
-      commdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() -minObj],
-                       pos, objectPosList[it->getOrder() -minObj] );
-      maskdc.DrawLine( posPartner, objectPosList[it->getCommPartnerObject() ],
-                       pos, objectPosList[it->getOrder() -minObj] );
+      commdc.DrawLine( posPartner, objectPosList[ it->getCommPartnerObject() ],
+                       pos, objectPosList[ it->getOrder() ] );
+      maskdc.DrawLine( posPartner, objectPosList[ it->getCommPartnerObject() ],
+                       pos, objectPosList[ it->getOrder() ] );
     }
     ++it;
   }
