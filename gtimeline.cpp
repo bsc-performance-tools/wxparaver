@@ -213,8 +213,6 @@ void gTimeline::redraw()
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
   myWindow->getSelectedRows( selected, beginRow, endRow );
-  TObjectOrder numObjects = selected.size();
-  TObjectOrder minObj = selected.front();
   TObjectOrder maxObj = selected.back();
 
   ready = false;
@@ -282,8 +280,6 @@ void gTimeline::drawAxis( wxDC& dc )
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
   myWindow->getSelectedRows( selected, beginRow, endRow );
   TObjectOrder numObjects = selected.size();
-  TObjectOrder minObj = selected.front();
-  TObjectOrder maxObj = selected.back();
 
   // Get the text extent for the last object (probably the larger one)
   dc.SetFont( objectFont );
@@ -416,9 +412,6 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
   myWindow->getSelectedRows( selected, beginRow, endRow );
-  TObjectOrder numObjects = selected.size();
-  TObjectOrder minObj = selected.front();
-  TObjectOrder maxObj = selected.back();
 
   RecordList::iterator it = comms->begin();
   step = ( 1 / step );
