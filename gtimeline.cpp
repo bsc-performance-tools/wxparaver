@@ -314,16 +314,18 @@ void gTimeline::drawAxis( wxDC& dc )
     y = ( (wxCoord) ( inc * ( obj ) ) ) + drawBorder;
     if( ( inc * 0.25 ) >= 1.0 )
     {
-      if( obj > (TObjectOrder)0 ) objectHeight < ( y - objectPosList[ obj - 1 ] ) * 0.75 ? 
-                    objectHeight = ( y - objectPosList[ obj - 1 ] ) * 0.75 :
-                    objectHeight = objectHeight;
+      if( obj > (TObjectOrder)0 ) 
+        objectHeight < ( y - objectPosList[ obj - 1 ] ) * 0.75 ? 
+                       objectHeight = ( y - objectPosList[ obj - 1 ] ) * 0.75 :
+                       objectHeight = objectHeight;
       y += (wxCoord)( inc * 0.25 );
     }
     else
     {
-      if( obj > (TObjectOrder)0 ) objectHeight < ( y - objectPosList[ obj - 1 ] ) ? 
-                    objectHeight = ( y - objectPosList[ obj - 1 ] ) :
-                    objectHeight = objectHeight;
+      if( obj > (TObjectOrder)0 ) 
+        objectHeight < ( y - objectPosList[ obj - 1 ] ) ? 
+                       objectHeight = ( y - objectPosList[ obj - 1 ] ) :
+                       objectHeight = objectHeight;
     }
     objectPosList[ selected[ obj ] ] = y;
     dc.DrawText( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ),
@@ -332,6 +334,9 @@ void gTimeline::drawAxis( wxDC& dc )
     // next selected row
     ++it;
   }
+  
+  if( numObjects == 1 )
+    objectHeight = timeAxisPos - objectPosList[ selected[ 0 ] ];
 
   dc.SetFont( timeFont );
   dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ),
