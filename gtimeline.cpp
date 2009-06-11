@@ -315,16 +315,16 @@ void gTimeline::drawAxis( wxDC& dc )
     if( ( inc * 0.25 ) >= 1.0 )
     {
       if( obj > (TObjectOrder)0 ) 
-        objectHeight < ( y - objectPosList[ obj - 1 ] ) * 0.75 ? 
-                       objectHeight = ( y - objectPosList[ obj - 1 ] ) * 0.75 :
+        objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 ? 
+                       objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 :
                        objectHeight = objectHeight;
       y += (wxCoord)( inc * 0.25 );
     }
     else
     {
       if( obj > (TObjectOrder)0 ) 
-        objectHeight < ( y - objectPosList[ obj - 1 ] ) ? 
-                       objectHeight = ( y - objectPosList[ obj - 1 ] ) :
+        objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) ? 
+                       objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) :
                        objectHeight = objectHeight;
     }
     objectPosList[ selected[ obj ] ] = y;
