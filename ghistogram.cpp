@@ -1485,6 +1485,8 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
 
   controlCloned->setWindowBeginTime( myHistogram->getBeginTime() );
   controlCloned->setWindowEndTime( myHistogram->getEndTime() );
+  controlCloned->addZoom( myHistogram->getBeginTime(), myHistogram->getEndTime(), 
+                          objectBegin, objectEnd );
 
   if( myHistogram->getThreeDimensions() )
   {
@@ -1547,13 +1549,15 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     productWin->setName( tmpStr.str() );
     
-    productWin->setWindowBeginTime( myHistogram->getBeginTime() );
-    productWin->setWindowEndTime( myHistogram->getEndTime() );
-    
     productWin->setPosX( controlCloned->getPosX() );
     productWin->setPosY( controlCloned->getPosY() );
     productWin->setWidth( controlCloned->getWidth() );
     productWin->setHeight( controlCloned->getHeight() );
+    
+    productWin->setWindowBeginTime( myHistogram->getBeginTime() );
+    productWin->setWindowEndTime( myHistogram->getEndTime() );
+    productWin->addZoom( myHistogram->getBeginTime(), myHistogram->getEndTime(), 
+                         objectBegin, objectEnd );
     
     openWindow = tmpControlWindow->clone( productWin, 
                                           parent,
