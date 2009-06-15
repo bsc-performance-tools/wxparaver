@@ -202,6 +202,9 @@ public:
   bool GetOpenControlDragging() const { return openControlDragging ; }
   void SetOpenControlDragging(bool value) { openControlDragging = value ; }
 
+  vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
+  void SetSelectedRows(vector<TObjectOrder> value) { selectedRows = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -273,6 +276,7 @@ private:
   wxPoint zoomPointEnd;
   wxBitmap drawImage;
   bool openControlDragging;
+  vector<TObjectOrder> selectedRows;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
 

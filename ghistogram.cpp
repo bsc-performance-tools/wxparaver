@@ -241,7 +241,11 @@ void gHistogram::execute()
   SetTitle( winTitle + _(" (Working...)") );
   Update();
   
-  myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime() );
+  selectedRows.clear();
+  TObjectOrder beginRow = myHistogram->getControlWindow()->getZoomSecondDimension().first;
+  TObjectOrder endRow =  myHistogram->getControlWindow()->getZoomSecondDimension().second;
+  myHistogram->getControlWindow()->getSelectedRows( selectedRows, beginRow, endRow );
+  myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows );
 
   if( myHistogram->getZoom() )
     fillZoom();
@@ -284,15 +288,16 @@ void gHistogram::fillGrid()
 
   numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
   numRows = myHistogram->getNumRows();
+
   if( horizontal )
   {
-    numDrawCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
-    numDrawRows = myHistogram->getNumRows();
+    numDrawCols = numCols;
+    numDrawRows = numRows;
   }
   else
   {
-    numDrawCols = myHistogram->getNumRows();
-    numDrawRows = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+    numDrawCols = numRows;
+    numDrawRows = numCols;
   }
 
   gridHisto->BeginBatch();
@@ -340,15 +345,16 @@ void gHistogram::fillGrid()
         {
           int w, h;
       
-          gridHisto->GetTextExtent( myHistogram->getRowLabel( iRow ), &w, &h, NULL, NULL, &labelFont );
+          gridHisto->GetTextExtent( myHistogram->getRowLabel( selectedRows[ iRow ] ),
+                                    &w, &h, NULL, NULL, &labelFont );
           if( rowLabelWidth == 0 || rowLabelWidth < w )
             rowLabelWidth = w;
-          gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+          gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( selectedRows[ iRow ] ) );
         }
       }
       else
       {
-        gridHisto->SetColLabelValue( iRow, myHistogram->getRowLabel( iRow ) );
+        gridHisto->SetColLabelValue( iRow, myHistogram->getRowLabel( selectedRows[ iRow ] ) );
       }
       
       THistogramColumn iDrawCol;
