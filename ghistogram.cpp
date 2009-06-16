@@ -1278,7 +1278,7 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   TObjectOrder row = myHistogram->getHorizontal() ? floor( lastPosZoomY / zoomCellHeight ) :
                                                     floor( lastPosZoomX / zoomCellWidth );
   if( row > 0 )
-    text << _( myHistogram->getRowLabel( row - 1 ).c_str() )
+    text << _( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
          << _( "  " );
 
   if( column > 0 )
@@ -1288,9 +1288,9 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   if( row > 0 && column > 0 )
   {
     TSemanticValue value = getZoomSemanticValue( column - 1, row - 1 );
-    text << _( LabelConstructor::histoCellLabel( myHistogram, 
-                                                 value, 
-                                                 myHistogram->getShowUnits() ).c_str() );
+    text << _( "= " ) << _( LabelConstructor::histoCellLabel( myHistogram, 
+                                                              value, 
+                                                              myHistogram->getShowUnits() ).c_str() );
   }
   
   histoStatus->SetStatusText( text );
@@ -1441,9 +1441,11 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
   objectBegin = myHistogram->getHorizontal() ? floor( yBegin / zoomCellHeight ) :
                                                floor( xBegin / zoomCellWidth );
   if( objectBegin > 0 ) --objectBegin;
+  objectBegin = selectedRows[ objectBegin ];
   objectEnd = myHistogram->getHorizontal() ? floor( yEnd / zoomCellHeight ) :
                                              floor( xEnd / zoomCellWidth );
   if( objectEnd > 0 ) --objectEnd;
+  objectEnd = selectedRows[ objectEnd ];
 }
 
 void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
