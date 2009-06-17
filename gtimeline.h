@@ -30,8 +30,6 @@
 #include "popupmenu.h"
 #include "copypaste.h"
 
-// TEMPLATES
-#include "zoomhistory.h"
 /*!
  * Forward declarations
  */

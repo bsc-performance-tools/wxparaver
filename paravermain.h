@@ -19,19 +19,17 @@
 
 #include <vector>
 #include <wx/progdlg.h>
+#include <wx/treectrl.h>
 ////@begin includes
 #include "wx/aui/framemanager.h"
 #include "wx/frame.h"
 #include "wx/toolbar.h"
 #include "wx/choicebk.h"
 ////@end includes
-#include "wx/propgrid/propgrid.h"
-#include "wx/treectrl.h"
 #include "trace.h"
 #include "localkernel.h"
 #include "paraverconfig.h"
 #include "previousfiles.h"
-#include "windows_tree.h"
 /*!
  * Forward declarations
  */
@@ -42,6 +40,7 @@ class wxChoicebook;
 class wxPropertyGrid;
 ////@end forward declarations
 class ProgressController;
+class wxPropertyGridEvent;
 
 /*!
  * Control identifiers

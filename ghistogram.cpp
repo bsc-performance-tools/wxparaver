@@ -32,6 +32,7 @@
 #include "histogramtotals.h"
 #include "loadedwindows.h"
 #include "windows_tree.h"
+#include "paravermain.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -934,7 +935,9 @@ void gHistogram::OnPopUpClone()
                                     getAllTracesTree()->GetRootItem(),
                                     getSelectedTraceTree()->GetRootItem() );
     else
+#ifndef WIN32
 #warning TODO: Gui Exception class inherited from ParaverKernelException
+#endif
       cout << "ERROR! NOT FOUND ORIGINAL EXTRA CONTROL WINDOW OF HISTOGRAM!" << endl;
   }
 

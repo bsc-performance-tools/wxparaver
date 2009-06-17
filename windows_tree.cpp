@@ -1,5 +1,3 @@
-#include <wx/event.h>
-
 #include "windows_tree.h"
 #include "loadedwindows.h"
 #include "gtimeline.h"
@@ -10,8 +8,10 @@ wxTreeCtrl * createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
   wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_SINGLE );
+                                         wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE );
+#ifndef WIN32
   newTree->SetWindowStyle( wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_SINGLE );
+#endif
   newTree->SetImageList( imageList );
   newTree->AddRoot( wxT( "Root" ), -1, -1, new TreeBrowserItemData( "Root", (gTimeline *)NULL ) );
   

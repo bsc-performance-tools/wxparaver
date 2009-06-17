@@ -3,16 +3,15 @@
 
 #include <wx/treectrl.h>
 #include <wx/choicebk.h>
-
-#include "window.h"
-#include "histogram.h"
-#include "paravermain.h"
+#include <vector>
 
 class gTimeline;
 class gHistogram;
 class paraverMain;
+class Window;
+class Histogram;
 
-//static paraverMain* myParaverMain;
+using namespace std;
 
 wxTreeCtrl * createTree( wxImageList *imageList );
 wxTreeCtrl *getAllTracesTree();

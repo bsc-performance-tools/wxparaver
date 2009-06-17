@@ -30,6 +30,7 @@
 #include "labelconstructor.h"
 #include "drawmode.h"
 #include "loadedwindows.h"
+#include "windows_tree.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -556,7 +557,6 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
     TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
 
-
     if( zoomXY )
     {
       if( zoomEndY < zoomBeginY )
@@ -566,7 +566,7 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       if( zoomBeginY > timeAxisPos )
         zoomBeginY = timeAxisPos - 1;
       if( zoomBeginY < drawBorder )
-        zoomBeginY = drawBorder;
+        zoomBeginY = drawBorder + 1;
 
       if( zoomEndY > timeAxisPos )
         zoomEndY = timeAxisPos - 1;
@@ -586,7 +586,6 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       beginRow = selected[ beginRow ];
       endRow   = selected[ endRow ];
     }
-
     myWindow->addZoom( beginTime, endTime, beginRow, endRow );
 
     // Update window properties
@@ -798,7 +797,7 @@ void gTimeline::OnPopUpPasteSpecial()
 void gTimeline::OnPopUpRowSelection()
 {
   wxArrayString choices;
-  
+
   wxMultiChoiceDialog *dialog = gPopUpMenu::createRowSelectionDialog( choices, this );
 
   if ( dialog->ShowModal() == wxID_OK )

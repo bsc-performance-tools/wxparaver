@@ -316,7 +316,7 @@ void SaveConfigurationDialog::OnSaveClick( wxCommandEvent& event )
   TransferDataFromWindow();
   if( timelines.begin() == timelines.end() &&
       histograms.begin() == histograms.end() )
-    EndModal( wxID_CANCEL );
+    EndModal( wxID_OK );//EndModal( wxID_CANCEL );
   else
     EndModal( wxID_OK );
 }
