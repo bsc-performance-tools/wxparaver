@@ -170,7 +170,6 @@ void gHistogram::Init()
   gridHisto = NULL;
   histoStatus = NULL;
 ////@end gHistogram member initialisation
-  popUpMenu = NULL;
   parent = NULL;
 }
 
@@ -812,7 +811,6 @@ void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
 void gHistogram::OnPopUpCopy()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
-  popUpMenu->enableMenu( this );
 }
 
 void gHistogram::OnPopUpPaste()
@@ -862,6 +860,7 @@ void gHistogram::OnPopUpPasteTime()
 void gHistogram::OnPopUpPasteObjects()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
+  myHistogram->setRecalc( true );
   updateHistogram();
 }
 
@@ -1588,3 +1587,4 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   else
     throw exception();
 }
+

@@ -115,7 +115,6 @@ gPasteWindowProperties::gPasteWindowProperties()
   timeline = NULL;
   histogram = NULL;
 
-  // Something more ingenous?
   vector< bool > destiny( 2 , false );
   vector < vector< bool > > source( 2, destiny );
   vector< vector < vector< bool > > > option( 2, source );
@@ -130,12 +129,21 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[STR_COPY] = option;
   allowed[STR_SIZE] = option;
 
+  // Policy : Only same trace
+  for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
+    for ( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
+      for ( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
+        if ( trace == SAME_TRACE )
+          option[trace][copy][paste] = true;
+        else
+          option[trace][copy][paste] = false;
+  allowed[STR_OBJECTS] = option;
+
   // Policy : Don't allow initial paste
   for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
     for ( int copy = TIMELINE; copy <= HISTOGRAM; copy++ )
       for ( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         option[trace][copy][paste] = false;
-  allowed[STR_OBJECTS] = option; // due to not being implemented yet
   allowed[STR_PASTE] = option;
   allowed[STR_PASTE_SPECIAL] = option;
 
@@ -215,6 +223,9 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     }
     else if ( property == STR_OBJECTS )
     {
+      vector< bool > auxRows;
+      timeline->GetMyWindow()->getSelectedRows( auxRows );
+      whichTimeline->GetMyWindow()->setSelectedRows( auxRows );
     }
     else if ( property == STR_FILTER_COMMS )
     {
@@ -259,6 +270,9 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     }
     else if ( property == STR_OBJECTS )
     {
+      vector< bool > auxRows;
+      histogram->GetHistogram()->getControlWindow()->getSelectedRows( auxRows );
+      whichTimeline->GetMyWindow()->setSelectedRows( auxRows );
     }
     else
     {
@@ -286,6 +300,9 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     }
     else if ( property == STR_OBJECTS )
     {
+      vector< bool > auxRows;
+      timeline->GetMyWindow()->getSelectedRows( auxRows );
+      whichHistogram->GetHistogram()->getControlWindow()->setSelectedRows( auxRows );
     }
     else
     {
@@ -307,6 +324,9 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     }
     else if ( property == STR_OBJECTS )
     {
+      vector< bool > auxRows;
+      histogram->GetHistogram()->getControlWindow()->getSelectedRows( auxRows );
+      whichHistogram->GetHistogram()->getControlWindow()->setSelectedRows( auxRows );
     }
     else
     {

@@ -163,9 +163,6 @@ public:
   Histogram* GetHistogram() const { return myHistogram ; }
   void SetHistogram(Histogram* value) { myHistogram = value ; }
 
-  gPopUpMenu * GetPopUpMenu() const { return popUpMenu ; }
-  void SetPopUpMenu(gPopUpMenu * value) { popUpMenu = value ; }
-
   bool GetReady() const { return ready ; }
   void SetReady(bool value) { ready = value ; }
 
@@ -263,7 +260,6 @@ public:
   wxStatusBar* histoStatus;
 private:
   Histogram* myHistogram;
-  gPopUpMenu * popUpMenu;
   bool ready;
   wxBitmap zoomImage;
   wxTimer * timerZoom;

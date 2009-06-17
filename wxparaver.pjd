@@ -163,7 +163,6 @@
         <string name="Optimizations">"%AUTO%"</string>
         <string name="Warnings">"%AUTO%"</string>
         <string name="Debug flags">"%AUTO%"</string>
-        <string name="Extra compile flags">"%AUTO%"</string>
         <string name="Libraries">"%AUTO%"</string>
         <string name="Library path">"%AUTO%"</string>
         <string name="Linker flags">"%AUTO%"</string>
@@ -223,7 +222,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% -lwxcode_gtk2d_propgrid-2.8 -lparaver-kernel -lcfg -lapi"</string>
           <string name="Library path">"../paraver-kernel"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -289,7 +287,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% -lwxcode_gtk2_propgrid-2.8 -lparaver-kernel -lcfg -lapi"</string>
           <string name="Library path">"../paraver-kernel"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -355,7 +352,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -421,7 +417,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -484,7 +479,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"/W1"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28d_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Debug"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -544,7 +538,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"/W3"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Release"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -604,7 +597,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -664,7 +656,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -724,7 +715,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -783,7 +773,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -842,7 +831,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -901,7 +889,6 @@
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO%"</string>
           <string name="Library path">"%AUTO%"</string>
           <string name="Linker flags">"%AUTO%"</string>
@@ -1637,20 +1624,19 @@
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
-          <string name="variable-1">"popUpMenu|gPopUpMenu *|PopUpMenu||2|0|"</string>
-          <string name="variable-2">"ready|bool|Ready|false|2|0|"</string>
-          <string name="variable-3">"zoomImage|wxBitmap|ZoomImage||2|0|"</string>
-          <string name="variable-4">"timerZoom|wxTimer *|TimerZoom|new wxTimer( this )|2|0|"</string>
-          <string name="variable-5">"lastPosZoomX|double|LastPosZoomX|0|2|0|"</string>
-          <string name="variable-6">"lastPosZoomY|double|LastPosZoomY|0|2|0|"</string>
-          <string name="variable-7">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
-          <string name="variable-8">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
-          <string name="variable-9">"openControlActivated|bool|OpenControlActivated|false|2|0|"</string>
-          <string name="variable-10">"zoomPointBegin|wxPoint|ZoomPointBegin||2|0|"</string>
-          <string name="variable-11">"zoomPointEnd|wxPoint|ZoomPointEnd||2|0|"</string>
-          <string name="variable-12">"drawImage|wxBitmap|DrawImage||2|0|"</string>
-          <string name="variable-13">"openControlDragging|bool|OpenControlDragging|false|2|0|"</string>
-          <string name="variable-14">"selectedRows|vector&lt;TObjectOrder&gt;|SelectedRows||2|0|"</string>
+          <string name="variable-1">"ready|bool|Ready|false|2|0|"</string>
+          <string name="variable-2">"zoomImage|wxBitmap|ZoomImage||2|0|"</string>
+          <string name="variable-3">"timerZoom|wxTimer *|TimerZoom|new wxTimer( this )|2|0|"</string>
+          <string name="variable-4">"lastPosZoomX|double|LastPosZoomX|0|2|0|"</string>
+          <string name="variable-5">"lastPosZoomY|double|LastPosZoomY|0|2|0|"</string>
+          <string name="variable-6">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
+          <string name="variable-7">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
+          <string name="variable-8">"openControlActivated|bool|OpenControlActivated|false|2|0|"</string>
+          <string name="variable-9">"zoomPointBegin|wxPoint|ZoomPointBegin||2|0|"</string>
+          <string name="variable-10">"zoomPointEnd|wxPoint|ZoomPointEnd||2|0|"</string>
+          <string name="variable-11">"drawImage|wxBitmap|DrawImage||2|0|"</string>
+          <string name="variable-12">"openControlDragging|bool|OpenControlDragging|false|2|0|"</string>
+          <string name="variable-13">"selectedRows|vector&lt;TObjectOrder&gt;|SelectedRows||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gHistogram"</string>
           <string name="event-handler-1">"wxEVT_SIZE|OnSize|NONE||gHistogram"</string>
           <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gHistogram"</string>

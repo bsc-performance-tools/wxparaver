@@ -135,9 +135,17 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
 {
   choices.Empty();
   
-  choices.Add(wxT(STR_TIME));
-  choices.Add(wxT(STR_OBJECTS));
-  choices.Add(wxT(STR_SIZE));
+  gPasteWindowProperties *pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+  
+  if ( pasteActions->isAllowed( whichHistogram, string(STR_TIME) ) )
+    choices.Add(wxT(STR_TIME));
+
+  if ( pasteActions->isAllowed( whichHistogram, string(STR_OBJECTS) ) )
+    choices.Add(wxT(STR_OBJECTS));
+
+  if ( pasteActions->isAllowed( whichHistogram, string(STR_SIZE) ) )
+    choices.Add(wxT(STR_SIZE));
+
   return new wxMultiChoiceDialog( whichHistogram,
                                   wxT( "Select properties to paste:" ),
                                   wxT("Paste Special"),
