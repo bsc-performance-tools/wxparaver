@@ -566,10 +566,10 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       )
       valuesObjects.clear();
       
+    valuesColumns.clear();
+
     for( THistogramColumn iCol = beginColumn; iCol <= endColumn; ++iCol )
     {
-      valuesColumns.clear();
-      
       if( !( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
             ( !commStat && myHistogram->endCell( iCol, curPlane ) ) ) )
       {
@@ -623,6 +623,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
                                 cellWidth < 1.0 ? 1 : rint( cellWidth ),
                                 cellHeight < 1.0 ? 1 : rint( cellHeight ) );
+      valuesObjects.clear();
     }
   }
 }
