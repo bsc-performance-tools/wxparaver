@@ -226,6 +226,10 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       vector< bool > auxRows;
       timeline->GetMyWindow()->getSelectedRows( auxRows );
       whichTimeline->GetMyWindow()->setSelectedRows( auxRows );
+      whichTimeline->GetMyWindow()->addZoom( whichTimeline->GetMyWindow()->getWindowBeginTime(),
+                                             whichTimeline->GetMyWindow()->getWindowEndTime(),
+                                             timeline->GetMyWindow()->getZoomSecondDimension().first,
+                                             timeline->GetMyWindow()->getZoomSecondDimension().second );
     }
     else if ( property == STR_FILTER_COMMS )
     {
@@ -302,7 +306,12 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     {
       vector< bool > auxRows;
       timeline->GetMyWindow()->getSelectedRows( auxRows );
-      whichHistogram->GetHistogram()->getControlWindow()->setSelectedRows( auxRows );
+      Window *controlWindow = whichHistogram->GetHistogram()->getControlWindow();
+      controlWindow->setSelectedRows( auxRows );
+      controlWindow->addZoom( controlWindow->getWindowBeginTime(),
+                              controlWindow->getWindowEndTime(),
+                              timeline->GetMyWindow()->getZoomSecondDimension().first,
+                              timeline->GetMyWindow()->getZoomSecondDimension().second );
     }
     else
     {
@@ -326,7 +335,12 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     {
       vector< bool > auxRows;
       histogram->GetHistogram()->getControlWindow()->getSelectedRows( auxRows );
-      whichHistogram->GetHistogram()->getControlWindow()->setSelectedRows( auxRows );
+      Window *controlWindow = whichHistogram->GetHistogram()->getControlWindow();
+      controlWindow->setSelectedRows( auxRows );
+      controlWindow->addZoom( controlWindow->getWindowBeginTime(),
+                              controlWindow->getWindowEndTime(),
+                              histogram->GetHistogram()->getControlWindow()->getZoomSecondDimension().first,
+                              histogram->GetHistogram()->getControlWindow()->getZoomSecondDimension().second );
     }
     else
     {
