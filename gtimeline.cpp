@@ -213,7 +213,7 @@ void gTimeline::redraw()
   vector<TObjectOrder> selected;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( selected, beginRow, endRow );
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
   TObjectOrder maxObj = selected.back();
 
   ready = false;
@@ -279,7 +279,7 @@ void gTimeline::drawAxis( wxDC& dc )
   vector<TObjectOrder> selected;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( selected, beginRow, endRow );
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
   TObjectOrder numObjects = selected.size();
 
   // Get the text extent for the last object (probably the larger one)
@@ -358,7 +358,7 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
   vector<TObjectOrder> selected;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( selected, beginRow, endRow );
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
 
   vector<TObjectOrder>::iterator first = find( selected.begin(), selected.end(), firstRow );
   vector<TObjectOrder>::iterator last  = find( selected.begin(), selected.end(), lastRow );
@@ -412,7 +412,7 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
   vector<TObjectOrder> selected;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( selected, beginRow, endRow );
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
 
   RecordList::iterator it = comms->begin();
   step = ( 1 / step );
@@ -574,7 +574,7 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
         zoomEndY = drawBorder;
 
       vector<TObjectOrder> selected;
-      myWindow->getSelectedRows( selected, beginRow, endRow );
+      myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
       TObjectOrder numObjects = selected.size();
       double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
       beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
@@ -810,12 +810,12 @@ void gTimeline::OnPopUpRowSelection()
         newSelection.push_back( (TObjectOrder)selections[ row ] );
 
       vector< TObjectOrder > previousSelection;
-      myWindow->getSelectedRows( previousSelection );
+      myWindow->getSelectedRows( myWindow->getLevel(), previousSelection );
 
       if ( ( previousSelection.size() != newSelection.size() ) ||
            !equal( previousSelection.begin(), previousSelection.end(), newSelection.begin() ) )
       {
-        myWindow->setSelectedRows( newSelection );
+        myWindow->setSelectedRows( myWindow->getLevel(), newSelection );
         myWindow->setRedraw( true );
         myWindow->setChanged( true );
       }
