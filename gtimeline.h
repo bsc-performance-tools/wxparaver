@@ -181,10 +181,11 @@ public:
   static bool ShowToolTips();
 
   void redraw();
-  void drawAxis( wxDC& dc );
-  void drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder firstRow, TObjectOrder lastRow );
+  void drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
+  void drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder firstRow, TObjectOrder lastRow,
+                vector<TObjectOrder>& selectedSet, vector<bool>& selected );
   void drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
-                 TTime from, TTime to, TTime step, wxCoord pos );
+                 TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected );
 
   void OnPopUpRightDown( void );
 

@@ -210,11 +210,13 @@ void gTimeline::redraw()
   SetTitle( winTitle + _(" (Working...)") );
   
   // Get selected rows
-  vector<TObjectOrder> selected;
+  vector<bool>         selected;
+  vector<TObjectOrder> selectedSet;
+  myWindow->getSelectedRows( myWindow->getLevel(), selected );
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
-  TObjectOrder maxObj = selected.back();
+  myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow );
+  TObjectOrder maxObj = selectedSet[ selectedSet.size() - 1 ];
 
   ready = false;
   bufferImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
@@ -234,11 +236,12 @@ void gTimeline::redraw()
   
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
   bufferDraw.Clear();
-  drawAxis( bufferDraw );
+  drawAxis( bufferDraw, selectedSet );
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS );
   
   // Drawmode: Group objects with same wxCoord in objectPosList
-  for( vector< TObjectOrder >::iterator obj = selected.begin(); obj != selected.end(); ++obj )
+  vector<TObjectOrder>::iterator endIt = selectedSet.end();
+  for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != endIt; ++obj )
   {
     TObjectOrder firstObj = *obj;
     TObjectOrder lastObj = firstObj;
@@ -247,7 +250,7 @@ void gTimeline::redraw()
       ++obj;
       lastObj = *obj;
     }
-    drawRow( bufferDraw, commdc, maskdc, firstObj, lastObj );
+    drawRow( bufferDraw, commdc, maskdc, firstObj, lastObj, selectedSet, selected );
   }
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
@@ -265,8 +268,10 @@ void gTimeline::redraw()
 }
 
 
-void gTimeline::drawAxis( wxDC& dc )
+void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 {
+  size_t numObjects = selected.size();
+  
   dc.SetPen( wxPen( *wxWHITE, 1 ) );
   dc.SetTextForeground( *wxWHITE );
   
@@ -274,13 +279,6 @@ void gTimeline::drawAxis( wxDC& dc )
   dc.SetFont( timeFont );
   wxSize timeExt = dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ) );
   timeAxisPos = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
-
-  // Get selected rows
-  vector<TObjectOrder> selected;
-  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
-  TObjectOrder numObjects = selected.size();
 
   // Get the text extent for the last object (probably the larger one)
   dc.SetFont( objectFont );
@@ -346,7 +344,8 @@ void gTimeline::drawAxis( wxDC& dc )
 }
 
 
-void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder firstRow, TObjectOrder lastRow )
+void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder firstRow, TObjectOrder lastRow,
+                         vector<TObjectOrder>& selectedSet, vector<bool>& selected )
 {
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
@@ -354,14 +353,8 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
   vector<TSemanticValue> rowValues;
   wxCoord timePos = objectAxisPos + 1;
 
-  // Get selected rows
-  vector<TObjectOrder> selected;
-  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
-
-  vector<TObjectOrder>::iterator first = find( selected.begin(), selected.end(), firstRow );
-  vector<TObjectOrder>::iterator last  = find( selected.begin(), selected.end(), lastRow );
+  vector<TObjectOrder>::iterator first = find( selectedSet.begin(), selectedSet.end(), firstRow );
+  vector<TObjectOrder>::iterator last  = find( selectedSet.begin(), selectedSet.end(), lastRow );
 
   wxCoord objectPos = objectPosList[ firstRow ];
 
@@ -370,7 +363,6 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
        currentTime += timeStep )
   {
     rowValues.clear();
-
     for( vector<TObjectOrder>::iterator row = first; row <= last; ++row )
     {
       timeValues.clear();
@@ -379,19 +371,16 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
         myWindow->calcNext( *row );
 
       timeValues.push_back( myWindow->getValue( *row ) );
-      RecordList *rl = myWindow->getRecordList( *row );
-      if( rl != NULL )
-        drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos );
       while( myWindow->getEndTime( *row ) < currentTime )
       {
         myWindow->calcNext( *row );
         timeValues.push_back( myWindow->getValue( *row ) );
-        rl = myWindow->getRecordList( *row );
-        if( rl != NULL )
-          drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos );
       }
-    
       rowValues.push_back( DrawMode::selectValue( timeValues, myWindow->getDrawModeTime() ) );
+
+      RecordList *rl = myWindow->getRecordList( *row );
+      if( rl != NULL )
+        drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos, selected );
     }
     TSemanticValue valueToDraw = DrawMode::selectValue( rowValues, myWindow->getDrawModeObject() );
     rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
@@ -406,24 +395,16 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
 
 
 void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, 
-                          TTime from, TTime to, TTime step, wxCoord pos )
+                          TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected )
 {
-  // Get selected rows
-  vector<TObjectOrder> selected;
-  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
-
   RecordList::iterator it = comms->begin();
   step = ( 1 / step );
   while( it != comms->end() && it->getTime() < from )
     ++it;
   while( it != comms->end() && it->getTime() <= to )
   {
-    vector<TObjectOrder>::iterator partnerObject = find( selected.begin(), selected.end(),
-                                                         it->getCommPartnerObject() );
-
-    if( partnerObject != selected.end() &&
+    TObjectOrder partnerObject = it->getCommPartnerObject();
+    if( selected[ partnerObject ] &&
         ( it->getType() & RECV ||
           ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
       )
@@ -434,9 +415,9 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
         commdc.SetPen( *wxRED_PEN );
       wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
       posPartner += objectAxisPos;
-      commdc.DrawLine( posPartner, objectPosList[ it->getCommPartnerObject() ],
+      commdc.DrawLine( posPartner, objectPosList[ partnerObject ],
                        pos, objectPosList[ it->getOrder() ] );
-      maskdc.DrawLine( posPartner, objectPosList[ it->getCommPartnerObject() ],
+      maskdc.DrawLine( posPartner, objectPosList[ partnerObject ],
                        pos, objectPosList[ it->getOrder() ] );
     }
     ++it;

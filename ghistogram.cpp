@@ -246,6 +246,7 @@ void gHistogram::execute()
   TObjectOrder endRow =  myHistogram->getControlWindow()->getZoomSecondDimension().second;
   myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                     selectedRows, beginRow, endRow );
+
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows );
 
   if( myHistogram->getZoom() )
