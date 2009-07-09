@@ -511,7 +511,10 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
 
-  if( ready && ( zoomBeginX != zoomEndX || zoomBeginY != zoomEndY ))
+  if( ready &&
+      ( zoomBeginX != zoomEndX || zoomBeginY != zoomEndY ))// &&
+//      ( zoomEndX >= objectAxisPos ) &&
+//      ( zoomEndY <= timeAxisPos ))
   {
     // TIME zoom limits
     if( zoomEndX < zoomBeginX )

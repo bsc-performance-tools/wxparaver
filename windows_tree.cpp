@@ -4,6 +4,8 @@
 #include "ghistogram.h"
 #include "paravermain.h"
 
+
+
 wxTreeCtrl * createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;

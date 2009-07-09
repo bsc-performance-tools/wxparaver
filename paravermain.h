@@ -53,6 +53,8 @@ class wxPropertyGridEvent;
 #define ID_RECENTCFGS 10009
 #define ID_MENUSAVECFG 10011
 #define ID_TOOLBAR 10003
+#define ID_NEW_WINDOW 10030
+#define ID_NEW_DERIVED_WINDOW 10031
 #define ID_CHOICEWINBROWSER 10002
 #define ID_FOREIGN 10010
 #define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
@@ -148,6 +150,18 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
   void OnExitClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_WINDOW
+  void OnToolNewWindowClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_NEW_WINDOW
+  void OnToolNewWindowUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_WINDOW
+  void OnNewDerivedWindowClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_NEW_DERIVED_WINDOW
+  void OnNewDerivedWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );
 
@@ -165,6 +179,9 @@ public:
   /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
   void OnTreeItemActivated( wxTreeEvent& event );
   void OnTreeRightClick( wxTreeEvent& event );
+  
+  void OnTreeBeginDrag( wxTreeEvent& event );
+  void OnTreeEndDrag( wxTreeEvent& event );
   
   /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
   void OnPropertyGridChange( wxPropertyGridEvent& event );
@@ -221,13 +238,21 @@ public:
 ////@end paraverMain member function declarations
 
   /// Should we show tooltips?
-  static bool ShowToolTips();
+  bool ShowToolTips();
   void refreshTree( gTimeline *whichTimeline, Window *window );
+  
+  int GetNextPosX();
+  int GetNextPosY();
 
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
   static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height
-  
+  static wxSize defaultWindowSize;
+  static int initialPosX;
+  static int initialPosY;
+  static Window *beginDragWindow;
+  static Window *endDragWindow;
+
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
   wxMenu* menuFile;
@@ -259,6 +284,7 @@ private:
                   Window *window );
 */
   bool DoLoadCFG( const string &path );
+  void ShowDerivedDialog();
 };
 
 void progressFunction( ProgressController *progress );

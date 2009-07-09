@@ -1543,18 +1543,18 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
 
     extraControlCloned->setWindowBeginTime( myHistogram->getBeginTime() );
     extraControlCloned->setWindowEndTime( myHistogram->getEndTime() );
-    
+
     controlCloned->setShowWindow( false );
     extraControlCloned->setShowWindow( false );
     Window *productWin = Window::create( controlCloned->getKernel(), controlCloned, extraControlCloned );
-    
+
     productWin->setLevelFunction( DERIVED, "product" );
     tmpStr.str( "" );
     tmpStr << name << " 3DZoom ranges [" << ( columnBegin * delta ) + min << ",";
     if ( ( ( columnEnd * delta ) + min + delta ) >= max )
       tmpStr << max << "]";
     else
-        tmpStr << ( columnEnd * delta ) + min + delta << ")";
+      tmpStr << ( columnEnd * delta ) + min + delta << ")";
     tmpStr << "/[" << ( plane * extraDelta ) + extraMin << ",";
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";

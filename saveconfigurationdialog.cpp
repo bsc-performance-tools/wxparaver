@@ -301,8 +301,6 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   options.histoComputeGradient = optComputeGradient->GetValue();
   options.description = textDescription->GetValue().c_str();
 
-  
-
   return true;
 }
 

@@ -24,6 +24,8 @@
 ////@end includes
 
 #include "wx/imaglist.h"
+#include "wx/tipdlg.h"
+
 #include "paravermain.h"
 #include "paraverkernelexception.h"
 #include "cfg.h"
@@ -39,8 +41,11 @@
 #include "pg_util.h"
 #include "saveconfigurationdialog.h"
 #include "windows_tree.h"
+#include "derivedtimelinedialog.h"
 
 ////@begin XPM images
+#include "new_window.xpm"
+#include "new_derived_window.xpm"
 ////@end XPM images
 
 #include "table.xpm"
@@ -75,6 +80,12 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
+  EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
+  EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
+
+  EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
+  EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
+
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
 
@@ -85,6 +96,10 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
   EVT_TREE_ITEM_ACTIVATED( wxID_ANY, paraverMain::OnTreeItemActivated )
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, paraverMain::OnTreeRightClick)
+  
+  EVT_TREE_BEGIN_DRAG(wxID_ANY, paraverMain::OnTreeBeginDrag)
+  EVT_TREE_END_DRAG( wxID_ANY, paraverMain::OnTreeEndDrag)
+
   EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
 END_EVENT_TABLE()
 
@@ -112,6 +127,7 @@ paraverMain::paraverMain()
   myParaverMain = this;
 
   Init();
+  ShowToolTips();
 }
 
 paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
@@ -130,6 +146,7 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
   Create( parent, id, caption, pos, size, style );
   
   defaultTitleBarSize = GetSize() - GetClientSize();
+  ShowToolTips();
 }
 
 
@@ -242,6 +259,14 @@ void paraverMain::CreateControls()
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
+  wxBitmap itemtool16Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
+  wxBitmap itemtool16BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_WINDOW, false);
+  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
+  wxBitmap itemtool17BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -261,6 +286,9 @@ void paraverMain::CreateControls()
   wxTreeCtrl* tmpTree = createTree( imageList );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
 }
+
+
+
 
 bool paraverMain::DoLoadTrace( const string &path )
 {
@@ -434,6 +462,18 @@ void paraverMain::OnExitClick( wxCommandEvent& event )
 
 bool paraverMain::ShowToolTips()
 {
+  static size_t s_index = (size_t) -1;
+  if ( s_index == (size_t)-1 )
+  {
+    srand( time( NULL ));
+    s_index = rand() % 2; // number of tips
+  }
+  wxTipProvider *tipProvider = wxCreateFileTipProvider( wxT( "./tips.txt" ), s_index );
+  
+ // this returns a bool 
+  //wxShowTip( this, tipProvider, true);
+  delete tipProvider;
+  
   return true;
 }
 
@@ -446,6 +486,16 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin paraverMain bitmap retrieval
   wxUnusedVar(name);
+  if (name == _T("new_window.xpm"))
+  {
+    wxBitmap bitmap( application_star_xpm);
+    return bitmap;
+  }
+  else if (name == _T("new_derived_window.xpm"))
+  {
+    wxBitmap bitmap( application_add_xpm);
+    return bitmap;
+  }
   return wxNullBitmap;
 ////@end paraverMain bitmap retrieval
 }
@@ -914,6 +964,9 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   {
     currentHisto = histo->GetHistogram();
     currentTimeline = NULL;
+    beginDragWindow = NULL;
+    endDragWindow = NULL;
+
     if( histo->IsShown() )
       histo->Raise();
   }
@@ -921,6 +974,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   {
     currentHisto = NULL;
     currentTimeline = timeline->GetMyWindow();
+    beginDragWindow = timeline->GetMyWindow();
     if( timeline->IsShown() )
       timeline->Raise();
   }
@@ -936,12 +990,15 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
   
   if( gHistogram *histo = itemData->getHistogram() )
   {
+    beginDragWindow = NULL;
+    endDragWindow = NULL;
     Histogram *tmpHisto = histo->GetHistogram();
     tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
     Window *tmpWin = timeline->GetMyWindow();
+    beginDragWindow = timeline->GetMyWindow();
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
   }
 }
@@ -953,10 +1010,16 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
   
   if( gHistogram *histo = itemData->getHistogram() )
   {
+    beginDragWindow = NULL;
+    endDragWindow = NULL;
+
     histo->rightDownManager();
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
+    beginDragWindow = timeline->GetMyWindow();
+    endDragWindow = NULL;
+
     timeline->rightDownManager();
   }
 }
@@ -1234,3 +1297,279 @@ void paraverMain::OnMenusavecfgUpdate( wxUpdateUIEvent& event )
     event.Enable( false );
 }
 
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL
+ */
+wxSize paraverMain::defaultWindowSize = wxSize( 600, 115 );
+int paraverMain::initialPosX = 0;
+int paraverMain::initialPosY = 0;
+
+void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
+{
+  // Create new window
+  Window *newWindow = Window::create( localKernel, loadedTraces[ currentTrace ] );
+ 
+  newWindow->setName( "New window" );
+  newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
+  newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
+                      0, newWindow->getWindowLevelObjects() - 1 );
+
+  // Position window in screen
+  newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
+  newWindow->setHeight( defaultWindowSize.GetHeight() );
+  
+  if ( initialPosX != 0 )
+    initialPosX += defaultTitleBarSize.GetHeight();
+  else
+    initialPosX += GetSize().GetWidth();
+
+  newWindow->setPosX( initialPosX );
+  newWindow->setPosY( initialPosY );
+  initialPosY += defaultTitleBarSize.GetHeight();
+
+  // Its default semantic
+  for ( UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= COMPOSECPU; windowLevel++ )
+    newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
+
+  string semanticFunction = loadedTraces[ currentTrace ]->getDefaultSemanticFunc( THREAD );
+  if ( semanticFunction != "" )
+    newWindow->setLevelFunction( THREAD, semanticFunction );
+  else
+    newWindow->setLevelFunction( THREAD, "State As Is" );
+
+  // Build gtimeline and append new window to windows tree
+  wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+  wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+
+  BuildTree( this,
+             allTracesPage, allTracesPage->GetRootItem(), 
+             currentPage,   currentPage->GetRootItem(),
+             newWindow );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL
+ */
+
+void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent& event )
+{
+  if ( loadedTraces.size() > 0 )
+    tbarMain->EnableTool( ID_NEW_WINDOW, true );
+  else
+    tbarMain->EnableTool( ID_NEW_WINDOW, false );
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_DERIVED_WINDOW
+ */
+
+void paraverMain::ShowDerivedDialog()
+{
+  // Centrar!!
+  // DerivedTimelineDialog derivedDialog( this, wxID_ANY, wxString( "Create Derived" ), wxPoint(400,300) );
+  DerivedTimelineDialog derivedDialog( this );
+  vector<Window *> timelines;
+  LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
+
+  derivedDialog.SetTimelines1( timelines );
+  derivedDialog.SetTimelines2( timelines );
+
+  // estudiar casuistica, no siempre pasa
+  if ( beginDragWindow == NULL ||
+       beginDragWindow->getTrace() == loadedTraces[ currentTrace ] )
+    derivedDialog.SetCurrentWindow1( beginDragWindow );
+  else 
+    derivedDialog.SetCurrentWindow1( NULL );
+
+  if ( endDragWindow == NULL ||
+       endDragWindow->getTrace() == loadedTraces[ currentTrace ] )
+    derivedDialog.SetCurrentWindow2( endDragWindow );
+  else 
+    derivedDialog.SetCurrentWindow2( NULL );
+/*
+  vector< string > operationLabels;
+  beginDragWindow->getGroupLabels( operationLabels, 1 );
+  
+  derivedDialog.SetOperations(operationLabels);
+*/
+  if( derivedDialog.ShowModal() == wxID_OK )
+  {
+      vector< Window * > selectedTimeline = derivedDialog.GetTimelines1();
+      beginDragWindow = selectedTimeline[0]->clone();
+      beginDragWindow->setPosX( GetNextPosX() );
+      beginDragWindow->setPosY( GetNextPosY() );
+      
+      selectedTimeline.clear();
+      selectedTimeline = derivedDialog.GetTimelines2();
+      endDragWindow = selectedTimeline[0]->clone();
+      endDragWindow->setPosX( GetNextPosX() );
+      endDragWindow->setPosY( GetNextPosY() );
+
+      // Create new derived window
+      Window *newWindow = Window::create( localKernel, beginDragWindow, endDragWindow );
+      newWindow->setPosX( GetNextPosX() );
+      newWindow->setPosY( GetNextPosY() );
+ 
+      newWindow->setName( "New derived window" );
+      newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
+      newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
+                          0, newWindow->getWindowLevelObjects() - 1 );
+
+      // Size
+      newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
+      newWindow->setHeight( defaultWindowSize.GetHeight() );
+
+      // Its default semantic
+      for ( UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= TOPCOMPOSE2; windowLevel++ )
+        newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
+
+      newWindow->setFactor( 0, derivedDialog.GetFactorTimeline1() );
+      newWindow->setFactor( 1, derivedDialog.GetFactorTimeline2() );
+
+      vector< string > semanticDerivedFunction = derivedDialog.GetOperations();
+      newWindow->setLevelFunction( DERIVED, semanticDerivedFunction[0] );
+
+      // Build gtimeline and append new window to windows tree
+      wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+      wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+
+      BuildTree( this,
+                 allTracesPage, allTracesPage->GetRootItem(), 
+                 currentPage,   currentPage->GetRootItem(),
+                 newWindow );
+
+      bool found;
+      gTimeline *last = getGTimelineFromWindow( currentPage->GetRootItem(), newWindow, found );
+      if ( found )
+        last->Raise();
+    }
+}
+
+
+void paraverMain::OnNewDerivedWindowClick( wxCommandEvent& event )
+{
+  ShowDerivedDialog();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_NEW_DERIVED_WINDOW
+ */
+
+void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent& event )
+{
+
+  if ( loadedTraces.size() > 0 )
+  {
+    vector<Window *> timelines;
+    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
+    if ( timelines.size() > 0 )
+      tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, true );
+    else
+      tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
+  }
+  else
+    tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
+}
+
+Window *paraverMain::beginDragWindow = NULL;
+Window *paraverMain::endDragWindow = NULL;
+
+void paraverMain::OnTreeBeginDrag( wxTreeEvent& event )
+{
+  wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+
+  if( gTimeline *timeline = itemData->getTimeline() )
+  {
+    event.Allow();
+    beginDragWindow = timeline->GetMyWindow();
+  }
+  else
+    beginDragWindow = NULL;
+}
+
+int paraverMain::GetNextPosX()
+{
+  if ( initialPosX != 0 )
+    initialPosX += defaultTitleBarSize.GetHeight();
+  else
+    initialPosX += GetSize().GetWidth();
+    
+  return initialPosX;
+}
+
+int paraverMain::GetNextPosY()
+{
+  initialPosY += defaultTitleBarSize.GetHeight();
+  
+  return initialPosY;
+}
+
+void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
+{
+  if ( event.GetItem().IsOk() )
+  {
+    wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
+
+    if( gTimeline *timeline = itemData->getTimeline() )
+    {
+      endDragWindow = timeline->GetMyWindow();
+      ShowDerivedDialog();
+/*
+      beginDragWindow = beginDragWindow->clone();
+      beginDragWindow->setPosX( GetNextPosX() );
+      beginDragWindow->setPosY( GetNextPosY() );
+      
+      endDragWindow = timeline->GetMyWindow()->clone();
+      endDragWindow->setPosX( GetNextPosX() );
+      endDragWindow->setPosY( GetNextPosY() );
+
+      // Create new derived window
+      Window *newWindow = Window::create( localKernel, beginDragWindow, endDragWindow );
+      newWindow->setPosX( GetNextPosX() );
+      newWindow->setPosY( GetNextPosY() );
+ 
+      newWindow->setName( "New derived window" );
+      newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
+      newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
+                          0, newWindow->getWindowLevelObjects() - 1 );
+
+      // Size
+      newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
+      newWindow->setHeight( defaultWindowSize.GetHeight() );
+
+      // Its default semantic
+      for ( UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= TOPCOMPOSE2; windowLevel++ )
+        newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
+
+      newWindow->setFactor( 0, 1.0 );
+      newWindow->setFactor( 1, 1.0 );
+
+      string semanticDerivedFunction = ""; // recover default one?
+      if ( semanticDerivedFunction != "" )
+        newWindow->setLevelFunction( DERIVED, semanticDerivedFunction );
+      else
+        newWindow->setLevelFunction( DERIVED, "product" );
+
+      // Build gtimeline and append new window to windows tree
+      wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+      wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+
+      BuildTree( this,
+                 allTracesPage, allTracesPage->GetRootItem(), 
+                 currentPage,   currentPage->GetRootItem(),
+                 newWindow );
+
+      bool found;
+      gTimeline *last = getGTimelineFromWindow( currentPage->GetRootItem(), newWindow, found );
+      if ( found )
+        last->Raise();
+*/
+    }
+  }
+}
