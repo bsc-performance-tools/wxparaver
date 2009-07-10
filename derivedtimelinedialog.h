@@ -36,6 +36,7 @@
 
 ////@begin control identifiers
 #define ID_DERIVEDTIMELINEDIALOG 10032
+#define ID_DERIVED_NAME 10001
 #define ID_TOPCOMPOSE1 10002
 #define ID_TOPCOMPOSE2 10000
 #define ID_FACTOR_TIMELINE_1 10035
@@ -116,6 +117,9 @@ public:
   vector< string > GetTopCompose2() const { return topCompose2 ; }
   void SetTopCompose2(vector< string > value) { topCompose2 = value ; }
 
+  string GetTimelineName() const { return timelineName ; }
+  void SetTimelineName(string value) { timelineName = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -130,6 +134,7 @@ public:
   bool TransferDataFromWindow();
 
 ////@begin DerivedTimelineDialog member variables
+  wxTextCtrl* widgetName;
   wxChoice* widgetTopCompose1;
   wxChoice* widgetTopCompose2;
   wxTextCtrl* widgetFactorTimeline1;
@@ -148,16 +153,19 @@ private:
   Window * currentWindow2;
   vector< string > topCompose1;
   vector< string > topCompose2;
+  string timelineName;
 ////@end DerivedTimelineDialog member variables
 
   void presetTimelineComboBox( vector< Window * > timelines,
                                Window *currentWindow,
                                wxComboBox *comboBox );
   void presetStringChoiceBox( vector< string > list, wxChoice *choiceBox );
-  void presetFactorFields( double value, wxTextCtrl *field );
+  void presetFactorField( double value, wxTextCtrl *field );
+  void presetNameField( string whichName, wxTextCtrl *field );
+
   void getSelectedString( wxChoice *choiceBox, vector< string > &selection );
   void getSelectedWindow( wxComboBox *comboBox, vector< Window * > &selection );
-
+  void getName( wxTextCtrl *field, string &whichName );
 };
 
 #endif

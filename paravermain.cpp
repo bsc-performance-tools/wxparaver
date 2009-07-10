@@ -468,11 +468,13 @@ bool paraverMain::ShowToolTips()
     srand( time( NULL ));
     s_index = rand() % 2; // number of tips
   }
+  /*
   wxTipProvider *tipProvider = wxCreateFileTipProvider( wxT( "./tips.txt" ), s_index );
   
- // this returns a bool 
-  //wxShowTip( this, tipProvider, true);
+  // this returns a bool 
+  wxShowTip( this, tipProvider, true);
   delete tipProvider;
+  */
   
   return true;
 }
@@ -1374,10 +1376,11 @@ void paraverMain::ShowDerivedDialog()
   vector<Window *> timelines;
   LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
 
+  derivedDialog.SetTimelineName( "New Derived Window" );
+
   derivedDialog.SetTimelines1( timelines );
   derivedDialog.SetTimelines2( timelines );
 
-  // estudiar casuistica, no siempre pasa
   if ( beginDragWindow == NULL ||
        beginDragWindow->getTrace() == loadedTraces[ currentTrace ] )
     derivedDialog.SetCurrentWindow1( beginDragWindow );
@@ -1389,12 +1392,7 @@ void paraverMain::ShowDerivedDialog()
     derivedDialog.SetCurrentWindow2( endDragWindow );
   else 
     derivedDialog.SetCurrentWindow2( NULL );
-/*
-  vector< string > operationLabels;
-  beginDragWindow->getGroupLabels( operationLabels, 1 );
-  
-  derivedDialog.SetOperations(operationLabels);
-*/
+
   if( derivedDialog.ShowModal() == wxID_OK )
   {
       vector< Window * > selectedTimeline = derivedDialog.GetTimelines1();
@@ -1413,7 +1411,7 @@ void paraverMain::ShowDerivedDialog()
       newWindow->setPosX( GetNextPosX() );
       newWindow->setPosY( GetNextPosY() );
  
-      newWindow->setName( "New derived window" );
+      newWindow->setName( derivedDialog.GetTimelineName() );
       newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
       newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
                           0, newWindow->getWindowLevelObjects() - 1 );
@@ -1422,9 +1420,11 @@ void paraverMain::ShowDerivedDialog()
       newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
       newWindow->setHeight( defaultWindowSize.GetHeight() );
 
-      // Its default semantic
-      for ( UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= TOPCOMPOSE2; windowLevel++ )
-        newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
+      // Semantic
+      vector< string > auxCompose = derivedDialog.GetTopCompose1();
+      newWindow->setLevelFunction( TOPCOMPOSE1, auxCompose[0] );
+      auxCompose = derivedDialog.GetTopCompose2();
+      newWindow->setLevelFunction( TOPCOMPOSE2, auxCompose[0] );
 
       newWindow->setFactor( 0, derivedDialog.GetFactorTimeline1() );
       newWindow->setFactor( 1, derivedDialog.GetFactorTimeline2() );
