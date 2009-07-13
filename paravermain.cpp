@@ -1402,7 +1402,10 @@ void paraverMain::ShowDerivedDialog()
       
       selectedTimeline.clear();
       selectedTimeline = derivedDialog.GetTimelines2();
-      endDragWindow = selectedTimeline[0]->clone();
+
+//     if ( endDragWindow == beginDragWindow )
+        endDragWindow = selectedTimeline[0]->clone();
+      
       endDragWindow->setPosX( GetNextPosX() );
       endDragWindow->setPosY( GetNextPosY() );
 
@@ -1520,56 +1523,6 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
     {
       endDragWindow = timeline->GetMyWindow();
       ShowDerivedDialog();
-/*
-      beginDragWindow = beginDragWindow->clone();
-      beginDragWindow->setPosX( GetNextPosX() );
-      beginDragWindow->setPosY( GetNextPosY() );
-      
-      endDragWindow = timeline->GetMyWindow()->clone();
-      endDragWindow->setPosX( GetNextPosX() );
-      endDragWindow->setPosY( GetNextPosY() );
-
-      // Create new derived window
-      Window *newWindow = Window::create( localKernel, beginDragWindow, endDragWindow );
-      newWindow->setPosX( GetNextPosX() );
-      newWindow->setPosY( GetNextPosY() );
- 
-      newWindow->setName( "New derived window" );
-      newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
-      newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
-                          0, newWindow->getWindowLevelObjects() - 1 );
-
-      // Size
-      newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
-      newWindow->setHeight( defaultWindowSize.GetHeight() );
-
-      // Its default semantic
-      for ( UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= TOPCOMPOSE2; windowLevel++ )
-        newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
-
-      newWindow->setFactor( 0, 1.0 );
-      newWindow->setFactor( 1, 1.0 );
-
-      string semanticDerivedFunction = ""; // recover default one?
-      if ( semanticDerivedFunction != "" )
-        newWindow->setLevelFunction( DERIVED, semanticDerivedFunction );
-      else
-        newWindow->setLevelFunction( DERIVED, "product" );
-
-      // Build gtimeline and append new window to windows tree
-      wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-      wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
-
-      BuildTree( this,
-                 allTracesPage, allTracesPage->GetRootItem(), 
-                 currentPage,   currentPage->GetRootItem(),
-                 newWindow );
-
-      bool found;
-      gTimeline *last = getGTimelineFromWindow( currentPage->GetRootItem(), newWindow, found );
-      if ( found )
-        last->Raise();
-*/
     }
   }
 }
