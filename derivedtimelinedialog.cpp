@@ -268,32 +268,25 @@ bool DerivedTimelineDialog::TransferDataToWindow()
   return true;
 }
 
+
 bool DerivedTimelineDialog::TransferDataFromWindow()
 {
-  double auxFactor;
+  bool result;
 
-  // First check factor mismatch
-  if ( !widgetFactorTimeline1->GetValue().ToDouble( &auxFactor ))
-    return false;
-  else
-    factorTimeline1 = auxFactor;
+  if ( result = getFactorFields( factorTimeline1, factorTimeline2 ) )
+  {
+      // If factors are ok, then retrieve all the other data
+    getName( widgetName, timelineName );
 
-  if ( !widgetFactorTimeline2->GetValue().ToDouble( &auxFactor ))
-    return false;
-  else
-    factorTimeline2 = auxFactor;
+    getSelectedString( widgetTopCompose1, topCompose1 );
+    getSelectedString( widgetTopCompose2, topCompose2 );
+    getSelectedString( widgetOperations, operations );
   
-  // If factors are ok, then retrieve all the other data
-  getName( widgetName, timelineName );
-  
-  getSelectedString( widgetTopCompose1, topCompose1 );
-  getSelectedString( widgetTopCompose2, topCompose2 );
-  getSelectedString( widgetOperations, operations );
-  
-  getSelectedWindow( widgetTimelines1, timelines1 );
-  getSelectedWindow( widgetTimelines2, timelines2 );
+    getSelectedWindow( widgetTimelines1, timelines1 );
+    getSelectedWindow( widgetTimelines2, timelines2 );
+  }
 
-  return true;
+  return result;
 }
 
 
@@ -334,10 +327,7 @@ void DerivedTimelineDialog::OnOkClick( wxCommandEvent& event )
     EndModal( wxID_OK );
   else
   {
-    wxMessageDialog message( this, 
-                             "Factor void or type mismatch.\nPlease use decimal format.",
-                             "Error in Field", wxOK );
-    message.ShowModal();
+    EndModal( wxID_OK ); // never used!
   }
 }
 
@@ -348,29 +338,37 @@ void DerivedTimelineDialog::OnOkClick( wxCommandEvent& event )
 
 void DerivedTimelineDialog::OnSwapWindowsClick( wxCommandEvent& event )
 {
-  // Swap window vectors
-  vector< Window * > aux = timelines1;
-  timelines1 = timelines2;
-  timelines2 = aux;
-  
-  // Get current selected timelines
-  int pos1 = widgetTimelines1->GetCurrentSelection();
-  int pos2 = widgetTimelines2->GetCurrentSelection();
+  if ( getFactorFields( factorTimeline2, factorTimeline1 ) ) // Change performed through parameter order 
+  {
+    // Swap factors
+    presetFactorField( factorTimeline1, widgetFactorTimeline1 );
+    presetFactorField( factorTimeline2, widgetFactorTimeline2 );
 
-  // Clean them
-  widgetTimelines1->Clear();
-  widgetTimelines2->Clear();
+    // Swap window vectors
+    vector< Window * > aux = timelines1;
+    timelines1 = timelines2;
+    timelines2 = aux;
 
-  // Rebuild and select timeline properly
-  for( vector<Window *>::iterator it = timelines1.begin(); it != timelines1.end(); ++it )
-    widgetTimelines1->Append( wxString( (*it)->getName().c_str() ) );
-  
-  for( vector<Window *>::iterator it = timelines2.begin(); it != timelines2.end(); ++it )
-    widgetTimelines2->Append( wxString( (*it)->getName().c_str() ) );
+    // Get current selected timelines
+    int pos1 = widgetTimelines1->GetCurrentSelection();
+    int pos2 = widgetTimelines2->GetCurrentSelection();
 
-  widgetTimelines1->Select( pos2 );
-  widgetTimelines2->Select( pos1 );
+    // Clean them
+    widgetTimelines1->Clear();
+    widgetTimelines2->Clear();
+
+    // Rebuild and select timeline properly
+    for( vector<Window *>::iterator it = timelines1.begin(); it != timelines1.end(); ++it )
+      widgetTimelines1->Append( wxString( (*it)->getName().c_str() ) );
+
+    for( vector<Window *>::iterator it = timelines2.begin(); it != timelines2.end(); ++it )
+      widgetTimelines2->Append( wxString( (*it)->getName().c_str() ) );
+
+    widgetTimelines1->Select( pos2 );
+    widgetTimelines2->Select( pos1 );
+  }
 }
+
 
 // Build first list of timelines and set the selected one
 void DerivedTimelineDialog::presetTimelineComboBox( vector< Window * > timelines,
@@ -427,7 +425,7 @@ void DerivedTimelineDialog::presetNameField( string whichName, wxTextCtrl *field
 }
 
 void DerivedTimelineDialog::getSelectedString( wxChoice *choiceBox,
-                                               vector< string > &selection )
+                                               vector< string > &selection ) const
 {
   string tmp = selection[ choiceBox->GetCurrentSelection() ];
   selection.clear();
@@ -436,7 +434,7 @@ void DerivedTimelineDialog::getSelectedString( wxChoice *choiceBox,
 
 
 void DerivedTimelineDialog::getSelectedWindow( wxComboBox *comboBox,
-                                               vector< Window * > &selection )
+                                               vector< Window * > &selection ) const
 {
   Window* tmp = selection[ comboBox->GetCurrentSelection() ];
   selection.clear();
@@ -444,8 +442,41 @@ void DerivedTimelineDialog::getSelectedWindow( wxComboBox *comboBox,
 }
 
 void DerivedTimelineDialog::getName( wxTextCtrl *field,
-                                     string &whichName )
+                                     string &whichName ) const
 {
   whichName = field->GetValue();
 }
+
+
+bool DerivedTimelineDialog::getFactorFields( double &whichFactor1,
+                                             double &whichFactor2 )
+{
+  double auxFactor1, auxFactor2;
+  
+  // Checks both factors for mismatch
+  if ( !widgetFactorTimeline1->GetValue().ToDouble( &auxFactor1 ))
+  {
+    wxMessageDialog message( this, 
+                             "Factor 1 void or type mismatch.\nPlease use decimal format.",
+                             "Error in Field", wxOK );
+    message.ShowModal();
+    return false;
+  }
+  else if ( !widgetFactorTimeline2->GetValue().ToDouble( &auxFactor2 ))
+  {
+    wxMessageDialog message( this, 
+                             "Factor 2 void or type mismatch.\nPlease use decimal format.",
+                             "Error in Field", wxOK );
+    message.ShowModal();
+    return false;
+  }
+
+  // Only if both of them are ok then retrieve data
+  whichFactor1 = auxFactor1;
+  whichFactor2 = auxFactor2;
+
+  return true;
+}
+
+
 

@@ -163,9 +163,11 @@ private:
   void presetFactorField( double value, wxTextCtrl *field );
   void presetNameField( string whichName, wxTextCtrl *field );
 
-  void getSelectedString( wxChoice *choiceBox, vector< string > &selection );
-  void getSelectedWindow( wxComboBox *comboBox, vector< Window * > &selection );
-  void getName( wxTextCtrl *field, string &whichName );
+  void getSelectedString( wxChoice *choiceBox, vector< string > &selection ) const;
+  void getSelectedWindow( wxComboBox *comboBox, vector< Window * > &selection ) const;
+  void getName( wxTextCtrl *field, string &whichName ) const;
+  bool getFactorFields( double &whichFactor1,
+                        double &whichFactor2 );
 };
 
 #endif
