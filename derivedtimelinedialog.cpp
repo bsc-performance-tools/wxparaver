@@ -273,7 +273,7 @@ bool DerivedTimelineDialog::TransferDataFromWindow()
 {
   bool result;
 
-  if ( result = getFactorFields( factorTimeline1, factorTimeline2 ) )
+  if ( ( result = getFactorFields( factorTimeline1, factorTimeline2 ) ) )
   {
       // If factors are ok, then retrieve all the other data
     getName( widgetName, timelineName );
