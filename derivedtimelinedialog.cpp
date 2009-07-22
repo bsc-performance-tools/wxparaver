@@ -43,6 +43,10 @@ IMPLEMENT_DYNAMIC_CLASS( DerivedTimelineDialog, wxDialog )
 BEGIN_EVENT_TABLE( DerivedTimelineDialog, wxDialog )
 
 ////@begin DerivedTimelineDialog event table entries
+  EVT_CHOICE( ID_TOPCOMPOSE1, DerivedTimelineDialog::OnTopcompose1Selected )
+
+  EVT_CHOICE( ID_TOPCOMPOSE2, DerivedTimelineDialog::OnTopcompose2Selected )
+
   EVT_BUTTON( ID_SWAP_WINDOWS, DerivedTimelineDialog::OnSwapWindowsClick )
 
   EVT_BUTTON( wxID_OK, DerivedTimelineDialog::OnOkClick )
@@ -113,7 +117,15 @@ void DerivedTimelineDialog::Init()
   currentWindow2 = NULL;
   widgetName = NULL;
   widgetTopCompose1 = NULL;
+  widgetLabelMinCompose1 = NULL;
+  widgetMinCompose1 = NULL;
+  widgetLabelMaxCompose1 = NULL;
+  widgetMaxCompose1 = NULL;
   widgetTopCompose2 = NULL;
+  widgetLabelMinCompose2 = NULL;
+  widgetMinCompose2 = NULL;
+  widgetLabelMaxCompose2 = NULL;
+  widgetMaxCompose2 = NULL;
   widgetFactorTimeline1 = NULL;
   widgetTimelines1 = NULL;
   widgetOperations = NULL;
@@ -142,13 +154,13 @@ void DerivedTimelineDialog::CreateControls()
   wxStaticText* itemStaticText4 = new wxStaticText( itemDialog1, wxID_STATIC, _("Name"), wxDefaultPosition, wxSize(100, -1), wxALIGN_RIGHT );
   itemFlexGridSizer3->Add(itemStaticText4, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  widgetName = new wxTextCtrl( itemDialog1, ID_DERIVED_NAME, _T(""), wxDefaultPosition, wxSize(250, -1), 0 );
+  widgetName = new wxTextCtrl( itemDialog1, ID_DERIVED_NAME, wxEmptyString, wxDefaultPosition, wxSize(250, -1), 0 );
   itemFlexGridSizer3->Add(widgetName, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine6 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine6, 0, wxGROW|wxALL, 5);
 
-  wxGridSizer* itemGridSizer7 = new wxGridSizer(2, 2, 0, 0);
+  wxGridSizer* itemGridSizer7 = new wxGridSizer(2, 6, 0, 0);
   itemBoxSizer2->Add(itemGridSizer7, 0, wxGROW|wxALL, 5);
 
   wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Top Compose 1"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -158,71 +170,103 @@ void DerivedTimelineDialog::CreateControls()
   widgetTopCompose1 = new wxChoice( itemDialog1, ID_TOPCOMPOSE1, wxDefaultPosition, wxDefaultSize, widgetTopCompose1Strings, wxFULL_REPAINT_ON_RESIZE );
   itemGridSizer7->Add(widgetTopCompose1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticText* itemStaticText10 = new wxStaticText( itemDialog1, wxID_STATIC, _("Top Compose 2"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemGridSizer7->Add(itemStaticText10, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  widgetLabelMinCompose1 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min"), wxDefaultPosition, wxDefaultSize, 0 );
+  widgetLabelMinCompose1->Enable(false);
+  itemGridSizer7->Add(widgetLabelMinCompose1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  widgetMinCompose1 = new wxTextCtrl( itemDialog1, ID_MINCOMPOSE1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  widgetMinCompose1->Enable(false);
+  itemGridSizer7->Add(widgetMinCompose1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  widgetLabelMaxCompose1 = new wxStaticText( itemDialog1, wxID_STATIC, _("Max"), wxDefaultPosition, wxDefaultSize, 0 );
+  widgetLabelMaxCompose1->Enable(false);
+  itemGridSizer7->Add(widgetLabelMaxCompose1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  widgetMaxCompose1 = new wxTextCtrl( itemDialog1, ID_MAXCOMPOSE2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  widgetMaxCompose1->Enable(false);
+  itemGridSizer7->Add(widgetMaxCompose1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, wxID_STATIC, _("Top Compose 2"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemGridSizer7->Add(itemStaticText14, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString widgetTopCompose2Strings;
   widgetTopCompose2 = new wxChoice( itemDialog1, ID_TOPCOMPOSE2, wxDefaultPosition, wxDefaultSize, widgetTopCompose2Strings, wxFULL_REPAINT_ON_RESIZE );
   itemGridSizer7->Add(widgetTopCompose2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticLine* itemStaticLine12 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine12, 0, wxGROW|wxALL, 5);
+  widgetLabelMinCompose2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min"), wxDefaultPosition, wxDefaultSize, 0 );
+  widgetLabelMinCompose2->Enable(false);
+  itemGridSizer7->Add(widgetLabelMinCompose2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxGridSizer* itemGridSizer13 = new wxGridSizer(5, 2, 0, 0);
-  itemBoxSizer2->Add(itemGridSizer13, 0, wxGROW|wxALL, 5);
+  widgetMinCompose2 = new wxTextCtrl( itemDialog1, ID_MINCOMPOSE2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  widgetMinCompose2->Enable(false);
+  itemGridSizer7->Add(widgetMinCompose2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemGridSizer13->Add(itemStaticText14, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  widgetLabelMaxCompose2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Max"), wxDefaultPosition, wxDefaultSize, 0 );
+  widgetLabelMaxCompose2->Enable(false);
+  itemGridSizer7->Add(widgetLabelMaxCompose2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  widgetMaxCompose2 = new wxTextCtrl( itemDialog1, ID_MAXCOMPOSE2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  widgetMaxCompose2->Enable(false);
+  itemGridSizer7->Add(widgetMaxCompose2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxStaticLine* itemStaticLine20 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine20, 0, wxGROW|wxALL, 5);
+
+  wxGridSizer* itemGridSizer21 = new wxGridSizer(5, 2, 0, 0);
+  itemBoxSizer2->Add(itemGridSizer21, 0, wxGROW|wxALL, 5);
+
+  wxStaticText* itemStaticText22 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemGridSizer21->Add(itemStaticText22, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   widgetFactorTimeline1 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_1, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemGridSizer13->Add(widgetFactorTimeline1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemGridSizer21->Add(widgetFactorTimeline1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticText* itemStaticText16 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemGridSizer13->Add(itemStaticText16, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticText* itemStaticText24 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemGridSizer21->Add(itemStaticText24, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString widgetTimelines1Strings;
-  widgetTimelines1 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_1, _T(""), wxDefaultPosition, wxDefaultSize, widgetTimelines1Strings, wxCB_READONLY );
-  itemGridSizer13->Add(widgetTimelines1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  widgetTimelines1 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_1, wxEmptyString, wxDefaultPosition, wxDefaultSize, widgetTimelines1Strings, wxCB_READONLY );
+  itemGridSizer21->Add(widgetTimelines1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticText* itemStaticText18 = new wxStaticText( itemDialog1, wxID_STATIC, _("Operation"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemGridSizer13->Add(itemStaticText18, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticText* itemStaticText26 = new wxStaticText( itemDialog1, wxID_STATIC, _("Operation"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemGridSizer21->Add(itemStaticText26, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString widgetOperationsStrings;
   widgetOperations = new wxChoice( itemDialog1, ID_OPERATIONS, wxDefaultPosition, wxDefaultSize, widgetOperationsStrings, wxFULL_REPAINT_ON_RESIZE );
-  itemGridSizer13->Add(widgetOperations, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemGridSizer21->Add(widgetOperations, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticText* itemStaticText20 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemGridSizer13->Add(itemStaticText20, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticText* itemStaticText28 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemGridSizer21->Add(itemStaticText28, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString widgetTimelines2Strings;
-  widgetTimelines2 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_2, _T(""), wxDefaultPosition, wxDefaultSize, widgetTimelines2Strings, wxCB_READONLY );
-  itemGridSizer13->Add(widgetTimelines2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  widgetTimelines2 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_2, wxEmptyString, wxDefaultPosition, wxDefaultSize, widgetTimelines2Strings, wxCB_READONLY );
+  itemGridSizer21->Add(widgetTimelines2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticText* itemStaticText22 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemGridSizer13->Add(itemStaticText22, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticText* itemStaticText30 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemGridSizer21->Add(itemStaticText30, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   widgetFactorTimeline2 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_2, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemGridSizer13->Add(widgetFactorTimeline2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemGridSizer21->Add(widgetFactorTimeline2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticLine* itemStaticLine24 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine24, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine32 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine32, 0, wxGROW|wxALL, 5);
 
   swapWindowsButton = new wxButton( itemDialog1, ID_SWAP_WINDOWS, _("S&wap Windows"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer2->Add(swapWindowsButton, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxStaticLine* itemStaticLine26 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine26, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine34 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine34, 0, wxGROW|wxALL, 5);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer27 = new wxStdDialogButtonSizer;
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer35 = new wxStdDialogButtonSizer;
 
-  itemBoxSizer2->Add(itemStdDialogButtonSizer27, 0, wxALIGN_RIGHT|wxALL, 5);
-  wxButton* itemButton28 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer27->AddButton(itemButton28);
+  itemBoxSizer2->Add(itemStdDialogButtonSizer35, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxButton* itemButton36 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer35->AddButton(itemButton36);
 
-  wxButton* itemButton29 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer27->AddButton(itemButton29);
+  wxButton* itemButton37 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer35->AddButton(itemButton37);
 
-  itemStdDialogButtonSizer27->Realize();
+  itemStdDialogButtonSizer35->Realize();
 
 ////@end DerivedTimelineDialog content construction
 }
@@ -248,7 +292,7 @@ bool DerivedTimelineDialog::TransferDataToWindow()
   presetNameField( timelineName, widgetName );
 
   // Retrieve list of top compose operations, build and select first operation
-  currentWindow1->getGroupLabels( topCompose1, 0 );
+  currentWindow1->getGroupLabels( 0, topCompose1 );
   topCompose2 = topCompose1;
   presetStringChoiceBox( topCompose1, widgetTopCompose1 );
   presetStringChoiceBox( topCompose2, widgetTopCompose2 );
@@ -258,7 +302,7 @@ bool DerivedTimelineDialog::TransferDataToWindow()
   presetTimelineComboBox( timelines2, currentWindow2, widgetTimelines2 );
 
   // Retrieve list of operations, build and select first operation
-  currentWindow1->getGroupLabels( operations, 1 );
+  currentWindow1->getGroupLabels( 1, operations );
   presetStringChoiceBox( operations, widgetOperations );
 
   // Fill factor fields
@@ -479,4 +523,129 @@ bool DerivedTimelineDialog::getFactorFields( double &whichFactor1,
 }
 
 
+void DerivedTimelineDialog::setEnabled(  wxStaticText *label, wxTextCtrl *field, bool enabled )
+{
+  label->Enable( enabled );
+  field->Enable( enabled );
+}
+
+void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
+                                                   string nameFunction,
+                                                   UINT32 numParameters,
+                                                   vector< string > namesParameters )
+{
+  if ( compose == 0 )
+  {
+    if ( numParameters == 0 )
+    {
+      widgetLabelMinCompose1->Enable( false );
+      widgetMinCompose1->Enable( false );
+      widgetLabelMaxCompose1->Enable( false );
+      widgetMaxCompose1->Enable( false );
+    }
+    else if ( numParameters == 1 )
+    {
+      wxString aux1;
+
+      aux1 << namesParameters[ 0 ];
+      widgetLabelMinCompose1->SetLabel( aux1 );
+    
+      widgetLabelMinCompose1->Enable( true );
+      widgetMinCompose1->Enable( true );
+      widgetLabelMaxCompose1->Enable( false );
+      widgetMaxCompose1->Enable( false );
+    }
+    else
+    {
+      wxString aux1, aux2;
+
+      aux1 << namesParameters[ 0 ];
+      widgetLabelMinCompose1->SetLabel( aux1 );
+      widgetLabelMinCompose1->Enable( true );
+      widgetMinCompose1->Enable( true );
+
+      aux2 << namesParameters[ 1 ];
+      widgetLabelMinCompose1->SetLabel( aux2 );
+
+      widgetLabelMaxCompose1->Enable( true );
+      widgetMaxCompose1->Enable( true );
+    }
+  }
+  else
+  {
+    if ( numParameters == 0 )
+    {
+      widgetLabelMinCompose2->Enable( false );
+      widgetMinCompose2->Enable( false );
+
+      widgetLabelMaxCompose2->Enable( false );
+      widgetMaxCompose2->Enable( false );
+    }
+    else if ( numParameters == 1 )
+    {
+      wxString aux1;
+
+      aux1 << namesParameters[ 0 ];
+      widgetLabelMinCompose2->SetLabel( aux1 );
+      widgetLabelMinCompose2->Enable( true );
+      widgetMinCompose2->Enable( true );
+
+      widgetLabelMaxCompose2->Enable( false );
+      widgetMaxCompose2->Enable( false );
+    }
+    else
+    {
+      wxString aux1, aux2;
+
+      aux1 << namesParameters[ 0 ];
+      widgetLabelMinCompose2->SetLabel( aux1 );
+      widgetLabelMinCompose2->Enable( true );
+      widgetMinCompose2->Enable( true );
+
+      aux2 << namesParameters[ 1 ];
+      widgetLabelMinCompose2->SetLabel( aux2 );
+      widgetLabelMaxCompose2->Enable( true );
+      widgetMaxCompose2->Enable( true );
+    }
+  }
+}
+
+
+void DerivedTimelineDialog::allowRangeWidgets()
+{
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOPCOMPOSE1
+ */
+
+void DerivedTimelineDialog::OnTopcompose1Selected( wxCommandEvent& event )
+{
+  UINT32 numParameters;
+  vector< string > namesParameters;
+
+  // Get the Compose selected
+  string nameFunction = topCompose1[ widgetTopCompose1->GetCurrentSelection() ];
+  
+  if ( currentWindow1->getParametersOfFunction( nameFunction, numParameters, namesParameters ) )
+    setParametersCompose( 0, nameFunction, numParameters, namesParameters );
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOPCOMPOSE2
+ */
+
+void DerivedTimelineDialog::OnTopcompose2Selected( wxCommandEvent& event )
+{
+  UINT32 numParameters;
+  vector< string > namesParameters;
+
+  // Get the Compose selected
+  string nameFunction = topCompose2[ widgetTopCompose1->GetCurrentSelection() ];
+  
+  if ( currentWindow1->getParametersOfFunction( nameFunction, numParameters, namesParameters ) )
+    setParametersCompose( 1, nameFunction, numParameters, namesParameters );
+}
 

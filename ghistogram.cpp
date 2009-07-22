@@ -278,7 +278,7 @@ void gHistogram::fillGrid()
   mainSizer->Layout();
   
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
-    throw( exception() );
+    throw( std::exception() );
 
   if( myHistogram->getComputeGradient() )
     myHistogram->recalcGradientLimits();
@@ -465,7 +465,7 @@ void gHistogram::fillZoom()
   bufferDraw.Clear();
 
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
-    throw( exception() );
+    throw( std::exception() );
 
   if( myHistogram->getComputeGradient() )
     myHistogram->recalcGradientLimits();
@@ -553,7 +553,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
   vector<TSemanticValue> valuesObjects;
 
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
-    throw( exception() );
+    throw( std::exception() );
 
   if( commStat )
     curPlane = myHistogram->getCommSelectedPlane();
@@ -694,22 +694,22 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   wxUnusedVar(name);
   if (name == _T("histo_zoom.xpm"))
   {
-    wxBitmap bitmap( histo_zoom_xpm);
+    wxBitmap bitmap(histo_zoom_xpm);
     return bitmap;
   }
   else if (name == _T("timeline.xpm"))
   {
-    wxBitmap bitmap( timeline_xpm);
+    wxBitmap bitmap(timeline_xpm);
     return bitmap;
   }
   else if (name == _T("histo_color.xpm"))
   {
-    wxBitmap bitmap( color_xpm);
+    wxBitmap bitmap(color_xpm);
     return bitmap;
   }
   else if (name == _T("histo_horvert.xpm"))
   {
-    wxBitmap bitmap( horvert_xpm);
+    wxBitmap bitmap(horvert_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -1461,7 +1461,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
                                                         myHistogram->getControlWindow(),
                                                         found );
   if( !found )
-    throw exception();
+    throw std::exception();
     
   gTimeline *openWindow = NULL;
   Window *controlCloned = myHistogram->getControlWindow()->clone();
@@ -1590,6 +1590,6 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   if( openWindow != NULL )
     openWindow->GetMyWindow()->setShowWindow( true );
   else
-    throw exception();
+    throw std::exception();
 }
 
