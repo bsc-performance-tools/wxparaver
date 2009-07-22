@@ -3972,7 +3972,7 @@
               <string name="proxy-GrowableColumns">""</string>
               <string name="proxy-GrowableRows">""</string>
               <long name="proxy-Columns">2</long>
-              <long name="proxy-Rows">2</long>
+              <long name="proxy-Rows">1</long>
               <long name="proxy-ColumnSpacing">0</long>
               <long name="proxy-RowSpacing">0</long>
               <string name="proxy-Member variable name">""</string>
@@ -3981,10 +3981,10 @@
               <string name="proxy-AlignV">"Centre"</string>
               <long name="proxy-Stretch factor">0</long>
               <long name="proxy-Border">5</long>
-              <bool name="proxy-wxLEFT">1</bool>
-              <bool name="proxy-wxRIGHT">1</bool>
-              <bool name="proxy-wxTOP">1</bool>
-              <bool name="proxy-wxBOTTOM">1</bool>
+              <bool name="proxy-wxLEFT">0</bool>
+              <bool name="proxy-wxRIGHT">0</bool>
+              <bool name="proxy-wxTOP">0</bool>
+              <bool name="proxy-wxBOTTOM">0</bool>
               <bool name="proxy-wxSHAPED">0</bool>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -4044,7 +4044,7 @@
                 <long name="proxy-Y">-1</long>
                 <long name="proxy-Width">100</long>
                 <long name="proxy-Height">-1</long>
-                <string name="proxy-AlignH">"Right"</string>
+                <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
                 <long name="proxy-Border">5</long>
@@ -4197,7 +4197,7 @@
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
             </document>
             <document>
-              <string name="title">"wxGridSizerProxy"</string>
+              <string name="title">"wxFlexGridSizer"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"sizer"</string>
@@ -4206,7 +4206,9 @@
               <long name="title-mode">0</long>
               <long name="locked">0</long>
               <string name="created">"9/7/2009"</string>
-              <string name="proxy-type">"wbGridSizerProxy"</string>
+              <string name="proxy-type">"wbFlexGridSizerProxy"</string>
+              <string name="proxy-GrowableColumns">""</string>
+              <string name="proxy-GrowableRows">""</string>
               <long name="proxy-Columns">6</long>
               <long name="proxy-Rows">2</long>
               <long name="proxy-ColumnSpacing">0</long>
@@ -4222,7 +4224,7 @@
               <bool name="proxy-wxTOP">1</bool>
               <bool name="proxy-wxBOTTOM">1</bool>
               <bool name="proxy-wxSHAPED">0</bool>
-              <bool name="proxy-wxADJUST_MINSIZE">1</bool>
+              <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <document>
                 <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -5143,7 +5145,7 @@
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
             </document>
             <document>
-              <string name="title">"wxGridSizerProxy"</string>
+              <string name="title">"wxFlexGridSizer"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"sizer"</string>
@@ -5152,7 +5154,9 @@
               <long name="title-mode">0</long>
               <long name="locked">0</long>
               <string name="created">"7/7/2009"</string>
-              <string name="proxy-type">"wbGridSizerProxy"</string>
+              <string name="proxy-type">"wbFlexGridSizerProxy"</string>
+              <string name="proxy-GrowableColumns">""</string>
+              <string name="proxy-GrowableRows">""</string>
               <long name="proxy-Columns">2</long>
               <long name="proxy-Rows">5</long>
               <long name="proxy-ColumnSpacing">0</long>
@@ -5168,7 +5172,7 @@
               <bool name="proxy-wxTOP">1</bool>
               <bool name="proxy-wxBOTTOM">1</bool>
               <bool name="proxy-wxSHAPED">0</bool>
-              <bool name="proxy-wxADJUST_MINSIZE">1</bool>
+              <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <document>
                 <string name="title">"wxStaticText: wxID_STATIC"</string>
