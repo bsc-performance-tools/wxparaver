@@ -269,6 +269,17 @@ void DerivedTimelineDialog::CreateControls()
   itemStdDialogButtonSizer35->Realize();
 
 ////@end DerivedTimelineDialog content construction
+
+  widgetLabelMinCompose1->Show( false );
+  widgetMinCompose1->Show( false );
+  widgetLabelMaxCompose1->Show( false );
+  widgetMaxCompose1->Show( false );
+
+
+  widgetLabelMinCompose2->Show( false );
+  widgetMinCompose2->Show( false );
+  widgetLabelMaxCompose2->Show( false );
+  widgetMaxCompose2->Show( false );
 }
 
 
@@ -523,21 +534,21 @@ bool DerivedTimelineDialog::getFactorFields( double &whichFactor1,
 }
 
 
-void DerivedTimelineDialog::setEnabled(  wxStaticText *label, wxTextCtrl *field, bool enabled )
-{
-  label->Enable( enabled );
-  field->Enable( enabled );
-}
-
 void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
                                                    string nameFunction,
                                                    UINT32 numParameters,
-                                                   vector< string > namesParameters )
+                                                   vector< string > namesParameters,
+                                                   vector< vector< double > > defaultValues )
 {
   if ( compose == 0 )
   {
     if ( numParameters == 0 )
     {
+      widgetLabelMinCompose1->Show( false );
+      widgetMinCompose1->Show( false );
+      widgetLabelMaxCompose1->Show( false );
+      widgetMaxCompose1->Show( false );
+      
       widgetLabelMinCompose1->Enable( false );
       widgetMinCompose1->Enable( false );
       widgetLabelMaxCompose1->Enable( false );
@@ -545,11 +556,18 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
     }
     else if ( numParameters == 1 )
     {
+      widgetLabelMinCompose1->Show( true );
+      widgetMinCompose1->Show( true );
+      widgetLabelMaxCompose1->Show( false );
+      widgetMaxCompose1->Show( false );
+
       wxString aux1;
 
       aux1 << namesParameters[ 0 ];
       widgetLabelMinCompose1->SetLabel( aux1 );
-    
+
+      setParameterComposeField( 0, defaultValues, widgetMinCompose1 );
+
       widgetLabelMinCompose1->Enable( true );
       widgetMinCompose1->Enable( true );
       widgetLabelMaxCompose1->Enable( false );
@@ -557,16 +575,23 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
     }
     else
     {
+      widgetLabelMinCompose1->Show( true );
+      widgetMinCompose1->Show( true );
+      widgetLabelMaxCompose1->Show( true );
+      widgetMaxCompose1->Show( true );
+
       wxString aux1, aux2;
 
       aux1 << namesParameters[ 0 ];
+      aux2 << namesParameters[ 1 ];
       widgetLabelMinCompose1->SetLabel( aux1 );
+      widgetLabelMaxCompose1->SetLabel( aux2 );
+
+      setParameterComposeField( 0, defaultValues, widgetMinCompose1 );
+      setParameterComposeField( 1, defaultValues, widgetMaxCompose1 );
+
       widgetLabelMinCompose1->Enable( true );
       widgetMinCompose1->Enable( true );
-
-      aux2 << namesParameters[ 1 ];
-      widgetLabelMinCompose1->SetLabel( aux2 );
-
       widgetLabelMaxCompose1->Enable( true );
       widgetMaxCompose1->Enable( true );
     }
@@ -575,46 +600,78 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
   {
     if ( numParameters == 0 )
     {
+      widgetLabelMinCompose2->Show( false );
+      widgetMinCompose2->Show( false );
+      widgetLabelMaxCompose2->Show( false );
+      widgetMaxCompose2->Show( false );
+
       widgetLabelMinCompose2->Enable( false );
       widgetMinCompose2->Enable( false );
-
       widgetLabelMaxCompose2->Enable( false );
       widgetMaxCompose2->Enable( false );
     }
     else if ( numParameters == 1 )
     {
+      widgetLabelMinCompose2->Show( true );
+      widgetMinCompose2->Show( true );
+      widgetLabelMaxCompose2->Show( false );
+      widgetMaxCompose2->Show( false );
+
       wxString aux1;
 
       aux1 << namesParameters[ 0 ];
       widgetLabelMinCompose2->SetLabel( aux1 );
+
+      setParameterComposeField( 0, defaultValues, widgetMinCompose2 );
+
       widgetLabelMinCompose2->Enable( true );
       widgetMinCompose2->Enable( true );
-
       widgetLabelMaxCompose2->Enable( false );
       widgetMaxCompose2->Enable( false );
     }
     else
     {
+      widgetLabelMinCompose2->Show( true );
+      widgetMinCompose2->Show( true );
+      widgetLabelMaxCompose2->Show( true );
+      widgetMaxCompose2->Show( true );
+
       wxString aux1, aux2;
 
       aux1 << namesParameters[ 0 ];
+      aux2 << namesParameters[ 1 ];
       widgetLabelMinCompose2->SetLabel( aux1 );
+      widgetLabelMaxCompose2->SetLabel( aux2 );
+
+      setParameterComposeField( 0, defaultValues, widgetMinCompose2 );
+      setParameterComposeField( 1, defaultValues, widgetMaxCompose2 );
+
       widgetLabelMinCompose2->Enable( true );
       widgetMinCompose2->Enable( true );
-
-      aux2 << namesParameters[ 1 ];
-      widgetLabelMinCompose2->SetLabel( aux2 );
       widgetLabelMaxCompose2->Enable( true );
       widgetMaxCompose2->Enable( true );
     }
   }
+
+  Layout(); // Test to resize window
 }
 
-
-void DerivedTimelineDialog::allowRangeWidgets()
+void DerivedTimelineDialog::setParameterComposeField( UINT32 parameter,
+                                                       vector< vector< double > > defaultValues,
+                                                       wxTextCtrl *field )
 {
-}
+  wxString aux;
 
+  UINT32 maxValues = UINT32( defaultValues[ parameter ].size() );
+  aux << defaultValues[ parameter ][ 0 ];
+  for ( UINT32 i = 1; i < maxValues; ++i  )
+  {
+    aux << ", ";
+    aux << defaultValues[ parameter ][ i ];
+  }
+  
+  field->SetValue( aux );
+}
 
 /*!
  * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOPCOMPOSE1
@@ -624,12 +681,16 @@ void DerivedTimelineDialog::OnTopcompose1Selected( wxCommandEvent& event )
 {
   UINT32 numParameters;
   vector< string > namesParameters;
+  vector< vector < double > > defaultParameters;
 
   // Get the Compose selected
   string nameFunction = topCompose1[ widgetTopCompose1->GetCurrentSelection() ];
   
-  if ( currentWindow1->getParametersOfFunction( nameFunction, numParameters, namesParameters ) )
-    setParametersCompose( 0, nameFunction, numParameters, namesParameters );
+  if ( currentWindow1->getParametersOfFunction( nameFunction, 
+                                                 numParameters,
+                                                 namesParameters,
+                                                 defaultParameters ) )
+    setParametersCompose( 0, nameFunction, numParameters, namesParameters, defaultParameters );
 }
 
 
@@ -641,11 +702,15 @@ void DerivedTimelineDialog::OnTopcompose2Selected( wxCommandEvent& event )
 {
   UINT32 numParameters;
   vector< string > namesParameters;
+  vector< vector < double > > defaultParameters;
 
   // Get the Compose selected
-  string nameFunction = topCompose2[ widgetTopCompose1->GetCurrentSelection() ];
+  string nameFunction = topCompose2[ widgetTopCompose2->GetCurrentSelection() ];
   
-  if ( currentWindow1->getParametersOfFunction( nameFunction, numParameters, namesParameters ) )
-    setParametersCompose( 1, nameFunction, numParameters, namesParameters );
+  if ( currentWindow2->getParametersOfFunction( nameFunction, 
+                                                 numParameters,
+                                                 namesParameters,
+                                                 defaultParameters ) )
+    setParametersCompose( 1, nameFunction, numParameters, namesParameters, defaultParameters );
 }
 

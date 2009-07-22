@@ -201,13 +201,14 @@ private:
   void getName( wxTextCtrl *field, string &whichName ) const;
   bool getFactorFields( double &whichFactor1,
                         double &whichFactor2 );
-  void setEnabled(  wxStaticText *label, wxTextCtrl *field, bool enabled );
-  void allowRangeWidgets();
   void setParametersCompose( UINT32 compose,
                              string nameFunction,
                              UINT32 numParameters,
-                             vector< string > namesParameters );
-
+                             vector< string > namesParameters,
+                             vector< vector< double > > defaultValues );
+  void setParameterComposeField( UINT32 parameter,
+                                 vector< vector< double > > defaultValues,
+                                 wxTextCtrl *field );
 
 };
 
