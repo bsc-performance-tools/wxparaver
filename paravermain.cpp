@@ -21,6 +21,7 @@
 #endif
 
 ////@begin includes
+#include "wx/imaglist.h"
 ////@end includes
 
 #include "wx/imaglist.h"
@@ -241,20 +242,20 @@ void paraverMain::CreateControls()
 
   wxMenuBar* menuBar = new wxMenuBar;
   menuFile = new wxMenu;
-  menuFile->Append(wxID_OPEN, _("Load &Trace..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(wxID_OPEN, _("Load &Trace..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu5 = new wxMenu;
   menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu8 = new wxMenu;
   menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
-  menuFile->Append(wxID_EXIT, _("&Quit"), _T(""), wxITEM_NORMAL);
+  menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
   menuHelp = new wxMenu;
-  menuHelp->Append(wxID_ABOUT, _("&About..."), _T(""), wxITEM_NORMAL);
+  menuHelp->Append(wxID_ABOUT, _("&About..."), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuHelp, _("&Help"));
   itemFrame1->SetMenuBar(menuBar);
 
@@ -286,8 +287,6 @@ void paraverMain::CreateControls()
   wxTreeCtrl* tmpTree = createTree( imageList );
   choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
 }
-
-
 
 
 bool paraverMain::DoLoadTrace( const string &path )
@@ -490,12 +489,12 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   wxUnusedVar(name);
   if (name == _T("new_window.xpm"))
   {
-    wxBitmap bitmap( application_star_xpm);
+    wxBitmap bitmap(application_star_xpm);
     return bitmap;
   }
   else if (name == _T("new_derived_window.xpm"))
   {
-    wxBitmap bitmap( application_add_xpm);
+    wxBitmap bitmap(application_add_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -1027,8 +1026,6 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
 }
 
 
-
-
 /*!
  * wxEVT_UPDATE_UI event handler for ID_CHOICEWINBROWSER
  */
@@ -1047,12 +1044,15 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
     wxTreeItemId root = currentTree->GetRootItem();
     wxTreeItemIdValue cookie;
     wxTreeItemId currentChild = currentTree->GetFirstChild( root, cookie );
-    while( currentChild.IsOk() )
+    unsigned int numberChild = currentTree->GetChildrenCount( root, false );
+    for ( unsigned int current = 0; current < numberChild; ++current )
     {
-      updateTreeItem( currentTree, currentChild, allWindows, allHistograms, currentWindow );
+      if ( currentChild.IsOk() )
+        updateTreeItem( currentTree, currentChild, allWindows, allHistograms, currentWindow );
       currentChild = currentTree->GetNextChild( root, cookie );
     }
   }
+
    // add pending window or histogram
   for( vector<Window *>::iterator it = allWindows.begin(); it != allWindows.end(); ++it )
   {
@@ -1361,6 +1361,12 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent& event )
     tbarMain->EnableTool( ID_NEW_WINDOW, true );
   else
     tbarMain->EnableTool( ID_NEW_WINDOW, false );
+
+  if ( currentHisto != NULL )
+    tbarMain->EnableTool( ID_NEW_WINDOW, false );
+
+  if ( currentTimeline != NULL )
+    tbarMain->EnableTool( ID_NEW_WINDOW, true );
 }
 
 
@@ -1469,12 +1475,15 @@ void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent& event )
   {
     vector<Window *> timelines;
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
-    if ( timelines.size() > 0 )
+    if ( ( timelines.size() > 0 ) && ( currentTimeline != NULL ))
       tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, true );
     else
       tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
   }
   else
+    tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
+
+  if ( currentHisto != NULL )
     tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
 }
 

@@ -199,7 +199,7 @@ void SaveConfigurationDialog::CreateControls()
   wxStaticText* itemStaticText21 = new wxStaticText( itemDialog1, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer2->Add(itemStaticText21, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 5);
 
-  textDescription = new wxTextCtrl( itemDialog1, ID_TEXTDESCRIPTION, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
+  textDescription = new wxTextCtrl( itemDialog1, ID_TEXTDESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
   itemBoxSizer2->Add(textDescription, 1, wxGROW|wxALL, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer23 = new wxStdDialogButtonSizer;
