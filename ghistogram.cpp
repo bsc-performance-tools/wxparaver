@@ -246,14 +246,14 @@ void gHistogram::execute()
   TObjectOrder endRow =  myHistogram->getControlWindow()->getZoomSecondDimension().second;
   myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                     selectedRows, beginRow, endRow );
-
+cout << "begin execute histogram..." << endl;
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows );
-
+cout << "begin fill grid or zoom..." << endl;
   if( myHistogram->getZoom() )
     fillZoom();
   else
     fillGrid();
-
+cout << "...end fill grid or zoom" << endl;
   ready = true;
 
   this->Refresh();

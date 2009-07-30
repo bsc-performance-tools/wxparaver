@@ -18,6 +18,9 @@
  */
 ////@begin includes
 #include "wx/frame.h"
+#include "wx/splitter.h"
+#include "wx/notebook.h"
+#include "wx/richtext/richtextctrl.h"
 ////@end includes
 #include <wx/treebase.h>
 
@@ -35,6 +38,9 @@
  */
 
 ////@begin forward declarations
+class wxSplitterWindow;
+class wxNotebook;
+class wxRichTextCtrl;
 ////@end forward declarations
 class Window;
 /*!
@@ -43,7 +49,15 @@ class Window;
 
 ////@begin control identifiers
 #define ID_GTIMELINE 10001
+#define ID_SPLITTERWINDOW 10048
 #define ID_SCROLLEDWINDOW 10007
+#define ID_NOTEBOOK 10042
+#define ID_RICHTEXTCTRL 10043
+#define ID_PANEL 10044
+#define ID_TEXTCTRL 10045
+#define ID_TEXTCTRL1 10046
+#define ID_TEXTCTRL2 10047
+#define ID_PANEL1 10049
 #define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
 #define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
@@ -82,8 +96,8 @@ public:
   /// wxEVT_CLOSE_WINDOW event handler for ID_GTIMELINE
   void OnCloseWindow( wxCloseEvent& event );
 
-  /// wxEVT_SIZE event handler for ID_GTIMELINE
-  void OnSize( wxSizeEvent& event );
+  /// wxEVT_CREATE event handler for ID_GTIMELINE
+  void OnCreate( wxWindowCreateEvent& event );
 
   /// wxEVT_IDLE event handler for ID_GTIMELINE
   void OnIdle( wxIdleEvent& event );
@@ -91,23 +105,38 @@ public:
   /// wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE
   void OnRightDown( wxMouseEvent& event );
 
+  /// wxEVT_COMMAND_SPLITTER_DOUBLECLICKED event handler for ID_SPLITTERWINDOW
+  void OnSplitterwindowSashDClick( wxSplitterEvent& event );
+
+  /// wxEVT_COMMAND_SPLITTER_UNSPLIT event handler for ID_SPLITTERWINDOW
+  void OnSplitterwindowSashUnsplit( wxSplitterEvent& event );
+
+  /// wxEVT_SIZE event handler for ID_SCROLLEDWINDOW
+  void OnScrolledWindowSize( wxSizeEvent& event );
+
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
-  void OnPaint( wxPaintEvent& event );
+  void OnScrolledWindowPaint( wxPaintEvent& event );
 
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
-  void OnEraseBackground( wxEraseEvent& event );
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
   /// wxEVT_LEFT_DOWN event handler for ID_SCROLLEDWINDOW
-  void OnLeftDown( wxMouseEvent& event );
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
 
   /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
-  void OnLeftUp( wxMouseEvent& event );
+  void OnScrolledWindowLeftUp( wxMouseEvent& event );
+
+  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
+  void OnScrolledWindowRightDown( wxMouseEvent& event );
 
   /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
-  void OnMotion( wxMouseEvent& event );
+  void OnScrolledWindowMotion( wxMouseEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
-  void OnScrolledwindowUpdate( wxUpdateUIEvent& event );
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK
+  void OnNotebookPageChanging( wxNotebookEvent& event );
 
 ////@end gTimeline event handler declarations
 
@@ -169,6 +198,9 @@ public:
 
   long GetZoomEndY() const { return zoomEndY ; }
   void SetZoomEndY(long value) { zoomEndY = value ; }
+
+  bool GetCanRedraw() const { return canRedraw ; }
+  void SetCanRedraw(bool value) { canRedraw = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -240,7 +272,14 @@ public:
 
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
+  wxSplitterWindow* splitter;
   wxScrolledWindow* drawZone;
+  wxNotebook* infoZone;
+  wxRichTextCtrl* whatWhereText;
+  wxPanel* timingZone;
+  wxTextCtrl* initialTimeText;
+  wxTextCtrl* finalTimeText;
+  wxTextCtrl* durationText;
   wxBitmap bufferImage;
   wxBitmap drawImage;
   wxBitmap commImage;
@@ -261,6 +300,7 @@ private:
   long beginRow;
   long endRow;
   long zoomEndY;
+  bool canRedraw;
 ////@end gTimeline member variables
 
   wxWindow *parent;

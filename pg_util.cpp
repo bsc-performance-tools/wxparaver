@@ -17,6 +17,7 @@
 #include "histogram.h"
 #include "filter.h"
 #include "loadedwindows.h"
+#include "labelconstructor.h"
 
 void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 Window *whichWindow,
@@ -56,10 +57,12 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   Filter *filter = whichWindow->getFilter();
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
-  windowProperties->Append( new wxFloatProperty( wxT("Begin time"), wxPG_LABEL, 
-                            wxT( whichWindow->getWindowBeginTime() ) ) );
-  windowProperties->Append( new wxFloatProperty( wxT("End time"), wxPG_LABEL, 
-                            wxT( whichWindow->getWindowEndTime() ) ) );
+  windowProperties->Append( new wxStringProperty( wxT("Begin time"), wxPG_LABEL, 
+                            wxT( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowBeginTime() ),
+                                                              whichWindow->getTimeUnit() ) ) ) );
+  windowProperties->Append( new wxStringProperty( wxT("End time"), wxPG_LABEL, 
+                            wxT( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowEndTime() ),
+                                                              whichWindow->getTimeUnit() ) ) ) );
 
   windowProperties->Append( new wxFloatProperty( wxT("Semantic Minimum"), wxPG_LABEL,
                             wxT( whichWindow->getMinimumY() ) ) );
@@ -705,10 +708,12 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   windowProperties->Clear();
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichHisto->getName() ) ) );
-  windowProperties->Append( new wxFloatProperty( wxT("Begin time"), wxPG_LABEL, 
-                            wxT( whichHisto->getBeginTime() ) ) );
-  windowProperties->Append( new wxFloatProperty( wxT("End time"), wxPG_LABEL, 
-                            wxT( whichHisto->getEndTime() ) ) );
+  windowProperties->Append( new wxStringProperty( wxT("Begin time"), wxPG_LABEL, 
+                            wxT( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getBeginTime() ),
+                                                              whichHisto->getControlWindow()->getTimeUnit() ) ) ) );
+  windowProperties->Append( new wxStringProperty( wxT("End time"), wxPG_LABEL, 
+                            wxT( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getEndTime() ),
+                                                              whichHisto->getControlWindow()->getTimeUnit() ) ) ) );
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   statCat->SetFlagsFromString( "COLLAPSED" );

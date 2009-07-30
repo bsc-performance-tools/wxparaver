@@ -64,11 +64,16 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
 ////@begin gTimeline event table entries
   EVT_CLOSE( gTimeline::OnCloseWindow )
-  EVT_SIZE( gTimeline::OnSize )
+  EVT_WINDOW_CREATE( gTimeline::OnCreate )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
 
-  EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledwindowUpdate )
+  EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
+  EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
+
+  EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
+
+  EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
 
 ////@end gTimeline event table entries
 
@@ -131,7 +136,15 @@ void gTimeline::Init()
   myWindow = NULL;
   objectHeight = 1;
   zooming = false;
+  canRedraw = true;
+  splitter = NULL;
   drawZone = NULL;
+  infoZone = NULL;
+  whatWhereText = NULL;
+  timingZone = NULL;
+  initialTimeText = NULL;
+  finalTimeText = NULL;
+  durationText = NULL;
 ////@end gTimeline member initialisation
 
   zoomXY = false;
@@ -150,20 +163,59 @@ void gTimeline::CreateControls()
 ////@begin gTimeline content construction
   gTimeline* itemFrame1 = this;
 
-  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-  itemFrame1->SetSizer(itemBoxSizer2);
+  splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_3DBORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT|wxNO_BORDER );
+  splitter->SetMinimumPaneSize(0);
 
-  drawZone = new wxScrolledWindow( itemFrame1, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
-  itemBoxSizer2->Add(drawZone, 1, wxGROW|wxALL, 1);
+  drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
   drawZone->SetScrollbars(1, 1, 0, 0);
+  infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+
+  whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+
+  infoZone->AddPage(whatWhereText, _("What/Where"));
+
+  timingZone = new wxPanel( infoZone, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
+  timingZone->SetSizer(itemBoxSizer7);
+
+  wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer7->Add(itemBoxSizer8, 0, wxGROW, 5);
+  wxStaticText* itemStaticText9 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer8->Add(itemStaticText9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+
+  wxStaticText* itemStaticText10 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer8->Add(itemStaticText10, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+
+  wxStaticText* itemStaticText11 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer8->Add(itemStaticText11, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+
+  wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer7->Add(itemBoxSizer12, 1, wxGROW, 5);
+  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer12->Add(initialTimeText, 0, wxGROW|wxALL, 5);
+
+  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer12->Add(finalTimeText, 0, wxGROW|wxALL, 5);
+
+  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer12->Add(durationText, 0, wxGROW|wxALL, 5);
+
+  infoZone->AddPage(timingZone, _("Timing"));
+
+  wxPanel* itemPanel16 = new wxPanel( infoZone, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+
+  infoZone->AddPage(itemPanel16, _("Colors/Definitions"));
+
+  splitter->SplitHorizontally(drawZone, infoZone, 0);
 
   // Connect events and objects
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
 ////@end gTimeline content construction
 }
 
@@ -277,7 +329,8 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   
   // Get the text extent for time label
   dc.SetFont( timeFont );
-  wxSize timeExt = dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ) );
+  wxSize timeExt = dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ),
+                                                                  myWindow->getTimeUnit() ) );
   timeAxisPos = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
 
   // Get the text extent for the last object (probably the larger one)
@@ -334,11 +387,14 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     objectHeight = timeAxisPos - objectPosList[ selected[ 0 ] ];
 
   dc.SetFont( timeFont );
-  dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowBeginTime(), myWindow->getTimeUnit() ),
+  dc.DrawText( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ),
+                                            myWindow->getTimeUnit() ),
                objectAxisPos, timeAxisPos + drawBorder );
-  dc.DrawText( LabelConstructor::timeLabel( myWindow->getWindowEndTime(), myWindow->getTimeUnit() ),
+  dc.DrawText( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowEndTime() ),
+                                            myWindow->getTimeUnit() ),
                dc.GetSize().GetWidth() -
-               ( dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->getWindowEndTime(), myWindow->getTimeUnit() ) )
+               ( dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowEndTime() ),
+                                                                myWindow->getTimeUnit() ) )
                .GetWidth() + drawBorder ),
                timeAxisPos + drawBorder );
 }
@@ -429,7 +485,7 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
 /*!
  * wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
  */
-void gTimeline::OnEraseBackground( wxEraseEvent& event )
+void gTimeline::OnScrolledWindowEraseBackground( wxEraseEvent& event )
 {
   //event.Skip();
 }
@@ -438,7 +494,7 @@ void gTimeline::OnEraseBackground( wxEraseEvent& event )
 /*!
  * wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
  */
-void gTimeline::OnPaint( wxPaintEvent& event )
+void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( drawZone );
 
@@ -450,10 +506,18 @@ void gTimeline::OnPaint( wxPaintEvent& event )
 /*!
  * wxEVT_SIZE event handler for ID_GTIMELINE
  */
-void gTimeline::OnSize( wxSizeEvent& event )
+void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
-  if( ready )
-    redraw();
+  if( canRedraw &&
+      ( drawZone->GetSize().GetWidth() != myWindow->getWidth() ||
+        drawZone->GetSize().GetHeight() != myWindow->getHeight() ) )
+  {
+    if( ready )
+      redraw();
+    
+    myWindow->setWidth( drawZone->GetSize().GetWidth() );
+    myWindow->setHeight( drawZone->GetSize().GetHeight() );
+  }
   event.Skip();
 }
 
@@ -476,8 +540,6 @@ void gTimeline::OnIdle( wxIdleEvent& event )
 
   myWindow->setPosX( this->GetPosition().x );
   myWindow->setPosY( this->GetPosition().y );
-  myWindow->setWidth( this->GetSize().GetWidth() );
-  myWindow->setHeight( this->GetSize().GetHeight() );
 }
 
 
@@ -493,7 +555,7 @@ void gTimeline::OnCloseWindow( wxCloseEvent& event )
 /*!
  * wxEVT_LEFT_DOWN event handler for ID_SCROLLEDWINDOW
  */
-void gTimeline::OnLeftDown( wxMouseEvent& event )
+void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
 {
   zooming = true;
   zoomBeginX = event.GetX();
@@ -504,19 +566,19 @@ void gTimeline::OnLeftDown( wxMouseEvent& event )
 /*!
  * wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
  */
-void gTimeline::OnLeftUp( wxMouseEvent& event )
+void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 {
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
   wxMemoryDC dc( bufferImage );
+
   zoomEndX = event.GetX();
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
 
-  if( ready &&
-      ( zoomBeginX != zoomEndX || zoomBeginY != zoomEndY ))// &&
-//      ( zoomEndX >= objectAxisPos ) &&
-//      ( zoomEndY <= timeAxisPos ))
+  // TIME zoom limits
+  if( zooming )
   {
-    // TIME zoom limits
     if( zoomEndX < zoomBeginX )
     {
       long tmp = zoomEndX; zoomEndX = zoomBeginX; zoomBeginX = tmp;
@@ -525,50 +587,58 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
       zoomBeginX = 0;
     else
       zoomBeginX -= objectAxisPos;
-      
-    if( zoomEndX > dc.GetSize().GetWidth() - drawBorder )
-      zoomEndX = dc.GetSize().GetWidth() - drawBorder;
+  }
+  if( zoomEndX < objectAxisPos )
+    zoomEndX = 0;
+  else if( zoomEndX > dc.GetSize().GetWidth() - drawBorder )
+    zoomEndX = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
+  else
     zoomEndX -= objectAxisPos;
 
-    // Detect begin and end TIME
-    TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                     ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+  // Detect begin and end TIME
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
+                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
-    TTime endTime = ( timeStep * zoomEndX ) + myWindow->getWindowBeginTime();
-    TTime beginTime = ( timeStep * zoomBeginX ) + myWindow->getWindowBeginTime();
+  TTime endTime = ( timeStep * zoomEndX ) + myWindow->getWindowBeginTime();
+  TTime beginTime = ( timeStep * zoomBeginX ) + myWindow->getWindowBeginTime();
 
-    // ROW zoom limits
-    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-    TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-
-    if( zoomXY )
+  if( zooming )
+  {
+    if( zoomEndY < zoomBeginY )
     {
-      if( zoomEndY < zoomBeginY )
-      {
-        long tmp = zoomEndY; zoomEndY = zoomBeginY; zoomBeginY = tmp;
-      }
-      if( zoomBeginY > timeAxisPos )
-        zoomBeginY = timeAxisPos - 1;
-      if( zoomBeginY < drawBorder )
-        zoomBeginY = drawBorder + 1;
+      long tmp = zoomEndY; zoomEndY = zoomBeginY; zoomBeginY = tmp;
+    }
+    if( zoomBeginY > timeAxisPos )
+      zoomBeginY = timeAxisPos - 1;
+    if( zoomBeginY < drawBorder )
+      zoomBeginY = drawBorder + 1;
+  }
 
-      if( zoomEndY > timeAxisPos )
-        zoomEndY = timeAxisPos - 1;
-      if( zoomEndY < drawBorder )
-        zoomEndY = drawBorder;
+  if( zoomEndY > timeAxisPos )
+    zoomEndY = timeAxisPos - 1;
+  if( zoomEndY < drawBorder )
+    zoomEndY = drawBorder;
 
-      vector<TObjectOrder> selected;
-      myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
-      TObjectOrder numObjects = selected.size();
-      double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
-      beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
-      endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
+  vector<TObjectOrder> selected;
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
+  TObjectOrder numObjects = selected.size();
+  double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
+  beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
+  endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
   
-      if( endRow > numObjects )
-        endRow = numObjects - 1;
+  if( endRow > numObjects )
+    endRow = numObjects - 1;
 
-      beginRow = selected[ beginRow ];
-      endRow   = selected[ endRow ];
+  beginRow = selected[ beginRow ];
+  endRow   = selected[ endRow ];
+
+  if( zooming && ready &&
+      ( zoomBeginX != zoomEndX || zoomBeginY != zoomEndY ) )
+  {
+    if( !zoomXY )
+    {
+      beginRow = myWindow->getZoomSecondDimension().first;
+      endRow =  myWindow->getZoomSecondDimension().second;
     }
     myWindow->addZoom( beginTime, endTime, beginRow, endRow );
 
@@ -579,6 +649,37 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
+  else
+  {
+    if( !splitter->IsSplit() )
+    {
+      canRedraw = false;
+      int currentHeight = this->GetSize().GetHeight();
+      this->SetSize( this->GetSize().GetWidth(),
+                     this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() );
+      splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
+      drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+      canRedraw = true;
+    }
+    wxString txt;
+    whatWhereText->Clear();
+    txt << _( "Object: " ) << LabelConstructor::objectLabel( endRow, myWindow->getLevel(), myWindow->getTrace() );
+    txt << _( "\t  Click time: " ) << LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime ),
+                                                                 myWindow->getTimeUnit() );
+    txt << _( "\n\n" );
+    whatWhereText->AppendText( txt );
+    txt.Clear();
+    myWindow->init( endTime, true );
+    txt << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( endRow ), true ) );
+    txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel( 
+                                      myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow ) 
+                                                                         - myWindow->getBeginTime( endRow ) ),
+                                      myWindow->getTimeUnit() );
+    txt << _( "\n" );
+    whatWhereText->BeginBold();
+    whatWhereText->AppendText( txt );
+    whatWhereText->EndBold();
+  }
 
   zooming = false;
   zoomXY = false;
@@ -588,7 +689,7 @@ void gTimeline::OnLeftUp( wxMouseEvent& event )
 /*!
  * wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
  */
-void gTimeline::OnScrolledwindowUpdate( wxUpdateUIEvent& event )
+void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
 {
   if( this->IsShown() )
   {
@@ -981,7 +1082,7 @@ void gTimeline::rightDownManager()
 /*!
  * wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
  */
-void gTimeline::OnRightDown( wxMouseEvent& event )
+void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
 {
   rightDownManager();
 }
@@ -990,55 +1091,166 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
 /*!
  * wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
  */
-void gTimeline::OnMotion( wxMouseEvent& event )
+void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
-  if( !zooming )
-    return;
+  wxMemoryDC dc( bufferImage );
 
-  zoomXY = event.ControlDown();
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
+                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
-  wxMemoryDC memdc( drawImage );
-  memdc.SetBackgroundMode( wxTRANSPARENT );
-  memdc.SetBackground( *wxTRANSPARENT_BRUSH );
-  memdc.Clear();
-#ifdef __WXGTK__
-  wxGCDC dc( memdc );
-  dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
-#else
-  wxDC& dc = memdc;
-  dc.SetBrush( *wxTRANSPARENT_BRUSH );
-#endif
-  dc.SetPen( *wxWHITE_PEN );
-
-  long beginX = zoomBeginX > event.GetX() ? event.GetX() : zoomBeginX;
-  long beginY = drawBorder;
-  long endX = zoomBeginX < event.GetX() ? event.GetX() : zoomBeginX;
-  if( beginX < objectAxisPos )
-    beginX = objectAxisPos;
-  if( endX > drawImage.GetWidth() - drawBorder )
-    endX = drawImage.GetWidth() - drawBorder;
-  wxCoord width = endX - beginX;
-  wxCoord height = timeAxisPos - drawBorder + 1;
-
-  if ( zoomXY )
+  if( zooming )
   {
-    beginY = zoomBeginY > event.GetY() ? event.GetY() : zoomBeginY;
-    long endY = zoomBeginY < event.GetY() ? event.GetY() : zoomBeginY;
-    if( beginY > timeAxisPos )
-      beginY = timeAxisPos;
-    if( endY > timeAxisPos )
-      endY = timeAxisPos;
-    if( beginY < drawBorder )
-      beginY = drawBorder;
-    if( endY < drawBorder )
-      endY = drawBorder;
-    height = endY - beginY;
+    zoomXY = event.ControlDown();
+
+    wxMemoryDC memdc( drawImage );
+    memdc.SetBackgroundMode( wxTRANSPARENT );
+    memdc.SetBackground( *wxTRANSPARENT_BRUSH );
+    memdc.Clear();
+#ifdef __WXGTK__
+    wxGCDC dc( memdc );
+    dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
+#else
+    wxDC& dc = memdc;
+    dc.SetBrush( *wxTRANSPARENT_BRUSH );
+#endif
+    dc.SetPen( *wxWHITE_PEN );
+
+    long beginX = zoomBeginX > event.GetX() ? event.GetX() : zoomBeginX;
+    long beginY = drawBorder;
+    long endX = zoomBeginX < event.GetX() ? event.GetX() : zoomBeginX;
+    if( beginX < objectAxisPos )
+      beginX = objectAxisPos;
+    if( endX > drawImage.GetWidth() - drawBorder )
+      endX = drawImage.GetWidth() - drawBorder;
+    wxCoord width = endX - beginX;
+    wxCoord height = timeAxisPos - drawBorder + 1;
+
+    if ( zoomXY )
+    {
+      beginY = zoomBeginY > event.GetY() ? event.GetY() : zoomBeginY;
+      long endY = zoomBeginY < event.GetY() ? event.GetY() : zoomBeginY;
+      if( beginY > timeAxisPos )
+        beginY = timeAxisPos;
+      if( endY > timeAxisPos )
+        endY = timeAxisPos;
+      if( beginY < drawBorder )
+        beginY = drawBorder;
+      if( endY < drawBorder )
+        endY = drawBorder;
+      height = endY - beginY;
+    }
+
+    dc.DrawBitmap( bufferImage, 0, 0, false );
+    if( myWindow->getDrawCommLines() )
+      dc.DrawBitmap( commImage, 0, 0, true );
+    dc.DrawRectangle( beginX, beginY, width, height );
+
+    drawZone->Refresh();
+  
+    if( beginX < objectAxisPos )
+      beginX = 0;
+    else
+      beginX -= objectAxisPos;
+      
+    if( endX > dc.GetSize().GetWidth() - drawBorder )
+      endX = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
+    else
+      endX -= objectAxisPos;
+      
+    TTime endTime = ( timeStep * endX ) + myWindow->getWindowBeginTime();
+    TTime beginTime = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
+    
+    initialTimeText->SetValue( _( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( beginTime ),
+                                                               myWindow->getTimeUnit() ).c_str() ) );
+    finalTimeText->SetValue( _( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime ),
+                                                             myWindow->getTimeUnit() ).c_str() ) );
+    durationText->SetValue( _( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime - beginTime ),
+                                                            myWindow->getTimeUnit() ).c_str() ) );
   }
-
-  dc.DrawBitmap( bufferImage, 0, 0, false );
-  if( myWindow->getDrawCommLines() )
-    dc.DrawBitmap( commImage, 0, 0, true );
-  dc.DrawRectangle( beginX, beginY, width, height );
-
-  drawZone->Refresh();
+  else
+  {
+    long beginX = event.GetX();
+    if( beginX < objectAxisPos )
+      beginX = 0;
+    else if( beginX > dc.GetSize().GetWidth() - drawBorder )
+      beginX = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
+    else
+      beginX -= objectAxisPos;
+    TTime time = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
+    
+    initialTimeText->SetValue( _( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit() ).c_str() ) );
+    finalTimeText->SetValue( _( "" ) );
+    durationText->SetValue( _( "" ) );
+  }
 }
+
+
+
+
+/*!
+ * wxEVT_CREATE event handler for ID_GTIMELINE
+ */
+
+void gTimeline::OnCreate( wxWindowCreateEvent& event )
+{
+  splitter->Unsplit();
+  event.Skip();
+}
+
+
+/*!
+ * wxEVT_COMMAND_SPLITTER_UNSPLIT event handler for ID_SPLITTERWINDOW
+ */
+
+void gTimeline::OnSplitterwindowSashUnsplit( wxSplitterEvent& event )
+{
+  this->SetSize( this->GetSize().GetWidth(), myWindow->getHeight() );
+  drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+  canRedraw = true;
+}
+
+
+/*!
+ * wxEVT_COMMAND_SPLITTER_DOUBLECLICKED event handler for ID_SPLITTERWINDOW
+ */
+
+void gTimeline::OnSplitterwindowSashDClick( wxSplitterEvent& event )
+{
+  canRedraw = false;
+  event.Skip();
+}
+
+
+/*!
+ * wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE
+ */
+
+void gTimeline::OnRightDown( wxMouseEvent& event )
+{
+////@begin wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE in gTimeline.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE in gTimeline. 
+}
+
+
+
+
+/*!
+ * wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK
+ */
+
+void gTimeline::OnNotebookPageChanging( wxNotebookEvent& event )
+{
+  if( myWindow == NULL )
+    return;
+  canRedraw = false;
+  infoZone->ChangeSelection( event.GetSelection() );
+  if( !splitter->IsSplit() )
+  {
+    splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+  }
+  drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+  canRedraw = true;
+}
+
