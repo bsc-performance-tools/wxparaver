@@ -90,6 +90,9 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOPCOMPOSE2
   void OnTopcompose2Selected( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_OPERATIONS
+  void OnOperationsSelected( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SWAP_WINDOWS
   void OnSwapWindowsClick( wxCommandEvent& event );
 
@@ -168,8 +171,10 @@ public:
   wxStaticText* widgetLabelMaxCompose2;
   wxTextCtrl* widgetMaxCompose2;
   wxTextCtrl* widgetFactorTimeline1;
+  wxStaticText* widgetLabelTimelines1;
   wxComboBox* widgetTimelines1;
   wxChoice* widgetOperations;
+  wxStaticText* widgetLabelTimelines2;
   wxComboBox* widgetTimelines2;
   wxTextCtrl* widgetFactorTimeline2;
   wxButton* swapWindowsButton;
@@ -209,6 +214,9 @@ private:
                              vector< vector< double > > defaultValues );
   void setParameterComposeField( UINT32 parameter,
                                  vector< vector< double > > defaultValues,
+                                 wxTextCtrl *field );
+  bool getParameterComposeField( UINT32 parameter,
+                                 vector< vector< double > > &values,
                                  wxTextCtrl *field );
 
 };

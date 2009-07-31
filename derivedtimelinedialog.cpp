@@ -47,6 +47,8 @@ BEGIN_EVENT_TABLE( DerivedTimelineDialog, wxDialog )
 
   EVT_CHOICE( ID_TOPCOMPOSE2, DerivedTimelineDialog::OnTopcompose2Selected )
 
+  EVT_CHOICE( ID_OPERATIONS, DerivedTimelineDialog::OnOperationsSelected )
+
   EVT_BUTTON( ID_SWAP_WINDOWS, DerivedTimelineDialog::OnSwapWindowsClick )
 
   EVT_BUTTON( wxID_OK, DerivedTimelineDialog::OnOkClick )
@@ -129,8 +131,10 @@ void DerivedTimelineDialog::Init()
   widgetLabelMaxCompose2 = NULL;
   widgetMaxCompose2 = NULL;
   widgetFactorTimeline1 = NULL;
+  widgetLabelTimelines1 = NULL;
   widgetTimelines1 = NULL;
   widgetOperations = NULL;
+  widgetLabelTimelines2 = NULL;
   widgetTimelines2 = NULL;
   widgetFactorTimeline2 = NULL;
   swapWindowsButton = NULL;
@@ -254,8 +258,8 @@ void DerivedTimelineDialog::CreateControls()
   widgetFactorTimeline1 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_1, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
   itemFlexGridSizer31->Add(widgetFactorTimeline1, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
-  wxStaticText* itemStaticText34 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(itemStaticText34, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
+  widgetLabelTimelines1 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer31->Add(widgetLabelTimelines1, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
 
   wxArrayString widgetTimelines1Strings;
   widgetTimelines1 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_1, wxEmptyString, wxDefaultPosition, wxDefaultSize, widgetTimelines1Strings, wxCB_READONLY );
@@ -268,8 +272,8 @@ void DerivedTimelineDialog::CreateControls()
   widgetOperations = new wxChoice( itemDialog1, ID_OPERATIONS, wxDefaultPosition, wxDefaultSize, widgetOperationsStrings, wxFULL_REPAINT_ON_RESIZE );
   itemFlexGridSizer31->Add(widgetOperations, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
-  wxStaticText* itemStaticText38 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(itemStaticText38, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
+  widgetLabelTimelines2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer31->Add(widgetLabelTimelines2, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxTOP, 5);
 
   wxArrayString widgetTimelines2Strings;
   widgetTimelines2 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_2, wxEmptyString, wxDefaultPosition, wxDefaultSize, widgetTimelines2Strings, wxCB_READONLY );
@@ -348,6 +352,7 @@ bool DerivedTimelineDialog::TransferDataToWindow()
   // Retrieve list of operations, build and select first operation
   currentWindow1->getGroupLabels( 1, operations );
   presetStringChoiceBox( operations, widgetOperations );
+  widgetOperations->SetStringSelection( "product" );
 
   // Fill factor fields
   presetFactorField( factorTimeline1, widgetFactorTimeline1 );
@@ -686,7 +691,7 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
     }
   }
 
-  Layout(); // prueba
+  Layout();
   Fit();
 }
 
@@ -700,12 +705,33 @@ void DerivedTimelineDialog::setParameterComposeField( UINT32 parameter,
   aux << defaultValues[ parameter ][ 0 ];
   for ( UINT32 i = 1; i < maxValues; ++i  )
   {
-    aux << ", ";
+    aux << "; ";
     aux << defaultValues[ parameter ][ i ];
   }
   
   field->SetValue( aux );
 }
+
+bool DerivedTimelineDialog::getParameterComposeField( UINT32 parameter,
+                                                      vector< vector< double > > &values,
+                                                      wxTextCtrl *field )
+{
+  wxString aux;
+
+  aux = field->GetValue();
+
+/*  wxArrayString valuesStr = aux.GetArrayString();
+
+  for( UINT8 idx = 0; idx < valuesStr.GetCount(); idx++ )
+  {
+    double tmpDouble;
+    valuesStr[ idx ].ToDouble( &tmpDouble );
+    values[parameter].push_back( tmpDouble );
+  }
+*/
+  return true;
+}
+
 
 /*!
  * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOPCOMPOSE1
@@ -717,9 +743,10 @@ void DerivedTimelineDialog::OnTopcompose1Selected( wxCommandEvent& event )
   vector< string > namesParameters;
   vector< vector < double > > defaultParameters;
 
-  // Get the Compose selected
+  // Get the Compose 1 function selected
   string nameFunction = topCompose1[ widgetTopCompose1->GetCurrentSelection() ];
-  
+
+  // Show widgets for its parameters
   if ( currentWindow1->getParametersOfFunction( nameFunction, 
                                                  numParameters,
                                                  namesParameters,
@@ -738,9 +765,10 @@ void DerivedTimelineDialog::OnTopcompose2Selected( wxCommandEvent& event )
   vector< string > namesParameters;
   vector< vector < double > > defaultParameters;
 
-  // Get the Compose selected
+  // Get the Compose 2 function selected
   string nameFunction = topCompose2[ widgetTopCompose2->GetCurrentSelection() ];
-  
+
+  // Show widgets for its parameters
   if ( currentWindow2->getParametersOfFunction( nameFunction, 
                                                  numParameters,
                                                  namesParameters,
@@ -748,3 +776,29 @@ void DerivedTimelineDialog::OnTopcompose2Selected( wxCommandEvent& event )
     setParametersCompose( 1, nameFunction, numParameters, namesParameters, defaultParameters );
 }
 
+
+/*!
+ * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_OPERATIONS
+ */
+
+void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
+{
+  // Get the Operation selected
+  string nameOperations = operations[ widgetOperations->GetCurrentSelection() ];
+
+  // Changes label
+  if ( nameOperations == "controlled: clear by" ||
+       nameOperations == "controlled: maximum"  ||
+       nameOperations == "controlled: add" )
+  {
+    widgetLabelTimelines1->SetLabel( "Data" );
+    widgetLabelTimelines2->SetLabel( "Control" );
+  }
+  else
+  {
+    widgetLabelTimelines1->SetLabel( "Timeline" );
+    widgetLabelTimelines2->SetLabel( "Timeline" );
+  }
+
+  Layout();
+}

@@ -174,6 +174,7 @@ void BuildTree( wxWindow *parent,
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
   tmpTimeline->SetSize( window->getPosX(), window->getPosY(), window->getWidth(), window->getHeight() );
+
   if( window->getShowWindow() )
   {
     tmpTimeline->Show();
@@ -190,7 +191,6 @@ void BuildTree( wxWindow *parent,
     BuildTree( parent, root1, currentWindowId1, root2, currentWindowId2, window->getParent( 1 ) );
   }
 }
-
 
 
 void updateTreeItem( wxTreeCtrl *tree,

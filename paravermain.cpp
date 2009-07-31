@@ -110,6 +110,9 @@ wxProgressDialog *paraverMain::dialogProgress = NULL;
 
 wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
 
+Window *paraverMain::beginDragWindow = NULL;
+Window *paraverMain::endDragWindow = NULL;
+
 /*!
  * paraverMain constructors
  */
@@ -959,22 +962,25 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
-  
-  if( gHistogram *histo = itemData->getHistogram() )
+
+  endDragWindow = NULL;
+  if( gHistogram *histo = itemData->getHistogram() ) // Is a histogram?
   {
     currentHisto = histo->GetHistogram();
+
     currentTimeline = NULL;
     beginDragWindow = NULL;
-    endDragWindow = NULL;
 
     if( histo->IsShown() )
       histo->Raise();
   }
-  else if( gTimeline *timeline = itemData->getTimeline() )
+  else if( gTimeline *timeline = itemData->getTimeline() ) // Is a timeline.
   {
-    currentHisto = NULL;
     currentTimeline = timeline->GetMyWindow();
     beginDragWindow = timeline->GetMyWindow();
+
+    currentHisto = NULL;
+
     if( timeline->IsShown() )
       timeline->Raise();
   }
@@ -988,37 +994,42 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
   
+  endDragWindow = NULL;
   if( gHistogram *histo = itemData->getHistogram() )
   {
-    beginDragWindow = NULL;
-    endDragWindow = NULL;
     Histogram *tmpHisto = histo->GetHistogram();
+
+    beginDragWindow = NULL;
+
     tmpHisto->setShowWindow( !tmpHisto->getShowWindow() );
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
     Window *tmpWin = timeline->GetMyWindow();
+
     beginDragWindow = timeline->GetMyWindow();
+
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
   }
 }
+
 
 void paraverMain::OnTreeRightClick( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
   
+  endDragWindow = NULL;
+
   if( gHistogram *histo = itemData->getHistogram() )
   {
     beginDragWindow = NULL;
-    endDragWindow = NULL;
 
     histo->rightDownManager();
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
     beginDragWindow = timeline->GetMyWindow();
-    endDragWindow = NULL;
 
     timeline->rightDownManager();
   }
@@ -1361,9 +1372,6 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent& event )
   else
     tbarMain->EnableTool( ID_NEW_WINDOW, false );
 
-  if ( currentHisto != NULL )
-    tbarMain->EnableTool( ID_NEW_WINDOW, false );
-
   if ( currentTimeline != NULL )
     tbarMain->EnableTool( ID_NEW_WINDOW, true );
 }
@@ -1375,7 +1383,6 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::ShowDerivedDialog()
 {
-  // Centrar!!
   // DerivedTimelineDialog derivedDialog( this, wxID_ANY, wxString( "Create Derived" ), wxPoint(400,300) );
   DerivedTimelineDialog derivedDialog( this );
   vector<Window *> timelines;
@@ -1387,73 +1394,79 @@ void paraverMain::ShowDerivedDialog()
   derivedDialog.SetTimelines2( timelines );
 
   if ( beginDragWindow == NULL ||
-       beginDragWindow->getTrace() == loadedTraces[ currentTrace ] )
+      beginDragWindow->getTrace() == loadedTraces[ currentTrace ] )
     derivedDialog.SetCurrentWindow1( beginDragWindow );
   else 
     derivedDialog.SetCurrentWindow1( NULL );
 
   if ( endDragWindow == NULL ||
-       endDragWindow->getTrace() == loadedTraces[ currentTrace ] )
+      endDragWindow->getTrace() == loadedTraces[ currentTrace ] )
     derivedDialog.SetCurrentWindow2( endDragWindow );
   else 
     derivedDialog.SetCurrentWindow2( NULL );
 
   if( derivedDialog.ShowModal() == wxID_OK )
   {
-      vector< Window * > selectedTimeline = derivedDialog.GetTimelines1();
-      beginDragWindow = selectedTimeline[0]->clone();
-      beginDragWindow->setPosX( GetNextPosX() );
-      beginDragWindow->setPosY( GetNextPosY() );
-      
-      selectedTimeline.clear();
-      selectedTimeline = derivedDialog.GetTimelines2();
+    vector< Window * > selectedTimeline = derivedDialog.GetTimelines1();
+    beginDragWindow = selectedTimeline[0]->clone();
+    beginDragWindow->setPosX( GetNextPosX() );
+    beginDragWindow->setPosY( GetNextPosY() );
 
-//     if ( endDragWindow == beginDragWindow )
-        endDragWindow = selectedTimeline[0]->clone();
-      
-      endDragWindow->setPosX( GetNextPosX() );
-      endDragWindow->setPosY( GetNextPosY() );
+    selectedTimeline.clear();
+    selectedTimeline = derivedDialog.GetTimelines2();
 
-      // Create new derived window
-      Window *newWindow = Window::create( localKernel, beginDragWindow, endDragWindow );
-      newWindow->setPosX( GetNextPosX() );
-      newWindow->setPosY( GetNextPosY() );
- 
-      newWindow->setName( derivedDialog.GetTimelineName() );
-      newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
-      newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
-                          0, newWindow->getWindowLevelObjects() - 1 );
+//  if ( endDragWindow == beginDragWindow )
+    endDragWindow = selectedTimeline[0]->clone();
 
-      // Size
-      newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
-      newWindow->setHeight( defaultWindowSize.GetHeight() );
+    endDragWindow->setPosX( GetNextPosX() );
+    endDragWindow->setPosY( GetNextPosY() );
 
-      // Semantic
-      vector< string > auxCompose = derivedDialog.GetTopCompose1();
-      newWindow->setLevelFunction( TOPCOMPOSE1, auxCompose[0] );
-      auxCompose = derivedDialog.GetTopCompose2();
-      newWindow->setLevelFunction( TOPCOMPOSE2, auxCompose[0] );
+    // Create new derived window
+    Window *newWindow = Window::create( localKernel, beginDragWindow, endDragWindow );
+    newWindow->setPosX( GetNextPosX() );
+    newWindow->setPosY( GetNextPosY() );
 
-      newWindow->setFactor( 0, derivedDialog.GetFactorTimeline1() );
-      newWindow->setFactor( 1, derivedDialog.GetFactorTimeline2() );
+    newWindow->setName( derivedDialog.GetTimelineName() );
+    newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
+    newWindow->setWindowBeginTime( beginDragWindow->getWindowBeginTime() );
+    newWindow->setWindowEndTime( beginDragWindow->getWindowEndTime() );
+    newWindow->addZoom( beginDragWindow->getWindowBeginTime(),
+                        beginDragWindow->getWindowEndTime(),
+                        0, newWindow->getWindowLevelObjects() - 1 );
+    newWindow->setShowChildrenWindow( false );
 
-      vector< string > semanticDerivedFunction = derivedDialog.GetOperations();
-      newWindow->setLevelFunction( DERIVED, semanticDerivedFunction[0] );
+    // Size
+    newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
+    newWindow->setHeight( defaultWindowSize.GetHeight() );
 
-      // Build gtimeline and append new window to windows tree
-      wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-      wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+    // Semantic
+    vector< string > auxCompose = derivedDialog.GetTopCompose1();
+    newWindow->setLevelFunction( TOPCOMPOSE1, auxCompose[0] );
+    auxCompose = derivedDialog.GetTopCompose2();
+    newWindow->setLevelFunction( TOPCOMPOSE2, auxCompose[0] );
 
-      BuildTree( this,
-                 allTracesPage, allTracesPage->GetRootItem(), 
-                 currentPage,   currentPage->GetRootItem(),
-                 newWindow );
+    newWindow->setFactor( 0, derivedDialog.GetFactorTimeline1() );
+    newWindow->setFactor( 1, derivedDialog.GetFactorTimeline2() );
 
-      bool found;
-      gTimeline *last = getGTimelineFromWindow( currentPage->GetRootItem(), newWindow, found );
-      if ( found )
-        last->Raise();
-    }
+    vector< string > semanticDerivedFunction = derivedDialog.GetOperations();
+    newWindow->setLevelFunction( DERIVED, semanticDerivedFunction[0] );
+
+    // Build gtimeline and append new window to windows tree
+    wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+    wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+
+    BuildTree( this,
+               allTracesPage, allTracesPage->GetRootItem(), 
+               currentPage,   currentPage->GetRootItem(),
+               newWindow );
+
+    bool found;
+    gTimeline *last = getGTimelineFromWindow( currentPage->GetRootItem(), newWindow, found );
+    if ( found )
+//    last->Raise();
+      currentWindow = last;
+
+  }
 }
 
 
@@ -1486,22 +1499,21 @@ void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent& event )
     tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
 }
 
-Window *paraverMain::beginDragWindow = NULL;
-Window *paraverMain::endDragWindow = NULL;
 
 void paraverMain::OnTreeBeginDrag( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
+  beginDragWindow = NULL;
+
   if( gTimeline *timeline = itemData->getTimeline() )
   {
-    event.Allow();
     beginDragWindow = timeline->GetMyWindow();
+    event.Allow();
   }
-  else
-    beginDragWindow = NULL;
 }
+
 
 int paraverMain::GetNextPosX()
 {
@@ -1513,12 +1525,14 @@ int paraverMain::GetNextPosX()
   return initialPosX;
 }
 
+
 int paraverMain::GetNextPosY()
 {
   initialPosY += defaultTitleBarSize.GetHeight();
   
   return initialPosY;
 }
+
 
 void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
 {
@@ -1527,7 +1541,9 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
     wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
     TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
-    if( gTimeline *timeline = itemData->getTimeline() )
+    endDragWindow = NULL;
+
+    if ( gTimeline *timeline = itemData->getTimeline())
     {
       endDragWindow = timeline->GetMyWindow();
       ShowDerivedDialog();
