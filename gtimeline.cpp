@@ -109,6 +109,9 @@ bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption
 
   CreateControls();
 ////@end gTimeline creation
+
+  splitter->Unsplit();
+
   return true;
 }
 
