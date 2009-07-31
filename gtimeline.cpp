@@ -20,7 +20,6 @@
 #endif
 
 ////@begin includes
-#include "wx/imaglist.h"
 ////@end includes
 #include <wx/dcbuffer.h>
 
@@ -174,7 +173,7 @@ void gTimeline::CreateControls()
   drawZone->SetScrollbars(1, 1, 0, 0);
   infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
 
   infoZone->AddPage(whatWhereText, _("What/Where"));
 
@@ -195,13 +194,13 @@ void gTimeline::CreateControls()
 
   wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer7->Add(itemBoxSizer12, 1, wxGROW, 5);
-  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(initialTimeText, 0, wxGROW|wxALL, 5);
 
-  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(finalTimeText, 0, wxGROW|wxALL, 5);
 
-  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(durationText, 0, wxGROW|wxALL, 5);
 
   infoZone->AddPage(timingZone, _("Timing"));
@@ -589,6 +588,12 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
   wxMemoryDC dc( bufferImage );
 
+  if( event.ShiftDown() )
+  {
+    zooming = false;
+    return;
+  }
+  
   zoomEndX = event.GetX();
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
@@ -676,11 +681,13 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
       int currentHeight = this->GetSize().GetHeight();
 #endif
       canRedraw = false;
+#ifdef WIN32
       this->SetSize( this->GetSize().GetWidth(),
                      this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() );
-#ifdef WIN32
       splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
 #else
+      this->SetSize( this->GetSize().GetWidth(),
+                     this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() + 50 );
       splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
 #endif
       drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
@@ -695,12 +702,28 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     whatWhereText->AppendText( txt );
     txt.Clear();
     myWindow->init( endTime, true );
+    myWindow->calcPrev( endRow );
     txt << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( endRow ), true ) );
     txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
                                       myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow )
                                                                          - myWindow->getBeginTime( endRow ) ),
                                       myWindow->getTimeUnit() );
     txt << _( "\n" );
+    myWindow->calcNext( endRow );
+    txt << wxT( "==> " ) << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( endRow ), true ) );
+    txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
+                                      myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow )
+                                                                         - myWindow->getBeginTime( endRow ) ),
+                                      myWindow->getTimeUnit() );
+    txt << _( "\n" );
+    myWindow->calcNext( endRow );
+    txt << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( endRow ), true ) );
+    txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
+                                      myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow )
+                                                                         - myWindow->getBeginTime( endRow ) ),
+                                      myWindow->getTimeUnit() );
+    txt << _( "\n" );
+    
     whatWhereText->BeginBold();
     whatWhereText->AppendText( txt );
     whatWhereText->EndBold();
@@ -1125,7 +1148,10 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
   if( zooming )
   {
-    zoomXY = event.ControlDown();
+    if( !event.ShiftDown() )
+      zoomXY = event.ControlDown();
+    else
+      zoomXY = false;
 
     wxMemoryDC memdc( drawImage );
     memdc.SetBackgroundMode( wxTRANSPARENT );
@@ -1192,7 +1218,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     durationText->SetValue( _( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime - beginTime ),
                                                             myWindow->getTimeUnit() ).c_str() ) );
   }
-  else
+  else if( event.ShiftDown() )
   {
     long beginX = event.GetX();
     if( beginX < objectAxisPos )
