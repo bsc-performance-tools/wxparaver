@@ -246,14 +246,14 @@ void gHistogram::execute()
   TObjectOrder endRow =  myHistogram->getControlWindow()->getZoomSecondDimension().second;
   myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                     selectedRows, beginRow, endRow );
-cout << "begin execute histogram..." << endl;
+
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows );
-cout << "begin fill grid or zoom..." << endl;
+
   if( myHistogram->getZoom() )
     fillZoom();
   else
     fillGrid();
-cout << "...end fill grid or zoom" << endl;
+
   ready = true;
 
   this->Refresh();
@@ -694,22 +694,22 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   wxUnusedVar(name);
   if (name == _T("histo_zoom.xpm"))
   {
-    wxBitmap bitmap(histo_zoom_xpm);
+    wxBitmap bitmap( histo_zoom_xpm);
     return bitmap;
   }
   else if (name == _T("timeline.xpm"))
   {
-    wxBitmap bitmap(timeline_xpm);
+    wxBitmap bitmap( timeline_xpm);
     return bitmap;
   }
   else if (name == _T("histo_color.xpm"))
   {
-    wxBitmap bitmap(color_xpm);
+    wxBitmap bitmap( color_xpm);
     return bitmap;
   }
   else if (name == _T("histo_horvert.xpm"))
   {
-    wxBitmap bitmap(horvert_xpm);
+    wxBitmap bitmap( horvert_xpm);
     return bitmap;
   }
   return wxNullBitmap;

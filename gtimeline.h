@@ -96,9 +96,6 @@ public:
   /// wxEVT_CLOSE_WINDOW event handler for ID_GTIMELINE
   void OnCloseWindow( wxCloseEvent& event );
 
-  /// wxEVT_CREATE event handler for ID_GTIMELINE
-  void OnCreate( wxWindowCreateEvent& event );
-
   /// wxEVT_IDLE event handler for ID_GTIMELINE
   void OnIdle( wxIdleEvent& event );
 
@@ -202,6 +199,9 @@ public:
   bool GetCanRedraw() const { return canRedraw ; }
   void SetCanRedraw(bool value) { canRedraw = value ; }
 
+  bool GetFirstUnsplit() const { return firstUnsplit ; }
+  void SetFirstUnsplit(bool value) { firstUnsplit = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -301,6 +301,7 @@ private:
   long endRow;
   long zoomEndY;
   bool canRedraw;
+  bool firstUnsplit;
 ////@end gTimeline member variables
 
   wxWindow *parent;

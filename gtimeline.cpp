@@ -64,7 +64,6 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
 ////@begin gTimeline event table entries
   EVT_CLOSE( gTimeline::OnCloseWindow )
-  EVT_WINDOW_CREATE( gTimeline::OnCreate )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
 
@@ -136,7 +135,8 @@ void gTimeline::Init()
   myWindow = NULL;
   objectHeight = 1;
   zooming = false;
-  canRedraw = true;
+  canRedraw = false;
+  firstUnsplit = false;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -460,7 +460,7 @@ void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
   while( it != comms->end() && it->getTime() <= to )
   {
     TObjectOrder partnerObject = it->getCommPartnerObject();
-    if( selected[ partnerObject ] &&
+    if( ( it->getType() & COMM ) && selected[ partnerObject ] &&
         ( it->getType() & RECV ||
           ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
       )
@@ -514,7 +514,7 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
   {
     if( ready )
       redraw();
-    
+cout << "height " << drawZone->GetSize().GetHeight() <<endl;
     myWindow->setWidth( drawZone->GetSize().GetWidth() );
     myWindow->setHeight( drawZone->GetSize().GetHeight() );
   }
@@ -528,6 +528,17 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
   this->SetTitle( myWindow->getName() );
+  
+  if( !firstUnsplit )
+  {
+    firstUnsplit = true;
+    splitter->Unsplit();
+//    this->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+    drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+    canRedraw = true;
+    if( !ready )
+      redraw();
+  }
   
   if( myWindow->getShowWindow() )
   {
@@ -640,6 +651,8 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
       beginRow = myWindow->getZoomSecondDimension().first;
       endRow =  myWindow->getZoomSecondDimension().second;
     }
+    if( ( endTime - beginTime ) < 10 )
+      endTime = beginTime + 10;
     myWindow->addZoom( beginTime, endTime, beginRow, endRow );
 
     // Update window properties
@@ -654,10 +667,9 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     if( !splitter->IsSplit() )
     {
       canRedraw = false;
-      int currentHeight = this->GetSize().GetHeight();
       this->SetSize( this->GetSize().GetWidth(),
                      this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() );
-      splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
+      splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
       drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
       canRedraw = true;
     }
@@ -1187,15 +1199,6 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
 
 
-/*!
- * wxEVT_CREATE event handler for ID_GTIMELINE
- */
-
-void gTimeline::OnCreate( wxWindowCreateEvent& event )
-{
-  splitter->Unsplit();
-  event.Skip();
-}
 
 
 /*!
@@ -1204,7 +1207,9 @@ void gTimeline::OnCreate( wxWindowCreateEvent& event )
 
 void gTimeline::OnSplitterwindowSashUnsplit( wxSplitterEvent& event )
 {
-  this->SetSize( this->GetSize().GetWidth(), myWindow->getHeight() );
+  canRedraw = false;
+  this->SetSize( this->GetSize().GetWidth(), this->GetSize().GetHeight() -
+                                             infoZone->GetSize().GetHeight() );
   drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
   canRedraw = true;
 }
@@ -1253,4 +1258,6 @@ void gTimeline::OnNotebookPageChanging( wxNotebookEvent& event )
   drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
   canRedraw = true;
 }
+
+
 

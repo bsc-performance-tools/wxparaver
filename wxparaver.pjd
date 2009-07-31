@@ -88,7 +88,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Release"</string>
+    <string name="configuration">"VC++ Debug"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"utf-8"</string>
     <string name="project_encoding">"utf-8"</string>
@@ -450,7 +450,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
@@ -488,7 +488,7 @@
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28d_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Debug"</string>
           <string name="Linker flags">"%AUTO%"</string>
-          <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost_1_35_0"</string>
+          <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
@@ -510,7 +510,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
@@ -548,7 +548,7 @@
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28_propgrid.lib gdiplus.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Release"</string>
           <string name="Linker flags">"%AUTO%"</string>
-          <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost_1_35_0"</string>
+          <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
@@ -570,7 +570,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
@@ -630,7 +630,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
@@ -2246,11 +2246,11 @@
           <string name="variable-16">"beginRow|long|BeginRow||2|0|"</string>
           <string name="variable-17">"endRow|long|EndRow||2|0|"</string>
           <string name="variable-18">"zoomEndY|long|ZoomEndY||2|0|"</string>
-          <string name="variable-19">"canRedraw|bool|CanRedraw|true|2|0|"</string>
+          <string name="variable-19">"canRedraw|bool|CanRedraw|false|2|0|"</string>
+          <string name="variable-20">"firstUnsplit|bool|FirstUnsplit|false|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
-          <string name="event-handler-1">"wxEVT_CREATE|OnCreate|NONE||gTimeline"</string>
-          <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
-          <string name="event-handler-3">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>
+          <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
+          <string name="event-handler-2">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>
           <string name="proxy-Id name">"ID_GTIMELINE"</string>
           <long name="proxy-Id value">10001</long>
           <string name="proxy-Class">"gTimeline"</string>
