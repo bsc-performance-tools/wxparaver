@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        gtimeline.cpp
-// Purpose:     
+// Purpose:
 // Author:      Eloy Martinez
-// Modified by: 
+// Modified by:
 // Created:     Wed 27 Aug 2008 11:26:03 CEST
-// RCS-ID:      
-// Copyright:   
-// Licence:     
+// RCS-ID:
+// Copyright:
+// Licence:
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -109,9 +109,9 @@ bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption
 
   CreateControls();
 ////@end gTimeline creation
-
+#ifndef WIN32
   splitter->Unsplit();
-
+#endif
   return true;
 }
 
@@ -162,7 +162,7 @@ void gTimeline::Init()
  */
 
 void gTimeline::CreateControls()
-{    
+{
 ////@begin gTimeline content construction
   gTimeline* itemFrame1 = this;
 
@@ -263,7 +263,7 @@ void gTimeline::redraw()
 {
   wxString winTitle = GetTitle();
   SetTitle( winTitle + _(" (Working...)") );
-  
+
   // Get selected rows
   vector<bool>         selected;
   vector<TObjectOrder> selectedSet;
@@ -288,12 +288,12 @@ void gTimeline::redraw()
   maskdc.SetBackground( *wxBLACK_BRUSH );
   maskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   maskdc.Clear();
-  
+
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
   bufferDraw.Clear();
   drawAxis( bufferDraw, selectedSet );
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS );
-  
+
   // Drawmode: Group objects with same wxCoord in objectPosList
   vector<TObjectOrder>::iterator endIt = selectedSet.end();
   for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != endIt; ++obj )
@@ -317,7 +317,7 @@ void gTimeline::redraw()
   commImage.SetMask( mask );
   if( myWindow->getDrawCommLines() )
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
-  
+
   ready = true;
   SetTitle( winTitle );
 }
@@ -326,10 +326,10 @@ void gTimeline::redraw()
 void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 {
   size_t numObjects = selected.size();
-  
+
   dc.SetPen( wxPen( *wxWHITE, 1 ) );
   dc.SetTextForeground( *wxWHITE );
-  
+
   // Get the text extent for time label
   dc.SetFont( timeFont );
   wxSize timeExt = dc.GetTextExtent( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ),
@@ -340,12 +340,12 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   dc.SetFont( objectFont );
   // +1!
   wxSize objectExt = dc.GetTextExtent( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1,
-                                                                      myWindow->getLevel(), 
+                                                                      myWindow->getLevel(),
                                                                       myWindow->getTrace() ) );
   objectAxisPos = drawBorder + objectExt.GetWidth() + drawBorder;
-  
+
   // Draw axis lines
-  dc.DrawLine( objectAxisPos, drawBorder, 
+  dc.DrawLine( objectAxisPos, drawBorder,
                objectAxisPos, timeAxisPos );
   dc.DrawLine( objectAxisPos, timeAxisPos,
                dc.GetSize().GetWidth() - drawBorder, timeAxisPos );
@@ -365,16 +365,16 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     y = ( (wxCoord) ( inc * ( obj ) ) ) + drawBorder;
     if( ( inc * 0.25 ) >= 1.0 )
     {
-      if( obj > (TObjectOrder)0 ) 
-        objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 ? 
+      if( obj > (TObjectOrder)0 )
+        objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 ?
                        objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 :
                        objectHeight = objectHeight;
       y += (wxCoord)( inc * 0.25 );
     }
     else
     {
-      if( obj > (TObjectOrder)0 ) 
-        objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) ? 
+      if( obj > (TObjectOrder)0 )
+        objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) ?
                        objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) :
                        objectHeight = objectHeight;
     }
@@ -385,7 +385,7 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     // next selected row
     ++it;
   }
-  
+
   if( numObjects == 1 )
     objectHeight = timeAxisPos - objectPosList[ selected[ 0 ] ];
 
@@ -417,8 +417,8 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
 
   wxCoord objectPos = objectPosList[ firstRow ];
 
-  for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep; 
-       currentTime <= myWindow->getWindowEndTime(); 
+  for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep;
+       currentTime <= myWindow->getWindowEndTime();
        currentTime += timeStep )
   {
     rowValues.clear();
@@ -453,7 +453,7 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
 }
 
 
-void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms, 
+void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
                           TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected )
 {
   RecordList::iterator it = comms->begin();
@@ -517,7 +517,7 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
   {
     if( ready )
       redraw();
-cout << "height " << drawZone->GetSize().GetHeight() <<endl;
+
     myWindow->setWidth( drawZone->GetSize().GetWidth() );
     myWindow->setHeight( drawZone->GetSize().GetHeight() );
   }
@@ -531,7 +531,8 @@ cout << "height " << drawZone->GetSize().GetHeight() <<endl;
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
   this->SetTitle( myWindow->getName() );
-  
+
+#ifdef WIN32
   if( !firstUnsplit )
   {
     firstUnsplit = true;
@@ -542,7 +543,8 @@ void gTimeline::OnIdle( wxIdleEvent& event )
     if( !ready )
       redraw();
   }
-  
+#endif
+
   if( myWindow->getShowWindow() )
   {
     this->Show();
@@ -639,7 +641,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
   beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
   endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
-  
+
   if( endRow > numObjects )
     endRow = numObjects - 1;
 
@@ -669,10 +671,17 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   {
     if( !splitter->IsSplit() )
     {
+#ifndef WIN32
+      int currentHeight = this->GetSize().GetHeight();
+#endif
       canRedraw = false;
       this->SetSize( this->GetSize().GetWidth(),
                      this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() );
+#ifdef WIN32
       splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+#else
+      splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
+#endif
       drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
       canRedraw = true;
     }
@@ -686,8 +695,8 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     txt.Clear();
     myWindow->init( endTime, true );
     txt << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( endRow ), true ) );
-    txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel( 
-                                      myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow ) 
+    txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
+                                      myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow )
                                                                          - myWindow->getBeginTime( endRow ) ),
                                       myWindow->getTimeUnit() );
     txt << _( "\n" );
@@ -728,7 +737,7 @@ void gTimeline::OnPopUpCopy()
 // derived windows must pass existing clonedWindow, because Window::clone is recursive
 gTimeline *gTimeline::clone( Window *clonedWindow,
                              wxWindow *parent,
-                             wxTreeItemId idRoot1, 
+                             wxTreeItemId idRoot1,
                              wxTreeItemId idRoot2,
                              bool mustRedraw )
 {
@@ -870,7 +879,7 @@ void gTimeline::OnPopUpPasteFilterEvents()
 void gTimeline::OnPopUpPasteSpecial()
 {
   wxArrayString choices;
-  
+
   wxMultiChoiceDialog *dialog = gPopUpMenu::createPasteSpecialDialog( choices, this );
 
   if ( dialog->ShowModal() == wxID_OK )
@@ -1085,7 +1094,7 @@ void gTimeline::OnPopUpRedoZoom()
 void gTimeline::rightDownManager()
 {
   gPopUpMenu popUpMenu( this );
-  
+
   popUpMenu.enable( "Undo Zoom", !myWindow->emptyPrevZoom() );
   popUpMenu.enable( "Redo Zoom", !myWindow->emptyNextZoom() );
 
@@ -1161,20 +1170,20 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     dc.DrawRectangle( beginX, beginY, width, height );
 
     drawZone->Refresh();
-  
+
     if( beginX < objectAxisPos )
       beginX = 0;
     else
       beginX -= objectAxisPos;
-      
+
     if( endX > dc.GetSize().GetWidth() - drawBorder )
       endX = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
     else
       endX -= objectAxisPos;
-      
+
     TTime endTime = ( timeStep * endX ) + myWindow->getWindowBeginTime();
     TTime beginTime = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
-    
+
     initialTimeText->SetValue( _( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( beginTime ),
                                                                myWindow->getTimeUnit() ).c_str() ) );
     finalTimeText->SetValue( _( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime ),
@@ -1192,7 +1201,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     else
       beginX -= objectAxisPos;
     TTime time = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
-    
+
     initialTimeText->SetValue( _( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit() ).c_str() ) );
     finalTimeText->SetValue( _( "" ) );
     durationText->SetValue( _( "" ) );
@@ -1211,8 +1220,12 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 void gTimeline::OnSplitterwindowSashUnsplit( wxSplitterEvent& event )
 {
   canRedraw = false;
+#ifdef WIN32
   this->SetSize( this->GetSize().GetWidth(), this->GetSize().GetHeight() -
                                              infoZone->GetSize().GetHeight() );
+#else
+  this->SetSize( this->GetSize().GetWidth(), myWindow->getHeight() );
+#endif
   drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
   canRedraw = true;
 }
@@ -1238,7 +1251,7 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
 ////@begin wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE in gTimeline.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE in gTimeline. 
+////@end wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE in gTimeline.
 }
 
 
