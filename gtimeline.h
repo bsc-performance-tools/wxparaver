@@ -307,6 +307,10 @@ private:
   wxWindow *parent;
   
   static const wxCoord drawBorder = 5;
+  
+  void printWhatWhere( TRecordTime whichTime, TObjectOrder whichRow );
+  void printWWSemantic( wxString& onString, TObjectOrder whichRow, bool clickedValue );
+  void printWWRecords( wxString& onString, TObjectOrder whichRow );
 };
 
 #endif  // _GTIMELINE_H_

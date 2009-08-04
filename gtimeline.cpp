@@ -693,40 +693,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
       drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
       canRedraw = true;
     }
-    wxString txt;
-    whatWhereText->Clear();
-    txt << _( "Object: " ) << LabelConstructor::objectLabel( endRow, myWindow->getLevel(), myWindow->getTrace() );
-    txt << _( "\t  Click time: " ) << LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime ),
-                                                                 myWindow->getTimeUnit() );
-    txt << _( "\n\n" );
-    whatWhereText->AppendText( txt );
-    txt.Clear();
-    myWindow->init( endTime, true );
-    myWindow->calcPrev( endRow );
-    txt << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( endRow ), true ) );
-    txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
-                                      myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow )
-                                                                         - myWindow->getBeginTime( endRow ) ),
-                                      myWindow->getTimeUnit() );
-    txt << _( "\n" );
-    myWindow->calcNext( endRow );
-    txt << wxT( "==> " ) << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( endRow ), true ) );
-    txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
-                                      myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow )
-                                                                         - myWindow->getBeginTime( endRow ) ),
-                                      myWindow->getTimeUnit() );
-    txt << _( "\n" );
-    myWindow->calcNext( endRow );
-    txt << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( endRow ), true ) );
-    txt << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
-                                      myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( endRow )
-                                                                         - myWindow->getBeginTime( endRow ) ),
-                                      myWindow->getTimeUnit() );
-    txt << _( "\n" );
-    
-    whatWhereText->BeginBold();
-    whatWhereText->AppendText( txt );
-    whatWhereText->EndBold();
+    printWhatWhere( endTime, endRow );
   }
 
   zooming = false;
@@ -1303,4 +1270,137 @@ void gTimeline::OnNotebookPageChanging( wxNotebookEvent& event )
 }
 
 
+void gTimeline::printWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
+{
+  wxString txt;
+  
+  whatWhereText->Clear();
+  int fontSize = 8;
 
+  whatWhereText->BeginFontSize( fontSize );
+  
+  txt << _( "Object: " ) << LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() );
+  txt << _( "\t  Click time: " ) << LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
+                                                                 myWindow->getTimeUnit() );
+  txt << _( "\n\n" );
+  whatWhereText->AppendText( txt );
+
+  myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS );
+
+  txt.Clear();
+  myWindow->calcPrev( whichRow );
+  printWWSemantic( txt, whichRow, false );
+  whatWhereText->BeginBold();
+  whatWhereText->AppendText( txt );
+  whatWhereText->EndBold();
+  txt.Clear();
+  printWWRecords( txt, whichRow );
+  whatWhereText->BeginFontSize( fontSize - 1 );
+  whatWhereText->BeginItalic();
+  whatWhereText->AppendText( txt );
+  whatWhereText->EndItalic();
+  whatWhereText->EndFontSize();
+
+  txt.Clear();
+  myWindow->calcNext( whichRow );
+  printWWSemantic( txt, whichRow, true );
+  whatWhereText->BeginBold();
+  whatWhereText->AppendText( txt );
+  whatWhereText->EndBold();
+  txt.Clear();
+  printWWRecords( txt, whichRow );
+  whatWhereText->BeginFontSize( fontSize - 1 );
+  whatWhereText->BeginItalic();
+  whatWhereText->AppendText( txt );
+  whatWhereText->EndItalic();
+  whatWhereText->EndFontSize();
+
+  txt.Clear();
+  myWindow->calcNext( whichRow );
+  printWWSemantic( txt, whichRow, false );
+  whatWhereText->BeginBold();
+  whatWhereText->AppendText( txt );
+  whatWhereText->EndBold();
+  txt.Clear();
+  printWWRecords( txt, whichRow );
+  whatWhereText->BeginFontSize( fontSize - 1 );
+  whatWhereText->BeginItalic();
+  whatWhereText->AppendText( txt );
+  whatWhereText->EndItalic();
+  whatWhereText->EndFontSize();
+
+  whatWhereText->EndFontSize();
+}
+
+void gTimeline::printWWSemantic( wxString& onString, TObjectOrder whichRow, bool clickedValue )
+{
+  if( clickedValue )
+    onString << wxT( "==> " );
+  onString << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( whichRow ), true ) );
+  onString << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
+                                           myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( whichRow )
+                                                                              - myWindow->getBeginTime( whichRow ) ),
+                                           myWindow->getTimeUnit() );
+  onString << _( "\n" );
+}
+
+void gTimeline::printWWRecords( wxString& onString, TObjectOrder whichRow )
+{
+  RecordList *rl = myWindow->getRecordList( whichRow );
+  RecordList::iterator it = rl->begin();
+
+  while( it != rl->end() && (*it).getTime() < myWindow->getBeginTime( whichRow ) )
+    ++it;
+    
+  while( it != rl->end() && (*it).getTime() < myWindow->getEndTime( whichRow ) )
+  {
+    if( (*it).getType() & EVENT )
+    {
+      onString << wxT( "User Event at " ) << LabelConstructor::timeLabel(
+                                               myWindow->traceUnitsToWindowUnits( (*it).getTime() ),
+                                               myWindow->getTimeUnit() );
+      onString << wxT( "\t" );
+      onString << LabelConstructor::eventLabel( myWindow, (*it).getEventType(), (*it).getEventValue(), true );
+      onString << wxT( "\n" );
+    }
+    else if( (*it).getType() & COMM )
+    {
+      if( (*it).getType() & LOG )
+        onString << wxT( "Logical " );
+      else if( (*it).getType() & PHY )
+        onString << wxT( "Physical " );
+        
+      if( (*it).getType() & SEND )
+        onString << wxT( "SEND " );
+      else if( (*it).getType() & RECV )
+        onString << wxT( "RECEIVE " );
+        
+      onString << wxT( "at " ) << LabelConstructor::timeLabel(
+                                    myWindow->traceUnitsToWindowUnits( (*it).getTime() ),
+                                    myWindow->getTimeUnit() );
+      onString << wxT( " to " ) << LabelConstructor::objectLabel( (*it).getCommPartnerObject(),
+                                                                  myWindow->getLevel(),
+                                                                  myWindow->getTrace() );
+      onString << wxT( " at " ) << LabelConstructor::timeLabel(
+                                     myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() ),
+                                     myWindow->getTimeUnit() );
+      if( (*it).getType() & SEND )
+        onString << wxT( ", Duration: " ) << LabelConstructor::timeLabel(
+                                               myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() 
+                                                                                  - (*it).getTime() ),
+                                               myWindow->getTimeUnit() );
+      else if( (*it).getType() & RECV )
+        onString << wxT( ", Duration: " ) << LabelConstructor::timeLabel(
+                                               myWindow->traceUnitsToWindowUnits( (*it).getTime()
+                                                                                  - (*it).getCommPartnerTime() ),
+                                               myWindow->getTimeUnit() );
+
+      onString << wxT( " (size: " ) << (*it).getCommSize() << 
+                  wxT( ", tag: " ) << (*it).getCommTag() << wxT( ")" );
+      onString << wxT( "\n" );
+    }
+    ++it;
+  }
+
+  rl->erase( rl->begin(), it );
+}
