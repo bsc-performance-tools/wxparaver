@@ -513,14 +513,14 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
 void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
   if( canRedraw &&
-      ( drawZone->GetSize().GetWidth() != myWindow->getWidth() ||
-        drawZone->GetSize().GetHeight() != myWindow->getHeight() ) )
+      ( event.GetSize().GetWidth() != myWindow->getWidth() ||
+        event.GetSize().GetHeight() != myWindow->getHeight() ) )
   {
     if( ready )
       redraw();
 
-    myWindow->setWidth( drawZone->GetSize().GetWidth() );
-    myWindow->setHeight( drawZone->GetSize().GetHeight() );
+    myWindow->setWidth( event.GetSize().GetWidth() );
+    myWindow->setHeight( event.GetSize().GetHeight() );
   }
   event.Skip();
 }
@@ -544,6 +544,8 @@ void gTimeline::OnIdle( wxIdleEvent& event )
     if( !ready )
       redraw();
   }
+#else
+  canRedraw = true;
 #endif
 
   if( myWindow->getShowWindow() )
