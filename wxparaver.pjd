@@ -88,7 +88,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Release"</string>
+    <string name="configuration">"VC++ Release"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -492,7 +492,7 @@
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets build command">"nmake /nologo -f makefile.vc INCLUDE=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\include;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\include&quot; LIB=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\lib;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\lib&quot; USE_XRC=1 BUILD=debug UNICODE=0 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_GUI=1 USE_GUI=1  USE_GDIPLUS=1 RUNTIME_LIBS=static SHARED=0 all"</string>
           <string name="wxWidgets clean command">"%AUTO%"</string>
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
@@ -552,7 +552,7 @@
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets build command">"nmake /nologo -f makefile.vc INCLUDE=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\include;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\include&quot; LIB=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\lib;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\lib&quot; USE_XRC=1 BUILD=release UNICODE=0 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_GUI=1  USE_GDIPLUS=1 RUNTIME_LIBS=static SHARED=0 all"</string>
           <string name="wxWidgets clean command">"%AUTO%"</string>
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>

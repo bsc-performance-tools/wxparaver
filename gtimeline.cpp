@@ -645,7 +645,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
   TObjectOrder numObjects = selected.size();
   double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
-  beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
+  beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder) / heightPerRow ) );
   endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
 
   if( endRow > numObjects )
@@ -686,8 +686,9 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
                      this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() );
       splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
 #else
+      int addHeight = infoZone->GetSize().GetHeight();
       this->SetSize( this->GetSize().GetWidth(),
-                     this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() + 50 );
+                     this->GetSize().GetHeight() + ( addHeight < 100 )?100:addHeight );
       splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
 #endif
       drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
@@ -1124,7 +1125,8 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     memdc.SetBackgroundMode( wxTRANSPARENT );
     memdc.SetBackground( *wxTRANSPARENT_BRUSH );
     memdc.Clear();
-#ifdef __WXGTK__
+//#ifdef __WXGTK__
+#if wxTEST_GRAPHICS == 1
     wxGCDC dc( memdc );
     dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
 #else
