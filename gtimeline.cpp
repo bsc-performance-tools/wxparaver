@@ -20,6 +20,7 @@
 #endif
 
 ////@begin includes
+#include "wx/imaglist.h"
 ////@end includes
 #include <wx/dcbuffer.h>
 
@@ -173,7 +174,7 @@ void gTimeline::CreateControls()
   drawZone->SetScrollbars(1, 1, 0, 0);
   infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
 
   infoZone->AddPage(whatWhereText, _("What/Where"));
 
@@ -194,13 +195,13 @@ void gTimeline::CreateControls()
 
   wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer7->Add(itemBoxSizer12, 1, wxGROW, 5);
-  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(initialTimeText, 0, wxGROW|wxALL, 5);
 
-  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(finalTimeText, 0, wxGROW|wxALL, 5);
 
-  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
+  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(durationText, 0, wxGROW|wxALL, 5);
 
   infoZone->AddPage(timingZone, _("Timing"));
@@ -688,7 +689,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 #else
       int addHeight = infoZone->GetSize().GetHeight();
       this->SetSize( this->GetSize().GetWidth(),
-                     this->GetSize().GetHeight() + ( addHeight < 100 )?100:addHeight );
+                     this->GetSize().GetHeight() + ( addHeight < 200 )?200:addHeight );
       splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
 #endif
       drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
