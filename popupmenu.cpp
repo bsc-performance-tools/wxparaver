@@ -139,38 +139,71 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 
 wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choices, gHistogram *whichHistogram )
 {
+  wxArrayInt sel;
+  int i = 0;
+
   choices.Empty();
   
   gPasteWindowProperties *pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
   
   if ( pasteActions->isAllowed( whichHistogram, string(STR_TIME) ) )
+  {
     choices.Add(wxT(STR_TIME));
+    sel.Add( i );
+    ++i;
+  }
 
   if ( pasteActions->isAllowed( whichHistogram, string(STR_OBJECTS) ) )
+  {
     choices.Add(wxT(STR_OBJECTS));
+    sel.Add( i );
+    ++i;
+  }
 
   if ( pasteActions->isAllowed( whichHistogram, string(STR_SIZE) ) )
+  {
     choices.Add(wxT(STR_SIZE));
+    sel.Add( i );
+    ++i;
+  }
 
-  return new wxMultiChoiceDialog( whichHistogram,
-                                  wxT( "Select properties to paste:" ),
-                                  wxT("Paste Special"),
-                                  choices);
+  wxMultiChoiceDialog *tmpDialog = new wxMultiChoiceDialog( whichHistogram,
+                                                            wxT( "Select properties to paste:" ),
+                                                            wxT("Paste Special"),
+                                                            choices);
+  tmpDialog->SetSelections( sel );
+  
+  return tmpDialog;
 }
 
 wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choices, gTimeline *whichTimeline )
 {
+  wxArrayInt sel;
+  int i = 0;
+
   choices.Empty();
   gPasteWindowProperties *pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
   
   if ( pasteActions->isAllowed( whichTimeline, string(STR_TIME) ) )
+  {
     choices.Add(wxT(STR_TIME));
+    sel.Add( i );
+    ++i;
+  }
 
   if ( pasteActions->isAllowed( whichTimeline, string(STR_OBJECTS) ) )
+  {
     choices.Add(wxT(STR_OBJECTS));
+    sel.Add( i );
+    ++i;
+  }
 
   if ( pasteActions->isAllowed( whichTimeline, string(STR_SIZE) ) )
+  {
     choices.Add(wxT(STR_SIZE));
+    sel.Add( i );
+    ++i;
+  }
 
   if ( pasteActions->isAllowed( whichTimeline, string(STR_FILTER_COMMS) ) )
     choices.Add(wxT(STR_FILTER_COMMS_XT));
@@ -178,10 +211,13 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
   if ( pasteActions->isAllowed( whichTimeline, string(STR_FILTER_EVENTS) ) )
     choices.Add(wxT(STR_FILTER_EVENTS_XT));
 
-  return new wxMultiChoiceDialog( whichTimeline,
-                                  wxT( "Select properties to paste:" ),
-                                  wxT("Paste Special"),
-                                  choices );
+  wxMultiChoiceDialog *tmpDialog = new wxMultiChoiceDialog( whichTimeline,
+                                                            wxT( "Select properties to paste:" ),
+                                                            wxT("Paste Special"),
+                                                            choices );
+  tmpDialog->SetSelections( sel );
+  
+  return tmpDialog;
 }
 
 
