@@ -252,13 +252,14 @@ wxIcon SaveConfigurationDialog::GetIconResource( const wxString& name )
 ////@end SaveConfigurationDialog icon retrieval
 }
 
+
 bool SaveConfigurationDialog::TransferDataToWindow()
 {
   wxArrayString items;
   for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
     items.Add( wxString( (*it)->getName().c_str() ) );
   listTimelines->InsertItems( items, 0 );
-  
+
   items.Clear();
   for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
     items.Add( wxString( (*it)->getName().c_str() ) );
@@ -273,6 +274,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
 
   return true;
 }
+
 
 bool SaveConfigurationDialog::TransferDataFromWindow()
 {

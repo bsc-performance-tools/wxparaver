@@ -133,17 +133,17 @@ public:
   string GetTimelineName() const { return timelineName ; }
   void SetTimelineName(string value) { timelineName = value ; }
 
-  double GetMinCompose1() const { return minCompose1 ; }
-  void SetMinCompose1(double value) { minCompose1 = value ; }
+  TParamValue GetMinCompose1() const { return minCompose1 ; }
+  void SetMinCompose1(TParamValue value) { minCompose1 = value ; }
 
-  double GetMaxCompose1() const { return maxCompose1 ; }
-  void SetMaxCompose1(double value) { maxCompose1 = value ; }
+  TParamValue GetMaxCompose1() const { return maxCompose1 ; }
+  void SetMaxCompose1(TParamValue value) { maxCompose1 = value ; }
 
-  double GetMinCompose2() const { return minCompose2 ; }
-  void SetMinCompose2(double value) { minCompose2 = value ; }
+  TParamValue GetMinCompose2() const { return minCompose2 ; }
+  void SetMinCompose2(TParamValue value) { minCompose2 = value ; }
 
-  double GetMaxCompose2() const { return maxCompose2 ; }
-  void SetMaxCompose2(double value) { maxCompose2 = value ; }
+  TParamValue GetMaxCompose2() const { return maxCompose2 ; }
+  void SetMaxCompose2(TParamValue value) { maxCompose2 = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -189,10 +189,10 @@ private:
   vector< string > topCompose1;
   vector< string > topCompose2;
   string timelineName;
-  double minCompose1;
-  double maxCompose1;
-  double minCompose2;
-  double maxCompose2;
+  TParamValue minCompose1;
+  TParamValue maxCompose1;
+  TParamValue minCompose2;
+  TParamValue maxCompose2;
 ////@end DerivedTimelineDialog member variables
 
   void presetTimelineComboBox( vector< Window * > timelines,
@@ -212,12 +212,13 @@ private:
                              UINT32 numParameters,
                              vector< string > namesParameters,
                              vector< vector< double > > defaultValues );
-  void setParameterComposeField( UINT32 parameter,
-                                 vector< vector< double > > defaultValues,
-                                 wxTextCtrl *field );
-  bool getParameterComposeField( UINT32 parameter,
-                                 vector< vector< double > > &values,
-                                 wxTextCtrl *field );
+
+  bool getParameterCompose( wxTextCtrl *field,
+                            TParamValue &parameter,
+                            wxString prefixMessage );
+
+  void setParameterComposeField( TParamValue defaultValues, wxTextCtrl *field );
+  bool getParameterComposeField( wxTextCtrl *field, TParamValue &values );
 
 };
 

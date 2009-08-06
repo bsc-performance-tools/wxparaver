@@ -24,7 +24,7 @@
 ////@end includes
 
 #include "derivedtimelinedialog.h"
-
+#include <wx/tokenzr.h>
 ////@begin XPM images
 ////@end XPM images
 
@@ -92,7 +92,9 @@ bool DerivedTimelineDialog::Create(wxWindow* parent, wxWindowID id, const wxStri
   }
   Centre();
 ////@end DerivedTimelineDialog creation
+
   Fit();
+
   return true;
 }
 
@@ -362,11 +364,46 @@ bool DerivedTimelineDialog::TransferDataToWindow()
 }
 
 
+bool DerivedTimelineDialog::getParameterCompose( wxTextCtrl *field,
+                                                 TParamValue &parameter,
+                                                 wxString prefixMessage )
+{
+  if ( field->IsShown() )
+    if ( !getParameterComposeField( field, parameter ) )
+    {
+      wxString fullMessage = prefixMessage +
+                             _(" parameter void or type mismatch.\nPlease use decimal format." );
+      wxMessageDialog message( this, 
+                               fullMessage,
+                               "Error in Field", wxOK );
+      message.ShowModal();
+      return false;
+    }
+
+  return true;
+}
+
+
 bool DerivedTimelineDialog::TransferDataFromWindow()
 {
-  bool result;
+  TParamValue paramsMinCompose1, paramsMaxCompose1;
+  TParamValue paramsMinCompose2, paramsMaxCompose2;
 
-  if ( ( result = getFactorFields( factorTimeline1, factorTimeline2 ) ) )
+  if ( !getParameterCompose( widgetMinCompose1, paramsMinCompose1, _( "Compose 1" )))
+    return false;
+
+  if ( !getParameterCompose( widgetMaxCompose1, paramsMaxCompose1, _( "Compose 1" )))
+    return false;
+
+  if ( !getParameterCompose( widgetMinCompose2, paramsMinCompose2, _( "Compose 2" )))
+    return false;
+
+  if ( !getParameterCompose( widgetMaxCompose2, paramsMaxCompose2, _( "Compose 2" )))
+    return false;
+
+  if ( !getFactorFields( factorTimeline1, factorTimeline2 ) )
+    return false;
+  else 
   {
       // If factors are ok, then retrieve all the other data
     getName( widgetName, timelineName );
@@ -374,12 +411,22 @@ bool DerivedTimelineDialog::TransferDataFromWindow()
     getSelectedString( widgetTopCompose1, topCompose1 );
     getSelectedString( widgetTopCompose2, topCompose2 );
     getSelectedString( widgetOperations, operations );
-  
+
     getSelectedWindow( widgetTimelines1, timelines1 );
     getSelectedWindow( widgetTimelines2, timelines2 );
+
+    // and then assign previous gathered parameters of composes
+    if ( widgetMinCompose1->IsShown() )
+      minCompose1 = paramsMinCompose1;
+    else if ( widgetMaxCompose1->IsShown() )
+      maxCompose1 = paramsMaxCompose1;
+    else if ( widgetMinCompose2->IsShown() )
+      minCompose2 = paramsMinCompose2;
+    else if ( widgetMaxCompose2->IsShown() )
+      maxCompose2 = paramsMaxCompose2;
   }
 
-  return result;
+  return true;
 }
 
 
@@ -418,10 +465,6 @@ void DerivedTimelineDialog::OnOkClick( wxCommandEvent& event )
 {
   if ( TransferDataFromWindow() )
     EndModal( wxID_OK );
-  else
-  {
-    EndModal( wxID_OK ); // never used!
-  }
 }
 
 
@@ -573,10 +616,10 @@ bool DerivedTimelineDialog::getFactorFields( double &whichFactor1,
 
 
 void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
-                                                   string nameFunction,
-                                                   UINT32 numParameters,
-                                                   vector< string > namesParameters,
-                                                   vector< vector< double > > defaultValues )
+                                                  string nameFunction,
+                                                  UINT32 numParameters,
+                                                  vector< string > namesParameters,
+                                                  vector< TParamValue > defaultValues )
 {
   if ( compose == 0 )
   {
@@ -604,7 +647,7 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
       aux1 << namesParameters[ 0 ];
       widgetLabelMinCompose1->SetLabel( aux1 );
 
-      setParameterComposeField( 0, defaultValues, widgetMinCompose1 );
+      setParameterComposeField( defaultValues[ 0 ], widgetMinCompose1 );
 
       widgetLabelMinCompose1->Enable( true );
       widgetMinCompose1->Enable( true );
@@ -625,8 +668,8 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
       widgetLabelMinCompose1->SetLabel( aux1 );
       widgetLabelMaxCompose1->SetLabel( aux2 );
 
-      setParameterComposeField( 0, defaultValues, widgetMinCompose1 );
-      setParameterComposeField( 1, defaultValues, widgetMaxCompose1 );
+      setParameterComposeField( defaultValues[ 0 ], widgetMinCompose1 );
+      setParameterComposeField( defaultValues[ 1 ], widgetMaxCompose1 );
 
       widgetLabelMinCompose1->Enable( true );
       widgetMinCompose1->Enable( true );
@@ -660,7 +703,7 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
       aux1 << namesParameters[ 0 ];
       widgetLabelMinCompose2->SetLabel( aux1 );
 
-      setParameterComposeField( 0, defaultValues, widgetMinCompose2 );
+      setParameterComposeField( defaultValues[ 0 ], widgetMinCompose2 );
 
       widgetLabelMinCompose2->Enable( true );
       widgetMinCompose2->Enable( true );
@@ -681,8 +724,8 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
       widgetLabelMinCompose2->SetLabel( aux1 );
       widgetLabelMaxCompose2->SetLabel( aux2 );
 
-      setParameterComposeField( 0, defaultValues, widgetMinCompose2 );
-      setParameterComposeField( 1, defaultValues, widgetMaxCompose2 );
+      setParameterComposeField( defaultValues[ 0 ], widgetMinCompose2 );
+      setParameterComposeField( defaultValues[ 1 ], widgetMaxCompose2 );
 
       widgetLabelMinCompose2->Enable( true );
       widgetMinCompose2->Enable( true );
@@ -695,41 +738,42 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
   Fit();
 }
 
-void DerivedTimelineDialog::setParameterComposeField( UINT32 parameter,
-                                                       vector< vector< double > > defaultValues,
-                                                       wxTextCtrl *field )
+
+void DerivedTimelineDialog::setParameterComposeField( TParamValue defaultValues, wxTextCtrl *field )
 {
   wxString aux;
 
-  UINT32 maxValues = UINT32( defaultValues[ parameter ].size() );
-  aux << defaultValues[ parameter ][ 0 ];
+  UINT32 maxValues = UINT32( defaultValues.size() );
+
+  aux << defaultValues[ 0 ];
   for ( UINT32 i = 1; i < maxValues; ++i  )
   {
     aux << "; ";
-    aux << defaultValues[ parameter ][ i ];
+    aux << defaultValues[ i ];
   }
   
   field->SetValue( aux );
 }
 
-bool DerivedTimelineDialog::getParameterComposeField( UINT32 parameter,
-                                                      vector< vector< double > > &values,
-                                                      wxTextCtrl *field )
+
+bool DerivedTimelineDialog::getParameterComposeField( wxTextCtrl *field, TParamValue &values )
 {
-  wxString aux;
+  double tmpDouble;
 
-  aux = field->GetValue();
+  bool allTokensAreDouble = true;
 
-/*  wxArrayString valuesStr = aux.GetArrayString();
+  wxStringTokenizer tkz( field->GetValue(), wxT( ";" ) );
 
-  for( UINT8 idx = 0; idx < valuesStr.GetCount(); idx++ )
+  while ( allTokensAreDouble && tkz.HasMoreTokens() )
   {
-    double tmpDouble;
-    valuesStr[ idx ].ToDouble( &tmpDouble );
-    values[parameter].push_back( tmpDouble );
+    wxString token = tkz.GetNextToken();
+    if ( token.ToDouble( &tmpDouble ) )
+      values.push_back( tmpDouble );
+    else
+      allTokensAreDouble = false;
   }
-*/
-  return true;
+
+  return allTokensAreDouble;
 }
 
 

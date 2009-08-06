@@ -7,7 +7,7 @@
     <string name="author">""</string>
     <string name="description">""</string>
     <string name="xrc_filename">""</string>
-    <bool name="convert_images_to_xpm">0</bool>
+    <long name="image_mode">0</long>
     <bool name="inline_images">0</bool>
     <bool name="generate_cpp_for_xrc">0</bool>
     <long name="working_mode">1</long>
@@ -21,6 +21,7 @@
     <bool name="use_two_step_construction">0</bool>
     <bool name="use_enums">0</bool>
     <bool name="generate_for_xrced">0</bool>
+    <bool name="generate_virtual_eventhandlers">0</bool>
     <string name="current_platform">"&lt;All platforms&gt;"</string>
     <string name="target_wx_version">"2.8.7"</string>
     <string name="cpp_header_comment">"/////////////////////////////////////////////////////////////////////////////
@@ -88,7 +89,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"VC++ Release"</string>
+    <string name="configuration">"GCC Debug"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -138,10 +139,13 @@
         <string name="Modularity">"Modular"</string>
         <string name="GUI mode">"GUI"</string>
         <string name="Toolkit">"wxGTK+2"</string>
+        <string name="Processor type">"32-bit"</string>
         <string name="Runtime linking">"Dynamic"</string>
         <string name="Use exceptions">"Yes"</string>
         <string name="Use ODBC">"No"</string>
         <string name="Use OpenGL">"No"</string>
+        <string name="Use wxMediaCtrl">"No"</string>
+        <string name="Use wxRichTextCtrl">"Yes"</string>
         <string name="wxWidgets version">"%WXVERSION%"</string>
         <string name="Executable name">"%EXECUTABLE%"</string>
         <string name="Program arguments">""</string>
@@ -176,6 +180,7 @@
         <string name="PATH variable">"%AUTO%"</string>
         <bool name="Suppress source rules">0</bool>
         <bool name="Enable makefile generation">1</bool>
+        <string name="CFG">""</string>
         <document>
           <string name="title">"GCC Debug"</string>
           <string name="type">"gcc-config-data-document"</string>
@@ -195,10 +200,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -236,7 +244,9 @@
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
+          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
+          <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
           <string name="Minimum OS version">"%AUTO%"</string>
           <string name="Info.plist location">"%AUTO%"</string>
@@ -261,10 +271,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -302,7 +315,9 @@
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
+          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
+          <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
           <string name="Minimum OS version">"%AUTO%"</string>
           <string name="Info.plist location">"%AUTO%"</string>
@@ -327,10 +342,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -368,7 +386,9 @@
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
+          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
+          <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
           <string name="Minimum OS version">"%AUTO%"</string>
           <string name="Info.plist location">"%AUTO%"</string>
@@ -393,10 +413,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -434,7 +457,9 @@
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
+          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
+          <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
           <string name="Minimum OS version">"%AUTO%"</string>
           <string name="Info.plist location">"%AUTO%"</string>
@@ -459,10 +484,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxMSW"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Static"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -519,10 +547,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxMSW"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Static"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -579,10 +610,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -639,10 +673,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -699,10 +736,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -758,10 +798,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -817,10 +860,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -876,10 +922,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -1104,8 +1153,8 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <string name="proxy-Bitmap unchecked">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
                 <string name="title">"Previous Traces: ID_RECENTTRACES"</string>
@@ -1160,8 +1209,8 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <string name="proxy-Bitmap unchecked">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
                 <string name="title">"Previous Configurations: ID_RECENTCFGS"</string>
@@ -1216,8 +1265,8 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <string name="proxy-Bitmap unchecked">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
                 <string name="title">"------------"</string>
@@ -1252,8 +1301,8 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <string name="proxy-Bitmap unchecked">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
             </document>
             <document>
@@ -1290,8 +1339,8 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <string name="proxy-Bitmap unchecked">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
             </document>
           </document>
@@ -4716,10 +4765,10 @@
           <string name="variable-7">"topCompose1|vector&lt; string &gt;|TopCompose1||2|0|"</string>
           <string name="variable-8">"topCompose2|vector&lt; string &gt;|TopCompose2||2|0|"</string>
           <string name="variable-9">"timelineName|string|TimelineName||2|0|"</string>
-          <string name="variable-10">"minCompose1|double|MinCompose1||2|0|"</string>
-          <string name="variable-11">"maxCompose1|double|MaxCompose1||2|0|"</string>
-          <string name="variable-12">"minCompose2|double|MinCompose2||2|0|"</string>
-          <string name="variable-13">"maxCompose2|double|MaxCompose2||2|0|"</string>
+          <string name="variable-10">"minCompose1|TParamValue|MinCompose1||2|0|"</string>
+          <string name="variable-11">"maxCompose1|TParamValue|MaxCompose1||2|0|"</string>
+          <string name="variable-12">"minCompose2|TParamValue|MinCompose2||2|0|"</string>
+          <string name="variable-13">"maxCompose2|TParamValue|MaxCompose2||2|0|"</string>
           <string name="proxy-Id name">"ID_DERIVEDTIMELINEDIALOG"</string>
           <long name="proxy-Id value">10032</long>
           <string name="proxy-Class">"DerivedTimelineDialog"</string>
@@ -4792,14 +4841,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>

@@ -21,6 +21,7 @@
 #endif
 
 ////@begin includes
+#include "wx/imaglist.h"
 ////@end includes
 
 #include "wx/imaglist.h"
@@ -244,20 +245,20 @@ void paraverMain::CreateControls()
 
   wxMenuBar* menuBar = new wxMenuBar;
   menuFile = new wxMenu;
-  menuFile->Append(wxID_OPEN, _("Load &Trace..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(wxID_OPEN, _("Load &Trace..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu5 = new wxMenu;
   menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu8 = new wxMenu;
   menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
-  menuFile->Append(wxID_EXIT, _("&Quit"), _T(""), wxITEM_NORMAL);
+  menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
   menuHelp = new wxMenu;
-  menuHelp->Append(wxID_ABOUT, _("&About..."), _T(""), wxITEM_NORMAL);
+  menuHelp->Append(wxID_ABOUT, _("&About..."), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuHelp, _("&Help"));
   itemFrame1->SetMenuBar(menuBar);
 
@@ -491,12 +492,12 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   wxUnusedVar(name);
   if (name == _T("new_window.xpm"))
   {
-    wxBitmap bitmap( application_star_xpm);
+    wxBitmap bitmap(application_star_xpm);
     return bitmap;
   }
   else if (name == _T("new_derived_window.xpm"))
   {
-    wxBitmap bitmap( application_add_xpm);
+    wxBitmap bitmap(application_add_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -1383,16 +1384,17 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::ShowDerivedDialog()
 {
-  // DerivedTimelineDialog derivedDialog( this, wxID_ANY, wxString( "Create Derived" ), wxPoint(400,300) );
   DerivedTimelineDialog derivedDialog( this );
   vector<Window *> timelines;
   LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
 
   derivedDialog.SetTimelineName( "New Derived Window" );
 
+  // Set timelines list
   derivedDialog.SetTimelines1( timelines );
   derivedDialog.SetTimelines2( timelines );
 
+  // Set current window
   if ( beginDragWindow == NULL ||
       beginDragWindow->getTrace() == loadedTraces[ currentTrace ] )
     derivedDialog.SetCurrentWindow1( beginDragWindow );
@@ -1438,6 +1440,27 @@ void paraverMain::ShowDerivedDialog()
     // Size
     newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
     newWindow->setHeight( defaultWindowSize.GetHeight() );
+
+    // Parameters of Composes
+    TParamValue auxParam = derivedDialog.GetMinCompose1();
+    if ( auxParam.size() > 0 )
+      newWindow->setFunctionParam( TOPCOMPOSE1, 0, auxParam );
+    auxParam.clear();
+
+    auxParam =  derivedDialog.GetMaxCompose1();
+    if ( auxParam.size() > 0 )
+      newWindow->setFunctionParam( TOPCOMPOSE1, 1, auxParam );
+    auxParam.clear();
+
+    auxParam =  derivedDialog.GetMinCompose2();
+    if ( auxParam.size() > 0 )
+      newWindow->setFunctionParam( TOPCOMPOSE2, 0, auxParam );
+    auxParam.clear();
+
+    auxParam =  derivedDialog.GetMaxCompose2();
+    if ( auxParam.size() > 0 )
+      newWindow->setFunctionParam( TOPCOMPOSE2, 1, auxParam );
+    auxParam.clear();
 
     // Semantic
     vector< string > auxCompose = derivedDialog.GetTopCompose1();
