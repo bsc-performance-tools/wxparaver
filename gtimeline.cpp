@@ -1395,12 +1395,14 @@ void gTimeline::resizeDrawZone( int width, int height )
   canRedraw = false;
   drawZone->SetSize( width, height );
   if( !splitter->IsSplit() )
-    this->SetSize( width, height );
+    this->SetClientSize( width, height );
   else
   {
-    this->SetSize( width, height + infoZone->GetSize().GetHeight() );
+    this->SetClientSize( width, height + infoZone->GetSize().GetHeight() );
     splitter->SetSashPosition( height );
   }
+  myWindow->setWidth( width );
+  myWindow->setHeight( height );
   canRedraw = true;
 }
 
