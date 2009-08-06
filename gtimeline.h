@@ -262,6 +262,8 @@ public:
 
   void OnPopUpRowSelection();
 
+  void OnPopUpInfoPanel();
+  
   gTimeline *clone( Window *clonedWindow,
                     wxWindow *parent,
                     wxTreeItemId idRoot1,
@@ -270,6 +272,10 @@ public:
 
   void rightDownManager();
 
+  void resizeDrawZone( int width, int height );
+  
+  bool IsSplit() const;
+  
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
   wxSplitterWindow* splitter;
@@ -311,6 +317,9 @@ private:
   void printWhatWhere( TRecordTime whichTime, TObjectOrder whichRow );
   void printWWSemantic( wxString& onString, TObjectOrder whichRow, bool clickedValue );
   void printWWRecords( wxString& onString, TObjectOrder whichRow );
+  
+  void Unsplit();
+  void Split();
 };
 
 #endif  // _GTIMELINE_H_

@@ -422,6 +422,13 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSeparator();
   buildItem( this, wxString( "Select Rows" ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
 
+  AppendSeparator();
+  buildItem( this, 
+             wxString( "Info Panel" ),
+             ITEMCHECK,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuInfoPanel,
+             ID_MENU_INFO_PANEL,
+             timeline->IsSplit() );
 
   enableMenu( timeline );
 }
@@ -907,4 +914,10 @@ void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event)
 {
   if ( timeline != NULL )
     timeline->OnPopUpRowSelection();
+}
+
+void gPopUpMenu::OnMenuInfoPanel( wxCommandEvent& event )
+{
+  if( timeline != NULL )
+    timeline->OnPopUpInfoPanel();
 }

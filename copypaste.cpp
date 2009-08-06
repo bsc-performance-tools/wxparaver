@@ -218,8 +218,9 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     else if ( property == STR_SIZE )
     {
       int width, height;
-      timeline->GetSize( &width, &height);
-      whichTimeline->SetSize( width, height );
+      width = timeline->GetMyWindow()->getWidth();
+      height = timeline->GetMyWindow()->getHeight();
+      whichTimeline->resizeDrawZone( width, height );
     }
     else if ( property == STR_OBJECTS )
     {

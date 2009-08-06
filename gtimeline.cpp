@@ -679,22 +679,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   {
     if( !splitter->IsSplit() )
     {
-#ifndef WIN32
-      int currentHeight = this->GetSize().GetHeight();
-#endif
-      canRedraw = false;
-#ifdef WIN32
-      this->SetSize( this->GetSize().GetWidth(),
-                     this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() );
-      splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
-#else
-      int addHeight = infoZone->GetSize().GetHeight();
-      this->SetSize( this->GetSize().GetWidth(),
-                     this->GetSize().GetHeight() + ( addHeight < 200 )?200:addHeight );
-      splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
-#endif
-      drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
-      canRedraw = true;
+      Split();
     }
     printWhatWhere( endTime, endRow );
   }
@@ -1221,15 +1206,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
 void gTimeline::OnSplitterwindowSashUnsplit( wxSplitterEvent& event )
 {
-  canRedraw = false;
-#ifdef WIN32
-  this->SetSize( this->GetSize().GetWidth(), this->GetSize().GetHeight() -
-                                             infoZone->GetSize().GetHeight() );
-#else
-  this->SetSize( this->GetSize().GetWidth(), myWindow->getHeight() );
-#endif
-  drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
-  canRedraw = true;
+  Unsplit();
 }
 
 
@@ -1411,4 +1388,68 @@ void gTimeline::printWWRecords( wxString& onString, TObjectOrder whichRow )
   }
 
   rl->erase( rl->begin(), it );
+}
+
+void gTimeline::resizeDrawZone( int width, int height )
+{
+  canRedraw = false;
+  drawZone->SetSize( width, height );
+  if( !splitter->IsSplit() )
+    this->SetSize( width, height );
+  else
+  {
+    this->SetSize( width, height + infoZone->GetSize().GetHeight() );
+    splitter->SetSashPosition( height );
+  }
+  canRedraw = true;
+}
+
+bool gTimeline::IsSplit() const
+{
+  return splitter->IsSplit();
+}
+
+void gTimeline::OnPopUpInfoPanel()
+{
+  if( splitter->IsSplit() )
+  {
+    canRedraw = false;
+    splitter->Unsplit();
+    Unsplit();
+  }
+  else
+    Split();
+}
+
+void gTimeline::Unsplit()
+{
+  canRedraw = false;
+#ifdef WIN32
+  this->SetSize( this->GetSize().GetWidth(), this->GetSize().GetHeight() -
+                                             infoZone->GetSize().GetHeight() );
+#else
+  this->SetSize( this->GetSize().GetWidth(), myWindow->getHeight() );
+#endif
+  drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+  canRedraw = true;
+}
+
+void gTimeline::Split()
+{
+#ifndef WIN32
+      int currentHeight = this->GetSize().GetHeight();
+#endif
+      canRedraw = false;
+#ifdef WIN32
+      this->SetSize( this->GetSize().GetWidth(),
+                     this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() );
+      splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+#else
+      int addHeight = infoZone->GetSize().GetHeight();
+      this->SetSize( this->GetSize().GetWidth(),
+                     this->GetSize().GetHeight() + ( addHeight < 200 )?200:addHeight );
+      splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
+#endif
+      drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+      canRedraw = true;
 }
