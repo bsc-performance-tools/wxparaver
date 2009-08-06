@@ -1441,7 +1441,15 @@ void paraverMain::ShowDerivedDialog()
     newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
     newWindow->setHeight( defaultWindowSize.GetHeight() );
 
-    // Parameters of Composes
+    // Semantic
+    vector< string > auxCompose = derivedDialog.GetTopCompose1();
+    newWindow->setLevelFunction( TOPCOMPOSE1, auxCompose[0] );
+    auxCompose = derivedDialog.GetTopCompose2();
+    newWindow->setLevelFunction( TOPCOMPOSE2, auxCompose[0] );
+
+    newWindow->setFactor( 0, derivedDialog.GetFactorTimeline1() );
+    newWindow->setFactor( 1, derivedDialog.GetFactorTimeline2() );
+
     TParamValue auxParam = derivedDialog.GetMinCompose1();
     if ( auxParam.size() > 0 )
       newWindow->setFunctionParam( TOPCOMPOSE1, 0, auxParam );
@@ -1461,15 +1469,6 @@ void paraverMain::ShowDerivedDialog()
     if ( auxParam.size() > 0 )
       newWindow->setFunctionParam( TOPCOMPOSE2, 1, auxParam );
     auxParam.clear();
-
-    // Semantic
-    vector< string > auxCompose = derivedDialog.GetTopCompose1();
-    newWindow->setLevelFunction( TOPCOMPOSE1, auxCompose[0] );
-    auxCompose = derivedDialog.GetTopCompose2();
-    newWindow->setLevelFunction( TOPCOMPOSE2, auxCompose[0] );
-
-    newWindow->setFactor( 0, derivedDialog.GetFactorTimeline1() );
-    newWindow->setFactor( 1, derivedDialog.GetFactorTimeline2() );
 
     vector< string > semanticDerivedFunction = derivedDialog.GetOperations();
     newWindow->setLevelFunction( DERIVED, semanticDerivedFunction[0] );
