@@ -20,10 +20,9 @@
 #endif
 
 ////@begin includes
-#include "wx/imaglist.h"
 ////@end includes
 #include <wx/dcbuffer.h>
-
+#include <wx/statline.h>
 #include <algorithm>
 
 #include "gtimeline.h"
@@ -74,6 +73,8 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
 
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
+
+  EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
 
 ////@end gTimeline event table entries
 
@@ -141,6 +142,7 @@ void gTimeline::Init()
   zooming = false;
   canRedraw = false;
   firstUnsplit = false;
+  redoColors = false;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -149,6 +151,8 @@ void gTimeline::Init()
   initialTimeText = NULL;
   finalTimeText = NULL;
   durationText = NULL;
+  colorsPanel = NULL;
+  colorsSizer = NULL;
 ////@end gTimeline member initialisation
 
   zoomXY = false;
@@ -174,11 +178,12 @@ void gTimeline::CreateControls()
   drawZone->SetScrollbars(1, 1, 0, 0);
   infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
 
   infoZone->AddPage(whatWhereText, _("What/Where"));
 
-  timingZone = new wxPanel( infoZone, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  timingZone = new wxScrolledWindow( infoZone, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  timingZone->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
   timingZone->SetSizer(itemBoxSizer7);
 
@@ -195,20 +200,25 @@ void gTimeline::CreateControls()
 
   wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer7->Add(itemBoxSizer12, 1, wxGROW, 5);
-  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(initialTimeText, 0, wxGROW|wxALL, 5);
 
-  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(finalTimeText, 0, wxGROW|wxALL, 5);
 
-  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer12->Add(durationText, 0, wxGROW|wxALL, 5);
 
+  timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
 
-  wxPanel* itemPanel16 = new wxPanel( infoZone, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  colorsPanel = new wxScrolledWindow( infoZone, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL|wxTAB_TRAVERSAL );
+  colorsPanel->SetScrollbars(1, 1, 0, 0);
+  colorsSizer = new wxBoxSizer(wxVERTICAL);
+  colorsPanel->SetSizer(colorsSizer);
 
-  infoZone->AddPage(itemPanel16, _("Colors/Definitions"));
+  colorsPanel->FitInside();
+  infoZone->AddPage(colorsPanel, _("Colors"));
 
   splitter->SplitHorizontally(drawZone, infoZone, 0);
 
@@ -262,6 +272,8 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 void gTimeline::redraw()
 {
+  redoColors = true;
+  
   wxString winTitle = GetTitle();
   SetTitle( winTitle + _(" (Working...)") );
 
@@ -1456,3 +1468,120 @@ void gTimeline::Split()
       drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
       canRedraw = true;
 }
+
+
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_PANEL1
+ */
+
+void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
+{
+  static SemanticInfoType lastType = NO_TYPE;
+  static TSemanticValue lastMin = 0;
+  static TSemanticValue lastMax = 15;
+  static bool codeColorSet = true;
+  
+  if( redoColors &&
+      ( myWindow->getSemanticInfoType() != lastType ||
+        myWindow->getMinimumY() != lastMin ||
+        myWindow->getMaximumY() != lastMax ||
+        myWindow->IsCodeColorSet() != codeColorSet )
+    )
+  {
+    lastType = myWindow->getSemanticInfoType();
+    lastMin = myWindow->getMinimumY();
+    lastMax = myWindow->getMaximumY();
+    codeColorSet = myWindow->IsCodeColorSet();
+
+    colorsSizer->Clear( true );
+    wxBoxSizer *itemSizer;
+    wxStaticText *itemText;
+    wxPanel *itemColor;
+    
+    if( myWindow->IsCodeColorSet() )
+    {
+      int endLimit = ceil( lastMax );
+    
+      if( lastType != EVENTTYPE_TYPE )
+      {
+        if( lastType == APPL_TYPE )
+          endLimit = myWindow->getTrace()->totalApplications() - 1;
+        else if( lastType == TASK_TYPE )
+          endLimit = myWindow->getTrace()->totalTasks() - 1;
+        else if( lastType == THREAD_TYPE )
+          endLimit = myWindow->getTrace()->totalThreads() - 1;
+        else if( lastType == NODE_TYPE )
+          endLimit = myWindow->getTrace()->totalNodes() - 1;
+        else if( lastType == CPU_TYPE )
+          endLimit = myWindow->getTrace()->totalCPUs() - 1;
+        else if( lastMax - lastMin > 200 )
+          endLimit = 200 + floor( lastMin );
+      }
+      int typeEndLimit = 0;
+      
+      for( int i = floor( lastMin ); i <= endLimit; ++i )
+      {
+        if( lastType == EVENTTYPE_TYPE && !myWindow->getTrace()->eventLoaded( i ) )
+          continue;
+          
+        if( lastType == EVENTTYPE_TYPE && typeEndLimit > 200 )
+          break;
+        else
+          ++typeEndLimit;
+        
+        itemSizer = new wxBoxSizer(wxHORIZONTAL);
+
+        itemText = new wxStaticText( colorsPanel, wxID_ANY, _T("") );
+        wxString tmpStr = wxT( LabelConstructor::semanticLabel( myWindow, i, true ).c_str() );
+        itemText->SetLabel( tmpStr );
+
+        wxSize tmpSize( 20, itemText->GetSize().GetHeight() );
+        itemColor = new wxPanel( colorsPanel, wxID_ANY, wxDefaultPosition, tmpSize );
+        rgb tmprgb = myWindow->getCodeColor().calcColor( i, myWindow->getMinimumY(), myWindow->getMaximumY() );
+        wxColour tmpColor( tmprgb.red, tmprgb.green, tmprgb.blue );
+        itemColor->SetBackgroundColour( tmpColor );
+
+        itemSizer->Add( itemColor );
+        itemSizer->AddSpacer( 5 );
+        itemSizer->Add( itemText );
+        colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
+      
+        if( i < ceil( myWindow->getMaximumY() ) )
+          colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+      }
+    }
+    else
+    {
+      TSemanticValue step = ( lastMax - lastMin ) / 20.0;
+      for( int i = 0; i <= 20; ++i )
+      {
+        itemSizer = new wxBoxSizer(wxHORIZONTAL);
+
+        itemText = new wxStaticText( colorsPanel, wxID_ANY, _T("") );
+        wxString tmpStr;
+        tmpStr << wxT( "~" ) << LabelConstructor::semanticLabel( myWindow, ( i * step ) + lastMin, false );
+        itemText->SetLabel( tmpStr );
+
+        wxSize tmpSize( 20, itemText->GetSize().GetHeight() );
+        itemColor = new wxPanel( colorsPanel, wxID_ANY, wxDefaultPosition, tmpSize );
+        rgb tmprgb = myWindow->getGradientColor().calcColor( ( i * step ) + lastMin, lastMin, lastMax );
+        wxColour tmpColor( tmprgb.red, tmprgb.green, tmprgb.blue );
+        itemColor->SetBackgroundColour( tmpColor );
+
+        itemSizer->Add( itemColor );
+        itemSizer->AddSpacer( 5 );
+        itemSizer->Add( itemText );
+        colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
+      
+        if( i < 20 )
+          colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+      }
+    }
+    colorsPanel->Layout();
+    colorsPanel->FitInside();
+  }
+  redoColors = false;
+}
+

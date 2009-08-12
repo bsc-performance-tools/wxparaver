@@ -41,6 +41,7 @@
 class wxSplitterWindow;
 class wxNotebook;
 class wxRichTextCtrl;
+class wxBoxSizer;
 ////@end forward declarations
 class Window;
 /*!
@@ -135,6 +136,9 @@ public:
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK
   void OnNotebookPageChanging( wxNotebookEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_PANEL1
+  void OnColorsPanelUpdate( wxUpdateUIEvent& event );
+
 ////@end gTimeline event handler declarations
 
 ////@begin gTimeline member function declarations
@@ -201,6 +205,9 @@ public:
 
   bool GetFirstUnsplit() const { return firstUnsplit ; }
   void SetFirstUnsplit(bool value) { firstUnsplit = value ; }
+
+  bool GetRedoColors() const { return redoColors ; }
+  void SetRedoColors(bool value) { redoColors = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -282,10 +289,12 @@ public:
   wxScrolledWindow* drawZone;
   wxNotebook* infoZone;
   wxRichTextCtrl* whatWhereText;
-  wxPanel* timingZone;
+  wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
   wxTextCtrl* finalTimeText;
   wxTextCtrl* durationText;
+  wxScrolledWindow* colorsPanel;
+  wxBoxSizer* colorsSizer;
   wxBitmap bufferImage;
   wxBitmap drawImage;
   wxBitmap commImage;
@@ -308,6 +317,7 @@ private:
   long zoomEndY;
   bool canRedraw;
   bool firstUnsplit;
+  bool redoColors;
 ////@end gTimeline member variables
 
   wxWindow *parent;
