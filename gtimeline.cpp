@@ -183,7 +183,7 @@ void gTimeline::CreateControls()
   infoZone->AddPage(whatWhereText, _("What/Where"));
 
   timingZone = new wxScrolledWindow( infoZone, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  timingZone->SetScrollbars(1, 1, 0, 0);
+  timingZone->SetScrollbars(1, 5, 0, 0);
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
   timingZone->SetSizer(itemBoxSizer7);
 
@@ -213,7 +213,7 @@ void gTimeline::CreateControls()
   infoZone->AddPage(timingZone, _("Timing"));
 
   colorsPanel = new wxScrolledWindow( infoZone, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL|wxTAB_TRAVERSAL );
-  colorsPanel->SetScrollbars(1, 1, 0, 0);
+  colorsPanel->SetScrollbars(1, 5, 0, 0);
   colorsSizer = new wxBoxSizer(wxVERTICAL);
   colorsPanel->SetSizer(colorsSizer);
 

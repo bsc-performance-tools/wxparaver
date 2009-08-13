@@ -521,12 +521,12 @@ void gHistogram::fillZoom()
   bufferDraw.SetPen( *wxBLACK_PEN );
   bufferDraw.SetBrush( *wxTRANSPARENT_BRUSH );
   bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), bufferDraw.GetSize().GetHeight() );
-  if( cellHeight > 3.0 )
+  if( cellHeight > 5.0 )
   {
     for( TObjectOrder iRow = 0; iRow < numDrawRows; ++iRow )
      bufferDraw.DrawLine( 0, ( iRow + 1 ) * cellHeight, bufferDraw.GetSize().GetWidth(), ( iRow + 1 ) * cellHeight );
   }
-  if( cellWidth > 3.0 )
+  if( cellWidth > 5.0 )
   {
     for( TObjectOrder iCol = 0; iCol < numDrawCols; ++iCol )
      bufferDraw.DrawLine( ( iCol + 1 ) * cellWidth, 0, ( iCol + 1 ) * cellWidth, bufferDraw.GetSize().GetHeight() );

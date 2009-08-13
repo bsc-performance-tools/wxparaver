@@ -718,7 +718,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   statCat->SetFlagsFromString( "COLLAPSED" );
   
-  windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
+//  windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
   
   vector<string> tmpV;
   whichHisto->getGroupsLabels( tmpV );
