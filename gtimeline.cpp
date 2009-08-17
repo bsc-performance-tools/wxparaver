@@ -569,6 +569,16 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   else
     this->Show( false );
 
+  if( myWindow->getRaiseWindow() )
+  {
+    if( !this->IsShown() )
+      myWindow->setShowWindow( true );
+    else
+      this->Raise();
+    
+    myWindow->setRaiseWindow( false );
+  }
+  
   myWindow->setPosX( this->GetPosition().x );
   myWindow->setPosY( this->GetPosition().y );
 }

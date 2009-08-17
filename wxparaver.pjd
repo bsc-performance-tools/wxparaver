@@ -1105,7 +1105,6 @@
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                <string name="proxy-Bitmap unchecked">""</string>
               </document>
               <document>
                 <string name="title">"Previous Traces: ID_RECENTTRACES"</string>
@@ -1161,7 +1160,6 @@
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                <string name="proxy-Bitmap unchecked">""</string>
               </document>
               <document>
                 <string name="title">"Previous Configurations: ID_RECENTCFGS"</string>
@@ -1779,14 +1777,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">"mainSizer"</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -2123,7 +2113,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Open Control Window: ID_TOOL_OPEN_CONTROL_WINDOW"</string>
+              <string name="title">"Open Filtered Control Window: ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -2133,16 +2123,86 @@
               <long name="locked">0</long>
               <string name="created">"28/5/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
-              <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenControlWindowClick|NONE||gHistogram"</string>
-              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolOpenControlWindowUpdate|NONE||gHistogram"</string>
-              <string name="proxy-Id name">"ID_TOOL_OPEN_CONTROL_WINDOW"</string>
+              <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenFilteredControlWindowClick|NONE||gHistogram"</string>
+              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolOpenFilteredControlWindowUpdate|NONE||gHistogram"</string>
+              <string name="proxy-Id name">"ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW"</string>
               <long name="proxy-Id value">10029</long>
+              <string name="proxy-Bitmap">"timeline.xpm"</string>
+              <string name="proxy-Bitmap (disabled)">""</string>
+              <string name="proxy-Label">"Open Filtered Control Window"</string>
+              <string name="proxy-Kind">"Normal"</string>
+              <bool name="proxy-Enabled">1</bool>
+              <string name="proxy-Tooltip">"Open Filtered Control Window"</string>
+              <string name="proxy-Help text">""</string>
+              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+            </document>
+            <document>
+              <string name="title">"Open Control Window: ID_TOOL_OPEN_CONTROL_WINDOW"</string>
+              <string name="type">"dialog-control-document"</string>
+              <string name="filename">""</string>
+              <string name="icon-name">"menuitem"</string>
+              <long name="is-transient">0</long>
+              <long name="owns-file">1</long>
+              <long name="title-mode">0</long>
+              <long name="locked">0</long>
+              <string name="created">"17/8/2009"</string>
+              <string name="proxy-type">"wbToolBarButtonProxy"</string>
+              <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenControlWindowClick|NONE||gHistogram"</string>
+              <string name="proxy-Id name">"ID_TOOL_OPEN_CONTROL_WINDOW"</string>
+              <long name="proxy-Id value">10050</long>
               <string name="proxy-Bitmap">"timeline.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
               <string name="proxy-Label">"Open Control Window"</string>
               <string name="proxy-Kind">"Normal"</string>
               <bool name="proxy-Enabled">1</bool>
               <string name="proxy-Tooltip">"Open Control Window"</string>
+              <string name="proxy-Help text">""</string>
+              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+            </document>
+            <document>
+              <string name="title">"Open Data Window: ID_TOOL_OPEN_DATA_WINDOW"</string>
+              <string name="type">"dialog-control-document"</string>
+              <string name="filename">""</string>
+              <string name="icon-name">"menuitem"</string>
+              <long name="is-transient">0</long>
+              <long name="owns-file">1</long>
+              <long name="title-mode">0</long>
+              <long name="locked">0</long>
+              <string name="created">"17/8/2009"</string>
+              <string name="proxy-type">"wbToolBarButtonProxy"</string>
+              <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenDataWindowClick|NONE||gHistogram"</string>
+              <string name="proxy-Id name">"ID_TOOL_OPEN_DATA_WINDOW"</string>
+              <long name="proxy-Id value">10051</long>
+              <string name="proxy-Bitmap">"timeline.xpm"</string>
+              <string name="proxy-Bitmap (disabled)">""</string>
+              <string name="proxy-Label">"Open Data Window"</string>
+              <string name="proxy-Kind">"Normal"</string>
+              <bool name="proxy-Enabled">1</bool>
+              <string name="proxy-Tooltip">"Open Data Window"</string>
+              <string name="proxy-Help text">""</string>
+              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+            </document>
+            <document>
+              <string name="title">"Open Extra Control Window: ID_TOOL_OPEN_EXTRA_WINDOW"</string>
+              <string name="type">"dialog-control-document"</string>
+              <string name="filename">""</string>
+              <string name="icon-name">"menuitem"</string>
+              <long name="is-transient">0</long>
+              <long name="owns-file">1</long>
+              <long name="title-mode">0</long>
+              <long name="locked">0</long>
+              <string name="created">"17/8/2009"</string>
+              <string name="proxy-type">"wbToolBarButtonProxy"</string>
+              <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenExtraWindowClick|NONE||gHistogram"</string>
+              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolOpenExtraWindowUpdate|NONE||"</string>
+              <string name="proxy-Id name">"ID_TOOL_OPEN_EXTRA_WINDOW"</string>
+              <long name="proxy-Id value">10052</long>
+              <string name="proxy-Bitmap">"timeline.xpm"</string>
+              <string name="proxy-Bitmap (disabled)">""</string>
+              <string name="proxy-Label">"Open Extra Control Window"</string>
+              <string name="proxy-Kind">"Normal"</string>
+              <bool name="proxy-Enabled">1</bool>
+              <string name="proxy-Tooltip">"Open Extra Control Window"</string>
               <string name="proxy-Help text">""</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
