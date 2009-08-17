@@ -807,9 +807,22 @@ void gTimeline::OnPopUpFitTimeScale()
 }
 
 
+void gTimeline::OnPopUpFitSemanticScaleMin()
+{
+  myWindow->computeYScaleMin();
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+void gTimeline::OnPopUpFitSemanticScaleMax()
+{
+  myWindow->computeYScaleMax();
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
 void gTimeline::OnPopUpFitSemanticScale()
 {
-  // problem! computes for all the rows!!
   myWindow->computeYScale();
   myWindow->setRedraw( true );
   myWindow->setChanged( true );

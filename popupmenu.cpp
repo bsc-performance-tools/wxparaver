@@ -20,7 +20,9 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_UNDO_ZOOM, gPopUpMenu::OnMenuUndoZoom )
   EVT_MENU( ID_MENU_REDO_ZOOM, gPopUpMenu::OnMenuRedoZoom )
   EVT_MENU( ID_MENU_FIT_TIME, gPopUpMenu::OnMenuFitTime )
-  EVT_MENU( ID_MENU_FIT_SEMANTIC, gPopUpMenu::OnMenuFitSemantic )
+  EVT_MENU( ID_MENU_FIT_SEMANTIC_MIN, gPopUpMenu::OnMenuFitSemanticMin )
+  EVT_MENU( ID_MENU_FIT_SEMANTIC_MAX, gPopUpMenu::OnMenuFitSemanticMax )
+  EVT_MENU( ID_MENU_FIT_SEMANTIC_BOTH, gPopUpMenu::OnMenuFitSemanticBoth )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
   EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
@@ -260,6 +262,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuColor = new wxMenu;
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
+  popUpMenuFitSemantic = new wxMenu;
   popUpMenuDrawMode = new wxMenu;
   popUpMenuDrawModeTime = new wxMenu;
   popUpMenuDrawModeObjects = new wxMenu;
@@ -288,7 +291,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSeparator();
 
   buildItem( this, wxString( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
-  buildItem( this, wxString( STR_FIT_SEMANTIC ), ITEMNORMAL, NULL, ID_MENU_FIT_SEMANTIC);
+  buildItem( popUpMenuFitSemantic, wxString( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
+  buildItem( popUpMenuFitSemantic, wxString( "Fit Maximum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
+  buildItem( popUpMenuFitSemantic, wxString( "Fit Both" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
+  AppendSubMenu( popUpMenuFitSemantic, STR_FIT_SEMANTIC );
 
   AppendSeparator();
 
@@ -441,6 +447,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuColor = new wxMenu;
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
+  popUpMenuFitSemantic = new wxMenu;
   popUpMenuDrawMode = new wxMenu;
   popUpMenuDrawModeTime = new wxMenu;
   popUpMenuDrawModeObjects = new wxMenu;
@@ -465,7 +472,10 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   AppendSeparator();
 
   buildItem( this, wxString( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
-  buildItem( this, wxString( STR_FIT_SEMANTIC ), ITEMNORMAL, NULL, ID_MENU_FIT_SEMANTIC );
+  buildItem( popUpMenuFitSemantic, wxString( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
+  buildItem( popUpMenuFitSemantic, wxString( "Fit Maximum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
+  buildItem( popUpMenuFitSemantic, wxString( "Fit Both" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
+  AppendSubMenu( popUpMenuFitSemantic, STR_FIT_SEMANTIC );
 
   AppendSeparator();
   
@@ -740,7 +750,23 @@ void gPopUpMenu::OnMenuFitTime( wxCommandEvent& event)
     histogram->OnPopUpFitTimeScale();
 }
 
-void gPopUpMenu::OnMenuFitSemantic( wxCommandEvent& event)
+void gPopUpMenu::OnMenuFitSemanticMin( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpFitSemanticScaleMin();
+  else
+    histogram->OnPopUpFitSemanticScaleMin();
+}
+
+void gPopUpMenu::OnMenuFitSemanticMax( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpFitSemanticScaleMax();
+  else
+    histogram->OnPopUpFitSemanticScaleMax();
+}
+
+void gPopUpMenu::OnMenuFitSemanticBoth( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpFitSemanticScale();

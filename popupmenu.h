@@ -23,30 +23,32 @@ class gHistogram;
 #define ID_MENU_UNDO_ZOOM                         30009
 #define ID_MENU_REDO_ZOOM                         30010
 #define ID_MENU_FIT_TIME                          30011
-#define ID_MENU_FIT_SEMANTIC                      30012
-#define ID_MENU_CODE_COLOR                        30013
-#define ID_MENU_GRADIENT_COLOR                    30014
-#define ID_MENU_NOT_NULL_GRADIENT_COLOR           30015
-#define ID_MENU_DRAWMODE_TIME_LAST                30016
-#define ID_MENU_DRAWMODE_TIME_MAXIMUM             30017
-#define ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO    30018
-#define ID_MENU_DRAWMODE_TIME_RANDOM              30019
-#define ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO     30020
-#define ID_MENU_DRAWMODE_TIME_AVERAGE             30021
-#define ID_MENU_DRAWMODE_OBJECTS_LAST             30022
-#define ID_MENU_DRAWMODE_OBJECTS_MAXIMUM          30023
-#define ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO 30024
-#define ID_MENU_DRAWMODE_OBJECTS_RANDOM           30025
-#define ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO  30026
-#define ID_MENU_DRAWMODE_OBJECTS_AVERAGE          30027
-#define ID_MENU_DRAWMODE_BOTH_LAST                30028
-#define ID_MENU_DRAWMODE_BOTH_MAXIMUM             30029
-#define ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO    30030
-#define ID_MENU_DRAWMODE_BOTH_RANDOM              30031
-#define ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO     30032
-#define ID_MENU_DRAWMODE_BOTH_AVERAGE             30033
-#define ID_MENU_ROW_SELECTION                     30034
-#define ID_MENU_INFO_PANEL                        30035
+#define ID_MENU_FIT_SEMANTIC_MIN                  30012
+#define ID_MENU_FIT_SEMANTIC_MAX                  30013
+#define ID_MENU_FIT_SEMANTIC_BOTH                 30014
+#define ID_MENU_CODE_COLOR                        30015
+#define ID_MENU_GRADIENT_COLOR                    30016
+#define ID_MENU_NOT_NULL_GRADIENT_COLOR           30017
+#define ID_MENU_DRAWMODE_TIME_LAST                30018
+#define ID_MENU_DRAWMODE_TIME_MAXIMUM             30019
+#define ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO    30020
+#define ID_MENU_DRAWMODE_TIME_RANDOM              30021
+#define ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO     30022
+#define ID_MENU_DRAWMODE_TIME_AVERAGE             30023
+#define ID_MENU_DRAWMODE_OBJECTS_LAST             30024
+#define ID_MENU_DRAWMODE_OBJECTS_MAXIMUM          30025
+#define ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO 30026
+#define ID_MENU_DRAWMODE_OBJECTS_RANDOM           30027
+#define ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO  30028
+#define ID_MENU_DRAWMODE_OBJECTS_AVERAGE          30029
+#define ID_MENU_DRAWMODE_BOTH_LAST                30030
+#define ID_MENU_DRAWMODE_BOTH_MAXIMUM             30031
+#define ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO    30032
+#define ID_MENU_DRAWMODE_BOTH_RANDOM              30033
+#define ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO     30034
+#define ID_MENU_DRAWMODE_BOTH_AVERAGE             30035
+#define ID_MENU_ROW_SELECTION                     30036
+#define ID_MENU_INFO_PANEL                        30037
 
 class gPopUpMenu : public wxMenu
 {
@@ -86,7 +88,9 @@ class gPopUpMenu : public wxMenu
     void OnMenuUndoZoom( wxCommandEvent& event);
     void OnMenuRedoZoom( wxCommandEvent& event);
     void OnMenuFitTime( wxCommandEvent& event);
-    void OnMenuFitSemantic( wxCommandEvent& event);
+    void OnMenuFitSemanticMin( wxCommandEvent& event);
+    void OnMenuFitSemanticMax( wxCommandEvent& event);
+    void OnMenuFitSemanticBoth( wxCommandEvent& event);
     
     void OnMenuCodeColor( wxCommandEvent& event);
     void OnMenuGradientColor( wxCommandEvent& event);
@@ -123,6 +127,7 @@ class gPopUpMenu : public wxMenu
     wxMenu * popUpMenuColor;
     wxMenu * popUpMenuPaste;
     wxMenu * popUpMenuPasteFilter;
+    wxMenu * popUpMenuFitSemantic;
     wxMenu * popUpMenuDrawMode;
     wxMenu * popUpMenuDrawModeTime;
     wxMenu * popUpMenuDrawModeObjects;

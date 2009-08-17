@@ -239,6 +239,8 @@ public:
   void OnPopUpPasteFilterEvents();
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
+  void OnPopUpFitSemanticScaleMin();
+  void OnPopUpFitSemanticScaleMax();
   void OnPopUpFitSemanticScale();
   void OnPopUpCodeColor();
   void OnPopUpGradientColor();

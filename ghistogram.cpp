@@ -957,7 +957,17 @@ void gHistogram::OnPopUpFitTimeScale()
   updateHistogram();
 }
 
-void gHistogram::OnPopUpFitSemanticScale(){}
+void gHistogram::OnPopUpFitSemanticScaleMin()
+{
+}
+
+void gHistogram::OnPopUpFitSemanticScaleMax()
+{
+}
+
+void gHistogram::OnPopUpFitSemanticScale()
+{
+}
 
 void gHistogram::OnPopUpDrawModeSemanticLast()
 {

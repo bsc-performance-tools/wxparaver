@@ -226,6 +226,8 @@ public:
   void OnPopUpPasteSize();
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
+  void OnPopUpFitSemanticScaleMin();
+  void OnPopUpFitSemanticScaleMax();
   void OnPopUpFitSemanticScale();
   void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();
