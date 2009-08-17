@@ -19,6 +19,49 @@
 #include "loadedwindows.h"
 #include "labelconstructor.h"
 
+static bool filterCatCollapsed        = true;
+static bool commFilterCatCollapsed    = true;
+static bool commFilterFromCollapsed   = true;
+static bool commFilterToCollapsed     = true;
+static bool commFilterTagCollapsed    = true;
+static bool commFilterSizeCollapsed   = true;
+static bool commFilterBWCollapsed     = true;
+static bool eventFilterCatCollapsed   = true;
+static bool eventFilterTypeCollapsed  = true;
+static bool eventFilterValueCollapsed = true;
+static bool semanticCatCollapsed      = true;
+
+static bool statCatCollapsed      = true;
+static bool ctrlCatCollapsed      = true;
+static bool dataCatCollapsed      = true;
+static bool thirdWinCatCollapsed = true;
+
+inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat, const wxString& catName )
+{
+  wxPGProperty *tmpProp = windowProperties->GetPropertyByLabel( catName );
+  if( tmpProp != NULL )
+    categoryStat = tmpProp->GetFlagsAsString( wxPG_PROP_COLLAPSED ) == "COLLAPSED";
+}
+inline void updateCategoriesState( wxPropertyGrid *windowProperties )
+{
+  updateStateOf( windowProperties, filterCatCollapsed,        wxT( "Filter" ) );
+  updateStateOf( windowProperties, commFilterCatCollapsed,    wxT( "Communications" ) );
+  updateStateOf( windowProperties, commFilterFromCollapsed,   wxT( "Comm from" ) );
+  updateStateOf( windowProperties, commFilterToCollapsed,     wxT( "Comm to" ) );
+  updateStateOf( windowProperties, commFilterTagCollapsed,    wxT( "Comm tag" ) );
+  updateStateOf( windowProperties, commFilterSizeCollapsed,   wxT( "Comm size" ) );
+  updateStateOf( windowProperties, commFilterBWCollapsed,     wxT( "Comm bandwidth" ) );
+  updateStateOf( windowProperties, eventFilterCatCollapsed,   wxT( "Events" ) );
+  updateStateOf( windowProperties, eventFilterTypeCollapsed,  wxT( "Event type" ) );
+  updateStateOf( windowProperties, eventFilterValueCollapsed, wxT( "Event value" ) );
+  updateStateOf( windowProperties, semanticCatCollapsed,      wxT( "Semantic" ) );
+
+  updateStateOf( windowProperties, statCatCollapsed,      wxT( "Statistics" ) );
+  updateStateOf( windowProperties, ctrlCatCollapsed,      wxT( "Control" ) );
+  updateStateOf( windowProperties, dataCatCollapsed,      wxT( "Data" ) );
+  updateStateOf( windowProperties, thirdWinCatCollapsed,  wxT( "3D" ) );
+}
+
 void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 Window *whichWindow,
                                 wxPGId category,
@@ -42,15 +85,11 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 
 void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWindow )
 {
-  static bool filterCatCollapsed = true;
-  
+  updateCategoriesState( windowProperties );
+
   whichWindow->setChanged( false );
   windowProperties->Freeze();
-  
-  wxPGProperty *tmpProp = windowProperties->GetPropertyByLabel( wxT( "Filter" ) );
-  if( tmpProp != NULL )
-    filterCatCollapsed = tmpProp->GetFlagsAsString( wxPG_PROP_COLLAPSED ) == "COLLAPSED";
-    
+
   windowProperties->Clear();
   wxArrayString arrayStr;
   wxArrayInt arrayInt;
@@ -98,7 +137,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     
     // ---------------------------- COMMUNICATION FILTER ---------------------------
     wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
-    commFilterCat->SetFlagsFromString( "COLLAPSED" );
+    if( commFilterCatCollapsed )
+      commFilterCat->SetFlagsFromString( "COLLAPSED" );
     
     windowProperties->AppendIn( commFilterCat, 
         new wxBoolProperty( wxT("Logical"), wxPG_LABEL, filter->getLogical() ) );
@@ -110,7 +150,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                         new wxStringProperty( wxT("Comm from"),
                                                                               wxPG_LABEL,
                                                                               wxT("<composed>") ) );
-    commFilterFrom->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    if( commFilterFromCollapsed )
+      commFilterFrom->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    else
+      commFilterFrom->SetFlagsFromString( "DISABLED" );
 
     pos = 0;
     selected = -1;
@@ -152,7 +195,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                       new wxStringProperty( wxT("Comm to"),
                                                                             wxPG_LABEL,
                                                                             wxT("<composed>") ) );
-    commFilterTo->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    if( commFilterToCollapsed )
+      commFilterTo->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    else
+      commFilterTo->SetFlagsFromString( "DISABLED" );
 
     pos = 0;
     selected = -1;
@@ -180,7 +226,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                        new wxStringProperty( wxT("Comm tag"),
                                                                              wxPG_LABEL,
                                                                              wxT("<composed>") ) );
-    commFilterTag->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    if( commFilterTagCollapsed )
+      commFilterTag->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    else
+      commFilterTag->SetFlagsFromString( "DISABLED" );
 
     pos = 0;
     selected = -1;
@@ -222,8 +271,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                         new wxStringProperty( wxT("Comm size"), 
                                                                                wxPG_LABEL,
                                                                                wxT("<composed>") ) );
-    commFilterSize->SetFlagsFromString( "DISABLED|COLLAPSED" );
-
+    if( commFilterSizeCollapsed )
+      commFilterSize->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    else
+      commFilterSize->SetFlagsFromString( "DISABLED" );
+      
     pos = 0;
     selected = -1;
     for( vector<string>::iterator it = filterFunctions.begin();
@@ -250,7 +302,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                       new wxStringProperty( wxT("Comm bandwidth"), 
                                                                             wxPG_LABEL,
                                                                             wxT("<composed>") ) );
-    commFilterBW->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    if( commFilterBWCollapsed )
+      commFilterBW->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    else
+      commFilterBW->SetFlagsFromString( "DISABLED" );
 
     pos = 0;
     selected = -1;
@@ -275,14 +330,18 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
     // -------------------------------- EVENT FILTER -------------------------------
     wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
-    eventFilterCat->SetFlagsFromString( "COLLAPSED" );
+    if( eventFilterCatCollapsed )
+      eventFilterCat->SetFlagsFromString( "COLLAPSED" );
     // Event Type
     wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
                                                          new wxStringProperty( wxT("Event type"), 
                                                                                wxPG_LABEL,
                                                                                wxT("<composed>") ) );
-    eventFilterType->SetFlagsFromString( "DISABLED|COLLAPSED" );
-    
+    if( eventFilterTypeCollapsed )
+      eventFilterType->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    else
+      eventFilterType->SetFlagsFromString( "DISABLED" );
+
     pos = 0;
     selected = -1;
     for( vector<string>::iterator it = filterFunctions.begin();
@@ -336,8 +395,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                           new wxStringProperty( wxT("Event value"), 
                                                                                 wxPG_LABEL,
                                                                                 wxT("<composed>") ) );
-    eventFilterValue->SetFlagsFromString( "DISABLED|COLLAPSED" );
-    
+    if( eventFilterValueCollapsed )
+      eventFilterValue->SetFlagsFromString( "DISABLED|COLLAPSED" );
+    else
+      eventFilterValue->SetFlagsFromString( "DISABLED" );
+
     pos = 0;
     selected = -1;
     for( vector<string>::iterator it = filterFunctions.begin();
@@ -366,7 +428,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   //-------------------------------------------------------------------------
   TParamValue pValues;
   wxPGId semanticCat = windowProperties->Append( new wxPropertyCategory( wxT("Semantic") ) );
-  semanticCat->SetFlagsFromString( "COLLAPSED" );
+  if( semanticCatCollapsed )
+    semanticCat->SetFlagsFromString( "COLLAPSED" );
   
   vector<string> composeFunctions;
   whichWindow->getAllSemanticFunctions( COMPOSE_GROUP, composeFunctions );
@@ -707,6 +770,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
 void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whichHisto )
 {
+  updateCategoriesState( windowProperties );
+  
   wxArrayString arrayStr;
   wxArrayInt arrayInt;
   int selected, pos;
@@ -724,7 +789,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
                                                               whichHisto->getControlWindow()->getTimeUnit() ) ) ) );
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
-  statCat->SetFlagsFromString( "COLLAPSED" );
+  if( statCatCollapsed )
+    statCat->SetFlagsFromString( "COLLAPSED" );
   
 //  windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
   
@@ -759,7 +825,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   // Control Window related properties
   wxPGId ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control") ) );
-  ctrlCat->SetFlagsFromString( "COLLAPSED" );
+  if( ctrlCatCollapsed )
+    ctrlCat->SetFlagsFromString( "COLLAPSED" );
   
   vector<TWindowID> validWin;
   Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
@@ -784,7 +851,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   // Data Window related properties
   wxPGId dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data") ) );
-  dataCat->SetFlagsFromString( "COLLAPSED" );
+  if( dataCatCollapsed )
+    dataCat->SetFlagsFromString( "COLLAPSED" );
   
   validWin.clear();  //  vector<TWindowID> validWin;
   LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
@@ -805,7 +873,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   // 3rd window related properties
   wxPGId thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D") ) );
-  thirdWinCat->SetFlagsFromString( "COLLAPSED" );
+  if( thirdWinCatCollapsed )
+    thirdWinCat->SetFlagsFromString( "COLLAPSED" );
   
   windowProperties->AppendIn( thirdWinCat, new wxBoolProperty( wxT("Activate 3D"), wxPG_LABEL, whichHisto->getThreeDimensions() ) );
   validWin.clear();
