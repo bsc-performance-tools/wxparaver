@@ -42,8 +42,15 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 
 void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWindow )
 {
+  static bool filterCatCollapsed = true;
+  
   whichWindow->setChanged( false );
   windowProperties->Freeze();
+  
+  wxPGProperty *tmpProp = windowProperties->GetPropertyByLabel( wxT( "Filter" ) );
+  if( tmpProp != NULL )
+    filterCatCollapsed = tmpProp->GetFlagsAsString( wxPG_PROP_COLLAPSED ) == "COLLAPSED";
+    
   windowProperties->Clear();
   wxArrayString arrayStr;
   wxArrayInt arrayInt;
@@ -86,7 +93,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     }
 
     wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
-    filterCat->SetFlagsFromString( "COLLAPSED" );
+    if( filterCatCollapsed )
+      filterCat->SetFlagsFromString( "COLLAPSED" );
     
     // ---------------------------- COMMUNICATION FILTER ---------------------------
     wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );

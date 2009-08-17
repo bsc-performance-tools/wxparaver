@@ -1554,20 +1554,40 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
     }
     else
     {
+      itemSizer = new wxBoxSizer(wxHORIZONTAL);
+
+      itemText = new wxStaticText( colorsPanel, wxID_ANY, _T("") );
+      wxString tmpStr;
+      tmpStr << wxT("< ") <<LabelConstructor::semanticLabel( myWindow, lastMin, false );
+      itemText->SetLabel( tmpStr );
+
+      wxSize tmpSize( 20, itemText->GetSize().GetHeight() );
+      itemColor = new wxPanel( colorsPanel, wxID_ANY, wxDefaultPosition, tmpSize );
+      rgb tmprgb = myWindow->getGradientColor().calcColor( lastMin - 1, lastMin, lastMax );
+      wxColour tmpColor( tmprgb.red, tmprgb.green, tmprgb.blue );
+      itemColor->SetBackgroundColour( tmpColor );
+
+      itemSizer->Add( itemColor );
+      itemSizer->AddSpacer( 5 );
+      itemSizer->Add( itemText );
+      colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
+      
+      colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+
       TSemanticValue step = ( lastMax - lastMin ) / 20.0;
       for( int i = 0; i <= 20; ++i )
       {
         itemSizer = new wxBoxSizer(wxHORIZONTAL);
 
         itemText = new wxStaticText( colorsPanel, wxID_ANY, _T("") );
-        wxString tmpStr;
-        tmpStr << wxT( "~" ) << LabelConstructor::semanticLabel( myWindow, ( i * step ) + lastMin, false );
+        tmpStr.Clear();
+        tmpStr << LabelConstructor::semanticLabel( myWindow, ( i * step ) + lastMin, false );
         itemText->SetLabel( tmpStr );
 
-        wxSize tmpSize( 20, itemText->GetSize().GetHeight() );
+        tmpSize = wxSize( 20, itemText->GetSize().GetHeight() );
         itemColor = new wxPanel( colorsPanel, wxID_ANY, wxDefaultPosition, tmpSize );
-        rgb tmprgb = myWindow->getGradientColor().calcColor( ( i * step ) + lastMin, lastMin, lastMax );
-        wxColour tmpColor( tmprgb.red, tmprgb.green, tmprgb.blue );
+        tmprgb = myWindow->getGradientColor().calcColor( ( i * step ) + lastMin, lastMin, lastMax );
+        tmpColor = wxColour( tmprgb.red, tmprgb.green, tmprgb.blue );
         itemColor->SetBackgroundColour( tmpColor );
 
         itemSizer->Add( itemColor );
@@ -1575,9 +1595,25 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
         itemSizer->Add( itemText );
         colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
       
-        if( i < 20 )
-          colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+        colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
       }
+      itemSizer = new wxBoxSizer(wxHORIZONTAL);
+
+      itemText = new wxStaticText( colorsPanel, wxID_ANY, _T("") );
+      tmpStr.Clear();
+      tmpStr << wxT("> ") <<LabelConstructor::semanticLabel( myWindow, lastMax, false );
+      itemText->SetLabel( tmpStr );
+
+      tmpSize = wxSize( 20, itemText->GetSize().GetHeight() );
+      itemColor = new wxPanel( colorsPanel, wxID_ANY, wxDefaultPosition, tmpSize );
+      tmprgb = myWindow->getGradientColor().calcColor( lastMax + 1, lastMin, lastMax );
+      tmpColor = wxColour( tmprgb.red, tmprgb.green, tmprgb.blue );
+      itemColor->SetBackgroundColour( tmpColor );
+
+      itemSizer->Add( itemColor );
+      itemSizer->AddSpacer( 5 );
+      itemSizer->Add( itemText );
+      colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
     }
     colorsPanel->Layout();
     colorsPanel->FitInside();
