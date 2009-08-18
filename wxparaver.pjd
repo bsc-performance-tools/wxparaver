@@ -2183,7 +2183,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Open Extra Control Window: ID_TOOL_OPEN_EXTRA_WINDOW"</string>
+              <string name="title">"Open 3D Window: ID_TOOL_OPEN_EXTRA_WINDOW"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -2199,10 +2199,10 @@
               <long name="proxy-Id value">10052</long>
               <string name="proxy-Bitmap">"timeline.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
-              <string name="proxy-Label">"Open Extra Control Window"</string>
+              <string name="proxy-Label">"Open 3D Window"</string>
               <string name="proxy-Kind">"Normal"</string>
               <bool name="proxy-Enabled">1</bool>
-              <string name="proxy-Tooltip">"Open Extra Control Window"</string>
+              <string name="proxy-Tooltip">"Open 3D Window"</string>
               <string name="proxy-Help text">""</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
@@ -2629,8 +2629,6 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">"whatWhereText"</string>
-                <string name="proxy-Tab label">"What/Where"</string>
-                <string name="proxy-Tab icon">""</string>
                 <string name="proxy-Initial value">""</string>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Tooltip text">""</string>
@@ -2677,6 +2675,8 @@
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
+                <string name="proxy-Tab label">"What/Where"</string>
+                <string name="proxy-Tab icon">""</string>
               </document>
               <document>
                 <string name="title">"wxScrolledWindow: ID_PANEL"</string>
@@ -2699,8 +2699,6 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">"timingZone"</string>
-                <string name="proxy-Tab label">"Timing"</string>
-                <string name="proxy-Tab icon">""</string>
                 <long name="proxy-PPU X">1</long>
                 <long name="proxy-PPU Y">5</long>
                 <long name="proxy-Units X">0</long>
@@ -2754,6 +2752,8 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
+                <string name="proxy-Tab label">"Timing"</string>
+                <string name="proxy-Tab icon">""</string>
                 <document>
                   <string name="title">"wxBoxSizer H"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -3311,8 +3311,6 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">"colorsPanel"</string>
-                <string name="proxy-Tab label">"Colors"</string>
-                <string name="proxy-Tab icon">""</string>
                 <long name="proxy-PPU X">1</long>
                 <long name="proxy-PPU Y">5</long>
                 <long name="proxy-Units X">0</long>
@@ -3366,6 +3364,8 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
+                <string name="proxy-Tab label">"Colors"</string>
+                <string name="proxy-Tab icon">""</string>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>

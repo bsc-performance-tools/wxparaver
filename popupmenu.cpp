@@ -45,6 +45,8 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothRandomNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_AVERAGE, gPopUpMenu::OnMenuDrawModeBothAverage )
   EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
+  EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
+  EVT_MENU( ID_MENU_AUTO_DATA_GRADIENT, gPopUpMenu::OnMenuAutoDataGradient )
 
 END_EVENT_TABLE()
 
@@ -135,7 +137,6 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 
   Enable( FindItem( STR_CLONE ), true );
   Enable( FindItem( STR_FIT_TIME ), true );
-  Enable( FindItem( STR_FIT_SEMANTIC ), true );
 }
 
 
@@ -472,10 +473,18 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   AppendSeparator();
 
   buildItem( this, wxString( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
-  buildItem( popUpMenuFitSemantic, wxString( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
-  buildItem( popUpMenuFitSemantic, wxString( "Fit Maximum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
-  buildItem( popUpMenuFitSemantic, wxString( "Fit Both" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
-  AppendSubMenu( popUpMenuFitSemantic, STR_FIT_SEMANTIC );
+  buildItem( this, 
+             wxString( "Auto Fit Control Scale" ),
+             ITEMCHECK,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoControlScale,
+             ID_MENU_AUTO_CONTROL_SCALE,
+             histogram->GetHistogram()->getComputeScale() );
+  buildItem( this, 
+             wxString( "Auto Fit Data Gradient" ),
+             ITEMCHECK,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoDataGradient,
+             ID_MENU_AUTO_DATA_GRADIENT,
+             histogram->GetHistogram()->getComputeGradient() );
 
   AppendSeparator();
   
@@ -754,24 +763,18 @@ void gPopUpMenu::OnMenuFitSemanticMin( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpFitSemanticScaleMin();
-  else
-    histogram->OnPopUpFitSemanticScaleMin();
 }
 
 void gPopUpMenu::OnMenuFitSemanticMax( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpFitSemanticScaleMax();
-  else
-    histogram->OnPopUpFitSemanticScaleMax();
 }
 
 void gPopUpMenu::OnMenuFitSemanticBoth( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpFitSemanticScale();
-  else
-    histogram->OnPopUpFitSemanticScale();
 }
 
 void gPopUpMenu::OnMenuCodeColor( wxCommandEvent& event)
@@ -946,4 +949,16 @@ void gPopUpMenu::OnMenuInfoPanel( wxCommandEvent& event )
 {
   if( timeline != NULL )
     timeline->OnPopUpInfoPanel();
+}
+
+void gPopUpMenu::OnMenuAutoControlScale( wxCommandEvent& event )
+{
+  if( histogram != NULL )
+    histogram->OnPopUpAutoControlScale( event.IsChecked() );
+}
+
+void gPopUpMenu::OnMenuAutoDataGradient( wxCommandEvent& event )
+{
+  if( histogram != NULL )
+    histogram->OnPopUpAutoDataGradient( event.IsChecked() );
 }

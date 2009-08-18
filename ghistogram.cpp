@@ -224,7 +224,7 @@ void gHistogram::CreateControls()
   itemToolBar6->AddTool(ID_TOOL_OPEN_DATA_WINDOW, _("Open Data Window"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _("Open Data Window"), wxEmptyString);
   wxBitmap itemtool11Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
   wxBitmap itemtool11BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open Extra Control Window"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Open Extra Control Window"), wxEmptyString);
+  itemToolBar6->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open 3D Window"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Open 3D Window"), wxEmptyString);
   itemToolBar6->AddSeparator();
   wxBitmap itemtool13Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
   wxBitmap itemtool13BitmapDisabled;
@@ -297,7 +297,10 @@ void gHistogram::fillGrid()
     throw( std::exception() );
 
   if( myHistogram->getComputeGradient() )
+  {
     myHistogram->recalcGradientLimits();
+    myHistogram->setChanged( true );
+  }
     
   if( commStat )
     curPlane = myHistogram->getCommSelectedPlane();
@@ -484,7 +487,10 @@ void gHistogram::fillZoom()
     throw( std::exception() );
 
   if( myHistogram->getComputeGradient() )
+  {
     myHistogram->recalcGradientLimits();
+    myHistogram->setChanged( true );
+  }
     
   if( commStat )
     curPlane = myHistogram->getCommSelectedPlane();
@@ -973,16 +979,18 @@ void gHistogram::OnPopUpFitTimeScale()
   updateHistogram();
 }
 
-void gHistogram::OnPopUpFitSemanticScaleMin()
+void gHistogram::OnPopUpAutoControlScale( bool state )
 {
+  myHistogram->setComputeScale( state );
+  if( state )
+    myHistogram->setRecalc( true );
 }
 
-void gHistogram::OnPopUpFitSemanticScaleMax()
+void gHistogram::OnPopUpAutoDataGradient( bool state )
 {
-}
-
-void gHistogram::OnPopUpFitSemanticScale()
-{
+  myHistogram->setComputeGradient( state );
+  if( state )
+    myHistogram->setRedraw( true );
 }
 
 void gHistogram::OnPopUpDrawModeSemanticLast()

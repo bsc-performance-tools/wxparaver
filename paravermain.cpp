@@ -585,16 +585,19 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == "ControlMinimum" )
   {
     currentHisto->setControlMin( property->GetValue().GetDouble() );
+    currentHisto->setComputeScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "ControlMaximum" )
   {
     currentHisto->setControlMax( property->GetValue().GetDouble() );
+    currentHisto->setComputeScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "ControlDelta" )
   {
     currentHisto->setControlDelta( property->GetValue().GetDouble() );
+    currentHisto->setComputeScale( false );
     currentHisto->setRecalc( true );
   }
 // Data Window related properties
@@ -602,6 +605,18 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentHisto->setDataWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
     currentHisto->setRecalc( true );
+  }
+  else if( propName == "DataMinimum" )
+  {
+    currentHisto->setMinGradient( property->GetValue().GetDouble() );
+    currentHisto->setComputeGradient( false );
+    currentHisto->setRedraw( true );
+  }
+  else if( propName == "DataMaximum" )
+  {
+    currentHisto->setMaxGradient( property->GetValue().GetDouble() );
+    currentHisto->setComputeGradient( false );
+    currentHisto->setRedraw( true );
   }
   // Histogram related properties
   else if( propName == "Calculate all" )
@@ -636,16 +651,19 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == "3DMinimum" )
   {
     currentHisto->setExtraControlMin( property->GetValue().GetDouble() );
+    currentHisto->setComputeScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "3DMaximum" )
   {
     currentHisto->setExtraControlMax( property->GetValue().GetDouble() );
+    currentHisto->setComputeScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "3DDelta" )
   {
     currentHisto->setExtraControlDelta( property->GetValue().GetDouble() );
+    currentHisto->setComputeScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "3DPlane" )

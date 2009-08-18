@@ -49,6 +49,8 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_BOTH_AVERAGE             30035
 #define ID_MENU_ROW_SELECTION                     30036
 #define ID_MENU_INFO_PANEL                        30037
+#define ID_MENU_AUTO_CONTROL_SCALE                30038
+#define ID_MENU_AUTO_DATA_GRADIENT                30039
 
 class gPopUpMenu : public wxMenu
 {
@@ -120,6 +122,9 @@ class gPopUpMenu : public wxMenu
     void OnMenuRowSelection( wxCommandEvent& event);
 
     void OnMenuInfoPanel( wxCommandEvent& event );
+    
+    void OnMenuAutoControlScale( wxCommandEvent& event );
+    void OnMenuAutoDataGradient( wxCommandEvent& event );
   private:
     gTimeline *timeline;
     gHistogram *histogram;

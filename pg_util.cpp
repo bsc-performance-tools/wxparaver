@@ -870,6 +870,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   }
   wxEnumProperty *tmpDataWin = new wxEnumProperty( wxT("Window"), wxT("DataWindow"), arrayStr, arrayInt, selected );
   windowProperties->AppendIn( dataCat, tmpDataWin );
+  windowProperties->AppendIn( dataCat, new wxFloatProperty( wxT("Minimum Gradient"), wxT("DataMinimum"), wxT( whichHisto->getMinGradient() )));
+  windowProperties->AppendIn( dataCat, new wxFloatProperty( wxT("Maximum Gradient"), wxT("DataMaximum"), wxT( whichHisto->getMaxGradient() )));
 
   // 3rd window related properties
   wxPGId thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D") ) );
