@@ -82,6 +82,9 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CHECKBOX( ID_CHECK_DRAWFLAGS, gTimeline::OnCheckDrawflagsClick )
   EVT_UPDATE_UI( ID_CHECK_DRAWFLAGS, gTimeline::OnCheckDrawflagsUpdate )
 
+  EVT_CHECKBOX( ID_CHECK_FUNCTIONLINECOLOR, gTimeline::OnCheckFunctionlinecolorClick )
+  EVT_UPDATE_UI( ID_CHECK_FUNCTIONLINECOLOR, gTimeline::OnCheckFunctionlinecolorUpdate )
+
 ////@end gTimeline event table entries
 
 END_EVENT_TABLE()
@@ -164,6 +167,7 @@ void gTimeline::Init()
   viewPropPanel = NULL;
   checkDrawLines = NULL;
   checkDrawFlags = NULL;
+  checkFunctionLineColor = NULL;
 ////@end gTimeline member initialisation
 
   zoomXY = false;
@@ -243,6 +247,10 @@ void gTimeline::CreateControls()
   checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Draw Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawFlags->SetValue(true);
   itemBoxSizer19->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
+
+  checkFunctionLineColor = new wxCheckBox( viewPropPanel, ID_CHECK_FUNCTIONLINECOLOR, _("Draw Function Line With Color"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFunctionLineColor->SetValue(true);
+  itemBoxSizer19->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
 
   viewPropPanel->FitInside();
   infoZone->AddPage(viewPropPanel, _("View Properties"));
@@ -1800,5 +1808,26 @@ void gTimeline::OnCheckDrawflagsClick( wxCommandEvent& event )
 void gTimeline::OnCheckDrawflagsUpdate( wxUpdateUIEvent& event )
 {
   event.Check( myWindow->getDrawFlags() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_FUNCTIONLINECOLOR
+ */
+
+void gTimeline::OnCheckFunctionlinecolorClick( wxCommandEvent& event )
+{
+  myWindow->setDrawFunctionLineColor( event.IsChecked() );
+  myWindow->setRedraw( true );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECK_FUNCTIONLINECOLOR
+ */
+
+void gTimeline::OnCheckFunctionlinecolorUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myWindow->getDrawFunctionLineColor() );
 }
 
