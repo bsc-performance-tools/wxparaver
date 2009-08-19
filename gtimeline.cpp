@@ -76,10 +76,18 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
 
+  EVT_CHECKBOX( ID_CHECK_DRAWLINES, gTimeline::OnCheckDrawlinesClick )
+  EVT_UPDATE_UI( ID_CHECK_DRAWLINES, gTimeline::OnCheckDrawlinesUpdate )
+
+  EVT_CHECKBOX( ID_CHECK_DRAWFLAGS, gTimeline::OnCheckDrawflagsClick )
+  EVT_UPDATE_UI( ID_CHECK_DRAWFLAGS, gTimeline::OnCheckDrawflagsUpdate )
+
 ////@end gTimeline event table entries
 
 END_EVENT_TABLE()
 
+static char flag[20] = { 0xc7, 0x01, 0x7d, 0x03, 0xab, 0x02, 0x55, 0x03, 0xab, 0x02, 0xd7, 0x03,
+                         0x79, 0x02, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00 };
 
 /*!
  * gTimeline constructors
@@ -153,6 +161,9 @@ void gTimeline::Init()
   durationText = NULL;
   colorsPanel = NULL;
   colorsSizer = NULL;
+  viewPropPanel = NULL;
+  checkDrawLines = NULL;
+  checkDrawFlags = NULL;
 ////@end gTimeline member initialisation
 
   zoomXY = false;
@@ -220,6 +231,22 @@ void gTimeline::CreateControls()
   colorsPanel->FitInside();
   infoZone->AddPage(colorsPanel, _("Colors"));
 
+  viewPropPanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+  viewPropPanel->SetScrollbars(1, 5, 0, 0);
+  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxVERTICAL);
+  viewPropPanel->SetSizer(itemBoxSizer19);
+
+  checkDrawLines = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWLINES, _("Draw Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkDrawLines->SetValue(true);
+  itemBoxSizer19->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
+
+  checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Draw Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkDrawFlags->SetValue(true);
+  itemBoxSizer19->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
+
+  viewPropPanel->FitInside();
+  infoZone->AddPage(viewPropPanel, _("View Properties"));
+
   splitter->SplitHorizontally(drawZone, infoZone, 0);
 
   // Connect events and objects
@@ -280,9 +307,9 @@ void gTimeline::redraw()
   // Get selected rows
   vector<bool>         selected;
   vector<TObjectOrder> selectedSet;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected );
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+  myWindow->getSelectedRows( myWindow->getLevel(), selected );
   myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow );
   TObjectOrder maxObj = selectedSet[ selectedSet.size() - 1 ];
 
@@ -290,22 +317,33 @@ void gTimeline::redraw()
   bufferImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
   drawImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
   commImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
+  eventImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
   wxMemoryDC bufferDraw( bufferImage );
   wxMemoryDC commdc( commImage );
+  wxMemoryDC eventdc( eventImage );
   commdc.SetBackgroundMode( wxTRANSPARENT );
   commdc.SetBackground( *wxTRANSPARENT_BRUSH );
   commdc.Clear();
+  eventdc.SetBackgroundMode( wxTRANSPARENT );
+  eventdc.SetBackground( *wxTRANSPARENT_BRUSH );
+  eventdc.Clear();
   wxBitmap commMask;
   commMask.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight(), 1 );
-  wxMemoryDC maskdc( commMask );
-  maskdc.SetBackground( *wxBLACK_BRUSH );
-  maskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
-  maskdc.Clear();
+  wxMemoryDC commmaskdc( commMask );
+  commmaskdc.SetBackground( *wxBLACK_BRUSH );
+  commmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
+  commmaskdc.Clear();
+  wxBitmap eventMask;
+  eventMask.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight(), 1 );
+  wxMemoryDC eventmaskdc( eventMask );
+  eventmaskdc.SetBackground( *wxBLACK_BRUSH );
+  eventmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
+  eventmaskdc.Clear();
 
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
   bufferDraw.Clear();
   drawAxis( bufferDraw, selectedSet );
-  myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS );
+  myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
 
   // Drawmode: Group objects with same wxCoord in objectPosList
   vector<TObjectOrder>::iterator endIt = selectedSet.end();
@@ -318,16 +356,29 @@ void gTimeline::redraw()
       ++obj;
       lastObj = *obj;
     }
-    drawRow( bufferDraw, commdc, maskdc, firstObj, lastObj, selectedSet, selected );
+    drawRow( bufferDraw, commdc, commmaskdc, eventdc, eventmaskdc,
+             firstObj, lastObj, selectedSet, selected );
   }
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
-  maskdc.SetPen( *wxBLACK_PEN );
-  maskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
-  maskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
-  wxMask *mask = new wxMask( commMask );
+
+  eventmaskdc.SetPen( *wxBLACK_PEN );
+  eventmaskdc.SetBrush( *wxBLACK_BRUSH );
+  eventmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
+  eventmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
+  wxMask *mask = new wxMask( eventMask );
+  eventImage.SetMask( mask );
+
+  if( myWindow->getDrawFlags() )
+    bufferDraw.DrawBitmap( eventImage, 0, 0, true );
+
+  commmaskdc.SetPen( *wxBLACK_PEN );
+  commmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
+  commmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
+  mask = new wxMask( commMask );
   commImage.SetMask( mask );
+
   if( myWindow->getDrawCommLines() )
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 
@@ -416,7 +467,9 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 }
 
 
-void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder firstRow, TObjectOrder lastRow,
+void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
+                         wxMemoryDC& eventdc, wxDC& eventmaskdc,
+                         TObjectOrder firstRow, TObjectOrder lastRow,
                          vector<TObjectOrder>& selectedSet, vector<bool>& selected )
 {
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
@@ -452,7 +505,8 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
 
       RecordList *rl = myWindow->getRecordList( *row );
       if( rl != NULL )
-        drawComm( commdc, maskdc, rl, currentTime - timeStep, currentTime, timeStep, timePos, selected );
+        drawRecords( commdc, commmaskdc, eventdc, eventmaskdc,
+                     rl, currentTime - timeStep, currentTime, timeStep, timePos, selected );
     }
     TSemanticValue valueToDraw = DrawMode::selectValue( rowValues, myWindow->getDrawModeObject() );
     rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
@@ -466,35 +520,60 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrde
 }
 
 
-void gTimeline::drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
-                          TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected )
+void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
+                             wxMemoryDC& eventdc, wxDC& eventmaskdc,
+                             RecordList *records,
+                             TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected )
 {
-  RecordList::iterator it = comms->begin();
+  bool existEvents = false;
+  
+  RecordList::iterator it = records->begin();
   step = ( 1 / step );
-  while( it != comms->end() && it->getTime() < from )
+  while( it != records->end() && it->getTime() < from )
     ++it;
-  while( it != comms->end() && it->getTime() <= to )
+  while( it != records->end() && it->getTime() <= to )
   {
-    TObjectOrder partnerObject = it->getCommPartnerObject();
-    if( ( it->getType() & COMM ) && selected[ partnerObject ] &&
-        ( it->getType() & RECV ||
-          ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
-      )
+    if( it->getType() & EVENT )
+      existEvents = true;
+    else
     {
-      if( it->getType() & LOG )
-        commdc.SetPen( wxPen( wxColour( 255, 255, 0 ) ) );
-      else if( it->getType() & PHY )
-        commdc.SetPen( *wxRED_PEN );
-      wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
-      posPartner += objectAxisPos;
-      commdc.DrawLine( posPartner, objectPosList[ partnerObject ],
-                       pos, objectPosList[ it->getOrder() ] );
-      maskdc.DrawLine( posPartner, objectPosList[ partnerObject ],
-                       pos, objectPosList[ it->getOrder() ] );
+      TObjectOrder partnerObject = it->getCommPartnerObject();
+      if( ( it->getType() & COMM ) && selected[ partnerObject ] &&
+          ( it->getType() & RECV ||
+            ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
+        )
+      {
+        if( it->getType() & LOG )
+          commdc.SetPen( wxPen( wxColour( 255, 255, 0 ) ) );
+        else if( it->getType() & PHY )
+          commdc.SetPen( *wxRED_PEN );
+        wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
+        posPartner += objectAxisPos;
+        commdc.DrawLine( posPartner, objectPosList[ partnerObject ],
+                         pos, objectPosList[ it->getOrder() ] );
+        commmaskdc.DrawLine( posPartner, objectPosList[ partnerObject ],
+                             pos, objectPosList[ it->getOrder() ] );
+      }
     }
     ++it;
   }
-  comms->erase( comms->begin(), it );
+
+  if( existEvents )
+  {
+    eventdc.SetTextForeground( *wxGREEN );
+    eventdc.SetBackgroundMode( wxTRANSPARENT );
+    eventdc.SetBackground( *wxTRANSPARENT_BRUSH );
+    wxBitmap imgFlag( flag, 10, 10 );
+    wxMask *newMask = new wxMask( imgFlag, *wxWHITE );
+    imgFlag.SetMask( newMask );
+    eventdc.DrawBitmap( imgFlag, pos, objectPosList[ it->getOrder() ] - 10, true );
+    //eventmaskdc.DrawBitmap( imgFlag, 200, 10, true );
+    eventmaskdc.SetPen( *wxWHITE_PEN );
+    eventmaskdc.SetBrush( *wxWHITE_BRUSH );
+    eventmaskdc.DrawRectangle( pos, objectPosList[ it->getOrder() ] - 10, 9, 9 );
+  }
+  
+  records->erase( records->begin(), it );
 }
 
 
@@ -513,9 +592,12 @@ void gTimeline::OnScrolledWindowEraseBackground( wxEraseEvent& event )
 void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( drawZone );
-
-  if( ready )
-    dc.DrawBitmap( drawImage, 0, 0, false );
+  wxMemoryDC bufferDraw;
+  
+  if( !ready )
+    return;
+  
+  dc.DrawBitmap( drawImage, 0, 0, false );
 }
 
 
@@ -1188,6 +1270,8 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     }
 
     dc.DrawBitmap( bufferImage, 0, 0, false );
+    if( myWindow->getDrawFlags() )
+      dc.DrawBitmap( eventImage, 0, 0, true );
     if( myWindow->getDrawCommLines() )
       dc.DrawBitmap( commImage, 0, 0, true );
     dc.DrawRectangle( beginX, beginY, width, height );
@@ -1642,5 +1726,79 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
     colorsPanel->FitInside();
   }
   redoColors = false;
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWLINES
+ */
+
+void gTimeline::OnCheckDrawlinesClick( wxCommandEvent& event )
+{
+  wxMemoryDC bufferDraw;
+
+  myWindow->setDrawCommLines( event.IsChecked() );
+  
+  if( !ready )
+    return;
+  
+  bufferDraw.SelectObject(wxNullBitmap);
+  bufferDraw.SelectObject( drawImage );
+  bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
+
+  if( myWindow->getDrawFlags() )
+    bufferDraw.DrawBitmap( eventImage, 0, 0, true );
+
+  if( myWindow->getDrawCommLines() )
+    bufferDraw.DrawBitmap( commImage, 0, 0, true );
+
+  drawZone->Refresh();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECK_DRAWLINES
+ */
+
+void gTimeline::OnCheckDrawlinesUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myWindow->getDrawCommLines() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWFLAGS
+ */
+
+void gTimeline::OnCheckDrawflagsClick( wxCommandEvent& event )
+{
+  wxMemoryDC bufferDraw;
+
+  myWindow->setDrawFlags( event.IsChecked() );
+  
+  if( !ready )
+    return;
+  
+  bufferDraw.SelectObject(wxNullBitmap);
+  bufferDraw.SelectObject( drawImage );
+  bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
+
+  if( myWindow->getDrawFlags() )
+    bufferDraw.DrawBitmap( eventImage, 0, 0, true );
+
+  if( myWindow->getDrawCommLines() )
+    bufferDraw.DrawBitmap( commImage, 0, 0, true );
+
+  drawZone->Refresh();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECK_DRAWFLAGS
+ */
+
+void gTimeline::OnCheckDrawflagsUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myWindow->getDrawFlags() );
 }
 

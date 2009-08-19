@@ -24,6 +24,7 @@
 ////@end includes
 #include <wx/treebase.h>
 
+#include "wx/checkbox.h"
 #include "wx/choicdlg.h"
 #include "wx/dcmemory.h"
 #include "wx/scrolwin.h"
@@ -59,6 +60,9 @@ class Window;
 #define ID_TEXTCTRL1 10046
 #define ID_TEXTCTRL2 10047
 #define ID_PANEL1 10049
+#define ID_SCROLLEDWINDOW1 10053
+#define ID_CHECK_DRAWLINES 10054
+#define ID_CHECK_DRAWFLAGS 10055
 #define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
 #define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
@@ -139,6 +143,18 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_PANEL1
   void OnColorsPanelUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWLINES
+  void OnCheckDrawlinesClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECK_DRAWLINES
+  void OnCheckDrawlinesUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWFLAGS
+  void OnCheckDrawflagsClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECK_DRAWFLAGS
+  void OnCheckDrawflagsUpdate( wxUpdateUIEvent& event );
+
 ////@end gTimeline event handler declarations
 
 ////@begin gTimeline member function declarations
@@ -209,6 +225,9 @@ public:
   bool GetRedoColors() const { return redoColors ; }
   void SetRedoColors(bool value) { redoColors = value ; }
 
+  wxBitmap GetEventImage() const { return eventImage ; }
+  void SetEventImage(wxBitmap value) { eventImage = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -221,10 +240,14 @@ public:
 
   void redraw();
   void drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
-  void drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& maskdc, TObjectOrder firstRow, TObjectOrder lastRow,
+  void drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
+                wxMemoryDC& eventdc, wxDC& eventmaskdc,
+                TObjectOrder firstRow, TObjectOrder lastRow,
                 vector<TObjectOrder>& selectedSet, vector<bool>& selected );
-  void drawComm( wxMemoryDC& commdc, wxDC& maskdc, RecordList *comms,
-                 TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected );
+  void drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
+                    wxMemoryDC& eventdc, wxDC& eventmaskdc,
+                    RecordList *records,
+                    TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected );
 
   void OnPopUpRightDown( void );
 
@@ -297,9 +320,13 @@ public:
   wxTextCtrl* durationText;
   wxScrolledWindow* colorsPanel;
   wxBoxSizer* colorsSizer;
+  wxScrolledWindow* viewPropPanel;
+  wxCheckBox* checkDrawLines;
+  wxCheckBox* checkDrawFlags;
   wxBitmap bufferImage;
   wxBitmap drawImage;
   wxBitmap commImage;
+  wxBitmap eventImage;
 private:
   bool ready;
   Window* myWindow;
