@@ -490,7 +490,8 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
   vector<TObjectOrder>::iterator last  = find( selectedSet.begin(), selectedSet.end(), lastRow );
 
   wxCoord objectPos = objectPosList[ firstRow ];
-
+  int lineLastPos = 0;
+  
   for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep;
        currentTime <= myWindow->getWindowEndTime();
        currentTime += timeStep )
@@ -517,12 +518,39 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
                      rl, currentTime - timeStep, currentTime, timeStep, timePos, selected );
     }
     TSemanticValue valueToDraw = DrawMode::selectValue( rowValues, myWindow->getDrawModeObject() );
-    rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
-    dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-    if( objectPos + objectHeight < timeAxisPos )
-      dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
+    if( myWindow->getDrawFunctionLineColor() )
+    {
+      rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
+      dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+      if( objectPos + objectHeight < timeAxisPos )
+        dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
+      else
+        dc.DrawLine( timePos, objectPos, timePos, timeAxisPos - 1 );
+    }
     else
-      dc.DrawLine( timePos, objectPos, timePos, timeAxisPos - 1 );
+    {
+      if( valueToDraw < myWindow->getMinimumY() )
+        valueToDraw = myWindow->getMinimumY();
+      else if( valueToDraw > myWindow->getMaximumY() )
+        valueToDraw = myWindow->getMaximumY();
+        
+      double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
+                      / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+      int currentPos = objectHeight * tmpPos;
+      
+      dc.SetPen( *wxGREY_PEN );
+      if( currentPos != lineLastPos )
+      {
+        int from = ( currentPos > lineLastPos ) ? currentPos : lineLastPos;
+        int to   = ( currentPos < lineLastPos ) ? currentPos : lineLastPos;
+        dc.DrawLine( timePos, objectPos + objectHeight - from,
+                     timePos, objectPos + objectHeight - to + 1 );
+      }
+      else
+        dc.DrawPoint( timePos, objectPos + objectHeight - currentPos );
+
+      lineLastPos = currentPos;
+    }
     timePos++;
   }
 }

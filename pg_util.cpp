@@ -831,7 +831,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   vector<TWindowID> validWin;
   Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
                                                                  whichHisto->getDataWindow();
-  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, validWin );
+  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getExtraControlWindow(), validWin );
   arrayStr.Clear();
   arrayInt.Clear();
   selected = -1;
@@ -881,8 +881,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   windowProperties->AppendIn( thirdWinCat, new wxBoolProperty( wxT("Activate 3D"), wxPG_LABEL, whichHisto->getThreeDimensions() ) );
   validWin.clear();
   dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
-                                                                 whichHisto->getDataWindow();
-  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, validWin );
+                                                         whichHisto->getDataWindow();
+  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getControlWindow(), validWin );
   arrayStr.Clear();
   arrayInt.Clear();
   selected = -1;

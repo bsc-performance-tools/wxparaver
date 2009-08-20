@@ -51,11 +51,11 @@ class Histogram;
 #define ID_GRIDHISTO 10005
 #define ID_HISTOSTATUS 10028
 #define ID_TOOLBAR1 10024
-#define ID_TOOLZOOM 10025
-#define ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW 10029
 #define ID_TOOL_OPEN_CONTROL_WINDOW 10050
 #define ID_TOOL_OPEN_DATA_WINDOW 10051
 #define ID_TOOL_OPEN_EXTRA_WINDOW 10052
+#define ID_TOOLZOOM 10025
+#define ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW 10029
 #define ID_TOOLGRADIENT 10026
 #define ID_TOOLHORIZVERT 10027
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
@@ -135,18 +135,6 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
   void OnGridhistoUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLZOOM
-  void OnToolzoomClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_TOOLZOOM
-  void OnToolzoomUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW
-  void OnToolOpenFilteredControlWindowClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW
-  void OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_OPEN_CONTROL_WINDOW
   void OnToolOpenControlWindowClick( wxCommandEvent& event );
 
@@ -158,6 +146,18 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_OPEN_EXTRA_WINDOW
   void OnToolOpenExtraWindowUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLZOOM
+  void OnToolzoomClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOLZOOM
+  void OnToolzoomUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW
+  void OnToolOpenFilteredControlWindowClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW
+  void OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLGRADIENT
   void OnToolgradientClick( wxCommandEvent& event );

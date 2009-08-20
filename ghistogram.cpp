@@ -48,8 +48,8 @@
 #endif
 
 ////@begin XPM images
-#include "histo_zoom.xpm"
 #include "timeline.xpm"
+#include "histo_zoom.xpm"
 #include "histo_color.xpm"
 #include "histo_horvert.xpm"
 ////@end XPM images
@@ -88,18 +88,18 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
 
-  EVT_MENU( ID_TOOLZOOM, gHistogram::OnToolzoomClick )
-  EVT_UPDATE_UI( ID_TOOLZOOM, gHistogram::OnToolzoomUpdate )
-
-  EVT_MENU( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, gHistogram::OnToolOpenFilteredControlWindowClick )
-  EVT_UPDATE_UI( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, gHistogram::OnToolOpenFilteredControlWindowUpdate )
-
   EVT_MENU( ID_TOOL_OPEN_CONTROL_WINDOW, gHistogram::OnToolOpenControlWindowClick )
 
   EVT_MENU( ID_TOOL_OPEN_DATA_WINDOW, gHistogram::OnToolOpenDataWindowClick )
 
   EVT_MENU( ID_TOOL_OPEN_EXTRA_WINDOW, gHistogram::OnToolOpenExtraWindowClick )
   EVT_UPDATE_UI( ID_TOOL_OPEN_EXTRA_WINDOW, gHistogram::OnToolOpenExtraWindowUpdate )
+
+  EVT_MENU( ID_TOOLZOOM, gHistogram::OnToolzoomClick )
+  EVT_UPDATE_UI( ID_TOOLZOOM, gHistogram::OnToolzoomUpdate )
+
+  EVT_MENU( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, gHistogram::OnToolOpenFilteredControlWindowClick )
+  EVT_UPDATE_UI( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, gHistogram::OnToolOpenFilteredControlWindowUpdate )
 
   EVT_MENU( ID_TOOLGRADIENT, gHistogram::OnToolgradientClick )
   EVT_UPDATE_UI( ID_TOOLGRADIENT, gHistogram::OnToolgradientUpdate )
@@ -210,28 +210,29 @@ void gHistogram::CreateControls()
   mainSizer->Add(histoStatus, 0, wxGROW, 5);
 
   wxToolBar* itemToolBar6 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_TOOLBAR1 );
-  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
+  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
   wxBitmap itemtool7BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
+  itemToolBar6->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
   wxBitmap itemtool8Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
   wxBitmap itemtool8BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, _("Open Filtered Control Window"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_NORMAL, _("Open Filtered Control Window"), wxEmptyString);
+  itemToolBar6->AddTool(ID_TOOL_OPEN_DATA_WINDOW, _("Open Data Window"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_NORMAL, _("Open Data Window"), wxEmptyString);
   wxBitmap itemtool9Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
   wxBitmap itemtool9BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
-  wxBitmap itemtool10Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
-  wxBitmap itemtool10BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOL_OPEN_DATA_WINDOW, _("Open Data Window"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _("Open Data Window"), wxEmptyString);
-  wxBitmap itemtool11Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
-  wxBitmap itemtool11BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open 3D Window"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_NORMAL, _("Open 3D Window"), wxEmptyString);
+  itemToolBar6->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open 3D Window"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_NORMAL, _("Open 3D Window"), wxEmptyString);
   itemToolBar6->AddSeparator();
-  wxBitmap itemtool13Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
-  wxBitmap itemtool13BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
-  wxBitmap itemtool14Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
+  wxBitmap itemtool11Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
+  wxBitmap itemtool11BitmapDisabled;
+  itemToolBar6->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
+  wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
+  wxBitmap itemtool12BitmapDisabled;
+  itemToolBar6->AddTool(ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, _("Open Filtered Control Window"), itemtool12Bitmap, itemtool12BitmapDisabled, wxITEM_NORMAL, _("Open Filtered Control Window"), wxEmptyString);
+  itemToolBar6->AddSeparator();
+  wxBitmap itemtool14Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
   wxBitmap itemtool14BitmapDisabled;
-  itemToolBar6->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
+  itemToolBar6->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
+  wxBitmap itemtool15Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
+  wxBitmap itemtool15BitmapDisabled;
+  itemToolBar6->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool15Bitmap, itemtool15BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
   itemToolBar6->Realize();
   itemFrame1->SetToolBar(itemToolBar6);
 
@@ -714,14 +715,14 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin gHistogram bitmap retrieval
   wxUnusedVar(name);
-  if (name == _T("histo_zoom.xpm"))
-  {
-    wxBitmap bitmap( histo_zoom_xpm);
-    return bitmap;
-  }
-  else if (name == _T("timeline.xpm"))
+  if (name == _T("timeline.xpm"))
   {
     wxBitmap bitmap( timeline_xpm);
+    return bitmap;
+  }
+  else if (name == _T("histo_zoom.xpm"))
+  {
+    wxBitmap bitmap( histo_zoom_xpm);
     return bitmap;
   }
   else if (name == _T("histo_color.xpm"))
