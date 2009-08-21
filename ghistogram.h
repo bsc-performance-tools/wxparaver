@@ -23,6 +23,7 @@
 #include "wx/statusbr.h"
 #include "wx/toolbar.h"
 ////@end includes
+#include <wx/statbmp.h>
 #include "wx/timer.h"
 #include "paraverkerneltypes.h"
 #include "popupmenu.h"
@@ -50,7 +51,7 @@ class Histogram;
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
 #define ID_HISTOSTATUS 10028
-#define ID_TOOLBAR1 10024
+#define ID_AUITOOLBAR1 10059
 #define ID_TOOL_OPEN_CONTROL_WINDOW 10050
 #define ID_TOOL_OPEN_DATA_WINDOW 10051
 #define ID_TOOL_OPEN_EXTRA_WINDOW 10052

@@ -235,6 +235,9 @@ public:
   wxBitmap GetEventImage() const { return eventImage ; }
   void SetEventImage(wxBitmap value) { eventImage = value ; }
 
+  bool GetDrawCaution() const { return drawCaution ; }
+  void SetDrawCaution(bool value) { drawCaution = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -335,6 +338,7 @@ public:
   wxBitmap drawImage;
   wxBitmap commImage;
   wxBitmap eventImage;
+  bool drawCaution;
 private:
   bool ready;
   Window* myWindow;

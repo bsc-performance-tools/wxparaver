@@ -31,6 +31,7 @@
 #include "drawmode.h"
 #include "loadedwindows.h"
 #include "windows_tree.h"
+#include "caution.xpm"
 
 #define wxTEST_GRAPHICS 1
 
@@ -154,6 +155,7 @@ void gTimeline::Init()
   canRedraw = false;
   firstUnsplit = false;
   redoColors = false;
+  drawCaution = false;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -353,6 +355,8 @@ void gTimeline::redraw()
   drawAxis( bufferDraw, selectedSet );
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
 
+  drawCaution = false;
+  
   // Drawmode: Group objects with same wxCoord in objectPosList
   vector<TObjectOrder>::iterator endIt = selectedSet.end();
   for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != endIt; ++obj )
@@ -371,6 +375,15 @@ void gTimeline::redraw()
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 
+  if( drawCaution )
+  {
+    wxBitmap cautionImage( caution_xpm );
+    bufferDraw.DrawBitmap( cautionImage,
+                           drawBorder,
+                           drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                           true );
+  }
+  
   eventmaskdc.SetPen( *wxBLACK_PEN );
   eventmaskdc.SetBrush( *wxBLACK_BRUSH );
   eventmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
@@ -508,7 +521,11 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
       while( myWindow->getEndTime( *row ) < currentTime )
       {
         myWindow->calcNext( *row );
-        timeValues.push_back( myWindow->getValue( *row ) );
+        TSemanticValue currentValue = myWindow->getValue( *row );
+        timeValues.push_back( currentValue );
+        if( currentValue < myWindow->getMinimumY() 
+            || currentValue > myWindow->getMaximumY() )
+          drawCaution = true;
       }
       rowValues.push_back( DrawMode::selectValue( timeValues, myWindow->getDrawModeTime() ) );
 
@@ -533,12 +550,12 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
         valueToDraw = myWindow->getMinimumY();
       else if( valueToDraw > myWindow->getMaximumY() )
         valueToDraw = myWindow->getMaximumY();
-        
+
       double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
                       / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
       int currentPos = objectHeight * tmpPos;
       
-      dc.SetPen( *wxGREY_PEN );
+      dc.SetPen( *wxWHITE_PEN );
       if( currentPos != lineLastPos )
       {
         int from = ( currentPos > lineLastPos ) ? currentPos : lineLastPos;
@@ -716,6 +733,17 @@ void gTimeline::OnCloseWindow( wxCloseEvent& event )
  */
 void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
 {
+  wxBitmap tmpImage( caution_xpm );
+  if( event.GetX() < tmpImage.GetWidth() + drawBorder
+      && event.GetY() > drawZone->GetSize().GetHeight() - tmpImage.GetHeight() - drawBorder )
+  {
+    wxMessageDialog dialog( this,
+                            wxT( "Some semantic values are outside the maximum or minimum boundaries." ),
+                            wxT( "Semantic Scale Warning" ),
+                            wxOK|wxICON_EXCLAMATION );
+    dialog.ShowModal();
+    return;
+  }
   zooming = true;
   zoomBeginX = event.GetX();
   zoomBeginY = event.GetY();

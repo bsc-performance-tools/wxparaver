@@ -209,7 +209,7 @@ void gHistogram::CreateControls()
   histoStatus->SetFieldsCount(1);
   mainSizer->Add(histoStatus, 0, wxGROW, 5);
 
-  wxToolBar* itemToolBar6 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_TOOLBAR1 );
+  wxToolBar* itemToolBar6 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("timeline.xpm")));
   wxBitmap itemtool7BitmapDisabled;
   itemToolBar6->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
@@ -717,22 +717,22 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   wxUnusedVar(name);
   if (name == _T("timeline.xpm"))
   {
-    wxBitmap bitmap( timeline_xpm);
+    wxBitmap bitmap(timeline_xpm);
     return bitmap;
   }
   else if (name == _T("histo_zoom.xpm"))
   {
-    wxBitmap bitmap( histo_zoom_xpm);
+    wxBitmap bitmap(histo_zoom_xpm);
     return bitmap;
   }
   else if (name == _T("histo_color.xpm"))
   {
-    wxBitmap bitmap( color_xpm);
+    wxBitmap bitmap(color_xpm);
     return bitmap;
   }
   else if (name == _T("histo_horvert.xpm"))
   {
-    wxBitmap bitmap( horvert_xpm);
+    wxBitmap bitmap(horvert_xpm);
     return bitmap;
   }
   return wxNullBitmap;

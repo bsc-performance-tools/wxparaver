@@ -7,7 +7,7 @@
     <string name="author">""</string>
     <string name="description">""</string>
     <string name="xrc_filename">""</string>
-    <bool name="convert_images_to_xpm">0</bool>
+    <long name="image_mode">0</long>
     <bool name="inline_images">0</bool>
     <bool name="generate_cpp_for_xrc">0</bool>
     <long name="working_mode">1</long>
@@ -21,6 +21,7 @@
     <bool name="use_two_step_construction">0</bool>
     <bool name="use_enums">0</bool>
     <bool name="generate_for_xrced">0</bool>
+    <bool name="generate_virtual_eventhandlers">0</bool>
     <string name="current_platform">"&lt;All platforms&gt;"</string>
     <string name="target_wx_version">"2.8.7"</string>
     <string name="cpp_header_comment">"/////////////////////////////////////////////////////////////////////////////
@@ -138,10 +139,13 @@
         <string name="Modularity">"Modular"</string>
         <string name="GUI mode">"GUI"</string>
         <string name="Toolkit">"wxGTK+2"</string>
+        <string name="Processor type">"32-bit"</string>
         <string name="Runtime linking">"Dynamic"</string>
         <string name="Use exceptions">"Yes"</string>
         <string name="Use ODBC">"No"</string>
         <string name="Use OpenGL">"No"</string>
+        <string name="Use wxMediaCtrl">"No"</string>
+        <string name="Use wxRichTextCtrl">"Yes"</string>
         <string name="wxWidgets version">"%WXVERSION%"</string>
         <string name="Executable name">"%EXECUTABLE%"</string>
         <string name="Program arguments">""</string>
@@ -176,6 +180,7 @@
         <string name="PATH variable">"%AUTO%"</string>
         <bool name="Suppress source rules">0</bool>
         <bool name="Enable makefile generation">1</bool>
+        <string name="CFG">""</string>
         <document>
           <string name="title">"GCC Debug"</string>
           <string name="type">"gcc-config-data-document"</string>
@@ -195,10 +200,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -236,7 +244,9 @@
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
+          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
+          <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
           <string name="Minimum OS version">"%AUTO%"</string>
           <string name="Info.plist location">"%AUTO%"</string>
@@ -261,10 +271,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -302,7 +315,9 @@
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
+          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
+          <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
           <string name="Minimum OS version">"%AUTO%"</string>
           <string name="Info.plist location">"%AUTO%"</string>
@@ -327,10 +342,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -368,7 +386,9 @@
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
+          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
+          <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
           <string name="Minimum OS version">"%AUTO%"</string>
           <string name="Info.plist location">"%AUTO%"</string>
@@ -393,10 +413,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -434,7 +457,9 @@
           <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
+          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
+          <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
           <string name="Minimum OS version">"%AUTO%"</string>
           <string name="Info.plist location">"%AUTO%"</string>
@@ -459,10 +484,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxMSW"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Static"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -519,10 +547,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxMSW"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Static"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -579,10 +610,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -639,10 +673,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -699,10 +736,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -758,10 +798,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -817,10 +860,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -876,10 +922,13 @@
           <string name="Modularity">"Modular"</string>
           <string name="GUI mode">"GUI"</string>
           <string name="Toolkit">"wxGTK+2"</string>
+          <string name="Processor type">"32-bit"</string>
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
+          <string name="Use wxMediaCtrl">"No"</string>
+          <string name="Use wxRichTextCtrl">"Yes"</string>
           <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
@@ -1104,6 +1153,7 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
+                <string name="proxy-Bitmap unchecked">""</string>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
@@ -1159,6 +1209,7 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
+                <string name="proxy-Bitmap unchecked">""</string>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
@@ -1214,8 +1265,8 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <string name="proxy-Bitmap unchecked">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
                 <string name="title">"------------"</string>
@@ -1250,8 +1301,8 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <string name="proxy-Bitmap unchecked">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
             </document>
             <document>
@@ -1288,8 +1339,8 @@
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Help text">""</string>
                 <string name="proxy-Bitmap">""</string>
-                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                 <string name="proxy-Bitmap unchecked">""</string>
+                <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
             </document>
           </document>
@@ -2009,7 +2060,7 @@
             </document>
           </document>
           <document>
-            <string name="title">"wxToolBar: ID_TOOLBAR1"</string>
+            <string name="title">"wxToolBar: ID_AUITOOLBAR1"</string>
             <string name="type">"dialog-control-document"</string>
             <string name="filename">""</string>
             <string name="icon-name">"toolbar"</string>
@@ -2017,10 +2068,9 @@
             <long name="owns-file">1</long>
             <long name="title-mode">0</long>
             <long name="locked">0</long>
-            <string name="created">"5/3/2009"</string>
             <string name="proxy-type">"wbToolBarProxy"</string>
-            <string name="proxy-Id name">"ID_TOOLBAR1"</string>
-            <long name="proxy-Id value">10024</long>
+            <string name="proxy-Id name">"ID_AUITOOLBAR1"</string>
+            <long name="proxy-Id value">10059</long>
             <string name="proxy-Name">""</string>
             <string name="proxy-Class">"wxToolBar"</string>
             <string name="proxy-Base class">"wxToolBar"</string>
@@ -2097,7 +2147,6 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"20/8/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenControlWindowClick|NONE||gHistogram"</string>
               <string name="proxy-Id name">"ID_TOOL_OPEN_CONTROL_WINDOW"</string>
@@ -2120,7 +2169,6 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"20/8/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenDataWindowClick|NONE||gHistogram"</string>
               <string name="proxy-Id name">"ID_TOOL_OPEN_DATA_WINDOW"</string>
@@ -2143,7 +2191,6 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"20/8/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenExtraWindowClick|NONE||gHistogram"</string>
               <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolOpenExtraWindowUpdate|NONE||"</string>
@@ -2167,7 +2214,6 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"20/8/2009"</string>
               <string name="proxy-type">"wbToolBarSeparatorProxy"</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
@@ -2180,7 +2226,6 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"5/3/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolzoomClick|NONE||gHistogram"</string>
               <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolzoomUpdate|NONE||gHistogram"</string>
@@ -2204,7 +2249,6 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"28/5/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOpenFilteredControlWindowClick|NONE||gHistogram"</string>
               <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolOpenFilteredControlWindowUpdate|NONE||gHistogram"</string>
@@ -2228,7 +2272,6 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"28/5/2009"</string>
               <string name="proxy-type">"wbToolBarSeparatorProxy"</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
@@ -2241,7 +2284,6 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"5/3/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolgradientClick|NONE||gHistogram"</string>
               <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolgradientUpdate|NONE||"</string>
@@ -2265,10 +2307,9 @@
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="created">"5/3/2009"</string>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolhorizvertClick|NONE||gHistogram"</string>
-              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolhorizvertUpdate|NONE||"</string>
+              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolhorizvertUpdate|NONE||gHistogram"</string>
               <string name="proxy-Id name">"ID_TOOLHORIZVERT"</string>
               <long name="proxy-Id value">10027</long>
               <string name="proxy-Bitmap">"histo_horvert.xpm"</string>
@@ -2323,6 +2364,7 @@
           <string name="variable-20">"firstUnsplit|bool|FirstUnsplit|false|2|0|"</string>
           <string name="variable-21">"redoColors|bool|RedoColors|false|2|0|"</string>
           <string name="variable-22">"eventImage|wxBitmap|EventImage||0|0|"</string>
+          <string name="variable-23">"drawCaution|bool|DrawCaution|false|0|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>
@@ -7974,6 +8016,18 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="created">"25/6/2009"</string>
+          <long name="zoom-level">100</long>
+        </document>
+        <document>
+          <string name="title">"caution.xpm"</string>
+          <string name="type">"image-document"</string>
+          <string name="filename">"caution.xpm"</string>
+          <string name="icon-name">"image"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">0</long>
+          <long name="locked">0</long>
+          <string name="created">"20/8/2009"</string>
           <long name="zoom-level">100</long>
         </document>
       </document>
