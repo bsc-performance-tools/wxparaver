@@ -389,6 +389,7 @@ void gTimeline::redraw()
   eventmaskdc.SetBrush( *wxBLACK_BRUSH );
   eventmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
   eventmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
+  eventmaskdc.SelectObject(wxNullBitmap);
   wxMask *mask = new wxMask( eventMask );
   eventImage.SetMask( mask );
 
@@ -396,8 +397,10 @@ void gTimeline::redraw()
     bufferDraw.DrawBitmap( eventImage, 0, 0, true );
 
   commmaskdc.SetPen( *wxBLACK_PEN );
+  commmaskdc.SetBrush( *wxBLACK_BRUSH );
   commmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
   commmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
+  commmaskdc.SelectObject(wxNullBitmap);
   mask = new wxMask( commMask );
   commImage.SetMask( mask );
 
@@ -619,15 +622,19 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
   if( existEvents )
   {
     eventdc.SetTextForeground( *wxGREEN );
+    eventdc.SetTextBackground( *wxBLACK );
+/*    eventdc.SetPen( *wxGREEN_PEN );
+    eventdc.SetBrush( *wxGREEN_BRUSH );*/
     eventdc.SetBackgroundMode( wxTRANSPARENT );
-    eventdc.SetBackground( *wxTRANSPARENT_BRUSH );
+/*    eventdc.SetBackground( *wxBLACK_BRUSH );
+    eventdc.SetBrush( *wxGREEN_BRUSH );*/
     wxBitmap imgFlag( flag, 10, 10 );
-    wxMask *newMask = new wxMask( imgFlag, *wxWHITE );
-    imgFlag.SetMask( newMask );
+/*    wxMask *newMask = new wxMask( imgFlag, *wxWHITE );
+    imgFlag.SetMask( newMask );*/
     eventdc.DrawBitmap( imgFlag, pos, objectPosList[ row ] - 10, true );
-    //eventmaskdc.DrawBitmap( imgFlag, 200, 10, true );
     eventmaskdc.SetPen( *wxWHITE_PEN );
     eventmaskdc.SetBrush( *wxWHITE_BRUSH );
+//    eventmaskdc.DrawBitmap( imgFlag, pos, objectPosList[ row ] - 10, true );
     eventmaskdc.DrawRectangle( pos, objectPosList[ row ] - 10, 9, 9 );
   }
   
