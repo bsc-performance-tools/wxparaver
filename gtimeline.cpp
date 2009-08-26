@@ -1116,6 +1116,7 @@ void gTimeline::OnPopUpGradientColor()
 {
   myWindow->setGradientColorMode();
   myWindow->getGradientColor().allowOutOfScale( true );
+  myWindow->getGradientColor().allowOutliers( true );
   myWindow->setRedraw( true );
 }
 
@@ -1123,6 +1124,7 @@ void gTimeline::OnPopUpNotNullGradientColor()
 {
   myWindow->setGradientColorMode();
   myWindow->getGradientColor().allowOutOfScale( false );
+  myWindow->getGradientColor().allowOutliers( true );
   myWindow->setRedraw( true );
 }
 

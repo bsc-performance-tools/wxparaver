@@ -20,8 +20,8 @@
 ////@begin includes
 #include "wx/frame.h"
 #include "wx/grid.h"
-#include "wx/statusbr.h"
 #include "wx/toolbar.h"
+#include "wx/statusbr.h"
 ////@end includes
 #include <wx/statbmp.h>
 #include "wx/timer.h"
@@ -50,7 +50,6 @@ class Histogram;
 #define ID_GHISTOGRAM 10004
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
-#define ID_HISTOSTATUS 10028
 #define ID_AUITOOLBAR1 10059
 #define ID_TOOL_OPEN_CONTROL_WINDOW 10050
 #define ID_TOOL_OPEN_DATA_WINDOW 10051
@@ -59,6 +58,7 @@ class Histogram;
 #define ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW 10029
 #define ID_TOOLGRADIENT 10026
 #define ID_TOOLHORIZVERT 10027
+#define ID_HISTOSTATUS 10028
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
 #define SYMBOL_GHISTOGRAM_TITLE _("gHistogram")
 #define SYMBOL_GHISTOGRAM_IDNAME ID_GHISTOGRAM
@@ -274,6 +274,7 @@ public:
   wxBoxSizer* mainSizer;
   wxScrolledWindow* zoomHisto;
   wxGrid* gridHisto;
+  wxBoxSizer* warningSizer;
   wxStatusBar* histoStatus;
 private:
   Histogram* myHistogram;
