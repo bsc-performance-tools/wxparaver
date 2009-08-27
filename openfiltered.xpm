@@ -1,5 +1,5 @@
 /* XPM */
-static char * openfiltered_xpm[] = {
+static const char * openfiltered_xpm[] = {
 "16 16 65 1",
 " 	c None",
 ".	c #CFA861",

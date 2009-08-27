@@ -50,6 +50,8 @@ class Histogram;
 #define ID_GHISTOGRAM 10004
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
+#define wxID_CONTROLWARNING 10024
+#define wxID_3DWARNING 10057
 #define ID_AUITOOLBAR1 10059
 #define ID_TOOL_OPEN_CONTROL_WINDOW 10050
 #define ID_TOOL_OPEN_DATA_WINDOW 10051
@@ -135,6 +137,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
   void OnGridhistoUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_CONTROLWARNING
+  void OnControlWarningUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_3DWARNING
+  void On3dWarningUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_OPEN_CONTROL_WINDOW
   void OnToolOpenControlWindowClick( wxCommandEvent& event );
@@ -275,6 +283,8 @@ public:
   wxScrolledWindow* zoomHisto;
   wxGrid* gridHisto;
   wxBoxSizer* warningSizer;
+  wxStaticBitmap* controlWarning;
+  wxStaticBitmap* xtraWarning;
   wxStatusBar* histoStatus;
 private:
   Histogram* myHistogram;

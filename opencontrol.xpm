@@ -1,5 +1,5 @@
 /* XPM */
-static char * opencontrol_xpm[] = {
+static const char * opencontrol_xpm[] = {
 "16 16 6 1",
 " 	c None",
 ".	c #FFFFFF",
