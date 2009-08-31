@@ -60,6 +60,7 @@ class Histogram;
 #define ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW 10029
 #define ID_TOOLGRADIENT 10026
 #define ID_TOOLHORIZVERT 10027
+#define ID_TOOL_HIDE_COLUMNS 10058
 #define ID_HISTOSTATUS 10028
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
 #define SYMBOL_GHISTOGRAM_TITLE _("gHistogram")
@@ -179,6 +180,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_TOOLHORIZVERT
   void OnToolhorizvertUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_HIDE_COLUMNS
+  void OnToolHideColumnsClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_HIDE_COLUMNS
+  void OnToolHideColumnsUpdate( wxUpdateUIEvent& event );
 
 ////@end gHistogram event handler declarations
 
