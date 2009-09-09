@@ -206,7 +206,7 @@
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
-          <string name="Use wxRichTextCtrl">"Yes"</string>
+          <string name="Use wxRichTextCtrl">"No"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -277,7 +277,7 @@
           <string name="Use ODBC">"No"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
-          <string name="Use wxRichTextCtrl">"Yes"</string>
+          <string name="Use wxRichTextCtrl">"No"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
           <string name="Enable universal binaries">"No"</string>
@@ -299,7 +299,7 @@
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
-          <string name="Optimizations">"-O2"</string>
+          <string name="Optimizations">"-O3 -ffast-math"</string>
           <string name="Warnings">"%AUTO%"</string>
           <string name="Debug flags">"%AUTO%"</string>
           <string name="Extra compile flags">"%AUTO%"</string>
@@ -2629,6 +2629,8 @@
           <string name="variable-21">"redoColors|bool|RedoColors|false|2|0|"</string>
           <string name="variable-22">"eventImage|wxBitmap|EventImage||0|0|"</string>
           <string name="variable-23">"drawCaution|bool|DrawCaution|false|0|0|"</string>
+          <string name="variable-24">"splitChanged|bool|SplitChanged|false|2|0|"</string>
+          <string name="variable-25">"timerSize|wxTimer *|TimerSize|new wxTimer( this )|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>
@@ -2914,7 +2916,7 @@
               <long name="proxy-X">-1</long>
               <long name="proxy-Y">-1</long>
               <long name="proxy-Width">-1</long>
-              <long name="proxy-Height">-1</long>
+              <long name="proxy-Height">50</long>
               <string name="proxy-AlignH">"Expand"</string>
               <string name="proxy-AlignV">"Centre"</string>
               <long name="proxy-Stretch factor">0</long>

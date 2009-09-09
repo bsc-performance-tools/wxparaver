@@ -397,7 +397,8 @@ bool paraverMain::DoLoadCFG( const string &path )
           appendHistogram2Tree( tmpHisto );
           LoadedWindows::getInstance()->add( (*it) );
 
-          tmpHisto->SetSize( (*it)->getPosX(), (*it)->getPosY(), (*it)->getWidth(), (*it)->getHeight() );
+          tmpHisto->SetClientSize( wxRect( (*it)->getPosX(), (*it)->getPosY(),
+                                           (*it)->getWidth(), (*it)->getHeight() ) );
           if( (*it)->getShowWindow() )
           {
             tmpHisto->Show();

@@ -173,7 +173,8 @@ void BuildTree( wxWindow *parent,
   gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, window->getName() );
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
-  tmpTimeline->SetSize( window->getPosX(), window->getPosY(), window->getWidth(), window->getHeight() );
+  tmpTimeline->SetClientSize( wxRect( window->getPosX(), window->getPosY(),
+                                      window->getWidth(), window->getHeight() ) );
 
   if( window->getShowWindow() )
   {

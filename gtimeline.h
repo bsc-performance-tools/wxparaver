@@ -238,6 +238,12 @@ public:
   bool GetDrawCaution() const { return drawCaution ; }
   void SetDrawCaution(bool value) { drawCaution = value ; }
 
+  bool GetSplitChanged() const { return splitChanged ; }
+  void SetSplitChanged(bool value) { splitChanged = value ; }
+
+  wxTimer * GetTimerSize() const { return timerSize ; }
+  void SetTimerSize(wxTimer * value) { timerSize = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -359,6 +365,8 @@ private:
   bool canRedraw;
   bool firstUnsplit;
   bool redoColors;
+  bool splitChanged;
+  wxTimer * timerSize;
 ////@end gTimeline member variables
 
   wxWindow *parent;
@@ -371,6 +379,7 @@ private:
   
   void Unsplit();
   void Split();
+  void OnTimerSize( wxTimerEvent& event );
 };
 
 #endif  // _GTIMELINE_H_

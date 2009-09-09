@@ -89,6 +89,8 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
 ////@end gTimeline event table entries
 
+  EVT_TIMER( wxID_ANY, gTimeline::OnTimerSize )
+  
 END_EVENT_TABLE()
 
 static char flag[20] = { 0xc7, 0x01, 0x7d, 0x03, 0xab, 0x02, 0x55, 0x03, 0xab, 0x02, 0xd7, 0x03,
@@ -157,6 +159,8 @@ void gTimeline::Init()
   firstUnsplit = false;
   redoColors = false;
   drawCaution = false;
+  splitChanged = false;
+  timerSize = new wxTimer( this );
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -194,7 +198,7 @@ void gTimeline::CreateControls()
 
   drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
   drawZone->SetScrollbars(1, 1, 0, 0);
-  infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+  infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxSize(-1, splitter->ConvertDialogToPixels(wxSize(-1, 50)).y), wxBK_DEFAULT );
 
   whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
 
@@ -325,10 +329,10 @@ void gTimeline::redraw()
   TObjectOrder maxObj = selectedSet[ selectedSet.size() - 1 ];
 
   ready = false;
-  bufferImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
-  drawImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
-  commImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
-  eventImage.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() );
+  bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
+  drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
+  commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
+  eventImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   wxMemoryDC bufferDraw( bufferImage );
   wxMemoryDC commdc( commImage );
   wxMemoryDC eventdc( eventImage );
@@ -339,13 +343,13 @@ void gTimeline::redraw()
   eventdc.SetBackground( *wxTRANSPARENT_BRUSH );
   eventdc.Clear();
   wxBitmap commMask;
-  commMask.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight(), 1 );
+  commMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC commmaskdc( commMask );
   commmaskdc.SetBackground( *wxBLACK_BRUSH );
   commmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   commmaskdc.Clear();
   wxBitmap eventMask;
-  eventMask.Create( drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight(), 1 );
+  eventMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC eventmaskdc( eventMask );
   eventmaskdc.SetBackground( *wxBLACK_BRUSH );
   eventmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
@@ -379,9 +383,13 @@ void gTimeline::redraw()
   if( drawCaution )
   {
     wxBitmap cautionImage( caution_xpm );
+    bufferDraw.SetPen( *wxBLACK_PEN );
+    bufferDraw.SetBrush( *wxBLACK_BRUSH );
+    bufferDraw.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
+                              drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
     bufferDraw.DrawBitmap( cautionImage,
                            drawBorder,
-                           drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                           drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
                            true );
   }
   
@@ -623,18 +631,11 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
   {
     eventdc.SetTextForeground( *wxGREEN );
     eventdc.SetTextBackground( *wxBLACK );
-/*    eventdc.SetPen( *wxGREEN_PEN );
-    eventdc.SetBrush( *wxGREEN_BRUSH );*/
     eventdc.SetBackgroundMode( wxTRANSPARENT );
-/*    eventdc.SetBackground( *wxBLACK_BRUSH );
-    eventdc.SetBrush( *wxGREEN_BRUSH );*/
     wxBitmap imgFlag( flag, 10, 10 );
-/*    wxMask *newMask = new wxMask( imgFlag, *wxWHITE );
-    imgFlag.SetMask( newMask );*/
     eventdc.DrawBitmap( imgFlag, pos, objectPosList[ row ] - 10, true );
     eventmaskdc.SetPen( *wxWHITE_PEN );
     eventmaskdc.SetBrush( *wxWHITE_BRUSH );
-//    eventmaskdc.DrawBitmap( imgFlag, pos, objectPosList[ row ] - 10, true );
     eventmaskdc.DrawRectangle( pos, objectPosList[ row ] - 10, 9, 9 );
   }
   
@@ -673,15 +674,18 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
   if( !IsShown() )
     return;
-  if( canRedraw &&
-      ( event.GetSize().GetWidth() != myWindow->getWidth() ||
-        event.GetSize().GetHeight() != myWindow->getHeight() ) )
+  if( splitChanged )
   {
-    if( ready )
-      redraw();
-
+    resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
+    splitChanged = false;
+  }
+  else if( canRedraw &&
+           ( event.GetSize().GetWidth() != myWindow->getWidth() ||
+             event.GetSize().GetHeight() != myWindow->getHeight() ) )
+  {
     myWindow->setWidth( event.GetSize().GetWidth() );
     myWindow->setHeight( event.GetSize().GetHeight() );
+    timerSize->Start( 100, true );
   }
   event.Skip();
 }
@@ -700,7 +704,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
     firstUnsplit = true;
     splitter->Unsplit();
 //    this->SetSize( myWindow->getWidth(), myWindow->getHeight() );
-    drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+    drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
     canRedraw = true;
     if( !ready )
       redraw();
@@ -1450,9 +1454,10 @@ void gTimeline::OnNotebookPageChanging( wxNotebookEvent& event )
   infoZone->ChangeSelection( event.GetSelection() );
   if( !splitter->IsSplit() )
   {
-    splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+    //splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+    Split();
   }
-  drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+//  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
   canRedraw = true;
 }
 
@@ -1595,12 +1600,12 @@ void gTimeline::printWWRecords( wxString& onString, TObjectOrder whichRow )
 void gTimeline::resizeDrawZone( int width, int height )
 {
   canRedraw = false;
-  drawZone->SetSize( width, height );
+  drawZone->SetClientSize( width, height );
   if( !splitter->IsSplit() )
     this->SetClientSize( width, height );
   else
   {
-    this->SetClientSize( width, height + infoZone->GetSize().GetHeight() );
+    this->SetClientSize( width, height + infoZone->GetClientSize().GetHeight() );
     splitter->SetSashPosition( height );
   }
   myWindow->setWidth( width );
@@ -1628,34 +1633,31 @@ void gTimeline::OnPopUpInfoPanel()
 void gTimeline::Unsplit()
 {
   canRedraw = false;
+  this->Freeze();
+
 #ifdef WIN32
-  this->SetSize( this->GetSize().GetWidth(), this->GetSize().GetHeight() -
-                                             infoZone->GetSize().GetHeight() );
+  this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() -
+                                                         infoZone->GetClientSize().GetHeight() );
 #else
-  this->SetSize( this->GetSize().GetWidth(), myWindow->getHeight() );
+  this->SetClientSize( this->GetClientSize().GetWidth(), myWindow->getHeight() );
 #endif
-  drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
+
+  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
+  this->Thaw();
   canRedraw = true;
+  splitChanged = true;
 }
 
 void gTimeline::Split()
 {
-#ifndef WIN32
-      int currentHeight = this->GetSize().GetHeight();
-#endif
-      canRedraw = false;
-#ifdef WIN32
-      this->SetSize( this->GetSize().GetWidth(),
-                     this->GetSize().GetHeight() + infoZone->GetSize().GetHeight() );
-      splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
-#else
-      int addHeight = infoZone->GetSize().GetHeight();
-      this->SetSize( this->GetSize().GetWidth(),
-                     this->GetSize().GetHeight() + ( addHeight < 200 )?200:addHeight );
-      splitter->SplitHorizontally( drawZone, infoZone, currentHeight );
-#endif
-      drawZone->SetSize( myWindow->getWidth(), myWindow->getHeight() );
-      canRedraw = true;
+  canRedraw = false;
+  this->Freeze();
+  splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
+  splitter->SetSashPosition( myWindow->getHeight() );
+  this->Thaw();
+  canRedraw = true;
+  splitChanged = true;
 }
 
 
@@ -1923,3 +1925,9 @@ void gTimeline::OnCheckFunctionlinecolorUpdate( wxUpdateUIEvent& event )
   event.Check( myWindow->getDrawFunctionLineColor() );
 }
 
+void gTimeline::OnTimerSize( wxTimerEvent& event )
+{
+  if( ready )
+    redraw();
+  Refresh();
+}
