@@ -21,6 +21,7 @@
 #endif
 
 ////@begin includes
+#include "wx/imaglist.h"
 ////@end includes
 
 #include "wx/imaglist.h"
@@ -244,20 +245,20 @@ void paraverMain::CreateControls()
 
   wxMenuBar* menuBar = new wxMenuBar;
   menuFile = new wxMenu;
-  menuFile->Append(wxID_OPEN, _("Load &Trace..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(wxID_OPEN, _("Load &Trace..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu5 = new wxMenu;
   menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu8 = new wxMenu;
   menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), _T(""), wxITEM_NORMAL);
+  menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
-  menuFile->Append(wxID_EXIT, _("&Quit"), _T(""), wxITEM_NORMAL);
+  menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
   menuHelp = new wxMenu;
-  menuHelp->Append(wxID_ABOUT, _("&About..."), _T(""), wxITEM_NORMAL);
+  menuHelp->Append(wxID_ABOUT, _("&About..."), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuHelp, _("&Help"));
   itemFrame1->SetMenuBar(menuBar);
 
@@ -491,12 +492,12 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   wxUnusedVar(name);
   if (name == _T("new_window.xpm"))
   {
-    wxBitmap bitmap( application_star_xpm);
+    wxBitmap bitmap(application_star_xpm);
     return bitmap;
   }
   else if (name == _T("new_derived_window.xpm"))
   {
-    wxBitmap bitmap( application_add_xpm);
+    wxBitmap bitmap(application_add_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -542,11 +543,13 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     if( currentTimeline != NULL )
     {
       currentTimeline->setWindowBeginTime( currentTimeline->windowUnitsToTraceUnits( tmpValue ) );
+      currentTimeline->setChanged( true );
       currentTimeline->setRedraw( true );
     }
     else if( currentHisto != NULL )
     {
       currentHisto->setWindowBeginTime( currentHisto->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
+      currentHisto->setChanged( true );
       currentHisto->setRecalc( true );
     }
   }
@@ -619,33 +622,26 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentHisto->setRedraw( true );
   }
   // Histogram related properties
-  else if( propName == "Calculate all" )
-    currentHisto->setCalculateAll( property->GetValue().GetBool() );
   else if( propName == "Type" )
   {
     if( property->GetValue().GetLong() == 0 )
       currentHisto->setCurrentStat( currentHisto->getFirstCommStatistic() );
     else
       currentHisto->setCurrentStat( currentHisto->getFirstStatistic() );
-    currentHisto->setChanged( true );
     currentHisto->setRedraw( true );
+    currentHisto->setChanged( true );
   }
   else if( propName == "Statistic" )
   {
     currentHisto->setCurrentStat( string( property->GetDisplayedString().c_str() ) );
     currentHisto->setRedraw( true );
   }
-  else if( propName == "Activate 3D" )
-  {
-    if( property->GetValueAsString() == wxT( "True" ) )
-      currentHisto->setExtraControlWindow( currentHisto->getControlWindow() );
-    else
-      currentHisto->clearExtraControlWindow();
-    currentHisto->setRecalc( true );
-  }
   else if( propName == "3rd Window" )
   {
-    currentHisto->setExtraControlWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
+    if( property->GetValue().GetLong() == -1 )
+      currentHisto->clearExtraControlWindow();
+    else
+      currentHisto->setExtraControlWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
     currentHisto->setRecalc( true );
   }
   else if( propName == "3DMinimum" )

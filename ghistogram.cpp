@@ -511,6 +511,8 @@ void gHistogram::fillZoom()
   bool horizontal = myHistogram->getHorizontal();
   double& cellWidth = zoomCellWidth;
   double& cellHeight = zoomCellHeight;
+  vector<THistogramColumn> noVoidColumns;
+  vector<bool> selectedColumns;
   
   gridHisto->Show( false );
   zoomHisto->Show( true );
@@ -538,26 +540,58 @@ void gHistogram::fillZoom()
     curPlane = myHistogram->getSelectedPlane();
 
   numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
-  if( horizontal )
+
+  if( myHistogram->getHideColumns() )
   {
-    numDrawCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
-    numDrawRows = myHistogram->getNumRows();
+    if( commStat )
+      columnSelection.init( myHistogram->getCommColumnTotals(), idStat, numCols, curPlane );
+    else
+      columnSelection.init( myHistogram->getColumnTotals(), idStat, numCols, curPlane );
+    columnSelection.getSelected( noVoidColumns );
+    if( horizontal )
+    {
+      numDrawCols = noVoidColumns.size();
+      numDrawRows = myHistogram->getNumRows();
+    }
+    else
+    {
+      numDrawCols = myHistogram->getNumRows();
+      numDrawRows = noVoidColumns.size();
+    }
+    columnSelection.getSelected( selectedColumns );
   }
   else
   {
-    numDrawCols = myHistogram->getNumRows();
-    numDrawRows = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+    if( horizontal )
+    {
+      numDrawCols = numCols;
+      numDrawRows = myHistogram->getNumRows();
+    }
+    else
+    {
+      numDrawCols = myHistogram->getNumRows();
+      numDrawRows = numCols;
+    }
+    selectedColumns.insert( selectedColumns.begin(), numCols, true );
   }
-
+  
   cellWidth = (double)( zoomHisto->GetSize().GetWidth() ) / (double)( numDrawCols + 1 );
   cellHeight = (double)( zoomHisto->GetSize().GetHeight() ) / (double)( numDrawRows + 1 );
 
-  for( THistogramColumn iCol = 0; iCol < numCols; iCol++ )
+  THistogramColumn tmpNumCols = numCols;
+  if( myHistogram->getHideColumns() )
+    tmpNumCols = noVoidColumns.size();
+
+  for( THistogramColumn iCol = 0; iCol < tmpNumCols; iCol++ )
   {
+    THistogramColumn realCol = iCol;
+    if( myHistogram->getHideColumns() )
+      realCol = noVoidColumns[ iCol ];
+      
     if( commStat )
-      myHistogram->setCommFirstCell( iCol, curPlane );
+      myHistogram->setCommFirstCell( realCol, curPlane );
     else
-      myHistogram->setFirstCell( iCol, curPlane );
+      myHistogram->setFirstCell( realCol, curPlane );
 
     bufferDraw.SetBrush( *wxGREY_BRUSH );
     bufferDraw.SetPen( *wxTRANSPARENT_PEN );
@@ -568,16 +602,38 @@ void gHistogram::fillZoom()
     THistogramColumn endCol = beginCol;
     if( horizontal )
     {
-      while( ( endCol + 1 ) <= numCols && ( endCol + 2 ) * cellWidth == ( beginCol + 1 ) * cellWidth )
+      while( ( endCol + 1 ) <= tmpNumCols 
+             && ( endCol + 2 ) * cellWidth == ( beginCol + 1 ) * cellWidth )
+      {
         ++endCol;
+        THistogramColumn tmpEndCol = endCol;
+        if( myHistogram->getHideColumns() )
+          tmpEndCol = noVoidColumns[ endCol ];
+        if( commStat )
+          myHistogram->setCommFirstCell( tmpEndCol, curPlane );
+        else
+          myHistogram->setFirstCell( tmpEndCol, curPlane );
+      }
     }
     else
     {
-      while( ( endCol + 1 ) <= numCols && ( endCol + 2 ) * cellHeight == ( beginCol + 1 ) * cellHeight )
+      while( ( endCol + 1 ) <= tmpNumCols 
+             && ( endCol + 2 ) * cellHeight == ( beginCol + 1 ) * cellHeight )
+      {
         ++endCol;
+        THistogramColumn tmpEndCol = endCol;
+        if( myHistogram->getHideColumns() )
+          tmpEndCol = noVoidColumns[ endCol ];
+        if( commStat )
+          myHistogram->setCommFirstCell( tmpEndCol, curPlane );
+        else
+          myHistogram->setFirstCell( tmpEndCol, curPlane );
+      }
     }
     
-    drawColumn( beginCol, endCol, bufferDraw );
+    drawColumn( beginCol, endCol, noVoidColumns, bufferDraw );
+    if( endCol > iCol )
+      iCol = endCol;
   }
   
   bufferDraw.SetPen( *wxBLACK_PEN );
@@ -602,7 +658,7 @@ void gHistogram::fillZoom()
 }
 
 void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn,
-                             wxMemoryDC& bufferDraw )
+                             vector<THistogramColumn>& noVoidColumns, wxMemoryDC& bufferDraw )
 {
   TObjectOrder numRows = myHistogram->getNumRows();
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
@@ -632,8 +688,12 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       
     valuesColumns.clear();
 
-    for( THistogramColumn iCol = beginColumn; iCol <= endColumn; ++iCol )
+    for( THistogramColumn drawCol = beginColumn; drawCol <= endColumn; ++drawCol )
     {
+      THistogramColumn iCol = drawCol;
+      if( myHistogram->getHideColumns() )
+        iCol = noVoidColumns[ drawCol ];
+        
       if( !( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
             ( !commStat && myHistogram->endCell( iCol, curPlane ) ) ) )
       {
@@ -1444,18 +1504,28 @@ void gHistogram::OnZoomContextMenu( wxContextMenuEvent& event )
 void gHistogram::OnTimerZoom( wxTimerEvent& event )
 {
   wxString text;
+  vector<THistogramColumn> noVoidColumns;
   
   THistogramColumn column = myHistogram->getHorizontal() ? floor( lastPosZoomX / zoomCellWidth ) :
                                                            floor( lastPosZoomY / zoomCellHeight );
   TObjectOrder row = myHistogram->getHorizontal() ? floor( lastPosZoomY / zoomCellHeight ) :
                                                     floor( lastPosZoomX / zoomCellWidth );
+
+  
   if( row > 0 )
     text << _( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
          << _( "  " );
 
   if( column > 0 )
+  {
+    if( myHistogram->getHideColumns() )
+    {
+      columnSelection.getSelected( noVoidColumns );
+      column = noVoidColumns[ column - 1 ] + 1;
+    }
     text << _( myHistogram->getColumnLabel( column - 1 ).c_str() )
          << _( "  " );
+  }
   
   if( row > 0 && column > 0 )
   {
@@ -1473,6 +1543,7 @@ TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjec
   THistogramColumn plane;
   TSemanticValue value = 0.0;
   UINT16 idStat;
+  
   myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
   
   if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
@@ -1592,6 +1663,11 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
       yEnd = zoomPointBegin.y;
     }
     
+    if( xBegin < 0 ) xBegin = 0;
+    if( yBegin < 0 ) yBegin = 0;
+    if( xEnd > zoomHisto->GetSize().GetWidth() ) xEnd = zoomHisto->GetSize().GetWidth();
+    if( yEnd > zoomHisto->GetSize().GetHeight() ) yEnd = zoomHisto->GetSize().GetHeight();
+
     THistogramColumn columnBegin, columnEnd;
     TObjectOrder objectBegin, objectEnd;
     openControlGetParameters( xBegin, xEnd, yBegin, yEnd,
@@ -1607,17 +1683,29 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
   columnBegin = myHistogram->getHorizontal() ? floor( xBegin / zoomCellWidth ) :
                                                floor( yBegin / zoomCellHeight );
   if( columnBegin > 0 ) --columnBegin;
+  else if( columnBegin < 0 ) columnBegin = 0;
   columnEnd = myHistogram->getHorizontal() ? floor( xEnd / zoomCellWidth ) :
                                              floor( yEnd / zoomCellHeight );
   if( columnEnd > 0 ) --columnEnd;
+  else if( columnEnd < 0 ) columnEnd = 0;
   objectBegin = myHistogram->getHorizontal() ? floor( yBegin / zoomCellHeight ) :
                                                floor( xBegin / zoomCellWidth );
   if( objectBegin > 0 ) --objectBegin;
+  else if( objectBegin < 0 ) objectBegin = 0;
   objectBegin = selectedRows[ objectBegin ];
   objectEnd = myHistogram->getHorizontal() ? floor( yEnd / zoomCellHeight ) :
                                              floor( xEnd / zoomCellWidth );
   if( objectEnd > 0 ) --objectEnd;
+  else if( objectEnd < 0 ) objectEnd = 0;
   objectEnd = selectedRows[ objectEnd ];
+
+  if( myHistogram->getHideColumns() )
+  {
+    vector<THistogramColumn> noVoidColumns;
+    columnSelection.getSelected( noVoidColumns );
+    columnBegin = noVoidColumns[ columnBegin ];
+    columnEnd = noVoidColumns[ columnEnd ];
+  }
 }
 
 void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,

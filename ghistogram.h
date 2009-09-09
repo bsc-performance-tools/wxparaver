@@ -233,6 +233,9 @@ public:
   vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
   void SetSelectedRows(vector<TObjectOrder> value) { selectedRows = value ; }
 
+  SelectionManagement<THistogramColumn,int> GetColumnSelection() const { return columnSelection ; }
+  void SetColumnSelection(SelectionManagement<THistogramColumn,int> value) { columnSelection = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -308,6 +311,7 @@ private:
   wxBitmap drawImage;
   bool openControlDragging;
   vector<TObjectOrder> selectedRows;
+  SelectionManagement<THistogramColumn,int> columnSelection;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
 
@@ -315,7 +319,8 @@ private:
   void OnTimerZoom( wxTimerEvent& event );
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
 //  ZoomHistory<TTime, TObjectOrder> *zoomHistory;
-  void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, wxMemoryDC& bufferDraw );
+  void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
+                   vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
   void fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat );
   void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                  THistogramColumn& columnBegin, THistogramColumn& columnEnd,

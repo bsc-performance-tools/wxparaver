@@ -878,7 +878,6 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   if( thirdWinCatCollapsed )
     thirdWinCat->SetFlagsFromString( "COLLAPSED" );
   
-  windowProperties->AppendIn( thirdWinCat, new wxBoolProperty( wxT("Activate 3D"), wxPG_LABEL, whichHisto->getThreeDimensions() ) );
   validWin.clear();
   dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
                                                          whichHisto->getDataWindow();
@@ -886,13 +885,13 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   arrayStr.Clear();
   arrayInt.Clear();
   selected = -1;
+  arrayStr.Add( wxT( "none" ) );
+  arrayInt.Add( -1 );
   for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
     arrayStr.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
     arrayInt.Add( (*it) );
-    if( ( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getExtraControlWindow() ) ||
-        ( whichHisto->getExtraControlWindow() == NULL && 
-          LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getControlWindow() ) )
+    if( ( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getExtraControlWindow() ) )
       selected = (*it);
   }
   wxEnumProperty *tmp3rdWin = new wxEnumProperty( wxT("3rd Window"), wxPG_LABEL, arrayStr, arrayInt, selected );
@@ -923,7 +922,6 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   if( !whichHisto->getThreeDimensions() )
   {
-    tmp3rdWin->SetFlagsFromString( "DISABLED" );
     tmp3dMin->SetFlagsFromString( "DISABLED" );
     tmp3dMax->SetFlagsFromString( "DISABLED" );
     tmp3dDelta->SetFlagsFromString( "DISABLED" );

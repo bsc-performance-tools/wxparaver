@@ -189,7 +189,7 @@ void gTimeline::CreateControls()
 ////@begin gTimeline content construction
   gTimeline* itemFrame1 = this;
 
-  splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_3DBORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT|wxNO_BORDER );
+  splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
   splitter->SetMinimumPaneSize(0);
 
   drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
@@ -671,6 +671,8 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
  */
 void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
+  if( !IsShown() )
+    return;
   if( canRedraw &&
       ( event.GetSize().GetWidth() != myWindow->getWidth() ||
         event.GetSize().GetHeight() != myWindow->getHeight() ) )
@@ -838,7 +840,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   endRow   = selected[ endRow ];
 
   if( zooming && ready &&
-      ( zoomBeginX != zoomEndX || zoomBeginY != zoomEndY ) )
+      ( zoomEndX - zoomBeginX > 3.0 || zoomBeginY != zoomEndY ) )
   {
     if( !zoomXY )
     {
@@ -1308,20 +1310,6 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     else
       zoomXY = false;
 
-    wxMemoryDC memdc( drawImage );
-    memdc.SetBackgroundMode( wxTRANSPARENT );
-    memdc.SetBackground( *wxTRANSPARENT_BRUSH );
-    memdc.Clear();
-//#ifdef __WXGTK__
-#if wxTEST_GRAPHICS == 1
-    wxGCDC dc( memdc );
-    dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
-#else
-    wxDC& dc = memdc;
-    dc.SetBrush( *wxTRANSPARENT_BRUSH );
-#endif
-    dc.SetPen( *wxWHITE_PEN );
-
     long beginX = zoomBeginX > event.GetX() ? event.GetX() : zoomBeginX;
     long beginY = drawBorder;
     long endX = zoomBeginX < event.GetX() ? event.GetX() : zoomBeginX;
@@ -1347,14 +1335,30 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
       height = endY - beginY;
     }
 
-    dc.DrawBitmap( bufferImage, 0, 0, false );
-    if( myWindow->getDrawFlags() )
-      dc.DrawBitmap( eventImage, 0, 0, true );
-    if( myWindow->getDrawCommLines() )
-      dc.DrawBitmap( commImage, 0, 0, true );
-    dc.DrawRectangle( beginX, beginY, width, height );
+    if( endX - beginX > 3.0 )
+    {
+      wxMemoryDC memdc( drawImage );
+      memdc.SetBackgroundMode( wxTRANSPARENT );
+      memdc.SetBackground( *wxTRANSPARENT_BRUSH );
+      memdc.Clear();
+#if wxTEST_GRAPHICS == 1
+      wxGCDC dc( memdc );
+      dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
+#else
+      wxDC& dc = memdc;
+      dc.SetBrush( *wxTRANSPARENT_BRUSH );
+#endif
+      dc.SetPen( *wxWHITE_PEN );
 
-    drawZone->Refresh();
+      dc.DrawBitmap( bufferImage, 0, 0, false );
+      if( myWindow->getDrawFlags() )
+        dc.DrawBitmap( eventImage, 0, 0, true );
+      if( myWindow->getDrawCommLines() )
+        dc.DrawBitmap( commImage, 0, 0, true );
+      dc.DrawRectangle( beginX, beginY, width, height );
+
+      drawZone->Refresh();
+    }
 
     if( beginX < objectAxisPos )
       beginX = 0;
