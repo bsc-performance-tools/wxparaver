@@ -776,6 +776,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
   wxMemoryDC dc( bufferImage );
+  bool outOfDraw = false;
 
   if( event.ShiftDown() )
   {
@@ -800,9 +801,15 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
       zoomBeginX -= objectAxisPos;
   }
   if( zoomEndX < objectAxisPos )
+  {
     zoomEndX = 0;
+    outOfDraw = true;
+  }
   else if( zoomEndX > dc.GetSize().GetWidth() - drawBorder )
+  {
     zoomEndX = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
+    outOfDraw = true;
+  }
   else
     zoomEndX -= objectAxisPos;
 
@@ -826,9 +833,15 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   }
 
   if( zoomEndY > timeAxisPos )
+  {
     zoomEndY = timeAxisPos - 1;
+    outOfDraw = true;
+  }
   if( zoomEndY < drawBorder )
+  {
     zoomEndY = drawBorder;
+    outOfDraw = true;
+  }
 
   vector<TObjectOrder> selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
@@ -862,7 +875,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
-  else
+  else if( !outOfDraw )
   {
     if( !splitter->IsSplit() )
     {
