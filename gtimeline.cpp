@@ -126,9 +126,7 @@ bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption
 
   CreateControls();
 ////@end gTimeline creation
-#ifndef WIN32
   splitter->Unsplit();
-#endif
   return true;
 }
 
@@ -1648,12 +1646,12 @@ void gTimeline::Unsplit()
   canRedraw = false;
   this->Freeze();
 
-#ifdef WIN32
+/*#ifdef WIN32
   this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() -
                                                          infoZone->GetClientSize().GetHeight() );
-#else
+#else*/
   this->SetClientSize( this->GetClientSize().GetWidth(), myWindow->getHeight() );
-#endif
+//#endif
 
   drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
   this->Thaw();
@@ -1666,6 +1664,10 @@ void gTimeline::Split()
   canRedraw = false;
   this->Freeze();
   splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+#ifdef WIN32
+  this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() +
+                                                         infoZone->GetClientSize().GetHeight() + 5 );
+#endif
   drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
   splitter->SetSashPosition( myWindow->getHeight() );
   this->Thaw();

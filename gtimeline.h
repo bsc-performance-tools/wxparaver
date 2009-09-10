@@ -28,6 +28,7 @@
 #include "wx/choicdlg.h"
 #include "wx/dcmemory.h"
 #include "wx/scrolwin.h"
+#include "wx/timer.h"
 
 #include "paraverkerneltypes.h"
 #include "recordlist.h"
