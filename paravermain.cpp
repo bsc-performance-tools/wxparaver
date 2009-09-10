@@ -43,10 +43,12 @@
 #include "saveconfigurationdialog.h"
 #include "windows_tree.h"
 #include "derivedtimelinedialog.h"
+#include "histogramdialog.h"
 
 ////@begin XPM images
 #include "new_window.xpm"
 #include "new_derived_window.xpm"
+#include "new_histogram.xpm"
 ////@end XPM images
 
 #include "table.xpm"
@@ -86,6 +88,9 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
+
+  EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
+  EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
 
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
@@ -271,6 +276,10 @@ void paraverMain::CreateControls()
   wxBitmap itemtool17BitmapDisabled;
   tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
+  wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  wxBitmap itemtool18BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -499,6 +508,11 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   else if (name == _T("new_derived_window.xpm"))
   {
     wxBitmap bitmap(application_add_xpm);
+    return bitmap;
+  }
+  else if (name == _T("new_histogram.xpm"))
+  {
+    wxBitmap bitmap(new_histogram_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -1501,7 +1515,83 @@ void paraverMain::ShowDerivedDialog()
     if ( found )
 //    last->Raise();
       currentWindow = last;
+  }
+}
 
+
+void paraverMain::ShowHistogramDialog()
+{
+  HistogramDialog histogramDialog( this );
+
+  vector<TWindowID> timelines;
+  LoadedWindows::getInstance()->getAll( timelines );
+
+  histogramDialog.SetControlTimelines( timelines );
+// esto lo hace internamente
+//  histogramDialog.SetDataTimelines( timelines ); 
+
+  vector< pair< TRecordTime, TRecordTime > > ranges;
+  // Window Times
+  ranges.push_back( make_pair( currentTimeline->getWindowBeginTime(), currentTimeline->getWindowEndTime() ) );
+  // Trace Times
+  ranges.push_back( make_pair( 0.0, currentTimeline->getTrace()->getEndTime() ) );
+
+  histogramDialog.SetTimeRange( ranges );
+
+  histogramDialog.TransferDataToWindow( currentTimeline );
+
+  if( histogramDialog.ShowModal() == wxID_OK )
+  {
+    vector< TWindowID > controlTimeline = histogramDialog.GetControlTimelines();
+    vector< TWindowID > dataTimeline = histogramDialog.GetDataTimelines();
+    vector< TWindowID > extraControlTimeline = histogramDialog.GetExtraControlTimelineList();
+    ranges.clear();
+    ranges = histogramDialog.GetTimeRange();
+
+    Histogram *newHistogram = Histogram::create( localKernel );
+
+    newHistogram->setName( "New Histogram" );
+/*
+   newHistogram->setPosX();
+    newHistogram->setPosY();
+    newHistogram->setWidth();
+    newHistogram->setHeigth();
+*/
+    newHistogram->setShowWindow( true );
+    newHistogram->setCalculateAll( true );
+    newHistogram->setCurrentStat( "Time" );
+
+    newHistogram->setWindowBeginTime( ranges[0].first );
+    newHistogram->setWindowEndTime( ranges[0].second );
+
+    newHistogram->setControlWindow( LoadedWindows::getInstance()->getWindow( controlTimeline[0] ) );
+    newHistogram->setControlMin( histogramDialog.GetControlTimelineMin() );
+    newHistogram->setControlMax( histogramDialog.GetControlTimelineMax() );
+    newHistogram->setControlDelta( histogramDialog.GetControlTimelineDelta() );
+
+    newHistogram->setDataWindow( LoadedWindows::getInstance()->getWindow( dataTimeline[0] ) );
+
+    if ( !extraControlTimeline.empty() )
+    {
+      newHistogram->setExtraControlWindow( LoadedWindows::getInstance()->getWindow( extraControlTimeline[0] ) );
+      newHistogram->setExtraControlMin( histogramDialog.GetExtraControlTimelineMin() );
+      newHistogram->setExtraControlMax( histogramDialog.GetExtraControlTimelineMax() );
+      newHistogram->setExtraControlDelta( histogramDialog.GetExtraControlTimelineDelta() );
+    }
+
+    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, newHistogram->getName() );
+    tmpHisto->SetHistogram( newHistogram );
+
+    appendHistogram2Tree( tmpHisto );
+    LoadedWindows::getInstance()->add( newHistogram );
+
+    tmpHisto->SetSize( newHistogram->getPosX(), newHistogram->getPosY(),
+                       newHistogram->getWidth(), newHistogram->getHeight() );
+    if( newHistogram->getShowWindow() )
+    {
+      tmpHisto->Show();
+    }
+    tmpHisto->execute();
   }
 }
 
@@ -1523,10 +1613,8 @@ void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent& event )
   {
     vector<Window *> timelines;
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
-    if ( ( timelines.size() > 0 ) && ( currentTimeline != NULL ))
-      tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, true );
-    else
-      tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
+
+    tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, ( timelines.size() > 0 ) && ( currentTimeline != NULL ) );
   }
   else
     tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
@@ -1586,3 +1674,24 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
     }
   }
 }
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_HISTOGRAM
+ */
+
+void paraverMain::OnNewHistogramClick( wxCommandEvent& event )
+{
+  ShowHistogramDialog();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_NEW_HISTOGRAM
+ */
+
+void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent& event )
+{
+  tbarMain->EnableTool( ID_NEW_HISTOGRAM, currentTimeline != NULL );
+}
+
