@@ -312,6 +312,13 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 void gTimeline::redraw()
 {
+  if( splitChanged )
+  {
+    resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
+    splitChanged = false;
+    return;
+  }
+
   redoColors = true;
   
   wxString winTitle = GetTitle();
@@ -672,20 +679,18 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 {
   if( !IsShown() )
     return;
-  if( splitChanged )
-  {
-    resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
-    splitChanged = false;
-  }
   else if( canRedraw &&
            ( event.GetSize().GetWidth() != myWindow->getWidth() ||
              event.GetSize().GetHeight() != myWindow->getHeight() ) )
   {
-    myWindow->setWidth( event.GetSize().GetWidth() );
-    myWindow->setHeight( event.GetSize().GetHeight() );
+    if( !splitChanged )
+    {
+      myWindow->setWidth( event.GetSize().GetWidth() );
+      myWindow->setHeight( event.GetSize().GetHeight() );
+    }
     timerSize->Start( 100, true );
   }
-  event.Skip();
+//  event.Skip();
 }
 
 
@@ -1616,7 +1621,7 @@ void gTimeline::resizeDrawZone( int width, int height )
     this->SetClientSize( width, height );
   else
   {
-    this->SetClientSize( width, height + infoZone->GetClientSize().GetHeight() );
+    this->SetClientSize( width, height + infoZone->GetClientSize().GetHeight() + 5 );
     splitter->SetSashPosition( height );
   }
   myWindow->setWidth( width );
@@ -1664,12 +1669,13 @@ void gTimeline::Split()
   canRedraw = false;
   this->Freeze();
   splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
+/*  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
+  splitter->SetSashPosition( myWindow->getHeight() );*/
+  resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
 #ifdef WIN32
   this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() +
                                                          infoZone->GetClientSize().GetHeight() + 5 );
 #endif
-  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
-  splitter->SetSashPosition( myWindow->getHeight() );
   this->Thaw();
   canRedraw = true;
   splitChanged = true;

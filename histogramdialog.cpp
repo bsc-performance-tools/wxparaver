@@ -648,10 +648,14 @@ void HistogramDialog::OnHistogramButtonselectUpdate( wxUpdateUIEvent& event )
 
 void HistogramDialog::presetNumericField( double value, wxTextCtrl *field )
 {
-
+  stringstream auxSStr;
   wxString auxNumber;
 
-  auxNumber << value;
+  locale mylocale("");
+  auxSStr.imbue( mylocale );
+  auxSStr << fixed;
+  auxSStr << value;
+  auxNumber << auxSStr.str();
   field->SetValue( auxNumber );
 }
 
