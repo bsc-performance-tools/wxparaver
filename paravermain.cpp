@@ -1585,8 +1585,8 @@ void paraverMain::ShowHistogramDialog()
     appendHistogram2Tree( tmpHisto );
     LoadedWindows::getInstance()->add( newHistogram );
 
-    tmpHisto->SetSize( newHistogram->getPosX(), newHistogram->getPosY(),
-                       newHistogram->getWidth(), newHistogram->getHeight() );
+    tmpHisto->SetClientSize( wxRect( newHistogram->getPosX(), newHistogram->getPosY(),
+                                     newHistogram->getWidth(), newHistogram->getHeight() ) );
     if( newHistogram->getShowWindow() )
     {
       tmpHisto->Show();
