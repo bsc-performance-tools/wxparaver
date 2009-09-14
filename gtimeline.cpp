@@ -850,12 +850,14 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
   TObjectOrder numObjects = selected.size();
   double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
-  beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder) / heightPerRow ) );
+  beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
   endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
 
-  if( endRow > numObjects )
+  if( endRow >= numObjects )
     endRow = numObjects - 1;
-
+  if( beginRow >= numObjects )
+    beginRow = numObjects - 1;
+    
   beginRow = selected[ beginRow ];
   endRow   = selected[ endRow ];
 
