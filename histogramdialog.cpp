@@ -23,6 +23,7 @@
 ////@begin includes
 ////@end includes
 
+#include <sstream>
 #include "histogramdialog.h"
 #include "paraverconfig.h"
 // #include "histogram.h"
@@ -131,6 +132,8 @@ HistogramDialog::~HistogramDialog()
 void HistogramDialog::Init()
 {
 ////@begin HistogramDialog member initialisation
+  controlTimelineAutofit = true;
+  extraControlTimelineAutofit = true;
   listControlTimelines = NULL;
   buttonControlTimelineAutoFit = NULL;
   labelControlTimelineMin = NULL;
@@ -420,36 +423,39 @@ void HistogramDialog::OnOkClick( wxCommandEvent& event )
   double tmp;
   TWindowID auxID;
 
-  if ( txtControlTimelineMin->GetValue().ToDouble( &tmp ) )
-    controlTimelineMin = tmp;
-  else
+  if ( !GetControlTimelineAutofit() )
   {
-    auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
-    controlTimelineMin = LoadedWindows::getInstance()->getWindow( auxID )->getMinimumY();
-    stringstream val;
-    val << controlTimelineMin;
-    errorMessage = "\tControl Timeline Minimum : " + val.str() + "\n";
-  }
+    if ( txtControlTimelineMin->GetValue().ToDouble( &tmp ) )
+      controlTimelineMin = tmp;
+    else
+    {
+      auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
+      controlTimelineMin = LoadedWindows::getInstance()->getWindow( auxID )->getMinimumY();
+      stringstream val;
+      val << controlTimelineMin;
+      errorMessage = "\tControl Timeline Minimum : " + val.str() + "\n";
+    }
 
-  if ( txtControlTimelineMax->GetValue().ToDouble( &tmp ) )
-    controlTimelineMax = tmp;
-  else
-  {
-    auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
-    controlTimelineMax = LoadedWindows::getInstance()->getWindow( auxID )->getMaximumY();
-    stringstream val;
-    val << controlTimelineMax;
-    errorMessage += "\tControl Timeline Maximum : " + val.str() + "\n";
-  }
+    if ( txtControlTimelineMax->GetValue().ToDouble( &tmp ) )
+      controlTimelineMax = tmp;
+    else
+    {
+      auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
+      controlTimelineMax = LoadedWindows::getInstance()->getWindow( auxID )->getMaximumY();
+      stringstream val;
+      val << controlTimelineMax;
+      errorMessage += "\tControl Timeline Maximum : " + val.str() + "\n";
+    }
 
-  if ( txtControlTimelineDelta->GetValue().ToDouble( &tmp ) )
-    controlTimelineDelta = tmp;
-  else
-  {
-    controlTimelineDelta = computeDelta( controlTimelineMin, controlTimelineMax );
-    stringstream val;
-    val << controlTimelineDelta;
-    errorMessage += "\tControl Timeline Delta : " + val.str() + "\n";
+    if ( txtControlTimelineDelta->GetValue().ToDouble( &tmp ) )
+      controlTimelineDelta = tmp;
+    else
+    {
+      controlTimelineDelta = computeDelta( controlTimelineMin, controlTimelineMax );
+      stringstream val;
+      val << controlTimelineDelta;
+      errorMessage += "\tControl Timeline Delta : " + val.str() + "\n";
+    }
   }
 
   getSelectedWindowID( listControlTimelines, controlTimelines, false );
@@ -459,40 +465,45 @@ void HistogramDialog::OnOkClick( wxCommandEvent& event )
   getSelectedWindowID( list3DTimelines, extraControlTimelines, true );
 
 
-  if ( !extraControlTimelines.empty() )
+  if ( list3DTimelines->GetCurrentSelection() != 0 )
   {
-    if ( txt3DTimelineMin->GetValue().ToDouble( &tmp ) )
-      extraControlTimelineMin = tmp;
-    else
+    if ( !GetExtraControlTimelineAutofit() )
     {
-      auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() ];
-      extraControlTimelineMin = LoadedWindows::getInstance()->getWindow( auxID )->getMinimumY();
-      stringstream val;
-      val << extraControlTimelineMin;
-      errorMessage += "\t3D Timeline Min : " + val.str() + "\n";
-    }
+      if ( txt3DTimelineMin->GetValue().ToDouble( &tmp ) )
+        extraControlTimelineMin = tmp;
+      else
+      {
+        auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() ];
+        extraControlTimelineMin = LoadedWindows::getInstance()->getWindow( auxID )->getMinimumY();
+        stringstream val;
+        val << extraControlTimelineMin;
+        errorMessage += "\t3D Timeline Min : " + val.str() + "\n";
+      }
 
-    if ( txt3DTimelineMax->GetValue().ToDouble( &tmp ) )
-      extraControlTimelineMax = tmp;
-    else
-    {
-      auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() ];
-      extraControlTimelineMax = LoadedWindows::getInstance()->getWindow( auxID )->getMaximumY();
-      stringstream val;
-      val << extraControlTimelineMax;
-      errorMessage += "\t3D Timeline Max : " + val.str() + "\n";
-    }
+      if ( txt3DTimelineMax->GetValue().ToDouble( &tmp ) )
+        extraControlTimelineMax = tmp;
+      else
+      {
+        auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() ];
+        extraControlTimelineMax = LoadedWindows::getInstance()->getWindow( auxID )->getMaximumY();
+        stringstream val;
+        val << extraControlTimelineMax;
+        errorMessage += "\t3D Timeline Max : " + val.str() + "\n";
+      }
 
-    if ( txt3DTimelineDelta->GetValue().ToDouble( &tmp ) )
-      extraControlTimelineDelta = tmp;
-    else
-    {
-      extraControlTimelineDelta = computeDelta( extraControlTimelineMin, extraControlTimelineMax );
-      stringstream val;
-      val << extraControlTimelineDelta;
-      errorMessage += "\t3D Timeline Delta : " + val.str() + "\n";
+      if ( txt3DTimelineDelta->GetValue().ToDouble( &tmp ) )
+        extraControlTimelineDelta = tmp;
+      else
+      {
+        extraControlTimelineDelta = computeDelta( extraControlTimelineMin, extraControlTimelineMax );
+        stringstream val;
+        val << extraControlTimelineDelta;
+        errorMessage += "\t3D Timeline Delta : " + val.str() + "\n";
+      }
     }
   }
+  else
+    extraControlTimelines.clear();
 
   timeRange.clear();
 
@@ -542,10 +553,10 @@ void HistogramDialog::OnOkClick( wxCommandEvent& event )
 void HistogramDialog::OnHistogramControltimelineautofitClick( wxCommandEvent& event )
 {
   if ( buttonControlTimelineAutoFit->GetValue() )
-    controlTimelineAutofit();
+    updateControlTimelineAutofit();
 }
 
-void HistogramDialog::controlTimelineAutofit()
+void HistogramDialog::updateControlTimelineAutofit()
 {
   TSemanticValue min, max, delta;
 
@@ -557,7 +568,7 @@ void HistogramDialog::controlTimelineAutofit()
   presetNumericField( (double)delta, txtControlTimelineDelta );
 }
 
-void HistogramDialog::extraControlTimelineAutofit()
+void HistogramDialog::updateExtraControlTimelineAutofit()
 {
   TSemanticValue min, max, delta;
 
@@ -653,6 +664,7 @@ void HistogramDialog::presetNumericField( double value, wxTextCtrl *field )
 
   locale mylocale("");
   auxSStr.imbue( mylocale );
+  auxSStr.precision( ParaverConfig::getInstance()->getPrecision() );
   auxSStr << fixed;
   auxSStr << value;
   auxNumber << auxSStr.str();
@@ -822,7 +834,7 @@ void HistogramDialog::OnRadiobuttonManualUpdate( wxUpdateUIEvent& event )
 
 void HistogramDialog::OnHistogramControltimelinelistSelected( wxCommandEvent& event )
 {
-  controlTimelineAutofit();
+  updateControlTimelineAutofit();
 }
 
 /*!
@@ -840,7 +852,7 @@ void HistogramDialog::OnHistogramDatatimelinelistSelected( wxCommandEvent& event
 
 void HistogramDialog::OnHistogram3dtimelinelistSelected( wxCommandEvent& event )
 {
-  extraControlTimelineAutofit();
+  updateExtraControlTimelineAutofit();
 }
 
 

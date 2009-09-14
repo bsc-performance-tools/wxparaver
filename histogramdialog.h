@@ -170,9 +170,6 @@ public:
   vector< TWindowID > GetDataTimelines() const { return dataTimelines ; }
   void SetDataTimelines(vector< TWindowID > value) { dataTimelines = value ; }
 
-  vector< TWindowID > GetExtraControlTimelineList() const { return extraControlTimelines ; }
-  void SetExtraControlTimelineList(vector< TWindowID > value) { extraControlTimelines = value ; }
-
   double GetExtraControlTimelineMin() const { return extraControlTimelineMin ; }
   void SetExtraControlTimelineMin(double value) { extraControlTimelineMin = value ; }
 
@@ -184,6 +181,15 @@ public:
 
   vector< pair< TRecordTime, TRecordTime > > GetTimeRange() const { return timeRange ; }
   void SetTimeRange(vector< pair< TRecordTime, TRecordTime > > value) { timeRange = value ; }
+
+  vector< TWindowID > GetExtraControlTimelines() const { return extraControlTimelines ; }
+  void SetExtraControlTimelines(vector< TWindowID > value) { extraControlTimelines = value ; }
+
+  bool GetControlTimelineAutofit() const { return controlTimelineAutofit ; }
+  void SetControlTimelineAutofit(bool value) { controlTimelineAutofit = value ; }
+
+  bool GetExtraControlTimelineAutofit() const { return extraControlTimelineAutofit ; }
+  void SetExtraControlTimelineAutofit(bool value) { extraControlTimelineAutofit = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -227,11 +233,13 @@ private:
   double controlTimelineMax;
   double controlTimelineDelta;
   vector< TWindowID > dataTimelines;
-  vector< TWindowID > extraControlTimelines;
   double extraControlTimelineMin;
   double extraControlTimelineMax;
   double extraControlTimelineDelta;
   vector< pair< TRecordTime, TRecordTime > > timeRange;
+  vector< TWindowID > extraControlTimelines;
+  bool controlTimelineAutofit;
+  bool extraControlTimelineAutofit;
 ////@end HistogramDialog member variables
 
   map< wxTextCtrl *, bool > isOkTxtField;
@@ -244,8 +252,8 @@ private:
                             bool listWithFirstVoidOption );
   TSemanticValue computeDelta( TSemanticValue min, TSemanticValue max );
   void computeColumns( Window *timeline, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta );
-  void controlTimelineAutofit();
-  void extraControlTimelineAutofit();
+  void updateControlTimelineAutofit();
+  void updateExtraControlTimelineAutofit();
   UINT32 fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget );
 
 

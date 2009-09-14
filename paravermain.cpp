@@ -1544,7 +1544,7 @@ void paraverMain::ShowHistogramDialog()
   {
     vector< TWindowID > controlTimeline = histogramDialog.GetControlTimelines();
     vector< TWindowID > dataTimeline = histogramDialog.GetDataTimelines();
-    vector< TWindowID > extraControlTimeline = histogramDialog.GetExtraControlTimelineList();
+    vector< TWindowID > extraControlTimeline = histogramDialog.GetExtraControlTimelines();
     ranges.clear();
     ranges = histogramDialog.GetTimeRange();
 
@@ -1565,18 +1565,34 @@ void paraverMain::ShowHistogramDialog()
     newHistogram->setWindowEndTime( ranges[0].second );
 
     newHistogram->setControlWindow( LoadedWindows::getInstance()->getWindow( controlTimeline[0] ) );
-    newHistogram->setControlMin( histogramDialog.GetControlTimelineMin() );
-    newHistogram->setControlMax( histogramDialog.GetControlTimelineMax() );
-    newHistogram->setControlDelta( histogramDialog.GetControlTimelineDelta() );
+
+    if ( histogramDialog.GetControlTimelineAutofit() )
+      newHistogram->setCompute2DScale( true );
+    else
+    {
+      newHistogram->setCompute2DScale( false );
+
+      newHistogram->setControlMin( histogramDialog.GetControlTimelineMin() );
+      newHistogram->setControlMax( histogramDialog.GetControlTimelineMax() );
+      newHistogram->setControlDelta( histogramDialog.GetControlTimelineDelta() );
+    }
 
     newHistogram->setDataWindow( LoadedWindows::getInstance()->getWindow( dataTimeline[0] ) );
 
     if ( !extraControlTimeline.empty() )
     {
       newHistogram->setExtraControlWindow( LoadedWindows::getInstance()->getWindow( extraControlTimeline[0] ) );
-      newHistogram->setExtraControlMin( histogramDialog.GetExtraControlTimelineMin() );
-      newHistogram->setExtraControlMax( histogramDialog.GetExtraControlTimelineMax() );
-      newHistogram->setExtraControlDelta( histogramDialog.GetExtraControlTimelineDelta() );
+
+      if ( histogramDialog.GetExtraControlTimelineAutofit() )
+        newHistogram->setCompute3DScale( true );
+      else
+      {
+        newHistogram->setCompute3DScale( false );
+
+        newHistogram->setExtraControlMin( histogramDialog.GetExtraControlTimelineMin() );
+        newHistogram->setExtraControlMax( histogramDialog.GetExtraControlTimelineMax() );
+        newHistogram->setExtraControlDelta( histogramDialog.GetExtraControlTimelineDelta() );
+      }
     }
 
     gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, newHistogram->getName() );
