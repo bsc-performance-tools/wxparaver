@@ -261,6 +261,7 @@ public:
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
   void OnPopUpAutoControlScale( bool state );
+  void OnPopUpAuto3DScale( bool state );
   void OnPopUpAutoDataGradient( bool state );
   void OnPopUpUndoZoom();
   void OnPopUpRedoZoom();

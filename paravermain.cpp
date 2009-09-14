@@ -603,19 +603,19 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == "ControlMinimum" )
   {
     currentHisto->setControlMin( property->GetValue().GetDouble() );
-    currentHisto->setComputeScale( false );
+    currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "ControlMaximum" )
   {
     currentHisto->setControlMax( property->GetValue().GetDouble() );
-    currentHisto->setComputeScale( false );
+    currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "ControlDelta" )
   {
     currentHisto->setControlDelta( property->GetValue().GetDouble() );
-    currentHisto->setComputeScale( false );
+    currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
 // Data Window related properties
@@ -662,19 +662,19 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == "3DMinimum" )
   {
     currentHisto->setExtraControlMin( property->GetValue().GetDouble() );
-    currentHisto->setComputeScale( false );
+    currentHisto->setCompute3DScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "3DMaximum" )
   {
     currentHisto->setExtraControlMax( property->GetValue().GetDouble() );
-    currentHisto->setComputeScale( false );
+    currentHisto->setCompute3DScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "3DDelta" )
   {
     currentHisto->setExtraControlDelta( property->GetValue().GetDouble() );
-    currentHisto->setComputeScale( false );
+    currentHisto->setCompute3DScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == "3DPlane" )

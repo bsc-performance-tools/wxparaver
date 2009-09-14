@@ -1174,7 +1174,14 @@ void gHistogram::OnPopUpFitTimeScale()
 
 void gHistogram::OnPopUpAutoControlScale( bool state )
 {
-  myHistogram->setComputeScale( state );
+  myHistogram->setCompute2DScale( state );
+  if( state )
+    myHistogram->setRecalc( true );
+}
+
+void gHistogram::OnPopUpAuto3DScale( bool state )
+{
+  myHistogram->setCompute3DScale( state );
   if( state )
     myHistogram->setRecalc( true );
 }

@@ -46,6 +46,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_AVERAGE, gPopUpMenu::OnMenuDrawModeBothAverage )
   EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
   EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
+  EVT_MENU( ID_MENU_AUTO_3D_SCALE, gPopUpMenu::OnMenuAuto3DScale )
   EVT_MENU( ID_MENU_AUTO_DATA_GRADIENT, gPopUpMenu::OnMenuAutoDataGradient )
 
 END_EVENT_TABLE()
@@ -478,7 +479,14 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              ITEMCHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoControlScale,
              ID_MENU_AUTO_CONTROL_SCALE,
-             histogram->GetHistogram()->getComputeScale() );
+             histogram->GetHistogram()->getCompute2DScale() );
+  if( histogram->GetHistogram()->getThreeDimensions() )
+    buildItem( this, 
+               wxString( "Auto Fit 3D Scale" ),
+               ITEMCHECK,
+               (wxObjectEventFunction)&gPopUpMenu::OnMenuAuto3DScale,
+               ID_MENU_AUTO_3D_SCALE,
+               histogram->GetHistogram()->getCompute3DScale() );
   buildItem( this, 
              wxString( "Auto Fit Data Gradient" ),
              ITEMCHECK,
@@ -955,6 +963,12 @@ void gPopUpMenu::OnMenuAutoControlScale( wxCommandEvent& event )
 {
   if( histogram != NULL )
     histogram->OnPopUpAutoControlScale( event.IsChecked() );
+}
+
+void gPopUpMenu::OnMenuAuto3DScale( wxCommandEvent& event )
+{
+  if( histogram != NULL )
+    histogram->OnPopUpAuto3DScale( event.IsChecked() );
 }
 
 void gPopUpMenu::OnMenuAutoDataGradient( wxCommandEvent& event )
