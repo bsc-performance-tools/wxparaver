@@ -198,7 +198,8 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end HistogramDialog member function declarations
 
-  void TransferDataToWindow( Window *current );
+  bool TransferDataToWindow( Window *current );
+  bool TransferDataFromWindow();
 
   /// Should we show tooltips?
   static bool ShowToolTips();
@@ -242,9 +243,7 @@ private:
   bool extraControlTimelineAutofit;
 ////@end HistogramDialog member variables
 
-  map< wxTextCtrl *, bool > isOkTxtField;
-
-  void presetNumericField( double value, wxTextCtrl *field );
+  wxString formatNumber( double value );
 
   // getSelectedWindow deletes previous information in vector selection
   void getSelectedWindowID( wxChoice * listWidget,
@@ -255,8 +254,7 @@ private:
   void updateControlTimelineAutofit();
   void updateExtraControlTimelineAutofit();
   UINT32 fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget );
-
-
+  void enable3DFields( bool autofit );
 };
 
 #endif
