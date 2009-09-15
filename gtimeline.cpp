@@ -1540,6 +1540,8 @@ void gTimeline::printWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
   whatWhereText->EndFontSize();
 
   whatWhereText->EndFontSize();
+  
+  infoZone->ChangeSelection( 0 );
 }
 
 void gTimeline::printWWSemantic( wxString& onString, TObjectOrder whichRow, bool clickedValue )
