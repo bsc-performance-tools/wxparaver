@@ -226,12 +226,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 8)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 8)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
@@ -479,6 +479,14 @@ void gHistogram::fillGrid()
                 myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
               gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, 
                                                   wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+              wxColour BackColour = wxColour( tmpCol.red, tmpCol.green, tmpCol.blue );
+              unsigned int BackColour_luminance = (BackColour.Red() * 30)/100 +
+                                                  (BackColour.Green() * 59)/100 +
+                                                  (BackColour.Blue() * 11) / 100;
+              if (BackColour_luminance >= 128)
+                gridHisto->SetCellTextColour( iDrawRow, iDrawCol, *wxBLACK );
+              else
+                gridHisto->SetCellTextColour( iDrawRow, iDrawCol, *wxWHITE );
             }
             else gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
             myHistogram->setNextCell( iCol, curPlane );
@@ -491,7 +499,7 @@ void gHistogram::fillGrid()
         }
       }
     }
-    
+
     gridHisto->SetRowLabelValue( numDrawRows, "" );
   }
 
@@ -1520,7 +1528,12 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   TObjectOrder row = myHistogram->getHorizontal() ? floor( lastPosZoomY / zoomCellHeight ) :
                                                     floor( lastPosZoomX / zoomCellWidth );
 
-  
+  if( column >= myHistogram->getNumColumns() )
+    column = myHistogram->getNumColumns() - 1;
+    
+  if( row >= myHistogram->getNumRows() )
+    row = myHistogram->getNumRows() - 1;
+    
   if( row > 0 )
     text << _( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
          << _( "  " );
