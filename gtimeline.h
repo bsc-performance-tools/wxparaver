@@ -340,6 +340,7 @@ public:
         SEMANTIC_LINE,
         END_LINES_SEMANTIC,
         BEGIN_LINES_RECORD,
+        MARK_LINE,
         EVENT_LINE,
         COMMUNICATION_LINE,
         END_LINES_RECORD } TWWLine;
@@ -394,15 +395,16 @@ private:
 ////@end gTimeline member variables
 
   wxWindow *parent;
-//  vector< wxString > whatWhereLines;
-  vector< pair< TWWLine, wxString > > whatWhereLines;
 
   static const wxCoord drawBorder = 5;
 
+  vector< pair< TWWLine, wxString > > whatWhereLines;
+  int whatWhereSelectedTimeEventLines;
+  int whatWhereSelectedTimeCommunicationLines;
   void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow );
   void printWhatWhere( );
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue );
-  void printWWRecords( TObjectOrder whichRow );
+  void printWWRecords( TObjectOrder whichRow, bool clickedValue );
 
   void Unsplit();
   void Split();

@@ -1523,6 +1523,8 @@ void gTimeline::OnNotebookPageChanging( wxNotebookEvent& event )
 void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
 {
   whatWhereLines.clear();
+  whatWhereSelectedTimeEventLines = 0;
+  whatWhereSelectedTimeCommunicationLines = 0;
 
   wxString txt;
 
@@ -1536,15 +1538,15 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
 
   myWindow->calcPrev( whichRow );
   printWWSemantic( whichRow, false );
-  printWWRecords( whichRow );
+  printWWRecords( whichRow, false );
 
   myWindow->calcNext( whichRow );
   printWWSemantic( whichRow, true );
-  printWWRecords( whichRow );
+  printWWRecords( whichRow, true );
 
   myWindow->calcNext( whichRow );
   printWWSemantic( whichRow, false );
-  printWWRecords( whichRow );
+  printWWRecords( whichRow, false );
 }
 
 
@@ -1591,6 +1593,12 @@ void gTimeline::printWhatWhere( )
           whatWhereText->EndFontSize();
         break;
 
+      case MARK_LINE:
+        if (( checkWWEvents->IsChecked() && whatWhereSelectedTimeEventLines > 0 ) ||
+            ( checkWWCommunications->IsChecked() && whatWhereSelectedTimeCommunicationLines > 0 ))
+          whatWhereText->AppendText( it->second );
+        break;
+
       case HEADER_LINE:
         whatWhereText->AppendText( it->second );
         break;
@@ -1630,7 +1638,7 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
 
 // If some tags changes here, please read printWhatWhere function.
 // It selects lines of the wxString text, checking for unique tags to recognize line type.
-void gTimeline::printWWRecords( TObjectOrder whichRow )
+void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
 {
   wxString onString;
 
@@ -1641,7 +1649,14 @@ void gTimeline::printWWRecords( TObjectOrder whichRow )
 
   while( it != rl->end() && (*it).getTime() < myWindow->getBeginTime( whichRow ) )
     ++it;
-    
+
+  if( clickedValue )
+  {
+    onString << wxT( "==> " );
+    whatWhereLines.push_back( make_pair( MARK_LINE, onString )); // just to write it
+    onString.clear();
+  }
+
   while( it != rl->end() && (*it).getTime() < myWindow->getEndTime( whichRow ) )
   {
     if( (*it).getType() & EVENT )
@@ -1652,8 +1667,12 @@ void gTimeline::printWWRecords( TObjectOrder whichRow )
       onString << wxT( "\t" );
       onString << LabelConstructor::eventLabel( myWindow, (*it).getEventType(), (*it).getEventValue(), true );
       onString << wxT( "\n" );
+
       whatWhereLines.push_back( make_pair( EVENT_LINE, onString ));
       onString.clear();
+      
+      if ( clickedValue )
+        whatWhereSelectedTimeEventLines++;
     }
     else if( (*it).getType() & COMM )
     {
@@ -1690,8 +1709,12 @@ void gTimeline::printWWRecords( TObjectOrder whichRow )
       onString << wxT( " (size: " ) << (*it).getCommSize() << 
                   wxT( ", tag: " ) << (*it).getCommTag() << wxT( ")" );
       onString << wxT( "\n" );
+
       whatWhereLines.push_back( make_pair( COMMUNICATION_LINE, onString ));
       onString.clear();
+
+      if ( clickedValue )
+        whatWhereSelectedTimeCommunicationLines++;
     }
     ++it;
   }
