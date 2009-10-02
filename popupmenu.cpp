@@ -23,6 +23,8 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_MIN, gPopUpMenu::OnMenuFitSemanticMin )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_MAX, gPopUpMenu::OnMenuFitSemanticMax )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_BOTH, gPopUpMenu::OnMenuFitSemanticBoth )
+  EVT_MENU( ID_MENU_PAINT_COMMUNICATION_LINES, gPopUpMenu::OnMenuPaintCommunicationLines )
+  EVT_MENU( ID_MENU_PAINT_EVENT_FLAGS, gPopUpMenu::OnMenuPaintEventFlags )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
   EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
@@ -261,6 +263,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   timeline = whichTimeline;
   histogram = NULL;
 
+  popUpMenuPaint = new wxMenu;
   popUpMenuColor = new wxMenu;
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
@@ -299,6 +302,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSubMenu( popUpMenuFitSemantic, STR_FIT_SEMANTIC );
 
   AppendSeparator();
+
+  buildItem( popUpMenuPaint, wxString( "Communication Lines" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuPaintCommunicationLines, ID_MENU_PAINT_COMMUNICATION_LINES, timeline->GetMyWindow()->getDrawCommLines() );
+  buildItem( popUpMenuPaint, wxString( "Event Flags" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuPaintEventFlags, ID_MENU_PAINT_EVENT_FLAGS, timeline->GetMyWindow()->getDrawFlags() );
+  AppendSubMenu( popUpMenuPaint, wxString( "Paint" ));
 
   buildItem( popUpMenuColor, wxString( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->IsCodeColorSet() );
   buildItem( popUpMenuColor, wxString( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->IsGradientColorSet() );
@@ -446,6 +453,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   timeline = NULL;
   histogram = whichHistogram;
 
+  popUpMenuPaint = new wxMenu;
   popUpMenuColor = new wxMenu;
   popUpMenuPaste = new wxMenu;
   popUpMenuPasteFilter = new wxMenu;
@@ -783,6 +791,19 @@ void gPopUpMenu::OnMenuFitSemanticBoth( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpFitSemanticScale();
+}
+
+
+void gPopUpMenu::OnMenuPaintCommunicationLines( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->drawCommunicationLines( event.IsChecked() );
+}
+
+void gPopUpMenu::OnMenuPaintEventFlags( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->drawEventFlags( event.IsChecked() );
 }
 
 void gPopUpMenu::OnMenuCodeColor( wxCommandEvent& event)

@@ -76,6 +76,12 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
 
+  EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
+
+  EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
+
+  EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
 
   EVT_CHECKBOX( ID_CHECK_DRAWLINES, gTimeline::OnCheckDrawlinesClick )
@@ -162,6 +168,10 @@ void gTimeline::Init()
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
+  whatWherePanel = NULL;
+  checkWWSemantic = NULL;
+  checkWWEvents = NULL;
+  checkWWCommunications = NULL;
   whatWhereText = NULL;
   timingZone = NULL;
   initialTimeText = NULL;
@@ -198,36 +208,57 @@ void gTimeline::CreateControls()
   drawZone->SetScrollbars(1, 1, 0, 0);
   infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxSize(-1, splitter->ConvertDialogToPixels(wxSize(-1, 50)).y), wxBK_DEFAULT );
 
-  whatWhereText = new wxRichTextCtrl( infoZone, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW2, wxDefaultPosition, infoZone->ConvertDialogToPixels(wxSize(100, 100)), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+  whatWherePanel->SetScrollbars(1, 1, 0, 0);
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
+  whatWherePanel->SetSizer(itemBoxSizer6);
 
-  infoZone->AddPage(whatWhereText, _("What/Where"));
+  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, 5);
+  checkWWSemantic = new wxCheckBox( whatWherePanel, ID_CHECKBOX, _("Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWSemantic->SetValue(true);
+  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+  checkWWEvents = new wxCheckBox( whatWherePanel, ID_CHECKBOX1, _("Events"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWEvents->SetValue(true);
+  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+  checkWWCommunications = new wxCheckBox( whatWherePanel, ID_CHECKBOX2, _("Communications"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWCommunications->SetValue(true);
+  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+  whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+  whatWherePanel->FitInside();
+  infoZone->AddPage(whatWherePanel, _("What / Where"));
 
   timingZone = new wxScrolledWindow( infoZone, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   timingZone->SetScrollbars(1, 5, 0, 0);
-  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
-  timingZone->SetSizer(itemBoxSizer7);
+  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
+  timingZone->SetSizer(itemBoxSizer13);
 
-  wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer7->Add(itemBoxSizer8, 0, wxGROW, 5);
-  wxStaticText* itemStaticText9 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer8->Add(itemStaticText9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer13->Add(itemBoxSizer14, 0, wxGROW, 5);
+  wxStaticText* itemStaticText15 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer14->Add(itemStaticText15, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxStaticText* itemStaticText10 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer8->Add(itemStaticText10, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxStaticText* itemStaticText16 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer14->Add(itemStaticText16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxStaticText* itemStaticText11 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer8->Add(itemStaticText11, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer14->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxBoxSizer* itemBoxSizer12 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer7->Add(itemBoxSizer12, 1, wxGROW, 5);
+  wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer13->Add(itemBoxSizer18, 1, wxGROW, 5);
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer12->Add(initialTimeText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer18->Add(initialTimeText, 0, wxGROW|wxALL, 5);
 
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer12->Add(finalTimeText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer18->Add(finalTimeText, 0, wxGROW|wxALL, 5);
 
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer12->Add(durationText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer18->Add(durationText, 0, wxGROW|wxALL, 5);
 
   timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
@@ -242,20 +273,20 @@ void gTimeline::CreateControls()
 
   viewPropPanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
   viewPropPanel->SetScrollbars(1, 5, 0, 0);
-  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxVERTICAL);
-  viewPropPanel->SetSizer(itemBoxSizer19);
+  wxBoxSizer* itemBoxSizer25 = new wxBoxSizer(wxVERTICAL);
+  viewPropPanel->SetSizer(itemBoxSizer25);
 
   checkDrawLines = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWLINES, _("Draw Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawLines->SetValue(true);
-  itemBoxSizer19->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer25->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
 
   checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Draw Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawFlags->SetValue(true);
-  itemBoxSizer19->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer25->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
 
   checkFunctionLineColor = new wxCheckBox( viewPropPanel, ID_CHECK_FUNCTIONLINECOLOR, _("Draw Function Line With Color"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFunctionLineColor->SetValue(true);
-  itemBoxSizer19->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer25->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
 
   viewPropPanel->FitInside();
   infoZone->AddPage(viewPropPanel, _("View Properties"));
@@ -699,7 +730,10 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
-  this->SetTitle( myWindow->getName() );
+  string composedName = myWindow->getName() + " @ " +
+                        myWindow->getTrace()->getTraceName();
+
+  this->SetTitle( composedName );
 
 #ifdef WIN32
   if( !firstUnsplit )
@@ -737,6 +771,12 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   
   myWindow->setPosX( this->GetPosition().x );
   myWindow->setPosY( this->GetPosition().y );
+
+//  if ( this == FindFocus() )
+//  {
+//    cout << myWindow->getTrace()->getFileName() << endl;
+//    choiceWindowBrowser
+//  }
 }
 
 
@@ -754,6 +794,8 @@ void gTimeline::OnCloseWindow( wxCloseEvent& event )
  */
 void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
 {
+  paraverMain::myParaverMain->selectTrace( GetMyWindow()->getTrace() );
+
   wxBitmap tmpImage( caution_xpm );
   if( event.GetX() < tmpImage.GetWidth() + drawBorder
       && event.GetY() > drawZone->GetSize().GetHeight() - tmpImage.GetHeight() - drawBorder )
@@ -886,7 +928,8 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     {
       Split();
     }
-    printWhatWhere( endTime, endRow );
+    computeWhatWhere( endTime, endRow );
+    printWhatWhere();
   }
 
   zooming = false;
@@ -941,7 +984,11 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   wxSize size = wxSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
 #endif
 
-  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
+  string composedName = myWindow->getName() + " @ " +
+                        myWindow->getTrace()->getTraceName();
+
+//  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
+  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( composedName.c_str() ), position, size );
   clonedTimeline->SetMyWindow( clonedWindow );
 
   // add to loaded windows list
@@ -1296,6 +1343,8 @@ void gTimeline::OnPopUpRedoZoom()
 
 void gTimeline::rightDownManager()
 {
+  paraverMain::myParaverMain->selectTrace( GetMyWindow()->getTrace() );
+
   gPopUpMenu popUpMenu( this );
 
   popUpMenu.enable( "Undo Zoom", !myWindow->emptyPrevZoom() );
@@ -1420,10 +1469,6 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 }
 
 
-
-
-
-
 /*!
  * wxEVT_COMMAND_SPLITTER_UNSPLIT event handler for ID_SPLITTERWINDOW
  */
@@ -1451,13 +1496,7 @@ void gTimeline::OnSplitterwindowSashDClick( wxSplitterEvent& event )
 
 void gTimeline::OnRightDown( wxMouseEvent& event )
 {
-////@begin wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE in gTimeline.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE in gTimeline.
 }
-
-
 
 
 /*!
@@ -1480,72 +1519,101 @@ void gTimeline::OnNotebookPageChanging( wxNotebookEvent& event )
 }
 
 
-void gTimeline::printWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
+// Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
+void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
 {
-  wxString txt;
-  
-  whatWhereText->Clear();
-  int fontSize = 8;
+  whatWhereLines.clear();
 
-  whatWhereText->BeginFontSize( fontSize );
-  
+  wxString txt;
+
   txt << _( "Object: " ) << LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() );
   txt << _( "\t  Click time: " ) << LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
                                                                  myWindow->getTimeUnit() );
   txt << _( "\n\n" );
-  whatWhereText->AppendText( txt );
+  whatWhereLines.push_back( make_pair( HEADER_LINE, txt ) );
 
   myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS );
 
-  txt.Clear();
   myWindow->calcPrev( whichRow );
-  printWWSemantic( txt, whichRow, false );
-  whatWhereText->BeginBold();
-  whatWhereText->AppendText( txt );
-  whatWhereText->EndBold();
-  txt.Clear();
-  printWWRecords( txt, whichRow );
-  whatWhereText->BeginFontSize( fontSize - 1 );
-  whatWhereText->BeginItalic();
-  whatWhereText->AppendText( txt );
-  whatWhereText->EndItalic();
-  whatWhereText->EndFontSize();
+  printWWSemantic( whichRow, false );
+  printWWRecords( whichRow );
 
-  txt.Clear();
   myWindow->calcNext( whichRow );
-  printWWSemantic( txt, whichRow, true );
-  whatWhereText->BeginBold();
-  whatWhereText->AppendText( txt );
-  whatWhereText->EndBold();
-  txt.Clear();
-  printWWRecords( txt, whichRow );
-  whatWhereText->BeginFontSize( fontSize - 1 );
-  whatWhereText->BeginItalic();
-  whatWhereText->AppendText( txt );
-  whatWhereText->EndItalic();
-  whatWhereText->EndFontSize();
+  printWWSemantic( whichRow, true );
+  printWWRecords( whichRow );
 
-  txt.Clear();
   myWindow->calcNext( whichRow );
-  printWWSemantic( txt, whichRow, false );
-  whatWhereText->BeginBold();
-  whatWhereText->AppendText( txt );
-  whatWhereText->EndBold();
-  txt.Clear();
-  printWWRecords( txt, whichRow );
-  whatWhereText->BeginFontSize( fontSize - 1 );
-  whatWhereText->BeginItalic();
-  whatWhereText->AppendText( txt );
-  whatWhereText->EndItalic();
-  whatWhereText->EndFontSize();
+  printWWSemantic( whichRow, false );
+  printWWRecords( whichRow );
+}
+
+
+void gTimeline::printWhatWhere( )
+{
+  whatWhereText->Clear();
+  int fontSize = 8;
+
+  whatWhereText->BeginFontSize( fontSize );
+
+  for ( vector< pair< TWWLine, wxString > >::iterator it = whatWhereLines.begin(); 
+        it != whatWhereLines.end(); ++it )
+  {
+    switch( it->first )
+    {
+      case EVENT_LINE:
+        if ( checkWWEvents->IsChecked() )
+          whatWhereText->AppendText( it->second );
+        break;
+      case COMMUNICATION_LINE:
+        if ( checkWWCommunications->IsChecked() )
+          whatWhereText->AppendText( it->second );
+        break;
+      case SEMANTIC_LINE:
+        if ( checkWWSemantic->IsChecked() )
+          whatWhereText->AppendText( it->second );
+        break;
+
+      case BEGIN_LINES_SEMANTIC:
+        if ( checkWWSemantic->IsChecked() )
+          whatWhereText->BeginBold();
+        break;
+      case END_LINES_SEMANTIC:
+        if ( checkWWSemantic->IsChecked() )
+          whatWhereText->EndBold();
+        break;
+
+      case BEGIN_LINES_RECORD:
+        if ( checkWWEvents->IsChecked() || checkWWCommunications->IsChecked() )
+          whatWhereText->BeginFontSize( fontSize - 1 );
+        break;
+      case END_LINES_RECORD:
+        if ( checkWWEvents->IsChecked() || checkWWCommunications->IsChecked() )
+          whatWhereText->EndFontSize();
+        break;
+
+      case HEADER_LINE:
+        whatWhereText->AppendText( it->second );
+        break;
+
+      default:
+        break;
+    }
+  }
 
   whatWhereText->EndFontSize();
-  
+
   infoZone->ChangeSelection( 0 );
 }
 
-void gTimeline::printWWSemantic( wxString& onString, TObjectOrder whichRow, bool clickedValue )
+
+// If some tags changes here, please read printWhatWhere function.
+// It selects lines of the wxString text, checking for unique tags to recognize line type.
+void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
 {
+  wxString onString;
+
+  whatWhereLines.push_back( make_pair( BEGIN_LINES_SEMANTIC, _( "" )));
+
   if( clickedValue )
     onString << wxT( "==> " );
   onString << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( whichRow ), true ) );
@@ -1554,10 +1622,20 @@ void gTimeline::printWWSemantic( wxString& onString, TObjectOrder whichRow, bool
                                                                               - myWindow->getBeginTime( whichRow ) ),
                                            myWindow->getTimeUnit() );
   onString << _( "\n" );
+  whatWhereLines.push_back( make_pair( SEMANTIC_LINE, onString ));
+
+  whatWhereLines.push_back( make_pair( END_LINES_SEMANTIC, _( "" )));
 }
 
-void gTimeline::printWWRecords( wxString& onString, TObjectOrder whichRow )
+
+// If some tags changes here, please read printWhatWhere function.
+// It selects lines of the wxString text, checking for unique tags to recognize line type.
+void gTimeline::printWWRecords( TObjectOrder whichRow )
 {
+  wxString onString;
+
+  whatWhereLines.push_back( make_pair( BEGIN_LINES_RECORD, _( "" )));
+
   RecordList *rl = myWindow->getRecordList( whichRow );
   RecordList::iterator it = rl->begin();
 
@@ -1574,6 +1652,8 @@ void gTimeline::printWWRecords( wxString& onString, TObjectOrder whichRow )
       onString << wxT( "\t" );
       onString << LabelConstructor::eventLabel( myWindow, (*it).getEventType(), (*it).getEventValue(), true );
       onString << wxT( "\n" );
+      whatWhereLines.push_back( make_pair( EVENT_LINE, onString ));
+      onString.clear();
     }
     else if( (*it).getType() & COMM )
     {
@@ -1610,12 +1690,17 @@ void gTimeline::printWWRecords( wxString& onString, TObjectOrder whichRow )
       onString << wxT( " (size: " ) << (*it).getCommSize() << 
                   wxT( ", tag: " ) << (*it).getCommTag() << wxT( ")" );
       onString << wxT( "\n" );
+      whatWhereLines.push_back( make_pair( COMMUNICATION_LINE, onString ));
+      onString.clear();
     }
     ++it;
   }
 
   rl->erase( rl->begin(), it );
+
+  whatWhereLines.push_back( make_pair( END_LINES_RECORD, _( "" )));
 }
+
 
 void gTimeline::resizeDrawZone( int width, int height )
 {
@@ -1838,15 +1923,11 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWLINES
- */
-
-void gTimeline::OnCheckDrawlinesClick( wxCommandEvent& event )
+void gTimeline::drawCommunicationLines( bool draw )
 {
   wxMemoryDC bufferDraw;
 
-  myWindow->setDrawCommLines( event.IsChecked() );
+  myWindow->setDrawCommLines( draw );
   
   if( !ready )
     return;
@@ -1871,6 +1952,48 @@ void gTimeline::OnCheckDrawlinesClick( wxCommandEvent& event )
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 
   drawZone->Refresh();
+}
+
+
+void gTimeline::drawEventFlags( bool draw )
+{
+  wxMemoryDC bufferDraw;
+
+  myWindow->setDrawFlags( draw );
+  
+  if( !ready )
+    return;
+  
+  bufferDraw.SelectObject(wxNullBitmap);
+  bufferDraw.SelectObject( drawImage );
+  bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
+
+  if( drawCaution )
+  {
+    wxBitmap cautionImage( caution_xpm );
+    bufferDraw.DrawBitmap( cautionImage,
+                           drawBorder,
+                           drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                           true );
+  }
+
+  if( myWindow->getDrawFlags() )
+    bufferDraw.DrawBitmap( eventImage, 0, 0, true );
+
+  if( myWindow->getDrawCommLines() )
+    bufferDraw.DrawBitmap( commImage, 0, 0, true );
+
+  drawZone->Refresh();
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWLINES
+ */
+
+void gTimeline::OnCheckDrawlinesClick( wxCommandEvent& event )
+{
+  drawCommunicationLines( event.IsChecked() );
 }
 
 
@@ -1890,33 +2013,7 @@ void gTimeline::OnCheckDrawlinesUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnCheckDrawflagsClick( wxCommandEvent& event )
 {
-  wxMemoryDC bufferDraw;
-
-  myWindow->setDrawFlags( event.IsChecked() );
-  
-  if( !ready )
-    return;
-  
-  bufferDraw.SelectObject(wxNullBitmap);
-  bufferDraw.SelectObject( drawImage );
-  bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
-
-  if( drawCaution )
-  {
-    wxBitmap cautionImage( caution_xpm );
-    bufferDraw.DrawBitmap( cautionImage,
-                           drawBorder,
-                           drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                           true );
-  }
-
-  if( myWindow->getDrawFlags() )
-    bufferDraw.DrawBitmap( eventImage, 0, 0, true );
-
-  if( myWindow->getDrawCommLines() )
-    bufferDraw.DrawBitmap( commImage, 0, 0, true );
-
-  drawZone->Refresh();
+  drawEventFlags( event.IsChecked() );
 }
 
 
@@ -1955,4 +2052,22 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
   if( ready )
     redraw();
   Refresh();
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
+ */
+
+void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
+{
+  checkWWSemantic->Enable( false );
+  checkWWEvents->Enable( false );
+  checkWWCommunications->Enable( false );
+
+  printWhatWhere();
+
+  checkWWSemantic->Enable( true );
+  checkWWEvents->Enable( true );
+  checkWWCommunications->Enable( true );
 }

@@ -170,7 +170,10 @@ void BuildTree( wxWindow *parent,
   wxTreeItemId currentWindowId1, currentWindowId2;
   TreeBrowserItemData *currentData;
 
-  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, window->getName() );
+  string composedName = window->getName() + " @ " +
+                        window->getTrace()->getTraceName();
+
+  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, composedName );
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
   tmpTimeline->SetClientSize( wxRect( window->getPosX(), window->getPosY(),

@@ -55,6 +55,10 @@ class Window;
 #define ID_SPLITTERWINDOW 10048
 #define ID_SCROLLEDWINDOW 10007
 #define ID_NOTEBOOK 10042
+#define ID_SCROLLEDWINDOW2 10076
+#define ID_CHECKBOX 10077
+#define ID_CHECKBOX1 10079
+#define ID_CHECKBOX2 10080
 #define ID_RICHTEXTCTRL 10043
 #define ID_PANEL 10044
 #define ID_TEXTCTRL 10045
@@ -141,6 +145,9 @@ public:
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK
   void OnNotebookPageChanging( wxNotebookEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
+  void OnCheckWhatWhere( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_PANEL1
   void OnColorsPanelUpdate( wxUpdateUIEvent& event );
@@ -266,6 +273,9 @@ public:
                     RecordList *records,
                     TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected );
 
+  void drawCommunicationLines( bool draw );
+  void drawEventFlags( bool draw );
+
   void OnPopUpRightDown( void );
 
   // Pop Up Menu Methods
@@ -324,12 +334,25 @@ public:
   void resizeDrawZone( int width, int height );
   
   bool IsSplit() const;
-  
+
+  typedef enum {  HEADER_LINE = 0,
+        BEGIN_LINES_SEMANTIC,
+        SEMANTIC_LINE,
+        END_LINES_SEMANTIC,
+        BEGIN_LINES_RECORD,
+        EVENT_LINE,
+        COMMUNICATION_LINE,
+        END_LINES_RECORD } TWWLine;
+
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
   wxSplitterWindow* splitter;
   wxScrolledWindow* drawZone;
   wxNotebook* infoZone;
+  wxScrolledWindow* whatWherePanel;
+  wxCheckBox* checkWWSemantic;
+  wxCheckBox* checkWWEvents;
+  wxCheckBox* checkWWCommunications;
   wxRichTextCtrl* whatWhereText;
   wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
@@ -371,13 +394,16 @@ private:
 ////@end gTimeline member variables
 
   wxWindow *parent;
-  
+//  vector< wxString > whatWhereLines;
+  vector< pair< TWWLine, wxString > > whatWhereLines;
+
   static const wxCoord drawBorder = 5;
-  
-  void printWhatWhere( TRecordTime whichTime, TObjectOrder whichRow );
-  void printWWSemantic( wxString& onString, TObjectOrder whichRow, bool clickedValue );
-  void printWWRecords( wxString& onString, TObjectOrder whichRow );
-  
+
+  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow );
+  void printWhatWhere( );
+  void printWWSemantic( TObjectOrder whichRow, bool clickedValue );
+  void printWWRecords( TObjectOrder whichRow );
+
   void Unsplit();
   void Split();
   void OnTimerSize( wxTimerEvent& event );

@@ -44,6 +44,7 @@
 #include "windows_tree.h"
 #include "derivedtimelinedialog.h"
 #include "histogramdialog.h"
+#include "preferencesdialog.h"
 
 ////@begin XPM images
 #include "new_window.xpm"
@@ -80,6 +81,9 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
+
+  EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
+  EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
 
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
 
@@ -257,8 +261,9 @@ void paraverMain::CreateControls()
   menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu8 = new wxMenu;
   menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
-  menuFile->AppendSeparator();
   menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
+  menuFile->AppendSeparator();
+  menuFile->Append(ID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
@@ -268,17 +273,17 @@ void paraverMain::CreateControls()
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
-  wxBitmap itemtool16Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
-  wxBitmap itemtool16BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
-  tbarMain->EnableTool(ID_NEW_WINDOW, false);
-  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
+  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
   wxBitmap itemtool17BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
-  tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
-  wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_WINDOW, false);
+  wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
   wxBitmap itemtool18BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
+  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
+  wxBitmap itemtool19Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  wxBitmap itemtool19BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool19Bitmap, itemtool19BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
@@ -350,6 +355,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     currentTrace = loadedTraces.size() - 1;
     wxTreeCtrl *newTree = createTree( imageList );
     choiceWindowBrowser->AddPage( newTree, path );
+    choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
     previousTraces->add( path );
   }
   catch( ParaverKernelException& ex )
@@ -1595,7 +1601,9 @@ void paraverMain::ShowHistogramDialog()
       }
     }
 
-    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, newHistogram->getName() );
+    string composedName = newHistogram->getName() + " @ " +
+                          newHistogram->getControlWindow()->getTrace()->getTraceName();
+    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, composedName );
     tmpHisto->SetHistogram( newHistogram );
 
     appendHistogram2Tree( tmpHisto );
@@ -1708,6 +1716,73 @@ void paraverMain::OnNewHistogramClick( wxCommandEvent& event )
 
 void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent& event )
 {
-  tbarMain->EnableTool( ID_NEW_HISTOGRAM, currentTimeline != NULL );
+  if ( loadedTraces.size() > 0 )
+  {
+    vector<Window *> timelines;
+    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
+    tbarMain->EnableTool( ID_NEW_HISTOGRAM, ( timelines.size() > 0 ) && ( currentTimeline != NULL ) );
+  }
+  else
+    tbarMain->EnableTool( ID_NEW_HISTOGRAM, false );
 }
 
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_PREFERENCES
+ */
+
+void paraverMain::OnPreferencesClick( wxCommandEvent& event )
+{
+  PreferencesDialog preferences( this );
+
+  preferences.SetHistogramNumColumns( paraverConfig->getHistoNumColumns() );
+  preferences.SetHistogramMaxNumColumns( 400 ); // TO IMPLEMENT
+  preferences.SetHistogramPrecision( paraverConfig->getPrecision() );
+  preferences.SetHistogramMaxPrecision( 20 ); // TO IMPLEMENT
+  preferences.SetHistogramShowUnits( paraverConfig->getShowUnits() );
+  preferences.SetHistogramThousandSeparator( paraverConfig->getThousandSep() );
+  preferences.SetWhatWherePrecision( 2 ); // TO IMPLEMENT
+
+  preferences.TransferDataToWindow();
+
+  if ( preferences.ShowModal() == wxID_OK )
+  {
+    preferences.TransferDataFromWindow();
+
+    // Apply Preferences
+    paraverConfig->setHistoNumColumns( preferences.GetHistogramNumColumns() );
+    paraverConfig->setPrecision( preferences.GetHistogramPrecision() );
+    paraverConfig->setShowUnits( preferences.GetHistogramShowUnits() );
+    paraverConfig->setThousandSep( preferences.GetHistogramThousandSeparator() );
+
+    // Save Preferences to File
+  }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_PREFERENCES
+ */
+
+void paraverMain::OnPreferencesUpdate( wxUpdateUIEvent& event )
+{
+////@begin wxEVT_UPDATE_UI event handler for ID_PREFERENCES in paraverMain.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_UPDATE_UI event handler for ID_PREFERENCES in paraverMain. 
+}
+
+void paraverMain::selectTrace( Trace *trace )
+{
+  size_t currentTrace;
+  for ( currentTrace = 0; currentTrace < loadedTraces.size(); ++currentTrace )
+    if ( loadedTraces[ currentTrace ] == trace )
+      break;
+
+  int currentPage  = choiceWindowBrowser->GetSelection();
+
+  if ( currentPage != 0 )
+    choiceWindowBrowser->SetSelection( currentTrace + 1 );
+
+  SetCurrentTrace( currentTrace );
+}

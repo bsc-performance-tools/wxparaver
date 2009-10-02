@@ -52,6 +52,7 @@ class wxPropertyGridEvent;
 #define ID_MENULOADCFG 10006
 #define ID_RECENTCFGS 10009
 #define ID_MENUSAVECFG 10011
+#define ID_PREFERENCES 10001
 #define ID_TOOLBAR 10003
 #define ID_NEW_WINDOW 10030
 #define ID_NEW_DERIVED_WINDOW 10031
@@ -147,6 +148,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_MENUSAVECFG
   void OnMenusavecfgUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_PREFERENCES
+  void OnPreferencesClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_PREFERENCES
+  void OnPreferencesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
   void OnExitClick( wxCommandEvent& event );
@@ -250,6 +257,7 @@ public:
   
   int GetNextPosX();
   int GetNextPosY();
+  void selectTrace( Trace *trace );
 
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows

@@ -28,6 +28,9 @@
 #include "paraverconfig.h"
 // #include "histogram.h"
 
+// pREFERENCES
+//#include <wx/notebook.h>
+#include "preferencesdialog.h"
 ////@begin XPM images
 ////@end XPM images
 
@@ -338,7 +341,7 @@ void HistogramDialog::CreateControls()
   txtControlTimelineMin->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
   txtControlTimelineMax->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
   txtControlTimelineDelta->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
-  
+
   txt3DTimelineMin->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
   txt3DTimelineMax->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
   txt3DTimelineDelta->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
@@ -638,6 +641,54 @@ void HistogramDialog::OnHistogram3dtimelineautofitUpdate( wxUpdateUIEvent& event
   enable3DFields( !button3DTimelineAutoFit->GetValue() );
 }
 
+/*
+PreferencesDialog::PreferencesDialog( wxWindow* parent,
+                 wxWindowID id,
+                 const wxString& title)
+{
+  SetSheetStyle(wxPROPSHEET_NOTEBOOK);
+  Create(parent, id, title);
+}
+
+PreferencesDialog::~PreferencesDialog()
+{}
+
+bool PreferencesDialog::Create( wxWindow* parent,
+                 wxWindowID id,
+                 const wxString& title,
+                 const wxPoint& pos,
+                 const wxSize& size,
+                 long style,
+                 const wxString& name )
+{
+
+
+  if (!wxPropertySheetDialog::Create( parent, id, title ))
+    return false;
+
+  cout << "PREFERENCES DIALOG CREATED!" << endl;
+  CreateButtons( wxOK | wxCANCEL | wxHELP );
+
+
+//  wxNotebookPage* mypage = new wxNotebookPage();
+//  wxNotebook* mypanel = new wxNotebook();
+//  mypanel->AddPage( mypage, wxT("General"), true);
+//  GetBookCtrl()->AddPage( mypanel, wxT("General"));
+
+
+  wxBookCtrlBase* notebook = GetBookCtrl();
+  wxPanel *panel1 = new wxPanel( notebook );
+
+  notebook->AddPage( panel1, _("General"), true);
+
+  LayoutDialog();
+  ShowModal();
+
+  return true;
+}
+
+*/
+
 
 /*!
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_HISTOGRAM_BUTTONSELECT
@@ -645,6 +696,7 @@ void HistogramDialog::OnHistogram3dtimelineautofitUpdate( wxUpdateUIEvent& event
 
 void HistogramDialog::OnHistogramButtonselectClick( wxCommandEvent& event )
 {
+//  PreferencesDialog myprefs(this, wxID_ANY, _("Preferences"));
 }
 
 

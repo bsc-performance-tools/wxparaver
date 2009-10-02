@@ -88,7 +88,9 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
 
+  EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
+  EVT_GRID_LABEL_LEFT_CLICK( gHistogram::OnLabelLeftClick )
   EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
   EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
@@ -226,12 +228,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
@@ -240,7 +242,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -281,8 +283,11 @@ void gHistogram::CreateControls()
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gHistogram::OnRightDown), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
+  itemToolBar11->Connect(ID_AUITOOLBAR1, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), NULL, this);
+  itemToolBar11->Connect(ID_AUITOOLBAR1, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gHistogram::OnRightDown), NULL, this);
 ////@end gHistogram content construction
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
@@ -957,7 +962,10 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
 
 void gHistogram::OnIdle( wxIdleEvent& event )
 {
-  this->SetTitle( myHistogram->getName() );
+  string composedName = myHistogram->getName() + " @ " +
+                        myHistogram->getControlWindow()->getTrace()->getTraceName();
+
+  this->SetTitle( composedName );
 
   if( myHistogram->getShowWindow() )
     this->Show();
@@ -1112,7 +1120,11 @@ void gHistogram::OnPopUpClone()
   wxPoint position =  wxPoint( this->GetPosition().x + titleBarSize.GetHeight(),
                                this->GetPosition().y + titleBarSize.GetHeight() );
   wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
-  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, clonedName, position, size );
+
+  string composedName = clonedName + " @ " +
+                        clonedHistogram->getControlWindow()->getTrace()->getTraceName();
+
+  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, composedName, position, size );
   clonedGHistogram->myHistogram = clonedHistogram;
 
   clonedGHistogram->ready = false;
@@ -1323,6 +1335,8 @@ void gHistogram::OnPopUpRedoZoom(){}
 
 void gHistogram::rightDownManager()
 {
+  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
+
   gPopUpMenu popUpMenu( this );
 //  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
 //  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
@@ -1630,6 +1644,7 @@ void gHistogram::OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnLeftDown( wxMouseEvent& event )
 {
+  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
   if( openControlActivated )
   {
     openControlActivated= false;
@@ -1950,5 +1965,35 @@ void gHistogram::OnToolHideColumnsClick( wxCommandEvent& event )
 void gHistogram::OnToolHideColumnsUpdate( wxUpdateUIEvent& event )
 {
   event.Check( myHistogram->getHideColumns() );
+}
+
+
+/*!
+ * wxEVT_RIGHT_DOWN event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnRightDown( wxMouseEvent& event )
+{
+  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
+}
+
+
+/*!
+ * wxEVT_GRID_CELL_LEFT_CLICK event handler for ID_GRIDHISTO
+ */
+
+void gHistogram::OnCellLeftClick( wxGridEvent& event )
+{
+  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
+}
+
+
+/*!
+ * wxEVT_GRID_LABEL_LEFT_CLICK event handler for ID_GRIDHISTO
+ */
+
+void gHistogram::OnLabelLeftClick( wxGridEvent& event )
+{
+  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
 }
 

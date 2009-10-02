@@ -118,6 +118,9 @@ public:
   /// wxEVT_LEFT_UP event handler for ID_ZOOMHISTO
   void OnLeftUp( wxMouseEvent& event );
 
+  /// wxEVT_RIGHT_DOWN event handler for ID_ZOOMHISTO
+  void OnRightDown( wxMouseEvent& event );
+
   /// wxEVT_MOTION event handler for ID_ZOOMHISTO
   void OnMotion( wxMouseEvent& event );
 
@@ -127,8 +130,14 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_ZOOMHISTO
   void OnZoomhistoUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_GRID_CELL_LEFT_CLICK event handler for ID_GRIDHISTO
+  void OnCellLeftClick( wxGridEvent& event );
+
   /// wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
   void OnCellRightClick( wxGridEvent& event );
+
+  /// wxEVT_GRID_LABEL_LEFT_CLICK event handler for ID_GRIDHISTO
+  void OnLabelLeftClick( wxGridEvent& event );
 
   /// wxEVT_GRID_LABEL_RIGHT_CLICK event handler for ID_GRIDHISTO
   void OnLabelRightClick( wxGridEvent& event );

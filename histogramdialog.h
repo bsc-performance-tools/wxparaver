@@ -28,6 +28,10 @@
 #include "window.h"
 #include "loadedwindows.h"
 
+// wxPropertyDialogSheet
+//#include <wx/propdlg.h>
+//#include <wx/generic/propdlg.h>
+
 /*!
  * Forward declarations
  */
@@ -256,6 +260,25 @@ private:
   UINT32 fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget );
   void enable3DFields( bool autofit );
 };
+
+/*
+class PreferencesDialog : public wxPropertySheetDialog
+{
+  public:
+    PreferencesDialog( wxWindow* parent,
+                 wxWindowID id,
+                 const wxString& title);
+    ~PreferencesDialog();
+
+    bool Create( wxWindow* parent,
+                 wxWindowID id,
+                 const wxString& title,
+                 const wxPoint& pos = wxDefaultPosition,
+                 const wxSize& size = wxDefaultSize,
+                 long style = wxDEFAULT_DIALOG_STYLE,
+                 const wxString& name = "Preferences" );
+};
+*/
 
 #endif
   // _HISTOGRAMDIALOG_H_
