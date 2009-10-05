@@ -335,15 +335,15 @@ public:
   
   bool IsSplit() const;
 
-  typedef enum {  HEADER_LINE = 0,
-        BEGIN_LINES_SEMANTIC,
-        SEMANTIC_LINE,
-        END_LINES_SEMANTIC,
-        BEGIN_LINES_RECORD,
-        MARK_LINE,
-        EVENT_LINE,
-        COMMUNICATION_LINE,
-        END_LINES_RECORD } TWWLine;
+  typedef enum {  RAW_LINE = 0,
+                  BEGIN_LINES_SEMANTIC,
+                  SEMANTIC_LINE,
+                  END_LINES_SEMANTIC,
+                  BEGIN_LINES_RECORD,
+                  MARK_LINE,
+                  EVENT_LINE,
+                  COMMUNICATION_LINE,
+                  END_LINES_RECORD } TWWLine;
 
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables

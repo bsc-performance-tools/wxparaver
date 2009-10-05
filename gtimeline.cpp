@@ -1532,7 +1532,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
   txt << _( "\t  Click time: " ) << LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
                                                                  myWindow->getTimeUnit() );
   txt << _( "\n\n" );
-  whatWhereLines.push_back( make_pair( HEADER_LINE, txt ) );
+  whatWhereLines.push_back( make_pair( RAW_LINE, txt ) );
 
   myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS );
 
@@ -1599,7 +1599,7 @@ void gTimeline::printWhatWhere( )
           whatWhereText->AppendText( it->second );
         break;
 
-      case HEADER_LINE:
+      case RAW_LINE:
         whatWhereText->AppendText( it->second );
         break;
 
@@ -1722,6 +1722,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
   rl->erase( rl->begin(), it );
 
   whatWhereLines.push_back( make_pair( END_LINES_RECORD, _( "" )));
+  whatWhereLines.push_back( make_pair( RAW_LINE, _( "\n" )));
 }
 
 
