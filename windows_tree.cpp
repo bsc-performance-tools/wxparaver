@@ -201,7 +201,7 @@ void updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      vector< Window * > &allWindows,
                      vector< Histogram * > &allHistograms,
-                     wxWindow *currentWindow )
+                     wxWindow **currentWindow )
 {
   TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( id );
 
@@ -211,7 +211,7 @@ void updateTreeItem( wxTreeCtrl *tree,
   {
     if( tmpTimeline->IsActive() )
     {
-      currentWindow = tmpTimeline;
+      *currentWindow = tmpTimeline;
       tree->SelectItem( id );
     }
     Window *tmpWindow = tmpTimeline->GetMyWindow();
@@ -229,7 +229,7 @@ void updateTreeItem( wxTreeCtrl *tree,
   {
     if( tmpHistogram->IsActive() )
     {
-      currentWindow = tmpHistogram;
+      *currentWindow = tmpHistogram;
       tree->SelectItem( id );
     }
     Histogram *tmpHisto = tmpHistogram->GetHistogram();

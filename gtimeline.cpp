@@ -628,9 +628,10 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
 {
   bool existEvents = false;
   TObjectOrder row = 0;
-  
+
   RecordList::iterator it = records->begin();
   step = ( 1 / step );
+
   while( it != records->end() && it->getTime() < from )
     ++it;
   while( it != records->end() && it->getTime() <= to )

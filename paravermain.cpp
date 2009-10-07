@@ -123,6 +123,12 @@ wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
 Window *paraverMain::beginDragWindow = NULL;
 Window *paraverMain::endDragWindow = NULL;
 
+static bool userMessage( string message )
+{
+  wxMessageDialog tmpDialog( NULL, message, "Paraver question", wxYES_NO | wxICON_QUESTION );
+  return tmpDialog.ShowModal() == wxID_YES;
+}
+
 /*!
  * paraverMain constructors
  */
@@ -134,7 +140,7 @@ paraverMain::paraverMain()
   imageList->Add( wxIcon( timeline_xpm ) );
 
   LocalKernel::init();
-  localKernel = new LocalKernel();
+  localKernel = new LocalKernel( userMessage );
   paraverConfig = ParaverConfig::getInstance();
   paraverConfig->readParaverConfigFile();
   myParaverMain = this;
@@ -150,7 +156,7 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
   imageList->Add( wxIcon( timeline_xpm ) );
 
   LocalKernel::init();
-  localKernel = new LocalKernel();
+  localKernel = new LocalKernel( userMessage );
   paraverConfig = ParaverConfig::getInstance();
   paraverConfig->readParaverConfigFile();
   myParaverMain = this;
@@ -1093,7 +1099,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
     for ( unsigned int current = 0; current < numberChild; ++current )
     {
       if ( currentChild.IsOk() )
-        updateTreeItem( currentTree, currentChild, allWindows, allHistograms, currentWindow );
+        updateTreeItem( currentTree, currentChild, allWindows, allHistograms, &currentWindow );
       currentChild = currentTree->GetNextChild( root, cookie );
     }
   }
@@ -1786,3 +1792,6 @@ void paraverMain::selectTrace( Trace *trace )
 
   SetCurrentTrace( currentTrace );
 }
+
+
+

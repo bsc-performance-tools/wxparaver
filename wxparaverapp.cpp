@@ -118,3 +118,5 @@ int wxparaverApp::OnExit()
 ////@end wxparaverApp cleanup
 }
 
+
+
