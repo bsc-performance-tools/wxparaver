@@ -193,10 +193,6 @@ void gPasteWindowProperties::copy( gHistogram* whichHistogram )
 
 void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string property )
 {
-   TRecordTime destinyTraceBeginTime = 0;
-// TRecordTime destinyTraceBeginTime =  whichTimeline->GetMyWindow()->getTrace()->getBeginTime();
-   TRecordTime destinyTraceEndTime =  whichTimeline->GetMyWindow()->getTrace()->getEndTime();
-
   if ( timeline != NULL )
   {
     // paste timeline -> timeline
@@ -205,15 +201,8 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
       TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
 
-      if ( sourceBeginTime < destinyTraceBeginTime )
-        whichTimeline->GetMyWindow()->setWindowBeginTime( destinyTraceBeginTime );
-      else
-        whichTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
-
-      if ( sourceEndTime > destinyTraceEndTime )
-        whichTimeline->GetMyWindow()->setWindowEndTime( destinyTraceEndTime );
-      else
-        whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
+      whichTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
+      whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
     }
     else if ( property == STR_SIZE )
     {
@@ -257,15 +246,8 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
       TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
 
-      if ( sourceBeginTime < destinyTraceBeginTime )
-        whichTimeline->GetMyWindow()->setWindowBeginTime( destinyTraceBeginTime );
-      else
-        whichTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
-
-      if ( sourceEndTime > destinyTraceEndTime )
-        whichTimeline->GetMyWindow()->setWindowEndTime( destinyTraceEndTime );
-      else
-        whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
+      whichTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
+      whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
     }
     else if ( property == STR_SIZE )
     {

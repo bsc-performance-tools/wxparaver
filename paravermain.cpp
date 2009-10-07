@@ -696,6 +696,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   }
   
   // Timeline related properties
+  else if( propName == "Level" )
+  {
+    currentTimeline->setLevel( (TWindowLevel)property->GetValue().GetLong() );
+    currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
+  }
   else if( propName == "Logical" )
   {
     currentTimeline->getFilter()->setLogical( property->GetValue().GetBool() );

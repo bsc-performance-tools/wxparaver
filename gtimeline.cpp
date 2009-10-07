@@ -554,7 +554,7 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
   int lineLastPos = 0;
   
   for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep;
-       currentTime <= myWindow->getWindowEndTime();
+       currentTime <= myWindow->getWindowEndTime() && currentTime <= myWindow->getTrace()->getEndTime();
        currentTime += timeStep )
   {
     rowValues.clear();

@@ -114,6 +114,34 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                             wxT( whichWindow->getMinimumY() ) ) );
   windowProperties->Append( new wxFloatProperty( wxT("Semantic Maximum"), wxPG_LABEL,
                             wxT( whichWindow->getMaximumY() ) ) );
+                            
+  if( !whichWindow->isDerivedWindow() )
+  {
+    wxArrayString arrayLevels;
+    wxArrayInt arrayLevelsPos;
+    
+    if( whichWindow->getTrace()->existResourceInfo() )
+    {
+      arrayLevels.Add( _( "System" ) );
+      arrayLevelsPos.Add( SYSTEM );
+      arrayLevels.Add( _( "Node" ) );
+      arrayLevelsPos.Add( NODE );
+      arrayLevels.Add( _( "CPU" ) );
+      arrayLevelsPos.Add( CPU );
+    }
+    arrayLevels.Add( _( "Workload" ) );
+    arrayLevelsPos.Add( WORKLOAD );
+    arrayLevels.Add( _( "Application" ) );
+    arrayLevelsPos.Add( APPLICATION );
+    arrayLevels.Add( _( "Task" ) );
+    arrayLevelsPos.Add( TASK );
+    arrayLevels.Add( _( "Thread" ) );
+    arrayLevelsPos.Add( THREAD );
+    
+    windowProperties->Append( new wxEnumProperty( wxT("Level"), wxPG_LABEL,
+                                                  arrayLevels, arrayLevelsPos, whichWindow->getLevel() ) );
+  }
+  
   //-------------------------------------------------------------------------
   // Filter related properties
   //-------------------------------------------------------------------------
