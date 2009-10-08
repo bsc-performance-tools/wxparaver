@@ -24,7 +24,7 @@ wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool 
 gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found );
 void getParentGTimeline( gTimeline *current, vector< gTimeline * > & children );
 
-void BuildTree( wxWindow *parent,
+void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
                 Window *window,

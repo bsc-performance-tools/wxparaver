@@ -147,7 +147,7 @@ void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
   parents.push_back(((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( getAllTracesTree()->GetNextChild( item, cookie ) )))->getTimeline());
 }
 
-void BuildTree( wxWindow *parent,
+void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
                 Window *window,
@@ -180,6 +180,7 @@ void BuildTree( wxWindow *parent,
     BuildTree( parent, root1, currentWindowId1, root2, currentWindowId2, window->getParent( 0 ) );
     BuildTree( parent, root1, currentWindowId1, root2, currentWindowId2, window->getParent( 1 ) );
   }
+  parent->SetCurrentWindow( (wxWindow *)tmpTimeline );
 }
 
 

@@ -273,7 +273,7 @@ public:
   int GetNextPosX();
   int GetNextPosY();
   void selectTrace( Trace *trace );
-  INT16 getTracePosition( Trace *trace );
+  UINT16 getTracePosition( Trace *trace );
 
   void commandLineLoadings( wxCmdLineParser &parser );
   

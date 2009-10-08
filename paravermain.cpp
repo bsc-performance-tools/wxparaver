@@ -1052,7 +1052,8 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   if( gHistogram *histo = itemData->getHistogram() ) // Is a histogram?
   {
     currentHisto = histo->GetHistogram();
-
+    currentWindow = (wxWindow *)currentHisto;
+    
     currentTimeline = NULL;
     beginDragWindow = NULL;
 
@@ -1063,6 +1064,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   {
     currentTimeline = timeline->GetMyWindow();
     beginDragWindow = timeline->GetMyWindow();
+    currentWindow = (wxWindow *)currentTimeline;
 
     currentHisto = NULL;
 
@@ -1679,6 +1681,8 @@ void paraverMain::ShowHistogramDialog()
       tmpHisto->Show();
     }
     tmpHisto->execute();
+    
+    currentWindow = (wxWindow *)tmpHisto;
   }
   raiseCurrentWindow = true;
 }
@@ -1854,9 +1858,9 @@ void paraverMain::selectTrace( Trace *trace )
 }
 
 
-INT16 paraverMain::getTracePosition( Trace *trace )
+UINT16 paraverMain::getTracePosition( Trace *trace )
 {
-  INT16 currentTrace;
+  UINT16 currentTrace;
 
   for ( currentTrace = 0; currentTrace < loadedTraces.size(); ++currentTrace )
     if ( loadedTraces[ currentTrace ] == trace )
