@@ -10,14 +10,14 @@ class gHistogram;
 class paraverMain;
 class Window;
 class Histogram;
+class Trace;
 
 using namespace std;
 
 wxTreeCtrl * createTree( wxImageList *imageList );
 wxTreeCtrl *getAllTracesTree();
-wxTreeCtrl *getSelectedTraceTree();
+wxTreeCtrl *getSelectedTraceTree( Trace *trace );
 
-void appendTimeline2Tree( gTimeline *whichTimeline, Window *window );
 void appendHistogram2Tree( gHistogram *ghistogram );
 
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found );

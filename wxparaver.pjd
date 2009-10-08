@@ -1047,7 +1047,7 @@
           <string name="variable-12">"numNewWindows|int|NumNewWindows|0|2|0|"</string>
           <string name="variable-13">"numNewHistograms|int|NumNewHistograms|0|2|0|"</string>
           <string name="variable-14">"numNewDerived|int|NumNewDerived|0|2|0|"</string>
-          <string name="variable-15">"raiseCurrentWindow|bool|Raise|true|2|0|"</string>
+          <string name="variable-15">"raiseCurrentWindow|bool|RaiseCurrentWindow|true|2|0|"</string>
           <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
@@ -1877,14 +1877,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -1927,10 +1919,9 @@
                 <string name="event-handler-1">"wxEVT_ERASE_BACKGROUND|OnEraseBackground|NONE||gHistogram"</string>
                 <string name="event-handler-2">"wxEVT_LEFT_DOWN|OnLeftDown|NONE||gHistogram"</string>
                 <string name="event-handler-3">"wxEVT_LEFT_UP|OnLeftUp|NONE||gHistogram"</string>
-                <string name="event-handler-4">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gHistogram"</string>
-                <string name="event-handler-5">"wxEVT_MOTION|OnMotion|NONE||gHistogram"</string>
-                <string name="event-handler-6">"wxEVT_CONTEXT_MENU|OnZoomContextMenu|NONE||gHistogram"</string>
-                <string name="event-handler-7">"wxEVT_UPDATE_UI|OnZoomhistoUpdate|NONE||gHistogram"</string>
+                <string name="event-handler-4">"wxEVT_MOTION|OnMotion|NONE||gHistogram"</string>
+                <string name="event-handler-5">"wxEVT_CONTEXT_MENU|OnZoomContextMenu|NONE||gHistogram"</string>
+                <string name="event-handler-6">"wxEVT_UPDATE_UI|OnZoomhistoUpdate|NONE||gHistogram"</string>
                 <string name="proxy-Id name">"ID_ZOOMHISTO"</string>
                 <long name="proxy-Id value">10023</long>
                 <string name="proxy-Name">""</string>

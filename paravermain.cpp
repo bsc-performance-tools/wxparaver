@@ -1135,6 +1135,8 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   // Update loop and delete
   for( unsigned int iPage = 0; iPage < choiceWindowBrowser->GetPageCount(); iPage++ )
   {
+    if( iPage > 0 && choiceWindowBrowser->GetSelection() > 0 )
+      currentWindow = NULL;
     wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( iPage );
     wxTreeItemId root = currentTree->GetRootItem();
     wxTreeItemIdValue cookie;
@@ -1143,7 +1145,11 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
     for ( unsigned int current = 0; current < numberChild; ++current )
     {
       if ( currentChild.IsOk() )
+      {
         updateTreeItem( currentTree, currentChild, allWindows, allHistograms, &currentWindow );
+        if( iPage > 0 && choiceWindowBrowser->GetSelection() > 0 && currentWindow != NULL )
+          choiceWindowBrowser->SetSelection( iPage );
+      }
       currentChild = currentTree->GetNextChild( root, cookie );
     }
   }
@@ -1848,4 +1854,14 @@ void paraverMain::selectTrace( Trace *trace )
 }
 
 
+INT16 paraverMain::getTracePosition( Trace *trace )
+{
+  INT16 currentTrace;
+
+  for ( currentTrace = 0; currentTrace < loadedTraces.size(); ++currentTrace )
+    if ( loadedTraces[ currentTrace ] == trace )
+      break;
+
+  return currentTrace;
+}
 

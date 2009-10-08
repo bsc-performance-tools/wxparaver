@@ -772,12 +772,6 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   
   myWindow->setPosX( this->GetPosition().x );
   myWindow->setPosY( this->GetPosition().y );
-
-//  if ( this == FindFocus() )
-//  {
-//    cout << myWindow->getTrace()->getFileName() << endl;
-//    choiceWindowBrowser
-//  }
 }
 
 
@@ -795,8 +789,6 @@ void gTimeline::OnCloseWindow( wxCloseEvent& event )
  */
 void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
 {
-  paraverMain::myParaverMain->selectTrace( GetMyWindow()->getTrace() );
-
   wxBitmap tmpImage( caution_xpm );
   if( event.GetX() < tmpImage.GetWidth() + drawBorder
       && event.GetY() > drawZone->GetSize().GetHeight() - tmpImage.GetHeight() - drawBorder )
@@ -996,7 +988,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   LoadedWindows::getInstance()->add( clonedWindow );
 
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
-  INT16 currentTrace = paraverMain::myParaverMain->GetCurrentTrace();
+  INT16 currentTrace = paraverMain::myParaverMain->getTracePosition( clonedWindow->getTrace() );
   wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 ); // Global page
   wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
 
@@ -1033,7 +1025,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
 
 void gTimeline::OnPopUpClone()
 {
-  clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree()->GetRootItem());
+  clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
 }
 
 
@@ -1344,8 +1336,6 @@ void gTimeline::OnPopUpRedoZoom()
 
 void gTimeline::rightDownManager()
 {
-  paraverMain::myParaverMain->selectTrace( GetMyWindow()->getTrace() );
-
   gPopUpMenu popUpMenu( this );
 
   popUpMenu.enable( "Undo Zoom", !myWindow->emptyPrevZoom() );

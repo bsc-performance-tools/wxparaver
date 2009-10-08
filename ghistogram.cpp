@@ -283,7 +283,6 @@ void gHistogram::CreateControls()
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), NULL, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gHistogram::OnRightDown), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
   itemToolBar11->Connect(ID_AUITOOLBAR1, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), NULL, this);
@@ -1141,7 +1140,7 @@ void gHistogram::OnPopUpClone()
     controlGTimeline->clone( clonedHistogram->getControlWindow(),
                              parent,
                              getAllTracesTree()->GetRootItem(),
-                             getSelectedTraceTree()->GetRootItem() );
+                             getSelectedTraceTree( clonedHistogram->getControlWindow()->getTrace() )->GetRootItem() );
   else
     cout << "ERROR! NOT FOUND ORIGINAL CONTROL WINDOW OF HISTOGRAM!" << endl;
     
@@ -1155,7 +1154,7 @@ void gHistogram::OnPopUpClone()
       dataGTimeline->clone( clonedHistogram->getDataWindow(),
                             parent,
                             getAllTracesTree()->GetRootItem(),
-                            getSelectedTraceTree()->GetRootItem() );
+                            getSelectedTraceTree( clonedHistogram->getDataWindow()->getTrace() )->GetRootItem() );
     else
       cout << "ERROR! NOT FOUND ORIGINAL DATA WINDOW OF HISTOGRAM!" << endl;
   }
@@ -1172,7 +1171,7 @@ void gHistogram::OnPopUpClone()
       extraControlGTimeline->clone( clonedHistogram->getExtraControlWindow(),
                                     parent,
                                     getAllTracesTree()->GetRootItem(),
-                                    getSelectedTraceTree()->GetRootItem() );
+                                    getSelectedTraceTree( clonedHistogram->getExtraControlWindow()->getTrace() )->GetRootItem() );
     else
 #ifndef WIN32
 #warning TODO: Gui Exception class inherited from ParaverKernelException
@@ -1644,7 +1643,6 @@ void gHistogram::OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnLeftDown( wxMouseEvent& event )
 {
-  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
   if( openControlActivated )
   {
     openControlActivated= false;
@@ -1867,7 +1865,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     openWindow = tmpControlWindow->clone( productWin, 
                                           parent,
                                           getAllTracesTree()->GetRootItem(),
-                                          getSelectedTraceTree()->GetRootItem(),
+                                          getSelectedTraceTree( productWin->getTrace() )->GetRootItem(),
                                           false );
   }
   else
@@ -1875,7 +1873,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     openWindow = tmpControlWindow->clone( controlCloned, 
                                           parent,
                                           getAllTracesTree()->GetRootItem(),
-                                          getSelectedTraceTree()->GetRootItem(),
+                                          getSelectedTraceTree( controlCloned->getTrace() )->GetRootItem(),
                                           false );
   }
   
@@ -1968,14 +1966,6 @@ void gHistogram::OnToolHideColumnsUpdate( wxUpdateUIEvent& event )
 }
 
 
-/*!
- * wxEVT_RIGHT_DOWN event handler for ID_ZOOMHISTO
- */
-
-void gHistogram::OnRightDown( wxMouseEvent& event )
-{
-  paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
-}
 
 
 /*!
@@ -1995,5 +1985,18 @@ void gHistogram::OnCellLeftClick( wxGridEvent& event )
 void gHistogram::OnLabelLeftClick( wxGridEvent& event )
 {
   paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
+}
+
+
+/*!
+ * wxEVT_RIGHT_DOWN event handler for ID_AUITOOLBAR1
+ */
+
+void gHistogram::OnRightDown( wxMouseEvent& event )
+{
+////@begin wxEVT_RIGHT_DOWN event handler for ID_AUITOOLBAR1 in gHistogram.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_RIGHT_DOWN event handler for ID_AUITOOLBAR1 in gHistogram. 
 }
 
