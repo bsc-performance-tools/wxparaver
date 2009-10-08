@@ -1044,6 +1044,9 @@
           <string name="variable-9">"lastTimeline|Window *|LastTimeline|NULL|2|0|"</string>
           <string name="variable-10">"lastHisto|Histogram *|LastHisto|NULL|2|0|"</string>
           <string name="variable-11">"currentWindow|wxWindow *|CurrentWindow|NULL|2|0|"</string>
+          <string name="variable-12">"numNewWindows|int|NumNewWindows|0|2|0|"</string>
+          <string name="variable-13">"numNewHistograms|int|NumNewHistograms|0|2|0|"</string>
+          <string name="variable-14">"numNewDerived|int|NumNewDerived|0|2|0|"</string>
           <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>

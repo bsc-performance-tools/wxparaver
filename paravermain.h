@@ -244,6 +244,15 @@ public:
   wxWindow * GetCurrentWindow() const { return currentWindow ; }
   void SetCurrentWindow(wxWindow * value) { currentWindow = value ; }
 
+  int GetNumNewWindows() const { return numNewWindows ; }
+  void SetNumNewWindows(int value) { numNewWindows = value ; }
+
+  int GetNumNewHistograms() const { return numNewHistograms ; }
+  void SetNumNewHistograms(int value) { numNewHistograms = value ; }
+
+  int GetNumNewDerived() const { return numNewDerived ; }
+  void SetNumNewDerived(int value) { numNewDerived = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -288,6 +297,9 @@ private:
   Window * lastTimeline;
   Histogram * lastHisto;
   wxWindow * currentWindow;
+  int numNewWindows;
+  int numNewHistograms;
+  int numNewDerived;
 ////@end paraverMain member variables
 
 

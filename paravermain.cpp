@@ -239,6 +239,9 @@ void paraverMain::Init()
   lastTimeline = NULL;
   lastHisto = NULL;
   currentWindow = NULL;
+  numNewWindows = 0;
+  numNewHistograms = 0;
+  numNewDerived = 0;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -1285,10 +1288,9 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   if( wxTheApp->IsActive() )
   {
     if( currentWindow != NULL && raise )
-    {
-      raise = false;
       currentWindow->Raise();
-    }
+
+    raise = false;
   }
   else
     raise = true;
@@ -1369,7 +1371,10 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
   // Create new window
   Window *newWindow = Window::create( localKernel, loadedTraces[ currentTrace ] );
  
-  newWindow->setName( "New window" );
+  ++numNewWindows;
+  wxString tmpName( "New window #" );
+  tmpName << numNewWindows;
+  newWindow->setName( tmpName.c_str() );
   newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
   newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
                       0, newWindow->getWindowLevelObjects() - 1 );
@@ -1434,7 +1439,10 @@ void paraverMain::ShowDerivedDialog()
   vector<Window *> timelines;
   LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
 
-  derivedDialog.SetTimelineName( "New Derived Window" );
+  ++numNewDerived;
+  wxString tmpName( "New Derived Window #" );
+  tmpName << numNewDerived;
+  derivedDialog.SetTimelineName( tmpName.c_str() );
 
   // Set timelines list
   derivedDialog.SetTimelines1( timelines );
@@ -1568,7 +1576,10 @@ void paraverMain::ShowHistogramDialog()
 
     Histogram *newHistogram = Histogram::create( localKernel );
 
-    newHistogram->setName( "New Histogram" );
+    ++numNewHistograms;
+    wxString tmpName( "New Histogram #" );
+    tmpName << numNewHistograms;
+    newHistogram->setName( tmpName.c_str() );
 /*
    newHistogram->setPosX();
     newHistogram->setPosY();
