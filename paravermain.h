@@ -253,6 +253,9 @@ public:
   int GetNumNewDerived() const { return numNewDerived ; }
   void SetNumNewDerived(int value) { numNewDerived = value ; }
 
+  bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
+  void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -300,6 +303,7 @@ private:
   int numNewWindows;
   int numNewHistograms;
   int numNewDerived;
+  bool raiseCurrentWindow;
 ////@end paraverMain member variables
 
 

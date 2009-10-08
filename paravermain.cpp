@@ -126,7 +126,10 @@ Window *paraverMain::endDragWindow = NULL;
 static bool userMessage( string message )
 {
   wxMessageDialog tmpDialog( NULL, message, "Paraver question", wxYES_NO | wxICON_QUESTION );
-  return tmpDialog.ShowModal() == wxID_YES;
+  paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
+  int tmpResult = tmpDialog.ShowModal();
+  paraverMain::myParaverMain->SetRaiseCurrentWindow( true );
+  return tmpResult == wxID_YES;
 }
 
 /*!
@@ -242,6 +245,7 @@ void paraverMain::Init()
   numNewWindows = 0;
   numNewHistograms = 0;
   numNewDerived = 0;
+  raiseCurrentWindow = true;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -371,7 +375,9 @@ bool paraverMain::DoLoadTrace( const string &path )
   {
     loaded = false;
     wxMessageDialog message( this, ex.what(), "Error loading trace", wxOK );
+    raiseCurrentWindow = false;
     message.ShowModal();
+    raiseCurrentWindow = true;
   }
   paraverMain::dialogProgress->Show( false );
   delete paraverMain::dialogProgress;
@@ -387,7 +393,9 @@ bool paraverMain::DoLoadCFG( const string &path )
     {
       wxString errMessage = path + " isn't a valid cfg.";
       wxMessageDialog message( this, errMessage.c_str(), "Invalid file", wxOK );
+      raiseCurrentWindow = false;
       message.ShowModal();
+      raiseCurrentWindow = true;
     }
     else
     {
@@ -398,7 +406,9 @@ bool paraverMain::DoLoadCFG( const string &path )
       {
         wxString errMessage = path + " failed to load in:\n'" + CFGLoader::errorLine.c_str() + "'";
         wxMessageDialog message( this, errMessage.c_str(), "Loading error", wxOK );
+        raiseCurrentWindow = false;
         message.ShowModal();
+        raiseCurrentWindow = true;
       }
       else
       {
@@ -445,11 +455,13 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
   wxFileDialog dialog( this, "Load Trace", "", "", 
     "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*", 
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
+  raiseCurrentWindow = false;
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
     DoLoadTrace( path.c_str() );
   }
+  raiseCurrentWindow = true;
 }
 
 
@@ -462,11 +474,13 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
   wxFileDialog dialog( this, "Load Configuration", "", "",
     "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*",
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
+  raiseCurrentWindow = false;
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
     DoLoadCFG( path.c_str());
   }
+  raiseCurrentWindow = true;
 }
 
 
@@ -1283,17 +1297,11 @@ void progressFunction( ProgressController *progress )
 
 void paraverMain::OnIdle( wxIdleEvent& event )
 {
-  static bool raise = true;
-  
   if( wxTheApp->IsActive() )
   {
-    if( currentWindow != NULL && raise )
+    if( currentWindow != NULL && raiseCurrentWindow )
       currentWindow->Raise();
-
-    raise = false;
   }
-  else
-    raise = true;
 }
 
 
@@ -1328,6 +1336,7 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
   saveDialog.SetTimelines( timelines );
   saveDialog.SetHistograms( histograms );
   
+  raiseCurrentWindow = false;
   if( saveDialog.ShowModal() == wxID_OK )
   {
     timelines = saveDialog.GetTimelines();
@@ -1343,6 +1352,7 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
       previousCFGs->add( path.c_str() );
     }
   }
+  raiseCurrentWindow = true;
 }
 
 
@@ -1461,6 +1471,7 @@ void paraverMain::ShowDerivedDialog()
   else 
     derivedDialog.SetCurrentWindow2( NULL );
 
+  raiseCurrentWindow = false;
   if( derivedDialog.ShowModal() == wxID_OK )
   {
     vector< Window * > selectedTimeline = derivedDialog.GetTimelines1();
@@ -1542,6 +1553,7 @@ void paraverMain::ShowDerivedDialog()
 //    last->Raise();
       currentWindow = last;
   }
+  raiseCurrentWindow = true;
 }
 
 
@@ -1566,6 +1578,7 @@ void paraverMain::ShowHistogramDialog()
 
   histogramDialog.TransferDataToWindow( currentTimeline );
 
+  raiseCurrentWindow = false;
   if( histogramDialog.ShowModal() == wxID_OK )
   {
     vector< TWindowID > controlTimeline = histogramDialog.GetControlTimelines();
@@ -1640,6 +1653,7 @@ void paraverMain::ShowHistogramDialog()
     }
     tmpHisto->execute();
   }
+  raiseCurrentWindow = true;
 }
 
 
@@ -1768,6 +1782,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
 
   preferences.TransferDataToWindow();
 
+  raiseCurrentWindow = true;
   if ( preferences.ShowModal() == wxID_OK )
   {
     preferences.TransferDataFromWindow();
@@ -1780,6 +1795,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
 
     // Save Preferences to File
   }
+  raiseCurrentWindow = false;
 }
 
 
