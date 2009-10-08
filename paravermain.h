@@ -20,6 +20,8 @@
 #include <vector>
 #include <wx/progdlg.h>
 #include <wx/treectrl.h>
+#include<wx/cmdline.h>
+
 ////@begin includes
 #include "wx/aui/framemanager.h"
 #include "wx/frame.h"
@@ -30,6 +32,7 @@
 #include "localkernel.h"
 #include "paraverconfig.h"
 #include "previousfiles.h"
+
 /*!
  * Forward declarations
  */
@@ -270,6 +273,7 @@ public:
   int GetNextPosX();
   int GetNextPosY();
   void selectTrace( Trace *trace );
+  void commandLineLoadings( wxCmdLineParser &parser );
   
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows

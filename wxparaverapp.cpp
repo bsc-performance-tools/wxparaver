@@ -82,28 +82,49 @@ void wxparaverApp::Init()
  */
 
 bool wxparaverApp::OnInit()
-{    
-////@begin wxparaverApp initialisation
-	// Remove the comment markers above and below this block
-	// to make permanent changes to the code.
+{
+  wxCmdLineEntryDesc argumentsParseSyntax[] =
+  {
+    { wxCMD_LINE_SWITCH, 
+      wxT("h"),
+      wxT("help"),
+      wxT("Show this help."),
+      wxCMD_LINE_VAL_STRING,
+      wxCMD_LINE_OPTION_HELP },
+
+    { wxCMD_LINE_PARAM, 
+      NULL,
+      NULL,
+      wxT( "(trace.prv | trace.prv.gz) (configuration.cfg)" ),
+      wxCMD_LINE_VAL_STRING,
+      wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
+
+    { wxCMD_LINE_NONE }
+  };
 
 #if wxUSE_XPM
-	wxImage::AddHandler(new wxXPMHandler);
+  wxImage::AddHandler(new wxXPMHandler);
 #endif
 #if wxUSE_LIBPNG
-	wxImage::AddHandler(new wxPNGHandler);
+  wxImage::AddHandler(new wxPNGHandler);
 #endif
 #if wxUSE_LIBJPEG
-	wxImage::AddHandler(new wxJPEGHandler);
+  wxImage::AddHandler(new wxJPEGHandler);
 #endif
 #if wxUSE_GIF
-	wxImage::AddHandler(new wxGIFHandler);
+  wxImage::AddHandler(new wxGIFHandler);
 #endif
-	paraverMain* mainWindow = new paraverMain( NULL );
-	mainWindow->Show(true);
-////@end wxparaverApp initialisation
 
-    return true;
+  wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
+  paraverCommandLineParser.Parse();
+
+  paraverMain* mainWindow = new paraverMain( NULL );
+
+  mainWindow->commandLineLoadings( paraverCommandLineParser );
+
+  mainWindow->Show(true);
+
+  return true;
 }
 
 
@@ -112,11 +133,8 @@ bool wxparaverApp::OnInit()
  */
 
 int wxparaverApp::OnExit()
-{    
+{
 ////@begin wxparaverApp cleanup
 	return wxApp::OnExit();
 ////@end wxparaverApp cleanup
 }
-
-
-

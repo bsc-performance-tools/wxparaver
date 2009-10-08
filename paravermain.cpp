@@ -172,6 +172,27 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
 }
 
 
+void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
+{
+  string fileName;
+  for ( unsigned int i = 0; i < parser.GetParamCount(); ++i )
+  {
+    fileName = parser.GetParam( i ).mb_str();
+
+    if (( fileName.substr( fileName.length() - 6 ) == "prv.gz" ) || 
+        ( fileName.substr( fileName.length() - 3 ) == "prv" ))
+    {
+      DoLoadTrace( fileName );
+    }
+    else if (( fileName.substr( fileName.length() - 3 ) == "cfg" ) && !loadedTraces.empty() )
+    {
+      DoLoadCFG( fileName );
+    }
+
+    fileName.erase();
+  }
+}
+
 /*!
  * paraverMain creator
  */
