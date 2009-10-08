@@ -383,17 +383,21 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                     arrayFilterFunctions, arrayFilterFunctionsPos, selected );
     windowProperties->AppendIn( eventFilterType, typeFunction );
 
-    vector<TEventType> types;
-    whichWindow->getTrace()->getEventLabels().getTypes( types );
+    set<TEventType> allTypes;
+    vector<TEventType> labeledTypes;
+    whichWindow->getTrace()->getEventLabels().getTypes( labeledTypes );
+    allTypes = whichWindow->getTrace()->getLoadedEvents();
+    allTypes.insert( labeledTypes.begin(), labeledTypes.end() );
     arrayStr.Clear();
     arrayInt.Clear();
-    for( vector<TEventType>::iterator it = types.begin(); it != types.end(); ++it )
+    for( set<TEventType>::iterator it = allTypes.begin(); it != allTypes.end(); ++it )
     {
       arrayInt.Add( (*it) );
       string tmpstr;
       whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
       arrayStr.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
     }
+    
     wxPGChoices typeChoices( arrayStr, arrayInt );
     wxArrayInt values;
     vector<TEventType> typesSel;
