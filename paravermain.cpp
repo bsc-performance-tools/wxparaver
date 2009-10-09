@@ -1328,7 +1328,12 @@ void paraverMain::OnIdle( wxIdleEvent& event )
 {
   if( wxTheApp->IsActive() )
   {
-    if( currentWindow != NULL && raiseCurrentWindow )
+    bool showWindow = false;
+    if( currentTimeline != NULL )
+      showWindow = currentTimeline->getShowWindow();
+    else if( currentHisto != NULL )
+      showWindow = currentHisto->getShowWindow();
+    if( currentWindow != NULL && showWindow && raiseCurrentWindow )
       currentWindow->Raise();
   }
 }
