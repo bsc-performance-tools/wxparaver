@@ -2086,3 +2086,6 @@ void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
   checkWWEvents->Enable( true );
   checkWWCommunications->Enable( true );
 }
+
+
+

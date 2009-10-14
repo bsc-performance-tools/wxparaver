@@ -1052,7 +1052,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   if( gHistogram *histo = itemData->getHistogram() ) // Is a histogram?
   {
     currentHisto = histo->GetHistogram();
-    currentWindow = (wxWindow *)currentHisto;
+    currentWindow = (wxWindow *)histo;
     
     currentTimeline = NULL;
     beginDragWindow = NULL;
@@ -1064,7 +1064,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   {
     currentTimeline = timeline->GetMyWindow();
     beginDragWindow = timeline->GetMyWindow();
-    currentWindow = (wxWindow *)currentTimeline;
+    currentWindow = (wxWindow *)timeline;
 
     currentHisto = NULL;
 
