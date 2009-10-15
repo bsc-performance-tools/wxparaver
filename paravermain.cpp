@@ -1830,6 +1830,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setThousandSep( preferences.GetHistogramThousandSeparator() );
 
     // Save Preferences to File
+    paraverConfig->writeParaverConfigFile();
   }
   raiseCurrentWindow = false;
 }
