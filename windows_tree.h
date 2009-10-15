@@ -33,6 +33,7 @@ void updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      vector< Window * > &allWindows,
                      vector< Histogram * > &allHistograms,
-                     wxWindow **currentWindow  );
+                     wxWindow **currentWindow,
+                     bool allTracesTree );
 
 #endif // _GWINDOWTREE_H_

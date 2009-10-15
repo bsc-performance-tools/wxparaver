@@ -60,6 +60,7 @@ class wxPropertyGridEvent;
 #define ID_NEW_WINDOW 10030
 #define ID_NEW_DERIVED_WINDOW 10031
 #define ID_NEW_HISTOGRAM 10060
+#define ID_TOOLDELETE 10081
 #define ID_CHOICEWINBROWSER 10002
 #define ID_FOREIGN 10010
 #define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
@@ -178,6 +179,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_NEW_HISTOGRAM
   void OnNewHistogramUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLDELETE
+  void OnTooldeleteClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOLDELETE
+  void OnTooldeleteUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );

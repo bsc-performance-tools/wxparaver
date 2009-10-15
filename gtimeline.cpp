@@ -145,6 +145,8 @@ gTimeline::~gTimeline()
 {
 ////@begin gTimeline destruction
 ////@end gTimeline destruction
+  delete timerSize;
+  delete myWindow;
 }
 
 

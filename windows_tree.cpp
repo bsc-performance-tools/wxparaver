@@ -190,20 +190,22 @@ void updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      vector< Window * > &allWindows,
                      vector< Histogram * > &allHistograms,
-                     wxWindow **currentWindow )
+                     wxWindow **currentWindow,
+                     bool allTracesTree )
 {
+  bool destroy = false;
   TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( id );
 
   // No matter timeline or histogram, get its name and delete from given vector 
   wxString tmpName;
   if( gTimeline *tmpTimeline = itemData->getTimeline() )
   {
-    if( tmpTimeline->IsActive() )
+    Window *tmpWindow = tmpTimeline->GetMyWindow();
+    if( tmpTimeline->IsActive() && !tmpWindow->getDestroy() )
     {
       *currentWindow = tmpTimeline;
       tree->SelectItem( id );
     }
-    Window *tmpWindow = tmpTimeline->GetMyWindow();
     tmpName = tmpWindow->getName();
     for ( vector<Window *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
     {
@@ -213,15 +215,36 @@ void updateTreeItem( wxTreeCtrl *tree,
         break;
       }
     }
+    
+    if( tmpWindow->getDestroy() )
+    {
+      if( paraverMain::myParaverMain->GetCurrentTimeline() == tmpWindow )
+        paraverMain::myParaverMain->SetCurrentTimeline( NULL );
+      if( !allTracesTree )
+        tmpTimeline->Destroy();
+      Window *parent1 = tmpWindow->getParent( 0 );
+      if( parent1 != NULL )
+      {
+        parent1->setChild( NULL );
+        parent1->setDestroy( true );
+      }
+      Window *parent2 = tmpWindow->getParent( 1 );
+      if( parent2 != NULL )
+      {
+        parent2->setChild( NULL );
+        parent2->setDestroy( true );
+      }
+      destroy = true;
+    }
   }
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
-    if( tmpHistogram->IsActive() )
+    Histogram *tmpHisto = tmpHistogram->GetHistogram();
+    if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
     {
       *currentWindow = tmpHistogram;
       tree->SelectItem( id );
     }
-    Histogram *tmpHisto = tmpHistogram->GetHistogram();
     tmpName = tmpHisto->getName();
     for ( vector<Histogram *>::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
     {
@@ -230,6 +253,15 @@ void updateTreeItem( wxTreeCtrl *tree,
         allHistograms.erase( it );
         break;
       }
+    }
+
+    if( tmpHisto->getDestroy() )
+    {
+      if( paraverMain::myParaverMain->GetCurrentHisto() == tmpHisto )
+        paraverMain::myParaverMain->SetCurrentHisto( NULL );
+      if( !allTracesTree )
+        tmpHistogram->Destroy();
+      destroy = true;
     }
   }
   
@@ -244,9 +276,15 @@ void updateTreeItem( wxTreeCtrl *tree,
     wxTreeItemId currentChild = tree->GetFirstChild( id, cookie );
     while( currentChild.IsOk() )
     {
-      updateTreeItem( tree, currentChild, allWindows, allHistograms, currentWindow );
-      currentChild = tree->GetNextChild( id, cookie );
+      updateTreeItem( tree, currentChild, allWindows, allHistograms, currentWindow, allTracesTree );
+      if( !destroy )
+        currentChild = tree->GetNextChild( id, cookie );
+      else
+        currentChild = tree->GetFirstChild( id, cookie );
     }
   }
+
+  if( destroy )
+    tree->Delete( id );
 }
 

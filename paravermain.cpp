@@ -50,6 +50,7 @@
 #include "new_window.xpm"
 #include "new_derived_window.xpm"
 #include "new_histogram.xpm"
+#include "delete.xpm"
 ////@end XPM images
 
 #include "table.xpm"
@@ -95,6 +96,9 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
+
+  EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
+  EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
 
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
@@ -319,6 +323,10 @@ void paraverMain::CreateControls()
   wxBitmap itemtool19BitmapDisabled;
   tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool19Bitmap, itemtool19BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
+  tbarMain->AddSeparator();
+  wxBitmap itemtool21Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
+  wxBitmap itemtool21BitmapDisabled;
+  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool21Bitmap, itemtool21BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -563,6 +571,11 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   else if (name == _T("new_histogram.xpm"))
   {
     wxBitmap bitmap(new_histogram_xpm);
+    return bitmap;
+  }
+  else if (name == _T("delete.xpm"))
+  {
+    wxBitmap bitmap(delete_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -1148,7 +1161,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
     {
       if ( currentChild.IsOk() )
       {
-        updateTreeItem( currentTree, currentChild, allWindows, allHistograms, &currentWindow );
+        updateTreeItem( currentTree, currentChild, allWindows, allHistograms, &currentWindow, iPage == 0 );
         if( iPage > 0 && choiceWindowBrowser->GetSelection() > 0 && currentWindow != NULL )
           choiceWindowBrowser->SetSelection( iPage );
       }
@@ -1524,6 +1537,8 @@ void paraverMain::ShowDerivedDialog()
 
     // Create new derived window
     Window *newWindow = Window::create( localKernel, beginDragWindow, endDragWindow );
+    beginDragWindow->setChild( newWindow );
+    endDragWindow->setChild( newWindow );
     newWindow->setPosX( GetNextPosX() );
     newWindow->setPosY( GetNextPosY() );
 
@@ -1873,5 +1888,38 @@ UINT16 paraverMain::getTracePosition( Trace *trace )
       break;
 
   return currentTrace;
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLDELETE
+ */
+
+void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
+{
+  if( currentHisto != NULL )
+    currentHisto->setDestroy( true );
+  if( currentTimeline != NULL )
+  {
+    if( currentTimeline->getChild() == NULL )
+      currentTimeline->setDestroy( true );
+    else
+      wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
+                    _( "Paraver information" ),
+                    wxOK | wxICON_INFORMATION );
+  }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOLDELETE
+ */
+
+void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent& event )
+{
+  if( currentTimeline != NULL || currentHisto != NULL )
+    event.Enable( true );
+  else
+    event.Enable( false );
 }
 
