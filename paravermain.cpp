@@ -75,6 +75,9 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
 
+  EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
+  EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
+
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
 
@@ -295,10 +298,11 @@ void paraverMain::CreateControls()
   menuFile->Append(wxID_OPEN, _("Load &Trace..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu5 = new wxMenu;
   menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
+  menuFile->Append(ID_UNLOADTRACE, _("Unload Trace..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), wxEmptyString, wxITEM_NORMAL);
-  wxMenu* itemMenu8 = new wxMenu;
-  menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu8);
+  wxMenu* itemMenu9 = new wxMenu;
+  menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu9);
   menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(ID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
@@ -311,22 +315,22 @@ void paraverMain::CreateControls()
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
-  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
-  wxBitmap itemtool17BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
-  tbarMain->EnableTool(ID_NEW_WINDOW, false);
-  wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
+  wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
   wxBitmap itemtool18BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
-  tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
-  wxBitmap itemtool19Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_WINDOW, false);
+  wxBitmap itemtool19Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
   wxBitmap itemtool19BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool19Bitmap, itemtool19BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
+  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool19Bitmap, itemtool19BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
+  wxBitmap itemtool20Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  wxBitmap itemtool20BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool20Bitmap, itemtool20BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->AddSeparator();
-  wxBitmap itemtool21Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
-  wxBitmap itemtool21BitmapDisabled;
-  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool21Bitmap, itemtool21BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
+  wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
+  wxBitmap itemtool22BitmapDisabled;
+  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -1172,6 +1176,8 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
    // add pending window or histogram
   for( vector<Window *>::iterator it = allWindows.begin(); it != allWindows.end(); ++it )
   {
+    if( (*it)->getDestroy() )
+      continue;
     wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
     wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
 
@@ -1181,6 +1187,8 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
 
   for( vector<Histogram *>::iterator it = allHistograms.begin(); it != allHistograms.end(); ++it )
   {
+    if( (*it)->getDestroy() )
+      continue;
     gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, (*it)->getName() );
     tmpHisto->SetHistogram( *it );
 
@@ -1348,6 +1356,35 @@ void paraverMain::OnIdle( wxIdleEvent& event )
       showWindow = currentHisto->getShowWindow();
     if( currentWindow != NULL && showWindow && raiseCurrentWindow )
       currentWindow->Raise();
+    
+    int iTrace = 0;
+    for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
+    {
+      if( (*it)->getUnload() )
+      {
+        vector<Window *> windows;
+        vector<Histogram *> histograms;
+        
+        LoadedWindows::getInstance()->getAll( *it, windows );
+        LoadedWindows::getInstance()->getAll( *it, histograms );
+        
+        if( windows.begin() == windows.end() && histograms.begin() == histograms.end() )
+        {
+          if( currentTrace == iTrace ) currentTrace = -1;
+          Trace *tmpTrace = *it;
+          vector<Trace *>::iterator tmpIt = it;
+          --tmpIt;
+          loadedTraces.erase( it );
+          it = tmpIt;
+          delete tmpTrace;
+          choiceWindowBrowser->DeletePage( iTrace + 1 );
+        }
+        else
+          ++iTrace;
+      }
+      else
+        ++iTrace;
+    }
   }
 }
 
@@ -1923,3 +1960,56 @@ void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent& event )
     event.Enable( false );
 }
 
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_UNLOADTRACE
+ */
+
+void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
+{
+  wxArrayString choices;
+
+  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
+    choices.Add( (*it)->getTraceName().c_str() );
+  wxSingleChoiceDialog dialog( this, _("Select the trace to unload:"), _("Unload Trace"), choices );
+  
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    UnloadTrace( dialog.GetSelection() );
+  }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_UNLOADTRACE
+ */
+
+void paraverMain::OnUnloadtraceUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( loadedTraces.begin() != loadedTraces.end() );
+}
+
+
+void paraverMain::UnloadTrace( int whichTrace )
+{
+  vector<Window *> windows;
+  vector<Histogram *> histograms;
+  
+  LoadedWindows::getInstance()->getAll( loadedTraces[ whichTrace ], windows );
+  LoadedWindows::getInstance()->getAll( loadedTraces[ whichTrace ], histograms );
+  
+  for( vector<Window *>::iterator it = windows.begin(); it != windows.end(); ++it )
+  {
+    (*it)->setShowWindow( false );
+    if( (*it)->getChild() == NULL )
+      (*it)->setDestroy( true );
+  }
+
+  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  {
+    (*it)->setShowWindow( false );
+    (*it)->setDestroy( true );
+  }
+  
+  loadedTraces[ whichTrace ]->setUnload( true );
+}

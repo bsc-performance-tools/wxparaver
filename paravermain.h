@@ -52,6 +52,7 @@ class wxPropertyGridEvent;
 ////@begin control identifiers
 #define ID_PARAVERMAIN 10000
 #define ID_RECENTTRACES 10008
+#define ID_UNLOADTRACE 10082
 #define ID_MENULOADCFG 10006
 #define ID_RECENTCFGS 10009
 #define ID_MENUSAVECFG 10011
@@ -140,6 +141,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_RECENTTRACES
   void OnRecenttracesUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_UNLOADTRACE
+  void OnUnloadtraceClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_UNLOADTRACE
+  void OnUnloadtraceUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADCFG
   void OnMenuloadcfgClick( wxCommandEvent& event );
@@ -322,6 +329,7 @@ private:
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
+  void UnloadTrace( int whichTrace );
 /*
   void BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
                   wxTreeCtrl *root2, wxTreeItemId idRoot2,

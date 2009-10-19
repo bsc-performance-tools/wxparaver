@@ -733,6 +733,9 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
+  if( myWindow->getDestroy() )
+    return;
+
   string composedName = myWindow->getName() + " @ " +
                         myWindow->getTrace()->getTraceName();
 

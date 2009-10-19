@@ -170,6 +170,7 @@ gHistogram::~gHistogram()
 {
 ////@begin gHistogram destruction
 ////@end gHistogram destruction
+  delete myHistogram;
 }
 
 
@@ -961,6 +962,9 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
 
 void gHistogram::OnIdle( wxIdleEvent& event )
 {
+  if( myHistogram->getDestroy() )
+    return;
+
   string composedName = myHistogram->getName() + " @ " +
                         myHistogram->getControlWindow()->getTrace()->getTraceName();
 
