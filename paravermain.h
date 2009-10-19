@@ -291,6 +291,8 @@ public:
 
   void commandLineLoadings( wxCmdLineParser &parser );
   
+  void clearProperties();
+  
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
   static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height

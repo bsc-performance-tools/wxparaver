@@ -219,7 +219,10 @@ void updateTreeItem( wxTreeCtrl *tree,
     if( tmpWindow->getDestroy() )
     {
       if( paraverMain::myParaverMain->GetCurrentTimeline() == tmpWindow )
+      {
         paraverMain::myParaverMain->SetCurrentTimeline( NULL );
+        paraverMain::myParaverMain->clearProperties();
+      }
       if( !allTracesTree )
         tmpTimeline->Destroy();
       Window *parent1 = tmpWindow->getParent( 0 );
@@ -258,7 +261,10 @@ void updateTreeItem( wxTreeCtrl *tree,
     if( tmpHisto->getDestroy() )
     {
       if( paraverMain::myParaverMain->GetCurrentHisto() == tmpHisto )
+      {
         paraverMain::myParaverMain->SetCurrentHisto( NULL );
+        paraverMain::myParaverMain->clearProperties();
+      }
       if( !allTracesTree )
         tmpHistogram->Destroy();
       destroy = true;

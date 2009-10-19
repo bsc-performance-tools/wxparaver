@@ -1400,6 +1400,24 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
     currentTrace = loadedTraces.size() - 1;
   else
     currentTrace = selPage - 1;
+    
+  wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
+  if( !tree->GetSelection().IsOk() )
+    return;
+
+  TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
+  if( item->getTimeline() != NULL )
+  {
+    currentWindow = item->getTimeline();
+    currentTimeline = item->getTimeline()->GetMyWindow();
+    currentHisto = NULL;
+  }
+  else if( item->getHistogram() != NULL )
+  {
+    currentWindow = item->getHistogram();
+    currentHisto = item->getHistogram()->GetHistogram();
+    currentTimeline = NULL;
+  }
 }
 
 
@@ -2012,4 +2030,9 @@ void paraverMain::UnloadTrace( int whichTrace )
   }
   
   loadedTraces[ whichTrace ]->setUnload( true );
+}
+
+void paraverMain::clearProperties()
+{
+  windowProperties->Clear();
 }
