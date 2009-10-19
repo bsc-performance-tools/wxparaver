@@ -15,6 +15,7 @@ using namespace std;
 #define STR_TIME             "Time"
 #define STR_SIZE             "Size"
 #define STR_OBJECTS          "Objects"
+#define STR_SEMANTIC_SCALE   "Semantic Scale"
 #define STR_FILTER           "Filter"
 #define STR_FILTER_COMMS     "Communications"
 #define STR_FILTER_COMMS_XT  "Filter:Communications"

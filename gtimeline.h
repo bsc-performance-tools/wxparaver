@@ -284,6 +284,7 @@ public:
   void OnPopUpPasteTime();
   void OnPopUpPasteObjects();
   void OnPopUpPasteSize();
+  void OnPopUpPasteSemanticScale();
   void OnPopUpPasteFilterAll();
   void OnPopUpPasteFilterCommunications();
   void OnPopUpPasteFilterEvents();

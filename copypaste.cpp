@@ -128,6 +128,7 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[STR_TIME] = option;
   allowed[STR_COPY] = option;
   allowed[STR_SIZE] = option;
+  allowed[STR_SEMANTIC_SCALE] = option;
 
   // Policy : Only same trace
   for ( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
@@ -195,7 +196,7 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
 {
   if ( timeline != NULL )
   {
-    // paste timeline -> timeline
+    // paste timeline -> whichtimeline
     if ( property == STR_TIME )
     {
       TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
@@ -234,6 +235,11 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       whichTimeline->GetMyWindow()->getFilter()->copyEventsSection( timeline->GetMyWindow()->getFilter() );
       whichTimeline->GetMyWindow()->getFilter()->copyCommunicationsSection( timeline->GetMyWindow()->getFilter() );
     }
+    else if ( property == STR_SEMANTIC_SCALE )
+    {
+      whichTimeline->GetMyWindow()->setMinimumY( timeline->GetMyWindow()->getMinimumY() );
+      whichTimeline->GetMyWindow()->setMaximumY( timeline->GetMyWindow()->getMaximumY() );
+    }
     else
     {
     }
@@ -261,6 +267,12 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       Window *controlWin = histogram->GetHistogram()->getControlWindow();
       controlWin->getSelectedRows( controlWin->getLevel(), auxRows );
       whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
+    }
+    else if ( property == STR_SEMANTIC_SCALE )
+    {
+      Window *controlWin = histogram->GetHistogram()->getControlWindow();
+      whichTimeline->GetMyWindow()->setMinimumY( controlWin->getMinimumY() );
+      whichTimeline->GetMyWindow()->setMaximumY( controlWin->getMaximumY() );
     }
     else
     {
@@ -297,6 +309,12 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
                               timeline->GetMyWindow()->getZoomSecondDimension().first,
                               timeline->GetMyWindow()->getZoomSecondDimension().second );
     }
+    else if ( property == STR_SEMANTIC_SCALE )
+    {
+      Window *controlWin = whichHistogram->GetHistogram()->getControlWindow();
+      controlWin->setMinimumY( timeline->GetMyWindow()->getMinimumY() );
+      controlWin->setMaximumY( timeline->GetMyWindow()->getMaximumY() );
+    }
     else
     {
     }
@@ -326,6 +344,13 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
                               controlWindow->getWindowEndTime(),
                               histogram->GetHistogram()->getControlWindow()->getZoomSecondDimension().first,
                               histogram->GetHistogram()->getControlWindow()->getZoomSecondDimension().second );
+    }
+    else if ( property == STR_SEMANTIC_SCALE )
+    {
+      Window *srcControlWin = histogram->GetHistogram()->getControlWindow();
+      Window *dstControlWin = whichHistogram->GetHistogram()->getControlWindow();
+      dstControlWin->setMinimumY( srcControlWin->getMinimumY() );
+      dstControlWin->setMaximumY( srcControlWin->getMaximumY() );
     }
     else
     {

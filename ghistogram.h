@@ -267,6 +267,8 @@ public:
   void OnPopUpPasteTime();
   void OnPopUpPasteObjects();
   void OnPopUpPasteSize();
+  void OnPopUpPasteSemanticScale();
+
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
   void OnPopUpAutoControlScale( bool state );
