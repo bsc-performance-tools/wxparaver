@@ -450,12 +450,6 @@ bool HistogramDialog::TransferDataFromWindow()
     }
   }
 
-  getSelectedWindowID( listControlTimelines, controlTimelines, false );
-
-  getSelectedWindowID( listDataTimelines, dataTimelines, false );
-
-  getSelectedWindowID( list3DTimelines, extraControlTimelines, true );
-
 
   if ( list3DTimelines->GetCurrentSelection() != 0 )
   {
@@ -523,6 +517,13 @@ bool HistogramDialog::TransferDataFromWindow()
                              wxOK | wxICON_EXCLAMATION );
     message.ShowModal();
   }
+
+  getSelectedWindowID( listControlTimelines, controlTimelines, false );
+
+  getSelectedWindowID( listDataTimelines, dataTimelines, false );
+
+  getSelectedWindowID( list3DTimelines, extraControlTimelines, true );
+
 
   return true;
 }

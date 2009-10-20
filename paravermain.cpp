@@ -1349,6 +1349,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
 {
   if( wxTheApp->IsActive() )
   {
+#ifndef WIN32
     bool showWindow = false;
     if( currentTimeline != NULL )
       showWindow = currentTimeline->getShowWindow();
@@ -1356,7 +1357,8 @@ void paraverMain::OnIdle( wxIdleEvent& event )
       showWindow = currentHisto->getShowWindow();
     if( currentWindow != NULL && showWindow && raiseCurrentWindow )
       currentWindow->Raise();
-    
+#endif
+
     int iTrace = 0;
     for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     {
@@ -1371,13 +1373,24 @@ void paraverMain::OnIdle( wxIdleEvent& event )
         if( windows.begin() == windows.end() && histograms.begin() == histograms.end() )
         {
           if( currentTrace == iTrace ) currentTrace = -1;
+          else --currentTrace;
           Trace *tmpTrace = *it;
-          vector<Trace *>::iterator tmpIt = it;
-          --tmpIt;
-          loadedTraces.erase( it );
-          it = tmpIt;
+          if( it == loadedTraces.begin() )
+          {
+            loadedTraces.erase( it );
+            it = loadedTraces.begin();
+          }
+          else
+          {
+            vector<Trace *>::iterator tmpIt = it;
+            --tmpIt;
+            loadedTraces.erase( it );
+            it = tmpIt;
+          }
           delete tmpTrace;
           choiceWindowBrowser->DeletePage( iTrace + 1 );
+          if( it == loadedTraces.end() )
+            break;
         }
         else
           ++iTrace;
@@ -1776,18 +1789,18 @@ void paraverMain::OnNewDerivedWindowClick( wxCommandEvent& event )
 void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent& event )
 {
 
-  if ( loadedTraces.size() > 0 )
+  if ( loadedTraces.size() > 0 && currentTrace > -1 )
   {
     vector<Window *> timelines;
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
 
-    tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, ( timelines.size() > 0 ) && ( currentTimeline != NULL ) );
+    event.Enable( ( timelines.size() > 0 ) && ( currentTimeline != NULL ) );
   }
   else
-    tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
+    event.Enable( false );
 
   if ( currentHisto != NULL )
-    tbarMain->EnableTool( ID_NEW_DERIVED_WINDOW, false );
+    event.Enable( false );
 }
 
 
@@ -1991,10 +2004,14 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
     choices.Add( (*it)->getTraceName().c_str() );
   wxSingleChoiceDialog dialog( this, _("Select the trace to unload:"), _("Unload Trace"), choices );
   
+  raiseCurrentWindow = false;
+#ifndef WIN32
   if( dialog.ShowModal() == wxID_OK )
-  {
+#else
+  dialog.ShowModal();
+#endif
     UnloadTrace( dialog.GetSelection() );
-  }
+  raiseCurrentWindow = true;
 }
 
 
