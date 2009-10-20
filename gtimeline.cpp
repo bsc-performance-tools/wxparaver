@@ -737,7 +737,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
     return;
 
   string composedName = myWindow->getName() + " @ " +
-                        myWindow->getTrace()->getTraceName();
+                        myWindow->getTrace()->getTraceNameNumbered();
 
   this->SetTitle( composedName );
 
@@ -983,7 +983,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
 #endif
 
   string composedName = myWindow->getName() + " @ " +
-                        myWindow->getTrace()->getTraceName();
+                        myWindow->getTrace()->getTraceNameNumbered();
 
 //  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
   gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( composedName.c_str() ), position, size );

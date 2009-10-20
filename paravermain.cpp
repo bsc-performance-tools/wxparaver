@@ -357,11 +357,19 @@ bool paraverMain::DoLoadTrace( const string &path )
   Trace *tr = NULL;
   bool loaded = true;
   
+  map< string, UINT32 >::iterator it = traceInstance.find( path );
+  if ( it == traceInstance.end() )
+    traceInstance[ path ] = 0;
+
+/*
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
   {
     if( (*it)->getFileName().compare( path ) == 0 )
-      return true;
+    // Trace is loaded.
+      timesLoaded++;
   }
+  traceWasLoaded = ( timesLoaded > 0 );
+*/
 
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction );
@@ -395,13 +403,17 @@ bool paraverMain::DoLoadTrace( const string &path )
     paraverMain::dialogProgress->Pulse( wxT( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
+
     tr = Trace::create( localKernel, path, progress );
-    
+    tr->setInstanceNumber( traceInstance[ path ]++ );
+
     loadedTraces.push_back( tr );
     currentTrace = loadedTraces.size() - 1;
     wxTreeCtrl *newTree = createTree( imageList );
-    choiceWindowBrowser->AddPage( newTree, path );
+
+    choiceWindowBrowser->AddPage( newTree, tr->getFileNameNumbered() );
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
+
     previousTraces->add( path );
   }
   catch( ParaverKernelException& ex )
@@ -2001,7 +2013,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   wxArrayString choices;
 
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
-    choices.Add( (*it)->getTraceName().c_str() );
+    choices.Add( (*it)->getTraceNameNumbered().c_str() );
   wxSingleChoiceDialog dialog( this, _("Select the trace to unload:"), _("Unload Trace"), choices );
   
   raiseCurrentWindow = false;

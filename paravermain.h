@@ -328,6 +328,7 @@ private:
   bool raiseCurrentWindow;
 ////@end paraverMain member variables
 
+  map< string, UINT32 > traceInstance;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );
