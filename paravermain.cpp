@@ -1361,7 +1361,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
 {
   if( wxTheApp->IsActive() )
   {
-#ifndef WIN32
+#if 0 // Because problems on Windows and some window managers (KDE)
     bool showWindow = false;
     if( currentTimeline != NULL )
       showWindow = currentTimeline->getShowWindow();
