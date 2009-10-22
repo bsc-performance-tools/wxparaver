@@ -4290,7 +4290,7 @@
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
                     <string name="proxy-Member variable name">"checkDrawLines"</string>
-                    <string name="proxy-Label">"Draw Communication Lines"</string>
+                    <string name="proxy-Label">"Communication Lines"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
                     <string name="proxy-Tooltip text">""</string>
@@ -4356,7 +4356,7 @@
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
                     <string name="proxy-Member variable name">"checkDrawFlags"</string>
-                    <string name="proxy-Label">"Draw Event Flags"</string>
+                    <string name="proxy-Label">"Event Flags"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
                     <string name="proxy-Tooltip text">""</string>
@@ -4422,7 +4422,7 @@
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
                     <string name="proxy-Member variable name">"checkFunctionLineColor"</string>
-                    <string name="proxy-Label">"Draw Function Line With Color"</string>
+                    <string name="proxy-Label">"Function Line With Color"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
                     <string name="proxy-Tooltip text">""</string>
