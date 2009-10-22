@@ -355,7 +355,7 @@ void gTimeline::redraw()
   redoColors = true;
   
   wxString winTitle = GetTitle();
-  SetTitle( winTitle + _(" (Working...)") );
+  SetTitle( _("(Working...) ") + winTitle );
 
   // Get selected rows
   vector<bool>         selected;

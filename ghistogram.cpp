@@ -301,7 +301,7 @@ void gHistogram::execute()
   if( myHistogram == NULL )
     return;
   wxString winTitle = GetTitle();
-  SetTitle( winTitle + _(" (Working...)") );
+  SetTitle( _("(Working...) ") + winTitle );
   Update();
   
   selectedRows.clear();
@@ -999,7 +999,7 @@ void gHistogram::updateHistogram()
     if( myHistogram->getRedraw() )
     {
       wxString winTitle = GetTitle();
-      SetTitle( winTitle + _(" (Working...)") );
+      SetTitle( _("(Working...) ") + winTitle );
       Update();
       
       myHistogram->setRedraw( false );
@@ -1523,7 +1523,7 @@ void gHistogram::OnSize( wxSizeEvent& event )
   if( ready && myHistogram->getZoom() )
   {
     wxString winTitle = GetTitle();
-    SetTitle( winTitle + _(" (Working...)") );
+    SetTitle( _("(Working...) ") + winTitle );
     Update();
     
     fillZoom();
