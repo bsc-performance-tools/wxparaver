@@ -27,8 +27,8 @@ class gHistogram;
 #define ID_MENU_FIT_SEMANTIC_MIN                  30013
 #define ID_MENU_FIT_SEMANTIC_MAX                  30014
 #define ID_MENU_FIT_SEMANTIC_BOTH                 30015
-#define ID_MENU_PAINT_COMMUNICATION_LINES         30016
-#define ID_MENU_PAINT_EVENT_FLAGS                 30017
+#define ID_MENU_VIEW_COMMUNICATION_LINES          30016
+#define ID_MENU_VIEW_EVENT_FLAGS                  30017
 #define ID_MENU_CODE_COLOR                        30018
 #define ID_MENU_GRADIENT_COLOR                    30019
 #define ID_MENU_NOT_NULL_GRADIENT_COLOR           30020
@@ -99,8 +99,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuFitSemanticMax( wxCommandEvent& event);
     void OnMenuFitSemanticBoth( wxCommandEvent& event);
 
-    void OnMenuPaintCommunicationLines( wxCommandEvent& event);
-    void OnMenuPaintEventFlags( wxCommandEvent& event);
+    void OnMenuViewCommunicationLines( wxCommandEvent& event);
+    void OnMenuViewEventFlags( wxCommandEvent& event);
 
     void OnMenuCodeColor( wxCommandEvent& event);
     void OnMenuGradientColor( wxCommandEvent& event);
@@ -138,7 +138,7 @@ class gPopUpMenu : public wxMenu
     gTimeline *timeline;
     gHistogram *histogram;
 
-    wxMenu * popUpMenuPaint;
+    wxMenu * popUpMenuView;
     wxMenu * popUpMenuColor;
     wxMenu * popUpMenuPaste;
     wxMenu * popUpMenuPasteFilter;

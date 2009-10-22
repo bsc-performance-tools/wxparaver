@@ -278,20 +278,20 @@ void gTimeline::CreateControls()
   wxBoxSizer* itemBoxSizer25 = new wxBoxSizer(wxVERTICAL);
   viewPropPanel->SetSizer(itemBoxSizer25);
 
-  checkDrawLines = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWLINES, _("Draw Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkDrawLines = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWLINES, _("Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawLines->SetValue(true);
   itemBoxSizer25->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
 
-  checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Draw Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawFlags->SetValue(true);
   itemBoxSizer25->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
 
-  checkFunctionLineColor = new wxCheckBox( viewPropPanel, ID_CHECK_FUNCTIONLINECOLOR, _("Draw Function Line With Color"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFunctionLineColor = new wxCheckBox( viewPropPanel, ID_CHECK_FUNCTIONLINECOLOR, _("Function Line With Color"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFunctionLineColor->SetValue(true);
   itemBoxSizer25->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
 
   viewPropPanel->FitInside();
-  infoZone->AddPage(viewPropPanel, _("View Properties"));
+  infoZone->AddPage(viewPropPanel, _("View"));
 
   splitter->SplitHorizontally(drawZone, infoZone, 0);
 

@@ -4195,7 +4195,7 @@
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
                 <string name="proxy-Member variable name">"viewPropPanel"</string>
-                <string name="proxy-Tab label">"View Properties"</string>
+                <string name="proxy-Tab label">"View"</string>
                 <string name="proxy-Tab icon">""</string>
                 <long name="proxy-PPU X">1</long>
                 <long name="proxy-PPU Y">5</long>
@@ -4298,7 +4298,7 @@
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
                     <string name="proxy-Member variable name">"checkDrawLines"</string>
-                    <string name="proxy-Label">"Draw Communication Lines"</string>
+                    <string name="proxy-Label">"Communication Lines"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
                     <string name="proxy-Tooltip text">""</string>
@@ -4364,7 +4364,7 @@
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
                     <string name="proxy-Member variable name">"checkDrawFlags"</string>
-                    <string name="proxy-Label">"Draw Event Flags"</string>
+                    <string name="proxy-Label">"Event Flags"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
                     <string name="proxy-Tooltip text">""</string>
@@ -4430,7 +4430,7 @@
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
                     <string name="proxy-Member variable name">"checkFunctionLineColor"</string>
-                    <string name="proxy-Label">"Draw Function Line With Color"</string>
+                    <string name="proxy-Label">"Function Line With Color"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
                     <string name="proxy-Tooltip text">""</string>
@@ -11237,6 +11237,8 @@
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"2D"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">"Histogram preferences."</string>
             <string name="proxy-Background colour">""</string>
@@ -11289,8 +11291,6 @@
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"2D"</string>
-            <string name="proxy-Tab icon">""</string>
             <document>
               <string name="title">"wxBoxSizer V"</string>
               <string name="type">"dialog-control-document"</string>
@@ -11758,6 +11758,8 @@
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"What/Where"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">"Timeline What/Where information preferences."</string>
             <string name="proxy-Background colour">""</string>
@@ -11810,8 +11812,6 @@
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"What/Where"</string>
-            <string name="proxy-Tab icon">""</string>
             <document>
               <string name="title">"wxBoxSizer H"</string>
               <string name="type">"dialog-control-document"</string>
@@ -12008,6 +12008,8 @@
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Global"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">""</string>
             <string name="proxy-Background colour">""</string>
@@ -12060,8 +12062,6 @@
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Global"</string>
-            <string name="proxy-Tab icon">""</string>
           </document>
           <document>
             <string name="title">"wxPanel: ID_PREFERENCES_FILTERS"</string>
@@ -12083,6 +12083,8 @@
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Filters"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">""</string>
             <string name="proxy-Background colour">""</string>
@@ -12135,8 +12137,6 @@
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Filters"</string>
-            <string name="proxy-Tab icon">""</string>
           </document>
         </document>
       </document>

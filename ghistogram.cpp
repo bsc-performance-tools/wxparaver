@@ -170,7 +170,7 @@ gHistogram::~gHistogram()
 {
 ////@begin gHistogram destruction
 ////@end gHistogram destruction
-cout<<"gHistogram destructor"<<endl;
+
   delete myHistogram;
 }
 
