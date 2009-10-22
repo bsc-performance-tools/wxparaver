@@ -278,15 +278,15 @@ void gTimeline::CreateControls()
   wxBoxSizer* itemBoxSizer25 = new wxBoxSizer(wxVERTICAL);
   viewPropPanel->SetSizer(itemBoxSizer25);
 
-  checkDrawLines = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWLINES, _("Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkDrawLines = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWLINES, _("Draw Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawLines->SetValue(true);
   itemBoxSizer25->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
 
-  checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Draw Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawFlags->SetValue(true);
   itemBoxSizer25->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
 
-  checkFunctionLineColor = new wxCheckBox( viewPropPanel, ID_CHECK_FUNCTIONLINECOLOR, _("Function Line With Color"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFunctionLineColor = new wxCheckBox( viewPropPanel, ID_CHECK_FUNCTIONLINECOLOR, _("Draw Function Line With Color"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFunctionLineColor->SetValue(true);
   itemBoxSizer25->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
 
@@ -1577,6 +1577,20 @@ void gTimeline::printWhatWhere( )
           whatWhereText->AppendText( it->second );
         break;
 
+      case BEGIN_LINES_SELECTED:
+          whatWhereText->BeginTextColour( *wxBLACK );
+        break;
+      case END_LINES_SELECTED:
+          whatWhereText->EndTextColour();
+        break;
+
+      case BEGIN_OTHER_LINES:
+          whatWhereText->BeginTextColour( wxColour( 0xb0b0b0 ) ); // GREY
+        break;
+      case END_OTHER_LINES:
+          whatWhereText->EndTextColour();
+        break;
+
       case BEGIN_LINES_SEMANTIC:
         if ( checkWWSemantic->IsChecked() )
           whatWhereText->BeginBold();
@@ -1625,7 +1639,10 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
   whatWhereLines.push_back( make_pair( BEGIN_LINES_SEMANTIC, _( "" )));
 
   if( clickedValue )
-    onString << wxT( "==> " );
+    whatWhereLines.push_back( make_pair( BEGIN_LINES_SELECTED, _( "" )));
+  else
+    whatWhereLines.push_back( make_pair( BEGIN_OTHER_LINES, _( "" )));
+
   onString << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( whichRow ), true ) );
   onString << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
                                            myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( whichRow )
@@ -1633,6 +1650,11 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
                                            myWindow->getTimeUnit() );
   onString << _( "\n" );
   whatWhereLines.push_back( make_pair( SEMANTIC_LINE, onString ));
+
+  if( clickedValue )
+    whatWhereLines.push_back( make_pair( END_LINES_SELECTED, _( "" )));
+  else
+    whatWhereLines.push_back( make_pair( END_OTHER_LINES, _( "" )));
 
   whatWhereLines.push_back( make_pair( END_LINES_SEMANTIC, _( "" )));
 }
@@ -1653,11 +1675,9 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
     ++it;
 
   if( clickedValue )
-  {
-    onString << wxT( "==> " );
-    whatWhereLines.push_back( make_pair( MARK_LINE, onString )); // just to write it
-    onString.clear();
-  }
+    whatWhereLines.push_back( make_pair( BEGIN_LINES_SELECTED, _( "" )));
+  else
+    whatWhereLines.push_back( make_pair( BEGIN_OTHER_LINES, _( "" )));
 
   while( it != rl->end() && (*it).getTime() < myWindow->getEndTime( whichRow ) )
   {
@@ -1722,6 +1742,11 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
   }
 
   rl->erase( rl->begin(), it );
+
+  if( clickedValue )
+    whatWhereLines.push_back( make_pair( END_LINES_SELECTED, _( "" )));
+  else
+    whatWhereLines.push_back( make_pair( END_OTHER_LINES, _( "" )));
 
   whatWhereLines.push_back( make_pair( END_LINES_RECORD, _( "" )));
   whatWhereLines.push_back( make_pair( RAW_LINE, _( "\n" )));

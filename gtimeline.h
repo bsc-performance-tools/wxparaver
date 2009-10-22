@@ -337,6 +337,10 @@ public:
   bool IsSplit() const;
 
   typedef enum {  RAW_LINE = 0,
+                  BEGIN_LINES_SELECTED,
+                  END_LINES_SELECTED,
+                  BEGIN_OTHER_LINES,
+                  END_OTHER_LINES,
                   BEGIN_LINES_SEMANTIC,
                   SEMANTIC_LINE,
                   END_LINES_SEMANTIC,
