@@ -395,6 +395,12 @@ void gTimeline::redraw()
 
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
   bufferDraw.Clear();
+  
+  // Paint blank image while redrawing
+  wxClientDC dc( drawZone );
+  dc.DrawBitmap( bufferImage, 0, 0, false );
+  drawZone->Update();
+  
   drawAxis( bufferDraw, selectedSet );
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
 
