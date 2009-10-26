@@ -381,15 +381,17 @@ bool paraverMain::DoLoadTrace( const string &path )
                                          this,
                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     string reducePath;
-    if( path.length() > 40 )
-    {
 #ifdef WIN32
+    if( path.length() > 40 && path.find_last_of( '\\' ) != string::npos )
+    {
       string file = path.substr( path.find_last_of( '\\' ) );
       string tmp = path.substr( 0, path.find_last_of( '\\' ) );
       reducePath = "/..." + path.substr( tmp.find_last_of( '\\' ),
                                          tmp.length() - tmp.find_last_of( '\\' ) )
                    + file;
 #else
+    if( path.length() > 40 && path.find_last_of( '/' ) != string::npos )
+    {
       string file = path.substr( path.find_last_of( '/' ) );
       string tmp = path.substr( 0, path.find_last_of( '/' ) );
       reducePath = "/..." + path.substr( tmp.find_last_of( '/' ),

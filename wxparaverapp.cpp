@@ -120,9 +120,9 @@ bool wxparaverApp::OnInit()
 
   paraverMain* mainWindow = new paraverMain( NULL );
 
-  mainWindow->commandLineLoadings( paraverCommandLineParser );
-
   mainWindow->Show(true);
+
+  mainWindow->commandLineLoadings( paraverCommandLineParser );
 
   return true;
 }
