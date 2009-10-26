@@ -82,6 +82,8 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
 
+  EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
 
   EVT_CHECKBOX( ID_CHECK_DRAWLINES, gTimeline::OnCheckDrawlinesClick )
@@ -174,6 +176,7 @@ void gTimeline::Init()
   checkWWSemantic = NULL;
   checkWWEvents = NULL;
   checkWWCommunications = NULL;
+  checkWWPreviousNext = NULL;
   whatWhereText = NULL;
   timingZone = NULL;
   initialTimeText = NULL;
@@ -229,6 +232,10 @@ void gTimeline::CreateControls()
   checkWWCommunications->SetValue(true);
   itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
+  checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _("Previous / Next"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWPreviousNext->SetValue(true);
+  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
   whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
   itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
@@ -237,30 +244,30 @@ void gTimeline::CreateControls()
 
   timingZone = new wxScrolledWindow( infoZone, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   timingZone->SetScrollbars(1, 5, 0, 0);
-  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
-  timingZone->SetSizer(itemBoxSizer13);
+  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
+  timingZone->SetSizer(itemBoxSizer14);
 
-  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer13->Add(itemBoxSizer14, 0, wxGROW, 5);
-  wxStaticText* itemStaticText15 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer14->Add(itemStaticText15, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer14->Add(itemBoxSizer15, 0, wxGROW, 5);
+  wxStaticText* itemStaticText16 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer15->Add(itemStaticText16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxStaticText* itemStaticText16 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer14->Add(itemStaticText16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer15->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer14->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxStaticText* itemStaticText18 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer15->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer13->Add(itemBoxSizer18, 1, wxGROW, 5);
+  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer14->Add(itemBoxSizer19, 1, wxGROW, 5);
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer18->Add(initialTimeText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer19->Add(initialTimeText, 0, wxGROW|wxALL, 5);
 
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer18->Add(finalTimeText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer19->Add(finalTimeText, 0, wxGROW|wxALL, 5);
 
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer18->Add(durationText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer19->Add(durationText, 0, wxGROW|wxALL, 5);
 
   timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
@@ -275,20 +282,20 @@ void gTimeline::CreateControls()
 
   viewPropPanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
   viewPropPanel->SetScrollbars(1, 5, 0, 0);
-  wxBoxSizer* itemBoxSizer25 = new wxBoxSizer(wxVERTICAL);
-  viewPropPanel->SetSizer(itemBoxSizer25);
+  wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxVERTICAL);
+  viewPropPanel->SetSizer(itemBoxSizer26);
 
   checkDrawLines = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWLINES, _("Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawLines->SetValue(true);
-  itemBoxSizer25->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer26->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
 
   checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawFlags->SetValue(true);
-  itemBoxSizer25->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer26->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
 
   checkFunctionLineColor = new wxCheckBox( viewPropPanel, ID_CHECK_FUNCTIONLINECOLOR, _("Function Line With Color"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFunctionLineColor->SetValue(true);
-  itemBoxSizer25->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer26->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
 
   viewPropPanel->FitInside();
   infoZone->AddPage(viewPropPanel, _("View"));
@@ -1534,13 +1541,17 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
   whatWhereSelectedTimeEventLines = 0;
   whatWhereSelectedTimeCommunicationLines = 0;
 
+  whatWhereLines.push_back( make_pair( BEGIN_OBJECT_SECTION, _( "" )));
+
   wxString txt;
 
   txt << _( "Object: " ) << LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() );
   txt << _( "\t  Click time: " ) << LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
                                                                  myWindow->getTimeUnit() );
-  txt << _( "\n\n" );
+  txt << _( "\n" );
   whatWhereLines.push_back( make_pair( RAW_LINE, txt ) );
+
+  whatWhereLines.push_back( make_pair( END_OBJECT_SECTION, _( "" )));
 
   myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS );
 
@@ -1560,73 +1571,83 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
 
 void gTimeline::printWhatWhere( )
 {
-  whatWhereText->Clear();
   int fontSize = 8;
+  bool allowedLine, allowedSection;
+
+  whatWhereText->Clear();
 
   whatWhereText->BeginFontSize( fontSize );
 
   for ( vector< pair< TWWLine, wxString > >::iterator it = whatWhereLines.begin(); 
         it != whatWhereLines.end(); ++it )
   {
+    // Is that section allowed?
     switch( it->first )
     {
-      case EVENT_LINE:
-        if ( checkWWEvents->IsChecked() )
-          whatWhereText->AppendText( it->second );
+      case BEGIN_OBJECT_SECTION:
+        allowedSection = true;
         break;
-      case COMMUNICATION_LINE:
-        if ( checkWWCommunications->IsChecked() )
-          whatWhereText->AppendText( it->second );
+      case BEGIN_PREVNEXT_SECTION:
+        allowedSection = checkWWPreviousNext->IsChecked();
+        whatWhereText->BeginTextColour( wxColour( 0xb0b0b0 ) ); // GREY
         break;
-      case SEMANTIC_LINE:
-        if ( checkWWSemantic->IsChecked() )
-          whatWhereText->AppendText( it->second );
+      case END_PREVNEXT_SECTION:
+        whatWhereText->EndTextColour();
         break;
-
-      case BEGIN_LINES_SELECTED:
-          whatWhereText->BeginTextColour( *wxBLACK );
+      case BEGIN_CURRENT_SECTION:
+        allowedSection = true;
+        whatWhereText->BeginTextColour( *wxBLACK );
         break;
-      case END_LINES_SELECTED:
-          whatWhereText->EndTextColour();
+      case END_CURRENT_SECTION:
+        whatWhereText->EndTextColour();
         break;
-
-      case BEGIN_OTHER_LINES:
-          whatWhereText->BeginTextColour( wxColour( 0xb0b0b0 ) ); // GREY
+      case BEGIN_RECORDS_SECTION:
+        allowedSection = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
+        whatWhereText->BeginFontSize( fontSize - 1 );
         break;
-      case END_OTHER_LINES:
-          whatWhereText->EndTextColour();
+      case END_RECORDS_SECTION:
+        whatWhereText->EndFontSize();
         break;
-
-      case BEGIN_LINES_SEMANTIC:
-        if ( checkWWSemantic->IsChecked() )
-          whatWhereText->BeginBold();
+      case BEGIN_SEMANTIC_SECTION:
+        allowedSection = checkWWSemantic->IsChecked();
+        whatWhereText->BeginBold();
         break;
-      case END_LINES_SEMANTIC:
-        if ( checkWWSemantic->IsChecked() )
-          whatWhereText->EndBold();
-        break;
-
-      case BEGIN_LINES_RECORD:
-        if ( checkWWEvents->IsChecked() || checkWWCommunications->IsChecked() )
-          whatWhereText->BeginFontSize( fontSize - 1 );
-        break;
-      case END_LINES_RECORD:
-        if ( checkWWEvents->IsChecked() || checkWWCommunications->IsChecked() )
-          whatWhereText->EndFontSize();
-        break;
-
-      case MARK_LINE:
-        if (( checkWWEvents->IsChecked() && whatWhereSelectedTimeEventLines > 0 ) ||
-            ( checkWWCommunications->IsChecked() && whatWhereSelectedTimeCommunicationLines > 0 ))
-          whatWhereText->AppendText( it->second );
-        break;
-
-      case RAW_LINE:
-        whatWhereText->AppendText( it->second );
+      case END_SEMANTIC_SECTION:
+        whatWhereText->EndBold();
         break;
 
       default:
+        if ( allowedSection )
+        {
+          // Is that line allowed?
+          switch( it->first )
+          {
+            case EVENT_LINE:
+              allowedLine = checkWWEvents->IsChecked();
+              break;
+            case COMMUNICATION_LINE:
+              allowedLine = checkWWCommunications->IsChecked();
+              break;
+
+            case SEMANTIC_LINE:
+              allowedLine = checkWWSemantic->IsChecked();
+              break;
+
+            case MARK_LINE:
+              allowedLine = (( checkWWEvents->IsChecked() && whatWhereSelectedTimeEventLines > 0 ) ||
+                             ( checkWWCommunications->IsChecked() && whatWhereSelectedTimeCommunicationLines > 0 ));
+              break;
+
+            default:
+              allowedLine = true;
+              break;
+          }
+
+          if ( allowedLine )
+            whatWhereText->AppendText( it->second );
+
         break;
+      }
     }
   }
 
@@ -1637,17 +1658,16 @@ void gTimeline::printWhatWhere( )
 
 
 // If some tags changes here, please read printWhatWhere function.
-// It selects lines of the wxString text, checking for unique tags to recognize line type.
 void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( BEGIN_LINES_SEMANTIC, _( "" )));
+  whatWhereLines.push_back( make_pair( BEGIN_SEMANTIC_SECTION, _( "" )));
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( BEGIN_LINES_SELECTED, _( "" )));
+    whatWhereLines.push_back( make_pair( BEGIN_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( BEGIN_OTHER_LINES, _( "" )));
+    whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
 
   onString << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( whichRow ), true ) );
   onString << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
@@ -1658,21 +1678,20 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
   whatWhereLines.push_back( make_pair( SEMANTIC_LINE, onString ));
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( END_LINES_SELECTED, _( "" )));
+    whatWhereLines.push_back( make_pair( END_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( END_OTHER_LINES, _( "" )));
+    whatWhereLines.push_back( make_pair( END_PREVNEXT_SECTION, _( "" )));
 
-  whatWhereLines.push_back( make_pair( END_LINES_SEMANTIC, _( "" )));
+  whatWhereLines.push_back( make_pair( END_SEMANTIC_SECTION, _( "" )));
 }
 
 
 // If some tags changes here, please read printWhatWhere function.
-// It selects lines of the wxString text, checking for unique tags to recognize line type.
 void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( BEGIN_LINES_RECORD, _( "" )));
+  whatWhereLines.push_back( make_pair( BEGIN_RECORDS_SECTION, _( "" )));
 
   RecordList *rl = myWindow->getRecordList( whichRow );
   RecordList::iterator it = rl->begin();
@@ -1681,9 +1700,9 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
     ++it;
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( BEGIN_LINES_SELECTED, _( "" )));
+    whatWhereLines.push_back( make_pair( BEGIN_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( BEGIN_OTHER_LINES, _( "" )));
+    whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
 
   while( it != rl->end() && (*it).getTime() < myWindow->getEndTime( whichRow ) )
   {
@@ -1750,11 +1769,11 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
   rl->erase( rl->begin(), it );
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( END_LINES_SELECTED, _( "" )));
+    whatWhereLines.push_back( make_pair( END_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( END_OTHER_LINES, _( "" )));
+    whatWhereLines.push_back( make_pair( END_PREVNEXT_SECTION, _( "" )));
 
-  whatWhereLines.push_back( make_pair( END_LINES_RECORD, _( "" )));
+  whatWhereLines.push_back( make_pair( END_RECORDS_SECTION, _( "" )));
   whatWhereLines.push_back( make_pair( RAW_LINE, _( "\n" )));
 }
 
@@ -2121,13 +2140,12 @@ void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
   checkWWSemantic->Enable( false );
   checkWWEvents->Enable( false );
   checkWWCommunications->Enable( false );
+  checkWWPreviousNext->Enable( false );
 
   printWhatWhere();
 
   checkWWSemantic->Enable( true );
   checkWWEvents->Enable( true );
   checkWWCommunications->Enable( true );
+  checkWWPreviousNext->Enable( true );
 }
-
-
-

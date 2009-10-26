@@ -59,6 +59,7 @@ class Window;
 #define ID_CHECKBOX 10077
 #define ID_CHECKBOX1 10079
 #define ID_CHECKBOX2 10080
+#define ID_CHECKBOX3 10083
 #define ID_RICHTEXTCTRL 10043
 #define ID_PANEL 10044
 #define ID_TEXTCTRL 10045
@@ -336,19 +337,39 @@ public:
   
   bool IsSplit() const;
 
+/*
+        case BEGIN_SEMANTIC_LINES:
+          allowed = checkWWSemantic->IsChecked();
+          break;
+        case END_SEMANTIC_LINES:
+          allowed = checkWWSemantic->IsChecked();
+          break;
+
+        case BEGIN_RECORD_LINES:
+          allowed = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
+          break;
+        case END_RECORD_LINES:
+          allowed = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
+          break;
+
+
+*/
+
   typedef enum {  RAW_LINE = 0,
-                  BEGIN_LINES_SELECTED,
-                  END_LINES_SELECTED,
-                  BEGIN_OTHER_LINES,
-                  END_OTHER_LINES,
-                  BEGIN_LINES_SEMANTIC,
+                  BEGIN_OBJECT_SECTION,
+                  END_OBJECT_SECTION,
+                  BEGIN_PREVNEXT_SECTION,
+                  END_PREVNEXT_SECTION,
+                  BEGIN_CURRENT_SECTION,
+                  END_CURRENT_SECTION,
+                  BEGIN_SEMANTIC_SECTION,
                   SEMANTIC_LINE,
-                  END_LINES_SEMANTIC,
-                  BEGIN_LINES_RECORD,
+                  END_SEMANTIC_SECTION,
+                  BEGIN_RECORDS_SECTION,
                   MARK_LINE,
                   EVENT_LINE,
                   COMMUNICATION_LINE,
-                  END_LINES_RECORD } TWWLine;
+                  END_RECORDS_SECTION } TWWLine;
 
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
@@ -359,6 +380,7 @@ public:
   wxCheckBox* checkWWSemantic;
   wxCheckBox* checkWWEvents;
   wxCheckBox* checkWWCommunications;
+  wxCheckBox* checkWWPreviousNext;
   wxRichTextCtrl* whatWhereText;
   wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
