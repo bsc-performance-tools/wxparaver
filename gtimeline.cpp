@@ -2082,6 +2082,58 @@ void gTimeline::drawEventFlags( bool draw )
 }
 
 
+void gTimeline::saveImage()
+{
+  wxString imageName, imageSuffix, defaultDir;
+  long imageType;
+  
+  string auxName = myWindow->getName() + "_" + myWindow->getTrace()->getTraceNameNumbered();
+  imageName = _( auxName.c_str() );
+
+#ifdef WIN32
+  defaultDir = _(".\\");
+#else
+  defaultDir = _("./");
+#endif
+
+  wxFileDialog saveDialog( this,
+                           _("Save Image"),
+                           defaultDir,
+                           imageName, // default name ->window name!
+#ifdef WIN32
+                           _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
+#else
+                           _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
+#endif
+                           wxSAVE );
+  if ( saveDialog.ShowModal() == wxID_OK )
+  {
+    wxImage baseLayer = drawImage.ConvertToImage();
+    switch( saveDialog.GetFilterIndex() )
+    {
+      case 0:
+        imageType =  wxBITMAP_TYPE_BMP;
+        imageSuffix = _(".bmp");
+        break;
+      case 1:
+        imageType =  wxBITMAP_TYPE_JPEG;
+        imageSuffix = _(".jpg");
+        break;
+      case 2:
+        imageType =  wxBITMAP_TYPE_PNG;
+        imageSuffix = _(".png");
+        break;
+      case 3:
+        imageType = wxBITMAP_TYPE_XPM;
+        imageSuffix = _(".xpm");
+        break;
+    }
+
+    baseLayer.SaveFile( saveDialog.GetPath() + imageSuffix , imageType );
+  }
+}
+
+
 /*!
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWLINES
  */

@@ -51,10 +51,11 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO     30037
 #define ID_MENU_DRAWMODE_BOTH_AVERAGE             30038
 #define ID_MENU_ROW_SELECTION                     30039
-#define ID_MENU_INFO_PANEL                        30040
-#define ID_MENU_AUTO_CONTROL_SCALE                30041
-#define ID_MENU_AUTO_3D_SCALE                     30042
-#define ID_MENU_AUTO_DATA_GRADIENT                30043
+#define ID_MENU_SAVE_IMAGE                        30040
+#define ID_MENU_INFO_PANEL                        30041
+#define ID_MENU_AUTO_CONTROL_SCALE                30042
+#define ID_MENU_AUTO_3D_SCALE                     30043
+#define ID_MENU_AUTO_DATA_GRADIENT                30044
 
 class gPopUpMenu : public wxMenu
 {
@@ -128,6 +129,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeBothAverage( wxCommandEvent& event);
 
     void OnMenuRowSelection( wxCommandEvent& event);
+
+    void OnMenuSaveImage( wxCommandEvent& event );
 
     void OnMenuInfoPanel( wxCommandEvent& event );
     

@@ -48,6 +48,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothRandomNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_AVERAGE, gPopUpMenu::OnMenuDrawModeBothAverage )
   EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
+  EVT_MENU( ID_MENU_SAVE_IMAGE, gPopUpMenu::OnMenuSaveImage )
   EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
   EVT_MENU( ID_MENU_AUTO_3D_SCALE, gPopUpMenu::OnMenuAuto3DScale )
   EVT_MENU( ID_MENU_AUTO_DATA_GRADIENT, gPopUpMenu::OnMenuAutoDataGradient )
@@ -446,6 +447,9 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
   buildItem( this, wxString( "Select Rows" ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
+
+  AppendSeparator();
+  buildItem( this, wxString( "Save Image..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
 
   AppendSeparator();
   buildItem( this, 
@@ -991,6 +995,12 @@ void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event)
 {
   if ( timeline != NULL )
     timeline->OnPopUpRowSelection();
+}
+
+void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->saveImage();
 }
 
 void gPopUpMenu::OnMenuInfoPanel( wxCommandEvent& event )
