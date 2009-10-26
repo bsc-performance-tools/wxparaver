@@ -3445,7 +3445,7 @@
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">1</bool>
-                      <bool name="proxy-wxTOP">1</bool>
+                      <bool name="proxy-wxTOP">0</bool>
                       <bool name="proxy-wxBOTTOM">1</bool>
                       <bool name="proxy-wxSHAPED">0</bool>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>

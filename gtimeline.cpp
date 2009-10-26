@@ -234,7 +234,7 @@ void gTimeline::CreateControls()
 
   checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _("Previous / Next"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWPreviousNext->SetValue(true);
-  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
   itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
@@ -939,6 +939,9 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     {
       Split();
     }
+    whatWhereText->Clear();
+    whatWhereText->AppendText( "Working..." );
+    Update();
     computeWhatWhere( endTime, endRow );
     printWhatWhere();
   }
@@ -1573,6 +1576,7 @@ void gTimeline::printWhatWhere( )
 {
   int fontSize = 8;
   bool allowedLine, allowedSection;
+  int recordsCount = 0;
 
   whatWhereText->Clear();
 
@@ -1623,13 +1627,22 @@ void gTimeline::printWhatWhere( )
           switch( it->first )
           {
             case EVENT_LINE:
-              allowedLine = checkWWEvents->IsChecked();
+              if( recordsCount >= 100 )
+                allowedLine = false;
+              else
+                allowedLine = checkWWEvents->IsChecked();
+              ++recordsCount;
               break;
             case COMMUNICATION_LINE:
-              allowedLine = checkWWCommunications->IsChecked();
+              if( recordsCount >= 100 )
+                allowedLine = false;
+              else
+                allowedLine = checkWWCommunications->IsChecked();
+              ++recordsCount;
               break;
 
             case SEMANTIC_LINE:
+              recordsCount = 0;
               allowedLine = checkWWSemantic->IsChecked();
               break;
 
@@ -1645,6 +1658,12 @@ void gTimeline::printWhatWhere( )
 
           if ( allowedLine )
             whatWhereText->AppendText( it->second );
+          else if( recordsCount == 200 )
+          {
+            whatWhereText->BeginBold();
+            whatWhereText->AppendText( "Too much records. Reduce time scale.\n" );
+            whatWhereText->EndBold();
+          }
 
         break;
       }
@@ -1696,7 +1715,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
   RecordList *rl = myWindow->getRecordList( whichRow );
   RecordList::iterator it = rl->begin();
 
-  while( it != rl->end() && (*it).getTime() < myWindow->getBeginTime( whichRow ) )
+  while( it != rl->end() && (*it).getTime() < myWindow->getWindowBeginTime() && (*it).getTime() < myWindow->getBeginTime( whichRow ) )
     ++it;
 
   if( clickedValue )
@@ -1704,7 +1723,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
   else
     whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
 
-  while( it != rl->end() && (*it).getTime() < myWindow->getEndTime( whichRow ) )
+  while( it != rl->end() && (*it).getTime() <= myWindow->getWindowEndTime() && (*it).getTime() <= myWindow->getEndTime( whichRow ) )
   {
     if( (*it).getType() & EVENT )
     {
