@@ -337,24 +337,6 @@ public:
   
   bool IsSplit() const;
 
-/*
-        case BEGIN_SEMANTIC_LINES:
-          allowed = checkWWSemantic->IsChecked();
-          break;
-        case END_SEMANTIC_LINES:
-          allowed = checkWWSemantic->IsChecked();
-          break;
-
-        case BEGIN_RECORD_LINES:
-          allowed = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
-          break;
-        case END_RECORD_LINES:
-          allowed = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
-          break;
-
-
-*/
-
   typedef enum {  RAW_LINE = 0,
                   BEGIN_OBJECT_SECTION,
                   END_OBJECT_SECTION,
