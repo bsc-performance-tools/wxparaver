@@ -84,6 +84,8 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
 
+  EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
 
   EVT_CHECKBOX( ID_CHECK_DRAWLINES, gTimeline::OnCheckDrawlinesClick )
@@ -177,6 +179,7 @@ void gTimeline::Init()
   checkWWEvents = NULL;
   checkWWCommunications = NULL;
   checkWWPreviousNext = NULL;
+  checkWWText = NULL;
   whatWhereText = NULL;
   timingZone = NULL;
   initialTimeText = NULL;
@@ -194,6 +197,8 @@ void gTimeline::Init()
   bufferImage.Create( 1, 1 );
   objectFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
   timeFont = wxFont( 6, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  whatWhereTime = 0.0;
+  whatWhereRow = 0;
 }
 
 
@@ -236,6 +241,10 @@ void gTimeline::CreateControls()
   checkWWPreviousNext->SetValue(true);
   itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
+  checkWWText = new wxCheckBox( whatWherePanel, ID_CHECKBOX4, _("Text"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWText->SetValue(true);
+  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
   whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
   itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
@@ -244,30 +253,30 @@ void gTimeline::CreateControls()
 
   timingZone = new wxScrolledWindow( infoZone, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   timingZone->SetScrollbars(1, 5, 0, 0);
-  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
-  timingZone->SetSizer(itemBoxSizer14);
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
+  timingZone->SetSizer(itemBoxSizer15);
 
-  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer14->Add(itemBoxSizer15, 0, wxGROW, 5);
-  wxStaticText* itemStaticText16 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer15->Add(itemStaticText16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer15->Add(itemBoxSizer16, 0, wxGROW, 5);
+  wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer16->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer15->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxStaticText* itemStaticText18 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer16->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxStaticText* itemStaticText18 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer15->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  wxStaticText* itemStaticText19 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer16->Add(itemStaticText19, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
-  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer14->Add(itemBoxSizer19, 1, wxGROW, 5);
+  wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer15->Add(itemBoxSizer20, 1, wxGROW, 5);
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer19->Add(initialTimeText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer20->Add(initialTimeText, 0, wxGROW|wxALL, 5);
 
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer19->Add(finalTimeText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer20->Add(finalTimeText, 0, wxGROW|wxALL, 5);
 
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer19->Add(durationText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer20->Add(durationText, 0, wxGROW|wxALL, 5);
 
   timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
@@ -282,20 +291,20 @@ void gTimeline::CreateControls()
 
   viewPropPanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
   viewPropPanel->SetScrollbars(1, 5, 0, 0);
-  wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxVERTICAL);
-  viewPropPanel->SetSizer(itemBoxSizer26);
+  wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxVERTICAL);
+  viewPropPanel->SetSizer(itemBoxSizer27);
 
   checkDrawLines = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWLINES, _("Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawLines->SetValue(true);
-  itemBoxSizer26->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer27->Add(checkDrawLines, 0, wxALIGN_LEFT|wxALL, 5);
 
   checkDrawFlags = new wxCheckBox( viewPropPanel, ID_CHECK_DRAWFLAGS, _("Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDrawFlags->SetValue(true);
-  itemBoxSizer26->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer27->Add(checkDrawFlags, 0, wxALIGN_LEFT|wxALL, 5);
 
   checkFunctionLineColor = new wxCheckBox( viewPropPanel, ID_CHECK_FUNCTIONLINECOLOR, _("Function Line With Color"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFunctionLineColor->SetValue(true);
-  itemBoxSizer26->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer27->Add(checkFunctionLineColor, 0, wxALIGN_LEFT|wxALL, 5);
 
   viewPropPanel->FitInside();
   infoZone->AddPage(viewPropPanel, _("View"));
@@ -942,7 +951,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     whatWhereText->Clear();
     whatWhereText->AppendText( "Working..." );
     Update();
-    computeWhatWhere( endTime, endRow );
+    computeWhatWhere( endTime, endRow, checkWWText->IsChecked() );
     printWhatWhere();
   }
 
@@ -1538,8 +1547,11 @@ void gTimeline::OnNotebookPageChanging( wxNotebookEvent& event )
 
 
 // Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
-void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
+void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, bool textMode )
 {
+  whatWhereTime = whichTime;
+  whatWhereRow = whichRow;
+
   whatWhereLines.clear();
   whatWhereSelectedTimeEventLines = 0;
   whatWhereSelectedTimeCommunicationLines = 0;
@@ -1559,16 +1571,16 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow )
   myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS );
 
   myWindow->calcPrev( whichRow );
-  printWWSemantic( whichRow, false );
-  printWWRecords( whichRow, false );
+  printWWSemantic( whichRow, false, textMode );
+  printWWRecords( whichRow, false, textMode );
 
   myWindow->calcNext( whichRow );
-  printWWSemantic( whichRow, true );
-  printWWRecords( whichRow, true );
+  printWWSemantic( whichRow, true, textMode );
+  printWWRecords( whichRow, true, textMode );
 
   myWindow->calcNext( whichRow );
-  printWWSemantic( whichRow, false );
-  printWWRecords( whichRow, false );
+  printWWSemantic( whichRow, false, textMode );
+  printWWRecords( whichRow, false, textMode );
 }
 
 
@@ -1677,7 +1689,7 @@ void gTimeline::printWhatWhere( )
 
 
 // If some tags changes here, please read printWhatWhere function.
-void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
+void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode )
 {
   wxString onString;
 
@@ -1688,7 +1700,9 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
   else
     whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
 
-  onString << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( whichRow ), true ) );
+  if ( !textMode )
+    onString << _("Semantic value: ");
+  onString << wxT( LabelConstructor::semanticLabel( myWindow, myWindow->getValue( whichRow ), textMode ) );
   onString << wxT( "\t  Duration: " ) << LabelConstructor::timeLabel(
                                            myWindow->traceUnitsToWindowUnits( myWindow->getEndTime( whichRow )
                                                                               - myWindow->getBeginTime( whichRow ) ),
@@ -1706,7 +1720,7 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue )
 
 
 // If some tags changes here, please read printWhatWhere function.
-void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
+void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode )
 {
   wxString onString;
 
@@ -1731,7 +1745,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue )
                                                myWindow->traceUnitsToWindowUnits( (*it).getTime() ),
                                                myWindow->getTimeUnit() );
       onString << wxT( "\t" );
-      onString << LabelConstructor::eventLabel( myWindow, (*it).getEventType(), (*it).getEventValue(), true );
+      onString << LabelConstructor::eventLabel( myWindow, (*it).getEventType(), (*it).getEventValue(), textMode );
       onString << wxT( "\n" );
 
       whatWhereLines.push_back( make_pair( EVENT_LINE, onString ));
@@ -2206,12 +2220,31 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
  */
 
+void gTimeline::OnCheckWhatWhereText( wxCommandEvent& event )
+{
+  checkWWSemantic->Enable( false );
+  checkWWEvents->Enable( false );
+  checkWWCommunications->Enable( false );
+  checkWWPreviousNext->Enable( false );
+  checkWWText->Enable( false );
+
+  computeWhatWhere( whatWhereTime, whatWhereRow, event.IsChecked() );
+  printWhatWhere();
+
+  checkWWSemantic->Enable( true );
+  checkWWEvents->Enable( true );
+  checkWWCommunications->Enable( true );
+  checkWWPreviousNext->Enable( true );
+  checkWWText->Enable( true );
+}
+
 void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
 {
   checkWWSemantic->Enable( false );
   checkWWEvents->Enable( false );
   checkWWCommunications->Enable( false );
   checkWWPreviousNext->Enable( false );
+  checkWWText->Enable( false );
 
   printWhatWhere();
 
@@ -2219,4 +2252,5 @@ void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
   checkWWEvents->Enable( true );
   checkWWCommunications->Enable( true );
   checkWWPreviousNext->Enable( true );
+  checkWWText->Enable( true );
 }

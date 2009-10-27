@@ -60,6 +60,7 @@ class Window;
 #define ID_CHECKBOX1 10079
 #define ID_CHECKBOX2 10080
 #define ID_CHECKBOX3 10083
+#define ID_CHECKBOX4 10084
 #define ID_RICHTEXTCTRL 10043
 #define ID_PANEL 10044
 #define ID_TEXTCTRL 10045
@@ -149,6 +150,9 @@ public:
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
   void OnCheckWhatWhere( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX4
+  void OnCheckWhatWhereText( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_PANEL1
   void OnColorsPanelUpdate( wxUpdateUIEvent& event );
@@ -366,6 +370,7 @@ public:
   wxCheckBox* checkWWEvents;
   wxCheckBox* checkWWCommunications;
   wxCheckBox* checkWWPreviousNext;
+  wxCheckBox* checkWWText;
   wxRichTextCtrl* whatWhereText;
   wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
@@ -413,10 +418,13 @@ private:
   vector< pair< TWWLine, wxString > > whatWhereLines;
   int whatWhereSelectedTimeEventLines;
   int whatWhereSelectedTimeCommunicationLines;
-  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow );
+  TRecordTime whatWhereTime;
+  TObjectOrder whatWhereRow;
+
+  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, bool textMode );
   void printWhatWhere( );
-  void printWWSemantic( TObjectOrder whichRow, bool clickedValue );
-  void printWWRecords( TObjectOrder whichRow, bool clickedValue );
+  void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode );
+  void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode );
 
   void Unsplit();
   void Split();
