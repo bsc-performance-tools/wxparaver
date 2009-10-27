@@ -586,8 +586,8 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
         myWindow->calcNext( *row );
         TSemanticValue currentValue = myWindow->getValue( *row );
         timeValues.push_back( currentValue );
-        if( currentValue < myWindow->getMinimumY() 
-            || currentValue > myWindow->getMaximumY() )
+        if( currentValue != 0 && ( currentValue < myWindow->getMinimumY() 
+                                   || currentValue > myWindow->getMaximumY() ) )
           drawCaution = true;
       }
       rowValues.push_back( DrawMode::selectValue( timeValues, myWindow->getDrawModeTime() ) );
