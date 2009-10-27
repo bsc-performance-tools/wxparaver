@@ -1984,7 +1984,14 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
   if( currentTimeline != NULL )
   {
     if( currentTimeline->getChild() == NULL )
-      currentTimeline->setDestroy( true );
+    {
+      if( !currentTimeline->getUsedByHistogram() )
+        currentTimeline->setDestroy( true );
+      else
+        wxMessageBox( _( "Cannot delete windows used by histograms." ),
+                      _( "Paraver information" ),
+                      wxOK | wxICON_INFORMATION );
+    }
     else
       wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
                     _( "Paraver information" ),
