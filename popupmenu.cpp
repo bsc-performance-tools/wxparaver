@@ -4,6 +4,7 @@
 #include "window.h"
 #include <wx/event.h>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -47,6 +48,10 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_RANDOM, gPopUpMenu::OnMenuDrawModeBothRandom )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothRandomNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_AVERAGE, gPopUpMenu::OnMenuDrawModeBothAverage )
+  EVT_MENU( ID_MENU_PIXEL_SIZE_x1, gPopUpMenu::OnMenuPixelSize )
+  EVT_MENU( ID_MENU_PIXEL_SIZE_x2, gPopUpMenu::OnMenuPixelSize )
+  EVT_MENU( ID_MENU_PIXEL_SIZE_x4, gPopUpMenu::OnMenuPixelSize )
+  EVT_MENU( ID_MENU_PIXEL_SIZE_x8, gPopUpMenu::OnMenuPixelSize )
   EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
   EVT_MENU( ID_MENU_SAVE_IMAGE, gPopUpMenu::OnMenuSaveImage )
   EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
@@ -282,6 +287,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuDrawModeTime = new wxMenu;
   popUpMenuDrawModeObjects = new wxMenu;
   popUpMenuDrawModeBoth = new wxMenu;
+  popUpMenuPixelSize = new wxMenu;
 
   buildItem( this, wxString(STR_COPY), ITEMNORMAL, NULL, ID_MENU_COPY );
 
@@ -444,6 +450,34 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeObjects, wxString( "Objects" ));
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeBoth, wxString( "Both" ));
   AppendSubMenu( popUpMenuDrawMode, wxString( "Drawmode" ));
+
+  buildItem( popUpMenuPixelSize,
+             wxString( "x1" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
+             ID_MENU_PIXEL_SIZE_x1,
+             timeline->GetPixelSize() == 1 );
+  buildItem( popUpMenuPixelSize,
+             wxString( "x2" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
+             ID_MENU_PIXEL_SIZE_x2,
+             timeline->GetPixelSize() == 2 );
+  buildItem( popUpMenuPixelSize,
+             wxString( "x4" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
+             ID_MENU_PIXEL_SIZE_x4,
+             timeline->GetPixelSize() == 4 );
+  buildItem( popUpMenuPixelSize,
+             wxString( "x8" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
+             ID_MENU_PIXEL_SIZE_x8,
+             timeline->GetPixelSize() == 8 );
+
+  AppendSubMenu( popUpMenuPixelSize, wxString( "Pixel Size" ));
+
 
   AppendSeparator();
   buildItem( this, wxString( "Select Rows" ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
@@ -989,6 +1023,25 @@ void gPopUpMenu::OnMenuDrawModeBothAverage( wxCommandEvent& event)
     timeline->OnPopUpDrawModeBothAverage();
   else if( histogram != NULL )
     histogram->OnPopUpDrawModeBothAverage();
+}
+
+void gPopUpMenu::OnMenuPixelSize( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+  {
+    UINT32 pixelSize; 
+
+    switch( event.GetId() )
+    {
+      case ID_MENU_PIXEL_SIZE_x1: pixelSize = 1; break;
+      case ID_MENU_PIXEL_SIZE_x2: pixelSize = 2; break;
+      case ID_MENU_PIXEL_SIZE_x4: pixelSize = 4; break;
+      case ID_MENU_PIXEL_SIZE_x8: pixelSize = 8; break;
+      default:                    pixelSize = 1; break;
+    }
+
+    timeline->OnPopUpPixelSize( pixelSize );
+  }
 }
 
 void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event)

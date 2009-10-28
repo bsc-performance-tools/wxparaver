@@ -257,6 +257,9 @@ public:
   wxTimer * GetTimerSize() const { return timerSize ; }
   void SetTimerSize(wxTimer * value) { timerSize = value ; }
 
+  UINT32 GetPixelSize() const { return pixelSize ; }
+  void SetPixelSize(UINT32 value) { pixelSize = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -324,6 +327,8 @@ public:
   void OnPopUpDrawModeBothMaximum();
   void OnPopUpDrawModeBothMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
+
+  void OnPopUpPixelSize( UINT32 whichPixelSize );
 
   void OnPopUpRowSelection();
 
@@ -409,6 +414,7 @@ private:
   bool redoColors;
   bool splitChanged;
   wxTimer * timerSize;
+  UINT32 pixelSize;
 ////@end gTimeline member variables
 
   wxWindow *parent;

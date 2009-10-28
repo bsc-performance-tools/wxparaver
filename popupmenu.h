@@ -4,6 +4,7 @@
 #include <wx/menu.h>
 #include <wx/choicdlg.h>
 #include <map>
+
 using namespace std;
 
 enum ItemType {ITEMNORMAL, ITEMRADIO, ITEMCHECK};
@@ -50,12 +51,16 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_BOTH_RANDOM              30036
 #define ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO     30037
 #define ID_MENU_DRAWMODE_BOTH_AVERAGE             30038
-#define ID_MENU_ROW_SELECTION                     30039
-#define ID_MENU_SAVE_IMAGE                        30040
-#define ID_MENU_INFO_PANEL                        30041
-#define ID_MENU_AUTO_CONTROL_SCALE                30042
-#define ID_MENU_AUTO_3D_SCALE                     30043
-#define ID_MENU_AUTO_DATA_GRADIENT                30044
+#define ID_MENU_PIXEL_SIZE_x1                     30039
+#define ID_MENU_PIXEL_SIZE_x2                     30040
+#define ID_MENU_PIXEL_SIZE_x4                     30041
+#define ID_MENU_PIXEL_SIZE_x8                     30042
+#define ID_MENU_ROW_SELECTION                     30043
+#define ID_MENU_SAVE_IMAGE                        30044
+#define ID_MENU_INFO_PANEL                        30045
+#define ID_MENU_AUTO_CONTROL_SCALE                30046
+#define ID_MENU_AUTO_3D_SCALE                     30047
+#define ID_MENU_AUTO_DATA_GRADIENT                30048
 
 class gPopUpMenu : public wxMenu
 {
@@ -128,6 +133,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeBothAverage( wxCommandEvent& event);
 
+    void OnMenuPixelSize( wxCommandEvent& event );
+
     void OnMenuRowSelection( wxCommandEvent& event);
 
     void OnMenuSaveImage( wxCommandEvent& event );
@@ -141,15 +148,16 @@ class gPopUpMenu : public wxMenu
     gTimeline *timeline;
     gHistogram *histogram;
 
-    wxMenu * popUpMenuView;
-    wxMenu * popUpMenuColor;
-    wxMenu * popUpMenuPaste;
-    wxMenu * popUpMenuPasteFilter;
-    wxMenu * popUpMenuFitSemantic;
-    wxMenu * popUpMenuDrawMode;
-    wxMenu * popUpMenuDrawModeTime;
-    wxMenu * popUpMenuDrawModeObjects;
-    wxMenu * popUpMenuDrawModeBoth;
+    wxMenu *popUpMenuView;
+    wxMenu *popUpMenuColor;
+    wxMenu *popUpMenuPaste;
+    wxMenu *popUpMenuPasteFilter;
+    wxMenu *popUpMenuFitSemantic;
+    wxMenu *popUpMenuDrawMode;
+    wxMenu *popUpMenuDrawModeTime;
+    wxMenu *popUpMenuDrawModeObjects;
+    wxMenu *popUpMenuDrawModeBoth;
+    wxMenu *popUpMenuPixelSize;
 
     void buildItem( wxMenu *popUp,
                     const wxString &title,

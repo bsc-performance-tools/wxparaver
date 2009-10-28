@@ -2775,6 +2775,7 @@
           <string name="variable-23">"drawCaution|bool|DrawCaution|false|0|0|"</string>
           <string name="variable-24">"splitChanged|bool|SplitChanged|false|2|0|"</string>
           <string name="variable-25">"timerSize|wxTimer *|TimerSize|new wxTimer( this )|2|0|"</string>
+          <string name="variable-26">"pixelSize|UINT32|PixelSize|1|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>

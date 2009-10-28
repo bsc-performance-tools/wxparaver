@@ -171,6 +171,7 @@ void gTimeline::Init()
   drawCaution = false;
   splitChanged = false;
   timerSize = new wxTimer( this );
+  pixelSize = 1;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -565,8 +566,11 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
                          TObjectOrder firstRow, TObjectOrder lastRow,
                          vector<TObjectOrder>& selectedSet, vector<bool>& selected )
 {
-  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
+  float magnify = float( GetPixelSize() );
+
+  TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+
   vector<TSemanticValue> timeValues;
   vector<TSemanticValue> rowValues;
   wxCoord timePos = objectAxisPos + 1;
@@ -604,17 +608,30 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
       RecordList *rl = myWindow->getRecordList( *row );
       if( rl != NULL )
         drawRecords( commdc, commmaskdc, eventdc, eventmaskdc,
-                     rl, currentTime - timeStep, currentTime, timeStep, timePos, selected );
+                     rl, currentTime - timeStep, currentTime, timeStep / magnify, timePos, selected );
     }
     TSemanticValue valueToDraw = DrawMode::selectValue( rowValues, myWindow->getDrawModeObject() );
     if( myWindow->getDrawFunctionLineColor() )
     {
       rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
       dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-      if( objectPos + objectHeight < timeAxisPos )
-        dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
+
+      if ( magnify == 1.0 ) // same than before
+      {
+        if( objectPos + objectHeight < timeAxisPos )
+          dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
+        else
+          dc.DrawLine( timePos, objectPos, timePos, timeAxisPos - 1 );
+      }
       else
-        dc.DrawLine( timePos, objectPos, timePos, timeAxisPos - 1 );
+      {
+        // Draw a rectangle and fill with same color
+        dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+        if( objectPos + objectHeight < timeAxisPos )
+          dc.DrawRectangle( timePos , objectPos, magnify , objectHeight );
+        else
+          dc.DrawRectangle( timePos , objectPos, magnify, objectPos + objectHeight - timeAxisPos + 1 );
+      }
     }
     else
     {
@@ -634,13 +651,23 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
         int to   = ( currentPos < lineLastPos ) ? currentPos : lineLastPos;
         dc.DrawLine( timePos, objectPos + objectHeight - from,
                      timePos, objectPos + objectHeight - to + 1 );
+
+        if( magnify > 1.0 )
+          dc.DrawLine( timePos,            objectPos + objectHeight - currentPos,
+                       timePos + magnify, objectPos + objectHeight - currentPos ); 
       }
       else
-        dc.DrawPoint( timePos, objectPos + objectHeight - currentPos );
+      {
+        if ( magnify == 1.0 ) // same than before
+          dc.DrawPoint( timePos, objectPos + objectHeight - currentPos );
+        else
+          dc.DrawLine( timePos,            objectPos + objectHeight - currentPos,
+                       timePos + magnify, objectPos + objectHeight - currentPos ); 
+      }
 
       lineLastPos = currentPos;
     }
-    timePos++;
+    timePos += (int) magnify ;
   }
 }
 
@@ -699,7 +726,7 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
     eventmaskdc.SetBrush( *wxWHITE_BRUSH );
     eventmaskdc.DrawRectangle( pos, objectPosList[ row ] - 10, 9, 9 );
   }
-  
+
   records->erase( records->begin(), it );
 }
 
@@ -1013,6 +1040,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
 //  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
   gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( composedName.c_str() ), position, size );
   clonedTimeline->SetMyWindow( clonedWindow );
+  clonedTimeline->SetPixelSize( GetPixelSize() );
 
   // add to loaded windows list
   LoadedWindows::getInstance()->add( clonedWindow );
@@ -1341,6 +1369,14 @@ void gTimeline::OnPopUpDrawModeBothAverage()
   myWindow->setDrawModeTime( DRAW_AVERAGE );
   myWindow->setRedraw( true );
 }
+
+
+void gTimeline::OnPopUpPixelSize( UINT32 whichPixelSize )
+{
+  SetPixelSize( whichPixelSize );
+  myWindow->setRedraw( true );
+}
+
 
 void gTimeline::OnPopUpUndoZoom()
 {
