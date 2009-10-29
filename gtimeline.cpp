@@ -931,7 +931,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 
   if( zoomEndY > timeAxisPos )
   {
-    zoomEndY = timeAxisPos - 1;
+    zoomEndY = timeAxisPos;
     outOfDraw = true;
   }
   if( zoomEndY < drawBorder )

@@ -1248,8 +1248,8 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
   else if( currentTimeline != NULL )
   {
     lastHisto = NULL;
-      if( lastTimeline == currentTimeline && !currentTimeline->getChanged() )
-    return;
+    if( lastTimeline == currentTimeline && !currentTimeline->getChanged() )
+      return;
     lastTimeline = currentTimeline;
 
     updateTimelineProperties( windowProperties, currentTimeline );
