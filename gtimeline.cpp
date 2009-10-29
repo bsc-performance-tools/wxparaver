@@ -629,10 +629,10 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
       {
         // Draw a rectangle and fill with same color
         dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-        if( objectPos + objectHeight < timeAxisPos )
+        //if( objectPos + objectHeight < timeAxisPos )
           dc.DrawRectangle( timePos , objectPos, magnify , objectHeight );
-        else
-          dc.DrawRectangle( timePos , objectPos, magnify, objectPos + objectHeight - timeAxisPos + 1 );
+        /*else
+          dc.DrawRectangle( timePos , objectPos, magnify, objectPos + objectHeight - timeAxisPos + 1 );*/
       }
     }
     else
