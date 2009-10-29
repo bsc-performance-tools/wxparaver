@@ -133,6 +133,9 @@ public:
 
 ////@begin paraverMain event handler declarations
 
+  /// wxEVT_CLOSE_WINDOW event handler for ID_PARAVERMAIN
+  void OnCloseWindow( wxCloseEvent& event );
+
   /// wxEVT_IDLE event handler for ID_PARAVERMAIN
   void OnIdle( wxIdleEvent& event );
 
@@ -349,6 +352,8 @@ private:
   bool DoLoadCFG( const string &path );
   void ShowDerivedDialog();
   void ShowHistogramDialog();
+  
+  void PrepareToExit();
 };
 
 void progressFunction( ProgressController *progress );

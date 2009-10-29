@@ -69,6 +69,7 @@ IMPLEMENT_CLASS( paraverMain, wxFrame )
 BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
 ////@begin paraverMain event table entries
+  EVT_CLOSE( paraverMain::OnCloseWindow )
   EVT_IDLE( paraverMain::OnIdle )
 
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
@@ -539,10 +540,8 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 
 void paraverMain::OnExitClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT in paraverMain.
-  // Before editing this code, remove the block markers.
+  PrepareToExit();
   Destroy();
-////@end wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT in paraverMain. 
 }
 
 
@@ -2090,3 +2089,28 @@ void paraverMain::removeActiveWindow( wxWindow *window )
 {
   activeWindows.erase( window );
 }
+
+void paraverMain::PrepareToExit()
+{
+  vector<Histogram *> histograms;
+  LoadedWindows::getInstance()->getAll( histograms );
+  
+  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  {
+    (*it)->clearControlWindow();
+    (*it)->clearDataWindow();
+    (*it)->clearExtraControlWindow();
+  }
+}
+
+
+/*!
+ * wxEVT_CLOSE_WINDOW event handler for ID_PARAVERMAIN
+ */
+
+void paraverMain::OnCloseWindow( wxCloseEvent& event )
+{
+  PrepareToExit();
+  Destroy();
+}
+

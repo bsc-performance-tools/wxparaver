@@ -1049,7 +1049,8 @@
           <string name="variable-14">"numNewDerived|int|NumNewDerived|0|2|0|"</string>
           <string name="variable-15">"raiseCurrentWindow|bool|RaiseCurrentWindow|true|2|0|"</string>
           <string name="variable-16">"activeWindows|set&lt;wxWindow *&gt;|ActiveWindows||2|0|"</string>
-          <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
+          <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||paraverMain"</string>
+          <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
           <string name="proxy-Class">"paraverMain"</string>
