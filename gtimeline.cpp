@@ -413,10 +413,12 @@ void gTimeline::redraw()
   bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
   bufferDraw.Clear();
   
+#ifndef WIN32
   // Paint blank image while redrawing
   wxClientDC dc( drawZone );
   dc.DrawBitmap( bufferImage, 0, 0, false );
   drawZone->Update();
+#endif
   
   drawAxis( bufferDraw, selectedSet );
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
@@ -746,7 +748,6 @@ void gTimeline::OnScrolledWindowEraseBackground( wxEraseEvent& event )
 void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( drawZone );
-  wxMemoryDC bufferDraw;
   
   if( !ready )
     return;
