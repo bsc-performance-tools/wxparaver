@@ -138,3 +138,4 @@ int wxparaverApp::OnExit()
 	return wxApp::OnExit();
 ////@end wxparaverApp cleanup
 }
+

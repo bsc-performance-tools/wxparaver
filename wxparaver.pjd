@@ -1048,6 +1048,7 @@
           <string name="variable-13">"numNewHistograms|int|NumNewHistograms|0|2|0|"</string>
           <string name="variable-14">"numNewDerived|int|NumNewDerived|0|2|0|"</string>
           <string name="variable-15">"raiseCurrentWindow|bool|RaiseCurrentWindow|true|2|0|"</string>
+          <string name="variable-16">"activeWindows|set&lt;wxWindow *&gt;|ActiveWindows||2|0|"</string>
           <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
@@ -1935,14 +1936,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -2208,8 +2201,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">9</long>
-                <long name="proxy-Height">8</long>
+                <long name="proxy-Width">8</long>
+                <long name="proxy-Height">7</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -2273,8 +2266,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">9</long>
-                <long name="proxy-Height">8</long>
+                <long name="proxy-Width">8</long>
+                <long name="proxy-Height">7</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -2390,8 +2383,6 @@
             <long name="title-mode">0</long>
             <long name="locked">0</long>
             <string name="proxy-type">"wbToolBarProxy"</string>
-            <string name="event-handler-0">"wxEVT_LEFT_DOWN|OnLeftDown|NONE||gHistogram"</string>
-            <string name="event-handler-1">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gHistogram"</string>
             <string name="proxy-Id name">"ID_AUITOOLBAR1"</string>
             <long name="proxy-Id value">10059</long>
             <string name="proxy-Name">""</string>

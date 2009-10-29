@@ -287,8 +287,6 @@ void gHistogram::CreateControls()
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
-  itemToolBar11->Connect(ID_AUITOOLBAR1, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), NULL, this);
-  itemToolBar11->Connect(ID_AUITOOLBAR1, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gHistogram::OnRightDown), NULL, this);
 ////@end gHistogram content construction
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
@@ -974,9 +972,15 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   this->SetTitle( composedName );
 
   if( myHistogram->getShowWindow() )
+  {
     this->Show();
+//    paraverMain::myParaverMain->addActiveWindow( this );
+  }
   else
+  {
     this->Show( false );
+//    paraverMain::myParaverMain->removeActiveWindow( this );
+  }
     
   myHistogram->setPosX( this->GetPosition().x );
   myHistogram->setPosY( this->GetPosition().y );
@@ -2003,15 +2007,4 @@ void gHistogram::OnLabelLeftClick( wxGridEvent& event )
 }
 
 
-/*!
- * wxEVT_RIGHT_DOWN event handler for ID_AUITOOLBAR1
- */
-
-void gHistogram::OnRightDown( wxMouseEvent& event )
-{
-////@begin wxEVT_RIGHT_DOWN event handler for ID_AUITOOLBAR1 in gHistogram.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_RIGHT_DOWN event handler for ID_AUITOOLBAR1 in gHistogram. 
-}
 

@@ -151,9 +151,6 @@ public:
   /// wxEVT_UPDATE_UI event handler for wxID_3DWARNING
   void On3dWarningUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_RIGHT_DOWN event handler for ID_AUITOOLBAR1
-  void OnRightDown( wxMouseEvent& event );
-
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_OPEN_CONTROL_WINDOW
   void OnToolOpenControlWindowClick( wxCommandEvent& event );
 

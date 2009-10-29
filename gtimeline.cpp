@@ -808,15 +808,19 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   if( myWindow->getShowWindow() )
   {
     this->Show();
+//    paraverMain::myParaverMain->addActiveWindow( this );
     if( !ready )
       redraw();
   }
   else
+  {
     this->Show( false );
+//    paraverMain::myParaverMain->removeActiveWindow( this );
+  }
 
   if( myWindow->getRaiseWindow() )
   {
-    if( !this->IsShown() )
+    if( !myWindow->getShowWindow() )
       myWindow->setShowWindow( true );
     else
       this->Raise();

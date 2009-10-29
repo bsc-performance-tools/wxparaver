@@ -220,6 +220,7 @@ public:
   void OnPreviousTracesClick( wxCommandEvent& event );
   void OnPreviousCFGsClick( wxCommandEvent& event );
 
+  void OnActivate( wxActivateEvent& event );
 ////@begin paraverMain member function declarations
 
   /// Returns the AUI manager object
@@ -273,6 +274,9 @@ public:
   bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
   void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
 
+  set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
+  void SetActiveWindows(set<wxWindow *> value) { activeWindows = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -292,6 +296,9 @@ public:
   void commandLineLoadings( wxCmdLineParser &parser );
   
   void clearProperties();
+  
+  void addActiveWindow( wxWindow *window );
+  void removeActiveWindow( wxWindow *window );
   
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
@@ -326,6 +333,7 @@ private:
   int numNewHistograms;
   int numNewDerived;
   bool raiseCurrentWindow;
+  set<wxWindow *> activeWindows;
 ////@end paraverMain member variables
 
   map< string, UINT32 > traceInstance;

@@ -118,6 +118,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_TREE_END_DRAG( wxID_ANY, paraverMain::OnTreeEndDrag)
 
   EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
+  
+  EVT_ACTIVATE(paraverMain::OnActivate) 
 END_EVENT_TABLE()
 
 
@@ -1363,16 +1365,6 @@ void paraverMain::OnIdle( wxIdleEvent& event )
 {
   if( wxTheApp->IsActive() )
   {
-#if 0 // Because problems on Windows and some window managers (KDE)
-    bool showWindow = false;
-    if( currentTimeline != NULL )
-      showWindow = currentTimeline->getShowWindow();
-    else if( currentHisto != NULL )
-      showWindow = currentHisto->getShowWindow();
-    if( currentWindow != NULL && showWindow && raiseCurrentWindow )
-      currentWindow->Raise();
-#endif
-
     int iTrace = 0;
     for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     {
@@ -2073,4 +2065,28 @@ void paraverMain::UnloadTrace( int whichTrace )
 void paraverMain::clearProperties()
 {
   windowProperties->Clear();
+}
+
+void paraverMain::OnActivate( wxActivateEvent& event )
+{
+#if 0
+  if( event.GetActive() )
+  {
+    for( set<wxWindow *>::iterator it = activeWindows.begin();
+        it != activeWindows.end(); ++it )
+      (*it)->Raise();
+    Raise();
+  }
+#endif
+  event.Skip();
+}
+
+void paraverMain::addActiveWindow( wxWindow *window )
+{
+  activeWindows.insert( window );
+}
+
+void paraverMain::removeActiveWindow( wxWindow *window )
+{
+  activeWindows.erase( window );
 }
