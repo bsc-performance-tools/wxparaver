@@ -1772,6 +1772,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     
   gTimeline *openWindow = NULL;
   Window *controlCloned = myHistogram->getControlWindow()->clone();
+  controlCloned->setUsedByHistogram( false );
   THistogramLimit min = myHistogram->getControlMin();
   THistogramLimit max = myHistogram->getControlMax();
   THistogramLimit delta = myHistogram->getControlDelta();
@@ -1811,6 +1812,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   if( myHistogram->getThreeDimensions() )
   {
     Window *extraControlCloned = myHistogram->getExtraControlWindow()->clone();
+    extraControlCloned->setUsedByHistogram( false );
 
     THistogramLimit extraMin = myHistogram->getExtraControlMin();
     THistogramLimit extraMax = myHistogram->getExtraControlMax();
@@ -1895,7 +1897,10 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   }
   
   if( openWindow != NULL )
+  {
+    openWindow->GetMyWindow()->setUsedByHistogram( false );
     openWindow->GetMyWindow()->setShowWindow( true );
+  }
   else
     throw std::exception();
 }
