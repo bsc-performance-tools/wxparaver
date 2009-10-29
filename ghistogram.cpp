@@ -1559,11 +1559,11 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   TObjectOrder row = myHistogram->getHorizontal() ? floor( lastPosZoomY / zoomCellHeight ) :
                                                     floor( lastPosZoomX / zoomCellWidth );
 
-  if( column >= myHistogram->getNumColumns() )
-    column = myHistogram->getNumColumns() - 1;
+  if( column > myHistogram->getNumColumns() )
+    column = myHistogram->getNumColumns();
     
-  if( row >= myHistogram->getNumRows() )
-    row = myHistogram->getNumRows() - 1;
+  if( row > myHistogram->getNumRows() )
+    row = myHistogram->getNumRows();
     
   if( row > 0 )
     text << _( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
