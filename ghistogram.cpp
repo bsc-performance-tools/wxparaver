@@ -230,12 +230,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(10, 9)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(10, 9)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
@@ -244,7 +244,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(15, 16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -825,14 +825,22 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
 
     for( THistogramColumn iCol = 0; iCol < numDrawCols; ++iCol )
     {
+      vector<TSemanticValue> totals;
+      histoTotals->getAll( totals, idStat, iCol, curPlane );
+
       if( horizontal )
-        labels.push_back( gridHisto->GetColLabelValue( iCol ) );
+      {
+        if( totals[ 0 ] != 0 )
+          labels.push_back( gridHisto->GetColLabelValue( iCol ) );
+      }
       else
-        labels.push_back( gridHisto->GetRowLabelValue( iCol ) );
+      {
+        if( totals[ 0 ] != 0 )
+          labels.push_back( gridHisto->GetRowLabelValue( iCol ) );
+      }
     }
     
     THistogramColumn iDrawCol = 0;
-    vector<wxString>::iterator labelIt = labels.begin();
     for( THistogramColumn iCol = 0; iCol < numDrawCols; ++iCol )
     {
       vector<TSemanticValue> totals;
@@ -841,23 +849,14 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
       if( totals[ 0 ] == 0 )
       {
         if( horizontal )
-        {
           gridHisto->DeleteCols( iDrawCol );
-          labels.erase( labelIt );
-        }
         else
-        {
           gridHisto->DeleteRows( iDrawCol );
-          labels.erase( labelIt );
-        }
       }
       else
-      {
         ++iDrawCol;
-        ++labelIt;
-      }
     }
-    
+
     for( THistogramColumn iCol = 0; iCol < iDrawCol; ++iCol )
     {
       if( horizontal )
