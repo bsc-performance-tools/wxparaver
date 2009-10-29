@@ -186,7 +186,7 @@ void BuildTree( paraverMain *parent,
 }
 
 
-void updateTreeItem( wxTreeCtrl *tree,
+bool updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      vector< Window * > &allWindows,
                      vector< Histogram * > &allHistograms,
@@ -207,6 +207,7 @@ void updateTreeItem( wxTreeCtrl *tree,
       tree->SelectItem( id );
     }
     tmpName = tmpWindow->getName();
+    
     for ( vector<Window *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
     {
       if ( *it == tmpWindow )
@@ -292,5 +293,7 @@ void updateTreeItem( wxTreeCtrl *tree,
 
   if( destroy )
     tree->Delete( id );
+    
+  return destroy;
 }
 

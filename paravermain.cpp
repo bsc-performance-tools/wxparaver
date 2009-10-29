@@ -1165,6 +1165,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   vector< Window * > allWindows;
   LoadedWindows::getInstance()->getAll( allWindows );
   vector< Histogram * > allHistograms;
+  bool destroyed = false;
 
   // Update loop and delete
   for( unsigned int iPage = 0; iPage < choiceWindowBrowser->GetPageCount(); iPage++ )
@@ -1176,15 +1177,31 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
     wxTreeItemIdValue cookie;
     wxTreeItemId currentChild = currentTree->GetFirstChild( root, cookie );
     unsigned int numberChild = currentTree->GetChildrenCount( root, false );
-    for ( unsigned int current = 0; current < numberChild; ++current )
+    unsigned int current = 0;
+    while( current < numberChild )
     {
       if ( currentChild.IsOk() )
       {
-        updateTreeItem( currentTree, currentChild, allWindows, allHistograms, &currentWindow, iPage == 0 );
+        destroyed = updateTreeItem( currentTree, currentChild, allWindows, allHistograms, &currentWindow, iPage == 0 );
         if( iPage > 0 && choiceWindowBrowser->GetSelection() > 0 && currentWindow != NULL )
           choiceWindowBrowser->SetSelection( iPage );
       }
-      currentChild = currentTree->GetNextChild( root, cookie );
+      else
+        destroyed = false;
+
+      if( !destroyed )
+      {
+        currentChild = currentTree->GetNextChild( root, cookie );
+        ++current;
+      }
+      else
+      {
+        currentChild = currentTree->GetFirstChild( root, cookie );
+        if( current == numberChild - 1 )
+          ++current;
+        else
+          current = 0;
+      }
     }
   }
 
@@ -1193,6 +1210,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   {
     if( (*it)->getDestroy() )
       continue;
+
     wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
     wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
 

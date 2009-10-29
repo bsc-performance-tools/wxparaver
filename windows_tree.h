@@ -29,7 +29,7 @@ void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
                 Window *window,
                 string nameSuffix = "" );
-void updateTreeItem( wxTreeCtrl *tree,
+bool updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      vector< Window * > &allWindows,
                      vector< Histogram * > &allHistograms,
