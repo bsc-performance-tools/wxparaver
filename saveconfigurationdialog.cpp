@@ -141,7 +141,7 @@ void SaveConfigurationDialog::CreateControls()
   itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxArrayString listTimelinesStrings;
-  listTimelines = new wxListBox( itemDialog1, ID_LISTTIMELINES, wxDefaultPosition, wxSize(200, -1), listTimelinesStrings, wxLB_MULTIPLE );
+  listTimelines = new wxCheckListBox( itemDialog1, ID_LISTTIMELINES, wxDefaultPosition, wxSize(200, -1), listTimelinesStrings, wxLB_MULTIPLE );
   itemBoxSizer4->Add(listTimelines, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
@@ -151,7 +151,7 @@ void SaveConfigurationDialog::CreateControls()
   itemBoxSizer7->Add(itemStaticText8, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxArrayString listHistogramsStrings;
-  listHistograms = new wxListBox( itemDialog1, ID_LISTHISTOGRAMS, wxDefaultPosition, wxSize(200, -1), listHistogramsStrings, wxLB_MULTIPLE );
+  listHistograms = new wxCheckListBox( itemDialog1, ID_LISTHISTOGRAMS, wxDefaultPosition, wxSize(200, -1), listHistogramsStrings, wxLB_MULTIPLE );
   itemBoxSizer7->Add(listHistograms, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxVERTICAL);
@@ -278,20 +278,21 @@ bool SaveConfigurationDialog::TransferDataToWindow()
 
 bool SaveConfigurationDialog::TransferDataFromWindow()
 {
-  wxArrayInt selected;
-  
-  listTimelines->GetSelections( selected );
   vector<Window *> tmpTimelines;
-  for( size_t i = 0; i < selected.GetCount(); ++i )
-    tmpTimelines.push_back( timelines[ selected.Item( i ) ] );
+  for( size_t i = 0; i < listTimelines->GetCount(); ++i )
+  {
+    if( listTimelines->IsChecked( i ) )
+      tmpTimelines.push_back( timelines[ i ] );
+  }
   timelines.clear();
   timelines = tmpTimelines;
   
-  selected.Clear();
-  listHistograms->GetSelections( selected );
   vector<Histogram *> tmpHistograms;
-  for( size_t i = 0; i < selected.GetCount(); ++i )
-    tmpHistograms.push_back( histograms[ selected.Item( i ) ] );
+  for( size_t i = 0; i < listHistograms->GetCount(); ++i )
+  {
+    if( listHistograms->IsChecked( i ) )
+      tmpHistograms.push_back( histograms[ i ] );
+  }
   histograms.clear();
   histograms = tmpHistograms;
   

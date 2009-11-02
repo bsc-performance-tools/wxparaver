@@ -112,8 +112,8 @@ public:
   bool TransferDataFromWindow();
   
 ////@begin SaveConfigurationDialog member variables
-  wxListBox* listTimelines;
-  wxListBox* listHistograms;
+  wxCheckListBox* listTimelines;
+  wxCheckListBox* listHistograms;
   wxCheckBox* optRelativeBegin;
   wxCheckBox* optRelativeEnd;
   wxCheckBox* optComputeSemantic;
