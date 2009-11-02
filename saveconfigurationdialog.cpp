@@ -288,6 +288,7 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   timelines = tmpTimelines;
   
   selected.Clear();
+  listHistograms->GetSelections( selected );
   vector<Histogram *> tmpHistograms;
   for( size_t i = 0; i < selected.GetCount(); ++i )
     tmpHistograms.push_back( histograms[ selected.Item( i ) ] );
