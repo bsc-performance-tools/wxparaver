@@ -2041,6 +2041,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   dialog.ShowModal();
 #endif
     UnloadTrace( dialog.GetSelection() );
+
   raiseCurrentWindow = true;
 }
 
@@ -2072,6 +2073,9 @@ void paraverMain::UnloadTrace( int whichTrace )
 
   for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
+    (*it)->clearControlWindow();
+    (*it)->clearDataWindow();
+    (*it)->clearExtraControlWindow();
     (*it)->setShowWindow( false );
     (*it)->setDestroy( true );
   }
@@ -2120,7 +2124,6 @@ void paraverMain::PrepareToExit()
     (*it)->clearExtraControlWindow();
   }
 }
-
 
 /*!
  * wxEVT_CLOSE_WINDOW event handler for ID_PARAVERMAIN
