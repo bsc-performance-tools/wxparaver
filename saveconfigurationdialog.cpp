@@ -141,7 +141,7 @@ void SaveConfigurationDialog::CreateControls()
   itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxArrayString listTimelinesStrings;
-  listTimelines = new wxCheckListBox( itemDialog1, ID_LISTTIMELINES, wxDefaultPosition, wxSize(200, -1), listTimelinesStrings, wxLB_SINGLE );
+  listTimelines = new wxListBox( itemDialog1, ID_LISTTIMELINES, wxDefaultPosition, wxSize(200, -1), listTimelinesStrings, wxLB_MULTIPLE );
   itemBoxSizer4->Add(listTimelines, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
@@ -151,7 +151,7 @@ void SaveConfigurationDialog::CreateControls()
   itemBoxSizer7->Add(itemStaticText8, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxArrayString listHistogramsStrings;
-  listHistograms = new wxCheckListBox( itemDialog1, ID_LISTHISTOGRAMS, wxDefaultPosition, wxSize(200, -1), listHistogramsStrings, wxLB_SINGLE );
+  listHistograms = new wxListBox( itemDialog1, ID_LISTHISTOGRAMS, wxDefaultPosition, wxSize(200, -1), listHistogramsStrings, wxLB_MULTIPLE );
   itemBoxSizer7->Add(listHistograms, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxVERTICAL);
@@ -288,7 +288,6 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   timelines = tmpTimelines;
   
   selected.Clear();
-  listHistograms->GetSelections( selected );
   vector<Histogram *> tmpHistograms;
   for( size_t i = 0; i < selected.GetCount(); ++i )
     tmpHistograms.push_back( histograms[ selected.Item( i ) ] );

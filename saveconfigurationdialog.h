@@ -12,7 +12,6 @@
 #ifndef _SAVECONFIGURATIONDIALOG_H_
 #define _SAVECONFIGURATIONDIALOG_H_
 
-
 /*!
  * Includes
  */
@@ -113,8 +112,8 @@ public:
   bool TransferDataFromWindow();
   
 ////@begin SaveConfigurationDialog member variables
-  wxCheckListBox* listTimelines;
-  wxCheckListBox* listHistograms;
+  wxListBox* listTimelines;
+  wxListBox* listHistograms;
   wxCheckBox* optRelativeBegin;
   wxCheckBox* optRelativeEnd;
   wxCheckBox* optComputeSemantic;

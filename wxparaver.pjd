@@ -89,7 +89,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Debug"</string>
+    <string name="configuration">"VC++ Release"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -475,7 +475,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
@@ -538,7 +538,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
@@ -601,7 +601,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
@@ -664,7 +664,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
@@ -1937,6 +1937,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -2202,8 +2210,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">8</long>
-                <long name="proxy-Height">7</long>
+                <long name="proxy-Width">10</long>
+                <long name="proxy-Height">9</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -2267,8 +2275,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">8</long>
-                <long name="proxy-Height">7</long>
+                <long name="proxy-Width">10</long>
+                <long name="proxy-Height">9</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -4692,14 +4700,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -4825,7 +4825,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxCheckListBox: ID_LISTTIMELINES"</string>
+                  <string name="title">"wxListBox: ID_LISTTIMELINES"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"listbox"</string>
@@ -4834,18 +4834,19 @@
                   <long name="title-mode">0</long>
                   <long name="locked">0</long>
                   <string name="created">"23/2/2009"</string>
-                  <string name="proxy-type">"wbCheckListBoxProxy"</string>
+                  <string name="proxy-type">"wbListBoxProxy"</string>
                   <string name="proxy-Id name">"ID_LISTTIMELINES"</string>
                   <long name="proxy-Id value">10013</long>
                   <string name="proxy-Name">""</string>
-                  <string name="proxy-Class">"wxCheckListBox"</string>
-                  <string name="proxy-Base class">"wxCheckListBox"</string>
+                  <string name="proxy-Class">"wxListBox"</string>
+                  <string name="proxy-Base class">"wxListBox"</string>
                   <bool name="proxy-External implementation">1</bool>
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
                   <string name="proxy-Member variable name">"listTimelines"</string>
                   <string name="proxy-Strings">""</string>
+                  <string name="proxy-Initial value">""</string>
                   <string name="proxy-Help text">""</string>
                   <string name="proxy-Tooltip text">""</string>
                   <string name="proxy-Background colour">""</string>
@@ -4861,8 +4862,8 @@
                   <string name="proxy-Data class implementation filename">""</string>
                   <string name="proxy-Data class header filename">""</string>
                   <string name="proxy-Data class manager window">""</string>
-                  <bool name="proxy-wxLB_SINGLE">1</bool>
-                  <bool name="proxy-wxLB_MULTIPLE">0</bool>
+                  <bool name="proxy-wxLB_SINGLE">0</bool>
+                  <bool name="proxy-wxLB_MULTIPLE">1</bool>
                   <bool name="proxy-wxLB_EXTENDED">0</bool>
                   <bool name="proxy-wxLB_ALWAYS_SB">0</bool>
                   <bool name="proxy-wxLB_NEEDED_SB">0</bool>
@@ -4993,7 +4994,7 @@
                   <string name="proxy-Custom ctor arguments">""</string>
                 </document>
                 <document>
-                  <string name="title">"wxCheckListBox: ID_LISTHISTOGRAMS"</string>
+                  <string name="title">"wxListBox: ID_LISTHISTOGRAMS"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
                   <string name="icon-name">"listbox"</string>
@@ -5002,18 +5003,19 @@
                   <long name="title-mode">0</long>
                   <long name="locked">0</long>
                   <string name="created">"23/2/2009"</string>
-                  <string name="proxy-type">"wbCheckListBoxProxy"</string>
+                  <string name="proxy-type">"wbListBoxProxy"</string>
                   <string name="proxy-Id name">"ID_LISTHISTOGRAMS"</string>
                   <long name="proxy-Id value">10014</long>
                   <string name="proxy-Name">""</string>
-                  <string name="proxy-Class">"wxCheckListBox"</string>
-                  <string name="proxy-Base class">"wxCheckListBox"</string>
+                  <string name="proxy-Class">"wxListBox"</string>
+                  <string name="proxy-Base class">"wxListBox"</string>
                   <bool name="proxy-External implementation">1</bool>
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
                   <string name="proxy-Member variable name">"listHistograms"</string>
                   <string name="proxy-Strings">""</string>
+                  <string name="proxy-Initial value">""</string>
                   <string name="proxy-Help text">""</string>
                   <string name="proxy-Tooltip text">""</string>
                   <string name="proxy-Background colour">""</string>
@@ -5029,8 +5031,8 @@
                   <string name="proxy-Data class implementation filename">""</string>
                   <string name="proxy-Data class header filename">""</string>
                   <string name="proxy-Data class manager window">""</string>
-                  <bool name="proxy-wxLB_SINGLE">1</bool>
-                  <bool name="proxy-wxLB_MULTIPLE">0</bool>
+                  <bool name="proxy-wxLB_SINGLE">0</bool>
+                  <bool name="proxy-wxLB_MULTIPLE">1</bool>
                   <bool name="proxy-wxLB_EXTENDED">0</bool>
                   <bool name="proxy-wxLB_ALWAYS_SB">0</bool>
                   <bool name="proxy-wxLB_NEEDED_SB">0</bool>
@@ -6085,14 +6087,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -11358,6 +11352,8 @@
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"2D"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">"Histogram preferences."</string>
             <string name="proxy-Background colour">""</string>
@@ -11410,8 +11406,6 @@
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"2D"</string>
-            <string name="proxy-Tab icon">""</string>
             <document>
               <string name="title">"wxBoxSizer V"</string>
               <string name="type">"dialog-control-document"</string>
@@ -11879,6 +11873,8 @@
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"What/Where"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">"Timeline What/Where information preferences."</string>
             <string name="proxy-Background colour">""</string>
@@ -11931,8 +11927,6 @@
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"What/Where"</string>
-            <string name="proxy-Tab icon">""</string>
             <document>
               <string name="title">"wxBoxSizer H"</string>
               <string name="type">"dialog-control-document"</string>
@@ -12129,6 +12123,8 @@
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Global"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">""</string>
             <string name="proxy-Background colour">""</string>
@@ -12181,8 +12177,6 @@
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Global"</string>
-            <string name="proxy-Tab icon">""</string>
           </document>
           <document>
             <string name="title">"wxPanel: ID_PREFERENCES_FILTERS"</string>
@@ -12204,6 +12198,8 @@
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Filters"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">""</string>
             <string name="proxy-Background colour">""</string>
@@ -12256,8 +12252,6 @@
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Filters"</string>
-            <string name="proxy-Tab icon">""</string>
           </document>
         </document>
       </document>
