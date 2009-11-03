@@ -46,6 +46,9 @@
 #include "histogramdialog.h"
 #include "preferencesdialog.h"
 
+#include <signal.h>
+#include <iostream>
+
 ////@begin XPM images
 #include "new_window.xpm"
 #include "new_derived_window.xpm"
@@ -132,6 +135,10 @@ wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
 
 Window *paraverMain::beginDragWindow = NULL;
 Window *paraverMain::endDragWindow = NULL;
+
+extern volatile bool sig1;
+extern volatile bool sig2;
+extern struct sigaction act;
 
 static bool userMessage( string message )
 {
@@ -470,6 +477,9 @@ bool paraverMain::DoLoadCFG( const string &path )
 
           if ( (*it)->getChild() == NULL )
             BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
+
+          if ( it + 1 == newWindows.end() )
+            currentTimeline = *it;
         }
 
         for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
@@ -1422,6 +1432,11 @@ void paraverMain::OnIdle( wxIdleEvent& event )
         ++iTrace;
     }
   }
+
+#ifndef WIN32
+  if ( sig1 || sig2 )
+    OnSignal();
+#endif
 }
 
 
@@ -2135,3 +2150,120 @@ void paraverMain::OnCloseWindow( wxCloseEvent& event )
   Destroy();
 }
 
+
+#ifndef WIN32
+//void paraverMain::OnSignal( int signalNumber )
+void paraverMain::OnSignal( )
+{
+  // Any loaded trace?
+  bool mySig1 = sig1;
+  bool mySig2 = sig2;
+  sig1 = false;
+  sig2 = false;
+
+  if ( loadedTraces.size() == 0 )
+  {
+    wxMessageDialog message( this, "No trace loaded", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+    raiseCurrentWindow = false;
+    //message.ShowModal();
+    raiseCurrentWindow = true;
+
+    cout << "No trace loaded!" << endl;
+    return;
+  }
+
+  string path = "./";
+  string filename = "paraload.sig";
+  string fullName = path + filename;
+  ifstream paraloadFile;
+  paraloadFile.open( fullName.c_str() );
+  if ( !paraloadFile  )
+  {
+    cout << "File " << fullName << " not found!" << endl;
+    return;
+  }
+
+  string cfgFullName;
+  std::getline( paraloadFile, cfgFullName );
+
+  if( mySig1 )
+  {
+//    cout << "sigusr1 catched!" << endl;
+//    cout << "CFG file: " << cfgFullName << endl;
+    // Load cfg
+    DoLoadCFG( cfgFullName );
+    choiceWindowBrowser->UpdateWindowUI();
+  }
+  else if( mySig2 )
+  {
+//    cout << "sigusr2 catched!" << endl;
+
+    Window* myCurrentTimeline;
+    vector<Window *> timelines;
+  
+    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
+    if ( currentTimeline == NULL )
+    {
+      if ( timelines.size() > 0 )
+      {
+        myCurrentTimeline = timelines[ timelines.size() - 1  ];
+      }
+      else
+      {
+        wxMessageDialog message( this, "No timeline created", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+        raiseCurrentWindow = false;
+        //message.ShowModal();
+        raiseCurrentWindow = true;
+        cout << "No timeline selected" << endl;
+        return;
+      }
+    }
+    else
+      myCurrentTimeline = currentTimeline;
+
+    // Zoom last loaded window
+    string times;
+    std::getline( paraloadFile, times );
+//    cout << times << endl;
+
+    size_t pos = times.find(":");
+    if ( pos == string::npos )
+    {
+      wxMessageDialog message( this, "Missing times separator ':' in file paraload.sig", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+      raiseCurrentWindow = false;
+      //message.ShowModal();
+      cout << "Missing times separator ':' in file paraload.sig" << endl;
+      raiseCurrentWindow = true;
+      return;
+    }
+    else
+    {
+      string time1 = times.substr( 0, pos );
+      string time2 = times.substr( ++pos,times.size() - 1  );
+
+//      cout << "Time 1:" << time1 << endl; 
+//      cout << "Time 2:" << time2 << endl; 
+
+      stringstream aux( time1 );
+      double auxt1;
+      aux >> auxt1;
+      stringstream aux2( time2 );
+      double auxt2;
+      aux2 >> auxt2;
+
+      myCurrentTimeline->addZoom( auxt1, auxt2 );
+      myCurrentTimeline->setWindowBeginTime( auxt1 );
+      myCurrentTimeline->setWindowEndTime( auxt2 );
+
+      myCurrentTimeline->setRedraw( true );
+      myCurrentTimeline->setChanged( true );
+
+      wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+      bool found;
+      gTimeline *last = getGTimelineFromWindow( currentPage->GetRootItem(), myCurrentTimeline, found );
+      if ( found )
+        last->UpdateWindowUI();
+    }
+  }
+}
+#endif

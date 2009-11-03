@@ -23,6 +23,11 @@
 ////@begin includes
 ////@end includes
 
+// Signal handling
+#include <signal.h>
+#include <stdio.h>
+
+
 #include "wxparaverapp.h"
 
 ////@begin XPM images
@@ -81,6 +86,78 @@ void wxparaverApp::Init()
  * Initialisation for wxparaverApp
  */
 
+paraverMain* wxparaverApp::mainWindow = NULL;
+
+
+#ifndef WIN32
+volatile bool sig1 = false;
+volatile bool sig2 = false;
+
+void wxparaverApp::handler( int signalNumber )
+{
+  sigdelset( &act.sa_mask, SIGUSR1 );
+  sigdelset( &act.sa_mask, SIGUSR2 );
+
+//  wxMutexGuiEnter();
+//  wxparaverApp::mainWindow->OnSignal( signalNumber );
+//  wxMutexGuiLeave();
+  if ( signalNumber == SIGUSR1 )
+  {
+    sig1 = true;
+  }
+  else
+  {
+    sig1 = false;
+  }
+
+  sig2 = !sig1;
+
+//  wxIdleEvent event;
+//  event.RequestMore();
+//  wxTheApp->SendIdleEvents( mainWindow, event );
+  mainWindow->Raise();
+
+  sigaddset( &act.sa_mask, SIGUSR1 );
+  sigaddset( &act.sa_mask, SIGUSR2 );
+  sigaction( SIGUSR1, &act, NULL );
+  sigaction( SIGUSR2, &act, NULL );
+}
+
+
+void wxparaverApp::presetUserSignals()
+{
+
+  act.sa_handler = &handler;
+  act.sa_flags = 0;
+
+  if ( sigemptyset( &act.sa_mask ) != 0 )
+  {
+    /* Handle error */
+  }
+
+  if ( sigaddset( &act.sa_mask, SIGUSR1 ))
+  {
+    /* Handle error */
+  }
+
+  if ( sigaddset( &act.sa_mask, SIGUSR2 ))
+  {
+    /* Handle error */
+  }
+
+  if ( sigaction( SIGUSR1, &act, NULL ) != 0 )
+  {
+    /* Handle error */
+  }
+
+  if ( sigaction( SIGUSR2, &act, NULL ) != 0 )
+  {
+    /* Handle error */
+  }
+}
+#endif
+
+
 bool wxparaverApp::OnInit()
 {
   wxCmdLineEntryDesc argumentsParseSyntax[] =
@@ -118,11 +195,23 @@ bool wxparaverApp::OnInit()
   wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
   paraverCommandLineParser.Parse();
 
-  paraverMain* mainWindow = new paraverMain( NULL );
+  mainWindow = new paraverMain( NULL );
 
   mainWindow->Show(true);
 
   mainWindow->commandLineLoadings( paraverCommandLineParser );
+
+/*
+  paraverMain *mainWindow;
+  mainWindow = new paraverMain( NULL );
+
+  mainWindow->Show(true);
+
+  mainWindow->commandLineLoadings( paraverCommandLineParser );
+*/
+#ifndef WIN32
+  presetUserSignals();
+#endif
 
   return true;
 }

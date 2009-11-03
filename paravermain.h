@@ -302,7 +302,12 @@ public:
   
   void addActiveWindow( wxWindow *window );
   void removeActiveWindow( wxWindow *window );
-  
+
+#ifndef WIN32
+//  void OnSignal( int sigusr );
+  void OnSignal( );
+#endif
+
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
   static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height

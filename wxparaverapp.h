@@ -36,6 +36,8 @@
 ////@begin control identifiers
 ////@end control identifiers
 
+struct sigaction act;
+
 /*!
  * wxparaverApp class declaration
  */
@@ -57,6 +59,12 @@ public:
     /// Called on exit
     virtual int OnExit();
 
+#ifndef WIN32
+    // Signal handling
+    static void handler( int signum );
+    void presetUserSignals();
+#endif
+
 ////@begin wxparaverApp event handler declarations
 
 ////@end wxparaverApp event handler declarations
@@ -67,6 +75,8 @@ public:
 
 ////@begin wxparaverApp member variables
 ////@end wxparaverApp member variables
+
+    static paraverMain* mainWindow;
 };
 
 /*!
