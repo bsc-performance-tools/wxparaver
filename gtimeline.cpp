@@ -697,9 +697,10 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
     else
     {
       TObjectOrder partnerObject = it->getCommPartnerObject();
+
       if( ( it->getType() & COMM ) && selected[ partnerObject ] &&
-          ( it->getType() & RECV ||
-            ( it->getType() & SEND && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
+          ( ( it->getType() & RECV ) ||
+            ( ( it->getType() & SEND ) && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
         )
       {
         if( it->getType() & LOG )
@@ -1611,6 +1612,8 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 
   myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS );
 
+  myWindow->getRecordList( whichRow )->erase( myWindow->getRecordList( whichRow )->begin(),
+                                              myWindow->getRecordList( whichRow )->end() );
   myWindow->calcPrev( whichRow );
   printWWSemantic( whichRow, false, textMode );
   printWWRecords( whichRow, false, textMode );
@@ -1810,9 +1813,13 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
       onString << wxT( "at " ) << LabelConstructor::timeLabel(
                                     myWindow->traceUnitsToWindowUnits( (*it).getTime() ),
                                     myWindow->getTimeUnit() );
-      onString << wxT( " to " ) << LabelConstructor::objectLabel( (*it).getCommPartnerObject(),
-                                                                  myWindow->getLevel(),
-                                                                  myWindow->getTrace() );
+      if( (*it).getType() & SEND )
+        onString << wxT( " to " );
+      else if( (*it).getType() & RECV )
+        onString << wxT( " from " );
+      onString << LabelConstructor::objectLabel( (*it).getCommPartnerObject(),
+                                                 myWindow->getLevel(),
+                                                 myWindow->getTrace() );
       onString << wxT( " at " ) << LabelConstructor::timeLabel(
                                      myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() ),
                                      myWindow->getTimeUnit() );
