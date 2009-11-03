@@ -2165,10 +2165,10 @@ void paraverMain::OnSignal( )
   {
     wxMessageDialog message( this, "No trace loaded", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
     raiseCurrentWindow = false;
-    //message.ShowModal();
+    message.ShowModal();
     raiseCurrentWindow = true;
 
-    cout << "No trace loaded!" << endl;
+    // cout << "No trace loaded!" << endl;
     return;
   }
 
@@ -2192,7 +2192,6 @@ void paraverMain::OnSignal( )
 //    cout << "CFG file: " << cfgFullName << endl;
     // Load cfg
     DoLoadCFG( cfgFullName );
-    choiceWindowBrowser->UpdateWindowUI();
   }
   else if( mySig2 )
   {
@@ -2212,9 +2211,9 @@ void paraverMain::OnSignal( )
       {
         wxMessageDialog message( this, "No timeline created", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
         raiseCurrentWindow = false;
-        //message.ShowModal();
+        message.ShowModal();
         raiseCurrentWindow = true;
-        cout << "No timeline selected" << endl;
+        // cout << "No timeline selected" << endl;
         return;
       }
     }
@@ -2231,8 +2230,8 @@ void paraverMain::OnSignal( )
     {
       wxMessageDialog message( this, "Missing times separator ':' in file paraload.sig", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
       raiseCurrentWindow = false;
-      //message.ShowModal();
-      cout << "Missing times separator ':' in file paraload.sig" << endl;
+      message.ShowModal();
+      // cout << "Missing times separator ':' in file paraload.sig" << endl;
       raiseCurrentWindow = true;
       return;
     }
@@ -2247,23 +2246,24 @@ void paraverMain::OnSignal( )
       stringstream aux( time1 );
       double auxt1;
       aux >> auxt1;
+      if ( auxt1 == -1.0 )
+        auxt1 = 0.0;
+
       stringstream aux2( time2 );
       double auxt2;
       aux2 >> auxt2;
+      if ( auxt2 == -1.0 )
+        auxt2 = myCurrentTimeline->getTrace()->getEndTime();
 
-      myCurrentTimeline->addZoom( auxt1, auxt2 );
       myCurrentTimeline->setWindowBeginTime( auxt1 );
       myCurrentTimeline->setWindowEndTime( auxt2 );
+      myCurrentTimeline->addZoom( auxt1, auxt2 );
 
       myCurrentTimeline->setRedraw( true );
       myCurrentTimeline->setChanged( true );
-
-      wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
-      bool found;
-      gTimeline *last = getGTimelineFromWindow( currentPage->GetRootItem(), myCurrentTimeline, found );
-      if ( found )
-        last->UpdateWindowUI();
     }
   }
+
+  choiceWindowBrowser->UpdateWindowUI();
 }
 #endif
