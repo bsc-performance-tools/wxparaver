@@ -61,6 +61,10 @@ class gHistogram;
 #define ID_MENU_AUTO_CONTROL_SCALE                30046
 #define ID_MENU_AUTO_3D_SCALE                     30047
 #define ID_MENU_AUTO_DATA_GRADIENT                30048
+#define ID_MENU_GRADIENT_FUNCTION_LINEAR          30049
+#define ID_MENU_GRADIENT_FUNCTION_STEPS           30050
+#define ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC     30051
+#define ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL     30052
 
 class gPopUpMenu : public wxMenu
 {
@@ -144,6 +148,9 @@ class gPopUpMenu : public wxMenu
     void OnMenuAutoControlScale( wxCommandEvent& event );
     void OnMenuAuto3DScale( wxCommandEvent& event );
     void OnMenuAutoDataGradient( wxCommandEvent& event );
+    
+    void OnMenuGradientFunction( wxCommandEvent& event );
+
   private:
     gTimeline *timeline;
     gHistogram *histogram;
@@ -158,6 +165,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuDrawModeObjects;
     wxMenu *popUpMenuDrawModeBoth;
     wxMenu *popUpMenuPixelSize;
+    wxMenu *popUpMenuGradientFunction;
 
     void buildItem( wxMenu *popUp,
                     const wxString &title,

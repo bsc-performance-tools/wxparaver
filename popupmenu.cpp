@@ -1102,7 +1102,7 @@ void gPopUpMenu::OnMenuAutoDataGradient( wxCommandEvent& event )
 void gPopUpMenu::OnMenuGradientFunction( wxCommandEvent& event )
 {
   GradientColor::TGradientFunction gradFunc;
-cout<<"hola"<<endl;
+
   switch( event.GetId() )
   {
     case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = GradientColor::LINEAR; break;
