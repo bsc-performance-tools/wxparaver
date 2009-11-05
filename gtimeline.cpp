@@ -1940,18 +1940,21 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
   static TSemanticValue lastMin = 0;
   static TSemanticValue lastMax = 15;
   static bool codeColorSet = true;
+  static GradientColor::TGradientFunction gradientFunc = GradientColor::LINEAR;
   
   if( redoColors &&
       ( myWindow->getSemanticInfoType() != lastType ||
         myWindow->getMinimumY() != lastMin ||
         myWindow->getMaximumY() != lastMax ||
-        myWindow->IsCodeColorSet() != codeColorSet )
+        myWindow->IsCodeColorSet() != codeColorSet ||
+        myWindow->getGradientColor().getGradientFunction() != gradientFunc )
     )
   {
     lastType = myWindow->getSemanticInfoType();
     lastMin = myWindow->getMinimumY();
     lastMax = myWindow->getMaximumY();
     codeColorSet = myWindow->IsCodeColorSet();
+    gradientFunc = myWindow->getGradientColor().getGradientFunction();
 
     colorsSizer->Clear( true );
     wxBoxSizer *itemSizer;
@@ -2301,4 +2304,10 @@ void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
   checkWWCommunications->Enable( true );
   checkWWPreviousNext->Enable( true );
   checkWWText->Enable( true );
+}
+
+void gTimeline::OnMenuGradientFunction( GradientColor::TGradientFunction function )
+{
+  myWindow->getGradientColor().setGradientFunction( function );
+  myWindow->setRedraw( true );
 }

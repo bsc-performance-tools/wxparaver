@@ -295,6 +295,8 @@ public:
   void OnPopUpDrawModeBothMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
 
+  void OnMenuGradientFunction( GradientColor::TGradientFunction function );
+  
   void rightDownManager();
 
 ////@begin gHistogram member variables

@@ -57,6 +57,10 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
   EVT_MENU( ID_MENU_AUTO_3D_SCALE, gPopUpMenu::OnMenuAuto3DScale )
   EVT_MENU( ID_MENU_AUTO_DATA_GRADIENT, gPopUpMenu::OnMenuAutoDataGradient )
+  EVT_MENU( ID_MENU_GRADIENT_FUNCTION_LINEAR, gPopUpMenu::OnMenuGradientFunction )
+  EVT_MENU( ID_MENU_GRADIENT_FUNCTION_STEPS, gPopUpMenu::OnMenuGradientFunction )
+  EVT_MENU( ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, gPopUpMenu::OnMenuGradientFunction )
+  EVT_MENU( ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, gPopUpMenu::OnMenuGradientFunction )
 
 END_EVENT_TABLE()
 
@@ -288,6 +292,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuDrawModeObjects = new wxMenu;
   popUpMenuDrawModeBoth = new wxMenu;
   popUpMenuPixelSize = new wxMenu;
+  popUpMenuGradientFunction = new wxMenu;
 
   buildItem( this, wxString(STR_COPY), ITEMNORMAL, NULL, ID_MENU_COPY );
 
@@ -329,6 +334,13 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, wxString( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->IsNotNullGradientColorSet() );
   AppendSubMenu( popUpMenuColor, wxString( "Color" ));
 
+  buildItem( popUpMenuGradientFunction, wxString( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
+  buildItem( popUpMenuGradientFunction, wxString( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
+  buildItem( popUpMenuGradientFunction, wxString( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
+  buildItem( popUpMenuGradientFunction, wxString( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
+  wxMenuItem *tmpGradFunc = AppendSubMenu( popUpMenuGradientFunction, wxString( "Gradient Function" ) );
+  Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->IsCodeColorSet() == false );
+  
   buildItem( popUpMenuDrawModeTime,
              wxString( "Last" ),
              ITEMRADIO,
@@ -510,6 +522,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuDrawModeTime = new wxMenu;
   popUpMenuDrawModeObjects = new wxMenu;
   popUpMenuDrawModeBoth = new wxMenu;
+  popUpMenuGradientFunction = new wxMenu;
 
   buildItem( this, wxString(STR_COPY), ITEMNORMAL, NULL, ID_MENU_COPY );
 
@@ -550,6 +563,12 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoDataGradient,
              ID_MENU_AUTO_DATA_GRADIENT,
              histogram->GetHistogram()->getComputeGradient() );
+
+  buildItem( popUpMenuGradientFunction, wxString( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
+  buildItem( popUpMenuGradientFunction, wxString( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
+  buildItem( popUpMenuGradientFunction, wxString( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
+  buildItem( popUpMenuGradientFunction, wxString( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
+  AppendSubMenu( popUpMenuGradientFunction, wxString( "Gradient Function " ) );
 
   AppendSeparator();
   
@@ -1078,4 +1097,23 @@ void gPopUpMenu::OnMenuAutoDataGradient( wxCommandEvent& event )
 {
   if( histogram != NULL )
     histogram->OnPopUpAutoDataGradient( event.IsChecked() );
+}
+
+void gPopUpMenu::OnMenuGradientFunction( wxCommandEvent& event )
+{
+  GradientColor::TGradientFunction gradFunc;
+cout<<"hola"<<endl;
+  switch( event.GetId() )
+  {
+    case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = GradientColor::LINEAR; break;
+    case ID_MENU_GRADIENT_FUNCTION_STEPS: gradFunc = GradientColor::STEPS; break;
+    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC: gradFunc = GradientColor::LOGARITHMIC; break;
+    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL: gradFunc = GradientColor::EXPONENTIAL; break;
+    default: gradFunc = GradientColor::LINEAR;
+  }
+  
+  if( timeline != NULL )
+    timeline->OnMenuGradientFunction( gradFunc );
+  else if( histogram != NULL )
+    histogram->OnMenuGradientFunction( gradFunc );
 }
