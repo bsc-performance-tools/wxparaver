@@ -2172,9 +2172,10 @@ void paraverMain::OnSignal( )
     return;
   }
 
-  string path = "./";
+  string path = getenv("HOME");
+  //string path = "./";
   string filename = "paraload.sig";
-  string fullName = path + filename;
+  string fullName = path + "/" + filename;
   ifstream paraloadFile;
   paraloadFile.open( fullName.c_str() );
   if ( !paraloadFile  )
@@ -2193,8 +2194,6 @@ void paraverMain::OnSignal( )
     // Load cfg
     DoLoadCFG( cfgFullName );
   }
-  else if( mySig2 )
-  {
 //    cout << "sigusr2 catched!" << endl;
 
     Window* myCurrentTimeline;
@@ -2262,7 +2261,6 @@ void paraverMain::OnSignal( )
       myCurrentTimeline->setRedraw( true );
       myCurrentTimeline->setChanged( true );
     }
-  }
 
   choiceWindowBrowser->UpdateWindowUI();
 }
