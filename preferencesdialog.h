@@ -43,6 +43,7 @@
 #define ID_PREFERENCES_WHATWHERE 10072
 #define ID_PREFERENCES_WW_PRECISION 10000
 #define ID_PREFERENCES_GLOBAL 10073
+#define ID_PREFERENCES_GLOBAL_FILLGAPS 10085
 #define ID_PREFERENCES_FILTERS 10070
 #define SYMBOL_PREFERENCESDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PREFERENCESDIALOG_TITLE _("Preferences")
@@ -110,6 +111,9 @@ public:
   UINT32 GetWhatWhereMaxPrecision() const { return whatWhereMaxPrecision ; }
   void SetWhatWhereMaxPrecision(UINT32 value) { whatWhereMaxPrecision = value ; }
 
+  bool GetGlobalFillStateGaps() const { return globalFillStateGaps ; }
+  void SetGlobalFillStateGaps(bool value) { globalFillStateGaps = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -128,6 +132,7 @@ public:
   wxTextCtrl* txt2DPrecision;
   wxCheckListBox* check2DOptions;
   wxTextCtrl* txtWhatWherePrecision;
+  wxCheckBox* checkGlobalFillStateGaps;
 private:
   UINT32 histogramNumColumns;
   UINT32 histogramPrecision;
@@ -137,6 +142,7 @@ private:
   UINT32 histogramMaxNumColumns;
   UINT32 histogramMaxPrecision;
   UINT32 whatWhereMaxPrecision;
+  bool globalFillStateGaps;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

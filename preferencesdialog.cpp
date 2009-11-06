@@ -115,10 +115,12 @@ void PreferencesDialog::Init()
   histogramMaxNumColumns = 100000;
   histogramMaxPrecision = 10;
   whatWhereMaxPrecision = 10;
+  globalFillStateGaps = false;
   txt2DNumColumns = NULL;
   txt2DPrecision = NULL;
   check2DOptions = NULL;
   txtWhatWherePrecision = NULL;
+  checkGlobalFillStateGaps = NULL;
 ////@end PreferencesDialog member initialisation
 }
 
@@ -188,16 +190,17 @@ void PreferencesDialog::CreateControls()
   GetBookCtrl()->AddPage(itemPanel11, _("What/Where"));
 
   wxPanel* itemPanel15 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_GLOBAL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemPanel15->Show(false);
-  itemPanel15->Enable(false);
+  checkGlobalFillStateGaps = new wxCheckBox( itemPanel15, ID_PREFERENCES_GLOBAL_FILLGAPS, _("Fill State gaps with IDLE State"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkGlobalFillStateGaps->SetValue(false);
+
 
   GetBookCtrl()->AddPage(itemPanel15, _("Global"));
 
-  wxPanel* itemPanel16 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemPanel16->Show(false);
-  itemPanel16->Enable(false);
+  wxPanel* itemPanel18 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemPanel18->Show(false);
+  itemPanel18->Enable(false);
 
-  GetBookCtrl()->AddPage(itemPanel16, _("Filters"));
+  GetBookCtrl()->AddPage(itemPanel18, _("Filters"));
 
 ////@end PreferencesDialog content construction
 
@@ -281,6 +284,9 @@ bool PreferencesDialog::TransferDataToWindow()
   // What Where
   txtWhatWherePrecision->SetValue( formatNumber( whatWherePrecision ));
 
+  // Global
+  checkGlobalFillStateGaps->SetValue( globalFillStateGaps );
+
   return true;
 }
 
@@ -303,5 +309,11 @@ bool PreferencesDialog::TransferDataFromWindow()
   if ( txtWhatWherePrecision->GetValue().ToLong( &aux ) )
     whatWherePrecision = ( UINT32 )aux;
 
+  // Global
+  globalFillStateGaps = checkGlobalFillStateGaps->IsChecked();
+
   return true;
 }
+
+
+

@@ -1937,6 +1937,9 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetHistogramThousandSeparator( paraverConfig->getThousandSep() );
   preferences.SetWhatWherePrecision( 2 ); // TO IMPLEMENT
 
+//  cout << "paraverConfig->getFillStateGaps(): " << paraverConfig->getFillStateGaps() << endl;
+  preferences.SetGlobalFillStateGaps( paraverConfig->getFillStateGaps() );
+
   preferences.TransferDataToWindow();
 
   raiseCurrentWindow = true;
@@ -1949,6 +1952,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setPrecision( preferences.GetHistogramPrecision() );
     paraverConfig->setShowUnits( preferences.GetHistogramShowUnits() );
     paraverConfig->setThousandSep( preferences.GetHistogramThousandSeparator() );
+    paraverConfig->setFillStateGaps( preferences.GetGlobalFillStateGaps() );
 
     // Save Preferences to File
     paraverConfig->writeParaverConfigFile();
@@ -2152,116 +2156,115 @@ void paraverMain::OnCloseWindow( wxCloseEvent& event )
 
 
 #ifndef WIN32
-//void paraverMain::OnSignal( int signalNumber )
 void paraverMain::OnSignal( )
 {
-  // Any loaded trace?
+  // PRECOND: sig1 XOR sig2 == true;
+
   bool mySig1 = sig1;
-  bool mySig2 = sig2;
+
+  // Clear global variables
   sig1 = false;
   sig2 = false;
 
+  // Any loaded trace?
   if ( loadedTraces.size() == 0 )
   {
     wxMessageDialog message( this, "No trace loaded", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
-
-    // cout << "No trace loaded!" << endl;
     return;
   }
 
+  // Does paraload.sig exists?
   string path = getenv("HOME");
-  //string path = "./";
   string filename = "paraload.sig";
   string fullName = path + "/" + filename;
   ifstream paraloadFile;
   paraloadFile.open( fullName.c_str() );
   if ( !paraloadFile  )
   {
-    cout << "File " << fullName << " not found!" << endl;
+    wxMessageDialog message( this, "File ./paraload.sig not found", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+    raiseCurrentWindow = false;
+    message.ShowModal();
+    raiseCurrentWindow = true;
     return;
   }
 
+  // Read cfg location
   string cfgFullName;
   std::getline( paraloadFile, cfgFullName );
 
+  // Code only for sigusr1: load cfg
   if( mySig1 )
-  {
-//    cout << "sigusr1 catched!" << endl;
-//    cout << "CFG file: " << cfgFullName << endl;
-    // Load cfg
     DoLoadCFG( cfgFullName );
-  }
-//    cout << "sigusr2 catched!" << endl;
 
-    Window* myCurrentTimeline;
-    vector<Window *> timelines;
-  
-    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
-    if ( currentTimeline == NULL )
+  // Code for both sigusr1 and sigusr2: zoom
+  Window* myCurrentTimeline;
+  vector<Window *> timelines;
+
+  LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
+  if ( currentTimeline == NULL )
+  {
+    if ( timelines.size() > 0 )
     {
-      if ( timelines.size() > 0 )
-      {
-        myCurrentTimeline = timelines[ timelines.size() - 1  ];
-      }
-      else
-      {
-        wxMessageDialog message( this, "No timeline created", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
-        raiseCurrentWindow = false;
-        message.ShowModal();
-        raiseCurrentWindow = true;
-        // cout << "No timeline selected" << endl;
-        return;
-      }
+      myCurrentTimeline = timelines[ timelines.size() - 1  ];
     }
     else
-      myCurrentTimeline = currentTimeline;
-
-    // Zoom last loaded window
-    string times;
-    std::getline( paraloadFile, times );
-//    cout << times << endl;
-
-    size_t pos = times.find(":");
-    if ( pos == string::npos )
     {
-      wxMessageDialog message( this, "Missing times separator ':' in file paraload.sig", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+      wxMessageDialog message( this, "No timeline created", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
       raiseCurrentWindow = false;
       message.ShowModal();
-      // cout << "Missing times separator ':' in file paraload.sig" << endl;
       raiseCurrentWindow = true;
       return;
     }
-    else
-    {
-      string time1 = times.substr( 0, pos );
-      string time2 = times.substr( ++pos,times.size() - 1  );
+  }
+  else
+    myCurrentTimeline = currentTimeline;
 
-//      cout << "Time 1:" << time1 << endl; 
-//      cout << "Time 2:" << time2 << endl; 
+  // Read paraload.sig second line: times
+  string times;
+  std::getline( paraloadFile, times );
 
-      stringstream aux( time1 );
-      double auxt1;
-      aux >> auxt1;
-      if ( auxt1 == -1.0 )
-        auxt1 = 0.0;
+  size_t pos = times.find(":");
+  if ( pos == string::npos )
+  {
+    wxMessageDialog message( this, "Missing times separator ':' in file paraload.sig", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+    raiseCurrentWindow = false;
+    message.ShowModal();
+    raiseCurrentWindow = true;
+    return;
+  }
+  else
+  {
+    // Get begin time
+    string time = times.substr( 0, pos );
+    stringstream aux( time );
+    double auxt1;
+    aux >> auxt1;
 
-      stringstream aux2( time2 );
-      double auxt2;
-      aux2 >> auxt2;
-      if ( auxt2 == -1.0 )
-        auxt2 = myCurrentTimeline->getTrace()->getEndTime();
+    if ( auxt1 == -1.0 )
+      auxt1 = 0.0;
 
-      myCurrentTimeline->setWindowBeginTime( auxt1 );
-      myCurrentTimeline->setWindowEndTime( auxt2 );
-      myCurrentTimeline->addZoom( auxt1, auxt2 );
+    // Get end time
+    string time2 = times.substr( ++pos,times.size() - 1  );
+    stringstream aux2( time2 );
+    double auxt2;
+    aux2 >> auxt2;
 
-      myCurrentTimeline->setRedraw( true );
-      myCurrentTimeline->setChanged( true );
-    }
+    if ( auxt2 == -1.0 )
+      auxt2 = myCurrentTimeline->getTrace()->getEndTime();
 
+    // Zoom
+    myCurrentTimeline->setWindowBeginTime( auxt1 );
+    myCurrentTimeline->setWindowEndTime( auxt2 );
+    myCurrentTimeline->addZoom( auxt1, auxt2 );
+
+    myCurrentTimeline->setRedraw( true );
+    myCurrentTimeline->setChanged( true );
+  }
+
+  // Refresh
   choiceWindowBrowser->UpdateWindowUI();
 }
 #endif
