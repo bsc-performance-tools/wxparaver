@@ -486,7 +486,8 @@ void gTimeline::redraw()
 void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 {
   size_t numObjects = selected.size();
-
+  float magnify = float( GetPixelSize() );
+  
   dc.SetPen( wxPen( *wxWHITE, 1 ) );
   dc.SetTextForeground( *wxWHITE );
 
@@ -547,7 +548,16 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   }
 
   if( numObjects == 1 )
-    objectHeight = timeAxisPos - objectPosList[ selected[ 0 ] ];
+    objectHeight = ( timeAxisPos - objectPosList[ selected[ 0 ] ] );
+  else
+  {
+    if( ( inc * 0.25 ) < 1.0 && magnify > objectHeight )
+    {
+      for( vector<wxCoord>::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
+        *it = ( floor( ( *it - drawBorder ) / magnify ) * magnify ) + drawBorder;
+      objectHeight = magnify;
+    }
+  }
 
   dc.SetFont( timeFont );
   dc.DrawText( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ),
