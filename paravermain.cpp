@@ -1932,16 +1932,16 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
 {
   PreferencesDialog preferences( this );
 
-  preferences.SetHistogramNumColumns( paraverConfig->getHistoNumColumns() );
+  preferences.SetHistogramNumColumns( paraverConfig->getHistogramNumColumns() );
   preferences.SetHistogramMaxNumColumns( 400 ); // TO IMPLEMENT
-  preferences.SetHistogramPrecision( paraverConfig->getPrecision() );
+  preferences.SetHistogramPrecision( paraverConfig->getHistogramPrecision() );
   preferences.SetHistogramMaxPrecision( 20 ); // TO IMPLEMENT
-  preferences.SetHistogramShowUnits( paraverConfig->getShowUnits() );
-  preferences.SetHistogramThousandSeparator( paraverConfig->getThousandSep() );
+  preferences.SetHistogramShowUnits( paraverConfig->getHistogramShowUnits() );
+  preferences.SetHistogramThousandSeparator( paraverConfig->getHistogramThousandSep() );
   preferences.SetWhatWherePrecision( 2 ); // TO IMPLEMENT
 
 //  cout << "paraverConfig->getFillStateGaps(): " << paraverConfig->getFillStateGaps() << endl;
-  preferences.SetGlobalFillStateGaps( paraverConfig->getFillStateGaps() );
+  preferences.SetGlobalFillStateGaps( paraverConfig->getGlobalFillStateGaps() );
 
   preferences.TransferDataToWindow();
 
@@ -1951,11 +1951,11 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     preferences.TransferDataFromWindow();
 
     // Apply Preferences
-    paraverConfig->setHistoNumColumns( preferences.GetHistogramNumColumns() );
-    paraverConfig->setPrecision( preferences.GetHistogramPrecision() );
-    paraverConfig->setShowUnits( preferences.GetHistogramShowUnits() );
-    paraverConfig->setThousandSep( preferences.GetHistogramThousandSeparator() );
-    paraverConfig->setFillStateGaps( preferences.GetGlobalFillStateGaps() );
+    paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );
+    paraverConfig->setHistogramPrecision( preferences.GetHistogramPrecision() );
+    paraverConfig->setHistogramShowUnits( preferences.GetHistogramShowUnits() );
+    paraverConfig->setHistogramThousandSep( preferences.GetHistogramThousandSeparator() );
+    paraverConfig->setGlobalFillStateGaps( preferences.GetGlobalFillStateGaps() );
 
     // Save Preferences to File
     paraverConfig->writeParaverConfigFile();

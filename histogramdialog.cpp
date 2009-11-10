@@ -718,7 +718,7 @@ wxString HistogramDialog::formatNumber( double value )
 
   locale mylocale("");
   auxSStr.imbue( mylocale );
-  auxSStr.precision( ParaverConfig::getInstance()->getPrecision() );
+  auxSStr.precision( ParaverConfig::getInstance()->getHistogramPrecision() );
   auxSStr << fixed;
   auxSStr << value;
   auxNumber << auxSStr.str();
@@ -732,11 +732,11 @@ TSemanticValue HistogramDialog::computeDelta( TSemanticValue min, TSemanticValue
   TSemanticValue delta;
 
   if ( max - min < ( TSemanticValue )1.0 )
-    delta = ( max - min ) / ParaverConfig::getInstance()->getHistoNumColumns();
-  else if ( max - min <= ParaverConfig::getInstance()->getHistoNumColumns() )
+    delta = ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns();
+  else if ( max - min <= ParaverConfig::getInstance()->getHistogramNumColumns() )
     delta = (double )1.0;
   else
-    delta = ( max - min ) / ParaverConfig::getInstance()->getHistoNumColumns();
+    delta = ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns();
 
   return delta;
 }
