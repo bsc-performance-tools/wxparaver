@@ -2289,9 +2289,7 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   description << "Barcelona Supercomputing Center.\n\n";
   description << "wxParaver allows the programmer to examine graphically a ";
   description << "tracefile, with the possibility to choose different filters in ";
-  description << "order to select what is displayed.\n\n";
-  description << "You can play with tools like timing or zooming, which make ";
-  description << "easy the analysis and the understanding of parallel programs.\n";
+  description << "order to select what is displayed.\n";
   info.SetDescription( description );
   developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
   developers.Add( _("Pedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
