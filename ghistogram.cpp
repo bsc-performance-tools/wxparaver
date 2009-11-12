@@ -1495,7 +1495,7 @@ void gHistogram::OnMotion( wxMouseEvent& event )
     memdc.SetBackgroundMode( wxTRANSPARENT );
     memdc.SetBackground( *wxTRANSPARENT_BRUSH );
     memdc.Clear();
-#ifdef __WXGTK__
+#if wxTEST_GRAPHICS == 1
     wxGCDC dc( memdc );
     dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
 #else
