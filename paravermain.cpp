@@ -1932,16 +1932,33 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
 {
   PreferencesDialog preferences( this );
 
+  // GLOBAL
+  preferences.SetGlobalFillStateGaps( paraverConfig->getGlobalFillStateGaps() );
+
+  // TIMELINE
+  preferences.SetWhatWherePrecision( 2 ); // TO IMPLEMENT
+
+  // HISTOGRAM
   preferences.SetHistogramNumColumns( paraverConfig->getHistogramNumColumns() );
   preferences.SetHistogramMaxNumColumns( 400 ); // TO IMPLEMENT
   preferences.SetHistogramPrecision( paraverConfig->getHistogramPrecision() );
   preferences.SetHistogramMaxPrecision( 20 ); // TO IMPLEMENT
   preferences.SetHistogramShowUnits( paraverConfig->getHistogramShowUnits() );
   preferences.SetHistogramThousandSeparator( paraverConfig->getHistogramThousandSep() );
-  preferences.SetWhatWherePrecision( 2 ); // TO IMPLEMENT
 
-//  cout << "paraverConfig->getFillStateGaps(): " << paraverConfig->getFillStateGaps() << endl;
-  preferences.SetGlobalFillStateGaps( paraverConfig->getGlobalFillStateGaps() );
+  // COLORS
+  preferences.SetTimelineColourBackground( paraverConfig->getColorsTimelineBackground() );
+  preferences.SetTimelineColourAxis( paraverConfig->getColorsTimelineAxis() );
+  preferences.SetTimelineColourLogical( paraverConfig->getColorsTimelineLogicalCommunications() );
+  preferences.SetTimelineColourPhysical( paraverConfig->getColorsTimelinePhysicalCommunications() );
+
+  preferences.SetGradientColourBegin( paraverConfig->getColorsBeginGradient() );
+  preferences.SetGradientColourEnd( paraverConfig->getColorsEndGradient() );
+  preferences.SetGradientColourLow( paraverConfig->getColorsLowGradient() );
+  preferences.SetGradientColourTop( paraverConfig->getColorsTopGradient() );
+
+  // FILTER
+
 
   preferences.TransferDataToWindow();
 
@@ -1951,11 +1968,30 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     preferences.TransferDataFromWindow();
 
     // Apply Preferences
+
+    // GLOBAL
+    paraverConfig->setGlobalFillStateGaps( preferences.GetGlobalFillStateGaps() );
+
+    // TIMELINE
+
+    // HISTOGRAM
     paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );
     paraverConfig->setHistogramPrecision( preferences.GetHistogramPrecision() );
     paraverConfig->setHistogramShowUnits( preferences.GetHistogramShowUnits() );
     paraverConfig->setHistogramThousandSep( preferences.GetHistogramThousandSeparator() );
-    paraverConfig->setGlobalFillStateGaps( preferences.GetGlobalFillStateGaps() );
+
+    // COLORS 
+    paraverConfig->setColorsTimelineBackground( preferences.GetTimelineColourBackground() );
+    paraverConfig->setColorsTimelineAxis( preferences.GetTimelineColourAxis() );
+    paraverConfig->setColorsTimelineLogicalCommunications( preferences.GetTimelineColourLogical() );
+    paraverConfig->setColorsTimelinePhysicalCommunications( preferences.GetTimelineColourPhysical() );
+
+    paraverConfig->setColorsBeginGradient( preferences.GetGradientColourBegin() );
+    paraverConfig->setColorsEndGradient( preferences.GetGradientColourEnd() );
+    paraverConfig->setColorsLowGradient( preferences.GetGradientColourLow() );
+    paraverConfig->setColorsTopGradient( preferences.GetGradientColourTop() );
+
+    // FILTER
 
     // Save Preferences to File
     paraverConfig->writeParaverConfigFile();

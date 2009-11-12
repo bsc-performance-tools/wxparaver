@@ -19,6 +19,7 @@
 
 ////@begin includes
 #include "wx/propdlg.h"
+#include "wx/clrpicker.h"
 ////@end includes
 
 #include "paraverconfig.h"
@@ -28,6 +29,7 @@
  */
 
 ////@begin forward declarations
+class wxColourPickerCtrl;
 ////@end forward declarations
 
 /*!
@@ -36,14 +38,25 @@
 
 ////@begin control identifiers
 #define ID_PREFERENCESDIALOG 10069
-#define ID_PREFERENCES_2D 10071
+#define ID_PREFERENCES_GLOBAL 10073
+#define ID_PREFERENCES_GLOBAL_FILLGAPS 10085
+#define ID_PREFERENCES_TIMELINE 10072
+#define ID_PREFERENCES_WW_PRECISION 10000
+#define ID_PREFERENCES_HISTOGRAM 10071
 #define ID_PREFERENCES_2D_NUMCOLUMNS 10075
 #define ID_PREFERENCES_2D_PRECISION 10074
 #define ID_PREFERENCES_2D_CHECKOPTIONS 10078
-#define ID_PREFERENCES_WHATWHERE 10072
-#define ID_PREFERENCES_WW_PRECISION 10000
-#define ID_PREFERENCES_GLOBAL 10073
-#define ID_PREFERENCES_GLOBAL_FILLGAPS 10085
+#define ID_PREFERENCES_COLOR 10086
+#define ID_COLOURPICKER_BACKGROUND 10002
+#define ID_COLOURPICKER_AXIS 10001
+#define ID_COLOURPICKER_LOGICAL 10007
+#define ID_COLOURPICKER_PHYSICAL 10008
+#define ID_BUTTON_DEFAULT_TIMELINE 10087
+#define ID_COLOURPICKER_GRADBEGIN 10003
+#define ID_COLOURPICKER_GRADEND 10004
+#define ID_COLOURPICKER_GRADLOW 10005
+#define ID_COLOURPICKER_GRADTOP 10006
+#define ID_BUTTON_DEFAULT_GRADIENT 10009
 #define ID_PREFERENCES_FILTERS 10070
 #define SYMBOL_PREFERENCESDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PREFERENCESDIALOG_TITLE _("Preferences")
@@ -83,6 +96,15 @@ public:
 
 ////@begin PreferencesDialog event handler declarations
 
+  /// wxEVT_COLOURPICKER_CHANGED event handler for ID_COLOURPICKER_BACKGROUND
+  void OnColourpickerBackgroundColourPickerChanged( wxColourPickerEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DEFAULT_TIMELINE
+  void OnButtonDefaultTimelineClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DEFAULT_GRADIENT
+  void OnButtonDefaultGradientClick( wxCommandEvent& event );
+
 ////@end PreferencesDialog event handler declarations
 
 ////@begin PreferencesDialog member function declarations
@@ -114,6 +136,30 @@ public:
   bool GetGlobalFillStateGaps() const { return globalFillStateGaps ; }
   void SetGlobalFillStateGaps(bool value) { globalFillStateGaps = value ; }
 
+  rgb GetTimelineColourBackground() const { return timelineColourBackground ; }
+  void SetTimelineColourBackground(rgb value) { timelineColourBackground = value ; }
+
+  rgb GetTimelineColourAxis() const { return timelineColourAxis ; }
+  void SetTimelineColourAxis(rgb value) { timelineColourAxis = value ; }
+
+  rgb GetTimelineColourLogical() const { return timelineColourLogical ; }
+  void SetTimelineColourLogical(rgb value) { timelineColourLogical = value ; }
+
+  rgb GetTimelineColourPhysical() const { return timelineColourPhysical ; }
+  void SetTimelineColourPhysical(rgb value) { timelineColourPhysical = value ; }
+
+  rgb GetGradientColourBegin() const { return gradientColourBegin ; }
+  void SetGradientColourBegin(rgb value) { gradientColourBegin = value ; }
+
+  rgb GetGradientColourEnd() const { return gradientColourEnd ; }
+  void SetGradientColourEnd(rgb value) { gradientColourEnd = value ; }
+
+  rgb GetGradientColourLow() const { return gradientColourLow ; }
+  void SetGradientColourLow(rgb value) { gradientColourLow = value ; }
+
+  rgb GetGradientColourTop() const { return gradientColourTop ; }
+  void SetGradientColourTop(rgb value) { gradientColourTop = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -128,11 +174,19 @@ public:
   bool TransferDataFromWindow();
 
 ////@begin PreferencesDialog member variables
+  wxCheckBox* checkGlobalFillStateGaps;
+  wxTextCtrl* txtWhatWherePrecision;
   wxTextCtrl* txt2DNumColumns;
   wxTextCtrl* txt2DPrecision;
   wxCheckListBox* check2DOptions;
-  wxTextCtrl* txtWhatWherePrecision;
-  wxCheckBox* checkGlobalFillStateGaps;
+  wxColourPickerCtrl* colourPickerBackground;
+  wxColourPickerCtrl* colourPickerAxis;
+  wxColourPickerCtrl* colourPickerLogical;
+  wxColourPickerCtrl* colourPickerPhysical;
+  wxColourPickerCtrl* colourPickerGradientBegin;
+  wxColourPickerCtrl* colourPickerGradientEnd;
+  wxColourPickerCtrl* colourPickerGradientLow;
+  wxColourPickerCtrl* colourPickerGradientTop;
 private:
   UINT32 histogramNumColumns;
   UINT32 histogramPrecision;
@@ -143,9 +197,20 @@ private:
   UINT32 histogramMaxPrecision;
   UINT32 whatWhereMaxPrecision;
   bool globalFillStateGaps;
+  rgb timelineColourBackground;
+  rgb timelineColourAxis;
+  rgb timelineColourLogical;
+  rgb timelineColourPhysical;
+  rgb gradientColourBegin;
+  rgb gradientColourEnd;
+  rgb gradientColourLow;
+  rgb gradientColourTop;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
+  rgb wxColourToRGB( wxColour colour ) ;
+  wxColour RGBTowxColour( rgb colour );
+
 };
 
 #endif

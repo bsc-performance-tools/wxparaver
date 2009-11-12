@@ -370,7 +370,16 @@ void gTimeline::redraw()
   }
 
   redoColors = true;
-  
+
+  rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
+  wxColour foregroundColour = wxColour( rgbForegroundColour.red,
+                                       rgbForegroundColour.green,
+                                       rgbForegroundColour.blue );
+  rgb rgbBackgroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineBackground();
+  wxColour backgroundColour = wxColour( rgbBackgroundColour.red,
+                                       rgbBackgroundColour.green,
+                                       rgbBackgroundColour.blue );
+
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );
 
@@ -410,7 +419,7 @@ void gTimeline::redraw()
   eventmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   eventmaskdc.Clear();
 
-  bufferDraw.SetBackground( wxBrush( *wxBLACK_BRUSH ) );
+  bufferDraw.SetBackground( wxBrush( backgroundColour ) );
   bufferDraw.Clear();
   
 #ifndef WIN32
@@ -447,7 +456,9 @@ void gTimeline::redraw()
   {
     wxBitmap cautionImage( caution_xpm );
     bufferDraw.SetPen( *wxBLACK_PEN );
+    //bufferDraw.SetPen( wxPen( backgroundColour ) );
     bufferDraw.SetBrush( *wxBLACK_BRUSH );
+    //bufferDraw.SetBrush( wxBrush( backgroundColour ) );
     bufferDraw.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
                               drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
     bufferDraw.DrawBitmap( cautionImage,
@@ -488,8 +499,11 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   size_t numObjects = selected.size();
   float magnify = float( GetPixelSize() );
   
-  dc.SetPen( wxPen( *wxWHITE, 1 ) );
-  dc.SetTextForeground( *wxWHITE );
+  rgb rgbAxisColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
+  wxColour axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
+
+  dc.SetPen( wxPen( axisColour, 1 ) );
+  dc.SetTextForeground( axisColour );
 
   // Get the text extent for time label
   dc.SetFont( timeFont );
@@ -580,6 +594,11 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
 {
   float magnify = float( GetPixelSize() );
 
+  rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
+  wxColour foregroundColour = wxColour( rgbForegroundColour.red,
+                                        rgbForegroundColour.green,
+                                        rgbForegroundColour.blue );
+
   TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
@@ -656,7 +675,7 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
                       / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
       int currentPos = objectHeight * tmpPos;
       
-      dc.SetPen( *wxWHITE_PEN );
+      dc.SetPen( foregroundColour );
       if( currentPos != lineLastPos )
       {
         int from = ( currentPos > lineLastPos ) ? currentPos : lineLastPos;
@@ -692,6 +711,21 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
   bool existEvents = false;
   TObjectOrder row = 0;
 
+  rgb rgbLogicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineLogicalCommunications();
+  wxColour logicalColour = wxColour( rgbLogicalColour.red, rgbLogicalColour.green ,rgbLogicalColour.blue );
+
+  rgb rgbPhysicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelinePhysicalCommunications();
+  wxColour physicalColour = wxColour( rgbPhysicalColour.red, rgbPhysicalColour.green ,rgbPhysicalColour.blue );
+
+  rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
+  wxColour foregroundColour = wxColour( rgbForegroundColour.red,
+                                       rgbForegroundColour.green,
+                                       rgbForegroundColour.blue );
+  rgb rgbBackgroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineBackground();
+  wxColour backgroundColour = wxColour( rgbBackgroundColour.red,
+                                       rgbBackgroundColour.green,
+                                       rgbBackgroundColour.blue );
+
   RecordList::iterator it = records->begin();
   step = ( 1 / step );
 
@@ -714,9 +748,9 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
         )
       {
         if( it->getType() & LOG )
-          commdc.SetPen( wxPen( wxColour( 255, 255, 0 ) ) );
+          commdc.SetPen( wxPen( logicalColour ) );
         else if( it->getType() & PHY )
-          commdc.SetPen( *wxRED_PEN );
+          commdc.SetPen(  wxPen( physicalColour ) );
         wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
         posPartner += objectAxisPos;
         commdc.DrawLine( posPartner, objectPosList[ partnerObject ],
@@ -731,7 +765,7 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
   if( existEvents )
   {
     eventdc.SetTextForeground( *wxGREEN );
-    eventdc.SetTextBackground( *wxBLACK );
+    eventdc.SetTextBackground( backgroundColour );
     eventdc.SetBackgroundMode( wxTRANSPARENT );
     wxBitmap imgFlag( flag, 10, 10 );
     eventdc.DrawBitmap( imgFlag, pos, objectPosList[ row ] - 10, true );
@@ -1450,6 +1484,15 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
   wxMemoryDC dc( bufferImage );
 
+  rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
+  wxColour foregroundColour = wxColour( rgbForegroundColour.red,
+                                       rgbForegroundColour.green,
+                                       rgbForegroundColour.blue );
+  rgb rgbBackgroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineBackground();
+  wxColour backgroundColour = wxColour( rgbBackgroundColour.red,
+                                       rgbBackgroundColour.green,
+                                       rgbBackgroundColour.blue );
+
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
@@ -1498,7 +1541,8 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
       wxDC& dc = memdc;
       dc.SetBrush( *wxTRANSPARENT_BRUSH );
 #endif
-      dc.SetPen( *wxWHITE_PEN );
+      // dc.SetPen( *wxWHITE_PEN );
+      dc.SetPen( wxPen( foregroundColour ) );
 
       dc.DrawBitmap( bufferImage, 0, 0, false );
       if( myWindow->getDrawFlags() )
