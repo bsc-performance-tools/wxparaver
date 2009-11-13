@@ -46,7 +46,22 @@ class wxColourPickerCtrl;
 #define ID_DIRPICKERCTRL_CFG 10010
 #define ID_DIRPICKERCTRL_TMP 10011
 #define ID_PREFERENCES_TIMELINE 10072
-#define ID_PREFERENCES_WW_PRECISION 10000
+#define ID_CHECKBOX5 10088
+#define ID_CHECKBOX6 10090
+#define ID_CHECKBOX7 10091
+#define ID_CHOICE 10092
+#define ID_CHOICE4 10015
+#define ID_CHOICE1 10012
+#define ID_CHOICE2 10013
+#define ID_CHOICE5 10016
+#define ID_CHECKBOX_TIMELINE_WW_SEMANTIC 10093
+#define ID_CHECKBOX_TIMELINE_WW_EVENTS 10094
+#define ID_CHECKBOX_TIMELINE_WW_COMMUNICATIONS 10095
+#define ID_CHECKBOX_TIMELINE_WW_PREVIOUS_NEXT 10096
+#define ID_CHECKBOX_TIMELINE_WW_TEXT 10097
+#define ID_TEXTBOX_TIMELINE_WW_PRECISION 10000
+#define ID_CHOICE_TIMELINE_SAVE_AS_IMAGE 10014
+#define ID_CHOICE_TIMELINE_SAVE_AS_TEXT 10017
 #define ID_PREFERENCES_HISTOGRAM 10071
 #define ID_PREFERENCES_2D_NUMCOLUMNS 10075
 #define ID_PREFERENCES_2D_PRECISION 10074
@@ -192,7 +207,22 @@ public:
   wxDirPickerCtrl* dirPickerTrace;
   wxDirPickerCtrl* dirPickerCFG;
   wxDirPickerCtrl* dirPickerTmp;
+  wxCheckBox* checkTimelineEventLines;
+  wxCheckBox* checkTimelineCommunicationLines;
+  wxCheckBox* checkTimelineFunctionAsColor;
+  wxChoice* choiceTimelineColor;
+  wxChoice* choiceTimelineGradientFunction;
+  wxChoice* choiceTimelineDrawmodeTime;
+  wxChoice* choiceTimelineDrawmodeObjects;
+  wxChoice* choiceTimelinePixelSize;
+  wxCheckBox* checkTimelineWWSemantic;
+  wxCheckBox* checkTimelineWWEvents;
+  wxCheckBox* checkTimelineWWCommunications;
+  wxCheckBox* checkTimelineWWPreviousNext;
+  wxCheckBox* checkTimelineWWText;
   wxTextCtrl* txtWhatWherePrecision;
+  wxChoice* choiceTimelineSaveImageFormat;
+  wxChoice* choiceTimelineSaveTextFormat;
   wxTextCtrl* txt2DNumColumns;
   wxTextCtrl* txt2DPrecision;
   wxCheckListBox* check2DOptions;
@@ -228,6 +258,7 @@ private:
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
+  void presetStringChoiceBox( vector< string > list, wxChoice *choiceBox );
   rgb wxColourToRGB( wxColour colour ) ;
   wxColour RGBTowxColour( rgb colour );
 
