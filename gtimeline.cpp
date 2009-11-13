@@ -318,6 +318,7 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
 ////@end gTimeline content construction
@@ -2365,3 +2366,73 @@ void gTimeline::OnMenuGradientFunction( GradientColor::TGradientFunction functio
   myWindow->getGradientColor().setGradientFunction( function );
   myWindow->setRedraw( true );
 }
+
+
+/*!
+ * wxEVT_MIDDLE_UP event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
+{
+  wxMemoryDC dc( bufferImage );
+  long X = event.GetX();
+  
+  if( X < objectAxisPos || X > dc.GetSize().GetWidth() - drawBorder
+      || event.GetY() < drawBorder || event.GetY() > timeAxisPos )
+    return;
+  else
+    X -= objectAxisPos;
+
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
+                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+
+  TTime posTime = ( timeStep * X ) + myWindow->getWindowBeginTime();
+
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
+  vector<TObjectOrder> selected;
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
+  TObjectOrder numObjects = selected.size();
+  double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
+  TObjectOrder posRow = TObjectOrder( floor( (event.GetY() - drawBorder - 1) / heightPerRow ) );
+
+  if( posRow >= numObjects )
+    posRow = numObjects - 1;
+    
+  posRow = selected[ posRow ];
+
+  TEventValue value;
+  if( myWindow->getTrace()->findLastEventValue( posRow, posTime, 60000119,value ) )
+  {
+    string valueStr = LabelConstructor::eventValueLabel( myWindow, 60000119, value );
+    string lineStr = valueStr.substr( 0, valueStr.find_first_of( ' ', 0 ) );
+    cout << "line " << lineStr << endl;
+    string fileStr = valueStr.substr( valueStr.find_first_of( '(', 0 ) + 1,
+                                      valueStr.length() - valueStr.find_first_of( '(', 0 ) - 2 );
+    cout << "filename " << fileStr << endl;
+    wxDirDialog dirDialog( NULL, "Choose the directory to find to source files" );
+    if( dirDialog.ShowModal() == wxID_OK )
+    {
+      wxString path = dirDialog.GetPath();
+      cout << path.c_str() << endl;
+      wxString command;
+#ifdef WIN32
+      command << "wordpad.exe " /*<< " +" << lineStr << " "*/ << path << "/" << fileStr;
+      wxExecute( command );
+#else
+      command << "gvim " << " +" << lineStr << " " << path << "/" << fileStr;
+      if( wxExecute( command ) == 0 )
+      {
+        command << "nedit " << " +" << lineStr << " " << path << "/" << fileStr;
+        if( wxExecute( command ) == 0 )
+          wxMessageBox( "Install gvim or nedit for view source code files.", "Show source code" );
+      }
+#endif
+    }
+  }
+  else
+  {
+    wxMessageBox( "Event " + (wxString() << 60000119) + " not found.", "Show source code" );
+  }
+}
+

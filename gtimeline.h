@@ -136,6 +136,9 @@ public:
   /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
+  /// wxEVT_MIDDLE_UP event handler for ID_SCROLLEDWINDOW
+  void OnScrolledWindowMiddleUp( wxMouseEvent& event );
+
   /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowRightDown( wxMouseEvent& event );
 

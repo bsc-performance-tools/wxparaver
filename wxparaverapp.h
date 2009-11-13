@@ -36,7 +36,9 @@
 ////@begin control identifiers
 ////@end control identifiers
 
+#ifndef WIN32
 struct sigaction act;
+#endif
 
 /*!
  * wxparaverApp class declaration
