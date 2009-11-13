@@ -1498,7 +1498,7 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     timelines = saveDialog.GetTimelines();
     histograms = saveDialog.GetHistograms();
     options = saveDialog.GetOptions();
-    wxFileDialog dialog( this, "Save Configuration", "", "",
+    wxFileDialog dialog( this, "Save Configuration", paraverConfig->getGlobalCFGsPath(), "",
       "Paraver configuration file (*.cfg)|*.cfg",
       wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
     if( dialog.ShowModal() == wxID_OK )
