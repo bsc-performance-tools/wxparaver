@@ -443,7 +443,12 @@ bool paraverMain::DoLoadTrace( const string &path )
   delete paraverMain::dialogProgress;
   paraverMain::dialogProgress = NULL;
   delete progress;
-  
+
+#ifndef WIN32
+  if ( sig1 || sig2 )
+    OnSignal();
+#endif
+
   return loaded;
 }
 
@@ -2218,6 +2223,15 @@ void paraverMain::OnSignal( )
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
+    return;
+  }
+
+  // Is some trace loading now?
+  if ( paraverMain::dialogProgress != NULL )
+  {
+    // Restore global variables
+    sig1 = mySig1;
+    sig2 = !mySig1;
     return;
   }
 
