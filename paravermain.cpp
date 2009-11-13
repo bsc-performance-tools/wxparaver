@@ -515,7 +515,7 @@ bool paraverMain::DoLoadCFG( const string &path )
  */
 void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, "Load Trace", "", "", 
+  wxFileDialog dialog( this, "Load Trace", paraverConfig->getGlobalTracesPath(), "", 
     "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*", 
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
   raiseCurrentWindow = false;
@@ -534,7 +534,7 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, "Load Configuration", "", "",
+  wxFileDialog dialog( this, "Load Configuration", paraverConfig->getGlobalCFGsPath(), "",
     "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*",
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
   raiseCurrentWindow = false;
@@ -1934,6 +1934,9 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
 
   // GLOBAL
   preferences.SetGlobalFillStateGaps( paraverConfig->getGlobalFillStateGaps() );
+  preferences.SetTracesPath( paraverConfig->getGlobalTracesPath() );
+  preferences.SetCfgsPath( paraverConfig->getGlobalCFGsPath() );
+  preferences.SetTmpPath( paraverConfig->getGlobalTmpPath() );
 
   // TIMELINE
   preferences.SetWhatWherePrecision( 2 ); // TO IMPLEMENT
@@ -1971,6 +1974,9 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
 
     // GLOBAL
     paraverConfig->setGlobalFillStateGaps( preferences.GetGlobalFillStateGaps() );
+    paraverConfig->setGlobalTracesPath( preferences.GetTracesPath() );
+    paraverConfig->setGlobalCFGsPath( preferences.GetCfgsPath() );
+    paraverConfig->setGlobalTmpPath( preferences.GetTmpPath() );
 
     // TIMELINE
 

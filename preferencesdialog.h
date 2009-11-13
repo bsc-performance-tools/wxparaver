@@ -19,6 +19,7 @@
 
 ////@begin includes
 #include "wx/propdlg.h"
+#include "wx/filepicker.h"
 #include "wx/clrpicker.h"
 ////@end includes
 
@@ -29,6 +30,7 @@
  */
 
 ////@begin forward declarations
+class wxDirPickerCtrl;
 class wxColourPickerCtrl;
 ////@end forward declarations
 
@@ -40,6 +42,9 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCESDIALOG 10069
 #define ID_PREFERENCES_GLOBAL 10073
 #define ID_PREFERENCES_GLOBAL_FILLGAPS 10085
+#define ID_DIRPICKERCTRL_TRACES 10089
+#define ID_DIRPICKERCTRL_CFG 10010
+#define ID_DIRPICKERCTRL_TMP 10011
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_WW_PRECISION 10000
 #define ID_PREFERENCES_HISTOGRAM 10071
@@ -160,6 +165,15 @@ public:
   rgb GetGradientColourTop() const { return gradientColourTop ; }
   void SetGradientColourTop(rgb value) { gradientColourTop = value ; }
 
+  string GetTracesPath() const { return tracesPath ; }
+  void SetTracesPath(string value) { tracesPath = value ; }
+
+  string GetCfgsPath() const { return cfgsPath ; }
+  void SetCfgsPath(string value) { cfgsPath = value ; }
+
+  string GetTmpPath() const { return tmpPath ; }
+  void SetTmpPath(string value) { tmpPath = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -175,6 +189,9 @@ public:
 
 ////@begin PreferencesDialog member variables
   wxCheckBox* checkGlobalFillStateGaps;
+  wxDirPickerCtrl* dirPickerTrace;
+  wxDirPickerCtrl* dirPickerCFG;
+  wxDirPickerCtrl* dirPickerTmp;
   wxTextCtrl* txtWhatWherePrecision;
   wxTextCtrl* txt2DNumColumns;
   wxTextCtrl* txt2DPrecision;
@@ -205,6 +222,9 @@ private:
   rgb gradientColourEnd;
   rgb gradientColourLow;
   rgb gradientColourTop;
+  string tracesPath;
+  string cfgsPath;
+  string tmpPath;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
