@@ -456,10 +456,10 @@ void gTimeline::redraw()
   if( drawCaution )
   {
     wxBitmap cautionImage( caution_xpm );
-    bufferDraw.SetPen( *wxBLACK_PEN );
-    //bufferDraw.SetPen( wxPen( backgroundColour ) );
-    bufferDraw.SetBrush( *wxBLACK_BRUSH );
-    //bufferDraw.SetBrush( wxBrush( backgroundColour ) );
+    //bufferDraw.SetPen( *wxBLACK_PEN );
+    bufferDraw.SetPen( wxPen( backgroundColour ) );
+    //bufferDraw.SetBrush( *wxBLACK_BRUSH );
+    bufferDraw.SetBrush( wxBrush( backgroundColour ) );
     bufferDraw.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
                               drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
     bufferDraw.DrawBitmap( cautionImage,
