@@ -2374,6 +2374,9 @@ void gTimeline::OnMenuGradientFunction( GradientColor::TGradientFunction functio
 
 void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 {
+  if( myWindow->getLevel() != THREAD )
+    return;
+
   wxMemoryDC dc( bufferImage );
   long X = event.GetX();
   
@@ -2401,10 +2404,13 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
     
   posRow = selected[ posRow ];
 
+  TEventType type;
   TEventValue value;
-  if( myWindow->getTrace()->findLastEventValue( posRow, posTime, 60000119,value ) )
+  vector<TEventType> events;
+  events.push_back( 60000119 );
+  if( myWindow->getTrace()->findLastEventValue( posRow, posTime, events, type, value ) )
   {
-    string valueStr = LabelConstructor::eventValueLabel( myWindow, 60000119, value );
+    string valueStr = LabelConstructor::eventValueLabel( myWindow, type, value );
     string lineStr = valueStr.substr( 0, valueStr.find_first_of( ' ', 0 ) );
     cout << "line " << lineStr << endl;
     string fileStr = valueStr.substr( valueStr.find_first_of( '(', 0 ) + 1,
@@ -2421,6 +2427,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
       wxExecute( command );
 #else
       command << "gvim " << " +" << lineStr << " " << path << "/" << fileStr;
+      cout << command << endl;
       if( wxExecute( command ) == 0 )
       {
         command << "nedit " << " +" << lineStr << " " << path << "/" << fileStr;

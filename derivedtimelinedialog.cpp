@@ -354,7 +354,7 @@ bool DerivedTimelineDialog::TransferDataToWindow()
   // Retrieve list of operations, build and select first operation
   currentWindow1->getGroupLabels( 1, operations );
   presetStringChoiceBox( operations, widgetOperations );
-  widgetOperations->SetStringSelection( "product" );
+  widgetOperations->SetStringSelection( _( "product" ) );
 
   // Fill factor fields
   presetFactorField( factorTimeline1, widgetFactorTimeline1 );
@@ -375,7 +375,7 @@ bool DerivedTimelineDialog::getParameterCompose( wxTextCtrl *field,
                              _(" parameter void or type mismatch.\nPlease use decimal format." );
       wxMessageDialog message( this, 
                                fullMessage,
-                               "Error in Field", wxOK );
+                               _( "Error in Field" ), wxOK );
       message.ShowModal();
       return false;
     }
@@ -495,10 +495,10 @@ void DerivedTimelineDialog::OnSwapWindowsClick( wxCommandEvent& event )
 
     // Rebuild and select timeline properly
     for( vector<Window *>::iterator it = timelines1.begin(); it != timelines1.end(); ++it )
-      widgetTimelines1->Append( wxString( (*it)->getName().c_str() ) );
+      widgetTimelines1->Append( wxString::FromAscii( (*it)->getName().c_str() ) );
 
     for( vector<Window *>::iterator it = timelines2.begin(); it != timelines2.end(); ++it )
-      widgetTimelines2->Append( wxString( (*it)->getName().c_str() ) );
+      widgetTimelines2->Append( wxString::FromAscii( (*it)->getName().c_str() ) );
 
     widgetTimelines1->Select( pos2 );
     widgetTimelines2->Select( pos1 );
@@ -514,7 +514,7 @@ void DerivedTimelineDialog::presetTimelineComboBox( vector< Window * > timelines
   int pos;
 
   for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
-    comboBox->Append( wxString( (*it)->getName().c_str() ) );
+    comboBox->Append( wxString::FromAscii( (*it)->getName().c_str() ) );
 
   pos = 0;
   for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
@@ -536,7 +536,7 @@ void DerivedTimelineDialog::presetStringChoiceBox( vector< string > list,
 
   for( vector< string >::iterator it = list.begin(); it != list.end(); ++it )
   {
-    aux << *it;
+    aux << wxString::FromAscii( (*it).c_str() );
     choiceBox->Append( aux );
     aux.clear();
   }
@@ -556,7 +556,7 @@ void DerivedTimelineDialog::presetNameField( string whichName, wxTextCtrl *field
 {
   wxString auxName;
 
-  auxName << whichName;
+  auxName << wxString::FromAscii( whichName.c_str() );
   field->SetValue( auxName );
 }
 
@@ -580,7 +580,7 @@ void DerivedTimelineDialog::getSelectedWindow( wxComboBox *comboBox,
 void DerivedTimelineDialog::getName( wxTextCtrl *field,
                                      string &whichName ) const
 {
-  whichName = field->GetValue();
+  whichName = string( field->GetValue().mb_str() );
 }
 
 
@@ -593,16 +593,16 @@ bool DerivedTimelineDialog::getFactorFields( double &whichFactor1,
   if ( !widgetFactorTimeline1->GetValue().ToDouble( &auxFactor1 ))
   {
     wxMessageDialog message( this, 
-                             "Factor 1 void or type mismatch.\nPlease use decimal format.",
-                             "Error in Field", wxOK );
+                             _( "Factor 1 void or type mismatch.\nPlease use decimal format." ),
+                             _( "Error in Field" ), wxOK );
     message.ShowModal();
     return false;
   }
   else if ( !widgetFactorTimeline2->GetValue().ToDouble( &auxFactor2 ))
   {
     wxMessageDialog message( this, 
-                             "Factor 2 void or type mismatch.\nPlease use decimal format.",
-                             "Error in Field", wxOK );
+                             _( "Factor 2 void or type mismatch.\nPlease use decimal format." ),
+                             _( "Error in Field" ), wxOK );
     message.ShowModal();
     return false;
   }
@@ -644,7 +644,7 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
 
       wxString aux1;
 
-      aux1 << namesParameters[ 0 ];
+      aux1 << wxString::FromAscii( namesParameters[ 0 ].c_str() );
       widgetLabelMinCompose1->SetLabel( aux1 );
 
       setParameterComposeField( defaultValues[ 0 ], widgetMinCompose1 );
@@ -663,8 +663,8 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
 
       wxString aux1, aux2;
 
-      aux1 << namesParameters[ 0 ];
-      aux2 << namesParameters[ 1 ];
+      aux1 << wxString::FromAscii( namesParameters[ 0 ].c_str() );
+      aux2 << wxString::FromAscii( namesParameters[ 1 ].c_str() );
       widgetLabelMinCompose1->SetLabel( aux1 );
       widgetLabelMaxCompose1->SetLabel( aux2 );
 
@@ -700,7 +700,7 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
 
       wxString aux1;
 
-      aux1 << namesParameters[ 0 ];
+      aux1 << wxString::FromAscii( namesParameters[ 0 ].c_str() );
       widgetLabelMinCompose2->SetLabel( aux1 );
 
       setParameterComposeField( defaultValues[ 0 ], widgetMinCompose2 );
@@ -719,8 +719,8 @@ void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
 
       wxString aux1, aux2;
 
-      aux1 << namesParameters[ 0 ];
-      aux2 << namesParameters[ 1 ];
+      aux1 << wxString::FromAscii( namesParameters[ 0 ].c_str() );
+      aux2 << wxString::FromAscii( namesParameters[ 1 ].c_str() );
       widgetLabelMinCompose2->SetLabel( aux1 );
       widgetLabelMaxCompose2->SetLabel( aux2 );
 
@@ -748,7 +748,7 @@ void DerivedTimelineDialog::setParameterComposeField( TParamValue defaultValues,
   aux << defaultValues[ 0 ];
   for ( UINT32 i = 1; i < maxValues; ++i  )
   {
-    aux << "; ";
+    aux << _( "; " );
     aux << defaultValues[ i ];
   }
   
@@ -835,13 +835,13 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
        nameOperations == "controlled: maximum"  ||
        nameOperations == "controlled: add" )
   {
-    widgetLabelTimelines1->SetLabel( "Data" );
-    widgetLabelTimelines2->SetLabel( "Control" );
+    widgetLabelTimelines1->SetLabel( _( "Data" ) );
+    widgetLabelTimelines2->SetLabel( _( "Control" ) );
   }
   else
   {
-    widgetLabelTimelines1->SetLabel( "Timeline" );
-    widgetLabelTimelines2->SetLabel( "Timeline" );
+    widgetLabelTimelines1->SetLabel( _( "Timeline" ) );
+    widgetLabelTimelines2->SetLabel( _( "Timeline" ) );
   }
 
   Layout();
