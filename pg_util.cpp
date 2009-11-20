@@ -85,6 +85,8 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 
 void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWindow )
 {
+  UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
+
   updateCategoriesState( windowProperties );
 
   whichWindow->setChanged( false );
@@ -105,10 +107,12 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
   windowProperties->Append( new wxStringProperty( wxT("Begin time"), wxPG_LABEL, 
                             wxT( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowBeginTime() ),
-                                                              whichWindow->getTimeUnit() ) ) ) );
+                                                              whichWindow->getTimeUnit(),
+                                                              precision ) ) ) );
   windowProperties->Append( new wxStringProperty( wxT("End time"), wxPG_LABEL, 
                             wxT( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowEndTime() ),
-                                                              whichWindow->getTimeUnit() ) ) ) );
+                                                              whichWindow->getTimeUnit(),
+                                                              precision ) ) ) );
 
   windowProperties->Append( new wxFloatProperty( wxT("Semantic Minimum"), wxPG_LABEL,
                             wxT( whichWindow->getMinimumY() ) ) );
@@ -802,6 +806,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
 void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whichHisto )
 {
+  UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
+
   updateCategoriesState( windowProperties );
   
   wxArrayString arrayStr;
@@ -815,10 +821,12 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichHisto->getName() ) ) );
   windowProperties->Append( new wxStringProperty( wxT("Begin time"), wxPG_LABEL, 
                             wxT( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getBeginTime() ),
-                                                              whichHisto->getControlWindow()->getTimeUnit() ) ) ) );
+                                                              whichHisto->getControlWindow()->getTimeUnit(),
+                                                              precision ) ) ) );
   windowProperties->Append( new wxStringProperty( wxT("End time"), wxPG_LABEL, 
                             wxT( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getEndTime() ),
-                                                              whichHisto->getControlWindow()->getTimeUnit() ) ) ) );
+                                                              whichHisto->getControlWindow()->getTimeUnit(),
+                                                              precision ) ) ) );
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   if( statCatCollapsed )

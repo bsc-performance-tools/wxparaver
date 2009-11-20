@@ -1944,7 +1944,26 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetTmpPath( paraverConfig->getGlobalTmpPath() );
 
   // TIMELINE
-  preferences.SetWhatWherePrecision( 2 ); // TO IMPLEMENT
+
+  preferences.SetTimelineNameFormatPrefix( paraverConfig->getTimelineDefaultName() );
+  preferences.SetTimelineNameFormatFull( paraverConfig->getTimelineNameFormat() );
+  //preferences.GetTimelineDefaultCFG( paraverConfig->setTimelineDefaultCFG() );
+  preferences.SetTimelineEventLines( paraverConfig->getTimelineViewEventsLines() );
+  preferences.SetTimelineCommunicationLines( paraverConfig->getTimelineViewCommunicationsLines() );
+  preferences.SetTimelineFunctionAsColor( paraverConfig->getTimelineViewFunctionAsColor() );
+  preferences.SetTimelineColor( ( UINT32 )paraverConfig->getTimelineColor() );
+  preferences.SetTimelineGradientFunction( ( UINT32 )paraverConfig->getTimelineGradientFunction() );
+  preferences.SetTimelineDrawmodeTime( ( UINT32 )paraverConfig->getTimelineDrawmodeTime() );
+  preferences.SetTimelineDrawmodeObjects( ( UINT32 )paraverConfig->getTimelineDrawmodeObjects() );
+  preferences.SetTimelinePixelSize( ( UINT32 )paraverConfig->getTimelinePixelSize() );
+  preferences.SetTimelineWWPrecision( paraverConfig->getTimelinePrecision() );
+  preferences.SetTimelineWWSemantic( paraverConfig->getTimelineWhatWhereSemantic() );
+  preferences.SetTimelineWWEvents( paraverConfig->getTimelineWhatWhereEvents() );
+  preferences.SetTimelineWWCommunications( paraverConfig->getTimelineWhatWhereCommunications() );
+  preferences.SetTimelineWWPreviousNext( paraverConfig->getTimelineWhatWherePreviousNext() );
+  preferences.SetTimelineWWText( paraverConfig->getTimelineWhatWhereText() );
+  preferences.SetTimelineSaveImageFormat( ( UINT32 )paraverConfig->getTimelineSaveImageFormat() );
+  preferences.SetTimelineSaveTextFormat( ( UINT32 )paraverConfig->getTimelineSaveTextFormat() );
 
   // HISTOGRAM
   preferences.SetHistogramNumColumns( paraverConfig->getHistogramNumColumns() );
@@ -1967,7 +1986,6 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
 
   // FILTER
 
-
   preferences.TransferDataToWindow();
 
   raiseCurrentWindow = true;
@@ -1984,6 +2002,25 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setGlobalTmpPath( preferences.GetTmpPath() );
 
     // TIMELINE
+    paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );
+    paraverConfig->setTimelineNameFormat( preferences.GetTimelineNameFormatFull() );
+    //paraverConfig->setTimelineDefaultCFG( preferences.GetTimelineDefaultCFG() );
+    paraverConfig->setTimelinePrecision( preferences.GetTimelineWWPrecision() );
+    paraverConfig->setTimelineViewEventsLines( preferences.GetTimelineEventLines() );
+    paraverConfig->setTimelineViewCommunicationsLines( preferences.GetTimelineCommunicationLines() );
+    paraverConfig->setTimelineViewFunctionAsColor( preferences.GetTimelineFunctionAsColor() );
+    paraverConfig->setTimelineColor( (SemanticColor::TColorFunction)preferences.GetTimelineColor() );
+    paraverConfig->setTimelineGradientFunction( (GradientColor::TGradientFunction)preferences.GetTimelineGradientFunction() );
+    paraverConfig->setTimelineDrawmodeTime( (DrawModeMethod)preferences.GetTimelineDrawmodeTime() );
+    paraverConfig->setTimelineDrawmodeObjects( (DrawModeMethod)preferences.GetTimelineDrawmodeObjects() );
+    paraverConfig->setTimelinePixelSize( preferences.GetTimelinePixelSize() );
+    paraverConfig->setTimelineWhatWhereSemantic( preferences.GetTimelineWWSemantic() );
+    paraverConfig->setTimelineWhatWhereEvents( preferences.GetTimelineWWEvents() );
+    paraverConfig->setTimelineWhatWhereCommunications( preferences.GetTimelineWWCommunications() );
+    paraverConfig->setTimelineWhatWherePreviousNext( preferences.GetTimelineWWPreviousNext() );
+    paraverConfig->setTimelineWhatWhereText( preferences.GetTimelineWWText() );
+    paraverConfig->setTimelineSaveImageFormat( (ParaverConfig::TImageFormat)preferences.GetTimelineSaveImageFormat() );
+    paraverConfig->setTimelineSaveTextFormat( (ParaverConfig::TTextFormat)preferences.GetTimelineSaveTextFormat() );
 
     // HISTOGRAM
     paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );

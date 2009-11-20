@@ -20,6 +20,7 @@
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/filepicker.h"
+#include "wx/spinctrl.h"
 #include "wx/clrpicker.h"
 ////@end includes
 
@@ -31,6 +32,7 @@
 
 ////@begin forward declarations
 class wxDirPickerCtrl;
+class wxSpinCtrl;
 class wxColourPickerCtrl;
 ////@end forward declarations
 
@@ -46,22 +48,24 @@ class wxColourPickerCtrl;
 #define ID_DIRPICKERCTRL_CFG 10010
 #define ID_DIRPICKERCTRL_TMP 10011
 #define ID_PREFERENCES_TIMELINE 10072
-#define ID_CHECKBOX5 10088
-#define ID_CHECKBOX6 10090
-#define ID_CHECKBOX7 10091
-#define ID_CHOICE 10092
-#define ID_CHOICE4 10015
-#define ID_CHOICE1 10012
-#define ID_CHOICE2 10013
-#define ID_CHOICE5 10016
+#define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
+#define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
+#define ID_PREFERENCES_TIMELINE_COMMUNICATION_LINES 10090
+#define ID_PREFERENCES_TIMELINE_EVENT_LINES 10088
+#define ID_PREFERENCES_TIMELINE_SEMANTIC_AS_COLOR 10091
+#define ID_PREFERENCES_TIMELINE_COLOR 10086
+#define ID_PREFERENCES_TIMELINE_GRADIENT 10015
+#define ID_PREFERENCES_TIMELINE_DRAWMODE_TIME 10012
+#define ID_PREFERENCES_TIMELINE_DRAWMODE_OBJECTS 10013
+#define ID_PREFERENCES_TIMELINE_PIXEL_SIZE 10016
 #define ID_CHECKBOX_TIMELINE_WW_SEMANTIC 10093
 #define ID_CHECKBOX_TIMELINE_WW_EVENTS 10094
 #define ID_CHECKBOX_TIMELINE_WW_COMMUNICATIONS 10095
 #define ID_CHECKBOX_TIMELINE_WW_PREVIOUS_NEXT 10096
 #define ID_CHECKBOX_TIMELINE_WW_TEXT 10097
-#define ID_TEXTBOX_TIMELINE_WW_PRECISION 10000
-#define ID_CHOICE_TIMELINE_SAVE_AS_IMAGE 10014
-#define ID_CHOICE_TIMELINE_SAVE_AS_TEXT 10017
+#define ID_PREFERENCES_TIMELINE_WW_PRECISION 10000
+#define ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE 10014
+#define ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT 10017
 #define ID_PREFERENCES_HISTOGRAM 10071
 #define ID_PREFERENCES_2D_NUMCOLUMNS 10075
 #define ID_PREFERENCES_2D_PRECISION 10074
@@ -135,8 +139,8 @@ public:
   UINT32 GetHistogramPrecision() const { return histogramPrecision ; }
   void SetHistogramPrecision(UINT32 value) { histogramPrecision = value ; }
 
-  UINT32 GetWhatWherePrecision() const { return whatWherePrecision ; }
-  void SetWhatWherePrecision(UINT32 value) { whatWherePrecision = value ; }
+  UINT32 GetTimelineWWPrecision() const { return timelineWWPrecision ; }
+  void SetTimelineWWPrecision(UINT32 value) { timelineWWPrecision = value ; }
 
   bool GetHistogramThousandSeparator() const { return histogramThousandSeparator ; }
   void SetHistogramThousandSeparator(bool value) { histogramThousandSeparator = value ; }
@@ -189,6 +193,57 @@ public:
   string GetTmpPath() const { return tmpPath ; }
   void SetTmpPath(string value) { tmpPath = value ; }
 
+  string GetTimelineNameFormatPrefix() const { return timelineNameFormatPrefix ; }
+  void SetTimelineNameFormatPrefix(string value) { timelineNameFormatPrefix = value ; }
+
+  string GetTimelineNameFormatFull() const { return timelineNameFormatFull ; }
+  void SetTimelineNameFormatFull(string value) { timelineNameFormatFull = value ; }
+
+  bool GetTimelineEventLines() const { return timelineEventLines ; }
+  void SetTimelineEventLines(bool value) { timelineEventLines = value ; }
+
+  bool GetTimelineCommunicationLines() const { return timelineCommunicationLines ; }
+  void SetTimelineCommunicationLines(bool value) { timelineCommunicationLines = value ; }
+
+  bool GetTimelineFunctionAsColor() const { return timelineFunctionAsColor ; }
+  void SetTimelineFunctionAsColor(bool value) { timelineFunctionAsColor = value ; }
+
+  bool GetTimelineWWSemantic() const { return timelineWWSemantic ; }
+  void SetTimelineWWSemantic(bool value) { timelineWWSemantic = value ; }
+
+  bool GetTimelineWWEvents() const { return timelineWWEvents ; }
+  void SetTimelineWWEvents(bool value) { timelineWWEvents = value ; }
+
+  bool GetTimelineWWCommunications() const { return timelineWWCommunications ; }
+  void SetTimelineWWCommunications(bool value) { timelineWWCommunications = value ; }
+
+  bool GetTimelineWWPreviousNext() const { return timelineWWPreviousNext ; }
+  void SetTimelineWWPreviousNext(bool value) { timelineWWPreviousNext = value ; }
+
+  bool GetTimelineWWText() const { return timelineWWText ; }
+  void SetTimelineWWText(bool value) { timelineWWText = value ; }
+
+  UINT32 GetTimelineColor() const { return timelineColor ; }
+  void SetTimelineColor(UINT32 value) { timelineColor = value ; }
+
+  UINT32 GetTimelineGradientFunction() const { return timelineGradientFunction ; }
+  void SetTimelineGradientFunction(UINT32 value) { timelineGradientFunction = value ; }
+
+  UINT32 GetTimelineDrawmodeTime() const { return timelineDrawmodeTime ; }
+  void SetTimelineDrawmodeTime(UINT32 value) { timelineDrawmodeTime = value ; }
+
+  UINT32 GetTimelineDrawmodeObjects() const { return timelineDrawmodeObjects ; }
+  void SetTimelineDrawmodeObjects(UINT32 value) { timelineDrawmodeObjects = value ; }
+
+  UINT32 GetTimelinePixelSize() const { return timelinePixelSize ; }
+  void SetTimelinePixelSize(UINT32 value) { timelinePixelSize = value ; }
+
+  UINT32 GetTimelineSaveImageFormat() const { return timelineSaveImageFormat ; }
+  void SetTimelineSaveImageFormat(UINT32 value) { timelineSaveImageFormat = value ; }
+
+  UINT32 GetTimelineSaveTextFormat() const { return timelineSaveTextFormat ; }
+  void SetTimelineSaveTextFormat(UINT32 value) { timelineSaveTextFormat = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -207,8 +262,10 @@ public:
   wxDirPickerCtrl* dirPickerTrace;
   wxDirPickerCtrl* dirPickerCFG;
   wxDirPickerCtrl* dirPickerTmp;
-  wxCheckBox* checkTimelineEventLines;
+  wxTextCtrl* txtTimelineNameFormatPrefix;
+  wxTextCtrl* txtTimelineNameFormatFull;
   wxCheckBox* checkTimelineCommunicationLines;
+  wxCheckBox* checkTimelineEventLines;
   wxCheckBox* checkTimelineFunctionAsColor;
   wxChoice* choiceTimelineColor;
   wxChoice* choiceTimelineGradientFunction;
@@ -220,11 +277,11 @@ public:
   wxCheckBox* checkTimelineWWCommunications;
   wxCheckBox* checkTimelineWWPreviousNext;
   wxCheckBox* checkTimelineWWText;
-  wxTextCtrl* txtWhatWherePrecision;
+  wxSpinCtrl* txtTimelineWWPrecision;
   wxChoice* choiceTimelineSaveImageFormat;
   wxChoice* choiceTimelineSaveTextFormat;
-  wxTextCtrl* txt2DNumColumns;
-  wxTextCtrl* txt2DPrecision;
+  wxSpinCtrl* txt2DNumColumns;
+  wxSpinCtrl* txt2DPrecision;
   wxCheckListBox* check2DOptions;
   wxColourPickerCtrl* colourPickerBackground;
   wxColourPickerCtrl* colourPickerAxis;
@@ -237,7 +294,7 @@ public:
 private:
   UINT32 histogramNumColumns;
   UINT32 histogramPrecision;
-  UINT32 whatWherePrecision;
+  UINT32 timelineWWPrecision;
   bool histogramThousandSeparator;
   bool histogramShowUnits;
   UINT32 histogramMaxNumColumns;
@@ -255,10 +312,29 @@ private:
   string tracesPath;
   string cfgsPath;
   string tmpPath;
+  string timelineNameFormatPrefix;
+  string timelineNameFormatFull;
+  bool timelineEventLines;
+  bool timelineCommunicationLines;
+  bool timelineFunctionAsColor;
+  bool timelineWWSemantic;
+  bool timelineWWEvents;
+  bool timelineWWCommunications;
+  bool timelineWWPreviousNext;
+  bool timelineWWText;
+  UINT32 timelineColor;
+  UINT32 timelineGradientFunction;
+  UINT32 timelineDrawmodeTime;
+  UINT32 timelineDrawmodeObjects;
+  UINT32 timelinePixelSize;
+  UINT32 timelineSaveImageFormat;
+  UINT32 timelineSaveTextFormat;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
-  void presetStringChoiceBox( vector< string > list, wxChoice *choiceBox );
+  void setLabelsChoiceBox( const vector< string > &list,
+                           const UINT32 &selected,
+                           wxChoice *choiceBox );
   rgb wxColourToRGB( wxColour colour ) ;
   wxColour RGBTowxColour( rgb colour );
 
