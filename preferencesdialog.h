@@ -67,9 +67,24 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE 10014
 #define ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT 10017
 #define ID_PREFERENCES_HISTOGRAM 10071
-#define ID_PREFERENCES_2D_NUMCOLUMNS 10075
-#define ID_PREFERENCES_2D_PRECISION 10074
-#define ID_PREFERENCES_2D_CHECKOPTIONS 10078
+#define ID_PREFERENCES_HISTOGRAM_NAME_PREFIX 10018
+#define ID_PREFERENCES_HISTOGRAM_NAME_FULL 10019
+#define ID_PREFERENCES_HISTOGRAM_MATRIX_ZOOM 10092
+#define ID_PREFERENCES_HISTOGRAM_MATRIX_HORIZONTAL 10023
+#define ID_PREFERENCES_HISTOGRAM_MATRIX_HIDE_EMPTY 10024
+#define ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT 10022
+#define ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT_FUNCTION 10020
+#define ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_SEMANTIC 10021
+#define ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_OBJECTS 10025
+#define ID_PREFERENCES_HISTOGRAM_SCIENTIFIC_NOTATION 10026
+#define ID_PREFERENCES_HISTOGRAM_THOUSANDS_SEPARATOR 10027
+#define ID_PREFERENCES_HISTOGRAM_SHOW_UNITS 10028
+#define ID_PREFERENCES_HISTOGRAM_PRECISION 10074
+#define ID_PREFERENCES_HISTOGRAM_AUTOFIT_CONTROL 10030
+#define ID_PREFERENCES_HISTOGRAM_AUTOFIT_DATA_GRADIENT 10029
+#define ID_PREFERENCES_HISTOGRAM_NUMCOLUMNS 10075
+#define ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT 10031
+#define ID_PREFERENCES_HISTOGRAM_SAVE_TXT_FORMAT 10032
 #define ID_PREFERENCES_COLOR 10086
 #define ID_COLOURPICKER_BACKGROUND 10002
 #define ID_COLOURPICKER_AXIS 10001
@@ -280,9 +295,24 @@ public:
   wxSpinCtrl* txtTimelineWWPrecision;
   wxChoice* choiceTimelineSaveImageFormat;
   wxChoice* choiceTimelineSaveTextFormat;
-  wxSpinCtrl* txt2DNumColumns;
-  wxSpinCtrl* txt2DPrecision;
-  wxCheckListBox* check2DOptions;
+  wxTextCtrl* txtHistogramNameFormatPrefix;
+  wxTextCtrl* txtHistogramNameFormatFull;
+  wxCheckBox* checkHistogramZoom;
+  wxCheckBox* checkHistogramHorizontal;
+  wxCheckBox* checkHistogramHideEmpty;
+  wxCheckBox* checkHistogramShowGradient;
+  wxChoice* choiceHistogramGradientFunction;
+  wxChoice* choiceHistogramDrawmodeSemantic;
+  wxChoice* choiceHistogramDrawmodeObjects;
+  wxCheckBox* checkHistogramScientificNotation;
+  wxCheckBox* checkHistogramThousandsSeparator;
+  wxCheckBox* checkHistogramShowUnits;
+  wxSpinCtrl* txtHistogramPrecision;
+  wxCheckBox* checkHistogramAutofitControlScale;
+  wxCheckBox* checkHistogramAutofitDataGradient;
+  wxSpinCtrl* txtHistogramNumColumns;
+  wxChoice* choiceHistogramSaveImageFormat;
+  wxChoice* choiceHistogramSaveTextFormat;
   wxColourPickerCtrl* colourPickerBackground;
   wxColourPickerCtrl* colourPickerAxis;
   wxColourPickerCtrl* colourPickerLogical;
