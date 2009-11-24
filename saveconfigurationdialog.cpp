@@ -141,7 +141,7 @@ void SaveConfigurationDialog::CreateControls()
   itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxArrayString listTimelinesStrings;
-  listTimelines = new wxCheckListBox( itemDialog1, ID_LISTTIMELINES, wxDefaultPosition, wxSize(200, -1), listTimelinesStrings, wxLB_MULTIPLE );
+  listTimelines = new wxCheckListBox( itemDialog1, ID_LISTTIMELINES, wxDefaultPosition, wxSize(200, -1), listTimelinesStrings, wxLB_SINGLE );
   itemBoxSizer4->Add(listTimelines, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
@@ -151,7 +151,7 @@ void SaveConfigurationDialog::CreateControls()
   itemBoxSizer7->Add(itemStaticText8, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxArrayString listHistogramsStrings;
-  listHistograms = new wxCheckListBox( itemDialog1, ID_LISTHISTOGRAMS, wxDefaultPosition, wxSize(200, -1), listHistogramsStrings, wxLB_MULTIPLE );
+  listHistograms = new wxCheckListBox( itemDialog1, ID_LISTHISTOGRAMS, wxDefaultPosition, wxSize(200, -1), listHistogramsStrings, wxLB_SINGLE );
   itemBoxSizer7->Add(listHistograms, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxVERTICAL);
@@ -257,12 +257,12 @@ bool SaveConfigurationDialog::TransferDataToWindow()
 {
   wxArrayString items;
   for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
-    items.Add( wxString( (*it)->getName().c_str() ) );
+    items.Add( wxString::FromAscii( (*it)->getName().c_str() ) );
   listTimelines->InsertItems( items, 0 );
 
   items.Clear();
   for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
-    items.Add( wxString( (*it)->getName().c_str() ) );
+    items.Add( wxString::FromAscii( (*it)->getName().c_str() ) );
   listHistograms->InsertItems( items, 0 );
 
   optRelativeBegin->SetValue( options.windowBeginTimeRelative );
@@ -302,7 +302,7 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   options.histoAllTrace = radioAllTrace->GetValue();
   options.histoComputeYScale = optComputeLimits->GetValue();
   options.histoComputeGradient = optComputeGradient->GetValue();
-  options.description = textDescription->GetValue().c_str();
+  options.description = std::string( textDescription->GetValue().mb_str() );
 
   return true;
 }
