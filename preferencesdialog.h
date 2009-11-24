@@ -259,6 +259,48 @@ public:
   UINT32 GetTimelineSaveTextFormat() const { return timelineSaveTextFormat ; }
   void SetTimelineSaveTextFormat(UINT32 value) { timelineSaveTextFormat = value ; }
 
+  string GetHistogramNameFormatPrefix() const { return histogramNameFormatPrefix ; }
+  void SetHistogramNameFormatPrefix(string value) { histogramNameFormatPrefix = value ; }
+
+  string GetHistogramNameFormatFull() const { return histogramNameFormatFull ; }
+  void SetHistogramNameFormatFull(string value) { histogramNameFormatFull = value ; }
+
+  bool GetHistogramZoom() const { return histogramZoom ; }
+  void SetHistogramZoom(bool value) { histogramZoom = value ; }
+
+  bool GetHistogramHideEmpty() const { return histogramHideEmpty ; }
+  void SetHistogramHideEmpty(bool value) { histogramHideEmpty = value ; }
+
+  bool GetHistogramHorizontal() const { return histogramHorizontal ; }
+  void SetHistogramHorizontal(bool value) { histogramHorizontal = value ; }
+
+  bool GetHistogramShowGradient() const { return histogramShowGradient ; }
+  void SetHistogramShowGradient(bool value) { histogramShowGradient = value ; }
+
+  UINT32 GetHistogramGradientFunction() const { return histogramGradientFunction ; }
+  void SetHistogramGradientFunction(UINT32 value) { histogramGradientFunction = value ; }
+
+  UINT32 GetHistogramDrawmodeObjects() const { return histogramDrawmodeObjects ; }
+  void SetHistogramDrawmodeObjects(UINT32 value) { histogramDrawmodeObjects = value ; }
+
+  bool GetHistogramScientificNotation() const { return histogramScientificNotation ; }
+  void SetHistogramScientificNotation(bool value) { histogramScientificNotation = value ; }
+
+  bool GetHistogramAutofitControlScale() const { return histogramAutofitControlScale ; }
+  void SetHistogramAutofitControlScale(bool value) { histogramAutofitControlScale = value ; }
+
+  bool GetHistogramAutofitDataGradient() const { return histogramAutofitDataGradient ; }
+  void SetHistogramAutofitDataGradient(bool value) { histogramAutofitDataGradient = value ; }
+
+  UINT32 GetHistogramSaveImageFormat() const { return histogramSaveImageFormat ; }
+  void SetHistogramSaveImageFormat(UINT32 value) { histogramSaveImageFormat = value ; }
+
+  UINT32 GetHistogramSaveTextFormat() const { return histogramSaveTextFormat ; }
+  void SetHistogramSaveTextFormat(UINT32 value) { histogramSaveTextFormat = value ; }
+
+  bool GetHistogramDrawmodeSemantic() const { return histogramDrawmodeSemantic ; }
+  void SetHistogramDrawmodeSemantic(bool value) { histogramDrawmodeSemantic = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -359,6 +401,20 @@ private:
   UINT32 timelinePixelSize;
   UINT32 timelineSaveImageFormat;
   UINT32 timelineSaveTextFormat;
+  string histogramNameFormatPrefix;
+  string histogramNameFormatFull;
+  bool histogramZoom;
+  bool histogramHideEmpty;
+  bool histogramHorizontal;
+  bool histogramShowGradient;
+  UINT32 histogramGradientFunction;
+  UINT32 histogramDrawmodeObjects;
+  bool histogramScientificNotation;
+  bool histogramAutofitControlScale;
+  bool histogramAutofitDataGradient;
+  UINT32 histogramSaveImageFormat;
+  UINT32 histogramSaveTextFormat;
+  bool histogramDrawmodeSemantic;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

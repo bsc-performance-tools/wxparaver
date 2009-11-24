@@ -144,6 +144,20 @@ void PreferencesDialog::Init()
   timelinePixelSize = 0;
   timelineSaveImageFormat = 0;
   timelineSaveTextFormat = 0;
+  histogramNameFormatPrefix = "";
+  histogramNameFormatFull = "";
+  histogramZoom = false;
+  histogramHideEmpty = false;
+  histogramHorizontal = true;
+  histogramShowGradient = true;
+  histogramGradientFunction = 0;
+  histogramDrawmodeObjects = 0;
+  histogramScientificNotation = false;
+  histogramAutofitControlScale = true;
+  histogramAutofitDataGradient = true;
+  histogramSaveImageFormat = 0;
+  histogramSaveTextFormat = 0;
+  histogramDrawmodeSemantic = true;
   checkGlobalFillStateGaps = NULL;
   dirPickerTrace = NULL;
   dirPickerCFG = NULL;
@@ -268,6 +282,7 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer20->Add(itemBoxSizer21, 3, wxGROW|wxALL, 5);
   wxStaticBox* itemStaticBoxSizer22Static = new wxStaticBox(itemPanel19, wxID_STATIC, _("  Name Format  "));
   wxStaticBoxSizer* itemStaticBoxSizer22 = new wxStaticBoxSizer(itemStaticBoxSizer22Static, wxVERTICAL);
+  itemStaticBoxSizer22Static->Enable(false);
   itemBoxSizer21->Add(itemStaticBoxSizer22, 0, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer22->Add(itemBoxSizer23, 0, wxGROW|wxTOP|wxBOTTOM, 5);
@@ -490,9 +505,10 @@ void PreferencesDialog::CreateControls()
   itemPanel75->SetSizer(itemBoxSizer76);
 
   wxBoxSizer* itemBoxSizer77 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer76->Add(itemBoxSizer77, 0, wxGROW|wxALL, 5);
+  itemBoxSizer76->Add(itemBoxSizer77, 1, wxGROW|wxALL, 5);
   wxStaticBox* itemStaticBoxSizer78Static = new wxStaticBox(itemPanel75, wxID_STATIC, _("  Name Format  "));
   wxStaticBoxSizer* itemStaticBoxSizer78 = new wxStaticBoxSizer(itemStaticBoxSizer78Static, wxVERTICAL);
+  itemStaticBoxSizer78Static->Enable(false);
   itemBoxSizer77->Add(itemStaticBoxSizer78, 0, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer79 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer78->Add(itemBoxSizer79, 0, wxGROW|wxTOP|wxBOTTOM, 5);
@@ -599,7 +615,7 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer100->Add(choiceHistogramDrawmodeObjects, 1, wxGROW|wxRIGHT, 5);
 
   wxBoxSizer* itemBoxSizer104 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer76->Add(itemBoxSizer104, 0, wxGROW|wxALL, 5);
+  itemBoxSizer76->Add(itemBoxSizer104, 1, wxGROW|wxALL, 5);
   wxStaticBox* itemStaticBoxSizer105Static = new wxStaticBox(itemPanel75, wxID_ANY, _("  Cell Format  "));
   wxStaticBoxSizer* itemStaticBoxSizer105 = new wxStaticBoxSizer(itemStaticBoxSizer105Static, wxVERTICAL);
   itemBoxSizer104->Add(itemStaticBoxSizer105, 0, wxGROW|wxALL, 5);
@@ -666,12 +682,14 @@ void PreferencesDialog::CreateControls()
 
   wxStaticBox* itemStaticBoxSizer120Static = new wxStaticBox(itemPanel75, wxID_ANY, _("  Save Options  "));
   wxStaticBoxSizer* itemStaticBoxSizer120 = new wxStaticBoxSizer(itemStaticBoxSizer120Static, wxVERTICAL);
+  itemStaticBoxSizer120Static->Enable(false);
   itemBoxSizer104->Add(itemStaticBoxSizer120, 1, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer121 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer120->Add(itemBoxSizer121, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
   wxStaticText* itemStaticText122 = new wxStaticText( itemPanel75, wxID_STATIC, _("Image as"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     itemStaticText122->SetToolTip(_("Default image format selected."));
+  itemStaticText122->Enable(false);
   itemBoxSizer121->Add(itemStaticText122, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   itemBoxSizer121->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
@@ -680,6 +698,7 @@ void PreferencesDialog::CreateControls()
   choiceHistogramSaveImageFormat = new wxChoice( itemPanel75, ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveImageFormatStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramSaveImageFormat->SetToolTip(_("Default image format selected."));
+  choiceHistogramSaveImageFormat->Enable(false);
   itemBoxSizer121->Add(choiceHistogramSaveImageFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
 
   wxBoxSizer* itemBoxSizer125 = new wxBoxSizer(wxHORIZONTAL);
@@ -936,11 +955,8 @@ bool PreferencesDialog::TransferDataToWindow()
 
   // GLOBAL
   checkGlobalFillStateGaps->SetValue( globalFillStateGaps );
-  
   dirPickerTrace->SetPath( wxString::FromAscii( tracesPath.c_str() ) );
-
   dirPickerCFG->SetPath( wxString::FromAscii( cfgsPath.c_str() ) );
-
   dirPickerTmp->SetPath( wxString::FromAscii( tmpPath.c_str() ) );
 
   // TIMELINE
@@ -984,11 +1000,39 @@ bool PreferencesDialog::TransferDataToWindow()
   setLabelsChoiceBox( options, timelineSaveTextFormat, choiceTimelineSaveTextFormat );
 
   // HISTOGRAM
+  txtHistogramNameFormatPrefix->SetValue( wxString::FromAscii( histogramNameFormatPrefix.c_str() ) );
+  txtHistogramNameFormatFull->SetValue( wxString::FromAscii( histogramNameFormatFull.c_str() ) );
+
+  checkHistogramZoom->SetValue( histogramZoom );
+  checkHistogramHorizontal->SetValue( histogramHorizontal );
+  checkHistogramHideEmpty->SetValue( histogramHideEmpty );
+  checkHistogramShowGradient->SetValue( histogramShowGradient );
+
+  options.clear();
+  LabelConstructor::getGUIGroupLabels( LabelConstructor::GRADIENT_FUNCTION, options );
+  setLabelsChoiceBox( options, histogramGradientFunction, choiceHistogramGradientFunction );
+
+  options.clear();
+  LabelConstructor::getGUIGroupLabels( LabelConstructor::DRAWMODE, options );
+  setLabelsChoiceBox( options, histogramDrawmodeSemantic, choiceHistogramDrawmodeSemantic );
+  setLabelsChoiceBox( options, histogramDrawmodeObjects, choiceHistogramDrawmodeObjects );
+
+  checkHistogramScientificNotation->SetValue( histogramScientificNotation );
+  checkHistogramThousandsSeparator->SetValue( histogramThousandSeparator );
+  checkHistogramShowUnits->SetValue( histogramShowUnits );
   txtHistogramPrecision->SetValue( ( int )histogramPrecision );
+
+  checkHistogramAutofitControlScale->SetValue( histogramAutofitControlScale );
+  checkHistogramAutofitDataGradient->SetValue( histogramAutofitDataGradient );
   txtHistogramNumColumns->SetValue( ( int )histogramNumColumns );
 
-  checkHistogramShowUnits->SetValue( histogramShowUnits );
-  checkHistogramThousandsSeparator->SetValue( histogramThousandSeparator );
+  options.clear();
+  LabelConstructor::getGUIGroupLabels( LabelConstructor::IMAGE_FORMAT, options );
+  setLabelsChoiceBox( options, histogramSaveImageFormat, choiceHistogramSaveImageFormat );
+
+  options.clear();
+  LabelConstructor::getGUIGroupLabels( LabelConstructor::TEXT_FORMAT, options );
+  setLabelsChoiceBox( options, histogramSaveTextFormat, choiceHistogramSaveTextFormat );
 
   // COLORS
   colourPickerBackground->SetColour( RGBTowxColour( timelineColourBackground ) );
@@ -1043,14 +1087,30 @@ bool PreferencesDialog::TransferDataFromWindow()
   timelineSaveTextFormat = ( UINT32 )choiceTimelineSaveTextFormat->GetCurrentSelection();
 
   // HISTOGRAM
+  histogramNameFormatPrefix = std::string( txtHistogramNameFormatPrefix->GetValue().mb_str() );
+  histogramNameFormatFull = std::string( txtHistogramNameFormatFull->GetValue().mb_str() );
+
+  histogramZoom = checkHistogramZoom->GetValue();
+  histogramHorizontal = checkHistogramHorizontal->GetValue();
+  histogramHideEmpty = checkHistogramHideEmpty->GetValue();
+  histogramShowGradient = checkHistogramShowGradient->GetValue();
+
+  histogramGradientFunction = ( UINT32 )choiceHistogramGradientFunction->GetCurrentSelection();
+  histogramDrawmodeSemantic = ( UINT32 )choiceHistogramDrawmodeSemantic->GetCurrentSelection();
+  histogramDrawmodeObjects = ( UINT32 )choiceHistogramDrawmodeObjects->GetCurrentSelection();
+
+  histogramScientificNotation = checkHistogramScientificNotation->GetValue();
+  histogramThousandSeparator = checkHistogramThousandsSeparator->GetValue();
+  histogramShowUnits = checkHistogramShowUnits->IsChecked();
   histogramPrecision = ( UINT32 )txtHistogramPrecision->GetValue();
+
+  histogramAutofitControlScale = checkHistogramAutofitControlScale->GetValue();
+  histogramAutofitDataGradient = checkHistogramAutofitDataGradient->GetValue();
+  histogramNumColumns = (UINT32)txtHistogramNumColumns->GetValue();
   histogramNumColumns = ( UINT32 )txtHistogramNumColumns->GetValue();
 
-  histogramShowUnits = checkHistogramShowUnits->IsChecked();
-  histogramThousandSeparator = checkHistogramThousandsSeparator->GetValue();
-
-/*  txtTimelineNameFormatFull->SetValue( timelineNameFormatFull );
-  timelineWWPrecision = ( UINT32 )txtTimelineWWPrecision->GetValue();*/
+  histogramSaveImageFormat = ( UINT32 )choiceHistogramSaveImageFormat->GetCurrentSelection();
+  histogramSaveTextFormat = ( UINT32 )choiceHistogramSaveTextFormat->GetCurrentSelection();
 
   // COLORS
   timelineColourBackground = wxColourToRGB( colourPickerBackground->GetColour() );

@@ -1966,12 +1966,28 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetTimelineSaveTextFormat( ( UINT32 )paraverConfig->getTimelineSaveTextFormat() );
 
   // HISTOGRAM
-  preferences.SetHistogramNumColumns( paraverConfig->getHistogramNumColumns() );
-  preferences.SetHistogramMaxNumColumns( 400 ); // TO IMPLEMENT
-  preferences.SetHistogramPrecision( paraverConfig->getHistogramPrecision() );
-  preferences.SetHistogramMaxPrecision( 20 ); // TO IMPLEMENT
-  preferences.SetHistogramShowUnits( paraverConfig->getHistogramShowUnits() );
+  //preferences.SetHistogramNameFormatPrefix( paraverConfig->getHistogramDefaultName() );
+  preferences.SetHistogramNameFormatPrefix( std::string( "New Histogram # %N" ) );
+  //preferences.SetHistogramNameFormatFull( paraverConfig->getHistogramNameFormat() );
+  preferences.SetHistogramNameFormatFull( std::string( "%P @ %T" ) );
+  preferences.SetHistogramZoom( paraverConfig->getHistogramViewZoom() );
+  preferences.SetHistogramHorizontal( paraverConfig->getHistogramViewHorizontal() );
+  preferences.SetHistogramHideEmpty( !paraverConfig->getHistogramViewEmptyColumns() );
+  preferences.SetHistogramShowGradient( paraverConfig->getHistogramViewGradientColors() );
+  preferences.SetHistogramGradientFunction( paraverConfig->getHistogramGradientFunction() );
+  preferences.SetHistogramDrawmodeSemantic( ( UINT32 ) paraverConfig->getHistogramDrawmodeSemantic() );
+  preferences.SetHistogramDrawmodeObjects( ( UINT32 ) paraverConfig->getHistogramDrawmodeObjects() );
+  preferences.SetHistogramScientificNotation( paraverConfig->getHistogramScientificNotation() );
   preferences.SetHistogramThousandSeparator( paraverConfig->getHistogramThousandSep() );
+  preferences.SetHistogramShowUnits( paraverConfig->getHistogramShowUnits() );
+  preferences.SetHistogramPrecision( paraverConfig->getHistogramPrecision() );
+  preferences.SetHistogramAutofitControlScale( paraverConfig->getHistogramAutofitControlScale() );
+  preferences.SetHistogramAutofitDataGradient( paraverConfig->getHistogramAutofitDataGradient() );
+  preferences.SetHistogramNumColumns( paraverConfig->getHistogramNumColumns() );
+//  preferences.SetHistogramMaxNumColumns( 400 ); // TO IMPLEMENT
+//  preferences.SetHistogramMaxPrecision( 20 ); // TO IMPLEMENT
+  preferences.SetHistogramSaveImageFormat( ( UINT32 )paraverConfig->getHistogramSaveImageFormat() );
+  preferences.SetHistogramSaveTextFormat( ( UINT32 )paraverConfig->getHistogramSaveTextFormat() );
 
   // COLORS
   preferences.SetTimelineColourBackground( paraverConfig->getColorsTimelineBackground() );
@@ -2023,10 +2039,24 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setTimelineSaveTextFormat( (ParaverConfig::TTextFormat)preferences.GetTimelineSaveTextFormat() );
 
     // HISTOGRAM
-    paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );
-    paraverConfig->setHistogramPrecision( preferences.GetHistogramPrecision() );
-    paraverConfig->setHistogramShowUnits( preferences.GetHistogramShowUnits() );
+    //paraverConfig->setHistogramDefaultName( preferences.GetHistogramNameFormatPrefix() );
+    //paraverConfig->setHistogramNameFormat( preferences.GetHistogramNameFormatFull() );
+    paraverConfig->setHistogramViewZoom( preferences.GetHistogramZoom() );
+    paraverConfig->setHistogramViewHorizontal( preferences.GetHistogramHorizontal() );
+    paraverConfig->setHistogramViewEmptyColumns( !preferences.GetHistogramHideEmpty() );
+    paraverConfig->setHistogramViewGradientColors( preferences.GetHistogramShowGradient() );
+    paraverConfig->setHistogramGradientFunction( (GradientColor::TGradientFunction)preferences.GetHistogramGradientFunction() );
+    paraverConfig->setHistogramDrawmodeSemantic( ( DrawModeMethod ) preferences.GetHistogramDrawmodeSemantic() );
+    paraverConfig->setHistogramDrawmodeObjects( ( DrawModeMethod ) preferences.GetHistogramDrawmodeObjects() );
+    paraverConfig->setHistogramScientificNotation( preferences.GetHistogramScientificNotation() );
     paraverConfig->setHistogramThousandSep( preferences.GetHistogramThousandSeparator() );
+    paraverConfig->setHistogramShowUnits( preferences.GetHistogramShowUnits() );
+    paraverConfig->setHistogramPrecision( preferences.GetHistogramPrecision() );
+    paraverConfig->setHistogramAutofitControlScale( preferences.GetHistogramAutofitControlScale() );
+    paraverConfig->setHistogramAutofitDataGradient( preferences.GetHistogramAutofitDataGradient() );
+    paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );
+    paraverConfig->setHistogramSaveImageFormat( ( ParaverConfig::TImageFormat ) preferences.GetHistogramSaveImageFormat() );
+    paraverConfig->setHistogramSaveTextFormat( ( ParaverConfig::TTextFormat ) preferences.GetHistogramSaveTextFormat() );
 
     // COLORS 
     paraverConfig->setColorsTimelineBackground( preferences.GetTimelineColourBackground() );
