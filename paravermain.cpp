@@ -145,7 +145,7 @@ extern struct sigaction act;
 
 static bool userMessage( string message )
 {
-  wxMessageDialog tmpDialog( NULL, message, "Paraver question", wxYES_NO | wxICON_QUESTION );
+  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( message.c_str() ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();
   paraverMain::myParaverMain->SetRaiseCurrentWindow( true );
@@ -361,7 +361,7 @@ void paraverMain::CreateControls()
 
 ////@end paraverMain content construction
   wxTreeCtrl* tmpTree = createTree( imageList );
-  choiceWindowBrowser->AddPage( tmpTree, "All Traces" );
+  choiceWindowBrowser->AddPage( tmpTree, _( "All Traces" ) );
 }
 
 
@@ -415,7 +415,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     else
       reducePath = path;
     reducePath += "\t";
-    paraverMain::dialogProgress->Pulse( wxT( reducePath.c_str() ) );
+    paraverMain::dialogProgress->Pulse( wxString::FromAscii( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
@@ -426,7 +426,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     currentTrace = loadedTraces.size() - 1;
     wxTreeCtrl *newTree = createTree( imageList );
 
-    choiceWindowBrowser->AddPage( newTree, tr->getFileNameNumbered() );
+    choiceWindowBrowser->AddPage( newTree, wxString::FromAscii( tr->getFileNameNumbered().c_str() ) );
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( path );
@@ -434,7 +434,7 @@ bool paraverMain::DoLoadTrace( const string &path )
   catch( ParaverKernelException& ex )
   {
     loaded = false;
-    wxMessageDialog message( this, ex.what(), "Error loading trace", wxOK );
+    wxMessageDialog message( this, wxString::FromAscii( ex.what() ), _( "Error loading trace" ), wxOK );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
@@ -456,8 +456,8 @@ bool paraverMain::DoLoadCFG( const string &path )
 {
     if( !CFGLoader::isCFGFile( path ))
     {
-      wxString errMessage = path + " isn't a valid cfg.";
-      wxMessageDialog message( this, errMessage.c_str(), "Invalid file", wxOK );
+      wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " isn't a valid cfg." );
+      wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
       raiseCurrentWindow = false;
       message.ShowModal();
       raiseCurrentWindow = true;
@@ -469,8 +469,8 @@ bool paraverMain::DoLoadCFG( const string &path )
       
       if( !CFGLoader::loadCFG( localKernel, path, loadedTraces[ currentTrace ], newWindows, newHistograms ) )
       {
-        wxString errMessage = path + " failed to load in:\n'" + CFGLoader::errorLine.c_str() + "'";
-        wxMessageDialog message( this, errMessage.c_str(), "Loading error", wxOK );
+        wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
+        wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK );
         raiseCurrentWindow = false;
         message.ShowModal();
         raiseCurrentWindow = true;
@@ -493,7 +493,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
         {
 
-          gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, (*it)->getName() );
+          gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
           tmpHisto->SetHistogram( *it );
 
           appendHistogram2Tree( tmpHisto );
@@ -520,14 +520,14 @@ bool paraverMain::DoLoadCFG( const string &path )
  */
 void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, "Load Trace", paraverConfig->getGlobalTracesPath(), "", 
-    "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*", 
+  wxFileDialog dialog( this, _( "Load Trace" ), wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() ), _( "" ), 
+    _( "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*" ),
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
   raiseCurrentWindow = false;
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
-    DoLoadTrace( path.c_str() );
+    DoLoadTrace( std::string( path.mb_str() ) );
   }
   raiseCurrentWindow = true;
 }
@@ -539,14 +539,14 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, "Load Configuration", paraverConfig->getGlobalCFGsPath(), "",
-    "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*",
+  wxFileDialog dialog( this, _( "Load Configuration" ), wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() ), _( "" ),
+    _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
   raiseCurrentWindow = false;
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
-    DoLoadCFG( path.c_str());
+    DoLoadCFG( std::string( path.mb_str() ) );
   }
   raiseCurrentWindow = true;
 }
@@ -644,15 +644,15 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
   const wxString& propName = property->GetName();
 
-  if( propName == "Name" )
+  if( propName == _( "Name" ) )
   {
     wxString tmpName = property->GetValue().GetString();
     if( currentTimeline != NULL )
-      currentTimeline->setName( string( tmpName.c_str() ) );
+      currentTimeline->setName( std::string( tmpName.mb_str() ) );
     else if( currentHisto != NULL )
-      currentHisto->setName( string( tmpName.c_str() ) );
+      currentHisto->setName( std::string( tmpName.mb_str() ) );
   }
-  else if( propName == "Begin time" )
+  else if( propName == _( "Begin time" ) )
   {
     double tmpValue = property->GetValue().GetDouble();
     if( currentTimeline != NULL )
@@ -668,7 +668,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       currentHisto->setRecalc( true );
     }
   }
-  else if( propName == "End time" )
+  else if( propName == _( "End time" ) )
   {
     double tmpValue = property->GetValue().GetDouble();
     if( currentTimeline != NULL )
@@ -682,62 +682,62 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       currentHisto->setRecalc( true );
     }
   }
-  else if( propName == "Semantic Minimum" )
+  else if( propName == _( "Semantic Minimum" ) )
   {
     double tmpValue = property->GetValue().GetDouble();
     currentTimeline->setMinimumY( tmpValue );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Semantic Maximum" )
+  else if( propName == _( "Semantic Maximum" ) )
   {
     double tmpValue = property->GetValue().GetDouble();
     currentTimeline->setMaximumY( tmpValue );
     currentTimeline->setRedraw( true );
   }
   // Control Window related properties
-  else if( propName == "ControlWindow" )
+  else if( propName == _( "ControlWindow" ) )
   {
     currentHisto->setControlWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "ControlMinimum" )
+  else if( propName == _( "ControlMinimum" ) )
   {
     currentHisto->setControlMin( property->GetValue().GetDouble() );
     currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "ControlMaximum" )
+  else if( propName == _( "ControlMaximum" ) )
   {
     currentHisto->setControlMax( property->GetValue().GetDouble() );
     currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "ControlDelta" )
+  else if( propName == _( "ControlDelta" ) )
   {
     currentHisto->setControlDelta( property->GetValue().GetDouble() );
     currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
 // Data Window related properties
-  else if( propName == "DataWindow" )
+  else if( propName == _( "DataWindow" ) )
   {
     currentHisto->setDataWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "DataMinimum" )
+  else if( propName == _( "DataMinimum" ) )
   {
     currentHisto->setMinGradient( property->GetValue().GetDouble() );
     currentHisto->setComputeGradient( false );
     currentHisto->setRedraw( true );
   }
-  else if( propName == "DataMaximum" )
+  else if( propName == _( "DataMaximum" ) )
   {
     currentHisto->setMaxGradient( property->GetValue().GetDouble() );
     currentHisto->setComputeGradient( false );
     currentHisto->setRedraw( true );
   }
   // Histogram related properties
-  else if( propName == "Type" )
+  else if( propName == _( "Type" ) )
   {
     if( property->GetValue().GetLong() == 0 )
       currentHisto->setCurrentStat( currentHisto->getFirstCommStatistic() );
@@ -746,12 +746,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentHisto->setRedraw( true );
     currentHisto->setChanged( true );
   }
-  else if( propName == "Statistic" )
+  else if( propName == _( "Statistic" ) )
   {
-    currentHisto->setCurrentStat( string( property->GetDisplayedString().c_str() ) );
+    currentHisto->setCurrentStat( std::string( property->GetDisplayedString().mb_str() ) );
     currentHisto->setRedraw( true );
   }
-  else if( propName == "3rd Window" )
+  else if( propName == _( "3rd Window" ) )
   {
     if( property->GetValue().GetLong() == -1 )
       currentHisto->clearExtraControlWindow();
@@ -759,53 +759,53 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       currentHisto->setExtraControlWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "3DMinimum" )
+  else if( propName == _( "3DMinimum" ) )
   {
     currentHisto->setExtraControlMin( property->GetValue().GetDouble() );
     currentHisto->setCompute3DScale( false );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "3DMaximum" )
+  else if( propName == _( "3DMaximum" ) )
   {
     currentHisto->setExtraControlMax( property->GetValue().GetDouble() );
     currentHisto->setCompute3DScale( false );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "3DDelta" )
+  else if( propName == _( "3DDelta" ) )
   {
     currentHisto->setExtraControlDelta( property->GetValue().GetDouble() );
     currentHisto->setCompute3DScale( false );
     currentHisto->setRecalc( true );
   }
-  else if( propName == "3DPlane" )
+  else if( propName == _( "3DPlane" ) )
   {
     currentHisto->setSelectedPlane( property->GetValue().GetLong() );
     currentHisto->setRedraw( true );
   }
   
   // Timeline related properties
-  else if( propName == "Level" )
+  else if( propName == _( "Level" ) )
   {
     currentTimeline->setLevel( (TWindowLevel)property->GetValue().GetLong() );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Logical" )
+  else if( propName == _( "Logical" ) )
   {
     currentTimeline->getFilter()->setLogical( property->GetValue().GetBool() );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Physical" )
+  else if( propName == _( "Physical" ) )
   {
     currentTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm from.FromFunction" )
+  else if( propName == _( "Comm from.FromFunction" ) )
   {
-    currentTimeline->getFilter()->setCommFromFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->getFilter()->setCommFromFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm from.From" )
+  else if( propName == _( "Comm from.From" ) )
   {
     Filter *filter = currentTimeline->getFilter();
     filter->clearCommFrom();
@@ -819,7 +819,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "FromToOp" )
+  else if( propName == _( "FromToOp" ) )
   {
     long op = property->GetValue().GetLong();
     Filter *filter = currentTimeline->getFilter();
@@ -830,12 +830,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm to.ToFunction" )
+  else if( propName == _( "Comm to.ToFunction" ) )
   {
-    currentTimeline->getFilter()->setCommToFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->getFilter()->setCommToFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm to.To" )
+  else if( propName == _( "Comm to.To" ) )
   {
     Filter *filter = currentTimeline->getFilter();
     filter->clearCommTo();
@@ -849,12 +849,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm tag.TagFunction" )
+  else if( propName == _( "Comm tag.TagFunction" ) )
   {
-    currentTimeline->getFilter()->setCommTagFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->getFilter()->setCommTagFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm tag.Tag" )
+  else if( propName == _( "Comm tag.Tag" ) )
   {
     Filter *filter = currentTimeline->getFilter();
     filter->clearCommTags();
@@ -868,7 +868,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "TagSizeOp" )
+  else if( propName == _( "TagSizeOp" ) )
   {
     long op = property->GetValue().GetLong();
     Filter *filter = currentTimeline->getFilter();
@@ -879,12 +879,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm size.SizeFunction" )
+  else if( propName == _( "Comm size.SizeFunction" ) )
   {
-    currentTimeline->getFilter()->setCommSizeFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->getFilter()->setCommSizeFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm size.Size" )
+  else if( propName == _( "Comm size.Size" ) )
   {
     Filter *filter = currentTimeline->getFilter();
     filter->clearCommSizes();
@@ -898,12 +898,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm bandwidth.BWFunction" )
+  else if( propName == _( "Comm bandwidth.BWFunction" ) )
   {
-    currentTimeline->getFilter()->setBandWidthFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->getFilter()->setBandWidthFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Comm bandwidth.Bandwidth" )
+  else if( propName == _( "Comm bandwidth.Bandwidth" ) )
   {
     Filter *filter = currentTimeline->getFilter();
     filter->clearBandWidth();
@@ -917,12 +917,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Event type.TypeFunction" )
+  else if( propName == _( "Event type.TypeFunction" ) )
   {
-    currentTimeline->getFilter()->setEventTypeFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->getFilter()->setEventTypeFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Event type.Types" )
+  else if( propName == _( "Event type.Types" ) )
   {
     Filter *filter = currentTimeline->getFilter();
     filter->clearEventTypes();
@@ -932,7 +932,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "TypeValueOp" )
+  else if( propName == _( "TypeValueOp" ) )
   {
     long op = property->GetValue().GetLong();
     Filter *filter = currentTimeline->getFilter();
@@ -943,12 +943,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Event value.ValueFunction" )
+  else if( propName == _( "Event value.ValueFunction" ) )
   {
-    currentTimeline->getFilter()->setEventValueFunction( string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->getFilter()->setEventValueFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Event value.Values" )
+  else if( propName == _( "Event value.Values" ) )
   {
     Filter *filter = currentTimeline->getFilter();
     filter->clearEventValues();
@@ -962,109 +962,109 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
     currentTimeline->setRedraw( true );
   }
-  else if( propName == "Top Compose 1" )
+  else if( propName == _( "Top Compose 1" ) )
   {
-    currentTimeline->setLevelFunction( TOPCOMPOSE1, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( TOPCOMPOSE1, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Top Compose 2" )
+  else if( propName == _( "Top Compose 2" ) )
   {
-    currentTimeline->setLevelFunction( TOPCOMPOSE2, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( TOPCOMPOSE2, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Derived" )
+  else if( propName == _( "Derived" ) )
   {
-    currentTimeline->setLevelFunction( DERIVED, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( DERIVED, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Compose Workload" )
+  else if( propName == _( "Compose Workload" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSEWORKLOAD, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( COMPOSEWORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Workload" )
+  else if( propName == _( "Workload" ) )
   {
-    currentTimeline->setLevelFunction( WORKLOAD, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( WORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Compose Appl" )
+  else if( propName == _( "Compose Appl" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSEAPPLICATION, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( COMPOSEAPPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Application" )
+  else if( propName == _( "Application" ) )
   {
-    currentTimeline->setLevelFunction( APPLICATION, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( APPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Compose Task" )
+  else if( propName == _( "Compose Task" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSETASK, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( COMPOSETASK, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Task" )
+  else if( propName == _( "Task" ) )
   {
-    currentTimeline->setLevelFunction( TASK, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( TASK, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Compose System" )
+  else if( propName == _( "Compose System" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSESYSTEM, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( COMPOSESYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "System" )
+  else if( propName == _( "System" ) )
   {
-    currentTimeline->setLevelFunction( SYSTEM, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( SYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Compose Node" )
+  else if( propName == _( "Compose Node" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSENODE, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( COMPOSENODE, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Node" )
+  else if( propName == _( "Node" ) )
   {
-    currentTimeline->setLevelFunction( NODE, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( NODE, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Compose CPU" )
+  else if( propName == _( "Compose CPU" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSECPU, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( COMPOSECPU, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "CPU" )
+  else if( propName == _( "CPU" ) )
   {
-    currentTimeline->setLevelFunction( CPU, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( CPU, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Compose Thread" )
+  else if( propName == _( "Compose Thread" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSETHREAD, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( COMPOSETHREAD, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName == "Thread" )
+  else if( propName == _( "Thread" ) )
   {
-    currentTimeline->setLevelFunction( THREAD, string( property->GetDisplayedString().c_str() ) );
+    currentTimeline->setLevelFunction( THREAD, std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
-  else if( propName.BeforeFirst( ' ' ) == "Param" )
+  else if( propName.BeforeFirst( ' ' ) == _( "Param" ) )
   {
     wxString paramData = propName.AfterFirst( ' ' );
     TParamIndex paramIdx;
@@ -1240,7 +1240,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   {
     if( (*it)->getDestroy() )
       continue;
-    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, (*it)->getName() );
+    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
     tmpHisto->SetHistogram( *it );
 
     appendHistogram2Tree( tmpHisto );
@@ -1332,7 +1332,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
   {
     if( menuIt == menuItems.end() )
     {
-      wxMenuItem *newItem = new wxMenuItem( menuTraces, wxID_ANY, wxT( (*it).c_str() ) );
+      wxMenuItem *newItem = new wxMenuItem( menuTraces, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
       menuTraces->Append( newItem );
       Connect( newItem->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
@@ -1341,7 +1341,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
     else
     {
       wxMenuItem *tmp = *menuIt;
-      tmp->SetItemLabel( wxT( (*it).c_str() ) );
+      tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
       ++menuIt;
     }
   }
@@ -1369,7 +1369,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
   {
     if( menuIt == menuItems.end() )
     {
-      wxMenuItem *newItem = new wxMenuItem( menuCFGs, wxID_ANY, wxT( (*it).c_str() ) );
+      wxMenuItem *newItem = new wxMenuItem( menuCFGs, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
       menuCFGs->Append( newItem );
       Connect( newItem->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
@@ -1378,7 +1378,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
     else
     {
       wxMenuItem *tmp = *menuIt;
-      tmp->SetItemLabel( wxT( (*it).c_str() ) );
+      tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
       ++menuIt;
     }
   }
@@ -1503,14 +1503,14 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     timelines = saveDialog.GetTimelines();
     histograms = saveDialog.GetHistograms();
     options = saveDialog.GetOptions();
-    wxFileDialog dialog( this, "Save Configuration", paraverConfig->getGlobalCFGsPath(), "",
-      "Paraver configuration file (*.cfg)|*.cfg",
+    wxFileDialog dialog( this, _( "Save Configuration" ), wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() ), _( "" ),
+      _("Paraver configuration file (*.cfg)|*.cfg" ),
       wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
     if( dialog.ShowModal() == wxID_OK )
     {
       wxString path = dialog.GetPath();
-      CFGLoader::saveCFG( path.c_str(), options, timelines, histograms );
-      previousCFGs->add( path.c_str() );
+      CFGLoader::saveCFG( std::string( path.mb_str() ), options, timelines, histograms );
+      previousCFGs->add( std::string( path.mb_str() ) );
     }
   }
   raiseCurrentWindow = true;
@@ -1543,9 +1543,9 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
   Window *newWindow = Window::create( localKernel, loadedTraces[ currentTrace ] );
  
   ++numNewWindows;
-  wxString tmpName( "New window #" );
+  wxString tmpName( _( "New window #" ) );
   tmpName << numNewWindows;
-  newWindow->setName( tmpName.c_str() );
+  newWindow->setName( std::string( tmpName.mb_str() ) );
   newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
   newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
                       0, newWindow->getWindowLevelObjects() - 1 );
@@ -1611,9 +1611,9 @@ void paraverMain::ShowDerivedDialog()
   LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
 
   ++numNewDerived;
-  wxString tmpName( "New Derived Window #" );
+  wxString tmpName( _( "New Derived Window #" ) );
   tmpName << numNewDerived;
-  derivedDialog.SetTimelineName( tmpName.c_str() );
+  derivedDialog.SetTimelineName( std::string( tmpName.mb_str() ) );
 
   // Set timelines list
   derivedDialog.SetTimelines1( timelines );
@@ -1753,9 +1753,9 @@ void paraverMain::ShowHistogramDialog()
     Histogram *newHistogram = Histogram::create( localKernel );
 
     ++numNewHistograms;
-    wxString tmpName( "New Histogram #" );
+    wxString tmpName( _( "New Histogram #" ) );
     tmpName << numNewHistograms;
-    newHistogram->setName( tmpName.c_str() );
+    newHistogram->setName( std::string( tmpName.mb_str() ) );
 /*
    newHistogram->setPosX();
     newHistogram->setPosY();
@@ -1802,7 +1802,7 @@ void paraverMain::ShowHistogramDialog()
 
     string composedName = newHistogram->getName() + " @ " +
                           newHistogram->getControlWindow()->getTrace()->getTraceName();
-    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, composedName );
+    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( composedName.c_str() ) );
     tmpHisto->SetHistogram( newHistogram );
 
     appendHistogram2Tree( tmpHisto );
@@ -2137,7 +2137,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   wxArrayString choices;
 
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
-    choices.Add( (*it)->getTraceNameNumbered().c_str() );
+    choices.Add( wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() ) );
   wxSingleChoiceDialog dialog( this, _("Select the trace to unload:"), _("Unload Trace"), choices );
   
   raiseCurrentWindow = false;
@@ -2256,7 +2256,7 @@ void paraverMain::OnSignal( )
   // Any loaded trace?
   if ( loadedTraces.size() == 0 )
   {
-    wxMessageDialog message( this, "No trace loaded", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+    wxMessageDialog message( this, _( "No trace loaded" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
@@ -2280,7 +2280,7 @@ void paraverMain::OnSignal( )
   paraloadFile.open( fullName.c_str() );
   if ( !paraloadFile  )
   {
-    wxMessageDialog message( this, "File ./paraload.sig not found", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+    wxMessageDialog message( this, _( "File ./paraload.sig not found" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
@@ -2308,7 +2308,7 @@ void paraverMain::OnSignal( )
     }
     else
     {
-      wxMessageDialog message( this, "No timeline created", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+      wxMessageDialog message( this, _( "No timeline created" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
       raiseCurrentWindow = false;
       message.ShowModal();
       raiseCurrentWindow = true;
@@ -2325,7 +2325,7 @@ void paraverMain::OnSignal( )
   size_t pos = times.find(":");
   if ( pos == string::npos )
   {
-    wxMessageDialog message( this, "Missing times separator ':' in file paraload.sig", "Signal Handler Manager", wxOK | wxICON_EXCLAMATION );
+    wxMessageDialog message( this, _( "Missing times separator ':' in file paraload.sig" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
@@ -2377,12 +2377,12 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   wxString description;
   
   info.SetName( _("wxParaver") );
-  info.SetVersion( _("3.99 (Build " + wxString() << __DATE__ << ")" ) );
-  description << "\nwxParaver is a graphical displaying tool developed at BSC :\n";
-  description << "Barcelona Supercomputing Center.\n\n";
-  description << "wxParaver allows the programmer to examine graphically a ";
-  description << "tracefile, with the possibility to choose different filters in ";
-  description << "order to select what is displayed.\n";
+  info.SetVersion( _( "3.99 (Build " ) + wxString() << _( __DATE__ ) << _( ")" ) );
+  description << _( "\nwxParaver is a graphical displaying tool developed at BSC :\n" );
+  description << _( "Barcelona Supercomputing Center.\n\n" );
+  description << _( "wxParaver allows the programmer to examine graphically a " );
+  description << _( "tracefile, with the possibility to choose different filters in " );
+  description << _( "order to select what is displayed.\n" );
   info.SetDescription( description );
   developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
   developers.Add( _("Pedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );

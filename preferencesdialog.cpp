@@ -845,9 +845,9 @@ void PreferencesDialog::CreateControls()
 
   // Filter forbidden chars
   wxArrayString forbidden;
-  forbidden.Add("-");
-  forbidden.Add(".");
-  forbidden.Add(",");
+  forbidden.Add( _( "-" ) );
+  forbidden.Add( _( "." ) );
+  forbidden.Add( _( "," ) );
 
 /*
 // wxTextCtrl validators
@@ -908,7 +908,7 @@ wxString PreferencesDialog::formatNumber( long value )
 //  auxSStr.precision( ParaverConfig::getInstance()->getPrecision() );
 //  auxSStr << fixed;
   auxSStr << value;
-  auxNumber << auxSStr.str();
+  auxNumber << wxString::FromAscii( auxSStr.str().c_str() );
 
   return auxNumber;
 }
@@ -918,15 +918,12 @@ void PreferencesDialog::setLabelsChoiceBox( const vector< string > &list,
                                                const UINT32 &selected,
                                                wxChoice *choiceBox )
 {
-  wxString aux;
   choiceBox->Clear(); // entra dos veces!!!
 
   for( vector< string >::const_iterator it = list.begin(); it != list.end(); ++it )
   {
     // add every string of the list to the choice box
-    aux << *it;
-    choiceBox->Append( aux );
-    aux.clear();
+    choiceBox->Append( wxString::FromAscii( (*it).c_str() ) );
   }
 
   choiceBox->Select( selected );
@@ -939,19 +936,16 @@ bool PreferencesDialog::TransferDataToWindow()
 
   // GLOBAL
   checkGlobalFillStateGaps->SetValue( globalFillStateGaps );
-  wxString tmpStr;
-  tmpStr << tracesPath;
-  dirPickerTrace->SetPath( tmpStr );
-  tmpStr.Clear();
-  tmpStr << cfgsPath;
-  dirPickerCFG->SetPath( tmpStr );
-  tmpStr.Clear();
-  tmpStr << tmpPath;
-  dirPickerTmp->SetPath( tmpStr );
+  
+  dirPickerTrace->SetPath( wxString::FromAscii( tracesPath.c_str() ) );
+
+  dirPickerCFG->SetPath( wxString::FromAscii( cfgsPath.c_str() ) );
+
+  dirPickerTmp->SetPath( wxString::FromAscii( tmpPath.c_str() ) );
 
   // TIMELINE
-  txtTimelineNameFormatPrefix->SetValue( timelineNameFormatPrefix );
-  txtTimelineNameFormatFull->SetValue( timelineNameFormatFull );
+  txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
+  txtTimelineNameFormatFull->SetValue( wxString::FromAscii( timelineNameFormatFull.c_str() ) );
 
   checkTimelineEventLines->SetValue( timelineEventLines );
   checkTimelineCommunicationLines->SetValue( timelineCommunicationLines );
@@ -1019,13 +1013,13 @@ bool PreferencesDialog::TransferDataFromWindow()
 
   // GLOBAL
   globalFillStateGaps = checkGlobalFillStateGaps->IsChecked();
-  tracesPath = dirPickerTrace->GetPath();
-  cfgsPath = dirPickerCFG->GetPath();
-  tmpPath = dirPickerTmp->GetPath();
+  tracesPath = std::string( dirPickerTrace->GetPath().mb_str() );
+  cfgsPath = std::string( dirPickerCFG->GetPath().mb_str() );
+  tmpPath = std::string( dirPickerTmp->GetPath().mb_str() );
 
   // TIMELINE
-  timelineNameFormatPrefix = txtTimelineNameFormatPrefix->GetValue();
-  timelineNameFormatFull = txtTimelineNameFormatFull->GetValue();
+  timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );
+  timelineNameFormatFull = std::string( txtTimelineNameFormatFull->GetValue().mb_str() );
   // Parse format looking for modifiers %N -> number, %P -> prefix, %T -> trace
 
   timelineEventLines = checkTimelineEventLines->IsChecked();
@@ -1055,8 +1049,8 @@ bool PreferencesDialog::TransferDataFromWindow()
   histogramShowUnits = checkHistogramShowUnits->IsChecked();
   histogramThousandSeparator = checkHistogramThousandsSeparator->GetValue();
 
-  txtTimelineNameFormatFull->SetValue( timelineNameFormatFull );
-  timelineWWPrecision = ( UINT32 )txtTimelineWWPrecision->GetValue();
+/*  txtTimelineNameFormatFull->SetValue( timelineNameFormatFull );
+  timelineWWPrecision = ( UINT32 )txtTimelineWWPrecision->GetValue();*/
 
   // COLORS
   timelineColourBackground = wxColourToRGB( colourPickerBackground->GetColour() );

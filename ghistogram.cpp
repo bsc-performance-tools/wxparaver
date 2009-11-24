@@ -387,21 +387,21 @@ void gHistogram::fillGrid()
   {
     if( commStat )
     {
-      gridHisto->SetColLabelValue( iCol, myHistogram->getRowLabel( iCol ) );
+      gridHisto->SetColLabelValue( iCol, wxString::FromAscii( myHistogram->getRowLabel( iCol ).c_str() ) );
       myHistogram->setCommFirstCell( iCol, curPlane );
     }
     else
     {
       if( horizontal )
-        gridHisto->SetColLabelValue( iCol, myHistogram->getColumnLabel( iCol ) );
+        gridHisto->SetColLabelValue( iCol, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
       else
       {
         int w, h;
       
-        gridHisto->GetTextExtent( myHistogram->getColumnLabel( iCol ), &w, &h, NULL, NULL, &labelFont );
+        gridHisto->GetTextExtent( wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ), &w, &h, NULL, NULL, &labelFont );
         if( rowLabelWidth == 0 || rowLabelWidth < w )
           rowLabelWidth = w;
-        gridHisto->SetRowLabelValue( iCol, myHistogram->getColumnLabel( iCol ) );
+        gridHisto->SetRowLabelValue( iCol, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
       }
       myHistogram->setFirstCell( iCol, curPlane );
     }
@@ -414,16 +414,16 @@ void gHistogram::fillGrid()
         {
           int w, h;
       
-          gridHisto->GetTextExtent( myHistogram->getRowLabel( selectedRows[ iRow ] ),
+          gridHisto->GetTextExtent( wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iRow ] ).c_str() ),
                                     &w, &h, NULL, NULL, &labelFont );
           if( rowLabelWidth == 0 || rowLabelWidth < w )
             rowLabelWidth = w;
-          gridHisto->SetRowLabelValue( iRow, myHistogram->getRowLabel( selectedRows[ iRow ] ) );
+          gridHisto->SetRowLabelValue( iRow, wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iRow ] ).c_str() ) );
         }
       }
       else
       {
-        gridHisto->SetColLabelValue( iRow, myHistogram->getRowLabel( selectedRows[ iRow ] ) );
+        gridHisto->SetColLabelValue( iRow, wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iRow ] ).c_str() ) );
       }
       
       THistogramColumn iDrawCol;
@@ -442,7 +442,7 @@ void gHistogram::fillGrid()
       if( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
           ( !commStat && myHistogram->endCell( iCol, curPlane ) ) )
       {
-        gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
+        gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString::FromAscii( "-" ) );
         gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
       }
       else
@@ -454,7 +454,7 @@ void gHistogram::fillGrid()
             string tmpStr;
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
               myHistogram->getCommCurrentValue( iCol, idStat, curPlane ), true );
-            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( tmpStr ) );
+            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString::FromAscii( tmpStr.c_str() ) );
             if( myHistogram->getShowColor() )
             {
               rgb tmpCol = myHistogram->calcGradientColor( 
@@ -467,7 +467,7 @@ void gHistogram::fillGrid()
           }
           else
           {
-            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
+            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString::FromAscii( "-" ) );
             gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
           }
         }
@@ -478,7 +478,7 @@ void gHistogram::fillGrid()
             string tmpStr;
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
               myHistogram->getCurrentValue( iCol, idStat, curPlane ), true );
-            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( tmpStr ) );
+            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString::FromAscii( tmpStr.c_str() ) );
             if( myHistogram->getShowColor() )
             {
               rgb tmpCol = myHistogram->calcGradientColor( 
@@ -499,14 +499,14 @@ void gHistogram::fillGrid()
           }
           else
           {
-            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString( "-" ) );
+            gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString::FromAscii( "-" ) );
             gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, *wxWHITE );
           }
         }
       }
     }
 
-    gridHisto->SetRowLabelValue( numDrawRows, "" );
+    gridHisto->SetRowLabelValue( numDrawRows, _( "" ) );
   }
 
   fillTotals( rowLabelWidth, numDrawRows + 1, curPlane, idStat );
@@ -789,12 +789,12 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
     {
       int w,h;
 
-      gridHisto->GetTextExtent( LabelConstructor::histoTotalLabel( (THistoTotals) i ), 
+      gridHisto->GetTextExtent( wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals) i ).c_str() ), 
                                 &w, &h, NULL, NULL, &labelFont );
       if( rowLabelWidth == 0 || rowLabelWidth < w )
         rowLabelWidth = w;
       gridHisto->SetRowLabelValue( beginRow + i, 
-        LabelConstructor::histoTotalLabel( (THistoTotals) i ) );
+        wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals) i ).c_str() ) );
 
       if( totals[ 0 ] > 0.0 )
       {
@@ -803,11 +803,11 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
           tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ], false );
         else
           tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ], true );
-        gridHisto->SetCellValue( beginRow + i, iCol, wxString( tmpStr ) );
+        gridHisto->SetCellValue( beginRow + i, iCol, wxString::FromAscii( tmpStr.c_str() ) );
       }
       else
       {
-        gridHisto->SetCellValue( beginRow + i, iCol, wxString( "-" ) );
+        gridHisto->SetCellValue( beginRow + i, iCol, wxString::FromAscii( "-" ) );
       }
     }
   }
@@ -870,7 +870,7 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
       gridHisto->SetRowLabelValue( iDrawCol, wxT( "" ) );
       for( int i = 0; i < NUMTOTALS; ++i )
         gridHisto->SetRowLabelValue( iDrawCol + i + 1, 
-          LabelConstructor::histoTotalLabel( (THistoTotals) i ) );
+          wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals) i ).c_str() ) );
     }
   }
 }
@@ -968,7 +968,7 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   string composedName = myHistogram->getName() + " @ " +
                         myHistogram->getTrace()->getTraceNameNumbered();
 
-  this->SetTitle( composedName );
+  this->SetTitle( wxString::FromAscii( composedName.c_str() ) );
 
   if( myHistogram->getShowWindow() )
   {
@@ -1140,7 +1140,7 @@ void gHistogram::OnPopUpClone()
   string composedName = clonedName + " @ " +
                         clonedHistogram->getTrace()->getTraceNameNumbered();
 
-  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, composedName, position, size );
+  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), position, size );
   clonedGHistogram->myHistogram = clonedHistogram;
 
   clonedGHistogram->ready = false;
@@ -1565,7 +1565,7 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
     row = myHistogram->getNumRows();
     
   if( row > 0 )
-    text << _( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
+    text << wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
          << _( "  " );
 
   if( column > 0 )
@@ -1575,16 +1575,16 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
       columnSelection.getSelected( noVoidColumns );
       column = noVoidColumns[ column - 1 ] + 1;
     }
-    text << _( myHistogram->getColumnLabel( column - 1 ).c_str() )
+    text << wxString::FromAscii( myHistogram->getColumnLabel( column - 1 ).c_str() )
          << _( "  " );
   }
   
   if( row > 0 && column > 0 )
   {
     TSemanticValue value = getZoomSemanticValue( column - 1, row - 1 );
-    text << _( "= " ) << _( LabelConstructor::histoCellLabel( myHistogram, 
-                                                              value, 
-                                                              myHistogram->getShowUnits() ).c_str() );
+    text << _( "= " ) << wxString::FromAscii( LabelConstructor::histoCellLabel( myHistogram, 
+                                                                                value, 
+                                                                                myHistogram->getShowUnits() ).c_str() );
   }
   
   histoStatus->SetStatusText( text );

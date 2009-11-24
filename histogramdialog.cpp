@@ -417,7 +417,7 @@ void HistogramDialog::getSelectedWindowID( wxChoice * listWidget,
 bool HistogramDialog::TransferDataFromWindow()
 {
   // Copy Selected window
-  string errorMessage = "";
+  wxString errorMessage = _( "" );
   double tmp;
   TWindowID auxID;
 
@@ -429,7 +429,7 @@ bool HistogramDialog::TransferDataFromWindow()
     {
       auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
       controlTimelineMin = LoadedWindows::getInstance()->getWindow( auxID )->getMinimumY();
-      errorMessage = "\tControl Timeline Minimum : " + formatNumber( controlTimelineMin ) + "\n";
+      errorMessage = _( "\tControl Timeline Minimum : " ) + formatNumber( controlTimelineMin ) + _( "\n" );
     }
 
     if ( txtControlTimelineMax->GetValue().ToDouble( &tmp ) )
@@ -438,7 +438,7 @@ bool HistogramDialog::TransferDataFromWindow()
     {
       auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
       controlTimelineMax = LoadedWindows::getInstance()->getWindow( auxID )->getMaximumY();
-      errorMessage += "\tControl Timeline Maximum : " + formatNumber( controlTimelineMax ) + "\n";
+      errorMessage += _( "\tControl Timeline Maximum : " ) + formatNumber( controlTimelineMax ) + _( "\n" );
     }
 
     if ( txtControlTimelineDelta->GetValue().ToDouble( &tmp ) )
@@ -446,7 +446,7 @@ bool HistogramDialog::TransferDataFromWindow()
     else
     {
       controlTimelineDelta = computeDelta( controlTimelineMin, controlTimelineMax );
-      errorMessage += "\tControl Timeline Delta : " + formatNumber( controlTimelineDelta ) + "\n";
+      errorMessage += _( "\tControl Timeline Delta : " ) + formatNumber( controlTimelineDelta ) + _( "\n" );
     }
   }
 
@@ -461,7 +461,7 @@ bool HistogramDialog::TransferDataFromWindow()
       {
         auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() - 1 ];
         extraControlTimelineMin = LoadedWindows::getInstance()->getWindow( auxID )->getMinimumY();
-        errorMessage += "\t3D Timeline Min : " + formatNumber( extraControlTimelineMin ) + "\n";
+        errorMessage += _( "\t3D Timeline Min : " ) + formatNumber( extraControlTimelineMin ) + _( "\n" );
       }
 
       if ( txt3DTimelineMax->GetValue().ToDouble( &tmp ) )
@@ -470,7 +470,7 @@ bool HistogramDialog::TransferDataFromWindow()
       {
         auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() - 1 ];
         extraControlTimelineMax = LoadedWindows::getInstance()->getWindow( auxID )->getMaximumY();
-        errorMessage += "\t3D Timeline Max : " + formatNumber( extraControlTimelineMax ) + "\n";
+        errorMessage += _( "\t3D Timeline Max : " ) + formatNumber( extraControlTimelineMax ) + _( "\n" );
       }
 
       if ( txt3DTimelineDelta->GetValue().ToDouble( &tmp ) )
@@ -478,7 +478,7 @@ bool HistogramDialog::TransferDataFromWindow()
       else
       {
         extraControlTimelineDelta = computeDelta( extraControlTimelineMin, extraControlTimelineMax );
-        errorMessage += "\t3D Timeline Delta : " +  formatNumber( extraControlTimelineDelta ) + "\n";
+        errorMessage += _( "\t3D Timeline Delta : " ) +  formatNumber( extraControlTimelineDelta ) + _( "\n" );
       }
     }
   }
@@ -494,7 +494,7 @@ bool HistogramDialog::TransferDataFromWindow()
   {
     auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
     auxBegin = LoadedWindows::getInstance()->getWindow( auxID )->getWindowBeginTime();
-    errorMessage += "\tBegin Time : " + formatNumber( auxBegin ) + "\n";
+    errorMessage += _( "\tBegin Time : " ) + formatNumber( auxBegin ) + _( "\n" );
   }
 
   if ( txtEndTime->GetValue().ToDouble( &tmp ) )
@@ -503,17 +503,17 @@ bool HistogramDialog::TransferDataFromWindow()
   {
     auxID  = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
     auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->getWindowEndTime();
-    errorMessage += "\tEnd Time : " + formatNumber( auxEnd ) + "\n";
+    errorMessage += _( "\tEnd Time : " ) + formatNumber( auxEnd ) + _( "\n" );
   }
 
   timeRange.push_back( make_pair( auxBegin, auxEnd ) );
 
-  if ( errorMessage != "" )
+  if ( errorMessage != _( "" ) )
   {
-    string prefix = "Following substitutions will be applied:\n\n";
+    wxString prefix = _( "Following substitutions will be applied:\n\n" );
     wxMessageDialog message( this,
-                             wxT( prefix + errorMessage ) ,
-                            "Conversion problem",
+                             prefix + errorMessage,
+                             _( "Conversion problem" ),
                              wxOK | wxICON_EXCLAMATION );
     message.ShowModal();
   }
@@ -716,12 +716,12 @@ wxString HistogramDialog::formatNumber( double value )
   stringstream auxSStr;
   wxString auxNumber;
 
-  locale mylocale("");
+  locale mylocale( "" );
   auxSStr.imbue( mylocale );
   auxSStr.precision( ParaverConfig::getInstance()->getHistogramPrecision() );
   auxSStr << fixed;
   auxSStr << value;
-  auxNumber << auxSStr.str();
+  auxNumber << wxString::FromAscii( auxSStr.str().c_str() );
 
   return auxNumber;
 }
@@ -758,13 +758,13 @@ UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listTimel
   int posSelected = 0;
 
   if ( current == NULL )
-    listWidget->Append( wxString( "- - - None - - -" ) );
+    listWidget->Append( _( "- - - None - - -" ) );
 
   for( vector< TWindowID >::iterator it = listTimelines.begin(); it != listTimelines.end(); ++it )
   {
     // Fill control timeline list widget
     aux = LoadedWindows::getInstance()->getWindow( *it );
-    listWidget->Append( wxString( aux->getName().c_str() ) );
+    listWidget->Append( wxString::FromAscii( aux->getName().c_str() ) );
 
     // Find its position in that list
     if ( aux == current )

@@ -30,7 +30,7 @@ prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
 
     unsigned int i;
     for ( i=0; i<value.GetCount(); i++ )
-      tmpArray.Add( wxString().Format("%d", value[i] ) );
+      tmpArray.Add( wxString().Format(_( "%d" ), value[i] ) );
     SetValue(tmpArray);
 }
 
@@ -44,7 +44,7 @@ prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
     wxArrayString tmpArray;
     unsigned int i;
     for ( i=0; i<value.GetCount(); i++ )
-      tmpArray.Add( wxString().Format("%d", value[i] ) );
+      tmpArray.Add( wxString().Format( _( "%d" ), value[i] ) );
     SetValue(tmpArray);
 }
 
@@ -58,7 +58,7 @@ prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
     wxArrayString tmpArray;
     unsigned int i;
     for ( i=0; i<value.GetCount(); i++ )
-      tmpArray.Add( wxString().Format("%d", value[i] ) );
+      tmpArray.Add( wxString().Format( _( "%d" ), value[i] ) );
     SetValue(tmpArray);
 }
 
@@ -256,7 +256,7 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
     for( vector<string>::const_iterator it = functions[ i ].begin(); 
          it != functions[ i ].end(); ++it )
     {
-      wxString tmpStr( (*it).c_str() );
+      wxString tmpStr( wxString::FromAscii( (*it).c_str() ) );
       subMenus[ i ]->AppendCheckItem( idMenu, tmpStr );
       if( tmpStr == value )
       {
@@ -271,7 +271,7 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
                             wxCommandEventHandler( SemanticMenu::OnMenu ),
                             NULL,
                             this );
-    Append( i, levels[ i ].c_str(), subMenus[ i ] );
+    Append( i, wxString::FromAscii( levels[ i ].c_str() ), subMenus[ i ] );
   }
 }
 

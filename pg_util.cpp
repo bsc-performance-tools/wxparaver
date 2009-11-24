@@ -40,7 +40,7 @@ inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat,
 {
   wxPGProperty *tmpProp = windowProperties->GetPropertyByLabel( catName );
   if( tmpProp != NULL )
-    categoryStat = tmpProp->GetFlagsAsString( wxPG_PROP_COLLAPSED ) == "COLLAPSED";
+    categoryStat = tmpProp->GetFlagsAsString( wxPG_PROP_COLLAPSED ) == _( "COLLAPSED" );
 }
 inline void updateCategoriesState( wxPropertyGrid *windowProperties )
 {
@@ -70,13 +70,13 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
   for( TParamIndex paramIdx = 0; paramIdx < whichWindow->getFunctionNumParam( functionLevel ); ++paramIdx )
   {
     wxArrayString valuesStr;
-    wxString propName( "Param" );
-    propName << " " << paramIdx << " " << functionLevel;
+    wxString propName( _( "Param" ) );
+    propName << _( " " ) << paramIdx << _( " " ) << functionLevel;
     TParamValue values = whichWindow->getFunctionParam( functionLevel, paramIdx );
     for( TParamValue::iterator it = values.begin(); it != values.end(); ++it )
       valuesStr.Add( wxString() << (*it) );
     wxArrayStringProperty *parameterProp = new wxArrayStringProperty( 
-                                              wxString(_("   ")) + _(whichWindow->getFunctionParamName( functionLevel, paramIdx ).c_str()), 
+                                              wxString( _("   ") ) + wxString::FromAscii( whichWindow->getFunctionParamName( functionLevel, paramIdx ).c_str() ), 
                                               propName, 
                                               valuesStr );
     windowProperties->AppendIn( category, parameterProp );
@@ -104,20 +104,20 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   int selected, pos;
   Filter *filter = whichWindow->getFilter();
   
-  windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichWindow->getName() ) ) );
+  windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxString::FromAscii( whichWindow->getName().c_str() ) ) );
   windowProperties->Append( new wxStringProperty( wxT("Begin time"), wxPG_LABEL, 
-                            wxT( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowBeginTime() ),
-                                                              whichWindow->getTimeUnit(),
-                                                              precision ) ) ) );
+                            wxString::FromAscii( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowBeginTime() ),
+                                                                              whichWindow->getTimeUnit(),
+                                                                              precision ).c_str() ) ) );
   windowProperties->Append( new wxStringProperty( wxT("End time"), wxPG_LABEL, 
-                            wxT( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowEndTime() ),
-                                                              whichWindow->getTimeUnit(),
-                                                              precision ) ) ) );
+                            wxString::FromAscii( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowEndTime() ),
+                                                                              whichWindow->getTimeUnit(),
+                                                                              precision ).c_str() ) ) );
 
   windowProperties->Append( new wxFloatProperty( wxT("Semantic Minimum"), wxPG_LABEL,
-                            wxT( whichWindow->getMinimumY() ) ) );
+                                                 whichWindow->getMinimumY() ) );
   windowProperties->Append( new wxFloatProperty( wxT("Semantic Maximum"), wxPG_LABEL,
-                            wxT( whichWindow->getMaximumY() ) ) );
+                                                 whichWindow->getMaximumY() ) );
                             
   if( !whichWindow->isDerivedWindow() )
   {
@@ -158,19 +158,19 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     for( vector<string>::iterator it = filterFunctions.begin();
          it != filterFunctions.end(); ++it )
     {
-      arrayFilterFunctions.Add( wxT( (*it).c_str() ) );
+      arrayFilterFunctions.Add( wxString::FromAscii( (*it).c_str() ) );
       arrayFilterFunctionsPos.Add( pos );
       ++pos;
     }
 
     wxPGId filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
     if( filterCatCollapsed )
-      filterCat->SetFlagsFromString( "COLLAPSED" );
+      filterCat->SetFlagsFromString( _( "COLLAPSED" ) );
     
     // ---------------------------- COMMUNICATION FILTER ---------------------------
     wxPGId commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
     if( commFilterCatCollapsed )
-      commFilterCat->SetFlagsFromString( "COLLAPSED" );
+      commFilterCat->SetFlagsFromString( _( "COLLAPSED" ) );
     
     windowProperties->AppendIn( commFilterCat, 
         new wxBoolProperty( wxT("Logical"), wxPG_LABEL, filter->getLogical() ) );
@@ -183,9 +183,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                               wxPG_LABEL,
                                                                               wxT("<composed>") ) );
     if( commFilterFromCollapsed )
-      commFilterFrom->SetFlagsFromString( "DISABLED|COLLAPSED" );
+      commFilterFrom->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
     else
-      commFilterFrom->SetFlagsFromString( "DISABLED" );
+      commFilterFrom->SetFlagsFromString( _( "DISABLED" ) );
 
     pos = 0;
     selected = -1;
@@ -210,8 +210,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
     arrayStr.Clear();
     arrayInt.Clear();
-    arrayStr.Add( "And" );
-    arrayStr.Add( "Or" );
+    arrayStr.Add( _( "And" ) );
+    arrayStr.Add( _( "Or" ) );
     arrayInt.Add( 0 );
     arrayInt.Add( 1 );
     if( filter->getOpFromTo() )
@@ -228,9 +228,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                             wxPG_LABEL,
                                                                             wxT("<composed>") ) );
     if( commFilterToCollapsed )
-      commFilterTo->SetFlagsFromString( "DISABLED|COLLAPSED" );
+      commFilterTo->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
     else
-      commFilterTo->SetFlagsFromString( "DISABLED" );
+      commFilterTo->SetFlagsFromString( _( "DISABLED" ) );
 
     pos = 0;
     selected = -1;
@@ -259,9 +259,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                              wxPG_LABEL,
                                                                              wxT("<composed>") ) );
     if( commFilterTagCollapsed )
-      commFilterTag->SetFlagsFromString( "DISABLED|COLLAPSED" );
+      commFilterTag->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
     else
-      commFilterTag->SetFlagsFromString( "DISABLED" );
+      commFilterTag->SetFlagsFromString( _( "DISABLED" ) );
 
     pos = 0;
     selected = -1;
@@ -286,8 +286,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
     arrayStr.Clear();
     arrayInt.Clear();
-    arrayStr.Add( "And" );
-    arrayStr.Add( "Or" );
+    arrayStr.Add( _( "And" ) );
+    arrayStr.Add( _( "Or" ) );
     arrayInt.Add( 0 );
     arrayInt.Add( 1 );
     if( filter->getOpTagSize() )
@@ -304,9 +304,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                                wxPG_LABEL,
                                                                                wxT("<composed>") ) );
     if( commFilterSizeCollapsed )
-      commFilterSize->SetFlagsFromString( "DISABLED|COLLAPSED" );
+      commFilterSize->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
     else
-      commFilterSize->SetFlagsFromString( "DISABLED" );
+      commFilterSize->SetFlagsFromString( _( "DISABLED" ) );
       
     pos = 0;
     selected = -1;
@@ -335,9 +335,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                             wxPG_LABEL,
                                                                             wxT("<composed>") ) );
     if( commFilterBWCollapsed )
-      commFilterBW->SetFlagsFromString( "DISABLED|COLLAPSED" );
+      commFilterBW->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
     else
-      commFilterBW->SetFlagsFromString( "DISABLED" );
+      commFilterBW->SetFlagsFromString( _( "DISABLED" ) );
 
     pos = 0;
     selected = -1;
@@ -363,16 +363,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     // -------------------------------- EVENT FILTER -------------------------------
     wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
     if( eventFilterCatCollapsed )
-      eventFilterCat->SetFlagsFromString( "COLLAPSED" );
+      eventFilterCat->SetFlagsFromString( _( "COLLAPSED" ) );
     // Event Type
     wxPGId eventFilterType = windowProperties->AppendIn( eventFilterCat, 
                                                          new wxStringProperty( wxT("Event type"), 
                                                                                wxPG_LABEL,
                                                                                wxT("<composed>") ) );
     if( eventFilterTypeCollapsed )
-      eventFilterType->SetFlagsFromString( "DISABLED|COLLAPSED" );
+      eventFilterType->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
     else
-      eventFilterType->SetFlagsFromString( "DISABLED" );
+      eventFilterType->SetFlagsFromString( _( "DISABLED" ) );
 
     pos = 0;
     selected = -1;
@@ -399,7 +399,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       arrayInt.Add( (*it) );
       string tmpstr;
       whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
-      arrayStr.Add( wxString() << (*it) << " " << wxT( tmpstr.c_str() ) );
+      arrayStr.Add( wxString() << (*it) << _( " " ) << wxString::FromAscii( tmpstr.c_str() ) );
     }
     
     wxPGChoices typeChoices( arrayStr, arrayInt );
@@ -414,8 +414,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     
     arrayStr.Clear();
     arrayInt.Clear();
-    arrayStr.Add( "And" );
-    arrayStr.Add( "Or" );
+    arrayStr.Add( _( "And" ) );
+    arrayStr.Add( _( "Or" ) );
     arrayInt.Add( 0 );
     arrayInt.Add( 1 );
     if( filter->getOpTypeValue() )
@@ -432,9 +432,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                                 wxPG_LABEL,
                                                                                 wxT("<composed>") ) );
     if( eventFilterValueCollapsed )
-      eventFilterValue->SetFlagsFromString( "DISABLED|COLLAPSED" );
+      eventFilterValue->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
     else
-      eventFilterValue->SetFlagsFromString( "DISABLED" );
+      eventFilterValue->SetFlagsFromString( _( "DISABLED" ) );
 
     pos = 0;
     selected = -1;
@@ -465,7 +465,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   TParamValue pValues;
   wxPGId semanticCat = windowProperties->Append( new wxPropertyCategory( wxT("Semantic") ) );
   if( semanticCatCollapsed )
-    semanticCat->SetFlagsFromString( "COLLAPSED" );
+    semanticCat->SetFlagsFromString( _( "COLLAPSED" ) );
   
   vector<string> composeFunctions;
   whichWindow->getAllSemanticFunctions( COMPOSE_GROUP, composeFunctions );
@@ -474,7 +474,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   for( vector<string>::iterator it = composeFunctions.begin();
        it != composeFunctions.end(); ++it )
   {
-    arrayComposeFunctions.Add( wxT( (*it).c_str() ) );
+    arrayComposeFunctions.Add( wxString::FromAscii( (*it).c_str() ) );
     arrayComposeFunctionsPos.Add( pos );
     ++pos;
   }
@@ -520,7 +520,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     for( vector<string>::iterator it = derivedFunctions.begin();
          it != derivedFunctions.end(); ++it )
     {
-      arrayStr.Add( wxT( (*it).c_str() ) );
+      arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
       arrayInt.Add( pos );
       if( (*it) == whichWindow->getLevelFunction( DERIVED ) )
         selected = pos;
@@ -541,7 +541,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     for( vector<string>::iterator it = notThreadFunctions.begin();
         it != notThreadFunctions.end(); ++it )
     {
-      arrayNotThreadFunctions.Add( wxT( (*it).c_str() ) );
+      arrayNotThreadFunctions.Add( wxString::FromAscii( (*it).c_str() ) );
       arrayNotThreadFunctionsPos.Add( pos );
       ++pos;
     }
@@ -743,7 +743,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         for( vector<string>::iterator it = cpuFunctions.begin();
              it != cpuFunctions.end(); ++it )
         {
-          arrayStr.Add( wxT( (*it).c_str() ) );
+          arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
           arrayInt.Add( pos );
           if( (*it) == whichWindow->getLevelFunction( CPU ) )
             selected = pos;
@@ -792,7 +792,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                 wxPG_LABEL,
                                 levels,
                                 threadFunctions,
-                                wxT( whichWindow->getLevelFunction( THREAD ) ) ) );
+                                wxString::FromAscii( whichWindow->getLevelFunction( THREAD ).c_str() ) ) );
     semanticFunctionParameter( windowProperties, whichWindow, semanticCat, THREAD );
   }
   // END of Semantic related properties
@@ -818,26 +818,26 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   windowProperties->Freeze();
   windowProperties->Clear();
   
-  windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxT( whichHisto->getName() ) ) );
+  windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxString::FromAscii( whichHisto->getName().c_str() ) ) );
   windowProperties->Append( new wxStringProperty( wxT("Begin time"), wxPG_LABEL, 
-                            wxT( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getBeginTime() ),
-                                                              whichHisto->getControlWindow()->getTimeUnit(),
-                                                              precision ) ) ) );
+                            wxString::FromAscii( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getBeginTime() ),
+                                                                              whichHisto->getControlWindow()->getTimeUnit(),
+                                                                              precision ).c_str() ) ) );
   windowProperties->Append( new wxStringProperty( wxT("End time"), wxPG_LABEL, 
-                            wxT( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getEndTime() ),
-                                                              whichHisto->getControlWindow()->getTimeUnit(),
-                                                              precision ) ) ) );
+                            wxString::FromAscii( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getEndTime() ),
+                                                                              whichHisto->getControlWindow()->getTimeUnit(),
+                                                                              precision ).c_str() ) ) );
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   if( statCatCollapsed )
-    statCat->SetFlagsFromString( "COLLAPSED" );
+    statCat->SetFlagsFromString( _( "COLLAPSED" ) );
   
 //  windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
   
   vector<string> tmpV;
   whichHisto->getGroupsLabels( tmpV );
   for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
-    arrayStr.Add( wxT( (*it).c_str() ) );
+    arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
   arrayInt.Add( 0 );
   arrayInt.Add( 1 );
   if( whichHisto->itsCommunicationStat( whichHisto->getCurrentStat() ) )
@@ -854,7 +854,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   selected = -1;
   for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
   {
-    arrayStr.Add( wxT( (*it).c_str() ) );
+    arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
     arrayInt.Add( pos );
     if( (*it) == whichHisto->getCurrentStat() )
       selected = pos;
@@ -862,13 +862,13 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   }
   if( selected == -1 ) selected = 0;
   windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Statistic"), wxPG_LABEL, arrayStr, arrayInt, selected ) );
-  windowProperties->AppendIn( statCat, new wxFloatProperty( wxT("Minimum Gradient"), wxT("DataMinimum"), wxT( whichHisto->getMinGradient() )));
-  windowProperties->AppendIn( statCat, new wxFloatProperty( wxT("Maximum Gradient"), wxT("DataMaximum"), wxT( whichHisto->getMaxGradient() )));
+  windowProperties->AppendIn( statCat, new wxFloatProperty( wxT("Minimum Gradient"), wxT("DataMinimum"), whichHisto->getMinGradient() ) );
+  windowProperties->AppendIn( statCat, new wxFloatProperty( wxT("Maximum Gradient"), wxT("DataMaximum"), whichHisto->getMaxGradient() ) );
 
   // Control Window related properties
   wxPGId ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control") ) );
   if( ctrlCatCollapsed )
-    ctrlCat->SetFlagsFromString( "COLLAPSED" );
+    ctrlCat->SetFlagsFromString( _( "COLLAPSED" ) );
   
   vector<TWindowID> validWin;
   Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
@@ -879,7 +879,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   selected = -1;
   for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
-    arrayStr.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
+    arrayStr.Add( wxString::FromAscii( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
     arrayInt.Add( (*it) );
     // Do we need this -if- here?
     if( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getControlWindow() )
@@ -887,14 +887,14 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   }
   wxEnumProperty *tmpCtrlWin = new wxEnumProperty( wxT("Window"), wxT("ControlWindow"), arrayStr, arrayInt, selected );
   windowProperties->AppendIn( ctrlCat, tmpCtrlWin );
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Minimum"), wxT("ControlMinimum"), wxT( whichHisto->getControlMin() )));
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Maximum"), wxT("ControlMaximum"), wxT( whichHisto->getControlMax() )));
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Delta"), wxT("ControlDelta"), wxT( whichHisto->getControlDelta() )));
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Minimum"), wxT("ControlMinimum"), whichHisto->getControlMin() ) );
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Maximum"), wxT("ControlMaximum"), whichHisto->getControlMax() ) );
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Delta"), wxT("ControlDelta"), whichHisto->getControlDelta() ) );
 
   // Data Window related properties
   wxPGId dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data") ) );
   if( dataCatCollapsed )
-    dataCat->SetFlagsFromString( "COLLAPSED" );
+    dataCat->SetFlagsFromString( _( "COLLAPSED" ) );
   
   validWin.clear();  //  vector<TWindowID> validWin;
   LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
@@ -905,7 +905,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   selected = -1;
   for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
-    arrayStr.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
+    arrayStr.Add( wxString::FromAscii( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
     arrayInt.Add( (*it) );
     if( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getDataWindow() )
       selected = (*it);
@@ -916,7 +916,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   // 3rd window related properties
   wxPGId thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D") ) );
   if( thirdWinCatCollapsed )
-    thirdWinCat->SetFlagsFromString( "COLLAPSED" );
+    thirdWinCat->SetFlagsFromString( _( "COLLAPSED" ) );
   
   validWin.clear();
   dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
@@ -929,7 +929,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   arrayInt.Add( -1 );
   for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
   {
-    arrayStr.Add( wxT( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
+    arrayStr.Add( wxString::FromAscii( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
     arrayInt.Add( (*it) );
     if( ( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getExtraControlWindow() ) )
       selected = (*it);
@@ -950,7 +950,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   {
     if( whichHisto->planeWithValues( i ) )
     {
-      arrayStr.Add( whichHisto->getPlaneLabel( i ) );
+      arrayStr.Add( wxString::FromAscii( whichHisto->getPlaneLabel( i ).c_str() ) );
       arrayInt.Add( pos );
       if( pos == whichHisto->getSelectedPlane() )
         selected = pos;
@@ -962,10 +962,10 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   if( !whichHisto->getThreeDimensions() )
   {
-    tmp3dMin->SetFlagsFromString( "DISABLED" );
-    tmp3dMax->SetFlagsFromString( "DISABLED" );
-    tmp3dDelta->SetFlagsFromString( "DISABLED" );
-    tmp3dPlane->SetFlagsFromString( "DISABLED" );
+    tmp3dMin->SetFlagsFromString( _( "DISABLED" ) );
+    tmp3dMax->SetFlagsFromString( _( "DISABLED" ) );
+    tmp3dDelta->SetFlagsFromString( _( "DISABLED" ) );
+    tmp3dPlane->SetFlagsFromString( _( "DISABLED" ) );
   }
 
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );
