@@ -1541,7 +1541,7 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
 {
   // Create new window
   Window *newWindow = Window::create( localKernel, loadedTraces[ currentTrace ] );
- 
+
   ++numNewWindows;
   wxString tmpName( _( "New window #" ) );
   tmpName << numNewWindows;
@@ -1982,6 +1982,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetHistogramShowUnits( paraverConfig->getHistogramShowUnits() );
   preferences.SetHistogramPrecision( paraverConfig->getHistogramPrecision() );
   preferences.SetHistogramAutofitControlScale( paraverConfig->getHistogramAutofitControlScale() );
+  preferences.SetHistogramAutofit3DScale( paraverConfig->getHistogramAutofitThirdDimensionScale() );
   preferences.SetHistogramAutofitDataGradient( paraverConfig->getHistogramAutofitDataGradient() );
   preferences.SetHistogramNumColumns( paraverConfig->getHistogramNumColumns() );
 //  preferences.SetHistogramMaxNumColumns( 400 ); // TO IMPLEMENT
@@ -2053,6 +2054,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setHistogramShowUnits( preferences.GetHistogramShowUnits() );
     paraverConfig->setHistogramPrecision( preferences.GetHistogramPrecision() );
     paraverConfig->setHistogramAutofitControlScale( preferences.GetHistogramAutofitControlScale() );
+    paraverConfig->setHistogramAutofitThirdDimensionScale( preferences.GetHistogramAutofit3DScale() );
     paraverConfig->setHistogramAutofitDataGradient( preferences.GetHistogramAutofitDataGradient() );
     paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );
     paraverConfig->setHistogramSaveImageFormat( ( ParaverConfig::TImageFormat ) preferences.GetHistogramSaveImageFormat() );

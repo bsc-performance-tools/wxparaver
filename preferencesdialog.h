@@ -81,6 +81,7 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCES_HISTOGRAM_SHOW_UNITS 10028
 #define ID_PREFERENCES_HISTOGRAM_PRECISION 10074
 #define ID_PREFERENCES_HISTOGRAM_AUTOFIT_CONTROL 10030
+#define ID_PREFERENCES_HISTOGRAM_AUTOFIT_3D 10030
 #define ID_PREFERENCES_HISTOGRAM_AUTOFIT_DATA_GRADIENT 10029
 #define ID_PREFERENCES_HISTOGRAM_NUMCOLUMNS 10075
 #define ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT 10031
@@ -301,6 +302,9 @@ public:
   bool GetHistogramDrawmodeSemantic() const { return histogramDrawmodeSemantic ; }
   void SetHistogramDrawmodeSemantic(bool value) { histogramDrawmodeSemantic = value ; }
 
+  bool GetHistogramAutofit3DScale() const { return histogramAutofit3DScale ; }
+  void SetHistogramAutofit3DScale(bool value) { histogramAutofit3DScale = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -351,6 +355,7 @@ public:
   wxCheckBox* checkHistogramShowUnits;
   wxSpinCtrl* txtHistogramPrecision;
   wxCheckBox* checkHistogramAutofitControlScale;
+  wxCheckBox* checkHistogramAutofit3DScale;
   wxCheckBox* checkHistogramAutofitDataGradient;
   wxSpinCtrl* txtHistogramNumColumns;
   wxChoice* choiceHistogramSaveImageFormat;
@@ -415,6 +420,7 @@ private:
   UINT32 histogramSaveImageFormat;
   UINT32 histogramSaveTextFormat;
   bool histogramDrawmodeSemantic;
+  bool histogramAutofit3DScale;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

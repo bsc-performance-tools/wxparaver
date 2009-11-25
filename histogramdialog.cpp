@@ -337,6 +337,11 @@ void HistogramDialog::CreateControls()
 
 ////@end HistogramDialog content construction
 
+  controlTimelineAutofit = ParaverConfig::getInstance()->getHistogramAutofitControlScale();
+  buttonControlTimelineAutoFit->SetValue( controlTimelineAutofit );
+  extraControlTimelineAutofit = ParaverConfig::getInstance()->getHistogramAutofitThirdDimensionScale();
+  button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit ); 
+
   // Filter forbidden chars
   txtControlTimelineMin->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
   txtControlTimelineMax->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
@@ -573,7 +578,8 @@ void HistogramDialog::updateExtraControlTimelineAutofit()
     txt3DTimelineDelta->Clear();
 
     button3DTimelineAutoFit->Enable( false );
-    button3DTimelineAutoFit->SetValue( true );
+    //button3DTimelineAutoFit->SetValue( true );
+    button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit );
     enable3DFields( false );
   }
   else
@@ -778,8 +784,6 @@ UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listTimel
   return posSelected;
 }
 
-
-
 bool HistogramDialog::TransferDataToWindow( Window *current )
 {
   UINT32 pos;
@@ -797,6 +801,8 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
   txtControlTimelineMax->SetValue( formatNumber(  max ) );
   txtControlTimelineDelta->SetValue( formatNumber( delta ) );
 
+  buttonControlTimelineAutoFit->SetValue( controlTimelineAutofit );
+
   // Fill Data Timelines choice list
   LoadedWindows::getInstance()->getValidDataWindow( current, NULL, dataTimelines );
   pos = fillList( current, dataTimelines, listDataTimelines ); // here selected is also the current one
@@ -808,6 +814,7 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
   pos = fillList( NULL, extraControlTimelines, list3DTimelines );
   list3DTimelines->Select( pos );
 
+  button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit );
   button3DTimelineAutoFit->Enable( false );
 
   txtBeginTime->SetValue( formatNumber( timeRange[ WINDOW_RANGE ].first ) );
