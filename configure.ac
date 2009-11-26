@@ -28,11 +28,15 @@ if test "$wxWin" != 1; then
 		wxWidgets version is $reqwx or above.
 		])
 fi
+
+AX_BOOST_BASE(1.36)
+AX_BOOST_SERIALIZATION
  
 CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS -I./ -I../common-files/ -I../paraver-kernel/api/"
 CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY -I./ -I../common-files/ -I../paraver-kernel/api/"
 CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
 LIBS="$LIBS $WX_LIBS -L../paraver-kernel/"
+LDFLAGS="$LDFLAGS $BOOST_LDFLAGS $BOOST_SERIALIZATION_LIB"
 
 # Checks for header files.
 

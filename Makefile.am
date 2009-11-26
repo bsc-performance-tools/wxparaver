@@ -28,6 +28,6 @@ wxparaver_SOURCES = copypaste.cpp \
                     wxparaverapp.cpp \
                     wxparaverapp.h
 
-wxparaver_LDADD = @LIBS@ -lwxcode_gtk2u_propgrid-2.8 -lparaver-kernel -lparaver-api -lboost_serialization-gcc43-mt
+wxparaver_LDADD = @LIBS@ -lwxcode_gtk2u_propgrid-2.8 -lparaver-kernel -lparaver-api
 wxparaver_CXXFLAGS = @CXXFLAGS@
 
