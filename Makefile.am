@@ -28,6 +28,23 @@ wxparaver_SOURCES = copypaste.cpp \
                     wxparaverapp.cpp \
                     wxparaverapp.h
 
+noinst_HEADERS = \
+              caution.xpm\
+              delete.xpm\
+              hide_cols.xpm\
+              histo_color.xpm\
+              histo_horvert.xpm\
+              histo_zoom.xpm\
+              new_derived_window.xpm\
+              new_histogram.xpm\
+              new_window.xpm\
+              open3d.xpm\
+              opencontrol.xpm\
+              opendata.xpm\
+              openfiltered.xpm\
+              table.xpm\
+              timeline.xpm
+
 wxparaver_LDADD = @LIBS@ -lwxcode_gtk2u_propgrid-2.8 -lparaver-kernel -lparaver-api
 wxparaver_CXXFLAGS = @CXXFLAGS@
 
