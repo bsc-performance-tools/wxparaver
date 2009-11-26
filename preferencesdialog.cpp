@@ -240,633 +240,573 @@ void PreferencesDialog::CreateControls()
   wxStaticText* itemStaticText8 = new wxStaticText( itemPanel2, wxID_STATIC, _("Traces"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer7->Add(itemStaticText8, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemBoxSizer7->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
   dirPickerTrace = new wxDirPickerCtrl( itemPanel2, ID_DIRPICKERCTRL_TRACES, wxEmptyString, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE|wxDIRP_USE_TEXTCTRL );
   if (PreferencesDialog::ShowToolTips())
     dirPickerTrace->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
   itemBoxSizer7->Add(dirPickerTrace, 6, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer6->Add(itemBoxSizer11, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText12 = new wxStaticText( itemPanel2, wxID_STATIC, _("CFGs"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer11->Add(itemStaticText12, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  itemBoxSizer11->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer6->Add(itemBoxSizer10, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText11 = new wxStaticText( itemPanel2, wxID_STATIC, _("CFGs"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(itemStaticText11, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   dirPickerCFG = new wxDirPickerCtrl( itemPanel2, ID_DIRPICKERCTRL_CFG, wxEmptyString, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE|wxDIRP_USE_TEXTCTRL );
   dirPickerCFG->SetHelpText(_("Base path to configuration files (.cfg). "));
   if (PreferencesDialog::ShowToolTips())
     dirPickerCFG->SetToolTip(_("Base path to configuration files (.cfg). "));
-  itemBoxSizer11->Add(dirPickerCFG, 6, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer10->Add(dirPickerCFG, 6, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer6->Add(itemBoxSizer15, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText16 = new wxStaticText( itemPanel2, wxID_STATIC, _("Tmp"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticText16->Enable(false);
-  itemBoxSizer15->Add(itemStaticText16, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  itemBoxSizer15->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer6->Add(itemBoxSizer13, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText14 = new wxStaticText( itemPanel2, wxID_STATIC, _("Tmp"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticText14->Enable(false);
+  itemBoxSizer13->Add(itemStaticText14, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   dirPickerTmp = new wxDirPickerCtrl( itemPanel2, ID_DIRPICKERCTRL_TMP, wxEmptyString, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRP_DEFAULT_STYLE|wxDIRP_USE_TEXTCTRL );
   if (PreferencesDialog::ShowToolTips())
     dirPickerTmp->SetToolTip(_("Working directory for results and logs."));
   dirPickerTmp->Enable(false);
-  itemBoxSizer15->Add(dirPickerTmp, 6, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer13->Add(dirPickerTmp, 6, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   GetBookCtrl()->AddPage(itemPanel2, _("Global"));
 
-  wxPanel* itemPanel19 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_TIMELINE, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxPanel* itemPanel16 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_TIMELINE, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
+  itemPanel16->SetSizer(itemBoxSizer17);
+
+  wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer17->Add(itemBoxSizer18, 3, wxGROW|wxTOP, 5);
+  wxStaticBox* itemStaticBoxSizer19Static = new wxStaticBox(itemPanel16, wxID_STATIC, _("  Name Format  "));
+  wxStaticBoxSizer* itemStaticBoxSizer19 = new wxStaticBoxSizer(itemStaticBoxSizer19Static, wxVERTICAL);
+  itemStaticBoxSizer19Static->Enable(false);
+  itemBoxSizer18->Add(itemStaticBoxSizer19, 0, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
-  itemPanel19->SetSizer(itemBoxSizer20);
-
-  wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer20->Add(itemBoxSizer21, 3, wxGROW|wxALL, 5);
-  wxStaticBox* itemStaticBoxSizer22Static = new wxStaticBox(itemPanel19, wxID_STATIC, _("  Name Format  "));
-  wxStaticBoxSizer* itemStaticBoxSizer22 = new wxStaticBoxSizer(itemStaticBoxSizer22Static, wxVERTICAL);
-  itemStaticBoxSizer22Static->Enable(false);
-  itemBoxSizer21->Add(itemStaticBoxSizer22, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer22->Add(itemBoxSizer23, 0, wxGROW|wxTOP|wxBOTTOM, 5);
-  wxStaticText* itemStaticText24 = new wxStaticText( itemPanel19, wxID_STATIC, _("Prefix"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer19->Add(itemBoxSizer20, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  wxStaticText* itemStaticText21 = new wxStaticText( itemPanel16, wxID_STATIC, _("Prefix"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText24->SetToolTip(_("Default name for new timelines, applied in window browser."));
-  itemStaticText24->Enable(false);
-  itemBoxSizer23->Add(itemStaticText24, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+    itemStaticText21->SetToolTip(_("Default name for new timelines, applied in window browser."));
+  itemStaticText21->Enable(false);
+  itemBoxSizer20->Add(itemStaticText21, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
-  itemBoxSizer23->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  txtTimelineNameFormatPrefix = new wxTextCtrl( itemPanel19, ID_PREFERENCES_TIMELINE_NAME_PREFIX, _("New Window # %N"), wxDefaultPosition, wxDefaultSize, 0 );
+  txtTimelineNameFormatPrefix = new wxTextCtrl( itemPanel16, ID_PREFERENCES_TIMELINE_NAME_PREFIX, _("New Window # %N"), wxDefaultPosition, wxDefaultSize, 0 );
   txtTimelineNameFormatPrefix->SetMaxLength(256);
   if (PreferencesDialog::ShowToolTips())
     txtTimelineNameFormatPrefix->SetToolTip(_("Default name for new timelines, applied in window browser."));
   txtTimelineNameFormatPrefix->Enable(false);
-  itemBoxSizer23->Add(txtTimelineNameFormatPrefix, 2, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+  itemBoxSizer20->Add(txtTimelineNameFormatPrefix, 2, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer22->Add(itemBoxSizer27, 0, wxGROW|wxBOTTOM, 5);
-  wxStaticText* itemStaticText28 = new wxStaticText( itemPanel19, wxID_STATIC, _("Full"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer19->Add(itemBoxSizer23, 0, wxGROW|wxBOTTOM, 5);
+  wxStaticText* itemStaticText24 = new wxStaticText( itemPanel16, wxID_STATIC, _("Full"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText28->SetToolTip(_("Default full name for new timelines, applied in window title."));
-  itemStaticText28->Enable(false);
-  itemBoxSizer27->Add(itemStaticText28, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+    itemStaticText24->SetToolTip(_("Default full name for new timelines, applied in window title."));
+  itemStaticText24->Enable(false);
+  itemBoxSizer23->Add(itemStaticText24, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
-  itemBoxSizer27->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  txtTimelineNameFormatFull = new wxTextCtrl( itemPanel19, ID_PREFERENCES_TIMELINE_NAME_FULL, _("%P @ %T"), wxDefaultPosition, wxDefaultSize, 0 );
+  txtTimelineNameFormatFull = new wxTextCtrl( itemPanel16, ID_PREFERENCES_TIMELINE_NAME_FULL, _("%P @ %T"), wxDefaultPosition, wxDefaultSize, 0 );
   txtTimelineNameFormatFull->SetMaxLength(256);
   if (PreferencesDialog::ShowToolTips())
     txtTimelineNameFormatFull->SetToolTip(_("Default full name for new timelines, applied in window title."));
   txtTimelineNameFormatFull->Enable(false);
-  itemBoxSizer27->Add(txtTimelineNameFormatFull, 2, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+  itemBoxSizer23->Add(txtTimelineNameFormatFull, 2, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
-  wxStaticBox* itemStaticBoxSizer31Static = new wxStaticBox(itemPanel19, wxID_ANY, _("  Rendering Options  "));
-  wxStaticBoxSizer* itemStaticBoxSizer31 = new wxStaticBoxSizer(itemStaticBoxSizer31Static, wxVERTICAL);
-  itemBoxSizer21->Add(itemStaticBoxSizer31, 1, wxGROW|wxALL, 5);
-  checkTimelineCommunicationLines = new wxCheckBox( itemPanel19, ID_PREFERENCES_TIMELINE_COMMUNICATION_LINES, _("Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer26Static = new wxStaticBox(itemPanel16, wxID_ANY, _("  Rendering Options  "));
+  wxStaticBoxSizer* itemStaticBoxSizer26 = new wxStaticBoxSizer(itemStaticBoxSizer26Static, wxVERTICAL);
+  itemBoxSizer18->Add(itemStaticBoxSizer26, 1, wxGROW|wxALL, 5);
+  checkTimelineCommunicationLines = new wxCheckBox( itemPanel16, ID_PREFERENCES_TIMELINE_COMMUNICATION_LINES, _("Communication Lines"), wxDefaultPosition, wxDefaultSize, 0 );
   checkTimelineCommunicationLines->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkTimelineCommunicationLines->SetToolTip(_("View communications lines in new timelines."));
-  itemStaticBoxSizer31->Add(checkTimelineCommunicationLines, 0, wxGROW|wxTOP, 5);
+  itemStaticBoxSizer26->Add(checkTimelineCommunicationLines, 0, wxGROW|wxTOP, 5);
 
-  checkTimelineEventLines = new wxCheckBox( itemPanel19, ID_PREFERENCES_TIMELINE_EVENT_LINES, _("Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkTimelineEventLines = new wxCheckBox( itemPanel16, ID_PREFERENCES_TIMELINE_EVENT_LINES, _("Event Flags"), wxDefaultPosition, wxDefaultSize, 0 );
   checkTimelineEventLines->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkTimelineEventLines->SetToolTip(_("View event flags in new timelines."));
-  itemStaticBoxSizer31->Add(checkTimelineEventLines, 0, wxGROW, 5);
+  itemStaticBoxSizer26->Add(checkTimelineEventLines, 0, wxGROW, 5);
 
-  checkTimelineFunctionAsColor = new wxCheckBox( itemPanel19, ID_PREFERENCES_TIMELINE_SEMANTIC_AS_COLOR, _("Semantic Values as Color"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkTimelineFunctionAsColor = new wxCheckBox( itemPanel16, ID_PREFERENCES_TIMELINE_SEMANTIC_AS_COLOR, _("Semantic Values as Color"), wxDefaultPosition, wxDefaultSize, 0 );
   checkTimelineFunctionAsColor->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkTimelineFunctionAsColor->SetToolTip(_("Represent semantic values as function in new timelines."));
-  itemStaticBoxSizer31->Add(checkTimelineFunctionAsColor, 0, wxGROW|wxBOTTOM, 5);
+  itemStaticBoxSizer26->Add(checkTimelineFunctionAsColor, 0, wxGROW|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer35 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer31->Add(itemBoxSizer35, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText36 = new wxStaticText( itemPanel19, wxID_STATIC, _("Color"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer30 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer26->Add(itemBoxSizer30, 0, wxGROW|wxTOP, 5);
+  wxStaticText* itemStaticText31 = new wxStaticText( itemPanel16, wxID_STATIC, _("Color"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText36->SetToolTip(_("Color mode selected in new timeline."));
-  itemBoxSizer35->Add(itemStaticText36, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-
-  itemBoxSizer35->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText31->SetToolTip(_("Color mode selected in new timeline."));
+  itemBoxSizer30->Add(itemStaticText31, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceTimelineColorStrings;
-  choiceTimelineColor = new wxChoice( itemPanel19, ID_PREFERENCES_TIMELINE_COLOR, wxDefaultPosition, wxDefaultSize, choiceTimelineColorStrings, 0 );
+  choiceTimelineColor = new wxChoice( itemPanel16, ID_PREFERENCES_TIMELINE_COLOR, wxDefaultPosition, wxDefaultSize, choiceTimelineColorStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineColor->SetToolTip(_("Color mode selected in new timeline."));
-  itemBoxSizer35->Add(choiceTimelineColor, 1, wxGROW|wxRIGHT, 5);
+  itemBoxSizer30->Add(choiceTimelineColor, 1, wxGROW|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer39 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer31->Add(itemBoxSizer39, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText40 = new wxStaticText( itemPanel19, wxID_STATIC, _("Gradient Function"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer26->Add(itemBoxSizer33, 0, wxGROW|wxTOP, 5);
+  wxStaticText* itemStaticText34 = new wxStaticText( itemPanel16, wxID_STATIC, _("Gradient Function"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText40->SetToolTip(_("Gradient function selected in new timeline."));
-  itemBoxSizer39->Add(itemStaticText40, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-  itemBoxSizer39->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText34->SetToolTip(_("Gradient function selected in new timeline."));
+  itemBoxSizer33->Add(itemStaticText34, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxArrayString choiceTimelineGradientFunctionStrings;
-  choiceTimelineGradientFunction = new wxChoice( itemPanel19, ID_PREFERENCES_TIMELINE_GRADIENT, wxDefaultPosition, wxDefaultSize, choiceTimelineGradientFunctionStrings, 0 );
+  choiceTimelineGradientFunction = new wxChoice( itemPanel16, ID_PREFERENCES_TIMELINE_GRADIENT, wxDefaultPosition, wxDefaultSize, choiceTimelineGradientFunctionStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineGradientFunction->SetToolTip(_("Gradient function selected in new timeline."));
-  itemBoxSizer39->Add(choiceTimelineGradientFunction, 1, wxGROW|wxRIGHT, 5);
+  itemBoxSizer33->Add(choiceTimelineGradientFunction, 1, wxGROW|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer31->Add(itemBoxSizer43, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText44 = new wxStaticText( itemPanel19, wxID_STATIC, _("Drawmode Time"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer36 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer26->Add(itemBoxSizer36, 0, wxGROW|wxTOP, 5);
+  wxStaticText* itemStaticText37 = new wxStaticText( itemPanel16, wxID_STATIC, _("Drawmode Time"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText44->SetToolTip(_("Drawmode for time axis selected in new timeline."));
-  itemBoxSizer43->Add(itemStaticText44, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-
-  itemBoxSizer43->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText37->SetToolTip(_("Drawmode for time axis selected in new timeline."));
+  itemBoxSizer36->Add(itemStaticText37, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceTimelineDrawmodeTimeStrings;
-  choiceTimelineDrawmodeTime = new wxChoice( itemPanel19, ID_PREFERENCES_TIMELINE_DRAWMODE_TIME, wxDefaultPosition, wxDefaultSize, choiceTimelineDrawmodeTimeStrings, 0 );
+  choiceTimelineDrawmodeTime = new wxChoice( itemPanel16, ID_PREFERENCES_TIMELINE_DRAWMODE_TIME, wxDefaultPosition, wxDefaultSize, choiceTimelineDrawmodeTimeStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineDrawmodeTime->SetToolTip(_("Drawmode for time axis selected in new timeline."));
-  itemBoxSizer43->Add(choiceTimelineDrawmodeTime, 1, wxGROW|wxRIGHT, 5);
+  itemBoxSizer36->Add(choiceTimelineDrawmodeTime, 1, wxGROW|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer47 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer31->Add(itemBoxSizer47, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText48 = new wxStaticText( itemPanel19, wxID_STATIC, _("Drawmode Objects"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer39 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer26->Add(itemBoxSizer39, 0, wxGROW|wxTOP, 5);
+  wxStaticText* itemStaticText40 = new wxStaticText( itemPanel16, wxID_STATIC, _("Drawmode Objects"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText48->SetToolTip(_("Drawmode for objects axis selected in new timeline."));
-  itemBoxSizer47->Add(itemStaticText48, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-
-  itemBoxSizer47->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText40->SetToolTip(_("Drawmode for objects axis selected in new timeline."));
+  itemBoxSizer39->Add(itemStaticText40, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceTimelineDrawmodeObjectsStrings;
-  choiceTimelineDrawmodeObjects = new wxChoice( itemPanel19, ID_PREFERENCES_TIMELINE_DRAWMODE_OBJECTS, wxDefaultPosition, wxDefaultSize, choiceTimelineDrawmodeObjectsStrings, 0 );
+  choiceTimelineDrawmodeObjects = new wxChoice( itemPanel16, ID_PREFERENCES_TIMELINE_DRAWMODE_OBJECTS, wxDefaultPosition, wxDefaultSize, choiceTimelineDrawmodeObjectsStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineDrawmodeObjects->SetToolTip(_("Drawmode for objects axis selected in new timeline."));
-  itemBoxSizer47->Add(choiceTimelineDrawmodeObjects, 1, wxGROW|wxRIGHT, 5);
+  itemBoxSizer39->Add(choiceTimelineDrawmodeObjects, 1, wxGROW|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer51 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer31->Add(itemBoxSizer51, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText52 = new wxStaticText( itemPanel19, wxID_STATIC, _("Pixel Size"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer42 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer26->Add(itemBoxSizer42, 0, wxGROW|wxTOP, 5);
+  wxStaticText* itemStaticText43 = new wxStaticText( itemPanel16, wxID_STATIC, _("Pixel Size"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText52->SetToolTip(_("Pixel size selected in new timeline."));
-  itemBoxSizer51->Add(itemStaticText52, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  itemBoxSizer51->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText43->SetToolTip(_("Pixel size selected in new timeline."));
+  itemBoxSizer42->Add(itemStaticText43, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString choiceTimelinePixelSizeStrings;
-  choiceTimelinePixelSize = new wxChoice( itemPanel19, ID_PREFERENCES_TIMELINE_PIXEL_SIZE, wxDefaultPosition, wxDefaultSize, choiceTimelinePixelSizeStrings, 0 );
+  choiceTimelinePixelSize = new wxChoice( itemPanel16, ID_PREFERENCES_TIMELINE_PIXEL_SIZE, wxDefaultPosition, wxDefaultSize, choiceTimelinePixelSizeStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceTimelinePixelSize->SetToolTip(_("Pixel size selected in new timeline."));
-  itemBoxSizer51->Add(choiceTimelinePixelSize, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+  itemBoxSizer42->Add(choiceTimelinePixelSize, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer55 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer20->Add(itemBoxSizer55, 2, wxGROW, 5);
-  wxStaticBox* itemStaticBoxSizer56Static = new wxStaticBox(itemPanel19, wxID_ANY, _("  What / Where  "));
-  wxStaticBoxSizer* itemStaticBoxSizer56 = new wxStaticBoxSizer(itemStaticBoxSizer56Static, wxVERTICAL);
-  itemBoxSizer55->Add(itemStaticBoxSizer56, 2, wxGROW|wxALL, 5);
-  checkTimelineWWSemantic = new wxCheckBox( itemPanel19, ID_CHECKBOX_TIMELINE_WW_SEMANTIC, _("Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer17->Add(itemBoxSizer45, 2, wxGROW|wxTOP, 5);
+  wxStaticBox* itemStaticBoxSizer46Static = new wxStaticBox(itemPanel16, wxID_ANY, _("  What / Where  "));
+  wxStaticBoxSizer* itemStaticBoxSizer46 = new wxStaticBoxSizer(itemStaticBoxSizer46Static, wxVERTICAL);
+  itemBoxSizer45->Add(itemStaticBoxSizer46, 2, wxGROW|wxALL, 5);
+  checkTimelineWWSemantic = new wxCheckBox( itemPanel16, ID_CHECKBOX_TIMELINE_WW_SEMANTIC, _("Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
   checkTimelineWWSemantic->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkTimelineWWSemantic->SetToolTip(_("Show semantic information when left click in timeline."));
-  itemStaticBoxSizer56->Add(checkTimelineWWSemantic, 0, wxGROW|wxTOP, 5);
+  itemStaticBoxSizer46->Add(checkTimelineWWSemantic, 0, wxGROW|wxTOP, 5);
 
-  checkTimelineWWEvents = new wxCheckBox( itemPanel19, ID_CHECKBOX_TIMELINE_WW_EVENTS, _("Events"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkTimelineWWEvents = new wxCheckBox( itemPanel16, ID_CHECKBOX_TIMELINE_WW_EVENTS, _("Events"), wxDefaultPosition, wxDefaultSize, 0 );
   checkTimelineWWEvents->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkTimelineWWEvents->SetToolTip(_("Show events information when left click in timeline."));
-  itemStaticBoxSizer56->Add(checkTimelineWWEvents, 0, wxGROW, 5);
+  itemStaticBoxSizer46->Add(checkTimelineWWEvents, 0, wxGROW, 5);
 
-  checkTimelineWWCommunications = new wxCheckBox( itemPanel19, ID_CHECKBOX_TIMELINE_WW_COMMUNICATIONS, _("Communications"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkTimelineWWCommunications = new wxCheckBox( itemPanel16, ID_CHECKBOX_TIMELINE_WW_COMMUNICATIONS, _("Communications"), wxDefaultPosition, wxDefaultSize, 0 );
   checkTimelineWWCommunications->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkTimelineWWCommunications->SetToolTip(_("Show communications information when left click in timeline."));
-  itemStaticBoxSizer56->Add(checkTimelineWWCommunications, 0, wxGROW, 5);
+  itemStaticBoxSizer46->Add(checkTimelineWWCommunications, 0, wxGROW, 5);
 
-  checkTimelineWWPreviousNext = new wxCheckBox( itemPanel19, ID_CHECKBOX_TIMELINE_WW_PREVIOUS_NEXT, _("Previous / Next"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkTimelineWWPreviousNext = new wxCheckBox( itemPanel16, ID_CHECKBOX_TIMELINE_WW_PREVIOUS_NEXT, _("Previous / Next"), wxDefaultPosition, wxDefaultSize, 0 );
   checkTimelineWWPreviousNext->SetValue(false);
   if (PreferencesDialog::ShowToolTips())
     checkTimelineWWPreviousNext->SetToolTip(_("In addition to current semantic value, show information for previous and next ones when left click in timeline."));
-  itemStaticBoxSizer56->Add(checkTimelineWWPreviousNext, 0, wxGROW, 5);
+  itemStaticBoxSizer46->Add(checkTimelineWWPreviousNext, 0, wxGROW, 5);
 
-  checkTimelineWWText = new wxCheckBox( itemPanel19, ID_CHECKBOX_TIMELINE_WW_TEXT, _("Text"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkTimelineWWText = new wxCheckBox( itemPanel16, ID_CHECKBOX_TIMELINE_WW_TEXT, _("Text"), wxDefaultPosition, wxDefaultSize, 0 );
   checkTimelineWWText->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkTimelineWWText->SetToolTip(_("Show semantic value as text when left click in timeline."));
-  itemStaticBoxSizer56->Add(checkTimelineWWText, 0, wxGROW|wxBOTTOM, 5);
+  itemStaticBoxSizer46->Add(checkTimelineWWText, 0, wxGROW|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer62 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer56->Add(itemBoxSizer62, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText63 = new wxStaticText( itemPanel19, wxID_STATIC, _("Precision"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer62->Add(itemStaticText63, 2, wxALIGN_CENTER_VERTICAL, 5);
+  wxBoxSizer* itemBoxSizer52 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer46->Add(itemBoxSizer52, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText53 = new wxStaticText( itemPanel16, wxID_STATIC, _("Precision"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer52->Add(itemStaticText53, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer62->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxSHAPED, 5);
-
-  txtTimelineWWPrecision = new wxSpinCtrl( itemPanel19, ID_PREFERENCES_TIMELINE_WW_PRECISION, _T("2"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 2 );
+  txtTimelineWWPrecision = new wxSpinCtrl( itemPanel16, ID_PREFERENCES_TIMELINE_WW_PRECISION, _T("2"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 2 );
   if (PreferencesDialog::ShowToolTips())
     txtTimelineWWPrecision->SetToolTip(_("Decimal precision for semantic values."));
-  itemBoxSizer62->Add(txtTimelineWWPrecision, 3, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer52->Add(txtTimelineWWPrecision, 3, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxStaticBox* itemStaticBoxSizer66Static = new wxStaticBox(itemPanel19, wxID_ANY, _("  Save Options  "));
-  wxStaticBoxSizer* itemStaticBoxSizer66 = new wxStaticBoxSizer(itemStaticBoxSizer66Static, wxVERTICAL);
-  itemBoxSizer55->Add(itemStaticBoxSizer66, 1, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer67 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer66->Add(itemBoxSizer67, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
-  wxStaticText* itemStaticText68 = new wxStaticText( itemPanel19, wxID_STATIC, _("Image as"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer55Static = new wxStaticBox(itemPanel16, wxID_ANY, _("  Save Options  "));
+  wxStaticBoxSizer* itemStaticBoxSizer55 = new wxStaticBoxSizer(itemStaticBoxSizer55Static, wxVERTICAL);
+  itemBoxSizer45->Add(itemStaticBoxSizer55, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer56 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer55->Add(itemBoxSizer56, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  wxStaticText* itemStaticText57 = new wxStaticText( itemPanel16, wxID_STATIC, _("Image as"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText68->SetToolTip(_("Default image format selected."));
-  itemBoxSizer67->Add(itemStaticText68, 2, wxALIGN_CENTER_VERTICAL, 5);
-
-  itemBoxSizer67->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText57->SetToolTip(_("Default image format selected."));
+  itemBoxSizer56->Add(itemStaticText57, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceTimelineSaveImageFormatStrings;
-  choiceTimelineSaveImageFormat = new wxChoice( itemPanel19, ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE, wxDefaultPosition, wxDefaultSize, choiceTimelineSaveImageFormatStrings, 0 );
+  choiceTimelineSaveImageFormat = new wxChoice( itemPanel16, ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE, wxDefaultPosition, wxDefaultSize, choiceTimelineSaveImageFormatStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineSaveImageFormat->SetToolTip(_("Default image format selected."));
-  itemBoxSizer67->Add(choiceTimelineSaveImageFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer56->Add(choiceTimelineSaveImageFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer71 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer66->Add(itemBoxSizer71, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
-  wxStaticText* itemStaticText72 = new wxStaticText( itemPanel19, wxID_STATIC, _("Text as"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer59 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer55->Add(itemBoxSizer59, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  wxStaticText* itemStaticText60 = new wxStaticText( itemPanel16, wxID_STATIC, _("Text as"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText72->SetToolTip(_("Default text format selected."));
-  itemStaticText72->Enable(false);
-  itemBoxSizer71->Add(itemStaticText72, 2, wxALIGN_CENTER_VERTICAL, 5);
-
-  itemBoxSizer71->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText60->SetToolTip(_("Default text format selected."));
+  itemStaticText60->Enable(false);
+  itemBoxSizer59->Add(itemStaticText60, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceTimelineSaveTextFormatStrings;
-  choiceTimelineSaveTextFormat = new wxChoice( itemPanel19, ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT, wxDefaultPosition, wxDefaultSize, choiceTimelineSaveTextFormatStrings, 0 );
+  choiceTimelineSaveTextFormat = new wxChoice( itemPanel16, ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT, wxDefaultPosition, wxDefaultSize, choiceTimelineSaveTextFormatStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineSaveTextFormat->SetToolTip(_("Default text format selected."));
   choiceTimelineSaveTextFormat->Enable(false);
-  itemBoxSizer71->Add(choiceTimelineSaveTextFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer59->Add(choiceTimelineSaveTextFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
 
-  GetBookCtrl()->AddPage(itemPanel19, _("Timeline"));
+  GetBookCtrl()->AddPage(itemPanel16, _("Timeline"));
 
-  wxPanel* itemPanel75 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_HISTOGRAM, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxPanel* itemPanel62 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_HISTOGRAM, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   if (PreferencesDialog::ShowToolTips())
-    itemPanel75->SetToolTip(_("Histogram preferences."));
-  wxBoxSizer* itemBoxSizer76 = new wxBoxSizer(wxHORIZONTAL);
-  itemPanel75->SetSizer(itemBoxSizer76);
+    itemPanel62->SetToolTip(_("Histogram preferences."));
+  wxBoxSizer* itemBoxSizer63 = new wxBoxSizer(wxHORIZONTAL);
+  itemPanel62->SetSizer(itemBoxSizer63);
 
-  wxBoxSizer* itemBoxSizer77 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer76->Add(itemBoxSizer77, 1, wxGROW|wxALL, 5);
-  wxStaticBox* itemStaticBoxSizer78Static = new wxStaticBox(itemPanel75, wxID_STATIC, _("  Name Format  "));
-  wxStaticBoxSizer* itemStaticBoxSizer78 = new wxStaticBoxSizer(itemStaticBoxSizer78Static, wxVERTICAL);
-  itemStaticBoxSizer78Static->Enable(false);
-  itemBoxSizer77->Add(itemStaticBoxSizer78, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer79 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer78->Add(itemBoxSizer79, 0, wxGROW|wxTOP|wxBOTTOM, 5);
-  wxStaticText* itemStaticText80 = new wxStaticText( itemPanel75, wxID_STATIC, _("Prefix"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer64 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer63->Add(itemBoxSizer64, 3, wxGROW|wxTOP, 5);
+  wxStaticBox* itemStaticBoxSizer65Static = new wxStaticBox(itemPanel62, wxID_STATIC, _("  Name Format  "));
+  wxStaticBoxSizer* itemStaticBoxSizer65 = new wxStaticBoxSizer(itemStaticBoxSizer65Static, wxVERTICAL);
+  itemStaticBoxSizer65Static->Enable(false);
+  itemBoxSizer64->Add(itemStaticBoxSizer65, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer66 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer65->Add(itemBoxSizer66, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  wxStaticText* itemStaticText67 = new wxStaticText( itemPanel62, wxID_STATIC, _("Prefix"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText80->SetToolTip(_("Default name for new histograms, applied in window browser."));
-  itemStaticText80->Enable(false);
-  itemBoxSizer79->Add(itemStaticText80, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+    itemStaticText67->SetToolTip(_("Default name for new histograms, applied in window browser."));
+  itemStaticText67->Enable(false);
+  itemBoxSizer66->Add(itemStaticText67, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
-  itemBoxSizer79->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  txtHistogramNameFormatPrefix = new wxTextCtrl( itemPanel75, ID_PREFERENCES_HISTOGRAM_NAME_PREFIX, _("New Histogram # %N"), wxDefaultPosition, wxDefaultSize, 0 );
+  txtHistogramNameFormatPrefix = new wxTextCtrl( itemPanel62, ID_PREFERENCES_HISTOGRAM_NAME_PREFIX, _("New Histogram # %N"), wxDefaultPosition, wxDefaultSize, 0 );
   txtHistogramNameFormatPrefix->SetMaxLength(256);
   if (PreferencesDialog::ShowToolTips())
     txtHistogramNameFormatPrefix->SetToolTip(_("Default name for new histograms, applied in window browser."));
   txtHistogramNameFormatPrefix->Enable(false);
-  itemBoxSizer79->Add(txtHistogramNameFormatPrefix, 2, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+  itemBoxSizer66->Add(txtHistogramNameFormatPrefix, 2, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer83 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer78->Add(itemBoxSizer83, 0, wxGROW|wxBOTTOM, 5);
-  wxStaticText* itemStaticText84 = new wxStaticText( itemPanel75, wxID_STATIC, _("Full"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer69 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer65->Add(itemBoxSizer69, 0, wxGROW|wxBOTTOM, 5);
+  wxStaticText* itemStaticText70 = new wxStaticText( itemPanel62, wxID_STATIC, _("Full"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText84->SetToolTip(_("Default full name for new histograms, applied in window title."));
-  itemStaticText84->Enable(false);
-  itemBoxSizer83->Add(itemStaticText84, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+    itemStaticText70->SetToolTip(_("Default full name for new histograms, applied in window title."));
+  itemStaticText70->Enable(false);
+  itemBoxSizer69->Add(itemStaticText70, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
-  itemBoxSizer83->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  txtHistogramNameFormatFull = new wxTextCtrl( itemPanel75, ID_PREFERENCES_HISTOGRAM_NAME_FULL, _("%P @ %T"), wxDefaultPosition, wxDefaultSize, 0 );
+  txtHistogramNameFormatFull = new wxTextCtrl( itemPanel62, ID_PREFERENCES_HISTOGRAM_NAME_FULL, _("%P @ %T"), wxDefaultPosition, wxDefaultSize, 0 );
   txtHistogramNameFormatFull->SetMaxLength(256);
   if (PreferencesDialog::ShowToolTips())
     txtHistogramNameFormatFull->SetToolTip(_("Default full name for new histograms, applied in window title."));
   txtHistogramNameFormatFull->Enable(false);
-  itemBoxSizer83->Add(txtHistogramNameFormatFull, 2, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+  itemBoxSizer69->Add(txtHistogramNameFormatFull, 2, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
-  wxStaticBox* itemStaticBoxSizer87Static = new wxStaticBox(itemPanel75, wxID_ANY, _("  Matrix Options  "));
-  wxStaticBoxSizer* itemStaticBoxSizer87 = new wxStaticBoxSizer(itemStaticBoxSizer87Static, wxVERTICAL);
-  itemBoxSizer77->Add(itemStaticBoxSizer87, 1, wxGROW|wxALL, 5);
-  checkHistogramZoom = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_MATRIX_ZOOM, _("Zoom View as default"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer72Static = new wxStaticBox(itemPanel62, wxID_ANY, _("  Matrix Options  "));
+  wxStaticBoxSizer* itemStaticBoxSizer72 = new wxStaticBoxSizer(itemStaticBoxSizer72Static, wxVERTICAL);
+  itemBoxSizer64->Add(itemStaticBoxSizer72, 1, wxGROW|wxALL, 5);
+  checkHistogramZoom = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_MATRIX_ZOOM, _("Zoom View as default"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramZoom->SetValue(false);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramZoom->SetToolTip(_("Select between numeric and zoom view for the histogram matrix."));
-  itemStaticBoxSizer87->Add(checkHistogramZoom, 0, wxGROW|wxTOP, 5);
+  itemStaticBoxSizer72->Add(checkHistogramZoom, 0, wxGROW|wxTOP, 5);
 
-  checkHistogramHorizontal = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_MATRIX_HORIZONTAL, _("Horizontal disposition"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramHorizontal = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_MATRIX_HORIZONTAL, _("Horizontal disposition"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramHorizontal->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramHorizontal->SetToolTip(_("Select between horizontal / vertical disposition for the histogram matrix."));
-  itemStaticBoxSizer87->Add(checkHistogramHorizontal, 0, wxGROW, 5);
+  itemStaticBoxSizer72->Add(checkHistogramHorizontal, 0, wxGROW, 5);
 
-  checkHistogramHideEmpty = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_MATRIX_HIDE_EMPTY, _("Hide empty columns"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramHideEmpty = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_MATRIX_HIDE_EMPTY, _("Hide empty columns"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramHideEmpty->SetValue(false);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramHideEmpty->SetToolTip(_("Hide columns when all its cells are empty."));
-  itemStaticBoxSizer87->Add(checkHistogramHideEmpty, 0, wxGROW, 5);
+  itemStaticBoxSizer72->Add(checkHistogramHideEmpty, 0, wxGROW, 5);
 
-  checkHistogramShowGradient = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT, _("Show Gradient Colors"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramShowGradient = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT, _("Show Gradient Colors"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramShowGradient->SetValue(true);
-  itemStaticBoxSizer87->Add(checkHistogramShowGradient, 0, wxGROW|wxBOTTOM, 5);
+  itemStaticBoxSizer72->Add(checkHistogramShowGradient, 0, wxGROW|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer92 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer87->Add(itemBoxSizer92, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText93 = new wxStaticText( itemPanel75, wxID_STATIC, _("Gradient Function"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer77 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer72->Add(itemBoxSizer77, 0, wxGROW|wxTOP, 5);
+  wxStaticText* itemStaticText78 = new wxStaticText( itemPanel62, wxID_STATIC, _("Gradient Function"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText93->SetToolTip(_("Color mode selected in new timeline."));
-  itemBoxSizer92->Add(itemStaticText93, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-
-  itemBoxSizer92->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText78->SetToolTip(_("Color mode selected in new timeline."));
+  itemBoxSizer77->Add(itemStaticText78, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceHistogramGradientFunctionStrings;
-  choiceHistogramGradientFunction = new wxChoice( itemPanel75, ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT_FUNCTION, wxDefaultPosition, wxDefaultSize, choiceHistogramGradientFunctionStrings, 0 );
+  choiceHistogramGradientFunction = new wxChoice( itemPanel62, ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT_FUNCTION, wxDefaultPosition, wxDefaultSize, choiceHistogramGradientFunctionStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramGradientFunction->SetToolTip(_("Color mode selected in new timeline."));
-  itemBoxSizer92->Add(choiceHistogramGradientFunction, 1, wxGROW|wxRIGHT, 5);
+  itemBoxSizer77->Add(choiceHistogramGradientFunction, 1, wxGROW|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer96 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer87->Add(itemBoxSizer96, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText97 = new wxStaticText( itemPanel75, wxID_STATIC, _("Drawmode Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer80 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer72->Add(itemBoxSizer80, 0, wxGROW|wxTOP, 5);
+  wxStaticText* itemStaticText81 = new wxStaticText( itemPanel62, wxID_STATIC, _("Drawmode Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText97->SetToolTip(_("Color mode selected in new timeline."));
-  itemBoxSizer96->Add(itemStaticText97, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-
-  itemBoxSizer96->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText81->SetToolTip(_("Color mode selected in new timeline."));
+  itemBoxSizer80->Add(itemStaticText81, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceHistogramDrawmodeSemanticStrings;
-  choiceHistogramDrawmodeSemantic = new wxChoice( itemPanel75, ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_SEMANTIC, wxDefaultPosition, wxDefaultSize, choiceHistogramDrawmodeSemanticStrings, 0 );
+  choiceHistogramDrawmodeSemantic = new wxChoice( itemPanel62, ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_SEMANTIC, wxDefaultPosition, wxDefaultSize, choiceHistogramDrawmodeSemanticStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramDrawmodeSemantic->SetToolTip(_("Color mode selected in new timeline."));
-  itemBoxSizer96->Add(choiceHistogramDrawmodeSemantic, 1, wxGROW|wxRIGHT, 5);
+  itemBoxSizer80->Add(choiceHistogramDrawmodeSemantic, 1, wxGROW|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer100 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer87->Add(itemBoxSizer100, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText101 = new wxStaticText( itemPanel75, wxID_STATIC, _("Drawmode Objects"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer83 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer72->Add(itemBoxSizer83, 0, wxGROW|wxTOP, 5);
+  wxStaticText* itemStaticText84 = new wxStaticText( itemPanel62, wxID_STATIC, _("Drawmode Objects"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText101->SetToolTip(_("Color mode selected in new timeline."));
-  itemBoxSizer100->Add(itemStaticText101, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-
-  itemBoxSizer100->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText84->SetToolTip(_("Color mode selected in new timeline."));
+  itemBoxSizer83->Add(itemStaticText84, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceHistogramDrawmodeObjectsStrings;
-  choiceHistogramDrawmodeObjects = new wxChoice( itemPanel75, ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_OBJECTS, wxDefaultPosition, wxDefaultSize, choiceHistogramDrawmodeObjectsStrings, 0 );
+  choiceHistogramDrawmodeObjects = new wxChoice( itemPanel62, ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_OBJECTS, wxDefaultPosition, wxDefaultSize, choiceHistogramDrawmodeObjectsStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramDrawmodeObjects->SetToolTip(_("Color mode selected in new timeline."));
-  itemBoxSizer100->Add(choiceHistogramDrawmodeObjects, 1, wxGROW|wxRIGHT, 5);
+  itemBoxSizer83->Add(choiceHistogramDrawmodeObjects, 1, wxGROW|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer104 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer76->Add(itemBoxSizer104, 1, wxGROW|wxALL, 5);
-  wxStaticBox* itemStaticBoxSizer105Static = new wxStaticBox(itemPanel75, wxID_ANY, _("  Cell Format  "));
-  wxStaticBoxSizer* itemStaticBoxSizer105 = new wxStaticBoxSizer(itemStaticBoxSizer105Static, wxVERTICAL);
-  itemBoxSizer104->Add(itemStaticBoxSizer105, 0, wxGROW|wxALL, 5);
-  checkHistogramScientificNotation = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_SCIENTIFIC_NOTATION, _("Scientific Notation"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer86 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer63->Add(itemBoxSizer86, 2, wxGROW|wxTOP, 5);
+  wxStaticBox* itemStaticBoxSizer87Static = new wxStaticBox(itemPanel62, wxID_ANY, _("  Cell Format  "));
+  wxStaticBoxSizer* itemStaticBoxSizer87 = new wxStaticBoxSizer(itemStaticBoxSizer87Static, wxVERTICAL);
+  itemBoxSizer86->Add(itemStaticBoxSizer87, 0, wxGROW|wxALL, 5);
+  checkHistogramScientificNotation = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_SCIENTIFIC_NOTATION, _("Scientific Notation"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramScientificNotation->SetValue(false);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramScientificNotation->SetToolTip(_("Write cell content using scientific notation."));
-  itemStaticBoxSizer105->Add(checkHistogramScientificNotation, 0, wxGROW|wxTOP, 5);
+  itemStaticBoxSizer87->Add(checkHistogramScientificNotation, 0, wxGROW|wxTOP, 5);
 
-  checkHistogramThousandsSeparator = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_THOUSANDS_SEPARATOR, _("Thousands Separator"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramThousandsSeparator = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_THOUSANDS_SEPARATOR, _("Thousands Separator"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramThousandsSeparator->SetValue(false);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramThousandsSeparator->SetToolTip(_("Write cell content using thousands separator."));
-  itemStaticBoxSizer105->Add(checkHistogramThousandsSeparator, 0, wxGROW, 5);
+  itemStaticBoxSizer87->Add(checkHistogramThousandsSeparator, 0, wxGROW, 5);
 
-  checkHistogramShowUnits = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_SHOW_UNITS, _("Show Units"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramShowUnits = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_SHOW_UNITS, _("Show Units"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramShowUnits->SetValue(false);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramShowUnits->SetToolTip(_("End numeric information with its units."));
-  itemStaticBoxSizer105->Add(checkHistogramShowUnits, 0, wxGROW|wxBOTTOM, 5);
+  itemStaticBoxSizer87->Add(checkHistogramShowUnits, 0, wxGROW|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer109 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer105->Add(itemBoxSizer109, 0, wxGROW|wxBOTTOM, 5);
-  wxStaticText* itemStaticText110 = new wxStaticText( itemPanel75, wxID_STATIC, _("Precision"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer91 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer87->Add(itemBoxSizer91, 0, wxGROW|wxBOTTOM, 5);
+  wxStaticText* itemStaticText92 = new wxStaticText( itemPanel62, wxID_STATIC, _("Precision"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText110->SetToolTip(_("Decimal precision applied to the presentation of histogram metrics."));
-  itemBoxSizer109->Add(itemStaticText110, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemStaticText92->SetToolTip(_("Decimal precision applied to the presentation of histogram metrics."));
+  itemBoxSizer91->Add(itemStaticText92, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemBoxSizer109->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  txtHistogramPrecision = new wxSpinCtrl( itemPanel75, ID_PREFERENCES_HISTOGRAM_PRECISION, _T("2"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 2 );
+  txtHistogramPrecision = new wxSpinCtrl( itemPanel62, ID_PREFERENCES_HISTOGRAM_PRECISION, _T("2"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 10, 2 );
   if (PreferencesDialog::ShowToolTips())
     txtHistogramPrecision->SetToolTip(_("Decimal precision applied to the presentation of histogram metrics."));
-  itemBoxSizer109->Add(txtHistogramPrecision, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer91->Add(txtHistogramPrecision, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer113Static = new wxStaticBox(itemPanel75, wxID_ANY, _("  Compute Options  "));
-  wxStaticBoxSizer* itemStaticBoxSizer113 = new wxStaticBoxSizer(itemStaticBoxSizer113Static, wxVERTICAL);
-  itemBoxSizer104->Add(itemStaticBoxSizer113, 0, wxGROW|wxALL, 5);
-  checkHistogramAutofitControlScale = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_AUTOFIT_CONTROL, _("Autofit Control Scale"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer94Static = new wxStaticBox(itemPanel62, wxID_ANY, _("  Compute Options  "));
+  wxStaticBoxSizer* itemStaticBoxSizer94 = new wxStaticBoxSizer(itemStaticBoxSizer94Static, wxVERTICAL);
+  itemBoxSizer86->Add(itemStaticBoxSizer94, 0, wxGROW|wxALL, 5);
+  checkHistogramAutofitControlScale = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_AUTOFIT_CONTROL, _("Autofit Control Scale"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramAutofitControlScale->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramAutofitControlScale->SetToolTip(_("Fit control scale when histogram is created."));
-  itemStaticBoxSizer113->Add(checkHistogramAutofitControlScale, 0, wxGROW|wxTOP, 5);
+  itemStaticBoxSizer94->Add(checkHistogramAutofitControlScale, 0, wxGROW|wxTOP, 5);
 
-  checkHistogramAutofit3DScale = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_AUTOFIT_3D, _("Autofit 3D Scale"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramAutofit3DScale = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_AUTOFIT_3D, _("Autofit 3D Scale"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramAutofit3DScale->SetValue(false);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramAutofit3DScale->SetToolTip(_("Fit 3D scale when histogram is created."));
-  itemStaticBoxSizer113->Add(checkHistogramAutofit3DScale, 0, wxGROW|wxTOP, 5);
+  itemStaticBoxSizer94->Add(checkHistogramAutofit3DScale, 0, wxGROW, 5);
 
-  checkHistogramAutofitDataGradient = new wxCheckBox( itemPanel75, ID_PREFERENCES_HISTOGRAM_AUTOFIT_DATA_GRADIENT, _("Autofit Data Gradient"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramAutofitDataGradient = new wxCheckBox( itemPanel62, ID_PREFERENCES_HISTOGRAM_AUTOFIT_DATA_GRADIENT, _("Autofit Data Gradient"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramAutofitDataGradient->SetValue(true);
   if (PreferencesDialog::ShowToolTips())
     checkHistogramAutofitDataGradient->SetToolTip(_("Fit data gradient when histogram is created."));
-  itemStaticBoxSizer113->Add(checkHistogramAutofitDataGradient, 0, wxGROW|wxBOTTOM, 5);
+  itemStaticBoxSizer94->Add(checkHistogramAutofitDataGradient, 0, wxGROW|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer117 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer113->Add(itemBoxSizer117, 0, wxGROW|wxBOTTOM, 5);
-  wxStaticText* itemStaticText118 = new wxStaticText( itemPanel75, wxID_STATIC, _("Columns"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer98 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer94->Add(itemBoxSizer98, 0, wxGROW|wxBOTTOM, 5);
+  wxStaticText* itemStaticText99 = new wxStaticText( itemPanel62, wxID_STATIC, _("Columns"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText118->SetToolTip(_("Initial number of columns for new histograms."));
-  itemBoxSizer117->Add(itemStaticText118, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    itemStaticText99->SetToolTip(_("Initial number of columns for new histograms."));
+  itemBoxSizer98->Add(itemStaticText99, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemBoxSizer117->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  txtHistogramNumColumns = new wxSpinCtrl( itemPanel75, ID_PREFERENCES_HISTOGRAM_NUMCOLUMNS, _T("20"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 256, 20 );
+  txtHistogramNumColumns = new wxSpinCtrl( itemPanel62, ID_PREFERENCES_HISTOGRAM_NUMCOLUMNS, _T("20"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 256, 20 );
   if (PreferencesDialog::ShowToolTips())
     txtHistogramNumColumns->SetToolTip(_("Initial number of columns for new histograms."));
-  itemBoxSizer117->Add(txtHistogramNumColumns, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer98->Add(txtHistogramNumColumns, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer121Static = new wxStaticBox(itemPanel75, wxID_ANY, _("  Save Options  "));
-  wxStaticBoxSizer* itemStaticBoxSizer121 = new wxStaticBoxSizer(itemStaticBoxSizer121Static, wxVERTICAL);
-  itemStaticBoxSizer121Static->Enable(false);
-  itemBoxSizer104->Add(itemStaticBoxSizer121, 1, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer122 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer121->Add(itemBoxSizer122, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
-  wxStaticText* itemStaticText123 = new wxStaticText( itemPanel75, wxID_STATIC, _("Image as"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer101Static = new wxStaticBox(itemPanel62, wxID_ANY, _("  Save Options  "));
+  wxStaticBoxSizer* itemStaticBoxSizer101 = new wxStaticBoxSizer(itemStaticBoxSizer101Static, wxVERTICAL);
+  itemStaticBoxSizer101Static->Enable(false);
+  itemBoxSizer86->Add(itemStaticBoxSizer101, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer102 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer101->Add(itemBoxSizer102, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  wxStaticText* itemStaticText103 = new wxStaticText( itemPanel62, wxID_STATIC, _("Image as"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText123->SetToolTip(_("Default image format selected."));
-  itemStaticText123->Enable(false);
-  itemBoxSizer122->Add(itemStaticText123, 2, wxALIGN_CENTER_VERTICAL, 5);
-
-  itemBoxSizer122->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText103->SetToolTip(_("Default image format selected."));
+  itemStaticText103->Enable(false);
+  itemBoxSizer102->Add(itemStaticText103, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceHistogramSaveImageFormatStrings;
-  choiceHistogramSaveImageFormat = new wxChoice( itemPanel75, ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveImageFormatStrings, 0 );
+  choiceHistogramSaveImageFormat = new wxChoice( itemPanel62, ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveImageFormatStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramSaveImageFormat->SetToolTip(_("Default image format selected."));
   choiceHistogramSaveImageFormat->Enable(false);
-  itemBoxSizer122->Add(choiceHistogramSaveImageFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer102->Add(choiceHistogramSaveImageFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer126 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer121->Add(itemBoxSizer126, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
-  wxStaticText* itemStaticText127 = new wxStaticText( itemPanel75, wxID_STATIC, _("Text as"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer105 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer101->Add(itemBoxSizer105, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  wxStaticText* itemStaticText106 = new wxStaticText( itemPanel62, wxID_STATIC, _("Text as"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText127->SetToolTip(_("Default text format selected."));
-  itemStaticText127->Enable(false);
-  itemBoxSizer126->Add(itemStaticText127, 2, wxALIGN_CENTER_VERTICAL, 5);
-
-  itemBoxSizer126->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText106->SetToolTip(_("Default text format selected."));
+  itemStaticText106->Enable(false);
+  itemBoxSizer105->Add(itemStaticText106, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceHistogramSaveTextFormatStrings;
-  choiceHistogramSaveTextFormat = new wxChoice( itemPanel75, ID_PREFERENCES_HISTOGRAM_SAVE_TXT_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveTextFormatStrings, 0 );
+  choiceHistogramSaveTextFormat = new wxChoice( itemPanel62, ID_PREFERENCES_HISTOGRAM_SAVE_TXT_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveTextFormatStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramSaveTextFormat->SetToolTip(_("Default text format selected."));
   choiceHistogramSaveTextFormat->Enable(false);
-  itemBoxSizer126->Add(choiceHistogramSaveTextFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer105->Add(choiceHistogramSaveTextFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
 
-  GetBookCtrl()->AddPage(itemPanel75, _("Histogram"));
+  GetBookCtrl()->AddPage(itemPanel62, _("Histogram"));
 
-  wxPanel* itemPanel130 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_COLOR, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  wxBoxSizer* itemBoxSizer131 = new wxBoxSizer(wxVERTICAL);
-  itemPanel130->SetSizer(itemBoxSizer131);
+  wxPanel* itemPanel108 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_COLOR, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxBoxSizer* itemBoxSizer109 = new wxBoxSizer(wxVERTICAL);
+  itemPanel108->SetSizer(itemBoxSizer109);
 
-  wxStaticBox* itemStaticBoxSizer132Static = new wxStaticBox(itemPanel130, wxID_ANY, _("  Timeline  "));
-  wxStaticBoxSizer* itemStaticBoxSizer132 = new wxStaticBoxSizer(itemStaticBoxSizer132Static, wxVERTICAL);
-  itemBoxSizer131->Add(itemStaticBoxSizer132, 1, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer133 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer132->Add(itemBoxSizer133, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText134 = new wxStaticText( itemPanel130, wxID_STATIC, _("Background"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer110Static = new wxStaticBox(itemPanel108, wxID_ANY, _("  Timeline  "));
+  wxStaticBoxSizer* itemStaticBoxSizer110 = new wxStaticBoxSizer(itemStaticBoxSizer110Static, wxVERTICAL);
+  itemBoxSizer109->Add(itemStaticBoxSizer110, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer111 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer110->Add(itemBoxSizer111, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText112 = new wxStaticText( itemPanel108, wxID_STATIC, _("Background"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText134->SetToolTip(_("When background timeline color is changed, new foreground complementary color is suggested."));
-  itemBoxSizer133->Add(itemStaticText134, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText112->SetToolTip(_("When background timeline color is changed, new foreground complementary color is suggested."));
+  itemBoxSizer111->Add(itemStaticText112, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer133->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  colourPickerBackground = new wxColourPickerCtrl( itemPanel130, ID_COLOURPICKER_BACKGROUND, wxColour(0, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerBackground = new wxColourPickerCtrl( itemPanel108, ID_COLOURPICKER_BACKGROUND, wxColour(0, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerBackground->SetToolTip(_("When background timeline color is changed, new foreground complementary color is suggested."));
-  itemBoxSizer133->Add(colourPickerBackground, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer111->Add(colourPickerBackground, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer137 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer132->Add(itemBoxSizer137, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText138 = new wxStaticText( itemPanel130, wxID_STATIC, _("Foreground"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer114 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer110->Add(itemBoxSizer114, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText115 = new wxStaticText( itemPanel108, wxID_STATIC, _("Foreground"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText138->SetToolTip(_("Color used to draw scale axis and object names in timelines."));
-  itemBoxSizer137->Add(itemStaticText138, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText115->SetToolTip(_("Color used to draw scale axis and object names in timelines."));
+  itemBoxSizer114->Add(itemStaticText115, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer137->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  colourPickerAxis = new wxColourPickerCtrl( itemPanel130, ID_COLOURPICKER_AXIS, wxColour(255, 255, 255), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerAxis = new wxColourPickerCtrl( itemPanel108, ID_COLOURPICKER_AXIS, wxColour(255, 255, 255), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerAxis->SetToolTip(_("Color used to draw scale axis and object names in timelines."));
-  itemBoxSizer137->Add(colourPickerAxis, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer114->Add(colourPickerAxis, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer141 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer132->Add(itemBoxSizer141, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText142 = new wxStaticText( itemPanel130, wxID_STATIC, _("Logical comms."), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer117 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer110->Add(itemBoxSizer117, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText118 = new wxStaticText( itemPanel108, wxID_STATIC, _("Logical comms."), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText142->SetToolTip(_("Color used to draw logical communications in timelines."));
-  itemBoxSizer141->Add(itemStaticText142, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText118->SetToolTip(_("Color used to draw logical communications in timelines."));
+  itemBoxSizer117->Add(itemStaticText118, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer141->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  colourPickerLogical = new wxColourPickerCtrl( itemPanel130, ID_COLOURPICKER_LOGICAL, wxColour(255, 255, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerLogical = new wxColourPickerCtrl( itemPanel108, ID_COLOURPICKER_LOGICAL, wxColour(255, 255, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerLogical->SetToolTip(_("Color used to draw logical communications in timelines."));
-  itemBoxSizer141->Add(colourPickerLogical, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer117->Add(colourPickerLogical, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer145 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer132->Add(itemBoxSizer145, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText146 = new wxStaticText( itemPanel130, wxID_STATIC, _("Physical comms."), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer120 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer110->Add(itemBoxSizer120, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText121 = new wxStaticText( itemPanel108, wxID_STATIC, _("Physical comms."), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText146->SetToolTip(_("Color used to draw physical communications in timelines."));
-  itemBoxSizer145->Add(itemStaticText146, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText121->SetToolTip(_("Color used to draw physical communications in timelines."));
+  itemBoxSizer120->Add(itemStaticText121, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer145->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  colourPickerPhysical = new wxColourPickerCtrl( itemPanel130, ID_COLOURPICKER_PHYSICAL, wxColour(255, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerPhysical = new wxColourPickerCtrl( itemPanel108, ID_COLOURPICKER_PHYSICAL, wxColour(255, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerPhysical->SetToolTip(_("Color used to draw physical communications in timelines."));
-  itemBoxSizer145->Add(colourPickerPhysical, 2, wxALIGN_CENTER_VERTICAL|wxTOP, 5);
+  itemBoxSizer120->Add(colourPickerPhysical, 2, wxALIGN_CENTER_VERTICAL|wxTOP, 5);
 
-  wxButton* itemButton149 = new wxButton( itemPanel130, ID_BUTTON_DEFAULT_TIMELINE, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxButton* itemButton123 = new wxButton( itemPanel108, ID_BUTTON_DEFAULT_TIMELINE, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemButton149->SetToolTip(_("Restores predefined colors."));
-  itemStaticBoxSizer132->Add(itemButton149, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+    itemButton123->SetToolTip(_("Restores predefined colors."));
+  itemStaticBoxSizer110->Add(itemButton123, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
-  wxStaticBox* itemStaticBoxSizer150Static = new wxStaticBox(itemPanel130, wxID_ANY, _("  Gradient  "));
-  wxStaticBoxSizer* itemStaticBoxSizer150 = new wxStaticBoxSizer(itemStaticBoxSizer150Static, wxVERTICAL);
-  itemBoxSizer131->Add(itemStaticBoxSizer150, 1, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer151 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer150->Add(itemBoxSizer151, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText152 = new wxStaticText( itemPanel130, wxID_STATIC, _("Begin"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer124Static = new wxStaticBox(itemPanel108, wxID_ANY, _("  Gradient  "));
+  wxStaticBoxSizer* itemStaticBoxSizer124 = new wxStaticBoxSizer(itemStaticBoxSizer124Static, wxVERTICAL);
+  itemBoxSizer109->Add(itemStaticBoxSizer124, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer125 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer124->Add(itemBoxSizer125, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText126 = new wxStaticText( itemPanel108, wxID_STATIC, _("Begin"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText152->SetToolTip(_("Base color used to represent semantic values when gradient is selected."));
-  itemBoxSizer151->Add(itemStaticText152, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText126->SetToolTip(_("Base color used to represent semantic values when gradient is selected."));
+  itemBoxSizer125->Add(itemStaticText126, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer151->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  colourPickerGradientBegin = new wxColourPickerCtrl( itemPanel130, ID_COLOURPICKER_GRADBEGIN, wxColour(0, 255, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerGradientBegin = new wxColourPickerCtrl( itemPanel108, ID_COLOURPICKER_GRADBEGIN, wxColour(0, 255, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerGradientBegin->SetToolTip(_("Base color used to represent semantic values when gradient is selected."));
-  itemBoxSizer151->Add(colourPickerGradientBegin, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer125->Add(colourPickerGradientBegin, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer155 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer150->Add(itemBoxSizer155, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText156 = new wxStaticText( itemPanel130, wxID_STATIC, _("End"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer128 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer124->Add(itemBoxSizer128, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText129 = new wxStaticText( itemPanel108, wxID_STATIC, _("End"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText156->SetToolTip(_("Top color used to represent semantic values when gradient is selected."));
-  itemBoxSizer155->Add(itemStaticText156, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText129->SetToolTip(_("Top color used to represent semantic values when gradient is selected."));
+  itemBoxSizer128->Add(itemStaticText129, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer155->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  colourPickerGradientEnd = new wxColourPickerCtrl( itemPanel130, ID_COLOURPICKER_GRADEND, wxColour(0, 0, 255), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerGradientEnd = new wxColourPickerCtrl( itemPanel108, ID_COLOURPICKER_GRADEND, wxColour(0, 0, 255), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerGradientEnd->SetToolTip(_("Top color used to represent semantic values when gradient is selected."));
-  itemBoxSizer155->Add(colourPickerGradientEnd, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer128->Add(colourPickerGradientEnd, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer159 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer150->Add(itemBoxSizer159, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText160 = new wxStaticText( itemPanel130, wxID_STATIC, _("Low outliers"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer131 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer124->Add(itemBoxSizer131, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText132 = new wxStaticText( itemPanel108, wxID_STATIC, _("Low outliers"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText160->SetToolTip(_("Any semantic outlier smaller than <Begin> will use this color."));
-  itemBoxSizer159->Add(itemStaticText160, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText132->SetToolTip(_("Any semantic outlier smaller than <Begin> will use this color."));
+  itemBoxSizer131->Add(itemStaticText132, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer159->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  colourPickerGradientLow = new wxColourPickerCtrl( itemPanel130, ID_COLOURPICKER_GRADLOW, wxColour(207, 207, 68), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerGradientLow = new wxColourPickerCtrl( itemPanel108, ID_COLOURPICKER_GRADLOW, wxColour(207, 207, 68), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerGradientLow->SetToolTip(_("Any semantic outlier smaller than <Begin> will use this color."));
-  itemBoxSizer159->Add(colourPickerGradientLow, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer131->Add(colourPickerGradientLow, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer163 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer150->Add(itemBoxSizer163, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText164 = new wxStaticText( itemPanel130, wxID_STATIC, _("High outliers"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer134 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer124->Add(itemBoxSizer134, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText135 = new wxStaticText( itemPanel108, wxID_STATIC, _("High outliers"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText164->SetToolTip(_("Any semantic outlier greater than <End> will use this color."));
-  itemBoxSizer163->Add(itemStaticText164, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText135->SetToolTip(_("Any semantic outlier greater than <End> will use this color."));
+  itemBoxSizer134->Add(itemStaticText135, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  itemBoxSizer163->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL, 5);
-
-  colourPickerGradientTop = new wxColourPickerCtrl( itemPanel130, ID_COLOURPICKER_GRADTOP, wxColour(255, 146, 24), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerGradientTop = new wxColourPickerCtrl( itemPanel108, ID_COLOURPICKER_GRADTOP, wxColour(255, 146, 24), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerGradientTop->SetToolTip(_("Any semantic outlier greater than <End> will use this color."));
-  itemBoxSizer163->Add(colourPickerGradientTop, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer134->Add(colourPickerGradientTop, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxButton* itemButton167 = new wxButton( itemPanel130, ID_BUTTON_DEFAULT_GRADIENT, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxButton* itemButton137 = new wxButton( itemPanel108, ID_BUTTON_DEFAULT_GRADIENT, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemButton167->SetToolTip(_("Restores predefined colors."));
-  itemStaticBoxSizer150->Add(itemButton167, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+    itemButton137->SetToolTip(_("Restores predefined colors."));
+  itemStaticBoxSizer124->Add(itemButton137, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
-  GetBookCtrl()->AddPage(itemPanel130, _("Color"));
+  GetBookCtrl()->AddPage(itemPanel108, _("Color"));
 
-  wxPanel* itemPanel168 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemPanel168->Show(false);
-  itemPanel168->Enable(false);
+  wxPanel* itemPanel138 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemPanel138->Show(false);
+  itemPanel138->Enable(false);
 
-  GetBookCtrl()->AddPage(itemPanel168, _("Filters"));
+  GetBookCtrl()->AddPage(itemPanel138, _("Filters"));
 
 ////@end PreferencesDialog content construction
 

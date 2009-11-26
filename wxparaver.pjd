@@ -6095,14 +6095,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -6190,8 +6182,8 @@
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">0</bool>
-                <bool name="proxy-wxRIGHT">0</bool>
+                <bool name="proxy-wxLEFT">1</bool>
+                <bool name="proxy-wxRIGHT">1</bool>
                 <bool name="proxy-wxTOP">0</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
                 <bool name="proxy-wxSHAPED">0</bool>
@@ -6387,7 +6379,7 @@
                 <long name="proxy-Stretch factor">1</long>
                 <long name="proxy-Border">5</long>
                 <bool name="proxy-wxLEFT">1</bool>
-                <bool name="proxy-wxRIGHT">0</bool>
+                <bool name="proxy-wxRIGHT">1</bool>
                 <bool name="proxy-wxTOP">0</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
                 <bool name="proxy-wxSHAPED">0</bool>
@@ -6653,7 +6645,7 @@
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Right"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
+                      <long name="proxy-Stretch factor">1</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">1</bool>
@@ -6734,7 +6726,7 @@
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Expand"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">1</long>
+                      <long name="proxy-Stretch factor">2</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">0</bool>
@@ -6828,7 +6820,7 @@
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Right"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
+                      <long name="proxy-Stretch factor">1</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">1</bool>
@@ -6909,7 +6901,7 @@
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Expand"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">1</long>
+                      <long name="proxy-Stretch factor">2</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">0</bool>
@@ -6995,7 +6987,7 @@
                 <long name="proxy-Stretch factor">1</long>
                 <long name="proxy-Border">5</long>
                 <bool name="proxy-wxLEFT">1</bool>
-                <bool name="proxy-wxRIGHT">0</bool>
+                <bool name="proxy-wxRIGHT">1</bool>
                 <bool name="proxy-wxTOP">0</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
                 <bool name="proxy-wxSHAPED">0</bool>
@@ -7261,7 +7253,7 @@
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Right"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
+                      <long name="proxy-Stretch factor">1</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">1</bool>
@@ -7342,7 +7334,7 @@
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Expand"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">1</long>
+                      <long name="proxy-Stretch factor">2</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">0</bool>
@@ -7436,7 +7428,7 @@
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Right"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
+                      <long name="proxy-Stretch factor">1</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">1</bool>
@@ -7517,7 +7509,7 @@
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Expand"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">1</long>
+                      <long name="proxy-Stretch factor">2</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">0</bool>
@@ -7620,9 +7612,9 @@
                 <long name="proxy-Height">-1</long>
                 <string name="proxy-AlignH">"Right"</string>
                 <string name="proxy-AlignV">"Centre"</string>
-                <long name="proxy-Stretch factor">0</long>
+                <long name="proxy-Stretch factor">1</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">0</bool>
+                <bool name="proxy-wxLEFT">1</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
@@ -7705,7 +7697,7 @@
                 <long name="proxy-Border">5</long>
                 <bool name="proxy-wxLEFT">1</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
-                <bool name="proxy-wxTOP">0</bool>
+                <bool name="proxy-wxTOP">1</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
@@ -7770,9 +7762,9 @@
                 <long name="proxy-Height">-1</long>
                 <string name="proxy-AlignH">"Right"</string>
                 <string name="proxy-AlignV">"Centre"</string>
-                <long name="proxy-Stretch factor">0</long>
+                <long name="proxy-Stretch factor">1</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">0</bool>
+                <bool name="proxy-wxLEFT">1</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
@@ -7902,9 +7894,9 @@
                 <long name="proxy-Height">-1</long>
                 <string name="proxy-AlignH">"Right"</string>
                 <string name="proxy-AlignV">"Centre"</string>
-                <long name="proxy-Stretch factor">0</long>
+                <long name="proxy-Stretch factor">1</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">0</bool>
+                <bool name="proxy-wxLEFT">1</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
@@ -8031,9 +8023,9 @@
                 <long name="proxy-Height">-1</long>
                 <string name="proxy-AlignH">"Right"</string>
                 <string name="proxy-AlignV">"Centre"</string>
-                <long name="proxy-Stretch factor">0</long>
+                <long name="proxy-Stretch factor">1</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">0</bool>
+                <bool name="proxy-wxLEFT">1</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
@@ -8163,9 +8155,9 @@
                 <long name="proxy-Height">-1</long>
                 <string name="proxy-AlignH">"Right"</string>
                 <string name="proxy-AlignV">"Centre"</string>
-                <long name="proxy-Stretch factor">0</long>
+                <long name="proxy-Stretch factor">1</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">0</bool>
+                <bool name="proxy-wxLEFT">1</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
@@ -8703,14 +8695,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -11714,31 +11698,6 @@
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  </document>
-                  <document>
                     <string name="title">"wxDirPickerCtrl: ID_DIRPICKERCTRL_TRACES"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
@@ -11901,31 +11860,6 @@
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  </document>
-                  <document>
                     <string name="title">"wxDirPickerCtrl: ID_DIRPICKERCTRL_CFG"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
@@ -12086,31 +12020,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                  </document>
-                  <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   </document>
                   <document>
                     <string name="title">"wxDirPickerCtrl: ID_DIRPICKERCTRL_TMP"</string>
@@ -12298,10 +12207,10 @@
                 <string name="proxy-AlignV">"Expand"</string>
                 <long name="proxy-Stretch factor">3</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">1</bool>
-                <bool name="proxy-wxRIGHT">1</bool>
+                <bool name="proxy-wxLEFT">0</bool>
+                <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
-                <bool name="proxy-wxBOTTOM">1</bool>
+                <bool name="proxy-wxBOTTOM">0</bool>
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -12431,31 +12340,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_PREFERENCES_TIMELINE_NAME_PREFIX"</string>
@@ -12631,31 +12515,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_PREFERENCES_TIMELINE_NAME_FULL"</string>
@@ -13056,31 +12915,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_COLOR"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -13232,31 +13066,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_GRADIENT"</string>
@@ -13412,31 +13221,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_DRAWMODE_TIME"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -13588,31 +13372,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_DRAWMODE_OBJECTS"</string>
@@ -13768,31 +13527,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_PIXEL_SIZE"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -13872,7 +13606,7 @@
                 <long name="proxy-Border">5</long>
                 <bool name="proxy-wxLEFT">0</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
-                <bool name="proxy-wxTOP">0</bool>
+                <bool name="proxy-wxTOP">1</bool>
                 <bool name="proxy-wxBOTTOM">0</bool>
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
@@ -14320,31 +14054,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">1</bool>
-                      <bool name="proxy-wxSHAPED">1</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxSpinCtrl: ID_PREFERENCES_TIMELINE_WW_PRECISION"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -14541,31 +14250,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -14717,31 +14401,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT"</string>
@@ -14919,12 +14578,12 @@
                 <string name="proxy-Member variable name">""</string>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Expand"</string>
-                <long name="proxy-Stretch factor">1</long>
+                <long name="proxy-Stretch factor">3</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">1</bool>
-                <bool name="proxy-wxRIGHT">1</bool>
+                <bool name="proxy-wxLEFT">0</bool>
+                <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
-                <bool name="proxy-wxBOTTOM">1</bool>
+                <bool name="proxy-wxBOTTOM">0</bool>
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -15054,31 +14713,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_PREFERENCES_HISTOGRAM_NAME_PREFIX"</string>
@@ -15254,31 +14888,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_PREFERENCES_HISTOGRAM_NAME_FULL"</string>
@@ -15742,31 +15351,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT_FUNCTION"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -15918,31 +15502,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_SEMANTIC"</string>
@@ -16098,31 +15657,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_OBJECTS"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -16198,12 +15732,12 @@
                 <string name="proxy-Member variable name">""</string>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Expand"</string>
-                <long name="proxy-Stretch factor">1</long>
+                <long name="proxy-Stretch factor">2</long>
                 <long name="proxy-Border">5</long>
-                <bool name="proxy-wxLEFT">1</bool>
-                <bool name="proxy-wxRIGHT">1</bool>
+                <bool name="proxy-wxLEFT">0</bool>
+                <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
-                <bool name="proxy-wxBOTTOM">1</bool>
+                <bool name="proxy-wxBOTTOM">0</bool>
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -16524,31 +16058,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxSpinCtrl: ID_PREFERENCES_HISTOGRAM_PRECISION"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -16769,7 +16278,7 @@
                     <long name="proxy-Border">5</long>
                     <bool name="proxy-wxLEFT">0</bool>
                     <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">1</bool>
+                    <bool name="proxy-wxTOP">0</bool>
                     <bool name="proxy-wxBOTTOM">0</bool>
                     <bool name="proxy-wxSHAPED">0</bool>
                     <bool name="proxy-wxADJUST_MINSIZE">0</bool>
@@ -16932,31 +16441,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxSpinCtrl: ID_PREFERENCES_HISTOGRAM_NUMCOLUMNS"</string>
@@ -17155,31 +16639,6 @@
                       <string name="proxy-Custom ctor arguments">""</string>
                     </document>
                     <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    </document>
-                    <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT"</string>
                       <string name="type">"dialog-control-document"</string>
                       <string name="filename">""</string>
@@ -17331,31 +16790,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                    </document>
-                    <document>
-                      <string name="title">"Spacer"</string>
-                      <string name="type">"dialog-control-document"</string>
-                      <string name="filename">""</string>
-                      <string name="icon-name">"spacer"</string>
-                      <long name="is-transient">0</long>
-                      <long name="owns-file">1</long>
-                      <long name="title-mode">0</long>
-                      <long name="locked">0</long>
-                      <string name="proxy-type">"wbSpacerProxy"</string>
-                      <long name="proxy-Width">5</long>
-                      <long name="proxy-Height">5</long>
-                      <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">0</long>
-                      <long name="proxy-Border">5</long>
-                      <bool name="proxy-wxLEFT">0</bool>
-                      <bool name="proxy-wxRIGHT">0</bool>
-                      <bool name="proxy-wxTOP">0</bool>
-                      <bool name="proxy-wxBOTTOM">0</bool>
-                      <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_SAVE_TXT_FORMAT"</string>
@@ -17646,31 +17080,6 @@
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  </document>
-                  <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_BACKGROUND"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
@@ -17830,31 +17239,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                  </document>
-                  <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_AXIS"</string>
@@ -18017,31 +17401,6 @@
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  </document>
-                  <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_LOGICAL"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
@@ -18200,31 +17559,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                  </document>
-                  <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_PHYSICAL"</string>
@@ -18487,31 +17821,6 @@
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  </document>
-                  <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_GRADBEGIN"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
@@ -18670,31 +17979,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                  </document>
-                  <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_GRADEND"</string>
@@ -18857,31 +18141,6 @@
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  </document>
-                  <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_GRADLOW"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
@@ -19040,31 +18299,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                  </document>
-                  <document>
-                    <string name="title">"Spacer"</string>
-                    <string name="type">"dialog-control-document"</string>
-                    <string name="filename">""</string>
-                    <string name="icon-name">"spacer"</string>
-                    <long name="is-transient">0</long>
-                    <long name="owns-file">1</long>
-                    <long name="title-mode">0</long>
-                    <long name="locked">0</long>
-                    <string name="proxy-type">"wbSpacerProxy"</string>
-                    <long name="proxy-Width">5</long>
-                    <long name="proxy-Height">5</long>
-                    <string name="proxy-AlignH">"Centre"</string>
-                    <string name="proxy-AlignV">"Centre"</string>
-                    <long name="proxy-Stretch factor">0</long>
-                    <long name="proxy-Border">5</long>
-                    <bool name="proxy-wxLEFT">0</bool>
-                    <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">0</bool>
-                    <bool name="proxy-wxBOTTOM">0</bool>
-                    <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_GRADTOP"</string>
