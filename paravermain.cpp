@@ -293,6 +293,8 @@ void paraverMain::Init()
   choiceWindowBrowser = NULL;
   windowProperties = NULL;
 ////@end paraverMain member initialisation
+
+  anyTraceLoaded = false;
 }
 
 /*!
@@ -430,6 +432,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( path );
+    anyTraceLoaded = true;
   }
   catch( ParaverKernelException& ex )
   {
@@ -520,9 +523,15 @@ bool paraverMain::DoLoadCFG( const string &path )
  */
 void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, _( "Load Trace" ), wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() ), _( "" ), 
+  wxString tracePath = _("");
+
+  if ( !traceLoadedBefore )
+    tracePath = wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() );
+
+  wxFileDialog dialog( this, _( "Load Trace" ), tracePath, _( "" ), 
     _( "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*" ),
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
+
   raiseCurrentWindow = false;
   if( dialog.ShowModal() == wxID_OK )
   {
