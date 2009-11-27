@@ -204,7 +204,7 @@ void gTimeline::Init()
   // Avoid manipulation
   UINT32 pixelSizeIndexSelector = ParaverConfig::getInstance()->getTimelinePixelSize();
   if ( pixelSizeIndexSelector >= 0 && pixelSizeIndexSelector <= 3 )
-    pixelSize = UINT32( floor ( pow( 2, pixelSizeIndexSelector )));
+    pixelSize = UINT32( floor ( pow( 2, (double)pixelSizeIndexSelector )));
 }
 
 
@@ -376,12 +376,14 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 void gTimeline::redraw()
 {
+#ifndef WIN32
   if( splitChanged )
   {
     resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
     splitChanged = false;
     return;
   }
+#endif
 
   redoColors = true;
 
