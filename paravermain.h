@@ -349,6 +349,7 @@ private:
 
   map< string, UINT32 > traceInstance;
   bool traceLoadedBefore;
+  bool CFGLoadedBefore;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );

@@ -295,6 +295,7 @@ void paraverMain::Init()
 ////@end paraverMain member initialisation
 
   traceLoadedBefore = false;
+  CFGLoadedBefore = false;
 }
 
 /*!
@@ -512,6 +513,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         }
 
         previousCFGs->add( path );
+        CFGLoadedBefore = true;
       }
     }
     return true;
@@ -548,7 +550,12 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, _( "Load Configuration" ), wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() ), _( "" ),
+  wxString CFGPath = _("");
+
+  if ( !CFGLoadedBefore )
+   CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
+
+  wxFileDialog dialog( this, _( "Load Configuration" ), CFGPath, _( "" ),
     _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
   raiseCurrentWindow = false;
