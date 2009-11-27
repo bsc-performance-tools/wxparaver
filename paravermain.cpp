@@ -294,7 +294,7 @@ void paraverMain::Init()
   windowProperties = NULL;
 ////@end paraverMain member initialisation
 
-  anyTraceLoaded = false;
+  traceLoadedBefore = false;
 }
 
 /*!
@@ -432,7 +432,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( path );
-    anyTraceLoaded = true;
+    traceLoadedBefore = true;
   }
   catch( ParaverKernelException& ex )
   {

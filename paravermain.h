@@ -348,7 +348,7 @@ private:
 ////@end paraverMain member variables
 
   map< string, UINT32 > traceInstance;
-  bool anyTraceLoaded;
+  bool traceLoadedBefore;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );

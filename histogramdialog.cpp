@@ -713,7 +713,7 @@ void HistogramDialog::OnHistogramButtonselectClick( wxCommandEvent& event )
 
 void HistogramDialog::OnHistogramButtonselectUpdate( wxUpdateUIEvent& event )
 {
-  buttonSelect->Enable( radioManual->GetValue() );
+  //buttonSelect->Enable( radioManual->GetValue() );
 }
 
 
