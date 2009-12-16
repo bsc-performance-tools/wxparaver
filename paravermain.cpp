@@ -422,7 +422,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
-    tr = Trace::create( localKernel, path, progress );
+    tr = Trace::create( localKernel, path, false, progress );
     tr->setInstanceNumber( traceInstance[ path ]++ );
 
     loadedTraces.push_back( tr );
