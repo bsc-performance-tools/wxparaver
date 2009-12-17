@@ -1,0 +1,12 @@
+Library dependencies:
+	- wxWidgets >= 2.8.0
+	- wxPropertyGrid >= 1.4.0
+	- Boost >= 1.36
+	- Boost Serialization
+	- Paraver Kernel Library
+	- Paraver Kernel API
+
+Read INSTALL file for installation instructions.
+
+Due to naming problems with wxPropertyGrid compilation, the library name must be libwxcode_gtk2u_propgrid-2.8.so. Please make a link to your wxPropertyGrid library once installed with this name if do not correspond.
+
