@@ -45,6 +45,6 @@ noinst_HEADERS = \
               table.xpm\
               timeline.xpm
 
-wxparaver_LDADD = @LIBS@ -lwxcode_gtk2u_propgrid-2.8 -lparaver-kernel -lparaver-api
+wxparaver_LDADD = @LIBS@ -l@WXPROPGRID_NAME@ -lparaver-kernel -lparaver-api
 wxparaver_CXXFLAGS = @CXXFLAGS@
 

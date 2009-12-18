@@ -1,11 +1,11 @@
 #!/bin/sh
 
 echo "aclocal"
-aclocal
+aclocal -I m4
 echo "autoheader"
 autoheader
-echo "autoconf"
-autoconf
 echo "automake -a -c"
 automake -a -c
+echo "autoconf"
+autoconf
 
