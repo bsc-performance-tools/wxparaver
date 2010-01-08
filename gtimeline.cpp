@@ -422,8 +422,8 @@ void gTimeline::redraw()
   vector<TObjectOrder> selectedSet;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected );
-  myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow );
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, true );
+  myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
   TObjectOrder maxObj = selectedSet[ selectedSet.size() - 1 ];
 
   ready = false;
@@ -1023,7 +1023,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   }
 
   vector<TObjectOrder> selected;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
   double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
   beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
@@ -1311,7 +1311,7 @@ void gTimeline::OnPopUpRowSelection()
         newSelection.push_back( (TObjectOrder)selections[ row ] );
 
       vector< TObjectOrder > previousSelection;
-      myWindow->getSelectedRows( myWindow->getLevel(), previousSelection );
+      myWindow->getSelectedRows( myWindow->getLevel(), previousSelection, true );
 
       if ( ( previousSelection.size() != newSelection.size() ) ||
            !equal( previousSelection.begin(), previousSelection.end(), newSelection.begin() ) )
@@ -2442,7 +2442,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
   vector<TObjectOrder> selected;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow );
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
   double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
   TObjectOrder posRow = TObjectOrder( floor( (event.GetY() - drawBorder - 1) / heightPerRow ) );

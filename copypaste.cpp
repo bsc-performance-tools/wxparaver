@@ -244,7 +244,7 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     else if ( property == STR_OBJECTS )
     {
       vector< bool > auxRows;
-      timeline->GetMyWindow()->getSelectedRows( timeline->GetMyWindow()->getLevel(), auxRows );
+      timeline->GetMyWindow()->getSelectedRows( timeline->GetMyWindow()->getLevel(), auxRows, true );
       whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
       whichTimeline->GetMyWindow()->addZoom( whichTimeline->GetMyWindow()->getWindowBeginTime(),
                                              whichTimeline->GetMyWindow()->getWindowEndTime(),
@@ -294,7 +294,7 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     {
       vector< bool > auxRows;
       Window *controlWin = histogram->GetHistogram()->getControlWindow();
-      controlWin->getSelectedRows( controlWin->getLevel(), auxRows );
+      controlWin->getSelectedRows( controlWin->getLevel(), auxRows, true );
       whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
     }
     else if ( property == STR_SEMANTIC_SCALE )
@@ -330,7 +330,7 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     else if ( property == STR_OBJECTS )
     {
       vector< bool > auxRows;
-      timeline->GetMyWindow()->getSelectedRows( timeline->GetMyWindow()->getLevel(), auxRows );
+      timeline->GetMyWindow()->getSelectedRows( timeline->GetMyWindow()->getLevel(), auxRows, true );
       Window *controlWindow = whichHistogram->GetHistogram()->getControlWindow();
       controlWindow->setSelectedRows( controlWindow->getLevel(), auxRows );
       controlWindow->addZoom( controlWindow->getWindowBeginTime(),
@@ -366,7 +366,7 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     {
       vector< bool > auxRows;
       histogram->GetHistogram()->getControlWindow()->getSelectedRows( 
-          histogram->GetHistogram()->getControlWindow()->getLevel(), auxRows );
+          histogram->GetHistogram()->getControlWindow()->getLevel(), auxRows, true );
       Window *controlWindow = whichHistogram->GetHistogram()->getControlWindow();
       controlWindow->setSelectedRows( controlWindow->getLevel(), auxRows );
       controlWindow->addZoom( controlWindow->getWindowBeginTime(),
