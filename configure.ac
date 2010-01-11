@@ -34,8 +34,8 @@ AX_BOOST_SERIALIZATION
 AX_PROG_WXPROPGRID_NAME
 
  
-CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS -I./ -I../common-files/ -I../paraver-kernel/api/"
-CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY -I./ -I../common-files/ -I../paraver-kernel/api/"
+CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS $BOOST_CPPFLAGS -I./ -I../common-files/ -I../paraver-kernel/api/"
+CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY $BOOST_CPPFLAGS -I./ -I../common-files/ -I../paraver-kernel/api/"
 CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
 LIBS="$LIBS $WX_LIBS -L../paraver-kernel/"
 LDFLAGS="$LDFLAGS $BOOST_LDFLAGS $BOOST_SERIALIZATION_LIB"
