@@ -34,12 +34,6 @@ AX_BOOST_SERIALIZATION
 AX_PROG_WXPROPGRID_NAME
 
  
-CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS $BOOST_CPPFLAGS -I./ -I../common-files/ -I../paraver-kernel/api/"
-CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY $BOOST_CPPFLAGS -I./ -I../common-files/ -I../paraver-kernel/api/"
-CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
-LIBS="$LIBS $WX_LIBS -L../paraver-kernel/"
-LDFLAGS="$LDFLAGS $BOOST_LDFLAGS $BOOST_SERIALIZATION_LIB"
-
 # Checks for header files.
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -56,6 +50,13 @@ AC_CHECK_TYPES([int64_t, uint64_t, int8_t, uint8_t, int32_t, uint32_t, int16_t, 
 
 # Checks for library functions.
 AC_CHECK_FUNCS([floor rint])
+
+
+CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS $BOOST_CPPFLAGS -I./ -I../common-files/ -I../paraver-kernel/api/"
+CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY $BOOST_CPPFLAGS -I./ -I../common-files/ -I../paraver-kernel/api/"
+CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
+LIBS="$LIBS $WX_LIBS -L../paraver-kernel/"
+LDFLAGS="$LDFLAGS $BOOST_LDFLAGS $BOOST_SERIALIZATION_LIB"
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
