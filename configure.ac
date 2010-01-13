@@ -5,6 +5,7 @@ AC_PREREQ([2.63])
 AC_INIT(wxParaver, 3.99, tools@bsc.es)
 AC_CONFIG_SRCDIR([wxparaverapp.cpp])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CXX
