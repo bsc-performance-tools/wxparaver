@@ -52,6 +52,8 @@
 #include "windows_tree.h"
 #include "caution.xpm"
 //#include "paraverconfig.h"
+//#include "paraverkerneltypes.h"
+
 #define wxTEST_GRAPHICS 1
 
 #if wxTEST_GRAPHICS
@@ -1297,29 +1299,74 @@ void gTimeline::OnPopUpPasteSpecial()
 
 void gTimeline::OnPopUpRowSelection()
 {
-  wxArrayString choices;
+//  wxArrayString choices;
+//  wxMultiChoiceDialog *dialog = gPopUpMenu::createRowSelectionDialog( choices, this );
 
-  wxMultiChoiceDialog *dialog = gPopUpMenu::createRowSelectionDialog( choices, this );
+  RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
+
+//cout << "Creado dialogo" << endl;
 
   if ( dialog->ShowModal() == wxID_OK )
   {
-    wxArrayInt selections = dialog->GetSelections();
-    if ( selections.GetCount() > 0 )
+    TWindowLevel beginLevel;
+    TWindowLevel endLevel;
+
+    // Set range of levels for update loop
+    if (( myWindow->getLevel() >= WORKLOAD ) && ( myWindow->getLevel() <= THREAD ))
     {
-      vector< TObjectOrder > newSelection;
-      for ( size_t row = (size_t)0; row < (size_t)selections.GetCount(); row++ )
-        newSelection.push_back( (TObjectOrder)selections[ row ] );
+      beginLevel = APPLICATION;
+      endLevel = THREAD;
+    }
+    else
+    {
+      beginLevel = NODE;
+      endLevel = CPU;
+    }
+//cout << "  Range levels: [ " << beginLevel << ", " << endLevel << " ]" << endl;
 
-      vector< TObjectOrder > previousSelection;
-      myWindow->getSelectedRows( myWindow->getLevel(), previousSelection, true );
-
-      if ( ( previousSelection.size() != newSelection.size() ) ||
-           !equal( previousSelection.begin(), previousSelection.end(), newSelection.begin() ) )
+    // Loop through levels to update gTimeline
+    bool refresh;
+    for ( TWindowLevel whichLevel = beginLevel; whichLevel <= endLevel; whichLevel = TWindowLevel(whichLevel + 1) )
+    {
+//cout << "  loop --> current level: " << whichLevel << endl;
+      wxArrayInt selections;
+      int numberSelected = dialog->GetSelections( whichLevel, selections );
+      if ( numberSelected > 0 )
       {
-        myWindow->setSelectedRows( myWindow->getLevel(), newSelection );
-        myWindow->setRedraw( true );
-        myWindow->setChanged( true );
+        // Get new selections for that level
+        vector< TObjectOrder > newSelection;
+//cout << "            " ;
+        for ( size_t row = (size_t)0; row < (size_t)numberSelected; row++ )
+        {
+          newSelection.push_back( (TObjectOrder)selections[ row ] );
+//cout << (TObjectOrder)selections[ row ] << ", ";
+        }
+//cout << endl;
+        // Do we need to update?
+        vector< TObjectOrder > previousSelection;
+        myWindow->getSelectedRows( whichLevel, previousSelection, true );
+
+        if ( ( previousSelection.size() != newSelection.size() ) ||
+             !equal( previousSelection.begin(), previousSelection.end(), newSelection.begin() ) )
+        {
+//cout << "            Update!!" << endl;
+          // Update
+          myWindow->setSelectedRows( whichLevel, newSelection );
+
+          // and do not refresh for minor levels
+          if ( whichLevel <= myWindow->getLevel() )
+          {
+            refresh = true;
+          }
+        }
       }
+    }
+
+    if ( refresh )
+    {
+//cout << "             and refresh!" << endl;
+      myWindow->setRedraw( true );
+      myWindow->setChanged( true );
     }
   }
 
@@ -1707,11 +1754,23 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 
   myWindow->getRecordList( whichRow )->erase( myWindow->getRecordList( whichRow )->begin(),
                                               myWindow->getRecordList( whichRow )->end() );
-  myWindow->calcPrev( whichRow );
-  printWWSemantic( whichRow, false, textMode );
-  printWWRecords( whichRow, false, textMode );
 
-  myWindow->calcNext( whichRow );
+  TRecordTime tmpBeginTime = myWindow->getBeginTime( whichRow );
+
+  cout << "tmpBeginTime[ " << whichRow << " ] = " << tmpBeginTime << endl;
+
+  if ( tmpBeginTime > 0.0 )
+  {
+    --tmpBeginTime;
+    myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS );
+
+//  myWindow->calcPrev( whichRow );
+    printWWSemantic( whichRow, false, textMode );
+    printWWRecords( whichRow, false, textMode );
+    myWindow->calcNext( whichRow );
+  }
+
+  //myWindow->calcNext( whichRow );
   printWWSemantic( whichRow, true, textMode );
   printWWRecords( whichRow, true, textMode );
 

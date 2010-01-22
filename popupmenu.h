@@ -32,6 +32,10 @@
 
 #include <wx/menu.h>
 #include <wx/choicdlg.h>
+#include <wx/propdlg.h>
+#include <wx/generic/propdlg.h>
+#include "rowsselectiondialog.h"
+
 #include <map>
 
 using namespace std;
@@ -118,7 +122,8 @@ class gPopUpMenu : public wxMenu
 
     static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gHistogram *whichHistogram );
     static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gTimeline * whichTimeline );
-    static wxMultiChoiceDialog *createRowSelectionDialog( wxArrayString& choices, gTimeline *whichTimeline );
+    // static wxMultiChoiceDialog *createRowSelectionDialog( wxArrayString& choices, gTimeline *whichTimeline );
+    static RowsSelectionDialog *createRowSelectionDialog( gTimeline *whichTimeline );
     static string getOption( wxArrayString& choices, int position );
 
     void OnMenuCopy( wxCommandEvent& event);
