@@ -1040,7 +1040,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   endRow   = selected[ endRow ];
 
   if( zooming && ready &&
-      ( zoomEndX - zoomBeginX > 3.0 || zoomBeginY != zoomEndY ) )
+      ( zoomEndX - zoomBeginX > 5.0 || zoomBeginY != zoomEndY ) )
   {
     if( !zoomXY )
     {
@@ -1757,20 +1757,16 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 
   TRecordTime tmpBeginTime = myWindow->getBeginTime( whichRow );
 
-  cout << "tmpBeginTime[ " << whichRow << " ] = " << tmpBeginTime << endl;
-
   if ( tmpBeginTime > 0.0 )
   {
     --tmpBeginTime;
     myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS );
 
-//  myWindow->calcPrev( whichRow );
     printWWSemantic( whichRow, false, textMode );
     printWWRecords( whichRow, false, textMode );
     myWindow->calcNext( whichRow );
   }
 
-  //myWindow->calcNext( whichRow );
   printWWSemantic( whichRow, true, textMode );
   printWWRecords( whichRow, true, textMode );
 
