@@ -1305,12 +1305,7 @@ void gTimeline::OnPopUpPasteSpecial()
 
 void gTimeline::OnPopUpRowSelection()
 {
-//  wxArrayString choices;
-//  wxMultiChoiceDialog *dialog = gPopUpMenu::createRowSelectionDialog( choices, this );
-
   RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
-
-//cout << "Creado dialogo" << endl;
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -1328,26 +1323,21 @@ void gTimeline::OnPopUpRowSelection()
       beginLevel = NODE;
       endLevel = CPU;
     }
-//cout << "  Range levels: [ " << beginLevel << ", " << endLevel << " ]" << endl;
 
     // Loop through levels to update gTimeline
     bool refresh;
     for ( TWindowLevel whichLevel = beginLevel; whichLevel <= endLevel; whichLevel = TWindowLevel(whichLevel + 1) )
     {
-//cout << "  loop --> current level: " << whichLevel << endl;
       wxArrayInt selections;
       int numberSelected = dialog->GetSelections( whichLevel, selections );
       if ( numberSelected > 0 )
       {
         // Get new selections for that level
         vector< TObjectOrder > newSelection;
-//cout << "            " ;
         for ( size_t row = (size_t)0; row < (size_t)numberSelected; row++ )
         {
           newSelection.push_back( (TObjectOrder)selections[ row ] );
-//cout << (TObjectOrder)selections[ row ] << ", ";
         }
-//cout << endl;
         // Do we need to update?
         vector< TObjectOrder > previousSelection;
         myWindow->getSelectedRows( whichLevel, previousSelection, true );
@@ -1355,7 +1345,6 @@ void gTimeline::OnPopUpRowSelection()
         if ( ( previousSelection.size() != newSelection.size() ) ||
              !equal( previousSelection.begin(), previousSelection.end(), newSelection.begin() ) )
         {
-//cout << "            Update!!" << endl;
           // Update
           myWindow->setSelectedRows( whichLevel, newSelection );
 
@@ -1370,7 +1359,6 @@ void gTimeline::OnPopUpRowSelection()
 
     if ( refresh )
     {
-//cout << "             and refresh!" << endl;
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
     }

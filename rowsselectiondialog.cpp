@@ -94,7 +94,8 @@ void RowsSelectionDialog::buildPanel( wxWindow* parent, const wxString& title, T
   wxArrayString choices;
 
   vector< bool > selectedRow;
-  myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedRow, true );
+//  myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedRow, true );
+  myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedRow, false );
   for ( size_t row = (size_t)0; row < selectedRow.size(); ++row )
     choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
                                                                      whichLevel,
@@ -191,20 +192,15 @@ RowsSelectionDialog::~RowsSelectionDialog()
 {
   for ( vector< wxButton * >::iterator it = selectionButtons.begin(); it != selectionButtons.end(); ++it )
   {
-//    cout << "--- select" << endl;
     (*it)->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, 
                        wxCommandEventHandler( RowsSelectionDialog::OnSelectAllButtonClicked )); 
     ++it; 
-//    cout << "--- unselect" << endl;
     (*it)->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED,
                        wxCommandEventHandler( RowsSelectionDialog::OnUnselectAllButtonClicked )); 
     ++it; 
-//    cout << "--- invert" << endl;
     (*it)->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED,
                        wxCommandEventHandler( RowsSelectionDialog::OnInvertButtonClicked )); 
   }
-
-//  cout << endl << "DELETING ROW SELECTION OBJECT." << endl;
 }
 
 
