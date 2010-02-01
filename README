@@ -8,6 +8,9 @@ Library dependencies:
 
 Read INSTALL file for installation instructions.
 
+LINUX ONLY!!!:
+wxWidgets best with GTK.
+
 WINDOWS ONLY!!!:
 modify wxGRAPHICS_CONTEXT variable to 1 in file [wxWidgets dir]\include\wx\msw\setup.h
 

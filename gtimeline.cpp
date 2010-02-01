@@ -192,6 +192,7 @@ void gTimeline::Init()
   splitChanged = false;
   timerSize = new wxTimer( this );
   pixelSize = 1;
+  infoZoneLastSize = 200;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -2016,7 +2017,7 @@ void gTimeline::resizeDrawZone( int width, int height )
     this->SetClientSize( width, height );
   else
   {
-    this->SetClientSize( width, height + infoZone->GetClientSize().GetHeight() + 5 );
+    this->SetClientSize( width, height + /*infoZone->GetClientSize().GetHeight()*/infoZoneLastSize + 5 );
     splitter->SetSashPosition( height );
   }
   myWindow->setWidth( width );
@@ -2034,6 +2035,7 @@ void gTimeline::OnPopUpInfoPanel()
   if( splitter->IsSplit() )
   {
     canRedraw = false;
+    infoZoneLastSize = infoZone->GetSize().GetHeight();
     splitter->Unsplit();
     Unsplit();
   }
@@ -2067,9 +2069,11 @@ void gTimeline::Split()
 /*  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
   splitter->SetSashPosition( myWindow->getHeight() );*/
   resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
+  infoZone->SetClientSize( myWindow->getWidth(), infoZoneLastSize );
 #ifdef WIN32
   this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() +
-                                                         infoZone->GetClientSize().GetHeight() + 5 );
+                                                         /*infoZone->GetClientSize().GetHeight()*/
+                                                         infoZoneLastSize + 5 );
 #endif
   this->Thaw();
   canRedraw = true;

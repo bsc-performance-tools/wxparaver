@@ -281,6 +281,9 @@ public:
   UINT32 GetPixelSize() const { return pixelSize ; }
   void SetPixelSize(UINT32 value) { pixelSize = value ; }
 
+  int GetInfoZoneLastSize() const { return infoZoneLastSize ; }
+  void SetInfoZoneLastSize(int value) { infoZoneLastSize = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -438,6 +441,7 @@ private:
   bool splitChanged;
   wxTimer * timerSize;
   UINT32 pixelSize;
+  int infoZoneLastSize;
 ////@end gTimeline member variables
 
   wxWindow *parent;
