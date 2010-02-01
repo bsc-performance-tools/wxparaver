@@ -8,5 +8,6 @@ Library dependencies:
 
 Read INSTALL file for installation instructions.
 
-Due to naming problems with wxPropertyGrid compilation, the library name must be libwxcode_gtk2u_propgrid-2.8.so. Please make a link to your wxPropertyGrid library once installed with this name if do not correspond.
+WINDOWS ONLY!!!:
+modify wxGRAPHICS_CONTEXT variable to 1 in file [wxWidgets dir]\include\wx\msw\setup.h
 
