@@ -301,6 +301,18 @@ public:
   set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
   void SetActiveWindows(set<wxWindow *> value) { activeWindows = value ; }
 
+  bool GetTraceLoadedBefore() const { return traceLoadedBefore ; }
+  void SetTraceLoadedBefore(bool value) { traceLoadedBefore = value ; }
+
+  bool GetCFGLoadedBefore() const { return CFGLoadedBefore ; }
+  void SetCFGLoadedBefore(bool value) { CFGLoadedBefore = value ; }
+
+  wxString GetTracePath() const { return tracePath ; }
+  void SetTracePath(wxString value) { tracePath = value ; }
+
+  wxString GetCFGPath() const { return CFGPath ; }
+  void SetCFGPath(wxString value) { CFGPath = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -363,11 +375,13 @@ private:
   int numNewDerived;
   bool raiseCurrentWindow;
   set<wxWindow *> activeWindows;
+  bool traceLoadedBefore;
+  bool CFGLoadedBefore;
+  wxString tracePath;
+  wxString CFGPath;
 ////@end paraverMain member variables
 
   map< string, UINT32 > traceInstance;
-  bool traceLoadedBefore;
-  bool CFGLoadedBefore;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
   bool DoLoadTrace( const string &path );

@@ -1905,6 +1905,9 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     productWin->setMaximumY( controlCloned->getMaximumY() );
     productWin->setMinimumY( controlCloned->getMinimumY() );
     productWin->setTimeUnit( controlCloned->getTimeUnit() );
+    productWin->setDrawCommLines( controlCloned->getDrawCommLines() );
+    productWin->setDrawFlags( controlCloned->getDrawFlags() );
+    productWin->setDrawFunctionLineColor( controlCloned->getDrawFunctionLineColor() );
     if( controlCloned->IsCodeColorSet() )
       productWin->setCodeColorMode();
     else if( controlCloned->IsGradientColorSet() )
@@ -1919,7 +1922,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       productWin->allowOutOfScale( false );
       productWin->allowOutliers( true );
     }
-    
+
     openWindow = tmpControlWindow->clone( productWin, 
                                           parent,
                                           getAllTracesTree()->GetRootItem(),

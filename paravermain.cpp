@@ -451,7 +451,6 @@ bool paraverMain::DoLoadTrace( const string &path )
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( path );
-    traceLoadedBefore = true;
   }
   catch( ParaverKernelException& ex )
   {
@@ -476,65 +475,63 @@ bool paraverMain::DoLoadTrace( const string &path )
 
 bool paraverMain::DoLoadCFG( const string &path )
 {
-    if( !CFGLoader::isCFGFile( path ))
+  if( !CFGLoader::isCFGFile( path ))
+  {
+    wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " isn't a valid cfg." );
+    wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
+    raiseCurrentWindow = false;
+    message.ShowModal();
+    raiseCurrentWindow = true;
+  }
+  else
+  {
+    vector<Window *> newWindows;
+    vector<Histogram *> newHistograms;
+      
+    if( !CFGLoader::loadCFG( localKernel, path, loadedTraces[ currentTrace ], newWindows, newHistograms ) )
     {
-      wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " isn't a valid cfg." );
-      wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
+      wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
+      wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK );
       raiseCurrentWindow = false;
       message.ShowModal();
       raiseCurrentWindow = true;
     }
     else
     {
-      vector<Window *> newWindows;
-      vector<Histogram *> newHistograms;
-      
-      if( !CFGLoader::loadCFG( localKernel, path, loadedTraces[ currentTrace ], newWindows, newHistograms ) )
+      wxTreeItemId child;
+      for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
       {
-        wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
-        wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK );
-        raiseCurrentWindow = false;
-        message.ShowModal();
-        raiseCurrentWindow = true;
+        wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+        wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+
+        if ( (*it)->getChild() == NULL )
+          BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
+
+        if ( it + 1 == newWindows.end() )
+          currentTimeline = *it;
       }
-      else
+
+      for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
       {
-        wxTreeItemId child;
-        for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
+        tmpHisto->SetHistogram( *it );
+
+        appendHistogram2Tree( tmpHisto );
+        LoadedWindows::getInstance()->add( (*it) );
+
+        tmpHisto->SetClientSize( wxRect( (*it)->getPosX(), (*it)->getPosY(),
+                                         (*it)->getWidth(), (*it)->getHeight() ) );
+        if( (*it)->getShowWindow() )
         {
-          wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-          wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
-
-          if ( (*it)->getChild() == NULL )
-            BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
-
-          if ( it + 1 == newWindows.end() )
-            currentTimeline = *it;
+          tmpHisto->Show();
         }
-
-        for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
-        {
-
-          gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
-          tmpHisto->SetHistogram( *it );
-
-          appendHistogram2Tree( tmpHisto );
-          LoadedWindows::getInstance()->add( (*it) );
-
-          tmpHisto->SetClientSize( wxRect( (*it)->getPosX(), (*it)->getPosY(),
-                                           (*it)->getWidth(), (*it)->getHeight() ) );
-          if( (*it)->getShowWindow() )
-          {
-            tmpHisto->Show();
-          }
-          tmpHisto->execute();
-        }
-
-        previousCFGs->add( path );
-        CFGLoadedBefore = true;
+        tmpHisto->execute();
       }
+
+      previousCFGs->add( path );
     }
-    return true;
+  }
+  return true;
 }
 
 
@@ -543,8 +540,6 @@ bool paraverMain::DoLoadCFG( const string &path )
  */
 void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
-  wxString tracePath = _("");
-
   if ( !traceLoadedBefore )
     tracePath = wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() );
 
@@ -556,6 +551,8 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
+    traceLoadedBefore = true;
+    tracePath = wxFileName( path ).GetPath();
     DoLoadTrace( std::string( path.mb_str() ) );
   }
   raiseCurrentWindow = true;
@@ -568,8 +565,6 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
-  wxString CFGPath = _("");
-
   if ( !CFGLoadedBefore )
    CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
 
@@ -580,6 +575,8 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
+    CFGLoadedBefore = true;
+    CFGPath = wxFileName( path ).GetPath();
     DoLoadCFG( std::string( path.mb_str() ) );
   }
   raiseCurrentWindow = true;
@@ -1137,7 +1134,7 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
   {
     currentHisto = histo->GetHistogram();
     currentWindow = (wxWindow *)histo;
-    
+
     currentTimeline = NULL;
     beginDragWindow = NULL;
 
@@ -1164,7 +1161,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
-  
+
   endDragWindow = NULL;
   if( gHistogram *histo = itemData->getHistogram() )
   {

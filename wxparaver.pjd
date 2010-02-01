@@ -24,40 +24,94 @@
     <bool name="generate_virtual_eventhandlers">0</bool>
     <string name="current_platform">"&lt;All platforms&gt;"</string>
     <string name="target_wx_version">"2.8.7"</string>
-    <string name="cpp_header_comment">"/////////////////////////////////////////////////////////////////////////////
-// Name:        %HEADER-FILENAME%
-// Purpose:     
-// Author:      %AUTHOR%
-// Modified by: 
-// Created:     %DATE%
-// RCS-ID:      
-// Copyright:   %COPYRIGHT%
-// Licence:     
-/////////////////////////////////////////////////////////////////////////////
+    <string name="cpp_header_comment">"/*****************************************************************************\
+ *                        ANALYSIS PERFORMANCE TOOLS                         *
+ *                                  wxparaver                                *
+ *              Paraver Trace Visualization and Analysis Tool                *
+ *****************************************************************************
+ *     ___     This library is free software; you can redistribute it and/or *
+ *    /  __         modify it under the terms of the GNU LGPL as published   *
+ *   /  /  _____    by the Free Software Foundation; either version 2.1      *
+ *  /  /  /     \   of the License, or (at your option) any later version.   *
+ * (  (  ( B S C )                                                           *
+ *  \  \  \_____/   This library is distributed in hope that it will be      *
+ *   \  \__         useful but WITHOUT ANY WARRANTY; without even the        *
+ *    \___          implied warranty of MERCHANTABILITY or FITNESS FOR A     *
+ *                  PARTICULAR PURPOSE. See the GNU LGPL for more details.   *
+ *                                                                           *
+ * You should have received a copy of the GNU Lesser General Public License  *
+ * along with this library; if not, write to the Free Software Foundation,   *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA          *
+ * The GNU LEsser General Public License is contained in the file COPYING.   *
+ *                                 ---------                                 *
+ *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
+\*****************************************************************************/
+
+/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
+ | @file: $HeadURL$
+ | @last_commit: $Date$
+ | @version:     $Revision$
+\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
 "</string>
-    <string name="cpp_implementation_comment">"/////////////////////////////////////////////////////////////////////////////
-// Name:        %SOURCE-FILENAME%
-// Purpose:     
-// Author:      %AUTHOR%
-// Modified by: 
-// Created:     %DATE%
-// RCS-ID:      
-// Copyright:   %COPYRIGHT%
-// Licence:     
-/////////////////////////////////////////////////////////////////////////////
+    <string name="cpp_implementation_comment">"/*****************************************************************************\
+ *                        ANALYSIS PERFORMANCE TOOLS                         *
+ *                                  wxparaver                                *
+ *              Paraver Trace Visualization and Analysis Tool                *
+ *****************************************************************************
+ *     ___     This library is free software; you can redistribute it and/or *
+ *    /  __         modify it under the terms of the GNU LGPL as published   *
+ *   /  /  _____    by the Free Software Foundation; either version 2.1      *
+ *  /  /  /     \   of the License, or (at your option) any later version.   *
+ * (  (  ( B S C )                                                           *
+ *  \  \  \_____/   This library is distributed in hope that it will be      *
+ *   \  \__         useful but WITHOUT ANY WARRANTY; without even the        *
+ *    \___          implied warranty of MERCHANTABILITY or FITNESS FOR A     *
+ *                  PARTICULAR PURPOSE. See the GNU LGPL for more details.   *
+ *                                                                           *
+ * You should have received a copy of the GNU Lesser General Public License  *
+ * along with this library; if not, write to the Free Software Foundation,   *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA          *
+ * The GNU LEsser General Public License is contained in the file COPYING.   *
+ *                                 ---------                                 *
+ *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
+\*****************************************************************************/
+
+/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
+ | @file: $HeadURL$
+ | @last_commit: $Date$
+ | @version:     $Revision$
+\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
 "</string>
-    <string name="cpp_symbols_file_comment">"/////////////////////////////////////////////////////////////////////////////
-// Name:        %SYMBOLS-FILENAME%
-// Purpose:     Symbols file
-// Author:      %AUTHOR%
-// Modified by: 
-// Created:     %DATE%
-// RCS-ID:      
-// Copyright:   %COPYRIGHT%
-// Licence:     
-/////////////////////////////////////////////////////////////////////////////
+    <string name="cpp_symbols_file_comment">"/*****************************************************************************\
+ *                        ANALYSIS PERFORMANCE TOOLS                         *
+ *                                  wxparaver                                *
+ *              Paraver Trace Visualization and Analysis Tool                *
+ *****************************************************************************
+ *     ___     This library is free software; you can redistribute it and/or *
+ *    /  __         modify it under the terms of the GNU LGPL as published   *
+ *   /  /  _____    by the Free Software Foundation; either version 2.1      *
+ *  /  /  /     \   of the License, or (at your option) any later version.   *
+ * (  (  ( B S C )                                                           *
+ *  \  \  \_____/   This library is distributed in hope that it will be      *
+ *   \  \__         useful but WITHOUT ANY WARRANTY; without even the        *
+ *    \___          implied warranty of MERCHANTABILITY or FITNESS FOR A     *
+ *                  PARTICULAR PURPOSE. See the GNU LGPL for more details.   *
+ *                                                                           *
+ * You should have received a copy of the GNU Lesser General Public License  *
+ * along with this library; if not, write to the Free Software Foundation,   *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA          *
+ * The GNU LEsser General Public License is contained in the file COPYING.   *
+ *                                 ---------                                 *
+ *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
+\*****************************************************************************/
+
+/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
+ | @file: $HeadURL$
+ | @last_commit: $Date$
+ | @version:     $Revision$
+\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
 "</string>
     <string name="cpp_header_preamble">""</string>
@@ -1049,6 +1103,10 @@
           <string name="variable-14">"numNewDerived|int|NumNewDerived|0|2|0|"</string>
           <string name="variable-15">"raiseCurrentWindow|bool|RaiseCurrentWindow|true|2|0|"</string>
           <string name="variable-16">"activeWindows|set&lt;wxWindow *&gt;|ActiveWindows||2|0|"</string>
+          <string name="variable-17">"traceLoadedBefore|bool|TraceLoadedBefore||2|0|"</string>
+          <string name="variable-18">"CFGLoadedBefore|bool|CFGLoadedBefore||2|0|"</string>
+          <string name="variable-19">"tracePath|wxString|TracePath||2|0|"</string>
+          <string name="variable-20">"CFGPath|wxString|CFGPath||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||paraverMain"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
@@ -1938,14 +1996,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -2211,8 +2261,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">9</long>
-                <long name="proxy-Height">8</long>
+                <long name="proxy-Width">8</long>
+                <long name="proxy-Height">7</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -2276,8 +2326,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">9</long>
-                <long name="proxy-Height">8</long>
+                <long name="proxy-Width">8</long>
+                <long name="proxy-Height">7</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -11546,7 +11596,7 @@
                   <string name="proxy-Label">"Fill State gaps with IDLE State"</string>
                   <bool name="proxy-Initial value">0</bool>
                   <string name="proxy-Help text">""</string>
-                  <string name="proxy-Tooltip text">"When a gap between states is detected in loading time, it's completed with an IDLE state"</string>
+                  <string name="proxy-Tooltip text">""</string>
                   <string name="proxy-Data variable">""</string>
                   <string name="proxy-Data validator">""</string>
                   <string name="proxy-Data source">""</string>
@@ -11667,7 +11717,7 @@
                     <string name="proxy-Label">"Traces"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Base path to traces files (.prv, .prv.gz, .pcf and .row)"</string>
+                    <string name="proxy-Tooltip text">""</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -11736,7 +11786,7 @@
                     <string name="proxy-Default path">""</string>
                     <string name="proxy-Message">""</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Base path to traces files (.prv, .prv.gz, .pcf and .row)"</string>
+                    <string name="proxy-Tooltip text">"Base path to traces files (.prv, .prv.gz, .pcf and .row)."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -11829,7 +11879,7 @@
                     <string name="proxy-Label">"CFGs"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Base path to configuration files (.cfg)"</string>
+                    <string name="proxy-Tooltip text">""</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -11897,7 +11947,7 @@
                     <string name="proxy-Member variable name">"dirPickerCFG"</string>
                     <string name="proxy-Default path">""</string>
                     <string name="proxy-Message">""</string>
-                    <string name="proxy-Help text">"Base path to configuration files (.cfg)"</string>
+                    <string name="proxy-Help text">"Base path to configuration files (.cfg). "</string>
                     <string name="proxy-Tooltip text">""</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
@@ -11991,7 +12041,7 @@
                     <string name="proxy-Label">"Tmp"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Working directory for results and logs"</string>
+                    <string name="proxy-Tooltip text">""</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -12060,7 +12110,7 @@
                     <string name="proxy-Default path">""</string>
                     <string name="proxy-Message">""</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Working directory for results and logs"</string>
+                    <string name="proxy-Tooltip text">"Working directory for results and logs."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -12311,7 +12361,7 @@
                       <string name="proxy-Label">"Prefix"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default name for new timelines, applied in window browser"</string>
+                      <string name="proxy-Tooltip text">"Default name for new timelines, applied in window browser."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -12380,7 +12430,7 @@
                       <string name="proxy-Initial value">"New Window # %N"</string>
                       <long name="proxy-Max length">256</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default name for new timelines, applied in window browser"</string>
+                      <string name="proxy-Tooltip text">"Default name for new timelines, applied in window browser."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -12486,7 +12536,7 @@
                       <string name="proxy-Label">"Full"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default full name for new timelines, applied in window title"</string>
+                      <string name="proxy-Tooltip text">"Default full name for new timelines, applied in window title."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -12555,7 +12605,7 @@
                       <string name="proxy-Initial value">"%P @ %T"</string>
                       <long name="proxy-Max length">256</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default full name for new timelines, applied in window title"</string>
+                      <string name="proxy-Tooltip text">"Default full name for new timelines, applied in window title."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -12671,7 +12721,7 @@
                     <string name="proxy-Label">"Communication Lines"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"View communications lines in new timelines"</string>
+                    <string name="proxy-Tooltip text">"View communications lines in new timelines."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -12734,7 +12784,7 @@
                     <string name="proxy-Label">"Event Flags"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"View event flags in new timelines"</string>
+                    <string name="proxy-Tooltip text">"View event flags in new timelines."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -12797,7 +12847,7 @@
                     <string name="proxy-Label">"Semantic Values as Color"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Represent semantic values as function in new timelines"</string>
+                    <string name="proxy-Tooltip text">"Represent semantic values as function in new timelines."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -12884,7 +12934,7 @@
                       <string name="proxy-Label">"Color"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Color mode selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Color mode selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -12953,7 +13003,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Color mode selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Color mode selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13037,7 +13087,7 @@
                       <string name="proxy-Label">"Gradient Function"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Gradient function selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Gradient function selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13106,7 +13156,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Gradient function selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Gradient function selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13190,7 +13240,7 @@
                       <string name="proxy-Label">"Drawmode Time"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Drawmode for time axis selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Drawmode for time axis selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13259,7 +13309,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Drawmode for time axis selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Drawmode for time axis selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13343,7 +13393,7 @@
                       <string name="proxy-Label">"Drawmode Objects"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Drawmode for objects axis selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Drawmode for objects axis selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13412,7 +13462,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Drawmode for objects axis selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Drawmode for objects axis selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13496,7 +13546,7 @@
                       <string name="proxy-Label">"Pixel Size"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Pixel size selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Pixel size selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13565,7 +13615,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Pixel size selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Pixel size selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -13684,7 +13734,7 @@
                     <string name="proxy-Label">"Semantic"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Show semantic information when left click in timeline"</string>
+                    <string name="proxy-Tooltip text">"Show semantic information when left click in timeline."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -13747,7 +13797,7 @@
                     <string name="proxy-Label">"Events"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Show events information when left click in timeline"</string>
+                    <string name="proxy-Tooltip text">"Show events information when left click in timeline."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -13810,7 +13860,7 @@
                     <string name="proxy-Label">"Communications"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Show communications information when left click in timeline"</string>
+                    <string name="proxy-Tooltip text">"Show communications information when left click in timeline."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -13873,7 +13923,7 @@
                     <string name="proxy-Label">"Previous / Next"</string>
                     <bool name="proxy-Initial value">0</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"In addition to current semantic value, show information for previous and next ones when left click in timeline"</string>
+                    <string name="proxy-Tooltip text">"In addition to current semantic value, show information for previous and next ones when left click in timeline."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -13936,7 +13986,7 @@
                     <string name="proxy-Label">"Text"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Show semantic value as text when left click in timeline"</string>
+                    <string name="proxy-Tooltip text">"Show semantic value as text when left click in timeline."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -14023,7 +14073,7 @@
                       <string name="proxy-Label">"Precision"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Decimal precision for semantic values"</string>
+                      <string name="proxy-Tooltip text">""</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14093,7 +14143,7 @@
                       <long name="proxy-Maximum value">10</long>
                       <long name="proxy-Initial value">2</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Decimal precision for semantic values"</string>
+                      <string name="proxy-Tooltip text">"Decimal precision for semantic values."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14219,7 +14269,7 @@
                       <string name="proxy-Label">"Image as"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default image format selected"</string>
+                      <string name="proxy-Tooltip text">"Default image format selected."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14288,7 +14338,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default image format selected"</string>
+                      <string name="proxy-Tooltip text">"Default image format selected."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14372,7 +14422,7 @@
                       <string name="proxy-Label">"Text as"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default text format selected"</string>
+                      <string name="proxy-Tooltip text">"Default text format selected."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14441,7 +14491,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default text format selected"</string>
+                      <string name="proxy-Tooltip text">"Default text format selected."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14503,7 +14553,7 @@
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Help text">""</string>
-            <string name="proxy-Tooltip text">""</string>
+            <string name="proxy-Tooltip text">"Histogram preferences."</string>
             <string name="proxy-Background colour">""</string>
             <string name="proxy-Foreground colour">""</string>
             <string name="proxy-Font">""</string>
@@ -14684,7 +14734,7 @@
                       <string name="proxy-Label">"Prefix"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default name for new histograms, applied in window browser"</string>
+                      <string name="proxy-Tooltip text">"Default name for new histograms, applied in window browser."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14753,7 +14803,7 @@
                       <string name="proxy-Initial value">"New Histogram # %N"</string>
                       <long name="proxy-Max length">256</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default name for new histograms, applied in window browser"</string>
+                      <string name="proxy-Tooltip text">"Default name for new histograms, applied in window browser."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14859,7 +14909,7 @@
                       <string name="proxy-Label">"Full"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default full name for new histograms, applied in window title"</string>
+                      <string name="proxy-Tooltip text">"Default full name for new histograms, applied in window title."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -14928,7 +14978,7 @@
                       <string name="proxy-Initial value">"%P @ %T"</string>
                       <long name="proxy-Max length">256</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default full name for new histograms, applied in window title"</string>
+                      <string name="proxy-Tooltip text">"Default full name for new histograms, applied in window title."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -15044,7 +15094,7 @@
                     <string name="proxy-Label">"Zoom View as default"</string>
                     <bool name="proxy-Initial value">0</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Select between numeric and zoom view for the histogram matrix"</string>
+                    <string name="proxy-Tooltip text">"Select between numeric and zoom view for the histogram matrix."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -15107,7 +15157,7 @@
                     <string name="proxy-Label">"Horizontal disposition"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Select between horizontal / vertical disposition for the histogram matrix"</string>
+                    <string name="proxy-Tooltip text">"Select between horizontal / vertical disposition for the histogram matrix."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -15170,7 +15220,7 @@
                     <string name="proxy-Label">"Hide empty columns"</string>
                     <bool name="proxy-Initial value">0</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Hide columns when all its cells are empty"</string>
+                    <string name="proxy-Tooltip text">"Hide columns when all its cells are empty."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -15233,7 +15283,7 @@
                     <string name="proxy-Label">"Show Gradient Colors"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Apply gradient colors to the background of the histogram cells"</string>
+                    <string name="proxy-Tooltip text">""</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -15320,7 +15370,7 @@
                       <string name="proxy-Label">"Gradient Function"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Color mode selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Color mode selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -15389,7 +15439,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Color mode selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Color mode selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -15473,7 +15523,7 @@
                       <string name="proxy-Label">"Drawmode Semantic"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Color mode selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Color mode selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -15542,7 +15592,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Color mode selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Color mode selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -15626,7 +15676,7 @@
                       <string name="proxy-Label">"Drawmode Objects"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Color mode selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Color mode selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -15695,7 +15745,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Color mode selected in new timeline"</string>
+                      <string name="proxy-Tooltip text">"Color mode selected in new timeline."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -15814,7 +15864,7 @@
                     <string name="proxy-Label">"Scientific Notation"</string>
                     <bool name="proxy-Initial value">0</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Write cell content using scientific notation"</string>
+                    <string name="proxy-Tooltip text">"Write cell content using scientific notation."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -15877,7 +15927,7 @@
                     <string name="proxy-Label">"Thousands Separator"</string>
                     <bool name="proxy-Initial value">0</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Write cell content using thousands separator"</string>
+                    <string name="proxy-Tooltip text">"Write cell content using thousands separator."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -15940,7 +15990,7 @@
                     <string name="proxy-Label">"Show Units"</string>
                     <bool name="proxy-Initial value">0</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"End numeric information with its units"</string>
+                    <string name="proxy-Tooltip text">"End numeric information with its units."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -16027,7 +16077,7 @@
                       <string name="proxy-Label">"Precision"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Decimal precision applied to the presentation of histogram metrics"</string>
+                      <string name="proxy-Tooltip text">"Decimal precision applied to the presentation of histogram metrics."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -16097,7 +16147,7 @@
                       <long name="proxy-Maximum value">10</long>
                       <long name="proxy-Initial value">2</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Decimal precision applied to the presentation of histogram metrics"</string>
+                      <string name="proxy-Tooltip text">"Decimal precision applied to the presentation of histogram metrics."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -16199,7 +16249,7 @@
                     <string name="proxy-Label">"Autofit Control Scale"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Fit control scale when histogram is created"</string>
+                    <string name="proxy-Tooltip text">"Fit control scale when histogram is created."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -16262,7 +16312,7 @@
                     <string name="proxy-Label">"Autofit 3D Scale"</string>
                     <bool name="proxy-Initial value">0</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Fit 3D scale when histogram is created"</string>
+                    <string name="proxy-Tooltip text">"Fit 3D scale when histogram is created."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -16325,7 +16375,7 @@
                     <string name="proxy-Label">"Autofit Data Gradient"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Fit data gradient when histogram is created"</string>
+                    <string name="proxy-Tooltip text">"Fit data gradient when histogram is created."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -16412,7 +16462,7 @@
                       <string name="proxy-Label">"Columns"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Initial number of columns for new histograms"</string>
+                      <string name="proxy-Tooltip text">"Initial number of columns for new histograms."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -16482,7 +16532,7 @@
                       <long name="proxy-Maximum value">256</long>
                       <long name="proxy-Initial value">20</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Initial number of columns for new histograms"</string>
+                      <string name="proxy-Tooltip text">"Initial number of columns for new histograms."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -16608,7 +16658,7 @@
                       <string name="proxy-Label">"Image as"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default image format selected"</string>
+                      <string name="proxy-Tooltip text">"Default image format selected."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -16677,7 +16727,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default image format selected"</string>
+                      <string name="proxy-Tooltip text">"Default image format selected."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -16761,7 +16811,7 @@
                       <string name="proxy-Label">"Text as"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default text format selected"</string>
+                      <string name="proxy-Tooltip text">"Default text format selected."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -16830,7 +16880,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">"Default text format selected"</string>
+                      <string name="proxy-Tooltip text">"Default text format selected."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -17049,7 +17099,7 @@
                     <string name="proxy-Label">"Background"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"When background timeline color is changed, new foreground complementary color is suggested"</string>
+                    <string name="proxy-Tooltip text">"When background timeline color is changed, new foreground complementary color is suggested."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17118,7 +17168,7 @@
                     <string name="proxy-Member variable name">"colourPickerBackground"</string>
                     <string name="proxy-Default colour">"000000"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"When background timeline color is changed, new foreground complementary color is suggested"</string>
+                    <string name="proxy-Tooltip text">"When background timeline color is changed, new foreground complementary color is suggested."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17210,7 +17260,7 @@
                     <string name="proxy-Label">"Foreground"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Color used to draw scale axis and object names in timelines"</string>
+                    <string name="proxy-Tooltip text">"Color used to draw scale axis and object names in timelines."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17278,7 +17328,7 @@
                     <string name="proxy-Member variable name">"colourPickerAxis"</string>
                     <string name="proxy-Default colour">"FFFFFF"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Color used to draw scale axis and object names in timelines"</string>
+                    <string name="proxy-Tooltip text">"Color used to draw scale axis and object names in timelines."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17370,7 +17420,7 @@
                     <string name="proxy-Label">"Logical comms."</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Color used to draw logical communications in timelines"</string>
+                    <string name="proxy-Tooltip text">"Color used to draw logical communications in timelines."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17438,7 +17488,7 @@
                     <string name="proxy-Member variable name">"colourPickerLogical"</string>
                     <string name="proxy-Default colour">"FFFF00"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Color used to draw logical communications in timelines"</string>
+                    <string name="proxy-Tooltip text">"Color used to draw logical communications in timelines."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17530,7 +17580,7 @@
                     <string name="proxy-Label">"Physical comms."</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Color used to draw physical communications in timelines"</string>
+                    <string name="proxy-Tooltip text">"Color used to draw physical communications in timelines."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17598,7 +17648,7 @@
                     <string name="proxy-Member variable name">"colourPickerPhysical"</string>
                     <string name="proxy-Default colour">"FF0000"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Color used to draw physical communications in timelines"</string>
+                    <string name="proxy-Tooltip text">"Color used to draw physical communications in timelines."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17667,7 +17717,7 @@
                   <string name="proxy-Label">"Default"</string>
                   <bool name="proxy-Default">0</bool>
                   <string name="proxy-Help text">""</string>
-                  <string name="proxy-Tooltip text">"Restores predefined colors"</string>
+                  <string name="proxy-Tooltip text">"Restores predefined colors."</string>
                   <string name="proxy-Data variable">""</string>
                   <string name="proxy-Data validator">""</string>
                   <string name="proxy-Data source">""</string>
@@ -17790,7 +17840,7 @@
                     <string name="proxy-Label">"Begin"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Base color used to represent semantic values when gradient is selected"</string>
+                    <string name="proxy-Tooltip text">"Base color used to represent semantic values when gradient is selected."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17858,7 +17908,7 @@
                     <string name="proxy-Member variable name">"colourPickerGradientBegin"</string>
                     <string name="proxy-Default colour">"00ff00"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Base color used to represent semantic values when gradient is selected"</string>
+                    <string name="proxy-Tooltip text">"Base color used to represent semantic values when gradient is selected."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -17950,7 +18000,7 @@
                     <string name="proxy-Label">"End"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Top color used to represent semantic values when gradient is selected"</string>
+                    <string name="proxy-Tooltip text">"Top color used to represent semantic values when gradient is selected."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -18018,7 +18068,7 @@
                     <string name="proxy-Member variable name">"colourPickerGradientEnd"</string>
                     <string name="proxy-Default colour">"0000ff"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Top color used to represent semantic values when gradient is selected"</string>
+                    <string name="proxy-Tooltip text">"Top color used to represent semantic values when gradient is selected."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -18110,7 +18160,7 @@
                     <string name="proxy-Label">"Low outliers"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Any semantic outlier smaller than &lt;Begin&gt; will use this color"</string>
+                    <string name="proxy-Tooltip text">"Any semantic outlier smaller than &lt;Begin&gt; will use this color."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -18178,7 +18228,7 @@
                     <string name="proxy-Member variable name">"colourPickerGradientLow"</string>
                     <string name="proxy-Default colour">"CFCF44"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Any semantic outlier smaller than &lt;Begin&gt; will use this color"</string>
+                    <string name="proxy-Tooltip text">"Any semantic outlier smaller than &lt;Begin&gt; will use this color."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -18270,7 +18320,7 @@
                     <string name="proxy-Label">"High outliers"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Any semantic outlier greater than &lt;End&gt; will use this color"</string>
+                    <string name="proxy-Tooltip text">"Any semantic outlier greater than &lt;End&gt; will use this color."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -18338,7 +18388,7 @@
                     <string name="proxy-Member variable name">"colourPickerGradientTop"</string>
                     <string name="proxy-Default colour">"FF9218"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Any semantic outlier greater than &lt;End&gt; will use this color"</string>
+                    <string name="proxy-Tooltip text">"Any semantic outlier greater than &lt;End&gt; will use this color."</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -18407,7 +18457,7 @@
                   <string name="proxy-Label">"Default"</string>
                   <bool name="proxy-Default">0</bool>
                   <string name="proxy-Help text">""</string>
-                  <string name="proxy-Tooltip text">"Restores predefined colors"</string>
+                  <string name="proxy-Tooltip text">"Restores predefined colors."</string>
                   <string name="proxy-Data variable">""</string>
                   <string name="proxy-Data validator">""</string>
                   <string name="proxy-Data source">""</string>
