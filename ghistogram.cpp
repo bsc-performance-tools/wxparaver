@@ -1880,6 +1880,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     Window *productWin = Window::create( controlCloned->getKernel(), controlCloned, extraControlCloned );
 
     productWin->setLevelFunction( DERIVED, "product" );
+    name = controlCloned->getName();
     tmpStr.str( "" );
     tmpStr << name << " 3DZoom ranges [" << ( columnBegin * delta ) + min << ",";
     if ( ( ( columnEnd * delta ) + min + delta ) >= max )
