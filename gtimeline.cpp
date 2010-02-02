@@ -1749,7 +1749,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 
   whatWhereLines.push_back( make_pair( END_OBJECT_SECTION, _( "" )));
 
-  myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS );
+  myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS, false );
 
   myWindow->getRecordList( whichRow )->erase( myWindow->getRecordList( whichRow )->begin(),
                                               myWindow->getRecordList( whichRow )->end() );
@@ -1759,17 +1759,17 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
   if ( tmpBeginTime > 0.0 )
   {
     --tmpBeginTime;
-    myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS );
+    myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
 
     printWWSemantic( whichRow, false, textMode );
     printWWRecords( whichRow, false, textMode );
-    myWindow->calcNext( whichRow );
+    myWindow->calcNext( whichRow, false );
   }
 
   printWWSemantic( whichRow, true, textMode );
   printWWRecords( whichRow, true, textMode );
 
-  myWindow->calcNext( whichRow );
+  myWindow->calcNext( whichRow, false );
   printWWSemantic( whichRow, false, textMode );
   printWWRecords( whichRow, false, textMode );
 }
@@ -1778,7 +1778,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 void gTimeline::printWhatWhere( )
 {
   int fontSize = 8;
-  bool allowedLine, allowedSection;
+  bool allowedLine, allowedSection = false;
   int recordsCount = 0;
 
   whatWhereText->Clear();
@@ -2351,6 +2351,10 @@ void gTimeline::saveImage()
       case 3:
         imageType = wxBITMAP_TYPE_XPM;
         imageSuffix = _(".xpm");
+        break;
+      default:
+        imageType =  wxBITMAP_TYPE_PNG;
+        imageSuffix = _(".png");
         break;
     }
 
