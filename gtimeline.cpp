@@ -793,6 +793,10 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
           commdc.SetPen(  wxPen( physicalColour ) );
         wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
         posPartner += objectAxisPos;
+        if( posPartner > 10000 )
+          posPartner = 10000;
+        if( posPartner < -10000 )
+          posPartner = -10000;
         commdc.DrawLine( posPartner, objectPosList[ partnerObject ],
                          pos, objectPosList[ it->getOrder() ] );
         commmaskdc.DrawLine( posPartner, objectPosList[ partnerObject ],
