@@ -47,6 +47,7 @@
 #include "filter.h"
 #include "loadedwindows.h"
 #include "labelconstructor.h"
+#include "paraverlabels.h"
 
 static bool filterCatCollapsed        = true;
 static bool commFilterCatCollapsed    = true;
@@ -175,6 +176,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                   arrayLevels, arrayLevelsPos, whichWindow->getLevel() ) );
   }
   
+  arrayStr.Clear();
+  arrayInt.Clear();
+  for( int iUnit = 0; iUnit <= DAY; ++iUnit )
+  {
+    arrayStr.Add( wxString::FromAscii( FULL_LABEL_TIMEUNIT[ iUnit ].c_str() ) );
+    arrayInt.Add( iUnit );
+  }
+  windowProperties->Append( new wxEnumProperty( wxT( "Time Unit" ), wxPG_LABEL, arrayStr, arrayInt,
+                                                whichWindow->getTimeUnit() ) );
+
   //-------------------------------------------------------------------------
   // Filter related properties
   //-------------------------------------------------------------------------

@@ -821,6 +821,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
+  else if( propName == _( "Time Unit" ) )
+  {
+    currentTimeline->setTimeUnit( (TWindowLevel)property->GetValue().GetLong() );
+    currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
+  }
   else if( propName == _( "Logical" ) )
   {
     currentTimeline->getFilter()->setLogical( property->GetValue().GetBool() );
