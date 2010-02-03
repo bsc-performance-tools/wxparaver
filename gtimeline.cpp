@@ -1751,13 +1751,13 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 
   myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS, false );
 
-  myWindow->getRecordList( whichRow )->erase( myWindow->getRecordList( whichRow )->begin(),
-                                              myWindow->getRecordList( whichRow )->end() );
-
   TRecordTime tmpBeginTime = myWindow->getBeginTime( whichRow );
 
   if ( tmpBeginTime > 0.0 )
   {
+    myWindow->getRecordList( whichRow )->erase( myWindow->getRecordList( whichRow )->begin(),
+                                                myWindow->getRecordList( whichRow )->end() );
+
     --tmpBeginTime;
     myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
 
@@ -1922,15 +1922,21 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   RecordList *rl = myWindow->getRecordList( whichRow );
   RecordList::iterator it = rl->begin();
 
-  while( it != rl->end() && (*it).getTime() < myWindow->getWindowBeginTime() && (*it).getTime() < myWindow->getBeginTime( whichRow ) )
+  while( it != rl->end() &&
+         (*it).getTime() < myWindow->getWindowBeginTime() &&
+         (*it).getTime() < myWindow->getBeginTime( whichRow ) )
+  {
     ++it;
+  }
 
   if( clickedValue )
     whatWhereLines.push_back( make_pair( BEGIN_CURRENT_SECTION, _( "" )));
   else
     whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
 
-  while( it != rl->end() && (*it).getTime() <= myWindow->getWindowEndTime() && (*it).getTime() <= myWindow->getEndTime( whichRow ) )
+  while( it != rl->end() && 
+         (*it).getTime() <= myWindow->getWindowEndTime() &&
+         (*it).getTime() <= myWindow->getEndTime( whichRow ) )
   {
     if( (*it).getType() & EVENT )
     {
