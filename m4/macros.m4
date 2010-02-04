@@ -12,3 +12,19 @@ AC_DEFUN([AX_PROG_WXPROPGRID_NAME],
    )
    AC_SUBST(WXPROPGRID_NAME)
 ])
+
+
+# AX_PROG_PARAVER_LIBDIR
+# -----------
+AC_DEFUN([AX_PROG_PARAVER_LIBDIR],
+[
+   AC_ARG_WITH(paraver_libs,
+      AC_HELP_STRING(
+         [--with-paraver-libdir@<:@=DIR@:>@],
+         [specify paraver-kernel and paraver-api libraries install directory. Default: /usr/local/lib]
+      ),
+      [PARAVER_LIBDIR=${withval}],
+      [PARAVER_LIBDIR=/usr/local/lib]
+   )
+   AC_SUBST(PARAVER_LIBDIR)
+])
