@@ -1693,6 +1693,7 @@ void gTimeline::OnSplitterwindowSashUnsplit( wxSplitterEvent& event )
 
 void gTimeline::OnSplitterwindowSashDClick( wxSplitterEvent& event )
 {
+  infoZoneLastSize = infoZone->GetSize().GetHeight();
   canRedraw = false;
   event.Skip();
 }
@@ -2080,11 +2081,11 @@ void gTimeline::Split()
   splitter->SetSashPosition( myWindow->getHeight() );*/
   resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
   infoZone->SetClientSize( myWindow->getWidth(), infoZoneLastSize );
-#ifdef WIN32
+/*#ifdef WIN32
   this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() +
                                                          /*infoZone->GetClientSize().GetHeight()*/
-                                                         infoZoneLastSize + 5 );
-#endif
+/*                                                         infoZoneLastSize + 5 );
+#endif*/
   this->Thaw();
   canRedraw = true;
   splitChanged = true;
