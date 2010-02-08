@@ -1537,15 +1537,20 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
   raiseCurrentWindow = false;
   if( saveDialog.ShowModal() == wxID_OK )
   {
+    if ( !CFGLoadedBefore )
+      CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
+
     timelines = saveDialog.GetTimelines();
     histograms = saveDialog.GetHistograms();
     options = saveDialog.GetOptions();
-    wxFileDialog dialog( this, _( "Save Configuration" ), wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() ), _( "" ),
+    wxFileDialog dialog( this, _( "Save Configuration" ), CFGPath, _( "" ),
       _("Paraver configuration file (*.cfg)|*.cfg" ),
       wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
     if( dialog.ShowModal() == wxID_OK )
     {
       wxString path = dialog.GetPath();
+      CFGLoadedBefore = true;
+      CFGPath = wxFileName( path ).GetPath();
       CFGLoader::saveCFG( std::string( path.mb_str() ), options, timelines, histograms );
       previousCFGs->add( std::string( path.mb_str() ) );
     }

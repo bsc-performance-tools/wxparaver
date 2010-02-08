@@ -2077,15 +2077,8 @@ void gTimeline::Split()
   canRedraw = false;
   this->Freeze();
   splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
-/*  drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
-  splitter->SetSashPosition( myWindow->getHeight() );*/
   resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
   infoZone->SetClientSize( myWindow->getWidth(), infoZoneLastSize );
-/*#ifdef WIN32
-  this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() +
-                                                         /*infoZone->GetClientSize().GetHeight()*/
-/*                                                         infoZoneLastSize + 5 );
-#endif*/
   this->Thaw();
   canRedraw = true;
   splitChanged = true;
