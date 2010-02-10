@@ -73,6 +73,7 @@
 #include "new_derived_window.xpm"
 #include "new_histogram.xpm"
 #include "delete.xpm"
+#include "cut_trace.xpm"
 ////@end XPM images
 
 #include "table.xpm"
@@ -127,6 +128,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
+
+  EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
 
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
@@ -365,6 +368,10 @@ void paraverMain::CreateControls()
   wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
   wxBitmap itemtool22BitmapDisabled;
   tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
+  tbarMain->AddSeparator();
+  wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
+  wxBitmap itemtool24BitmapDisabled;
+  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -644,6 +651,11 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   else if (name == _T("delete.xpm"))
   {
     wxBitmap bitmap(delete_xpm);
+    return bitmap;
+  }
+  else if (name == _T("cut_trace.xpm"))
+  {
+    wxBitmap bitmap(cut_trace_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -2465,5 +2477,15 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   //info.SetCopyright(_T(""));
 
   wxAboutBox(info);
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_CUT_TRACE
+ */
+
+void paraverMain::OnToolCutTraceUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( false );
 }
 
