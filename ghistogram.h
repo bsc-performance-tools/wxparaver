@@ -251,8 +251,8 @@ public:
   wxBitmap GetDrawImage() const { return drawImage ; }
   void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
-  bool GetOpenControlDragging() const { return openControlDragging ; }
-  void SetOpenControlDragging(bool value) { openControlDragging = value ; }
+  bool GetZoomDragging() const { return zoomDragging ; }
+  void SetZoomDragging(bool value) { zoomDragging = value ; }
 
   vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
   void SetSelectedRows(vector<TObjectOrder> value) { selectedRows = value ; }
@@ -268,6 +268,7 @@ public:
 ////@end gHistogram member function declarations
 
   void execute();
+
   void fillGrid();
   void fillZoom();
   
@@ -338,7 +339,7 @@ private:
   wxPoint zoomPointBegin;
   wxPoint zoomPointEnd;
   wxBitmap drawImage;
-  bool openControlDragging;
+  bool zoomDragging;
   vector<TObjectOrder> selectedRows;
   SelectionManagement<THistogramColumn,int> columnSelection;
 ////@end gHistogram member variables
@@ -347,7 +348,6 @@ private:
   void updateHistogram();
   void OnTimerZoom( wxTimerEvent& event );
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
-//  ZoomHistory<TTime, TObjectOrder> *zoomHistory;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
                    vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
   void fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat );
@@ -356,6 +356,8 @@ private:
                                  TObjectOrder& objectBegin, TObjectOrder& objectEnd );
   void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
                           TObjectOrder objectBegin, TObjectOrder objectEnd );
+  void zoom( THistogramColumn columnBegin, THistogramColumn columnEnd,
+             TObjectOrder objectBegin, TObjectOrder objectEnd );
 };
 
 #endif

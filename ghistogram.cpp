@@ -206,7 +206,7 @@ void gHistogram::Init()
   lastPosZoomX = 0;
   lastPosZoomY = 0;
   openControlActivated = false;
-  openControlDragging = false;
+  zoomDragging = false;
   mainSizer = NULL;
   zoomHisto = NULL;
   gridHisto = NULL;
@@ -248,12 +248,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
@@ -262,7 +262,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -321,10 +321,19 @@ void gHistogram::execute()
   zoomHisto->Show( false );
   gridHisto->Show( false );
   Update();
-  
+
+  TObjectOrder beginRow, endRow;
   selectedRows.clear();
-  TObjectOrder beginRow = myHistogram->getControlWindow()->getZoomSecondDimension().first;
-  TObjectOrder endRow =  myHistogram->getControlWindow()->getZoomSecondDimension().second;
+  if( myHistogram->isZoomEmpty() )
+  {
+    beginRow = myHistogram->getControlWindow()->getZoomSecondDimension().first;
+    endRow =  myHistogram->getControlWindow()->getZoomSecondDimension().second;
+  }
+  else
+  {
+    beginRow = myHistogram->getZoomSecondDimension().first;
+    endRow =  myHistogram->getZoomSecondDimension().second;
+  }
   myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                     selectedRows, beginRow, endRow, true );
 
@@ -341,7 +350,6 @@ void gHistogram::execute()
 
   SetTitle( winTitle );
 }
-
 
 void gHistogram::fillGrid()
 {
@@ -1227,7 +1235,6 @@ void gHistogram::OnPopUpFitTimeScale()
 {
   myHistogram->setWindowBeginTime( 0 );
   myHistogram->setWindowEndTime( myHistogram->getControlWindow()->getTrace()->getEndTime() );
-//  zoomHistory->addZoom( 0, myHistogram->getControlWindow()->getTrace()->getEndTime() );
   myHistogram->setRecalc( true );
   updateHistogram();
 }
@@ -1367,18 +1374,41 @@ void gHistogram::OnPopUpDrawModeBothAverage()
   myHistogram->setRedraw( true );
 }
 
-void gHistogram::OnPopUpUndoZoom(){}
-void gHistogram::OnPopUpRedoZoom(){}
+void gHistogram::OnPopUpUndoZoom()
+{
+//cout << "undozoom" << endl;
+  if ( !GetHistogram()->emptyPrevZoom() )
+  {
+    GetHistogram()->prevZoom();
+    zoom( GetHistogram()->getZoomFirstDimension().first, GetHistogram()->getZoomFirstDimension().second,
+          GetHistogram()->getZoomSecondDimension().first, GetHistogram()->getZoomSecondDimension().second );
+//cout << "undozoom "<< GetHistogram()->getZoomFirstDimension().first << " " << GetHistogram()->getZoomFirstDimension().second << " "<<  GetHistogram()->getZoomSecondDimension().first << " "<< GetHistogram()->getZoomSecondDimension().second << endl;
 
+  }
+}
+
+void gHistogram::OnPopUpRedoZoom()
+{
+//cout << "redozoom" << endl;
+  if ( !GetHistogram()->emptyNextZoom() )
+  {
+    GetHistogram()->nextZoom();
+    zoom( GetHistogram()->getZoomFirstDimension().first, GetHistogram()->getZoomFirstDimension().second,
+          GetHistogram()->getZoomSecondDimension().first, GetHistogram()->getZoomSecondDimension().second );
+//cout << "redozoom "<< GetHistogram()->getZoomFirstDimension().first << " " << GetHistogram()->getZoomFirstDimension().second << " "<<  GetHistogram()->getZoomSecondDimension().first << " "<< GetHistogram()->getZoomSecondDimension().second << endl;
+
+  }
+}
 
 void gHistogram::rightDownManager()
 {
   paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
 
   gPopUpMenu popUpMenu( this );
-//  popUpMenu->Enable( "Undo Zoom", !zoomHistory->emptyPrevZoom() );
-//  popUpMenu->Enable( "Redo Zoom", !zoomHistory->emptyNextZoom() );
+  popUpMenu.enable( "Undo Zoom", !GetHistogram()->emptyPrevZoom() );
+  popUpMenu.enable( "Redo Zoom", !GetHistogram()->emptyNextZoom() );
 
+  popUpMenu.enableMenu( this );
   PopupMenu( &popUpMenu );
 }
 
@@ -1511,7 +1541,7 @@ void gHistogram::OnMotion( wxMouseEvent& event )
   if( ready )
     timerZoom->Start( 100, true );
 
-  if( openControlDragging )
+  if( zoomDragging )
   {
     wxMemoryDC memdc( drawImage );
     memdc.SetBackgroundMode( wxTRANSPARENT );
@@ -1528,8 +1558,17 @@ void gHistogram::OnMotion( wxMouseEvent& event )
 
     long beginX = zoomPointBegin.x > event.GetX() ? event.GetX() : zoomPointBegin.x;
     long endX = zoomPointBegin.x < event.GetX() ? event.GetX() : zoomPointBegin.x;
-    long beginY = zoomPointBegin.y > event.GetY() ? event.GetY() : zoomPointBegin.y;
-    long endY = zoomPointBegin.y < event.GetY() ? event.GetY() : zoomPointBegin.y;
+    long beginY, endY;
+    if ( event.ControlDown() )
+    {
+      beginY = zoomPointBegin.y > event.GetY() ? event.GetY() : zoomPointBegin.y;
+      endY = zoomPointBegin.y < event.GetY() ? event.GetY() : zoomPointBegin.y;
+    }
+    else
+    {
+      beginY = 0;
+      endY = drawImage.GetHeight() - 1;
+    }
     wxCoord width = endX - beginX;
     wxCoord height = endY - beginY;
     
@@ -1682,13 +1721,61 @@ void gHistogram::OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnLeftDown( wxMouseEvent& event )
 {
-  if( openControlActivated )
-  {
-    openControlActivated= false;
-    openControlDragging = true;
-    zoomPointBegin = event.GetPosition();
-  }
+  zoomDragging = true;
+  zoomPointBegin = event.GetPosition();
 }
+
+
+void gHistogram::zoom( THistogramColumn columnBegin,
+                       THistogramColumn columnEnd,
+                       TObjectOrder objectBegin,
+                       TObjectOrder objectEnd )
+{
+  THistogramLimit min, max, delta;
+
+  if( GetHistogram()->getThreeDimensions() )
+  {
+    min = GetHistogram()->getExtraControlMin();
+    max = GetHistogram()->getExtraControlMax();
+    delta = GetHistogram()->getExtraControlDelta();
+
+    max = ( columnEnd * delta ) + min;
+    min = ( columnBegin * delta ) + min;
+
+    GetHistogram()->setExtraControlMin( min );
+    GetHistogram()->setExtraControlMax( max );
+
+    if ( max - min == 0 )
+      GetHistogram()->setExtraControlDelta( 1.0 );
+    else 
+      GetHistogram()->setExtraControlDelta( ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns() );
+
+    GetHistogram()->setCompute3DScale( false );
+  }
+  else
+  {
+    min = GetHistogram()->getControlMin();
+    max = GetHistogram()->getControlMax();
+    delta = GetHistogram()->getControlDelta();
+
+    max = ( columnEnd * delta ) + min;
+    min = ( columnBegin * delta ) + min;
+
+    GetHistogram()->setControlMin( min );
+    GetHistogram()->setControlMax( max );
+
+    if ( max - min == 0 )
+      GetHistogram()->setControlDelta( 1.0 );
+    else 
+      GetHistogram()->setControlDelta( ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns() );
+
+    GetHistogram()->setCompute2DScale( false );
+  }
+
+  GetHistogram()->setRecalc( true );
+  updateHistogram();
+}
+
 
 
 /*!
@@ -1697,9 +1784,9 @@ void gHistogram::OnLeftDown( wxMouseEvent& event )
 
 void gHistogram::OnLeftUp( wxMouseEvent& event )
 {
-  if( openControlDragging )
+  if( zoomDragging )
   {
-    openControlDragging = false;
+    zoomDragging = false;
     zoomPointEnd = event.GetPosition();
     zoomHisto->SetCursor( wxNullCursor );
 
@@ -1742,11 +1829,28 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     if( xEnd > zoomHisto->GetSize().GetWidth() ) xEnd = zoomHisto->GetSize().GetWidth();
     if( yEnd > zoomHisto->GetSize().GetHeight() ) yEnd = zoomHisto->GetSize().GetHeight();
 
+    if ( !event.ControlDown() )
+    {
+      yBegin = 0;
+      yEnd = zoomHisto->GetSize().GetHeight() - 1;
+    }
+
     THistogramColumn columnBegin, columnEnd;
     TObjectOrder objectBegin, objectEnd;
     openControlGetParameters( xBegin, xEnd, yBegin, yEnd,
                               columnBegin, columnEnd, objectBegin, objectEnd );
-    openControlWindow( columnBegin, columnEnd, objectBegin, objectEnd );
+
+    if ( openControlActivated )
+    {
+      openControlWindow( columnBegin, columnEnd, objectBegin, objectEnd );
+      openControlActivated = false;
+    }
+    else
+    {
+      zoom( columnBegin, columnEnd, objectBegin, objectEnd ); 
+//cout << "added zoom "<< columnBegin << " " << columnEnd << " "<< objectBegin << " "<< objectEnd << endl;
+      GetHistogram()->addZoom( columnBegin, columnEnd, objectBegin, objectEnd );
+    }
   }
 }
 

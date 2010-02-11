@@ -143,7 +143,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Release"</string>
+    <string name="configuration">"GCC Debug"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -1952,7 +1952,7 @@
           <string name="variable-9">"zoomPointBegin|wxPoint|ZoomPointBegin||2|0|"</string>
           <string name="variable-10">"zoomPointEnd|wxPoint|ZoomPointEnd||2|0|"</string>
           <string name="variable-11">"drawImage|wxBitmap|DrawImage||2|0|"</string>
-          <string name="variable-12">"openControlDragging|bool|OpenControlDragging|false|2|0|"</string>
+          <string name="variable-12">"zoomDragging|bool|ZoomDragging|false|2|0|"</string>
           <string name="variable-13">"selectedRows|vector&lt;TObjectOrder&gt;|SelectedRows||2|0|"</string>
           <string name="variable-14">"columnSelection|SelectionManagement&lt;THistogramColumn,int&gt;|ColumnSelection||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gHistogram"</string>
@@ -2303,8 +2303,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">8</long>
-                <long name="proxy-Height">7</long>
+                <long name="proxy-Width">9</long>
+                <long name="proxy-Height">8</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -2368,8 +2368,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">8</long>
-                <long name="proxy-Height">7</long>
+                <long name="proxy-Width">9</long>
+                <long name="proxy-Height">8</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>

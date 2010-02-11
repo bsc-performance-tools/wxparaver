@@ -969,7 +969,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     zooming = false;
     return;
   }
-  
+
   zoomEndX = event.GetX();
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
