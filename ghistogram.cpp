@@ -2042,6 +2042,27 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       productWin->allowOutOfScale( false );
       productWin->allowOutliers( true );
     }
+    productWin->setDrawModeObject( controlCloned->getDrawModeObject() );
+    productWin->setDrawModeTime( controlCloned->getDrawModeTime() );
+    productWin->getGradientColor().setGradientFunction(
+      controlCloned->getGradientColor().getGradientFunction() );
+    productWin->setLevel( controlCloned->getLevel() );
+    vector<bool> tmpSel;
+    for( int level = APPLICATION; level <= THREAD; ++level )
+    {
+      tmpSel.clear();
+      controlCloned->getSelectedRows( (TWindowLevel)level, tmpSel );
+      productWin->setSelectedRows( (TWindowLevel)level, tmpSel );
+    }
+    if( controlCloned->getTrace()->existResourceInfo() )
+    {
+      for( int level = NODE; level <= CPU; ++level )
+      {
+        tmpSel.clear();
+        controlCloned->getSelectedRows( (TWindowLevel)level, tmpSel );
+        productWin->setSelectedRows( (TWindowLevel)level, tmpSel );
+      }
+    }
 
     openWindow = tmpControlWindow->clone( productWin, 
                                           parent,

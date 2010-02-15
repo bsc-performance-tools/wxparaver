@@ -1741,7 +1741,7 @@ void paraverMain::ShowDerivedDialog()
     newWindow->setPosY( GetNextPosY() );
 
     newWindow->setName( derivedDialog.GetTimelineName() );
-    newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
+    newWindow->setTimeUnit( beginDragWindow->getTimeUnit() );
     newWindow->setWindowBeginTime( beginDragWindow->getWindowBeginTime() );
     newWindow->setWindowEndTime( beginDragWindow->getWindowEndTime() );
     newWindow->addZoom( beginDragWindow->getWindowBeginTime(),
@@ -1750,9 +1750,50 @@ void paraverMain::ShowDerivedDialog()
     newWindow->setShowChildrenWindow( false );
 
     // Size
-    newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
-    newWindow->setHeight( defaultWindowSize.GetHeight() );
+    newWindow->setWidth( beginDragWindow->getWidth() ); // magic numbers!
+    newWindow->setHeight( beginDragWindow->getHeight() );
 
+    newWindow->setMaximumY( beginDragWindow->getMaximumY() );
+    newWindow->setMinimumY( beginDragWindow->getMinimumY() );
+    newWindow->setDrawCommLines( beginDragWindow->getDrawCommLines() );
+    newWindow->setDrawFlags( beginDragWindow->getDrawFlags() );
+    newWindow->setDrawFunctionLineColor( beginDragWindow->getDrawFunctionLineColor() );
+    if( beginDragWindow->IsCodeColorSet() )
+      newWindow->setCodeColorMode();
+    else if( beginDragWindow->IsGradientColorSet() )
+    {
+      newWindow->setGradientColorMode();
+      newWindow->allowOutOfScale( true );
+      newWindow->allowOutliers( true );
+    }
+    else
+    {
+      newWindow->setGradientColorMode();
+      newWindow->allowOutOfScale( false );
+      newWindow->allowOutliers( true );
+    }
+    newWindow->setDrawModeObject( beginDragWindow->getDrawModeObject() );
+    newWindow->setDrawModeTime( beginDragWindow->getDrawModeTime() );
+    newWindow->getGradientColor().setGradientFunction(
+      beginDragWindow->getGradientColor().getGradientFunction() );
+    newWindow->setLevel( beginDragWindow->getLevel() );
+    vector<bool> tmpSel;
+    for( int level = APPLICATION; level <= THREAD; ++level )
+    {
+      tmpSel.clear();
+      beginDragWindow->getSelectedRows( (TWindowLevel)level, tmpSel );
+      newWindow->setSelectedRows( (TWindowLevel)level, tmpSel );
+    }
+    if( beginDragWindow->getTrace()->existResourceInfo() )
+    {
+      for( int level = NODE; level <= CPU; ++level )
+      {
+        tmpSel.clear();
+        beginDragWindow->getSelectedRows( (TWindowLevel)level, tmpSel );
+        newWindow->setSelectedRows( (TWindowLevel)level, tmpSel );
+      }
+    }
+    
     // Semantic
     vector< string > auxCompose = derivedDialog.GetTopCompose1();
     newWindow->setLevelFunction( TOPCOMPOSE1, auxCompose[0] );
