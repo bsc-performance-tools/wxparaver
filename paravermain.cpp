@@ -701,6 +701,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     if( currentTimeline != NULL )
     {
       currentTimeline->setWindowBeginTime( currentTimeline->windowUnitsToTraceUnits( tmpValue ) );
+
+      // modify current zoom directly
+      pair< TTime, TTime > zoomInfo = currentTimeline->getZoomFirstDimension();
+      zoomInfo.first = property->GetValue().GetDouble(); // begin
+      currentTimeline->setZoomFirstDimension( zoomInfo );
+
       currentTimeline->setChanged( true );
       currentTimeline->setRedraw( true );
     }
@@ -717,6 +723,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     if( currentTimeline != NULL )
     {
       currentTimeline->setWindowEndTime( currentTimeline->windowUnitsToTraceUnits( tmpValue ) );
+
+      // modify current zoom directly
+      pair< TTime, TTime > zoomInfo = currentTimeline->getZoomFirstDimension();
+      zoomInfo.second = property->GetValue().GetDouble(); // end
+      currentTimeline->setZoomFirstDimension( zoomInfo );
+
       currentTimeline->setRedraw( true );
     }
     else if( currentHisto != NULL )
