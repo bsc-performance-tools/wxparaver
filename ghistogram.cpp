@@ -362,6 +362,8 @@ void gHistogram::execute()
     currentZoom1.end = myHistogram->getControlMax();
     currentZoom2.begin = myHistogram->getControlDelta();
     myHistogram->addZoom( currentZoom1, currentZoom2 , beginRow, endRow );
+    zoomRow.begin = beginRow;
+    zoomRow.end = endRow;
   }
 }
 
