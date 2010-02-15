@@ -216,6 +216,8 @@ void gHistogram::Init()
   histoStatus = NULL;
 ////@end gHistogram member initialisation
   parent = NULL;
+  zoomRow.begin = 0;
+  zoomRow.end = 0;
 }
 
 
@@ -331,8 +333,10 @@ void gHistogram::execute()
   }
   else
   {
-    beginRow = myHistogram->getZoomSecondDimension().first;
-    endRow =  myHistogram->getZoomSecondDimension().second;
+    //beginRow = myHistogram->getZoomSecondDimension().first;
+    beginRow = zoomRow.begin;
+    //endRow =  myHistogram->getZoomSecondDimension().second;
+    endRow = zoomRow.end;
   }
   myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                     selectedRows, beginRow, endRow, true );
@@ -349,6 +353,16 @@ void gHistogram::execute()
   this->Refresh();
 
   SetTitle( winTitle );
+
+  // If none, we set the current view as the first zoom of the list
+  if( myHistogram->isZoomEmpty() )
+  {
+    HistogramProxy::TZoomInfo currentZoom1, currentZoom2;
+    currentZoom1.begin = myHistogram->getControlMin();
+    currentZoom1.end = myHistogram->getControlMax();
+    currentZoom2.begin = myHistogram->getControlDelta();
+    myHistogram->addZoom( currentZoom1, currentZoom2 , beginRow, endRow );
+  }
 }
 
 void gHistogram::fillGrid()
@@ -1376,27 +1390,31 @@ void gHistogram::OnPopUpDrawModeBothAverage()
 
 void gHistogram::OnPopUpUndoZoom()
 {
-//cout << "undozoom" << endl;
   if ( !GetHistogram()->emptyPrevZoom() )
   {
     GetHistogram()->prevZoom();
-    zoom( GetHistogram()->getZoomFirstDimension().first, GetHistogram()->getZoomFirstDimension().second,
-          GetHistogram()->getZoomSecondDimension().first, GetHistogram()->getZoomSecondDimension().second );
-//cout << "undozoom "<< GetHistogram()->getZoomFirstDimension().first << " " << GetHistogram()->getZoomFirstDimension().second << " "<<  GetHistogram()->getZoomSecondDimension().first << " "<< GetHistogram()->getZoomSecondDimension().second << endl;
+    THistogramLimit columnBegin = GetHistogram()->getZoomFirstDimension().first.begin;
+    THistogramLimit columnEnd = GetHistogram()->getZoomFirstDimension().first.end;
+    THistogramLimit delta = GetHistogram()->getZoomFirstDimension().second.begin;
+    TObjectOrder objectBegin = GetHistogram()->getZoomSecondDimension().first;
+    TObjectOrder objectEnd = GetHistogram()->getZoomSecondDimension().second;
 
+    zoom( columnBegin, columnEnd, objectBegin, objectEnd, delta );
   }
 }
 
 void gHistogram::OnPopUpRedoZoom()
 {
-//cout << "redozoom" << endl;
   if ( !GetHistogram()->emptyNextZoom() )
   {
     GetHistogram()->nextZoom();
-    zoom( GetHistogram()->getZoomFirstDimension().first, GetHistogram()->getZoomFirstDimension().second,
-          GetHistogram()->getZoomSecondDimension().first, GetHistogram()->getZoomSecondDimension().second );
-//cout << "redozoom "<< GetHistogram()->getZoomFirstDimension().first << " " << GetHistogram()->getZoomFirstDimension().second << " "<<  GetHistogram()->getZoomSecondDimension().first << " "<< GetHistogram()->getZoomSecondDimension().second << endl;
+    THistogramLimit columnBegin = GetHistogram()->getZoomFirstDimension().first.begin;
+    THistogramLimit columnEnd = GetHistogram()->getZoomFirstDimension().first.end;
+    THistogramLimit delta = GetHistogram()->getZoomFirstDimension().second.begin;
+    TObjectOrder objectBegin = GetHistogram()->getZoomSecondDimension().first;
+    TObjectOrder objectEnd = GetHistogram()->getZoomSecondDimension().second;
 
+    zoom( columnBegin, columnEnd, objectBegin, objectEnd, delta );
   }
 }
 
@@ -1726,51 +1744,43 @@ void gHistogram::OnLeftDown( wxMouseEvent& event )
 }
 
 
-void gHistogram::zoom( THistogramColumn columnBegin,
-                       THistogramColumn columnEnd,
-                       TObjectOrder objectBegin,
-                       TObjectOrder objectEnd )
+// newDelta = -1.0 (default value) --> zoom called from histogram window
+// else, zoom called from undo/redo history with its own delta stored, available in newDelta
+void gHistogram::zoom( THistogramLimit newColumnBegin,
+                       THistogramLimit newColumnEnd,
+                       TObjectOrder newObjectBegin,
+                       TObjectOrder newObjectEnd,
+                       THistogramLimit newDelta )
 {
   THistogramLimit min, max, delta;
 
-  if( GetHistogram()->getThreeDimensions() )
-  {
-    min = GetHistogram()->getExtraControlMin();
-    max = GetHistogram()->getExtraControlMax();
-    delta = GetHistogram()->getExtraControlDelta();
-
-    max = ( columnEnd * delta ) + min;
-    min = ( columnBegin * delta ) + min;
-
-    GetHistogram()->setExtraControlMin( min );
-    GetHistogram()->setExtraControlMax( max );
-
-    if ( max - min == 0 )
-      GetHistogram()->setExtraControlDelta( 1.0 );
-    else 
-      GetHistogram()->setExtraControlDelta( ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns() );
-
-    GetHistogram()->setCompute3DScale( false );
-  }
-  else
+  if ( newDelta == -1.0 )
   {
     min = GetHistogram()->getControlMin();
     max = GetHistogram()->getControlMax();
     delta = GetHistogram()->getControlDelta();
 
-    max = ( columnEnd * delta ) + min;
-    min = ( columnBegin * delta ) + min;
-
-    GetHistogram()->setControlMin( min );
-    GetHistogram()->setControlMax( max );
+    max = ( newColumnEnd * delta ) + min;
+    min = ( newColumnBegin * delta ) + min;
 
     if ( max - min == 0 )
-      GetHistogram()->setControlDelta( 1.0 );
-    else 
-      GetHistogram()->setControlDelta( ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns() );
-
-    GetHistogram()->setCompute2DScale( false );
+      delta = 1.0;
+    else
+      delta = ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns();
   }
+  else
+  {
+    min = newColumnBegin;
+    max = newColumnEnd;
+    delta = newDelta;
+  }
+
+  GetHistogram()->setControlMin( min );
+  GetHistogram()->setControlMax( max );
+  GetHistogram()->setControlDelta( delta );
+  GetHistogram()->setCompute2DScale( false );
+  zoomRow.begin = newObjectBegin;
+  zoomRow.end = newObjectEnd;
 
   GetHistogram()->setRecalc( true );
   updateHistogram();
@@ -1847,9 +1857,12 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     }
     else
     {
-      zoom( columnBegin, columnEnd, objectBegin, objectEnd ); 
-//cout << "added zoom "<< columnBegin << " " << columnEnd << " "<< objectBegin << " "<< objectEnd << endl;
-      GetHistogram()->addZoom( columnBegin, columnEnd, objectBegin, objectEnd );
+      zoom( columnBegin, columnEnd, objectBegin, objectEnd );
+      HistogramProxy::TZoomInfo currentZoom1, currentZoom2;
+      currentZoom1.begin = myHistogram->getControlMin();
+      currentZoom1.end = myHistogram->getControlMax();
+      currentZoom2.begin = myHistogram->getControlDelta();
+      myHistogram->addZoom( currentZoom1, currentZoom2, objectBegin, objectEnd );
     }
   }
 }

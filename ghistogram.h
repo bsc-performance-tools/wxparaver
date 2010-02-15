@@ -344,6 +344,7 @@ private:
   SelectionManagement<THistogramColumn,int> columnSelection;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
+  HistogramProxy::TZoomInfo zoomRow;
 
   void updateHistogram();
   void OnTimerZoom( wxTimerEvent& event );
@@ -356,8 +357,8 @@ private:
                                  TObjectOrder& objectBegin, TObjectOrder& objectEnd );
   void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
                           TObjectOrder objectBegin, TObjectOrder objectEnd );
-  void zoom( THistogramColumn columnBegin, THistogramColumn columnEnd,
-             TObjectOrder objectBegin, TObjectOrder objectEnd );
+  void zoom( THistogramLimit newColumnBegin, THistogramLimit newColumnEnd,
+             TObjectOrder newObjectBegin, TObjectOrder newObjectEnd, THistogramLimit newDelta = -1.0 );
 };
 
 #endif

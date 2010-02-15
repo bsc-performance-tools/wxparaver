@@ -872,12 +872,16 @@ void gPopUpMenu::OnMenuUndoZoom( wxCommandEvent& event)
 {
   if ( timeline != NULL )
     timeline->OnPopUpUndoZoom();
+  else
+    histogram->OnPopUpUndoZoom();
 }
 
 void gPopUpMenu::OnMenuRedoZoom( wxCommandEvent& event)
 {
   if ( timeline != NULL )
     timeline->OnPopUpRedoZoom();
+  else
+    histogram->OnPopUpRedoZoom();
 }
 
 void gPopUpMenu::OnMenuFitTime( wxCommandEvent& event)

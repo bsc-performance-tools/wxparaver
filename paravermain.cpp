@@ -746,18 +746,36 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == _( "ControlMinimum" ) )
   {
     currentHisto->setControlMin( property->GetValue().GetDouble() );
+
+    // modify current zoom directly
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = currentHisto->getZoomFirstDimension();
+    zoomInfo.first.begin = property->GetValue().GetDouble(); // minimum
+    currentHisto->setZoomFirstDimension( zoomInfo );
+
     currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == _( "ControlMaximum" ) )
   {
     currentHisto->setControlMax( property->GetValue().GetDouble() );
+
+    // modify current zoom directly
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = currentHisto->getZoomFirstDimension();
+    zoomInfo.first.end = property->GetValue().GetDouble(); // maximum
+    currentHisto->setZoomFirstDimension( zoomInfo );
+
     currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
   else if( propName == _( "ControlDelta" ) )
   {
     currentHisto->setControlDelta( property->GetValue().GetDouble() );
+
+    // modify current zoom directly
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = currentHisto->getZoomFirstDimension();
+    zoomInfo.second.begin = property->GetValue().GetDouble(); // delta
+    currentHisto->setZoomFirstDimension( zoomInfo );
+
     currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
