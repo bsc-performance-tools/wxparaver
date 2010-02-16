@@ -30,6 +30,7 @@ wxparaver_SOURCES = copypaste.cpp \
 
 noinst_HEADERS = \
               caution.xpm\
+              cut_trace.xpm\
               delete.xpm\
               hide_cols.xpm\
               histo_color.xpm\
