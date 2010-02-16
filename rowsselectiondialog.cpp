@@ -16,6 +16,7 @@
 #include "rowsselectiondialog.h"
 #include "labelconstructor.h"
 #include "gtimeline.h"
+#include "window.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -73,28 +74,30 @@ void RowsSelectionDialog::OnInvertButtonClicked( wxCommandEvent& event )
 }
 
 
-void RowsSelectionDialog::buildPanel( wxWindow* parent, const wxString& title, TWindowLevel whichLevel )
+void RowsSelectionDialog::buildPanel( gTimeline *myTimeline, 
+                                      const wxString& title,
+                                      TWindowLevel whichLevel )
 {
   wxPanel *myPanel;
-  gTimeline *myTimeline = (gTimeline *)parent;
 
   myPanel = new wxPanel( GetBookCtrl(),
                          wxID_ANY,
                          wxDefaultPosition,
                          wxDefaultSize,
-                         wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+                         wxSUNKEN_BORDER | wxTAB_TRAVERSAL );
 
-  GetBookCtrl()->AddPage( myPanel, title);
+  TWindowLevel level = myTimeline->GetMyWindow()->getLevel();
+
+  GetBookCtrl()->AddPage( myPanel, title, whichLevel == level );
 
   wxBoxSizer *panelSizer = new wxBoxSizer( wxVERTICAL );
   wxBoxSizer *buttonsSizer = new wxBoxSizer( wxHORIZONTAL );
 
   myPanel->SetSizer( panelSizer );
 
+  // Add Checklist lines
   wxArrayString choices;
-
   vector< bool > selectedRow;
-//  myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedRow, true );
   myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedRow, false );
   for ( size_t row = (size_t)0; row < selectedRow.size(); ++row )
     choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
@@ -111,6 +114,7 @@ void RowsSelectionDialog::buildPanel( wxWindow* parent, const wxString& title, T
 
   panelSizer->Add( auxCheckList, 3, wxALL | wxALIGN_CENTER | wxGROW, 5 );
 
+  // Add Buttons
   wxButton *auxButton = new wxButton( myPanel, wxID_ANY, _("Select All") );
   selectionButtons.push_back( auxButton );
   auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
@@ -135,29 +139,32 @@ void RowsSelectionDialog::buildPanel( wxWindow* parent, const wxString& title, T
                       this ); 
   buttonsSizer->Add( auxButton, 1, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
 
+  // Build Panel
   panelSizer->Add( buttonsSizer, 0, wxALL | wxALIGN_BOTTOM, 5 );
 }
 
 
-RowsSelectionDialog::RowsSelectionDialog( TWindowLevel whichLevel, wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
+  gTimeline *myTimeline = (gTimeline *)parent;
+
   Init();
   Create(parent, id, caption, pos, size, style);
 
-  level = whichLevel;
+  TWindowLevel level = myTimeline->GetMyWindow()->getLevel();
 
   if (( level >= SYSTEM ) && ( level <= CPU ))
   {
     minLevel = NODE;
-    buildPanel( parent, _("Node"), NODE );
-    buildPanel( parent, _("CPU"), CPU );
+    buildPanel( myTimeline, _("Node"), NODE );
+    buildPanel( myTimeline, _("CPU"), CPU );
   }
   else if (( level >= WORKLOAD ) && ( level <= THREAD ))
   {
     minLevel = APPLICATION;
-    buildPanel( parent, _("Application"), APPLICATION );
-    buildPanel( parent, _("Task"), TASK );
-    buildPanel( parent, _("Thread"), THREAD );
+    buildPanel( myTimeline, _("Application"), APPLICATION );
+    buildPanel( myTimeline, _("Task"), TASK );
+    buildPanel( myTimeline, _("Thread"), THREAD );
   }
 
   LayoutDialog();
@@ -169,13 +176,18 @@ RowsSelectionDialog::RowsSelectionDialog( TWindowLevel whichLevel, wxWindow* par
  * RowsSelectionDialog creator
  */
 
-bool RowsSelectionDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+bool RowsSelectionDialog::Create( wxWindow* parent,
+                                  wxWindowID id,
+                                  const wxString& caption,
+                                  const wxPoint& pos,
+                                  const wxSize& size,
+                                  long style )
 {
-  SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
-  SetSheetStyle(wxPROPSHEET_DEFAULT);
+  SetExtraStyle( wxWS_EX_VALIDATE_RECURSIVELY | wxWS_EX_BLOCK_EVENTS );
+  SetSheetStyle( wxPROPSHEET_DEFAULT );
   wxPropertySheetDialog::Create( parent, id, caption, pos, size, style );
 
-  CreateButtons(wxOK|wxCANCEL);
+  CreateButtons( wxOK | wxCANCEL );
   CreateControls();
   LayoutDialog();
   Centre();

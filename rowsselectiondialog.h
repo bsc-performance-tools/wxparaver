@@ -9,13 +9,15 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/checklst.h>
-//#include <wx/event.h>
+
 #include <map>
 
 #include "paraverkerneltypes.h"
+
 /*!
  * Forward declarations
  */
+class gTimeline;
 
 /*!
  * Control identifiers
@@ -31,7 +33,6 @@
 /*!
  * RowsSelectionDialog class declaration
  */
-
 class RowsSelectionDialog: public wxPropertySheetDialog
 {    
   DECLARE_DYNAMIC_CLASS( RowsSelectionDialog )
@@ -40,10 +41,20 @@ class RowsSelectionDialog: public wxPropertySheetDialog
 public:
   /// Constructors
   RowsSelectionDialog();
-  RowsSelectionDialog( TWindowLevel level, wxWindow* parent, wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE, long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
+  RowsSelectionDialog( wxWindow* parent,
+                       wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
+                       const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
+                       const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION,
+                       const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE,
+                       long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
 
   /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE, long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
+  bool Create( wxWindow* parent,
+               wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
+               const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
+               const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION,
+               const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE,
+               long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
 
   /// Destructor
   ~RowsSelectionDialog();
@@ -65,7 +76,6 @@ public:
   int GetSelections( TWindowLevel whichLevel, wxArrayInt &selections );
 
 private:
-  TWindowLevel level;
   TWindowLevel minLevel; 
   vector< wxButton * > selectionButtons;
   vector< wxCheckListBox* > levelCheckList;
@@ -73,10 +83,8 @@ private:
   void OnSelectAllButtonClicked( wxCommandEvent& event );
   void OnUnselectAllButtonClicked( wxCommandEvent& event );
   void OnInvertButtonClicked( wxCommandEvent& event );
-  void buildPanel( wxWindow* parent, const wxString& title, TWindowLevel level );
+  void buildPanel( gTimeline *myTimeline, const wxString& title, TWindowLevel level );
   void OnOkClick( wxCommandEvent& event );
-
 };
 
-#endif
-  // _ROWSSELECTIONDIALOG_H_
+#endif // _ROWSSELECTIONDIALOG_H_

@@ -275,40 +275,11 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
 }
 
 
-//wxMultiChoiceDialog *gPopUpMenu::createRowSelectionDialog( wxArrayString& choices, gTimeline *whichTimeline )
 RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gTimeline *whichTimeline )
 {
-/*
-  choices.Empty();
-  vector< bool > selectedRow;
-  whichTimeline->GetMyWindow()->getSelectedRows( whichTimeline->GetMyWindow()->getLevel(), selectedRow, true );
-
-  // Build full rows list
-  for ( size_t row = (size_t)0; row < selectedRow.size(); ++row )
-    choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
-                                                                     whichTimeline->GetMyWindow()->getLevel(),
-                                                                     whichTimeline->GetMyWindow()->getTrace() ).c_str() ) );
-  wxMultiChoiceDialog *myDialog = new wxMultiChoiceDialog( whichTimeline,
-                                                         wxT( "Select visible rows:" ),
-                                                         wxT("Rows Selection"),
-                                                         choices );
-*/
-/*  vector< TObjectOrder > selectedIndex;
-  whichTimeline->GetMyWindow()->getSelectedRows( whichTimeline->GetMyWindow()->getLevel(), selectedIndex, true );
-
-  wxArrayInt arrayIndex;
-  for ( vector< TObjectOrder>::iterator index = selectedIndex.begin(); index != selectedIndex.end(); index++ )
-    arrayIndex.Add( (int)*index );
-*/
-//  myDialog->SetSelections( arrayIndex );
-
-  RowsSelectionDialog *myDialog = new RowsSelectionDialog( APPLICATION,
-                                                             (wxWindow * )whichTimeline,
+  RowsSelectionDialog *myDialog = new RowsSelectionDialog( (wxWindow * )whichTimeline,
                                                              ID_ROWSSELECTIONDIALOG,
-                                                             _( "Rows Selection" )
-//                                                             choices, // names
-                                                             
-                                                             );
+                                                             _( "Rows Selection" ));
 
   return myDialog;
 }
