@@ -1053,9 +1053,21 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
+  else if( propName == _( "Factor #1" ) )
+  {
+    currentTimeline->setFactor( 0, property->GetValue().GetDouble() );
+    currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
+  }
   else if( propName == _( "Derived" ) )
   {
     currentTimeline->setLevelFunction( DERIVED, std::string( property->GetDisplayedString().mb_str() ) );
+    currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
+  }
+  else if( propName == _( "Factor #2" ) )
+  {
+    currentTimeline->setFactor( 1, property->GetValue().GetDouble() );
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }

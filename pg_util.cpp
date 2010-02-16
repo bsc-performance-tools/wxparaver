@@ -551,6 +551,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
   if( whichWindow->isDerivedWindow() )
   {
+    windowProperties->Append( new wxFloatProperty( wxT("Factor #1"), wxPG_LABEL,
+                                                 whichWindow->getFactor( 0 ) ) );
+
     vector<string> derivedFunctions;
     whichWindow->getAllSemanticFunctions( DERIVED_GROUP, derivedFunctions );
     arrayStr.Clear();
@@ -571,6 +574,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                 wxPG_LABEL,
                                 arrayStr, arrayInt, selected ) );
     semanticFunctionParameter( windowProperties, whichWindow, semanticCat, DERIVED );
+
+    windowProperties->Append( new wxFloatProperty( wxT("Factor #2"), wxPG_LABEL,
+                                                 whichWindow->getFactor( 1 ) ) );
+
   }
   else
   {
