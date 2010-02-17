@@ -2030,14 +2030,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -2303,8 +2295,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">9</long>
-                <long name="proxy-Height">8</long>
+                <long name="proxy-Width">8</long>
+                <long name="proxy-Height">7</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -2368,8 +2360,8 @@
                 <string name="proxy-Custom styles">""</string>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <long name="proxy-Width">9</long>
-                <long name="proxy-Height">8</long>
+                <long name="proxy-Width">8</long>
+                <long name="proxy-Height">7</long>
                 <string name="proxy-AlignH">"Centre"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
@@ -2599,7 +2591,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Open 3D Window: ID_TOOL_OPEN_EXTRA_WINDOW"</string>
+              <string name="title">"Open 3rd Window: ID_TOOL_OPEN_EXTRA_WINDOW"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -2614,10 +2606,10 @@
               <long name="proxy-Id value">10052</long>
               <string name="proxy-Bitmap">"open3d.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
-              <string name="proxy-Label">"Open 3D Window"</string>
+              <string name="proxy-Label">"Open 3rd Window"</string>
               <string name="proxy-Kind">"Normal"</string>
               <bool name="proxy-Enabled">1</bool>
-              <string name="proxy-Tooltip">"Open 3D Window"</string>
+              <string name="proxy-Tooltip">"Open 3rd Window"</string>
               <string name="proxy-Help text">""</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>

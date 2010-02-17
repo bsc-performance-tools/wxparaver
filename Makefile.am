@@ -21,6 +21,8 @@ wxparaver_SOURCES = copypaste.cpp \
                     popupmenu.h \
                     preferencesdialog.cpp \
                     preferencesdialog.h \
+                    rowsselectiondialog.cpp \
+                    rowsselectiondialog.h \
                     saveconfigurationdialog.cpp \
                     saveconfigurationdialog.h \
                     windows_tree.cpp \
