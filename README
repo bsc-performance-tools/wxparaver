@@ -1,10 +1,12 @@
 Library dependencies:
-	- wxWidgets >= 2.8.0
-	- wxPropertyGrid >= 1.4.0
-	- Boost >= 1.36
-	- Boost Serialization
-	- Paraver Kernel Library
-	- Paraver Kernel API
+	- wxWidgets >= 2.8.0 (www.wxwidgets.org)
+	- wxPropertyGrid >= 1.4.0 (wxpropgrid.sourceforge.net)
+	- Boost >= 1.36 (www.boost.org)
+	- Boost Serialization (www.boost.org)
+	- Paraver Kernel Library (www.bsc.es/paraver)
+	- Paraver Kernel API (www.bsc.es/paraver)
+
+If you have installed these packages from a package manager, remember to install devel packages too.
 
 Read INSTALL file for installation instructions.
 
