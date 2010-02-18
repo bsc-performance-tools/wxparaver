@@ -33,8 +33,6 @@
 #include "ghistogram.h"
 #include "paravermain.h"
 
-
-
 wxTreeCtrl * createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
@@ -203,8 +201,37 @@ void BuildTree( paraverMain *parent,
   }
 
   currentData =  new TreeBrowserItemData( wxString::FromAscii( window->getName().c_str() ), tmpTimeline );
-  currentWindowId1 = root1->AppendItem( idRoot1, wxString::FromAscii( window->getName().c_str() ), 1, -1, currentData );
-  currentWindowId2 = root2->AppendItem( idRoot2, wxString::FromAscii( window->getName().c_str() ), 1, -1, new TreeBrowserItemData( *currentData ) );
+
+  int iconNumber = 1; // number of timeline icon
+  if ( window->isDerivedWindow() )
+  {
+    string derivedFunctionName = window->getLevelFunction( DERIVED );
+
+    // GUI should'nt know these tags -> add operation to kernel
+    if ( derivedFunctionName == "add" )
+      iconNumber = 2;
+    else if  ( derivedFunctionName == "product" )
+      iconNumber = 3;
+    else if  ( derivedFunctionName == "substract" )
+      iconNumber = 4;
+    else if  ( derivedFunctionName == "divide" )
+      iconNumber = 5;
+    else if  ( derivedFunctionName == "maximum" )
+      iconNumber = 6;
+    else if  ( derivedFunctionName == "minimum" )
+      iconNumber = 7;
+    else if  ( derivedFunctionName == "different" )
+      iconNumber = 8;
+    else if  ( derivedFunctionName == "controlled: clear by" )
+      iconNumber = 9;
+    else if  ( derivedFunctionName == "controlled: maximum" )
+      iconNumber = 10;
+    else if ( derivedFunctionName == "controlled: add" )
+      iconNumber = 11;
+  }
+
+  currentWindowId1 = root1->AppendItem( idRoot1, wxString::FromAscii( window->getName().c_str() ), iconNumber, -1, currentData );
+  currentWindowId2 = root2->AppendItem( idRoot2, wxString::FromAscii( window->getName().c_str() ), iconNumber, -1, new TreeBrowserItemData( *currentData ) );
 
   if ( window->getParent( 0 ) != NULL )
   {

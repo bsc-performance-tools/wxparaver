@@ -1145,8 +1145,37 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
 
   TreeBrowserItemData *currentData =  new TreeBrowserItemData( wxString::FromAscii( clonedWindow->getName().c_str() ), clonedTimeline );
-  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( idRoot1, wxString::FromAscii( clonedWindow->getName().c_str() ), 1, -1, currentData );
-  wxTreeItemId currentWindowId2 = currentPage->AppendItem( idRoot2, wxString::FromAscii( clonedWindow->getName().c_str() ), 1, -1, new TreeBrowserItemData( *currentData ) );
+
+  int iconNumber = 1; // number of timeline icon
+  if ( clonedWindow->isDerivedWindow() )
+  {
+    string derivedFunctionName = clonedWindow->getLevelFunction( DERIVED );
+
+    // GUI should'nt know these tags -> add operation to kernel
+    if ( derivedFunctionName == "add" )
+      iconNumber = 2;
+    else if  ( derivedFunctionName == "product" )
+      iconNumber = 3;
+    else if  ( derivedFunctionName == "substract" )
+      iconNumber = 4;
+    else if  ( derivedFunctionName == "divide" )
+      iconNumber = 5;
+    else if  ( derivedFunctionName == "maximum" )
+      iconNumber = 6;
+    else if  ( derivedFunctionName == "minimum" )
+      iconNumber = 7;
+    else if  ( derivedFunctionName == "different" )
+      iconNumber = 8;
+    else if  ( derivedFunctionName == "controlled: clear by" )
+      iconNumber = 9;
+    else if  ( derivedFunctionName == "controlled: maximum" )
+      iconNumber = 10;
+    else if ( derivedFunctionName == "controlled: add" )
+      iconNumber = 11;
+  }
+
+  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( idRoot1, wxString::FromAscii( clonedWindow->getName().c_str() ), iconNumber, -1, currentData );
+  wxTreeItemId currentWindowId2 = currentPage->AppendItem( idRoot2, wxString::FromAscii( clonedWindow->getName().c_str() ), iconNumber, -1, new TreeBrowserItemData( *currentData ) );
 
   // if derived, clone parents
   if ( clonedWindow->isDerivedWindow() )

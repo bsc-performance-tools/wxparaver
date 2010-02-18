@@ -42,7 +42,6 @@
 #include "wx/imaglist.h"
 ////@end includes
 
-#include "wx/imaglist.h"
 #include "wx/tipdlg.h"
 #include "wx/aboutdlg.h"
 
@@ -78,6 +77,18 @@
 
 #include "table.xpm"
 #include "timeline.xpm"
+
+#include "derived_add.xpm"
+#include "derived_product.xpm"
+#include "derived_substract.xpm"
+#include "derived_divide.xpm"
+#include "derived_maximum.xpm"
+#include "derived_minimum.xpm"
+#include "derived_different.xpm"
+#include "derived_controlled_clear_by.xpm"
+#include "derived_controlled_maximum.xpm"
+#include "derived_controlled_add.xpm"
+
 /*!
  * paraverMain type definition
  */
@@ -173,15 +184,37 @@ static bool userMessage( string message )
   return tmpResult == wxID_YES;
 }
 
+wxImageList *paraverMain::getImageList()
+{
+  wxImageList *images;
+
+  images = new wxImageList( 16, 16 );
+  images->Add( wxIcon( table_xpm ) );
+  images->Add( wxIcon( timeline_xpm ) );
+
+  // Derived icons added in same order than kernel returns
+  images->Add( wxIcon( derived_add_xpm ) );
+  images->Add( wxIcon( derived_product_xpm ) );
+  images->Add( wxIcon( derived_substract_xpm ) );
+  images->Add( wxIcon( derived_divide_xpm ) );
+  images->Add( wxIcon( derived_maximum_xpm ) );
+  images->Add( wxIcon( derived_minimum_xpm ) );
+  images->Add( wxIcon( derived_different_xpm ) );
+  images->Add( wxIcon( derived_controlled_clear_by_xpm ) );
+  images->Add( wxIcon( derived_controlled_maximum_xpm ) );
+  images->Add( wxIcon( derived_controlled_add_xpm ) );
+
+  return images;
+}
+
+
 /*!
  * paraverMain constructors
  */
 
 paraverMain::paraverMain()
 {
-  imageList = new wxImageList( 16, 16 );
-  imageList->Add( wxIcon( table_xpm ) );
-  imageList->Add( wxIcon( timeline_xpm ) );
+  imageList = getImageList();
 
   LocalKernel::init();
   localKernel = new LocalKernel( userMessage );
@@ -195,9 +228,7 @@ paraverMain::paraverMain()
 
 paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
-  imageList = new wxImageList( 16, 16 );
-  imageList->Add( wxIcon( table_xpm ) );
-  imageList->Add( wxIcon( timeline_xpm ) );
+  imageList = getImageList();
 
   LocalKernel::init();
   localKernel = new LocalKernel( userMessage );

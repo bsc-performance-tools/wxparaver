@@ -38,7 +38,8 @@
 #include <vector>
 #include <wx/progdlg.h>
 #include <wx/treectrl.h>
-#include<wx/cmdline.h>
+#include <wx/cmdline.h>
+#include <wx/imaglist.h>
 
 ////@begin includes
 #include "wx/aui/framemanager.h"
@@ -388,6 +389,9 @@ private:
   map< string, UINT32 > traceInstance;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
+
+  wxImageList *getImageList();
+
   bool DoLoadTrace( const string &path );
   void UnloadTrace( int whichTrace );
 /*
