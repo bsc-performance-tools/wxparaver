@@ -79,7 +79,6 @@ void appendHistogram2Tree( gHistogram *ghistogram )
 }
 
 
-
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found )
 {
   wxTreeItemIdValue cookie;
@@ -162,6 +161,51 @@ gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &foun
   
   return retgt;
 }
+
+
+wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found )
+{
+  wxTreeItemId retItemId;
+  wxTreeItemIdValue cookie;
+
+  found = false;
+
+  wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
+  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( root );
+  
+  while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  {
+    gTimeline *tmpTimeline = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline();
+    if ( tmpTimeline != NULL && tmpTimeline->GetMyWindow() == wanted )
+    {
+      retItemId = itemCurrent;
+      found = true;
+    }
+    else if ( tmpTimeline != NULL )
+    {
+      retItemId = getItemIdFromWindow( itemCurrent, wanted, found );
+    }
+    if( !found )
+      itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
+  }
+  
+  if( !found && itemLast.IsOk() )
+  {
+    if (((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getTimeline()->GetMyWindow() == wanted )
+    {
+      retItemId = itemLast;
+      found = true;
+    }
+    else
+    {
+      retItemId = getItemIdFromWindow( itemLast, wanted, found );
+    }
+  }
+  
+  return retItemId;
+}
+
+
 
 // precond : current is a derived gTimeline
 void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )

@@ -1093,6 +1093,46 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == _( "Derived" ) )
   {
     currentTimeline->setLevelFunction( DERIVED, std::string( property->GetDisplayedString().mb_str() ) );
+
+    // Change Derived operation Icon: find icon in list
+    int iconNumber = 1; // number of timeline icon
+    string derivedFunctionName;
+    if ( currentTimeline->isDerivedWindow() )
+    {
+      derivedFunctionName = currentTimeline->getLevelFunction( DERIVED );
+
+      // GUI should'nt know these tags -> add operation to kernel
+      if ( derivedFunctionName == "add" )
+        iconNumber = 2;
+      else if  ( derivedFunctionName == "product" )
+        iconNumber = 3;
+      else if  ( derivedFunctionName == "substract" )
+        iconNumber = 4;
+      else if  ( derivedFunctionName == "divide" )
+        iconNumber = 5;
+      else if  ( derivedFunctionName == "maximum" )
+        iconNumber = 6;
+      else if  ( derivedFunctionName == "minimum" )
+        iconNumber = 7;
+      else if  ( derivedFunctionName == "different" )
+        iconNumber = 8;
+      else if  ( derivedFunctionName == "controlled: clear by" )
+        iconNumber = 9;
+      else if  ( derivedFunctionName == "controlled: maximum" )
+        iconNumber = 10;
+      else if ( derivedFunctionName == "controlled: add" )
+        iconNumber = 11;
+    }
+
+    // Change Derived operation Icon: set both trees, global and trace tree
+    wxTreeCtrl *globalTreePage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
+    wxTreeCtrl *currentTraceTreePage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+    bool found;
+    wxTreeItemId idInGlobalTree = getItemIdFromWindow( globalTreePage->GetRootItem(), currentTimeline, found );
+    wxTreeItemId idInCurrentTraceTree = getItemIdFromWindow( currentTraceTreePage->GetRootItem(), currentTimeline, found );
+    globalTreePage->SetItemImage( idInGlobalTree, iconNumber );
+    currentTraceTreePage->SetItemImage( idInCurrentTraceTree, iconNumber );
+
     currentTimeline->setRedraw( true );
     currentTimeline->setChanged( true );
   }
