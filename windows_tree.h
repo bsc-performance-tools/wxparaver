@@ -33,6 +33,7 @@
 #include <wx/treectrl.h>
 #include <wx/choicebk.h>
 #include <vector>
+#include <string>
 
 class gTimeline;
 class gHistogram;
@@ -58,7 +59,7 @@ void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
                 Window *window,
-                string nameSuffix = "" );
+                string nameSuffix = string("") );
 bool updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      vector< Window * > &allWindows,
