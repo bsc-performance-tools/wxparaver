@@ -34,6 +34,16 @@ noinst_HEADERS = \
               caution.xpm\
               cut_trace.xpm\
               delete.xpm\
+              derived_add.xpm\
+              derived_controlled_add.xpm\
+              derived_controlled_clear_by.xpm\
+              derived_controlled_maximum.xpm\
+              derived_different.xpm\
+              derived_divide.xpm\
+              derived_maximum.xpm\
+              derived_minimum.xpm\
+              derived_product.xpm\
+              derived_substract.xpm\
               hide_cols.xpm\
               histo_color.xpm\
               histo_horvert.xpm\

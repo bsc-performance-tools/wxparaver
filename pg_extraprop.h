@@ -30,6 +30,7 @@
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/propdev.h>
 #include <vector>
+#include <string>
 
 using namespace std;
 
