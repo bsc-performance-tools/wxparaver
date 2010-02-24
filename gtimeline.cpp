@@ -1091,6 +1091,7 @@ void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
     if( myWindow->getRedraw() )
     {
       myWindow->setRedraw( false );
+      splitChanged = false;
       redraw();
       drawZone->Refresh();
     }
