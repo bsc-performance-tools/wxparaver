@@ -2175,7 +2175,18 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
         if( lastType == EVENTTYPE_TYPE && !myWindow->getTrace()->eventLoaded( i ) )
           continue;
           
-        if( lastType == EVENTTYPE_TYPE && typeEndLimit > 200 )
+        string tmpstr;
+        if( lastType == STATE_TYPE &&
+            !myWindow->getTrace()->getStateLabels().getStateLabel( i, tmpstr ) )
+          continue;
+        if( lastType == EVENTVALUE_TYPE &&
+            !myWindow->getTrace()->getEventLabels().getEventValueLabel( i, tmpstr ) )
+          continue;
+          
+        if( ( lastType == EVENTTYPE_TYPE ||
+              lastType == EVENTVALUE_TYPE ||
+              lastType == STATE_TYPE )
+              && typeEndLimit > 200 )
           break;
         else
           ++typeEndLimit;
