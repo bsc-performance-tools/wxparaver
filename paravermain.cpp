@@ -410,11 +410,11 @@ void paraverMain::CreateControls()
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
-    .Name(_T("auiWindowBrowser")).Caption(_T("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   windowProperties = new wxPropertyGrid( itemFrame1, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   itemFrame1->GetAuiManager().AddPane(windowProperties, wxAuiPaneInfo()
-    .Name(_T("auiWindowProperties")).Caption(_T("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowProperties")).Caption(_("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   GetAuiManager().Update();
 
@@ -1676,6 +1676,8 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
       wxString path = dialog.GetPath();
       CFGLoadedBefore = true;
       CFGPath = wxFileName( path ).GetPath();
+      if( !path.EndsWith( ".cfg" ) )
+        path += ".cfg";
       CFGLoader::saveCFG( std::string( path.mb_str() ), options, timelines, histograms );
       previousCFGs->add( std::string( path.mb_str() ) );
     }
