@@ -1128,6 +1128,16 @@ void gHistogram::OnPopUpPasteSpecial()
         {
           if ( gPopUpMenu::getOption( choices, selections[i] ) == "Time" )
             recalc = true;
+          else if ( gPopUpMenu::getOption( choices, selections[i] ) == STR_CONTROL_SCALE )
+          {
+            myHistogram->setCompute2DScale( false );
+            recalc = true;
+          }
+          else if ( gPopUpMenu::getOption( choices, selections[i] ) == STR_3D_SCALE )
+          {
+            myHistogram->setCompute3DScale( false );
+            recalc = true;
+          }
           pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );
         }
       }
@@ -1168,6 +1178,22 @@ void gHistogram::OnPopUpPasteSemanticScale()
   myHistogram->setChanged( true );
 }
 
+void gHistogram::OnPopUpPasteControlScale()
+{
+  myHistogram->setCompute2DScale( false );
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, STR_CONTROL_SCALE );
+  updateHistogram();
+  myHistogram->setRecalc( true );
+}
+
+void gHistogram::OnPopUpPaste3DScale()
+{
+  myHistogram->setCompute3DScale( false );
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, STR_3D_SCALE );
+  updateHistogram();
+  myHistogram->setRecalc( true );
+}
+
 void gHistogram::OnPopUpClone()
 {
   Histogram *clonedHistogram = myHistogram->clone();
@@ -1181,7 +1207,7 @@ void gHistogram::OnPopUpClone()
 
   wxPoint position =  wxPoint( this->GetPosition().x + titleBarSize.GetHeight(),
                                this->GetPosition().y + titleBarSize.GetHeight() );
-  wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() );
+  wxSize size = wxSize( myHistogram->getWidth(), myHistogram->getHeight() + titleBarSize.GetHeight() );
 
   string composedName = clonedName + " @ " +
                         clonedHistogram->getTrace()->getTraceNameNumbered();

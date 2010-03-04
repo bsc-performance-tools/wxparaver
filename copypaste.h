@@ -54,6 +54,8 @@ using namespace std;
 #define STR_CLONE            "Clone"
 #define STR_FIT_TIME         "Fit Time Scale"
 #define STR_FIT_SEMANTIC     "Fit Semantic Scale"
+#define STR_CONTROL_SCALE    "Control scale"
+#define STR_3D_SCALE         "3D scale"
 
 class gTimeline;
 class gHistogram;

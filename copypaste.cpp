@@ -191,6 +191,18 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[STR_FILTER_ALL] = option;
   allowed[STR_FILTER_COMMS] = option;
   allowed[STR_FILTER_EVENTS] = option;
+  
+  option[SAME_TRACE][TIMELINE][TIMELINE] = false;
+  option[SAME_TRACE][TIMELINE][HISTOGRAM] = false;
+  option[SAME_TRACE][HISTOGRAM][TIMELINE] = false;
+  option[SAME_TRACE][HISTOGRAM][HISTOGRAM] = true;
+  option[DIFF_TRACE][TIMELINE][TIMELINE] = false;
+  option[DIFF_TRACE][TIMELINE][HISTOGRAM] = false;
+  option[DIFF_TRACE][HISTOGRAM][TIMELINE] = false;
+  option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
+  
+  allowed[STR_CONTROL_SCALE] = option;
+  allowed[STR_3D_SCALE] = option;
 }
 
 
@@ -354,7 +366,7 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     if ( property == STR_TIME )
     {
       whichHistogram->GetHistogram()->setWindowBeginTime( histogram->GetHistogram()->getBeginTime() );
-      whichHistogram->GetHistogram()->setWindowEndTime( histogram->GetHistogram()->getBeginTime() );
+      whichHistogram->GetHistogram()->setWindowEndTime( histogram->GetHistogram()->getEndTime() );
     }
     else if ( property == STR_SIZE )
     {
@@ -380,6 +392,22 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
       Window *dstControlWin = whichHistogram->GetHistogram()->getControlWindow();
       dstControlWin->setMinimumY( srcControlWin->getMinimumY() );
       dstControlWin->setMaximumY( srcControlWin->getMaximumY() );
+    }
+    else if( property == STR_CONTROL_SCALE )
+    {
+      Histogram *srcHisto = histogram->GetHistogram();
+      Histogram *dstHisto = whichHistogram->GetHistogram();
+      dstHisto->setControlMin( srcHisto->getControlMin() );
+      dstHisto->setControlMax( srcHisto->getControlMax() );
+      dstHisto->setControlDelta( srcHisto->getControlDelta() );
+    }
+    else if( property == STR_3D_SCALE )
+    {
+      Histogram *srcHisto = histogram->GetHistogram();
+      Histogram *dstHisto = whichHistogram->GetHistogram();
+      dstHisto->setExtraControlMin( srcHisto->getExtraControlMin() );
+      dstHisto->setExtraControlMax( srcHisto->getExtraControlMax() );
+      dstHisto->setExtraControlDelta( srcHisto->getExtraControlDelta() );
     }
     else
     {

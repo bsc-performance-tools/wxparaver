@@ -98,6 +98,8 @@ class gHistogram;
 #define ID_MENU_GRADIENT_FUNCTION_STEPS           30050
 #define ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC     30051
 #define ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL     30052
+#define ID_MENU_PASTE_CONTROL_SCALE               30053
+#define ID_MENU_PASTE_3D_SCALE                    30054
 
 class gPopUpMenu : public wxMenu
 {
@@ -134,6 +136,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuFilterAll( wxCommandEvent& event);
     void OnMenuFilterComms( wxCommandEvent& event);
     void OnMenuFilterEvents( wxCommandEvent& event);
+    void OnMenuPasteControlScale( wxCommandEvent& event );
+    void OnMenuPaste3DScale( wxCommandEvent& event );
     void OnMenuPasteSpecial( wxCommandEvent& event);
     void OnMenuClone( wxCommandEvent& event);
     void OnMenuUndoZoom( wxCommandEvent& event);

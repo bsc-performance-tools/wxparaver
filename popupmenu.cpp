@@ -90,6 +90,8 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_STEPS, gPopUpMenu::OnMenuGradientFunction )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, gPopUpMenu::OnMenuGradientFunction )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, gPopUpMenu::OnMenuGradientFunction )
+  EVT_MENU( ID_MENU_PASTE_CONTROL_SCALE, gPopUpMenu::OnMenuPasteControlScale )
+  EVT_MENU( ID_MENU_PASTE_3D_SCALE, gPopUpMenu::OnMenuPaste3DScale )
 
 END_EVENT_TABLE()
 
@@ -182,6 +184,13 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 
   Enable( FindItem( _( STR_CLONE ) ), true );
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
+  
+  Enable( FindItem( _( STR_CONTROL_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE) );
+  if( whichHistogram->GetHistogram()->getThreeDimensions() &&
+      histogram != NULL && histogram->GetHistogram()->getThreeDimensions() )
+    Enable( FindItem( _( STR_3D_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_3D_SCALE) );
+  else
+    Enable( FindItem( _( STR_3D_SCALE ) ), false );
 }
 
 
@@ -218,6 +227,15 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
   if ( pasteActions->isAllowed( whichHistogram, STR_SEMANTIC_SCALE ) )
     choices.Add( wxT( STR_SEMANTIC_SCALE ) );
 
+  if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_SCALE ) )
+    choices.Add( wxT( STR_CONTROL_SCALE ) );
+
+  if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_SCALE ) )
+  {
+    if( whichHistogram->GetHistogram()->getThreeDimensions() )
+      choices.Add( wxT( STR_3D_SCALE ) );
+  }
+  
   wxMultiChoiceDialog *tmpDialog = new wxMultiChoiceDialog( whichHistogram,
                                                             wxT( "Select properties to paste:" ),
                                                             wxT("Paste Special"),
@@ -538,6 +556,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( popUpMenuPaste, _( STR_OBJECTS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjects, ID_MENU_OBJECTS );
   buildItem( popUpMenuPaste, _( STR_SIZE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSize, ID_MENU_SIZE );
   buildItem( popUpMenuPaste, _( STR_SEMANTIC_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScale, ID_MENU_SEMANTIC_SCALE );
+  buildItem( popUpMenuPaste, _( STR_CONTROL_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlScale, ID_MENU_PASTE_CONTROL_SCALE );
+  buildItem( popUpMenuPaste, _( STR_3D_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPaste3DScale, ID_MENU_PASTE_3D_SCALE );
 
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
@@ -821,6 +841,16 @@ void gPopUpMenu::OnMenuFilterEvents( wxCommandEvent& event)
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteFilterEvents();
+}
+
+void gPopUpMenu::OnMenuPasteControlScale( wxCommandEvent& event )
+{
+  histogram->OnPopUpPasteControlScale();
+}
+
+void gPopUpMenu::OnMenuPaste3DScale( wxCommandEvent& event )
+{
+  histogram->OnPopUpPaste3DScale();
 }
 
 void gPopUpMenu::OnMenuPasteSpecial( wxCommandEvent& event)
