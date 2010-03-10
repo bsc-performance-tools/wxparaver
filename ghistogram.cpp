@@ -51,6 +51,7 @@
 #include "loadedwindows.h"
 #include "windows_tree.h"
 #include "paravermain.h"
+#include "textoutput.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -2226,3 +2227,31 @@ void gHistogram::OnMenuGradientFunction( GradientColor::TGradientFunction functi
   myHistogram->setRedraw( true );
 }
 
+void gHistogram::saveText()
+{
+  wxString fileName, defaultDir;
+  
+  string auxName = myHistogram->getName() + "_" + myHistogram->getTrace()->getTraceNameNumbered();
+  fileName = wxString::FromAscii( auxName.c_str() );
+
+#ifdef WIN32
+  defaultDir = _(".\\");
+#else
+  defaultDir = _("./");
+#endif
+
+  wxFileDialog saveDialog( this,
+                           _("Save as text"),
+                           defaultDir,
+                           fileName,
+                           _( "*.*" ),
+                           wxSAVE | wxFD_OVERWRITE_PROMPT );
+
+  if ( saveDialog.ShowModal() == wxID_OK )
+  {
+    TextOutput output;
+    output.setMultipleFiles( false );
+    string tmpStr = string( saveDialog.GetPath().mb_str() );
+    output.dumpHistogram( myHistogram, tmpStr );
+  }
+}

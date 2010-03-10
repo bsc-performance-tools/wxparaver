@@ -100,6 +100,7 @@ class gHistogram;
 #define ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL     30052
 #define ID_MENU_PASTE_CONTROL_SCALE               30053
 #define ID_MENU_PASTE_3D_SCALE                    30054
+#define ID_MENU_SAVE_TEXT                         30055
 
 class gPopUpMenu : public wxMenu
 {
@@ -180,6 +181,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuRowSelection( wxCommandEvent& event);
 
     void OnMenuSaveImage( wxCommandEvent& event );
+    void OnMenuSaveText( wxCommandEvent& event );
 
     void OnMenuInfoPanel( wxCommandEvent& event );
     

@@ -318,6 +318,8 @@ public:
 
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
   
+  void saveText();
+  
   void rightDownManager();
 
 ////@begin gHistogram member variables

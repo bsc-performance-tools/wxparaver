@@ -373,7 +373,7 @@ public:
   bool IsSplit() const;
 
   void saveImage();
-
+  void saveText();
 
   typedef enum {  RAW_LINE = 0,
                   BEGIN_OBJECT_SECTION,

@@ -83,6 +83,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_PIXEL_SIZE_x8, gPopUpMenu::OnMenuPixelSize )
   EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
   EVT_MENU( ID_MENU_SAVE_IMAGE, gPopUpMenu::OnMenuSaveImage )
+  EVT_MENU( ID_MENU_SAVE_TEXT, gPopUpMenu::OnMenuSaveText )
   EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
   EVT_MENU( ID_MENU_AUTO_3D_SCALE, gPopUpMenu::OnMenuAuto3DScale )
   EVT_MENU( ID_MENU_AUTO_DATA_GRADIENT, gPopUpMenu::OnMenuAutoDataGradient )
@@ -522,6 +523,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
   buildItem( this, _( "Save Image..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
+  buildItem( this, _( "Save as text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TEXT );
 
   AppendSeparator();
   buildItem( this, 
@@ -721,6 +723,9 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeObjects, _( "Objects" ));
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeBoth, _( "Both" ));
   AppendSubMenu( popUpMenuDrawMode, _( "Drawmode" ) );
+
+  AppendSeparator();
+  buildItem( this, _( "Save as text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TEXT );
 
   enableMenu( histogram );
 }
@@ -1115,6 +1120,14 @@ void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->saveImage();
+}
+
+void gPopUpMenu::OnMenuSaveText( wxCommandEvent& event )
+{
+  if( timeline != NULL )
+    timeline->saveText();
+  else if( histogram != NULL )
+    histogram->saveText();
 }
 
 void gPopUpMenu::OnMenuInfoPanel( wxCommandEvent& event )

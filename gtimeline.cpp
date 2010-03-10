@@ -53,6 +53,7 @@
 #include "caution.xpm"
 //#include "paraverconfig.h"
 //#include "paraverkerneltypes.h"
+#include "textoutput.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -2403,6 +2404,35 @@ void gTimeline::saveImage()
   }
 }
 
+
+void gTimeline::saveText()
+{
+  wxString fileName, defaultDir;
+  
+  string auxName = myWindow->getName() + "_" + myWindow->getTrace()->getTraceNameNumbered();
+  fileName = wxString::FromAscii( auxName.c_str() );
+
+#ifdef WIN32
+  defaultDir = _(".\\");
+#else
+  defaultDir = _("./");
+#endif
+
+  wxFileDialog saveDialog( this,
+                           _("Save as text"),
+                           defaultDir,
+                           fileName,
+                           _( "*.*" ),
+                           wxSAVE | wxFD_OVERWRITE_PROMPT );
+
+  if ( saveDialog.ShowModal() == wxID_OK )
+  {
+    TextOutput output;
+    output.setMultipleFiles( false );
+    string tmpStr = string( saveDialog.GetPath().mb_str() );
+    output.dumpWindow( myWindow, tmpStr );
+  }
+}
 
 /*!
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWLINES
