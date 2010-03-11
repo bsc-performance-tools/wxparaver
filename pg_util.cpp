@@ -189,7 +189,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   //-------------------------------------------------------------------------
   // Filter related properties
   //-------------------------------------------------------------------------
-  if( filter != NULL )
+  if( !whichWindow->isDerivedWindow() )
   {
     vector<string> filterFunctions;
     filter->getAllFilterFunctions( filterFunctions );
