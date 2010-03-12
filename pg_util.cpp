@@ -132,7 +132,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   wxArrayString arrayNotThreadFunctions;
   wxArrayInt arrayNotThreadFunctionsPos;
   int selected, pos;
-  Filter *filter = whichWindow->getFilter();
+  Filter *filter;
+  if( whichWindow->isDerivedWindow() )
+    filter = NULL;
+  else
+    filter = whichWindow->getFilter();
   
   windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxString::FromAscii( whichWindow->getName().c_str() ) ) );
   windowProperties->Append( new wxStringProperty( wxT("Begin time"), wxPG_LABEL, 

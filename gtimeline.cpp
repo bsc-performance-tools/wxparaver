@@ -652,7 +652,10 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
 
   wxCoord objectPos = objectPosList[ firstRow ];
   int lineLastPos = 0;
-  
+
+  for( vector<TObjectOrder>::iterator row = first; row <= last; ++row )
+    myWindow->initRow( *row, myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
+
   for( TTime currentTime = myWindow->getWindowBeginTime() + timeStep;
        currentTime <= myWindow->getWindowEndTime() && currentTime <= myWindow->getTrace()->getEndTime();
        currentTime += timeStep )
