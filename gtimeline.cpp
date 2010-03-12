@@ -2601,14 +2601,12 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
     if( dirDialog.ShowModal() == wxID_OK )
     {
       wxString path = dirDialog.GetPath();
-      cout << path.c_str() << endl;
       wxString command;
 #ifdef WIN32
       command << _( "wordpad.exe " ) /*<< " +" << lineStr << " "*/ << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
       wxExecute( command );
 #else
       command << _( "gvim " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
-      cout << command << endl;
       if( wxExecute( command ) == 0 )
       {
         command << _( "nedit " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
