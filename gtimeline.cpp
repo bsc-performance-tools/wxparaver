@@ -1785,7 +1785,8 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
   whatWhereLines.push_back( make_pair( END_OBJECT_SECTION, _( "" )));
 
   myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS, false );
-
+  myWindow->initRow( whichRow, whichTime, CREATEEVENTS + CREATECOMMS );
+  
   TRecordTime tmpBeginTime = myWindow->getBeginTime( whichRow );
 
   if ( tmpBeginTime > 0.0 )
@@ -1795,7 +1796,8 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 
     --tmpBeginTime;
     myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
-
+    myWindow->initRow( whichRow, tmpBeginTime, CREATEEVENTS + CREATECOMMS );
+    
     printWWSemantic( whichRow, false, textMode );
     printWWRecords( whichRow, false, textMode );
     myWindow->calcNext( whichRow, false );
