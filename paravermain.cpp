@@ -1129,8 +1129,8 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     wxTreeCtrl *currentTraceTreePage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
     bool found;
     wxTreeItemId idInGlobalTree = getItemIdFromWindow( globalTreePage->GetRootItem(), currentTimeline, found );
-    wxTreeItemId idInCurrentTraceTree = getItemIdFromWindow( currentTraceTreePage->GetRootItem(), currentTimeline, found );
     globalTreePage->SetItemImage( idInGlobalTree, iconNumber );
+    wxTreeItemId idInCurrentTraceTree = getItemIdFromWindow( currentTraceTreePage->GetRootItem(), currentTimeline, found );
     currentTraceTreePage->SetItemImage( idInCurrentTraceTree, iconNumber );
 
     currentTimeline->setRedraw( true );

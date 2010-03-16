@@ -143,7 +143,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Debug"</string>
+    <string name="configuration">"VC++ Release"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -529,7 +529,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
@@ -592,7 +592,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
@@ -626,7 +626,7 @@
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
-          <string name="Optimizations">"/MT /Ox /GR /EHsc /Ot /Oi /GL"</string>
+          <string name="Optimizations">"/MT /O2 /GR /EHsc /Ot /Oi /GL /Ob2 /GF /FD /EHsc /Gy"</string>
           <string name="Warnings">"/W3"</string>
           <string name="Debug flags">"%AUTO%"</string>
           <string name="Extra compile flags">"%AUTO%"</string>
@@ -655,7 +655,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
@@ -718,7 +718,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
@@ -6188,6 +6188,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
