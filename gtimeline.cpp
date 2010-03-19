@@ -398,7 +398,7 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 void gTimeline::redraw()
 {
-#ifndef WIN32
+#ifdef __WXGTK__
   if( splitChanged )
   {
     resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
