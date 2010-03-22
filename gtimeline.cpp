@@ -1049,7 +1049,8 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   endRow   = selected[ endRow ];
 
   if( zooming && ready &&
-      ( zoomEndX - zoomBeginX > 5.0 || zoomBeginY != zoomEndY ) )
+      zoomEndX - zoomBeginX > 5.0 &&
+      ( ( zoomXY && zoomEndY - zoomBeginY > 5.0 ) || !zoomXY ) )
   {
     if( !zoomXY )
     {

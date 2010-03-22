@@ -2625,6 +2625,7 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   description << _( "wxParaver allows the programmer to examine graphically a " );
   description << _( "tracefile, with the possibility to choose different filters in " );
   description << _( "order to select what is displayed.\n" );
+  description << _( "\n(paraver@bsc.es)\n" );
   info.SetDescription( description );
   developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
   developers.Add( _("Pedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
