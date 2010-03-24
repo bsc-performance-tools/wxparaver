@@ -91,6 +91,7 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCES_HISTOGRAM_MATRIX_HORIZONTAL 10023
 #define ID_PREFERENCES_HISTOGRAM_MATRIX_HIDE_EMPTY 10024
 #define ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT 10022
+#define ID_PREFERENCES_HISTOGRAM_MATRIX_LABELS_COLOR 10102
 #define ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT_FUNCTION 10020
 #define ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_SEMANTIC 10021
 #define ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_OBJECTS 10025
@@ -323,6 +324,9 @@ public:
   bool GetHistogramAutofit3DScale() const { return histogramAutofit3DScale ; }
   void SetHistogramAutofit3DScale(bool value) { histogramAutofit3DScale = value ; }
 
+  bool GetHistogramLabelsColor() const { return histogramLabelsColor ; }
+  void SetHistogramLabelsColor(bool value) { histogramLabelsColor = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -365,6 +369,7 @@ public:
   wxCheckBox* checkHistogramHorizontal;
   wxCheckBox* checkHistogramHideEmpty;
   wxCheckBox* checkHistogramShowGradient;
+  wxCheckBox* checkHistogramLabelsColor;
   wxChoice* choiceHistogramGradientFunction;
   wxChoice* choiceHistogramDrawmodeSemantic;
   wxChoice* choiceHistogramDrawmodeObjects;
@@ -439,6 +444,7 @@ private:
   UINT32 histogramSaveTextFormat;
   bool histogramDrawmodeSemantic;
   bool histogramAutofit3DScale;
+  bool histogramLabelsColor;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

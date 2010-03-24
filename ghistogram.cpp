@@ -76,6 +76,7 @@
 #include "histo_color.xpm"
 #include "histo_horvert.xpm"
 #include "hide_cols.xpm"
+#include "semantic_color.xpm"
 ////@end XPM images
 
 #ifdef WIN32
@@ -139,6 +140,9 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 
   EVT_MENU( ID_TOOL_HIDE_COLUMNS, gHistogram::OnToolHideColumnsClick )
   EVT_UPDATE_UI( ID_TOOL_HIDE_COLUMNS, gHistogram::OnToolHideColumnsUpdate )
+
+  EVT_MENU( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsClick )
+  EVT_UPDATE_UI( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsUpdate )
 
 ////@end gHistogram event table entries
   
@@ -294,6 +298,9 @@ void gHistogram::CreateControls()
   wxBitmap itemtool21Bitmap(itemFrame1->GetBitmapResource(wxT("hide_cols.xpm")));
   wxBitmap itemtool21BitmapDisabled;
   itemToolBar11->AddTool(ID_TOOL_HIDE_COLUMNS, _("Hide empty columns"), itemtool21Bitmap, itemtool21BitmapDisabled, wxITEM_CHECK, _("Hide empty columns"), wxEmptyString);
+  wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("semantic_color.xpm")));
+  wxBitmap itemtool22BitmapDisabled;
+  itemToolBar11->AddTool(ID_TOOL_LABEL_COLORS, _("Label colors"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_CHECK, _("Label colors"), wxEmptyString);
   itemToolBar11->Realize();
   itemFrame1->SetToolBar(itemToolBar11);
 
@@ -378,10 +385,18 @@ void gHistogram::fillGrid()
   THistogramColumn numCols, numDrawCols;
   TObjectOrder numRows, numDrawRows;
   bool horizontal = myHistogram->getHorizontal();
+  bool firstRowColored = myHistogram->getFirstRowColored();
+  wxFont cellFontBold;
   
   zoomHisto->Show( false );
   gridHisto->Show( true );
   mainSizer->Layout();
+  
+  if( firstRowColored )
+  {
+    cellFontBold = gridHisto->GetDefaultCellFont();
+    cellFontBold.SetWeight( wxFONTWEIGHT_BOLD );
+  }
   
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( std::exception() );
@@ -403,11 +418,17 @@ void gHistogram::fillGrid()
   if( horizontal )
   {
     numDrawCols = numCols;
-    numDrawRows = numRows;
+    if( firstRowColored && !commStat )
+      numDrawRows = numRows + 1;
+    else
+      numDrawRows = numRows;
   }
   else
   {
-    numDrawCols = numRows;
+    if( firstRowColored && !commStat )
+      numDrawCols = numRows + 1;
+    else
+      numDrawCols = numRows;
     numDrawRows = numCols;
   }
 
@@ -426,7 +447,26 @@ void gHistogram::fillGrid()
     gridHisto->AppendRows( numDrawRows + NUMTOTALS + 1 );
   }
 
-  for( THistogramColumn iCol = 0; iCol < numCols; iCol++ )
+  if( firstRowColored && !commStat )
+  {
+    if( horizontal )
+    {
+      gridHisto->SetRowLabelSize( gridHisto->GetDefaultRowLabelSize() );
+      gridHisto->SetColLabelSize( 0 );
+    }
+    else
+    {
+      gridHisto->SetColLabelSize( gridHisto->GetDefaultColLabelSize() );
+      gridHisto->SetRowLabelSize( 0 );
+    }
+  }
+  else
+  {
+    gridHisto->SetRowLabelSize( gridHisto->GetDefaultRowLabelSize() );
+    gridHisto->SetColLabelSize( gridHisto->GetDefaultColLabelSize() );
+  }
+
+  for( THistogramColumn iCol = 0; iCol < numCols; ++iCol )
   {
     if( commStat )
     {
@@ -436,7 +476,40 @@ void gHistogram::fillGrid()
     else
     {
       if( horizontal )
-        gridHisto->SetColLabelValue( iCol, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
+      {
+        if( firstRowColored )
+        {
+          gridHisto->SetCellAlignment( 0, iCol, wxALIGN_CENTRE, wxALIGN_CENTRE );
+          gridHisto->SetCellFont( 0, iCol, cellFontBold );
+          gridHisto->SetCellValue( 0, iCol, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
+          gridHisto->SetRowLabelValue( 0, wxT( "" ) );
+
+          Window *controlWindow = myHistogram->getControlWindow();
+          TSemanticValue tmpValue = ( iCol / myHistogram->getControlDelta() ) +
+                                    myHistogram->getControlMin();
+          rgb tmpCol;
+          if( myHistogram->getControlWindow()->IsCodeColorSet() )
+            tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
+                                                              controlWindow->getMinimumY(),
+                                                              controlWindow->getMaximumY() );
+          else
+            tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
+                                                                  controlWindow->getMinimumY(),
+                                                                  controlWindow->getMaximumY() );
+          gridHisto->SetCellBackgroundColour( 0, iCol, 
+                                              wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+          wxColour BackColour = wxColour( tmpCol.red, tmpCol.green, tmpCol.blue );
+          unsigned int BackColour_luminance = (BackColour.Red() * 30)/100 +
+                                              (BackColour.Green() * 59)/100 +
+                                              (BackColour.Blue() * 11) / 100;
+          if (BackColour_luminance >= 128)
+            gridHisto->SetCellTextColour( 0, iCol, *wxBLACK );
+          else
+            gridHisto->SetCellTextColour( 0, iCol, *wxWHITE );
+        }
+        else
+          gridHisto->SetColLabelValue( iCol, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
+      }
       else
       {
         int w, h;
@@ -444,13 +517,48 @@ void gHistogram::fillGrid()
         gridHisto->GetTextExtent( wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ), &w, &h, NULL, NULL, &labelFont );
         if( rowLabelWidth == 0 || rowLabelWidth < w )
           rowLabelWidth = w;
-        gridHisto->SetRowLabelValue( iCol, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
+        if( firstRowColored )
+        {
+          gridHisto->SetCellAlignment( iCol, 0, wxALIGN_CENTRE, wxALIGN_CENTRE );
+          gridHisto->SetCellFont( iCol, 0, cellFontBold );
+          gridHisto->SetCellValue( iCol, 0, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
+          gridHisto->SetColLabelValue( 0, wxT( "" ) );
+
+          Window *controlWindow = myHistogram->getControlWindow();
+          TSemanticValue tmpValue = ( iCol / myHistogram->getControlDelta() ) +
+                                    myHistogram->getControlMin();
+          rgb tmpCol;
+          if( myHistogram->getControlWindow()->IsCodeColorSet() )
+            tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
+                                                              controlWindow->getMinimumY(),
+                                                              controlWindow->getMaximumY() );
+          else
+            tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
+                                                                  controlWindow->getMinimumY(),
+                                                                  controlWindow->getMaximumY() );
+          gridHisto->SetCellBackgroundColour( iCol, 0,
+                                              wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+          wxColour BackColour = wxColour( tmpCol.red, tmpCol.green, tmpCol.blue );
+          unsigned int BackColour_luminance = (BackColour.Red() * 30)/100 +
+                                              (BackColour.Green() * 59)/100 +
+                                              (BackColour.Blue() * 11) / 100;
+          if (BackColour_luminance >= 128)
+            gridHisto->SetCellTextColour( iCol, 0, *wxBLACK );
+          else
+            gridHisto->SetCellTextColour( iCol, 0, *wxWHITE );
+        }
+        else
+          gridHisto->SetRowLabelValue( iCol, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
       }
       myHistogram->setFirstCell( iCol, curPlane );
     }
 
-    for( TObjectOrder iRow = 0; iRow < numRows; iRow++ )
+    for( TObjectOrder iLoopRow = 0; iLoopRow < numRows; iLoopRow++ )
     {
+      TObjectOrder iRow = iLoopRow;
+      if( firstRowColored && !commStat )
+        ++iRow;
+
       if( horizontal )
       {
         if( iCol == 0 )
@@ -516,7 +624,7 @@ void gHistogram::fillGrid()
         }
         else
         {
-          if( myHistogram->getCurrentRow( iCol, curPlane ) == iRow )
+          if( myHistogram->getCurrentRow( iCol, curPlane ) == iLoopRow )
           {
             string tmpStr;
             tmpStr = LabelConstructor::histoCellLabel( myHistogram,
@@ -558,7 +666,8 @@ void gHistogram::fillGrid()
 
   fillTotals( rowLabelWidth, numDrawRows + 1, curPlane, idStat );
 
-  gridHisto->SetRowLabelSize( rowLabelWidth + 5 );
+  if( !firstRowColored || horizontal || commStat )
+    gridHisto->SetRowLabelSize( rowLabelWidth + 5 );
   gridHisto->AutoSizeColumns();
   gridHisto->AutoSizeRows();
   gridHisto->EndBatch();
@@ -645,6 +754,11 @@ void gHistogram::fillZoom()
   if( myHistogram->getHideColumns() )
     tmpNumCols = noVoidColumns.size();
 
+  bufferDraw.SetBrush( *wxGREY_BRUSH );
+  bufferDraw.SetPen( *wxTRANSPARENT_PEN );
+  bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight );
+  bufferDraw.DrawRectangle( 0, 0, cellWidth, bufferDraw.GetSize().GetHeight() );
+
   for( THistogramColumn iCol = 0; iCol < tmpNumCols; iCol++ )
   {
     THistogramColumn realCol = iCol;
@@ -656,10 +770,6 @@ void gHistogram::fillZoom()
     else
       myHistogram->setFirstCell( realCol, curPlane );
 
-    bufferDraw.SetBrush( *wxGREY_BRUSH );
-    bufferDraw.SetPen( *wxTRANSPARENT_PEN );
-    bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight );
-    bufferDraw.DrawRectangle( 0, 0, cellWidth, bufferDraw.GetSize().GetHeight() );
 
     THistogramColumn beginCol = iCol;
     THistogramColumn endCol = beginCol;
@@ -726,6 +836,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
   TObjectOrder numRows = myHistogram->getNumRows();
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
+  bool firstRowColored = myHistogram->getFirstRowColored();
   double& cellWidth = zoomCellWidth;
   double& cellHeight = zoomCellHeight;
   UINT16 idStat;
@@ -785,6 +896,51 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       else
         valuesObjects.push_back( DrawMode::selectValue( valuesColumns, myHistogram->getDrawModeColumns() ) );
     }
+
+    THistogramColumn iDrawCol;
+    TObjectOrder iDrawRow;
+    if( horizontal )
+    {
+      iDrawCol = beginColumn;
+      iDrawRow = iRow;
+    }
+    else
+    {
+      iDrawCol = iRow;
+      iDrawRow = beginColumn;
+    }
+
+    if( firstRowColored && !commStat )
+    {
+      THistogramColumn firstDrawCol = iDrawCol;
+      TObjectOrder firstDrawRow = iDrawRow;
+      if( horizontal )
+        ++firstDrawCol;
+      else
+        ++firstDrawRow;
+          
+      rgb tmpCol;
+      Window *controlWindow = myHistogram->getControlWindow();
+      THistogramColumn tmpBeginCol = beginColumn;
+      if( myHistogram->getHideColumns() )
+        tmpBeginCol = noVoidColumns[ beginColumn ];
+      TSemanticValue tmpValue = ( tmpBeginCol / myHistogram->getControlDelta() ) +
+                                myHistogram->getControlMin();
+      if( myHistogram->getControlWindow()->IsCodeColorSet() )
+        tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
+                                                          controlWindow->getMinimumY(),
+                                                          controlWindow->getMaximumY() );
+      else
+        tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
+                                                              controlWindow->getMinimumY(),
+                                                              controlWindow->getMaximumY() );
+      bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+      bufferDraw.DrawRectangle( rint( ( firstDrawCol ) * cellWidth ), rint( ( firstDrawRow ) * cellHeight ),
+                                cellWidth < 1.0 ? 1 : rint( cellWidth ),
+                                cellHeight < 1.0 ? 1 : rint( cellHeight ) );
+      firstRowColored = false;
+    }
+      
     if( valuesObjects.begin() != valuesObjects.end() &&
         ( iRow == numRows || 
           ( horizontal && rint( ( iRow + 1 ) * cellHeight ) != rint( ( iRow + 2 ) * cellHeight ) ) ||
@@ -792,24 +948,13 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
         )
       )
     {
-      THistogramColumn iDrawCol;
-      TObjectOrder iDrawRow;
-      if( horizontal )
-      {
-        iDrawCol = beginColumn;
-        iDrawRow = iRow;
-      }
-      else
-      {
-        iDrawCol = iRow;
-        iDrawRow = beginColumn;
-      }
       rgb tmpCol = myHistogram->calcGradientColor( 
                      DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() ) );
       bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
       bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
                                 cellWidth < 1.0 ? 1 : rint( cellWidth ),
                                 cellHeight < 1.0 ? 1 : rint( cellHeight ) );
+
       valuesObjects.clear();
     }
   }
@@ -819,8 +964,17 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
 {
   THistogramColumn numDrawCols;
   wxFont labelFont = gridHisto->GetLabelFont();
+  bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
+  bool firstRowColored = myHistogram->getFirstRowColored();
   HistogramTotals *histoTotals = myHistogram->getTotals( myHistogram->getCurrentStat() );
+  wxFont cellFontBold;
+  
+  if( firstRowColored )
+  {
+    cellFontBold = gridHisto->GetDefaultCellFont();
+    cellFontBold.SetWeight( wxFONTWEIGHT_BOLD );
+  }
   
   if( horizontal )
     numDrawCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
@@ -840,9 +994,21 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
                                 &w, &h, NULL, NULL, &labelFont );
       if( rowLabelWidth == 0 || rowLabelWidth < w )
         rowLabelWidth = w;
-      gridHisto->SetRowLabelValue( beginRow + i, 
-        wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals) i ).c_str() ) );
+      if( firstRowColored && !horizontal && !commStat )
+      {
+        gridHisto->SetCellAlignment( beginRow + i, 0, wxALIGN_CENTRE, wxALIGN_CENTRE );
+        gridHisto->SetCellFont( beginRow + i, 0, cellFontBold );
+        gridHisto->SetCellValue( beginRow + i, 0, 
+          wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals) i ).c_str() ) );
+        //gridHisto->SetCellBackgroundColour( beginRow + i, 0, *wxLIGHT_GREY );
+      }
+      else
+        gridHisto->SetRowLabelValue( beginRow + i, 
+          wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals) i ).c_str() ) );
 
+      THistogramColumn realCol = iCol;
+      if( firstRowColored && !horizontal && !commStat )
+        ++realCol;
       if( totals[ 0 ] > 0.0 )
       {
         string tmpStr;
@@ -850,11 +1016,11 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
           tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ], false );
         else
           tmpStr = LabelConstructor::histoCellLabel( myHistogram, totals[ i ], true );
-        gridHisto->SetCellValue( beginRow + i, iCol, wxString::FromAscii( tmpStr.c_str() ) );
+        gridHisto->SetCellValue( beginRow + i, realCol, wxString::FromAscii( tmpStr.c_str() ) );
       }
       else
       {
-        gridHisto->SetCellValue( beginRow + i, iCol, wxString::FromAscii( "-" ) );
+        gridHisto->SetCellValue( beginRow + i, realCol, wxString::FromAscii( "-" ) );
       }
     }
   }
@@ -912,7 +1078,7 @@ void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogr
         gridHisto->SetRowLabelValue( iCol, labels[ iCol ] );
     }
 
-    if( !horizontal )
+    if( !horizontal || commStat)
     {
       gridHisto->SetRowLabelValue( iDrawCol, wxT( "" ) );
       for( int i = 0; i < NUMTOTALS; ++i )
@@ -983,6 +1149,11 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   else if (name == _T("hide_cols.xpm"))
   {
     wxBitmap bitmap(hide_xpm);
+    return bitmap;
+  }
+  else if (name == _T("semantic_color.xpm"))
+  {
+    wxBitmap bitmap(semantic_color_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -2255,3 +2426,25 @@ void gHistogram::saveText()
     output.dumpHistogram( myHistogram, tmpStr );
   }
 }
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_LABEL_COLORS
+ */
+
+void gHistogram::OnToolLabelColorsClick( wxCommandEvent& event )
+{
+  myHistogram->setFirstRowColored( event.IsChecked() );
+  myHistogram->setRedraw( true );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_LABEL_COLORS
+ */
+
+void gHistogram::OnToolLabelColorsUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myHistogram->getFirstRowColored() );
+}
+

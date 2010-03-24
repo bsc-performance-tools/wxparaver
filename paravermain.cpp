@@ -2184,6 +2184,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetHistogramHorizontal( paraverConfig->getHistogramViewHorizontal() );
   preferences.SetHistogramHideEmpty( !paraverConfig->getHistogramViewEmptyColumns() );
   preferences.SetHistogramShowGradient( paraverConfig->getHistogramViewGradientColors() );
+  preferences.SetHistogramLabelsColor( paraverConfig->getHistogramViewFirstRowColored() );
   preferences.SetHistogramGradientFunction( paraverConfig->getHistogramGradientFunction() );
   preferences.SetHistogramDrawmodeSemantic( ( UINT32 ) paraverConfig->getHistogramDrawmodeSemantic() );
   preferences.SetHistogramDrawmodeObjects( ( UINT32 ) paraverConfig->getHistogramDrawmodeObjects() );
@@ -2256,6 +2257,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setHistogramViewHorizontal( preferences.GetHistogramHorizontal() );
     paraverConfig->setHistogramViewEmptyColumns( !preferences.GetHistogramHideEmpty() );
     paraverConfig->setHistogramViewGradientColors( preferences.GetHistogramShowGradient() );
+    paraverConfig->setHistogramViewFirstRowColored( preferences.GetHistogramLabelsColor() );
     paraverConfig->setHistogramGradientFunction( (GradientColor::TGradientFunction)preferences.GetHistogramGradientFunction() );
     paraverConfig->setHistogramDrawmodeSemantic( ( DrawModeMethod ) preferences.GetHistogramDrawmodeSemantic() );
     paraverConfig->setHistogramDrawmodeObjects( ( DrawModeMethod ) preferences.GetHistogramDrawmodeObjects() );
