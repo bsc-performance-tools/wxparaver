@@ -55,6 +55,7 @@ noinst_HEADERS = \
               opencontrol.xpm\
               opendata.xpm\
               openfiltered.xpm\
+              semantic_color.xpm\
               table.xpm\
               timeline.xpm
 
