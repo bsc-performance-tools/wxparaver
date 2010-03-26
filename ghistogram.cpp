@@ -564,16 +564,16 @@ void gHistogram::fillGrid()
         {
           int w, h;
       
-          gridHisto->GetTextExtent( wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iRow ] ).c_str() ),
+          gridHisto->GetTextExtent( wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iLoopRow ] ).c_str() ),
                                     &w, &h, NULL, NULL, &labelFont );
           if( rowLabelWidth == 0 || rowLabelWidth < w )
             rowLabelWidth = w;
-          gridHisto->SetRowLabelValue( iRow, wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iRow ] ).c_str() ) );
+          gridHisto->SetRowLabelValue( iRow, wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iLoopRow ] ).c_str() ) );
         }
       }
       else
       {
-        gridHisto->SetColLabelValue( iRow, wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iRow ] ).c_str() ) );
+        gridHisto->SetColLabelValue( iRow, wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ iLoopRow ] ).c_str() ) );
       }
       
       THistogramColumn iDrawCol;
