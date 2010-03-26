@@ -387,6 +387,7 @@ void gHistogram::fillGrid()
   bool horizontal = myHistogram->getHorizontal();
   bool firstRowColored = myHistogram->getFirstRowColored();
   wxFont cellFontBold;
+  Window *controlWindow = myHistogram->getControlWindow();
   
   zoomHisto->Show( false );
   gridHisto->Show( true );
@@ -484,11 +485,10 @@ void gHistogram::fillGrid()
           gridHisto->SetCellValue( 0, iCol, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
           gridHisto->SetRowLabelValue( 0, wxT( "" ) );
 
-          Window *controlWindow = myHistogram->getControlWindow();
           TSemanticValue tmpValue = ( iCol / myHistogram->getControlDelta() ) +
                                     myHistogram->getControlMin();
           rgb tmpCol;
-          if( myHistogram->getControlWindow()->IsCodeColorSet() )
+          if( controlWindow->IsCodeColorSet() )
             tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                               controlWindow->getMinimumY(),
                                                               controlWindow->getMaximumY() );
@@ -524,11 +524,10 @@ void gHistogram::fillGrid()
           gridHisto->SetCellValue( iCol, 0, wxString::FromAscii( myHistogram->getColumnLabel( iCol ).c_str() ) );
           gridHisto->SetColLabelValue( 0, wxT( "" ) );
 
-          Window *controlWindow = myHistogram->getControlWindow();
           TSemanticValue tmpValue = ( iCol / myHistogram->getControlDelta() ) +
                                     myHistogram->getControlMin();
           rgb tmpCol;
-          if( myHistogram->getControlWindow()->IsCodeColorSet() )
+          if( controlWindow->IsCodeColorSet() )
             tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                               controlWindow->getMinimumY(),
                                                               controlWindow->getMaximumY() );

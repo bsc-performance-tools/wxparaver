@@ -410,13 +410,21 @@ void gTimeline::redraw()
   redoColors = true;
 
   rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
-  wxColour foregroundColour = wxColour( rgbForegroundColour.red,
-                                       rgbForegroundColour.green,
-                                       rgbForegroundColour.blue );
+  foregroundColour = wxColour( rgbForegroundColour.red,
+                               rgbForegroundColour.green,
+                               rgbForegroundColour.blue );
   rgb rgbBackgroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineBackground();
-  wxColour backgroundColour = wxColour( rgbBackgroundColour.red,
-                                       rgbBackgroundColour.green,
-                                       rgbBackgroundColour.blue );
+  backgroundColour = wxColour( rgbBackgroundColour.red,
+                               rgbBackgroundColour.green,
+                               rgbBackgroundColour.blue );
+
+  rgb rgbLogicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineLogicalCommunications();
+  logicalColour = wxColour( rgbLogicalColour.red, rgbLogicalColour.green ,rgbLogicalColour.blue );
+
+  rgb rgbPhysicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelinePhysicalCommunications();
+  physicalColour = wxColour( rgbPhysicalColour.red, rgbPhysicalColour.green ,rgbPhysicalColour.blue );
+
+  imgFlag = wxBitmap( flag, 10, 10 );
 
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );
@@ -635,11 +643,6 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
 {
   float magnify = float( GetPixelSize() );
 
-  rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
-  wxColour foregroundColour = wxColour( rgbForegroundColour.red,
-                                        rgbForegroundColour.green,
-                                        rgbForegroundColour.blue );
-
   TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
@@ -754,21 +757,8 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
 {
   bool existEvents = false;
   TObjectOrder row = 0;
-
-  rgb rgbLogicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineLogicalCommunications();
-  wxColour logicalColour = wxColour( rgbLogicalColour.red, rgbLogicalColour.green ,rgbLogicalColour.blue );
-
-  rgb rgbPhysicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelinePhysicalCommunications();
-  wxColour physicalColour = wxColour( rgbPhysicalColour.red, rgbPhysicalColour.green ,rgbPhysicalColour.blue );
-
-  rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
-  wxColour foregroundColour = wxColour( rgbForegroundColour.red,
-                                       rgbForegroundColour.green,
-                                       rgbForegroundColour.blue );
-  rgb rgbBackgroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineBackground();
-  wxColour backgroundColour = wxColour( rgbBackgroundColour.red,
-                                       rgbBackgroundColour.green,
-                                       rgbBackgroundColour.blue );
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
 
   RecordList::iterator it = records->begin();
   step = ( 1 / step );
@@ -786,7 +776,8 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
     {
       TObjectOrder partnerObject = it->getCommPartnerObject();
 
-      if( ( it->getType() & COMM ) && selected[ partnerObject ] &&
+      if( ( it->getType() & COMM ) && 
+          partnerObject >= beginRow && partnerObject <= endRow && selected[ partnerObject ] &&
           ( ( it->getType() & RECV ) ||
             ( ( it->getType() & SEND ) && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
         )
@@ -815,7 +806,6 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
     eventdc.SetTextForeground( *wxGREEN );
     eventdc.SetTextBackground( backgroundColour );
     eventdc.SetBackgroundMode( wxTRANSPARENT );
-    wxBitmap imgFlag( flag, 10, 10 );
     eventdc.DrawBitmap( imgFlag, pos, objectPosList[ row ] - 10, true );
     eventmaskdc.SetPen( *wxWHITE_PEN );
     eventmaskdc.SetBrush( *wxWHITE_BRUSH );

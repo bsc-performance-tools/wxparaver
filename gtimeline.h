@@ -284,6 +284,21 @@ public:
   int GetInfoZoneLastSize() const { return infoZoneLastSize ; }
   void SetInfoZoneLastSize(int value) { infoZoneLastSize = value ; }
 
+  wxColour GetForegroundColour() const { return foregroundColour ; }
+  void SetForegroundColour(wxColour value) { foregroundColour = value ; }
+
+  wxColour GetBackgroundColour() const { return backgroundColour ; }
+  void SetBackgroundColour(wxColour value) { backgroundColour = value ; }
+
+  wxColour GetLogicalColour() const { return logicalColour ; }
+  void SetLogicalColour(wxColour value) { logicalColour = value ; }
+
+  wxColour GetPhysicalColour() const { return physicalColour ; }
+  void SetPhysicalColour(wxColour value) { physicalColour = value ; }
+
+  wxBitmap GetImgFlag() const { return imgFlag ; }
+  void SetImgFlag(wxBitmap value) { imgFlag = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -418,6 +433,7 @@ public:
   wxBitmap commImage;
   wxBitmap eventImage;
   bool drawCaution;
+  wxColour physicalColour;
 private:
   bool ready;
   Window* myWindow;
@@ -442,6 +458,10 @@ private:
   wxTimer * timerSize;
   UINT32 pixelSize;
   int infoZoneLastSize;
+  wxColour foregroundColour;
+  wxColour backgroundColour;
+  wxColour logicalColour;
+  wxBitmap imgFlag;
 ////@end gTimeline member variables
 
   wxWindow *parent;
