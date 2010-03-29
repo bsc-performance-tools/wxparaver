@@ -516,7 +516,10 @@ bool HistogramDialog::TransferDataFromWindow()
   else
   {
     auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
-    auxBegin = LoadedWindows::getInstance()->getWindow( auxID )->getWindowBeginTime();
+    if( radioAllTrace->GetValue() )
+      auxBegin = 0.0;
+    else
+      auxBegin = LoadedWindows::getInstance()->getWindow( auxID )->getWindowBeginTime();
     errorMessage += _( "\tBegin Time : " ) + formatNumber( auxBegin ) + _( "\n" );
   }
 
@@ -525,7 +528,10 @@ bool HistogramDialog::TransferDataFromWindow()
   else
   {
     auxID  = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
-    auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->getWindowEndTime();
+    if( radioAllTrace->GetValue() )
+      auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->getTrace()->getEndTime();
+    else
+      auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->getWindowEndTime();
     errorMessage += _( "\tEnd Time : " ) + formatNumber( auxEnd ) + _( "\n" );
   }
 
