@@ -86,9 +86,7 @@ void RowsSelectionDialog::buildPanel( gTimeline *myTimeline,
                          wxDefaultSize,
                          wxSUNKEN_BORDER | wxTAB_TRAVERSAL );
 
-  TWindowLevel level = myTimeline->GetMyWindow()->getLevel();
-
-  GetBookCtrl()->AddPage( myPanel, title, whichLevel == level );
+  GetBookCtrl()->AddPage( myPanel, title, whichLevel == myTimeline->GetMyWindow()->getLevel() );
 
   wxBoxSizer *panelSizer = new wxBoxSizer( wxVERTICAL );
   wxBoxSizer *buttonsSizer = new wxBoxSizer( wxHORIZONTAL );
@@ -99,10 +97,11 @@ void RowsSelectionDialog::buildPanel( gTimeline *myTimeline,
   wxArrayString choices;
   vector< bool > selectedRow;
   myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedRow, false );
+  Trace *myTrace = myTimeline->GetMyWindow()->getTrace();
   for ( size_t row = (size_t)0; row < selectedRow.size(); ++row )
     choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
                                                                      whichLevel,
-                                                                     myTimeline->GetMyWindow()->getTrace() ).c_str() ) );
+                                                                     myTrace ).c_str() ) );
 
   vector< TObjectOrder > selectedIndex;
   myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedIndex, false );
