@@ -212,6 +212,7 @@ void gHistogram::Init()
   lastPosZoomY = 0;
   openControlActivated = false;
   zoomDragging = false;
+  escapePressed = false;
   mainSizer = NULL;
   zoomHisto = NULL;
   gridHisto = NULL;
@@ -315,6 +316,7 @@ void gHistogram::CreateControls()
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_KEY_DOWN, wxKeyEventHandler(gHistogram::OnZoomHistoKeyDown), NULL, this);
 ////@end gHistogram content construction
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
@@ -1918,6 +1920,7 @@ TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjec
 void gHistogram::OnToolOpenFilteredControlWindowClick( wxCommandEvent& event )
 {
   openControlActivated = true;
+  zoomHisto->SetFocus();
   zoomHisto->SetCursor( *wxCROSS_CURSOR );
 }
 
@@ -1938,6 +1941,7 @@ void gHistogram::OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnLeftDown( wxMouseEvent& event )
 {
+  zoomHisto->SetFocus();
   zoomDragging = true;
   zoomPointBegin = event.GetPosition();
 }
@@ -1993,6 +1997,12 @@ void gHistogram::zoom( THistogramLimit newColumnBegin,
 
 void gHistogram::OnLeftUp( wxMouseEvent& event )
 {
+  if( escapePressed )
+  {
+    escapePressed = false;
+    return;
+  }
+  
   if( zoomDragging )
   {
     zoomDragging = false;
@@ -2445,5 +2455,41 @@ void gHistogram::OnToolLabelColorsClick( wxCommandEvent& event )
 void gHistogram::OnToolLabelColorsUpdate( wxUpdateUIEvent& event )
 {
   event.Check( myHistogram->getFirstRowColored() );
+}
+
+
+/*!
+ * wxEVT_KEY_DOWN event handler for ID_ZOOMHISTO
+ */
+
+void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
+{
+  if( zoomDragging && event.GetKeyCode() == WXK_ESCAPE )
+  {
+    escapePressed = true;
+    zoomDragging = false;
+
+    wxMemoryDC memdc( drawImage );
+    memdc.SetBackgroundMode( wxTRANSPARENT );
+    memdc.SetBackground( *wxTRANSPARENT_BRUSH );
+    memdc.Clear();
+#if wxTEST_GRAPHICS == 1
+    wxGCDC dc( memdc );
+    dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
+#else
+    wxDC& dc = memdc;
+    dc.SetBrush( *wxTRANSPARENT_BRUSH );
+#endif
+    dc.DrawBitmap( zoomImage, 0, 0, false );
+
+    zoomHisto->Refresh();
+  }
+  else if( openControlActivated && event.GetKeyCode() == WXK_ESCAPE )
+  {
+    escapePressed = true;
+    openControlActivated = false;
+    zoomDragging = false;
+    zoomHisto->SetCursor( wxNullCursor );
+  }
 }
 

@@ -194,6 +194,7 @@ void gTimeline::Init()
   timerSize = new wxTimer( this );
   pixelSize = 1;
   infoZoneLastSize = 200;
+  escapePressed = false;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -348,6 +349,7 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -942,6 +944,7 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
     dialog.ShowModal();
     return;
   }
+  drawZone->SetFocus();
   zooming = true;
   zoomBeginX = event.GetX();
   zoomBeginY = event.GetY();
@@ -958,6 +961,12 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   wxMemoryDC dc( bufferImage );
   bool outOfDraw = false;
 
+  if( escapePressed )
+  {
+    escapePressed = false;
+    return;
+  }
+  
   if( event.ShiftDown() )
   {
     zooming = false;
@@ -2613,5 +2622,39 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
   {
     wxMessageBox( _( "Event " ) + (wxString() << 60000119) + _( " not found." ), _( "Show source code" ) );
   }
+}
+
+
+/*!
+ * wxEVT_KEY_DOWN event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
+{
+  if( zooming && event.GetKeyCode() == WXK_ESCAPE )
+  {
+    escapePressed = true;
+    zooming = false;
+  }
+
+  wxMemoryDC memdc( drawImage );
+  memdc.SetBackgroundMode( wxTRANSPARENT );
+  memdc.SetBackground( *wxTRANSPARENT_BRUSH );
+  memdc.Clear();
+#if wxTEST_GRAPHICS == 1
+  wxGCDC dc( memdc );
+  dc.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
+#else
+  wxDC& dc = memdc;
+  dc.SetBrush( *wxTRANSPARENT_BRUSH );
+#endif
+  dc.DrawBitmap( bufferImage, 0, 0, false );
+  if( myWindow->getDrawFlags() )
+    dc.DrawBitmap( eventImage, 0, 0, true );
+  if( myWindow->getDrawCommLines() )
+    dc.DrawBitmap( commImage, 0, 0, true );
+  drawZone->Refresh();
+
+  event.Skip();
 }
 

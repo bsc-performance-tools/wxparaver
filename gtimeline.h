@@ -89,7 +89,7 @@ class Window;
 #define ID_CHECK_DRAWLINES 10054
 #define ID_CHECK_DRAWFLAGS 10055
 #define ID_CHECK_FUNCTIONLINECOLOR 10056
-#define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxFULL_REPAINT_ON_RESIZE
+#define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
 #define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
 #define SYMBOL_GTIMELINE_SIZE wxSize(400, 300)
@@ -162,6 +162,9 @@ public:
 
   /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowMotion( wxMouseEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLEDWINDOW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
@@ -298,6 +301,9 @@ public:
 
   wxBitmap GetImgFlag() const { return imgFlag ; }
   void SetImgFlag(wxBitmap value) { imgFlag = value ; }
+
+  bool GetEscapePressed() const { return escapePressed ; }
+  void SetEscapePressed(bool value) { escapePressed = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -462,6 +468,7 @@ private:
   wxColour backgroundColour;
   wxColour logicalColour;
   wxBitmap imgFlag;
+  bool escapePressed;
 ////@end gTimeline member variables
 
   wxWindow *parent;

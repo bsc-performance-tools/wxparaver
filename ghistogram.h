@@ -143,6 +143,9 @@ public:
   /// wxEVT_CONTEXT_MENU event handler for ID_ZOOMHISTO
   void OnZoomContextMenu( wxContextMenuEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_ZOOMHISTO
+  void OnZoomHistoKeyDown( wxKeyEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_ZOOMHISTO
   void OnZoomhistoUpdate( wxUpdateUIEvent& event );
 
@@ -267,6 +270,9 @@ public:
   SelectionManagement<THistogramColumn,int> GetColumnSelection() const { return columnSelection ; }
   void SetColumnSelection(SelectionManagement<THistogramColumn,int> value) { columnSelection = value ; }
 
+  bool GetEscapePressed() const { return escapePressed ; }
+  void SetEscapePressed(bool value) { escapePressed = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -353,6 +359,7 @@ private:
   bool zoomDragging;
   vector<TObjectOrder> selectedRows;
   SelectionManagement<THistogramColumn,int> columnSelection;
+  bool escapePressed;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
   HistogramProxy::TZoomInfo zoomRow;
