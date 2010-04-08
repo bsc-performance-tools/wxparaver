@@ -256,8 +256,19 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     else if ( property == STR_OBJECTS )
     {
       vector< bool > auxRows;
-      timeline->GetMyWindow()->getSelectedRows( timeline->GetMyWindow()->getLevel(), auxRows, true );
-      whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
+      int lastLevel;
+      if( whichTimeline->GetMyWindow()->getTrace()->existResourceInfo() && 
+          timeline->GetMyWindow()->getTrace()->existResourceInfo() )
+        lastLevel = CPU;
+      else
+        lastLevel = THREAD;
+      for( int iLevel = APPLICATION; iLevel <= lastLevel; ++iLevel )
+      {
+        if( iLevel == SYSTEM )
+          continue;
+        timeline->GetMyWindow()->getSelectedRows( (TWindowLevel)iLevel, auxRows, true );
+        whichTimeline->GetMyWindow()->setSelectedRows( (TWindowLevel)iLevel, auxRows );
+      }
       whichTimeline->GetMyWindow()->addZoom( whichTimeline->GetMyWindow()->getWindowBeginTime(),
                                              whichTimeline->GetMyWindow()->getWindowEndTime(),
                                              timeline->GetMyWindow()->getZoomSecondDimension().first,
