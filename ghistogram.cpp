@@ -2288,6 +2288,46 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   
   if( openWindow != NULL )
   {
+    vector<bool> selectedRows;
+    THistogramColumn iPlane;
+    bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+    tmpControlWindow->GetMyWindow()->getSelectedRows( tmpControlWindow->GetMyWindow()->getLevel(), selectedRows );
+    if( commStat )
+      iPlane = myHistogram->getCommSelectedPlane();
+    else
+      iPlane = myHistogram->getSelectedPlane();
+    
+    for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+    {
+      if( commStat )
+        myHistogram->setCommFirstCell( iCol, iPlane );
+      else
+        myHistogram->setFirstCell( iCol, iPlane );
+    }
+
+    for( TObjectOrder iRow = 0; iRow < selectedRows.size(); ++iRow )
+    {
+      bool rowWithValues = false;
+      for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      {
+        if( ( !commStat && !myHistogram->endCell( iCol, iPlane ) &&
+              myHistogram->getCurrentRow( iCol, iPlane ) == iRow )
+            ||
+            ( commStat && !myHistogram->endCommCell( iCol, iPlane ) && 
+              myHistogram->getCommCurrentRow( iCol, iPlane ) == iRow )
+          )
+        {
+          rowWithValues = true;
+          if( commStat )
+            myHistogram->setCommNextCell( iCol, iPlane );
+          else
+            myHistogram->setNextCell( iCol, iPlane );
+        }
+      }
+      selectedRows[ iRow ] = rowWithValues && selectedRows[ iRow ];
+    }
+    openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), selectedRows );
+
     openWindow->GetMyWindow()->setUsedByHistogram( false );
     openWindow->GetMyWindow()->setShowWindow( true );
   }
