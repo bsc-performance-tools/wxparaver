@@ -127,6 +127,8 @@ END_EVENT_TABLE()
 static char flag[20] = { 0xc7, 0x01, 0x7d, 0x03, 0xab, 0x02, 0x55, 0x03, 0xab, 0x02, 0xd7, 0x03,
                          0x79, 0x02, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00 };
 
+//static char flag[5] = { 0x1f, 0x11, 0x1f, 0x01, 0x01 };
+
 /*!
  * gTimeline constructors
  */
@@ -426,6 +428,9 @@ void gTimeline::redraw()
   rgb rgbPhysicalColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelinePhysicalCommunications();
   physicalColour = wxColour( rgbPhysicalColour.red, rgbPhysicalColour.green ,rgbPhysicalColour.blue );
 
+  logicalPen = wxPen( logicalColour );
+  physicalPen = wxPen( physicalColour );
+
   imgFlag = wxBitmap( flag, 10, 10 );
 
   wxString winTitle = GetTitle();
@@ -470,7 +475,7 @@ void gTimeline::redraw()
   bufferDraw.SetBackground( wxBrush( backgroundColour ) );
   bufferDraw.Clear();
   
-#ifndef WIN32
+#ifdef __WXGTK__
   // Paint blank image while redrawing
   wxClientDC dc( drawZone );
   dc.DrawBitmap( bufferImage, 0, 0, false );
@@ -481,7 +486,15 @@ void gTimeline::redraw()
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
 
   drawCaution = false;
-  
+
+  eventdc.SetTextForeground( *wxGREEN );
+  eventdc.SetTextBackground( backgroundColour );
+  eventdc.SetPen( *wxGREEN_PEN );
+  eventdc.SetBrush( *wxGREEN_BRUSH );
+  eventdc.SetBackgroundMode( wxTRANSPARENT );
+  eventmaskdc.SetPen( *wxWHITE_PEN );
+  eventmaskdc.SetBrush( *wxWHITE_BRUSH );
+
   // Drawmode: Group objects with same wxCoord in objectPosList
   vector<TObjectOrder>::iterator endIt = selectedSet.end();
   for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != endIt; ++obj )
@@ -761,33 +774,39 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
   TObjectOrder row = 0;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-
+  wxCoord rowPos = 0;
+  
   RecordList::iterator it = records->begin();
+  if( it != records->end() )
+  {
+    row = it->getOrder();
+    rowPos = objectPosList[ row ];
+  }
+  
   step = ( 1 / step );
 
   while( it != records->end() && it->getTime() < from )
     ++it;
   while( it != records->end() && it->getTime() <= to )
   {
-    if( it->getType() & EVENT )
-    {
+    TRecordType recType = it->getType();
+    
+    if( recType & EVENT )
       existEvents = true;
-      row = it->getOrder();
-    }
     else
     {
       TObjectOrder partnerObject = it->getCommPartnerObject();
-
-      if( ( it->getType() & COMM ) && 
+      
+      if( ( recType & COMM ) && 
           partnerObject >= beginRow && partnerObject <= endRow && selected[ partnerObject ] &&
-          ( ( it->getType() & RECV ) ||
-            ( ( it->getType() & SEND ) && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
+          ( ( recType & RECV ) ||
+            ( ( recType & SEND ) && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
         )
       {
-        if( it->getType() & LOG )
-          commdc.SetPen( wxPen( logicalColour ) );
-        else if( it->getType() & PHY )
-          commdc.SetPen(  wxPen( physicalColour ) );
+        if( recType & LOG )
+          commdc.SetPen( logicalPen );
+        else if( recType & PHY )
+          commdc.SetPen(  physicalPen );
         wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
         posPartner += objectAxisPos;
         if( posPartner > 10000 )
@@ -795,9 +814,9 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
         if( posPartner < -10000 )
           posPartner = -10000;
         commdc.DrawLine( posPartner, objectPosList[ partnerObject ],
-                         pos, objectPosList[ it->getOrder() ] );
+                         pos, rowPos );
         commmaskdc.DrawLine( posPartner, objectPosList[ partnerObject ],
-                             pos, objectPosList[ it->getOrder() ] );
+                             pos, rowPos );
       }
     }
     ++it;
@@ -805,13 +824,17 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
 
   if( existEvents )
   {
-    eventdc.SetTextForeground( *wxGREEN );
-    eventdc.SetTextBackground( backgroundColour );
-    eventdc.SetBackgroundMode( wxTRANSPARENT );
-    eventdc.DrawBitmap( imgFlag, pos, objectPosList[ row ] - 10, true );
-    eventmaskdc.SetPen( *wxWHITE_PEN );
-    eventmaskdc.SetBrush( *wxWHITE_BRUSH );
-    eventmaskdc.DrawRectangle( pos, objectPosList[ row ] - 10, 9, 9 );
+    eventdc.DrawLine( pos, rowPos - 6, pos, rowPos );
+    eventdc.DrawLine( pos+1, rowPos - 6, pos+1, rowPos-3 );
+    eventdc.DrawLine( pos+2, rowPos - 6, pos+2, rowPos-3 );
+    eventdc.DrawLine( pos+3, rowPos - 6, pos+3, rowPos-3 );
+    eventdc.DrawLine( pos+4, rowPos - 6, pos+4, rowPos-3 );
+
+    eventmaskdc.DrawLine( pos, rowPos - 6, pos, rowPos );
+    eventmaskdc.DrawLine( pos+1, rowPos - 6, pos+1, rowPos-3 );
+    eventmaskdc.DrawLine( pos+2, rowPos - 6, pos+2, rowPos-3 );
+    eventmaskdc.DrawLine( pos+3, rowPos - 6, pos+3, rowPos-3 );
+    eventmaskdc.DrawLine( pos+4, rowPos - 6, pos+4, rowPos-3 );
   }
 
   records->erase( records->begin(), it );

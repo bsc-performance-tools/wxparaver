@@ -47,6 +47,7 @@
 #include "wx/dcmemory.h"
 #include "wx/scrolwin.h"
 #include "wx/timer.h"
+#include "wx/icon.h"
 
 #include "paraverkerneltypes.h"
 #include "recordlist.h"
@@ -305,6 +306,12 @@ public:
   bool GetEscapePressed() const { return escapePressed ; }
   void SetEscapePressed(bool value) { escapePressed = value ; }
 
+  wxPen GetLogicalPen() const { return logicalPen ; }
+  void SetLogicalPen(wxPen value) { logicalPen = value ; }
+
+  wxPen GetPhysicalPen() const { return physicalPen ; }
+  void SetPhysicalPen(wxPen value) { physicalPen = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -469,6 +476,8 @@ private:
   wxColour logicalColour;
   wxBitmap imgFlag;
   bool escapePressed;
+  wxPen logicalPen;
+  wxPen physicalPen;
 ////@end gTimeline member variables
 
   wxWindow *parent;
