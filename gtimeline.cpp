@@ -506,8 +506,37 @@ void gTimeline::redraw()
       ++obj;
       lastObj = *obj;
     }
-    drawRow( bufferDraw, commdc, commmaskdc, eventdc, eventmaskdc,
-             firstObj, lastObj, selectedSet, selected );
+    eventsToDraw.clear();
+    commsToDraw.clear();
+    drawRow( bufferDraw, firstObj, lastObj, selectedSet, selected );
+
+    wxCoord rowPos = objectPosList[ firstObj ];
+    for( hash_set<wxCoord>::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
+    {
+      eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
+      eventdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
+      eventdc.DrawLine( *it+2, rowPos - 6, *it+2, rowPos-3 );
+      eventdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
+      eventdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
+
+      eventmaskdc.DrawLine( *it, rowPos - 6, *it, rowPos );
+      eventmaskdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
+      eventmaskdc.DrawLine( *it+2, rowPos - 6, *it+2, rowPos-3 );
+      eventmaskdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
+      eventmaskdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
+    }
+    
+    for( hash_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+    {
+      if( it->recType & LOG )
+        commdc.SetPen( logicalPen );
+      else if( it->recType & PHY )
+        commdc.SetPen(  physicalPen );
+      commdc.DrawLine( it->toTime, it->toRow,
+                       it->fromTime, rowPos );
+      commmaskdc.DrawLine( it->toTime, it->toRow,
+                           it->fromTime, rowPos );
+    }
   }
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
@@ -651,9 +680,7 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 }
 
 
-void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
-                         wxMemoryDC& eventdc, wxDC& eventmaskdc,
-                         TObjectOrder firstRow, TObjectOrder lastRow,
+void gTimeline::drawRow( wxDC& dc, TObjectOrder firstRow, TObjectOrder lastRow,
                          vector<TObjectOrder>& selectedSet, vector<bool>& selected )
 {
   float magnify = float( GetPixelSize() );
@@ -700,8 +727,7 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
 
       RecordList *rl = myWindow->getRecordList( *row );
       if( rl != NULL )
-        drawRecords( commdc, commmaskdc, eventdc, eventmaskdc,
-                     rl, currentTime - timeStep, currentTime, timeStep / magnify, timePos, selected );
+        drawRecords( rl, currentTime - timeStep, currentTime, timeStep / magnify, timePos, selected );
     }
     TSemanticValue valueToDraw = DrawMode::selectValue( rowValues, myWindow->getDrawModeObject() );
     if( myWindow->getDrawFunctionLineColor() )
@@ -765,23 +791,14 @@ void gTimeline::drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
 }
 
 
-void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
-                             wxMemoryDC& eventdc, wxDC& eventmaskdc,
-                             RecordList *records,
+void gTimeline::drawRecords( RecordList *records,
                              TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected )
 {
   bool existEvents = false;
-  TObjectOrder row = 0;
   TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-  wxCoord rowPos = 0;
   
   RecordList::iterator it = records->begin();
-  if( it != records->end() )
-  {
-    row = it->getOrder();
-    rowPos = objectPosList[ row ];
-  }
   
   step = ( 1 / step );
 
@@ -803,39 +820,25 @@ void gTimeline::drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
             ( ( recType & SEND ) && it->getCommPartnerTime() > myWindow->getWindowEndTime() ) )
         )
       {
-        if( recType & LOG )
-          commdc.SetPen( logicalPen );
-        else if( recType & PHY )
-          commdc.SetPen(  physicalPen );
         wxCoord posPartner = (wxCoord)( ( it->getCommPartnerTime() - myWindow->getWindowBeginTime() ) * step );
         posPartner += objectAxisPos;
         if( posPartner > 10000 )
           posPartner = 10000;
         if( posPartner < -10000 )
           posPartner = -10000;
-        commdc.DrawLine( posPartner, objectPosList[ partnerObject ],
-                         pos, rowPos );
-        commmaskdc.DrawLine( posPartner, objectPosList[ partnerObject ],
-                             pos, rowPos );
+        commCoord tmpComm;
+        tmpComm.recType = recType;
+        tmpComm.fromTime = pos;
+        tmpComm.toTime = posPartner;
+        tmpComm.toRow = objectPosList[ partnerObject ];
+        commsToDraw.insert( tmpComm );
       }
     }
     ++it;
   }
 
   if( existEvents )
-  {
-    eventdc.DrawLine( pos, rowPos - 6, pos, rowPos );
-    eventdc.DrawLine( pos+1, rowPos - 6, pos+1, rowPos-3 );
-    eventdc.DrawLine( pos+2, rowPos - 6, pos+2, rowPos-3 );
-    eventdc.DrawLine( pos+3, rowPos - 6, pos+3, rowPos-3 );
-    eventdc.DrawLine( pos+4, rowPos - 6, pos+4, rowPos-3 );
-
-    eventmaskdc.DrawLine( pos, rowPos - 6, pos, rowPos );
-    eventmaskdc.DrawLine( pos+1, rowPos - 6, pos+1, rowPos-3 );
-    eventmaskdc.DrawLine( pos+2, rowPos - 6, pos+2, rowPos-3 );
-    eventmaskdc.DrawLine( pos+3, rowPos - 6, pos+3, rowPos-3 );
-    eventmaskdc.DrawLine( pos+4, rowPos - 6, pos+4, rowPos-3 );
-  }
+    eventsToDraw.insert( pos );
 
   records->erase( records->begin(), it );
 }

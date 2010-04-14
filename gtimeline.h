@@ -34,6 +34,12 @@
 /*!
  * Includes
  */
+#ifdef WIN32
+#include <hash_set>
+#else
+#include <ext/hash_set>
+#endif
+
 ////@begin includes
 #include "wx/frame.h"
 #include "wx/splitter.h"
@@ -97,6 +103,36 @@ class Window;
 #define SYMBOL_GTIMELINE_POSITION wxDefaultPosition
 ////@end control identifiers
 
+
+struct commCoord
+{
+  wxCoord fromTime;
+  wxCoord toTime;
+  wxCoord toRow;
+  TRecordType recType;
+  
+  bool operator==( const commCoord& b ) const
+  {
+    return fromTime == b.fromTime &&
+           toTime   == b.toTime   &&
+           toRow    == b.toRow    &&
+           recType  == b.recType;
+  }
+};
+
+struct hashCommCoord
+{
+  size_t operator()( const commCoord& x ) const
+  {
+    return ( ( x.fromTime + x.toTime + x.toRow ) * 100 ) + x.recType;
+  }
+};
+
+#ifdef WIN32
+using namespace stdext;
+#else
+using namespace __gnu_cxx;
+#endif
 
 /*!
  * gTimeline class declaration
@@ -312,6 +348,12 @@ public:
   wxPen GetPhysicalPen() const { return physicalPen ; }
   void SetPhysicalPen(wxPen value) { physicalPen = value ; }
 
+  hash_set<wxCoord> GetEventsToDraw() const { return eventsToDraw ; }
+  void SetEventsToDraw(hash_set<wxCoord> value) { eventsToDraw = value ; }
+
+  hash_set<commCoord,hashCommCoord> GetCommsToDraw() const { return commsToDraw ; }
+  void SetCommsToDraw(hash_set<commCoord,hashCommCoord> value) { commsToDraw = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -324,13 +366,9 @@ public:
 
   void redraw();
   void drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
-  void drawRow( wxDC& dc, wxMemoryDC& commdc, wxDC& commmaskdc,
-                wxMemoryDC& eventdc, wxDC& eventmaskdc,
-                TObjectOrder firstRow, TObjectOrder lastRow,
+  void drawRow( wxDC& dc, TObjectOrder firstRow, TObjectOrder lastRow,
                 vector<TObjectOrder>& selectedSet, vector<bool>& selected );
-  void drawRecords( wxMemoryDC& commdc, wxDC& commmaskdc,
-                    wxMemoryDC& eventdc, wxDC& eventmaskdc,
-                    RecordList *records,
+  void drawRecords( RecordList *records,
                     TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected );
 
   void drawCommunicationLines( bool draw );
@@ -478,6 +516,8 @@ private:
   bool escapePressed;
   wxPen logicalPen;
   wxPen physicalPen;
+  hash_set<wxCoord> eventsToDraw;
+  hash_set<commCoord,hashCommCoord> commsToDraw;
 ////@end gTimeline member variables
 
   wxWindow *parent;
