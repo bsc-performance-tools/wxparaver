@@ -824,7 +824,7 @@ void gTimeline::drawRecords( RecordList *records,
         posPartner += objectAxisPos;
         if( posPartner > 10000 )
           posPartner = 10000;
-        if( posPartner < -10000 )
+        else if( posPartner < -10000 )
           posPartner = -10000;
         commCoord tmpComm;
         tmpComm.recType = recType;
