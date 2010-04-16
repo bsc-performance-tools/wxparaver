@@ -44,6 +44,7 @@
 #include <sstream>
 #include "histogramdialog.h"
 #include "paraverconfig.h"
+#include "labelconstructor.h"
 // #include "histogram.h"
 
 // pREFERENCES
@@ -511,9 +512,12 @@ bool HistogramDialog::TransferDataFromWindow()
   timeRange.clear();
 
   TRecordTime auxBegin, auxEnd;
-  if ( txtBeginTime->GetValue().ToDouble( &tmp ) )
-    auxBegin = tmp;
-  else
+
+  bool done = LabelConstructor::getTimeValue( std::string( txtBeginTime->GetValue() ),
+                                              LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] )->getTimeUnit(),
+                                              ParaverConfig::getInstance()->getTimelinePrecision(),
+                                              auxBegin );
+  if ( !done )
   {
     auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
     if( radioAllTrace->GetValue() )
@@ -523,9 +527,11 @@ bool HistogramDialog::TransferDataFromWindow()
     errorMessage += _( "\tBegin Time : " ) + formatNumber( auxBegin ) + _( "\n" );
   }
 
-  if ( txtEndTime->GetValue().ToDouble( &tmp ) )
-    auxEnd = tmp;
-  else
+  done = LabelConstructor::getTimeValue( std::string( txtEndTime->GetValue() ),
+                                         LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] )->getTimeUnit(),
+                                         ParaverConfig::getInstance()->getTimelinePrecision(),
+                                         auxEnd );
+  if ( !done )
   {
     auxID  = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
     if( radioAllTrace->GetValue() )

@@ -731,16 +731,16 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == _( "Begin time" ) )
   {
     TTime tmpValue;
-    bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                currentTimeline->getTimeUnit(),
-                                                ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                tmpValue );
-
-    if (!done)
-      tmpValue = property->GetValue().GetDouble();
-
     if( currentTimeline != NULL )
     {
+      bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
+                                                  currentTimeline->getTimeUnit(),
+                                                  ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                  tmpValue );
+
+      if (!done)
+        tmpValue = property->GetValue().GetDouble();
+
       currentTimeline->setWindowBeginTime( currentTimeline->windowUnitsToTraceUnits( tmpValue ) );
 
       // modify current zoom directly
@@ -753,6 +753,14 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     }
     else if( currentHisto != NULL )
     {
+      bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
+                                                  currentHisto->getControlWindow()->getTimeUnit(),
+                                                  ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                  tmpValue );
+
+      if (!done)
+        tmpValue = property->GetValue().GetDouble();
+
       currentHisto->setWindowBeginTime( currentHisto->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
       currentHisto->setChanged( true );
       currentHisto->setRecalc( true );
@@ -761,16 +769,16 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == _( "End time" ) )
   {
     TTime tmpValue;
-    bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                currentTimeline->getTimeUnit(),
-                                                ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                tmpValue );
-
-    if (!done)
-      tmpValue = property->GetValue().GetDouble();
-
     if( currentTimeline != NULL )
     {
+      bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
+                                                  currentTimeline->getTimeUnit(),
+                                                  ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                  tmpValue );
+
+      if (!done)
+        tmpValue = property->GetValue().GetDouble();
+
       currentTimeline->setWindowEndTime( currentTimeline->windowUnitsToTraceUnits( tmpValue ) );
 
       // modify current zoom directly
@@ -782,6 +790,14 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     }
     else if( currentHisto != NULL )
     {
+      bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
+                                                  currentHisto->getControlWindow()->getTimeUnit(),
+                                                  ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                  tmpValue );
+
+      if (!done)
+        tmpValue = property->GetValue().GetDouble();
+
       currentHisto->setWindowEndTime( currentHisto->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
       currentHisto->setRecalc( true );
     }
