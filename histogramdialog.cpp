@@ -847,8 +847,17 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
   button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit );
   button3DTimelineAutoFit->Enable( false );
 
-  txtBeginTime->SetValue( formatNumber( timeRange[ WINDOW_RANGE ].first ) );
-  txtEndTime->SetValue( formatNumber( timeRange[ WINDOW_RANGE ].second ) );
+  txtBeginTime->SetValue(
+    wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].first ),
+                                                      current->getTimeUnit(),
+                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+  );
+
+  txtEndTime->SetValue(
+    wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].second ),
+                                                      current->getTimeUnit(),
+                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+  );
 
   return true;
 }
@@ -860,8 +869,19 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
 
 void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
 {
-  txtBeginTime->SetValue( formatNumber( timeRange[ WINDOW_RANGE ].first ) );
-  txtEndTime->SetValue( formatNumber( timeRange[ WINDOW_RANGE ].second ) );
+  Window *current = LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] );
+
+  txtBeginTime->SetValue(
+    wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].first ),
+                                                      current->getTimeUnit(),
+                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+  );
+
+  txtEndTime->SetValue(
+    wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].second ),
+                                                      current->getTimeUnit(),
+                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+  );
 }
 
 
@@ -871,8 +891,19 @@ void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
 
 void HistogramDialog::OnRadiobuttonAlltraceSelected( wxCommandEvent& event )
 {
-  txtBeginTime->SetValue( formatNumber( timeRange[ TRACE_RANGE ].first ) );
-  txtEndTime->SetValue( formatNumber( timeRange[ TRACE_RANGE ].second ) );
+  Window *current = LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] );
+
+  txtBeginTime->SetValue(
+    wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ TRACE_RANGE ].first ),
+                                                      current->getTimeUnit(),
+                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+  );
+
+  txtEndTime->SetValue(
+    wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ TRACE_RANGE ].second ),
+                                                      current->getTimeUnit(),
+                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+  );
 }
 
 
