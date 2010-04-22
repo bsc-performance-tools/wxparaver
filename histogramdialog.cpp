@@ -513,33 +513,36 @@ bool HistogramDialog::TransferDataFromWindow()
 
   TRecordTime auxBegin, auxEnd;
 
+  auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
   bool done = LabelConstructor::getTimeValue( std::string( txtBeginTime->GetValue() ),
-                                              LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] )->getTimeUnit(),
+                                              LoadedWindows::getInstance()->getWindow( auxID )->getTimeUnit(),
                                               ParaverConfig::getInstance()->getTimelinePrecision(),
                                               auxBegin );
   if ( !done )
   {
-    auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
     if( radioAllTrace->GetValue() )
       auxBegin = 0.0;
     else
       auxBegin = LoadedWindows::getInstance()->getWindow( auxID )->getWindowBeginTime();
     errorMessage += _( "\tBegin Time : " ) + formatNumber( auxBegin ) + _( "\n" );
   }
+  else
+    auxBegin = LoadedWindows::getInstance()->getWindow( auxID )->windowUnitsToTraceUnits( auxBegin );
 
   done = LabelConstructor::getTimeValue( std::string( txtEndTime->GetValue() ),
-                                         LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] )->getTimeUnit(),
+                                         LoadedWindows::getInstance()->getWindow( auxID )->getTimeUnit(),
                                          ParaverConfig::getInstance()->getTimelinePrecision(),
                                          auxEnd );
   if ( !done )
   {
-    auxID  = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
     if( radioAllTrace->GetValue() )
       auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->getTrace()->getEndTime();
     else
       auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->getWindowEndTime();
     errorMessage += _( "\tEnd Time : " ) + formatNumber( auxEnd ) + _( "\n" );
   }
+  else
+    auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->windowUnitsToTraceUnits( auxEnd );
 
   timeRange.push_back( make_pair( auxBegin, auxEnd ) );
 
