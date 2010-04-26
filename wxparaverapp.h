@@ -97,6 +97,8 @@ public:
 ////@end wxparaverApp member variables
 
     static paraverMain* mainWindow;
+    
+    wxLocale m_locale;
 };
 
 /*!

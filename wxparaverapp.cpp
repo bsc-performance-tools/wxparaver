@@ -98,6 +98,7 @@ void wxparaverApp::Init()
 {
 ////@begin wxparaverApp member initialisation
 ////@end wxparaverApp member initialisation
+  m_locale.Init();
 }
 
 /*!
