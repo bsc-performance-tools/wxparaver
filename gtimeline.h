@@ -118,8 +118,43 @@ struct commCoord
            toRow    == b.toRow    &&
            recType  == b.recType;
   }
+  
+#ifdef WIN32
+  bool operator<( const commCoord& b ) const
+  {
+    return true;
+  }
+
+  size_t hash() const {
+    return ( ( fromTime + toTime + toRow ) * 100 ) + recType;
+  }
+#endif
 };
 
+#ifdef WIN32
+  namespace stdext 
+  {
+    template<> class hash_compare<commCoord> 
+    {
+      public :
+        static const size_t bucket_size = 4;
+        static const size_t min_buckets = 8;
+        hash_compare() { }
+ 
+        size_t operator()(const commCoord &cc) const 
+        {
+          return cc.hash();
+        }
+ 
+        bool operator()(const commCoord &cc1, const commCoord &cc2) const
+        {
+          return (cc1 < cc2);
+        }
+    };
+  }
+#endif
+
+#ifndef WIN32
 struct hashCommCoord
 {
   size_t operator()( const commCoord& x ) const
@@ -127,6 +162,7 @@ struct hashCommCoord
     return ( ( x.fromTime + x.toTime + x.toRow ) * 100 ) + x.recType;
   }
 };
+#endif
 
 #ifdef WIN32
 using namespace stdext;
@@ -351,9 +387,6 @@ public:
   hash_set<wxCoord> GetEventsToDraw() const { return eventsToDraw ; }
   void SetEventsToDraw(hash_set<wxCoord> value) { eventsToDraw = value ; }
 
-  hash_set<commCoord,hashCommCoord> GetCommsToDraw() const { return commsToDraw ; }
-  void SetCommsToDraw(hash_set<commCoord,hashCommCoord> value) { commsToDraw = value ; }
-
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -517,11 +550,16 @@ private:
   wxPen logicalPen;
   wxPen physicalPen;
   hash_set<wxCoord> eventsToDraw;
-  hash_set<commCoord,hashCommCoord> commsToDraw;
 ////@end gTimeline member variables
 
-  wxWindow *parent;
+#ifdef WIN32
+  hash_set<commCoord> commsToDraw;
+#else
+  hash_set<commCoord,hashCommCoord> commsToDraw;
+#endif
 
+  wxWindow *parent;
+  
   static const wxCoord drawBorder = 5;
 
   vector< pair< TWWLine, wxString > > whatWhereLines;

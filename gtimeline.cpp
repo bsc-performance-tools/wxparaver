@@ -525,8 +525,12 @@ void gTimeline::redraw()
       eventmaskdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
       eventmaskdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
     }
-    
+
+#ifdef WIN32
+    for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+#else
     for( hash_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+#endif
     {
       if( it->recType & LOG )
         commdc.SetPen( logicalPen );
