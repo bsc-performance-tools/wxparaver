@@ -553,14 +553,14 @@ bool paraverMain::DoLoadCFG( const string &path )
 
       for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
       {
-        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
+        wxPoint tmpPos( (*it)->getPosX(), (*it)->getPosY() );
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ), tmpPos );
         tmpHisto->SetHistogram( *it );
 
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );
 
-        tmpHisto->SetClientSize( wxRect( (*it)->getPosX(), (*it)->getPosY(),
-                                         (*it)->getWidth(), (*it)->getHeight() ) );
+        tmpHisto->SetClientSize( wxSize( (*it)->getWidth(), (*it)->getHeight() ) );
         if( (*it)->getShowWindow() )
         {
           tmpHisto->Show();

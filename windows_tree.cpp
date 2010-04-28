@@ -232,11 +232,11 @@ void BuildTree( paraverMain *parent,
   string composedName = window->getName() + " @ " +
                         window->getTrace()->getTraceName();
 
-  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ) );
+  wxPoint tmpPos( window->getPosX(), window->getPosY() );
+  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), tmpPos );
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
-  tmpTimeline->SetClientSize( wxRect( window->getPosX(), window->getPosY(),
-                                      window->getWidth(), window->getHeight() ) );
+  tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
 
   if( window->getShowWindow() )
   {
