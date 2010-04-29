@@ -1755,10 +1755,13 @@ void gHistogram::OnToolhorizvertUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnMotion( wxMouseEvent& event )
 {
+  if( !ready )
+    return;
+
   lastPosZoomX = event.GetX();
   lastPosZoomY = event.GetY();
-  if( ready )
-    timerZoom->Start( 100, true );
+
+  timerZoom->Start( 100, true );
 
   if( zoomDragging )
   {
