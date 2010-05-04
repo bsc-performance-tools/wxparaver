@@ -514,7 +514,7 @@ bool HistogramDialog::TransferDataFromWindow()
   TRecordTime auxBegin, auxEnd;
 
   auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
-  bool done = LabelConstructor::getTimeValue( std::string( txtBeginTime->GetValue() ),
+  bool done = LabelConstructor::getTimeValue( std::string( txtBeginTime->GetValue().mb_str() ),
                                               LoadedWindows::getInstance()->getWindow( auxID )->getTimeUnit(),
                                               ParaverConfig::getInstance()->getTimelinePrecision(),
                                               auxBegin );
@@ -529,7 +529,7 @@ bool HistogramDialog::TransferDataFromWindow()
   else
     auxBegin = LoadedWindows::getInstance()->getWindow( auxID )->windowUnitsToTraceUnits( auxBegin );
 
-  done = LabelConstructor::getTimeValue( std::string( txtEndTime->GetValue() ),
+  done = LabelConstructor::getTimeValue( std::string( txtEndTime->GetValue().mb_str() ),
                                          LoadedWindows::getInstance()->getWindow( auxID )->getTimeUnit(),
                                          ParaverConfig::getInstance()->getTimelinePrecision(),
                                          auxEnd );

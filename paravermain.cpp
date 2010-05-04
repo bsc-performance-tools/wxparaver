@@ -1712,8 +1712,8 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
       wxString path = dialog.GetPath();
       CFGLoadedBefore = true;
       CFGPath = wxFileName( path ).GetPath();
-      if( !path.EndsWith( ".cfg" ) )
-        path += ".cfg";
+      if( !path.EndsWith( _( ".cfg" ) ) )
+        path += _( ".cfg" );
       CFGLoader::saveCFG( std::string( path.mb_str() ), options, timelines, histograms );
       previousCFGs->add( std::string( path.mb_str() ) );
     }

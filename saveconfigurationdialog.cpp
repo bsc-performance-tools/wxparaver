@@ -275,12 +275,12 @@ bool SaveConfigurationDialog::TransferDataToWindow()
 {
   wxArrayString items;
   for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
-    items.Add( wxString::FromAscii( (*it)->getName().c_str() ) + " @ " + (*it)->getTrace()->getTraceName().c_str() );
+    items.Add( wxString::FromAscii( (*it)->getName().c_str() ) + _( " @ " ) + wxString::FromAscii( (*it)->getTrace()->getTraceName().c_str() ) );
   listTimelines->InsertItems( items, 0 );
 
   items.Clear();
   for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
-    items.Add( wxString::FromAscii( (*it)->getName().c_str() ) + " @ " + (*it)->getTrace()->getTraceName().c_str() );
+    items.Add( wxString::FromAscii( (*it)->getName().c_str() ) + _( " @ " ) + wxString::FromAscii( (*it)->getTrace()->getTraceName().c_str() ) );
   listHistograms->InsertItems( items, 0 );
 
   optRelativeBegin->SetValue( options.windowBeginTimeRelative );
