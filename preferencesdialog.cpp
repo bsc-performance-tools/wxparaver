@@ -70,6 +70,8 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
 ////@begin PreferencesDialog event table entries
   EVT_COLOURPICKER_CHANGED( ID_COLOURPICKER_BACKGROUND, PreferencesDialog::OnColourpickerBackgroundColourPickerChanged )
 
+  EVT_UPDATE_UI( ID_COLOURPICKER_ZERO, PreferencesDialog::OnColourpickerZeroUpdate )
+
   EVT_BUTTON( ID_BUTTON_DEFAULT_TIMELINE, PreferencesDialog::OnButtonDefaultTimelineClick )
 
   EVT_BUTTON( ID_BUTTON_DEFAULT_GRADIENT, PreferencesDialog::OnButtonDefaultGradientClick )
@@ -178,6 +180,7 @@ void PreferencesDialog::Init()
   histogramDrawmodeSemantic = true;
   histogramAutofit3DScale = true;
   histogramLabelsColor = false;
+  colorUseZero = false;
   checkGlobalFillStateGaps = NULL;
   dirPickerTrace = NULL;
   dirPickerCFG = NULL;
@@ -222,6 +225,8 @@ void PreferencesDialog::Init()
   choiceHistogramSaveTextFormat = NULL;
   colourPickerBackground = NULL;
   colourPickerAxis = NULL;
+  checkZero = NULL;
+  colourPickerZero = NULL;
   colourPickerLogical = NULL;
   colourPickerPhysical = NULL;
   colourPickerGradientBegin = NULL;
@@ -741,96 +746,109 @@ void PreferencesDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer118 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer111->Add(itemBoxSizer118, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText119 = new wxStaticText( itemPanel109, wxID_STATIC, _("Logical comms."), wxDefaultPosition, wxDefaultSize, 0 );
+  checkZero = new wxCheckBox( itemPanel109, wxID_STATIC, _("Semantic zero"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkZero->SetValue(false);
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText119->SetToolTip(_("Color used to draw logical communications in timelines."));
-  itemBoxSizer118->Add(itemStaticText119, 1, wxALIGN_CENTER_VERTICAL, 5);
+    checkZero->SetToolTip(_("Color used for semantic zero values"));
+  itemBoxSizer118->Add(checkZero, 1, wxALIGN_CENTER_VERTICAL, 5);
+
+  colourPickerZero = new wxColourPickerCtrl( itemPanel109, ID_COLOURPICKER_ZERO, wxColour(0, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  if (PreferencesDialog::ShowToolTips())
+    colourPickerZero->SetToolTip(_("Color used for semantic zero values"));
+  itemBoxSizer118->Add(colourPickerZero, 2, wxALIGN_CENTER_VERTICAL, 5);
+
+  wxBoxSizer* itemBoxSizer121 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer111->Add(itemBoxSizer121, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText122 = new wxStaticText( itemPanel109, wxID_STATIC, _("Logical comms."), wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    itemStaticText122->SetToolTip(_("Color used to draw logical communications in timelines."));
+  itemBoxSizer121->Add(itemStaticText122, 1, wxALIGN_CENTER_VERTICAL, 5);
 
   colourPickerLogical = new wxColourPickerCtrl( itemPanel109, ID_COLOURPICKER_LOGICAL, wxColour(255, 255, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerLogical->SetToolTip(_("Color used to draw logical communications in timelines."));
-  itemBoxSizer118->Add(colourPickerLogical, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer121->Add(colourPickerLogical, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer121 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer111->Add(itemBoxSizer121, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText122 = new wxStaticText( itemPanel109, wxID_STATIC, _("Physical comms."), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer124 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer111->Add(itemBoxSizer124, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText125 = new wxStaticText( itemPanel109, wxID_STATIC, _("Physical comms."), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText122->SetToolTip(_("Color used to draw physical communications in timelines."));
-  itemBoxSizer121->Add(itemStaticText122, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText125->SetToolTip(_("Color used to draw physical communications in timelines."));
+  itemBoxSizer124->Add(itemStaticText125, 1, wxALIGN_CENTER_VERTICAL, 5);
 
   colourPickerPhysical = new wxColourPickerCtrl( itemPanel109, ID_COLOURPICKER_PHYSICAL, wxColour(255, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerPhysical->SetToolTip(_("Color used to draw physical communications in timelines."));
-  itemBoxSizer121->Add(colourPickerPhysical, 2, wxALIGN_CENTER_VERTICAL|wxTOP, 5);
+  itemBoxSizer124->Add(colourPickerPhysical, 2, wxALIGN_CENTER_VERTICAL|wxTOP, 5);
 
-  wxButton* itemButton124 = new wxButton( itemPanel109, ID_BUTTON_DEFAULT_TIMELINE, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxButton* itemButton127 = new wxButton( itemPanel109, ID_BUTTON_DEFAULT_TIMELINE, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemButton124->SetToolTip(_("Restores predefined colors."));
-  itemStaticBoxSizer111->Add(itemButton124, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+    itemButton127->SetToolTip(_("Restores predefined colors."));
+  itemStaticBoxSizer111->Add(itemButton127, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
-  wxStaticBox* itemStaticBoxSizer125Static = new wxStaticBox(itemPanel109, wxID_ANY, _("  Gradient  "));
-  wxStaticBoxSizer* itemStaticBoxSizer125 = new wxStaticBoxSizer(itemStaticBoxSizer125Static, wxVERTICAL);
-  itemBoxSizer110->Add(itemStaticBoxSizer125, 1, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer126 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer125->Add(itemBoxSizer126, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText127 = new wxStaticText( itemPanel109, wxID_STATIC, _("Begin"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer128Static = new wxStaticBox(itemPanel109, wxID_ANY, _("  Gradient  "));
+  wxStaticBoxSizer* itemStaticBoxSizer128 = new wxStaticBoxSizer(itemStaticBoxSizer128Static, wxVERTICAL);
+  itemBoxSizer110->Add(itemStaticBoxSizer128, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer129 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer128->Add(itemBoxSizer129, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText130 = new wxStaticText( itemPanel109, wxID_STATIC, _("Begin"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText127->SetToolTip(_("Base color used to represent semantic values when gradient is selected."));
-  itemBoxSizer126->Add(itemStaticText127, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText130->SetToolTip(_("Base color used to represent semantic values when gradient is selected."));
+  itemBoxSizer129->Add(itemStaticText130, 1, wxALIGN_CENTER_VERTICAL, 5);
 
   colourPickerGradientBegin = new wxColourPickerCtrl( itemPanel109, ID_COLOURPICKER_GRADBEGIN, wxColour(0, 255, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerGradientBegin->SetToolTip(_("Base color used to represent semantic values when gradient is selected."));
-  itemBoxSizer126->Add(colourPickerGradientBegin, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer129->Add(colourPickerGradientBegin, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer129 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer125->Add(itemBoxSizer129, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText130 = new wxStaticText( itemPanel109, wxID_STATIC, _("End"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer132 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer128->Add(itemBoxSizer132, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText133 = new wxStaticText( itemPanel109, wxID_STATIC, _("End"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText130->SetToolTip(_("Top color used to represent semantic values when gradient is selected."));
-  itemBoxSizer129->Add(itemStaticText130, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText133->SetToolTip(_("Top color used to represent semantic values when gradient is selected."));
+  itemBoxSizer132->Add(itemStaticText133, 1, wxALIGN_CENTER_VERTICAL, 5);
 
   colourPickerGradientEnd = new wxColourPickerCtrl( itemPanel109, ID_COLOURPICKER_GRADEND, wxColour(0, 0, 255), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerGradientEnd->SetToolTip(_("Top color used to represent semantic values when gradient is selected."));
-  itemBoxSizer129->Add(colourPickerGradientEnd, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer132->Add(colourPickerGradientEnd, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer132 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer125->Add(itemBoxSizer132, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText133 = new wxStaticText( itemPanel109, wxID_STATIC, _("Low outliers"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer135 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer128->Add(itemBoxSizer135, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText136 = new wxStaticText( itemPanel109, wxID_STATIC, _("Low outliers"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText133->SetToolTip(_("Any semantic outlier smaller than <Begin> will use this color."));
-  itemBoxSizer132->Add(itemStaticText133, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText136->SetToolTip(_("Any semantic outlier smaller than <Begin> will use this color."));
+  itemBoxSizer135->Add(itemStaticText136, 1, wxALIGN_CENTER_VERTICAL, 5);
 
   colourPickerGradientLow = new wxColourPickerCtrl( itemPanel109, ID_COLOURPICKER_GRADLOW, wxColour(207, 207, 68), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerGradientLow->SetToolTip(_("Any semantic outlier smaller than <Begin> will use this color."));
-  itemBoxSizer132->Add(colourPickerGradientLow, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer135->Add(colourPickerGradientLow, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer135 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer125->Add(itemBoxSizer135, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText136 = new wxStaticText( itemPanel109, wxID_STATIC, _("High outliers"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer138 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer128->Add(itemBoxSizer138, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText139 = new wxStaticText( itemPanel109, wxID_STATIC, _("High outliers"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText136->SetToolTip(_("Any semantic outlier greater than <End> will use this color."));
-  itemBoxSizer135->Add(itemStaticText136, 1, wxALIGN_CENTER_VERTICAL, 5);
+    itemStaticText139->SetToolTip(_("Any semantic outlier greater than <End> will use this color."));
+  itemBoxSizer138->Add(itemStaticText139, 1, wxALIGN_CENTER_VERTICAL, 5);
 
   colourPickerGradientTop = new wxColourPickerCtrl( itemPanel109, ID_COLOURPICKER_GRADTOP, wxColour(255, 146, 24), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerGradientTop->SetToolTip(_("Any semantic outlier greater than <End> will use this color."));
-  itemBoxSizer135->Add(colourPickerGradientTop, 2, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer138->Add(colourPickerGradientTop, 2, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxButton* itemButton138 = new wxButton( itemPanel109, ID_BUTTON_DEFAULT_GRADIENT, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxButton* itemButton141 = new wxButton( itemPanel109, ID_BUTTON_DEFAULT_GRADIENT, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemButton138->SetToolTip(_("Restores predefined colors."));
-  itemStaticBoxSizer125->Add(itemButton138, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+    itemButton141->SetToolTip(_("Restores predefined colors."));
+  itemStaticBoxSizer128->Add(itemButton141, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   GetBookCtrl()->AddPage(itemPanel109, _("Color"));
 
-  wxPanel* itemPanel139 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemPanel139->Show(false);
-  itemPanel139->Enable(false);
+  wxPanel* itemPanel142 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemPanel142->Show(false);
+  itemPanel142->Enable(false);
 
-  GetBookCtrl()->AddPage(itemPanel139, _("Filters"));
+  GetBookCtrl()->AddPage(itemPanel142, _("Filters"));
 
 ////@end PreferencesDialog content construction
 
@@ -1011,6 +1029,8 @@ bool PreferencesDialog::TransferDataToWindow()
   // COLORS
   colourPickerBackground->SetColour( RGBTowxColour( timelineColourBackground ) );
   colourPickerAxis->SetColour( RGBTowxColour( timelineColourAxis ) );
+  checkZero->SetValue( colorUseZero );
+  colourPickerZero->SetColour( RGBTowxColour( timelineColourZero ) );
   colourPickerLogical->SetColour( RGBTowxColour( timelineColourLogical ) );
   colourPickerPhysical->SetColour( RGBTowxColour( timelineColourPhysical ) );
 
@@ -1091,6 +1111,8 @@ bool PreferencesDialog::TransferDataFromWindow()
   // COLORS
   timelineColourBackground = wxColourToRGB( colourPickerBackground->GetColour() );
   timelineColourAxis       = wxColourToRGB( colourPickerAxis->GetColour() );
+  colorUseZero             = checkZero->IsChecked();
+  timelineColourZero       = wxColourToRGB( colourPickerZero->GetColour() );
   timelineColourLogical    = wxColourToRGB( colourPickerLogical->GetColour() );
   timelineColourPhysical   = wxColourToRGB( colourPickerPhysical->GetColour() );
 
@@ -1162,5 +1184,15 @@ void PreferencesDialog::OnColourpickerBackgroundColourPickerChanged( wxColourPic
   tmpBackground.blue  = 255 - tmpBackground.blue;
 
   colourPickerAxis->SetColour( RGBTowxColour( tmpBackground ) );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_COLOURPICKER_ZERO
+ */
+
+void PreferencesDialog::OnColourpickerZeroUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( checkZero->IsChecked() );
 }
 

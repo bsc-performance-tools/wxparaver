@@ -108,6 +108,7 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCES_COLOR 10086
 #define ID_COLOURPICKER_BACKGROUND 10002
 #define ID_COLOURPICKER_AXIS 10001
+#define ID_COLOURPICKER_ZERO 10104
 #define ID_COLOURPICKER_LOGICAL 10007
 #define ID_COLOURPICKER_PHYSICAL 10008
 #define ID_BUTTON_DEFAULT_TIMELINE 10087
@@ -157,6 +158,9 @@ public:
 
   /// wxEVT_COLOURPICKER_CHANGED event handler for ID_COLOURPICKER_BACKGROUND
   void OnColourpickerBackgroundColourPickerChanged( wxColourPickerEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_COLOURPICKER_ZERO
+  void OnColourpickerZeroUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DEFAULT_TIMELINE
   void OnButtonDefaultTimelineClick( wxCommandEvent& event );
@@ -327,6 +331,12 @@ public:
   bool GetHistogramLabelsColor() const { return histogramLabelsColor ; }
   void SetHistogramLabelsColor(bool value) { histogramLabelsColor = value ; }
 
+  bool GetColorUseZero() const { return colorUseZero ; }
+  void SetColorUseZero(bool value) { colorUseZero = value ; }
+
+  rgb GetTimelineColourZero() const { return timelineColourZero ; }
+  void SetTimelineColourZero(rgb value) { timelineColourZero = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -385,6 +395,8 @@ public:
   wxChoice* choiceHistogramSaveTextFormat;
   wxColourPickerCtrl* colourPickerBackground;
   wxColourPickerCtrl* colourPickerAxis;
+  wxCheckBox* checkZero;
+  wxColourPickerCtrl* colourPickerZero;
   wxColourPickerCtrl* colourPickerLogical;
   wxColourPickerCtrl* colourPickerPhysical;
   wxColourPickerCtrl* colourPickerGradientBegin;
@@ -445,6 +457,8 @@ private:
   bool histogramDrawmodeSemantic;
   bool histogramAutofit3DScale;
   bool histogramLabelsColor;
+  bool colorUseZero;
+  rgb timelineColourZero;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

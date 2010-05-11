@@ -2240,6 +2240,8 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   // COLORS
   preferences.SetTimelineColourBackground( paraverConfig->getColorsTimelineBackground() );
   preferences.SetTimelineColourAxis( paraverConfig->getColorsTimelineAxis() );
+  preferences.SetColorUseZero( paraverConfig->getColorsTimelineUseZero() );
+  preferences.SetTimelineColourZero( paraverConfig->getColorsTimelineColorZero() );
   preferences.SetTimelineColourLogical( paraverConfig->getColorsTimelineLogicalCommunications() );
   preferences.SetTimelineColourPhysical( paraverConfig->getColorsTimelinePhysicalCommunications() );
 
@@ -2311,6 +2313,8 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     // COLORS 
     paraverConfig->setColorsTimelineBackground( preferences.GetTimelineColourBackground() );
     paraverConfig->setColorsTimelineAxis( preferences.GetTimelineColourAxis() );
+    paraverConfig->setColorsTimelineUseZero( preferences.GetColorUseZero() );
+    paraverConfig->setColorsTimelineColorZero( preferences.GetTimelineColourZero() );
     paraverConfig->setColorsTimelineLogicalCommunications( preferences.GetTimelineColourLogical() );
     paraverConfig->setColorsTimelinePhysicalCommunications( preferences.GetTimelineColourPhysical() );
 
