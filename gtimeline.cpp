@@ -482,7 +482,12 @@ void gTimeline::redraw()
   drawZone->Update();
 #endif
   
-  drawAxis( bufferDraw, selectedSet );
+  if( !drawAxis( bufferDraw, selectedSet ) )
+  {
+    ready = true;
+    SetTitle( winTitle );
+    return;
+  }
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
 
   drawCaution = false;
@@ -588,7 +593,7 @@ void gTimeline::redraw()
 }
 
 
-void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
+bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 {
   // UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   UINT32 precision = 0;
@@ -607,6 +612,8 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   wxSize timeExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ),
                                                                                        myWindow->getTimeUnit(), precision ).c_str() ) );
   timeAxisPos = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
+  if( timeAxisPos + drawBorder + 1 > dc.GetSize().GetHeight() )
+    return false;
 
   // Get the text extent for the last object (probably the larger one)
   dc.SetFont( objectFont );
@@ -615,6 +622,8 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                                                                                            myWindow->getLevel(),
                                                                                            myWindow->getTrace() ).c_str() ) );
   objectAxisPos = drawBorder + objectExt.GetWidth() + drawBorder;
+  if( objectAxisPos + drawBorder + 1 > dc.GetSize().GetWidth() )
+    return false;
 
   // Draw axis lines
   dc.DrawLine( objectAxisPos, drawBorder,
@@ -681,6 +690,8 @@ void gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                                                                                      myWindow->getTimeUnit(), precision ).c_str() ) )
                .GetWidth() + drawBorder ),
                timeAxisPos + drawBorder );
+               
+  return true;
 }
 
 

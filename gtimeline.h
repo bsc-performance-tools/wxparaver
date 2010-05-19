@@ -398,7 +398,7 @@ public:
   static bool ShowToolTips();
 
   void redraw();
-  void drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
+  bool drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
   void drawRow( wxDC& dc, TObjectOrder firstRow, TObjectOrder lastRow,
                 vector<TObjectOrder>& selectedSet, vector<bool>& selected );
   void drawRecords( RecordList *records,
