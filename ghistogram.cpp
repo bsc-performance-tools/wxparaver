@@ -1181,6 +1181,11 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
 
 void gHistogram::OnIdle( wxIdleEvent& event )
 {
+//  if( myHistogram->getZoom() )
+    zoomHisto->SetFocus();
+//  else
+//    gridHisto->SetFocus();
+
   if( myHistogram->getDestroy() )
     return;
 
@@ -2507,6 +2512,18 @@ void gHistogram::OnToolLabelColorsUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
 {
+  if( event.ControlDown() && event.GetKeyCode() == (long) 'C' )
+  {
+    OnPopUpCopy();
+    return;
+  }
+  if( event.ControlDown() && event.GetKeyCode() == (long) 'V' )
+  {
+    if( gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
+      OnPopUpPasteSpecial();
+    return;
+  }
+
   if( zoomDragging && event.GetKeyCode() == WXK_ESCAPE )
   {
     escapePressed = true;
@@ -2535,4 +2552,8 @@ void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
     zoomHisto->SetCursor( wxNullCursor );
   }
 }
+
+
+
+
 

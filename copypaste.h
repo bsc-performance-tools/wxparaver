@@ -38,9 +38,9 @@ using namespace std;
 #include "gtimeline.h"
 #include "ghistogram.h"
 
-#define STR_COPY             "Copy"
+#define STR_COPY             "Copy\tCTRL+C"
 #define STR_PASTE            "Paste"
-#define STR_PASTE_SPECIAL    "Paste Special..."
+#define STR_PASTE_SPECIAL    "Paste Special...\tCTRL+V"
 #define STR_TIME             "Time"
 #define STR_SIZE             "Size"
 #define STR_OBJECTS          "Objects"

@@ -909,6 +909,8 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
+  drawZone->SetFocus();
+
   if( myWindow->getDestroy() )
     return;
 
@@ -2672,6 +2674,18 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
 void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 {
+  if( event.ControlDown() && event.GetKeyCode() == (long) 'C' )
+  {
+    OnPopUpCopy();
+    return;
+  }
+  if( event.ControlDown() && event.GetKeyCode() == (long) 'V' )
+  {
+    if( gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
+      OnPopUpPasteSpecial();
+    return;
+  }
+
   if( zooming && event.GetKeyCode() == WXK_ESCAPE )
   {
     escapePressed = true;
@@ -2698,4 +2712,6 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 
   event.Skip();
 }
+
+
 
