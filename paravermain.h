@@ -318,6 +318,9 @@ public:
   wxString GetCFGPath() const { return CFGPath ; }
   void SetCFGPath(wxString value) { CFGPath = value ; }
 
+  bool GetCanServeSignal() const { return canServeSignal ; }
+  void SetCanServeSignal(bool value) { canServeSignal = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -384,6 +387,7 @@ private:
   bool CFGLoadedBefore;
   wxString tracePath;
   wxString CFGPath;
+  bool canServeSignal;
 ////@end paraverMain member variables
 
   map< string, UINT32 > traceInstance;

@@ -341,6 +341,7 @@ void paraverMain::Init()
   numNewHistograms = 0;
   numNewDerived = 0;
   raiseCurrentWindow = true;
+  canServeSignal = true;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -431,6 +432,8 @@ bool paraverMain::DoLoadTrace( const string &path )
   Trace *tr = NULL;
   bool loaded = true;
   
+  canServeSignal = false;
+  
   map< string, UINT32 >::iterator it = traceInstance.find( path );
   if ( it == traceInstance.end() )
     traceInstance[ path ] = 0;
@@ -505,6 +508,8 @@ bool paraverMain::DoLoadTrace( const string &path )
   paraverMain::dialogProgress = NULL;
   delete progress;
 
+  canServeSignal = true;
+  
 #ifndef WIN32
   if ( sig1 || sig2 )
     OnSignal();
@@ -2530,6 +2535,8 @@ void paraverMain::OnCloseWindow( wxCloseEvent& event )
 void paraverMain::OnSignal( )
 {
   // PRECOND: sig1 XOR sig2 == true;
+  if( !canServeSignal )
+    return;
 
   bool mySig1 = sig1;
 
