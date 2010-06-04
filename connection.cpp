@@ -45,6 +45,14 @@ wxConnectionBase *stServer::OnAcceptConnection( const wxString& topic )
 {
   if( topic.Lower() == wxT( "wxparaver" ) )
   {
+    wxWindowList::Node *node = wxTopLevelWindows.GetFirst();
+    while( node )
+    {
+      wxDialog *dialog = wxDynamicCast( node->GetData(), wxDialog );
+      while( dialog && dialog->IsModal() )
+        wxMilliSleep( 100 );
+      node = node->GetNext();
+    }
     return new stConnection();
   }
   else

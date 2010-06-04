@@ -1608,7 +1608,10 @@ void paraverMain::OnIdle( wxIdleEvent& event )
       string fileStr = loadFilesQueue.front();
       loadFilesQueue.pop();
       if( fileStr.substr( fileStr.length() - 3 ) == "cfg" )
-        DoLoadCFG( fileStr );
+      {
+        if( loadedTraces.size() > 0 )
+          DoLoadCFG( fileStr );
+      }
       else
         DoLoadTrace( fileStr );
     }
