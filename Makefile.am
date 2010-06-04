@@ -1,7 +1,9 @@
 
 bin_PROGRAMS = wxparaver
 
-wxparaver_SOURCES = copypaste.cpp \
+wxparaver_SOURCES = connection.cpp \
+                    connection.h \
+                    copypaste.cpp \
                     copypaste.h \
                     derivedtimelinedialog.cpp \
                     derivedtimelinedialog.h \
