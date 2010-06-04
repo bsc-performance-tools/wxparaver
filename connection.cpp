@@ -45,14 +45,14 @@ wxConnectionBase *stServer::OnAcceptConnection( const wxString& topic )
 {
   if( topic.Lower() == wxT( "wxparaver" ) )
   {
-    wxWindowList::Node *node = wxTopLevelWindows.GetFirst();
+/*    wxWindowList::Node *node = wxTopLevelWindows.GetFirst();
     while( node )
     {
       wxDialog *dialog = wxDynamicCast( node->GetData(), wxDialog );
       while( dialog && dialog->IsModal() )
         wxMilliSleep( 100 );
       node = node->GetNext();
-    }
+    }*/
     return new stConnection();
   }
   else
@@ -69,6 +69,14 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   {
     if( wxparaverApp::mainWindow )
       wxparaverApp::mainWindow->Raise();
+  }
+  else if( filename == wxT( "BEGIN" ) )
+  {
+    wxparaverApp::mainWindow->SetCanServeSignal( false );
+  }
+  else if( filename == wxT( "END" ) )
+  {
+    wxparaverApp::mainWindow->SetCanServeSignal( true );
   }
   else
   {

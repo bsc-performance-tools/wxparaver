@@ -202,11 +202,13 @@ bool wxparaverApp::OnInit()
                                                            wxT( "wxparaver" ) );
     if( connection )
     {
+      connection->Execute( wxT( "BEGIN" ) );
       for( int i = 1; i < argc; ++i )
       {
         if( argv[ i ][ 0 ] != '-' )
           connection->Execute( argv[ i ] );
       }
+      connection->Execute( wxT( "END" ) );
       connection->Disconnect();
       delete connection;
     }
