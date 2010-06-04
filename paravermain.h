@@ -36,6 +36,7 @@
  */
 
 #include <vector>
+#include <queue>
 #include <wx/progdlg.h>
 #include <wx/treectrl.h>
 #include <wx/cmdline.h>
@@ -321,6 +322,9 @@ public:
   bool GetCanServeSignal() const { return canServeSignal ; }
   void SetCanServeSignal(bool value) { canServeSignal = value ; }
 
+  queue<string> GetLoadFilesQueue() const { return loadFilesQueue ; }
+  void SetLoadFilesQueue(queue<string> value) { loadFilesQueue = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -344,6 +348,8 @@ public:
   void addActiveWindow( wxWindow *window );
   void removeActiveWindow( wxWindow *window );
 
+  void enqueueFile( string whichFile );
+  
 #ifndef WIN32
 //  void OnSignal( int sigusr );
   void OnSignal( );
@@ -388,6 +394,7 @@ private:
   wxString tracePath;
   wxString CFGPath;
   bool canServeSignal;
+  queue<string> loadFilesQueue;
 ////@end paraverMain member variables
 
   map< string, UINT32 > traceInstance;

@@ -45,12 +45,15 @@
 #include <signal.h>
 #include <stdio.h>
 
-
 #include "wxparaverapp.h"
+#include "connection.h"
 
 ////@begin XPM images
 ////@end XPM images
 
+#ifndef WIN32
+struct sigaction act;
+#endif
 
 /*!
  * Application instance implementation
@@ -86,7 +89,7 @@ END_EVENT_TABLE()
 
 wxparaverApp::wxparaverApp()
 {
-    Init();
+  Init();
 }
 
 
@@ -179,6 +182,44 @@ void wxparaverApp::presetUserSignals()
 
 bool wxparaverApp::OnInit()
 {
+  const wxString name = wxString::Format("wxparaver-%s", wxGetUserId().c_str());
+  m_checker = new wxSingleInstanceChecker(name);
+  if ( !m_checker->IsAnotherRunning() )
+  {
+    m_server = new stServer;
+    
+    if( !m_server->Create( wxT( "wxparaver" ) ) )
+      wxLogDebug( wxT( "Failed to create an IPC service." ) );
+  }
+  else
+  {
+    wxLogNull logNull;
+    
+    stClient *client = new stClient;
+    wxString hostName = wxT( "localhost" );
+    wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                           wxT( "wxparaver" ),
+                                                           wxT( "wxparaver" ) );
+    if( connection )
+    {
+      for( int i = 1; i < argc; ++i )
+      {
+        if( argv[ i ][ 0 ] != '-' )
+          connection->Execute( argv[ i ] );
+      }
+      connection->Disconnect();
+      delete connection;
+    }
+    else
+    {
+      wxMessageBox( wxT( "Sorry, the existing instance may be too busy to respond." ),
+                    wxT( "wxparaver" ), wxICON_INFORMATION|wxOK );
+    }
+    
+    delete client;
+    return false;
+  }
+
   wxCmdLineEntryDesc argumentsParseSyntax[] =
   {
     { wxCMD_LINE_SWITCH, 
@@ -242,6 +283,12 @@ bool wxparaverApp::OnInit()
 
 int wxparaverApp::OnExit()
 {
+  if( m_checker != NULL )
+    delete m_checker;
+    
+  if( m_server != NULL )
+    delete m_server;
+
 ////@begin wxparaverApp cleanup
 	return wxApp::OnExit();
 ////@end wxparaverApp cleanup

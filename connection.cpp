@@ -27,89 +27,45 @@
  | @version:     $Revision$
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
-#ifndef _WXPARAVERAPP_H_
-#define _WXPARAVERAPP_H_
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
 
-
-/*!
- * Includes
- */
-
-////@begin includes
-#include "wx/image.h"
-#include "paravermain.h"
-////@end includes
-#include <wx/snglinst.h>
-
-/*!
- * Forward declarations
- */
-
-////@begin forward declarations
-////@end forward declarations
-class stServer;
-
-/*!
- * Control identifiers
- */
-
-////@begin control identifiers
-////@end control identifiers
-
-/*!
- * wxparaverApp class declaration
- */
-
-class wxparaverApp: public wxApp
-{    
-    DECLARE_CLASS( wxparaverApp )
-    DECLARE_EVENT_TABLE()
-
-public:
-    /// Constructor
-    wxparaverApp();
-
-    void Init();
-
-    /// Initialises the application
-    virtual bool OnInit();
-
-    /// Called on exit
-    virtual int OnExit();
-
-#ifndef WIN32
-    // Signal handling
-    static void handler( int signum );
-    void presetUserSignals();
+#ifdef __BORLANDC__
+#pragma hdrstop
 #endif
 
-////@begin wxparaverApp event handler declarations
-
-////@end wxparaverApp event handler declarations
-
-////@begin wxparaverApp member function declarations
-
-////@end wxparaverApp member function declarations
-
-////@begin wxparaverApp member variables
-////@end wxparaverApp member variables
-
-    static paraverMain* mainWindow;
-    
-    wxLocale m_locale;
-    
-    wxSingleInstanceChecker *m_checker;
-    
-    stServer *m_server;
-};
-
-/*!
- * Application instance declaration 
- */
-
-////@begin declare app
-DECLARE_APP(wxparaverApp)
-////@end declare app
-
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
 #endif
-    // _WXPARAVERAPP_H_
+
+#include "connection.h"
+#include "wxparaverapp.h"
+
+wxConnectionBase *stServer::OnAcceptConnection( const wxString& topic )
+{
+  if( topic.Lower() == wxT( "wxparaver" ) )
+  {
+    return new stConnection();
+  }
+  else
+    return NULL;
+}
+
+bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
+                              wxChar *data,
+                              int WXUNUSED( size ),
+                              wxIPCFormat WXUNUSED( format ) )
+{
+  wxString filename( data );
+  if( filename.IsEmpty() )
+  {
+    if( wxparaverApp::mainWindow )
+      wxparaverApp::mainWindow->Raise();
+  }
+  else
+  {
+    wxparaverApp::mainWindow->enqueueFile( string( filename.mb_str() ) );
+  }
+  
+  return true;
+}

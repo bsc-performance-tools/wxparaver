@@ -1601,6 +1601,19 @@ void progressFunction( ProgressController *progress )
 
 void paraverMain::OnIdle( wxIdleEvent& event )
 {
+  if( canServeSignal )
+  {
+    while( !loadFilesQueue.empty() )
+    {
+      string fileStr = loadFilesQueue.front();
+      loadFilesQueue.pop();
+      if( fileStr.substr( fileStr.length() - 3 ) == "cfg" )
+        DoLoadCFG( fileStr );
+      else
+        DoLoadTrace( fileStr );
+    }
+  }
+  
   if( wxTheApp->IsActive() )
   {
     int iTrace = 0;
@@ -2695,3 +2708,8 @@ void paraverMain::OnToolCutTraceUpdate( wxUpdateUIEvent& event )
   event.Enable( false );
 }
 
+
+void paraverMain::enqueueFile( string whichFile )
+{
+  loadFilesQueue.push( whichFile );
+}

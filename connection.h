@@ -27,89 +27,27 @@
  | @version:     $Revision$
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
-#ifndef _WXPARAVERAPP_H_
-#define _WXPARAVERAPP_H_
+#include "wx/ipc.h"
 
-
-/*!
- * Includes
- */
-
-////@begin includes
-#include "wx/image.h"
-#include "paravermain.h"
-////@end includes
-#include <wx/snglinst.h>
-
-/*!
- * Forward declarations
- */
-
-////@begin forward declarations
-////@end forward declarations
-class stServer;
-
-/*!
- * Control identifiers
- */
-
-////@begin control identifiers
-////@end control identifiers
-
-/*!
- * wxparaverApp class declaration
- */
-
-class wxparaverApp: public wxApp
-{    
-    DECLARE_CLASS( wxparaverApp )
-    DECLARE_EVENT_TABLE()
-
-public:
-    /// Constructor
-    wxparaverApp();
-
-    void Init();
-
-    /// Initialises the application
-    virtual bool OnInit();
-
-    /// Called on exit
-    virtual int OnExit();
-
-#ifndef WIN32
-    // Signal handling
-    static void handler( int signum );
-    void presetUserSignals();
-#endif
-
-////@begin wxparaverApp event handler declarations
-
-////@end wxparaverApp event handler declarations
-
-////@begin wxparaverApp member function declarations
-
-////@end wxparaverApp member function declarations
-
-////@begin wxparaverApp member variables
-////@end wxparaverApp member variables
-
-    static paraverMain* mainWindow;
-    
-    wxLocale m_locale;
-    
-    wxSingleInstanceChecker *m_checker;
-    
-    stServer *m_server;
+class stServer: public wxServer
+{
+  public:
+    wxConnectionBase *OnAcceptConnection( const wxString& topic );
 };
 
-/*!
- * Application instance declaration 
- */
+class stConnection: public wxConnection
+{
+  public:
+    stConnection() {}
+    ~stConnection() {}
+    
+    bool OnExecute( const wxString& topic, wxChar *data, int size, wxIPCFormat format );
+};
 
-////@begin declare app
-DECLARE_APP(wxparaverApp)
-////@end declare app
+class stClient: public wxClient
+{
+  public:
+    stClient() {}
+    wxConnectionBase *OnMakeConnection() { return new stConnection; }
+};
 
-#endif
-    // _WXPARAVERAPP_H_
