@@ -909,7 +909,8 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
-  drawZone->SetFocus();
+  if( IsActive() )
+    drawZone->SetFocus();
 
   if( myWindow->getDestroy() )
     return;
