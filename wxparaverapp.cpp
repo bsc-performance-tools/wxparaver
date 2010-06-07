@@ -182,7 +182,7 @@ void wxparaverApp::presetUserSignals()
 
 bool wxparaverApp::OnInit()
 {
-  const wxString name = wxString::Format("wxparaver-%s", wxGetUserId().c_str());
+  const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
   m_checker = new wxSingleInstanceChecker(name);
   if ( !m_checker->IsAnotherRunning() )
   {
