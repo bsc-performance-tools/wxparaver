@@ -188,7 +188,12 @@ bool wxparaverApp::OnInit()
   {
     m_server = new stServer;
     
-    if( !m_server->Create( wxT( "wxparaver" ) ) )
+#ifdef WIN32
+    if( !m_server->Create( wxT( "wxparaver_service" ) ) )
+#else
+    const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
+    if( !m_server->Create( service_name ) )
+#endif
       wxLogDebug( wxT( "Failed to create an IPC service." ) );
   }
   else
@@ -197,9 +202,16 @@ bool wxparaverApp::OnInit()
     
     stClient *client = new stClient;
     wxString hostName = wxT( "localhost" );
+#ifdef WIN32
     wxConnectionBase *connection = client->MakeConnection( hostName, 
                                                            wxT( "wxparaver" ),
                                                            wxT( "wxparaver" ) );
+#else
+    const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
+    wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                           service_name,
+                                                           wxT( "wxparaver" ) );
+#endif
     if( connection )
     {
       connection->Execute( wxT( "BEGIN" ) );
