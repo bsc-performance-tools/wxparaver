@@ -204,7 +204,7 @@ bool wxparaverApp::OnInit()
     wxString hostName = wxT( "localhost" );
 #ifdef WIN32
     wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                                           wxT( "wxparaver" ),
+                                                           wxT( "wxparaver_service" ),
                                                            wxT( "wxparaver" ) );
 #else
     const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
