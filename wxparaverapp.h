@@ -77,6 +77,7 @@ public:
     /// Called on exit
     virtual int OnExit();
 
+    int FilterEvent(wxEvent& event);
 #ifndef WIN32
     // Signal handling
     static void handler( int signum );

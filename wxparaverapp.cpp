@@ -308,3 +308,24 @@ int wxparaverApp::OnExit()
 ////@end wxparaverApp cleanup
 }
 
+
+int wxparaverApp::FilterEvent(wxEvent& event)
+{
+/*  if( event.GetEventType()==wxEVT_KEY_UP )
+    cout <<"KEY_UP"<<endl;
+  if( event.GetEventType()==wxEVT_KEY_DOWN )
+    cout <<"KEY_DOWN"<<endl;
+  if( event.GetEventType()==wxEVT_CHAR )
+    cout <<"CHAR"<<endl;*/
+    
+  if ( event.GetEventType()==wxEVT_KEY_UP && 
+       ((wxKeyEvent&)event).ControlDown() &&
+       ((wxKeyEvent&)event).GetKeyCode() == (long) 'C'
+     )
+  {
+    cout << "siiii"<<endl;
+    return true;
+  }
+  
+  return -1;
+}

@@ -245,7 +245,7 @@ void gTimeline::CreateControls()
   splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
   splitter->SetMinimumPaneSize(0);
 
-  drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
+  drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
   drawZone->SetScrollbars(1, 1, 0, 0);
   infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxSize(-1, splitter->ConvertDialogToPixels(wxSize(-1, 50)).y), wxBK_DEFAULT );
 
@@ -909,8 +909,8 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
-  if( IsActive() )
-    drawZone->SetFocus();
+/*  if( IsActive() )
+    drawZone->SetFocus();*/
 
   if( myWindow->getDestroy() )
     return;

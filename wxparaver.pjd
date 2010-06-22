@@ -1245,7 +1245,7 @@
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
-          <bool name="proxy-wxWANTS_CHARS">0</bool>
+          <bool name="proxy-wxWANTS_CHARS">1</bool>
           <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
           <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
           <bool name="proxy-wxCLIP_CHILDREN">0</bool>
@@ -1605,7 +1605,7 @@
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
-            <bool name="proxy-wxWANTS_CHARS">0</bool>
+            <bool name="proxy-wxWANTS_CHARS">1</bool>
             <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
             <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
             <bool name="proxy-wxCLIP_CHILDREN">0</bool>
@@ -1853,7 +1853,7 @@
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
-            <bool name="proxy-wxWANTS_CHARS">0</bool>
+            <bool name="proxy-wxWANTS_CHARS">1</bool>
             <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
             <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
             <bool name="proxy-wxCLIP_CHILDREN">0</bool>
@@ -1956,7 +1956,7 @@
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
-            <bool name="proxy-wxWANTS_CHARS">0</bool>
+            <bool name="proxy-wxWANTS_CHARS">1</bool>
             <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
             <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
             <bool name="proxy-wxCLIP_CHILDREN">0</bool>
@@ -3208,7 +3208,7 @@
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
-              <bool name="proxy-wxWANTS_CHARS">0</bool>
+              <bool name="proxy-wxWANTS_CHARS">1</bool>
               <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
               <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">1</bool>
               <bool name="proxy-wxCLIP_CHILDREN">0</bool>

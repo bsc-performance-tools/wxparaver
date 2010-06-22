@@ -385,7 +385,7 @@ void paraverMain::CreateControls()
   menuBar->Append(menuHelp, _("&Help"));
   itemFrame1->SetMenuBar(menuBar);
 
-  tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER );
+  tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxWANTS_CHARS );
   wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
   wxBitmap itemtool18BitmapDisabled;
   tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
@@ -410,12 +410,12 @@ void paraverMain::CreateControls()
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
 
-  choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+  choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
     .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
-  windowProperties = new wxPropertyGrid( itemFrame1, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  windowProperties = new wxPropertyGrid( itemFrame1, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
   itemFrame1->GetAuiManager().AddPane(windowProperties, wxAuiPaneInfo()
     .Name(_T("auiWindowProperties")).Caption(_("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
