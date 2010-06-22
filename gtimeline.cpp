@@ -909,8 +909,10 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
-/*  if( IsActive() )
-    drawZone->SetFocus();*/
+#ifndef WIN32
+  if( IsActive() )
+    drawZone->SetFocus();
+#endif
 
   if( myWindow->getDestroy() )
     return;
@@ -2713,6 +2715,8 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 
   event.Skip();
 }
+
+
 
 
 

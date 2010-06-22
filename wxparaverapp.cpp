@@ -308,24 +308,26 @@ int wxparaverApp::OnExit()
 ////@end wxparaverApp cleanup
 }
 
-
+#ifdef WIN32
 int wxparaverApp::FilterEvent(wxEvent& event)
 {
-/*  if( event.GetEventType()==wxEVT_KEY_UP )
-    cout <<"KEY_UP"<<endl;
-  if( event.GetEventType()==wxEVT_KEY_DOWN )
-    cout <<"KEY_DOWN"<<endl;
-  if( event.GetEventType()==wxEVT_CHAR )
-    cout <<"CHAR"<<endl;*/
-    
-  if ( event.GetEventType()==wxEVT_KEY_UP && 
+  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
        ((wxKeyEvent&)event).ControlDown() &&
        ((wxKeyEvent&)event).GetKeyCode() == (long) 'C'
      )
   {
-    cout << "siiii"<<endl;
+    mainWindow->OnKeyCopy();
+    return true;
+  }
+  else if ( event.GetEventType()==wxEVT_KEY_DOWN && 
+            ((wxKeyEvent&)event).ControlDown() &&
+            ((wxKeyEvent&)event).GetKeyCode() == (long) 'V'
+          )
+  {
+    mainWindow->OnKeyPaste();
     return true;
   }
   
   return -1;
 }
+#endif

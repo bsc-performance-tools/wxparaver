@@ -355,6 +355,11 @@ public:
   void OnSignal( );
 #endif
 
+#ifdef WIN32
+  void OnKeyCopy();
+  void OnKeyPaste();
+#endif
+
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
   static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height

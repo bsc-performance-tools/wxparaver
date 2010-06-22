@@ -1181,11 +1181,13 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
 
 void gHistogram::OnIdle( wxIdleEvent& event )
 {
+#ifndef WIN32
 //  if( myHistogram->getZoom() )
   if( IsActive() )
     zoomHisto->SetFocus();
 //  else
 //    gridHisto->SetFocus();
+#endif
 
   if( myHistogram->getDestroy() )
     return;
