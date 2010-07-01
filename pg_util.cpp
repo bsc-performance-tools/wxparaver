@@ -878,6 +878,33 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
                             wxString::FromAscii( LabelConstructor::timeLabel( whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getEndTime() ),
                                                                               whichHisto->getControlWindow()->getTimeUnit(),
                                                                               precision ).c_str() ) ) );
+
+  // Control Window related properties
+  wxPGId ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control") ) );
+  if( ctrlCatCollapsed )
+    ctrlCat->SetFlagsFromString( _( "COLLAPSED" ) );
+  
+  vector<TWindowID> validWin;
+  Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
+                                                                 whichHisto->getDataWindow();
+  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getExtraControlWindow(), validWin );
+  arrayStr.Clear();
+  arrayInt.Clear();
+  selected = -1;
+  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
+  {
+    arrayStr.Add( wxString::FromAscii( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
+    arrayInt.Add( (*it) );
+    // Do we need this -if- here?
+    if( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getControlWindow() )
+      selected = (*it);
+  }
+  wxEnumProperty *tmpCtrlWin = new wxEnumProperty( wxT("Window"), wxT("ControlWindow"), arrayStr, arrayInt, selected );
+  windowProperties->AppendIn( ctrlCat, tmpCtrlWin );
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Minimum"), wxT("ControlMinimum"), whichHisto->getControlMin() ) );
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Maximum"), wxT("ControlMaximum"), whichHisto->getControlMax() ) );
+  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Delta"), wxT("ControlDelta"), whichHisto->getControlDelta() ) );
+
   // Statistic related properties
   wxPGId statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
   if( statCatCollapsed )
@@ -915,32 +942,6 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Statistic"), wxPG_LABEL, arrayStr, arrayInt, selected ) );
   windowProperties->AppendIn( statCat, new wxFloatProperty( wxT("Minimum Gradient"), wxT("DataMinimum"), whichHisto->getMinGradient() ) );
   windowProperties->AppendIn( statCat, new wxFloatProperty( wxT("Maximum Gradient"), wxT("DataMaximum"), whichHisto->getMaxGradient() ) );
-
-  // Control Window related properties
-  wxPGId ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control") ) );
-  if( ctrlCatCollapsed )
-    ctrlCat->SetFlagsFromString( _( "COLLAPSED" ) );
-  
-  vector<TWindowID> validWin;
-  Window *dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
-                                                                 whichHisto->getDataWindow();
-  LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getExtraControlWindow(), validWin );
-  arrayStr.Clear();
-  arrayInt.Clear();
-  selected = -1;
-  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
-  {
-    arrayStr.Add( wxString::FromAscii( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
-    arrayInt.Add( (*it) );
-    // Do we need this -if- here?
-    if( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getControlWindow() )
-      selected = (*it);
-  }
-  wxEnumProperty *tmpCtrlWin = new wxEnumProperty( wxT("Window"), wxT("ControlWindow"), arrayStr, arrayInt, selected );
-  windowProperties->AppendIn( ctrlCat, tmpCtrlWin );
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Minimum"), wxT("ControlMinimum"), whichHisto->getControlMin() ) );
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Maximum"), wxT("ControlMaximum"), whichHisto->getControlMax() ) );
-  windowProperties->AppendIn( ctrlCat, new wxFloatProperty( wxT("Delta"), wxT("ControlDelta"), whichHisto->getControlDelta() ) );
 
   // Data Window related properties
   wxPGId dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data") ) );

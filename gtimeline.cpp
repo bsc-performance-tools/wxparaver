@@ -803,6 +803,13 @@ void gTimeline::drawRow( wxDC& dc, TObjectOrder firstRow, TObjectOrder lastRow,
     }
     timePos += (int) magnify ;
   }
+  
+  // Erase events and comms remaining in RecordLists
+  for( vector<TObjectOrder>::iterator row = first; row <= last; ++row )
+  {
+    RecordList *rl = myWindow->getRecordList( *row );
+    rl->erase( rl->begin(), rl->end() );
+  }
 }
 
 
