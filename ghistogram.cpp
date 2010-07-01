@@ -77,6 +77,7 @@
 #include "histo_horvert.xpm"
 #include "hide_cols.xpm"
 #include "semantic_color.xpm"
+#include "inclusive.xpm"
 ////@end XPM images
 
 #ifdef WIN32
@@ -143,6 +144,9 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 
   EVT_MENU( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsClick )
   EVT_UPDATE_UI( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsUpdate )
+
+  EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
+  EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
 
 ////@end gHistogram event table entries
   
@@ -256,12 +260,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(10, 9)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(10, 9)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
@@ -270,7 +274,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(15, 16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -302,6 +306,9 @@ void gHistogram::CreateControls()
   wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("semantic_color.xpm")));
   wxBitmap itemtool22BitmapDisabled;
   itemToolBar11->AddTool(ID_TOOL_LABEL_COLORS, _("Label colors"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_CHECK, _("Label colors"), wxEmptyString);
+  wxBitmap itemtool23Bitmap(itemFrame1->GetBitmapResource(wxT("inclusive.xpm")));
+  wxBitmap itemtool23BitmapDisabled;
+  itemToolBar11->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool23Bitmap, itemtool23BitmapDisabled, wxITEM_CHECK, wxEmptyString, wxEmptyString);
   itemToolBar11->Realize();
   itemFrame1->SetToolBar(itemToolBar11);
 
@@ -1155,6 +1162,11 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   else if (name == _T("semantic_color.xpm"))
   {
     wxBitmap bitmap(semantic_color_xpm);
+    return bitmap;
+  }
+  else if (name == _T("inclusive.xpm"))
+  {
+    wxBitmap bitmap(inclusive_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -2557,6 +2569,24 @@ void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
 }
 
 
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_INCLUSIVE
+ */
+
+void gHistogram::OnToolInclusiveClick( wxCommandEvent& event )
+{
+  myHistogram->setInclusive( event.IsChecked() );
+  myHistogram->setRecalc( true );
+}
 
 
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_INCLUSIVE
+ */
+
+void gHistogram::OnToolInclusiveUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( myHistogram->getInclusiveEnabled() );
+  event.Check( myHistogram->getInclusive() );
+}
 
