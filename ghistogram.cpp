@@ -308,7 +308,7 @@ void gHistogram::CreateControls()
   itemToolBar11->AddTool(ID_TOOL_LABEL_COLORS, _("Label colors"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_CHECK, _("Label colors"), wxEmptyString);
   wxBitmap itemtool23Bitmap(itemFrame1->GetBitmapResource(wxT("inclusive.xpm")));
   wxBitmap itemtool23BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool23Bitmap, itemtool23BitmapDisabled, wxITEM_CHECK, wxEmptyString, wxEmptyString);
+  itemToolBar11->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool23Bitmap, itemtool23BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
   itemToolBar11->Realize();
   itemFrame1->SetToolBar(itemToolBar11);
 
