@@ -50,6 +50,7 @@ noinst_HEADERS = \
               histo_color.xpm\
               histo_horvert.xpm\
               histo_zoom.xpm\
+              inclusive.xpm\
               new_derived_window.xpm\
               new_histogram.xpm\
               new_window.xpm\
