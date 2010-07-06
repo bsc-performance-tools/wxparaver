@@ -914,6 +914,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   
   vector<string> tmpV;
   whichHisto->getGroupsLabels( tmpV );
+  arrayStr.Clear();
+  arrayInt.Clear();
   for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
     arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
   arrayInt.Add( 0 );
