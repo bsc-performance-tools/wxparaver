@@ -1854,12 +1854,24 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
     printWWSemantic( whichRow, false, textMode );
     printWWRecords( whichRow, false, textMode );
     myWindow->calcNext( whichRow, false );
+    while( myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
+    {
+      printWWSemantic( whichRow, false, textMode );
+      printWWRecords( whichRow, false, textMode );
+      myWindow->calcNext( whichRow, false );
+    }
   }
 
   printWWSemantic( whichRow, true, textMode );
   printWWRecords( whichRow, true, textMode );
 
   myWindow->calcNext( whichRow, false );
+  while( myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
+  {
+    printWWSemantic( whichRow, false, textMode );
+    printWWRecords( whichRow, false, textMode );
+    myWindow->calcNext( whichRow, false );
+  }
   printWWSemantic( whichRow, false, textMode );
   printWWRecords( whichRow, false, textMode );
 }
