@@ -443,7 +443,18 @@ void gTimeline::redraw()
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, true );
   myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
-  TObjectOrder maxObj = selectedSet[ selectedSet.size() - 1 ];
+
+//  vector<bool>         tmpSel;
+//  myWindow->getSelectedRows( THREAD, tmpSel );
+//    for (int i=0;i<tmpSel.size();++i)
+//      cout << "REDRAW tmpSel[" <<i<<"] = "<< tmpSel[i] << endl;
+
+  // To avoid empty zooms (probably due to other bug)
+  TObjectOrder maxObj;
+  if ( selectedSet.size() == 0 )
+    maxObj = endRow; //something!!
+  else
+    maxObj = selectedSet[ selectedSet.size() - 1 ];
 
   ready = false;
   bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );

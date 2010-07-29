@@ -260,12 +260,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
@@ -274,7 +274,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2068,8 +2068,8 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     
     if( xBegin < 0 ) xBegin = 0;
     if( yBegin < 0 ) yBegin = 0;
-    if( xEnd > zoomHisto->GetSize().GetWidth() ) xEnd = zoomHisto->GetSize().GetWidth();
-    if( yEnd > zoomHisto->GetSize().GetHeight() ) yEnd = zoomHisto->GetSize().GetHeight();
+    if( xEnd > zoomHisto->GetSize().GetWidth() ) xEnd = zoomHisto->GetSize().GetWidth() - 1;
+    if( yEnd > zoomHisto->GetSize().GetHeight() ) yEnd = zoomHisto->GetSize().GetHeight() - 1;
 
     if ( !event.ControlDown() )
     {
@@ -2226,6 +2226,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
 
     controlCloned->setShowWindow( false );
     extraControlCloned->setShowWindow( false );
+
     Window *productWin = Window::create( controlCloned->getKernel(), controlCloned, extraControlCloned );
 
     productWin->setLevelFunction( DERIVED, "product" );
@@ -2314,41 +2315,86 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     vector<bool> selectedRows;
     THistogramColumn iPlane;
     bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
-    tmpControlWindow->GetMyWindow()->getSelectedRows( tmpControlWindow->GetMyWindow()->getLevel(), selectedRows );
-    if( commStat )
-      iPlane = myHistogram->getCommSelectedPlane();
-    else
-      iPlane = myHistogram->getSelectedPlane();
-    
-    for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
-    {
-      if( commStat )
-        myHistogram->setCommFirstCell( iCol, iPlane );
-      else
-        myHistogram->setFirstCell( iCol, iPlane );
-    }
+    tmpControlWindow->GetMyWindow()->getSelectedRows( tmpControlWindow->GetMyWindow()->getLevel(),
+                                                      selectedRows );
 
-    for( TObjectOrder iRow = 0; iRow < selectedRows.size(); ++iRow )
+    if ( !commStat )
     {
-      bool rowWithValues = false;
+      iPlane = myHistogram->getSelectedPlane();
+
       for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
       {
-        if( ( !commStat && !myHistogram->endCell( iCol, iPlane ) &&
-              myHistogram->getCurrentRow( iCol, iPlane ) == iRow )
-            ||
-            ( commStat && !myHistogram->endCommCell( iCol, iPlane ) && 
-              myHistogram->getCommCurrentRow( iCol, iPlane ) == iRow )
-          )
+        myHistogram->setFirstCell( iCol, iPlane );
+        while( !myHistogram->endCell( iCol, iPlane ) &&
+                myHistogram->getCurrentRow( iCol, iPlane ) < objectBegin )
+          myHistogram->setNextCell( iCol, iPlane );
+      }
+
+      TObjectOrder maxRow = selectedRows.size();
+      vector< bool > present( maxRow, false );
+      for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      {
+        bool outOfBounds = false;
+        while (( !myHistogram->endCell( iCol, iPlane ) && !outOfBounds ))
         {
-          rowWithValues = true;
-          if( commStat )
-            myHistogram->setCommNextCell( iCol, iPlane );
-          else
+          TObjectOrder currentRow = myHistogram->getCurrentRow( iCol, iPlane );
+          if (( currentRow >= objectBegin ) && ( currentRow <= objectEnd ))
+          {
+            present[ currentRow ] = true;
             myHistogram->setNextCell( iCol, iPlane );
+          }
+          else
+            outOfBounds = true;
         }
       }
-      selectedRows[ iRow ] = rowWithValues && selectedRows[ iRow ];
+
+//      int visibleBefore=0;
+//      int visibleAfter=0;
+      for (TObjectOrder i = 0; i < maxRow; ++i )
+      {
+//        if (selectedRows[i])
+//          visibleBefore++;
+        selectedRows[ i ] = selectedRows[ i ] && present[ i ];
+//        if (selectedRows[i])
+//          visibleAfter++;
+      }
+//      cout << "before open control zoom 2d; visible=" << visibleBefore << endl;
+//      cout << "after  open control zoom 2d; visible=" << visibleAfter << endl;
     }
+    else
+    {
+      iPlane = myHistogram->getCommSelectedPlane();
+
+      for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      {
+        myHistogram->setCommFirstCell( iCol, iPlane );
+        while( !myHistogram->endCommCell( iCol, iPlane ) &&
+                myHistogram->getCommCurrentRow( iCol, iPlane ) < objectBegin )
+          myHistogram->setCommNextCell( iCol, iPlane );
+      }
+
+      TObjectOrder maxRow = selectedRows.size();
+      vector< bool > present( maxRow, false );
+      TObjectOrder currentRow = 0;
+      for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      {
+        bool outOfBounds = false;
+        while (( !myHistogram->endCommCell( iCol, iPlane ) && !outOfBounds ))
+        {
+          currentRow = myHistogram->getCommCurrentRow( iCol, iPlane );
+          if (( currentRow >= objectBegin ) && ( currentRow <= objectEnd ))
+          {
+            present[ currentRow ] = true;
+            myHistogram->setCommNextCell( iCol, iPlane );
+          }
+          else
+            outOfBounds = true;
+        }
+      }
+      for (TObjectOrder i = 0; i < maxRow; ++i )
+        selectedRows[ i ] = selectedRows[ i ] && present[ i ];
+    }
+
     openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), selectedRows );
 
     openWindow->GetMyWindow()->setUsedByHistogram( false );
