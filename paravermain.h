@@ -220,6 +220,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TOOLDELETE
   void OnTooldeleteUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_CUT_TRACE
+  void OnToolCutTraceClick( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_CUT_TRACE
   void OnToolCutTraceUpdate( wxUpdateUIEvent& event );
 
@@ -418,6 +421,7 @@ private:
   bool DoLoadCFG( const string &path );
   void ShowDerivedDialog();
   void ShowHistogramDialog();
+  void ShowCutTraceWindow();
   
   void PrepareToExit();
 };

@@ -63,6 +63,7 @@
 #include "derivedtimelinedialog.h"
 #include "histogramdialog.h"
 #include "preferencesdialog.h"
+#include "cutfilterdialog.h"
 #include "labelconstructor.h"
 
 
@@ -142,6 +143,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
 
+  EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
 
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
@@ -413,11 +415,11 @@ void paraverMain::CreateControls()
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
-    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowBrowser")).Caption(_T("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   windowProperties = new wxPropertyGrid( itemFrame1, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
   itemFrame1->GetAuiManager().AddPane(windowProperties, wxAuiPaneInfo()
-    .Name(_T("auiWindowProperties")).Caption(_("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowProperties")).Caption(_T("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   GetAuiManager().Update();
 
@@ -2720,7 +2722,7 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
 
 void paraverMain::OnToolCutTraceUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( false );
+  event.Enable( true );
 }
 
 
@@ -2757,3 +2759,20 @@ void paraverMain::OnKeyPaste()
 }
 #endif
 
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_CUT_TRACE
+ */
+void paraverMain::OnToolCutTraceClick( wxCommandEvent& event )
+{
+  ShowCutTraceWindow();
+}
+
+void paraverMain::ShowCutTraceWindow()
+{
+  CutFilterDialog cutFilterDialog( this );
+
+  if( cutFilterDialog.ShowModal() == wxID_OK )
+  {
+  }
+}
