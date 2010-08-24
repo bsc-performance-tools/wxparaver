@@ -100,6 +100,10 @@ wxparaverApp::wxparaverApp()
 void wxparaverApp::Init()
 {
 ////@begin wxparaverApp member initialisation
+	globalTiming = false;
+	globalTimingBegin = 0;
+	globalTimingEnd = 0;
+	globalTimingCallDialog = NULL;
 ////@end wxparaverApp member initialisation
   m_locale.Init();
 }
@@ -331,3 +335,23 @@ int wxparaverApp::FilterEvent(wxEvent& event)
   return -1;
 }
 #endif
+
+void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
+{
+  globalTimingCallDialog = whichDialog;
+  wxSetCursor( *wxCROSS_CURSOR );
+  globalTiming = true;
+  globalTimingCallDialog->Enable( false );
+  globalTimingCallDialog->MakeModal( false );
+  mainWindow->Raise();
+}
+
+void wxparaverApp::DeactivateGlobalTiming()
+{
+  wxSetCursor( wxNullCursor );
+  globalTiming = false;
+  globalTimingCallDialog->Enable( true );
+  globalTimingCallDialog->MakeModal( true );
+  globalTimingCallDialog->Raise();
+}
+

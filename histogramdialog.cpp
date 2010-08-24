@@ -45,6 +45,7 @@
 #include "histogramdialog.h"
 #include "paraverconfig.h"
 #include "labelconstructor.h"
+#include "wxparaverapp.h"
 // #include "histogram.h"
 
 // pREFERENCES
@@ -68,6 +69,8 @@ IMPLEMENT_DYNAMIC_CLASS( HistogramDialog, wxDialog )
 BEGIN_EVENT_TABLE( HistogramDialog, wxDialog )
 
 ////@begin HistogramDialog event table entries
+  EVT_IDLE( HistogramDialog::OnIdle )
+
   EVT_CHOICE( ID_HISTOGRAM_CONTROLTIMELINELIST, HistogramDialog::OnHistogramControltimelinelistSelected )
 
   EVT_TOGGLEBUTTON( ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT, HistogramDialog::OnHistogramControltimelineautofitClick )
@@ -89,8 +92,10 @@ BEGIN_EVENT_TABLE( HistogramDialog, wxDialog )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_MANUAL, HistogramDialog::OnRadiobuttonManualSelected )
   EVT_UPDATE_UI( ID_RADIOBUTTON_MANUAL, HistogramDialog::OnRadiobuttonManualUpdate )
 
-  EVT_TOGGLEBUTTON( ID_HISTOGRAM_BUTTONSELECT, HistogramDialog::OnHistogramButtonselectClick )
+  EVT_BUTTON( ID_HISTOGRAM_BUTTONSELECT, HistogramDialog::OnHistogramButtonselectClick )
   EVT_UPDATE_UI( ID_HISTOGRAM_BUTTONSELECT, HistogramDialog::OnHistogramButtonselectUpdate )
+
+  EVT_BUTTON( wxID_CANCEL, HistogramDialog::OnCancelClick )
 
   EVT_BUTTON( wxID_OK, HistogramDialog::OnOkClick )
 
@@ -156,6 +161,7 @@ void HistogramDialog::Init()
 ////@begin HistogramDialog member initialisation
   controlTimelineAutofit = true;
   extraControlTimelineAutofit = true;
+  waitingGlobalTiming = false;
   listControlTimelines = NULL;
   buttonControlTimelineAutoFit = NULL;
   labelControlTimelineMin = NULL;
@@ -338,8 +344,7 @@ void HistogramDialog::CreateControls()
   radioManual->SetValue(false);
   itemBoxSizer39->Add(radioManual, 0, wxALIGN_LEFT|wxALL, 5);
 
-  buttonSelect = new wxToggleButton( itemDialog1, ID_HISTOGRAM_BUTTONSELECT, _("Select..."), wxDefaultPosition, wxDefaultSize, 0 );
-  buttonSelect->SetValue(false);
+  buttonSelect = new wxButton( itemDialog1, ID_HISTOGRAM_BUTTONSELECT, _("Select..."), wxDefaultPosition, wxDefaultSize, 0 );
   buttonSelect->Enable(false);
   itemBoxSizer38->Add(buttonSelect, 0, wxALIGN_BOTTOM|wxALL, 5);
 
@@ -575,7 +580,10 @@ bool HistogramDialog::TransferDataFromWindow()
 void HistogramDialog::OnOkClick( wxCommandEvent& event )
 {
   if ( TransferDataFromWindow() )
+  {
+    MakeModal( false );
     EndModal( wxID_OK );
+  }
 }
 
 
@@ -736,7 +744,8 @@ bool PreferencesDialog::Create( wxWindow* parent,
 
 void HistogramDialog::OnHistogramButtonselectClick( wxCommandEvent& event )
 {
-//  PreferencesDialog myprefs(this, wxID_ANY, _("Preferences"));
+  wxGetApp().ActivateGlobalTiming( this );
+  waitingGlobalTiming = true;
 }
 
 
@@ -746,7 +755,7 @@ void HistogramDialog::OnHistogramButtonselectClick( wxCommandEvent& event )
 
 void HistogramDialog::OnHistogramButtonselectUpdate( wxUpdateUIEvent& event )
 {
-  //buttonSelect->Enable( radioManual->GetValue() );
+  buttonSelect->Enable( radioManual->GetValue() );
 }
 
 
@@ -916,10 +925,7 @@ void HistogramDialog::OnRadiobuttonAlltraceSelected( wxCommandEvent& event )
 
 void HistogramDialog::OnRadiobuttonManualSelected( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_MANUAL in HistogramDialog.
-  // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_MANUAL in HistogramDialog. 
 }
 
 
@@ -983,4 +989,42 @@ void HistogramDialog::OnHistogram3dtimelinelistSelected( wxCommandEvent& event )
 }
 
 
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
+ */
+
+void HistogramDialog::OnCancelClick( wxCommandEvent& event )
+{
+  MakeModal( false );
+  EndModal( wxID_CANCEL );
+}
+
+
+/*!
+ * wxEVT_IDLE event handler for ID_HISTOGRAMDIALOG
+ */
+
+void HistogramDialog::OnIdle( wxIdleEvent& event )
+{
+  if( waitingGlobalTiming )
+  {
+    Window *current = LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] );
+    txtBeginTime->SetValue(
+      wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( wxGetApp().GetGlobalTimingBegin() ),
+                                                        current->getTimeUnit(),
+                                                        ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+    );
+
+    txtEndTime->SetValue(
+      wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( wxGetApp().GetGlobalTimingEnd() ),
+                                                        current->getTimeUnit(),
+                                                        ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+    );
+    
+    if( !wxGetApp().GetGlobalTiming() )
+      waitingGlobalTiming = false;
+  }
+}
 

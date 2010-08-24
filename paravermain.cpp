@@ -2000,7 +2000,8 @@ void paraverMain::ShowDerivedDialog()
 
 void paraverMain::ShowHistogramDialog()
 {
-  HistogramDialog histogramDialog( this );
+//  HistogramDialog histogramDialog( this );
+  HistogramDialog histogramDialog( NULL );
 
   vector<TWindowID> timelines;
   LoadedWindows::getInstance()->getAll( timelines );

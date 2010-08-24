@@ -144,7 +144,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Release"</string>
+    <string name="configuration">"GCC Debug"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -1149,6 +1149,10 @@
           <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
+          <string name="variable-0">"globalTiming|bool|GlobalTiming|false|2|0|"</string>
+          <string name="variable-1">"globalTimingBegin|TTime|GlobalTimingBegin|0|2|0|"</string>
+          <string name="variable-2">"globalTimingEnd|TTime|GlobalTimingEnd|0|2|0|"</string>
+          <string name="variable-3">"globalTimingCallDialog|wxDialog*|GlobalTimingCallDialog|NULL|2|0|"</string>
           <string name="proxy-Class">"wxparaverApp"</string>
           <string name="proxy-Base class">"wxApp"</string>
           <string name="proxy-Implementation filename">"wxparaverapp.cpp"</string>
@@ -2129,6 +2133,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -8930,6 +8942,8 @@
           <string name="variable-9">"extraControlTimelines|vector&lt; TWindowID &gt;|ExtraControlTimelines||2|0|"</string>
           <string name="variable-10">"controlTimelineAutofit|bool|ControlTimelineAutofit|true|2|0|"</string>
           <string name="variable-11">"extraControlTimelineAutofit|bool|ExtraControlTimelineAutofit|true|2|0|"</string>
+          <string name="variable-12">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
+          <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||HistogramDialog"</string>
           <string name="proxy-Id name">"ID_HISTOGRAMDIALOG"</string>
           <long name="proxy-Id value">10061</long>
           <string name="proxy-Class">"HistogramDialog"</string>
@@ -9003,14 +9017,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -11292,7 +11298,7 @@
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbRadioButtonProxy"</string>
                     <string name="event-handler-0">"wxEVT_COMMAND_RADIOBUTTON_SELECTED|OnRadiobuttonManualSelected|NONE||HistogramDialog"</string>
-                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnRadiobuttonManualUpdate|NONE||"</string>
+                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnRadiobuttonManualUpdate|NONE||HistogramDialog"</string>
                     <string name="proxy-Id name">"ID_RADIOBUTTON_MANUAL"</string>
                     <long name="proxy-Id value">10064</long>
                     <string name="proxy-Name">""</string>
@@ -11346,29 +11352,29 @@
                   </document>
                 </document>
                 <document>
-                  <string name="title">"wxToggleButton: ID_HISTOGRAM_BUTTONSELECT"</string>
+                  <string name="title">"wxButton: ID_HISTOGRAM_BUTTONSELECT"</string>
                   <string name="type">"dialog-control-document"</string>
                   <string name="filename">""</string>
-                  <string name="icon-name">"togglebutton"</string>
+                  <string name="icon-name">"dialogcontrol"</string>
                   <long name="is-transient">0</long>
                   <long name="owns-file">1</long>
                   <long name="title-mode">0</long>
                   <long name="locked">0</long>
-                  <string name="proxy-type">"wbToggleButtonProxy"</string>
-                  <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnHistogramButtonselectClick|NONE||HistogramDialog"</string>
+                  <string name="proxy-type">"wbButtonProxy"</string>
+                  <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnHistogramButtonselectClick|NONE||HistogramDialog"</string>
                   <string name="event-handler-1">"wxEVT_UPDATE_UI|OnHistogramButtonselectUpdate|NONE||HistogramDialog"</string>
                   <string name="proxy-Id name">"ID_HISTOGRAM_BUTTONSELECT"</string>
                   <long name="proxy-Id value">10062</long>
                   <string name="proxy-Name">""</string>
-                  <string name="proxy-Class">"wxToggleButton"</string>
-                  <string name="proxy-Base class">"wxToggleButton"</string>
+                  <string name="proxy-Class">"wxButton"</string>
+                  <string name="proxy-Base class">"wxButton"</string>
                   <bool name="proxy-External implementation">1</bool>
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
                   <string name="proxy-Member variable name">"buttonSelect"</string>
                   <string name="proxy-Label">"Select..."</string>
-                  <bool name="proxy-Initial value">0</bool>
+                  <bool name="proxy-Default">0</bool>
                   <string name="proxy-Help text">""</string>
                   <string name="proxy-Tooltip text">""</string>
                   <string name="proxy-Data variable">""</string>
@@ -11455,6 +11461,7 @@
                 <long name="title-mode">0</long>
                 <long name="locked">1</long>
                 <string name="proxy-type">"wbButtonProxy"</string>
+                <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnCancelClick|NONE||HistogramDialog"</string>
                 <string name="proxy-Id name">"wxID_CANCEL"</string>
                 <long name="proxy-Id value">5101</long>
                 <string name="proxy-Name">""</string>

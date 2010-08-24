@@ -87,19 +87,39 @@ public:
     void presetUserSignals();
 #endif
 
+    void ActivateGlobalTiming( wxDialog* whichDialog );
+    void DeactivateGlobalTiming();
+
 ////@begin wxparaverApp event handler declarations
 
 ////@end wxparaverApp event handler declarations
 
 ////@begin wxparaverApp member function declarations
 
+	bool GetGlobalTiming() const { return globalTiming ; }
+	void SetGlobalTiming(bool value) { globalTiming = value ; }
+
+	TTime GetGlobalTimingBegin() const { return globalTimingBegin ; }
+	void SetGlobalTimingBegin(TTime value) { globalTimingBegin = value ; }
+
+	TTime GetGlobalTimingEnd() const { return globalTimingEnd ; }
+	void SetGlobalTimingEnd(TTime value) { globalTimingEnd = value ; }
+
+	wxDialog* GetGlobalTimingCallDialog() const { return globalTimingCallDialog ; }
+	void SetGlobalTimingCallDialog(wxDialog* value) { globalTimingCallDialog = value ; }
+
 ////@end wxparaverApp member function declarations
 
+    static paraverMain* mainWindow;
+
 ////@begin wxparaverApp member variables
+private:
+	bool globalTiming;
+	TTime globalTimingBegin;
+	TTime globalTimingEnd;
+	wxDialog* globalTimingCallDialog;
 ////@end wxparaverApp member variables
 
-    static paraverMain* mainWindow;
-    
     wxLocale m_locale;
     
     wxSingleInstanceChecker *m_checker;

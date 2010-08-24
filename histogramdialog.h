@@ -125,6 +125,9 @@ public:
 
 ////@begin HistogramDialog event handler declarations
 
+  /// wxEVT_IDLE event handler for ID_HISTOGRAMDIALOG
+  void OnIdle( wxIdleEvent& event );
+
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_HISTOGRAM_CONTROLTIMELINELIST
   void OnHistogramControltimelinelistSelected( wxCommandEvent& event );
 
@@ -164,11 +167,14 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_RADIOBUTTON_MANUAL
   void OnRadiobuttonManualUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_HISTOGRAM_BUTTONSELECT
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_HISTOGRAM_BUTTONSELECT
   void OnHistogramButtonselectClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_HISTOGRAM_BUTTONSELECT
   void OnHistogramButtonselectUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
+  void OnCancelClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
@@ -213,6 +219,9 @@ public:
   bool GetExtraControlTimelineAutofit() const { return extraControlTimelineAutofit ; }
   void SetExtraControlTimelineAutofit(bool value) { extraControlTimelineAutofit = value ; }
 
+  bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
+  void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -249,7 +258,7 @@ public:
   wxRadioButton* radioAllWindow;
   wxRadioButton* radioAllTrace;
   wxRadioButton* radioManual;
-  wxToggleButton* buttonSelect;
+  wxButton* buttonSelect;
 private:
   vector< TWindowID > controlTimelines;
   double controlTimelineMin;
@@ -263,6 +272,7 @@ private:
   vector< TWindowID > extraControlTimelines;
   bool controlTimelineAutofit;
   bool extraControlTimelineAutofit;
+  bool waitingGlobalTiming;
 ////@end HistogramDialog member variables
 
   wxString formatNumber( double value );

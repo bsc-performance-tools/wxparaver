@@ -44,6 +44,7 @@
 #include <wx/statline.h>
 #include <algorithm>
 
+#include "wxparaverapp.h"
 #include "gtimeline.h"
 #include "window.h"
 #include "labelconstructor.h"
@@ -1073,6 +1074,15 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   TTime endTime = ( timeStep * zoomEndX ) + myWindow->getWindowBeginTime();
   TTime beginTime = ( timeStep * zoomBeginX ) + myWindow->getWindowBeginTime();
 
+  if( wxGetApp().GetGlobalTiming() )
+  {
+    zooming = false;
+    wxGetApp().SetGlobalTimingBegin( beginTime );
+    wxGetApp().SetGlobalTimingEnd( endTime );
+    wxGetApp().DeactivateGlobalTiming();
+    return;
+  }
+  
   if( zooming )
   {
     if( zoomEndY < zoomBeginY )
