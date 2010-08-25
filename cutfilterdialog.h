@@ -68,46 +68,46 @@ class wxSpinCtrl;
 #define ID_BITMAPBUTTON_PUSH_DOWN 10110
 #define ID_NOTEBOOK_CUT_FILTER_OPTIONS 10108
 #define ID_PANEL_CUTTER 10111
-#define ID_RADIOBUTTON 10116
-#define ID_RADIOBUTTON1 10117
-#define ID_TEXTCTRL_BEGIN_CUT 10118
-#define ID_TEXTCTRL_END_CUT 10119
-#define ID_BUTTON_SELECT_REGION 10114
-#define ID_BUTTON_ALL_TRACE 10115
-#define ID_CHECKBOX_CHECK_ORIGINAL_TIME 10120
-#define ID_CHECKBOX_REMOVE_FIRST_STATE 10121
-#define ID_CHECKBOX_BREAK_STATES 10122
-#define ID_CHECKBOX_REMOVE_LAST_STATE 10123
-#define ID_SPINCTRL_MAXIMUM_SIZE 10147
+#define ID_RADIOBUTTON_CUTTER_CUT_BY_TIME 10116
+#define ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT 10117
+#define ID_TEXTCTRL_CUTTER_BEGIN_CUT 10118
+#define ID_TEXTCTRL_CUTTER_END_CUT 10119
+#define ID_BUTTON_CUTTER_SELECT_REGION 10114
+#define ID_BUTTON_CUTTER_ALL_TRACE 10115
+#define ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME 10120
+#define ID_CHECKBOX_CUTTER_REMOVE_FIRST_STATE 10121
+#define ID_CHECKBOX_CUTTER_BREAK_STATES 10122
+#define ID_CHECKBOX_CUTTER_REMOVE_LAST_STATE 10123
+#define ID_SPINCTRL_CUTTER_MAXIMUM_SIZE 10147
 #define ID_PANEL_FILTER 10112
-#define ID_RADIOBUTTON2 10124
-#define ID_RADIOBUTTON3 10125
-#define ID_RADIOBUTTON4 10126
-#define ID_CHECKLISTBOX1 10128
-#define ID_BUTTON2 10129
-#define ID_BUTTON3 10130
-#define ID_BUTTON10 10151
-#define ID_LISTBOX 10141
-#define ID_BUTTON4 10142
-#define ID_BUTTON5 10143
-#define ID_SPINCTRL 10127
+#define ID_CHECKBOX_FILTER_DISCARD_STATE 10124
+#define ID_CHECKBOX_FILTER_DISCARD_EVENT 10125
+#define ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION 10126
+#define ID_CHECKLISTBOX_FILTER_STATES 10128
+#define ID_BUTTON_FILTER_SELECT_ALL 10129
+#define ID_BUTTON_FILTER_UNSELECT_ALL 10130
+#define ID_BUTTON_FILTER_SET_MINIMUM_TIME 10151
+#define ID_LISTBOX_FILTER_EVENTS 10141
+#define ID_BUTTON_FILTER_ADD 10142
+#define ID_BUTTON_FILTER_DELETE 10143
+#define ID_SPINCTRL_FILTER_SIZE 10127
 #define ID_PANEL_SOFTWARE_COUNTERS 10113
-#define ID_RADIOBUTTON5 10131
-#define ID_RADIOBUTTON6 10132
-#define ID_TEXTCTRL5 10133
-#define ID_TEXTCTRL6 10134
-#define ID_CHECKLISTBOX2 10148
-#define ID_BUTTON8 10149
-#define ID_BUTTON9 10150
-#define ID_RADIOBUTTON7 10135
+#define ID_RADIOBUTTON_SC_ON_INTERVALS 10131
+#define ID_RADIOBUTTON_SC_ON_STATES 10132
+#define ID_TEXTCTRL_SC_SAMPLING_INTERVAL 10133
+#define ID_TEXTCTRL_SC_MINIMUM_BURST_TIME 10134
+#define ID_CHECKLISTBOX_SC_SELECTED_EVENTS 10148
+#define ID_BUTTON_SC_SELECTED_EVENTS_ADD 10149
+#define ID_BUTTON_SC_SELECTED_EVENTS_DELETE 10150
+#define ID_RADIOBUTTON_SC_COUNT_EVENTS 10135
 #define ID_RADIOBUTTON8 10136
-#define ID_CHECKBOX9 10137
-#define ID_CHECKBOX10 10138
-#define ID_CHECKBOX11 10139
-#define ID_CHECKBOX12 10140
-#define ID_LISTBOX1 10144
-#define ID_BUTTON6 10145
-#define ID_BUTTON7 10146
+#define ID_CHECKBOX_SC_REMOVE_STATES 10137
+#define ID_CHECKBOX_SC_SUMMARIZE_USEFUL 10138
+#define ID_CHECKBOX_SC_GLOBAL_COUNTERS 10139
+#define ID_CHECKBOX_SC_ONLY_IN_BURSTS_COUNTING 10140
+#define ID_LISTBOX_SC_KEEP_EVENTS 10144
+#define ID_BUTTON_SC_KEEP_EVENTS_ADD 10145
+#define ID_BUTTON_SC_KEEP_EVENTS_DELETE 10146
 #define SYMBOL_CUTFILTERDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_CUTFILTERDIALOG_TITLE _("Cut & Filter")
 #define SYMBOL_CUTFILTERDIALOG_IDNAME ID_CUTFILTERDIALOG
@@ -156,7 +156,10 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_DOWN
   void OnBitmapbuttonPushDownClick( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CHECK_ORIGINAL_TIME
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_ALL_TRACE
+  void OnButtonCutterAllTraceClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
   void OnCheckOriginalTimeClick( wxCommandEvent& event );
 
 ////@end CutFilterDialog event handler declarations
@@ -174,6 +177,8 @@ public:
   static bool ShowToolTips();
 
   void UpdateToolList();
+  wxString formatNumber( double value );
+
 
 ////@begin CutFilterDialog member variables
   wxFilePickerCtrl* filePickerTrace;
@@ -181,17 +186,44 @@ public:
   wxBitmapButton* buttonUp;
   wxBitmapButton* buttonDown;
   wxNotebook* notebookTools;
-  wxRadioButton* radioButtonCutByTime;
-  wxRadioButton* radioButtonCutByPercent;
-  wxTextCtrl* textBeginCut;
-  wxTextCtrl* textEndCut;
-  wxButton* buttonSelectRegion;
-  wxButton* buttonAllTrace;
-  wxCheckBox* checkUseOriginalTime;
-  wxCheckBox* checkRemoveFirstState;
-  wxCheckBox* checkBreakStates;
-  wxCheckBox* checkRemoveLastState;
-  wxSpinCtrl* textMaximumTraceSize;
+  wxRadioButton* radioCutterCutByTime;
+  wxRadioButton* radioCutterCutByPercent;
+  wxTextCtrl* textCutterBeginCut;
+  wxTextCtrl* textCutterEndCut;
+  wxButton* buttonCutterSelectRegion;
+  wxButton* buttonCutterAllTrace;
+  wxCheckBox* checkCutterUseOriginalTime;
+  wxCheckBox* checkCutterRemoveFirstState;
+  wxCheckBox* checkCutterBreakStates;
+  wxCheckBox* checkCutterRemoveLastState;
+  wxSpinCtrl* textCutterMaximumTraceSize;
+  wxCheckBox* checkFilterDiscardState;
+  wxCheckBox* checkFilterDiscardEvent;
+  wxCheckBox* checkFilterDiscardCommunication;
+  wxCheckListBox* checkListFilterStates;
+  wxButton* buttonFilterSelectAll;
+  wxButton* buttonFilterUnselectAll;
+  wxButton* buttonFilterSetMinimumTime;
+  wxListBox* listboxFilterEvents;
+  wxButton* buttonFilterAdd;
+  wxButton* buttonFilterDelete;
+  wxSpinCtrl* textFilterSize;
+  wxRadioButton* radioSCOnIntervals;
+  wxRadioButton* radioSCOnStates;
+  wxTextCtrl* textSCSamplingInterval;
+  wxTextCtrl* textSCMinimumBurstTime;
+  wxCheckListBox* checkListSCSelectedEvents;
+  wxButton* buttonSCSelectedEventsAdd;
+  wxButton* buttonSCSelectedEventsDelete;
+  wxRadioButton* buttonSCCountEvents;
+  wxRadioButton* buttonSCAccumulateValues;
+  wxCheckBox* checkSCRemoveStates;
+  wxCheckBox* checkSCSummarizeUseful;
+  wxCheckBox* checkSCGlobalCounters;
+  wxCheckBox* checkSCOnlyInBurstCounting;
+  wxListBox* listSCKeepEvents;
+  wxButton* buttonSCKeepEventsAdd;
+  wxButton* buttonSCKeepEventsDelete;
 ////@end CutFilterDialog member variables
 
   vector< string > listToolOrder; // Names of the tools
