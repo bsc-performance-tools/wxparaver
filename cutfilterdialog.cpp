@@ -47,7 +47,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
-
+#include <wx/filedlg.h>
 
 ////@begin XPM images
 #include "arrow_up.xpm"
@@ -71,6 +71,8 @@ IMPLEMENT_DYNAMIC_CLASS( CutFilterDialog, wxDialog )
 BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
 ////@begin CutFilterDialog event table entries
+  EVT_FILEPICKER_CHANGED( ID_FILECTRL_CUTFILTER_TRACE_SELECTION, CutFilterDialog::OnFilectrlTracePickerChanged )
+
   EVT_UPDATE_UI( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderUpdate )
 
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_UP, CutFilterDialog::OnBitmapbuttonPushUpClick )
@@ -179,7 +181,7 @@ void CutFilterDialog::CreateControls()
     itemStaticText4->SetToolTip(_("Trace that will be used by the Cut/Filter toolkit."));
   itemBoxSizer3->Add(itemStaticText4, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  filePickerTrace = new wxFilePickerCtrl( itemDialog1, ID_FILECTRL_CUTFILTER_TRACE_SELECTION, wxEmptyString, wxEmptyString, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+  filePickerTrace = new wxFilePickerCtrl( itemDialog1, ID_FILECTRL_CUTFILTER_TRACE_SELECTION, _T("\"\""), _("Trace to Cut/Filter"), _T("Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR );
   if (CutFilterDialog::ShowToolTips())
     filePickerTrace->SetToolTip(_("Trace that will be used by the Cut/Filter toolkit."));
   itemBoxSizer3->Add(filePickerTrace, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -491,6 +493,11 @@ void CutFilterDialog::CreateControls()
   listToolOrder.push_back( string("Software Counters") );
 
   UpdateToolList();
+
+  //filePickerTrace->SetMessage( _( "Load Trace" ) );
+  filePickerTrace->SetName( _( "Load Trace" ) );
+  //filePickerTrace->SetPath( wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() ) );
+  //filePickerTrace->SetStyle(  wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
 }
 
 
@@ -672,5 +679,18 @@ void CutFilterDialog::OnCheckListToolOrderUpdate( wxUpdateUIEvent& event )
 
     pos++;
   }
+}
+
+
+/*!
+ * wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_TRACE_SELECTION
+ */
+
+void CutFilterDialog::OnFilectrlTracePickerChanged( wxFileDirPickerEvent& event )
+{
+  wxString path = filePickerTrace->GetPath();
+cout << path << endl;
+//  tracePath = wxFileName( path ).GetPath();
+//  DoLoadTrace( std::string( path.mb_str() ) );
 }
 

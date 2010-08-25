@@ -144,6 +144,9 @@ public:
 
 ////@begin CutFilterDialog event handler declarations
 
+  /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_TRACE_SELECTION
+  void OnFilectrlTracePickerChanged( wxFileDirPickerEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_CHECKLISTBOX
   void OnCheckListToolOrderUpdate( wxUpdateUIEvent& event );
 
