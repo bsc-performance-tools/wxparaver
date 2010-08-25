@@ -52,6 +52,7 @@ using namespace std;
 
 ////@begin forward declarations
 class wxFilePickerCtrl;
+class wxNotebook;
 class wxSpinCtrl;
 ////@end forward declarations
 
@@ -143,6 +144,9 @@ public:
 
 ////@begin CutFilterDialog event handler declarations
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKLISTBOX
+  void OnCheckListToolOrderUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_UP
   void OnBitmapbuttonPushUpClick( wxCommandEvent& event );
 
@@ -173,6 +177,7 @@ public:
   wxCheckListBox* checkListToolOrder;
   wxBitmapButton* buttonUp;
   wxBitmapButton* buttonDown;
+  wxNotebook* notebookTools;
   wxRadioButton* radioButtonCutByTime;
   wxRadioButton* radioButtonCutByPercent;
   wxTextCtrl* textBeginCut;

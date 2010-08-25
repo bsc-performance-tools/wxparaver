@@ -46,6 +46,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 
 ////@begin XPM images
@@ -70,6 +71,8 @@ IMPLEMENT_DYNAMIC_CLASS( CutFilterDialog, wxDialog )
 BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
 ////@begin CutFilterDialog event table entries
+  EVT_UPDATE_UI( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderUpdate )
+
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_UP, CutFilterDialog::OnBitmapbuttonPushUpClick )
 
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_DOWN, CutFilterDialog::OnBitmapbuttonPushDownClick )
@@ -140,6 +143,7 @@ void CutFilterDialog::Init()
   checkListToolOrder = NULL;
   buttonUp = NULL;
   buttonDown = NULL;
+  notebookTools = NULL;
   radioButtonCutByTime = NULL;
   radioButtonCutByPercent = NULL;
   textBeginCut = NULL;
@@ -193,24 +197,24 @@ void CutFilterDialog::CreateControls()
   checkListToolOrder = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX, wxDefaultPosition, wxDefaultSize, checkListToolOrderStrings, wxLB_SINGLE|wxLB_NEEDED_SB );
   if (CutFilterDialog::ShowToolTips())
     checkListToolOrder->SetToolTip(_("Select the order of the Cut/Filter tools."));
-  itemBoxSizer8->Add(checkListToolOrder, 3, wxGROW|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer8->Add(checkListToolOrder, 3, wxGROW|wxLEFT, 2);
 
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer8->Add(itemBoxSizer10, 1, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer8->Add(itemBoxSizer10, 1, wxALIGN_CENTER_VERTICAL, 2);
 
   buttonUp = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_PUSH_UP, itemDialog1->GetBitmapResource(wxT("arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (CutFilterDialog::ShowToolTips())
     buttonUp->SetToolTip(_("Select the order of the Cut/Filter tools."));
-  itemBoxSizer10->Add(buttonUp, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer10->Add(buttonUp, 1, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
   buttonDown = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_PUSH_DOWN, itemDialog1->GetBitmapResource(wxT("arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (CutFilterDialog::ShowToolTips())
     buttonDown->SetToolTip(_("Select the order of the Cut/Filter tools."));
-  itemBoxSizer10->Add(buttonDown, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer10->Add(buttonDown, 1, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  wxNotebook* itemNotebook13 = new wxNotebook( itemDialog1, ID_NOTEBOOK_CUT_FILTER_OPTIONS, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+  notebookTools = new wxNotebook( itemDialog1, ID_NOTEBOOK_CUT_FILTER_OPTIONS, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  wxPanel* itemPanel14 = new wxPanel( itemNotebook13, ID_PANEL_CUTTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxPanel* itemPanel14 = new wxPanel( notebookTools, ID_PANEL_CUTTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxVERTICAL);
   itemPanel14->SetSizer(itemBoxSizer15);
 
@@ -290,9 +294,9 @@ void CutFilterDialog::CreateControls()
   wxStaticText* itemStaticText41 = new wxStaticText( itemPanel14, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStaticBoxSizer38->Add(itemStaticText41, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemNotebook13->AddPage(itemPanel14, _("Cutter"));
+  notebookTools->AddPage(itemPanel14, _("Cutter"));
 
-  wxPanel* itemPanel42 = new wxPanel( itemNotebook13, ID_PANEL_FILTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxPanel* itemPanel42 = new wxPanel( notebookTools, ID_PANEL_FILTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxVERTICAL);
   itemPanel42->SetSizer(itemBoxSizer43);
 
@@ -321,13 +325,13 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer50 = new wxBoxSizer(wxVERTICAL);
   itemStaticBoxSizer48->Add(itemBoxSizer50, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
   wxButton* itemButton51 = new wxButton( itemPanel42, ID_BUTTON2, _("Select all"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer50->Add(itemButton51, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer50->Add(itemButton51, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
   wxButton* itemButton52 = new wxButton( itemPanel42, ID_BUTTON3, _("Unselect all"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer50->Add(itemButton52, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer50->Add(itemButton52, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
   wxButton* itemButton53 = new wxButton( itemPanel42, ID_BUTTON10, _("Set min time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer50->Add(itemButton53, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer50->Add(itemButton53, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
   wxStaticBox* itemStaticBoxSizer54Static = new wxStaticBox(itemPanel42, wxID_STATIC, _(" Events "));
   wxStaticBoxSizer* itemStaticBoxSizer54 = new wxStaticBoxSizer(itemStaticBoxSizer54Static, wxHORIZONTAL);
@@ -339,10 +343,10 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer56 = new wxBoxSizer(wxVERTICAL);
   itemStaticBoxSizer54->Add(itemBoxSizer56, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
   wxButton* itemButton57 = new wxButton( itemPanel42, ID_BUTTON4, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer56->Add(itemButton57, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer56->Add(itemButton57, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
   wxButton* itemButton58 = new wxButton( itemPanel42, ID_BUTTON5, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer56->Add(itemButton58, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer56->Add(itemButton58, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
   wxStaticBox* itemStaticBoxSizer59Static = new wxStaticBox(itemPanel42, wxID_STATIC, _(" Communications "));
   wxStaticBoxSizer* itemStaticBoxSizer59 = new wxStaticBoxSizer(itemStaticBoxSizer59Static, wxHORIZONTAL);
@@ -356,9 +360,9 @@ void CutFilterDialog::CreateControls()
   wxStaticText* itemStaticText62 = new wxStaticText( itemPanel42, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStaticBoxSizer59->Add(itemStaticText62, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemNotebook13->AddPage(itemPanel42, _("Filter"));
+  notebookTools->AddPage(itemPanel42, _("Filter"));
 
-  wxPanel* itemPanel63 = new wxPanel( itemNotebook13, ID_PANEL_SOFTWARE_COUNTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxPanel* itemPanel63 = new wxPanel( notebookTools, ID_PANEL_SOFTWARE_COUNTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   wxBoxSizer* itemBoxSizer64 = new wxBoxSizer(wxVERTICAL);
   itemPanel63->SetSizer(itemBoxSizer64);
 
@@ -464,9 +468,9 @@ void CutFilterDialog::CreateControls()
   wxButton* itemButton98 = new wxButton( itemPanel63, ID_BUTTON7, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer96->Add(itemButton98, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  itemNotebook13->AddPage(itemPanel63, _("Software Counters"));
+  notebookTools->AddPage(itemPanel63, _("Software Counters"));
 
-  itemBoxSizer2->Add(itemNotebook13, 4, wxGROW|wxALL, 5);
+  itemBoxSizer2->Add(notebookTools, 4, wxGROW|wxALL, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer99 = new wxStdDialogButtonSizer;
 
@@ -594,9 +598,6 @@ void CutFilterDialog::OnBitmapbuttonPushUpClick( wxCommandEvent& event )
 }
 
 
-
-
-
 void CutFilterDialog::UpdateToolList()
 {
   wxArrayString items;
@@ -649,6 +650,27 @@ void CutFilterDialog::OnBitmapbuttonPushDownClick( wxCommandEvent& event )
 
     // Keep the selection
     checkListToolOrder->SetSelection( ++lastItemSelected );
+  }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKLISTBOX
+ */
+
+void CutFilterDialog::OnCheckListToolOrderUpdate( wxUpdateUIEvent& event )
+{
+  int pos = 0;
+
+  for( vector< string >::iterator it = listToolOrder.begin(); it != listToolOrder.end(); ++it )
+  {
+    for( size_t i = 0; i < notebookTools->GetPageCount(); ++i )
+    {
+      if ( *it == string( notebookTools->GetPageText( i ).c_str()))
+        (notebookTools->GetPage( i ))->Enable( checkListToolOrder->IsChecked( pos ) );
+    }
+
+    pos++;
   }
 }
 
