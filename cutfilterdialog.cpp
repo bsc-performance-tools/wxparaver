@@ -235,7 +235,7 @@ void CutFilterDialog::CreateControls()
     itemStaticText5->SetToolTip(_("Trace that will be used by the Cut/Filter toolkit."));
   itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_LEFT|wxALL, 5);
 
-  filePickerTrace = new wxFilePickerCtrl( itemDialog1, ID_FILECTRL_CUTFILTER_TRACE_SELECTION, _T("\"\""), _("Trace to Cut/Filter"), _T("Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR );
+  filePickerTrace = new wxFilePickerCtrl( itemDialog1, ID_FILECTRL_CUTFILTER_TRACE_SELECTION, wxEmptyString, _("Trace to Cut/Filter"), _T("Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR );
   if (CutFilterDialog::ShowToolTips())
     filePickerTrace->SetToolTip(_("Trace that will be used by the Cut/Filter toolkit."));
   itemBoxSizer4->Add(filePickerTrace, 2, wxGROW|wxALL, 5);
@@ -872,10 +872,38 @@ void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& ev
 void CutFilterDialog::OnOkClick( wxCommandEvent& event )
 {
   // Any trace selected?
+  wxString path = filePickerTrace->GetPath();
+  if ( path == _("") )
+  {
+    wxMessageDialog message( this, _("Missing trace name.\nPlease choose one trace."), _( "Warning" ), wxOK );
+//      raiseCurrentWindow = false;
+    message.ShowModal();
+//      raiseCurrentWindow = true;
+    filePickerTrace->SetFocus();
+  }
 
   // Any tool selected?
+  bool someUtilitySelected = false;
+  for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
+  {
+    if ( checkListToolOrder->IsChecked( i ) )
+    {
+      someUtilitySelected = true;
+      break;
+    }
+  }
 
-  // Load resulting trace?
+  if ( !someUtilitySelected )
+  {
+    wxMessageDialog message( this, _("No utility selected.\nPlease choose the utilities to apply."), _( "Warning" ), wxOK );
+//      raiseCurrentWindow = false;
+    message.ShowModal();
+//      raiseCurrentWindow = true;
+    checkListToolOrder->SetFocus();
+  }
+
+  // Create TraceOptions
+
 }
 
 
