@@ -2768,11 +2768,92 @@ void paraverMain::OnToolCutTraceClick( wxCommandEvent& event )
   ShowCutTraceWindow();
 }
 
+
+string paraverMain::DoLoadFilteredTrace( string traceFileName,
+                                         TraceOptions *traceOptions,
+                                         vector< int > &filterToolOrder )
+{
+  TraceCutter *traceCutter;
+  TraceFilter *traceFilter;
+  TraceSoftwareCounters *traceSoftwareCounters;
+  //TraceCommunicationsFusion *traceCommunicationsFusion;
+
+  string tmpTraceIn, tmpTraceOut;
+  char tmpNameIn[1024], tmpNameOut[1024];
+  string strOutputFile;
+  vector< string > tmpFiles;
+
+  // Concatenate Filter Utilities
+  strcpy( tmpNameOut, (char *)traceFileName.c_str() );
+
+  for( UINT16 i = 0; i < filterToolOrder.size(); ++i )
+  {
+    strcpy( tmpNameIn, tmpNameOut );
+    localKernel->getNewTraceName( tmpNameIn, tmpNameOut, filterToolOrder[ i ] );
+
+    switch( filterToolOrder[i] )
+    {
+      case INC_CHOP_COUNTER:
+        traceCutter = localKernel->newTraceCutter( tmpNameIn,
+                                                tmpNameOut,
+                                                traceOptions );
+        localKernel->copyPCF( tmpNameIn, tmpNameOut );
+        break;
+
+      case INC_FILTER_COUNTER:
+        traceFilter = localKernel->newTraceFilter( tmpNameIn,
+                                                tmpNameOut,
+                                                traceOptions );
+        localKernel->copyPCF( tmpNameIn, tmpNameOut );
+        break;
+
+      case INC_SC_COUNTER:
+        traceSoftwareCounters = localKernel->newTraceSoftwareCounters( tmpNameIn,
+                                                                    tmpNameOut,
+                                                                    traceOptions );
+        break;
+
+      default:
+        break;
+    }
+
+    localKernel->copyROW( tmpNameIn, tmpNameOut );
+    tmpFiles.push_back( tmpNameOut );
+  }
+
+  // Delete intermediate files
+  char *pcfName, *rowName;
+  for( UINT16 i = 0; i < tmpFiles.size() - 1; ++i )
+  {
+    pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), "pcf" );
+    rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), "row" );
+    remove( tmpFiles[ i ].c_str() );
+    remove( pcfName );
+    remove( rowName );
+  }
+
+  // Delete utilities
+//  delete traceOptions;
+//  delete traceCutter;
+//  delete traceFilter;
+//  delete traceCommunicationsFusionTrace;
+//  delete traceSoftwareCounters;
+
+  return string( tmpNameOut );
+}
+
 void paraverMain::ShowCutTraceWindow()
 {
   CutFilterDialog cutFilterDialog( this );
 
   if( cutFilterDialog.ShowModal() == wxID_OK )
   {
+    vector< int > filterToolOrder = cutFilterDialog.GetToolsOrder();
+    string resultingTrace = DoLoadFilteredTrace( cutFilterDialog.GetTraceFileName(),
+                                                 cutFilterDialog.GetTraceOptions(),
+                                                 filterToolOrder );
+
+    if ( cutFilterDialog.LoadResultingTrace() )
+      DoLoadTrace( resultingTrace );
   }
 }

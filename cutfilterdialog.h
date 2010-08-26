@@ -56,6 +56,7 @@ class wxNotebook;
 class wxSpinCtrl;
 ////@end forward declarations
 
+class TraceOptions;
 /*!
  * Control identifiers
  */
@@ -90,9 +91,11 @@ class wxSpinCtrl;
 #define ID_BUTTON_FILTER_SELECT_ALL 10129
 #define ID_BUTTON_FILTER_UNSELECT_ALL 10130
 #define ID_BUTTON_FILTER_SET_MINIMUM_TIME 10151
+#define ID_CHECKBOX5 10156
 #define ID_LISTBOX_FILTER_EVENTS 10141
 #define ID_BUTTON_FILTER_ADD 10142
 #define ID_BUTTON_FILTER_DELETE 10143
+#define ID_CHECKBOX_FILTER_DISCARD_LISTED_EVENTS 10155
 #define ID_SPINCTRL_FILTER_SIZE 10127
 #define ID_PANEL_SOFTWARE_COUNTERS 10113
 #define ID_RADIOBUTTON_SC_ON_INTERVALS 10131
@@ -171,12 +174,21 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
   void OnCheckOriginalTimeClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_PANEL_FILTER
+  void OnPanelFilterUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_PANEL_SOFTWARE_COUNTERS
   void OnPanelSoftwareCountersUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
+  void OnOkClick( wxCommandEvent& event );
 
 ////@end CutFilterDialog event handler declarations
 
 ////@begin CutFilterDialog member function declarations
+
+  TraceOptions * GetTraceOptions() const { return traceOptions ; }
+  void SetTraceOptions(TraceOptions * value) { traceOptions = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -190,6 +202,10 @@ public:
 
   void UpdateToolList();
   wxString formatNumber( double value );
+
+  string GetTraceFileName();
+  vector< int > GetToolsOrder();
+  bool LoadResultingTrace();
 
 
 ////@begin CutFilterDialog member variables
@@ -210,17 +226,24 @@ public:
   wxCheckBox* checkCutterBreakStates;
   wxCheckBox* checkCutterRemoveLastState;
   wxSpinCtrl* textCutterMaximumTraceSize;
-  wxCheckBox* checkFilterDiscardState;
-  wxCheckBox* checkFilterDiscardEvent;
-  wxCheckBox* checkFilterDiscardCommunication;
+  wxCheckBox* checkFilterDiscardStateRecords;
+  wxCheckBox* checkFilterDiscardEventRecords;
+  wxCheckBox* checkFilterDiscardCommunicationRecords;
+  wxStaticBox* staticBoxSizerFilterStates;
   wxCheckListBox* checkListFilterStates;
   wxButton* buttonFilterSelectAll;
   wxButton* buttonFilterUnselectAll;
   wxButton* buttonFilterSetMinimumTime;
+  wxCheckBox* checkFilterDiscardListedStates;
+  wxStaticBox* staticBoxSizerFilterEvents;
   wxListBox* listboxFilterEvents;
   wxButton* buttonFilterAdd;
   wxButton* buttonFilterDelete;
+  wxCheckBox* checkFilterDiscardListedEvents;
+  wxStaticBox* staticBoxSizerFilterCommunications;
+  wxStaticText* staticTextFilterSize;
   wxSpinCtrl* textFilterSize;
+  wxStaticText* staticTextFilterSizeUnit;
   wxRadioButton* radioSCOnIntervals;
   wxRadioButton* radioSCOnStates;
   wxStaticText* staticTextSCSamplingInterval;
@@ -239,6 +262,8 @@ public:
   wxListBox* listSCKeepEvents;
   wxButton* buttonSCKeepEventsAdd;
   wxButton* buttonSCKeepEventsDelete;
+private:
+  TraceOptions * traceOptions;
 ////@end CutFilterDialog member variables
 
   vector< string > listToolOrder; // Names of the tools

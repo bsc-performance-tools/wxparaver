@@ -421,6 +421,10 @@ private:
   bool DoLoadCFG( const string &path );
   void ShowDerivedDialog();
   void ShowHistogramDialog();
+
+  string DoLoadFilteredTrace( string traceFileName,
+                              TraceOptions *traceOptions,
+                              vector< int > &filterToolOrder );
   void ShowCutTraceWindow();
   
   void PrepareToExit();

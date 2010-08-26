@@ -19124,6 +19124,7 @@
           <string name="id-suffix">""</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
+          <string name="variable-0">"traceOptions|TraceOptions *|TraceOptions|NULL|2|0|"</string>
           <string name="proxy-Id name">"ID_CUTFILTERDIALOG"</string>
           <long name="proxy-Id value">10103</long>
           <string name="proxy-Class">"CutFilterDialog"</string>
@@ -21106,7 +21107,7 @@
                         <string name="proxy-Implementation filename">""</string>
                         <string name="proxy-Header filename">""</string>
                         <string name="proxy-Member variable name">"checkCutterBreakStates"</string>
-                        <string name="proxy-Label">"Break states"</string>
+                        <string name="proxy-Label">"Don't break states"</string>
                         <bool name="proxy-Initial value">0</bool>
                         <string name="proxy-Help text">""</string>
                         <string name="proxy-Tooltip text">""</string>
@@ -21466,6 +21467,7 @@
                 <long name="title-mode">0</long>
                 <long name="locked">0</long>
                 <string name="proxy-type">"wbPanelProxy"</string>
+                <string name="event-handler-0">"wxEVT_UPDATE_UI|OnPanelFilterUpdate|NONE||CutFilterDialog"</string>
                 <string name="proxy-Id name">"ID_PANEL_FILTER"</string>
                 <long name="proxy-Id value">10112</long>
                 <string name="proxy-Name">""</string>
@@ -21555,7 +21557,7 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   <document>
-                    <string name="title">"wxStaticBoxSizer V"</string>
+                    <string name="title">"wxStaticBoxSizer H"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
                     <string name="icon-name">"sizer"</string>
@@ -21574,7 +21576,7 @@
                     <bool name="proxy-Hidden">0</bool>
                     <bool name="proxy-Enabled">1</bool>
                     <string name="proxy-Static box class">"wxStaticBox"</string>
-                    <string name="proxy-Orientation">"Vertical"</string>
+                    <string name="proxy-Orientation">"Horizontal"</string>
                     <string name="proxy-AlignH">"Expand"</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <long name="proxy-Stretch factor">0</long>
@@ -21606,7 +21608,7 @@
                       <bool name="proxy-Separate files">0</bool>
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
-                      <string name="proxy-Member variable name">"checkFilterDiscardState"</string>
+                      <string name="proxy-Member variable name">"checkFilterDiscardStateRecords"</string>
                       <string name="proxy-Label">"State"</string>
                       <bool name="proxy-Initial value">0</bool>
                       <string name="proxy-Help text">""</string>
@@ -21637,7 +21639,7 @@
                       <long name="proxy-Width">-1</long>
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Expand"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
+                      <string name="proxy-AlignV">"Expand"</string>
                       <long name="proxy-Stretch factor">0</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
@@ -21669,7 +21671,7 @@
                       <bool name="proxy-Separate files">0</bool>
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
-                      <string name="proxy-Member variable name">"checkFilterDiscardEvent"</string>
+                      <string name="proxy-Member variable name">"checkFilterDiscardEventRecords"</string>
                       <string name="proxy-Label">"Event"</string>
                       <bool name="proxy-Initial value">0</bool>
                       <string name="proxy-Help text">""</string>
@@ -21700,7 +21702,7 @@
                       <long name="proxy-Width">-1</long>
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Expand"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
+                      <string name="proxy-AlignV">"Expand"</string>
                       <long name="proxy-Stretch factor">0</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
@@ -21732,7 +21734,7 @@
                       <bool name="proxy-Separate files">0</bool>
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
-                      <string name="proxy-Member variable name">"checkFilterDiscardCommunication"</string>
+                      <string name="proxy-Member variable name">"checkFilterDiscardCommunicationRecords"</string>
                       <string name="proxy-Label">"Communication"</string>
                       <bool name="proxy-Initial value">0</bool>
                       <string name="proxy-Help text">""</string>
@@ -21763,7 +21765,7 @@
                       <long name="proxy-Width">-1</long>
                       <long name="proxy-Height">-1</long>
                       <string name="proxy-AlignH">"Expand"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
+                      <string name="proxy-AlignV">"Expand"</string>
                       <long name="proxy-Stretch factor">0</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
@@ -21790,7 +21792,7 @@
                     <string name="proxy-Id name">"wxID_STATIC"</string>
                     <long name="proxy-Id value">5105</long>
                     <string name="proxy-Label">" States "</string>
-                    <string name="proxy-Member variable name">""</string>
+                    <string name="proxy-Member variable name">"staticBoxSizerFilterStates"</string>
                     <string name="proxy-Sizer member variable name">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -21894,7 +21896,7 @@
                       <string name="proxy-Orientation">"Vertical"</string>
                       <string name="proxy-Member variable name">""</string>
                       <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
+                      <string name="proxy-AlignV">"Expand"</string>
                       <long name="proxy-Stretch factor">1</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
@@ -22100,6 +22102,69 @@
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
                       </document>
+                      <document>
+                        <string name="title">"wxCheckBox: ID_CHECKBOX5"</string>
+                        <string name="type">"dialog-control-document"</string>
+                        <string name="filename">""</string>
+                        <string name="icon-name">"checkbox"</string>
+                        <long name="is-transient">0</long>
+                        <long name="owns-file">1</long>
+                        <long name="title-mode">0</long>
+                        <long name="locked">0</long>
+                        <string name="proxy-type">"wbCheckBoxProxy"</string>
+                        <string name="proxy-Id name">"ID_CHECKBOX5"</string>
+                        <long name="proxy-Id value">10156</long>
+                        <string name="proxy-Name">""</string>
+                        <string name="proxy-Class">"wxCheckBox"</string>
+                        <string name="proxy-Base class">"wxCheckBox"</string>
+                        <bool name="proxy-External implementation">1</bool>
+                        <bool name="proxy-Separate files">0</bool>
+                        <string name="proxy-Implementation filename">""</string>
+                        <string name="proxy-Header filename">""</string>
+                        <string name="proxy-Member variable name">"checkFilterDiscardListedStates"</string>
+                        <string name="proxy-Label">"Discard"</string>
+                        <bool name="proxy-Initial value">0</bool>
+                        <string name="proxy-Help text">""</string>
+                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Data variable">""</string>
+                        <string name="proxy-Data validator">""</string>
+                        <string name="proxy-Data source">""</string>
+                        <string name="proxy-Data class name">""</string>
+                        <string name="proxy-Data class implementation filename">""</string>
+                        <string name="proxy-Data class header filename">""</string>
+                        <string name="proxy-Data class manager window">""</string>
+                        <string name="proxy-Background colour">""</string>
+                        <string name="proxy-Foreground colour">""</string>
+                        <string name="proxy-Font">""</string>
+                        <bool name="proxy-Hidden">0</bool>
+                        <bool name="proxy-Enabled">1</bool>
+                        <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                        <bool name="proxy-wxALIGN_RIGHT">0</bool>
+                        <bool name="proxy-wxCHK_2STATE">0</bool>
+                        <bool name="proxy-wxCHK_3STATE">0</bool>
+                        <bool name="proxy-wxCHK_ALLOW_3RD_STATE_FOR_USER">0</bool>
+                        <bool name="proxy-wxWANTS_CHARS">0</bool>
+                        <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
+                        <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+                        <string name="proxy-Custom styles">""</string>
+                        <long name="proxy-X">-1</long>
+                        <long name="proxy-Y">-1</long>
+                        <long name="proxy-Width">-1</long>
+                        <long name="proxy-Height">-1</long>
+                        <string name="proxy-AlignH">"Centre"</string>
+                        <string name="proxy-AlignV">"Centre"</string>
+                        <long name="proxy-Stretch factor">1</long>
+                        <long name="proxy-Border">5</long>
+                        <bool name="proxy-wxLEFT">1</bool>
+                        <bool name="proxy-wxRIGHT">1</bool>
+                        <bool name="proxy-wxTOP">1</bool>
+                        <bool name="proxy-wxBOTTOM">1</bool>
+                        <bool name="proxy-wxSHAPED">0</bool>
+                        <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+                        <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+                        <string name="proxy-Custom arguments">""</string>
+                        <string name="proxy-Custom ctor arguments">""</string>
+                      </document>
                     </document>
                   </document>
                   <document>
@@ -22115,7 +22180,7 @@
                     <string name="proxy-Id name">"wxID_STATIC"</string>
                     <long name="proxy-Id value">5105</long>
                     <string name="proxy-Label">" Events "</string>
-                    <string name="proxy-Member variable name">""</string>
+                    <string name="proxy-Member variable name">"staticBoxSizerFilterEvents"</string>
                     <string name="proxy-Sizer member variable name">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -22220,7 +22285,7 @@
                       <string name="proxy-Orientation">"Vertical"</string>
                       <string name="proxy-Member variable name">""</string>
                       <string name="proxy-AlignH">"Centre"</string>
-                      <string name="proxy-AlignV">"Centre"</string>
+                      <string name="proxy-AlignV">"Expand"</string>
                       <long name="proxy-Stretch factor">1</long>
                       <long name="proxy-Border">5</long>
                       <bool name="proxy-wxLEFT">1</bool>
@@ -22361,6 +22426,69 @@
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
                       </document>
+                      <document>
+                        <string name="title">"wxCheckBox: ID_CHECKBOX_FILTER_DISCARD_LISTED_EVENTS"</string>
+                        <string name="type">"dialog-control-document"</string>
+                        <string name="filename">""</string>
+                        <string name="icon-name">"checkbox"</string>
+                        <long name="is-transient">0</long>
+                        <long name="owns-file">1</long>
+                        <long name="title-mode">0</long>
+                        <long name="locked">0</long>
+                        <string name="proxy-type">"wbCheckBoxProxy"</string>
+                        <string name="proxy-Id name">"ID_CHECKBOX_FILTER_DISCARD_LISTED_EVENTS"</string>
+                        <long name="proxy-Id value">10155</long>
+                        <string name="proxy-Name">""</string>
+                        <string name="proxy-Class">"wxCheckBox"</string>
+                        <string name="proxy-Base class">"wxCheckBox"</string>
+                        <bool name="proxy-External implementation">1</bool>
+                        <bool name="proxy-Separate files">0</bool>
+                        <string name="proxy-Implementation filename">""</string>
+                        <string name="proxy-Header filename">""</string>
+                        <string name="proxy-Member variable name">"checkFilterDiscardListedEvents"</string>
+                        <string name="proxy-Label">"Discard"</string>
+                        <bool name="proxy-Initial value">0</bool>
+                        <string name="proxy-Help text">""</string>
+                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Data variable">""</string>
+                        <string name="proxy-Data validator">""</string>
+                        <string name="proxy-Data source">""</string>
+                        <string name="proxy-Data class name">""</string>
+                        <string name="proxy-Data class implementation filename">""</string>
+                        <string name="proxy-Data class header filename">""</string>
+                        <string name="proxy-Data class manager window">""</string>
+                        <string name="proxy-Background colour">""</string>
+                        <string name="proxy-Foreground colour">""</string>
+                        <string name="proxy-Font">""</string>
+                        <bool name="proxy-Hidden">0</bool>
+                        <bool name="proxy-Enabled">1</bool>
+                        <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                        <bool name="proxy-wxALIGN_RIGHT">0</bool>
+                        <bool name="proxy-wxCHK_2STATE">0</bool>
+                        <bool name="proxy-wxCHK_3STATE">0</bool>
+                        <bool name="proxy-wxCHK_ALLOW_3RD_STATE_FOR_USER">0</bool>
+                        <bool name="proxy-wxWANTS_CHARS">0</bool>
+                        <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
+                        <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+                        <string name="proxy-Custom styles">""</string>
+                        <long name="proxy-X">-1</long>
+                        <long name="proxy-Y">-1</long>
+                        <long name="proxy-Width">-1</long>
+                        <long name="proxy-Height">-1</long>
+                        <string name="proxy-AlignH">"Centre"</string>
+                        <string name="proxy-AlignV">"Centre"</string>
+                        <long name="proxy-Stretch factor">1</long>
+                        <long name="proxy-Border">5</long>
+                        <bool name="proxy-wxLEFT">1</bool>
+                        <bool name="proxy-wxRIGHT">1</bool>
+                        <bool name="proxy-wxTOP">1</bool>
+                        <bool name="proxy-wxBOTTOM">1</bool>
+                        <bool name="proxy-wxSHAPED">0</bool>
+                        <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+                        <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+                        <string name="proxy-Custom arguments">""</string>
+                        <string name="proxy-Custom ctor arguments">""</string>
+                      </document>
                     </document>
                   </document>
                   <document>
@@ -22376,7 +22504,7 @@
                     <string name="proxy-Id name">"wxID_STATIC"</string>
                     <long name="proxy-Id value">5105</long>
                     <string name="proxy-Label">" Communications "</string>
-                    <string name="proxy-Member variable name">""</string>
+                    <string name="proxy-Member variable name">"staticBoxSizerFilterCommunications"</string>
                     <string name="proxy-Sizer member variable name">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -22415,7 +22543,7 @@
                       <bool name="proxy-Separate files">0</bool>
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
-                      <string name="proxy-Member variable name">""</string>
+                      <string name="proxy-Member variable name">"staticTextFilterSize"</string>
                       <string name="proxy-Label">"Size"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
@@ -22552,7 +22680,7 @@
                       <bool name="proxy-Separate files">0</bool>
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
-                      <string name="proxy-Member variable name">""</string>
+                      <string name="proxy-Member variable name">"staticTextFilterSizeUnit"</string>
                       <string name="proxy-Label">"MB"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
@@ -24506,6 +24634,7 @@
                 <long name="title-mode">0</long>
                 <long name="locked">1</long>
                 <string name="proxy-type">"wbButtonProxy"</string>
+                <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnOkClick|NONE||CutFilterDialog"</string>
                 <string name="proxy-Id name">"wxID_OK"</string>
                 <long name="proxy-Id value">5100</long>
                 <string name="proxy-Name">""</string>
