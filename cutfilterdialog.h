@@ -63,6 +63,9 @@ class wxSpinCtrl;
 ////@begin control identifiers
 #define ID_CUTFILTERDIALOG 10103
 #define ID_FILECTRL_CUTFILTER_TRACE_SELECTION 10106
+#define ID_CHECKBOX_LOAD_RESULTING_TRACE 10152
+#define ID_BUTTON 10153
+#define ID_BUTTON1 10154
 #define ID_CHECKLISTBOX 10107
 #define ID_BITMAPBUTTON_PUSH_UP 10109
 #define ID_BITMAPBUTTON_PUSH_DOWN 10110
@@ -147,6 +150,9 @@ public:
   /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_TRACE_SELECTION
   void OnFilectrlTracePickerChanged( wxFileDirPickerEvent& event );
 
+  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
+  void OnCheckListToolOrderSelected( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_CHECKLISTBOX
   void OnCheckListToolOrderUpdate( wxUpdateUIEvent& event );
 
@@ -156,11 +162,17 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_DOWN
   void OnBitmapbuttonPushDownClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
+  void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_ALL_TRACE
   void OnButtonCutterAllTraceClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
   void OnCheckOriginalTimeClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_PANEL_SOFTWARE_COUNTERS
+  void OnPanelSoftwareCountersUpdate( wxUpdateUIEvent& event );
 
 ////@end CutFilterDialog event handler declarations
 
@@ -182,12 +194,13 @@ public:
 
 ////@begin CutFilterDialog member variables
   wxFilePickerCtrl* filePickerTrace;
+  wxCheckBox* loadResultingTrace;
   wxCheckListBox* checkListToolOrder;
   wxBitmapButton* buttonUp;
   wxBitmapButton* buttonDown;
   wxNotebook* notebookTools;
   wxRadioButton* radioCutterCutByTime;
-  wxRadioButton* radioCutterCutByPercent;
+  wxRadioButton* radioCutterCutByTimePercent;
   wxTextCtrl* textCutterBeginCut;
   wxTextCtrl* textCutterEndCut;
   wxButton* buttonCutterSelectRegion;
@@ -210,17 +223,19 @@ public:
   wxSpinCtrl* textFilterSize;
   wxRadioButton* radioSCOnIntervals;
   wxRadioButton* radioSCOnStates;
+  wxStaticText* staticTextSCSamplingInterval;
   wxTextCtrl* textSCSamplingInterval;
+  wxStaticText* staticTextSCMinimumBurstTime;
   wxTextCtrl* textSCMinimumBurstTime;
   wxCheckListBox* checkListSCSelectedEvents;
   wxButton* buttonSCSelectedEventsAdd;
   wxButton* buttonSCSelectedEventsDelete;
-  wxRadioButton* buttonSCCountEvents;
-  wxRadioButton* buttonSCAccumulateValues;
+  wxRadioButton* radioSCCountEvents;
+  wxRadioButton* radioSCAccumulateValues;
   wxCheckBox* checkSCRemoveStates;
   wxCheckBox* checkSCSummarizeUseful;
   wxCheckBox* checkSCGlobalCounters;
-  wxCheckBox* checkSCOnlyInBurstCounting;
+  wxCheckBox* checkSCOnlyInBurstsCounting;
   wxListBox* listSCKeepEvents;
   wxButton* buttonSCKeepEventsAdd;
   wxButton* buttonSCKeepEventsDelete;
