@@ -165,6 +165,7 @@ void CutFilterDialog::Init()
   radioCutterCutByTimePercent = NULL;
   textCutterBeginCut = NULL;
   textCutterEndCut = NULL;
+  textCutterTasks = NULL;
   buttonCutterSelectRegion = NULL;
   buttonCutterAllTrace = NULL;
   checkCutterUseOriginalTime = NULL;
@@ -322,245 +323,261 @@ void CutFilterDialog::CreateControls()
   textCutterEndCut = new wxTextCtrl( itemPanel19, ID_TEXTCTRL_CUTTER_END_CUT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer30->Add(textCutterEndCut, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer21->Add(itemBoxSizer33, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine33 = new wxStaticLine( itemPanel19, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemStaticBoxSizer21->Add(itemStaticLine33, 0, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer34 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer21->Add(itemBoxSizer34, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText35 = new wxStaticText( itemPanel19, wxID_STATIC, _("Tasks"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer34->Add(itemStaticText35, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  textCutterTasks = new wxTextCtrl( itemPanel19, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textCutterTasks->SetToolTip(_("Select the list of tasks to cut, separated by commas. Ranges marked with \"-\" are allowed. I.e. \"1-50,60,70-100\"."));
+  itemBoxSizer34->Add(textCutterTasks, 1, wxGROW|wxALL, 5);
+
+  wxStaticLine* itemStaticLine37 = new wxStaticLine( itemPanel19, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemStaticBoxSizer21->Add(itemStaticLine37, 0, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer38 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer21->Add(itemBoxSizer38, 0, wxGROW|wxALL, 5);
   buttonCutterSelectRegion = new wxButton( itemPanel19, ID_BUTTON_CUTTER_SELECT_REGION, _("Select Region..."), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer33->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer38->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   buttonCutterAllTrace = new wxButton( itemPanel19, ID_BUTTON_CUTTER_ALL_TRACE, _("All Trace"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer33->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer38->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
-  wxStaticBox* itemStaticBoxSizer36Static = new wxStaticBox(itemPanel19, wxID_STATIC, _(" Trace Options "));
-  wxStaticBoxSizer* itemStaticBoxSizer36 = new wxStaticBoxSizer(itemStaticBoxSizer36Static, wxVERTICAL);
-  itemBoxSizer20->Add(itemStaticBoxSizer36, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer36->Add(itemBoxSizer37, 0, wxGROW|wxLEFT|wxTOP, 5);
+  wxStaticBox* itemStaticBoxSizer41Static = new wxStaticBox(itemPanel19, wxID_STATIC, _(" Trace Options "));
+  wxStaticBoxSizer* itemStaticBoxSizer41 = new wxStaticBoxSizer(itemStaticBoxSizer41Static, wxVERTICAL);
+  itemBoxSizer20->Add(itemStaticBoxSizer41, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer42 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer41->Add(itemBoxSizer42, 0, wxGROW|wxLEFT|wxTOP, 5);
   checkCutterUseOriginalTime = new wxCheckBox( itemPanel19, ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, _("Use original time"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterUseOriginalTime->SetValue(false);
-  itemBoxSizer37->Add(checkCutterUseOriginalTime, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer42->Add(checkCutterUseOriginalTime, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   checkCutterRemoveFirstState = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_REMOVE_FIRST_STATE, _("Remove first state"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterRemoveFirstState->SetValue(false);
-  itemBoxSizer37->Add(checkCutterRemoveFirstState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer42->Add(checkCutterRemoveFirstState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
-  wxBoxSizer* itemBoxSizer40 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer36->Add(itemBoxSizer40, 0, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer41->Add(itemBoxSizer45, 0, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 5);
   checkCutterBreakStates = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_BREAK_STATES, _("Don't break states"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterBreakStates->SetValue(false);
-  itemBoxSizer40->Add(checkCutterBreakStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer45->Add(checkCutterBreakStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   checkCutterRemoveLastState = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_REMOVE_LAST_STATE, _("Remove last state"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterRemoveLastState->SetValue(false);
-  itemBoxSizer40->Add(checkCutterRemoveLastState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer45->Add(checkCutterRemoveLastState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
-  wxStaticBox* itemStaticBoxSizer43Static = new wxStaticBox(itemPanel19, wxID_STATIC, _(" Output Trace "));
-  wxStaticBoxSizer* itemStaticBoxSizer43 = new wxStaticBoxSizer(itemStaticBoxSizer43Static, wxHORIZONTAL);
-  itemBoxSizer20->Add(itemStaticBoxSizer43, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText44 = new wxStaticText( itemPanel19, wxID_STATIC, _("Maximum trace size"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer43->Add(itemStaticText44, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer48Static = new wxStaticBox(itemPanel19, wxID_STATIC, _(" Output Trace "));
+  wxStaticBoxSizer* itemStaticBoxSizer48 = new wxStaticBoxSizer(itemStaticBoxSizer48Static, wxHORIZONTAL);
+  itemBoxSizer20->Add(itemStaticBoxSizer48, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText49 = new wxStaticText( itemPanel19, wxID_STATIC, _("Maximum trace size"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer48->Add(itemStaticText49, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   textCutterMaximumTraceSize = new wxSpinCtrl( itemPanel19, ID_SPINCTRL_CUTTER_MAXIMUM_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
-  itemStaticBoxSizer43->Add(textCutterMaximumTraceSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemStaticBoxSizer48->Add(textCutterMaximumTraceSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticText* itemStaticText46 = new wxStaticText( itemPanel19, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer43->Add(itemStaticText46, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticText* itemStaticText51 = new wxStaticText( itemPanel19, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer48->Add(itemStaticText51, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   notebookTools->AddPage(itemPanel19, _("Cutter"));
 
-  wxPanel* itemPanel47 = new wxPanel( notebookTools, ID_PANEL_FILTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  wxBoxSizer* itemBoxSizer48 = new wxBoxSizer(wxVERTICAL);
-  itemPanel47->SetSizer(itemBoxSizer48);
+  wxPanel* itemPanel52 = new wxPanel( notebookTools, ID_PANEL_FILTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxBoxSizer* itemBoxSizer53 = new wxBoxSizer(wxVERTICAL);
+  itemPanel52->SetSizer(itemBoxSizer53);
 
-  wxStaticBox* itemStaticBoxSizer49Static = new wxStaticBox(itemPanel47, wxID_STATIC, _(" Discard Records "));
-  wxStaticBoxSizer* itemStaticBoxSizer49 = new wxStaticBoxSizer(itemStaticBoxSizer49Static, wxHORIZONTAL);
-  itemBoxSizer48->Add(itemStaticBoxSizer49, 0, wxGROW|wxALL, 5);
-  checkFilterDiscardStateRecords = new wxCheckBox( itemPanel47, ID_CHECKBOX_FILTER_DISCARD_STATE, _("State"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer54Static = new wxStaticBox(itemPanel52, wxID_STATIC, _(" Discard Records "));
+  wxStaticBoxSizer* itemStaticBoxSizer54 = new wxStaticBoxSizer(itemStaticBoxSizer54Static, wxHORIZONTAL);
+  itemBoxSizer53->Add(itemStaticBoxSizer54, 0, wxGROW|wxALL, 5);
+  checkFilterDiscardStateRecords = new wxCheckBox( itemPanel52, ID_CHECKBOX_FILTER_DISCARD_STATE, _("State"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardStateRecords->SetValue(false);
-  itemStaticBoxSizer49->Add(checkFilterDiscardStateRecords, 0, wxGROW|wxALL, 5);
+  itemStaticBoxSizer54->Add(checkFilterDiscardStateRecords, 0, wxGROW|wxALL, 5);
 
-  checkFilterDiscardEventRecords = new wxCheckBox( itemPanel47, ID_CHECKBOX_FILTER_DISCARD_EVENT, _("Event"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFilterDiscardEventRecords = new wxCheckBox( itemPanel52, ID_CHECKBOX_FILTER_DISCARD_EVENT, _("Event"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardEventRecords->SetValue(false);
-  itemStaticBoxSizer49->Add(checkFilterDiscardEventRecords, 0, wxGROW|wxALL, 5);
+  itemStaticBoxSizer54->Add(checkFilterDiscardEventRecords, 0, wxGROW|wxALL, 5);
 
-  checkFilterDiscardCommunicationRecords = new wxCheckBox( itemPanel47, ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, _("Communication"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFilterDiscardCommunicationRecords = new wxCheckBox( itemPanel52, ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, _("Communication"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardCommunicationRecords->SetValue(false);
-  itemStaticBoxSizer49->Add(checkFilterDiscardCommunicationRecords, 0, wxGROW|wxALL, 5);
+  itemStaticBoxSizer54->Add(checkFilterDiscardCommunicationRecords, 0, wxGROW|wxALL, 5);
 
-  staticBoxSizerFilterStates = new wxStaticBox(itemPanel47, wxID_STATIC, _(" States "));
-  wxStaticBoxSizer* itemStaticBoxSizer53 = new wxStaticBoxSizer(staticBoxSizerFilterStates, wxHORIZONTAL);
-  itemBoxSizer48->Add(itemStaticBoxSizer53, 1, wxGROW|wxALL, 5);
+  staticBoxSizerFilterStates = new wxStaticBox(itemPanel52, wxID_STATIC, _(" States "));
+  wxStaticBoxSizer* itemStaticBoxSizer58 = new wxStaticBoxSizer(staticBoxSizerFilterStates, wxHORIZONTAL);
+  itemBoxSizer53->Add(itemStaticBoxSizer58, 1, wxGROW|wxALL, 5);
   wxArrayString checkListFilterStatesStrings;
-  checkListFilterStates = new wxCheckListBox( itemPanel47, ID_CHECKLISTBOX_FILTER_STATES, wxDefaultPosition, wxDefaultSize, checkListFilterStatesStrings, wxLB_SINGLE );
-  itemStaticBoxSizer53->Add(checkListFilterStates, 2, wxGROW|wxALL, 5);
+  checkListFilterStates = new wxCheckListBox( itemPanel52, ID_CHECKLISTBOX_FILTER_STATES, wxDefaultPosition, wxDefaultSize, checkListFilterStatesStrings, wxLB_SINGLE );
+  itemStaticBoxSizer58->Add(checkListFilterStates, 2, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer55 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer53->Add(itemBoxSizer55, 1, wxGROW|wxALL, 5);
-  buttonFilterSelectAll = new wxButton( itemPanel47, ID_BUTTON_FILTER_SELECT_ALL, _("Select all"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer55->Add(buttonFilterSelectAll, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer60 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer58->Add(itemBoxSizer60, 1, wxGROW|wxALL, 5);
+  buttonFilterSelectAll = new wxButton( itemPanel52, ID_BUTTON_FILTER_SELECT_ALL, _("Select all"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer60->Add(buttonFilterSelectAll, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  buttonFilterUnselectAll = new wxButton( itemPanel47, ID_BUTTON_FILTER_UNSELECT_ALL, _("Unselect all"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer55->Add(buttonFilterUnselectAll, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  buttonFilterUnselectAll = new wxButton( itemPanel52, ID_BUTTON_FILTER_UNSELECT_ALL, _("Unselect all"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer60->Add(buttonFilterUnselectAll, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  buttonFilterSetMinimumTime = new wxButton( itemPanel47, ID_BUTTON_FILTER_SET_MINIMUM_TIME, _("Set min time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer55->Add(buttonFilterSetMinimumTime, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  buttonFilterSetMinimumTime = new wxButton( itemPanel52, ID_BUTTON_FILTER_SET_MINIMUM_TIME, _("Set min time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer60->Add(buttonFilterSetMinimumTime, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  checkFilterDiscardListedStates = new wxCheckBox( itemPanel47, ID_CHECKBOX5, _("Discard"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFilterDiscardListedStates = new wxCheckBox( itemPanel52, ID_CHECKBOX5, _("Discard"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardListedStates->SetValue(false);
-  itemBoxSizer55->Add(checkFilterDiscardListedStates, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer60->Add(checkFilterDiscardListedStates, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  staticBoxSizerFilterEvents = new wxStaticBox(itemPanel47, wxID_STATIC, _(" Events "));
-  wxStaticBoxSizer* itemStaticBoxSizer60 = new wxStaticBoxSizer(staticBoxSizerFilterEvents, wxHORIZONTAL);
-  itemBoxSizer48->Add(itemStaticBoxSizer60, 1, wxGROW|wxALL, 5);
+  staticBoxSizerFilterEvents = new wxStaticBox(itemPanel52, wxID_STATIC, _(" Events "));
+  wxStaticBoxSizer* itemStaticBoxSizer65 = new wxStaticBoxSizer(staticBoxSizerFilterEvents, wxHORIZONTAL);
+  itemBoxSizer53->Add(itemStaticBoxSizer65, 1, wxGROW|wxALL, 5);
   wxArrayString listboxFilterEventsStrings;
-  listboxFilterEvents = new wxListBox( itemPanel47, ID_LISTBOX_FILTER_EVENTS, wxDefaultPosition, wxDefaultSize, listboxFilterEventsStrings, wxLB_SINGLE );
-  itemStaticBoxSizer60->Add(listboxFilterEvents, 2, wxGROW|wxALL, 5);
+  listboxFilterEvents = new wxListBox( itemPanel52, ID_LISTBOX_FILTER_EVENTS, wxDefaultPosition, wxDefaultSize, listboxFilterEventsStrings, wxLB_SINGLE );
+  itemStaticBoxSizer65->Add(listboxFilterEvents, 2, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer62 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer60->Add(itemBoxSizer62, 1, wxGROW|wxALL, 5);
-  buttonFilterAdd = new wxButton( itemPanel47, ID_BUTTON_FILTER_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer62->Add(buttonFilterAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer67 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer65->Add(itemBoxSizer67, 1, wxGROW|wxALL, 5);
+  buttonFilterAdd = new wxButton( itemPanel52, ID_BUTTON_FILTER_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer67->Add(buttonFilterAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  buttonFilterDelete = new wxButton( itemPanel47, ID_BUTTON_FILTER_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer62->Add(buttonFilterDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  buttonFilterDelete = new wxButton( itemPanel52, ID_BUTTON_FILTER_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer67->Add(buttonFilterDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  checkFilterDiscardListedEvents = new wxCheckBox( itemPanel47, ID_CHECKBOX_FILTER_DISCARD_LISTED_EVENTS, _("Discard"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFilterDiscardListedEvents = new wxCheckBox( itemPanel52, ID_CHECKBOX_FILTER_DISCARD_LISTED_EVENTS, _("Discard"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardListedEvents->SetValue(false);
-  itemBoxSizer62->Add(checkFilterDiscardListedEvents, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer67->Add(checkFilterDiscardListedEvents, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  staticBoxSizerFilterCommunications = new wxStaticBox(itemPanel47, wxID_STATIC, _(" Communications "));
-  wxStaticBoxSizer* itemStaticBoxSizer66 = new wxStaticBoxSizer(staticBoxSizerFilterCommunications, wxHORIZONTAL);
-  itemBoxSizer48->Add(itemStaticBoxSizer66, 0, wxGROW|wxALL, 5);
-  staticTextFilterSize = new wxStaticText( itemPanel47, wxID_STATIC, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer66->Add(staticTextFilterSize, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  staticBoxSizerFilterCommunications = new wxStaticBox(itemPanel52, wxID_STATIC, _(" Communications "));
+  wxStaticBoxSizer* itemStaticBoxSizer71 = new wxStaticBoxSizer(staticBoxSizerFilterCommunications, wxHORIZONTAL);
+  itemBoxSizer53->Add(itemStaticBoxSizer71, 0, wxGROW|wxALL, 5);
+  staticTextFilterSize = new wxStaticText( itemPanel52, wxID_STATIC, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer71->Add(staticTextFilterSize, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  textFilterSize = new wxSpinCtrl( itemPanel47, ID_SPINCTRL_FILTER_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
-  itemStaticBoxSizer66->Add(textFilterSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  textFilterSize = new wxSpinCtrl( itemPanel52, ID_SPINCTRL_FILTER_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+  itemStaticBoxSizer71->Add(textFilterSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  staticTextFilterSizeUnit = new wxStaticText( itemPanel47, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer66->Add(staticTextFilterSizeUnit, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  staticTextFilterSizeUnit = new wxStaticText( itemPanel52, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer71->Add(staticTextFilterSizeUnit, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  notebookTools->AddPage(itemPanel47, _("Filter"));
+  notebookTools->AddPage(itemPanel52, _("Filter"));
 
-  wxPanel* itemPanel70 = new wxPanel( notebookTools, ID_PANEL_SOFTWARE_COUNTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  wxBoxSizer* itemBoxSizer71 = new wxBoxSizer(wxVERTICAL);
-  itemPanel70->SetSizer(itemBoxSizer71);
+  wxPanel* itemPanel75 = new wxPanel( notebookTools, ID_PANEL_SOFTWARE_COUNTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxBoxSizer* itemBoxSizer76 = new wxBoxSizer(wxVERTICAL);
+  itemPanel75->SetSizer(itemBoxSizer76);
 
-  wxStaticBox* itemStaticBoxSizer72Static = new wxStaticBox(itemPanel70, wxID_STATIC, _(" Region "));
-  wxStaticBoxSizer* itemStaticBoxSizer72 = new wxStaticBoxSizer(itemStaticBoxSizer72Static, wxHORIZONTAL);
-  itemBoxSizer71->Add(itemStaticBoxSizer72, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer73 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer72->Add(itemBoxSizer73, 0, wxGROW|wxALL, 5);
-  radioSCOnIntervals = new wxRadioButton( itemPanel70, ID_RADIOBUTTON_SC_ON_INTERVALS, _("On intervals"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+  wxStaticBox* itemStaticBoxSizer77Static = new wxStaticBox(itemPanel75, wxID_STATIC, _(" Region "));
+  wxStaticBoxSizer* itemStaticBoxSizer77 = new wxStaticBoxSizer(itemStaticBoxSizer77Static, wxHORIZONTAL);
+  itemBoxSizer76->Add(itemStaticBoxSizer77, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer78 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer77->Add(itemBoxSizer78, 0, wxGROW|wxALL, 5);
+  radioSCOnIntervals = new wxRadioButton( itemPanel75, ID_RADIOBUTTON_SC_ON_INTERVALS, _("On intervals"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioSCOnIntervals->SetValue(false);
-  itemBoxSizer73->Add(radioSCOnIntervals, 1, wxGROW|wxALL, 5);
+  itemBoxSizer78->Add(radioSCOnIntervals, 1, wxGROW|wxALL, 5);
 
-  radioSCOnStates = new wxRadioButton( itemPanel70, ID_RADIOBUTTON_SC_ON_STATES, _("On states"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioSCOnStates = new wxRadioButton( itemPanel75, ID_RADIOBUTTON_SC_ON_STATES, _("On states"), wxDefaultPosition, wxDefaultSize, 0 );
   radioSCOnStates->SetValue(false);
-  itemBoxSizer73->Add(radioSCOnStates, 1, wxGROW|wxALL, 5);
+  itemBoxSizer78->Add(radioSCOnStates, 1, wxGROW|wxALL, 5);
 
-  wxStaticLine* itemStaticLine76 = new wxStaticLine( itemPanel70, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-  itemStaticBoxSizer72->Add(itemStaticLine76, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine81 = new wxStaticLine( itemPanel75, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemStaticBoxSizer77->Add(itemStaticLine81, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer77 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer72->Add(itemBoxSizer77, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-  wxBoxSizer* itemBoxSizer78 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer77->Add(itemBoxSizer78, 1, wxGROW|wxALL, 5);
-  staticTextSCSamplingInterval = new wxStaticText( itemPanel70, wxID_STATIC, _("Sampling Interval (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer78->Add(staticTextSCSamplingInterval, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer82 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer77->Add(itemBoxSizer82, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer83 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer82->Add(itemBoxSizer83, 1, wxGROW|wxALL, 5);
+  staticTextSCSamplingInterval = new wxStaticText( itemPanel75, wxID_STATIC, _("Sampling Interval (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer83->Add(staticTextSCSamplingInterval, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  textSCSamplingInterval = new wxTextCtrl( itemPanel70, ID_TEXTCTRL_SC_SAMPLING_INTERVAL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer78->Add(textSCSamplingInterval, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  textSCSamplingInterval = new wxTextCtrl( itemPanel75, ID_TEXTCTRL_SC_SAMPLING_INTERVAL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer83->Add(textSCSamplingInterval, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer81 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer77->Add(itemBoxSizer81, 1, wxGROW|wxALL, 5);
-  staticTextSCMinimumBurstTime = new wxStaticText( itemPanel70, wxID_STATIC, _("Min Burst Time (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer81->Add(staticTextSCMinimumBurstTime, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer86 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer82->Add(itemBoxSizer86, 1, wxGROW|wxALL, 5);
+  staticTextSCMinimumBurstTime = new wxStaticText( itemPanel75, wxID_STATIC, _("Min Burst Time (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer86->Add(staticTextSCMinimumBurstTime, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  textSCMinimumBurstTime = new wxTextCtrl( itemPanel70, ID_TEXTCTRL_SC_MINIMUM_BURST_TIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer81->Add(textSCMinimumBurstTime, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  textSCMinimumBurstTime = new wxTextCtrl( itemPanel75, ID_TEXTCTRL_SC_MINIMUM_BURST_TIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer86->Add(textSCMinimumBurstTime, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer84Static = new wxStaticBox(itemPanel70, wxID_STATIC, _(" Selected events "));
-  wxStaticBoxSizer* itemStaticBoxSizer84 = new wxStaticBoxSizer(itemStaticBoxSizer84Static, wxHORIZONTAL);
-  itemBoxSizer71->Add(itemStaticBoxSizer84, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer85 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer84->Add(itemBoxSizer85, 1, wxGROW|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer89Static = new wxStaticBox(itemPanel75, wxID_STATIC, _(" Selected events "));
+  wxStaticBoxSizer* itemStaticBoxSizer89 = new wxStaticBoxSizer(itemStaticBoxSizer89Static, wxHORIZONTAL);
+  itemBoxSizer76->Add(itemStaticBoxSizer89, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer90 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer89->Add(itemBoxSizer90, 1, wxGROW|wxALL, 5);
   wxArrayString checkListSCSelectedEventsStrings;
-  checkListSCSelectedEvents = new wxCheckListBox( itemPanel70, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, checkListSCSelectedEventsStrings, wxLB_SINGLE );
-  itemBoxSizer85->Add(checkListSCSelectedEvents, 2, wxGROW|wxALL, 5);
+  checkListSCSelectedEvents = new wxCheckListBox( itemPanel75, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, checkListSCSelectedEventsStrings, wxLB_SINGLE );
+  itemBoxSizer90->Add(checkListSCSelectedEvents, 2, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer87 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer85->Add(itemBoxSizer87, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-  buttonSCSelectedEventsAdd = new wxButton( itemPanel70, ID_BUTTON_SC_SELECTED_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer87->Add(buttonSCSelectedEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
-
-  buttonSCSelectedEventsDelete = new wxButton( itemPanel70, ID_BUTTON_SC_SELECTED_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer87->Add(buttonSCSelectedEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
-
-  wxStaticBox* itemStaticBoxSizer90Static = new wxStaticBox(itemPanel70, wxID_STATIC, _(" Options "));
-  wxStaticBoxSizer* itemStaticBoxSizer90 = new wxStaticBoxSizer(itemStaticBoxSizer90Static, wxHORIZONTAL);
-  itemBoxSizer71->Add(itemStaticBoxSizer90, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer91 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer90->Add(itemBoxSizer91, 1, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer92 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer91->Add(itemBoxSizer92, 1, wxGROW|wxALL, 5);
-  radioSCCountEvents = new wxRadioButton( itemPanel70, ID_RADIOBUTTON_SC_COUNT_EVENTS, _("Count events"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+  itemBoxSizer90->Add(itemBoxSizer92, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  buttonSCSelectedEventsAdd = new wxButton( itemPanel75, ID_BUTTON_SC_SELECTED_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer92->Add(buttonSCSelectedEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
+
+  buttonSCSelectedEventsDelete = new wxButton( itemPanel75, ID_BUTTON_SC_SELECTED_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer92->Add(buttonSCSelectedEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
+
+  wxStaticBox* itemStaticBoxSizer95Static = new wxStaticBox(itemPanel75, wxID_STATIC, _(" Options "));
+  wxStaticBoxSizer* itemStaticBoxSizer95 = new wxStaticBoxSizer(itemStaticBoxSizer95Static, wxHORIZONTAL);
+  itemBoxSizer76->Add(itemStaticBoxSizer95, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer96 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer95->Add(itemBoxSizer96, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer97 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer96->Add(itemBoxSizer97, 1, wxGROW|wxALL, 5);
+  radioSCCountEvents = new wxRadioButton( itemPanel75, ID_RADIOBUTTON_SC_COUNT_EVENTS, _("Count events"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioSCCountEvents->SetValue(false);
-  itemBoxSizer92->Add(radioSCCountEvents, 1, wxGROW|wxALL, 5);
+  itemBoxSizer97->Add(radioSCCountEvents, 1, wxGROW|wxALL, 5);
 
-  radioSCAccumulateValues = new wxRadioButton( itemPanel70, ID_RADIOBUTTON8, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioSCAccumulateValues = new wxRadioButton( itemPanel75, ID_RADIOBUTTON8, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
   radioSCAccumulateValues->SetValue(false);
-  itemBoxSizer92->Add(radioSCAccumulateValues, 1, wxGROW|wxALL, 5);
+  itemBoxSizer97->Add(radioSCAccumulateValues, 1, wxGROW|wxALL, 5);
 
-  wxStaticLine* itemStaticLine95 = new wxStaticLine( itemPanel70, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-  itemBoxSizer91->Add(itemStaticLine95, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine100 = new wxStaticLine( itemPanel75, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemBoxSizer96->Add(itemStaticLine100, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer96 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer91->Add(itemBoxSizer96, 1, wxGROW|wxALL, 5);
-  checkSCRemoveStates = new wxCheckBox( itemPanel70, ID_CHECKBOX_SC_REMOVE_STATES, _("Remove states"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer101 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer96->Add(itemBoxSizer101, 1, wxGROW|wxALL, 5);
+  checkSCRemoveStates = new wxCheckBox( itemPanel75, ID_CHECKBOX_SC_REMOVE_STATES, _("Remove states"), wxDefaultPosition, wxDefaultSize, 0 );
   checkSCRemoveStates->SetValue(false);
-  itemBoxSizer96->Add(checkSCRemoveStates, 1, wxGROW|wxALL, 5);
+  itemBoxSizer101->Add(checkSCRemoveStates, 1, wxGROW|wxALL, 5);
 
-  checkSCSummarizeUseful = new wxCheckBox( itemPanel70, ID_CHECKBOX_SC_SUMMARIZE_USEFUL, _("Summarize useful"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkSCSummarizeUseful = new wxCheckBox( itemPanel75, ID_CHECKBOX_SC_SUMMARIZE_USEFUL, _("Summarize useful"), wxDefaultPosition, wxDefaultSize, 0 );
   checkSCSummarizeUseful->SetValue(false);
-  itemBoxSizer96->Add(checkSCSummarizeUseful, 1, wxGROW|wxALL, 5);
+  itemBoxSizer101->Add(checkSCSummarizeUseful, 1, wxGROW|wxALL, 5);
 
-  checkSCGlobalCounters = new wxCheckBox( itemPanel70, ID_CHECKBOX_SC_GLOBAL_COUNTERS, _("Global counters"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkSCGlobalCounters = new wxCheckBox( itemPanel75, ID_CHECKBOX_SC_GLOBAL_COUNTERS, _("Global counters"), wxDefaultPosition, wxDefaultSize, 0 );
   checkSCGlobalCounters->SetValue(false);
-  itemBoxSizer96->Add(checkSCGlobalCounters, 1, wxGROW|wxALL, 5);
+  itemBoxSizer101->Add(checkSCGlobalCounters, 1, wxGROW|wxALL, 5);
 
-  checkSCOnlyInBurstsCounting = new wxCheckBox( itemPanel70, ID_CHECKBOX_SC_ONLY_IN_BURSTS_COUNTING, _("Only in bursts counting"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkSCOnlyInBurstsCounting = new wxCheckBox( itemPanel75, ID_CHECKBOX_SC_ONLY_IN_BURSTS_COUNTING, _("Only in bursts counting"), wxDefaultPosition, wxDefaultSize, 0 );
   checkSCOnlyInBurstsCounting->SetValue(false);
-  itemBoxSizer96->Add(checkSCOnlyInBurstsCounting, 1, wxGROW|wxALL, 5);
+  itemBoxSizer101->Add(checkSCOnlyInBurstsCounting, 1, wxGROW|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer101Static = new wxStaticBox(itemPanel70, wxID_STATIC, _(" Keep events "));
-  wxStaticBoxSizer* itemStaticBoxSizer101 = new wxStaticBoxSizer(itemStaticBoxSizer101Static, wxHORIZONTAL);
-  itemBoxSizer71->Add(itemStaticBoxSizer101, 1, wxGROW|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer106Static = new wxStaticBox(itemPanel75, wxID_STATIC, _(" Keep events "));
+  wxStaticBoxSizer* itemStaticBoxSizer106 = new wxStaticBoxSizer(itemStaticBoxSizer106Static, wxHORIZONTAL);
+  itemBoxSizer76->Add(itemStaticBoxSizer106, 1, wxGROW|wxALL, 5);
   wxArrayString listSCKeepEventsStrings;
-  listSCKeepEvents = new wxListBox( itemPanel70, ID_LISTBOX_SC_KEEP_EVENTS, wxDefaultPosition, wxDefaultSize, listSCKeepEventsStrings, wxLB_SINGLE );
-  itemStaticBoxSizer101->Add(listSCKeepEvents, 2, wxGROW|wxALL, 5);
+  listSCKeepEvents = new wxListBox( itemPanel75, ID_LISTBOX_SC_KEEP_EVENTS, wxDefaultPosition, wxDefaultSize, listSCKeepEventsStrings, wxLB_SINGLE );
+  itemStaticBoxSizer106->Add(listSCKeepEvents, 2, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer103 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer101->Add(itemBoxSizer103, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-  buttonSCKeepEventsAdd = new wxButton( itemPanel70, ID_BUTTON_SC_KEEP_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer103->Add(buttonSCKeepEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer108 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer106->Add(itemBoxSizer108, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  buttonSCKeepEventsAdd = new wxButton( itemPanel75, ID_BUTTON_SC_KEEP_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer108->Add(buttonSCKeepEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonSCKeepEventsDelete = new wxButton( itemPanel70, ID_BUTTON_SC_KEEP_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer103->Add(buttonSCKeepEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  buttonSCKeepEventsDelete = new wxButton( itemPanel75, ID_BUTTON_SC_KEEP_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer108->Add(buttonSCKeepEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  notebookTools->AddPage(itemPanel70, _("Software Counters"));
+  notebookTools->AddPage(itemPanel75, _("Software Counters"));
 
   itemBoxSizer2->Add(notebookTools, 4, wxGROW|wxALL, 5);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer106 = new wxStdDialogButtonSizer;
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer111 = new wxStdDialogButtonSizer;
 
-  itemBoxSizer2->Add(itemStdDialogButtonSizer106, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-  wxButton* itemButton107 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer106->AddButton(itemButton107);
+  itemBoxSizer2->Add(itemStdDialogButtonSizer111, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  wxButton* itemButton112 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer111->AddButton(itemButton112);
 
-  wxButton* itemButton108 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer106->AddButton(itemButton108);
+  wxButton* itemButton113 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer111->AddButton(itemButton113);
 
-  itemStdDialogButtonSizer106->Realize();
+  itemStdDialogButtonSizer111->Realize();
 
 ////@end CutFilterDialog content construction
 
@@ -864,6 +881,30 @@ void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& ev
   }
 }
 
+void CutFilterDialog::TransferWindowToCutterData()
+{
+/*
+        traceOptions->set_max_trace_size( int traceSize );
+        traceOptions->set_by_time( bool whichByTime );
+        traceOptions->set_min_cutting_time( unsigned long long minCutTime );
+        traceOptions->set_max_cutting_time( unsigned long long maxCutTime );
+        traceOptions->set_minimum_time_percentage( unsigned long long whichMinimumTimePercentage );
+        traceOptions->set_maximum_time_percentage( unsigned long long whichMaximumTimePercentage );
+        traceOptions->set_tasks_list( char *tasksList );
+        traceOptions->set_original_time( char originalTime );
+        traceOptions->set_break_states( int breakStates );
+        traceOptions->set_remFirstStates( int remStates );
+        traceOptions->set_remLastStates( int remStates );
+*/
+}
+
+void CutFilterDialog::TransferWindowToFilterData()
+{
+}
+
+void CutFilterDialog::TransferWindowTosoftwareCountersData()
+{
+}
 
 /*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
@@ -876,9 +917,7 @@ void CutFilterDialog::OnOkClick( wxCommandEvent& event )
   if ( path == _("") )
   {
     wxMessageDialog message( this, _("Missing trace name.\nPlease choose one trace."), _( "Warning" ), wxOK );
-//      raiseCurrentWindow = false;
     message.ShowModal();
-//      raiseCurrentWindow = true;
     filePickerTrace->SetFocus();
   }
 
@@ -896,14 +935,24 @@ void CutFilterDialog::OnOkClick( wxCommandEvent& event )
   if ( !someUtilitySelected )
   {
     wxMessageDialog message( this, _("No utility selected.\nPlease choose the utilities to apply."), _( "Warning" ), wxOK );
-//      raiseCurrentWindow = false;
     message.ShowModal();
-//      raiseCurrentWindow = true;
     checkListToolOrder->SetFocus();
   }
 
   // Create TraceOptions
+  traceOptions = new TraceOptions();
 
+  // Cutter options
+  for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
+  {
+    if ( checkListToolOrder->IsChecked( i ) )
+    {
+      if ( listToolOrder[ i ] == "Cutter" )
+      {
+        TransferWindowToCutterData();
+      }
+    }
+  }
 }
 
 

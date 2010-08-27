@@ -38,8 +38,8 @@
 ////@begin includes
 #include "wx/filepicker.h"
 #include "wx/notebook.h"
-#include "wx/spinctrl.h"
 #include "wx/statline.h"
+#include "wx/spinctrl.h"
 ////@end includes
 
 using namespace std;
@@ -56,7 +56,8 @@ class wxNotebook;
 class wxSpinCtrl;
 ////@end forward declarations
 
-class TraceOptions;
+#include "traceoptions.h"
+
 /*!
  * Control identifiers
  */
@@ -76,6 +77,7 @@ class TraceOptions;
 #define ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT 10117
 #define ID_TEXTCTRL_CUTTER_BEGIN_CUT 10118
 #define ID_TEXTCTRL_CUTTER_END_CUT 10119
+#define ID_TEXTCTRL_CUTTER_TASKS 10157
 #define ID_BUTTON_CUTTER_SELECT_REGION 10114
 #define ID_BUTTON_CUTTER_ALL_TRACE 10115
 #define ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME 10120
@@ -207,6 +209,9 @@ public:
   vector< int > GetToolsOrder();
   bool LoadResultingTrace();
 
+  void TransferWindowToCutterData();
+  void TransferWindowToFilterData();
+  void TransferWindowTosoftwareCountersData();
 
 ////@begin CutFilterDialog member variables
   wxFilePickerCtrl* filePickerTrace;
@@ -219,6 +224,7 @@ public:
   wxRadioButton* radioCutterCutByTimePercent;
   wxTextCtrl* textCutterBeginCut;
   wxTextCtrl* textCutterEndCut;
+  wxTextCtrl* textCutterTasks;
   wxButton* buttonCutterSelectRegion;
   wxButton* buttonCutterAllTrace;
   wxCheckBox* checkCutterUseOriginalTime;
