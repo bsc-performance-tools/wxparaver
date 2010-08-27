@@ -249,7 +249,6 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer4->Add(itemBoxSizer8, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON, _("Load XML..."), wxDefaultPosition, wxDefaultSize, 0 );
-  itemButton9->Enable(false);
   itemBoxSizer8->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON1, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
@@ -407,7 +406,24 @@ void CutFilterDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer58 = new wxStaticBoxSizer(staticBoxSizerFilterStates, wxHORIZONTAL);
   itemBoxSizer53->Add(itemStaticBoxSizer58, 1, wxGROW|wxALL, 5);
   wxArrayString checkListFilterStatesStrings;
-  checkListFilterStates = new wxCheckListBox( itemPanel52, ID_CHECKLISTBOX_FILTER_STATES, wxDefaultPosition, wxDefaultSize, checkListFilterStatesStrings, wxLB_SINGLE );
+  checkListFilterStatesStrings.Add(_("Idle; 0"));
+  checkListFilterStatesStrings.Add(_("Running; 10000"));
+  checkListFilterStatesStrings.Add(_("Not created; 0"));
+  checkListFilterStatesStrings.Add(_("Waiting a message; 0"));
+  checkListFilterStatesStrings.Add(_("Bloking Send; 0"));
+  checkListFilterStatesStrings.Add(_("Thd. Synchr.; 0"));
+  checkListFilterStatesStrings.Add(_("Test/Probe; 0"));
+  checkListFilterStatesStrings.Add(_("Sched. and Fork/Join; 0"));
+  checkListFilterStatesStrings.Add(_("Wait/WaitAll; 0"));
+  checkListFilterStatesStrings.Add(_("Blocked; 0"));
+  checkListFilterStatesStrings.Add(_("Inmediate Send; 0"));
+  checkListFilterStatesStrings.Add(_("Inmediate Receive; 0"));
+  checkListFilterStatesStrings.Add(_("I/O; 0"));
+  checkListFilterStatesStrings.Add(_("Group Communication; 0"));
+  checkListFilterStatesStrings.Add(_("Tracing Disabled; 0"));
+  checkListFilterStatesStrings.Add(_("Others; 0"));
+  checkListFilterStatesStrings.Add(_("Send Receive; 0"));
+  checkListFilterStates = new wxCheckListBox( itemPanel52, ID_CHECKLISTBOX_FILTER_STATES, wxDefaultPosition, wxSize(-1, 100), checkListFilterStatesStrings, wxLB_SINGLE );
   itemStaticBoxSizer58->Add(checkListFilterStates, 2, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer60 = new wxBoxSizer(wxVERTICAL);
@@ -429,6 +445,9 @@ void CutFilterDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer65 = new wxStaticBoxSizer(staticBoxSizerFilterEvents, wxHORIZONTAL);
   itemBoxSizer53->Add(itemStaticBoxSizer65, 1, wxGROW|wxALL, 5);
   wxArrayString listboxFilterEventsStrings;
+  listboxFilterEventsStrings.Add(_("42000059"));
+  listboxFilterEventsStrings.Add(_("42000008"));
+  listboxFilterEventsStrings.Add(_("50000001-50000003"));
   listboxFilterEvents = new wxListBox( itemPanel52, ID_LISTBOX_FILTER_EVENTS, wxDefaultPosition, wxDefaultSize, listboxFilterEventsStrings, wxLB_SINGLE );
   itemStaticBoxSizer65->Add(listboxFilterEvents, 2, wxGROW|wxALL, 5);
 
@@ -498,11 +517,13 @@ void CutFilterDialog::CreateControls()
 
   wxStaticBox* itemStaticBoxSizer89Static = new wxStaticBox(itemPanel75, wxID_STATIC, _(" Selected events "));
   wxStaticBoxSizer* itemStaticBoxSizer89 = new wxStaticBoxSizer(itemStaticBoxSizer89Static, wxHORIZONTAL);
-  itemBoxSizer76->Add(itemStaticBoxSizer89, 0, wxGROW|wxALL, 5);
+  itemBoxSizer76->Add(itemStaticBoxSizer89, 1, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer90 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer89->Add(itemBoxSizer90, 1, wxGROW|wxALL, 5);
   wxArrayString checkListSCSelectedEventsStrings;
-  checkListSCSelectedEvents = new wxCheckListBox( itemPanel75, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, checkListSCSelectedEventsStrings, wxLB_SINGLE );
+  checkListSCSelectedEventsStrings.Add(_("42000059"));
+  checkListSCSelectedEventsStrings.Add(_("42000008"));
+  checkListSCSelectedEvents = new wxListBox( itemPanel75, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, checkListSCSelectedEventsStrings, wxLB_SINGLE );
   itemBoxSizer90->Add(checkListSCSelectedEvents, 2, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer92 = new wxBoxSizer(wxVERTICAL);
@@ -553,6 +574,7 @@ void CutFilterDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer106 = new wxStaticBoxSizer(itemStaticBoxSizer106Static, wxHORIZONTAL);
   itemBoxSizer76->Add(itemStaticBoxSizer106, 1, wxGROW|wxALL, 5);
   wxArrayString listSCKeepEventsStrings;
+  listSCKeepEventsStrings.Add(_("40000003"));
   listSCKeepEvents = new wxListBox( itemPanel75, ID_LISTBOX_SC_KEEP_EVENTS, wxDefaultPosition, wxDefaultSize, listSCKeepEventsStrings, wxLB_SINGLE );
   itemStaticBoxSizer106->Add(listSCKeepEvents, 2, wxGROW|wxALL, 5);
 

@@ -256,7 +256,7 @@ public:
   wxTextCtrl* textSCSamplingInterval;
   wxStaticText* staticTextSCMinimumBurstTime;
   wxTextCtrl* textSCMinimumBurstTime;
-  wxCheckListBox* checkListSCSelectedEvents;
+  wxListBox* checkListSCSelectedEvents;
   wxButton* buttonSCSelectedEventsAdd;
   wxButton* buttonSCSelectedEventsDelete;
   wxRadioButton* radioSCCountEvents;
