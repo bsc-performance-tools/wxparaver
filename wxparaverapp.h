@@ -108,6 +108,9 @@ public:
 	wxDialog* GetGlobalTimingCallDialog() const { return globalTimingCallDialog ; }
 	void SetGlobalTimingCallDialog(wxDialog* value) { globalTimingCallDialog = value ; }
 
+	bool GetGlobalTimingBeginIsSet() const { return globalTimingBeginIsSet ; }
+	void SetGlobalTimingBeginIsSet(bool value) { globalTimingBeginIsSet = value ; }
+
 ////@end wxparaverApp member function declarations
 
     static paraverMain* mainWindow;
@@ -118,6 +121,7 @@ private:
 	TTime globalTimingBegin;
 	TTime globalTimingEnd;
 	wxDialog* globalTimingCallDialog;
+	bool globalTimingBeginIsSet;
 ////@end wxparaverApp member variables
 
     wxLocale m_locale;

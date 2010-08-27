@@ -1076,10 +1076,29 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 
   if( wxGetApp().GetGlobalTiming() )
   {
-    zooming = false;
-    wxGetApp().SetGlobalTimingBegin( beginTime );
-    wxGetApp().SetGlobalTimingEnd( endTime );
-    wxGetApp().DeactivateGlobalTiming();
+    if( zooming )
+    {
+      zooming = false;
+      if( beginTime != endTime )
+      {
+        wxGetApp().SetGlobalTimingBegin( beginTime );
+        wxGetApp().SetGlobalTimingEnd( endTime );
+        wxGetApp().DeactivateGlobalTiming();
+      }
+      else
+      {
+        if( wxGetApp().GetGlobalTimingBeginIsSet() )
+        {
+          wxGetApp().SetGlobalTimingEnd( endTime );
+          wxGetApp().DeactivateGlobalTiming();
+        }
+        else
+        {
+          wxGetApp().SetGlobalTimingBegin( endTime );
+          wxGetApp().SetGlobalTimingBeginIsSet( true );
+        }
+      }
+    }
     return;
   }
   
@@ -1767,7 +1786,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     durationText->SetValue( wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime - beginTime ),
                                                                               myWindow->getTimeUnit(), precision ).c_str() ) );
   }
-  else if( event.ShiftDown() )
+  else if( event.ShiftDown() || wxGetApp().GetGlobalTiming() )
   {
     long beginX = event.GetX();
     if( beginX < objectAxisPos )
