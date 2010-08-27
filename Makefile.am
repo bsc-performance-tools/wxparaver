@@ -5,6 +5,8 @@ wxparaver_SOURCES = connection.cpp \
                     connection.h \
                     copypaste.cpp \
                     copypaste.h \
+                    cutfilterdialog.cpp \
+                    cutfilterdialog.h \
                     derivedtimelinedialog.cpp \
                     derivedtimelinedialog.h \
                     ghistogram.cpp \
@@ -33,6 +35,8 @@ wxparaver_SOURCES = connection.cpp \
                     wxparaverapp.h
 
 noinst_HEADERS = \
+              arrow_down.xpm\
+              arrow_up.xpm\
               caution.xpm\
               cut_trace.xpm\
               delete.xpm\
