@@ -375,7 +375,7 @@ void CutFilterDialog::CreateControls()
   wxStaticText* itemStaticText49 = new wxStaticText( itemPanel19, wxID_STATIC, _("Maximum trace size"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStaticBoxSizer48->Add(itemStaticText49, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  textCutterMaximumTraceSize = new wxSpinCtrl( itemPanel19, ID_SPINCTRL_CUTTER_MAXIMUM_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+  textCutterMaximumTraceSize = new wxSpinCtrl( itemPanel19, ID_SPINCTRL_CUTTER_MAXIMUM_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000000, 0 );
   itemStaticBoxSizer48->Add(textCutterMaximumTraceSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticText* itemStaticText51 = new wxStaticText( itemPanel19, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
