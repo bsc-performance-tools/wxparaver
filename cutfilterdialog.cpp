@@ -604,6 +604,8 @@ void CutFilterDialog::CreateControls()
 ////@end CutFilterDialog content construction
 
   // Other initializations
+
+  // Fill vector with tool names; sort here as you want them to appear in the tools list widget.
   listToolOrder.push_back( string("Cutter") );
   listToolOrder.push_back( string("Filter") );
   listToolOrder.push_back( string("Software Counters") );
@@ -612,6 +614,13 @@ void CutFilterDialog::CreateControls()
 
   filePickerTrace->SetName( _( "Load Trace" ) );
   //filePickerTrace->SetPath( wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() ) );
+
+  // Allow only numeric character for text boxes.
+  textCutterBeginCut->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+  textCutterEndCut->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+  textCutterTasks->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+  textSCSamplingInterval->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+  textSCMinimumBurstTime->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
 }
 
 
