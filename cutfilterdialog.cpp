@@ -814,7 +814,6 @@ void CutFilterDialog::OnCheckListToolOrderUpdate( wxUpdateUIEvent& event )
 void CutFilterDialog::OnFilectrlTracePickerChanged( wxFileDirPickerEvent& event )
 {
   wxString path = filePickerTrace->GetPath();
-cout << path << endl;
 //  tracePath = wxFileName( path ).GetPath();
 //  DoLoadTrace( std::string( path.mb_str() ) );
 }
@@ -912,8 +911,13 @@ void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& ev
   }
 }
 
-void CutFilterDialog::TransferWindowToCutterData()
+void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
 {
+  if ( !previousWarning )
+  {
+    if ( traceOptions != NULL )
+      traceOptions = new TraceOptions();
+
 /*
         traceOptions->set_max_trace_size( int traceSize );
         traceOptions->set_by_time( bool whichByTime );
@@ -927,29 +931,37 @@ void CutFilterDialog::TransferWindowToCutterData()
         traceOptions->set_remFirstStates( int remStates );
         traceOptions->set_remLastStates( int remStates );
 */
+  }
 }
 
-void CutFilterDialog::TransferWindowToFilterData()
+void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 {
+  if ( !previousWarning )
+  {
+    if ( traceOptions != NULL )
+      traceOptions = new TraceOptions();
+  }
 }
 
-void CutFilterDialog::TransferWindowTosoftwareCountersData()
+void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning )
 {
+  if ( !previousWarning )
+  {
+    if ( traceOptions != NULL )
+      traceOptions = new TraceOptions();
+  }
 }
 
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
- */
-
-void CutFilterDialog::OnOkClick( wxCommandEvent& event )
+void CutFilterDialog::CheckCommonOptions( bool &previousWarning )
 {
   // Any trace selected?
   wxString path = filePickerTrace->GetPath();
-  if ( path == _("") )
+  if ( !previousWarning && path == _("") )
   {
     wxMessageDialog message( this, _("Missing trace name.\nPlease choose one trace."), _( "Warning" ), wxOK );
     message.ShowModal();
     filePickerTrace->SetFocus();
+    previousWarning = true;
   }
 
   // Any tool selected?
@@ -963,24 +975,133 @@ void CutFilterDialog::OnOkClick( wxCommandEvent& event )
     }
   }
 
-  if ( !someUtilitySelected )
+  if ( !previousWarning && !someUtilitySelected )
   {
     wxMessageDialog message( this, _("No utility selected.\nPlease choose the utilities to apply."), _( "Warning" ), wxOK );
     message.ShowModal();
     checkListToolOrder->SetFocus();
+    previousWarning = true;
+  }
+}
+
+
+void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
+{
+  // Time region selected?
+  if ( !previousWarning && textCutterBeginCut->GetValue() == "" )
+  {
+    wxMessageDialog message( this, _("Please set the initial time."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    textCutterBeginCut->SetFocus();
+    previousWarning = true;
   }
 
-  // Create TraceOptions
-  traceOptions = new TraceOptions();
-
-  // Cutter options
-  for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
+  if ( !previousWarning && textCutterEndCut->GetValue() == "" )
   {
-    if ( checkListToolOrder->IsChecked( i ) )
+    wxMessageDialog message( this, _("Please set the final time."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    textCutterEndCut->SetFocus();
+    previousWarning = true;
+  }
+
+  // Are time set properly?
+  double cutterBeginTime, cutterEndTime;
+  textCutterBeginCut->GetValue().ToDouble( &cutterBeginTime );
+  textCutterEndCut->GetValue().ToDouble( &cutterEndTime );
+
+  // negative times?
+  if ( !previousWarning && cutterBeginTime < 0.0 )
+  {
+    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set begin time properly."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    textCutterBeginCut->SetFocus();
+    previousWarning = true;
+  }
+
+  if ( !previousWarning && cutterEndTime < 0.0 )
+  {
+    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set end time properly."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    textCutterEndCut->SetFocus();
+    previousWarning = true;
+  }
+
+  // percent out of range?
+  if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterBeginTime > 100.0 )
+  {
+    wxMessageDialog message( this, _("Begin time percent greater than 100 %.\n\nPlease set time percent properly."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    radioCutterCutByTimePercent->SetFocus();
+    previousWarning = true;
+  }
+
+  if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterEndTime > 100.0 )
+  {
+    wxMessageDialog message( this, _("End time percent greater than 100 %.\n\nPlease set time percent properly."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    radioCutterCutByTimePercent->SetFocus();
+    previousWarning = true;
+  }
+
+  // begin == end?
+  if ( !previousWarning && cutterBeginTime == cutterEndTime )
+  {
+    wxMessageDialog message( this, _("Same time for both limits.\n\nPlease set time range properly."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    textCutterBeginCut->SetFocus();
+    previousWarning = true;
+  }
+
+  // begin > end?
+  if ( !previousWarning && cutterBeginTime > cutterEndTime ) // Idea: Maybe it could swap times in text boxes.
+  {
+    wxMessageDialog message( this, _("Begin time greater than end time.\n\nPlease set time range properly."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    textCutterBeginCut->SetFocus();
+    previousWarning = true;
+  }
+}
+
+
+void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
+{
+}
+
+
+void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
+{
+}
+
+
+void CutFilterDialog::OnOkClick( wxCommandEvent& event )
+{
+  // To avoid annoying multiple warning windows at the same time, and also final filter creation
+  bool previousWarning = false;
+
+  CheckCommonOptions( previousWarning );
+
+  if ( !previousWarning )
+  {
+    // Which tools are selected?
+    for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
     {
-      if ( listToolOrder[ i ] == "Cutter" )
+      if ( checkListToolOrder->IsChecked( i ) )
       {
-        TransferWindowToCutterData();
+        if ( listToolOrder[ i ] == "Cutter" )
+        {
+          CheckCutterOptions( previousWarning );
+          TransferWindowToCutterData( previousWarning );
+        }
+        if ( listToolOrder[ i ] == "Filter" )
+        {
+          CheckFilterOptions( previousWarning );
+          TransferWindowToFilterData( previousWarning );
+        }
+        if ( listToolOrder[ i ] == "Software Counter" )
+        {
+          CheckSoftwareCountersOptions( previousWarning );
+          TransferWindowToSoftwareCountersData( previousWarning );
+        }
       }
     }
   }

@@ -209,9 +209,14 @@ public:
   vector< int > GetToolsOrder();
   bool LoadResultingTrace();
 
-  void TransferWindowToCutterData();
-  void TransferWindowToFilterData();
-  void TransferWindowTosoftwareCountersData();
+  void CheckCommonOptions( bool &previousWarning );
+  void CheckCutterOptions( bool &previousWarning );
+  void CheckFilterOptions( bool &previousWarning );
+  void CheckSoftwareCountersOptions( bool &previousWarning );
+
+  void TransferWindowToCutterData( bool previousWarning );
+  void TransferWindowToFilterData( bool previousWarning );
+  void TransferWindowToSoftwareCountersData( bool previousWarning );
 
 ////@begin CutFilterDialog member variables
   wxFilePickerCtrl* filePickerTrace;
