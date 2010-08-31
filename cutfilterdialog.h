@@ -179,6 +179,12 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_PANEL_FILTER
   void OnPanelFilterUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_ADD
+  void OnButtonFilterAddClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_DELETE
+  void OnButtonFilterDeleteClick( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_PANEL_SOFTWARE_COUNTERS
   void OnPanelSoftwareCountersUpdate( wxUpdateUIEvent& event );
 

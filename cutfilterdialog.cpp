@@ -50,6 +50,7 @@
 #include <iostream>
 #include <algorithm>
 #include <wx/filedlg.h>
+#include <wx/tokenzr.h>
 
 ////@begin XPM images
 #include "arrow_up.xpm"
@@ -89,6 +90,10 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_CHECKBOX( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckOriginalTimeClick )
 
   EVT_UPDATE_UI( ID_PANEL_FILTER, CutFilterDialog::OnPanelFilterUpdate )
+
+  EVT_BUTTON( ID_BUTTON_FILTER_ADD, CutFilterDialog::OnButtonFilterAddClick )
+
+  EVT_BUTTON( ID_BUTTON_FILTER_DELETE, CutFilterDialog::OnButtonFilterDeleteClick )
 
   EVT_UPDATE_UI( ID_PANEL_SOFTWARE_COUNTERS, CutFilterDialog::OnPanelSoftwareCountersUpdate )
 
@@ -1164,5 +1169,65 @@ void CutFilterDialog::OnPanelFilterUpdate( wxUpdateUIEvent& event )
   staticTextFilterSize->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
   textFilterSize->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
   staticTextFilterSizeUnit->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_ADD
+ */
+
+void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
+{
+  wxTextEntryDialog textEntry( this, 
+                               wxString() << "Allowed formats:\n"
+                                          << " Single event type: \'Type\'\n"
+                                          << " Range of event types: \'Begin type-End type\'\n"
+                                          << " Values for a single type: \'Type:Value 1,...,Value n\'",
+                               "Add events" );
+                               
+  if( textEntry.ShowModal() == wxID_OK )
+  {
+    unsigned long tmp;
+    wxStringTokenizer tok;
+    bool errorString = false;
+    wxString tmpStr;
+    
+    if( textEntry.GetValue() == "" )
+      return;
+      
+    tok.SetString( textEntry.GetValue(), "-:," );
+
+    while( ( tmpStr = tok.GetNextToken() ) != "" )
+    {
+      if( !tmpStr.ToULong( &tmp ) )
+      {
+        errorString = true;
+        break;
+      }
+    }
+    
+    if( errorString )
+    {
+      wxMessageBox( "Text inserted doesn't fit the allowed formats", "Not allowed format" );
+      return;
+    }
+    
+    listboxFilterEvents->Append( textEntry.GetValue() );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_DELETE
+ */
+
+void CutFilterDialog::OnButtonFilterDeleteClick( wxCommandEvent& event )
+{
+  wxArrayInt selec;
+  
+  if( listboxFilterEvents->GetSelections( selec ) == 0 )
+    return;
+    
+  listboxFilterEvents->Delete( selec[ 0 ] );
 }
 
