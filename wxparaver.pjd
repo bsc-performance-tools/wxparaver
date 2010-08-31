@@ -24046,6 +24046,7 @@
                           <long name="title-mode">0</long>
                           <long name="locked">0</long>
                           <string name="proxy-type">"wbButtonProxy"</string>
+                          <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonScSelectedEventsAddClick|NONE||CutFilterDialog"</string>
                           <string name="proxy-Id name">"ID_BUTTON_SC_SELECTED_EVENTS_ADD"</string>
                           <long name="proxy-Id value">10149</long>
                           <string name="proxy-Name">""</string>
@@ -24111,6 +24112,7 @@
                           <long name="title-mode">0</long>
                           <long name="locked">0</long>
                           <string name="proxy-type">"wbButtonProxy"</string>
+                          <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonScSelectedEventsDeleteClick|NONE||CutFilterDialog"</string>
                           <string name="proxy-Id name">"ID_BUTTON_SC_SELECTED_EVENTS_DELETE"</string>
                           <long name="proxy-Id value">10150</long>
                           <string name="proxy-Name">""</string>
@@ -24847,6 +24849,7 @@
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbButtonProxy"</string>
+                        <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonScKeepEventsAddClick|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_BUTTON_SC_KEEP_EVENTS_ADD"</string>
                         <long name="proxy-Id value">10145</long>
                         <string name="proxy-Name">""</string>
@@ -24912,6 +24915,7 @@
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbButtonProxy"</string>
+                        <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonScKeepEventsDeleteClick|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_BUTTON_SC_KEEP_EVENTS_DELETE"</string>
                         <long name="proxy-Id value">10146</long>
                         <string name="proxy-Name">""</string>

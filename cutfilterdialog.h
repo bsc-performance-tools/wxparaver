@@ -188,6 +188,18 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_PANEL_SOFTWARE_COUNTERS
   void OnPanelSoftwareCountersUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_ADD
+  void OnButtonScSelectedEventsAddClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_DELETE
+  void OnButtonScSelectedEventsDeleteClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_KEEP_EVENTS_ADD
+  void OnButtonScKeepEventsAddClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_KEEP_EVENTS_DELETE
+  void OnButtonScKeepEventsDeleteClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 

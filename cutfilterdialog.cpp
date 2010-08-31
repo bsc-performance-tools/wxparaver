@@ -97,6 +97,14 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
   EVT_UPDATE_UI( ID_PANEL_SOFTWARE_COUNTERS, CutFilterDialog::OnPanelSoftwareCountersUpdate )
 
+  EVT_BUTTON( ID_BUTTON_SC_SELECTED_EVENTS_ADD, CutFilterDialog::OnButtonScSelectedEventsAddClick )
+
+  EVT_BUTTON( ID_BUTTON_SC_SELECTED_EVENTS_DELETE, CutFilterDialog::OnButtonScSelectedEventsDeleteClick )
+
+  EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_ADD, CutFilterDialog::OnButtonScKeepEventsAddClick )
+
+  EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_DELETE, CutFilterDialog::OnButtonScKeepEventsDeleteClick )
+
   EVT_BUTTON( wxID_OK, CutFilterDialog::OnOkClick )
 
 ////@end CutFilterDialog event table entries
@@ -1229,5 +1237,124 @@ void CutFilterDialog::OnButtonFilterDeleteClick( wxCommandEvent& event )
     return;
     
   listboxFilterEvents->Delete( selec[ 0 ] );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_ADD
+ */
+
+void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
+{
+  wxTextEntryDialog textEntry( this, 
+                               wxString() << "Allowed formats:\n"
+                                          << " Single event type: \'Type\'\n"
+                                          << " Range of event types: \'Begin type-End type\'\n"
+                                          << " Values for a single type: \'Type:Value 1,...,Value n\'",
+                               "Add events" );
+                               
+  if( textEntry.ShowModal() == wxID_OK )
+  {
+    unsigned long tmp;
+    wxStringTokenizer tok;
+    bool errorString = false;
+    wxString tmpStr;
+    
+    if( textEntry.GetValue() == "" )
+      return;
+      
+    tok.SetString( textEntry.GetValue(), "-:," );
+
+    while( ( tmpStr = tok.GetNextToken() ) != "" )
+    {
+      if( !tmpStr.ToULong( &tmp ) )
+      {
+        errorString = true;
+        break;
+      }
+    }
+    
+    if( errorString )
+    {
+      wxMessageBox( "Text inserted doesn't fit the allowed formats", "Not allowed format" );
+      return;
+    }
+    
+    checkListSCSelectedEvents->Append( textEntry.GetValue() );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_SELECTED_EVENTS_DELETE
+ */
+
+void CutFilterDialog::OnButtonScSelectedEventsDeleteClick( wxCommandEvent& event )
+{
+  wxArrayInt selec;
+  
+  if( checkListSCSelectedEvents->GetSelections( selec ) == 0 )
+    return;
+    
+  checkListSCSelectedEvents->Delete( selec[ 0 ] );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_KEEP_EVENTS_ADD
+ */
+
+void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
+{
+  wxTextEntryDialog textEntry( this, 
+                               wxString() << "Allowed formats:\n"
+                                          << " Single event type: \'Type\'\n"
+                                          << " Range of event types: \'Begin type-End type\'\n",
+                               "Add events" );
+                               
+  if( textEntry.ShowModal() == wxID_OK )
+  {
+    unsigned long tmp;
+    wxStringTokenizer tok;
+    bool errorString = false;
+    wxString tmpStr;
+    
+    if( textEntry.GetValue() == "" )
+      return;
+      
+    tok.SetString( textEntry.GetValue(), "-" );
+
+    while( ( tmpStr = tok.GetNextToken() ) != "" )
+    {
+      if( !tmpStr.ToULong( &tmp ) )
+      {
+        errorString = true;
+        break;
+      }
+    }
+    
+    if( errorString )
+    {
+      wxMessageBox( "Text inserted doesn't fit the allowed formats", "Not allowed format" );
+      return;
+    }
+    
+    listSCKeepEvents->Append( textEntry.GetValue() );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_KEEP_EVENTS_DELETE
+ */
+
+void CutFilterDialog::OnButtonScKeepEventsDeleteClick( wxCommandEvent& event )
+{
+  wxArrayInt selec;
+  
+  if( listSCKeepEvents->GetSelections( selec ) == 0 )
+    return;
+    
+  listSCKeepEvents->Delete( selec[ 0 ] );
 }
 
