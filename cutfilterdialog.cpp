@@ -964,7 +964,7 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_by_time( radioCutterCutByTime->GetValue() );
 
     textCutterBeginCut->GetValue().ToULong( &auxULong );
-    traceOptions->set_min_cutting_time( (unsigned long long)auxULong ); // ok?
+    traceOptions->set_min_cutting_time( (unsigned long long)auxULong );
     traceOptions->set_minimum_time_percentage( (unsigned long long)auxULong );
 
     textCutterEndCut->GetValue().ToULong( &auxULong );
@@ -972,7 +972,7 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_maximum_time_percentage( (unsigned long long)auxULong );
 
     traceOptions->set_original_time( (char)checkCutterUseOriginalTime->IsChecked() );
-    traceOptions->set_break_states( (int)checkCutterDontBreakStates->IsChecked() ); // negar?
+    traceOptions->set_break_states( (int)!checkCutterDontBreakStates->IsChecked() );
     traceOptions->set_remFirstStates( (int)checkCutterRemoveFirstState->IsChecked() );
     traceOptions->set_remLastStates( (int)checkCutterRemoveLastState->IsChecked() );
 
