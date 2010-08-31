@@ -192,6 +192,18 @@ public:
   TraceOptions * GetTraceOptions() const { return traceOptions ; }
   void SetTraceOptions(TraceOptions * value) { traceOptions = value ; }
 
+  vector< int > GetFilterToolOrder() const { return filterToolOrder ; }
+  void SetFilterToolOrder(vector< int > value) { filterToolOrder = value ; }
+
+  bool GetLoadResultingTrace() const { return loadResultingTrace ; }
+  void SetLoadResultingTrace(bool value) { loadResultingTrace = value ; }
+
+  string GetNameSourceTrace() const { return nameSourceTrace ; }
+  void SetNameSourceTrace(string value) { nameSourceTrace = value ; }
+
+  string GetPathOutputTrace() const { return pathOutputTrace ; }
+  void SetPathOutputTrace(string value) { pathOutputTrace = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -214,13 +226,14 @@ public:
   void CheckFilterOptions( bool &previousWarning );
   void CheckSoftwareCountersOptions( bool &previousWarning );
 
+  void TransferWindowToCommonData( bool previousWarning );
   void TransferWindowToCutterData( bool previousWarning );
   void TransferWindowToFilterData( bool previousWarning );
   void TransferWindowToSoftwareCountersData( bool previousWarning );
 
 ////@begin CutFilterDialog member variables
   wxFilePickerCtrl* filePickerTrace;
-  wxCheckBox* loadResultingTrace;
+  wxCheckBox* checkLoadResultingTrace;
   wxCheckListBox* checkListToolOrder;
   wxBitmapButton* buttonUp;
   wxBitmapButton* buttonDown;
@@ -234,7 +247,7 @@ public:
   wxButton* buttonCutterAllTrace;
   wxCheckBox* checkCutterUseOriginalTime;
   wxCheckBox* checkCutterRemoveFirstState;
-  wxCheckBox* checkCutterBreakStates;
+  wxCheckBox* checkCutterDontBreakStates;
   wxCheckBox* checkCutterRemoveLastState;
   wxSpinCtrl* textCutterMaximumTraceSize;
   wxCheckBox* checkFilterDiscardStateRecords;
@@ -275,6 +288,10 @@ public:
   wxButton* buttonSCKeepEventsDelete;
 private:
   TraceOptions * traceOptions;
+  vector< int > filterToolOrder;
+  bool loadResultingTrace;
+  string nameSourceTrace;
+  string pathOutputTrace;
 ////@end CutFilterDialog member variables
 
   vector< string > listToolOrder; // Names of the tools

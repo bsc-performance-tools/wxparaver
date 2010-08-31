@@ -423,6 +423,7 @@ private:
   void ShowHistogramDialog();
 
   string DoLoadFilteredTrace( string traceFileName,
+                              string traceFilePath,
                               TraceOptions *traceOptions,
                               vector< int > &filterToolOrder );
   void ShowCutTraceWindow();

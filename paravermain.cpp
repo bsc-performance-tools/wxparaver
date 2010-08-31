@@ -415,11 +415,11 @@ void paraverMain::CreateControls()
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
-    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowBrowser")).Caption(_T("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   windowProperties = new wxPropertyGrid( itemFrame1, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
   itemFrame1->GetAuiManager().AddPane(windowProperties, wxAuiPaneInfo()
-    .Name(_T("auiWindowProperties")).Caption(_("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowProperties")).Caption(_T("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   GetAuiManager().Update();
 
@@ -2770,6 +2770,7 @@ void paraverMain::OnToolCutTraceClick( wxCommandEvent& event )
 
 
 string paraverMain::DoLoadFilteredTrace( string traceFileName,
+                                         string traceFilePath,
                                          TraceOptions *traceOptions,
                                          vector< int > &filterToolOrder )
 {
@@ -2779,31 +2780,36 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   //TraceCommunicationsFusion *traceCommunicationsFusion;
 
   string tmpTraceIn, tmpTraceOut;
-  char tmpNameIn[1024], tmpNameOut[1024];
+  char tmpNameIn[1024], tmpNameOut[1024], tmpPathOut[1024];
   string strOutputFile;
   vector< string > tmpFiles;
 
   // Concatenate Filter Utilities
   strcpy( tmpNameOut, (char *)traceFileName.c_str() );
+  strcpy( tmpPathOut, (char *)traceFilePath.c_str() );
 
   for( UINT16 i = 0; i < filterToolOrder.size(); ++i )
   {
     strcpy( tmpNameIn, tmpNameOut );
-    localKernel->getNewTraceName( tmpNameIn, tmpNameOut, filterToolOrder[ i ] );
+
+    // Please change this to:
+    // tmpNameOut = localKernel->getNewTraceName( tmpNameIn, tmpPathOut, filterToolOrder[ i ] );
+    localKernel->getNewTraceName( tmpNameIn, tmpPathOut, filterToolOrder[ i ] );
+    strcpy( tmpNameOut, tmpPathOut );
 
     switch( filterToolOrder[i] )
     {
       case INC_CHOP_COUNTER:
         traceCutter = localKernel->newTraceCutter( tmpNameIn,
-                                                tmpNameOut,
-                                                traceOptions );
+                                                   tmpNameOut,
+                                                   traceOptions );
         localKernel->copyPCF( tmpNameIn, tmpNameOut );
         break;
 
       case INC_FILTER_COUNTER:
         traceFilter = localKernel->newTraceFilter( tmpNameIn,
-                                                tmpNameOut,
-                                                traceOptions );
+                                                   tmpNameOut,
+                                                   traceOptions );
         localKernel->copyPCF( tmpNameIn, tmpNameOut );
         break;
 
@@ -2844,16 +2850,23 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
 
 void paraverMain::ShowCutTraceWindow()
 {
-  CutFilterDialog cutFilterDialog( this );
+  TraceOptions *traceOptions = TraceOptions::create( localKernel );
+
+  CutFilterDialog cutFilterDialog( this );  
+  cutFilterDialog.SetTraceOptions( traceOptions->getConcrete() );
 
   if( cutFilterDialog.ShowModal() == wxID_OK )
   {
-    vector< int > filterToolOrder = cutFilterDialog.GetToolsOrder();
-    string resultingTrace = DoLoadFilteredTrace( cutFilterDialog.GetTraceFileName(),
+    vector< int > filterToolOrder = cutFilterDialog.GetFilterToolOrder();
+
+    string traceFileName = cutFilterDialog.GetNameSourceTrace();
+    string traceFileOutputPath = cutFilterDialog.GetPathOutputTrace();
+    string resultingTrace = DoLoadFilteredTrace( traceFileName,
+                                                 traceFileOutputPath,
                                                  cutFilterDialog.GetTraceOptions(),
                                                  filterToolOrder );
 
-    if ( cutFilterDialog.LoadResultingTrace() )
+    if ( cutFilterDialog.GetLoadResultingTrace() )
       DoLoadTrace( resultingTrace );
   }
 }

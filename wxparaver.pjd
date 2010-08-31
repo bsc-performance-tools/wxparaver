@@ -2040,6 +2040,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -8905,6 +8913,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -19108,7 +19124,11 @@
           <string name="id-suffix">""</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
-          <string name="variable-0">"traceOptions|TraceOptions *|TraceOptions|NULL|2|0|"</string>
+          <string name="variable-0">"traceOptions|TraceOptions *|TraceOptions||2|0|"</string>
+          <string name="variable-1">"filterToolOrder|vector&lt; int &gt;|FilterToolOrder||2|0|"</string>
+          <string name="variable-2">"loadResultingTrace|bool|LoadResultingTrace|false|2|0|"</string>
+          <string name="variable-3">"nameSourceTrace|string|NameSourceTrace||2|0|"</string>
+          <string name="variable-4">"pathOutputTrace|string|PathOutputTrace||2|0|"</string>
           <string name="proxy-Id name">"ID_CUTFILTERDIALOG"</string>
           <long name="proxy-Id value">10103</long>
           <string name="proxy-Class">"CutFilterDialog"</string>
@@ -19341,7 +19361,7 @@
                   <string name="proxy-Data class implementation filename">""</string>
                   <string name="proxy-Data class header filename">""</string>
                   <string name="proxy-Data class manager window">""</string>
-                  <bool name="proxy-wxFLP_DEFAULT_STYLE">0</bool>
+                  <bool name="proxy-wxFLP_DEFAULT_STYLE">1</bool>
                   <bool name="proxy-wxFLP_USE_TEXTCTRL">0</bool>
                   <bool name="proxy-wxFLP_OPEN">1</bool>
                   <bool name="proxy-wxFLP_SAVE">0</bool>
@@ -19394,7 +19414,7 @@
                   <bool name="proxy-Separate files">0</bool>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
-                  <string name="proxy-Member variable name">"loadResultingTrace"</string>
+                  <string name="proxy-Member variable name">"checkLoadResultingTrace"</string>
                   <string name="proxy-Label">"Load the resulting trace"</string>
                   <bool name="proxy-Initial value">0</bool>
                   <string name="proxy-Help text">""</string>
@@ -21373,7 +21393,7 @@
                         <bool name="proxy-Separate files">0</bool>
                         <string name="proxy-Implementation filename">""</string>
                         <string name="proxy-Header filename">""</string>
-                        <string name="proxy-Member variable name">"checkCutterBreakStates"</string>
+                        <string name="proxy-Member variable name">"checkCutterDontBreakStates"</string>
                         <string name="proxy-Label">"Don't break states"</string>
                         <bool name="proxy-Initial value">0</bool>
                         <string name="proxy-Help text">""</string>
@@ -21605,7 +21625,7 @@
                       <string name="proxy-Header filename">""</string>
                       <string name="proxy-Member variable name">"textCutterMaximumTraceSize"</string>
                       <long name="proxy-Minimum value">0</long>
-                      <long name="proxy-Maximum value">-1</long>
+                      <long name="proxy-Maximum value">1000000</long>
                       <long name="proxy-Initial value">0</long>
                       <string name="proxy-Help text">""</string>
                       <string name="proxy-Tooltip text">""</string>
@@ -23177,7 +23197,7 @@
                         <string name="proxy-Header filename">""</string>
                         <string name="proxy-Member variable name">"radioSCOnIntervals"</string>
                         <string name="proxy-Label">"On intervals"</string>
-                        <bool name="proxy-Initial value">0</bool>
+                        <bool name="proxy-Initial value">1</bool>
                         <string name="proxy-Help text">""</string>
                         <string name="proxy-Tooltip text">""</string>
                         <string name="proxy-Background colour">""</string>

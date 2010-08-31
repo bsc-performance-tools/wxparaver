@@ -154,9 +154,9 @@ CutFilterDialog::~CutFilterDialog()
 void CutFilterDialog::Init()
 {
 ////@begin CutFilterDialog member initialisation
-  traceOptions = NULL;
+  loadResultingTrace = false;
   filePickerTrace = NULL;
-  loadResultingTrace = NULL;
+  checkLoadResultingTrace = NULL;
   checkListToolOrder = NULL;
   buttonUp = NULL;
   buttonDown = NULL;
@@ -170,7 +170,7 @@ void CutFilterDialog::Init()
   buttonCutterAllTrace = NULL;
   checkCutterUseOriginalTime = NULL;
   checkCutterRemoveFirstState = NULL;
-  checkCutterBreakStates = NULL;
+  checkCutterDontBreakStates = NULL;
   checkCutterRemoveLastState = NULL;
   textCutterMaximumTraceSize = NULL;
   checkFilterDiscardStateRecords = NULL;
@@ -236,14 +236,14 @@ void CutFilterDialog::CreateControls()
     itemStaticText5->SetToolTip(_("Trace that will be used by the Cut/Filter toolkit."));
   itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_LEFT|wxALL, 5);
 
-  filePickerTrace = new wxFilePickerCtrl( itemDialog1, ID_FILECTRL_CUTFILTER_TRACE_SELECTION, wxEmptyString, _("Trace to Cut/Filter"), _T("Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR );
+  filePickerTrace = new wxFilePickerCtrl( itemDialog1, ID_FILECTRL_CUTFILTER_TRACE_SELECTION, wxEmptyString, _("Trace to Cut/Filter"), _T("Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR );
   if (CutFilterDialog::ShowToolTips())
     filePickerTrace->SetToolTip(_("Trace that will be used by the Cut/Filter toolkit."));
   itemBoxSizer4->Add(filePickerTrace, 2, wxGROW|wxALL, 5);
 
-  loadResultingTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_LOAD_RESULTING_TRACE, _("Load the resulting trace"), wxDefaultPosition, wxDefaultSize, 0 );
-  loadResultingTrace->SetValue(false);
-  itemBoxSizer4->Add(loadResultingTrace, 0, wxGROW|wxALL, 5);
+  checkLoadResultingTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_LOAD_RESULTING_TRACE, _("Load the resulting trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkLoadResultingTrace->SetValue(false);
+  itemBoxSizer4->Add(checkLoadResultingTrace, 0, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer4->Add(itemBoxSizer8, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -361,9 +361,9 @@ void CutFilterDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer41->Add(itemBoxSizer45, 0, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 5);
-  checkCutterBreakStates = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_BREAK_STATES, _("Don't break states"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkCutterBreakStates->SetValue(false);
-  itemBoxSizer45->Add(checkCutterBreakStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  checkCutterDontBreakStates = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_BREAK_STATES, _("Don't break states"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCutterDontBreakStates->SetValue(false);
+  itemBoxSizer45->Add(checkCutterDontBreakStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   checkCutterRemoveLastState = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_REMOVE_LAST_STATE, _("Remove last state"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterRemoveLastState->SetValue(false);
@@ -487,7 +487,7 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer78 = new wxBoxSizer(wxVERTICAL);
   itemStaticBoxSizer77->Add(itemBoxSizer78, 0, wxGROW|wxALL, 5);
   radioSCOnIntervals = new wxRadioButton( itemPanel75, ID_RADIOBUTTON_SC_ON_INTERVALS, _("On intervals"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-  radioSCOnIntervals->SetValue(false);
+  radioSCOnIntervals->SetValue(true);
   itemBoxSizer78->Add(radioSCOnIntervals, 1, wxGROW|wxALL, 5);
 
   radioSCOnStates = new wxRadioButton( itemPanel75, ID_RADIOBUTTON_SC_ON_STATES, _("On states"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -678,12 +678,12 @@ void CutFilterDialog::OnCheckOriginalTimeClick( wxCommandEvent& event )
 {
   if ( checkCutterUseOriginalTime->IsChecked() )
   {
-    checkCutterBreakStates->SetValue( false );
-    checkCutterBreakStates->Disable();
+    checkCutterDontBreakStates->SetValue( false );
+    checkCutterDontBreakStates->Disable();
   }
   else
   {
-    checkCutterBreakStates->Enable();
+    checkCutterDontBreakStates->Enable();
   }
 }
 
@@ -911,35 +911,69 @@ void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& ev
   }
 }
 
-void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
+
+void CutFilterDialog::TransferWindowToCommonData( bool previousWarning )
 {
   if ( !previousWarning )
   {
-    if ( traceOptions != NULL )
-      traceOptions = new TraceOptions();
+    wxString fullPath = filePickerTrace->GetPath();  // includes path + name
+    wxString path = fullPath.BeforeLast('/'); // only path
 
-/*
-        traceOptions->set_max_trace_size( int traceSize );
-        traceOptions->set_by_time( bool whichByTime );
-        traceOptions->set_min_cutting_time( unsigned long long minCutTime );
-        traceOptions->set_max_cutting_time( unsigned long long maxCutTime );
-        traceOptions->set_minimum_time_percentage( unsigned long long whichMinimumTimePercentage );
-        traceOptions->set_maximum_time_percentage( unsigned long long whichMaximumTimePercentage );
-        traceOptions->set_tasks_list( char *tasksList );
-        traceOptions->set_original_time( char originalTime );
-        traceOptions->set_break_states( int breakStates );
-        traceOptions->set_remFirstStates( int remStates );
-        traceOptions->set_remLastStates( int remStates );
-*/
+    nameSourceTrace = std::string( fullPath.mb_str() );
+    pathOutputTrace = std::string( path.mb_str() );
+
+    loadResultingTrace = checkLoadResultingTrace->IsChecked();
+
+    for ( size_t i = 0; i < listToolOrder.size(); ++i )
+    {
+      if ( checkListToolOrder->IsChecked( i ) )
+      {
+        if ( listToolOrder[ i ] == "Cutter" )
+          filterToolOrder.push_back( INC_CHOP_COUNTER );
+        if ( listToolOrder[ i ] == "Filter" )
+          filterToolOrder.push_back( INC_FILTER_COUNTER );
+        if ( listToolOrder[ i ] == "Software Counters" )
+          filterToolOrder.push_back( INC_SC_COUNTER );
+      }
+    }
   }
 }
+
+
+void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
+{
+  unsigned long auxULong;
+
+  if ( !previousWarning )
+  {
+    traceOptions->set_max_trace_size( textCutterMaximumTraceSize->GetValue() );
+
+    traceOptions->set_by_time( radioCutterCutByTime->GetValue() );
+
+    textCutterBeginCut->GetValue().ToULong( &auxULong );
+    traceOptions->set_min_cutting_time( (unsigned long long)auxULong ); // ok?
+    traceOptions->set_minimum_time_percentage( (unsigned long long)auxULong );
+
+    textCutterEndCut->GetValue().ToULong( &auxULong );
+    traceOptions->set_max_cutting_time( (unsigned long long)auxULong );
+    traceOptions->set_maximum_time_percentage( (unsigned long long)auxULong );
+
+    traceOptions->set_original_time( (char)checkCutterUseOriginalTime->IsChecked() );
+    traceOptions->set_break_states( (int)checkCutterDontBreakStates->IsChecked() ); // negar?
+    traceOptions->set_remFirstStates( (int)checkCutterRemoveFirstState->IsChecked() );
+    traceOptions->set_remLastStates( (int)checkCutterRemoveLastState->IsChecked() );
+
+    // Only test purposes!
+    char auxTask[1024] = ""; 
+    traceOptions->set_tasks_list( auxTask );
+  }
+}
+
 
 void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 {
   if ( !previousWarning )
   {
-    if ( traceOptions != NULL )
-      traceOptions = new TraceOptions();
   }
 }
 
@@ -947,8 +981,6 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
 {
   if ( !previousWarning )
   {
-    if ( traceOptions != NULL )
-      traceOptions = new TraceOptions();
   }
 }
 
@@ -1079,6 +1111,7 @@ void CutFilterDialog::OnOkClick( wxCommandEvent& event )
   bool previousWarning = false;
 
   CheckCommonOptions( previousWarning );
+  TransferWindowToCommonData( previousWarning );
 
   if ( !previousWarning )
   {
@@ -1097,54 +1130,20 @@ void CutFilterDialog::OnOkClick( wxCommandEvent& event )
           CheckFilterOptions( previousWarning );
           TransferWindowToFilterData( previousWarning );
         }
-        if ( listToolOrder[ i ] == "Software Counter" )
+        if ( listToolOrder[ i ] == "Software Counters" )
         {
           CheckSoftwareCountersOptions( previousWarning );
           TransferWindowToSoftwareCountersData( previousWarning );
         }
       }
     }
+
+    EndModal( wxID_OK );
   }
+  else
+    EndModal( wxID_CANCEL );
 }
 
-
-string CutFilterDialog::GetTraceFileName()
-{
-  wxString path = filePickerTrace->GetPath();
-  return std::string( path.mb_str() );
-}
-
-
-vector< int > CutFilterDialog::GetToolsOrder()
-{
-  vector< int > filterToolOrder;
-
-  for ( size_t i = 0; i < listToolOrder.size(); ++i )
-  {
-    if ( checkListToolOrder->IsChecked( i ) )
-    {
-      if ( listToolOrder[ i ] == "Cutter" )
-        filterToolOrder.push_back( INC_CHOP_COUNTER );
-      if ( listToolOrder[ i ] == "Filter" )
-        filterToolOrder.push_back( INC_FILTER_COUNTER );
-      if ( listToolOrder[ i ] == "Software Counters" )
-        filterToolOrder.push_back( INC_SC_COUNTER );
-    }
-  }
-
-  return filterToolOrder;
-}
-
-
-bool CutFilterDialog::LoadResultingTrace()
-{
-  return loadResultingTrace->IsChecked();
-}
-
-
-/*!
- * wxEVT_UPDATE_UI event handler for ID_PANEL_FILTER
- */
 
 void CutFilterDialog::OnPanelFilterUpdate( wxUpdateUIEvent& event )
 {
