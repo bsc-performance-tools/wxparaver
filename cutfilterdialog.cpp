@@ -818,7 +818,7 @@ void CutFilterDialog::OnCheckListToolOrderUpdate( wxUpdateUIEvent& event )
   {
     for( size_t i = 0; i < notebookTools->GetPageCount(); ++i )
     {
-      if ( *it == string( notebookTools->GetPageText( i ).c_str()))
+      if ( *it == string( notebookTools->GetPageText( i ).mb_str()))
       {
         (notebookTools->GetPage( i ))->Enable( checkListToolOrder->IsChecked( pos ) );
       }
@@ -917,7 +917,7 @@ void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& ev
 
   for( vector< string >::iterator it = listToolOrder.begin(); it != listToolOrder.end(); ++it )
   {
-    if ( *it == string( notebookTools->GetPageText( notebookTools->GetSelection() ).c_str()) )
+    if ( *it == string( notebookTools->GetPageText( notebookTools->GetSelection() ).mb_str()) )
     {
       checkListToolOrder->SetSelection( pos );
     }
@@ -1002,7 +1002,7 @@ void CutFilterDialog::CheckCommonOptions( bool &previousWarning )
   wxString path = filePickerTrace->GetPath();
   if ( !previousWarning && path == _("") )
   {
-    wxMessageDialog message( this, _("Missing trace name.\nPlease choose one trace."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Missing trace name.\nPlease choose one trace."), _("Warning"), wxOK );
     message.ShowModal();
     filePickerTrace->SetFocus();
     previousWarning = true;
@@ -1040,9 +1040,9 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     previousWarning = true;
   }
 
-  if ( !previousWarning && textCutterEndCut->GetValue() == "" )
+  if ( !previousWarning && textCutterEndCut->GetValue() == _("") )
   {
-    wxMessageDialog message( this, _("Please set the final time."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Please set the final time."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterEndCut->SetFocus();
     previousWarning = true;
@@ -1056,7 +1056,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // negative times?
   if ( !previousWarning && cutterBeginTime < 0.0 )
   {
-    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set begin time properly."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set begin time properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1064,7 +1064,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
 
   if ( !previousWarning && cutterEndTime < 0.0 )
   {
-    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set end time properly."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set end time properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterEndCut->SetFocus();
     previousWarning = true;
@@ -1073,7 +1073,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // percent out of range?
   if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterBeginTime > 100.0 )
   {
-    wxMessageDialog message( this, _("Begin time percent greater than 100 %.\n\nPlease set time percent properly."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Begin time percent greater than 100 %.\n\nPlease set time percent properly."), _("Warning"), wxOK );
     message.ShowModal();
     radioCutterCutByTimePercent->SetFocus();
     previousWarning = true;
@@ -1081,7 +1081,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
 
   if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterEndTime > 100.0 )
   {
-    wxMessageDialog message( this, _("End time percent greater than 100 %.\n\nPlease set time percent properly."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("End time percent greater than 100 %.\n\nPlease set time percent properly."), _("Warning"), wxOK );
     message.ShowModal();
     radioCutterCutByTimePercent->SetFocus();
     previousWarning = true;
@@ -1090,7 +1090,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // begin == end?
   if ( !previousWarning && cutterBeginTime == cutterEndTime )
   {
-    wxMessageDialog message( this, _("Same time for both limits.\n\nPlease set time range properly."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Same time for both limits.\n\nPlease set time range properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1099,7 +1099,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // begin > end?
   if ( !previousWarning && cutterBeginTime > cutterEndTime ) // Idea: Maybe it could swap times in text boxes.
   {
-    wxMessageDialog message( this, _("Begin time greater than end time.\n\nPlease set time range properly."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Begin time greater than end time.\n\nPlease set time range properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1108,7 +1108,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // tasks string
   if( !previousWarning && !CheckStringTasks( textCutterTasks->GetValue() ) )
   {
-    wxMessageDialog message( this, _("Not allowed format in tasks text.\n\nPlease set it properly."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Not allowed format in tasks text.\n\nPlease set it properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterTasks->SetFocus();
     previousWarning = true;
@@ -1199,11 +1199,11 @@ void CutFilterDialog::OnPanelFilterUpdate( wxUpdateUIEvent& event )
 void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
 {
   wxTextEntryDialog textEntry( this, 
-                               wxString() << "Allowed formats:\n"
-                                          << " Single event type: \'Type\'\n"
-                                          << " Range of event types: \'Begin type-End type\'\n"
-                                          << " Values for a single type: \'Type:Value 1,...,Value n\'",
-                               "Add events" );
+                               wxString() << _("Allowed formats:\n")
+                                          << _(" Single event type: \'Type\'\n")
+                                          << _(" Range of event types: \'Begin type-End type\'\n")
+                                          << _(" Values for a single type: \'Type:Value 1,...,Value n\'"),
+                               _("Add events") );
                                
   if( textEntry.ShowModal() == wxID_OK )
   {
@@ -1215,7 +1215,7 @@ void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
     if( textEntry.GetValue() == "" )
       return;
       
-    tok.SetString( textEntry.GetValue(), "-:," );
+    tok.SetString( textEntry.GetValue(), _("-:,") );
 
     while( ( tmpStr = tok.GetNextToken() ) != "" )
     {
@@ -1228,7 +1228,7 @@ void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
     
     if( errorString )
     {
-      wxMessageBox( "Text inserted doesn't fit the allowed formats", "Not allowed format" );
+      wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
       return;
     }
     
@@ -1259,11 +1259,11 @@ void CutFilterDialog::OnButtonFilterDeleteClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
 {
   wxTextEntryDialog textEntry( this, 
-                               wxString() << "Allowed formats:\n"
-                                          << " Single event type: \'Type\'\n"
-                                          << " Range of event types: \'Begin type-End type\'\n"
-                                          << " Values for a single type: \'Type:Value 1,...,Value n\'",
-                               "Add events" );
+                               wxString() << _("Allowed formats:\n")
+                                          << _(" Single event type: \'Type\'\n")
+                                          << _(" Range of event types: \'Begin type-End type\'\n")
+                                          << _(" Values for a single type: \'Type:Value 1,...,Value n\'"),
+                               _("Add events") );
                                
   if( textEntry.ShowModal() == wxID_OK )
   {
@@ -1288,7 +1288,7 @@ void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
     
     if( errorString )
     {
-      wxMessageBox( "Text inserted doesn't fit the allowed formats", "Not allowed format" );
+      wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
       return;
     }
     
@@ -1319,10 +1319,10 @@ void CutFilterDialog::OnButtonScSelectedEventsDeleteClick( wxCommandEvent& event
 void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
 {
   wxTextEntryDialog textEntry( this, 
-                               wxString() << "Allowed formats:\n"
-                                          << " Single event type: \'Type\'\n"
-                                          << " Range of event types: \'Begin type-End type\'\n",
-                               "Add events" );
+                               wxString() << _("Allowed formats:\n")
+                                          << _(" Single event type: \'Type\'\n")
+                                          << _(" Range of event types: \'Begin type-End type\'\n"),
+                               _("Add events") );
                                
   if( textEntry.ShowModal() == wxID_OK )
   {
@@ -1347,7 +1347,7 @@ void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
     
     if( errorString )
     {
-      wxMessageBox( "Text inserted doesn't fit the allowed formats", "Not allowed format" );
+      wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
       return;
     }
     
