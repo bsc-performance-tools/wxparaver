@@ -1212,12 +1212,12 @@ void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
     bool errorString = false;
     wxString tmpStr;
     
-    if( textEntry.GetValue() == "" )
+    if( textEntry.GetValue() == _("") )
       return;
       
     tok.SetString( textEntry.GetValue(), _("-:,") );
 
-    while( ( tmpStr = tok.GetNextToken() ) != "" )
+    while( ( tmpStr = tok.GetNextToken() ) != _("") )
     {
       if( !tmpStr.ToULong( &tmp ) )
       {
@@ -1272,12 +1272,12 @@ void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
     bool errorString = false;
     wxString tmpStr;
     
-    if( textEntry.GetValue() == "" )
+    if( textEntry.GetValue() == _("") )
       return;
       
-    tok.SetString( textEntry.GetValue(), "-:," );
+    tok.SetString( textEntry.GetValue(), _("-:,") );
 
-    while( ( tmpStr = tok.GetNextToken() ) != "" )
+    while( ( tmpStr = tok.GetNextToken() ) != _("") )
     {
       if( !tmpStr.ToULong( &tmp ) )
       {
@@ -1331,12 +1331,12 @@ void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
     bool errorString = false;
     wxString tmpStr;
     
-    if( textEntry.GetValue() == "" )
+    if( textEntry.GetValue() == _("") )
       return;
       
-    tok.SetString( textEntry.GetValue(), "-" );
+    tok.SetString( textEntry.GetValue(), _("-") );
 
-    while( ( tmpStr = tok.GetNextToken() ) != "" )
+    while( ( tmpStr = tok.GetNextToken() ) != _("") )
     {
       if( !tmpStr.ToULong( &tmp ) )
       {
