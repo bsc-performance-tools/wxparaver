@@ -986,6 +986,60 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 {
   if ( !previousWarning )
   {
+/*
+    // Discard Records
+    traceOptions->set_filter_states( (char)!checkFilterDiscardStateRecords->IsChecked() );
+    traceOptions->set_filter_events( (char)!checkFilterDiscardEventRecords->IsChecked() );
+    traceOptions->set_filter_comms( (char)!checkFilterDiscardCommunicationRecords->IsChecked() );
+
+    //States
+    bool allStatesSelected = true;
+    for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+    {
+      if ( !checkListFilterStates->IsChecked( i ) )
+      {
+        allStatesSelected = false;
+        break;
+      }
+    }
+
+    TStateNames auxNames;
+    traceOptions->set_all_states( (char)allStatesSelected );
+    if ( allStatesSelected )
+    {
+      auxNames[ 0 ] = strdup( "All" );
+    }
+    else
+    {
+      // Read selected states and fill vector
+    int pos = 0;
+    for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+    {
+      if ( checkListFilterStates->IsChecked( i ) )
+      {
+        auxNames[ pos++ ] = strdup( (char *)checkListFilterStates->GetString( i ).c_str());
+      }
+    }
+    if( pos == 0 )
+    {
+      auxNames[ 0 ] = strdup( "Running" );
+    }
+    traceOptions->set_state_names( auxNames );
+
+    unsigned long auxULong;
+    textFilterMinBurstTime->GetValue().ToULong( &auxULong );
+    traceOptions->set_min_state_time( (unsigned long long)auxULong );
+
+    // Events
+//    traceOptions->set_filter_types( TFilterTypes filterTypes );
+//    traceOptions->void set_filter_last_type(  int filterLastType );
+    traceOptions->set_discard_given_types( (char)checkFilterDiscardListedEvents->IsChecked() );
+
+    //traceOptions->set_filter_by_call_time( char filterByCallTime ); //?
+
+    // Communications
+    traceOptions->set_min_comm_size( textFilterSize->GetValue() );
+*/
   }
 }
 
