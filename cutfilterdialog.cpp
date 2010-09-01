@@ -74,8 +74,6 @@ IMPLEMENT_DYNAMIC_CLASS( CutFilterDialog, wxDialog )
 BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
 ////@begin CutFilterDialog event table entries
-  EVT_FILEPICKER_CHANGED( ID_FILECTRL_CUTFILTER_TRACE_SELECTION, CutFilterDialog::OnFilectrlTracePickerChanged )
-
   EVT_LISTBOX( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderSelected )
   EVT_UPDATE_UI( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderUpdate )
 
@@ -90,6 +88,10 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_CHECKBOX( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckOriginalTimeClick )
 
   EVT_UPDATE_UI( ID_PANEL_FILTER, CutFilterDialog::OnPanelFilterUpdate )
+
+  EVT_BUTTON( ID_BUTTON_FILTER_SELECT_ALL, CutFilterDialog::OnButtonFilterSelectAllClick )
+
+  EVT_BUTTON( ID_BUTTON_FILTER_UNSELECT_ALL, CutFilterDialog::OnButtonFilterUnselectAllClick )
 
   EVT_BUTTON( ID_BUTTON_FILTER_ADD, CutFilterDialog::OnButtonFilterAddClick )
 
@@ -419,23 +421,8 @@ void CutFilterDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer58 = new wxStaticBoxSizer(staticBoxSizerFilterStates, wxHORIZONTAL);
   itemBoxSizer53->Add(itemStaticBoxSizer58, 1, wxGROW|wxALL, 5);
   wxArrayString checkListFilterStatesStrings;
-  checkListFilterStatesStrings.Add(_("Idle; 0"));
   checkListFilterStatesStrings.Add(_("Running; 10000"));
-  checkListFilterStatesStrings.Add(_("Not created; 0"));
-  checkListFilterStatesStrings.Add(_("Waiting a message; 0"));
-  checkListFilterStatesStrings.Add(_("Bloking Send; 0"));
-  checkListFilterStatesStrings.Add(_("Thd. Synchr.; 0"));
-  checkListFilterStatesStrings.Add(_("Test/Probe; 0"));
-  checkListFilterStatesStrings.Add(_("Sched. and Fork/Join; 0"));
-  checkListFilterStatesStrings.Add(_("Wait/WaitAll; 0"));
-  checkListFilterStatesStrings.Add(_("Blocked; 0"));
-  checkListFilterStatesStrings.Add(_("Inmediate Send; 0"));
-  checkListFilterStatesStrings.Add(_("Inmediate Receive; 0"));
-  checkListFilterStatesStrings.Add(_("I/O; 0"));
-  checkListFilterStatesStrings.Add(_("Group Communication; 0"));
-  checkListFilterStatesStrings.Add(_("Tracing Disabled; 0"));
-  checkListFilterStatesStrings.Add(_("Others; 0"));
-  checkListFilterStatesStrings.Add(_("Send Receive; 0"));
+  checkListFilterStatesStrings.Add(_("Waiting;0"));
   checkListFilterStates = new wxCheckListBox( itemPanel52, ID_CHECKLISTBOX_FILTER_STATES, wxDefaultPosition, wxSize(-1, 100), checkListFilterStatesStrings, wxLB_SINGLE );
   itemStaticBoxSizer58->Add(checkListFilterStates, 2, wxGROW|wxALL, 5);
 
@@ -820,16 +807,6 @@ void CutFilterDialog::OnCheckListToolOrderUpdate( wxUpdateUIEvent& event )
 }
 
 
-/*!
- * wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_TRACE_SELECTION
- */
-
-void CutFilterDialog::OnFilectrlTracePickerChanged( wxFileDirPickerEvent& event )
-{
-  wxString path = filePickerTrace->GetPath();
-//  tracePath = wxFileName( path ).GetPath();
-//  DoLoadTrace( std::string( path.mb_str() ) );
-}
 
 // This code is cut/paste from Histogram!!!!
 wxString CutFilterDialog::formatNumber( double value )
@@ -899,7 +876,9 @@ void CutFilterDialog::OnCheckListToolOrderSelected( wxCommandEvent& event )
   {
     for( size_t i = 0; i < notebookTools->GetPageCount(); ++i )
     {
-      if ( listToolOrder[ lastItemSelected ] == string( notebookTools->GetPageText( i ).c_str()))
+// this gives warning en 4.4.4
+//      if ( listToolOrder[ lastItemSelected ] == string( notebookTools->GetPageText( i ).c_str()))
+      if ( listToolOrder[ lastItemSelected ] == string( notebookTools->GetPageText( i ).mb_str()))
         notebookTools->ChangeSelection( i );
     }
   }
@@ -1033,7 +1012,7 @@ void CutFilterDialog::CheckCommonOptions( bool &previousWarning )
 void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
 {
   // Time region selected?
-  if ( !previousWarning && textCutterBeginCut->GetValue() == "" )
+  if ( !previousWarning && textCutterBeginCut->GetValue() == _("") )
   {
     wxMessageDialog message( this, _("Please set the initial time."), _( "Warning" ), wxOK );
     message.ShowModal();
@@ -1150,7 +1129,6 @@ void CutFilterDialog::OnOkClick( wxCommandEvent& event )
         }
       }
     }
-
     EndModal( wxID_OK );
   }
   else
@@ -1356,5 +1334,23 @@ void CutFilterDialog::OnButtonScKeepEventsDeleteClick( wxCommandEvent& event )
     return;
     
   listSCKeepEvents->Delete( selec[ 0 ] );
+}
+
+
+void CutFilterDialog::OnButtonFilterSelectAllClick( wxCommandEvent& event )
+{
+  for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+  {
+    checkListFilterStates->Check( i );
+  }
+}
+
+
+void CutFilterDialog::OnButtonFilterUnselectAllClick( wxCommandEvent& event )
+{
+  for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+  {
+    checkListFilterStates->Check( i, false );
+  }
 }
 

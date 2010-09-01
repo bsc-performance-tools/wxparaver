@@ -152,9 +152,6 @@ public:
 
 ////@begin CutFilterDialog event handler declarations
 
-  /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_TRACE_SELECTION
-  void OnFilectrlTracePickerChanged( wxFileDirPickerEvent& event );
-
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
   void OnCheckListToolOrderSelected( wxCommandEvent& event );
 
@@ -178,6 +175,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_PANEL_FILTER
   void OnPanelFilterUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_SELECT_ALL
+  void OnButtonFilterSelectAllClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_UNSELECT_ALL
+  void OnButtonFilterUnselectAllClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_ADD
   void OnButtonFilterAddClick( wxCommandEvent& event );
