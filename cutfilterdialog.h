@@ -247,6 +247,8 @@ public:
   void CheckFilterOptions( bool &previousWarning );
   void CheckSoftwareCountersOptions( bool &previousWarning );
 
+  bool CheckStringTasks( wxString taskStr );
+  
   void TransferWindowToCommonData( bool previousWarning );
   void TransferWindowToCutterData( bool previousWarning );
   void TransferWindowToFilterData( bool previousWarning );

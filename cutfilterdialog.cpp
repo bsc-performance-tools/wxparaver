@@ -955,9 +955,7 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_remFirstStates( (int)checkCutterRemoveFirstState->IsChecked() );
     traceOptions->set_remLastStates( (int)checkCutterRemoveLastState->IsChecked() );
 
-    // Only test purposes!
-    char auxTask[1024] = ""; 
-    traceOptions->set_tasks_list( auxTask );
+    traceOptions->set_tasks_list( (char *)textCutterTasks->GetValue().mb_str() );
   }
 }
 
@@ -1084,6 +1082,15 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     textCutterBeginCut->SetFocus();
     previousWarning = true;
   }
+  
+  // tasks string
+  if( !previousWarning && !CheckStringTasks( textCutterTasks->GetValue() ) )
+  {
+    wxMessageDialog message( this, _("Not allowed format in tasks text.\n\nPlease set it properly."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    textCutterTasks->SetFocus();
+    previousWarning = true;
+  }
 }
 
 
@@ -1129,10 +1136,14 @@ void CutFilterDialog::OnOkClick( wxCommandEvent& event )
         }
       }
     }
-    EndModal( wxID_OK );
+
+    if( previousWarning )
+      return;
+    else
+      EndModal( wxID_OK );
   }
   else
-    EndModal( wxID_CANCEL );
+    return;
 }
 
 
@@ -1336,6 +1347,35 @@ void CutFilterDialog::OnButtonScKeepEventsDeleteClick( wxCommandEvent& event )
   listSCKeepEvents->Delete( selec[ 0 ] );
 }
 
+bool CutFilterDialog::CheckStringTasks( wxString taskStr )
+{
+  if( taskStr == _( "" ) )
+    return true;
+    
+  stringstream sstr( string( taskStr.mb_str() ) );
+  
+  while( !sstr.eof() )
+  {
+    string tmpStr;
+    long tmpLong;
+    
+    std::getline( sstr, tmpStr, ',' );
+    
+    stringstream tmpStream( tmpStr );
+    std::getline( tmpStream, tmpStr, '-' );
+    if( !( stringstream( tmpStr ) >> tmpLong ) )
+      return false;
+    
+    if( !tmpStream.eof() )
+    {
+      std::getline( tmpStream, tmpStr );
+      if( !( stringstream( tmpStr ) >> tmpLong ) )
+        return false;
+    }
+  }
+  
+  return true;
+}
 
 void CutFilterDialog::OnButtonFilterSelectAllClick( wxCommandEvent& event )
 {
