@@ -283,7 +283,7 @@ void CutFilterDialog::CreateControls()
   checkListToolOrder = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX, wxDefaultPosition, wxDefaultSize, checkListToolOrderStrings, wxLB_SINGLE|wxLB_NEEDED_SB );
   if (CutFilterDialog::ShowToolTips())
     checkListToolOrder->SetToolTip(_("Select the order of the Cut/Filter tools."));
-  itemBoxSizer13->Add(checkListToolOrder, 3, wxGROW|wxLEFT|wxTOP, 2);
+  itemBoxSizer13->Add(checkListToolOrder, 2, wxGROW, 2);
 
   wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer13->Add(itemBoxSizer15, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);

@@ -19814,11 +19814,11 @@
                     <long name="proxy-Height">-1</long>
                     <string name="proxy-AlignH">"Centre"</string>
                     <string name="proxy-AlignV">"Expand"</string>
-                    <long name="proxy-Stretch factor">3</long>
+                    <long name="proxy-Stretch factor">2</long>
                     <long name="proxy-Border">2</long>
-                    <bool name="proxy-wxLEFT">1</bool>
+                    <bool name="proxy-wxLEFT">0</bool>
                     <bool name="proxy-wxRIGHT">0</bool>
-                    <bool name="proxy-wxTOP">1</bool>
+                    <bool name="proxy-wxTOP">0</bool>
                     <bool name="proxy-wxBOTTOM">0</bool>
                     <bool name="proxy-wxSHAPED">0</bool>
                     <bool name="proxy-wxADJUST_MINSIZE">0</bool>
