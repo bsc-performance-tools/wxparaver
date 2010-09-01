@@ -1365,11 +1365,15 @@ bool CutFilterDialog::CheckStringTasks( wxString taskStr )
     std::getline( tmpStream, tmpStr, '-' );
     if( !( stringstream( tmpStr ) >> tmpLong ) )
       return false;
+    else if( tmpLong == 0 )
+      return false;
     
     if( !tmpStream.eof() )
     {
       std::getline( tmpStream, tmpStr );
       if( !( stringstream( tmpStr ) >> tmpLong ) )
+        return false;
+      else if( tmpLong == 0 )
         return false;
     }
   }
