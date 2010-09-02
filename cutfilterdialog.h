@@ -92,8 +92,7 @@ class wxSpinCtrl;
 #define ID_CHECKLISTBOX_FILTER_STATES 10128
 #define ID_BUTTON_FILTER_SELECT_ALL 10129
 #define ID_BUTTON_FILTER_UNSELECT_ALL 10130
-#define ID_TEXTCTRL3 10151
-#define ID_CHECKBOX5 10156
+#define ID_TEXTCTRL_FILTER_MIN_BURST_TIME 10151
 #define ID_LISTBOX_FILTER_EVENTS 10141
 #define ID_BUTTON_FILTER_ADD 10142
 #define ID_BUTTON_FILTER_DELETE 10143
@@ -248,7 +247,12 @@ public:
   void CheckSoftwareCountersOptions( bool &previousWarning );
 
   bool CheckStringTasks( wxString taskStr );
-  
+  bool CheckEventsLine( wxString eventsStr );
+  void GetEventsFromLine( wxString eventsStr,
+                          TraceOptions::TFilterTypes &eventTypes,
+                          int &lastType );
+  void GetEventsList( TraceOptions::TFilterTypes &types, int &lastType );
+
   void TransferWindowToCommonData( bool previousWarning );
   void TransferWindowToCutterData( bool previousWarning );
   void TransferWindowToFilterData( bool previousWarning );
@@ -282,7 +286,6 @@ public:
   wxButton* buttonFilterUnselectAll;
   wxStaticText* labelFilterMinBurstTime;
   wxTextCtrl* textFilterMinBurstTime;
-  wxCheckBox* checkFilterDiscardListedStates;
   wxStaticBox* staticBoxSizerFilterEvents;
   wxListBox* listboxFilterEvents;
   wxButton* buttonFilterAdd;
