@@ -2780,13 +2780,14 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   //TraceCommunicationsFusion *traceCommunicationsFusion;
 
   string tmpTraceIn, tmpTraceOut;
-  char tmpNameIn[1024], tmpNameOut[1024], tmpPathOut[1024];
+  char tmpNameIn[1024], tmpNameOut[1024], tmpPathOut[1024], tmpPathOutBackup[1024];
   string strOutputFile;
   vector< string > tmpFiles;
 
   // Concatenate Filter Utilities
   strcpy( tmpNameOut, (char *)traceFileName.c_str() );
   strcpy( tmpPathOut, (char *)traceFilePath.c_str() );
+  strcpy( tmpPathOutBackup, (char *)traceFilePath.c_str() );
 
   for( UINT16 i = 0; i < filterToolOrder.size(); ++i )
   {
@@ -2796,6 +2797,7 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
     // tmpNameOut = localKernel->getNewTraceName( tmpNameIn, tmpPathOut, filterToolOrder[ i ] );
     localKernel->getNewTraceName( tmpNameIn, tmpPathOut, filterToolOrder[ i ] );
     strcpy( tmpNameOut, tmpPathOut );
+    strcpy( tmpPathOut, tmpPathOutBackup );
 
     switch( filterToolOrder[i] )
     {
