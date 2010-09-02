@@ -1122,6 +1122,9 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
       }
 
       TraceOptions::TStateNames auxNames;
+      for( int i = 0; i < 20; ++i )
+        auxNames[ i ] = NULL;
+        
       traceOptions->set_all_states( (char)allStatesSelected );
       if ( allStatesSelected )
       {
