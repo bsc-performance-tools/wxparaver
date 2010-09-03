@@ -230,6 +230,9 @@ public:
   string GetPathOutputTrace() const { return pathOutputTrace ; }
   void SetPathOutputTrace(string value) { pathOutputTrace = value ; }
 
+  bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
+  void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -308,7 +311,7 @@ public:
   wxTextCtrl* textSCSamplingInterval;
   wxStaticText* staticTextSCMinimumBurstTime;
   wxTextCtrl* textSCMinimumBurstTime;
-  wxListBox* checkListSCSelectedEvents;
+  wxListBox* listSCSelectedEvents;
   wxButton* buttonSCSelectedEventsAdd;
   wxButton* buttonSCSelectedEventsDelete;
   wxRadioButton* radioSCCountEvents;
@@ -326,6 +329,7 @@ private:
   bool loadResultingTrace;
   string nameSourceTrace;
   string pathOutputTrace;
+  bool waitingGlobalTiming;
 ////@end CutFilterDialog member variables
 
   vector< string > listToolOrder; // Names of the tools

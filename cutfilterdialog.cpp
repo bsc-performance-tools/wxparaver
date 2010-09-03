@@ -175,6 +175,7 @@ void CutFilterDialog::Init()
 {
 ////@begin CutFilterDialog member initialisation
   loadResultingTrace = false;
+  waitingGlobalTiming = false;
   filePickerTrace = NULL;
   checkLoadResultingTrace = NULL;
   checkListToolOrder = NULL;
@@ -217,7 +218,7 @@ void CutFilterDialog::Init()
   textSCSamplingInterval = NULL;
   staticTextSCMinimumBurstTime = NULL;
   textSCMinimumBurstTime = NULL;
-  checkListSCSelectedEvents = NULL;
+  listSCSelectedEvents = NULL;
   buttonSCSelectedEventsAdd = NULL;
   buttonSCSelectedEventsDelete = NULL;
   radioSCCountEvents = NULL;
@@ -269,6 +270,7 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer4->Add(itemBoxSizer8, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
 
   wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON, _("Load XML..."), wxDefaultPosition, wxDefaultSize, 0 );
+  itemButton9->Enable(false);
   itemBoxSizer8->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON1, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
@@ -466,9 +468,6 @@ void CutFilterDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer66 = new wxStaticBoxSizer(staticBoxSizerFilterEvents, wxHORIZONTAL);
   itemBoxSizer53->Add(itemStaticBoxSizer66, 1, wxGROW|wxALL, 3);
   wxArrayString listboxFilterEventsStrings;
-  listboxFilterEventsStrings.Add(_("42000059"));
-  listboxFilterEventsStrings.Add(_("42000008"));
-  listboxFilterEventsStrings.Add(_("50000001-50000003"));
   listboxFilterEvents = new wxListBox( itemPanel52, ID_LISTBOX_FILTER_EVENTS, wxDefaultPosition, wxDefaultSize, listboxFilterEventsStrings, wxLB_SINGLE );
   itemStaticBoxSizer66->Add(listboxFilterEvents, 2, wxGROW|wxALL, 2);
 
@@ -541,11 +540,9 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer77->Add(itemStaticBoxSizer90, 1, wxGROW|wxALL, 3);
   wxBoxSizer* itemBoxSizer91 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer90->Add(itemBoxSizer91, 1, wxGROW|wxALL, 0);
-  wxArrayString checkListSCSelectedEventsStrings;
-  checkListSCSelectedEventsStrings.Add(_("42000059"));
-  checkListSCSelectedEventsStrings.Add(_("42000008"));
-  checkListSCSelectedEvents = new wxListBox( itemPanel76, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, checkListSCSelectedEventsStrings, wxLB_SINGLE );
-  itemBoxSizer91->Add(checkListSCSelectedEvents, 2, wxGROW|wxALL, 2);
+  wxArrayString listSCSelectedEventsStrings;
+  listSCSelectedEvents = new wxListBox( itemPanel76, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, listSCSelectedEventsStrings, wxLB_SINGLE );
+  itemBoxSizer91->Add(listSCSelectedEvents, 2, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer93 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer91->Add(itemBoxSizer93, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -595,7 +592,6 @@ void CutFilterDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer107 = new wxStaticBoxSizer(itemStaticBoxSizer107Static, wxHORIZONTAL);
   itemBoxSizer77->Add(itemStaticBoxSizer107, 1, wxGROW|wxALL, 3);
   wxArrayString listSCKeepEventsStrings;
-  listSCKeepEventsStrings.Add(_("40000003"));
   listSCKeepEvents = new wxListBox( itemPanel76, ID_LISTBOX_SC_KEEP_EVENTS, wxDefaultPosition, wxDefaultSize, listSCKeepEventsStrings, wxLB_SINGLE );
   itemStaticBoxSizer107->Add(listSCKeepEvents, 2, wxGROW|wxALL, 2);
 
