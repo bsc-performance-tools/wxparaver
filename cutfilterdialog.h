@@ -151,9 +151,6 @@ public:
 
 ////@begin CutFilterDialog event handler declarations
 
-  /// wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
-  void OnIdle( wxIdleEvent& event );
-
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
   void OnCheckListToolOrderSelected( wxCommandEvent& event );
 
@@ -168,9 +165,6 @@ public:
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
   void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
-  void OnButtonCutterSelectRegionClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_ALL_TRACE
   void OnButtonCutterAllTraceClick( wxCommandEvent& event );
@@ -229,9 +223,6 @@ public:
 
   string GetPathOutputTrace() const { return pathOutputTrace ; }
   void SetPathOutputTrace(string value) { pathOutputTrace = value ; }
-
-  bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
-  void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -329,7 +320,6 @@ private:
   bool loadResultingTrace;
   string nameSourceTrace;
   string pathOutputTrace;
-  bool waitingGlobalTiming;
 ////@end CutFilterDialog member variables
 
   vector< string > listToolOrder; // Names of the tools

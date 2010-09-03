@@ -75,8 +75,6 @@ IMPLEMENT_DYNAMIC_CLASS( CutFilterDialog, wxDialog )
 BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
 ////@begin CutFilterDialog event table entries
-  EVT_IDLE( CutFilterDialog::OnIdle )
-
   EVT_LISTBOX( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderSelected )
   EVT_UPDATE_UI( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderUpdate )
 
@@ -85,8 +83,6 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_DOWN, CutFilterDialog::OnBitmapbuttonPushDownClick )
 
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
-
-  EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionClick )
 
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_TRACE, CutFilterDialog::OnButtonCutterAllTraceClick )
 
@@ -175,7 +171,6 @@ void CutFilterDialog::Init()
 {
 ////@begin CutFilterDialog member initialisation
   loadResultingTrace = false;
-  waitingGlobalTiming = false;
   filePickerTrace = NULL;
   checkLoadResultingTrace = NULL;
   checkListToolOrder = NULL;
@@ -1185,8 +1180,6 @@ char *CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox *selecte
     if ( i != selectedEvents->GetCount() - 1 )
       listStr += string(";");
   }
-
-  cout << listStr << endl;
 
   return strdup( listStr.c_str() );
 }
