@@ -347,7 +347,7 @@ void CutFilterDialog::CreateControls()
 
   textCutterTasks = new wxTextCtrl( itemPanel19, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
-    textCutterTasks->SetToolTip(_("Select the list of tasks to cut, separated by commas. Ranges marked with \"-\" are allowed. I.e. \"1-32,33,64-128\"."));
+    textCutterTasks->SetToolTip(_("Select the list of tasks to cut, separated by commas. Ranges marked with \"-\" are allowed. I.e. \"1-32,33,64-128\". Leave it empty to select all the tasks."));
   itemBoxSizer34->Add(textCutterTasks, 1, wxGROW|wxALL, 5);
 
   wxStaticLine* itemStaticLine37 = new wxStaticLine( itemPanel19, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
@@ -893,8 +893,6 @@ void CutFilterDialog::OnCheckListToolOrderSelected( wxCommandEvent& event )
   {
     for( size_t i = 0; i < notebookTools->GetPageCount(); ++i )
     {
-// this gives warning en 4.4.4
-//      if ( listToolOrder[ lastItemSelected ] == string( notebookTools->GetPageText( i ).c_str()))
       if ( listToolOrder[ lastItemSelected ] == string( notebookTools->GetPageText( i ).mb_str()))
         notebookTools->ChangeSelection( i );
     }
@@ -1177,8 +1175,32 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 
 void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning )
 {
+  unsigned long auxULong;
+
   if ( !previousWarning )
   {
+    // Region
+    traceOptions->set_sc_onInterval( (int) radioSCOnIntervals->GetValue() );
+
+    traceOptions->set_sc_sampling_interval( (unsigned long long)textSCSamplingInterval->GetValue().ToULong( &auxULong ) );
+    traceOptions->set_sc_minimum_burst_time( (unsigned long long)textSCMinimumBurstTime->GetValue().ToULong( &auxULong ) );
+
+    // Selected events
+//    traceOptions->set_sc_types( (char) *whichTypes );
+
+    // Options
+    traceOptions->set_sc_acumm_counters( (int) radioSCAccumulateValues->GetValue() );
+
+    traceOptions->set_sc_remove_states( (int) checkSCRemoveStates->IsChecked() );
+    traceOptions->set_sc_summarize_states( (int) checkSCSummarizeUseful->IsChecked() );
+    traceOptions->set_sc_global_counters( (int) checkSCGlobalCounters->IsChecked() );
+    traceOptions->set_sc_only_in_bursts( (int) checkSCOnlyInBurstsCounting->IsChecked() );
+
+    // Keep events
+//    traceOptions->set_sc_types_kept( (char) *typesKept );
+
+    // Experimental feature?
+    // traceOptions->set_sc_frequency( (int) scFrequency );
   }
 }
 
