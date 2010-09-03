@@ -441,7 +441,23 @@ bool paraverMain::DoLoadTrace( const string &path )
     wxMessageDialog maxSizeDialog( this, wxT( "Maximum size reached" ),
                                          wxT( "The maximum size for trace " + path.c_str() + " is reached.\nWould you like to cut or filter the trace?" ),
                                          wxYES_NO|wxCANCEL|wxICON_QUESTION );
-    //if( maxSizeDialog.ShowModal() == 
+    switch( maxSizeDialog.ShowModal() )
+    {
+      case wxID_YES:
+        //se abre dialog tijeras
+        canServeSignal = true;
+        return true;
+        break;
+        
+      case wxID_NO:
+        break;
+      
+      case wxID_CANCEL:
+        canServeSignal = true;
+        return true;
+        break;
+        
+    }
   }
   
   map< string, UINT32 >::iterator it = traceInstance.find( path );
