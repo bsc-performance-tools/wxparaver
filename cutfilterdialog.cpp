@@ -42,15 +42,16 @@
 #include "wx/imaglist.h"
 ////@end includes
 
-#include "cutfilterdialog.h"
-#include "paraverconfig.h"
-#include "kernelconnection.h"
-
 #include <sstream>
 #include <iostream>
 #include <algorithm>
 #include <wx/filedlg.h>
 #include <wx/tokenzr.h>
+
+#include "cutfilterdialog.h"
+#include "paraverconfig.h"
+#include "kernelconnection.h"
+#include "wxparaverapp.h"
 
 ////@begin XPM images
 #include "arrow_up.xpm"
@@ -74,6 +75,8 @@ IMPLEMENT_DYNAMIC_CLASS( CutFilterDialog, wxDialog )
 BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
 ////@begin CutFilterDialog event table entries
+  EVT_IDLE( CutFilterDialog::OnIdle )
+
   EVT_LISTBOX( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderSelected )
   EVT_UPDATE_UI( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderUpdate )
 
@@ -82,6 +85,8 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_DOWN, CutFilterDialog::OnBitmapbuttonPushDownClick )
 
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
+
+  EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionClick )
 
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_TRACE, CutFilterDialog::OnButtonCutterAllTraceClick )
 
@@ -170,6 +175,7 @@ void CutFilterDialog::Init()
 {
 ////@begin CutFilterDialog member initialisation
   loadResultingTrace = false;
+  waitingGlobalTiming = false;
   filePickerTrace = NULL;
   checkLoadResultingTrace = NULL;
   checkListToolOrder = NULL;
@@ -1675,6 +1681,41 @@ void CutFilterDialog::OnButtonFilterUnselectAllClick( wxCommandEvent& event )
   for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
   {
     checkListFilterStates->Check( i, false );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
+ */
+
+void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
+{
+  wxGetApp().ActivateGlobalTiming( this );
+  waitingGlobalTiming = true;
+}
+
+
+/*!
+ * wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
+ */
+
+void CutFilterDialog::OnIdle( wxIdleEvent& event )
+{
+  if( waitingGlobalTiming )
+  {
+    stringstream tmpsstr;
+    
+    tmpsstr << fixed;
+    tmpsstr << wxGetApp().GetGlobalTimingBegin();
+    textCutterBeginCut->SetValue( _( tmpsstr.str().c_str() ) );
+
+    tmpsstr.str( "" );
+    tmpsstr << wxGetApp().GetGlobalTimingEnd();
+    textCutterEndCut->SetValue( _( tmpsstr.str().c_str() ) );
+    
+    if( !wxGetApp().GetGlobalTiming() )
+      waitingGlobalTiming = false;
   }
 }
 

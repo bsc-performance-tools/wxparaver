@@ -104,7 +104,6 @@ void wxparaverApp::Init()
 	globalTimingBegin = 0;
 	globalTimingEnd = 0;
 	globalTimingCallDialog = NULL;
-	globalTimingBeginIsSet = false;
 ////@end wxparaverApp member initialisation
   m_locale.Init();
 }
@@ -345,6 +344,9 @@ void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
   globalTimingBeginIsSet = false;
   globalTimingCallDialog->Enable( false );
   globalTimingCallDialog->MakeModal( false );
+#ifdef WIN32
+  globalTimingCallDialog->Iconize( true );
+#endif
   mainWindow->Raise();
 }
 
@@ -355,6 +357,9 @@ void wxparaverApp::DeactivateGlobalTiming()
   globalTimingBeginIsSet = false;
   globalTimingCallDialog->Enable( true );
   globalTimingCallDialog->MakeModal( true );
+#ifdef WIN32
+  globalTimingCallDialog->Iconize( false );
+#endif
   globalTimingCallDialog->Raise();
 }
 
