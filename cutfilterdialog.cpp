@@ -75,6 +75,7 @@ IMPLEMENT_DYNAMIC_CLASS( CutFilterDialog, wxDialog )
 BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
 ////@begin CutFilterDialog event table entries
+  EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
 
   EVT_LISTBOX( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderSelected )
@@ -1781,4 +1782,16 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
       waitingGlobalTiming = false;
   }
 }
+
+
+/*!
+ * wxEVT_INIT_DIALOG event handler for ID_CUTFILTERDIALOG
+ */
+
+void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
+{
+  filePickerTrace->SetPath( wxString( nameSourceTrace.c_str() ) );
+  checkLoadResultingTrace->SetValue( loadResultingTrace );
+}
+
 

@@ -151,6 +151,9 @@ public:
 
 ////@begin CutFilterDialog event handler declarations
 
+  /// wxEVT_INIT_DIALOG event handler for ID_CUTFILTERDIALOG
+  void OnInitDialog( wxInitDialogEvent& event );
+
   /// wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
   void OnIdle( wxIdleEvent& event );
 

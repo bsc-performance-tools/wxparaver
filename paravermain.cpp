@@ -436,15 +436,17 @@ bool paraverMain::DoLoadTrace( const string &path )
 
   canServeSignal = false;
 
-  if( !localKernel->checkTraceSize( path, ParaverConfig::getInstance()->getFiltersFilterTraceUpToMB() ) )
+  if( !localKernel->checkTraceSize( path, ParaverConfig::getInstance()->getFiltersFilterTraceUpToMB() * 1E6 ) )
   {
-    wxMessageDialog maxSizeDialog( this, wxT( "Maximum size reached" ),
-                                         wxString( "The maximum size for trace " ) + wxString( path.c_str() ) + wxString( " is reached.\nWould you like to cut or filter the trace?" ),
-                                         wxYES_NO|wxCANCEL|wxICON_QUESTION );
+    wxMessageDialog maxSizeDialog( this, 
+                                   wxString( "The maximum size for trace " ) + wxString( path.c_str() ) + wxString( " is reached.\nWould you like to cut or filter the trace?" ),
+                                   wxT( "Maximum size reached" ),
+                                   wxYES_NO|wxCANCEL|wxICON_QUESTION );
+
     switch( maxSizeDialog.ShowModal() )
     {
       case wxID_YES:
-        //se abre dialog tijeras
+        ShowCutTraceWindow( path, true );
         canServeSignal = true;
         return true;
         break;
@@ -2789,7 +2791,7 @@ void paraverMain::OnKeyPaste()
  */
 void paraverMain::OnToolCutTraceClick( wxCommandEvent& event )
 {
-  ShowCutTraceWindow();
+  ShowCutTraceWindow( "", false );
 }
 
 
@@ -2874,13 +2876,19 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   return string( tmpNameOut );
 }
 
-void paraverMain::ShowCutTraceWindow()
+void paraverMain::ShowCutTraceWindow( const string& filename, bool loadTrace )
 {
   TraceOptions *traceOptions = TraceOptions::create( localKernel );
 
   CutFilterDialog cutFilterDialog( this );  
   cutFilterDialog.SetTraceOptions( traceOptions->getConcrete() );
 
+  if( filename != "" )
+  {
+    cutFilterDialog.SetNameSourceTrace( filename );
+    cutFilterDialog.SetLoadResultingTrace( loadTrace );
+  }
+  
   if( cutFilterDialog.ShowModal() == wxID_OK )
   {
     vector< int > filterToolOrder = cutFilterDialog.GetFilterToolOrder();

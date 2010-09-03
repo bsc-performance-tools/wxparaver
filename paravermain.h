@@ -426,7 +426,7 @@ private:
                               string traceFilePath,
                               TraceOptions *traceOptions,
                               vector< int > &filterToolOrder );
-  void ShowCutTraceWindow();
+  void ShowCutTraceWindow( const string& filename, bool loadTrace );
   
   void PrepareToExit();
 };
