@@ -218,7 +218,7 @@ void CutFilterDialog::Init()
   textSCSamplingInterval = NULL;
   staticTextSCMinimumBurstTime = NULL;
   textSCMinimumBurstTime = NULL;
-  checkListSCSelectedEvents = NULL;
+  listSCSelectedEvents = NULL;
   buttonSCSelectedEventsAdd = NULL;
   buttonSCSelectedEventsDelete = NULL;
   radioSCCountEvents = NULL;
@@ -270,6 +270,7 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer4->Add(itemBoxSizer8, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
 
   wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON, _("Load XML..."), wxDefaultPosition, wxDefaultSize, 0 );
+  itemButton9->Enable(false);
   itemBoxSizer8->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON1, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
@@ -467,9 +468,6 @@ void CutFilterDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer66 = new wxStaticBoxSizer(staticBoxSizerFilterEvents, wxHORIZONTAL);
   itemBoxSizer53->Add(itemStaticBoxSizer66, 1, wxGROW|wxALL, 3);
   wxArrayString listboxFilterEventsStrings;
-  listboxFilterEventsStrings.Add(_("42000059"));
-  listboxFilterEventsStrings.Add(_("42000008"));
-  listboxFilterEventsStrings.Add(_("50000001-50000003"));
   listboxFilterEvents = new wxListBox( itemPanel52, ID_LISTBOX_FILTER_EVENTS, wxDefaultPosition, wxDefaultSize, listboxFilterEventsStrings, wxLB_SINGLE );
   itemStaticBoxSizer66->Add(listboxFilterEvents, 2, wxGROW|wxALL, 2);
 
@@ -542,11 +540,9 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer77->Add(itemStaticBoxSizer90, 1, wxGROW|wxALL, 3);
   wxBoxSizer* itemBoxSizer91 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer90->Add(itemBoxSizer91, 1, wxGROW|wxALL, 0);
-  wxArrayString checkListSCSelectedEventsStrings;
-  checkListSCSelectedEventsStrings.Add(_("42000059"));
-  checkListSCSelectedEventsStrings.Add(_("42000008"));
-  checkListSCSelectedEvents = new wxListBox( itemPanel76, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, checkListSCSelectedEventsStrings, wxLB_SINGLE );
-  itemBoxSizer91->Add(checkListSCSelectedEvents, 2, wxGROW|wxALL, 2);
+  wxArrayString listSCSelectedEventsStrings;
+  listSCSelectedEvents = new wxListBox( itemPanel76, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, listSCSelectedEventsStrings, wxLB_SINGLE );
+  itemBoxSizer91->Add(listSCSelectedEvents, 2, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer93 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer91->Add(itemBoxSizer93, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -596,7 +592,6 @@ void CutFilterDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer107 = new wxStaticBoxSizer(itemStaticBoxSizer107Static, wxHORIZONTAL);
   itemBoxSizer77->Add(itemStaticBoxSizer107, 1, wxGROW|wxALL, 3);
   wxArrayString listSCKeepEventsStrings;
-  listSCKeepEventsStrings.Add(_("40000003"));
   listSCKeepEvents = new wxListBox( itemPanel76, ID_LISTBOX_SC_KEEP_EVENTS, wxDefaultPosition, wxDefaultSize, listSCKeepEventsStrings, wxLB_SINGLE );
   itemStaticBoxSizer107->Add(listSCKeepEvents, 2, wxGROW|wxALL, 2);
 
@@ -1179,6 +1174,24 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 }
 
 
+char *CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox *selectedEvents )
+{
+  string listStr;
+
+  for( size_t i = 0; i < selectedEvents->GetCount(); ++i )
+  {
+    string lineStr = string( selectedEvents->GetString( i ).mb_str() );
+    listStr += lineStr;
+    if ( i != selectedEvents->GetCount() - 1 )
+      listStr += string(";");
+  }
+
+  cout << listStr << endl;
+
+  return strdup( listStr.c_str() );
+}
+
+
 void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning )
 {
   unsigned long auxULong;
@@ -1192,7 +1205,7 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
     traceOptions->set_sc_minimum_burst_time( (unsigned long long)textSCMinimumBurstTime->GetValue().ToULong( &auxULong ) );
 
     // Selected events
-//    traceOptions->set_sc_types( (char) *whichTypes );
+    traceOptions->set_sc_types( GetSoftwareCountersEventsListToString( listSCSelectedEvents ) );
 
     // Options
     traceOptions->set_sc_acumm_counters( (int) radioSCAccumulateValues->GetValue() );
@@ -1203,12 +1216,13 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
     traceOptions->set_sc_only_in_bursts( (int) checkSCOnlyInBurstsCounting->IsChecked() );
 
     // Keep events
-//    traceOptions->set_sc_types_kept( (char) *typesKept );
+    traceOptions->set_sc_types_kept( GetSoftwareCountersEventsListToString( listSCKeepEvents ));
 
     // Experimental feature?
     // traceOptions->set_sc_frequency( (int) scFrequency );
   }
 }
+
 
 void CutFilterDialog::CheckCommonOptions( bool &previousWarning )
 {
@@ -1387,6 +1401,57 @@ void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
 
 void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
 {
+  // Time region selected?
+  if ( !previousWarning && radioSCOnIntervals->GetValue() && textSCSamplingInterval->GetValue() == _("") )
+  {
+    wxMessageDialog message( this, _("Please set the sampling interval time."), _( "Warning" ), wxOK );
+    message.ShowModal();
+    textSCSamplingInterval->SetFocus();
+    previousWarning = true;
+  }
+
+  if ( !previousWarning && radioSCOnStates->GetValue() && textSCMinimumBurstTime->GetValue() == _("")  )
+  {
+    wxMessageDialog message( this, _("Please set the minimum burst time."), _("Warning"), wxOK );
+    message.ShowModal();
+    textSCMinimumBurstTime->SetFocus();
+    previousWarning = true;
+  }
+
+  // Are time set properly?
+  double regionTime;
+  if ( !previousWarning && radioSCOnIntervals->GetValue() )
+    textSCSamplingInterval->GetValue().ToDouble( &regionTime );
+  else
+    textSCMinimumBurstTime->GetValue().ToDouble( &regionTime );
+
+
+  // sampling interval <0  or Min. burst time < 0
+  if ( !previousWarning && regionTime < 0.0 )
+  {
+    if ( radioSCOnIntervals->GetValue() )
+    {
+      wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set sampling interval burst time properly."), _("Warning"), wxOK );
+      message.ShowModal();
+      textSCSamplingInterval->SetFocus();
+    }
+    else
+    {
+      wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set minimum burst time properly."), _("Warning"), wxOK );
+      message.ShowModal();
+      textSCMinimumBurstTime->SetFocus();
+    }
+    previousWarning = true;
+  }
+
+  // Empty list of events?
+  if ( !previousWarning && listSCSelectedEvents->GetCount() == 0 )
+  {
+    wxMessageDialog message( this, _("The list of event types is empty.\n\nPlease add at least one event type."), _("Warning"), wxOK );
+    message.ShowModal();
+    buttonSCSelectedEventsAdd->SetFocus();
+    previousWarning = true;
+  }
 }
 
 
@@ -1507,10 +1572,10 @@ void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonFilterDeleteClick( wxCommandEvent& event )
 {
   wxArrayInt selec;
-  
+
   if( listboxFilterEvents->GetSelections( selec ) == 0 )
     return;
-    
+
   listboxFilterEvents->Delete( selec[ 0 ] );
 }
 
@@ -1524,7 +1589,6 @@ void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
   wxTextEntryDialog textEntry( this, 
                                wxString() << _("Allowed formats:\n")
                                           << _(" Single event type: \'Type\'\n")
-                                          << _(" Range of event types: \'Begin type-End type\'\n")
                                           << _(" Values for a single type: \'Type:Value 1,...,Value n\'"),
                                _("Add events") );
                                
@@ -1538,7 +1602,7 @@ void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
     if( textEntry.GetValue() == _("") )
       return;
       
-    tok.SetString( textEntry.GetValue(), _("-:,") );
+    tok.SetString( textEntry.GetValue(), _(":,") );
 
     while( ( tmpStr = tok.GetNextToken() ) != _("") )
     {
@@ -1555,7 +1619,7 @@ void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
       return;
     }
     
-    checkListSCSelectedEvents->Append( textEntry.GetValue() );
+    listSCSelectedEvents->Append( textEntry.GetValue() );
   }
 }
 
@@ -1568,10 +1632,10 @@ void CutFilterDialog::OnButtonScSelectedEventsDeleteClick( wxCommandEvent& event
 {
   wxArrayInt selec;
   
-  if( checkListSCSelectedEvents->GetSelections( selec ) == 0 )
+  if( listSCSelectedEvents->GetSelections( selec ) == 0 )
     return;
     
-  checkListSCSelectedEvents->Delete( selec[ 0 ] );
+  listSCSelectedEvents->Delete( selec[ 0 ] );
 }
 
 
@@ -1666,6 +1730,7 @@ bool CutFilterDialog::CheckStringTasks( wxString taskStr )
   
   return true;
 }
+
 
 void CutFilterDialog::OnButtonFilterSelectAllClick( wxCommandEvent& event )
 {

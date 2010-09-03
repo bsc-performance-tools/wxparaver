@@ -261,6 +261,7 @@ public:
                           TraceOptions::TFilterTypes &eventTypes,
                           int &lastType );
   void GetEventsList( TraceOptions::TFilterTypes &types, int &lastType );
+  char *GetSoftwareCountersEventsListToString( wxListBox *selectedEvents );
 
   void TransferWindowToCommonData( bool previousWarning );
   void TransferWindowToCutterData( bool previousWarning );
@@ -310,7 +311,7 @@ public:
   wxTextCtrl* textSCSamplingInterval;
   wxStaticText* staticTextSCMinimumBurstTime;
   wxTextCtrl* textSCMinimumBurstTime;
-  wxListBox* checkListSCSelectedEvents;
+  wxListBox* listSCSelectedEvents;
   wxButton* buttonSCSelectedEventsAdd;
   wxButton* buttonSCSelectedEventsDelete;
   wxRadioButton* radioSCCountEvents;
