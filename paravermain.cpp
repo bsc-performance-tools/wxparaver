@@ -2249,6 +2249,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetTracesPath( paraverConfig->getGlobalTracesPath() );
   preferences.SetCfgsPath( paraverConfig->getGlobalCFGsPath() );
   preferences.SetTmpPath( paraverConfig->getGlobalTmpPath() );
+  preferences.SetMaximumTraceSize( paraverConfig->getFiltersFilterTraceUpToMB() );
 
   // TIMELINE
 
@@ -2327,6 +2328,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setGlobalTracesPath( preferences.GetTracesPath() );
     paraverConfig->setGlobalCFGsPath( preferences.GetCfgsPath() );
     paraverConfig->setGlobalTmpPath( preferences.GetTmpPath() );
+    paraverConfig->setFiltersFilterTraceUpToMB( (float)preferences.GetMaximumTraceSize() );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );

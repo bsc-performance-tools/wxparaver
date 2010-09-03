@@ -181,7 +181,9 @@ void PreferencesDialog::Init()
   histogramAutofit3DScale = true;
   histogramLabelsColor = false;
   colorUseZero = false;
+  maximumTraceSize = 256;
   checkGlobalFillStateGaps = NULL;
+  txtMaximumTraceSize = NULL;
   dirPickerTrace = NULL;
   dirPickerCFG = NULL;
   dirPickerTmp = NULL;
@@ -258,12 +260,12 @@ void PreferencesDialog::CreateControls()
   itemStaticBoxSizer4->Add(checkGlobalFillStateGaps, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer4->Add(itemBoxSizer6, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-  wxStaticText* itemStaticText7 = new wxStaticText( itemPanel2, wxID_STATIC, _("Maximum loadable trace size"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer4->Add(itemBoxSizer6, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText7 = new wxStaticText( itemPanel2, wxID_STATIC, _("Maximum loadable trace size (MB)"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer6->Add(itemStaticText7, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxTextCtrl* itemTextCtrl8 = new wxTextCtrl( itemPanel2, ID_TEXTCTRL_MAXIMUM_LOADABLE_TRACE_SIZE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer6->Add(itemTextCtrl8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  txtMaximumTraceSize = new wxSpinCtrl( itemPanel2, ID_TEXTCTRL_MAXIMUM_LOADABLE_TRACE_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 5000, 0 );
+  itemBoxSizer6->Add(txtMaximumTraceSize, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticBox* itemStaticBoxSizer9Static = new wxStaticBox(itemPanel2, wxID_ANY, _("  Default directories  "));
   wxStaticBoxSizer* itemStaticBoxSizer9 = new wxStaticBoxSizer(itemStaticBoxSizer9Static, wxVERTICAL);
@@ -956,6 +958,7 @@ bool PreferencesDialog::TransferDataToWindow()
   dirPickerTrace->SetPath( wxString::FromAscii( tracesPath.c_str() ) );
   dirPickerCFG->SetPath( wxString::FromAscii( cfgsPath.c_str() ) );
   dirPickerTmp->SetPath( wxString::FromAscii( tmpPath.c_str() ) );
+  txtMaximumTraceSize->SetValue( maximumTraceSize );
 
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
@@ -1062,6 +1065,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   tracesPath = std::string( dirPickerTrace->GetPath().mb_str() );
   cfgsPath = std::string( dirPickerCFG->GetPath().mb_str() );
   tmpPath = std::string( dirPickerTmp->GetPath().mb_str() );
+  maximumTraceSize = (float)txtMaximumTraceSize->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );

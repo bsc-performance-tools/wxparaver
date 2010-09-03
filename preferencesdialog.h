@@ -37,8 +37,8 @@
 
 ////@begin includes
 #include "wx/propdlg.h"
-#include "wx/filepicker.h"
 #include "wx/spinctrl.h"
+#include "wx/filepicker.h"
 #include "wx/clrpicker.h"
 ////@end includes
 
@@ -49,8 +49,8 @@
  */
 
 ////@begin forward declarations
-class wxDirPickerCtrl;
 class wxSpinCtrl;
+class wxDirPickerCtrl;
 class wxColourPickerCtrl;
 ////@end forward declarations
 
@@ -338,6 +338,9 @@ public:
   rgb GetTimelineColourZero() const { return timelineColourZero ; }
   void SetTimelineColourZero(rgb value) { timelineColourZero = value ; }
 
+  float GetMaximumTraceSize() const { return maximumTraceSize ; }
+  void SetMaximumTraceSize(float value) { maximumTraceSize = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -353,6 +356,7 @@ public:
 
 ////@begin PreferencesDialog member variables
   wxCheckBox* checkGlobalFillStateGaps;
+  wxSpinCtrl* txtMaximumTraceSize;
   wxDirPickerCtrl* dirPickerTrace;
   wxDirPickerCtrl* dirPickerCFG;
   wxDirPickerCtrl* dirPickerTmp;
@@ -460,6 +464,7 @@ private:
   bool histogramLabelsColor;
   bool colorUseZero;
   rgb timelineColourZero;
+  float maximumTraceSize;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
