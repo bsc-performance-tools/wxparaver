@@ -433,8 +433,16 @@ bool paraverMain::DoLoadTrace( const string &path )
 {
   Trace *tr = NULL;
   bool loaded = true;
-  
+
   canServeSignal = false;
+
+  if( !localKernel->checkTraceSize( path, ParaverConfig::getInstance()->getFiltersFilterTraceUpToMB() ) )
+  {
+    wxMessageDialog maxSizeDialog( this, wxT( "Maximum size reached" ),
+                                         wxT( "The maximum size for trace " + path.c_str() + " is reached.\nWould you like to cut or filter the trace?" ),
+                                         wxYES_NO|wxCANCEL|wxICON_QUESTION );
+    //if( maxSizeDialog.ShowModal() == 
+  }
   
   map< string, UINT32 >::iterator it = traceInstance.find( path );
   if ( it == traceInstance.end() )

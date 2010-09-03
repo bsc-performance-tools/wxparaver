@@ -151,6 +151,9 @@ public:
 
 ////@begin CutFilterDialog event handler declarations
 
+  /// wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
+  void OnIdle( wxIdleEvent& event );
+
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
   void OnCheckListToolOrderSelected( wxCommandEvent& event );
 
@@ -165,6 +168,9 @@ public:
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
   void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
+  void OnButtonCutterSelectRegionClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_ALL_TRACE
   void OnButtonCutterAllTraceClick( wxCommandEvent& event );
@@ -302,7 +308,7 @@ public:
   wxTextCtrl* textSCSamplingInterval;
   wxStaticText* staticTextSCMinimumBurstTime;
   wxTextCtrl* textSCMinimumBurstTime;
-  wxListBox* listSCSelectedEvents;
+  wxListBox* checkListSCSelectedEvents;
   wxButton* buttonSCSelectedEventsAdd;
   wxButton* buttonSCSelectedEventsDelete;
   wxRadioButton* radioSCCountEvents;

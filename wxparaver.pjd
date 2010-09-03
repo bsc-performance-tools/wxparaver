@@ -1176,7 +1176,6 @@
           <long name="proxy-Height">600</long>
           <bool name="proxy-AUI manager">1</bool>
           <string name="proxy-Event sources">""</string>
-          <bool name="proxy-wxBORDER_THEME">0</bool>
           <document>
             <string name="title">"wxMenuBar: ID_MENUBAR"</string>
             <string name="type">"dialog-control-document"</string>
@@ -2031,6 +2030,7 @@
           <long name="proxy-Height">300</long>
           <bool name="proxy-AUI manager">0</bool>
           <string name="proxy-Event sources">""</string>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <document>
             <string name="title">"wxBoxSizer H"</string>
             <string name="type">"dialog-control-document"</string>
@@ -2043,6 +2043,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -3001,6 +3009,7 @@
           <long name="proxy-Height">300</long>
           <bool name="proxy-AUI manager">0</bool>
           <string name="proxy-Event sources">""</string>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <document>
             <string name="title">"wxSplitterWindow: ID_SPLITTERWINDOW"</string>
             <string name="type">"dialog-control-document"</string>
@@ -3078,6 +3087,7 @@
             <string name="proxy-Custom arguments">""</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <document>
               <string name="title">"wxScrolledWindow: ID_SCROLLEDWINDOW"</string>
               <string name="type">"dialog-control-document"</string>
@@ -19142,6 +19152,7 @@
           <string name="variable-2">"loadResultingTrace|bool|LoadResultingTrace|false|2|0|"</string>
           <string name="variable-3">"nameSourceTrace|string|NameSourceTrace||2|0|"</string>
           <string name="variable-4">"pathOutputTrace|string|PathOutputTrace||2|0|"</string>
+          <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||CutFilterDialog"</string>
           <string name="proxy-Id name">"ID_CUTFILTERDIALOG"</string>
           <long name="proxy-Id value">10103</long>
           <string name="proxy-Class">"CutFilterDialog"</string>
@@ -19214,14 +19225,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -19539,7 +19542,7 @@
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
                     <bool name="proxy-Hidden">0</bool>
-                    <bool name="proxy-Enabled">0</bool>
+                    <bool name="proxy-Enabled">1</bool>
                     <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     <bool name="proxy-wxBU_LEFT">0</bool>
                     <bool name="proxy-wxBU_RIGHT">0</bool>
@@ -21074,6 +21077,7 @@
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbButtonProxy"</string>
+                        <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonCutterSelectRegionClick|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_BUTTON_CUTTER_SELECT_REGION"</string>
                         <long name="proxy-Id value">10114</long>
                         <string name="proxy-Name">""</string>
@@ -22594,7 +22598,7 @@
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
                       <string name="proxy-Member variable name">"listboxFilterEvents"</string>
-                      <string name="proxy-Strings">""</string>
+                      <string name="proxy-Strings">"42000059|42000008|50000001-50000003"</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
                       <string name="proxy-Tooltip text">""</string>
@@ -22645,6 +22649,7 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxBoxSizer V"</string>
@@ -23820,6 +23825,7 @@
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
+                          <bool name="proxy-wxBORDER_THEME">0</bool>
                         </document>
                       </document>
                     </document>
@@ -23900,8 +23906,8 @@
                         <bool name="proxy-Separate files">0</bool>
                         <string name="proxy-Implementation filename">""</string>
                         <string name="proxy-Header filename">""</string>
-                        <string name="proxy-Member variable name">"listSCSelectedEvents"</string>
-                        <string name="proxy-Strings">""</string>
+                        <string name="proxy-Member variable name">"checkListSCSelectedEvents"</string>
+                        <string name="proxy-Strings">"42000059|42000008"</string>
                         <string name="proxy-Initial value">""</string>
                         <string name="proxy-Help text">""</string>
                         <string name="proxy-Tooltip text">""</string>
@@ -24706,7 +24712,7 @@
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
                       <string name="proxy-Member variable name">"listSCKeepEvents"</string>
-                      <string name="proxy-Strings">""</string>
+                      <string name="proxy-Strings">"40000003"</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
                       <string name="proxy-Tooltip text">""</string>
@@ -24757,6 +24763,7 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxBoxSizer V"</string>
