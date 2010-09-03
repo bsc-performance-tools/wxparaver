@@ -104,6 +104,7 @@ void wxparaverApp::Init()
 	globalTimingBegin = 0;
 	globalTimingEnd = 0;
 	globalTimingCallDialog = NULL;
+	globalTimingBeginIsSet = false;
 ////@end wxparaverApp member initialisation
   m_locale.Init();
 }
