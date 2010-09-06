@@ -1530,7 +1530,11 @@ void paraverMain::OnPreviousTracesClick( wxCommandEvent& event )
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();
     if ( currentId == eventId )
+    {
+      traceLoadedBefore = true;
+      tracePath = wxFileName( previousTraces->getFiles()[i] ).GetPath();
       DoLoadTrace( previousTraces->getFiles()[i] );
+    }
     i++;
   }
 }
