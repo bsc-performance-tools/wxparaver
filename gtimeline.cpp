@@ -227,6 +227,12 @@ void gTimeline::Init()
   whatWhereTime = 0.0;
   whatWhereRow = 0;
 
+  lastType = NO_TYPE;
+  lastMin = 0;
+  lastMax = 15;
+  codeColorSet = true;
+  gradientFunc = GradientColor::LINEAR;
+
   // Avoid manipulation
   UINT32 pixelSizeIndexSelector = ParaverConfig::getInstance()->getTimelinePixelSize();
   if ( pixelSizeIndexSelector >= 0 && pixelSizeIndexSelector <= 3 )
@@ -2234,11 +2240,6 @@ void gTimeline::Split()
 
 void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
 {
-  static SemanticInfoType lastType = NO_TYPE;
-  static TSemanticValue lastMin = 0;
-  static TSemanticValue lastMax = 15;
-  static bool codeColorSet = true;
-  static GradientColor::TGradientFunction gradientFunc = GradientColor::LINEAR;
   UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   
   if( redoColors &&

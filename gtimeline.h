@@ -552,6 +552,12 @@ private:
   hash_set<wxCoord> eventsToDraw;
 ////@end gTimeline member variables
 
+  SemanticInfoType lastType;
+  TSemanticValue lastMin;
+  TSemanticValue lastMax;
+  bool codeColorSet;
+  GradientColor::TGradientFunction gradientFunc;
+
 #ifdef WIN32
   hash_set<commCoord> commsToDraw;
 #else
