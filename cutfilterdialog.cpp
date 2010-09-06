@@ -1772,11 +1772,11 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
     
     tmpsstr << fixed;
     tmpsstr << wxGetApp().GetGlobalTimingBegin();
-    textCutterBeginCut->SetValue( _( tmpsstr.str().c_str() ) );
+    textCutterBeginCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
 
     tmpsstr.str( "" );
     tmpsstr << wxGetApp().GetGlobalTimingEnd();
-    textCutterEndCut->SetValue( _( tmpsstr.str().c_str() ) );
+    textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(),  wxConvUTF8 ) );
     
     if( !wxGetApp().GetGlobalTiming() )
       waitingGlobalTiming = false;
@@ -1790,7 +1790,7 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
 
 void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
 {
-  filePickerTrace->SetPath( wxString( nameSourceTrace.c_str() ) );
+  filePickerTrace->SetPath( wxString( nameSourceTrace.c_str(), wxConvUTF8 ) );
   checkLoadResultingTrace->SetValue( loadResultingTrace );
 }
 

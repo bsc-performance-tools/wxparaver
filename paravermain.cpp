@@ -2861,8 +2861,8 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   char *pcfName, *rowName;
   for( UINT16 i = 0; i < tmpFiles.size() - 1; ++i )
   {
-    pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), "pcf" );
-    rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), "row" );
+    pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)string("pcf").c_str() );
+    rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)string("row").c_str() );
     remove( tmpFiles[ i ].c_str() );
     remove( pcfName );
     remove( rowName );
