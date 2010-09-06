@@ -2885,7 +2885,14 @@ void paraverMain::ShowCutTraceWindow( const string& filename, bool loadTrace )
   CutFilterDialog cutFilterDialog( this );  
   cutFilterDialog.SetTraceOptions( traceOptions->getConcrete() );
 
-  if( filename != "" )
+  if( filename == "" )
+  {
+    if ( !traceLoadedBefore )
+      cutFilterDialog.SetNameSourceTrace( wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() ) );
+    else
+      cutFilterDialog.SetNameSourceTrace( tracePath );
+  }
+  else
   {
     cutFilterDialog.SetNameSourceTrace( filename );
     cutFilterDialog.SetLoadResultingTrace( loadTrace );
