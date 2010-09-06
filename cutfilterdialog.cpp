@@ -47,6 +47,7 @@
 #include <algorithm>
 #include <wx/filedlg.h>
 #include <wx/tokenzr.h>
+#include <wx/filename.h>
 
 #include "cutfilterdialog.h"
 #include "paraverconfig.h"
@@ -176,6 +177,7 @@ void CutFilterDialog::Init()
 {
 ////@begin CutFilterDialog member initialisation
   loadResultingTrace = false;
+  nameSourceTrace = "";
   waitingGlobalTiming = false;
   filePickerTrace = NULL;
   checkLoadResultingTrace = NULL;
@@ -1227,7 +1229,9 @@ void CutFilterDialog::CheckCommonOptions( bool &previousWarning )
 {
   // Any trace selected?
   wxString path = filePickerTrace->GetPath();
-  if ( !previousWarning && path == _("") )
+  wxFileName tmpName( path );
+
+  if ( !previousWarning && ( path == _("") || tmpName.IsDir() ))
   {
     wxMessageDialog message( this, _("Missing trace name.\nPlease choose one trace."), _("Warning"), wxOK );
     message.ShowModal();

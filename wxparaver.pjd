@@ -19306,7 +19306,7 @@
           <string name="variable-0">"traceOptions|TraceOptions *|TraceOptions||2|0|"</string>
           <string name="variable-1">"filterToolOrder|vector&lt; int &gt;|FilterToolOrder||2|0|"</string>
           <string name="variable-2">"loadResultingTrace|bool|LoadResultingTrace|false|2|0|"</string>
-          <string name="variable-3">"nameSourceTrace|string|NameSourceTrace||2|0|"</string>
+          <string name="variable-3">"nameSourceTrace|string|NameSourceTrace|&quot;&quot;|2|0|"</string>
           <string name="variable-4">"pathOutputTrace|string|PathOutputTrace||2|0|"</string>
           <string name="variable-5">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
           <string name="event-handler-0">"wxEVT_INIT_DIALOG|OnInitDialog|NONE||CutFilterDialog"</string>
@@ -19576,7 +19576,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxCheckBox: ID_CHECKBOX_LOAD_RESULTING_TRACE"</string>
