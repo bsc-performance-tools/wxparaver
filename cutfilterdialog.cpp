@@ -1811,12 +1811,6 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
 
   if( order.size() > 0 )
   {
-    // Uncheck everything
-    for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
-    {
-      checkListToolOrder->Check( i, false );
-    }
-
     // Fill new list, in order, and keeping the non-selected in listToolOrder
     for( size_t i = 0; i < order.size(); ++i )
     {
