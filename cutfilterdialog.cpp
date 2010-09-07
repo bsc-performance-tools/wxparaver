@@ -79,6 +79,8 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
 
+  EVT_BUTTON( ID_BUTTON, CutFilterDialog::OnButtonLoadXMLClick )
+
   EVT_LISTBOX( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderSelected )
   EVT_UPDATE_UI( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderUpdate )
 
@@ -179,6 +181,7 @@ void CutFilterDialog::Init()
   loadResultingTrace = false;
   nameSourceTrace = "";
   waitingGlobalTiming = false;
+  localKernel = NULL;
   filePickerTrace = NULL;
   checkLoadResultingTrace = NULL;
   checkListToolOrder = NULL;
@@ -1801,4 +1804,117 @@ void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
   checkLoadResultingTrace->SetValue( loadResultingTrace );
 }
 
+
+void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
+{
+  vector< string > auxListToolOrder; 
+
+  if( order.size() > 0 )
+  {
+    // Uncheck everything
+    for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
+    {
+      checkListToolOrder->Check( i, false );
+    }
+
+    // Fill new list, in order, and keeping the non-selected in listToolOrder
+    for( size_t i = 0; i < order.size(); ++i )
+    {
+      switch( order[i] )
+      {
+        case INC_CHOP_COUNTER:
+          auxListToolOrder.push_back( "Cutter" );
+          listToolOrder.erase( find( listToolOrder.begin(), listToolOrder.end(), string( "Cutter" )));
+          break;
+        case INC_FILTER_COUNTER:
+          auxListToolOrder.push_back( "Filter" );
+          listToolOrder.erase( find( listToolOrder.begin(), listToolOrder.end(), string( "Filter" )));
+          break;
+        case INC_SC_COUNTER:
+          auxListToolOrder.push_back( "Software Counters" );
+          listToolOrder.erase( find( listToolOrder.begin(), listToolOrder.end(), string( "Software Counters" )));
+          break;
+      }
+    }
+
+    // Finally, add the unused
+    for( size_t i = 0; i < listToolOrder.size(); ++i )
+    {
+      auxListToolOrder.push_back( listToolOrder[i] );
+    }
+
+    listToolOrder.swap( auxListToolOrder );
+
+    UpdateToolList();
+
+    // And check the selected, that fit in the firsts of the vector, as they've been ordered
+    for( size_t i = 0; i < order.size(); ++i )
+    {
+      checkListToolOrder->Check( i, true );
+    }
+  }
+}
+
+
+void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
+{
+
+}
+
+
+void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
+{
+
+}
+
+
+void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions )
+{
+
+}
+
+
+void CutFilterDialog::TransferDataToWindow( vector<int> order, TraceOptions *traceOptions )
+{
+  Freeze();
+
+  TransferCommonDataToWindow( order );
+
+  for( size_t i = 0; i < order.size(); ++i )
+  {
+    switch( order[i] )
+    {
+      case INC_CHOP_COUNTER:
+        TransferCutterDataToWindow( traceOptions );
+        break;
+      case INC_FILTER_COUNTER:
+        TransferFilterDataToWindow( traceOptions );
+        break;
+      case INC_SC_COUNTER:
+        TransferSoftwareCountersDataToWindow( traceOptions );
+        break;
+    }
+  }
+
+  Thaw();
+}
+
+
+void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
+{
+    wxFileDialog dialog( this,
+                         _( "Load XML Cut/Filter configuration file" ),
+                         wxString( nameSourceTrace.c_str(), wxConvUTF8 ),
+                         _( "" ), 
+                         _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
+                         wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
+
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
+    wxString path = dialog.GetPath();
+    vector<int> order = traceOptions->parseDoc( (char *)path.mb_str() );
+    TransferDataToWindow( order, traceOptions );
+  }
+}
 

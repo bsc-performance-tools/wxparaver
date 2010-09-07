@@ -157,6 +157,9 @@ public:
   /// wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
   void OnIdle( wxIdleEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON
+  void OnButtonLoadXMLClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
   void OnCheckListToolOrderSelected( wxCommandEvent& event );
 
@@ -236,6 +239,9 @@ public:
   bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
   void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
 
+  KernelConnection * GetLocalKernel() const { return localKernel ; }
+  void SetLocalKernel(KernelConnection * value) { localKernel = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -270,6 +276,12 @@ public:
   void TransferWindowToCutterData( bool previousWarning );
   void TransferWindowToFilterData( bool previousWarning );
   void TransferWindowToSoftwareCountersData( bool previousWarning );
+
+  void TransferCommonDataToWindow( vector<int> order );
+  void TransferCutterDataToWindow( TraceOptions *traceOptions );
+  void TransferFilterDataToWindow( TraceOptions *traceOptions );
+  void TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions );
+  void TransferDataToWindow( vector<int> order, TraceOptions *traceOptions );
 
 ////@begin CutFilterDialog member variables
   wxFilePickerCtrl* filePickerTrace;
@@ -333,6 +345,7 @@ private:
   string nameSourceTrace;
   string pathOutputTrace;
   bool waitingGlobalTiming;
+  KernelConnection * localKernel;
 ////@end CutFilterDialog member variables
 
   vector< string > listToolOrder; // Names of the tools
