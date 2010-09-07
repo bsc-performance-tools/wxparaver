@@ -1859,7 +1859,6 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
   textCutterMaximumTraceSize->SetValue( wxString::FromAscii( aux.str().c_str() ) );
 
   radioCutterCutByTime->SetValue( (bool)traceOptions->get_by_time() );
-  radioCutterCutByTimePercent->SetValue( !(bool)traceOptions->get_by_time() );
 
   if ( radioCutterCutByTime->GetValue() )
   {
@@ -1895,13 +1894,117 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 
 void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
 {
+/* copy/paste!!! change!!!
+    // Discard Records
+    traceOptions->set_filter_states( (char)!checkFilterDiscardStateRecords->IsChecked() );
+    traceOptions->set_filter_events( (char)!checkFilterDiscardEventRecords->IsChecked() );
+    traceOptions->set_filter_comms( (char)!checkFilterDiscardCommunicationRecords->IsChecked() );
 
+    // filter_by_call_time is for all the record types, BUT:
+    // 1) it uses a buffer (danger!)
+    // 2) it's undocumented 
+    // 3) if false => normal behaviour
+    // Was it an experimental feature?
+    traceOptions->set_filter_by_call_time( (char)false );
+
+    if ( !checkFilterDiscardStateRecords->IsChecked() )
+    {
+      bool allStatesSelected = true;
+      for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+      {
+        if ( !checkListFilterStates->IsChecked( i ) )
+        {
+          allStatesSelected = false;
+          break;
+        }
+      }
+
+      TraceOptions::TStateNames auxNames;
+      for( int i = 0; i < 20; ++i )
+        auxNames[ i ] = NULL;
+        
+      traceOptions->set_all_states( (char)allStatesSelected );
+      if ( allStatesSelected )
+      {
+        auxNames[ 0 ] = strdup( "All" );
+      }
+      else
+      {
+        // Read selected states and fill vector
+        int pos = 0;
+
+        for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+        {
+          if ( checkListFilterStates->IsChecked( i ) )
+          {
+            auxNames[ pos++ ] = strdup( (char *)checkListFilterStates->GetString( i ).c_str());
+          }
+        }
+
+        if( pos == 0 )
+        {
+          auxNames[ 0 ] = strdup( "Running" );
+        }
+
+        traceOptions->set_state_names( auxNames );
+
+        unsigned long auxULong;
+        textFilterMinBurstTime->GetValue().ToULong( &auxULong );
+        traceOptions->set_min_state_time( (unsigned long long)auxULong );
+      }
+    }
+
+    if ( !checkFilterDiscardEventRecords->IsChecked() )
+    {
+      traceOptions->set_discard_given_types( (char)checkFilterDiscardListedEvents->IsChecked() );
+
+      TraceOptions::TFilterTypes auxEvents;
+      int lastType = 0;
+      GetEventsList( auxEvents, lastType );
+      traceOptions->set_filter_types( auxEvents );
+      traceOptions->set_filter_last_type( lastType );
+    }
+
+    if ( !checkFilterDiscardCommunicationRecords->IsChecked() )
+    {
+      traceOptions->set_min_comm_size( textFilterSize->GetValue() );
+    }
+  }
+
+*/
 }
 
 
 void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions )
 {
+  stringstream aux;
 
+  // Region
+  radioSCOnIntervals->SetValue( (bool)traceOptions->get_sc_onInterval() );
+
+  aux.str("");
+  aux << traceOptions->get_sc_sampling_interval();
+  textSCSamplingInterval->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+ 
+  aux.str("");
+  aux << traceOptions->get_sc_minimum_burst_time();
+  textSCMinimumBurstTime->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+
+  // Selected events
+//  traceOptions->set_sc_types( GetSoftwareCountersEventsListToString( listSCSelectedEvents ) );
+
+  // Options
+  radioSCAccumulateValues->SetValue( (bool)traceOptions->get_sc_acumm_counters() );
+  checkSCRemoveStates->SetValue( (bool)traceOptions->get_sc_remove_states() );
+  checkSCSummarizeUseful->SetValue( (bool)traceOptions->get_sc_summarize_states() );
+  checkSCGlobalCounters->SetValue( (bool)traceOptions->get_sc_global_counters() );
+  checkSCOnlyInBurstsCounting->SetValue( (bool)traceOptions->get_sc_only_in_bursts() );
+
+  // Keep events
+//  traceOptions->set_sc_types_kept( GetSoftwareCountersEventsListToString( listSCKeepEvents ));
+
+  // Experimental feature?
+  // traceOptions->set_sc_frequency( (int) scFrequency );
 }
 
 
