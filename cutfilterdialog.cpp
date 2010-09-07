@@ -1783,7 +1783,10 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
     textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(),  wxConvUTF8 ) );
     
     if( !wxGetApp().GetGlobalTiming() )
+    {
+      radioCutterCutByTime->SetValue( true );
       waitingGlobalTiming = false;
+    }
   }
 }
 
