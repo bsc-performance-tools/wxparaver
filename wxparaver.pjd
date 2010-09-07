@@ -19665,7 +19665,7 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   <document>
-                    <string name="title">"wxButton: ID_BUTTON"</string>
+                    <string name="title">"wxButton: ID_BUTTON_LOAD_XML"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
                     <string name="icon-name">"dialogcontrol"</string>
@@ -19675,7 +19675,7 @@
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbButtonProxy"</string>
                     <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonLoadXMLClick|NONE||CutFilterDialog"</string>
-                    <string name="proxy-Id name">"ID_BUTTON"</string>
+                    <string name="proxy-Id name">"ID_BUTTON_LOAD_XML"</string>
                     <long name="proxy-Id value">10153</long>
                     <string name="proxy-Name">""</string>
                     <string name="proxy-Class">"wxButton"</string>
@@ -19700,7 +19700,7 @@
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
                     <bool name="proxy-Hidden">0</bool>
-                    <bool name="proxy-Enabled">0</bool>
+                    <bool name="proxy-Enabled">1</bool>
                     <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     <bool name="proxy-wxBU_LEFT">0</bool>
                     <bool name="proxy-wxBU_RIGHT">0</bool>
@@ -19731,7 +19731,7 @@
                     <string name="proxy-Custom ctor arguments">""</string>
                   </document>
                   <document>
-                    <string name="title">"wxButton: ID_BUTTON1"</string>
+                    <string name="title">"wxButton: ID_BUTTON_SAVE_XML"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
                     <string name="icon-name">"dialogcontrol"</string>
@@ -19740,7 +19740,7 @@
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbButtonProxy"</string>
-                    <string name="proxy-Id name">"ID_BUTTON1"</string>
+                    <string name="proxy-Id name">"ID_BUTTON_SAVE_XML"</string>
                     <long name="proxy-Id value">10154</long>
                     <string name="proxy-Name">""</string>
                     <string name="proxy-Class">"wxButton"</string>

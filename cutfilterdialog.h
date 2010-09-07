@@ -66,8 +66,8 @@ class wxSpinCtrl;
 #define ID_CUTFILTERDIALOG 10103
 #define ID_FILECTRL_CUTFILTER_TRACE_SELECTION 10106
 #define ID_CHECKBOX_LOAD_RESULTING_TRACE 10152
-#define ID_BUTTON 10153
-#define ID_BUTTON1 10154
+#define ID_BUTTON_LOAD_XML 10153
+#define ID_BUTTON_SAVE_XML 10154
 #define ID_CHECKLISTBOX 10107
 #define ID_BITMAPBUTTON_PUSH_UP 10109
 #define ID_BITMAPBUTTON_PUSH_DOWN 10110
@@ -157,7 +157,7 @@ public:
   /// wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
   void OnIdle( wxIdleEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_LOAD_XML
   void OnButtonLoadXMLClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX

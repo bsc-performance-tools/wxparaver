@@ -79,7 +79,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
 
-  EVT_BUTTON( ID_BUTTON, CutFilterDialog::OnButtonLoadXMLClick )
+  EVT_BUTTON( ID_BUTTON_LOAD_XML, CutFilterDialog::OnButtonLoadXMLClick )
 
   EVT_LISTBOX( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderSelected )
   EVT_UPDATE_UI( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderUpdate )
@@ -275,11 +275,10 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer4->Add(itemBoxSizer8, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
 
-  wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON, _("Load XML..."), wxDefaultPosition, wxDefaultSize, 0 );
-  itemButton9->Enable(false);
+  wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON_LOAD_XML, _("Load XML..."), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer8->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON1, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
+  wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON_SAVE_XML, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
   itemButton10->Enable(false);
   itemBoxSizer8->Add(itemButton10, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
@@ -1831,7 +1830,7 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
       }
     }
 
-    // Finally, add the unused
+    // Finally, add the non-selected to the end of the vector
     for( size_t i = 0; i < listToolOrder.size(); ++i )
     {
       auxListToolOrder.push_back( listToolOrder[i] );
@@ -1841,7 +1840,7 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
 
     UpdateToolList();
 
-    // And check the selected, that fit in the firsts of the vector, as they've been ordered
+    // And check the selected, that fit in the firsts elems of the vector order
     for( size_t i = 0; i < order.size(); ++i )
     {
       checkListToolOrder->Check( i, true );
@@ -1852,7 +1851,44 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
 
 void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 {
+  stringstream aux;
 
+  aux.str("");
+  aux << traceOptions->get_max_trace_size();
+  textCutterMaximumTraceSize->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+
+  radioCutterCutByTime->SetValue( (bool)traceOptions->get_by_time() );
+  radioCutterCutByTimePercent->SetValue( !(bool)traceOptions->get_by_time() );
+
+  if ( radioCutterCutByTime->GetValue() )
+  {
+    aux.str("");
+    aux << traceOptions->get_min_cutting_time();
+    textCutterBeginCut->SetValue(  wxString::FromAscii( aux.str().c_str() ) );
+
+    aux.str("");
+    aux << traceOptions->get_max_cutting_time();
+    textCutterEndCut->SetValue(  wxString::FromAscii( aux.str().c_str() ) );
+  }
+  else
+  {
+    aux.str("");
+    aux << traceOptions->get_minimum_time_percentage();
+    textCutterBeginCut->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+
+    aux.str("");
+    aux << traceOptions->get_maximum_time_percentage();
+    textCutterEndCut->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+  }
+
+  checkCutterUseOriginalTime->SetValue( (bool)traceOptions->get_original_time() );
+  checkCutterDontBreakStates->SetValue( !((bool)traceOptions->get_break_states()) );
+  checkCutterRemoveFirstState->SetValue( (bool)traceOptions->get_remFirstStates() );
+  checkCutterRemoveLastState->SetValue( (bool)traceOptions->get_remLastStates() );
+
+  TraceOptions::TTasksList auxList;
+  traceOptions->get_tasks_list( auxList );
+  textCutterTasks->SetValue( wxString::FromAscii( auxList ) );
 }
 
 
@@ -1896,17 +1932,17 @@ void CutFilterDialog::TransferDataToWindow( vector<int> order, TraceOptions *tra
 
 void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
 {
-    wxFileDialog dialog( this,
-                         _( "Load XML Cut/Filter configuration file" ),
-                         wxString( nameSourceTrace.c_str(), wxConvUTF8 ),
-                         _( "" ), 
-                         _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
-                         wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
+  wxFileDialog xmlSelectionDialog( this,
+                        _( "Load XML Cut/Filter configuration file" ),
+                        wxString( nameSourceTrace.c_str(), wxConvUTF8 ),
+                        _( "" ), 
+                        _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
+                        wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
 
-  if( dialog.ShowModal() == wxID_OK )
+  if( xmlSelectionDialog.ShowModal() == wxID_OK )
   {
     TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
-    wxString path = dialog.GetPath();
+    wxString path = xmlSelectionDialog.GetPath();
     vector<int> order = traceOptions->parseDoc( (char *)path.mb_str() );
     TransferDataToWindow( order, traceOptions );
   }
