@@ -276,6 +276,7 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer4->Add(itemBoxSizer8, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
 
   wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON_LOAD_XML, _("Load XML..."), wxDefaultPosition, wxDefaultSize, 0 );
+  itemButton9->Enable(false);
   itemBoxSizer8->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON_SAVE_XML, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
