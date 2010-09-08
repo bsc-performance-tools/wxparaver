@@ -956,7 +956,7 @@ void CutFilterDialog::TransferWindowToCommonData( bool previousWarning )
 
 void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
 {
-  unsigned long auxULong;
+  unsigned long long auxULong;
 
   if ( !previousWarning )
   {
@@ -964,11 +964,11 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
 
     traceOptions->set_by_time( radioCutterCutByTime->GetValue() );
 
-    textCutterBeginCut->GetValue().ToULong( &auxULong );
+    textCutterBeginCut->GetValue().ToULongLong( &auxULong );
     traceOptions->set_min_cutting_time( (unsigned long long)auxULong );
     traceOptions->set_minimum_time_percentage( (unsigned long long)auxULong );
 
-    textCutterEndCut->GetValue().ToULong( &auxULong );
+    textCutterEndCut->GetValue().ToULongLong( &auxULong );
     traceOptions->set_max_cutting_time( (unsigned long long)auxULong );
     traceOptions->set_maximum_time_percentage( (unsigned long long)auxULong );
 
@@ -1177,6 +1177,20 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
       traceOptions->set_min_comm_size( textFilterSize->GetValue() );
     }
   }
+}
+
+
+bool CutFilterDialog::SetSoftwareCountersEventsListToString( string listEvents, wxListBox *selectedEvents )
+{
+  /*size_t pos = find( string(";") );
+
+  while ( pos != std::npos )
+  {
+    selectedEvents
+
+  }
+*/
+  return true;
 }
 
 
@@ -1991,7 +2005,7 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
   textSCMinimumBurstTime->SetValue( wxString::FromAscii( aux.str().c_str() ) );
 
   // Selected events
-//  traceOptions->set_sc_types( GetSoftwareCountersEventsListToString( listSCSelectedEvents ) );
+  bool done = SetSoftwareCountersEventsListToString( string( traceOptions->get_sc_types() ), listSCSelectedEvents );
 
   // Options
   radioSCAccumulateValues->SetValue( (bool)traceOptions->get_sc_acumm_counters() );

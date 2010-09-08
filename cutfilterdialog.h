@@ -270,6 +270,8 @@ public:
                           TraceOptions::TFilterTypes &eventTypes,
                           int &lastType );
   void GetEventsList( TraceOptions::TFilterTypes &types, int &lastType );
+
+  bool SetSoftwareCountersEventsListToString( string listEvents, wxListBox *selectedEvents );
   char *GetSoftwareCountersEventsListToString( wxListBox *selectedEvents );
 
   void TransferWindowToCommonData( bool previousWarning );
