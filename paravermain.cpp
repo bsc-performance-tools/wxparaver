@@ -2905,9 +2905,15 @@ void paraverMain::ShowCutTraceWindow( const string& filename, bool loadTrace )
   if( filename == "" )
   {
     if ( !traceLoadedBefore )
+#ifdef WIN32
+      cutFilterDialog.SetNameSourceTrace( paraverConfig->getGlobalTracesPath() + "\\" );
+    else
+      cutFilterDialog.SetNameSourceTrace( std::string( tracePath.mb_str() ) + "\\" );
+#else
       cutFilterDialog.SetNameSourceTrace( paraverConfig->getGlobalTracesPath() + "/" );
     else
       cutFilterDialog.SetNameSourceTrace( std::string( tracePath.mb_str() ) + "/" );
+#endif
   }
   else
   {
