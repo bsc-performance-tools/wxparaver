@@ -1164,12 +1164,13 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
     if ( !checkFilterDiscardEventRecords->IsChecked() )
     {
       traceOptions->set_discard_given_types( (char)checkFilterDiscardListedEvents->IsChecked() );
-
       TraceOptions::TFilterTypes auxEvents;
       int lastType = 0;
       GetEventsList( auxEvents, lastType );
-      traceOptions->set_filter_types( auxEvents );
+
+      // To fix: always do set_filter_last_type first than set_filter_types
       traceOptions->set_filter_last_type( lastType );
+      traceOptions->set_filter_types( auxEvents );
     }
 
     if ( !checkFilterDiscardCommunicationRecords->IsChecked() )
