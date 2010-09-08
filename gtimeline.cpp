@@ -1897,29 +1897,37 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
     myWindow->init( tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
     myWindow->initRow( whichRow, tmpBeginTime, CREATEEVENTS + CREATECOMMS, false );
     
-    printWWSemantic( whichRow, false, textMode );
-    printWWRecords( whichRow, false, textMode );
-    myWindow->calcNext( whichRow, false );
-    while( myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
+    if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
     {
       printWWSemantic( whichRow, false, textMode );
       printWWRecords( whichRow, false, textMode );
       myWindow->calcNext( whichRow, false );
+      while( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() &&
+             myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
+      {
+        printWWSemantic( whichRow, false, textMode );
+        printWWRecords( whichRow, false, textMode );
+        myWindow->calcNext( whichRow, false );
+      }
     }
   }
 
   printWWSemantic( whichRow, true, textMode );
   printWWRecords( whichRow, true, textMode );
 
-  myWindow->calcNext( whichRow, false );
-  while( myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
+  if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
   {
+    myWindow->calcNext( whichRow, false );
+    while( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() &&
+           myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
+    {
+      printWWSemantic( whichRow, false, textMode );
+      printWWRecords( whichRow, false, textMode );
+      myWindow->calcNext( whichRow, false );
+    }
     printWWSemantic( whichRow, false, textMode );
     printWWRecords( whichRow, false, textMode );
-    myWindow->calcNext( whichRow, false );
   }
-  printWWSemantic( whichRow, false, textMode );
-  printWWRecords( whichRow, false, textMode );
 }
 
 
@@ -2071,8 +2079,8 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   RecordList::iterator it = rl->begin();
 
   while( it != rl->end() &&
-         (*it).getTime() < myWindow->getWindowBeginTime() &&
-         (*it).getTime() < myWindow->getBeginTime( whichRow ) )
+         ( (*it).getTime() < myWindow->getWindowBeginTime() ||
+           (*it).getTime() < myWindow->getBeginTime( whichRow ) ) )
   {
     ++it;
   }
