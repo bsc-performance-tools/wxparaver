@@ -277,7 +277,6 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer4->Add(itemBoxSizer8, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
 
   wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON_LOAD_XML, _("Load XML..."), wxDefaultPosition, wxDefaultSize, 0 );
-  itemButton9->Enable(false);
   itemBoxSizer8->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON_SAVE_XML, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
@@ -1963,6 +1962,57 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
   textCutterTasks->SetValue( wxString::FromAscii( auxList ) );
 }
 
+void CutFilterDialog::CheckStatesList( size_t begin, bool value )
+{
+  for( size_t i = begin; i < checkListFilterStates->GetCount(); ++i )
+    checkListFilterStates->Check( (int)i, value );
+}
+
+void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
+{
+  size_t s = 0;
+  wxArrayString newStates;
+  size_t oldMaxStates = checkListFilterStates->GetCount();
+
+  // Look for all the given states in the checkboxlist, and check them.
+  while( s < 20 && statesList[ s ] != NULL )
+  { 
+    bool found = false;
+    wxString stateNameToCheck( statesList[ s ], wxConvUTF8 );
+    stateNameToCheck = stateNameToCheck.Trim( true ).Trim( false );
+    for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+    {
+      wxString stateName = checkListFilterStates->GetString( i );
+      if( stateNameToCheck == stateName )
+      {
+        checkListFilterStates->Check( i );
+        found = true;
+      }
+    }
+
+    if( !found )
+    {
+      newStates.Add( stateNameToCheck );
+    }
+
+    ++s;
+  }
+
+  // Was an empty list? Check "Running".
+  if( s == 0 )
+  {
+    for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
+    {
+      wxString stateName = checkListFilterStates->GetString( i );
+      if( wxString("Running") == stateName )
+        checkListFilterStates->Check( i );
+    }
+  }
+
+  // Have we found new states? Add them to the botton and check them.
+  checkListFilterStates->InsertItems( newStates, checkListFilterStates->GetCount() );
+  CheckStatesList( oldMaxStates, checkListFilterStates->GetCount());
+}
 
 void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
 {
@@ -1974,6 +2024,19 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
   checkFilterDiscardCommunicationRecords->SetValue( !(bool)traceOptions->get_filter_comms() );
 
   // States
+  CheckStatesList( 0, (bool)traceOptions->get_all_states() ); // Check or uncheck all
+  if( !(bool)traceOptions->get_all_states() )
+  {
+    TraceOptions::TStateNames auxNames;
+    for( int i = 0; i < 20; ++i )
+      auxNames[ i ] = NULL;
+    traceOptions->get_state_names( auxNames );
+    CheckStatesList( auxNames );
+  }
+
+  aux.str("");
+  aux << traceOptions->get_min_state_time();
+  textFilterMinBurstTime->SetValue( wxString::FromAscii( aux.str().c_str() ));
 
   // Events
   checkFilterDiscardListedEvents->SetValue( (bool)traceOptions->get_discard_given_types() );
@@ -1986,55 +2049,6 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
   aux.str("");
   aux << traceOptions->get_min_comm_size();
   textFilterSize->SetValue( wxString::FromAscii( aux.str().c_str() ) );
-
-/* copy/paste!!! change!!!
-    if ( !checkFilterDiscardStateRecords->IsChecked() )
-    {
-      bool allStatesSelected = true;
-      for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
-      {
-        if ( !checkListFilterStates->IsChecked( i ) )
-        {
-          allStatesSelected = false;
-          break;
-        }
-      }
-
-      TraceOptions::TStateNames auxNames;
-      for( int i = 0; i < 20; ++i )
-        auxNames[ i ] = NULL;
-        
-      traceOptions->set_all_states( (char)allStatesSelected );
-      if ( allStatesSelected )
-      {
-        auxNames[ 0 ] = strdup( "All" );
-      }
-      else
-      {
-        // Read selected states and fill vector
-        int pos = 0;
-
-        for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
-        {
-          if ( checkListFilterStates->IsChecked( i ) )
-          {
-            auxNames[ pos++ ] = strdup( (char *)checkListFilterStates->GetString( i ).c_str());
-          }
-        }
-
-        if( pos == 0 )
-        {
-          auxNames[ 0 ] = strdup( "Running" );
-        }
-
-        traceOptions->set_state_names( auxNames );
-
-        unsigned long auxULong;
-        textFilterMinBurstTime->GetValue().ToULong( &auxULong );
-        traceOptions->set_min_state_time( (unsigned long long)auxULong );
-      }
-    }
-*/
 }
 
 

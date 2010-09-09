@@ -278,6 +278,9 @@ public:
   void SetEventLine( TraceOptions::TFilterTypes eventTypes, int current );
   void SetEventsList( TraceOptions::TFilterTypes types, int lastType ); 
   void GetEventsList( TraceOptions::TFilterTypes &types, int &lastType );
+  void CheckStatesList( size_t begin, bool value );
+  void CheckStatesList( TraceOptions::TStateNames statesList );
+
 
   bool SetSoftwareCountersEventsListToString( string listEvents, wxListBox *selectedEvents );
   char *GetSoftwareCountersEventsListToString( wxListBox *selectedEvents );
