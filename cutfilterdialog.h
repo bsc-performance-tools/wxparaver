@@ -175,6 +175,9 @@ public:
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
   void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
+  void OnNotebookCutFilterOptionsUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
   void OnButtonCutterSelectRegionClick( wxCommandEvent& event );
 
@@ -258,6 +261,9 @@ public:
   string GetTraceFileName();
   vector< int > GetToolsOrder();
   bool LoadResultingTrace();
+
+  void ChangePageSelectionFromToolsOrderListToTabs();
+  void ChangePageSelectionFromTabsToToolsOrderList();
 
   void CheckCommonOptions( bool &previousWarning );
   void CheckCutterOptions( bool &previousWarning );

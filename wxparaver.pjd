@@ -20167,6 +20167,7 @@
               <long name="locked">0</long>
               <string name="proxy-type">"wbNotebookProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED|OnNotebookCutFilterOptionsPageChanged|NONE||CutFilterDialog"</string>
+              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnNotebookCutFilterOptionsUpdate|NONE||CutFilterDialog"</string>
               <string name="proxy-Id name">"ID_NOTEBOOK_CUT_FILTER_OPTIONS"</string>
               <long name="proxy-Id value">10108</long>
               <string name="proxy-Name">""</string>
@@ -20231,7 +20232,6 @@
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Custom arguments">""</string>
               <string name="proxy-Custom ctor arguments">""</string>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
               <document>
                 <string name="title">"wxPanel: ID_PANEL_CUTTER"</string>
                 <string name="type">"dialog-control-document"</string>

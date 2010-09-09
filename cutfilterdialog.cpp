@@ -89,6 +89,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_DOWN, CutFilterDialog::OnBitmapbuttonPushDownClick )
 
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
+  EVT_UPDATE_UI( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsUpdate )
 
   EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionClick )
 
@@ -888,11 +889,7 @@ void CutFilterDialog::OnPanelSoftwareCountersUpdate( wxUpdateUIEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
- */
-
-void CutFilterDialog::OnCheckListToolOrderSelected( wxCommandEvent& event )
+void CutFilterDialog::ChangePageSelectionFromToolsOrderListToTabs()
 {
   int lastItemSelected = checkListToolOrder->GetSelection();
 
@@ -907,11 +904,7 @@ void CutFilterDialog::OnCheckListToolOrderSelected( wxCommandEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
- */
-
-void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event )
+void CutFilterDialog::ChangePageSelectionFromTabsToToolsOrderList()
 {
   int pos = 0;
 
@@ -923,6 +916,25 @@ void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& ev
     }
     pos++;
   }
+}
+
+/*!
+ * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
+ */
+
+void CutFilterDialog::OnCheckListToolOrderSelected( wxCommandEvent& event )
+{
+  ChangePageSelectionFromToolsOrderListToTabs();
+}
+
+
+/*!
+ * wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
+ */
+
+void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event )
+{
+  ChangePageSelectionFromTabsToToolsOrderList();
 }
 
 
@@ -1183,14 +1195,16 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 
 bool CutFilterDialog::SetSoftwareCountersEventsListToString( string listEvents, wxListBox *selectedEvents )
 {
-  /*size_t pos = find( string(";") );
-
-  while ( pos != std::npos )
+  selectedEvents->Clear();
+  stringstream auxList( listEvents );
+  while( !auxList.eof() )
   {
-    selectedEvents
+    string tmpStr;
 
+    std::getline( auxList, tmpStr, ';' );
+    selectedEvents->Append( wxString( tmpStr.c_str(), wxConvUTF8 ) );
   }
-*/
+
   return true;
 }
 
@@ -1846,14 +1860,14 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
       }
     }
 
-    // Finally, add the non-selected to the end of the vector
+    // Add the non-selected to the end of the vector
     for( size_t i = 0; i < listToolOrder.size(); ++i )
     {
       auxListToolOrder.push_back( listToolOrder[i] );
     }
 
+    // Set the new vector
     listToolOrder.swap( auxListToolOrder );
-
     UpdateToolList();
 
     // And check the selected, that fit in the firsts elems of the vector order
@@ -1861,6 +1875,9 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
     {
       checkListToolOrder->Check( i, true );
     }
+
+    // Finally, select first one to allow update raise it properly.
+    checkListToolOrder->SetSelection( 0 );
   }
 }
 
@@ -2006,7 +2023,8 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
   textSCMinimumBurstTime->SetValue( wxString::FromAscii( aux.str().c_str() ) );
 
   // Selected events
-  bool done = SetSoftwareCountersEventsListToString( string( traceOptions->get_sc_types() ), listSCSelectedEvents );
+  bool done = SetSoftwareCountersEventsListToString( string( traceOptions->get_sc_types() ),
+                                                     listSCSelectedEvents );
 
   // Options
   radioSCAccumulateValues->SetValue( (bool)traceOptions->get_sc_acumm_counters() );
@@ -2016,7 +2034,8 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
   checkSCOnlyInBurstsCounting->SetValue( (bool)traceOptions->get_sc_only_in_bursts() );
 
   // Keep events
-//  traceOptions->set_sc_types_kept( GetSoftwareCountersEventsListToString( listSCKeepEvents ));
+  done = SetSoftwareCountersEventsListToString( string( traceOptions->get_sc_types_kept() ),
+                                                listSCKeepEvents );
 
   // Experimental feature?
   // traceOptions->set_sc_frequency( (int) scFrequency );
@@ -2062,8 +2081,18 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
   {
     TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
     wxString path = xmlSelectionDialog.GetPath();
-    vector<int> order = traceOptions->parseDoc( (char *)path.mb_str() );
+    vector<int> order = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
     TransferDataToWindow( order, traceOptions );
   }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
+ */
+
+void CutFilterDialog::OnNotebookCutFilterOptionsUpdate( wxUpdateUIEvent& event )
+{
+  ChangePageSelectionFromToolsOrderListToTabs();
 }
 
