@@ -1110,6 +1110,46 @@ void CutFilterDialog::GetEventsList( TraceOptions::TFilterTypes &eventTypes, int
 }
 
 
+void CutFilterDialog::SetEventLine( TraceOptions::TFilterTypes eventTypes, int current )
+{
+  stringstream auxLine;
+
+  auxLine << eventTypes[ current ].type;
+  if ( eventTypes[ current ].max_type != 0 )
+  {
+    auxLine << "-" << eventTypes[ current ].max_type;
+  }
+  else
+  {
+    if ( eventTypes[ current ].last_value != 0 )
+    {
+      auxLine << ":";
+      for( int j = 0; j < eventTypes[ current ].last_value; ++j )
+      {
+        auxLine << eventTypes[ current ].value[ j ];
+        if ( j < eventTypes[ current ].last_value - 1 )
+        {
+          auxLine << ",";
+        }
+      }
+    }
+  }
+
+  listboxFilterEvents->Append( wxString( auxLine.str().c_str()) );
+}
+
+
+void CutFilterDialog::SetEventsList( TraceOptions::TFilterTypes eventTypes, int lastType )
+{
+  listboxFilterEvents->Clear();
+
+  for( int i = 0; i < lastType; ++i )
+  {
+    SetEventLine( eventTypes, i );
+  }
+}
+
+
 void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 {
   if ( !previousWarning )
@@ -1926,19 +1966,28 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 
 void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
 {
+  stringstream aux;
+
+  // Discard Records
+  checkFilterDiscardStateRecords->SetValue( !(bool)traceOptions->get_filter_states() );
+  checkFilterDiscardEventRecords->SetValue( !(bool)traceOptions->get_filter_events() );
+  checkFilterDiscardCommunicationRecords->SetValue( !(bool)traceOptions->get_filter_comms() );
+
+  // States
+
+  // Events
+  checkFilterDiscardListedEvents->SetValue( (bool)traceOptions->get_discard_given_types() );
+
+  TraceOptions::TFilterTypes auxEvents;
+  traceOptions->get_filter_types( auxEvents );
+  SetEventsList( auxEvents, traceOptions->get_filter_last_type() );
+
+  // Communications
+  aux.str("");
+  aux << traceOptions->get_min_comm_size();
+  textFilterSize->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+
 /* copy/paste!!! change!!!
-    // Discard Records
-    traceOptions->set_filter_states( (char)!checkFilterDiscardStateRecords->IsChecked() );
-    traceOptions->set_filter_events( (char)!checkFilterDiscardEventRecords->IsChecked() );
-    traceOptions->set_filter_comms( (char)!checkFilterDiscardCommunicationRecords->IsChecked() );
-
-    // filter_by_call_time is for all the record types, BUT:
-    // 1) it uses a buffer (danger!)
-    // 2) it's undocumented 
-    // 3) if false => normal behaviour
-    // Was it an experimental feature?
-    traceOptions->set_filter_by_call_time( (char)false );
-
     if ( !checkFilterDiscardStateRecords->IsChecked() )
     {
       bool allStatesSelected = true;
@@ -1985,24 +2034,6 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
         traceOptions->set_min_state_time( (unsigned long long)auxULong );
       }
     }
-
-    if ( !checkFilterDiscardEventRecords->IsChecked() )
-    {
-      traceOptions->set_discard_given_types( (char)checkFilterDiscardListedEvents->IsChecked() );
-
-      TraceOptions::TFilterTypes auxEvents;
-      int lastType = 0;
-      GetEventsList( auxEvents, lastType );
-      traceOptions->set_filter_types( auxEvents );
-      traceOptions->set_filter_last_type( lastType );
-    }
-
-    if ( !checkFilterDiscardCommunicationRecords->IsChecked() )
-    {
-      traceOptions->set_min_comm_size( textFilterSize->GetValue() );
-    }
-  }
-
 */
 }
 

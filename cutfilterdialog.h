@@ -275,6 +275,8 @@ public:
   void GetEventsFromLine( wxString eventsStr,
                           TraceOptions::TFilterTypes &eventTypes,
                           int &lastType );
+  void SetEventLine( TraceOptions::TFilterTypes eventTypes, int current );
+  void SetEventsList( TraceOptions::TFilterTypes types, int lastType ); 
   void GetEventsList( TraceOptions::TFilterTypes &types, int &lastType );
 
   bool SetSoftwareCountersEventsListToString( string listEvents, wxListBox *selectedEvents );
