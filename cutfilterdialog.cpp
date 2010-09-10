@@ -1241,7 +1241,7 @@ bool CutFilterDialog::SetSoftwareCountersEventsListToString( string listEvents, 
     string tmpStr;
 
     std::getline( auxList, tmpStr, ';' );
-    selectedEvents->Append( wxString( tmpStr.c_str(), wxConvUTF8 ) );
+    selectedEvents->Append( wxString( tmpStr.c_str(), wxConvUTF8 ).Trim(true).Trim(false) );
   }
 
   return true;
@@ -1872,13 +1872,14 @@ void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
   checkLoadResultingTrace->SetValue( loadResultingTrace );
 }
 
-
+// order only contains the identifiers of the selected tools
 void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
 {
-  vector< string > auxListToolOrder; 
 
   if( order.size() > 0 )
   {
+    vector< string > auxListToolOrder; // To build the new list, in new order
+
     // Fill new list, in order, and keeping the non-selected in listToolOrder
     for( size_t i = 0; i < order.size(); ++i )
     {
@@ -1899,23 +1900,37 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
       }
     }
 
-    // Add the non-selected to the end of the vector
+    // Add the non-selected to the end of the vector and remember if they were checked
+    vector<bool> checkedNotUsedTools;
     for( size_t i = 0; i < listToolOrder.size(); ++i )
     {
       auxListToolOrder.push_back( listToolOrder[i] );
+      for( size_t j = 0; j < checkListToolOrder->GetCount(); ++j )
+      {
+        wxString currentCheckName = checkListToolOrder->GetString( j );
+        wxString currentCheckNameClean = currentCheckName.Mid( currentCheckName.Find( wxChar(' '))).Trim(false);
+        if( currentCheckNameClean == wxString( listToolOrder[i].c_str(),  wxConvUTF8 ) )
+          checkedNotUsedTools.push_back( checkListToolOrder->IsChecked( j ) );
+      }
     }
 
     // Set the new vector
     listToolOrder.swap( auxListToolOrder );
     UpdateToolList();
 
-    // And check the selected, that fit in the firsts elems of the vector order
+    // Check the selected, that fit in the firsts elems of the vector order
     for( size_t i = 0; i < order.size(); ++i )
     {
       checkListToolOrder->Check( i, true );
     }
+    // But keep the remembered check state of the unused tools.
+    int j = 0;
+    for( size_t i = order.size(); i < order.size() + checkedNotUsedTools.size(); ++i )
+    {
+      checkListToolOrder->Check( i, checkedNotUsedTools[ j++ ] );
+    }
 
-    // Finally, select first one to allow update raise it properly.
+    // Finally, select first one to allow UpdateUi raise it properly.
     checkListToolOrder->SetSelection( 0 );
   }
 }
@@ -1959,7 +1974,7 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 
   TraceOptions::TTasksList auxList;
   traceOptions->get_tasks_list( auxList );
-  textCutterTasks->SetValue( wxString::FromAscii( auxList ) );
+  textCutterTasks->SetValue( wxString::FromAscii( auxList ).Trim( true ).Trim( false ) );
 }
 
 void CutFilterDialog::CheckStatesList( size_t begin, bool value )
@@ -1982,7 +1997,7 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
     stateNameToCheck = stateNameToCheck.Trim( true ).Trim( false );
     for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
     {
-      wxString stateName = checkListFilterStates->GetString( i );
+      wxString stateName = checkListFilterStates->GetString( i ); // Assume name in list always trimmed both ways.
       if( stateNameToCheck == stateName )
       {
         checkListFilterStates->Check( i );
@@ -2126,8 +2141,8 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
   {
     TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
     wxString path = xmlSelectionDialog.GetPath();
-    vector<int> order = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
-    TransferDataToWindow( order, traceOptions );
+    vector<int> toolsOrder = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
+    TransferDataToWindow( toolsOrder, traceOptions );
   }
 }
 
