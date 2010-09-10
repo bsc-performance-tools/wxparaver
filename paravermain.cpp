@@ -415,11 +415,11 @@ void paraverMain::CreateControls()
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
-    .Name(_T("auiWindowBrowser")).Caption(_T("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   windowProperties = new wxPropertyGrid( itemFrame1, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
   itemFrame1->GetAuiManager().AddPane(windowProperties, wxAuiPaneInfo()
-    .Name(_T("auiWindowProperties")).Caption(_T("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowProperties")).Caption(_("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   GetAuiManager().Update();
 
@@ -2816,6 +2816,14 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   string strOutputFile;
   vector< string > tmpFiles;
 
+  ProgressController *progress = ProgressController::create( localKernel );
+  progress->setHandler( progressFunction );
+
+  if( paraverMain::dialogProgress == NULL )
+    paraverMain::dialogProgress = new wxProgressDialog( wxT("Processing trace..."), wxT(""),numeric_limits<int>::max(),
+                                                        this,
+                                                        wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
   // Concatenate Filter Utilities
   strcpy( tmpNameOut, (char *)traceFileName.c_str() );
   strcpy( tmpPathOut, (char *)traceFilePath.c_str() );
@@ -2831,12 +2839,17 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
     strcpy( tmpNameOut, tmpPathOut );
     strcpy( tmpPathOut, tmpPathOutBackup );
 
+    paraverMain::dialogProgress->Pulse( wxString::FromAscii( tmpNameOut ) );
+    paraverMain::dialogProgress->Fit();
+    paraverMain::dialogProgress->Show();
+
     switch( filterToolOrder[i] )
     {
       case INC_CHOP_COUNTER:
         traceCutter = localKernel->newTraceCutter( tmpNameIn,
                                                    tmpNameOut,
-                                                   traceOptions );
+                                                   traceOptions,
+                                                   progress );
         localKernel->copyPCF( tmpNameIn, tmpNameOut );
         break;
 
@@ -2890,6 +2903,11 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
         break;
     }
   }
+
+  paraverMain::dialogProgress->Show( false );
+  delete paraverMain::dialogProgress;
+  paraverMain::dialogProgress = NULL;
+  delete progress;
 
   return string( tmpNameOut );
 }
