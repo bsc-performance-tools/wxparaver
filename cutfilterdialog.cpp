@@ -1134,7 +1134,7 @@ void CutFilterDialog::SetEventLine( TraceOptions::TFilterTypes eventTypes, int c
     }
   }
 
-  listboxFilterEvents->Append( wxString( auxLine.str().c_str()) );
+  listboxFilterEvents->Append( wxString( auxLine.str().c_str(), wxConvUTF8 ) );
 }
 
 
@@ -2019,7 +2019,7 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
     for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
     {
       wxString stateName = checkListFilterStates->GetString( i );
-      if( wxString("Running") == stateName )
+      if( wxString("Running", wxConvUTF8) == stateName )
         checkListFilterStates->Check( i );
     }
   }
