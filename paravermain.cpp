@@ -2856,14 +2856,16 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
       case INC_FILTER_COUNTER:
         traceFilter = localKernel->newTraceFilter( tmpNameIn,
                                                    tmpNameOut,
-                                                   traceOptions );
+                                                   traceOptions,
+                                                   progress );
         localKernel->copyPCF( tmpNameIn, tmpNameOut );
         break;
 
       case INC_SC_COUNTER:
         traceSoftwareCounters = localKernel->newTraceSoftwareCounters( tmpNameIn,
                                                                     tmpNameOut,
-                                                                    traceOptions );
+                                                                    traceOptions,
+                                                                    progress );
         // traceSoftwareCounters modifies the pcf, don't copy here!
         break;
 
