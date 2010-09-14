@@ -223,7 +223,6 @@ paraverMain::paraverMain()
   LocalKernel::init();
   localKernel = new LocalKernel( userMessage );
   paraverConfig = ParaverConfig::getInstance();
-  paraverConfig->readParaverConfigFile();
   myParaverMain = this;
 
   Init();
@@ -2254,6 +2253,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetCfgsPath( paraverConfig->getGlobalCFGsPath() );
   preferences.SetTmpPath( paraverConfig->getGlobalTmpPath() );
   preferences.SetMaximumTraceSize( paraverConfig->getFiltersFilterTraceUpToMB() );
+  preferences.SetSingleInstance( paraverConfig->getGlobalSingleInstance() );
 
   // TIMELINE
 
@@ -2333,6 +2333,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setGlobalCFGsPath( preferences.GetCfgsPath() );
     paraverConfig->setGlobalTmpPath( preferences.GetTmpPath() );
     paraverConfig->setFiltersFilterTraceUpToMB( (float)preferences.GetMaximumTraceSize() );
+    paraverConfig->setGlobalSingleInstance( preferences.GetSingleInstance() );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );

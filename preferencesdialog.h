@@ -66,6 +66,7 @@ class wxColourPickerCtrl;
 #define ID_DIRPICKERCTRL_TRACES 10089
 #define ID_DIRPICKERCTRL_CFG 10010
 #define ID_DIRPICKERCTRL_TMP 10011
+#define ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE 10158
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
@@ -341,6 +342,9 @@ public:
   float GetMaximumTraceSize() const { return maximumTraceSize ; }
   void SetMaximumTraceSize(float value) { maximumTraceSize = value ; }
 
+  bool GetSingleInstance() const { return singleInstance ; }
+  void SetSingleInstance(bool value) { singleInstance = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -360,6 +364,7 @@ public:
   wxDirPickerCtrl* dirPickerTrace;
   wxDirPickerCtrl* dirPickerCFG;
   wxDirPickerCtrl* dirPickerTmp;
+  wxCheckBox* checkGlobalSingleInstance;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
   wxCheckBox* checkTimelineCommunicationLines;
@@ -465,6 +470,7 @@ private:
   bool colorUseZero;
   rgb timelineColourZero;
   float maximumTraceSize;
+  bool singleInstance;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
