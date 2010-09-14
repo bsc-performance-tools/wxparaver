@@ -332,10 +332,14 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer22->Add(itemBoxSizer23, 1, wxGROW|wxLEFT|wxTOP, 5);
   radioCutterCutByTime = new wxRadioButton( itemPanel19, ID_RADIOBUTTON_CUTTER_CUT_BY_TIME, _("Cut by time"), wxDefaultPosition, wxDefaultSize, 0 );
   radioCutterCutByTime->SetValue(true);
+  if (CutFilterDialog::ShowToolTips())
+    radioCutterCutByTime->SetToolTip(_("Select this to cut [begin time, end time] region of the trace."));
   itemBoxSizer23->Add(radioCutterCutByTime, 1, wxALIGN_LEFT|wxLEFT|wxTOP, 5);
 
   radioCutterCutByTimePercent = new wxRadioButton( itemPanel19, ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT, _("Cut by time %"), wxDefaultPosition, wxDefaultSize, 0 );
   radioCutterCutByTimePercent->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    radioCutterCutByTimePercent->SetToolTip(_("Select this to cut [begin % time, end % time] region of the trace."));
   itemBoxSizer23->Add(radioCutterCutByTimePercent, 1, wxALIGN_LEFT|wxLEFT|wxTOP, 5);
 
   wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxVERTICAL);
@@ -343,17 +347,25 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer26->Add(itemBoxSizer27, 0, wxGROW|wxLEFT|wxTOP, 5);
   wxStaticText* itemStaticText28 = new wxStaticText( itemPanel19, wxID_STATIC, _("Begin"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    itemStaticText28->SetToolTip(_("Initial timestamp or percent for the cut."));
   itemBoxSizer27->Add(itemStaticText28, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
   textCutterBeginCut = new wxTextCtrl( itemPanel19, ID_TEXTCTRL_CUTTER_BEGIN_CUT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textCutterBeginCut->SetToolTip(_("Initial timestamp or percent for the cut."));
   itemBoxSizer27->Add(textCutterBeginCut, 3, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 5);
 
   wxBoxSizer* itemBoxSizer30 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer26->Add(itemBoxSizer30, 0, wxGROW|wxLEFT|wxTOP, 5);
   wxStaticText* itemStaticText31 = new wxStaticText( itemPanel19, wxID_STATIC, _("End"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    itemStaticText31->SetToolTip(_("Final timestamp or percent for the cut."));
   itemBoxSizer30->Add(itemStaticText31, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
   textCutterEndCut = new wxTextCtrl( itemPanel19, ID_TEXTCTRL_CUTTER_END_CUT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textCutterEndCut->SetToolTip(_("Final timestamp or percent for the cut."));
   itemBoxSizer30->Add(textCutterEndCut, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
   wxStaticLine* itemStaticLine33 = new wxStaticLine( itemPanel19, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
@@ -366,7 +378,7 @@ void CutFilterDialog::CreateControls()
 
   textCutterTasks = new wxTextCtrl( itemPanel19, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
-    textCutterTasks->SetToolTip(_("Select the list of tasks to cut, separated by commas. Ranges marked with \"-\" are allowed. I.e. \"1-32,33,64-128\". Leave it empty to select all the tasks."));
+    textCutterTasks->SetToolTip(_("Keep only information of tasks specified, separated by commas. Ranges marked with \"-\" are allowed. I.e. \"1-32,33,64-128\". Leave it empty to select all the tasks."));
   itemBoxSizer34->Add(textCutterTasks, 1, wxGROW|wxALL, 5);
 
   wxStaticLine* itemStaticLine37 = new wxStaticLine( itemPanel19, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
@@ -375,9 +387,13 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer38 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer21->Add(itemBoxSizer38, 0, wxGROW|wxALL, 5);
   buttonCutterSelectRegion = new wxButton( itemPanel19, ID_BUTTON_CUTTER_SELECT_REGION, _("Select Region..."), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    buttonCutterSelectRegion->SetToolTip(_("Fill times range directly clicking or dragging from timelines. You can click on different timelines."));
   itemBoxSizer38->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   buttonCutterAllTrace = new wxButton( itemPanel19, ID_BUTTON_CUTTER_ALL_TRACE, _("All Trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    buttonCutterAllTrace->SetToolTip(_("Set range [0%, 100%]."));
   itemBoxSizer38->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   wxStaticBox* itemStaticBoxSizer41Static = new wxStaticBox(itemPanel19, wxID_STATIC, _(" Trace Options "));
@@ -387,20 +403,28 @@ void CutFilterDialog::CreateControls()
   itemStaticBoxSizer41->Add(itemBoxSizer42, 0, wxGROW|wxLEFT|wxTOP, 5);
   checkCutterUseOriginalTime = new wxCheckBox( itemPanel19, ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, _("Use original time"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterUseOriginalTime->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkCutterUseOriginalTime->SetToolTip(_("If not set, after the cut the first timestamp will be set to 0, and the difference with the original time will be substracted to all the times. If set, original time is kept."));
   itemBoxSizer42->Add(checkCutterUseOriginalTime, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   checkCutterRemoveFirstState = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_REMOVE_FIRST_STATE, _("Remove first state"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterRemoveFirstState->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkCutterRemoveFirstState->SetToolTip(_("If the begin limit is inside a burst, don't keep it."));
   itemBoxSizer42->Add(checkCutterRemoveFirstState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer41->Add(itemBoxSizer45, 0, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 5);
   checkCutterDontBreakStates = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_BREAK_STATES, _("Don't break states"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterDontBreakStates->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkCutterDontBreakStates->SetToolTip(_("If set, no matter the given limits, the states in the middle of the cut are maintained. If not set the limits will split them. This options is overriden if \"Use original time\" is set."));
   itemBoxSizer45->Add(checkCutterDontBreakStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   checkCutterRemoveLastState = new wxCheckBox( itemPanel19, ID_CHECKBOX_CUTTER_REMOVE_LAST_STATE, _("Remove last state"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterRemoveLastState->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkCutterRemoveLastState->SetToolTip(_("If the end limit is inside a burst, don't keep it."));
   itemBoxSizer45->Add(checkCutterRemoveLastState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   wxStaticBox* itemStaticBoxSizer48Static = new wxStaticBox(itemPanel19, wxID_STATIC, _(" Output Trace "));
@@ -410,6 +434,8 @@ void CutFilterDialog::CreateControls()
   itemStaticBoxSizer48->Add(itemStaticText49, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   textCutterMaximumTraceSize = new wxSpinCtrl( itemPanel19, ID_SPINCTRL_CUTTER_MAXIMUM_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000000, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textCutterMaximumTraceSize->SetToolTip(_("Set upper limit for the size of the cutted trace  in MB. Once this limit is reached, no more records will be written to the resulting trace."));
   itemStaticBoxSizer48->Add(textCutterMaximumTraceSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticText* itemStaticText51 = new wxStaticText( itemPanel19, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );

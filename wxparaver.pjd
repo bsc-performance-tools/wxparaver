@@ -20417,7 +20417,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -20546,7 +20545,7 @@
                           <string name="proxy-Label">"Cut by time"</string>
                           <bool name="proxy-Initial value">1</bool>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"Select this to cut [begin time, end time] region of the trace."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -20607,7 +20606,7 @@
                           <string name="proxy-Label">"Cut by time %"</string>
                           <bool name="proxy-Initial value">0</bool>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"Select this to cut [begin % time, end % time] region of the trace."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -20717,7 +20716,7 @@
                             <string name="proxy-Label">"Begin"</string>
                             <long name="proxy-Wrapping width">-1</long>
                             <string name="proxy-Help text">""</string>
-                            <string name="proxy-Tooltip text">""</string>
+                            <string name="proxy-Tooltip text">"Initial timestamp or percent for the cut."</string>
                             <string name="proxy-Background colour">""</string>
                             <string name="proxy-Foreground colour">""</string>
                             <string name="proxy-Font">""</string>
@@ -20762,7 +20761,6 @@
                             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                             <string name="proxy-Custom arguments">""</string>
                             <string name="proxy-Custom ctor arguments">""</string>
-                            <bool name="proxy-wxBORDER_THEME">0</bool>
                           </document>
                           <document>
                             <string name="title">"wxTextCtrl: ID_TEXTCTRL_CUTTER_BEGIN_CUT"</string>
@@ -20787,7 +20785,7 @@
                             <string name="proxy-Initial value">""</string>
                             <long name="proxy-Max length">0</long>
                             <string name="proxy-Help text">""</string>
-                            <string name="proxy-Tooltip text">""</string>
+                            <string name="proxy-Tooltip text">"Initial timestamp or percent for the cut."</string>
                             <string name="proxy-Background colour">""</string>
                             <string name="proxy-Foreground colour">""</string>
                             <string name="proxy-Font">""</string>
@@ -20844,7 +20842,6 @@
                             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                             <string name="proxy-Custom arguments">""</string>
                             <string name="proxy-Custom ctor arguments">""</string>
-                            <bool name="proxy-wxBORDER_THEME">0</bool>
                           </document>
                         </document>
                         <document>
@@ -20894,7 +20891,7 @@
                             <string name="proxy-Label">"End"</string>
                             <long name="proxy-Wrapping width">-1</long>
                             <string name="proxy-Help text">""</string>
-                            <string name="proxy-Tooltip text">""</string>
+                            <string name="proxy-Tooltip text">"Final timestamp or percent for the cut."</string>
                             <string name="proxy-Background colour">""</string>
                             <string name="proxy-Foreground colour">""</string>
                             <string name="proxy-Font">""</string>
@@ -20939,7 +20936,6 @@
                             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                             <string name="proxy-Custom arguments">""</string>
                             <string name="proxy-Custom ctor arguments">""</string>
-                            <bool name="proxy-wxBORDER_THEME">0</bool>
                           </document>
                           <document>
                             <string name="title">"wxTextCtrl: ID_TEXTCTRL_CUTTER_END_CUT"</string>
@@ -20964,7 +20960,7 @@
                             <string name="proxy-Initial value">""</string>
                             <long name="proxy-Max length">0</long>
                             <string name="proxy-Help text">""</string>
-                            <string name="proxy-Tooltip text">""</string>
+                            <string name="proxy-Tooltip text">"Final timestamp or percent for the cut."</string>
                             <string name="proxy-Background colour">""</string>
                             <string name="proxy-Foreground colour">""</string>
                             <string name="proxy-Font">""</string>
@@ -21021,7 +21017,6 @@
                             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                             <string name="proxy-Custom arguments">""</string>
                             <string name="proxy-Custom ctor arguments">""</string>
-                            <bool name="proxy-wxBORDER_THEME">0</bool>
                           </document>
                         </document>
                       </document>
@@ -21198,7 +21193,7 @@
                         <string name="proxy-Initial value">""</string>
                         <long name="proxy-Max length">0</long>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">"Select the list of tasks to cut, separated by commas. Ranges marked with &quot;-&quot; are allowed. I.e. &quot;1-32,33,64-128&quot;. Leave it empty to select all the tasks."</string>
+                        <string name="proxy-Tooltip text">"Keep only information of tasks specified, separated by commas. Ranges marked with &quot;-&quot; are allowed. I.e. &quot;1-32,33,64-128&quot;. Leave it empty to select all the tasks."</string>
                         <string name="proxy-Background colour">""</string>
                         <string name="proxy-Foreground colour">""</string>
                         <string name="proxy-Font">""</string>
@@ -21255,7 +21250,6 @@
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxBORDER_THEME">0</bool>
                       </document>
                     </document>
                     <document>
@@ -21361,7 +21355,7 @@
                         <string name="proxy-Label">"Select Region..."</string>
                         <bool name="proxy-Default">0</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"Fill times range directly clicking or dragging from timelines. You can click on different timelines."</string>
                         <string name="proxy-Data variable">""</string>
                         <string name="proxy-Data validator">""</string>
                         <string name="proxy-Data source">""</string>
@@ -21427,7 +21421,7 @@
                         <string name="proxy-Label">"All Trace"</string>
                         <bool name="proxy-Default">0</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"Set range [0%, 100%]."</string>
                         <string name="proxy-Data variable">""</string>
                         <string name="proxy-Data validator">""</string>
                         <string name="proxy-Data source">""</string>
@@ -21552,7 +21546,7 @@
                         <string name="proxy-Label">"Use original time"</string>
                         <bool name="proxy-Initial value">0</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"If not set, after the cut the first timestamp will be set to 0, and the difference with the original time will be substracted to all the times. If set, original time is kept."</string>
                         <string name="proxy-Data variable">""</string>
                         <string name="proxy-Data validator">""</string>
                         <string name="proxy-Data source">""</string>
@@ -21615,7 +21609,7 @@
                         <string name="proxy-Label">"Remove first state"</string>
                         <bool name="proxy-Initial value">0</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"If the begin limit is inside a burst, don't keep it."</string>
                         <string name="proxy-Data variable">""</string>
                         <string name="proxy-Data validator">""</string>
                         <string name="proxy-Data source">""</string>
@@ -21703,7 +21697,7 @@
                         <string name="proxy-Label">"Don't break states"</string>
                         <bool name="proxy-Initial value">0</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"If set, no matter the given limits, the states in the middle of the cut are maintained. If not set the limits will split them. This options is overriden if &quot;Use original time&quot; is set."</string>
                         <string name="proxy-Data variable">""</string>
                         <string name="proxy-Data validator">""</string>
                         <string name="proxy-Data source">""</string>
@@ -21766,7 +21760,7 @@
                         <string name="proxy-Label">"Remove last state"</string>
                         <bool name="proxy-Initial value">0</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"If the end limit is inside a burst, don't keep it."</string>
                         <string name="proxy-Data variable">""</string>
                         <string name="proxy-Data validator">""</string>
                         <string name="proxy-Data source">""</string>
@@ -21909,7 +21903,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxSpinCtrl: ID_SPINCTRL_CUTTER_MAXIMUM_SIZE"</string>
@@ -21935,7 +21928,7 @@
                       <long name="proxy-Maximum value">1000000</long>
                       <long name="proxy-Initial value">0</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">""</string>
+                      <string name="proxy-Tooltip text">"Set upper limit for the size of the cutted trace  in MB. Once this limit is reached, no more records will be written to the resulting trace."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -21978,7 +21971,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxStaticText: wxID_STATIC"</string>
