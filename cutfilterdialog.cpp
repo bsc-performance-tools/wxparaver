@@ -271,15 +271,21 @@ void CutFilterDialog::CreateControls()
 
   checkLoadResultingTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_LOAD_RESULTING_TRACE, _("Load the resulting trace"), wxDefaultPosition, wxDefaultSize, 0 );
   checkLoadResultingTrace->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkLoadResultingTrace->SetToolTip(_("After the selected tools are applied, the resulting trace is loaded."));
   itemBoxSizer4->Add(checkLoadResultingTrace, 0, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer4->Add(itemBoxSizer8, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
 
   wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON_LOAD_XML, _("Load XML..."), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    itemButton9->SetToolTip(_("Load new settings from an xml file. Not used tools won't be changed.  "));
   itemBoxSizer8->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON_SAVE_XML, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    itemButton10->SetToolTip(_("Save current settings to an XML file."));
   itemButton10->Enable(false);
   itemBoxSizer8->Add(itemButton10, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
