@@ -118,6 +118,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_DELETE, CutFilterDialog::OnButtonScKeepEventsDeleteClick )
 
   EVT_BUTTON( wxID_OK, CutFilterDialog::OnOkClick )
+  EVT_UPDATE_UI( wxID_OK, CutFilterDialog::OnOkUpdate )
 
 ////@end CutFilterDialog event table entries
 
@@ -237,6 +238,7 @@ void CutFilterDialog::Init()
   listSCKeepEvents = NULL;
   buttonSCKeepEventsAdd = NULL;
   buttonSCKeepEventsDelete = NULL;
+  globalOk = NULL;
 ////@end CutFilterDialog member initialisation
 }
 
@@ -452,14 +454,20 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer53->Add(itemStaticBoxSizer54, 0, wxGROW|wxALL, 3);
   checkFilterDiscardStateRecords = new wxCheckBox( itemPanel52, ID_CHECKBOX_FILTER_DISCARD_STATE, _("State"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardStateRecords->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkFilterDiscardStateRecords->SetToolTip(_("Discard all the state records from the source trace."));
   itemStaticBoxSizer54->Add(checkFilterDiscardStateRecords, 0, wxGROW|wxALL, 2);
 
   checkFilterDiscardEventRecords = new wxCheckBox( itemPanel52, ID_CHECKBOX_FILTER_DISCARD_EVENT, _("Event"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardEventRecords->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkFilterDiscardEventRecords->SetToolTip(_("Discard all the event records from the source trace."));
   itemStaticBoxSizer54->Add(checkFilterDiscardEventRecords, 0, wxGROW|wxALL, 2);
 
   checkFilterDiscardCommunicationRecords = new wxCheckBox( itemPanel52, ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, _("Communication"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardCommunicationRecords->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkFilterDiscardCommunicationRecords->SetToolTip(_("Discard all the communication records from the source trace."));
   itemStaticBoxSizer54->Add(checkFilterDiscardCommunicationRecords, 0, wxGROW|wxALL, 2);
 
   staticBoxSizerFilterStates = new wxStaticBox(itemPanel52, wxID_STATIC, _(" States "));
@@ -484,6 +492,8 @@ void CutFilterDialog::CreateControls()
   checkListFilterStatesStrings.Add(_("Others"));
   checkListFilterStatesStrings.Add(_("Send Receive"));
   checkListFilterStates = new wxCheckListBox( itemPanel52, ID_CHECKLISTBOX_FILTER_STATES, wxDefaultPosition, wxSize(-1, 100), checkListFilterStatesStrings, wxLB_SINGLE );
+  if (CutFilterDialog::ShowToolTips())
+    checkListFilterStates->SetToolTip(_("Check the states that you want to keep in the filtered trace."));
   itemStaticBoxSizer58->Add(checkListFilterStates, 2, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer60 = new wxBoxSizer(wxVERTICAL);
@@ -497,9 +507,13 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer63 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer60->Add(itemBoxSizer63, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
   labelFilterMinBurstTime = new wxStaticText( itemPanel52, wxID_STATIC, _("Min. burst time"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    labelFilterMinBurstTime->SetToolTip(_("Specify the minimum burst time for the state records."));
   itemBoxSizer63->Add(labelFilterMinBurstTime, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   textFilterMinBurstTime = new wxTextCtrl( itemPanel52, ID_TEXTCTRL_FILTER_MIN_BURST_TIME, _("0"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textFilterMinBurstTime->SetToolTip(_("Specify the minimum burst time for the state records."));
   itemBoxSizer63->Add(textFilterMinBurstTime, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   staticBoxSizerFilterEvents = new wxStaticBox(itemPanel52, wxID_STATIC, _(" Events "));
@@ -507,6 +521,8 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer53->Add(itemStaticBoxSizer66, 1, wxGROW|wxALL, 3);
   wxArrayString listboxFilterEventsStrings;
   listboxFilterEvents = new wxListBox( itemPanel52, ID_LISTBOX_FILTER_EVENTS, wxDefaultPosition, wxDefaultSize, listboxFilterEventsStrings, wxLB_SINGLE );
+  if (CutFilterDialog::ShowToolTips())
+    listboxFilterEvents->SetToolTip(_("List of the allowed events."));
   itemStaticBoxSizer66->Add(listboxFilterEvents, 2, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer68 = new wxBoxSizer(wxVERTICAL);
@@ -519,15 +535,21 @@ void CutFilterDialog::CreateControls()
 
   checkFilterDiscardListedEvents = new wxCheckBox( itemPanel52, ID_CHECKBOX_FILTER_DISCARD_LISTED_EVENTS, _("Discard"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardListedEvents->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    checkFilterDiscardListedEvents->SetToolTip(_("If set, all the listed events will be discarded instead of being kept."));
   itemBoxSizer68->Add(checkFilterDiscardListedEvents, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   staticBoxSizerFilterCommunications = new wxStaticBox(itemPanel52, wxID_STATIC, _(" Communications "));
   wxStaticBoxSizer* itemStaticBoxSizer72 = new wxStaticBoxSizer(staticBoxSizerFilterCommunications, wxHORIZONTAL);
   itemBoxSizer53->Add(itemStaticBoxSizer72, 0, wxGROW|wxALL, 3);
   staticTextFilterSize = new wxStaticText( itemPanel52, wxID_STATIC, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    staticTextFilterSize->SetToolTip(_("Allow only communications with a minimum size."));
   itemStaticBoxSizer72->Add(staticTextFilterSize, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textFilterSize = new wxSpinCtrl( itemPanel52, ID_SPINCTRL_FILTER_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textFilterSize->SetToolTip(_("Allow only communications with a minimum size."));
   itemStaticBoxSizer72->Add(textFilterSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   staticTextFilterSizeUnit = new wxStaticText( itemPanel52, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -546,10 +568,14 @@ void CutFilterDialog::CreateControls()
   itemStaticBoxSizer78->Add(itemBoxSizer79, 0, wxGROW|wxALL, 0);
   radioSCOnIntervals = new wxRadioButton( itemPanel76, ID_RADIOBUTTON_SC_ON_INTERVALS, _("On intervals"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioSCOnIntervals->SetValue(true);
+  if (CutFilterDialog::ShowToolTips())
+    radioSCOnIntervals->SetToolTip(_("The software counters will be written periodically after every time interval"));
   itemBoxSizer79->Add(radioSCOnIntervals, 1, wxGROW|wxALL, 2);
 
   radioSCOnStates = new wxRadioButton( itemPanel76, ID_RADIOBUTTON_SC_ON_STATES, _("On states"), wxDefaultPosition, wxDefaultSize, 0 );
   radioSCOnStates->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    radioSCOnStates->SetToolTip(_("The software counters will be written after every context switch of a running burst of at least the declared duration."));
   itemBoxSizer79->Add(radioSCOnStates, 1, wxGROW|wxALL, 2);
 
   wxStaticLine* itemStaticLine82 = new wxStaticLine( itemPanel76, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
@@ -560,17 +586,25 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer84 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer83->Add(itemBoxSizer84, 1, wxGROW|wxALL, 2);
   staticTextSCSamplingInterval = new wxStaticText( itemPanel76, wxID_STATIC, _("Sampling Interval (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    staticTextSCSamplingInterval->SetToolTip(_("The software counters will be written periodically after every time interval"));
   itemBoxSizer84->Add(staticTextSCSamplingInterval, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textSCSamplingInterval = new wxTextCtrl( itemPanel76, ID_TEXTCTRL_SC_SAMPLING_INTERVAL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textSCSamplingInterval->SetToolTip(_("The software counters will be written periodically after every time interval."));
   itemBoxSizer84->Add(textSCSamplingInterval, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer87 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer83->Add(itemBoxSizer87, 1, wxGROW|wxALL, 2);
   staticTextSCMinimumBurstTime = new wxStaticText( itemPanel76, wxID_STATIC, _("Min Burst Time (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    staticTextSCMinimumBurstTime->SetToolTip(_("The software counters will be written after every context switch of a running burst of at least the declared duration."));
   itemBoxSizer87->Add(staticTextSCMinimumBurstTime, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textSCMinimumBurstTime = new wxTextCtrl( itemPanel76, ID_TEXTCTRL_SC_MINIMUM_BURST_TIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    textSCMinimumBurstTime->SetToolTip(_("The software counters will be written after every context switch of a running burst of at least the declared duration."));
   itemBoxSizer87->Add(textSCMinimumBurstTime, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxStaticBox* itemStaticBoxSizer90Static = new wxStaticBox(itemPanel76, wxID_STATIC, _(" Selected events "));
@@ -580,6 +614,8 @@ void CutFilterDialog::CreateControls()
   itemStaticBoxSizer90->Add(itemBoxSizer91, 1, wxGROW|wxALL, 0);
   wxArrayString listSCSelectedEventsStrings;
   listSCSelectedEvents = new wxListBox( itemPanel76, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, listSCSelectedEventsStrings, wxLB_SINGLE );
+  if (CutFilterDialog::ShowToolTips())
+    listSCSelectedEvents->SetToolTip(_("The counters will express the number of calls for every type-value specified in this list."));
   itemBoxSizer91->Add(listSCSelectedEvents, 2, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer93 = new wxBoxSizer(wxVERTICAL);
@@ -599,10 +635,14 @@ void CutFilterDialog::CreateControls()
   itemBoxSizer97->Add(itemBoxSizer98, 1, wxGROW|wxALL, 2);
   radioSCCountEvents = new wxRadioButton( itemPanel76, ID_RADIOBUTTON_SC_COUNT_EVENTS, _("Count events"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioSCCountEvents->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    radioSCCountEvents->SetToolTip(_("Count how many times the type-event pairs appear in the source trace."));
   itemBoxSizer98->Add(radioSCCountEvents, 1, wxGROW|wxALL, 2);
 
   radioSCAccumulateValues = new wxRadioButton( itemPanel76, ID_RADIOBUTTON8, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
   radioSCAccumulateValues->SetValue(false);
+  if (CutFilterDialog::ShowToolTips())
+    radioSCAccumulateValues->SetToolTip(_("Add the values instead of counting how many times the type-event pairs appear in the source trace."));
   itemBoxSizer98->Add(radioSCAccumulateValues, 1, wxGROW|wxALL, 2);
 
   wxStaticLine* itemStaticLine101 = new wxStaticLine( itemPanel76, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
@@ -651,8 +691,8 @@ void CutFilterDialog::CreateControls()
   wxButton* itemButton113 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStdDialogButtonSizer112->AddButton(itemButton113);
 
-  wxButton* itemButton114 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer112->AddButton(itemButton114);
+  globalOk = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer112->AddButton(globalOk);
 
   itemStdDialogButtonSizer112->Realize();
 
@@ -2186,5 +2226,21 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
 void CutFilterDialog::OnNotebookCutFilterOptionsUpdate( wxUpdateUIEvent& event )
 {
   ChangePageSelectionFromToolsOrderListToTabs();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for wxID_OK
+ */
+
+void CutFilterDialog::OnOkUpdate( wxUpdateUIEvent& event )
+{
+  bool enable = false;
+
+  for( size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
+    if ( checkListToolOrder->IsChecked( (int)i ) )
+      enable = true;
+
+  globalOk->Enable( enable );
 }
 

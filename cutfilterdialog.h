@@ -220,6 +220,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for wxID_OK
+  void OnOkUpdate( wxUpdateUIEvent& event );
+
 ////@end CutFilterDialog event handler declarations
 
 ////@begin CutFilterDialog member function declarations
@@ -351,6 +354,7 @@ public:
   wxListBox* listSCKeepEvents;
   wxButton* buttonSCKeepEventsAdd;
   wxButton* buttonSCKeepEventsDelete;
+  wxButton* globalOk;
 private:
   TraceOptions * traceOptions;
   vector< int > filterToolOrder;

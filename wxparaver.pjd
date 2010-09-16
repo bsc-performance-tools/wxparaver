@@ -22120,7 +22120,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -22201,7 +22200,7 @@
                       <string name="proxy-Label">"State"</string>
                       <bool name="proxy-Initial value">0</bool>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">""</string>
+                      <string name="proxy-Tooltip text">"Discard all the state records from the source trace."</string>
                       <string name="proxy-Data variable">""</string>
                       <string name="proxy-Data validator">""</string>
                       <string name="proxy-Data source">""</string>
@@ -22264,7 +22263,7 @@
                       <string name="proxy-Label">"Event"</string>
                       <bool name="proxy-Initial value">0</bool>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">""</string>
+                      <string name="proxy-Tooltip text">"Discard all the event records from the source trace."</string>
                       <string name="proxy-Data variable">""</string>
                       <string name="proxy-Data validator">""</string>
                       <string name="proxy-Data source">""</string>
@@ -22327,7 +22326,7 @@
                       <string name="proxy-Label">"Communication"</string>
                       <bool name="proxy-Initial value">0</bool>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">""</string>
+                      <string name="proxy-Tooltip text">"Discard all the communication records from the source trace."</string>
                       <string name="proxy-Data variable">""</string>
                       <string name="proxy-Data validator">""</string>
                       <string name="proxy-Data source">""</string>
@@ -22423,7 +22422,7 @@
                       <string name="proxy-Member variable name">"checkListFilterStates"</string>
                       <string name="proxy-Strings">"Idle|Running|Not created|Waiting a message|Bloking Send|Thd. Synchr.|Test/Probe|Sched. and Fork/Join|Wait/WaitAll|Blocked|Inmediate Send|Inmediate Receive|I/O|Group Communication|Tracing Disabled|Others|Send Receive"</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">""</string>
+                      <string name="proxy-Tooltip text">"Check the states that you want to keep in the filtered trace."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -22471,7 +22470,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxBoxSizer V"</string>
@@ -22676,7 +22674,7 @@
                           <string name="proxy-Label">"Min. burst time"</string>
                           <long name="proxy-Wrapping width">-1</long>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"Specify the minimum burst time for the state records."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -22721,7 +22719,6 @@
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
-                          <bool name="proxy-wxBORDER_THEME">0</bool>
                         </document>
                         <document>
                           <string name="title">"wxTextCtrl: ID_TEXTCTRL_FILTER_MIN_BURST_TIME"</string>
@@ -22746,7 +22743,7 @@
                           <string name="proxy-Initial value">"0"</string>
                           <long name="proxy-Max length">0</long>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"Specify the minimum burst time for the state records."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -22803,7 +22800,6 @@
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
-                          <bool name="proxy-wxBORDER_THEME">0</bool>
                         </document>
                       </document>
                     </document>
@@ -22864,7 +22860,7 @@
                       <string name="proxy-Strings">""</string>
                       <string name="proxy-Initial value">""</string>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">""</string>
+                      <string name="proxy-Tooltip text">"List of the allowed events."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -22912,7 +22908,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxBoxSizer V"</string>
@@ -23093,7 +23088,7 @@
                         <string name="proxy-Label">"Discard"</string>
                         <bool name="proxy-Initial value">0</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"If set, all the listed events will be discarded instead of being kept."</string>
                         <string name="proxy-Data variable">""</string>
                         <string name="proxy-Data validator">""</string>
                         <string name="proxy-Data source">""</string>
@@ -23191,7 +23186,7 @@
                       <string name="proxy-Label">"Size"</string>
                       <long name="proxy-Wrapping width">-1</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">""</string>
+                      <string name="proxy-Tooltip text">"Allow only communications with a minimum size."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -23236,7 +23231,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxSpinCtrl: ID_SPINCTRL_FILTER_SIZE"</string>
@@ -23262,7 +23256,7 @@
                       <long name="proxy-Maximum value">100</long>
                       <long name="proxy-Initial value">0</long>
                       <string name="proxy-Help text">""</string>
-                      <string name="proxy-Tooltip text">""</string>
+                      <string name="proxy-Tooltip text">"Allow only communications with a minimum size."</string>
                       <string name="proxy-Background colour">""</string>
                       <string name="proxy-Foreground colour">""</string>
                       <string name="proxy-Font">""</string>
@@ -23305,7 +23299,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -23455,7 +23448,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -23560,7 +23552,7 @@
                         <string name="proxy-Label">"On intervals"</string>
                         <bool name="proxy-Initial value">1</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"The software counters will be written periodically after every time interval"</string>
                         <string name="proxy-Background colour">""</string>
                         <string name="proxy-Foreground colour">""</string>
                         <string name="proxy-Font">""</string>
@@ -23621,7 +23613,7 @@
                         <string name="proxy-Label">"On states"</string>
                         <bool name="proxy-Initial value">0</bool>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"The software counters will be written after every context switch of a running burst of at least the declared duration."</string>
                         <string name="proxy-Background colour">""</string>
                         <string name="proxy-Foreground colour">""</string>
                         <string name="proxy-Font">""</string>
@@ -23786,7 +23778,7 @@
                           <string name="proxy-Label">"Sampling Interval (ns)"</string>
                           <long name="proxy-Wrapping width">-1</long>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"The software counters will be written periodically after every time interval"</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -23831,7 +23823,6 @@
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
-                          <bool name="proxy-wxBORDER_THEME">0</bool>
                         </document>
                         <document>
                           <string name="title">"wxTextCtrl: ID_TEXTCTRL_SC_SAMPLING_INTERVAL"</string>
@@ -23856,7 +23847,7 @@
                           <string name="proxy-Initial value">""</string>
                           <long name="proxy-Max length">0</long>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"The software counters will be written periodically after every time interval."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -23913,7 +23904,6 @@
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
-                          <bool name="proxy-wxBORDER_THEME">0</bool>
                         </document>
                       </document>
                       <document>
@@ -23963,7 +23953,7 @@
                           <string name="proxy-Label">"Min Burst Time (ns)"</string>
                           <long name="proxy-Wrapping width">-1</long>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"The software counters will be written after every context switch of a running burst of at least the declared duration."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -24008,7 +23998,6 @@
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
-                          <bool name="proxy-wxBORDER_THEME">0</bool>
                         </document>
                         <document>
                           <string name="title">"wxTextCtrl: ID_TEXTCTRL_SC_MINIMUM_BURST_TIME"</string>
@@ -24033,7 +24022,7 @@
                           <string name="proxy-Initial value">""</string>
                           <long name="proxy-Max length">0</long>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"The software counters will be written after every context switch of a running burst of at least the declared duration."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -24090,7 +24079,6 @@
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
-                          <bool name="proxy-wxBORDER_THEME">0</bool>
                         </document>
                       </document>
                     </document>
@@ -24175,7 +24163,7 @@
                         <string name="proxy-Strings">""</string>
                         <string name="proxy-Initial value">""</string>
                         <string name="proxy-Help text">""</string>
-                        <string name="proxy-Tooltip text">""</string>
+                        <string name="proxy-Tooltip text">"The counters will express the number of calls for every type-value specified in this list."</string>
                         <string name="proxy-Background colour">""</string>
                         <string name="proxy-Foreground colour">""</string>
                         <string name="proxy-Font">""</string>
@@ -24223,7 +24211,6 @@
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxBORDER_THEME">0</bool>
                       </document>
                       <document>
                         <string name="title">"wxBoxSizer V"</string>
@@ -24488,7 +24475,7 @@
                           <string name="proxy-Label">"Count events"</string>
                           <bool name="proxy-Initial value">0</bool>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"Count how many times the type-event pairs appear in the source trace."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -24549,7 +24536,7 @@
                           <string name="proxy-Label">"Accumulate values"</string>
                           <bool name="proxy-Initial value">0</bool>
                           <string name="proxy-Help text">""</string>
-                          <string name="proxy-Tooltip text">""</string>
+                          <string name="proxy-Tooltip text">"Add the values instead of counting how many times the type-event pairs appear in the source trace."</string>
                           <string name="proxy-Background colour">""</string>
                           <string name="proxy-Foreground colour">""</string>
                           <string name="proxy-Font">""</string>
@@ -25029,7 +25016,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxBoxSizer V"</string>
@@ -25299,6 +25285,7 @@
                 <long name="locked">1</long>
                 <string name="proxy-type">"wbButtonProxy"</string>
                 <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnOkClick|NONE||CutFilterDialog"</string>
+                <string name="event-handler-1">"wxEVT_UPDATE_UI|OnOkUpdate|NONE||CutFilterDialog"</string>
                 <string name="proxy-Id name">"wxID_OK"</string>
                 <long name="proxy-Id value">5100</long>
                 <string name="proxy-Name">""</string>
@@ -25308,7 +25295,7 @@
                 <bool name="proxy-Separate files">0</bool>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Header filename">""</string>
-                <string name="proxy-Member variable name">""</string>
+                <string name="proxy-Member variable name">"globalOk"</string>
                 <string name="proxy-Label">"&amp;OK"</string>
                 <bool name="proxy-Default">0</bool>
                 <string name="proxy-Help text">""</string>
