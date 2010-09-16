@@ -2202,9 +2202,16 @@ void CutFilterDialog::TransferDataToWindow( vector<int> order, TraceOptions *tra
 
 void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
 {
+  wxFileName auxDirectory( wxString( nameSourceTrace.c_str(), wxConvUTF8 ));
+
+  if( !auxDirectory.IsDir() )
+    auxDirectory = auxDirectory.GetPathWithSep();
+
+  wxString directory( auxDirectory.GetFullPath() );
+
   wxFileDialog xmlSelectionDialog( this,
                         _( "Load XML Cut/Filter configuration file" ),
-                        wxString( nameSourceTrace.c_str(), wxConvUTF8 ),
+                        directory,
                         _( "" ), 
                         _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
                         wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
@@ -2213,6 +2220,7 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
   {
     TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
     wxString path = xmlSelectionDialog.GetPath();
+cout << path.c_str() << endl;
     vector<int> toolsOrder = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
     TransferDataToWindow( toolsOrder, traceOptions );
   }
