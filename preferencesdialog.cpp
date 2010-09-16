@@ -304,7 +304,7 @@ void PreferencesDialog::CreateControls()
   dirPickerTmp->Enable(false);
   itemBoxSizer16->Add(dirPickerTmp, 6, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer19Static = new wxStaticBox(itemPanel2, wxID_ANY, _("Behaviour"));
+  wxStaticBox* itemStaticBoxSizer19Static = new wxStaticBox(itemPanel2, wxID_ANY, _("  Behaviour  "));
   wxStaticBoxSizer* itemStaticBoxSizer19 = new wxStaticBoxSizer(itemStaticBoxSizer19Static, wxVERTICAL);
   itemBoxSizer3->Add(itemStaticBoxSizer19, 0, wxGROW|wxALL, 5);
   checkGlobalSingleInstance = new wxCheckBox( itemPanel2, ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE, _("Allow only one running instance"), wxDefaultPosition, wxDefaultSize, 0 );

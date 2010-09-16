@@ -2220,7 +2220,6 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
   {
     TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
     wxString path = xmlSelectionDialog.GetPath();
-cout << path.c_str() << endl;
     vector<int> toolsOrder = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
     TransferDataToWindow( toolsOrder, traceOptions );
   }
