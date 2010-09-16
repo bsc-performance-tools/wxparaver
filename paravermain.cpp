@@ -2824,7 +2824,9 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   progress->setHandler( progressFunction );
 
   if( paraverMain::dialogProgress == NULL )
-    paraverMain::dialogProgress = new wxProgressDialog( wxT("Processing trace..."), wxT(""),numeric_limits<int>::max(),
+    paraverMain::dialogProgress = new wxProgressDialog( wxT("Processing trace..."),
+                                                        wxT(""),
+                                                        numeric_limits<int>::max(),
                                                         this,
                                                         wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
