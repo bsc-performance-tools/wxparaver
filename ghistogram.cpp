@@ -260,12 +260,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(10, 9)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(10, 9)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
@@ -274,7 +274,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(15, 16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -1811,6 +1811,8 @@ void gHistogram::OnMotion( wxMouseEvent& event )
       beginY = 0;
       endY = drawImage.GetHeight() - 1;
     }
+    if( beginX < 5 ) beginX = 0;
+    if( endX > zoomHisto->GetSize().GetWidth() - 5 ) endX = zoomHisto->GetSize().GetWidth() - 1;
     wxCoord width = endX - beginX;
     wxCoord height = endY - beginY;
     
@@ -2066,9 +2068,9 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
       yEnd = zoomPointBegin.y;
     }
     
-    if( xBegin < 0 ) xBegin = 0;
+    if( xBegin < 5 ) xBegin = 0;
     if( yBegin < 0 ) yBegin = 0;
-    if( xEnd > zoomHisto->GetSize().GetWidth() ) xEnd = zoomHisto->GetSize().GetWidth() - 1;
+    if( xEnd > zoomHisto->GetSize().GetWidth() - 5 ) xEnd = zoomHisto->GetSize().GetWidth() - 1;
     if( yEnd > zoomHisto->GetSize().GetHeight() ) yEnd = zoomHisto->GetSize().GetHeight() - 1;
 
     if ( !event.ControlDown() )
@@ -2109,7 +2111,7 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
   else if( columnBegin < 0 ) columnBegin = 0;
   columnEnd = myHistogram->getHorizontal() ? floor( xEnd / zoomCellWidth ) :
                                              floor( yEnd / zoomCellHeight );
-  if( columnEnd > 0 ) --columnEnd;
+  if( myHistogram->getControlDelta() == 1.0 && columnEnd > 0 ) --columnEnd;
   else if( columnEnd < 0 ) columnEnd = 0;
   objectBegin = myHistogram->getHorizontal() ? floor( yBegin / zoomCellHeight ) :
                                                floor( xBegin / zoomCellWidth );
