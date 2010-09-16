@@ -24,6 +24,7 @@
     <bool name="generate_virtual_eventhandlers">0</bool>
     <string name="current_platform">"&lt;All platforms&gt;"</string>
     <string name="target_wx_version">"2.8.7"</string>
+    <string name="app_kind">"Standard"</string>
     <string name="cpp_header_comment">"/*****************************************************************************\
  *                        ANALYSIS PERFORMANCE TOOLS                         *
  *                                  wxparaver                                *
@@ -143,7 +144,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"VC++ Release"</string>
+    <string name="configuration">"GCC Release"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -197,26 +198,38 @@
         <string name="Runtime linking">"Dynamic"</string>
         <string name="Use exceptions">"Yes"</string>
         <string name="Use ODBC">"No"</string>
+        <string name="Use XRC">"Yes"</string>
         <string name="Use OpenGL">"No"</string>
         <string name="Use wxMediaCtrl">"No"</string>
         <string name="Use wxRichTextCtrl">"Yes"</string>
-        <string name="wxWidgets version">"%WXVERSION%"</string>
+        <string name="Use wxHTML">"Yes"</string>
+        <string name="Use wxPropertyGrid">"Yes"</string>
+        <string name="Use wxAUI">"Yes"</string>
+        <string name="Use wxSTC">"Yes"</string>
+        <string name="Use wxRibbonControl">"Yes"</string>
         <string name="Executable name">"%EXECUTABLE%"</string>
         <string name="Program arguments">""</string>
         <string name="Working path">"%AUTO%"</string>
         <string name="Output path">"%AUTO%"</string>
         <string name="Objects path">"%AUTO%"</string>
-        <string name="Compiler location">"%AUTO%"</string>
-        <string name="wxWidgets location">"%AUTO%"</string>
-        <string name="C++ command">"%AUTO%"</string>
-        <string name="C command">"%AUTO%"</string>
-        <string name="Resource compiler">"%AUTO%"</string>
-        <string name="Make command">"%AUTO%"</string>
         <string name="Project makefile">"%AUTO%"</string>
+        <string name="wxWidgets version">"%WXVERSION%"</string>
         <string name="wxWidgets makefile">"%AUTO%"</string>
+        <string name="wxWidgets location">"%AUTO%"</string>
+        <string name="wxWidgets build path">"%AUTO%"</string>
+        <string name="wxWidgets build command">"%AUTO%"</string>
+        <string name="wxWidgets clean command">"%AUTO%"</string>
+        <string name="CFG">""</string>
+        <string name="Compiler location">"%AUTO%"</string>
         <string name="Compiler bin path">"%AUTO%"</string>
         <string name="Compiler include path">"%AUTO%"</string>
         <string name="Compiler lib path">"%AUTO%"</string>
+        <string name="PATH variable">"%AUTO%"</string>
+        <string name="C++ command">"%AUTO%"</string>
+        <string name="C command">"%AUTO%"</string>
+        <string name="Linker command">"%AUTO%"</string>
+        <string name="Resource compiler">"%AUTO%"</string>
+        <string name="Make command">"%AUTO%"</string>
         <string name="Preprocessor flags">"%AUTO%"</string>
         <string name="Optimizations">"%AUTO%"</string>
         <string name="Warnings">"%AUTO%"</string>
@@ -228,13 +241,8 @@
         <string name="Include path">"%AUTO%"</string>
         <string name="Resource flags">"%AUTO%"</string>
         <string name="Resource path">"%AUTO%"</string>
-        <string name="wxWidgets build path">"%AUTO%"</string>
-        <string name="wxWidgets build command">"%AUTO%"</string>
-        <string name="wxWidgets clean command">"%AUTO%"</string>
-        <string name="PATH variable">"%AUTO%"</string>
         <bool name="Suppress source rules">0</bool>
         <bool name="Enable makefile generation">1</bool>
-        <string name="CFG">""</string>
         <document>
           <string name="title">"GCC Debug"</string>
           <string name="type">"gcc-config-data-document"</string>
@@ -258,29 +266,40 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"No"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
-          <string name="Enable universal binaries">"No"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"if test ! -f $(WXWIN)/GCCBuildDebugGTK2DLL/config.log ; then $(WXWIN)/configure  --with-gtk=2 --enable-debug --disable-unicode --disable-universal --disable-monolithic --enable-gui --enable-shared --enable-exceptions --without-odbc --without-opengl --enable-graphics-ctx; fi ; make"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO% -Wno-deprecated"</string>
@@ -292,13 +311,8 @@
           <string name="Include path">"%AUTO% -I../common-files -I../paraver-kernel -I../paraver-kernel/api"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"if test ! -f $(WXWIN)/GCCBuildDebugGTK2DLL/config.log ; then $(WXWIN)/configure  --with-gtk=2 --enable-debug --disable-unicode --disable-universal --disable-monolithic --enable-gui --enable-shared --enable-exceptions --without-odbc --without-opengl --enable-graphics-ctx; fi ; make"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
           <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
@@ -329,29 +343,40 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"No"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
-          <string name="Enable universal binaries">"No"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"if test ! -f $(WXWIN)/GCCBuildReleaseGTK2DLL/config.log ; then $(WXWIN)/configure  --with-gtk=2 --disable-unicode --disable-universal --disable-monolithic --enable-gui --enable-shared --enable-exceptions --without-odbc --without-opengl --enable-graphics-ctx; fi ; make"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"-O3 -ffast-math"</string>
           <string name="Warnings">"%AUTO% -Wno-deprecated"</string>
@@ -363,13 +388,8 @@
           <string name="Include path">"%AUTO% -I../common-files -I../paraver-kernel -I../paraver-kernel/api"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"if test ! -f $(WXWIN)/GCCBuildReleaseGTK2DLL/config.log ; then $(WXWIN)/configure  --with-gtk=2 --disable-unicode --disable-universal --disable-monolithic --enable-gui --enable-shared --enable-exceptions --without-odbc --without-opengl --enable-graphics-ctx; fi ; make"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
           <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
@@ -400,29 +420,40 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
-          <string name="Enable universal binaries">"No"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
@@ -434,13 +465,8 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
           <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
@@ -471,29 +497,40 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Use wx-config">"Yes"</string>
           <string name="Use installed wxWidgets">"No"</string>
-          <string name="Enable universal binaries">"No"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
@@ -505,13 +542,8 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
           <string name="Command for wx-config">"%AUTO%"</string>
           <string name="Libiconv path">"%AUTO%"</string>
           <string name="SDK path">"%AUTO%"</string>
@@ -542,26 +574,38 @@
           <string name="Runtime linking">"Static"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"Yes"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"nmake /nologo -f makefile.vc INCLUDE=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\include;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\include&quot; LIB=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\lib;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\lib&quot; USE_XRC=1 BUILD=debug UNICODE=0 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_GUI=1 USE_GUI=1  USE_GDIPLUS=1 RUNTIME_LIBS=static SHARED=0 all"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"/W1"</string>
@@ -573,13 +617,8 @@
           <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"nmake /nologo -f makefile.vc INCLUDE=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\include;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\include&quot; LIB=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\lib;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\lib&quot; USE_XRC=1 BUILD=debug UNICODE=0 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_GUI=1 USE_GUI=1  USE_GDIPLUS=1 RUNTIME_LIBS=static SHARED=0 all"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
           <string name="Ignore libraries">"%AUTO%"</string>
         </document>
         <document>
@@ -605,26 +644,38 @@
           <string name="Runtime linking">"Static"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"Yes"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"nmake /nologo -f makefile.vc INCLUDE=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\include;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\include&quot; LIB=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\lib;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\lib&quot; USE_XRC=1 BUILD=release UNICODE=0 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_GUI=1  USE_GDIPLUS=1 RUNTIME_LIBS=static SHARED=0 all"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"/MT /O2 /GR /EHsc /Ot /Oi /GL /Ob2 /GF /FD /EHsc /Gy"</string>
           <string name="Warnings">"/W3"</string>
@@ -636,13 +687,8 @@
           <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"nmake /nologo -f makefile.vc INCLUDE=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\include;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\include&quot; LIB=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\lib;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\lib&quot; USE_XRC=1 BUILD=release UNICODE=0 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_GUI=1  USE_GDIPLUS=1 RUNTIME_LIBS=static SHARED=0 all"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
           <string name="Ignore libraries">"%AUTO%"</string>
         </document>
         <document>
@@ -668,26 +714,38 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
@@ -699,13 +757,8 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
           <string name="Ignore libraries">"%AUTO%"</string>
         </document>
         <document>
@@ -731,26 +784,38 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
@@ -762,13 +827,8 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
           <string name="Ignore libraries">"%AUTO%"</string>
         </document>
         <document>
@@ -794,26 +854,38 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
@@ -825,13 +897,8 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
         </document>
         <document>
           <string name="title">"MinGW Release"</string>
@@ -856,26 +923,38 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
@@ -887,13 +966,8 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
         </document>
         <document>
           <string name="title">"MinGW Unicode Debug"</string>
@@ -918,26 +992,38 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
@@ -949,13 +1035,8 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
         </document>
         <document>
           <string name="title">"MinGW Unicode Release"</string>
@@ -980,26 +1061,38 @@
           <string name="Runtime linking">"Dynamic"</string>
           <string name="Use exceptions">"Yes"</string>
           <string name="Use ODBC">"No"</string>
+          <string name="Use XRC">"Yes"</string>
           <string name="Use OpenGL">"No"</string>
           <string name="Use wxMediaCtrl">"No"</string>
           <string name="Use wxRichTextCtrl">"Yes"</string>
-          <string name="wxWidgets version">"%WXVERSION%"</string>
+          <string name="Use wxHTML">"Yes"</string>
+          <string name="Use wxPropertyGrid">"Yes"</string>
+          <string name="Use wxAUI">"Yes"</string>
+          <string name="Use wxSTC">"Yes"</string>
+          <string name="Use wxRibbonControl">"Yes"</string>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Program arguments">""</string>
           <string name="Working path">"%AUTO%"</string>
           <string name="Output path">"%AUTO%"</string>
           <string name="Objects path">"%AUTO%"</string>
-          <string name="Compiler location">"%AUTO%"</string>
-          <string name="wxWidgets location">"%AUTO%"</string>
-          <string name="C++ command">"%AUTO%"</string>
-          <string name="C command">"%AUTO%"</string>
-          <string name="Resource compiler">"%AUTO%"</string>
-          <string name="Make command">"%AUTO%"</string>
           <string name="Project makefile">"%AUTO%"</string>
+          <string name="wxWidgets version">"%WXVERSION%"</string>
           <string name="wxWidgets makefile">"%AUTO%"</string>
+          <string name="wxWidgets location">"%AUTO%"</string>
+          <string name="wxWidgets build path">"%AUTO%"</string>
+          <string name="wxWidgets build command">"%AUTO%"</string>
+          <string name="wxWidgets clean command">"%AUTO%"</string>
+          <string name="CFG">""</string>
+          <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler bin path">"%AUTO%"</string>
           <string name="Compiler include path">"%AUTO%"</string>
           <string name="Compiler lib path">"%AUTO%"</string>
+          <string name="PATH variable">"%AUTO%"</string>
+          <string name="C++ command">"%AUTO%"</string>
+          <string name="C command">"%AUTO%"</string>
+          <string name="Linker command">"%AUTO%"</string>
+          <string name="Resource compiler">"%AUTO%"</string>
+          <string name="Make command">"%AUTO%"</string>
           <string name="Preprocessor flags">"%AUTO%"</string>
           <string name="Optimizations">"%AUTO%"</string>
           <string name="Warnings">"%AUTO%"</string>
@@ -1011,13 +1104,8 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"%AUTO%"</string>
-          <string name="wxWidgets clean command">"%AUTO%"</string>
-          <string name="PATH variable">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
-          <string name="CFG">""</string>
         </document>
       </document>
     </document>
@@ -1058,6 +1146,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"globalTiming|bool|GlobalTiming|false|2|0|"</string>
@@ -1089,6 +1178,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"loadedTraces|vector&lt;Trace *&gt;|LoadedTraces||2|0|"</string>
@@ -1156,6 +1246,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -1515,6 +1606,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -1541,7 +1633,6 @@
             <string name="proxy-Custom arguments">""</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-AUI managed">1</bool>
             <string name="proxy-AUI name">"auiTBarMain"</string>
             <string name="proxy-AUI caption">""</string>
@@ -1764,6 +1855,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -1790,7 +1882,6 @@
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
             <string name="proxy-Custom arguments">""</string>
             <string name="proxy-Custom ctor arguments">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-AUI managed">1</bool>
             <string name="proxy-AUI name">"auiWindowBrowser"</string>
             <string name="proxy-AUI caption">"Window browser"</string>
@@ -1867,6 +1958,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">1</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -1896,7 +1988,6 @@
             <string name="proxy-Custom arguments">"%PARENT%, %ID%, %POSITION%, %SIZE%, %STYLE%"</string>
             <string name="proxy-Custom ctor arguments">"%PARENT%, %ID%, %POSITION%, %SIZE%, %STYLE%"</string>
             <string name="proxy-Event sources">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-AUI managed">1</bool>
             <string name="proxy-AUI name">"auiWindowProperties"</string>
             <string name="proxy-AUI caption">"Window properties"</string>
@@ -1949,6 +2040,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
@@ -2010,6 +2102,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -2030,7 +2123,6 @@
           <long name="proxy-Height">300</long>
           <bool name="proxy-AUI manager">0</bool>
           <string name="proxy-Event sources">""</string>
-          <bool name="proxy-wxBORDER_THEME">0</bool>
           <document>
             <string name="title">"wxBoxSizer H"</string>
             <string name="type">"dialog-control-document"</string>
@@ -2043,14 +2135,6 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Horizontal"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -2128,6 +2212,7 @@
                 <bool name="proxy-wxNO_BORDER">1</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -2135,8 +2220,8 @@
                 <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
                 <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">1</bool>
                 <bool name="proxy-wxCLIP_CHILDREN">0</bool>
-                <bool name="proxy-wxHSCROLL">1</bool>
-                <bool name="proxy-wxVSCROLL">1</bool>
+                <bool name="proxy-wxHSCROLL">0</bool>
+                <bool name="proxy-wxVSCROLL">0</bool>
                 <bool name="proxy-wxTAB_TRAVERSAL">0</bool>
                 <bool name="proxy-wxALWAYS_SHOW_SB">0</bool>
                 <bool name="proxy-wxWS_EX_VALIDATE_RECURSIVELY">0</bool>
@@ -2160,7 +2245,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxGrid: ID_GRIDHISTO"</string>
@@ -2213,6 +2297,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -2243,7 +2328,6 @@
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
             </document>
             <document>
@@ -2310,6 +2394,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -2334,7 +2419,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">1</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxStaticBitmap: wxID_3DWARNING"</string>
@@ -2376,6 +2460,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -2400,7 +2485,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">1</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxStaticBitmap: wxID_STATIC"</string>
@@ -2441,6 +2525,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -2465,7 +2550,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">1</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"Spacer"</string>
@@ -2547,6 +2631,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -2573,7 +2658,6 @@
             <string name="proxy-Custom arguments">""</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <document>
               <string name="title">"Open Control Window: ID_TOOL_OPEN_CONTROL_WINDOW"</string>
               <string name="type">"dialog-control-document"</string>
@@ -2862,6 +2946,7 @@
             <bool name="proxy-wxNO_BORDER">1</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -2888,7 +2973,6 @@
             <string name="proxy-Custom arguments">""</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
           </document>
         </document>
         <document>
@@ -2907,6 +2991,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"bufferImage|wxBitmap|BufferImage||0|0|"</string>
@@ -2989,6 +3074,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -3059,6 +3145,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -3086,7 +3173,6 @@
             <string name="proxy-Custom arguments">""</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <document>
               <string name="title">"wxScrolledWindow: ID_SCROLLEDWINDOW"</string>
               <string name="type">"dialog-control-document"</string>
@@ -3139,6 +3225,7 @@
               <bool name="proxy-wxNO_BORDER">1</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxBORDER_THEME">0</bool>
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -3171,7 +3258,6 @@
               <string name="proxy-Custom ctor arguments">""</string>
               <string name="proxy-Event sources">""</string>
               <bool name="proxy-AUI manager">0</bool>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
             </document>
             <document>
               <string name="title">"wxNotebook: ID_NOTEBOOK"</string>
@@ -3223,6 +3309,7 @@
               <bool name="proxy-wxNO_BORDER">0</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxBORDER_THEME">0</bool>
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -3249,7 +3336,6 @@
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Custom arguments">""</string>
               <string name="proxy-Custom ctor arguments">""</string>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
               <document>
                 <string name="title">"wxScrolledWindow: ID_SCROLLEDWINDOW2"</string>
                 <string name="type">"dialog-control-document"</string>
@@ -3293,6 +3379,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">1</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -3325,7 +3412,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -3735,6 +3821,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -3761,7 +3848,6 @@
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
                     <string name="proxy-Event sources">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
               </document>
@@ -3809,6 +3895,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">1</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -3841,7 +3928,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <document>
                   <string name="title">"wxBoxSizer H"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -3937,6 +4023,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -3961,7 +4048,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -4008,6 +4094,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -4032,7 +4119,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -4079,6 +4165,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -4103,7 +4190,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                   <document>
@@ -4188,6 +4274,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -4212,7 +4299,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_TEXTCTRL1"</string>
@@ -4271,6 +4357,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -4295,7 +4382,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_TEXTCTRL2"</string>
@@ -4354,6 +4440,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -4378,7 +4465,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -4428,6 +4514,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">1</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -4460,7 +4547,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -4532,6 +4618,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">1</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -4564,7 +4651,6 @@
                 <string name="proxy-Custom ctor arguments">""</string>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-AUI manager">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <document>
                   <string name="title">"wxBoxSizer V"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -4809,6 +4895,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"options|SaveOptions|Options||2|0|"</string>
@@ -4854,6 +4941,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -4874,7 +4962,6 @@
           <long name="proxy-Height">-1</long>
           <bool name="proxy-AUI manager">0</bool>
           <string name="proxy-Event sources">""</string>
-          <bool name="proxy-wxBORDER_THEME">0</bool>
           <document>
             <string name="title">"wxBoxSizer V"</string>
             <string name="type">"dialog-control-document"</string>
@@ -4994,6 +5081,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -5018,7 +5106,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxCheckListBox: ID_LISTTIMELINES"</string>
@@ -5067,6 +5154,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -5091,7 +5179,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
               </document>
               <document>
@@ -5164,6 +5251,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -5188,7 +5276,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxCheckListBox: ID_LISTHISTOGRAMS"</string>
@@ -5237,6 +5324,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -5261,7 +5349,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
               </document>
               <document>
@@ -5706,6 +5793,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -5728,7 +5816,6 @@
                     <bool name="proxy-wxSHAPED">0</bool>
                     <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxCheckBox: ID_CHECKLIMITS"</string>
@@ -5906,6 +5993,7 @@
               <bool name="proxy-wxNO_BORDER">0</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxBORDER_THEME">0</bool>
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -5930,7 +6018,6 @@
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Custom arguments">""</string>
               <string name="proxy-Custom ctor arguments">""</string>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
             </document>
             <document>
               <string name="title">"wxTextCtrl: ID_TEXTDESCRIPTION"</string>
@@ -5989,6 +6076,7 @@
               <bool name="proxy-wxNO_BORDER">0</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxBORDER_THEME">0</bool>
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -6013,7 +6101,6 @@
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Custom arguments">""</string>
               <string name="proxy-Custom ctor arguments">""</string>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
             </document>
             <document>
               <string name="title">"wxStdDialogButtonSizer"</string>
@@ -6199,6 +6286,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"factorTimeline1|double|FactorTimeline1|1.0|2|0|"</string>
@@ -6255,6 +6343,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -6275,7 +6364,6 @@
           <long name="proxy-Height">-1</long>
           <bool name="proxy-AUI manager">0</bool>
           <string name="proxy-Event sources">""</string>
-          <bool name="proxy-wxBORDER_THEME">0</bool>
           <document>
             <string name="title">"wxBoxSizer V"</string>
             <string name="type">"dialog-control-document"</string>
@@ -6368,6 +6456,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -6392,7 +6481,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxTextCtrl: ID_DERIVED_NAME"</string>
@@ -6450,6 +6538,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -6474,7 +6563,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
             </document>
             <document>
@@ -6509,6 +6597,7 @@
               <bool name="proxy-wxNO_BORDER">0</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxBORDER_THEME">0</bool>
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -6531,7 +6620,6 @@
               <bool name="proxy-wxSHAPED">0</bool>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
             </document>
             <document>
               <string name="title">"wxStaticBoxSizer V"</string>
@@ -6658,6 +6746,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -6682,7 +6771,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxChoice: ID_TOPCOMPOSE1"</string>
@@ -6837,6 +6925,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -6861,7 +6950,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_MINCOMPOSE1"</string>
@@ -6919,6 +7007,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -6943,7 +7032,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                   <document>
@@ -7014,6 +7102,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7038,7 +7127,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_MAXCOMPOSE1"</string>
@@ -7096,6 +7184,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7120,7 +7209,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -7156,6 +7244,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7178,7 +7267,6 @@
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxBoxSizer H"</string>
@@ -7272,6 +7360,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7296,7 +7385,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxChoice: ID_TOPCOMPOSE2"</string>
@@ -7451,6 +7539,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7475,7 +7564,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_MINCOMPOSE2"</string>
@@ -7533,6 +7621,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7557,7 +7646,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                   <document>
@@ -7628,6 +7716,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7652,7 +7741,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_MAXCOMPOSE2"</string>
@@ -7710,6 +7798,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7734,7 +7823,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -7814,6 +7902,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7838,7 +7927,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxTextCtrl: ID_FACTOR_TIMELINE_1"</string>
@@ -7896,6 +7984,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7920,7 +8009,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -7966,6 +8054,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -7990,7 +8079,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxComboBox: ID_TIMELINES_LIST_1"</string>
@@ -8099,6 +8187,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -8123,7 +8212,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxChoice: ID_OPERATIONS"</string>
@@ -8229,6 +8317,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -8253,7 +8342,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxComboBox: ID_TIMELINES_LIST_2"</string>
@@ -8362,6 +8450,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -8386,7 +8475,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxTextCtrl: ID_FACTOR_TIMELINE_2"</string>
@@ -8444,6 +8532,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -8468,7 +8557,6 @@
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
             </document>
             <document>
@@ -8503,6 +8591,7 @@
               <bool name="proxy-wxNO_BORDER">0</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxBORDER_THEME">0</bool>
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -8525,7 +8614,6 @@
               <bool name="proxy-wxSHAPED">0</bool>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
             </document>
             <document>
               <string name="title">"wxButton: ID_SWAP_WINDOWS"</string>
@@ -8626,6 +8714,7 @@
               <bool name="proxy-wxNO_BORDER">0</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxBORDER_THEME">0</bool>
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -8648,7 +8737,6 @@
               <bool name="proxy-wxSHAPED">0</bool>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
             </document>
             <document>
               <string name="title">"wxStdDialogButtonSizer"</string>
@@ -8833,6 +8921,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"controlTimelines|vector&lt; TWindowID &gt;|ControlTimelines||2|0|"</string>
@@ -8889,6 +8978,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -8909,7 +8999,6 @@
           <long name="proxy-Height">300</long>
           <bool name="proxy-AUI manager">0</bool>
           <string name="proxy-Event sources">""</string>
-          <bool name="proxy-wxBORDER_THEME">0</bool>
           <document>
             <string name="title">"wxBoxSizer V"</string>
             <string name="type">"dialog-control-document"</string>
@@ -9035,6 +9124,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9059,7 +9149,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxChoice: ID_HISTOGRAM_CONTROLTIMELINELIST"</string>
@@ -9257,6 +9346,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9281,7 +9371,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_HISTOGRAM_CONTROLTIMELINEMIN"</string>
@@ -9339,6 +9428,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9363,7 +9453,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -9409,6 +9498,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9433,7 +9523,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_HISTOGRAM_CONTROLTIMELINEMAX"</string>
@@ -9491,6 +9580,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9515,7 +9605,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -9561,6 +9650,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9585,7 +9675,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_HISTOGRAM_CONTROLTIMELINEDELTA"</string>
@@ -9643,6 +9732,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9667,7 +9757,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
               </document>
               <document>
@@ -9701,6 +9790,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9723,7 +9813,6 @@
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxBoxSizer H"</string>
@@ -9793,6 +9882,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9817,7 +9907,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxChoice: ID_HISTOGRAM_DATATIMELINELIST"</string>
@@ -9936,6 +10025,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -9958,7 +10048,6 @@
                 <bool name="proxy-wxSHAPED">0</bool>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                <bool name="proxy-wxBORDER_THEME">0</bool>
               </document>
               <document>
                 <string name="title">"wxBoxSizer H"</string>
@@ -10028,6 +10117,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10052,7 +10142,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxChoice: ID_HISTOGRAM_3DTIMELINELIST"</string>
@@ -10250,6 +10339,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10274,7 +10364,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_HISTOGRAM_3DTIMELINEMIN"</string>
@@ -10332,6 +10421,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10356,7 +10446,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -10402,6 +10491,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10426,7 +10516,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_HISTOGRAM_3DTIMELINEMAX"</string>
@@ -10484,6 +10573,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10508,7 +10598,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -10554,6 +10643,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10578,7 +10668,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_HISTOGRAM_3DTIMELINEDELTA"</string>
@@ -10636,6 +10725,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10660,7 +10750,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
               </document>
             </document>
@@ -10765,6 +10854,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10789,7 +10879,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_HISTOGRAM_BEGINTIME"</string>
@@ -10847,6 +10936,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10871,7 +10961,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -10917,6 +11006,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -10941,7 +11031,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_HISTOGRAM_ENDTIME"</string>
@@ -10999,6 +11088,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -11023,7 +11113,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
               </document>
               <document>
@@ -11514,6 +11603,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"histogramNumColumns|UINT32|HistogramNumColumns|20|2|0|"</string>
@@ -11619,6 +11709,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -11638,7 +11729,6 @@
           <long name="proxy-Width">399</long>
           <long name="proxy-Height">300</long>
           <string name="proxy-Event sources">""</string>
-          <bool name="proxy-wxBORDER_THEME">0</bool>
           <document>
             <string name="title">"wxPanel: ID_PREFERENCES_GLOBAL"</string>
             <string name="type">"dialog-control-document"</string>
@@ -11677,6 +11767,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">1</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -11713,7 +11804,6 @@
             <bool name="proxy-AUI manager">0</bool>
             <string name="proxy-Tab label">"Global"</string>
             <string name="proxy-Tab icon">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <document>
               <string name="title">"wxBoxSizer V"</string>
               <string name="type">"dialog-control-document"</string>
@@ -11902,6 +11992,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -11926,7 +12017,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxSpinCtrl: ID_TEXTCTRL_MAXIMUM_LOADABLE_TRACE_SIZE"</string>
@@ -11971,6 +12061,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -11995,7 +12086,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
               </document>
@@ -12100,6 +12190,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12124,7 +12215,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxDirPickerCtrl: ID_DIRPICKERCTRL_TRACES"</string>
@@ -12170,6 +12260,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12193,7 +12284,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -12264,6 +12354,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12288,7 +12379,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxDirPickerCtrl: ID_DIRPICKERCTRL_CFG"</string>
@@ -12334,6 +12424,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12357,7 +12448,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -12428,6 +12518,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12452,7 +12543,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxDirPickerCtrl: ID_DIRPICKERCTRL_TMP"</string>
@@ -12498,6 +12588,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12521,7 +12612,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
               </document>
@@ -12662,6 +12752,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">1</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12698,7 +12789,6 @@
             <bool name="proxy-AUI manager">0</bool>
             <string name="proxy-Tab label">"Timeline"</string>
             <string name="proxy-Tab icon">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <document>
               <string name="title">"wxBoxSizer H"</string>
               <string name="type">"dialog-control-document"</string>
@@ -12848,6 +12938,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12872,7 +12963,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_PREFERENCES_TIMELINE_NAME_PREFIX"</string>
@@ -12930,6 +13020,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -12954,7 +13045,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                   <document>
@@ -13025,6 +13115,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -13049,7 +13140,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_PREFERENCES_TIMELINE_NAME_FULL"</string>
@@ -13107,6 +13197,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -13131,7 +13222,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -13425,6 +13515,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -13449,7 +13540,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_COLOR"</string>
@@ -13579,6 +13669,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -13603,7 +13694,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_GRADIENT"</string>
@@ -13733,6 +13823,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -13757,7 +13848,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_DRAWMODE_TIME"</string>
@@ -13887,6 +13977,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -13911,7 +14002,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_DRAWMODE_OBJECTS"</string>
@@ -14041,6 +14131,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -14065,7 +14156,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_PIXEL_SIZE"</string>
@@ -14569,6 +14659,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -14593,7 +14684,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxSpinCtrl: ID_PREFERENCES_TIMELINE_WW_PRECISION"</string>
@@ -14638,6 +14728,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -14662,7 +14753,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -14767,6 +14857,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -14791,7 +14882,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE"</string>
@@ -14921,6 +15011,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -14945,7 +15036,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT"</string>
@@ -15049,6 +15139,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">1</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -15085,7 +15176,6 @@
             <bool name="proxy-AUI manager">0</bool>
             <string name="proxy-Tab label">"Histogram"</string>
             <string name="proxy-Tab icon">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <document>
               <string name="title">"wxBoxSizer H"</string>
               <string name="type">"dialog-control-document"</string>
@@ -15235,6 +15325,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -15259,7 +15350,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_PREFERENCES_HISTOGRAM_NAME_PREFIX"</string>
@@ -15317,6 +15407,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -15341,7 +15432,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                   <document>
@@ -15412,6 +15502,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -15436,7 +15527,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxTextCtrl: ID_PREFERENCES_HISTOGRAM_NAME_FULL"</string>
@@ -15494,6 +15584,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -15518,7 +15609,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -15938,6 +16028,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -15962,7 +16053,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT_FUNCTION"</string>
@@ -16092,6 +16182,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -16116,7 +16207,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_SEMANTIC"</string>
@@ -16246,6 +16336,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -16270,7 +16361,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_OBJECTS"</string>
@@ -16648,6 +16738,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -16672,7 +16763,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxSpinCtrl: ID_PREFERENCES_HISTOGRAM_PRECISION"</string>
@@ -16717,6 +16807,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -16741,7 +16832,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -17035,6 +17125,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17059,7 +17150,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxSpinCtrl: ID_PREFERENCES_HISTOGRAM_NUMCOLUMNS"</string>
@@ -17104,6 +17194,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17128,7 +17219,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -17233,6 +17323,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17257,7 +17348,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT"</string>
@@ -17387,6 +17477,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17411,7 +17502,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxChoice: ID_PREFERENCES_HISTOGRAM_SAVE_TXT_FORMAT"</string>
@@ -17515,6 +17605,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">1</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17551,7 +17642,6 @@
             <bool name="proxy-AUI manager">0</bool>
             <string name="proxy-Tab label">"Color"</string>
             <string name="proxy-Tab icon">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
             <document>
               <string name="title">"wxBoxSizer V"</string>
               <string name="type">"dialog-control-document"</string>
@@ -17677,6 +17767,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17701,7 +17792,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_BACKGROUND"</string>
@@ -17746,6 +17836,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17769,7 +17860,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -17840,6 +17930,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17864,7 +17955,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_AXIS"</string>
@@ -17908,6 +17998,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -17931,7 +18022,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -18064,6 +18154,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18087,7 +18178,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -18158,6 +18248,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18182,7 +18273,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_LOGICAL"</string>
@@ -18226,6 +18316,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18249,7 +18340,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -18320,6 +18410,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18344,7 +18435,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_PHYSICAL"</string>
@@ -18388,6 +18478,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18411,7 +18502,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -18582,6 +18672,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18606,7 +18697,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_GRADBEGIN"</string>
@@ -18650,6 +18740,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18673,7 +18764,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -18744,6 +18834,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18768,7 +18859,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_GRADEND"</string>
@@ -18812,6 +18902,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18835,7 +18926,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -18906,6 +18996,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18930,7 +19021,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_GRADLOW"</string>
@@ -18974,6 +19064,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -18997,7 +19088,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -19068,6 +19158,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -19092,7 +19183,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxColourPickerCtrl: ID_COLOURPICKER_GRADTOP"</string>
@@ -19136,6 +19226,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -19159,7 +19250,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                 </document>
                 <document>
@@ -19269,6 +19359,7 @@
             <bool name="proxy-wxNO_BORDER">0</bool>
             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+            <bool name="proxy-wxBORDER_THEME">0</bool>
             <bool name="proxy-wxSUNKEN_BORDER">1</bool>
             <bool name="proxy-wxRAISED_BORDER">0</bool>
             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -19305,7 +19396,6 @@
             <bool name="proxy-AUI manager">0</bool>
             <string name="proxy-Tab label">"Filters"</string>
             <string name="proxy-Tab icon">""</string>
-            <bool name="proxy-wxBORDER_THEME">0</bool>
           </document>
         </document>
         <document>
@@ -19323,6 +19413,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="proxy-Id name">"ID_ROWSSELECTIONDIALOG"</string>
@@ -19371,6 +19462,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -19390,7 +19482,6 @@
           <long name="proxy-Width">400</long>
           <long name="proxy-Height">300</long>
           <string name="proxy-Event sources">""</string>
-          <bool name="proxy-wxBORDER_THEME">0</bool>
         </document>
         <document>
           <string name="title">"Cut &amp; Filter Dialog"</string>
@@ -19407,6 +19498,7 @@
           <string name="id-prefix">""</string>
           <bool name="use-id-suffix">0</bool>
           <string name="id-suffix">""</string>
+          <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"traceOptions|TraceOptions *|TraceOptions||2|0|"</string>
@@ -19458,6 +19550,7 @@
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+          <bool name="proxy-wxBORDER_THEME">0</bool>
           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
           <bool name="proxy-wxRAISED_BORDER">0</bool>
           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -19594,6 +19687,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -19618,7 +19712,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxFilePickerCtrl: ID_FILECTRL_CUTFILTER_TRACE_SELECTION"</string>
@@ -19668,6 +19761,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -19691,7 +19785,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxCheckBox: ID_CHECKBOX_LOAD_RESULTING_TRACE"</string>
@@ -19981,6 +20074,7 @@
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                   <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -20005,7 +20099,6 @@
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxBoxSizer H"</string>
@@ -20079,6 +20172,7 @@
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                     <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -20103,7 +20197,6 @@
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                   </document>
                   <document>
                     <string name="title">"wxBoxSizer V"</string>
@@ -20323,6 +20416,7 @@
               <bool name="proxy-wxNO_BORDER">0</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+              <bool name="proxy-wxBORDER_THEME">0</bool>
               <bool name="proxy-wxSUNKEN_BORDER">0</bool>
               <bool name="proxy-wxRAISED_BORDER">0</bool>
               <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -20349,7 +20443,6 @@
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Custom arguments">""</string>
               <string name="proxy-Custom ctor arguments">""</string>
-              <bool name="proxy-wxBORDER_THEME">0</bool>
               <document>
                 <string name="title">"wxPanel: ID_PANEL_CUTTER"</string>
                 <string name="type">"dialog-control-document"</string>
@@ -20390,6 +20483,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">1</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -20744,6 +20838,7 @@
                             <bool name="proxy-wxNO_BORDER">0</bool>
                             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                            <bool name="proxy-wxBORDER_THEME">0</bool>
                             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                             <bool name="proxy-wxRAISED_BORDER">0</bool>
                             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -20825,6 +20920,7 @@
                             <bool name="proxy-wxNO_BORDER">0</bool>
                             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                            <bool name="proxy-wxBORDER_THEME">0</bool>
                             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                             <bool name="proxy-wxRAISED_BORDER">0</bool>
                             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -20919,6 +21015,7 @@
                             <bool name="proxy-wxNO_BORDER">0</bool>
                             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                            <bool name="proxy-wxBORDER_THEME">0</bool>
                             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                             <bool name="proxy-wxRAISED_BORDER">0</bool>
                             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -21000,6 +21097,7 @@
                             <bool name="proxy-wxNO_BORDER">0</bool>
                             <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                             <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                            <bool name="proxy-wxBORDER_THEME">0</bool>
                             <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                             <bool name="proxy-wxRAISED_BORDER">0</bool>
                             <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -21059,6 +21157,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -21081,7 +21180,6 @@
                       <bool name="proxy-wxSHAPED">0</bool>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxBoxSizer H"</string>
@@ -21151,6 +21249,7 @@
                         <bool name="proxy-wxNO_BORDER">0</bool>
                         <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                         <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                        <bool name="proxy-wxBORDER_THEME">0</bool>
                         <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                         <bool name="proxy-wxRAISED_BORDER">0</bool>
                         <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -21175,7 +21274,6 @@
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxBORDER_THEME">0</bool>
                       </document>
                       <document>
                         <string name="title">"wxTextCtrl: ID_TEXTCTRL_CUTTER_TASKS"</string>
@@ -21233,6 +21331,7 @@
                         <bool name="proxy-wxNO_BORDER">0</bool>
                         <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                         <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                        <bool name="proxy-wxBORDER_THEME">0</bool>
                         <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                         <bool name="proxy-wxRAISED_BORDER">0</bool>
                         <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -21290,6 +21389,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -21312,7 +21412,6 @@
                       <bool name="proxy-wxSHAPED">0</bool>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxBoxSizer H"</string>
@@ -21886,6 +21985,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -21954,6 +22054,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -22023,6 +22124,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -22047,7 +22149,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -22093,6 +22194,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">1</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -22453,6 +22555,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -22702,6 +22805,7 @@
                           <bool name="proxy-wxNO_BORDER">0</bool>
                           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                          <bool name="proxy-wxBORDER_THEME">0</bool>
                           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                           <bool name="proxy-wxRAISED_BORDER">0</bool>
                           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -22783,6 +22887,7 @@
                           <bool name="proxy-wxNO_BORDER">0</bool>
                           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                          <bool name="proxy-wxBORDER_THEME">0</bool>
                           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                           <bool name="proxy-wxRAISED_BORDER">0</bool>
                           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -22891,6 +22996,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -23214,6 +23320,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -23282,6 +23389,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -23351,6 +23459,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -23375,7 +23484,6 @@
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                   </document>
                 </document>
@@ -23421,6 +23529,7 @@
                 <bool name="proxy-wxNO_BORDER">0</bool>
                 <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                 <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                <bool name="proxy-wxBORDER_THEME">0</bool>
                 <bool name="proxy-wxSUNKEN_BORDER">1</bool>
                 <bool name="proxy-wxRAISED_BORDER">0</bool>
                 <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -23690,6 +23799,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -23712,7 +23822,6 @@
                       <bool name="proxy-wxSHAPED">0</bool>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                     </document>
                     <document>
                       <string name="title">"wxBoxSizer V"</string>
@@ -23806,6 +23915,7 @@
                           <bool name="proxy-wxNO_BORDER">0</bool>
                           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                          <bool name="proxy-wxBORDER_THEME">0</bool>
                           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                           <bool name="proxy-wxRAISED_BORDER">0</bool>
                           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -23887,6 +23997,7 @@
                           <bool name="proxy-wxNO_BORDER">0</bool>
                           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                          <bool name="proxy-wxBORDER_THEME">0</bool>
                           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                           <bool name="proxy-wxRAISED_BORDER">0</bool>
                           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -23981,6 +24092,7 @@
                           <bool name="proxy-wxNO_BORDER">0</bool>
                           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                          <bool name="proxy-wxBORDER_THEME">0</bool>
                           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                           <bool name="proxy-wxRAISED_BORDER">0</bool>
                           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -24062,6 +24174,7 @@
                           <bool name="proxy-wxNO_BORDER">0</bool>
                           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                           <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                          <bool name="proxy-wxBORDER_THEME">0</bool>
                           <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                           <bool name="proxy-wxRAISED_BORDER">0</bool>
                           <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -24194,6 +24307,7 @@
                         <bool name="proxy-wxNO_BORDER">0</bool>
                         <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                         <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                        <bool name="proxy-wxBORDER_THEME">0</bool>
                         <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                         <bool name="proxy-wxRAISED_BORDER">0</bool>
                         <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -24613,6 +24727,7 @@
                         <bool name="proxy-wxNO_BORDER">0</bool>
                         <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                         <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                        <bool name="proxy-wxBORDER_THEME">0</bool>
                         <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                         <bool name="proxy-wxRAISED_BORDER">0</bool>
                         <bool name="proxy-wxSTATIC_BORDER">0</bool>
@@ -24635,7 +24750,6 @@
                         <bool name="proxy-wxSHAPED">0</bool>
                         <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-                        <bool name="proxy-wxBORDER_THEME">0</bool>
                       </document>
                       <document>
                         <string name="title">"wxGridSizerProxy"</string>
@@ -24999,6 +25113,7 @@
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxSIMPLE_BORDER">0</bool>
                       <bool name="proxy-wxDOUBLE_BORDER">0</bool>
+                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxSTATIC_BORDER">0</bool>
