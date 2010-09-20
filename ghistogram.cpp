@@ -2327,41 +2327,25 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
       {
         myHistogram->setFirstCell( iCol, iPlane );
-        while( !myHistogram->endCell( iCol, iPlane ) &&
+/*        while( !myHistogram->endCell( iCol, iPlane ) &&
                 myHistogram->getCurrentRow( iCol, iPlane ) < objectBegin )
-          myHistogram->setNextCell( iCol, iPlane );
+          myHistogram->setNextCell( iCol, iPlane );*/
       }
 
       TObjectOrder maxRow = selectedRows.size();
       vector< bool > present( maxRow, false );
       for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
       {
-        bool outOfBounds = false;
-        while (( !myHistogram->endCell( iCol, iPlane ) && !outOfBounds ))
+        while ( !myHistogram->endCell( iCol, iPlane ) )
         {
           TObjectOrder currentRow = myHistogram->getCurrentRow( iCol, iPlane );
-          if (( currentRow >= objectBegin ) && ( currentRow <= objectEnd ))
-          {
-            present[ currentRow ] = true;
-            myHistogram->setNextCell( iCol, iPlane );
-          }
-          else
-            outOfBounds = true;
+          present[ currentRow + objectBegin ] = true;
+          myHistogram->setNextCell( iCol, iPlane );
         }
       }
 
-//      int visibleBefore=0;
-//      int visibleAfter=0;
       for (TObjectOrder i = 0; i < maxRow; ++i )
-      {
-//        if (selectedRows[i])
-//          visibleBefore++;
         selectedRows[ i ] = selectedRows[ i ] && present[ i ];
-//        if (selectedRows[i])
-//          visibleAfter++;
-      }
-//      cout << "before open control zoom 2d; visible=" << visibleBefore << endl;
-//      cout << "after  open control zoom 2d; visible=" << visibleAfter << endl;
     }
     else
     {
