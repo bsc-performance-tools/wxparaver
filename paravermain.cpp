@@ -521,6 +521,9 @@ bool paraverMain::DoLoadTrace( const string &path )
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( path );
+
+    currentTimeline = NULL;
+    currentHisto = NULL;
   }
   catch( ParaverKernelException& ex )
   {
@@ -1485,6 +1488,21 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
     tmpHisto->SetHistogram( *it );
 
     appendHistogram2Tree( tmpHisto );
+  }
+
+  // No window or histogram? Disable current selection.
+  if ( loadedTraces.size() > 0 )
+  {
+    allWindows.clear();
+    allHistograms.clear();
+    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], allWindows );
+    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], allHistograms );
+
+    if ( allWindows.size() == 0 && allHistograms.size() == 0 )
+    {
+      currentTimeline = NULL;
+      currentHisto = NULL;
+    }
   }
 }
 
