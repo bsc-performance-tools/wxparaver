@@ -2325,12 +2325,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       iPlane = myHistogram->getSelectedPlane();
 
       for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
-      {
         myHistogram->setFirstCell( iCol, iPlane );
-/*        while( !myHistogram->endCell( iCol, iPlane ) &&
-                myHistogram->getCurrentRow( iCol, iPlane ) < objectBegin )
-          myHistogram->setNextCell( iCol, iPlane );*/
-      }
 
       TObjectOrder maxRow = selectedRows.size();
       vector< bool > present( maxRow, false );
