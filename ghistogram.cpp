@@ -2091,6 +2091,8 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     }
     else
     {
+      objectBegin = selectedRows[ objectBegin ];
+      objectEnd = selectedRows[ objectEnd ];
       zoom( columnBegin, columnEnd, objectBegin, objectEnd );
       HistogramProxy::TZoomInfo currentZoom1, currentZoom2;
       currentZoom1.begin = myHistogram->getControlMin();
@@ -2117,12 +2119,10 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
                                                floor( xBegin / zoomCellWidth );
   if( objectBegin > 0 ) --objectBegin;
   else if( objectBegin < 0 ) objectBegin = 0;
-  objectBegin = selectedRows[ objectBegin ];
   objectEnd = myHistogram->getHorizontal() ? floor( yEnd / zoomCellHeight ) :
                                              floor( xEnd / zoomCellWidth );
   if( objectEnd > 0 ) --objectEnd;
   else if( objectEnd < 0 ) objectEnd = 0;
-  objectEnd = selectedRows[ objectEnd ];
 
   if( myHistogram->getHideColumns() )
   {
@@ -2180,7 +2180,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   controlCloned->setWindowBeginTime( myHistogram->getBeginTime() );
   controlCloned->setWindowEndTime( myHistogram->getEndTime() );
   controlCloned->addZoom( myHistogram->getBeginTime(), myHistogram->getEndTime(), 
-                          objectBegin, objectEnd );
+                          selectedRows[ objectBegin ], selectedRows[ objectEnd ] );
 
   if( myHistogram->getThreeDimensions() )
   {
@@ -2254,7 +2254,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     productWin->setWindowBeginTime( myHistogram->getBeginTime() );
     productWin->setWindowEndTime( myHistogram->getEndTime() );
     productWin->addZoom( myHistogram->getBeginTime(), myHistogram->getEndTime(), 
-                         objectBegin, objectEnd );
+                         selectedRows[ objectBegin ], selectedRows[ objectEnd ] );
     productWin->setMaximumY( controlCloned->getMaximumY() );
     productWin->setMinimumY( controlCloned->getMinimumY() );
     productWin->setTimeUnit( controlCloned->getTimeUnit() );
@@ -2314,33 +2314,37 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   
   if( openWindow != NULL )
   {
-    vector<bool> selectedRows;
+    vector<bool> tmpSelectedRows;
     THistogramColumn iPlane;
     bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
     tmpControlWindow->GetMyWindow()->getSelectedRows( tmpControlWindow->GetMyWindow()->getLevel(),
-                                                      selectedRows );
+                                                      tmpSelectedRows );
 
     if ( !commStat )
     {
       iPlane = myHistogram->getSelectedPlane();
 
       for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      {
         myHistogram->setFirstCell( iCol, iPlane );
-
-      TObjectOrder maxRow = selectedRows.size();
+        while( !myHistogram->endCell( iCol, iPlane ) && myHistogram->getCurrentRow( iCol, iPlane ) < objectBegin )
+          myHistogram->setNextCell( iCol, iPlane );
+      }
+      
+      TObjectOrder maxRow = tmpSelectedRows.size();
       vector< bool > present( maxRow, false );
       for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
       {
         while ( !myHistogram->endCell( iCol, iPlane ) )
         {
-          TObjectOrder currentRow = myHistogram->getCurrentRow( iCol, iPlane );
-          present[ currentRow + objectBegin ] = true;
+          TObjectOrder currentRow = selectedRows[ myHistogram->getCurrentRow( iCol, iPlane ) ];
+          present[ currentRow ] = true;
           myHistogram->setNextCell( iCol, iPlane );
         }
       }
 
       for (TObjectOrder i = 0; i < maxRow; ++i )
-        selectedRows[ i ] = selectedRows[ i ] && present[ i ];
+        tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && present[ i ];
     }
     else
     {
@@ -2349,34 +2353,26 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
       {
         myHistogram->setCommFirstCell( iCol, iPlane );
-        while( !myHistogram->endCommCell( iCol, iPlane ) &&
-                myHistogram->getCommCurrentRow( iCol, iPlane ) < objectBegin )
+        while( !myHistogram->endCommCell( iCol, iPlane ) && myHistogram->getCommCurrentRow( iCol, iPlane ) < objectBegin )
           myHistogram->setCommNextCell( iCol, iPlane );
       }
 
-      TObjectOrder maxRow = selectedRows.size();
+      TObjectOrder maxRow = tmpSelectedRows.size();
       vector< bool > present( maxRow, false );
-      TObjectOrder currentRow = 0;
       for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
       {
-        bool outOfBounds = false;
-        while (( !myHistogram->endCommCell( iCol, iPlane ) && !outOfBounds ))
+        while ( !myHistogram->endCommCell( iCol, iPlane ) )
         {
-          currentRow = myHistogram->getCommCurrentRow( iCol, iPlane );
-          if (( currentRow >= objectBegin ) && ( currentRow <= objectEnd ))
-          {
-            present[ currentRow ] = true;
-            myHistogram->setCommNextCell( iCol, iPlane );
-          }
-          else
-            outOfBounds = true;
+          TObjectOrder currentRow = selectedRows[ myHistogram->getCommCurrentRow( iCol, iPlane ) ];
+          present[ currentRow ] = true;
+          myHistogram->setCommNextCell( iCol, iPlane );
         }
       }
       for (TObjectOrder i = 0; i < maxRow; ++i )
-        selectedRows[ i ] = selectedRows[ i ] && present[ i ];
+        tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && present[ i ];
     }
 
-    openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), selectedRows );
+    openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), tmpSelectedRows );
 
     openWindow->GetMyWindow()->setUsedByHistogram( false );
     openWindow->GetMyWindow()->setShowWindow( true );
