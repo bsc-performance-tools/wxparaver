@@ -1857,14 +1857,24 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
 {
   wxString text;
   vector<THistogramColumn> noVoidColumns;
+
+  columnSelection.getSelected( noVoidColumns );
   
   THistogramColumn column = myHistogram->getHorizontal() ? floor( lastPosZoomX / zoomCellWidth ) :
                                                            floor( lastPosZoomY / zoomCellHeight );
   TObjectOrder row = myHistogram->getHorizontal() ? floor( lastPosZoomY / zoomCellHeight ) :
                                                     floor( lastPosZoomX / zoomCellWidth );
 
-  if( column > myHistogram->getNumColumns() )
-    column = myHistogram->getNumColumns();
+  if( myHistogram->getHideColumns() )
+  {
+    if( column > noVoidColumns.size() )
+      column = noVoidColumns.size();
+  }
+  else
+  {
+    if( column > myHistogram->getNumColumns() )
+      column = myHistogram->getNumColumns();
+  }
     
   if( row > myHistogram->getNumRows() )
     row = myHistogram->getNumRows();
@@ -1876,10 +1886,7 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   if( column > 0 )
   {
     if( myHistogram->getHideColumns() )
-    {
-      columnSelection.getSelected( noVoidColumns );
       column = noVoidColumns[ column - 1 ] + 1;
-    }
     text << wxString::FromAscii( myHistogram->getColumnLabel( column - 1 ).c_str() )
          << _( "  " );
   }
