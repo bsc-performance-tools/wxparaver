@@ -260,12 +260,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 8)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
@@ -274,7 +274,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -1858,8 +1858,6 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   wxString text;
   vector<THistogramColumn> noVoidColumns;
 
-  columnSelection.getSelected( noVoidColumns );
-  
   THistogramColumn column = myHistogram->getHorizontal() ? floor( lastPosZoomX / zoomCellWidth ) :
                                                            floor( lastPosZoomY / zoomCellHeight );
   TObjectOrder row = myHistogram->getHorizontal() ? floor( lastPosZoomY / zoomCellHeight ) :
@@ -1867,6 +1865,7 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
 
   if( myHistogram->getHideColumns() )
   {
+    columnSelection.getSelected( noVoidColumns );
     if( column > noVoidColumns.size() )
       column = noVoidColumns.size();
   }
@@ -2136,7 +2135,10 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
     vector<THistogramColumn> noVoidColumns;
     columnSelection.getSelected( noVoidColumns );
     columnBegin = noVoidColumns[ columnBegin ];
-    columnEnd = noVoidColumns[ columnEnd ];
+    if( columnEnd >= noVoidColumns.size() )
+      columnEnd = noVoidColumns[ noVoidColumns.size() - 1 ] + 1;
+    else
+      columnEnd = noVoidColumns[ columnEnd ];
   }
 }
 
@@ -2158,16 +2160,16 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   THistogramLimit delta = myHistogram->getControlDelta();
   TWindowLevel onLevel = controlCloned->getFirstFreeCompose();
 
-  if ( ( ( columnEnd * delta ) + min + delta ) >= max )
+  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
     controlCloned->setLevelFunction( onLevel, "Select Range" );
   else
     controlCloned->setLevelFunction( onLevel, "Select Range [)" );
       
   TParamValue param;
-  if( ( ( columnEnd * delta ) + min + delta ) >= max )
+  if( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
     param.push_back( max );
   else
-    param.push_back( ( columnEnd * delta ) + min + delta );
+    param.push_back( ( columnEnd * delta ) + min/* + delta*/ );
   controlCloned->setFunctionParam( onLevel, 0, param );
 
   param.clear();
@@ -2178,10 +2180,10 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   name = name.substr( 0, name.find_last_of( '.' ) );
   stringstream tmpStr;
   tmpStr << name << " 2DZoom range [" << ( columnBegin * delta ) + min << ",";
-  if ( ( ( columnEnd * delta ) + min + delta ) >= max )
+  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
     tmpStr << max << "]";
   else
-    tmpStr << ( columnEnd * delta ) + min + delta << ")";
+    tmpStr << ( columnEnd * delta ) + min/* + delta*/ << ")";
   controlCloned->setName( tmpStr.str() );
 
   controlCloned->setWindowBeginTime( myHistogram->getBeginTime() );
@@ -2327,11 +2329,14 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     tmpControlWindow->GetMyWindow()->getSelectedRows( tmpControlWindow->GetMyWindow()->getLevel(),
                                                       tmpSelectedRows );
 
+    if( columnBegin == columnEnd )
+      ++columnEnd;
+
     if ( !commStat )
     {
       iPlane = myHistogram->getSelectedPlane();
 
-      for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
         myHistogram->setFirstCell( iCol, iPlane );
         while( !myHistogram->endCell( iCol, iPlane ) && myHistogram->getCurrentRow( iCol, iPlane ) < objectBegin )
@@ -2340,7 +2345,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       
       TObjectOrder maxRow = tmpSelectedRows.size();
       vector< bool > present( maxRow, false );
-      for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
         while ( !myHistogram->endCell( iCol, iPlane ) )
         {
@@ -2357,7 +2362,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     {
       iPlane = myHistogram->getCommSelectedPlane();
 
-      for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
         myHistogram->setCommFirstCell( iCol, iPlane );
         while( !myHistogram->endCommCell( iCol, iPlane ) && myHistogram->getCommCurrentRow( iCol, iPlane ) < objectBegin )
@@ -2366,7 +2371,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
 
       TObjectOrder maxRow = tmpSelectedRows.size();
       vector< bool > present( maxRow, false );
-      for( THistogramColumn iCol = columnBegin; iCol <= columnEnd; ++iCol )
+      for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
         while ( !myHistogram->endCommCell( iCol, iPlane ) )
         {
