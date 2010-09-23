@@ -2160,6 +2160,9 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   THistogramLimit delta = myHistogram->getControlDelta();
   TWindowLevel onLevel = controlCloned->getFirstFreeCompose();
 
+  if( columnBegin == columnEnd )
+    ++columnEnd;
+
   if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
     controlCloned->setLevelFunction( onLevel, "Select Range" );
   else
@@ -2328,9 +2331,6 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
     tmpControlWindow->GetMyWindow()->getSelectedRows( tmpControlWindow->GetMyWindow()->getLevel(),
                                                       tmpSelectedRows );
-
-    if( columnBegin == columnEnd )
-      ++columnEnd;
 
     if ( !commStat )
     {
