@@ -157,6 +157,7 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[STR_TIME] = option;
   allowed[STR_COPY] = option;
   allowed[STR_SIZE] = option;
+  allowed[STR_DURATION] = option;
   allowed[STR_SEMANTIC_SCALE] = option;
 
   // Policy : Only same trace
@@ -274,6 +275,15 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
                                              timeline->GetMyWindow()->getZoomSecondDimension().first,
                                              timeline->GetMyWindow()->getZoomSecondDimension().second );
     }
+    else if ( property == STR_DURATION )
+    {
+      TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
+      TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
+      TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
+      TRecordTime newEndTime      = whichTimeline->GetMyWindow()->getWindowBeginTime() + sourceDuration;
+
+      whichTimeline->GetMyWindow()->setWindowEndTime( newEndTime );
+    }
     else if ( property == STR_FILTER_COMMS )
     {
       whichTimeline->GetMyWindow()->getFilter()->copyCommunicationsSection( timeline->GetMyWindow()->getFilter() );
@@ -320,6 +330,15 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       controlWin->getSelectedRows( controlWin->getLevel(), auxRows, true );
       whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
     }
+    else if ( property == STR_DURATION )
+    {
+      TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
+      TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
+      TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
+      TRecordTime newEndTime      = whichTimeline->GetMyWindow()->getWindowBeginTime() + sourceDuration;
+
+      whichTimeline->GetMyWindow()->setWindowEndTime( newEndTime );
+    }
     else if ( property == STR_SEMANTIC_SCALE )
     {
       Window *controlWin = histogram->GetHistogram()->getControlWindow();
@@ -361,6 +380,15 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
                               timeline->GetMyWindow()->getZoomSecondDimension().first,
                               timeline->GetMyWindow()->getZoomSecondDimension().second );
     }
+    else if ( property == STR_DURATION )
+    {
+      TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
+      TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
+      TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
+      TRecordTime newEndTime      = whichHistogram->GetHistogram()->getBeginTime() + sourceDuration;
+
+      whichHistogram->GetHistogram()->setWindowEndTime( newEndTime );
+    }
     else if ( property == STR_SEMANTIC_SCALE )
     {
       Window *controlWin = whichHistogram->GetHistogram()->getControlWindow();
@@ -396,6 +424,15 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
                               controlWindow->getWindowEndTime(),
                               histogram->GetHistogram()->getControlWindow()->getZoomSecondDimension().first,
                               histogram->GetHistogram()->getControlWindow()->getZoomSecondDimension().second );
+    }
+    else if ( property == STR_DURATION )
+    {
+      TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
+      TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
+      TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
+      TRecordTime newEndTime      = whichHistogram->GetHistogram()->getBeginTime() + sourceDuration;
+
+      whichHistogram->GetHistogram()->setWindowEndTime( newEndTime );
     }
     else if ( property == STR_SEMANTIC_SCALE )
     {

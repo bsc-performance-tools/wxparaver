@@ -1382,6 +1382,14 @@ void gTimeline::OnPopUpPasteSize()
   myWindow->setRedraw( true );
 }
 
+void gTimeline::OnPopUpPasteDuration()
+{
+  gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+  pasteActions->paste( this, "Duration" );
+  myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
+  myWindow->setRedraw( true );
+}
+
 void gTimeline::OnPopUpPasteSemanticScale()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Semantic Scale" );

@@ -303,6 +303,7 @@ public:
   void OnPopUpPasteTime();
   void OnPopUpPasteObjects();
   void OnPopUpPasteSize();
+  void OnPopUpPasteDuration();
   void OnPopUpPasteSemanticScale();
   void OnPopUpPasteControlScale();
   void OnPopUpPaste3DScale();
