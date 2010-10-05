@@ -55,6 +55,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_MIN, gPopUpMenu::OnMenuFitSemanticMin )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_MAX, gPopUpMenu::OnMenuFitSemanticMax )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_BOTH, gPopUpMenu::OnMenuFitSemanticBoth )
+  EVT_MENU( ID_MENU_FIT_OBJECTS, gPopUpMenu::OnMenuFitObjects )
   EVT_MENU( ID_MENU_VIEW_COMMUNICATION_LINES, gPopUpMenu::OnMenuViewCommunicationLines )
   EVT_MENU( ID_MENU_VIEW_EVENT_FLAGS, gPopUpMenu::OnMenuViewEventFlags )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
@@ -168,6 +169,7 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
 
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
   Enable( FindItem( _( STR_FIT_SEMANTIC ) ), true );
+  Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
 }
 
 
@@ -188,6 +190,7 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
 
   Enable( FindItem( _( STR_CLONE ) ), true );
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
+  Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
   
   Enable( FindItem( _( STR_CONTROL_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE) );
   if( whichHistogram->GetHistogram()->getThreeDimensions() &&
@@ -356,6 +359,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSeparator();
 
   buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
+  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
   buildItem( popUpMenuFitSemantic, _( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
   buildItem( popUpMenuFitSemantic, _( "Fit Maximum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
   buildItem( popUpMenuFitSemantic, _( "Fit Both" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
@@ -586,6 +590,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   AppendSeparator();
 
   buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
+  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
   buildItem( this, 
              _( "Auto Fit Control Scale" ),
              ITEMCHECK,
@@ -937,6 +942,13 @@ void gPopUpMenu::OnMenuFitSemanticBoth( wxCommandEvent& event )
     timeline->OnPopUpFitSemanticScale();
 }
 
+void gPopUpMenu::OnMenuFitObjects( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpFitObjects();
+  else
+    histogram->OnPopUpFitObjects();
+}
 
 void gPopUpMenu::OnMenuViewCommunicationLines( wxCommandEvent& event )
 {

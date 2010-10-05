@@ -1351,6 +1351,15 @@ void gTimeline::OnPopUpFitSemanticScale()
   myWindow->setChanged( true );
 }
 
+void gTimeline::OnPopUpFitObjects()
+{
+  // Doesn't work!!
+  //myWindow->addZoom( TObjectOrder( 0 ), myWindow->getWindowLevelObjects() - 1 );
+  myWindow->addZoom( myWindow->getZoomFirstDimension().first, myWindow->getZoomFirstDimension().second,
+                     TObjectOrder( 0 ), myWindow->getWindowLevelObjects() - 1 );
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
 
 void gTimeline::OnPopUpCodeColor()
 {

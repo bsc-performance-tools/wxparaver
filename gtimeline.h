@@ -425,6 +425,7 @@ public:
   void OnPopUpFitSemanticScaleMin();
   void OnPopUpFitSemanticScaleMax();
   void OnPopUpFitSemanticScale();
+  void OnPopUpFitObjects();
   void OnPopUpCodeColor();
   void OnPopUpGradientColor();
   void OnPopUpNotNullGradientColor();

@@ -1481,6 +1481,28 @@ void gHistogram::OnPopUpFitTimeScale()
   updateHistogram();
 }
 
+
+void gHistogram::OnPopUpFitObjects()
+{
+  HistogramProxy::TZoomInfo currentZoom1, currentZoom2;
+  TObjectOrder beginRow, endRow;
+
+  currentZoom1.begin = myHistogram->getControlMin();
+  currentZoom1.end = myHistogram->getControlMax();
+  currentZoom2.begin = myHistogram->getControlDelta();
+  beginRow = TObjectOrder( 0 );
+  endRow = myHistogram->getDataWindow()->getWindowLevelObjects() - 1;
+
+  // zoom?
+  myHistogram->addZoom( currentZoom1, currentZoom2 , beginRow, endRow );
+
+  zoomRow.begin = beginRow;
+  zoomRow.end = endRow;
+
+  myHistogram->setRecalc( true );
+  updateHistogram();
+}
+
 void gHistogram::OnPopUpAutoControlScale( bool state )
 {
   myHistogram->setCompute2DScale( state );

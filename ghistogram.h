@@ -310,6 +310,7 @@ public:
 
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
+  void OnPopUpFitObjects();
   void OnPopUpAutoControlScale( bool state );
   void OnPopUpAuto3DScale( bool state );
   void OnPopUpAutoDataGradient( bool state );
