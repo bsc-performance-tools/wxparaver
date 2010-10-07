@@ -65,6 +65,7 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
                               wxIPCFormat WXUNUSED( format ) )
 {
   wxString filename( data );
+
   if( filename.IsEmpty() )
   {
     if( wxparaverApp::mainWindow )
@@ -77,6 +78,21 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   else if( filename == wxT( "END" ) )
   {
     wxparaverApp::mainWindow->SetCanServeSignal( true );
+  }
+  else if( filename[ 0 ] == '-' )
+  {
+    if( filename != wxT( "-h" ) && filename != wxT( "--help" ) )
+    {
+      wxString tmpStr = filename.AfterFirst( '=' );
+      if( tmpStr == wxT( "" ) )
+        tmpStr = filename.AfterFirst( ' ' );
+      if( tmpStr != wxT( "" ) )
+      {
+        unsigned long tmpType;
+        tmpStr.ToULong( &tmpType );
+        wxGetApp().SetEventTypeForCode( tmpType );
+      }
+    }
   }
   else
   {

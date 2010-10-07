@@ -111,6 +111,9 @@ public:
 	bool GetGlobalTimingBeginIsSet() const { return globalTimingBeginIsSet ; }
 	void SetGlobalTimingBeginIsSet(bool value) { globalTimingBeginIsSet = value ; }
 
+	TEventType GetEventTypeForCode() const { return eventTypeForCode ; }
+	void SetEventTypeForCode(TEventType value) { eventTypeForCode = value ; }
+
 ////@end wxparaverApp member function declarations
 
     static paraverMain* mainWindow;
@@ -122,6 +125,7 @@ private:
 	TTime globalTimingEnd;
 	wxDialog* globalTimingCallDialog;
 	bool globalTimingBeginIsSet;
+	TEventType eventTypeForCode;
 ////@end wxparaverApp member variables
 
     wxLocale m_locale;

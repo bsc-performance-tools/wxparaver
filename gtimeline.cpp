@@ -2723,7 +2723,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
   TEventType type;
   TEventValue value;
   vector<TEventType> events;
-  events.push_back( 60000119 );
+  events.push_back( wxGetApp().GetEventTypeForCode() );
   if( myWindow->getTrace()->findLastEventValue( posRow, posTime, events, type, value ) )
   {
     string valueStr = LabelConstructor::eventValueLabel( myWindow, type, value );
@@ -2751,7 +2751,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
   }
   else
   {
-    wxMessageBox( _( "Event " ) + (wxString() << 60000119) + _( " not found." ), _( "Show source code" ) );
+    wxMessageBox( _( "Event " ) + (wxString() << wxGetApp().GetEventTypeForCode()) + _( " not found." ), _( "Show source code" ) );
   }
 }
 

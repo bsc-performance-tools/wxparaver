@@ -105,6 +105,7 @@ void wxparaverApp::Init()
 	globalTimingEnd = 0;
 	globalTimingCallDialog = NULL;
 	globalTimingBeginIsSet = false;
+	eventTypeForCode = 60000119;
 ////@end wxparaverApp member initialisation
   m_locale.Init();
 }
@@ -225,10 +226,7 @@ bool wxparaverApp::OnInit()
       {
         connection->Execute( wxT( "BEGIN" ) );
         for( int i = 1; i < argc; ++i )
-        {
-          if( argv[ i ][ 0 ] != '-' )
-            connection->Execute( argv[ i ] );
-        }
+          connection->Execute( argv[ i ] );
         connection->Execute( wxT( "END" ) );
         connection->Disconnect();
         delete connection;
@@ -252,6 +250,13 @@ bool wxparaverApp::OnInit()
       wxT("Show this help."),
       wxCMD_LINE_VAL_STRING,
       wxCMD_LINE_OPTION_HELP },
+
+    { wxCMD_LINE_OPTION, 
+      wxT("t"),
+      wxT("type"),
+      wxT("Event type to code linking."),
+      wxCMD_LINE_VAL_NUMBER,
+      wxCMD_LINE_PARAM_OPTIONAL },
 
     { wxCMD_LINE_PARAM, 
       NULL,
@@ -283,6 +288,10 @@ bool wxparaverApp::OnInit()
 
   mainWindow->Show(true);
 
+  long int tmpType;
+  if( paraverCommandLineParser.Found( wxT("t"), &tmpType ) )
+    eventTypeForCode = tmpType;
+  
   mainWindow->commandLineLoadings( paraverCommandLineParser );
 
 /*
