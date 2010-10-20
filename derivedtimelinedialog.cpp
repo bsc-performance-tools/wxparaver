@@ -269,61 +269,76 @@ void DerivedTimelineDialog::CreateControls()
   widgetMaxCompose2->Enable(false);
   itemBoxSizer28->Add(widgetMaxCompose2, 2, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
-  wxFlexGridSizer* itemFlexGridSizer31 = new wxFlexGridSizer(0, 2, 0, 0);
-  itemBoxSizer2->Add(itemFlexGridSizer31, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(itemBoxSizer31, 1, wxGROW|wxALL, 5);
 
-  wxStaticText* itemStaticText32 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(itemStaticText32, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer31->Add(itemBoxSizer32, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+  wxStaticText* itemStaticText33 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer32->Add(itemStaticText33, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   widgetFactorTimeline1 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_1, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(widgetFactorTimeline1, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer32->Add(widgetFactorTimeline1, 5, wxALIGN_CENTER_VERTICAL, 5);
 
-  widgetLabelTimelines1 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(widgetLabelTimelines1, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer35 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer31->Add(itemBoxSizer35, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+  widgetLabelTimelines1 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline "), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer35->Add(widgetLabelTimelines1, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   wxArrayString widgetTimelines1Strings;
   widgetTimelines1 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_1, wxEmptyString, wxDefaultPosition, wxDefaultSize, widgetTimelines1Strings, wxCB_READONLY );
-  itemFlexGridSizer31->Add(widgetTimelines1, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer35->Add(widgetTimelines1, 5, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxStaticText* itemStaticText36 = new wxStaticText( itemDialog1, wxID_STATIC, _("Operation"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(itemStaticText36, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer38 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer31->Add(itemBoxSizer38, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+  wxStaticText* itemStaticText39 = new wxStaticText( itemDialog1, wxID_STATIC, _("Operation"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer38->Add(itemStaticText39, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   wxArrayString widgetOperationsStrings;
   widgetOperations = new wxChoice( itemDialog1, ID_OPERATIONS, wxDefaultPosition, wxDefaultSize, widgetOperationsStrings, wxFULL_REPAINT_ON_RESIZE );
-  itemFlexGridSizer31->Add(widgetOperations, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer38->Add(widgetOperations, 5, wxALIGN_CENTER_VERTICAL, 5);
+
+  wxBoxSizer* itemBoxSizer41 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer31->Add(itemBoxSizer41, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   widgetLabelTimelines2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(widgetLabelTimelines2, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer41->Add(widgetLabelTimelines2, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   wxArrayString widgetTimelines2Strings;
   widgetTimelines2 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_2, wxEmptyString, wxDefaultPosition, wxDefaultSize, widgetTimelines2Strings, wxCB_READONLY );
-  itemFlexGridSizer31->Add(widgetTimelines2, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer41->Add(widgetTimelines2, 5, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxStaticText* itemStaticText40 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(itemStaticText40, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer44 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer31->Add(itemBoxSizer44, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
+  wxStaticText* itemStaticText45 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer44->Add(itemStaticText45, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   widgetFactorTimeline2 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_2, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer31->Add(widgetFactorTimeline2, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer44->Add(widgetFactorTimeline2, 5, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxStaticLine* itemStaticLine42 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine42, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine47 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine47, 0, wxGROW|wxALL, 5);
 
   swapWindowsButton = new wxButton( itemDialog1, ID_SWAP_WINDOWS, _("S&wap Windows"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer2->Add(swapWindowsButton, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxStaticLine* itemStaticLine44 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine44, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine49 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine49, 0, wxGROW|wxALL, 5);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer45 = new wxStdDialogButtonSizer;
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer50 = new wxStdDialogButtonSizer;
 
-  itemBoxSizer2->Add(itemStdDialogButtonSizer45, 0, wxALIGN_RIGHT|wxALL, 5);
-  wxButton* itemButton46 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer45->AddButton(itemButton46);
+  itemBoxSizer2->Add(itemStdDialogButtonSizer50, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxButton* itemButton51 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer50->AddButton(itemButton51);
 
-  wxButton* itemButton47 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer45->AddButton(itemButton47);
+  wxButton* itemButton52 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer50->AddButton(itemButton52);
 
-  itemStdDialogButtonSizer45->Realize();
+  itemStdDialogButtonSizer50->Realize();
 
 ////@end DerivedTimelineDialog content construction
 
