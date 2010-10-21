@@ -179,6 +179,57 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     windowProperties->Append( new wxEnumProperty( wxT("Level"), wxPG_LABEL,
                                                   arrayLevels, arrayLevelsPos, whichWindow->getLevel() ) );
   }
+  else
+  {
+    wxArrayString arrayLevels;
+    wxArrayInt arrayLevelsPos;
+    
+    if( whichWindow->getMinAcceptableLevel() >= SYSTEM &&
+        whichWindow->getMinAcceptableLevel() <= CPU )
+    {
+      if( whichWindow->getMinAcceptableLevel() >= SYSTEM )
+      {
+        arrayLevels.Add( _( "System" ) );
+        arrayLevelsPos.Add( SYSTEM );
+      }
+      if( whichWindow->getMinAcceptableLevel() >= NODE )
+      {
+        arrayLevels.Add( _( "Node" ) );
+        arrayLevelsPos.Add( NODE );
+      }
+      if( whichWindow->getMinAcceptableLevel() >= CPU )
+      {
+        arrayLevels.Add( _( "CPU" ) );
+        arrayLevelsPos.Add( CPU );
+      }
+    }
+    else
+    {
+      if( whichWindow->getMinAcceptableLevel() >= WORKLOAD )
+      {
+        arrayLevels.Add( _( "Workload" ) );
+        arrayLevelsPos.Add( WORKLOAD );
+      }
+      if( whichWindow->getMinAcceptableLevel() >= APPLICATION )
+      {
+        arrayLevels.Add( _( "Application" ) );
+        arrayLevelsPos.Add( APPLICATION );
+      }
+      if( whichWindow->getMinAcceptableLevel() >= TASK )
+      {
+        arrayLevels.Add( _( "Task" ) );
+        arrayLevelsPos.Add( TASK );
+      }
+      if( whichWindow->getMinAcceptableLevel() >= THREAD )
+      {
+        arrayLevels.Add( _( "Thread" ) );
+        arrayLevelsPos.Add( THREAD );
+      }
+    }
+    
+    windowProperties->Append( new wxEnumProperty( wxT("Level"), wxPG_LABEL,
+                                                  arrayLevels, arrayLevelsPos, whichWindow->getLevel() ) );
+  }
   
   arrayStr.Clear();
   arrayInt.Clear();
@@ -553,238 +604,227 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                               arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
   semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TOPCOMPOSE2 );
 
-  if( whichWindow->isDerivedWindow() )
+  vector<string> notThreadFunctions;
+  whichWindow->getAllSemanticFunctions( NOTTHREAD_GROUP, notThreadFunctions );
+  arrayNotThreadFunctions.Clear();
+  pos = 0;
+  for( vector<string>::iterator it = notThreadFunctions.begin();
+       it != notThreadFunctions.end(); ++it )
   {
-    windowProperties->Append( new wxFloatProperty( wxT("Factor #1"), wxPG_LABEL,
-                                                 whichWindow->getFactor( 0 ) ) );
-
-    vector<string> derivedFunctions;
-    whichWindow->getAllSemanticFunctions( DERIVED_GROUP, derivedFunctions );
-    arrayStr.Clear();
-    arrayInt.Clear();
-    pos = 0;
-    selected = -1;
-    for( vector<string>::iterator it = derivedFunctions.begin();
-         it != derivedFunctions.end(); ++it )
-    {
-      arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
-      arrayInt.Add( pos );
-      if( (*it) == whichWindow->getLevelFunction( DERIVED ) )
-        selected = pos;
-      ++pos;
-    }
-    windowProperties->AppendIn( semanticCat,
-                                new wxEnumProperty( wxT("Derived"),
-                                wxPG_LABEL,
-                                arrayStr, arrayInt, selected ) );
-    semanticFunctionParameter( windowProperties, whichWindow, semanticCat, DERIVED );
-
-    windowProperties->Append( new wxFloatProperty( wxT("Factor #2"), wxPG_LABEL,
-                                                 whichWindow->getFactor( 1 ) ) );
-
+    arrayNotThreadFunctions.Add( wxString::FromAscii( (*it).c_str() ) );
+    arrayNotThreadFunctionsPos.Add( pos );
+    ++pos;
   }
-  else
+
+  TWindowLevel level = whichWindow->getLevel();
+  TWindowLevel minAcceptLevel = whichWindow->getMinAcceptableLevel();
+  if( level >= WORKLOAD && level <= THREAD )
   {
-    vector<string> notThreadFunctions;
-    whichWindow->getAllSemanticFunctions( NOTTHREAD_GROUP, notThreadFunctions );
-    arrayNotThreadFunctions.Clear();
-    pos = 0;
-    for( vector<string>::iterator it = notThreadFunctions.begin();
-        it != notThreadFunctions.end(); ++it )
+    if( level == WORKLOAD )
     {
-      arrayNotThreadFunctions.Add( wxString::FromAscii( (*it).c_str() ) );
-      arrayNotThreadFunctionsPos.Add( pos );
-      ++pos;
-    }
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = composeFunctions.begin();
+           it != composeFunctions.end(); ++it )
+      {
+        if( (*it) == whichWindow->getLevelFunction( COMPOSEWORKLOAD ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Compose Workload"),
+                                  wxPG_LABEL,
+                                  arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEWORKLOAD );
 
-    TWindowLevel level = whichWindow->getLevel();
-    if( level >= WORKLOAD && level <= THREAD )
-    {
-      if( level == WORKLOAD )
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = notThreadFunctions.begin();
+           it != notThreadFunctions.end(); ++it )
       {
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = composeFunctions.begin();
-             it != composeFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( COMPOSEWORKLOAD ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Compose Workload"),
-                                    wxPG_LABEL,
-                                    arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEWORKLOAD );
-
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = notThreadFunctions.begin();
-             it != notThreadFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( WORKLOAD ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Workload"),
-                                    wxPG_LABEL,
-                                    arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, WORKLOAD );
+        if( (*it) == whichWindow->getLevelFunction( WORKLOAD ) )
+          selected = pos;
+        ++pos;
       }
-      
-      if( level <= APPLICATION )
-      {
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = composeFunctions.begin();
-             it != composeFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( COMPOSEAPPLICATION ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Compose Appl"),
-                                    wxPG_LABEL,
-                                    arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEAPPLICATION );
-      
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = notThreadFunctions.begin();
-             it != notThreadFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( APPLICATION ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Application"),
-                                    wxPG_LABEL,
-                                    arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, APPLICATION );
-      }
-      
-      if( level <= TASK )
-      {
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = composeFunctions.begin();
-             it != composeFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( COMPOSETASK ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Compose Task"),
-                                    wxPG_LABEL,
-                                    arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETASK );
-      
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = notThreadFunctions.begin();
-             it != notThreadFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( TASK ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Task"),
-                                    wxPG_LABEL,
-                                    arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TASK );
-      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Workload"),
+                                  wxPG_LABEL,
+                                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, WORKLOAD );
     }
-    else if( level >= SYSTEM && level <= CPU )
+      
+    if( level <= APPLICATION && minAcceptLevel >= APPLICATION )
     {
-      if( level == SYSTEM )
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = composeFunctions.begin();
+           it != composeFunctions.end(); ++it )
       {
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = composeFunctions.begin();
-             it != composeFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( COMPOSESYSTEM ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Compose System"),
-                                    wxPG_LABEL,
-                                    arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSESYSTEM );
-      
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = notThreadFunctions.begin();
-             it != notThreadFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( SYSTEM ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("System"),
-                                    wxPG_LABEL,
-                                    arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, SYSTEM );
+        if( (*it) == whichWindow->getLevelFunction( COMPOSEAPPLICATION ) )
+          selected = pos;
+        ++pos;
       }
-      
-      if( level <= NODE )
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Compose Appl"),
+                                  wxPG_LABEL,
+                                  arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEAPPLICATION );
+
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = notThreadFunctions.begin();
+           it != notThreadFunctions.end(); ++it )
       {
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = composeFunctions.begin();
-             it != composeFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( COMPOSENODE ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Compose Node"),
-                                    wxPG_LABEL,
-                                    arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSENODE );
-      
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = notThreadFunctions.begin();
-             it != notThreadFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( NODE ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Node"),
-                                    wxPG_LABEL,
-                                    arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, NODE );
+        if( (*it) == whichWindow->getLevelFunction( APPLICATION ) )
+          selected = pos;
+        ++pos;
       }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Application"),
+                                  wxPG_LABEL,
+                                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, APPLICATION );
+    }
       
-      if( level <= CPU )
+    if( level <= TASK && minAcceptLevel >= TASK )
+    {
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = composeFunctions.begin();
+           it != composeFunctions.end(); ++it )
       {
-        pos = 0;
-        selected = -1;
-        for( vector<string>::iterator it = composeFunctions.begin();
-             it != composeFunctions.end(); ++it )
-        {
-          if( (*it) == whichWindow->getLevelFunction( COMPOSECPU ) )
-            selected = pos;
-          ++pos;
-        }
-        windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("Compose CPU"),
-                                    wxPG_LABEL,
-                                    arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+        if( (*it) == whichWindow->getLevelFunction( COMPOSETASK ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Compose Task"),
+                                  wxPG_LABEL,
+                                  arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETASK );
+
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = notThreadFunctions.begin();
+           it != notThreadFunctions.end(); ++it )
+      {
+        if( (*it) == whichWindow->getLevelFunction( TASK ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Task"),
+                                  wxPG_LABEL,
+                                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TASK );
+    }
+    
+    if( whichWindow->isDerivedWindow() && minAcceptLevel >= THREAD )
+    {
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = composeFunctions.begin();
+           it != composeFunctions.end(); ++it )
+      {
+        if( (*it) == whichWindow->getLevelFunction( COMPOSETHREAD ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Compose Thread"),
+                                  wxPG_LABEL,
+                                  arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETHREAD );
+    }
+  }
+  else if( level >= SYSTEM && level <= CPU )
+  {
+    if( level == SYSTEM && minAcceptLevel >= SYSTEM )
+    {
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = composeFunctions.begin();
+           it != composeFunctions.end(); ++it )
+      {
+        if( (*it) == whichWindow->getLevelFunction( COMPOSESYSTEM ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Compose System"),
+                                  wxPG_LABEL,
+                                  arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSESYSTEM );
+
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = notThreadFunctions.begin();
+           it != notThreadFunctions.end(); ++it )
+      {
+        if( (*it) == whichWindow->getLevelFunction( SYSTEM ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("System"),
+                                  wxPG_LABEL,
+                                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, SYSTEM );
+    }
+      
+    if( level <= NODE && minAcceptLevel >= NODE )
+    {
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = composeFunctions.begin();
+           it != composeFunctions.end(); ++it )
+      {
+        if( (*it) == whichWindow->getLevelFunction( COMPOSENODE ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Compose Node"),
+                                  wxPG_LABEL,
+                                  arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSENODE );
+
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = notThreadFunctions.begin();
+           it != notThreadFunctions.end(); ++it )
+      {
+        if( (*it) == whichWindow->getLevelFunction( NODE ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Node"),
+                                  wxPG_LABEL,
+                                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, NODE );
+    }
+      
+    if( level <= CPU && minAcceptLevel >= CPU )
+    {
+      pos = 0;
+      selected = -1;
+      for( vector<string>::iterator it = composeFunctions.begin();
+           it != composeFunctions.end(); ++it )
+      {
+        if( (*it) == whichWindow->getLevelFunction( COMPOSECPU ) )
+          selected = pos;
+        ++pos;
+      }
+      windowProperties->AppendIn( semanticCat,
+                                  new wxEnumProperty( wxT("Compose CPU"),
+                                  wxPG_LABEL,
+                                  arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
                                   
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSECPU );
+      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSECPU );
       
+      if( !whichWindow->isDerivedWindow() )
+      {
         pos = 0;
         selected = -1;
         arrayStr.Clear();
@@ -807,7 +847,10 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         semanticFunctionParameter( windowProperties, whichWindow, semanticCat, CPU );
       }
     }
-    
+  }
+  
+  if( ! whichWindow->isDerivedWindow() )
+  {
     pos = 0;
     selected = -1;
     for( vector<string>::iterator it = composeFunctions.begin();
@@ -845,6 +888,36 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                 threadFunctions,
                                 wxString::FromAscii( whichWindow->getLevelFunction( THREAD ).c_str() ) ) );
     semanticFunctionParameter( windowProperties, whichWindow, semanticCat, THREAD );
+  }
+  
+  if( whichWindow->isDerivedWindow() )
+  {
+    windowProperties->Append( new wxFloatProperty( wxT("Factor #1"), wxPG_LABEL,
+                                                 whichWindow->getFactor( 0 ) ) );
+
+    vector<string> derivedFunctions;
+    whichWindow->getAllSemanticFunctions( DERIVED_GROUP, derivedFunctions );
+    arrayStr.Clear();
+    arrayInt.Clear();
+    pos = 0;
+    selected = -1;
+    for( vector<string>::iterator it = derivedFunctions.begin();
+         it != derivedFunctions.end(); ++it )
+    {
+      arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
+      arrayInt.Add( pos );
+      if( (*it) == whichWindow->getLevelFunction( DERIVED ) )
+        selected = pos;
+      ++pos;
+    }
+    windowProperties->AppendIn( semanticCat,
+                                new wxEnumProperty( wxT("Derived"),
+                                wxPG_LABEL,
+                                arrayStr, arrayInt, selected ) );
+    semanticFunctionParameter( windowProperties, whichWindow, semanticCat, DERIVED );
+
+    windowProperties->Append( new wxFloatProperty( wxT("Factor #2"), wxPG_LABEL,
+                                                 whichWindow->getFactor( 1 ) ) );
   }
   // END of Semantic related properties
   
