@@ -58,6 +58,7 @@ using namespace std;
 #define STR_FIT_OBJECTS      "Fit Objects"
 #define STR_CONTROL_SCALE    "Control scale"
 #define STR_3D_SCALE         "3D scale"
+#define STR_SYNCHRONIZE      "Synchronize"
 
 class gTimeline;
 class gHistogram;

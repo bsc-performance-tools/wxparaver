@@ -301,6 +301,11 @@ bool updateTreeItem( wxTreeCtrl *tree,
   if( gTimeline *tmpTimeline = itemData->getTimeline() )
   {
     Window *tmpWindow = tmpTimeline->GetMyWindow();
+    if( tmpWindow->isSync() )
+      tree->SetItemBold( id, true );
+    else
+      tree->SetItemBold( id, false );
+      
     if( tmpTimeline->IsActive() && !tmpWindow->getDestroy() )
     {
       *currentWindow = tmpTimeline;

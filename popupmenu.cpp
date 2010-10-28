@@ -95,6 +95,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, gPopUpMenu::OnMenuGradientFunction )
   EVT_MENU( ID_MENU_PASTE_CONTROL_SCALE, gPopUpMenu::OnMenuPasteControlScale )
   EVT_MENU( ID_MENU_PASTE_3D_SCALE, gPopUpMenu::OnMenuPaste3DScale )
+  EVT_MENU( ID_MENU_SYNCHRONIZE, gPopUpMenu::OnMenuSynchronize )
 
 END_EVENT_TABLE()
 
@@ -349,6 +350,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
   buildItem( this, _( STR_PASTE_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_SPECIAL );
+  buildItem( this, _( STR_SYNCHRONIZE ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize, ID_MENU_SYNCHRONIZE, timeline->GetMyWindow()->isSync() );
   buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
 
   AppendSeparator();
@@ -1204,4 +1206,12 @@ void gPopUpMenu::OnMenuGradientFunction( wxCommandEvent& event )
     timeline->OnMenuGradientFunction( gradFunc );
   else if( histogram != NULL )
     histogram->OnMenuGradientFunction( gradFunc );
+}
+
+void gPopUpMenu::OnMenuSynchronize( wxCommandEvent& event )
+{
+  if( timeline->GetMyWindow()->isSync() )
+    timeline->GetMyWindow()->removeFromSync();
+  else
+    timeline->GetMyWindow()->addToSyncGroup( 0 );
 }
