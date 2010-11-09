@@ -60,6 +60,7 @@ void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
                 Window *window,
                 string nameSuffix = string("") );
+
 bool updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      vector< Window * > &allWindows,
@@ -67,4 +68,8 @@ bool updateTreeItem( wxTreeCtrl *tree,
                      wxWindow **currentWindow,
                      bool allTracesTree );
 
+void iconizeWindows( wxTreeCtrl *tree,
+                     wxTreeItemId& id,
+                     bool iconize );
+                     
 #endif // _GWINDOWTREE_H_

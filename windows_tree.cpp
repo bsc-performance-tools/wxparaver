@@ -402,3 +402,37 @@ bool updateTreeItem( wxTreeCtrl *tree,
   return destroy;
 }
 
+
+void iconizeWindows( wxTreeCtrl *tree,
+                     wxTreeItemId& id,
+                     bool iconize )
+{
+  wxTreeItemIdValue cookie;
+  wxTreeItemId currentChild = tree->GetFirstChild( id, cookie );
+  unsigned int numberChild = tree->GetChildrenCount( id, false );
+  unsigned int current = 0;
+  while( current < numberChild )
+  {
+    if ( currentChild.IsOk() )
+    {
+      TreeBrowserItemData *itemData = (TreeBrowserItemData *)tree->GetItemData( currentChild );
+
+      if( gTimeline *tmpTimeline = itemData->getTimeline() )
+      {
+        if( tmpTimeline->GetMyWindow()->getShowWindow() )
+          tmpTimeline->Show( iconize );
+      }
+      else if( gHistogram *tmpHistogram = itemData->getHistogram() )
+      {
+        if( tmpHistogram->GetHistogram()->getShowWindow() )
+          tmpHistogram->Show( iconize );
+      }
+      
+      if( tree->ItemHasChildren( currentChild ) )
+        iconizeWindows( tree, currentChild, iconize );
+    }
+
+    currentChild = tree->GetNextChild( id, cookie );
+    ++current;
+  }
+}

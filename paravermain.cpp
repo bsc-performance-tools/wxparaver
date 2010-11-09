@@ -107,6 +107,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
 ////@begin paraverMain event table entries
   EVT_CLOSE( paraverMain::OnCloseWindow )
+  EVT_ICONIZE( paraverMain::OnIconize )
   EVT_IDLE( paraverMain::OnIdle )
 
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
@@ -2982,3 +2983,21 @@ void paraverMain::ShowCutTraceWindow( const string& filename, bool loadTrace )
   
   cutFilterDialog.MakeModal( false );
 }
+
+
+/*!
+ * wxEVT_ICONIZE event handler for ID_PARAVERMAIN
+ */
+
+void paraverMain::OnIconize( wxIconizeEvent& event )
+{
+  for( unsigned int iPage = 0; iPage < choiceWindowBrowser->GetPageCount(); iPage++ )
+  {
+    wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( iPage );
+    wxTreeItemId root = currentTree->GetRootItem();
+    iconizeWindows( currentTree, root, event.Iconized() );
+  }
+}
+
+
+

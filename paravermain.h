@@ -85,7 +85,7 @@ class wxPropertyGridEvent;
 #define ID_TOOL_CUT_TRACE 10100
 #define ID_CHOICEWINBROWSER 10002
 #define ID_FOREIGN 10010
-#define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxWANTS_CHARS
+#define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMINIMIZE_BOX|wxCLOSE_BOX|wxWANTS_CHARS
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(300, 600)
@@ -156,6 +156,9 @@ public:
 
   /// wxEVT_CLOSE_WINDOW event handler for ID_PARAVERMAIN
   void OnCloseWindow( wxCloseEvent& event );
+
+  /// wxEVT_ICONIZE event handler for ID_PARAVERMAIN
+  void OnIconize( wxIconizeEvent& event );
 
   /// wxEVT_IDLE event handler for ID_PARAVERMAIN
   void OnIdle( wxIdleEvent& event );

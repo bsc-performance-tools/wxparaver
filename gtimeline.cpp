@@ -962,7 +962,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   canRedraw = true;
 #endif
 
-  if( myWindow->getShowWindow() )
+  if( !wxparaverApp::mainWindow->IsIconized() && myWindow->getShowWindow() )
   {
     this->Show();
 //    paraverMain::myParaverMain->addActiveWindow( this );

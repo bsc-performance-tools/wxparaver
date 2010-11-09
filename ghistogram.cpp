@@ -44,6 +44,7 @@
 #include <wx/clipbrd.h>
 #include <sstream>
 #include <iostream>
+#include "wxparaverapp.h"
 #include "ghistogram.h"
 #include "histogram.h"
 #include "labelconstructor.h"
@@ -1209,7 +1210,7 @@ void gHistogram::OnIdle( wxIdleEvent& event )
 
   this->SetTitle( wxString::FromAscii( composedName.c_str() ) );
 
-  if( myHistogram->getShowWindow() )
+  if(  !wxparaverApp::mainWindow->IsIconized() && myHistogram->getShowWindow() )
   {
     this->Show();
 //    paraverMain::myParaverMain->addActiveWindow( this );

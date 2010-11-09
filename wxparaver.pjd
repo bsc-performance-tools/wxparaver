@@ -1206,7 +1206,8 @@
           <string name="variable-21">"canServeSignal|bool|CanServeSignal|true|2|0|"</string>
           <string name="variable-22">"loadFilesQueue|queue&lt;string&gt;|LoadFilesQueue||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||paraverMain"</string>
-          <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
+          <string name="event-handler-1">"wxEVT_ICONIZE|OnIconize|NONE||paraverMain"</string>
+          <string name="event-handler-2">"wxEVT_IDLE|OnIdle|NONE||paraverMain"</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
           <string name="proxy-Class">"paraverMain"</string>
@@ -1237,7 +1238,7 @@
           <bool name="proxy-wxSYSTEM_MENU">1</bool>
           <bool name="proxy-wxMINIMIZE">0</bool>
           <bool name="proxy-wxMAXIMIZE">0</bool>
-          <bool name="proxy-wxMINIMIZE_BOX">0</bool>
+          <bool name="proxy-wxMINIMIZE_BOX">1</bool>
           <bool name="proxy-wxMAXIMIZE_BOX">0</bool>
           <bool name="proxy-wxCLOSE_BOX">1</bool>
           <bool name="proxy-wxFRAME_TOOL_WINDOW">0</bool>
