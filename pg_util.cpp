@@ -115,7 +115,7 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 
 void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWindow )
 {
-  UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
+  PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
 
   updateCategoriesState( windowProperties );
 
@@ -930,7 +930,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
 void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whichHisto )
 {
-  UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
+  PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
 
   updateCategoriesState( windowProperties );
   

@@ -799,7 +799,7 @@ void HistogramDialog::computeColumns( Window *current, TSemanticValue &min, TSem
 }
 
 // if current = NULL, PUT none
-UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget )
+PRV_UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget )
 {
   Window *aux;
   int pos = 0;
@@ -828,7 +828,7 @@ UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listTimel
 
 bool HistogramDialog::TransferDataToWindow( Window *current )
 {
-  UINT32 pos;
+  PRV_UINT32 pos;
 
   // Fill Control Timelines choice list
   pos = fillList( current, controlTimelines, listControlTimelines );

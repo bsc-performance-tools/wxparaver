@@ -234,9 +234,9 @@ void gTimeline::Init()
   gradientFunc = GradientColor::LINEAR;
 
   // Avoid manipulation
-  UINT32 pixelSizeIndexSelector = ParaverConfig::getInstance()->getTimelinePixelSize();
+  PRV_UINT32 pixelSizeIndexSelector = ParaverConfig::getInstance()->getTimelinePixelSize();
   if ( pixelSizeIndexSelector >= 0 && pixelSizeIndexSelector <= 3 )
-    pixelSize = UINT32( floor ( pow( 2, (double)pixelSizeIndexSelector )));
+    pixelSize = PRV_UINT32( floor ( pow( 2, (double)pixelSizeIndexSelector )));
 }
 
 
@@ -613,8 +613,8 @@ void gTimeline::redraw()
 
 bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 {
-  // UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
-  UINT32 precision = 0;
+  // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
+  PRV_UINT32 precision = 0;
 
   size_t numObjects = selected.size();
   float magnify = float( GetPixelSize() );
@@ -1244,7 +1244,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   LoadedWindows::getInstance()->add( clonedWindow );
 
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
-  INT16 currentTrace = paraverMain::myParaverMain->getTracePosition( clonedWindow->getTrace() );
+  PRV_INT16 currentTrace = paraverMain::myParaverMain->getTracePosition( clonedWindow->getTrace() );
   wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 ); // Global page
   wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 ); // Current page
 
@@ -1654,7 +1654,7 @@ void gTimeline::OnPopUpDrawModeBothAverage()
 }
 
 
-void gTimeline::OnPopUpPixelSize( UINT32 whichPixelSize )
+void gTimeline::OnPopUpPixelSize( PRV_UINT32 whichPixelSize )
 {
   SetPixelSize( whichPixelSize );
   myWindow->setRedraw( true );
@@ -1716,8 +1716,8 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
   wxMemoryDC dc( bufferImage );
-  // UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
-  UINT32 precision = 0;
+  // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
+  PRV_UINT32 precision = 0;
 
   rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
   wxColour foregroundColour = wxColour( rgbForegroundColour.red,
@@ -2265,7 +2265,7 @@ void gTimeline::Split()
 
 void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
 {
-  UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
+  PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   
   if( redoColors &&
       ( myWindow->getSemanticInfoType() != lastType ||

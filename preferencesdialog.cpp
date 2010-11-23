@@ -942,7 +942,7 @@ wxString PreferencesDialog::formatNumber( long value )
 
 
 void PreferencesDialog::setLabelsChoiceBox( const vector< string > &list,
-                                               const UINT32 &selected,
+                                               const PRV_UINT32 &selected,
                                                wxChoice *choiceBox )
 {
   choiceBox->Clear(); // entra dos veces!!!
@@ -1086,21 +1086,21 @@ bool PreferencesDialog::TransferDataFromWindow()
   timelineCommunicationLines = checkTimelineCommunicationLines->IsChecked();
   timelineFunctionAsColor = checkTimelineFunctionAsColor->IsChecked();
 
-  timelineColor = ( UINT32 )choiceTimelineColor->GetCurrentSelection();
-  timelineGradientFunction = ( UINT32 )choiceTimelineGradientFunction->GetCurrentSelection();
-  timelineDrawmodeTime = ( UINT32 )choiceTimelineDrawmodeTime->GetCurrentSelection();
-  timelineDrawmodeObjects = ( UINT32 )choiceTimelineDrawmodeObjects->GetCurrentSelection();
-  timelinePixelSize = ( UINT32 )choiceTimelinePixelSize->GetCurrentSelection();
+  timelineColor = ( PRV_UINT32 )choiceTimelineColor->GetCurrentSelection();
+  timelineGradientFunction = ( PRV_UINT32 )choiceTimelineGradientFunction->GetCurrentSelection();
+  timelineDrawmodeTime = ( PRV_UINT32 )choiceTimelineDrawmodeTime->GetCurrentSelection();
+  timelineDrawmodeObjects = ( PRV_UINT32 )choiceTimelineDrawmodeObjects->GetCurrentSelection();
+  timelinePixelSize = ( PRV_UINT32 )choiceTimelinePixelSize->GetCurrentSelection();
 
   timelineWWSemantic = checkTimelineWWSemantic->IsChecked();
   timelineWWEvents = checkTimelineWWEvents->IsChecked();
   timelineWWCommunications = checkTimelineWWCommunications->IsChecked();
   timelineWWPreviousNext = checkTimelineWWPreviousNext->IsChecked();
   timelineWWText = checkTimelineWWText->IsChecked();
-  timelineWWPrecision = ( UINT32 )txtTimelineWWPrecision->GetValue();
+  timelineWWPrecision = ( PRV_UINT32 )txtTimelineWWPrecision->GetValue();
 
-  timelineSaveImageFormat = ( UINT32 )choiceTimelineSaveImageFormat->GetCurrentSelection();
-  timelineSaveTextFormat = ( UINT32 )choiceTimelineSaveTextFormat->GetCurrentSelection();
+  timelineSaveImageFormat = ( PRV_UINT32 )choiceTimelineSaveImageFormat->GetCurrentSelection();
+  timelineSaveTextFormat = ( PRV_UINT32 )choiceTimelineSaveTextFormat->GetCurrentSelection();
 
   // HISTOGRAM
   histogramNameFormatPrefix = std::string( txtHistogramNameFormatPrefix->GetValue().mb_str() );
@@ -1112,23 +1112,22 @@ bool PreferencesDialog::TransferDataFromWindow()
   histogramShowGradient = checkHistogramShowGradient->GetValue();
   histogramLabelsColor = checkHistogramLabelsColor->GetValue();
 
-  histogramGradientFunction = ( UINT32 )choiceHistogramGradientFunction->GetCurrentSelection();
-  histogramDrawmodeSemantic = ( UINT32 )choiceHistogramDrawmodeSemantic->GetCurrentSelection();
-  histogramDrawmodeObjects = ( UINT32 )choiceHistogramDrawmodeObjects->GetCurrentSelection();
+  histogramGradientFunction = ( PRV_UINT32 )choiceHistogramGradientFunction->GetCurrentSelection();
+  histogramDrawmodeSemantic = ( PRV_UINT32 )choiceHistogramDrawmodeSemantic->GetCurrentSelection();
+  histogramDrawmodeObjects = ( PRV_UINT32 )choiceHistogramDrawmodeObjects->GetCurrentSelection();
 
   histogramScientificNotation = checkHistogramScientificNotation->GetValue();
   histogramThousandSeparator = checkHistogramThousandsSeparator->GetValue();
   histogramShowUnits = checkHistogramShowUnits->IsChecked();
-  histogramPrecision = ( UINT32 )txtHistogramPrecision->GetValue();
+  histogramPrecision = ( PRV_UINT32 )txtHistogramPrecision->GetValue();
 
   histogramAutofitControlScale = checkHistogramAutofitControlScale->GetValue();
   histogramAutofit3DScale = checkHistogramAutofit3DScale->GetValue();
   histogramAutofitDataGradient = checkHistogramAutofitDataGradient->GetValue();
-  histogramNumColumns = (UINT32)txtHistogramNumColumns->GetValue();
-  histogramNumColumns = ( UINT32 )txtHistogramNumColumns->GetValue();
+  histogramNumColumns = ( THistogramColumn )txtHistogramNumColumns->GetValue();
 
-  histogramSaveImageFormat = ( UINT32 )choiceHistogramSaveImageFormat->GetCurrentSelection();
-  histogramSaveTextFormat = ( UINT32 )choiceHistogramSaveTextFormat->GetCurrentSelection();
+  histogramSaveImageFormat = ( PRV_UINT32 )choiceHistogramSaveImageFormat->GetCurrentSelection();
+  histogramSaveTextFormat = ( PRV_UINT32 )choiceHistogramSaveTextFormat->GetCurrentSelection();
 
   // COLORS
   timelineColourBackground = wxColourToRGB( colourPickerBackground->GetColour() );

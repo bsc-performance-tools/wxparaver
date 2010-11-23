@@ -462,7 +462,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     }
   }
   
-  map< string, UINT32 >::iterator it = traceInstance.find( path );
+  map< string, PRV_UINT32 >::iterator it = traceInstance.find( path );
   if ( it == traceInstance.end() )
     traceInstance[ path ] = 0;
 
@@ -1851,7 +1851,7 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
   initialPosY += defaultTitleBarSize.GetHeight();
 
   // Its default semantic
-  for ( UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= COMPOSECPU; windowLevel++ )
+  for ( PRV_UINT16 windowLevel = TOPCOMPOSE1; windowLevel <= COMPOSECPU; windowLevel++ )
     newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
 
   string semanticFunction = loadedTraces[ currentTrace ]->getDefaultSemanticFunc( THREAD );
@@ -2282,19 +2282,19 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetTimelineEventLines( paraverConfig->getTimelineViewEventsLines() );
   preferences.SetTimelineCommunicationLines( paraverConfig->getTimelineViewCommunicationsLines() );
   preferences.SetTimelineFunctionAsColor( paraverConfig->getTimelineViewFunctionAsColor() );
-  preferences.SetTimelineColor( ( UINT32 )paraverConfig->getTimelineColor() );
-  preferences.SetTimelineGradientFunction( ( UINT32 )paraverConfig->getTimelineGradientFunction() );
-  preferences.SetTimelineDrawmodeTime( ( UINT32 )paraverConfig->getTimelineDrawmodeTime() );
-  preferences.SetTimelineDrawmodeObjects( ( UINT32 )paraverConfig->getTimelineDrawmodeObjects() );
-  preferences.SetTimelinePixelSize( ( UINT32 )paraverConfig->getTimelinePixelSize() );
+  preferences.SetTimelineColor( ( PRV_UINT32 )paraverConfig->getTimelineColor() );
+  preferences.SetTimelineGradientFunction( ( PRV_UINT32 )paraverConfig->getTimelineGradientFunction() );
+  preferences.SetTimelineDrawmodeTime( ( PRV_UINT32 )paraverConfig->getTimelineDrawmodeTime() );
+  preferences.SetTimelineDrawmodeObjects( ( PRV_UINT32 )paraverConfig->getTimelineDrawmodeObjects() );
+  preferences.SetTimelinePixelSize( ( PRV_UINT32 )paraverConfig->getTimelinePixelSize() );
   preferences.SetTimelineWWPrecision( paraverConfig->getTimelinePrecision() );
   preferences.SetTimelineWWSemantic( paraverConfig->getTimelineWhatWhereSemantic() );
   preferences.SetTimelineWWEvents( paraverConfig->getTimelineWhatWhereEvents() );
   preferences.SetTimelineWWCommunications( paraverConfig->getTimelineWhatWhereCommunications() );
   preferences.SetTimelineWWPreviousNext( paraverConfig->getTimelineWhatWherePreviousNext() );
   preferences.SetTimelineWWText( paraverConfig->getTimelineWhatWhereText() );
-  preferences.SetTimelineSaveImageFormat( ( UINT32 )paraverConfig->getTimelineSaveImageFormat() );
-  preferences.SetTimelineSaveTextFormat( ( UINT32 )paraverConfig->getTimelineSaveTextFormat() );
+  preferences.SetTimelineSaveImageFormat( ( PRV_UINT32 )paraverConfig->getTimelineSaveImageFormat() );
+  preferences.SetTimelineSaveTextFormat( ( PRV_UINT32 )paraverConfig->getTimelineSaveTextFormat() );
 
   // HISTOGRAM
   //preferences.SetHistogramNameFormatPrefix( paraverConfig->getHistogramDefaultName() );
@@ -2307,8 +2307,8 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetHistogramShowGradient( paraverConfig->getHistogramViewGradientColors() );
   preferences.SetHistogramLabelsColor( paraverConfig->getHistogramViewFirstRowColored() );
   preferences.SetHistogramGradientFunction( paraverConfig->getHistogramGradientFunction() );
-  preferences.SetHistogramDrawmodeSemantic( ( UINT32 ) paraverConfig->getHistogramDrawmodeSemantic() );
-  preferences.SetHistogramDrawmodeObjects( ( UINT32 ) paraverConfig->getHistogramDrawmodeObjects() );
+  preferences.SetHistogramDrawmodeSemantic( ( PRV_UINT32 ) paraverConfig->getHistogramDrawmodeSemantic() );
+  preferences.SetHistogramDrawmodeObjects( ( PRV_UINT32 ) paraverConfig->getHistogramDrawmodeObjects() );
   preferences.SetHistogramScientificNotation( paraverConfig->getHistogramScientificNotation() );
   preferences.SetHistogramThousandSeparator( paraverConfig->getHistogramThousandSep() );
   preferences.SetHistogramShowUnits( paraverConfig->getHistogramShowUnits() );
@@ -2319,8 +2319,8 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetHistogramNumColumns( paraverConfig->getHistogramNumColumns() );
 //  preferences.SetHistogramMaxNumColumns( 400 ); // TO IMPLEMENT
 //  preferences.SetHistogramMaxPrecision( 20 ); // TO IMPLEMENT
-  preferences.SetHistogramSaveImageFormat( ( UINT32 )paraverConfig->getHistogramSaveImageFormat() );
-  preferences.SetHistogramSaveTextFormat( ( UINT32 )paraverConfig->getHistogramSaveTextFormat() );
+  preferences.SetHistogramSaveImageFormat( ( PRV_UINT32 )paraverConfig->getHistogramSaveImageFormat() );
+  preferences.SetHistogramSaveTextFormat( ( PRV_UINT32 )paraverConfig->getHistogramSaveTextFormat() );
 
   // COLORS
   preferences.SetTimelineColourBackground( paraverConfig->getColorsTimelineBackground() );
@@ -2447,9 +2447,9 @@ void paraverMain::selectTrace( Trace *trace )
 }
 
 
-UINT16 paraverMain::getTracePosition( Trace *trace )
+PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 {
-  UINT16 currentTrace;
+  PRV_UINT16 currentTrace;
 
   for ( currentTrace = 0; currentTrace < loadedTraces.size(); ++currentTrace )
     if ( loadedTraces[ currentTrace ] == trace )
@@ -2854,7 +2854,7 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   strcpy( tmpPathOut, (char *)traceFilePath.c_str() );
   strcpy( tmpPathOutBackup, (char *)traceFilePath.c_str() );
 
-  for( UINT16 i = 0; i < filterToolOrder.size(); ++i )
+  for( PRV_UINT16 i = 0; i < filterToolOrder.size(); ++i )
   {
     strcpy( tmpNameIn, tmpNameOut );
 
@@ -2904,7 +2904,7 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
 
   // Delete intermediate files
   char *pcfName, *rowName;
-  for( UINT16 i = 0; i < tmpFiles.size() - 1; ++i )
+  for( PRV_UINT16 i = 0; i < tmpFiles.size() - 1; ++i )
   {
     pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), "pcf" );
     rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), "row" );
@@ -2915,7 +2915,7 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
 
   // Delete utilities
   // delete traceOptions;
-  for( UINT16 i = 0; i < filterToolOrder.size(); ++i )
+  for( PRV_UINT16 i = 0; i < filterToolOrder.size(); ++i )
   {
     switch( filterToolOrder[i] )
     {
@@ -2998,6 +2998,5 @@ void paraverMain::OnIconize( wxIconizeEvent& event )
     iconizeWindows( currentTree, root, event.Iconized() );
   }
 }
-
 
 

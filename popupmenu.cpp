@@ -1130,7 +1130,7 @@ void gPopUpMenu::OnMenuPixelSize( wxCommandEvent& event )
 {
   if ( timeline != NULL )
   {
-    UINT32 pixelSize; 
+    PRV_UINT32 pixelSize; 
 
     switch( event.GetId() )
     {

@@ -58,7 +58,7 @@ wxTreeCtrl *getSelectedTraceTree( Trace *trace )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
 
-  INT16 currentTrace = paraverMain::myParaverMain->getTracePosition( trace );
+  PRV_INT16 currentTrace = paraverMain::myParaverMain->getTracePosition( trace );
 
   return (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
 }

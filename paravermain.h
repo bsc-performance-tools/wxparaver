@@ -271,8 +271,8 @@ public:
   ParaverConfig* GetParaverConfig() const { return paraverConfig ; }
   void SetParaverConfig(ParaverConfig* value) { paraverConfig = value ; }
 
-  INT16 GetCurrentTrace() const { return currentTrace ; }
-  void SetCurrentTrace(INT16 value) { currentTrace = value ; }
+  PRV_INT16 GetCurrentTrace() const { return currentTrace ; }
+  void SetCurrentTrace(PRV_INT16 value) { currentTrace = value ; }
 
   wxImageList* GetImageList() const { return imageList ; }
   void SetImageList(wxImageList* value) { imageList = value ; }
@@ -345,7 +345,7 @@ public:
   int GetNextPosX();
   int GetNextPosY();
   void selectTrace( Trace *trace );
-  UINT16 getTracePosition( Trace *trace );
+  PRV_UINT16 getTracePosition( Trace *trace );
 
   void commandLineLoadings( wxCmdLineParser &parser );
   
@@ -386,7 +386,7 @@ private:
   vector<Trace *> loadedTraces;
   KernelConnection* localKernel;
   ParaverConfig* paraverConfig;
-  INT16 currentTrace;
+  PRV_INT16 currentTrace;
   wxImageList* imageList;
   Window * currentTimeline;
   Histogram * currentHisto;
@@ -408,7 +408,7 @@ private:
   queue<string> loadFilesQueue;
 ////@end paraverMain member variables
 
-  map< string, UINT32 > traceInstance;
+  map< string, PRV_UINT32 > traceInstance;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
 

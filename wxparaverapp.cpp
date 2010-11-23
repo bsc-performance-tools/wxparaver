@@ -378,3 +378,4 @@ void wxparaverApp::DeactivateGlobalTiming()
   globalTimingCallDialog->Raise();
 }
 
+

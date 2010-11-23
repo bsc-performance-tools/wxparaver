@@ -648,9 +648,9 @@ bool DerivedTimelineDialog::getFactorFields( double &whichFactor1,
 }
 
 
-void DerivedTimelineDialog::setParametersCompose( UINT32 compose,
+void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
                                                   string nameFunction,
-                                                  UINT32 numParameters,
+                                                  PRV_UINT32 numParameters,
                                                   vector< string > namesParameters,
                                                   vector< TParamValue > defaultValues )
 {
@@ -776,10 +776,10 @@ void DerivedTimelineDialog::setParameterComposeField( TParamValue defaultValues,
 {
   wxString aux;
 
-  UINT32 maxValues = UINT32( defaultValues.size() );
+  PRV_UINT32 maxValues = PRV_UINT32( defaultValues.size() );
 
   aux << defaultValues[ 0 ];
-  for ( UINT32 i = 1; i < maxValues; ++i  )
+  for ( PRV_UINT32 i = 1; i < maxValues; ++i  )
   {
     aux << _( "; " );
     aux << defaultValues[ i ];
@@ -816,7 +816,7 @@ bool DerivedTimelineDialog::getParameterComposeField( wxTextCtrl *field, TParamV
 
 void DerivedTimelineDialog::OnTopcompose1Selected( wxCommandEvent& event )
 {
-  UINT32 numParameters;
+  PRV_UINT32 numParameters;
   vector< string > namesParameters;
   vector< vector < double > > defaultParameters;
 
@@ -838,7 +838,7 @@ void DerivedTimelineDialog::OnTopcompose1Selected( wxCommandEvent& event )
 
 void DerivedTimelineDialog::OnTopcompose2Selected( wxCommandEvent& event )
 {
-  UINT32 numParameters;
+  PRV_UINT32 numParameters;
   vector< string > namesParameters;
   vector< vector < double > > defaultParameters;
 

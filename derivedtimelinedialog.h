@@ -225,9 +225,9 @@ private:
   void getName( wxTextCtrl *field, string &whichName ) const;
   bool getFactorFields( double &whichFactor1,
                         double &whichFactor2 );
-  void setParametersCompose( UINT32 compose,
+  void setParametersCompose( PRV_UINT32 compose,
                              string nameFunction,
-                             UINT32 numParameters,
+                             PRV_UINT32 numParameters,
                              vector< string > namesParameters,
                              vector< vector< double > > defaultValues );
 

@@ -354,8 +354,8 @@ public:
   wxTimer * GetTimerSize() const { return timerSize ; }
   void SetTimerSize(wxTimer * value) { timerSize = value ; }
 
-  UINT32 GetPixelSize() const { return pixelSize ; }
-  void SetPixelSize(UINT32 value) { pixelSize = value ; }
+  PRV_UINT32 GetPixelSize() const { return pixelSize ; }
+  void SetPixelSize(PRV_UINT32 value) { pixelSize = value ; }
 
   int GetInfoZoneLastSize() const { return infoZoneLastSize ; }
   void SetInfoZoneLastSize(int value) { infoZoneLastSize = value ; }
@@ -453,7 +453,7 @@ public:
   void OnPopUpDrawModeBothMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
 
-  void OnPopUpPixelSize( UINT32 whichPixelSize );
+  void OnPopUpPixelSize( PRV_UINT32 whichPixelSize );
 
   void OnPopUpRowSelection();
 
@@ -542,7 +542,7 @@ private:
   bool redoColors;
   bool splitChanged;
   wxTimer * timerSize;
-  UINT32 pixelSize;
+  PRV_UINT32 pixelSize;
   int infoZoneLastSize;
   wxColour foregroundColour;
   wxColour backgroundColour;

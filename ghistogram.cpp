@@ -390,7 +390,7 @@ void gHistogram::fillGrid()
   int rowLabelWidth = 0;
   wxFont labelFont = gridHisto->GetLabelFont();
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
-  UINT16 idStat;
+  PRV_UINT16 idStat;
   THistogramColumn curPlane;
   THistogramColumn numCols, numDrawCols;
   TObjectOrder numRows, numDrawRows;
@@ -685,7 +685,7 @@ void gHistogram::fillGrid()
 void gHistogram::fillZoom()
 {
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
-  UINT16 idStat;
+  PRV_UINT16 idStat;
   THistogramColumn curPlane;
   THistogramColumn numCols, numDrawCols;
   TObjectOrder numDrawRows;
@@ -848,7 +848,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
   bool firstRowColored = myHistogram->getFirstRowColored();
   double& cellWidth = zoomCellWidth;
   double& cellHeight = zoomCellHeight;
-  UINT16 idStat;
+  PRV_UINT16 idStat;
   THistogramColumn curPlane;
   vector<TSemanticValue> valuesColumns;
   vector<TSemanticValue> valuesObjects;
@@ -969,7 +969,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
   }
 }
 
-void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, UINT16 idStat )
+void gHistogram::fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, PRV_UINT16 idStat )
 {
   THistogramColumn numDrawCols;
   wxFont labelFont = gridHisto->GetLabelFont();
@@ -1935,7 +1935,7 @@ TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjec
 {
   THistogramColumn plane;
   TSemanticValue value = 0.0;
-  UINT16 idStat;
+  PRV_UINT16 idStat;
   
   myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
   
@@ -2233,7 +2233,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     THistogramLimit extraMax = myHistogram->getExtraControlMax();
     THistogramLimit extraDelta = myHistogram->getExtraControlDelta();
     onLevel = extraControlCloned->getFirstFreeCompose();
-    UINT32 plane;
+    PRV_UINT32 plane;
     if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
       plane = myHistogram->getCommSelectedPlane();
     else

@@ -285,7 +285,7 @@ private:
   void computeColumns( Window *timeline, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta );
   void updateControlTimelineAutofit();
   void updateExtraControlTimelineAutofit();
-  UINT32 fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget );
+  PRV_UINT32 fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget );
   void enable3DFields( bool autofit );
 };
 

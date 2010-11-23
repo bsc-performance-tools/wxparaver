@@ -174,14 +174,14 @@ public:
 
 ////@begin PreferencesDialog member function declarations
 
-  UINT32 GetHistogramNumColumns() const { return histogramNumColumns ; }
-  void SetHistogramNumColumns(UINT32 value) { histogramNumColumns = value ; }
+  THistogramColumn GetHistogramNumColumns() const { return histogramNumColumns ; }
+  void SetHistogramNumColumns(THistogramColumn value) { histogramNumColumns = value ; }
 
-  UINT32 GetHistogramPrecision() const { return histogramPrecision ; }
-  void SetHistogramPrecision(UINT32 value) { histogramPrecision = value ; }
+  PRV_UINT32 GetHistogramPrecision() const { return histogramPrecision ; }
+  void SetHistogramPrecision(PRV_UINT32 value) { histogramPrecision = value ; }
 
-  UINT32 GetTimelineWWPrecision() const { return timelineWWPrecision ; }
-  void SetTimelineWWPrecision(UINT32 value) { timelineWWPrecision = value ; }
+  PRV_UINT32 GetTimelineWWPrecision() const { return timelineWWPrecision ; }
+  void SetTimelineWWPrecision(PRV_UINT32 value) { timelineWWPrecision = value ; }
 
   bool GetHistogramThousandSeparator() const { return histogramThousandSeparator ; }
   void SetHistogramThousandSeparator(bool value) { histogramThousandSeparator = value ; }
@@ -189,14 +189,14 @@ public:
   bool GetHistogramShowUnits() const { return histogramShowUnits ; }
   void SetHistogramShowUnits(bool value) { histogramShowUnits = value ; }
 
-  UINT32 GetHistogramMaxNumColumns() const { return histogramMaxNumColumns ; }
-  void SetHistogramMaxNumColumns(UINT32 value) { histogramMaxNumColumns = value ; }
+  THistogramColumn GetHistogramMaxNumColumns() const { return histogramMaxNumColumns ; }
+  void SetHistogramMaxNumColumns(THistogramColumn value) { histogramMaxNumColumns = value ; }
 
-  UINT32 GetHistogramMaxPrecision() const { return histogramMaxPrecision ; }
-  void SetHistogramMaxPrecision(UINT32 value) { histogramMaxPrecision = value ; }
+  PRV_UINT32 GetHistogramMaxPrecision() const { return histogramMaxPrecision ; }
+  void SetHistogramMaxPrecision(PRV_UINT32 value) { histogramMaxPrecision = value ; }
 
-  UINT32 GetWhatWhereMaxPrecision() const { return whatWhereMaxPrecision ; }
-  void SetWhatWhereMaxPrecision(UINT32 value) { whatWhereMaxPrecision = value ; }
+  PRV_UINT32 GetWhatWhereMaxPrecision() const { return whatWhereMaxPrecision ; }
+  void SetWhatWhereMaxPrecision(PRV_UINT32 value) { whatWhereMaxPrecision = value ; }
 
   bool GetGlobalFillStateGaps() const { return globalFillStateGaps ; }
   void SetGlobalFillStateGaps(bool value) { globalFillStateGaps = value ; }
@@ -264,26 +264,26 @@ public:
   bool GetTimelineWWText() const { return timelineWWText ; }
   void SetTimelineWWText(bool value) { timelineWWText = value ; }
 
-  UINT32 GetTimelineColor() const { return timelineColor ; }
-  void SetTimelineColor(UINT32 value) { timelineColor = value ; }
+  PRV_UINT32 GetTimelineColor() const { return timelineColor ; }
+  void SetTimelineColor(PRV_UINT32 value) { timelineColor = value ; }
 
-  UINT32 GetTimelineGradientFunction() const { return timelineGradientFunction ; }
-  void SetTimelineGradientFunction(UINT32 value) { timelineGradientFunction = value ; }
+  PRV_UINT32 GetTimelineGradientFunction() const { return timelineGradientFunction ; }
+  void SetTimelineGradientFunction(PRV_UINT32 value) { timelineGradientFunction = value ; }
 
-  UINT32 GetTimelineDrawmodeTime() const { return timelineDrawmodeTime ; }
-  void SetTimelineDrawmodeTime(UINT32 value) { timelineDrawmodeTime = value ; }
+  PRV_UINT32 GetTimelineDrawmodeTime() const { return timelineDrawmodeTime ; }
+  void SetTimelineDrawmodeTime(PRV_UINT32 value) { timelineDrawmodeTime = value ; }
 
-  UINT32 GetTimelineDrawmodeObjects() const { return timelineDrawmodeObjects ; }
-  void SetTimelineDrawmodeObjects(UINT32 value) { timelineDrawmodeObjects = value ; }
+  PRV_UINT32 GetTimelineDrawmodeObjects() const { return timelineDrawmodeObjects ; }
+  void SetTimelineDrawmodeObjects(PRV_UINT32 value) { timelineDrawmodeObjects = value ; }
 
-  UINT32 GetTimelinePixelSize() const { return timelinePixelSize ; }
-  void SetTimelinePixelSize(UINT32 value) { timelinePixelSize = value ; }
+  PRV_UINT32 GetTimelinePixelSize() const { return timelinePixelSize ; }
+  void SetTimelinePixelSize(PRV_UINT32 value) { timelinePixelSize = value ; }
 
-  UINT32 GetTimelineSaveImageFormat() const { return timelineSaveImageFormat ; }
-  void SetTimelineSaveImageFormat(UINT32 value) { timelineSaveImageFormat = value ; }
+  PRV_UINT32 GetTimelineSaveImageFormat() const { return timelineSaveImageFormat ; }
+  void SetTimelineSaveImageFormat(PRV_UINT32 value) { timelineSaveImageFormat = value ; }
 
-  UINT32 GetTimelineSaveTextFormat() const { return timelineSaveTextFormat ; }
-  void SetTimelineSaveTextFormat(UINT32 value) { timelineSaveTextFormat = value ; }
+  PRV_UINT32 GetTimelineSaveTextFormat() const { return timelineSaveTextFormat ; }
+  void SetTimelineSaveTextFormat(PRV_UINT32 value) { timelineSaveTextFormat = value ; }
 
   string GetHistogramNameFormatPrefix() const { return histogramNameFormatPrefix ; }
   void SetHistogramNameFormatPrefix(string value) { histogramNameFormatPrefix = value ; }
@@ -303,11 +303,11 @@ public:
   bool GetHistogramShowGradient() const { return histogramShowGradient ; }
   void SetHistogramShowGradient(bool value) { histogramShowGradient = value ; }
 
-  UINT32 GetHistogramGradientFunction() const { return histogramGradientFunction ; }
-  void SetHistogramGradientFunction(UINT32 value) { histogramGradientFunction = value ; }
+  PRV_UINT32 GetHistogramGradientFunction() const { return histogramGradientFunction ; }
+  void SetHistogramGradientFunction(PRV_UINT32 value) { histogramGradientFunction = value ; }
 
-  UINT32 GetHistogramDrawmodeObjects() const { return histogramDrawmodeObjects ; }
-  void SetHistogramDrawmodeObjects(UINT32 value) { histogramDrawmodeObjects = value ; }
+  PRV_UINT32 GetHistogramDrawmodeObjects() const { return histogramDrawmodeObjects ; }
+  void SetHistogramDrawmodeObjects(PRV_UINT32 value) { histogramDrawmodeObjects = value ; }
 
   bool GetHistogramScientificNotation() const { return histogramScientificNotation ; }
   void SetHistogramScientificNotation(bool value) { histogramScientificNotation = value ; }
@@ -318,11 +318,11 @@ public:
   bool GetHistogramAutofitDataGradient() const { return histogramAutofitDataGradient ; }
   void SetHistogramAutofitDataGradient(bool value) { histogramAutofitDataGradient = value ; }
 
-  UINT32 GetHistogramSaveImageFormat() const { return histogramSaveImageFormat ; }
-  void SetHistogramSaveImageFormat(UINT32 value) { histogramSaveImageFormat = value ; }
+  PRV_UINT32 GetHistogramSaveImageFormat() const { return histogramSaveImageFormat ; }
+  void SetHistogramSaveImageFormat(PRV_UINT32 value) { histogramSaveImageFormat = value ; }
 
-  UINT32 GetHistogramSaveTextFormat() const { return histogramSaveTextFormat ; }
-  void SetHistogramSaveTextFormat(UINT32 value) { histogramSaveTextFormat = value ; }
+  PRV_UINT32 GetHistogramSaveTextFormat() const { return histogramSaveTextFormat ; }
+  void SetHistogramSaveTextFormat(PRV_UINT32 value) { histogramSaveTextFormat = value ; }
 
   bool GetHistogramDrawmodeSemantic() const { return histogramDrawmodeSemantic ; }
   void SetHistogramDrawmodeSemantic(bool value) { histogramDrawmodeSemantic = value ; }
@@ -414,14 +414,14 @@ public:
   wxColourPickerCtrl* colourPickerGradientLow;
   wxColourPickerCtrl* colourPickerGradientTop;
 private:
-  UINT32 histogramNumColumns;
-  UINT32 histogramPrecision;
-  UINT32 timelineWWPrecision;
+  THistogramColumn histogramNumColumns;
+  PRV_UINT32 histogramPrecision;
+  PRV_UINT32 timelineWWPrecision;
   bool histogramThousandSeparator;
   bool histogramShowUnits;
-  UINT32 histogramMaxNumColumns;
-  UINT32 histogramMaxPrecision;
-  UINT32 whatWhereMaxPrecision;
+  THistogramColumn histogramMaxNumColumns;
+  PRV_UINT32 histogramMaxPrecision;
+  PRV_UINT32 whatWhereMaxPrecision;
   bool globalFillStateGaps;
   rgb timelineColourBackground;
   rgb timelineColourAxis;
@@ -444,26 +444,26 @@ private:
   bool timelineWWCommunications;
   bool timelineWWPreviousNext;
   bool timelineWWText;
-  UINT32 timelineColor;
-  UINT32 timelineGradientFunction;
-  UINT32 timelineDrawmodeTime;
-  UINT32 timelineDrawmodeObjects;
-  UINT32 timelinePixelSize;
-  UINT32 timelineSaveImageFormat;
-  UINT32 timelineSaveTextFormat;
+  PRV_UINT32 timelineColor;
+  PRV_UINT32 timelineGradientFunction;
+  PRV_UINT32 timelineDrawmodeTime;
+  PRV_UINT32 timelineDrawmodeObjects;
+  PRV_UINT32 timelinePixelSize;
+  PRV_UINT32 timelineSaveImageFormat;
+  PRV_UINT32 timelineSaveTextFormat;
   string histogramNameFormatPrefix;
   string histogramNameFormatFull;
   bool histogramZoom;
   bool histogramHideEmpty;
   bool histogramHorizontal;
   bool histogramShowGradient;
-  UINT32 histogramGradientFunction;
-  UINT32 histogramDrawmodeObjects;
+  PRV_UINT32 histogramGradientFunction;
+  PRV_UINT32 histogramDrawmodeObjects;
   bool histogramScientificNotation;
   bool histogramAutofitControlScale;
   bool histogramAutofitDataGradient;
-  UINT32 histogramSaveImageFormat;
-  UINT32 histogramSaveTextFormat;
+  PRV_UINT32 histogramSaveImageFormat;
+  PRV_UINT32 histogramSaveTextFormat;
   bool histogramDrawmodeSemantic;
   bool histogramAutofit3DScale;
   bool histogramLabelsColor;
@@ -475,7 +475,7 @@ private:
 
   wxString formatNumber( long value );
   void setLabelsChoiceBox( const vector< string > &list,
-                           const UINT32 &selected,
+                           const PRV_UINT32 &selected,
                            wxChoice *choiceBox );
   rgb wxColourToRGB( wxColour colour ) ;
   wxColour RGBTowxColour( rgb colour );
