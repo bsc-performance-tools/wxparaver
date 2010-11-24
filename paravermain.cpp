@@ -76,6 +76,8 @@
 #include "new_histogram.xpm"
 #include "delete.xpm"
 #include "cut_trace.xpm"
+#include "file_browser.xpm"
+#include "window_properties.xpm"
 ////@end XPM images
 
 #include "table.xpm"
@@ -348,6 +350,8 @@ void paraverMain::Init()
   menuHelp = NULL;
   tbarMain = NULL;
   choiceWindowBrowser = NULL;
+  toolBookFilesProperties = NULL;
+  dirctrlFiles = NULL;
   windowProperties = NULL;
 ////@end paraverMain member initialisation
 
@@ -417,15 +421,35 @@ void paraverMain::CreateControls()
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
     .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
-  windowProperties = new wxPropertyGrid( itemFrame1, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
-  itemFrame1->GetAuiManager().AddPane(windowProperties, wxAuiPaneInfo()
-    .Name(_T("auiWindowProperties")).Caption(_("Window properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+  toolBookFilesProperties = new wxToolbook( itemFrame1, ID_TOOLBOOKFILESANDPROPERTIES, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+  wxImageList* toolBookFilesPropertiesImageList = new wxImageList(16, 16, true, 2);
+  {
+    wxIcon toolBookFilesPropertiesIcon0(itemFrame1->GetIconResource(wxT("file_browser.xpm")));
+    toolBookFilesPropertiesImageList->Add(toolBookFilesPropertiesIcon0);
+    wxIcon toolBookFilesPropertiesIcon1(itemFrame1->GetIconResource(wxT("window_properties.xpm")));
+    toolBookFilesPropertiesImageList->Add(toolBookFilesPropertiesIcon1);
+  }
+  toolBookFilesProperties->AssignImageList(toolBookFilesPropertiesImageList);
+
+  dirctrlFiles = new wxGenericDirCtrl( toolBookFilesProperties, ID_DIRCTRLFILES, _T("/home/eloy/etc/cfgs"), wxDefaultPosition, wxDefaultSize, wxDIRCTRL_SHOW_FILTERS, _T("Paraver files|*.prv;*.prv.gz;*.cfg|CFG files (*.cfg)|*.cfg|PRV Files (*.prv, *.prv.gz)|*.prv;*.prv.gz"), 0 );
+
+  toolBookFilesProperties->AddPage(dirctrlFiles, wxEmptyString, false, 0);
+
+  windowProperties = new wxPropertyGrid( toolBookFilesProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
+
+  toolBookFilesProperties->AddPage(windowProperties, wxEmptyString, false, 1);
+
+  itemFrame1->GetAuiManager().AddPane(toolBookFilesProperties, wxAuiPaneInfo()
+    .Name(_T("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
 
   GetAuiManager().Update();
 
 ////@end paraverMain content construction
   wxTreeCtrl* tmpTree = createTree( imageList );
   choiceWindowBrowser->AddPage( tmpTree, _( "All Traces" ) );
+  
+  toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 1, wxT("Paraver Files") );
+  toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 2, wxT("Window Properties") );
 }
 
 
@@ -740,6 +764,16 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
   // Icon retrieval
 ////@begin paraverMain icon retrieval
   wxUnusedVar(name);
+  if (name == _T("file_browser.xpm"))
+  {
+    wxIcon icon(file_browser_xpm);
+    return icon;
+  }
+  else if (name == _T("window_properties.xpm"))
+  {
+    wxIcon icon(window_properties_xpm);
+    return icon;
+  }
   return wxNullIcon;
 ////@end paraverMain icon retrieval
 }
@@ -1341,6 +1375,11 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
 void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES )
+  {
+    event.Skip();
+    return;
+  }
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
   endDragWindow = NULL;
@@ -1374,6 +1413,20 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
 void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES )
+  {
+    wxFileName fileName( dirctrlFiles->GetPath() );
+    if( !fileName.IsDir() )
+    {
+      wxString fileExt( fileName.GetExt() );
+      if( fileExt == wxT( "prv" ) || fileExt == wxT( "prv.gz" ) )
+        DoLoadTrace( std::string( fileName.GetFullPath().mb_str() ) );
+      else if( fileExt == wxT( "cfg" ) && loadedTraces.size() > 0 )
+        DoLoadCFG( std::string( fileName.GetFullPath().mb_str() ) );
+    }
+    event.Skip();
+    return;
+  }
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
   endDragWindow = NULL;
@@ -1399,6 +1452,11 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
 void paraverMain::OnTreeRightClick( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
+  if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES )
+  {
+    event.Skip();
+    return;
+  }
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
   
   endDragWindow = NULL;
@@ -2998,5 +3056,9 @@ void paraverMain::OnIconize( wxIconizeEvent& event )
     iconizeWindows( currentTree, root, event.Iconized() );
   }
 }
+
+
+
+
 
 

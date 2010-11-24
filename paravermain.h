@@ -47,6 +47,8 @@
 #include "wx/frame.h"
 #include "wx/toolbar.h"
 #include "wx/choicebk.h"
+#include "wx/toolbook.h"
+#include "wx/dirctrl.h"
 ////@end includes
 #include "trace.h"
 #include "localkernel.h"
@@ -60,6 +62,8 @@
 ////@begin forward declarations
 class wxMenu;
 class wxChoicebook;
+class wxToolbook;
+class wxGenericDirCtrl;
 class wxPropertyGrid;
 ////@end forward declarations
 class ProgressController;
@@ -84,6 +88,8 @@ class wxPropertyGridEvent;
 #define ID_TOOLDELETE 10081
 #define ID_TOOL_CUT_TRACE 10100
 #define ID_CHOICEWINBROWSER 10002
+#define ID_TOOLBOOKFILESANDPROPERTIES 10159
+#define ID_DIRCTRLFILES 10160
 #define ID_FOREIGN 10010
 #define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMINIMIZE_BOX|wxCLOSE_BOX|wxWANTS_CHARS
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
@@ -381,6 +387,8 @@ public:
   wxMenu* menuHelp;
   wxToolBar* tbarMain;
   wxChoicebook* choiceWindowBrowser;
+  wxToolbook* toolBookFilesProperties;
+  wxGenericDirCtrl* dirctrlFiles;
   wxPropertyGrid* windowProperties;
 private:
   vector<Trace *> loadedTraces;
