@@ -453,6 +453,8 @@ void paraverMain::CreateControls()
   
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 1, wxT("Paraver Files") );
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 2, wxT("Window Properties") );
+  
+  dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath() ));
 }
 
 
