@@ -112,6 +112,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 ////@begin paraverMain event table entries
   EVT_CLOSE( paraverMain::OnCloseWindow )
   EVT_ICONIZE( paraverMain::OnIconize )
+  EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
 
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
@@ -421,7 +422,7 @@ void paraverMain::CreateControls()
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
-    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
+    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true));
 
   toolBookFilesProperties = new wxToolbook( itemFrame1, ID_TOOLBOOKFILESANDPROPERTIES, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
   wxImageList* toolBookFilesPropertiesImageList = new wxImageList(16, 16, true, 2);
@@ -1484,6 +1485,7 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
 
 void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
 {
+cout<<choiceWindowBrowser->GetSize().GetHeight()<<endl;
   // Get a copy of all Windows and Histograms from LoadedWindows
   vector< Window * > allWindows;
   LoadedWindows::getInstance()->getAll( allWindows );
@@ -3152,6 +3154,8 @@ void paraverMain::OnIconize( wxIconizeEvent& event )
     iconizeWindows( currentTree, root, event.Iconized() );
   }
 }
+
+
 
 
 /*!
