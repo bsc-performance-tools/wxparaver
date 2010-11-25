@@ -284,7 +284,10 @@ bool wxparaverApp::OnInit()
   wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
   paraverCommandLineParser.Parse();
 
-  mainWindow = new paraverMain( NULL );
+  wxSize mainWindowSize( ParaverConfig::getInstance()->getMainWindowWidth(),
+                         ParaverConfig::getInstance()->getMainWindowHeight() );
+  mainWindow = new paraverMain( NULL, SYMBOL_PARAVERMAIN_IDNAME, SYMBOL_PARAVERMAIN_TITLE, SYMBOL_PARAVERMAIN_POSITION, mainWindowSize );
+  //mainWindow = new paraverMain( NULL );
 
   mainWindow->Show(true);
 
@@ -316,6 +319,8 @@ bool wxparaverApp::OnInit()
 
 int wxparaverApp::OnExit()
 {
+  ParaverConfig::getInstance()->writeParaverConfigFile();
+  
   if( m_checker != NULL )
     delete m_checker;
     
