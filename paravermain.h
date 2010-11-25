@@ -166,9 +166,6 @@ public:
   /// wxEVT_ICONIZE event handler for ID_PARAVERMAIN
   void OnIconize( wxIconizeEvent& event );
 
-  /// wxEVT_SIZE event handler for ID_PARAVERMAIN
-  void OnSize( wxSizeEvent& event );
-
   /// wxEVT_IDLE event handler for ID_PARAVERMAIN
   void OnIdle( wxIdleEvent& event );
 

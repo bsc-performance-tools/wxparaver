@@ -112,7 +112,6 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 ////@begin paraverMain event table entries
   EVT_CLOSE( paraverMain::OnCloseWindow )
   EVT_ICONIZE( paraverMain::OnIconize )
-  EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
 
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
@@ -422,7 +421,7 @@ void paraverMain::CreateControls()
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
-    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true));
+    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true).MaximizeButton(true));
 
   toolBookFilesProperties = new wxToolbook( itemFrame1, ID_TOOLBOOKFILESANDPROPERTIES, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
   wxImageList* toolBookFilesPropertiesImageList = new wxImageList(16, 16, true, 2);
@@ -2774,7 +2773,7 @@ void paraverMain::OnSignal( )
   if ( lines.size() > 2 ) // any trace?
   {
     bool found = false;
-    size_t current = currentTrace;
+    PRV_INT16 current = currentTrace;
   
     // Is that trace loaded? First, try with current!
     if ( loadedTraces.size() > 0 )
@@ -2787,7 +2786,7 @@ void paraverMain::OnSignal( )
     if ( !found )
     {
       // then continue with all the list
-      for ( current = 0; current < loadedTraces.size(); ++current )
+      for ( current = 0; current < (PRV_INT16)loadedTraces.size(); ++current )
       {
         found = matchTraceNames( loadedTraces[ current ]->getFileName(),
                                  loadedTraces[ current ]->getTraceName(),
@@ -2800,7 +2799,7 @@ void paraverMain::OnSignal( )
       }
     }
 
-    if ( current == -1 || !found ) // No trace loaded or not found!!
+    if ( current <= 0 || !found ) // No trace loaded or not found!!
       DoLoadTrace( lines[ 2 ] );
   }
 
