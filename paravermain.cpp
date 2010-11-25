@@ -94,6 +94,8 @@
 #include "derived_controlled_maximum.xpm"
 #include "derived_controlled_add.xpm"
 
+#include <algorithm>
+
 /*!
  * paraverMain type definition
  */
@@ -2672,6 +2674,26 @@ void paraverMain::OnCloseWindow( wxCloseEvent& event )
 
 
 #ifndef WIN32
+
+bool paraverMain::matchTraceNames( const string &fileName1,  // path1/name1 or name1
+                                   const string &traceName1, // name1
+                                   const string &fileName2 ) // path2/name2 or name2
+{
+// not working for Windows !!
+//  string::size_type position = auxLine.find_last_of( '\\' );
+  string::size_type position = fileName2.find_last_of( '/' );
+
+  string traceName2;
+  if ( position != string::npos )
+    traceName2 = fileName2.substr( position + 1 );
+  else
+    traceName2 = fileName2;
+
+  return ((( fileName1 != traceName1 ) && ( fileName1 == fileName2 )) ||
+          (( fileName1 == traceName1 ) && ( traceName1 == traceName2 )));
+}
+
+
 void paraverMain::OnSignal( )
 {
   // PRECOND: sig1 XOR sig2 == true;
@@ -2683,16 +2705,6 @@ void paraverMain::OnSignal( )
   // Clear global variables
   sig1 = false;
   sig2 = false;
-
-  // Any loaded trace?
-  if ( loadedTraces.size() == 0 )
-  {
-    wxMessageDialog message( this, _( "No trace loaded" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
-    raiseCurrentWindow = false;
-    message.ShowModal();
-    raiseCurrentWindow = true;
-    return;
-  }
 
   // Is some trace loading now?
   if ( paraverMain::dialogProgress != NULL )
@@ -2711,16 +2723,101 @@ void paraverMain::OnSignal( )
   paraloadFile.open( fullName.c_str() );
   if ( !paraloadFile  )
   {
-    wxMessageDialog message( this, _( "File ./paraload.sig not found" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
+    wxMessageDialog message( this,
+                             _( "File ./paraload.sig not found" ),
+                             _( "Signal Handler Manager" ),
+                             wxOK | wxICON_EXCLAMATION );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
     return;
   }
 
+  string::size_type position;
+
+  // Read all lines in paraload.sig
+  vector<string> lines;
+  string auxLine;
+  while ( !paraloadFile.eof() )
+  {
+    // get line and trim its leading or trailing spaces or tabs
+    std::getline( paraloadFile, auxLine );
+    position = auxLine.find_last_not_of(" \t");
+    if ( position != string::npos   )
+    {
+      auxLine.erase( position + 1 );
+      position = auxLine.find_first_not_of(" \t");
+      if ( position != string::npos )
+      {
+        auxLine.erase( 0, position );
+      }
+    }
+    else
+    {
+      auxLine.clear();
+    }
+    
+    // Is it useful? Save it!
+    if ( auxLine.length() > 0 && auxLine[0] != '#' )
+    {
+      lines.push_back( auxLine );
+      auxLine.clear();
+    }
+  }
+  
+  // POSTCOND:
+  // lines[0] must contain paraver cfg
+  // lines[1] must contain time range to set the window
+  // if exists, lines[2] must contain a trace to load
+
+  if ( lines.size() > 2 ) // any trace?
+  {
+    bool found = false;
+    size_t current = currentTrace;
+  
+    // Is that trace loaded? First, try with current!
+    if ( loadedTraces.size() > 0 )
+    {
+      found = matchTraceNames( loadedTraces[ current ]->getFileName(),
+                               loadedTraces[ current ]->getTraceName(),
+                               lines[ 2 ] );
+    }
+    
+    if ( !found )
+    {
+      // then continue with all the list
+      for ( current = 0; current < loadedTraces.size(); ++current )
+      {
+        found = matchTraceNames( loadedTraces[ current ]->getFileName(),
+                                 loadedTraces[ current ]->getTraceName(),
+                                 lines[ 2 ] );
+        if ( found )
+        {
+          currentTrace = current; // select it !!
+          break;
+        }
+      }
+    }
+
+    if ( current == -1 || !found ) // No trace loaded or not found!!
+      DoLoadTrace( lines[ 2 ] );
+  }
+
+  // Anyway, Am I able to load any cfg?
+  if ( loadedTraces.size() == 0 )
+  {
+    wxMessageDialog message( this,
+                             _( "No trace loaded" ),
+                             _( "Signal Handler Manager" ),
+                             wxOK | wxICON_EXCLAMATION );
+    raiseCurrentWindow = false;
+    message.ShowModal();
+    raiseCurrentWindow = true;
+    return;
+  }
+  
   // Read cfg location
-  string cfgFullName;
-  std::getline( paraloadFile, cfgFullName );
+  string cfgFullName = lines[ 0 ];
 
   // Code only for sigusr1: load cfg
   if( mySig1 )
@@ -2729,7 +2826,7 @@ void paraverMain::OnSignal( )
   // Code for both sigusr1 and sigusr2: zoom
   Window* myCurrentTimeline;
   vector<Window *> timelines;
-
+  
   LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
   if ( currentTimeline == NULL )
   {
@@ -2750,8 +2847,7 @@ void paraverMain::OnSignal( )
     myCurrentTimeline = currentTimeline;
 
   // Read paraload.sig second line: times
-  string times;
-  std::getline( paraloadFile, times );
+  string times = lines[1];
 
   size_t pos = times.find(":");
   if ( pos == string::npos )

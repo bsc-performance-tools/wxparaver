@@ -364,7 +364,10 @@ public:
   
 #ifndef WIN32
 //  void OnSignal( int sigusr );
-  void OnSignal( );
+  void OnSignal();
+  bool matchTraceNames( const string &fileName1, 
+                        const string &traceName1,
+                        const string &fileName2 );
 #endif
 
 #ifdef WIN32
