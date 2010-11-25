@@ -1487,7 +1487,7 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
 
 void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
 {
-cout<<choiceWindowBrowser->GetSize().GetHeight()<<endl;
+//cout<<choiceWindowBrowser->GetSize().GetHeight()<<endl;
   // Get a copy of all Windows and Histograms from LoadedWindows
   vector< Window * > allWindows;
   LoadedWindows::getInstance()->getAll( allWindows );
