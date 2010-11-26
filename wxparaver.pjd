@@ -2055,7 +2055,7 @@
               <string name="proxy-Member variable name">"dirctrlFiles"</string>
               <string name="proxy-Tab label">""</string>
               <string name="proxy-Tab icon">"file_browser.xpm"</string>
-              <string name="proxy-Default folder">"/home/eloy/etc/cfgs"</string>
+              <string name="proxy-Default folder">""</string>
               <string name="proxy-Filter">"Paraver files|*.prv;*.prv.gz;*.cfg|CFG files (*.cfg)|*.cfg|PRV Files (*.prv, *.prv.gz)|*.prv;*.prv.gz"</string>
               <long name="proxy-Default filter">0</long>
               <string name="proxy-Help text">""</string>

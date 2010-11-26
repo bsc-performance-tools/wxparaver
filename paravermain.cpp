@@ -434,7 +434,7 @@ void paraverMain::CreateControls()
   }
   toolBookFilesProperties->AssignImageList(toolBookFilesPropertiesImageList);
 
-  dirctrlFiles = new wxGenericDirCtrl( toolBookFilesProperties, ID_DIRCTRLFILES, _T("/home/eloy/etc/cfgs"), wxDefaultPosition, wxDefaultSize, wxDIRCTRL_SHOW_FILTERS, _T("Paraver files|*.prv;*.prv.gz;*.cfg|CFG files (*.cfg)|*.cfg|PRV Files (*.prv, *.prv.gz)|*.prv;*.prv.gz"), 0 );
+  dirctrlFiles = new wxGenericDirCtrl( toolBookFilesProperties, ID_DIRCTRLFILES, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_SHOW_FILTERS, _T("Paraver files|*.prv;*.prv.gz;*.cfg|CFG files (*.cfg)|*.cfg|PRV Files (*.prv, *.prv.gz)|*.prv;*.prv.gz"), 0 );
 
   toolBookFilesProperties->AddPage(dirctrlFiles, wxEmptyString, false, 0);
 
@@ -454,7 +454,7 @@ void paraverMain::CreateControls()
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 1, wxT("Paraver Files") );
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 2, wxT("Window Properties") );
   
-  dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath() ));
+  dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
 }
 
 
