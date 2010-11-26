@@ -50,6 +50,7 @@ noinst_HEADERS = \
               derived_minimum.xpm\
               derived_product.xpm\
               derived_substract.xpm\
+              file_browser.xpm\
               hide_cols.xpm\
               histo_color.xpm\
               histo_horvert.xpm\
@@ -64,7 +65,8 @@ noinst_HEADERS = \
               openfiltered.xpm\
               semantic_color.xpm\
               table.xpm\
-              timeline.xpm
+              timeline.xpm\
+              window_properties.xpm
 
 wxparaver_LDADD = @LIBS@ -l@WXPROPGRID_NAME@ -lparaver-kernel -lparaver-api
 wxparaver_CXXFLAGS = @CXXFLAGS@
