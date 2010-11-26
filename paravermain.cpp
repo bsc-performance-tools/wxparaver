@@ -1424,7 +1424,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
     if( !fileName.IsDir() )
     {
       wxString fileExt( fileName.GetExt() );
-      if( fileExt == wxT( "prv" ) || fileExt == wxT( "prv.gz" ) )
+      if( fileExt == wxT( "prv" ) || fileExt == wxT( "gz" ) )
         DoLoadTrace( std::string( fileName.GetFullPath().mb_str() ) );
       else if( fileExt == wxT( "cfg" ) && loadedTraces.size() > 0 )
         DoLoadCFG( std::string( fileName.GetFullPath().mb_str() ) );
@@ -1487,7 +1487,6 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
 
 void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
 {
-//cout<<choiceWindowBrowser->GetSize().GetHeight()<<endl;
   // Get a copy of all Windows and Histograms from LoadedWindows
   vector< Window * > allWindows;
   LoadedWindows::getInstance()->getAll( allWindows );

@@ -319,6 +319,11 @@ bool wxparaverApp::OnInit()
 
 int wxparaverApp::OnExit()
 {
+//  double w, h;
+//  wxparaverApp::mainWindow->GetAuiManager().GetDockSizeConstraint( &w, &h );
+//  cout<<w<<" "<<h<<endl;
+//  cout << wxparaverApp::mainWindow->GetAuiManager().SavePaneInfo(
+//            wxparaverApp::mainWindow->GetAuiManager().GetPane( wxparaverApp::mainWindow->choiceWindowBrowser ) ).mb_str()<<endl;
   ParaverConfig::getInstance()->writeParaverConfigFile();
   
   if( m_checker != NULL )
