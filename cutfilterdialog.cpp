@@ -1055,10 +1055,10 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_max_cutting_time( (unsigned long long)auxULong );
     traceOptions->set_maximum_time_percentage( (unsigned long long)auxULong );
 
-    traceOptions->set_original_time( (char)checkCutterUseOriginalTime->IsChecked() );
-    traceOptions->set_break_states( (int)!checkCutterDontBreakStates->IsChecked() );
-    traceOptions->set_remFirstStates( (int)checkCutterRemoveFirstState->IsChecked() );
-    traceOptions->set_remLastStates( (int)checkCutterRemoveLastState->IsChecked() );
+    traceOptions->set_original_time( checkCutterUseOriginalTime->IsChecked() );
+    traceOptions->set_break_states( !checkCutterDontBreakStates->IsChecked() );
+    traceOptions->set_remFirstStates( checkCutterRemoveFirstState->IsChecked() );
+    traceOptions->set_remLastStates( checkCutterRemoveLastState->IsChecked() );
 
     traceOptions->set_tasks_list( (char *)textCutterTasks->GetValue().c_str() );
   }
@@ -1226,16 +1226,16 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
   if ( !previousWarning )
   {
     // Discard Records
-    traceOptions->set_filter_states( (char)!checkFilterDiscardStateRecords->IsChecked() );
-    traceOptions->set_filter_events( (char)!checkFilterDiscardEventRecords->IsChecked() );
-    traceOptions->set_filter_comms( (char)!checkFilterDiscardCommunicationRecords->IsChecked() );
+    traceOptions->set_filter_states( !checkFilterDiscardStateRecords->IsChecked() );
+    traceOptions->set_filter_events( !checkFilterDiscardEventRecords->IsChecked() );
+    traceOptions->set_filter_comms( !checkFilterDiscardCommunicationRecords->IsChecked() );
 
     // filter_by_call_time is for all the record types, BUT:
     // 1) it uses a buffer (danger!)
     // 2) it's undocumented 
     // 3) if false => normal behaviour
     // Was it an experimental feature?
-    traceOptions->set_filter_by_call_time( (char)false );
+    traceOptions->set_filter_by_call_time( false );
 
     if ( !checkFilterDiscardStateRecords->IsChecked() )
     {
@@ -1253,7 +1253,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
       for( int i = 0; i < 20; ++i )
         auxNames[ i ] = NULL;
         
-      traceOptions->set_all_states( (char)allStatesSelected );
+      traceOptions->set_all_states( allStatesSelected );
       if ( allStatesSelected )
       {
         auxNames[ 0 ] = strdup( "All" );
@@ -1286,7 +1286,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 
     if ( !checkFilterDiscardEventRecords->IsChecked() )
     {
-      traceOptions->set_discard_given_types( (char)checkFilterDiscardListedEvents->IsChecked() );
+      traceOptions->set_discard_given_types( checkFilterDiscardListedEvents->IsChecked() );
       TraceOptions::TFilterTypes auxEvents;
       int lastType = 0;
       GetEventsList( auxEvents, lastType );
@@ -1343,7 +1343,7 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
   if ( !previousWarning )
   {
     // Region
-    traceOptions->set_sc_onInterval( (int) radioSCOnIntervals->GetValue() );
+    traceOptions->set_sc_onInterval( radioSCOnIntervals->GetValue() );
 
     traceOptions->set_sc_sampling_interval( (unsigned long long)textSCSamplingInterval->GetValue().ToULong( &auxULong ) );
     traceOptions->set_sc_minimum_burst_time( (unsigned long long)textSCMinimumBurstTime->GetValue().ToULong( &auxULong ) );
@@ -1352,12 +1352,12 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
     traceOptions->set_sc_types( GetSoftwareCountersEventsListToString( listSCSelectedEvents ) );
 
     // Options
-    traceOptions->set_sc_acumm_counters( (int) radioSCAccumulateValues->GetValue() );
+    traceOptions->set_sc_acumm_counters( radioSCAccumulateValues->GetValue() );
 
-    traceOptions->set_sc_remove_states( (int) checkSCRemoveStates->IsChecked() );
-    traceOptions->set_sc_summarize_states( (int) checkSCSummarizeUseful->IsChecked() );
-    traceOptions->set_sc_global_counters( (int) checkSCGlobalCounters->IsChecked() );
-    traceOptions->set_sc_only_in_bursts( (int) checkSCOnlyInBurstsCounting->IsChecked() );
+    traceOptions->set_sc_remove_states( checkSCRemoveStates->IsChecked() );
+    traceOptions->set_sc_summarize_states( checkSCSummarizeUseful->IsChecked() );
+    traceOptions->set_sc_global_counters( checkSCGlobalCounters->IsChecked() );
+    traceOptions->set_sc_only_in_bursts( checkSCOnlyInBurstsCounting->IsChecked() );
 
     // Keep events
     traceOptions->set_sc_types_kept( GetSoftwareCountersEventsListToString( listSCKeepEvents ));
@@ -2039,10 +2039,10 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
     textCutterEndCut->SetValue( wxString::FromAscii( aux.str().c_str() ) );
   }
 
-  checkCutterUseOriginalTime->SetValue( (bool)traceOptions->get_original_time() );
-  checkCutterDontBreakStates->SetValue( !((bool)traceOptions->get_break_states()) );
-  checkCutterRemoveFirstState->SetValue( (bool)traceOptions->get_remFirstStates() );
-  checkCutterRemoveLastState->SetValue( (bool)traceOptions->get_remLastStates() );
+  checkCutterUseOriginalTime->SetValue( traceOptions->get_original_time() );
+  checkCutterDontBreakStates->SetValue( !traceOptions->get_break_states() );
+  checkCutterRemoveFirstState->SetValue( traceOptions->get_remFirstStates() );
+  checkCutterRemoveLastState->SetValue( traceOptions->get_remLastStates() );
 
   TraceOptions::TTasksList auxList;
   traceOptions->get_tasks_list( auxList );
@@ -2106,13 +2106,13 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
   stringstream aux;
 
   // Discard Records
-  checkFilterDiscardStateRecords->SetValue( !(bool)traceOptions->get_filter_states() );
-  checkFilterDiscardEventRecords->SetValue( !(bool)traceOptions->get_filter_events() );
-  checkFilterDiscardCommunicationRecords->SetValue( !(bool)traceOptions->get_filter_comms() );
+  checkFilterDiscardStateRecords->SetValue( !traceOptions->get_filter_states() );
+  checkFilterDiscardEventRecords->SetValue( !traceOptions->get_filter_events() );
+  checkFilterDiscardCommunicationRecords->SetValue( !traceOptions->get_filter_comms() );
 
   // States
-  CheckStatesList( 0, (bool)traceOptions->get_all_states() ); // Check or uncheck all
-  if( !(bool)traceOptions->get_all_states() )
+  CheckStatesList( 0, traceOptions->get_all_states() ); // Check or uncheck all
+  if( !traceOptions->get_all_states() )
   {
     TraceOptions::TStateNames auxNames;
     for( int i = 0; i < 20; ++i )
@@ -2126,7 +2126,7 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
   textFilterMinBurstTime->SetValue( wxString::FromAscii( aux.str().c_str() ));
 
   // Events
-  checkFilterDiscardListedEvents->SetValue( (bool)traceOptions->get_discard_given_types() );
+  checkFilterDiscardListedEvents->SetValue( traceOptions->get_discard_given_types() );
 
   TraceOptions::TFilterTypes auxEvents;
   traceOptions->get_filter_types( auxEvents );
@@ -2144,7 +2144,7 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
   stringstream aux;
 
   // Region
-  radioSCOnIntervals->SetValue( (bool)traceOptions->get_sc_onInterval() );
+  radioSCOnIntervals->SetValue( traceOptions->get_sc_onInterval() );
 
   aux.str("");
   aux << traceOptions->get_sc_sampling_interval();
@@ -2159,11 +2159,11 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
                                                      listSCSelectedEvents );
 
   // Options
-  radioSCAccumulateValues->SetValue( (bool)traceOptions->get_sc_acumm_counters() );
-  checkSCRemoveStates->SetValue( (bool)traceOptions->get_sc_remove_states() );
-  checkSCSummarizeUseful->SetValue( (bool)traceOptions->get_sc_summarize_states() );
-  checkSCGlobalCounters->SetValue( (bool)traceOptions->get_sc_global_counters() );
-  checkSCOnlyInBurstsCounting->SetValue( (bool)traceOptions->get_sc_only_in_bursts() );
+  radioSCAccumulateValues->SetValue( traceOptions->get_sc_acumm_counters() );
+  checkSCRemoveStates->SetValue( traceOptions->get_sc_remove_states() );
+  checkSCSummarizeUseful->SetValue( traceOptions->get_sc_summarize_states() );
+  checkSCGlobalCounters->SetValue( traceOptions->get_sc_global_counters() );
+  checkSCOnlyInBurstsCounting->SetValue( traceOptions->get_sc_only_in_bursts() );
 
   // Keep events
   done = SetSoftwareCountersEventsListToString( string( traceOptions->get_sc_types_kept() ),
