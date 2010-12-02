@@ -121,7 +121,8 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
 ////@end gTimeline event table entries
 
-  EVT_TIMER( wxID_ANY, gTimeline::OnTimerSize )
+  EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
+  EVT_TIMER( ID_TIMER_MOTION, gTimeline::OnTimerMotion )
   
 END_EVENT_TABLE()
 
@@ -174,6 +175,7 @@ gTimeline::~gTimeline()
 ////@begin gTimeline destruction
 ////@end gTimeline destruction
   delete timerSize;
+  delete timerMotion;
   delete myWindow;
 }
 
@@ -194,10 +196,11 @@ void gTimeline::Init()
   redoColors = false;
   drawCaution = false;
   splitChanged = false;
-  timerSize = new wxTimer( this );
+  timerSize = new wxTimer( this, ID_TIMER_SIZE );
   pixelSize = 1;
   infoZoneLastSize = 200;
   escapePressed = false;
+  timerMotion = new wxTimer( this, ID_TIMER_MOTION );
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -224,6 +227,7 @@ void gTimeline::Init()
   bufferImage.Create( 1, 1 );
   objectFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
   timeFont = wxFont( 6, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
   whatWhereTime = 0.0;
   whatWhereRow = 0;
 
@@ -1715,6 +1719,9 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
  */
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
+  motionPos = event.GetPosition();
+  timerMotion->Start( 100, true );
+  
   wxMemoryDC dc( bufferImage );
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   PRV_UINT32 precision = 0;
@@ -2637,6 +2644,41 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
   Refresh();
 }
 
+
+void gTimeline::OnTimerMotion( wxTimerEvent& event )
+{
+  wxMemoryDC dc( bufferImage );
+  wxPaintDC paintDC( drawZone );
+  wxColour tmpColor;
+
+  paintDC.DrawBitmap( drawImage, 0, 0 );
+  
+  if( motionPos.x < objectAxisPos + 1 || motionPos.x > bufferImage.GetWidth() - drawBorder ||
+      motionPos.y < drawBorder || motionPos.y > timeAxisPos - 1 )
+    return;
+
+  dc.GetPixel( motionPos.x, motionPos.y, &tmpColor );
+  if( tmpColor == backgroundColour )
+    return;
+  rgb color = { (ParaverColor)tmpColor.Red(), (ParaverColor)tmpColor.Green(), (ParaverColor)tmpColor.Blue() };
+  TSemanticValue semValue;
+  if( !myWindow->calcValueFromColor( color, semValue ) )
+    return;
+
+  wxString label( LabelConstructor::semanticLabel( myWindow, semValue, true, 
+                                                   ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+
+  paintDC.SetFont( semanticFont );
+  wxSize objectExt = paintDC.GetTextExtent( label );
+
+  paintDC.SetPen( backgroundColour );
+  paintDC.SetBrush( backgroundColour );
+  paintDC.DrawRectangle( bufferImage.GetWidth() / 2, timeAxisPos + 1, objectExt.GetWidth() + 30, bufferImage.GetHeight() - timeAxisPos );
+  paintDC.SetBrush( tmpColor );
+  paintDC.DrawRectangle( bufferImage.GetWidth() / 2, timeAxisPos + 2, 10, bufferImage.GetHeight() - timeAxisPos - 3 );
+  paintDC.SetTextForeground( foregroundColour );
+  paintDC.DrawText( label, bufferImage.GetWidth() / 2 + 12, timeAxisPos + 3 );
+}
 
 /*!
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX

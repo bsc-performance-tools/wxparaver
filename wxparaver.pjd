@@ -3213,7 +3213,7 @@
           <string name="variable-22">"eventImage|wxBitmap|EventImage||0|0|"</string>
           <string name="variable-23">"drawCaution|bool|DrawCaution|false|0|0|"</string>
           <string name="variable-24">"splitChanged|bool|SplitChanged|false|2|0|"</string>
-          <string name="variable-25">"timerSize|wxTimer *|TimerSize|new wxTimer( this )|2|0|"</string>
+          <string name="variable-25">"timerSize|wxTimer *|TimerSize|new wxTimer( this, ID_TIMER_SIZE )|2|0|"</string>
           <string name="variable-26">"pixelSize|PRV_UINT32|PixelSize|1|2|0|"</string>
           <string name="variable-27">"infoZoneLastSize|int|InfoZoneLastSize|200|2|0|"</string>
           <string name="variable-28">"foregroundColour|wxColour|ForegroundColour||2|0|"</string>
@@ -3225,6 +3225,9 @@
           <string name="variable-34">"logicalPen|wxPen|LogicalPen||2|0|"</string>
           <string name="variable-35">"physicalPen|wxPen|PhysicalPen||2|0|"</string>
           <string name="variable-36">"eventsToDraw|hash_set&lt;wxCoord&gt;|EventsToDraw||2|0|"</string>
+          <string name="variable-37">"timerMotion|wxTimer *|TimerMotion|new wxTimer( this, ID_TIMER_MOTION )|2|0|"</string>
+          <string name="variable-38">"motionPos|wxPoint|MotionPos||2|0|"</string>
+          <string name="variable-39">"semanticFont|wxFont|SemanticFont||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>

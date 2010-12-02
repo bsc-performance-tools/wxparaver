@@ -103,6 +103,8 @@ class Window;
 #define SYMBOL_GTIMELINE_POSITION wxDefaultPosition
 ////@end control identifiers
 
+#define ID_TIMER_SIZE 40000
+#define ID_TIMER_MOTION 40001
 
 struct commCoord
 {
@@ -387,6 +389,15 @@ public:
   hash_set<wxCoord> GetEventsToDraw() const { return eventsToDraw ; }
   void SetEventsToDraw(hash_set<wxCoord> value) { eventsToDraw = value ; }
 
+  wxTimer * GetTimerMotion() const { return timerMotion ; }
+  void SetTimerMotion(wxTimer * value) { timerMotion = value ; }
+
+  wxPoint GetMotionPos() const { return motionPos ; }
+  void SetMotionPos(wxPoint value) { motionPos = value ; }
+
+  wxFont GetSemanticFont() const { return semanticFont ; }
+  void SetSemanticFont(wxFont value) { semanticFont = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -552,6 +563,9 @@ private:
   wxPen logicalPen;
   wxPen physicalPen;
   hash_set<wxCoord> eventsToDraw;
+  wxTimer * timerMotion;
+  wxPoint motionPos;
+  wxFont semanticFont;
 ////@end gTimeline member variables
 
   SemanticInfoType lastType;
@@ -584,6 +598,7 @@ private:
   void Unsplit();
   void Split();
   void OnTimerSize( wxTimerEvent& event );
+  void OnTimerMotion( wxTimerEvent& event );
 };
 
 #endif  // _GTIMELINE_H_
