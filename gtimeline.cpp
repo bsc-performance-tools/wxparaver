@@ -2665,9 +2665,17 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   if( !myWindow->calcValueFromColor( color, semValue ) )
     return;
 
-  wxString label( LabelConstructor::semanticLabel( myWindow, semValue, true, 
-                                                   ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
-
+  wxString label;
+  if( myWindow->IsCodeColorSet() )
+    label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, semValue, true, 
+                                                                  ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+  else
+  {
+    semValue = ( semValue * ( myWindow->getMaximumY() - myWindow->getMinimumY() ) ) + myWindow->getMinimumY();
+    label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, semValue, false, 
+                                                                  ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+  }
+  
   paintDC.SetFont( semanticFont );
   wxSize objectExt = paintDC.GetTextExtent( label );
 
