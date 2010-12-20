@@ -2661,19 +2661,20 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   if( tmpColor == backgroundColour )
     return;
   rgb color = { (ParaverColor)tmpColor.Red(), (ParaverColor)tmpColor.Green(), (ParaverColor)tmpColor.Blue() };
-  TSemanticValue semValue;
-  if( !myWindow->calcValueFromColor( color, semValue ) )
+  TSemanticValue firstValue, secondValue;
+  if( !myWindow->calcValueFromColor( color, firstValue, secondValue ) )
     return;
 
   wxString label;
   if( myWindow->IsCodeColorSet() )
-    label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, semValue, true, 
+    label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, true, 
                                                                   ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
   else
   {
-    semValue = ( semValue * ( myWindow->getMaximumY() - myWindow->getMinimumY() ) ) + myWindow->getMinimumY();
-    label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, semValue, false, 
+    label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, false, 
                                                                   ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+    label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, secondValue, false, 
+                                                                                  ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
   }
   
   paintDC.SetFont( semanticFont );
@@ -2681,11 +2682,11 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
 
   paintDC.SetPen( backgroundColour );
   paintDC.SetBrush( backgroundColour );
-  paintDC.DrawRectangle( bufferImage.GetWidth() / 2, timeAxisPos + 1, objectExt.GetWidth() + 30, bufferImage.GetHeight() - timeAxisPos );
+  paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 1, objectExt.GetWidth() + 30, bufferImage.GetHeight() - timeAxisPos );
   paintDC.SetBrush( tmpColor );
-  paintDC.DrawRectangle( bufferImage.GetWidth() / 2, timeAxisPos + 2, 10, bufferImage.GetHeight() - timeAxisPos - 3 );
+  paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 2, 10, bufferImage.GetHeight() - timeAxisPos - 3 );
   paintDC.SetTextForeground( foregroundColour );
-  paintDC.DrawText( label, bufferImage.GetWidth() / 2 + 12, timeAxisPos + 3 );
+  paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + 12, timeAxisPos + 3 );
 }
 
 /*!
