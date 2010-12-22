@@ -2647,12 +2647,37 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
 
 void gTimeline::OnTimerMotion( wxTimerEvent& event )
 {
+  if( zooming )
+    return;
+
   wxMemoryDC dc( bufferImage );
+#ifdef WIN32
+  wxMemoryDC tmpDC( drawImage );
+  tmpDC.SetBackgroundMode( wxTRANSPARENT );
+  tmpDC.SetBackground( *wxTRANSPARENT_BRUSH );
+  tmpDC.Clear();
+#if wxTEST_GRAPHICS == 1
+  wxGCDC paintDC( tmpDC );
+  paintDC.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
+#else
+  wxDC& paintDC = tmpDC;
+  paintDC.SetBrush( *wxTRANSPARENT_BRUSH );
+#endif
+  paintDC.DrawBitmap( bufferImage, 0, 0, false );
+  if( myWindow->getDrawFlags() )
+    paintDC.DrawBitmap( eventImage, 0, 0, true );
+  if( myWindow->getDrawCommLines() )
+    paintDC.DrawBitmap( commImage, 0, 0, true );
+#else
   wxPaintDC paintDC( drawZone );
+  paintDC.DrawBitmap( drawImage, 0, 0 );
+#endif
   wxColour tmpColor;
 
-  paintDC.DrawBitmap( drawImage, 0, 0 );
-  
+#ifdef WIN32
+  drawZone->Refresh();
+#endif
+
   if( motionPos.x < objectAxisPos + 1 || motionPos.x > bufferImage.GetWidth() - drawBorder ||
       motionPos.y < drawBorder || motionPos.y > timeAxisPos - 1 )
     return;
@@ -2687,6 +2712,9 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 2, 10, bufferImage.GetHeight() - timeAxisPos - 3 );
   paintDC.SetTextForeground( foregroundColour );
   paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + 12, timeAxisPos + 3 );
+#ifdef WIN32
+  drawZone->Refresh();
+#endif
 }
 
 /*!
