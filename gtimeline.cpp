@@ -359,6 +359,7 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
@@ -1169,18 +1170,6 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
-  }
-  else if( !outOfDraw )
-  {
-    if( !splitter->IsSplit() )
-    {
-      Split();
-    }
-    whatWhereText->Clear();
-    whatWhereText->AppendText( _( "Working..." ) );
-    Update();
-    computeWhatWhere( endTime, endRow, checkWWText->IsChecked() );
-    printWhatWhere();
   }
 
   zooming = false;
@@ -2647,8 +2636,10 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
 
 void gTimeline::OnTimerMotion( wxTimerEvent& event )
 {
+#ifdef WIN32
   if( zooming )
     return;
+#endif
 
   wxMemoryDC dc( bufferImage );
 #ifdef WIN32
@@ -2881,6 +2872,52 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 }
 
 
+/*!
+ * wxEVT_LEFT_DCLICK event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
+{
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
+  long x = event.GetX();
+  long y = event.GetY();
+  wxMemoryDC dc( bufferImage );
+  
+  if( x < objectAxisPos ||
+      x > dc.GetSize().GetWidth() - drawBorder )
+    return;
+  else
+    x -= objectAxisPos;
+
+  if( y > timeAxisPos ||
+      y < drawBorder )
+    return;
+
+  TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
+                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+  TTime time = ( timeStep * x ) + myWindow->getWindowBeginTime();
 
 
+  vector<TObjectOrder> selected;
+  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+  TObjectOrder numObjects = selected.size();
+  double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
+  endRow = TObjectOrder( floor( ( y - drawBorder - 1 ) / heightPerRow ) );
+
+  if( endRow >= numObjects )
+    endRow = numObjects - 1;
+  endRow   = selected[ endRow ];
+
+
+  if( !splitter->IsSplit() )
+  {
+    Split();
+  }
+  whatWhereText->Clear();
+  whatWhereText->AppendText( _( "Working..." ) );
+  Update();
+  computeWhatWhere( time, endRow, checkWWText->IsChecked() );
+  printWhatWhere();
+}
 

@@ -3394,11 +3394,12 @@
               <string name="event-handler-2">"wxEVT_ERASE_BACKGROUND|OnScrolledWindowEraseBackground|NONE||gTimeline"</string>
               <string name="event-handler-3">"wxEVT_LEFT_DOWN|OnScrolledWindowLeftDown|NONE||gTimeline"</string>
               <string name="event-handler-4">"wxEVT_LEFT_UP|OnScrolledWindowLeftUp|NONE||gTimeline"</string>
-              <string name="event-handler-5">"wxEVT_MIDDLE_UP|OnScrolledWindowMiddleUp|NONE||gTimeline"</string>
-              <string name="event-handler-6">"wxEVT_RIGHT_DOWN|OnScrolledWindowRightDown|NONE||gTimeline"</string>
-              <string name="event-handler-7">"wxEVT_MOTION|OnScrolledWindowMotion|NONE||gTimeline"</string>
-              <string name="event-handler-8">"wxEVT_KEY_DOWN|OnScrolledWindowKeyDown|NONE||gTimeline"</string>
-              <string name="event-handler-9">"wxEVT_UPDATE_UI|OnScrolledWindowUpdate|NONE||gTimeline"</string>
+              <string name="event-handler-5">"wxEVT_LEFT_DCLICK|OnScrolledWindowLeftDClick|NONE||gTimeline"</string>
+              <string name="event-handler-6">"wxEVT_MIDDLE_UP|OnScrolledWindowMiddleUp|NONE||gTimeline"</string>
+              <string name="event-handler-7">"wxEVT_RIGHT_DOWN|OnScrolledWindowRightDown|NONE||gTimeline"</string>
+              <string name="event-handler-8">"wxEVT_MOTION|OnScrolledWindowMotion|NONE||gTimeline"</string>
+              <string name="event-handler-9">"wxEVT_KEY_DOWN|OnScrolledWindowKeyDown|NONE||gTimeline"</string>
+              <string name="event-handler-10">"wxEVT_UPDATE_UI|OnScrolledWindowUpdate|NONE||gTimeline"</string>
               <string name="proxy-Id name">"ID_SCROLLEDWINDOW"</string>
               <long name="proxy-Id value">10007</long>
               <string name="proxy-Name">""</string>
