@@ -310,8 +310,10 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
 RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gTimeline *whichTimeline )
 {
   RowsSelectionDialog *myDialog = new RowsSelectionDialog( (wxWindow * )whichTimeline,
-                                                             ID_ROWSSELECTIONDIALOG,
-                                                             _( "Rows Selection" ));
+                                                           whichTimeline->GetMyWindow(),
+                                                           whichTimeline->GetMyWindow()->getSelectedRows(),
+                                                           ID_ROWSSELECTIONDIALOG,
+                                                           _( "Rows Selection" ));
 
   return myDialog;
 }

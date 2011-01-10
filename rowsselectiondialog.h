@@ -13,11 +13,12 @@
 #include <map>
 
 #include "paraverkerneltypes.h"
+#include "selectionmanagement.h"
 
 /*!
  * Forward declarations
  */
-class gTimeline;
+class Window;
 
 /*!
  * Control identifiers
@@ -42,6 +43,8 @@ public:
   /// Constructors
   RowsSelectionDialog();
   RowsSelectionDialog( wxWindow* parent,
+                       Window *whichWindow,
+                       SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
                        wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
                        const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
                        const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION,
@@ -76,6 +79,8 @@ public:
   int GetSelections( TWindowLevel whichLevel, wxArrayInt &selections );
 
 private:
+  Window *myTimeline;
+  SelectionManagement< TObjectOrder, TWindowLevel > *mySelectedRows;
   TWindowLevel minLevel; 
   vector< wxButton * > selectionButtons;
   vector< wxCheckListBox* > levelCheckList;
@@ -83,7 +88,7 @@ private:
   void OnSelectAllButtonClicked( wxCommandEvent& event );
   void OnUnselectAllButtonClicked( wxCommandEvent& event );
   void OnInvertButtonClicked( wxCommandEvent& event );
-  void buildPanel( gTimeline *myTimeline, const wxString& title, TWindowLevel level );
+  void buildPanel( const wxString& title, TWindowLevel level );
   void OnOkClick( wxCommandEvent& event );
 };
 

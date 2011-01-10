@@ -48,6 +48,7 @@
 #include "loadedwindows.h"
 #include "labelconstructor.h"
 #include "paraverlabels.h"
+#include "rowsselectiondialog.h"
 
 static bool filterCatCollapsed        = true;
 static bool commFilterCatCollapsed    = true;
@@ -291,17 +292,25 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         selected = pos;
       pos++;
     }
+
     wxEnumProperty *fromFunction = new wxEnumProperty( wxT("Function"), wxT("FromFunction"),
                                     arrayFilterFunctions, arrayFilterFunctionsPos, selected );
-    windowProperties->AppendIn( commFilterFrom, fromFunction );
-
+    windowProperties->AppendIn( commFilterFrom, (wxPGProperty*)fromFunction );
+    
+    // add communication senders to arrayStr
     arrayStr.Clear();
     vector<TObjectOrder> fromSel;
     filter->getCommFrom( fromSel );
     for( vector<TObjectOrder>::iterator it = fromSel.begin(); it != fromSel.end(); it++ )
       arrayStr.Add( wxString() << ( (*it) + 1 ) );
-    wxArrayStringProperty *fromProperty = new wxArrayStringProperty( wxT("From"), wxPG_LABEL, arrayStr );
-    windowProperties->AppendIn( commFilterFrom, fromProperty );
+
+    //wxArrayStringProperty *fromProperty = new wxArrayStringProperty( wxT("From"), wxPG_LABEL, arrayStr );
+//    windowProperties->AppendIn( commFilterFrom, fromProperty );
+    windowProperties->AppendIn( commFilterFrom,
+                                new prvRowsSelectionProperty( windowProperties,
+                                                              whichWindow,
+                                                              wxT("From"),
+                                                              wxT("FromFunction") ) );
 
     arrayStr.Clear();
     arrayInt.Clear();

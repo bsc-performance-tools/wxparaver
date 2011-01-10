@@ -1457,59 +1457,8 @@ void gTimeline::OnPopUpRowSelection()
 
   if ( dialog->ShowModal() == wxID_OK )
   {
-    TWindowLevel beginLevel;
-    TWindowLevel endLevel;
-
-    // Set range of levels for update loop
-    if (( myWindow->getLevel() >= WORKLOAD ) && ( myWindow->getLevel() <= THREAD ))
-    {
-      beginLevel = APPLICATION;
-      endLevel = THREAD;
-    }
-    else
-    {
-      beginLevel = NODE;
-      endLevel = CPU;
-    }
-
-    // Loop through levels to update gTimeline
-    bool refresh;
-    for ( TWindowLevel whichLevel = beginLevel; whichLevel <= endLevel; whichLevel = TWindowLevel(whichLevel + 1) )
-    {
-      wxArrayInt selections;
-      int numberSelected = dialog->GetSelections( whichLevel, selections );
-      if ( numberSelected > 0 )
-      {
-        // Get new selections for that level
-        vector< TObjectOrder > newSelection;
-        for ( size_t row = (size_t)0; row < (size_t)numberSelected; row++ )
-        {
-          newSelection.push_back( (TObjectOrder)selections[ row ] );
-        }
-        // Do we need to update?
-        vector< TObjectOrder > previousSelection;
-        myWindow->getSelectedRows( whichLevel, previousSelection, true );
-
-        if ( ( previousSelection.size() != newSelection.size() ) ||
-             !equal( previousSelection.begin(), previousSelection.end(), newSelection.begin() ) )
-        {
-          // Update
-          myWindow->setSelectedRows( whichLevel, newSelection );
-
-          // and do not refresh for minor levels
-          if ( whichLevel <= myWindow->getLevel() )
-          {
-            refresh = true;
-          }
-        }
-      }
-    }
-
-    if ( refresh )
-    {
-      myWindow->setRedraw( true );
-      myWindow->setChanged( true );
-    }
+    myWindow->setRedraw( true );
+    myWindow->setChanged( true );
   }
 
   delete dialog;

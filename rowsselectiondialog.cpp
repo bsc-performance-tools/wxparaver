@@ -36,7 +36,6 @@ BEGIN_EVENT_TABLE( RowsSelectionDialog, wxPropertySheetDialog )
 EVT_BUTTON( wxID_OK, RowsSelectionDialog::OnOkClick )
 END_EVENT_TABLE()
 
-//class gTimeline;
 
 /*!
  * RowsSelectionDialog constructors
@@ -74,8 +73,7 @@ void RowsSelectionDialog::OnInvertButtonClicked( wxCommandEvent& event )
 }
 
 
-void RowsSelectionDialog::buildPanel( gTimeline *myTimeline, 
-                                      const wxString& title,
+void RowsSelectionDialog::buildPanel( const wxString& title,
                                       TWindowLevel whichLevel )
 {
   wxPanel *myPanel;
@@ -86,7 +84,7 @@ void RowsSelectionDialog::buildPanel( gTimeline *myTimeline,
                          wxDefaultSize,
                          wxSUNKEN_BORDER | wxTAB_TRAVERSAL );
 
-  GetBookCtrl()->AddPage( myPanel, title, whichLevel == myTimeline->GetMyWindow()->getLevel() );
+  GetBookCtrl()->AddPage( myPanel, title, whichLevel == myTimeline->getLevel() );
 
   wxBoxSizer *panelSizer = new wxBoxSizer( wxVERTICAL );
   wxBoxSizer *buttonsSizer = new wxBoxSizer( wxHORIZONTAL );
@@ -96,15 +94,15 @@ void RowsSelectionDialog::buildPanel( gTimeline *myTimeline,
   // Add Checklist lines
   wxArrayString choices;
   vector< bool > selectedRow;
-  myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedRow, false );
-  Trace *myTrace = myTimeline->GetMyWindow()->getTrace();
+  mySelectedRows->getSelected( selectedRow, whichLevel );
+  Trace *myTrace = myTimeline->getTrace();
   for ( size_t row = (size_t)0; row < selectedRow.size(); ++row )
     choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
                                                                      whichLevel,
                                                                      myTrace ).c_str() ) );
 
   vector< TObjectOrder > selectedIndex;
-  myTimeline->GetMyWindow()->getSelectedRows( whichLevel, selectedIndex, false );
+  mySelectedRows->getSelected( selectedIndex, whichLevel );
   wxCheckListBox * auxCheckList = new wxCheckListBox( myPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices );
   levelCheckList.push_back( auxCheckList );
 
@@ -143,27 +141,35 @@ void RowsSelectionDialog::buildPanel( gTimeline *myTimeline,
 }
 
 
-RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
+                                          Window *whichTimeline,
+                                          SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
+                                          wxWindowID id,
+                                          const wxString& caption,
+                                          const wxPoint& pos,
+                                          const wxSize& size,
+                                          long style )
 {
-  gTimeline *myTimeline = (gTimeline *)parent;
-
+  myTimeline = whichTimeline;
+  mySelectedRows = whichSelectedRows;
+  
   Init();
-  Create(parent, id, caption, pos, size, style);
+  Create( parent, id, caption, pos, size, style );
 
-  TWindowLevel level = myTimeline->GetMyWindow()->getLevel();
+  TWindowLevel level = myTimeline->getLevel();
 
   if (( level >= SYSTEM ) && ( level <= CPU ))
   {
     minLevel = NODE;
-    buildPanel( myTimeline, _("Node"), NODE );
-    buildPanel( myTimeline, _("CPU"), CPU );
+    buildPanel( _("Node"), NODE );
+    buildPanel( _("CPU"), CPU );
   }
   else if (( level >= WORKLOAD ) && ( level <= THREAD ))
   {
     minLevel = APPLICATION;
-    buildPanel( myTimeline, _("Application"), APPLICATION );
-    buildPanel( myTimeline, _("Task"), TASK );
-    buildPanel( myTimeline, _("Thread"), THREAD );
+    buildPanel( _("Application"), APPLICATION );
+    buildPanel( _("Task"), TASK );
+    buildPanel( _("Thread"), THREAD );
   }
 
   LayoutDialog();
@@ -284,6 +290,40 @@ int RowsSelectionDialog::GetSelections( TWindowLevel whichLevel, wxArrayInt &sel
 
 void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
 {
+  TWindowLevel beginLevel;
+  TWindowLevel endLevel;
+
+  // Set range of levels for update loop
+  if (( myTimeline->getLevel() >= WORKLOAD ) && ( myTimeline->getLevel() <= THREAD ))
+  {
+    beginLevel = APPLICATION;
+    endLevel = THREAD;
+  }
+  else
+  {
+    beginLevel = NODE;
+    endLevel = CPU;
+  }
+
+  // Loop through levels to update gTimeline
+  for ( TWindowLevel whichLevel = beginLevel; whichLevel <= endLevel; whichLevel = TWindowLevel(whichLevel + 1) )
+  {
+    wxArrayInt selections;
+    int numberSelected = GetSelections( whichLevel, selections );
+    if ( numberSelected > 0 )
+    {
+      // Get new selections for that level
+      vector< TObjectOrder > newSelection;
+      for ( size_t row = (size_t)0; row < (size_t)numberSelected; row++ )
+      {
+        newSelection.push_back( (TObjectOrder)selections[ row ] );
+      }
+      mySelectedRows->setSelected( newSelection,
+                                   myTimeline->getTrace()->getLevelObjects( whichLevel ),
+                                   whichLevel );
+    }
+  }
+
   if ( TransferDataFromWindow() )
     EndModal( wxID_OK );
 }

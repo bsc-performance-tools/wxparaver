@@ -38,9 +38,9 @@
 #include "wx/wx.h"
 #endif
 
-#include "pg_extraprop.h"
 #include <wx/choicdlg.h>
-
+#include "pg_extraprop.h"
+#include "window.h"
 /**********************************************************
  **       prvEventTypeProperty
  **********************************************************/
@@ -384,3 +384,56 @@ wxString prvSemanticThreadProperty::GetValueAsString( int ) const
   return GetValue().GetString();
 }
 
+
+/**********************************************************
+ **       prvRowsSelectionProperty
+ **********************************************************/
+
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
+                                wxString, wxString&, TextCtrlAndButton )
+
+prvRowsSelectionProperty::prvRowsSelectionProperty( wxPropertyGrid *propgrid,
+                                                    Window *whichWindow,
+                                                    const wxString &label,
+                                                    const wxString &name,
+                                                    const wxString &value ) : wxPGProperty(label, name)
+{
+  vector< TObjectOrder > tmp;
+ 
+  myTimeline = whichWindow;
+  mySelectedRows.init( whichWindow->getTrace() );
+  for ( PRV_UINT32 level = ( PRV_UINT32 )NONE; level <= ( PRV_UINT32 )CPU; ++level )
+  {
+    mySelectedRows.setSelected( tmp, ( TWindowLevel )level );
+  }
+}
+
+
+prvRowsSelectionProperty::~prvRowsSelectionProperty()
+{
+}
+
+wxString 	prvRowsSelectionProperty::GetValueAsString ( int ) const
+{
+  return _("");
+}
+
+
+bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
+                                         wxWindow* WXUNUSED(primary),
+                                         wxEvent& event )
+{
+  RowsSelectionDialog *dialog = new RowsSelectionDialog( (wxWindow *)propgrid,
+                                                         myTimeline,
+                                                         &mySelectedRows );
+
+  if ( propgrid->IsMainButtonEvent(event) )
+  {
+    if ( dialog->ShowModal() == wxID_OK )
+    {
+      cout << "OK!!" << endl;
+    }
+  }
+  
+  return true;
+}

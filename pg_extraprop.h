@@ -27,12 +27,17 @@
  | @version:     $Revision$
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
-#include <wx/propgrid/propgrid.h>
-#include <wx/propgrid/propdev.h>
 #include <vector>
 #include <string>
 
+#include <wx/propgrid/propgrid.h>
+#include <wx/propgrid/propdev.h>
+
+#include "rowsselectiondialog.h"
+
 using namespace std;
+
+class Window;
 
 /**********************************************************
  **       prvEventTypeProperty
@@ -128,3 +133,32 @@ class prvSemanticThreadProperty: public wxPGProperty
   private:
     SemanticMenu *myMenu;
 };
+
+/**********************************************************
+ **        prvRowsSelectionProperty
+ **********************************************************/
+class prvRowsSelectionProperty: public wxPGProperty
+{
+  WX_PG_DECLARE_PROPERTY_CLASS( prvRowsSelectionProperty )
+  public:
+    prvRowsSelectionProperty()
+    {}
+
+    prvRowsSelectionProperty( wxPropertyGrid *propgrid,
+                              Window *whichWindow,
+                              const wxString &label,
+                              const wxString &name,
+                              const wxString &value = wxEmptyString );
+                               
+    virtual ~prvRowsSelectionProperty();
+
+    wxString GetValueAsString ( int ) const;
+    WX_PG_DECLARE_EVENT_METHODS()
+  private:
+    Window *myTimeline;
+    SelectionManagement< TObjectOrder, TWindowLevel > mySelectedRows;
+};
+
+
+
+
