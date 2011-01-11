@@ -301,14 +301,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     arrayStr.Clear();
     vector<TObjectOrder> fromSel;
     filter->getCommFrom( fromSel );
-    for( vector<TObjectOrder>::iterator it = fromSel.begin(); it != fromSel.end(); it++ )
-      arrayStr.Add( wxString() << ( (*it) + 1 ) );
+    //for( vector<TObjectOrder>::iterator it = fromSel.begin(); it != fromSel.end(); it++ )
+    //  arrayStr.Add( wxString() << ( (*it) + 1 ) );
 
     //wxArrayStringProperty *fromProperty = new wxArrayStringProperty( wxT("From"), wxPG_LABEL, arrayStr );
 //    windowProperties->AppendIn( commFilterFrom, fromProperty );
     windowProperties->AppendIn( commFilterFrom,
                                 new prvRowsSelectionProperty( windowProperties,
                                                               whichWindow,
+                                                              _("From - Rows Selection"),
+                                                              fromSel,
                                                               wxT("From"),
                                                               wxT("FromFunction") ) );
 

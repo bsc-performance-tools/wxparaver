@@ -146,6 +146,8 @@ class prvRowsSelectionProperty: public wxPGProperty
 
     prvRowsSelectionProperty( wxPropertyGrid *propgrid,
                               Window *whichWindow,
+                              const wxString &windowName,
+                              vector<TObjectOrder> &whichSelection,
                               const wxString &label,
                               const wxString &name,
                               const wxString &value = wxEmptyString );
@@ -156,6 +158,7 @@ class prvRowsSelectionProperty: public wxPGProperty
     WX_PG_DECLARE_EVENT_METHODS()
   private:
     Window *myTimeline;
+    wxString myWindowName;
     SelectionManagement< TObjectOrder, TWindowLevel > mySelectedRows;
 };
 

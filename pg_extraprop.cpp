@@ -394,18 +394,16 @@ WX_PG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
 
 prvRowsSelectionProperty::prvRowsSelectionProperty( wxPropertyGrid *propgrid,
                                                     Window *whichWindow,
+                                                    const wxString &windowName,
+                                                    vector<TObjectOrder> &whichSelection,
                                                     const wxString &label,
                                                     const wxString &name,
                                                     const wxString &value ) : wxPGProperty(label, name)
 {
-  vector< TObjectOrder > tmp;
- 
   myTimeline = whichWindow;
+  myWindowName = windowName;
   mySelectedRows.init( whichWindow->getTrace() );
-  for ( PRV_UINT32 level = ( PRV_UINT32 )NONE; level <= ( PRV_UINT32 )CPU; ++level )
-  {
-    mySelectedRows.setSelected( tmp, ( TWindowLevel )level );
-  }
+  mySelectedRows.setSelected( whichSelection, whichWindow->getLevel() );
 }
 
 
@@ -420,17 +418,20 @@ wxString 	prvRowsSelectionProperty::GetValueAsString ( int ) const
 
 
 bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
-                                         wxWindow* WXUNUSED(primary),
-                                         wxEvent& event )
+                                        wxWindow* WXUNUSED(primary),
+                                        wxEvent& event )
 {
   RowsSelectionDialog *dialog = new RowsSelectionDialog( (wxWindow *)propgrid,
                                                          myTimeline,
-                                                         &mySelectedRows );
+                                                         &mySelectedRows,
+                                                         ID_ROWSSELECTIONDIALOG,
+                                                         myWindowName );
 
   if ( propgrid->IsMainButtonEvent(event) )
   {
     if ( dialog->ShowModal() == wxID_OK )
     {
+      // Transform selection to wxString
       cout << "OK!!" << endl;
     }
   }
