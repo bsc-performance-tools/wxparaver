@@ -301,11 +301,6 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     arrayStr.Clear();
     vector<TObjectOrder> fromSel;
     filter->getCommFrom( fromSel );
-    //for( vector<TObjectOrder>::iterator it = fromSel.begin(); it != fromSel.end(); it++ )
-    //  arrayStr.Add( wxString() << ( (*it) + 1 ) );
-
-    //wxArrayStringProperty *fromProperty = new wxArrayStringProperty( wxT("From"), wxPG_LABEL, arrayStr );
-    //    windowProperties->AppendIn( commFilterFrom, fromProperty );
     windowProperties->AppendIn( commFilterFrom,
                                 new prvRowsSelectionProperty( windowProperties,
                                                               whichWindow,
@@ -354,10 +349,13 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     arrayStr.Clear();
     vector<TObjectOrder> toSel;
     filter->getCommTo( toSel );
-    for( vector<TObjectOrder>::iterator it = toSel.begin(); it != toSel.end(); it++ )
-      arrayStr.Add( wxString() << ( (*it) + 1 ) );
-    wxArrayStringProperty *toProperty = new wxArrayStringProperty( wxT("To"), wxPG_LABEL, arrayStr );
-    windowProperties->AppendIn( commFilterTo, toProperty );
+    windowProperties->AppendIn( commFilterTo,
+                                new prvRowsSelectionProperty( windowProperties,
+                                                              whichWindow,
+                                                              _("To - Rows Selection"),
+                                                              toSel,
+                                                              wxT("To"),
+                                                              wxPG_LABEL ) );
 
     // Comm Tag
     wxPGId commFilterTag = windowProperties->AppendIn( commFilterCat, 
