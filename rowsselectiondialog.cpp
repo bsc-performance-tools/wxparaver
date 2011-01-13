@@ -93,10 +93,8 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
 
   // Add Checklist lines
   wxArrayString choices;
-  vector< bool > selectedRow;
-  mySelectedRows->getSelected( selectedRow, whichLevel );
   Trace *myTrace = myTimeline->getTrace();
-  for ( size_t row = (size_t)0; row < selectedRow.size(); ++row )
+  for ( size_t row = (size_t)0; row < myTrace->getLevelObjects( whichLevel ); ++row )
     choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
                                                                      whichLevel,
                                                                      myTrace ).c_str() ) );
@@ -286,31 +284,6 @@ int RowsSelectionDialog::GetSelections( TWindowLevel whichLevel, wxArrayInt &sel
 
   return selected;
 }
-
-
-int RowsSelectionDialog::GetSelections( TWindowLevel whichLevel, wxString &selections )
-{
-  int selected = 0;
-
-  for ( unsigned int i = 0; i < levelCheckList[ whichLevel - minLevel ]->GetCount(); ++i )
-  {
-    if ( levelCheckList[ whichLevel - minLevel ]->IsChecked( i ) )
-    {
-      if ( selected > 0 ) 
-      {
-        selections += _(", ");
-      }
-      ++selected;
-      selections += wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)i,
-                                                                        whichLevel,
-                                                                        myTimeline->getTrace(),
-                                                                        false ).c_str() );
-    }
-  }
-
-  return selected;
-}
-
 
 void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
 {

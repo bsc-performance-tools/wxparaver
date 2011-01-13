@@ -41,6 +41,9 @@
 #include <wx/choicdlg.h>
 #include "pg_extraprop.h"
 #include "window.h"
+#include "selectionrowsutils.h"
+#include "labelconstructor.h"
+
 /**********************************************************
  **       prvEventTypeProperty
  **********************************************************/
@@ -402,8 +405,20 @@ prvRowsSelectionProperty::prvRowsSelectionProperty( wxPropertyGrid *propgrid,
 {
   myTimeline = whichWindow;
   myWindowName = windowName;
-  mySelectedRows.init( whichWindow->getTrace() );
-  mySelectedRows.setSelected( whichSelection, whichWindow->getLevel() );
+  
+  mySelectedRows.init( myTimeline->getTrace() );
+  mySelectedRows.setSelected( whichSelection,
+                              myTimeline->getTrace()->getLevelObjects( myTimeline->getLevel() ),
+                              myTimeline->getLevel() );
+
+  vector<TObjectOrder> tmpSelection( whichSelection );
+  SelectionRowsUtils::getAllLevelsSelectedRows( myTimeline->getTrace(), 
+                                                mySelectedRows,
+                                                myTimeline->getLevel(),
+                                                tmpSelection );
+  wxString tmp;
+  GetStringValueFromVector( tmpSelection, tmp );
+  SetValue( tmp );
 }
 
 
@@ -440,11 +455,42 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
   {
     if ( dialog->ShowModal() == wxID_OK )
     {
+      wxArrayInt tmpArray;
+      vector<TObjectOrder> tmpSelection;
+      
+      dialog->GetSelections( myTimeline->getLevel(), tmpArray );
+      for( unsigned int idx = 0; idx < tmpArray.GetCount(); idx++ )
+        tmpSelection.push_back( tmpArray[ idx ] );
+
+      SelectionRowsUtils::getAllLevelsSelectedRows( myTimeline->getTrace(), 
+                                                    mySelectedRows,
+                                                    myTimeline->getLevel(),
+                                                    tmpSelection );
       wxString tmp;
-      dialog->GetSelections( myTimeline->getLevel(), tmp );
+      GetStringValueFromVector( tmpSelection, tmp );
       SetValueInEvent( tmp );
     }
   }
   
+  delete dialog;
+  
   return true;
+}
+
+
+void prvRowsSelectionProperty::GetStringValueFromVector( vector<TObjectOrder> &whichSelection,
+                                                         wxString &onString )
+{
+  for (  vector<TObjectOrder>::iterator it = whichSelection.begin(); it != whichSelection.end(); ++it )
+  {
+    if ( it != whichSelection.begin() ) 
+    {
+      onString += _(", ");
+    }
+
+    onString += wxString::FromAscii( LabelConstructor::objectLabel( *it,
+                                                                    myTimeline->getLevel(),
+                                                                    myTimeline->getTrace(),
+                                                                    false ).c_str() );
+  }
 }

@@ -77,7 +77,6 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
   int GetSelections( TWindowLevel whichLevel, wxArrayInt &selections );
-  int GetSelections( TWindowLevel whichLevel, wxString &selections );
 
 private:
   Window *myTimeline;
