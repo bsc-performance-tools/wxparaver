@@ -305,14 +305,14 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     //  arrayStr.Add( wxString() << ( (*it) + 1 ) );
 
     //wxArrayStringProperty *fromProperty = new wxArrayStringProperty( wxT("From"), wxPG_LABEL, arrayStr );
-//    windowProperties->AppendIn( commFilterFrom, fromProperty );
+    //    windowProperties->AppendIn( commFilterFrom, fromProperty );
     windowProperties->AppendIn( commFilterFrom,
                                 new prvRowsSelectionProperty( windowProperties,
                                                               whichWindow,
                                                               _("From - Rows Selection"),
                                                               fromSel,
                                                               wxT("From"),
-                                                              wxT("FromFunction") ) );
+                                                              wxPG_LABEL ) );
 
     arrayStr.Clear();
     arrayInt.Clear();

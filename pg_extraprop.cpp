@@ -411,9 +411,18 @@ prvRowsSelectionProperty::~prvRowsSelectionProperty()
 {
 }
 
+
+
 wxString 	prvRowsSelectionProperty::GetValueAsString ( int ) const
 {
-  return _("");
+  return GetValue().GetString();
+}
+
+
+void prvRowsSelectionProperty::GetSelectionAsVector( TWindowLevel whichLevel,
+                                                     vector<TObjectOrder> &levelSelections )
+{
+  mySelectedRows.getSelected( levelSelections, whichLevel );
 }
 
 
@@ -431,8 +440,9 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
   {
     if ( dialog->ShowModal() == wxID_OK )
     {
-      // Transform selection to wxString
-      cout << "OK!!" << endl;
+      wxString tmp;
+      dialog->GetSelections( myTimeline->getLevel(), tmp );
+      SetValueInEvent( tmp );
     }
   }
   

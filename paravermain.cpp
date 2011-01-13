@@ -938,7 +938,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentHisto->setCompute2DScale( false );
     currentHisto->setRecalc( true );
   }
-// Data Window related properties
+  // Data Window related properties
   else if( propName == _( "DataWindow" ) )
   {
     currentHisto->setDataWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
@@ -1039,14 +1039,15 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   }
   else if( propName == _( "Comm from.From" ) )
   {
+    prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
+  
     Filter *filter = currentTimeline->getFilter();
     filter->clearCommFrom();
-    wxArrayString value = property->GetValue().GetArrayString();
-    for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
+    vector< TObjectOrder > selection;
+    myProperty->GetSelectionAsVector( currentTimeline->getLevel(), selection );
+    for( vector< TObjectOrder >::iterator it = selection.begin(); it != selection.end(); ++it )
     {
-      long tmpLong;
-      value[ idx ].ToLong( &tmpLong );
-      filter->insertCommFrom( tmpLong - 1 );
+      filter->insertCommFrom( long(*it) );
     }
     
     currentTimeline->setRedraw( true );

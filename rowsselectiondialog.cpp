@@ -288,6 +288,30 @@ int RowsSelectionDialog::GetSelections( TWindowLevel whichLevel, wxArrayInt &sel
 }
 
 
+int RowsSelectionDialog::GetSelections( TWindowLevel whichLevel, wxString &selections )
+{
+  int selected = 0;
+
+  for ( unsigned int i = 0; i < levelCheckList[ whichLevel - minLevel ]->GetCount(); ++i )
+  {
+    if ( levelCheckList[ whichLevel - minLevel ]->IsChecked( i ) )
+    {
+      if ( selected > 0 ) 
+      {
+        selections += _(", ");
+      }
+      ++selected;
+      selections += wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)i,
+                                                                        whichLevel,
+                                                                        myTimeline->getTrace(),
+                                                                        false ).c_str() );
+    }
+  }
+
+  return selected;
+}
+
+
 void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
 {
   TWindowLevel beginLevel;

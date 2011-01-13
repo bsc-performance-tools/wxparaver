@@ -155,6 +155,8 @@ class prvRowsSelectionProperty: public wxPGProperty
     virtual ~prvRowsSelectionProperty();
 
     wxString GetValueAsString ( int ) const;
+    void GetSelectionAsVector( TWindowLevel whichLevel,
+                               vector<TObjectOrder> &levelSelections );
     WX_PG_DECLARE_EVENT_METHODS()
   private:
     Window *myTimeline;
