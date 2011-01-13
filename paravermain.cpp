@@ -2909,7 +2909,7 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   wxString description;
   
   info.SetName( _("wxParaver") );
-  info.SetVersion( _( "3.99 (Build " ) + wxString() << _( __DATE__ ) << _( ")" ) );
+  info.SetVersion( _( "4.0.0 (Build " ) + wxString() << _( __DATE__ ) << _( ")" ) );
   description << _( "\nwxParaver is a graphical displaying tool developed at BSC :\n" );
   description << _( "Barcelona Supercomputing Center.\n\n" );
   description << _( "wxParaver allows the programmer to examine graphically a " );
