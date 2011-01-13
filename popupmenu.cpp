@@ -58,6 +58,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_FIT_OBJECTS, gPopUpMenu::OnMenuFitObjects )
   EVT_MENU( ID_MENU_VIEW_COMMUNICATION_LINES, gPopUpMenu::OnMenuViewCommunicationLines )
   EVT_MENU( ID_MENU_VIEW_EVENT_FLAGS, gPopUpMenu::OnMenuViewEventFlags )
+  EVT_MENU( ID_MENU_VIEW_FUNCTION_LINE, gPopUpMenu::OnMenuViewFunctionLine )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
   EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
@@ -373,6 +374,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   buildItem( popUpMenuView, _( "Communication Lines" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewCommunicationLines, ID_MENU_VIEW_COMMUNICATION_LINES, timeline->GetMyWindow()->getDrawCommLines() );
   buildItem( popUpMenuView, _( "Event Flags" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewEventFlags, ID_MENU_VIEW_EVENT_FLAGS, timeline->GetMyWindow()->getDrawFlags() );
+  buildItem( popUpMenuView, _( "Function Line With Color" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFunctionLine, ID_MENU_VIEW_FUNCTION_LINE, timeline->GetMyWindow()->getDrawFunctionLineColor() );
   AppendSubMenu( popUpMenuView, _( "View" ));
 
   buildItem( popUpMenuColor, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->IsCodeColorSet() );
@@ -964,6 +966,12 @@ void gPopUpMenu::OnMenuViewEventFlags( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->drawEventFlags( event.IsChecked() );
+}
+
+void gPopUpMenu::OnMenuViewFunctionLine( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->drawFunctionLineColor( event.IsChecked() );
 }
 
 void gPopUpMenu::OnMenuCodeColor( wxCommandEvent& event)

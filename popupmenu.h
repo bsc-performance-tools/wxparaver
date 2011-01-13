@@ -104,6 +104,7 @@ class gHistogram;
 #define ID_MENU_PASTE_3D_SCALE                    30056
 #define ID_MENU_SAVE_TEXT                         30057
 #define ID_MENU_SYNCHRONIZE                       30058
+#define ID_MENU_VIEW_FUNCTION_LINE                30059
 
 class gPopUpMenu : public wxMenu
 {
@@ -155,6 +156,7 @@ class gPopUpMenu : public wxMenu
 
     void OnMenuViewCommunicationLines( wxCommandEvent& event);
     void OnMenuViewEventFlags( wxCommandEvent& event);
+    void OnMenuViewFunctionLine( wxCommandEvent& event );
 
     void OnMenuCodeColor( wxCommandEvent& event);
     void OnMenuGradientColor( wxCommandEvent& event);

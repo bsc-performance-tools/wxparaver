@@ -92,10 +92,6 @@ class Window;
 #define ID_TEXTCTRL1 10046
 #define ID_TEXTCTRL2 10047
 #define ID_PANEL1 10049
-#define ID_SCROLLEDWINDOW1 10053
-#define ID_CHECK_DRAWLINES 10054
-#define ID_CHECK_DRAWFLAGS 10055
-#define ID_CHECK_FUNCTIONLINECOLOR 10056
 #define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
 #define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
@@ -259,24 +255,6 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_PANEL1
   void OnColorsPanelUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWLINES
-  void OnCheckDrawlinesClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_CHECK_DRAWLINES
-  void OnCheckDrawlinesUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_DRAWFLAGS
-  void OnCheckDrawflagsClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_CHECK_DRAWFLAGS
-  void OnCheckDrawflagsUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECK_FUNCTIONLINECOLOR
-  void OnCheckFunctionlinecolorClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_CHECK_FUNCTIONLINECOLOR
-  void OnCheckFunctionlinecolorUpdate( wxUpdateUIEvent& event );
-
 ////@end gTimeline event handler declarations
 
 ////@begin gTimeline member function declarations
@@ -420,6 +398,7 @@ public:
 
   void drawCommunicationLines( bool draw );
   void drawEventFlags( bool draw );
+  void drawFunctionLineColor( bool draw );
 
   void OnPopUpRightDown( void );
 
@@ -524,10 +503,6 @@ public:
   wxTextCtrl* durationText;
   wxScrolledWindow* colorsPanel;
   wxBoxSizer* colorsSizer;
-  wxScrolledWindow* viewPropPanel;
-  wxCheckBox* checkDrawLines;
-  wxCheckBox* checkDrawFlags;
-  wxCheckBox* checkFunctionLineColor;
   wxBitmap bufferImage;
   wxBitmap drawImage;
   wxBitmap commImage;
