@@ -445,14 +445,14 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
                                         wxWindow* WXUNUSED(primary),
                                         wxEvent& event )
 {
-  RowsSelectionDialog *dialog = new RowsSelectionDialog( (wxWindow *)propgrid,
-                                                         myTimeline,
-                                                         &mySelectedRows,
-                                                         ID_ROWSSELECTIONDIALOG,
-                                                         myWindowName );
-
   if ( propgrid->IsMainButtonEvent(event) )
   {
+    RowsSelectionDialog *dialog = new RowsSelectionDialog( (wxWindow *)propgrid,
+                                                           myTimeline,
+                                                           &mySelectedRows,
+                                                           ID_ROWSSELECTIONDIALOG,
+                                                           myWindowName );
+
     if ( dialog->ShowModal() == wxID_OK )
     {
       wxArrayInt tmpArray;
@@ -470,9 +470,9 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
       GetStringValueFromVector( tmpSelection, tmp );
       SetValueInEvent( tmp );
     }
-  }
   
-  delete dialog;
+    delete dialog;
+  }
   
   return true;
 }
