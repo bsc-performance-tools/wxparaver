@@ -875,6 +875,9 @@ void PreferencesDialog::CreateControls()
   forbidden.Add( _( "-" ) );
   forbidden.Add( _( "." ) );
   forbidden.Add( _( "," ) );
+  
+  // DUMMY CODE: the purpose is only to avoid warning at compile
+  itemPropertySheetDialog1 = NULL;
 
 /*
 // wxTextCtrl validators

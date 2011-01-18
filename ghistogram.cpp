@@ -53,6 +53,7 @@
 #include "windows_tree.h"
 #include "paravermain.h"
 #include "textoutput.h"
+#include "paraverkernelexception.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -275,7 +276,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -1432,7 +1433,7 @@ void gHistogram::OnPopUpClone()
                              getAllTracesTree()->GetRootItem(),
                              getSelectedTraceTree( clonedHistogram->getControlWindow()->getTrace() )->GetRootItem() );
   else
-    cout << "ERROR! NOT FOUND ORIGINAL CONTROL WINDOW OF HISTOGRAM!" << endl;
+    throw new ParaverKernelException( ParaverKernelException::undefined, "ERROR! NOT FOUND ORIGINAL CONTROL WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
     
   if ( GetHistogram()->getDataWindow() != GetHistogram()->getControlWindow() )
   {
@@ -1446,7 +1447,7 @@ void gHistogram::OnPopUpClone()
                             getAllTracesTree()->GetRootItem(),
                             getSelectedTraceTree( clonedHistogram->getDataWindow()->getTrace() )->GetRootItem() );
     else
-      cout << "ERROR! NOT FOUND ORIGINAL DATA WINDOW OF HISTOGRAM!" << endl;
+      throw new ParaverKernelException( ParaverKernelException::undefined, "ERROR! NOT FOUND ORIGINAL DATA WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
   }
 
   if ( GetHistogram()->getExtraControlWindow() != NULL &&
@@ -1463,10 +1464,7 @@ void gHistogram::OnPopUpClone()
                                     getAllTracesTree()->GetRootItem(),
                                     getSelectedTraceTree( clonedHistogram->getExtraControlWindow()->getTrace() )->GetRootItem() );
     else
-#ifndef WIN32
-#warning TODO: Gui Exception class inherited from ParaverKernelException
-#endif
-      cout << "ERROR! NOT FOUND ORIGINAL EXTRA CONTROL WINDOW OF HISTOGRAM!" << endl;
+      throw new ParaverKernelException( ParaverKernelException::undefined, "ERROR! NOT FOUND ORIGINAL EXTRA CONTROL WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
   }
 
   // Finally, execute
