@@ -1036,6 +1036,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentTimeline->getFilter()->setCommFromFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "Comm from.From" ) )
   {
@@ -1067,6 +1068,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentTimeline->getFilter()->setCommToFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "Comm to.To" ) )
   {
@@ -1087,6 +1089,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentTimeline->getFilter()->setCommTagFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "Comm tag.Tag" ) )
   {
@@ -1117,6 +1120,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentTimeline->getFilter()->setCommSizeFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "Comm size.Size" ) )
   {
@@ -1136,6 +1140,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentTimeline->getFilter()->setBandWidthFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "Comm bandwidth.Bandwidth" ) )
   {
@@ -1155,6 +1160,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentTimeline->getFilter()->setEventTypeFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "Event type.Types" ) )
   {
@@ -1181,6 +1187,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     currentTimeline->getFilter()->setEventValueFunction( std::string( property->GetDisplayedString().mb_str() ) );
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "Event value.Values" ) )
   {

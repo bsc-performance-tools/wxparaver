@@ -301,13 +301,17 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     arrayStr.Clear();
     vector<TObjectOrder> fromSel;
     filter->getCommFrom( fromSel );
-    windowProperties->AppendIn( commFilterFrom,
-                                new prvRowsSelectionProperty( windowProperties,
-                                                              whichWindow,
-                                                              _("From - Rows Selection"),
-                                                              fromSel,
-                                                              wxT("From"),
-                                                              wxPG_LABEL ) );
+    wxPGId commFilterFromValues = windowProperties->AppendIn( commFilterFrom,
+                                    new prvRowsSelectionProperty( windowProperties,
+                                                                  whichWindow,
+                                                                  _("From - Rows Selection"),
+                                                                  fromSel,
+                                                                  wxT("From"),
+                                                                  wxPG_LABEL ) );
+
+    if( filter->getCommFromFunction() == "All" || 
+        filter->getCommFromFunction() == "None" )
+      commFilterFromValues->SetFlagsFromString( _( "DISABLED" ) );
 
     arrayStr.Clear();
     arrayInt.Clear();
@@ -349,13 +353,17 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     arrayStr.Clear();
     vector<TObjectOrder> toSel;
     filter->getCommTo( toSel );
-    windowProperties->AppendIn( commFilterTo,
-                                new prvRowsSelectionProperty( windowProperties,
-                                                              whichWindow,
-                                                              _("To - Rows Selection"),
-                                                              toSel,
-                                                              wxT("To"),
-                                                              wxPG_LABEL ) );
+    wxPGId commFilterToValues = windowProperties->AppendIn( commFilterTo,
+                                  new prvRowsSelectionProperty( windowProperties,
+                                                                whichWindow,
+                                                                _("To - Rows Selection"),
+                                                                toSel,
+                                                                wxT("To"),
+                                                                wxPG_LABEL ) );
+
+    if( filter->getCommToFunction() == "All" || 
+        filter->getCommToFunction() == "None" )
+      commFilterToValues->SetFlagsFromString( _( "DISABLED" ) );
 
     // Comm Tag
     wxPGId commFilterTag = windowProperties->AppendIn( commFilterCat, 
@@ -386,7 +394,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     for( vector<TCommTag>::iterator it = tagSel.begin(); it != tagSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
     wxArrayStringProperty *tagProperty = new wxArrayStringProperty( wxT("Tag"), wxPG_LABEL, arrayStr );
-    windowProperties->AppendIn( commFilterTag, tagProperty );
+    wxPGId commFilterTagValues = windowProperties->AppendIn( commFilterTag, tagProperty );
+
+    if( filter->getCommTagFunction() == "All" || 
+        filter->getCommTagFunction() == "None" )
+      commFilterTagValues->SetFlagsFromString( _( "DISABLED" ) );
 
     arrayStr.Clear();
     arrayInt.Clear();
@@ -431,7 +443,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     for( vector<TCommSize>::iterator it = sizeSel.begin(); it != sizeSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
     wxArrayStringProperty *sizeProperty = new wxArrayStringProperty( wxT("Size"), wxPG_LABEL, arrayStr );
-    windowProperties->AppendIn( commFilterSize, sizeProperty );
+    wxPGId commFilterSizeValues = windowProperties->AppendIn( commFilterSize, sizeProperty );
+
+    if( filter->getCommSizeFunction() == "All" || 
+        filter->getCommSizeFunction() == "None" )
+      commFilterSizeValues->SetFlagsFromString( _( "DISABLED" ) );
     
     // Comm BandWidth
     wxPGId commFilterBW = windowProperties->AppendIn( commFilterCat, 
@@ -462,7 +478,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     for( vector<TSemanticValue>::iterator it = bwSel.begin(); it != bwSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
     wxArrayStringProperty *bwProperty = new wxArrayStringProperty( wxT("Bandwidth"), wxPG_LABEL, arrayStr );
-    windowProperties->AppendIn( commFilterBW, bwProperty );
+    wxPGId commFilterBandWidthValues = windowProperties->AppendIn( commFilterBW, bwProperty );
+
+    if( filter->getBandWidthFunction() == "All" || 
+        filter->getBandWidthFunction() == "None" )
+      commFilterBandWidthValues->SetFlagsFromString( _( "DISABLED" ) );
 
     // -------------------------------- EVENT FILTER -------------------------------
     wxPGId eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
@@ -513,8 +533,12 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
       values.Add( (*it ) );
     prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices, values );
-    windowProperties->AppendIn( eventFilterType, tmpEventProperty );
+    wxPGId eventFilterTypeValues = windowProperties->AppendIn( eventFilterType, tmpEventProperty );
     windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
+
+    if( filter->getEventTypeFunction() == "All" || 
+        filter->getEventTypeFunction() == "None" )
+      eventFilterTypeValues->SetFlagsFromString( _( "DISABLED" ) );
     
     arrayStr.Clear();
     arrayInt.Clear();
@@ -559,7 +583,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
     wxArrayStringProperty *valueProperty = new wxArrayStringProperty( wxT("Values"), wxPG_LABEL, arrayStr );
-    windowProperties->AppendIn( eventFilterValue, valueProperty );
+    wxPGId eventFilterValueValues = windowProperties->AppendIn( eventFilterValue, valueProperty );
+
+    if( filter->getEventValueFunction() == "All" || 
+        filter->getEventValueFunction() == "None" )
+      eventFilterValueValues->SetFlagsFromString( _( "DISABLED" ) );
   }
   // END of Filter related properties
 
