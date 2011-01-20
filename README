@@ -16,3 +16,6 @@ wxWidgets best with GTK.
 WINDOWS ONLY!!!:
 modify wxGRAPHICS_CONTEXT variable to 1 in file [wxWidgets dir]\include\wx\msw\setup.h
 
+
+Please send any question or suggestion to tools@bsc.es
+
