@@ -177,7 +177,7 @@ void PreferencesDialog::Init()
   histogramAutofitDataGradient = true;
   histogramSaveImageFormat = 0;
   histogramSaveTextFormat = 0;
-  histogramDrawmodeSemantic = true;
+  histogramDrawmodeSemantic = 0;
   histogramAutofit3DScale = true;
   histogramLabelsColor = false;
   colorUseZero = false;

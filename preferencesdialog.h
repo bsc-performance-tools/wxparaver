@@ -324,8 +324,8 @@ public:
   PRV_UINT32 GetHistogramSaveTextFormat() const { return histogramSaveTextFormat ; }
   void SetHistogramSaveTextFormat(PRV_UINT32 value) { histogramSaveTextFormat = value ; }
 
-  bool GetHistogramDrawmodeSemantic() const { return histogramDrawmodeSemantic ; }
-  void SetHistogramDrawmodeSemantic(bool value) { histogramDrawmodeSemantic = value ; }
+  PRV_UINT32 GetHistogramDrawmodeSemantic() const { return histogramDrawmodeSemantic ; }
+  void SetHistogramDrawmodeSemantic(PRV_UINT32 value) { histogramDrawmodeSemantic = value ; }
 
   bool GetHistogramAutofit3DScale() const { return histogramAutofit3DScale ; }
   void SetHistogramAutofit3DScale(bool value) { histogramAutofit3DScale = value ; }
@@ -464,7 +464,7 @@ private:
   bool histogramAutofitDataGradient;
   PRV_UINT32 histogramSaveImageFormat;
   PRV_UINT32 histogramSaveTextFormat;
-  bool histogramDrawmodeSemantic;
+  PRV_UINT32 histogramDrawmodeSemantic;
   bool histogramAutofit3DScale;
   bool histogramLabelsColor;
   bool colorUseZero;

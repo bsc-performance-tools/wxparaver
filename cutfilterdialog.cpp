@@ -1256,7 +1256,11 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
       traceOptions->set_all_states( allStatesSelected );
       if ( allStatesSelected )
       {
+#ifdef WIN32
+        auxNames[ 0 ] = _strdup( "All" );
+#else
         auxNames[ 0 ] = strdup( "All" );
+#endif
       }
       else
       {
@@ -1267,13 +1271,21 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
         {
           if ( checkListFilterStates->IsChecked( i ) )
           {
+#ifdef WIN32
+            auxNames[ pos++ ] = _strdup( (char *)checkListFilterStates->GetString( i ).c_str());
+#else
             auxNames[ pos++ ] = strdup( (char *)checkListFilterStates->GetString( i ).c_str());
+#endif
           }
         }
 
         if( pos == 0 )
         {
+#ifdef WIN32
+          auxNames[ 0 ] = _strdup( "Running" );
+#else
           auxNames[ 0 ] = strdup( "Running" );
+#endif
         }
 
         traceOptions->set_state_names( auxNames );
@@ -1332,7 +1344,11 @@ char *CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox *selecte
       listStr += string(";");
   }
 
+#ifdef WIN32
+  return _strdup( listStr.c_str() );
+#else
   return strdup( listStr.c_str() );
+#endif
 }
 
 
@@ -2098,7 +2114,7 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
 
   // Have we found new states? Add them to the botton and check them.
   checkListFilterStates->InsertItems( newStates, checkListFilterStates->GetCount() );
-  CheckStatesList( oldMaxStates, checkListFilterStates->GetCount());
+  CheckStatesList( oldMaxStates, !( checkListFilterStates->GetCount() == 0 ) );
 }
 
 void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )

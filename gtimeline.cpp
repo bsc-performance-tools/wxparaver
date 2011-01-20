@@ -117,11 +117,6 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   
 END_EVENT_TABLE()
 
-static char flag[20] = { 0xc7, 0x01, 0x7d, 0x03, 0xab, 0x02, 0x55, 0x03, 0xab, 0x02, 0xd7, 0x03,
-                         0x79, 0x02, 0x01, 0x00, 0x01, 0x00, 0x01, 0x00 };
-
-//static char flag[5] = { 0x1f, 0x11, 0x1f, 0x01, 0x01 };
-
 /*!
  * gTimeline constructors
  */
@@ -409,8 +404,6 @@ void gTimeline::redraw()
 
   logicalPen = wxPen( logicalColour );
   physicalPen = wxPen( physicalColour );
-
-  imgFlag = wxBitmap( flag, 10, 10 );
 
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );

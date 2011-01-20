@@ -355,9 +355,6 @@ public:
   wxColour GetPhysicalColour() const { return physicalColour ; }
   void SetPhysicalColour(wxColour value) { physicalColour = value ; }
 
-  wxBitmap GetImgFlag() const { return imgFlag ; }
-  void SetImgFlag(wxBitmap value) { imgFlag = value ; }
-
   bool GetEscapePressed() const { return escapePressed ; }
   void SetEscapePressed(bool value) { escapePressed = value ; }
 
@@ -536,7 +533,6 @@ private:
   wxColour foregroundColour;
   wxColour backgroundColour;
   wxColour logicalColour;
-  wxBitmap imgFlag;
   bool escapePressed;
   wxPen logicalPen;
   wxPen physicalPen;
