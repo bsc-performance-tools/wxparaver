@@ -817,7 +817,11 @@ void gTimeline::drawRecords( RecordList *records,
       existEvents = true;
     else
     {
-      TObjectOrder partnerObject = it->getCommPartnerObject();
+      TObjectOrder partnerObject;
+      if ( myWindow->getLevel() >= WORKLOAD && myWindow->getLevel() <= THREAD )
+        partnerObject = myWindow->threadObjectToWindowObject( it->getCommPartnerObject() );
+      else
+        partnerObject = myWindow->cpuObjectToWindowObject( it->getCommPartnerObject() );
       
       if( ( recType & COMM ) && 
           partnerObject >= beginRow && partnerObject <= endRow && selected[ partnerObject ] &&
@@ -2052,9 +2056,15 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
         onString << wxT( " to " );
       else if( (*it).getType() & RECV )
         onString << wxT( " from " );
-      onString << wxString::FromAscii( LabelConstructor::objectLabel( (*it).getCommPartnerObject(),
-                                                                      myWindow->getLevel(),
-                                                                      myWindow->getTrace() ).c_str() );
+      if ( myWindow->getLevel() >= WORKLOAD && myWindow->getLevel() <= THREAD )
+        onString << wxString::FromAscii( LabelConstructor::objectLabel( myWindow->threadObjectToWindowObject( (*it).getCommPartnerObject() ),
+                                                                        myWindow->getLevel(),
+                                                                        myWindow->getTrace() ).c_str() );
+      else
+        onString << wxString::FromAscii( LabelConstructor::objectLabel( myWindow->cpuObjectToWindowObject( (*it).getCommPartnerObject() ),
+                                                                        myWindow->getLevel(),
+                                                                        myWindow->getTrace() ).c_str() );
+
       onString << wxT( " at " ) << wxString::FromAscii( LabelConstructor::timeLabel(
                                                           myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() ),
                                                           myWindow->getTimeUnit(),
