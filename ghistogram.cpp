@@ -2191,7 +2191,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   if( columnBegin == columnEnd )
     ++columnEnd;
 
-  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
+  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max || delta == 1.0)
     controlCloned->setLevelFunction( onLevel, "Select Range" );
   else
     controlCloned->setLevelFunction( onLevel, "Select Range [)" );
@@ -2213,6 +2213,8 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   tmpStr << name << " 2DZoom range [" << ( columnBegin * delta ) + min << ",";
   if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
     tmpStr << max << "]";
+  else if ( delta == 1 )
+    tmpStr << ( columnEnd * delta ) + min/* + delta*/ << "]";
   else
     tmpStr << ( columnEnd * delta ) + min/* + delta*/ << ")";
   controlCloned->setName( tmpStr.str() );
@@ -2237,7 +2239,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     else
       plane = myHistogram->getSelectedPlane();
 
-    if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
+    if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax || extraDelta == 1 )
       extraControlCloned->setLevelFunction( onLevel, "Is In Range" );
     else
       extraControlCloned->setLevelFunction( onLevel, "Is In Range [)" );
@@ -2245,6 +2247,8 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     TParamValue param;
     if( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       param.push_back( extraMax );
+    else if( extraDelta == 1 )
+      param.push_back( ( plane * extraDelta ) + extraMin );
     else
       param.push_back( ( plane * extraDelta ) + extraMin + extraDelta );
     extraControlCloned->setFunctionParam( onLevel, 0, param );
@@ -2259,6 +2263,8 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     tmpStr << name << " 3DZoom Mask range [" << ( plane * extraDelta ) + min << ",";
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";
+    else if( extraDelta == 1 )
+        tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << "]";
     else
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     extraControlCloned->setName( tmpStr.str() );
@@ -2277,11 +2283,15 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     tmpStr << name << " 3DZoom ranges [" << ( columnBegin * delta ) + min << ",";
     if ( ( ( columnEnd * delta ) + min + delta ) >= max )
       tmpStr << max << "]";
+    else if( delta == 1 )
+      tmpStr << ( columnEnd * delta ) + min + delta << "]";
     else
       tmpStr << ( columnEnd * delta ) + min + delta << ")";
     tmpStr << "/[" << ( plane * extraDelta ) + extraMin << ",";
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";
+    else if( extraDelta == 1 )
+        tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << "]";
     else
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     productWin->setName( tmpStr.str() );
