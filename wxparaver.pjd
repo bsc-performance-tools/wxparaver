@@ -3233,8 +3233,9 @@
           <string name="variable-34">"physicalPen|wxPen|PhysicalPen||2|0|"</string>
           <string name="variable-35">"eventsToDraw|hash_set&lt;wxCoord&gt;|EventsToDraw||2|0|"</string>
           <string name="variable-36">"timerMotion|wxTimer *|TimerMotion|new wxTimer( this, ID_TIMER_MOTION )|2|0|"</string>
-          <string name="variable-37">"motionPos|wxPoint|MotionPos||2|0|"</string>
-          <string name="variable-38">"semanticFont|wxFont|SemanticFont||2|0|"</string>
+          <string name="variable-37">"semanticFont|wxFont|SemanticFont||2|0|"</string>
+          <string name="variable-38">"motionEvent|wxMouseEvent|MotionEvent||2|0|"</string>
+          <string name="variable-39">"firstMotionEvent|wxMouseEvent|FirstMotionEvent||2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>

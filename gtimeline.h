@@ -370,11 +370,14 @@ public:
   wxTimer * GetTimerMotion() const { return timerMotion ; }
   void SetTimerMotion(wxTimer * value) { timerMotion = value ; }
 
-  wxPoint GetMotionPos() const { return motionPos ; }
-  void SetMotionPos(wxPoint value) { motionPos = value ; }
-
   wxFont GetSemanticFont() const { return semanticFont ; }
   void SetSemanticFont(wxFont value) { semanticFont = value ; }
+
+  wxMouseEvent GetMotionEvent() const { return motionEvent ; }
+  void SetMotionEvent(wxMouseEvent value) { motionEvent = value ; }
+
+  wxMouseEvent GetFirstMotionEvent() const { return firstMotionEvent ; }
+  void SetFirstMotionEvent(wxMouseEvent value) { firstMotionEvent = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -538,8 +541,9 @@ private:
   wxPen physicalPen;
   hash_set<wxCoord> eventsToDraw;
   wxTimer * timerMotion;
-  wxPoint motionPos;
   wxFont semanticFont;
+  wxMouseEvent motionEvent;
+  wxMouseEvent firstMotionEvent;
 ////@end gTimeline member variables
 
   SemanticInfoType lastType;

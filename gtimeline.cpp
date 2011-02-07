@@ -986,6 +986,7 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
   }
   drawZone->SetFocus();
   zooming = true;
+  firstMotionEvent = event;
   zoomBeginX = event.GetX();
   zoomBeginY = event.GetY();
 }
@@ -1621,7 +1622,7 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
  */
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
-  motionPos = event.GetPosition();
+  motionEvent = event;
   timerMotion->Start( 100, true );
   
   wxMemoryDC dc( bufferImage );
@@ -2512,10 +2513,10 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
 
 void gTimeline::OnTimerMotion( wxTimerEvent& event )
 {
-#ifdef WIN32
+/*#ifdef WIN32
   if( zooming )
     return;
-#endif
+#endif*/
 
   wxMemoryDC dc( bufferImage );
 #ifdef WIN32
@@ -2545,28 +2546,55 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   drawZone->Refresh();
 #endif
 
-  if( motionPos.x < objectAxisPos + 1 || motionPos.x > bufferImage.GetWidth() - drawBorder ||
-      motionPos.y < drawBorder || motionPos.y > timeAxisPos - 1 )
-    return;
-
-  dc.GetPixel( motionPos.x, motionPos.y, &tmpColor );
-  if( tmpColor == backgroundColour )
-    return;
-  rgb color = { (ParaverColor)tmpColor.Red(), (ParaverColor)tmpColor.Green(), (ParaverColor)tmpColor.Blue() };
-  TSemanticValue firstValue, secondValue;
-  if( !myWindow->calcValueFromColor( color, firstValue, secondValue ) )
+  if( motionEvent.GetX() < objectAxisPos + 1 || motionEvent.GetX() > bufferImage.GetWidth() - drawBorder ||
+      motionEvent.GetY() < drawBorder || motionEvent.GetY() > timeAxisPos - 1 )
     return;
 
   wxString label;
-  if( myWindow->IsCodeColorSet() )
-    label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, true, 
-                                                                  ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+  if( zooming || motionEvent.ShiftDown() || wxGetApp().GetGlobalTiming() )
+  {
+    long beginX;
+    PRV_UINT32 precision = 0;
+    TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
+                     ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );;
+    TTime time;
+
+    if( zooming )
+    {
+      beginX = firstMotionEvent.GetX();
+      if( beginX < objectAxisPos )
+        beginX = 0;
+      else
+        beginX -= objectAxisPos;
+      time = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
+      label = wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit(), precision ).c_str() );
+      label += wxT( " - " );
+    }
+    beginX = motionEvent.GetX();
+    beginX -= objectAxisPos;
+    time = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
+    label += wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( time ), myWindow->getTimeUnit(), precision ).c_str() );
+  }
   else
   {
-    label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, false, 
-                                                                  ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
-    label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, secondValue, false, 
-                                                                                  ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+    dc.GetPixel( motionEvent.GetX(), motionEvent.GetY(), &tmpColor );
+    if( tmpColor == backgroundColour )
+      return;
+    rgb color = { (ParaverColor)tmpColor.Red(), (ParaverColor)tmpColor.Green(), (ParaverColor)tmpColor.Blue() };
+    TSemanticValue firstValue, secondValue;
+    if( !myWindow->calcValueFromColor( color, firstValue, secondValue ) )
+      return;
+
+    if( myWindow->IsCodeColorSet() )
+      label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, true, 
+                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+    else
+    {
+      label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, false, 
+                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+      label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, secondValue, false, 
+                                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+    }
   }
   
   paintDC.SetFont( semanticFont );
@@ -2575,10 +2603,16 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   paintDC.SetPen( backgroundColour );
   paintDC.SetBrush( backgroundColour );
   paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 1, objectExt.GetWidth() + 30, bufferImage.GetHeight() - timeAxisPos );
-  paintDC.SetBrush( tmpColor );
-  paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 2, 10, bufferImage.GetHeight() - timeAxisPos - 3 );
+  if( !( zooming || motionEvent.ShiftDown() || wxGetApp().GetGlobalTiming() ) )
+  {
+    paintDC.SetBrush( tmpColor );
+    paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 2, 10, bufferImage.GetHeight() - timeAxisPos - 3 );
+  }
   paintDC.SetTextForeground( foregroundColour );
-  paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + 12, timeAxisPos + 3 );
+  if( zooming )
+    paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + objectAxisPos - ( objectExt.GetWidth() / 2 ), timeAxisPos + 3 );
+  else
+    paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + 12, timeAxisPos + 3 );
 #ifdef WIN32
   drawZone->Refresh();
 #endif
