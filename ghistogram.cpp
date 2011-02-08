@@ -1375,9 +1375,11 @@ void gHistogram::OnPopUpPasteDuration()
 
 void gHistogram::OnPopUpPasteSemanticScale()
 {
+  myHistogram->setComputeGradient( false );
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Semantic Scale" );
-  updateHistogram();
   myHistogram->setChanged( true );
+  myHistogram->setRedraw( true );
+  updateHistogram();
 }
 
 void gHistogram::OnPopUpPasteControlScale()

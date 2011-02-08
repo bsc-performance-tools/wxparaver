@@ -391,9 +391,8 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     }
     else if ( property == STR_SEMANTIC_SCALE )
     {
-      Window *controlWin = whichHistogram->GetHistogram()->getControlWindow();
-      controlWin->setMinimumY( timeline->GetMyWindow()->getMinimumY() );
-      controlWin->setMaximumY( timeline->GetMyWindow()->getMaximumY() );
+      whichHistogram->GetHistogram()->setMinGradient( timeline->GetMyWindow()->getMinimumY() );
+      whichHistogram->GetHistogram()->setMaxGradient( timeline->GetMyWindow()->getMaximumY() );
     }
     else
     {
@@ -436,10 +435,8 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     }
     else if ( property == STR_SEMANTIC_SCALE )
     {
-      Window *srcControlWin = histogram->GetHistogram()->getControlWindow();
-      Window *dstControlWin = whichHistogram->GetHistogram()->getControlWindow();
-      dstControlWin->setMinimumY( srcControlWin->getMinimumY() );
-      dstControlWin->setMaximumY( srcControlWin->getMaximumY() );
+      whichHistogram->GetHistogram()->setMinGradient( histogram->GetHistogram()->getMinGradient() );
+      whichHistogram->GetHistogram()->setMaxGradient( histogram->GetHistogram()->getMaxGradient() );
     }
     else if( property == STR_CONTROL_SCALE )
     {
