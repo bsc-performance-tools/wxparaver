@@ -31,6 +31,7 @@
 #include "copypaste.h"
 #include "labelconstructor.h"
 #include "window.h"
+#include "syncwindows.h"
 #include <wx/event.h>
 #include <iostream>
 #include <cmath>
@@ -97,6 +98,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_PASTE_CONTROL_SCALE, gPopUpMenu::OnMenuPasteControlScale )
   EVT_MENU( ID_MENU_PASTE_3D_SCALE, gPopUpMenu::OnMenuPaste3DScale )
   EVT_MENU( ID_MENU_SYNCHRONIZE, gPopUpMenu::OnMenuSynchronize )
+  EVT_MENU( ID_MENU_REMOVE_ALL_SYNC, gPopUpMenu::OnMenuRemoveAllSync )
 
 END_EVENT_TABLE()
 
@@ -169,6 +171,8 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
 
   Enable( FindItem( _( STR_CLONE ) ), true );
 
+  Enable( FindItem( _( STR_SYNC_REMOVEALL ) ), whichTimeline->GetMyWindow()->isSync() );
+  
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
   Enable( FindItem( _( STR_FIT_SEMANTIC ) ), true );
   Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
@@ -354,6 +358,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   buildItem( this, _( STR_PASTE_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_SPECIAL );
   buildItem( this, _( STR_SYNCHRONIZE ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize, ID_MENU_SYNCHRONIZE, timeline->GetMyWindow()->isSync() );
+  buildItem( this, _( STR_SYNC_REMOVEALL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllSync, ID_MENU_REMOVE_ALL_SYNC );
   buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
 
   AppendSeparator();
@@ -1224,4 +1229,11 @@ void gPopUpMenu::OnMenuSynchronize( wxCommandEvent& event )
     timeline->GetMyWindow()->removeFromSync();
   else
     timeline->GetMyWindow()->addToSyncGroup( 0 );
+}
+
+void gPopUpMenu::OnMenuRemoveAllSync( wxCommandEvent& event )
+{
+  if( !timeline->GetMyWindow()->isSync() )
+    return;
+  SyncWindows::getInstance()->removeAll( timeline->GetMyWindow()->getSyncGroup() );
 }

@@ -59,6 +59,7 @@ using namespace std;
 #define STR_CONTROL_SCALE    "Control scale"
 #define STR_3D_SCALE         "3D scale"
 #define STR_SYNCHRONIZE      "Synchronize"
+#define STR_SYNC_REMOVEALL   "Remove all sync"
 
 class gTimeline;
 class gHistogram;

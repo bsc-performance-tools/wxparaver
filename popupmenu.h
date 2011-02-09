@@ -104,7 +104,8 @@ class gHistogram;
 #define ID_MENU_PASTE_3D_SCALE                    30056
 #define ID_MENU_SAVE_TEXT                         30057
 #define ID_MENU_SYNCHRONIZE                       30058
-#define ID_MENU_VIEW_FUNCTION_LINE                30059
+#define ID_MENU_REMOVE_ALL_SYNC                   30059
+#define ID_MENU_VIEW_FUNCTION_LINE                30060
 
 class gPopUpMenu : public wxMenu
 {
@@ -199,6 +200,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuGradientFunction( wxCommandEvent& event );
 
     void OnMenuSynchronize( wxCommandEvent& event );
+    void OnMenuRemoveAllSync( wxCommandEvent& event );
   private:
     gTimeline *timeline;
     gHistogram *histogram;
