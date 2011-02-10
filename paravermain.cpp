@@ -96,6 +96,12 @@
 
 #include <algorithm>
 
+#ifdef WIN32
+  char PATH_SEP('\\');
+#else
+  char PATH_SEP('/');
+#endif
+
 /*!
  * paraverMain type definition
  */
@@ -511,31 +517,51 @@ bool paraverMain::DoLoadTrace( const string &path )
   try
   {
     if( paraverMain::dialogProgress == NULL )
-      paraverMain::dialogProgress = new wxProgressDialog( wxT("Loading trace..."), wxT(""),numeric_limits<int>::max(),
-                                         this,
-                                         wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+      paraverMain::dialogProgress = new wxProgressDialog( wxT("Loading trace..."),
+                                                          wxT(""),
+                                                          numeric_limits<int>::max(),
+                                                          this,
+                                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
+                                                          wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                          wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     string reducePath;
-#ifdef WIN32
+
+// TEST EN WINDOWS
+#if 0
     if( path.length() > 40 && path.find_last_of( '\\' ) != string::npos )
     {
       string file = path.substr( path.find_last_of( '\\' ) );
       string tmp = path.substr( 0, path.find_last_of( '\\' ) );
-      reducePath = "/..." + path.substr( tmp.find_last_of( '\\' ),
+      if(  tmp.find_last_of( '\\' ) != string::npos )
+      {
+        reducePath = "/..." + path.substr( tmp.find_last_of( '\\' ),
                                          tmp.length() - tmp.find_last_of( '\\' ) )
-                   + file;
-#else
-    if( path.length() > 40 && path.find_last_of( '/' ) != string::npos )
-    {
-      string file = path.substr( path.find_last_of( '/' ) );
-      string tmp = path.substr( 0, path.find_last_of( '/' ) );
-      reducePath = "/..." + path.substr( tmp.find_last_of( '/' ),
-                                         tmp.length() - tmp.find_last_of( '/' ) )
-                   + file;
+                     + file;
+      }
+      else
+      {
+        reducePath = "/..." + file;
+      }
 #endif
+    if( path.length() > 40 && path.find_last_of( PATH_SEP ) != string::npos )
+    {
+      string file = path.substr( path.find_last_of( PATH_SEP ) );
+      string tmp = path.substr( 0, path.find_last_of( PATH_SEP ) );
+      if ( tmp.find_last_of( PATH_SEP ) != string::npos )
+      {
+        reducePath = "/..." + path.substr( tmp.find_last_of( PATH_SEP ),
+                                           tmp.length() - tmp.find_last_of( PATH_SEP ) )
+                     + file;
+      }
+      else
+      {
+        reducePath = "/..." + file;
+      }
     }
     else
       reducePath = path;
     reducePath += "\t";
+
     paraverMain::dialogProgress->Pulse( wxString::FromAscii( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
