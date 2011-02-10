@@ -1193,6 +1193,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   {
     Filter *filter = currentTimeline->getFilter();
     filter->clearEventValues();
+
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
     {
@@ -1200,7 +1201,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       value[ idx ].ToULongLong( &tmpLong );
       filter->insertEventValue( tmpLong );
     }
-    
+
     currentTimeline->setRedraw( true );
   }
   else if( propName == _( "Top Compose 1" ) )

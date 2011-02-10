@@ -105,7 +105,7 @@ void prvEventTypeProperty::OnSetValue()
 
 wxString prvEventTypeProperty::GetValueAsString( int ) const
 {
-    return m_display;
+  return m_display;
 }
 
 void prvEventTypeProperty::GenerateValueAsString()
@@ -493,4 +493,118 @@ void prvRowsSelectionProperty::GetStringValueFromVector( vector<TObjectOrder> &w
                                                                     myTimeline->getTrace(),
                                                                     false ).c_str() );
   }
+}
+
+
+/**********************************************************
+ **       prvNumbersListProperty
+ **********************************************************/
+
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvNumbersListProperty, wxPGProperty,
+                                wxArrayInt, const wxArrayInt&, TextCtrl )
+
+prvNumbersListProperty::prvNumbersListProperty( const wxString& label,
+                                                const wxString& name,
+                                                const wxArrayString& value )
+                                                  : wxPGProperty(label,name)
+{
+  // Get local chars for decimal and thousand separators
+  // Actually having problems to read numbers with thousands sep like 60.000.001, so not allowed
+  
+  locale mylocale( "" );
+  char decimalChar =  use_facet< numpunct< char > >( mylocale ).decimal_point();
+// use_facet< numpunct< char > >( mylocale ).thousands_sep() can return the same char !?!
+/*  
+  char thousandsSepChar;
+
+  // Some locales are both the same!!
+  if ( decimalChar == ',' )
+    thousandsSepChar = '.';
+  else
+    thousandsSepChar = ',';
+*/
+
+  wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
+                              _("5"), _("6"), _("7"), _("8"), _("9"),
+//                              wxT( decimalChar ), wxT( thousandsSepChar ),
+                              wxT( decimalChar ),
+                              _(";") };
+
+  // Set numeric validator
+  wxTextValidator myValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
+//  wxArrayString charIncludes( (size_t)13, allowedChars );
+  wxArrayString charIncludes( (size_t)12, allowedChars );
+  myValidator.SetIncludes( charIncludes );
+  SetValidator( myValidator );
+
+  SetValue( value );
+}
+
+
+prvNumbersListProperty::~prvNumbersListProperty()
+{
+}
+
+
+void prvNumbersListProperty::OnSetValue()
+{
+  GenerateValueAsString();
+}
+
+
+wxString prvNumbersListProperty::GetValueAsString( int ) const
+{
+  return m_display;
+}
+
+
+void prvNumbersListProperty::GenerateValueAsString()
+{
+  wxString &tempStr = m_display;
+  tempStr = GetValue().GetString();
+}
+
+
+bool prvNumbersListProperty::StringToValue( wxVariant& variant, 
+                                            const wxString& text,
+                                            int ) const
+{
+  wxArrayString arr;
+
+  WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
+    arr.Add(token);
+  WX_PG_TOKENIZER1_END()
+  
+  // Order values
+  double tmpValue;
+
+  map< double, wxString > sortedValues;
+  for ( unsigned int i = 0; i < arr.GetCount(); ++i )
+  {
+    if ( arr[i].ToDouble( &tmpValue ))  // invalid values not used
+    {
+      sortedValues[ tmpValue ] = arr[i];
+    }
+  }
+  
+  wxArrayString tmpArr;
+  for ( map< double, wxString >::iterator it = sortedValues.begin(); it != sortedValues.end(); ++it )
+  {
+    tmpArr.Add( (*it).second );
+  }
+
+  arr = tmpArr;
+  
+  wxVariant v( WXVARIANT(arr) );
+  variant = v;
+
+  return true;
+}
+
+
+bool prvNumbersListProperty::OnEvent( wxPropertyGrid* propgrid,
+                                      wxWindow* WXUNUSED(primary),
+                                      wxEvent& event )
+{
+  return true;
 }

@@ -169,5 +169,33 @@ class prvRowsSelectionProperty: public wxPGProperty
 };
 
 
+/**********************************************************
+ **        prvNumbersListProperty
+ **********************************************************/
+class prvNumbersListProperty: public wxPGProperty
+{
+  WX_PG_DECLARE_PROPERTY_CLASS( prvNumbersListProperty )
+  public:
+    prvNumbersListProperty()
+    {}
 
+    prvNumbersListProperty( const wxString& label,
+                            const wxString& name,
+                            const wxArrayString& value );
 
+    virtual ~prvNumbersListProperty();
+
+    virtual void OnSetValue();
+    virtual wxString GetValueAsString( int flags = 0 ) const;
+    virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
+
+    WX_PG_DECLARE_EVENT_METHODS()
+
+  protected:
+
+    void GenerateValueAsString();
+
+    wxArrayString       m_valueAsStrings;  // Value as array of strings
+
+    wxString            m_display; // Cache displayed text since generating it is relatively complicated.
+};

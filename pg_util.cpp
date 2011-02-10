@@ -393,7 +393,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     filter->getCommTag( tagSel );
     for( vector<TCommTag>::iterator it = tagSel.begin(); it != tagSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
-    wxArrayStringProperty *tagProperty = new wxArrayStringProperty( wxT("Tag"), wxPG_LABEL, arrayStr );
+    prvNumbersListProperty *tagProperty = new prvNumbersListProperty( wxT("Tag"), wxPG_LABEL, arrayStr );
     wxPGId commFilterTagValues = windowProperties->AppendIn( commFilterTag, tagProperty );
 
     if( filter->getCommTagFunction() == "All" || 
@@ -442,7 +442,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     filter->getCommSize( sizeSel );
     for( vector<TCommSize>::iterator it = sizeSel.begin(); it != sizeSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
-    wxArrayStringProperty *sizeProperty = new wxArrayStringProperty( wxT("Size"), wxPG_LABEL, arrayStr );
+    prvNumbersListProperty *sizeProperty = new prvNumbersListProperty( wxT("Size"), wxPG_LABEL, arrayStr );
     wxPGId commFilterSizeValues = windowProperties->AppendIn( commFilterSize, sizeProperty );
 
     if( filter->getCommSizeFunction() == "All" || 
@@ -477,7 +477,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     filter->getBandWidth( bwSel );
     for( vector<TSemanticValue>::iterator it = bwSel.begin(); it != bwSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
-    wxArrayStringProperty *bwProperty = new wxArrayStringProperty( wxT("Bandwidth"), wxPG_LABEL, arrayStr );
+    prvNumbersListProperty *bwProperty = new prvNumbersListProperty( wxT("Bandwidth"), wxPG_LABEL, arrayStr );
     wxPGId commFilterBandWidthValues = windowProperties->AppendIn( commFilterBW, bwProperty );
 
     if( filter->getBandWidthFunction() == "All" || 
@@ -582,7 +582,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     filter->getEventValue( valuesSel );
     for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
-    wxArrayStringProperty *valueProperty = new wxArrayStringProperty( wxT("Values"), wxPG_LABEL, arrayStr );
+    prvNumbersListProperty *valueProperty = new prvNumbersListProperty( wxT("Values"), wxPG_LABEL, arrayStr );
     wxPGId eventFilterValueValues = windowProperties->AppendIn( eventFilterValue, valueProperty );
 
     if( filter->getEventValueFunction() == "All" || 
@@ -655,6 +655,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
   TWindowLevel level = whichWindow->getLevel();
   TWindowLevel minAcceptLevel = whichWindow->getMinAcceptableLevel();
+  
   if( level >= WORKLOAD && level <= THREAD )
   {
     if( level == WORKLOAD )
