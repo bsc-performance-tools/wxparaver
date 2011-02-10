@@ -924,8 +924,6 @@ void gTimeline::OnIdle( wxIdleEvent& event )
 //    this->SetSize( myWindow->getWidth(), myWindow->getHeight() );
     drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
     canRedraw = true;
-    if( !ready )
-      redraw();
   }
 #else
   canRedraw = true;
@@ -2513,11 +2511,6 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
 
 void gTimeline::OnTimerMotion( wxTimerEvent& event )
 {
-/*#ifdef WIN32
-  if( zooming )
-    return;
-#endif*/
-
   wxMemoryDC dc( bufferImage );
 #ifdef WIN32
   wxMemoryDC tmpDC( drawImage );
