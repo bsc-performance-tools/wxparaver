@@ -332,6 +332,10 @@ int wxparaverApp::OnExit()
   if( m_server != NULL )
     delete m_server;
 
+  // Every time you write some code without goto(s), God kills a kitten. Or was it the other way around?
+  goto the_kitten_goto;
+  the_kitten_goto:
+
 ////@begin wxparaverApp cleanup
 	return wxApp::OnExit();
 ////@end wxparaverApp cleanup
