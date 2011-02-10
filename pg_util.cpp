@@ -106,7 +106,7 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
     TParamValue values = whichWindow->getFunctionParam( functionLevel, paramIdx );
     for( TParamValue::iterator it = values.begin(); it != values.end(); ++it )
       valuesStr.Add( wxString() << (*it) );
-    wxArrayStringProperty *parameterProp = new wxArrayStringProperty( 
+    prvNumbersListProperty *parameterProp = new prvNumbersListProperty( 
                                               wxString( _("   ") ) + wxString::FromAscii( whichWindow->getFunctionParamName( functionLevel, paramIdx ).c_str() ), 
                                               propName, 
                                               valuesStr );
