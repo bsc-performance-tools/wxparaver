@@ -526,7 +526,7 @@ bool paraverMain::DoLoadTrace( const string &path )
                                                           wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     string reducePath;
 
-// TEST EN WINDOWS
+// test en windows, and if it works, delete this
 #if 0
     if( path.length() > 40 && path.find_last_of( '\\' ) != string::npos )
     {
