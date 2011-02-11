@@ -45,6 +45,7 @@ void gPasteWindowProperties::commonMenuSettings( )
       for ( int destiny = TIMELINE; destiny <= HISTOGRAM; destiny++ )
       {
         allowed[STR_PASTE][trace][origin][destiny] = true;
+        allowed[STR_PASTE_DEFAULT_SPECIAL][trace][origin][destiny] = true;
         allowed[STR_PASTE_SPECIAL][trace][origin][destiny] = true;
       }
 
@@ -176,6 +177,7 @@ gPasteWindowProperties::gPasteWindowProperties()
       for ( int paste = TIMELINE; paste <= HISTOGRAM; paste++ )
         option[trace][copy][paste] = false;
   allowed[STR_PASTE] = option;
+  allowed[STR_PASTE_DEFAULT_SPECIAL] = option;
   allowed[STR_PASTE_SPECIAL] = option;
 
   // Policy : Selective paste for FILTER options

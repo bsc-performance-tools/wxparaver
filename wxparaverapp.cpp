@@ -333,6 +333,7 @@ int wxparaverApp::OnExit()
     delete m_server;
 
   // Every time you write code without goto(s), God kills a kitten. Or was it the other way around?
+  // Does God::kills() { return --kitten; } returns a long int? 
   goto the_kitten_goto;
   the_kitten_goto:
 

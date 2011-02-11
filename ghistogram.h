@@ -299,6 +299,7 @@ public:
   // Pop Up Menu Methods
   void OnPopUpCopy();
   void OnPopUpPaste();
+  void OnPopUpPasteDefaultSpecial();
   void OnPopUpPasteSpecial();
   void OnPopUpPasteTime();
   void OnPopUpPasteObjects();

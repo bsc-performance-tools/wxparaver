@@ -276,7 +276,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -1344,6 +1344,15 @@ void gHistogram::OnPopUpPasteSpecial()
   }
 
   delete dialog;
+}
+
+void gHistogram::OnPopUpPasteDefaultSpecial()
+{
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Time" );
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
+  myHistogram->setRecalc( true );
+  updateHistogram();
 }
 
 void gHistogram::OnPopUpPasteTime()

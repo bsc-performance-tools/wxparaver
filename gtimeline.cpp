@@ -1324,6 +1324,20 @@ void gTimeline::OnPopUpCodeColor()
 }
 
 
+void gTimeline::OnPopUpPasteDefaultSpecial()
+{
+  gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+
+  pasteActions->paste( this, "Time" );
+  myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
+  pasteActions->paste( this, "Size" );
+  pasteActions->paste( this, "Objects" );
+
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}
+
+
 void gTimeline::OnPopUpPasteTime()
 {
   gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();

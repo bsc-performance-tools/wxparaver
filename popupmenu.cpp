@@ -48,6 +48,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_FILTER_ALL, gPopUpMenu::OnMenuFilterAll )
   EVT_MENU( ID_MENU_FILTER_COMMS, gPopUpMenu::OnMenuFilterComms )
   EVT_MENU( ID_MENU_FILTER_EVENTS, gPopUpMenu::OnMenuFilterEvents )
+  EVT_MENU( ID_MENU_PASTE_DEFAULT_SPECIAL, gPopUpMenu::OnMenuPasteDefaultSpecial )
   EVT_MENU( ID_MENU_PASTE_SPECIAL, gPopUpMenu::OnMenuPasteSpecial )
   EVT_MENU( ID_MENU_CLONE, gPopUpMenu::OnMenuClone )
   EVT_MENU( ID_MENU_UNDO_ZOOM, gPopUpMenu::OnMenuUndoZoom )
@@ -166,8 +167,9 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
   popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( _( STR_FILTER_COMMS ) ), sharedProperties->isAllowed( whichTimeline, STR_FILTER_COMMS) );
   popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( _( STR_FILTER_EVENTS ) ), sharedProperties->isAllowed( whichTimeline, STR_FILTER_EVENTS) );
 
-  Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE) );
-  Enable( FindItem( _( STR_PASTE_SPECIAL ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE_SPECIAL) );
+  Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE ) );
+  Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE_DEFAULT_SPECIAL ) );
+  Enable( FindItem( _( STR_PASTE_SPECIAL ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE_SPECIAL ) );
 
   Enable( FindItem( _( STR_CLONE ) ), true );
 
@@ -191,8 +193,9 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
   popUpMenuPaste->Enable( popUpMenuPaste->FindItem( _( STR_DURATION ) ), sharedProperties->isAllowed( whichHistogram, STR_DURATION )  );
   popUpMenuPaste->Enable( popUpMenuPaste->FindItem( _( STR_SEMANTIC_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_SEMANTIC_SCALE)  );
 
-  Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE) );
-  Enable( FindItem( _( STR_PASTE_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_SPECIAL) );
+  Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE ) );
+  Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_DEFAULT_SPECIAL ) );
+  Enable( FindItem( _( STR_PASTE_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_SPECIAL ) );
 
   Enable( FindItem( _( STR_CLONE ) ), true );
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
@@ -354,8 +357,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuPasteFilter, _( STR_FILTER_COMMS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterComms, ID_MENU_FILTER_COMMS );
   buildItem( popUpMenuPasteFilter, _( STR_FILTER_EVENTS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterEvents, ID_MENU_FILTER_EVENTS );
   popUpMenuPaste->AppendSubMenu( popUpMenuPasteFilter, _( STR_FILTER ) );
+
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
+  buildItem( this, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_DEFAULT_SPECIAL );
   buildItem( this, _( STR_PASTE_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_SPECIAL );
   buildItem( this, _( STR_SYNCHRONIZE ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize, ID_MENU_SYNCHRONIZE, timeline->GetMyWindow()->isSync() );
   buildItem( this, _( STR_SYNC_REMOVEALL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllSync, ID_MENU_REMOVE_ALL_SYNC );
@@ -590,6 +595,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
+  buildItem( this, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_DEFAULT_SPECIAL );
   buildItem( this, _( STR_PASTE_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_SPECIAL );
   buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
 
@@ -770,6 +776,8 @@ void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
     {
       Enable( FindItem( _( STR_PASTE ) ),
               gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, STR_PASTE ) );
+      Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ),
+              gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, STR_PASTE_DEFAULT_SPECIAL ) );
       Enable( FindItem( _( STR_PASTE_SPECIAL ) ),
               gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, STR_PASTE_SPECIAL ) );
     }
@@ -781,6 +789,8 @@ void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
     {
       Enable( FindItem( _( STR_PASTE ) ),
               gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, STR_PASTE ));
+      Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ),
+              gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, STR_PASTE_DEFAULT_SPECIAL ));
       Enable( FindItem( _( STR_PASTE_SPECIAL ) ),
               gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, STR_PASTE_SPECIAL ));
 
@@ -893,6 +903,14 @@ void gPopUpMenu::OnMenuPasteControlScale( wxCommandEvent& event )
 void gPopUpMenu::OnMenuPaste3DScale( wxCommandEvent& event )
 {
   histogram->OnPopUpPaste3DScale();
+}
+
+void gPopUpMenu::OnMenuPasteDefaultSpecial( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpPasteDefaultSpecial();
+  else
+    histogram->OnPopUpPasteDefaultSpecial();
 }
 
 void gPopUpMenu::OnMenuPasteSpecial( wxCommandEvent& event)

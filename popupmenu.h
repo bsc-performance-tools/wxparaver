@@ -106,6 +106,7 @@ class gHistogram;
 #define ID_MENU_SYNCHRONIZE                       30058
 #define ID_MENU_REMOVE_ALL_SYNC                   30059
 #define ID_MENU_VIEW_FUNCTION_LINE                30060
+#define ID_MENU_PASTE_DEFAULT_SPECIAL             30061
 
 class gPopUpMenu : public wxMenu
 {
@@ -145,6 +146,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuFilterEvents( wxCommandEvent& event);
     void OnMenuPasteControlScale( wxCommandEvent& event );
     void OnMenuPaste3DScale( wxCommandEvent& event );
+    void OnMenuPasteDefaultSpecial( wxCommandEvent& event);
     void OnMenuPasteSpecial( wxCommandEvent& event);
     void OnMenuClone( wxCommandEvent& event);
     void OnMenuUndoZoom( wxCommandEvent& event);
