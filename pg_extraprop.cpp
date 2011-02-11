@@ -514,6 +514,7 @@ prvNumbersListProperty::prvNumbersListProperty( const wxString& label,
   locale mylocale( "" );
   char decimalChar =  use_facet< numpunct< char > >( mylocale ).decimal_point();
 // use_facet< numpunct< char > >( mylocale ).thousands_sep() can return the same char !?!
+
 /*  
   char thousandsSepChar;
 
@@ -526,9 +527,13 @@ prvNumbersListProperty::prvNumbersListProperty( const wxString& label,
 
   wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
                               _("5"), _("6"), _("7"), _("8"), _("9"),
-//                              wxT( decimalChar ), wxT( thousandsSepChar ),
-                              wxT( decimalChar ),
+//                             wxT( decimalChar ), wxT( thousandsSepChar ),
+                              _(","),
                               _(";") };
+  if ( decimalChar == '.' )
+  {
+    allowedChars[ 10 ] = _(".");
+  }
 
   // Set numeric validator
   wxTextValidator myValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
