@@ -2609,7 +2609,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
 
   paintDC.SetPen( backgroundColour );
   paintDC.SetBrush( backgroundColour );
-  paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 1, objectExt.GetWidth() + 30, bufferImage.GetHeight() - timeAxisPos );
+//  paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 1, objectExt.GetWidth() + 30, bufferImage.GetHeight() - timeAxisPos );
   if( !( zooming || motionEvent.ShiftDown() || wxGetApp().GetGlobalTiming() ) )
   {
     paintDC.SetBrush( tmpColor );
