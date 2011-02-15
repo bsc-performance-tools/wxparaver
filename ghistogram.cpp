@@ -276,7 +276,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2199,7 +2199,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   THistogramLimit delta = myHistogram->getControlDelta();
   TWindowLevel onLevel = controlCloned->getFirstFreeCompose();
 
-  if( columnBegin == columnEnd )
+  if( columnBegin == columnEnd && delta != 1.0 )
     ++columnEnd;
 
   if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max || delta == 1.0)
@@ -2380,6 +2380,9 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
     tmpControlWindow->GetMyWindow()->getSelectedRows( tmpControlWindow->GetMyWindow()->getLevel(),
                                                       tmpSelectedRows );
+
+    if( columnBegin == columnEnd )
+      ++columnEnd;
 
     if ( !commStat )
     {
