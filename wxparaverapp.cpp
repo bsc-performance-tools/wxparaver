@@ -41,6 +41,8 @@
 ////@begin includes
 ////@end includes
 
+#include "labelconstructor.h"
+
 // Signal handling
 #include <signal.h>
 #include <stdio.h>
@@ -188,6 +190,51 @@ void wxparaverApp::presetUserSignals()
 
 bool wxparaverApp::OnInit()
 {
+  wxCmdLineEntryDesc argumentsParseSyntax[] =
+  {
+    { wxCMD_LINE_SWITCH, 
+      wxT("v"),
+      wxT("version"),
+      wxT("Show wxparaver version."),
+      wxCMD_LINE_VAL_STRING },
+
+    { wxCMD_LINE_SWITCH, 
+      wxT("h"),
+      wxT("help"),
+      wxT("Show this help."),
+      wxCMD_LINE_VAL_STRING,
+      wxCMD_LINE_OPTION_HELP },
+
+    { wxCMD_LINE_OPTION, 
+      wxT("t"),
+      wxT("type"),
+      wxT("Event type to code linking."),
+      wxCMD_LINE_VAL_NUMBER,
+      wxCMD_LINE_PARAM_OPTIONAL },
+
+    { wxCMD_LINE_PARAM, 
+      NULL,
+      NULL,
+      wxT( "(trace.prv | trace.prv.gz) (configuration.cfg)" ),
+      wxCMD_LINE_VAL_STRING,
+      wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
+
+    { wxCMD_LINE_NONE }
+  };
+
+  wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
+  if ( paraverCommandLineParser.Parse( false ) != 0 )
+  {
+    paraverCommandLineParser.Usage();
+    return false; 
+  }
+
+  if( paraverCommandLineParser.Found( wxT("v") ))
+  {
+    PrintVersion();
+    return false;
+  }
+
   ParaverConfig::getInstance()->readParaverConfigFile();
   
   if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
@@ -241,32 +288,6 @@ bool wxparaverApp::OnInit()
       return false;
     }
   }
-  
-  wxCmdLineEntryDesc argumentsParseSyntax[] =
-  {
-    { wxCMD_LINE_SWITCH, 
-      wxT("h"),
-      wxT("help"),
-      wxT("Show this help."),
-      wxCMD_LINE_VAL_STRING,
-      wxCMD_LINE_OPTION_HELP },
-
-    { wxCMD_LINE_OPTION, 
-      wxT("t"),
-      wxT("type"),
-      wxT("Event type to code linking."),
-      wxCMD_LINE_VAL_NUMBER,
-      wxCMD_LINE_PARAM_OPTIONAL },
-
-    { wxCMD_LINE_PARAM, 
-      NULL,
-      NULL,
-      wxT( "(trace.prv | trace.prv.gz) (configuration.cfg)" ),
-      wxCMD_LINE_VAL_STRING,
-      wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
-
-    { wxCMD_LINE_NONE }
-  };
 
 #if wxUSE_XPM
   wxImage::AddHandler(new wxXPMHandler);
@@ -280,9 +301,6 @@ bool wxparaverApp::OnInit()
 #if wxUSE_GIF
   wxImage::AddHandler(new wxGIFHandler);
 #endif
-
-  wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
-  paraverCommandLineParser.Parse();
 
   wxSize mainWindowSize( ParaverConfig::getInstance()->getMainWindowWidth(),
                          ParaverConfig::getInstance()->getMainWindowHeight() );
@@ -394,3 +412,15 @@ void wxparaverApp::DeactivateGlobalTiming()
 }
 
 
+void wxparaverApp::PrintVersion()
+{
+  cout << "wxparaver " << VERSION;
+
+  bool reverseOrder = true;
+  string auxDate = LabelConstructor::getDate( reverseOrder );
+
+  if ( auxDate.compare("") != 0 )
+    cout << " Build ";
+
+  cout << auxDate << endl;
+}

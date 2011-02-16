@@ -2943,7 +2943,8 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   wxString description;
   
   info.SetName( _("wxParaver") );
-  info.SetVersion( _( "4.0.1 (Build " ) + wxString() << _( __DATE__ ) << _( ")" ) );
+  info.SetVersion( wxString() << _( VERSION ) << _( " (Build " ) + \
+                   wxString() << _( __DATE__ ) << _( ")" ) );
   description << _( "\nwxParaver is a graphical displaying tool developed at BSC :\n" );
   description << _( "Barcelona Supercomputing Center.\n\n" );
   description << _( "wxParaver allows the programmer to examine graphically a " );
@@ -3193,8 +3194,6 @@ void paraverMain::OnIconize( wxIconizeEvent& event )
 }
 
 
-
-
 /*!
  * wxEVT_SIZE event handler for ID_PARAVERMAIN
  */
@@ -3206,4 +3205,3 @@ void paraverMain::OnSize( wxSizeEvent& event )
   
   event.Skip();
 }
-

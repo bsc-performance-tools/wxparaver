@@ -133,6 +133,10 @@ private:
     wxSingleInstanceChecker *m_checker;
     
     stServer *m_server;
+    
+
+    void PrintVersion();
+
 };
 
 /*!
