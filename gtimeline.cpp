@@ -894,7 +894,6 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
     }
     timerSize->Start( 100, true );
   }
-//  event.Skip();
 }
 
 
@@ -921,7 +920,6 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   {
     firstUnsplit = true;
     splitter->Unsplit();
-//    this->SetSize( myWindow->getWidth(), myWindow->getHeight() );
     drawZone->SetClientSize( myWindow->getWidth(), myWindow->getHeight() );
     canRedraw = true;
   }
@@ -932,14 +930,12 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   if( !wxparaverApp::mainWindow->IsIconized() && myWindow->getShowWindow() )
   {
     this->Show();
-//    paraverMain::myParaverMain->addActiveWindow( this );
     if( !ready )
       redraw();
   }
   else
   {
     this->Show( false );
-//    paraverMain::myParaverMain->removeActiveWindow( this );
   }
 
   if( myWindow->getRaiseWindow() )
@@ -1635,7 +1631,7 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
   motionEvent = event;
-  timerMotion->Start( 100, true );
+  timerMotion->Start( 10, true );
   
   wxMemoryDC dc( bufferImage );
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();

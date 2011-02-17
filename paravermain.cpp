@@ -501,16 +501,6 @@ bool paraverMain::DoLoadTrace( const string &path )
   if ( it == traceInstance.end() )
     traceInstance[ path ] = 0;
 
-/*
-  for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
-  {
-    if( (*it)->getFileName().compare( path ) == 0 )
-    // Trace is loaded.
-      timesLoaded++;
-  }
-  traceWasLoaded = ( timesLoaded > 0 );
-*/
-
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction );
 
@@ -2140,7 +2130,6 @@ void paraverMain::ShowDerivedDialog()
     bool found;
     gTimeline *last = getGTimelineFromWindow( currentPage->GetRootItem(), newWindow, found );
     if ( found )
-//    last->Raise();
       currentWindow = last;
   }
   raiseCurrentWindow = true;
@@ -2156,8 +2145,6 @@ void paraverMain::ShowHistogramDialog()
   LoadedWindows::getInstance()->getAll( timelines );
 
   histogramDialog.SetControlTimelines( timelines );
-// esto lo hace internamente
-//  histogramDialog.SetDataTimelines( timelines ); 
 
   vector< pair< TRecordTime, TRecordTime > > ranges;
   // Window Times
@@ -2676,16 +2663,6 @@ void paraverMain::OnActivate( wxActivateEvent& event )
   }
 #endif
   event.Skip();
-}
-
-void paraverMain::addActiveWindow( wxWindow *window )
-{
-  activeWindows.insert( window );
-}
-
-void paraverMain::removeActiveWindow( wxWindow *window )
-{
-  activeWindows.erase( window );
 }
 
 void paraverMain::PrepareToExit()

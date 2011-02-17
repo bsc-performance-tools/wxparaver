@@ -360,13 +360,9 @@ public:
   
   void clearProperties();
   
-  void addActiveWindow( wxWindow *window );
-  void removeActiveWindow( wxWindow *window );
-
   void enqueueFile( string whichFile );
   
 #ifndef WIN32
-//  void OnSignal( int sigusr );
   void OnSignal();
   bool matchTraceNames( const string &fileName1, 
                         const string &traceName1,
