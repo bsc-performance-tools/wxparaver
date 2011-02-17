@@ -414,7 +414,7 @@ void wxparaverApp::DeactivateGlobalTiming()
 
 void wxparaverApp::PrintVersion()
 {
-  cout << "wxparaver " << VERSION;
+  cout << PACKAGE_STRING;
 
   bool reverseOrder = true;
   string auxDate = LabelConstructor::getDate( reverseOrder );
