@@ -160,6 +160,8 @@ gTimeline::~gTimeline()
 {
 ////@begin gTimeline destruction
 ////@end gTimeline destruction
+  gPasteWindowProperties::getInstance()->verifyRemove( this );
+
   delete timerSize;
   delete timerMotion;
   delete myWindow;
@@ -1631,7 +1633,7 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
   motionEvent = event;
-  timerMotion->Start( 10, true );
+  timerMotion->Start( 20, true );
   
   wxMemoryDC dc( bufferImage );
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();

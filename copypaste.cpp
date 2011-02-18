@@ -514,3 +514,14 @@ TRecordTime gPasteWindowProperties::getEndTime()
   return histogram->GetHistogram()->getEndTime();
 }
 
+void gPasteWindowProperties::verifyRemove( gTimeline *whichTimeline )
+{
+  if( whichTimeline == timeline )
+    timeline = NULL;
+}
+
+void gPasteWindowProperties::verifyRemove( gHistogram *whichHistogram )
+{
+  if( whichHistogram == histogram )
+    histogram = NULL;
+}

@@ -199,7 +199,8 @@ gHistogram::~gHistogram()
 {
 ////@begin gHistogram destruction
 ////@end gHistogram destruction
-
+  gPasteWindowProperties::getInstance()->verifyRemove( this );
+  
   delete myHistogram;
 }
 

@@ -86,6 +86,9 @@ class gPasteWindowProperties
     TRecordTime getBeginTime();
     TRecordTime getEndTime();
 
+    void verifyRemove( gTimeline *whichTimeline );
+    void verifyRemove( gHistogram *whichHistogram );
+    
   private:
     #define SAME_TRACE 0
     #define DIFF_TRACE 1
