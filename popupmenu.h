@@ -102,11 +102,13 @@ class gHistogram;
 #define ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL     30054
 #define ID_MENU_PASTE_CONTROL_SCALE               30055
 #define ID_MENU_PASTE_3D_SCALE                    30056
-#define ID_MENU_SAVE_TEXT                         30057
-#define ID_MENU_SYNCHRONIZE                       30058
-#define ID_MENU_REMOVE_ALL_SYNC                   30059
-#define ID_MENU_VIEW_FUNCTION_LINE                30060
-#define ID_MENU_PASTE_DEFAULT_SPECIAL             30061
+#define ID_MENU_SAVE_TIMELINE_AS_TEXT             30057
+#define ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT        30058
+#define ID_MENU_SAVE_ALL_PLANES_AS_TEXT           30059
+#define ID_MENU_SYNCHRONIZE                       30060
+#define ID_MENU_REMOVE_ALL_SYNC                   30061
+#define ID_MENU_VIEW_FUNCTION_LINE                30062
+#define ID_MENU_PASTE_DEFAULT_SPECIAL             30063
 
 class gPopUpMenu : public wxMenu
 {
@@ -191,7 +193,9 @@ class gPopUpMenu : public wxMenu
     void OnMenuRowSelection( wxCommandEvent& event);
 
     void OnMenuSaveImage( wxCommandEvent& event );
-    void OnMenuSaveText( wxCommandEvent& event );
+    void OnMenuSaveTimelineAsText( wxCommandEvent& event );
+    void OnMenuSaveAllPlanesAsText( wxCommandEvent& event );
+    void OnMenuSaveCurrentPlaneAsText( wxCommandEvent& event );
 
     void OnMenuInfoPanel( wxCommandEvent& event );
     
@@ -218,6 +222,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuDrawModeBoth;
     wxMenu *popUpMenuPixelSize;
     wxMenu *popUpMenuGradientFunction;
+    wxMenu *popUpMenuSaveAsText;
 
     void buildItem( wxMenu *popUp,
                     const wxString &title,

@@ -88,7 +88,9 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_PIXEL_SIZE_x8, gPopUpMenu::OnMenuPixelSize )
   EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
   EVT_MENU( ID_MENU_SAVE_IMAGE, gPopUpMenu::OnMenuSaveImage )
-  EVT_MENU( ID_MENU_SAVE_TEXT, gPopUpMenu::OnMenuSaveText )
+  EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_TEXT, gPopUpMenu::OnMenuSaveTimelineAsText )
+  EVT_MENU( ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT, gPopUpMenu::OnMenuSaveCurrentPlaneAsText )
+  EVT_MENU( ID_MENU_SAVE_ALL_PLANES_AS_TEXT, gPopUpMenu::OnMenuSaveAllPlanesAsText )
   EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
   EVT_MENU( ID_MENU_AUTO_3D_SCALE, gPopUpMenu::OnMenuAuto3DScale )
   EVT_MENU( ID_MENU_AUTO_DATA_GRADIENT, gPopUpMenu::OnMenuAutoDataGradient )
@@ -554,7 +556,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
   buildItem( this, _( "Save Image..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
-  buildItem( this, _( "Save as text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TEXT );
+  buildItem( this, _( "Save as text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TIMELINE_AS_TEXT );
 
   AppendSeparator();
   buildItem( this, 
@@ -582,6 +584,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuDrawModeObjects = new wxMenu;
   popUpMenuDrawModeBoth = new wxMenu;
   popUpMenuGradientFunction = new wxMenu;
+  popUpMenuSaveAsText = new wxMenu;
 
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
 
@@ -759,8 +762,26 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   AppendSubMenu( popUpMenuDrawMode, _( "Drawmode" ) );
 
   AppendSeparator();
-  buildItem( this, _( "Save as text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TEXT );
+  
+  if ( histogram->GetHistogram()->getThreeDimensions() )
+  {
+    buildItem( popUpMenuSaveAsText, 
+               _( "Current Plane..." ),
+               ITEMNORMAL,
+               (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveCurrentPlaneAsText,
+               ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT );
+    buildItem( popUpMenuSaveAsText, _( "All Planes..." ),
+               ITEMNORMAL,
+               (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText,
+               ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
+    AppendSubMenu( popUpMenuSaveAsText, _( "Save as text" ) );
 
+  }
+  else
+  {
+    buildItem( this, _( "Save as text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
+  }
+  
   enableMenu( histogram );
 }
 
@@ -1190,13 +1211,25 @@ void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
     timeline->saveImage();
 }
 
-void gPopUpMenu::OnMenuSaveText( wxCommandEvent& event )
+void gPopUpMenu::OnMenuSaveTimelineAsText( wxCommandEvent& event )
 {
-  if( timeline != NULL )
-    timeline->saveText();
-  else if( histogram != NULL )
-    histogram->saveText();
+  timeline->saveText();
 }
+
+
+void gPopUpMenu::OnMenuSaveCurrentPlaneAsText( wxCommandEvent& event )
+{
+  bool onlySelectedPlane = true;
+  histogram->saveText( onlySelectedPlane );
+}
+
+
+void gPopUpMenu::OnMenuSaveAllPlanesAsText( wxCommandEvent& event )
+{
+  bool onlySelectedPlane = false;
+  histogram->saveText( onlySelectedPlane );
+}
+
 
 void gPopUpMenu::OnMenuInfoPanel( wxCommandEvent& event )
 {

@@ -341,7 +341,7 @@ public:
 
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
   
-  void saveText();
+  void saveText( bool onlySelectedPlane = false );
   
   void rightDownManager();
 

@@ -276,7 +276,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2557,11 +2557,22 @@ void gHistogram::OnMenuGradientFunction( GradientColor::TGradientFunction functi
   myHistogram->setRedraw( true );
 }
 
-void gHistogram::saveText()
+void gHistogram::saveText( bool onlySelectedPlane )
 {
   wxString fileName, defaultDir;
+  string auxName = myHistogram->getName() + "_";
   
-  string auxName = myHistogram->getName() + "_" + myHistogram->getTrace()->getTraceNameNumbered();
+  if ( onlySelectedPlane )
+  {
+    bool isCommStatistic = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+    if ( !isCommStatistic )
+      auxName += myHistogram->getPlaneLabel( myHistogram->getSelectedPlane() ) + "_";
+    else
+      auxName += myHistogram->getPlaneLabel( myHistogram->getCommSelectedPlane() ) + "_";
+  }
+
+  auxName += myHistogram->getTrace()->getTraceNameNumbered();
+
   fileName = wxString::FromAscii( auxName.c_str() );
 
 #ifdef WIN32
@@ -2582,7 +2593,7 @@ void gHistogram::saveText()
     TextOutput output;
     output.setMultipleFiles( false );
     string tmpStr = string( saveDialog.GetPath().mb_str() );
-    output.dumpHistogram( myHistogram, tmpStr, false, myHistogram->getHideColumns() );
+    output.dumpHistogram( myHistogram, tmpStr, onlySelectedPlane, myHistogram->getHideColumns() );
   }
 }
 
