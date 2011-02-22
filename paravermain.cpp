@@ -1739,6 +1739,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
 
 void progressFunction( ProgressController *progress )
 {
+//cout << progress->getCurrentProgress() << " / " << progress->getEndLimit() << endl;
   int p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
   if( !paraverMain::dialogProgress->Update( p ) )
     progress->setStop( true );
@@ -3018,7 +3019,10 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
                                                         wxT(""),
                                                         numeric_limits<int>::max(),
                                                         this,
-                                                        wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_ELAPSED_TIME|wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+                                                        wxPD_AUTO_HIDE|\
+                                                        wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                        wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
 
   // Concatenate Filter Utilities
   strcpy( tmpNameOut, (char *)traceFileName.c_str() );
