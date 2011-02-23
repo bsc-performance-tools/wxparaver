@@ -1739,8 +1739,12 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
 
 void progressFunction( ProgressController *progress )
 {
-//cout << progress->getCurrentProgress() << " / " << progress->getEndLimit() << endl;
-  int p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
+  int p;
+  if ( progress->getCurrentProgress() > progress->getEndLimit() )
+    p = numeric_limits<int>::max();
+  else 
+    p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
+
   if( !paraverMain::dialogProgress->Update( p ) )
     progress->setStop( true );
 //  app->Yield();
