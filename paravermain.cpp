@@ -471,17 +471,30 @@ bool paraverMain::DoLoadTrace( const string &path )
 
   canServeSignal = false;
 
-  if( !localKernel->checkTraceSize( path, ParaverConfig::getInstance()->getFiltersFilterTraceUpToMB() * 1E6 ) )
+  // Append whole path.
+  wxFileName tmpFileName( wxString( path.c_str(), wxConvUTF8 ) );
+    
+#ifdef WIN32
+  tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                         wxPATH_NORM_LONG );
+#else
+  tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                         wxPATH_NORM_LONG | wxPATH_NORM_TILDE );
+#endif
+
+  string tmpPath = std::string( tmpFileName.GetFullPath().mb_str() );
+
+  if( !localKernel->checkTraceSize( tmpPath, ParaverConfig::getInstance()->getFiltersFilterTraceUpToMB() * 1E6 ) )
   {
     wxMessageDialog maxSizeDialog( this, 
-                                   wxString( "The maximum size for trace ",  wxConvUTF8 ) + wxString( path.c_str(), wxConvUTF8 ) + wxString( " is reached.\nWould you like to cut or filter the trace?",  wxConvUTF8 ),
+                                   wxString( "The maximum size for trace ",  wxConvUTF8 ) + wxString( tmpPath.c_str(), wxConvUTF8 ) + wxString( " is reached.\nWould you like to cut or filter the trace?",  wxConvUTF8 ),
                                    wxT( "Maximum size reached" ),
                                    wxYES_NO|wxCANCEL|wxICON_QUESTION );
 
     switch( maxSizeDialog.ShowModal() )
     {
       case wxID_YES:
-        ShowCutTraceWindow( path, true );
+        ShowCutTraceWindow( tmpPath, true );
         canServeSignal = true;
         return true;
         break;
@@ -497,9 +510,9 @@ bool paraverMain::DoLoadTrace( const string &path )
     }
   }
   
-  map< string, PRV_UINT32 >::iterator it = traceInstance.find( path );
+  map< string, PRV_UINT32 >::iterator it = traceInstance.find( tmpPath );
   if ( it == traceInstance.end() )
-    traceInstance[ path ] = 0;
+    traceInstance[ tmpPath ] = 0;
 
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction );
@@ -518,14 +531,14 @@ bool paraverMain::DoLoadTrace( const string &path )
 
 // test en windows, and if it works, delete this
 #if 0
-    if( path.length() > 40 && path.find_last_of( '\\' ) != string::npos )
+    if( tmpPath.length() > 40 && tmpPath.find_last_of( '\\' ) != string::npos )
     {
-      string file = path.substr( path.find_last_of( '\\' ) );
-      string tmp = path.substr( 0, path.find_last_of( '\\' ) );
+      string file = tmpPath.substr( tmpPath.find_last_of( '\\' ) );
+      string tmp = tmpPath.substr( 0, tmpPath.find_last_of( '\\' ) );
       if(  tmp.find_last_of( '\\' ) != string::npos )
       {
-        reducePath = "/..." + path.substr( tmp.find_last_of( '\\' ),
-                                         tmp.length() - tmp.find_last_of( '\\' ) )
+        reducePath = "/..." + tmpPath.substr( tmp.find_last_of( '\\' ),
+                                              tmp.length() - tmp.find_last_of( '\\' ) )
                      + file;
       }
       else
@@ -533,14 +546,14 @@ bool paraverMain::DoLoadTrace( const string &path )
         reducePath = "/..." + file;
       }
 #endif
-    if( path.length() > 40 && path.find_last_of( PATH_SEP ) != string::npos )
+    if( tmpPath.length() > 40 && tmpPath.find_last_of( PATH_SEP ) != string::npos )
     {
-      string file = path.substr( path.find_last_of( PATH_SEP ) );
-      string tmp = path.substr( 0, path.find_last_of( PATH_SEP ) );
+      string file = tmpPath.substr( tmpPath.find_last_of( PATH_SEP ) );
+      string tmp = tmpPath.substr( 0, tmpPath.find_last_of( PATH_SEP ) );
       if ( tmp.find_last_of( PATH_SEP ) != string::npos )
       {
-        reducePath = "/..." + path.substr( tmp.find_last_of( PATH_SEP ),
-                                           tmp.length() - tmp.find_last_of( PATH_SEP ) )
+        reducePath = "/..." + tmpPath.substr( tmp.find_last_of( PATH_SEP ),
+                                              tmp.length() - tmp.find_last_of( PATH_SEP ) )
                      + file;
       }
       else
@@ -549,15 +562,15 @@ bool paraverMain::DoLoadTrace( const string &path )
       }
     }
     else
-      reducePath = path;
+      reducePath = tmpPath;
     reducePath += "\t";
 
     paraverMain::dialogProgress->Pulse( wxString::FromAscii( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
-    tr = Trace::create( localKernel, path, false, progress );
-    tr->setInstanceNumber( traceInstance[ path ]++ );
+    tr = Trace::create( localKernel, tmpPath, false, progress );
+    tr->setInstanceNumber( traceInstance[ tmpPath ]++ );
 
     loadedTraces.push_back( tr );
     currentTrace = loadedTraces.size() - 1;
@@ -566,10 +579,13 @@ bool paraverMain::DoLoadTrace( const string &path )
     choiceWindowBrowser->AddPage( newTree, wxString::FromAscii( tr->getFileNameNumbered().c_str() ) );
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
-    previousTraces->add( path );
+    previousTraces->add( tmpPath );
 
     currentTimeline = NULL;
     currentHisto = NULL;
+
+    traceLoadedBefore = true;
+    tracePath = tmpFileName.GetPath();
   }
   catch( ParaverKernelException& ex )
   {
@@ -672,8 +688,6 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
   if( dialog.ShowModal() == wxID_OK )
   {
     wxString path = dialog.GetPath();
-    traceLoadedBefore = true;
-    tracePath = wxFileName( path ).GetPath();
     DoLoadTrace( std::string( path.mb_str() ) );
   }
   raiseCurrentWindow = true;
@@ -1638,8 +1652,6 @@ void paraverMain::OnPreviousTracesClick( wxCommandEvent& event )
     int currentId = tmp->GetId();
     if ( currentId == eventId )
     {
-      traceLoadedBefore = true;
-      tracePath = wxFileName( wxString::FromAscii( previousTraces->getFiles()[i].c_str() ) ).GetPath();
       DoLoadTrace( previousTraces->getFiles()[i] );
     }
     i++;
