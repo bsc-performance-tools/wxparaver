@@ -2306,6 +2306,9 @@ int paraverMain::GetNextPosY()
 
 void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
 {
+  if( static_cast<wxTreeCtrl *>( event.GetEventObject() ) == dirctrlFiles->GetTreeCtrl() )
+    return;
+
   if ( event.GetItem().IsOk() )
   {
     wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
