@@ -277,7 +277,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -1821,7 +1821,7 @@ void gHistogram::OnMotion( wxMouseEvent& event )
   lastPosZoomX = event.GetX();
   lastPosZoomY = event.GetY();
 
-  timerZoom->Start( 100, true );
+  timerZoom->Start( 20, true );
 
   if( zoomDragging )
   {
