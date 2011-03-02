@@ -109,6 +109,8 @@ class gHistogram;
 #define ID_MENU_REMOVE_ALL_SYNC                   30061
 #define ID_MENU_VIEW_FUNCTION_LINE                30062
 #define ID_MENU_PASTE_DEFAULT_SPECIAL             30063
+#define ID_MENU_CODE_COLOR_2D                     30064
+#define ID_MENU_GRADIENT_COLOR_2D                 30065
 
 class gPopUpMenu : public wxMenu
 {
@@ -207,6 +209,9 @@ class gPopUpMenu : public wxMenu
 
     void OnMenuSynchronize( wxCommandEvent& event );
     void OnMenuRemoveAllSync( wxCommandEvent& event );
+    
+    void OnMenuCodeColor2D( wxCommandEvent& event );
+    void OnMenuGradientColor2D( wxCommandEvent& event );
   private:
     gTimeline *timeline;
     gHistogram *histogram;
@@ -223,6 +228,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuPixelSize;
     wxMenu *popUpMenuGradientFunction;
     wxMenu *popUpMenuSaveAsText;
+    wxMenu *popUpMenuColor2D;
 
     void buildItem( wxMenu *popUp,
                     const wxString &title,

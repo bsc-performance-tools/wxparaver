@@ -400,6 +400,7 @@ void gHistogram::fillGrid()
   bool firstRowColored = myHistogram->getFirstRowColored();
   wxFont cellFontBold;
   Window *controlWindow = myHistogram->getControlWindow();
+  Window *dataWindow = myHistogram->getDataWindow();
   
   zoomHisto->Show( false );
   gridHisto->Show( true );
@@ -643,8 +644,14 @@ void gHistogram::fillGrid()
             gridHisto->SetCellValue( iDrawRow, iDrawCol, wxString::FromAscii( tmpStr.c_str() ) );
             if( myHistogram->getShowColor() )
             {
-              rgb tmpCol = myHistogram->calcGradientColor( 
-                myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
+              rgb tmpCol;
+              if( myHistogram->getCodeColor() )
+                tmpCol = dataWindow->getCodeColor().calcColor(
+                  myHistogram->getCurrentValue( iCol, idStat, curPlane ),
+                  myHistogram->getMinGradient(), myHistogram->getMaxGradient() );
+              else
+                tmpCol = myHistogram->calcGradientColor( 
+                  myHistogram->getCurrentValue( iCol, idStat, curPlane ) );
               gridHisto->SetCellBackgroundColour( iDrawRow, iDrawCol, 
                                                   wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
               wxColour BackColour = wxColour( tmpCol.red, tmpCol.green, tmpCol.blue );
@@ -959,8 +966,14 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
         )
       )
     {
-      rgb tmpCol = myHistogram->calcGradientColor( 
-                     DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() ) );
+      rgb tmpCol;
+      if( myHistogram->getCodeColor() )
+        tmpCol = myHistogram->getDataWindow()->getCodeColor().calcColor(
+                   DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() ),
+                   myHistogram->getMinGradient(), myHistogram->getMaxGradient() );
+      else
+        tmpCol = myHistogram->calcGradientColor( 
+                   DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() ) );
       bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
       bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
                                 cellWidth < 1.0 ? 1 : rint( cellWidth ),

@@ -102,6 +102,8 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_PASTE_3D_SCALE, gPopUpMenu::OnMenuPaste3DScale )
   EVT_MENU( ID_MENU_SYNCHRONIZE, gPopUpMenu::OnMenuSynchronize )
   EVT_MENU( ID_MENU_REMOVE_ALL_SYNC, gPopUpMenu::OnMenuRemoveAllSync )
+  EVT_MENU( ID_MENU_CODE_COLOR_2D, gPopUpMenu::OnMenuCodeColor2D )
+  EVT_MENU( ID_MENU_GRADIENT_COLOR_2D, gPopUpMenu::OnMenuGradientColor2D )
 
 END_EVENT_TABLE()
 
@@ -585,6 +587,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuDrawModeBoth = new wxMenu;
   popUpMenuGradientFunction = new wxMenu;
   popUpMenuSaveAsText = new wxMenu;
+  popUpMenuColor2D = new wxMenu;
 
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
 
@@ -631,6 +634,10 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              ID_MENU_AUTO_DATA_GRADIENT,
              histogram->GetHistogram()->getComputeGradient() );
 
+  buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getCodeColor() );
+  buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, !histogram->GetHistogram()->getCodeColor() );
+  AppendSubMenu( popUpMenuColor2D, _( "Color Mode" ) );
+  
   buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
   buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
   buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
@@ -1287,4 +1294,16 @@ void gPopUpMenu::OnMenuRemoveAllSync( wxCommandEvent& event )
   if( !timeline->GetMyWindow()->isSync() )
     return;
   SyncWindows::getInstance()->removeAll( timeline->GetMyWindow()->getSyncGroup() );
+}
+
+void gPopUpMenu::OnMenuCodeColor2D( wxCommandEvent& event )
+{
+  histogram->GetHistogram()->setCodeColor( true );
+  histogram->GetHistogram()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuGradientColor2D( wxCommandEvent& event )
+{
+  histogram->GetHistogram()->setCodeColor( false );
+  histogram->GetHistogram()->setRedraw( true );
 }
