@@ -55,6 +55,10 @@
 #include "paraverconfig.h"
 #include "previousfiles.h"
 
+#ifdef WIN32
+#undef VERSION
+#define VERSION "4.0.2"
+#endif
 /*!
  * Forward declarations
  */
