@@ -1951,6 +1951,10 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
     initialPosX += defaultTitleBarSize.GetHeight();
   else
     initialPosX += GetSize().GetWidth();
+#ifdef __WXMAC__
+  if( initialPosY < GetPosition().y )
+    initialPosY = GetPosition().y;
+#endif
 
   newWindow->setPosX( initialPosX );
   newWindow->setPosY( initialPosY );
