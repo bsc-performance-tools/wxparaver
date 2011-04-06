@@ -76,14 +76,20 @@ EventsSelectionDialog::EventsSelectionDialog()
 }
 
 EventsSelectionDialog::EventsSelectionDialog( wxWindow* parent,
+                                              vector<TEventType> types,
+                                              vector<TEventValue> values,
+                                              bool hideOperatorsList,
                                               wxWindowID id,
                                               const wxString& caption,
                                               const wxPoint& pos,
                                               const wxSize& size,
-                                              long style,
-                                              bool hideOperatorsList )
+                                              long style )
 {
+  // window name, operators (selection and combined), types, values, selected types, selected values
+  // Init assigns to attributes
   Init( hideOperatorsList );
+  
+  // and create reads them to set the window
   Create(parent, id, caption, pos, size, style );
 }
 
@@ -133,6 +139,7 @@ void EventsSelectionDialog::Init( bool whichHideOperatorsList )
 {
 ////@begin EventsSelectionDialog member initialisation
   textWindowName = NULL;
+  boxSizerOperatorsChoice = NULL;
   choiceOperatorSelectTypes = NULL;
   combinedSelection = NULL;
   choiceOperatorSelectValues = NULL;
@@ -188,23 +195,23 @@ void EventsSelectionDialog::CreateControls()
 
   itemBoxSizer6->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer5->Add(itemBoxSizer14, 0, wxGROW|wxALL, 5);
+  boxSizerOperatorsChoice = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer5->Add(boxSizerOperatorsChoice, 0, wxGROW|wxALL, 5);
 
   wxArrayString choiceOperatorSelectTypesStrings;
   choiceOperatorSelectTypes = new wxChoice( itemDialog1, ID_CHOICE_OPERATOR_SELECT_TYPES, wxDefaultPosition, wxDefaultSize, choiceOperatorSelectTypesStrings, 0 );
-  itemBoxSizer14->Add(choiceOperatorSelectTypes, 2, wxGROW|wxALL, 5);
+  boxSizerOperatorsChoice->Add(choiceOperatorSelectTypes, 2, wxGROW|wxALL, 5);
 
   wxArrayString combinedSelectionStrings;
   combinedSelectionStrings.Add(_("And"));
   combinedSelectionStrings.Add(_("Or"));
   combinedSelection = new wxChoice( itemDialog1, ID_CHOICE_COMBINED_SELECTION, wxDefaultPosition, wxDefaultSize, combinedSelectionStrings, 0 );
   combinedSelection->SetStringSelection(_("And"));
-  itemBoxSizer14->Add(combinedSelection, 1, wxGROW|wxALL, 5);
+  boxSizerOperatorsChoice->Add(combinedSelection, 1, wxGROW|wxALL, 5);
 
   wxArrayString choiceOperatorSelectValuesStrings;
   choiceOperatorSelectValues = new wxChoice( itemDialog1, ID_CHOICE_OPERATOR_SELECT_VALUES, wxDefaultPosition, wxDefaultSize, choiceOperatorSelectValuesStrings, 0 );
-  itemBoxSizer14->Add(choiceOperatorSelectValues, 2, wxGROW|wxALL, 5);
+  boxSizerOperatorsChoice->Add(choiceOperatorSelectValues, 2, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer5->Add(itemBoxSizer18, 1, wxGROW|wxALL, 5);

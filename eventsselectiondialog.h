@@ -51,6 +51,7 @@ using namespace std;
  */
 
 ////@begin forward declarations
+class wxBoxSizer;
 ////@end forward declarations
 
 /*!
@@ -89,12 +90,14 @@ public:
   /// Constructors
   EventsSelectionDialog();
   EventsSelectionDialog( wxWindow* parent,
+                         vector<TEventType> types,
+                         vector<TEventValue> values,
+                         bool hideOperatorsList = false,
                          wxWindowID id = SYMBOL_EVENTSSELECTIONDIALOG_IDNAME,
                          const wxString& caption = SYMBOL_EVENTSSELECTIONDIALOG_TITLE,
                          const wxPoint& pos = SYMBOL_EVENTSSELECTIONDIALOG_POSITION,
                          const wxSize& size = SYMBOL_EVENTSSELECTIONDIALOG_SIZE,
-                         long style = SYMBOL_EVENTSSELECTIONDIALOG_STYLE,
-                         bool hideOperatorsList = false );
+                         long style = SYMBOL_EVENTSSELECTIONDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_EVENTSSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_EVENTSSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_EVENTSSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_EVENTSSELECTIONDIALOG_SIZE, long style = SYMBOL_EVENTSSELECTIONDIALOG_STYLE );
@@ -126,6 +129,7 @@ public:
 
 ////@begin EventsSelectionDialog member variables
   wxStaticText* textWindowName;
+  wxBoxSizer* boxSizerOperatorsChoice;
   wxChoice* choiceOperatorSelectTypes;
   wxChoice* combinedSelection;
   wxChoice* choiceOperatorSelectValues;
