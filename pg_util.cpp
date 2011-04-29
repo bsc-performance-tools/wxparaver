@@ -507,8 +507,12 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         selected = pos;
       pos++;
     }
+
+//#define EVENTS_WINDOW
+#ifndef EVENTS_WINDOW
     wxEnumProperty *typeFunction = new wxEnumProperty( wxT("Function"), wxT("TypeFunction"),
                                     arrayFilterFunctions, arrayFilterFunctionsPos, selected );
+#endif
     windowProperties->AppendIn( eventFilterType, typeFunction );
 
     set<TEventType> allTypes;
@@ -589,6 +593,17 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         filter->getEventValueFunction() == "None" )
       eventFilterValueValues->SetFlagsFromString( _( "DISABLED" ) );
   }
+
+#ifdef EVENTS_WINDOW
+    
+    EventsSelectionDialog *eventsDialog = new EventsSelectionDialog( whichWindow,
+                                              vector<TEventType> types,
+                                              vector<TEventValue> values,
+                                              false,
+                                              wxT("Events Selection") );
+#endif
+
+
   // END of Filter related properties
 
   //-------------------------------------------------------------------------

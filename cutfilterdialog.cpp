@@ -1438,7 +1438,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     previousWarning = true;
   }
 
-  // Are time set properly?
+  // Are times set properly?
   double cutterBeginTime, cutterEndTime;
   textCutterBeginCut->GetValue().ToDouble( &cutterBeginTime );
   textCutterEndCut->GetValue().ToDouble( &cutterEndTime );
@@ -1946,6 +1946,8 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
       radioCutterCutByTime->SetValue( true );
       waitingGlobalTiming = false;
     }
+    
+   // wxGetApp().DeactivateGlobalTiming();
   }
 }
 

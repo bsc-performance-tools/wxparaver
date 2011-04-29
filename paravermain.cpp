@@ -529,23 +529,6 @@ bool paraverMain::DoLoadTrace( const string &path )
                                                           wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     string reducePath;
 
-// test en windows, and if it works, delete this
-#if 0
-    if( tmpPath.length() > 40 && tmpPath.find_last_of( '\\' ) != string::npos )
-    {
-      string file = tmpPath.substr( tmpPath.find_last_of( '\\' ) );
-      string tmp = tmpPath.substr( 0, tmpPath.find_last_of( '\\' ) );
-      if(  tmp.find_last_of( '\\' ) != string::npos )
-      {
-        reducePath = "/..." + tmpPath.substr( tmp.find_last_of( '\\' ),
-                                              tmp.length() - tmp.find_last_of( '\\' ) )
-                     + file;
-      }
-      else
-      {
-        reducePath = "/..." + file;
-      }
-#endif
     if( tmpPath.length() > 40 && tmpPath.find_last_of( PATH_SEP ) != string::npos )
     {
       string file = tmpPath.substr( tmpPath.find_last_of( PATH_SEP ) );

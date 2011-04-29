@@ -350,11 +350,6 @@ int wxparaverApp::OnExit()
   if( m_server != NULL )
     delete m_server;
 
-  // Every time you write code without goto(s), God kills a kitten. Or was it the other way around?
-  // Does God::kills() { return --kitten; } returns a long int? 
-  goto the_kitten_goto;
-  the_kitten_goto:
-
 ////@begin wxparaverApp cleanup
 	return wxApp::OnExit();
 ////@end wxparaverApp cleanup
@@ -400,6 +395,7 @@ void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
 
 void wxparaverApp::DeactivateGlobalTiming()
 {
+cout << "DeactivateGlobalTiming" << endl;
   wxSetCursor( wxNullCursor );
   globalTiming = false;
   globalTimingBeginIsSet = false;
