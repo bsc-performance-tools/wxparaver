@@ -49,6 +49,7 @@
 
 #include "wxparaverapp.h"
 #include "connection.h"
+#include <wx/filename.h>
 
 ////@begin XPM images
 ////@end XPM images
@@ -273,7 +274,11 @@ bool wxparaverApp::OnInit()
       {
         connection->Execute( wxT( "BEGIN" ) );
         for( int i = 1; i < argc; ++i )
-          connection->Execute( argv[ i ] );
+        {
+          wxFileName tmpFile( wxT( argv[ i ] ) );
+          tmpFile.Normalize();
+          connection->Execute( tmpFile.GetFullPath().c_str() );
+        }
         connection->Execute( wxT( "END" ) );
         connection->Disconnect();
         delete connection;
