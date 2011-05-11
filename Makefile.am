@@ -15,6 +15,8 @@ wxparaver_SOURCES = connection.cpp \
                     gtimeline.h \
                     histogramdialog.cpp \
                     histogramdialog.h \
+                    histotablebase.cpp \
+                    histotablebase.h \
                     paravermain.cpp \
                     paravermain.h \
                     pg_extraprop.cpp \
