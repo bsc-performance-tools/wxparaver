@@ -59,6 +59,7 @@ class wxGrid;
 class wxStatusBar;
 ////@end forward declarations
 class Histogram;
+class HistoTableBase;
 
 /*!
  * Control identifiers
@@ -280,6 +281,9 @@ public:
   bool GetEscapePressed() const { return escapePressed ; }
   void SetEscapePressed(bool value) { escapePressed = value ; }
 
+  HistoTableBase* GetTableBase() const { return tableBase ; }
+  void SetTableBase(HistoTableBase* value) { tableBase = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -370,6 +374,7 @@ private:
   vector<TObjectOrder> selectedRows;
   SelectionManagement<THistogramColumn,int> columnSelection;
   bool escapePressed;
+  HistoTableBase* tableBase;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
   HistogramProxy::TZoomInfo zoomRow;

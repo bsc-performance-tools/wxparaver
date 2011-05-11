@@ -54,6 +54,7 @@
 #include "paravermain.h"
 #include "textoutput.h"
 #include "paraverkernelexception.h"
+#include "histotablebase.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -201,6 +202,11 @@ gHistogram::~gHistogram()
 ////@end gHistogram destruction
   gPasteWindowProperties::getInstance()->verifyRemove( this );
   
+  if( tableBase != NULL )
+  {
+    gridHisto->SetTable( NULL );
+    delete tableBase;
+  }
   delete myHistogram;
 }
 
@@ -220,6 +226,7 @@ void gHistogram::Init()
   openControlActivated = false;
   zoomDragging = false;
   escapePressed = false;
+  tableBase = NULL;
   mainSizer = NULL;
   zoomHisto = NULL;
   gridHisto = NULL;
@@ -391,6 +398,7 @@ void gHistogram::fillGrid()
 {
   int rowLabelWidth = 0;
   wxFont labelFont = gridHisto->GetLabelFont();
+  wxFont cellFontBold = gridHisto->GetDefaultCellFont();
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   PRV_UINT16 idStat;
   THistogramColumn curPlane;
@@ -398,7 +406,6 @@ void gHistogram::fillGrid()
   TObjectOrder numRows, numDrawRows;
   bool horizontal = myHistogram->getHorizontal();
   bool firstRowColored = myHistogram->getFirstRowColored();
-  wxFont cellFontBold;
   Window *controlWindow = myHistogram->getControlWindow();
   Window *dataWindow = myHistogram->getDataWindow();
   
@@ -406,12 +413,41 @@ void gHistogram::fillGrid()
   gridHisto->Show( true );
   mainSizer->Layout();
   
-  if( firstRowColored )
+  if( tableBase == NULL )
+    tableBase = new HistoTableBase( myHistogram );
+  tableBase->setSelectedRows( &selectedRows );
+  cellFontBold.SetWeight( wxFONTWEIGHT_BOLD );
+  tableBase->setDefaultFontBold( cellFontBold );
+
+  gridHisto->SetColMinimalAcceptableWidth( 0 );
+  gridHisto->SetRowMinimalAcceptableHeight( 0 );
+  if( myHistogram->getComputeGradient() )
   {
-    cellFontBold = gridHisto->GetDefaultCellFont();
-    cellFontBold.SetWeight( wxFONTWEIGHT_BOLD );
+    myHistogram->recalcGradientLimits();
+    myHistogram->setChanged( true );
   }
-  
+  if( firstRowColored && !commStat )
+  {
+    if( horizontal )
+    {
+      gridHisto->SetRowLabelSize( gridHisto->GetDefaultRowLabelSize() );
+      gridHisto->SetColLabelSize( 0 );
+    }
+    else
+    {
+      gridHisto->SetColLabelSize( gridHisto->GetDefaultColLabelSize() );
+      gridHisto->SetRowLabelSize( 0 );
+    }
+  }
+  else
+  {
+    gridHisto->SetRowLabelSize( gridHisto->GetDefaultRowLabelSize() );
+    gridHisto->SetColLabelSize( gridHisto->GetDefaultColLabelSize() );
+  }
+
+  gridHisto->SetTable( tableBase );
+
+#if 0
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( std::exception() );
 
@@ -686,6 +722,7 @@ void gHistogram::fillGrid()
 
   if( !firstRowColored || horizontal || commStat )
     gridHisto->SetRowLabelSize( rowLabelWidth + 5 );
+#endif
   gridHisto->AutoSizeColumns();
   gridHisto->AutoSizeRows();
   gridHisto->EndBatch();
