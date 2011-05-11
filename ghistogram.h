@@ -384,7 +384,6 @@ private:
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
                    vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
-  void fillTotals( int& rowLabelWidth, TObjectOrder beginRow, THistogramColumn curPlane, PRV_UINT16 idStat );
   void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                  THistogramColumn& columnBegin, THistogramColumn& columnEnd,
                                  TObjectOrder& objectBegin, TObjectOrder& objectEnd );
