@@ -1582,8 +1582,16 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   {
     allWindows.clear();
     allHistograms.clear();
-    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], allWindows );
-    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], allHistograms );
+    if( currentTrace == -1 )
+    {
+      LoadedWindows::getInstance()->getAll( allWindows );
+      LoadedWindows::getInstance()->getAll( allHistograms );
+    }
+    else
+    {
+      LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], allWindows );
+      LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], allHistograms );
+    }
 
     if ( allWindows.size() == 0 && allHistograms.size() == 0 )
     {
@@ -1782,8 +1790,10 @@ void paraverMain::OnIdle( wxIdleEvent& event )
         
         if( windows.begin() == windows.end() && histograms.begin() == histograms.end() )
         {
-          if( currentTrace == iTrace ) currentTrace = -1;
-          else --currentTrace;
+          if( currentTrace == iTrace )
+            currentTrace = -1;
+          else if( currentTrace > -1 )
+            --currentTrace;
           Trace *tmpTrace = *it;
           if( it == loadedTraces.begin() )
           {
@@ -1808,6 +1818,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
       else
         ++iTrace;
     }
+    if( currentTrace == -1 ) currentTrace = loadedTraces.size() - 1;
   }
 
 #ifndef WIN32
@@ -2343,7 +2354,10 @@ void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent& event )
   if ( loadedTraces.size() > 0 )
   {
     vector<Window *> timelines;
-    LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
+    if( currentTrace == -1 )
+      LoadedWindows::getInstance()->getAll( timelines );
+    else
+      LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
     tbarMain->EnableTool( ID_NEW_HISTOGRAM, ( timelines.size() > 0 ) && ( currentTimeline != NULL ) );
   }
   else
@@ -2605,11 +2619,9 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   wxSingleChoiceDialog dialog( this, _("Select the trace to unload:"), _("Unload Trace"), choices );
   
   raiseCurrentWindow = false;
-#ifndef WIN32
-  if( dialog.ShowModal() == wxID_OK )
-#else
+
   dialog.ShowModal();
-#endif
+  if( dialog.GetReturnCode() == wxID_OK )
     UnloadTrace( dialog.GetSelection() );
 
   raiseCurrentWindow = true;
