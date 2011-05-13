@@ -100,7 +100,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
   
   int w, h;
   wxFont tmpFont( GetView()->GetLabelFont() );
-  GetView()->GetTextExtent( wxString::FromAscii( label ), &w, &h, NULL, NULL, &tmpFont );
+  GetView()->GetTextExtent( label, &w, &h, NULL, NULL, &tmpFont );
   if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
     GetView()->SetRowLabelSize( 0 );
   else if( GetView()->GetRowLabelSize() == 0 || GetView()->GetRowLabelSize() - 5 < w )
@@ -180,9 +180,9 @@ wxString HistoTableBase::GetValue( int row, int col )
       if( vTotals[ 0 ] > 0.0 )
       {
         if( iTotal == AVGDIVMAX )
-          label = LabelConstructor::histoCellLabel( myHisto, vTotals[ iTotal ], false );
+          label = wxString::FromAscii( LabelConstructor::histoCellLabel( myHisto, vTotals[ iTotal ], false ).c_str());
         else
-          label = LabelConstructor::histoCellLabel( myHisto, vTotals[ iTotal ], true );
+          label = wxString::FromAscii( LabelConstructor::histoCellLabel( myHisto, vTotals[ iTotal ], true ).c_str());
       }
       else
       {
