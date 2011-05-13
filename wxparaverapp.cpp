@@ -275,7 +275,7 @@ bool wxparaverApp::OnInit()
         connection->Execute( wxT( "BEGIN" ) );
         for( int i = 1; i < argc; ++i )
         {
-          wxFileName tmpFile( wxT( argv[ i ] ) );
+          wxFileName tmpFile( argv[ i ] );
           tmpFile.Normalize();
           connection->Execute( tmpFile.GetFullPath().c_str() );
         }
