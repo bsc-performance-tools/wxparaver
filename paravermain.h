@@ -57,7 +57,7 @@
 
 #ifdef WIN32
 #undef VERSION
-#define VERSION "4.0.8"
+#define VERSION "4.0.9"
 #endif
 /*!
  * Forward declarations
@@ -99,7 +99,7 @@ class wxPropertyGridEvent;
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(300, 600)
-#define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, 0)
+#define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, -1)
 ////@end control identifiers
 
 
