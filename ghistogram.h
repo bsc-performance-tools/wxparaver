@@ -343,6 +343,8 @@ public:
   void OnPopUpDrawModeBothMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
 
+  void OnPopUpPixelSize( PRV_UINT16 whichPixelSize );
+  
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
   
   void saveText( bool onlySelectedPlane = false );

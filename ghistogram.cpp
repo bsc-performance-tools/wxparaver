@@ -459,10 +459,11 @@ void gHistogram::fillZoom()
   THistogramColumn numCols, numDrawCols;
   TObjectOrder numDrawRows;
   bool horizontal = myHistogram->getHorizontal();
-  double& cellWidth = zoomCellWidth;
-  double& cellHeight = zoomCellHeight;
+  double cellWidth;
+  double cellHeight;
   vector<THistogramColumn> noVoidColumns;
   vector<bool> selectedColumns;
+  PRV_UINT16 pixelSize = myHistogram->getPixelSize();
   
   gridHisto->Show( false );
   zoomHisto->Show( true );
@@ -525,8 +526,10 @@ void gHistogram::fillZoom()
     selectedColumns.insert( selectedColumns.begin(), numCols, true );
   }
   
-  cellWidth = (double)( zoomHisto->GetSize().GetWidth() ) / (double)( numDrawCols + 1 );
-  cellHeight = (double)( zoomHisto->GetSize().GetHeight() ) / (double)( numDrawRows + 1 );
+  zoomCellWidth = (double)( zoomHisto->GetSize().GetWidth() ) / (double)( numDrawCols + 1 );
+  cellWidth = zoomCellWidth  / (double)pixelSize;
+  zoomCellHeight = (double)( zoomHisto->GetSize().GetHeight() ) / (double)( numDrawRows + 1 );
+  cellHeight = zoomCellHeight  / (double)pixelSize;
 
   THistogramColumn tmpNumCols = numCols;
   if( myHistogram->getHideColumns() )
@@ -534,8 +537,8 @@ void gHistogram::fillZoom()
 
   bufferDraw.SetBrush( *wxGREY_BRUSH );
   bufferDraw.SetPen( *wxTRANSPARENT_PEN );
-  bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight );
-  bufferDraw.DrawRectangle( 0, 0, cellWidth, bufferDraw.GetSize().GetHeight() );
+  bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight * pixelSize);
+  bufferDraw.DrawRectangle( 0, 0, cellWidth * pixelSize, bufferDraw.GetSize().GetHeight() );
 
   for( THistogramColumn iCol = 0; iCol < tmpNumCols; iCol++ )
   {
@@ -593,12 +596,12 @@ void gHistogram::fillZoom()
   if( cellHeight > 5.0 )
   {
     for( TObjectOrder iRow = 0; iRow < numDrawRows; ++iRow )
-     bufferDraw.DrawLine( 0, ( iRow + 1 ) * cellHeight, bufferDraw.GetSize().GetWidth(), ( iRow + 1 ) * cellHeight );
+     bufferDraw.DrawLine( 0, ( iRow + 1 ) * cellHeight * pixelSize, bufferDraw.GetSize().GetWidth(), ( iRow + 1 ) * cellHeight * pixelSize);
   }
   if( cellWidth > 5.0 )
   {
     for( TObjectOrder iCol = 0; iCol < numDrawCols; ++iCol )
-     bufferDraw.DrawLine( ( iCol + 1 ) * cellWidth, 0, ( iCol + 1 ) * cellWidth, bufferDraw.GetSize().GetHeight() );
+     bufferDraw.DrawLine( ( iCol + 1 ) * cellWidth * pixelSize, 0, ( iCol + 1 ) * cellWidth * pixelSize, bufferDraw.GetSize().GetHeight() );
   }
   
   bufferDraw.SelectObject( wxNullBitmap );
@@ -615,13 +618,14 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
   bool firstRowColored = myHistogram->getFirstRowColored();
-  double& cellWidth = zoomCellWidth;
-  double& cellHeight = zoomCellHeight;
   PRV_UINT16 idStat;
   THistogramColumn curPlane;
   vector<TSemanticValue> valuesColumns;
   vector<TSemanticValue> valuesObjects;
-
+  PRV_UINT16 pixelSize = myHistogram->getPixelSize();
+  double cellWidth = zoomCellWidth / (double)pixelSize;
+  double cellHeight = zoomCellHeight / (double)pixelSize;
+  
   if( !myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat ) )
     throw( std::exception() );
 
@@ -713,9 +717,9 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
                                                               controlWindow->getMinimumY(),
                                                               controlWindow->getMaximumY() );
       bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-      bufferDraw.DrawRectangle( rint( ( firstDrawCol ) * cellWidth ), rint( ( firstDrawRow ) * cellHeight ),
-                                cellWidth < 1.0 ? 1 : rint( cellWidth ),
-                                cellHeight < 1.0 ? 1 : rint( cellHeight ) );
+      bufferDraw.DrawRectangle( rint( ( firstDrawCol ) * cellWidth * pixelSize ), rint( ( firstDrawRow ) * cellHeight *pixelSize ),
+                                cellWidth < 1.0 ? pixelSize : rint( cellWidth * pixelSize ),
+                                cellHeight < 1.0 ? pixelSize : rint( cellHeight * pixelSize ) );
       firstRowColored = false;
     }
       
@@ -735,9 +739,9 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
         tmpCol = myHistogram->calcGradientColor( 
                    DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() ) );
       bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-      bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth ), rint( ( iDrawRow + 1 ) * cellHeight ),
-                                cellWidth < 1.0 ? 1 : rint( cellWidth ),
-                                cellHeight < 1.0 ? 1 : rint( cellHeight ) );
+      bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth * pixelSize ), rint( ( iDrawRow + 1 ) * cellHeight * pixelSize ),
+                                cellWidth < 1.0 ? pixelSize : rint( cellWidth * pixelSize ),
+                                cellHeight < 1.0 ? pixelSize : rint( cellHeight * pixelSize ) );
 
       valuesObjects.clear();
     }
@@ -1292,6 +1296,12 @@ void gHistogram::OnPopUpDrawModeBothAverage()
 {
   myHistogram->setDrawModeObjects( DRAW_AVERAGE );
   myHistogram->setDrawModeColumns( DRAW_AVERAGE );
+  myHistogram->setRedraw( true );
+}
+
+void gHistogram::OnPopUpPixelSize( PRV_UINT16 whichPixelSize )
+{
+  myHistogram->setPixelSize( whichPixelSize );
   myHistogram->setRedraw( true );
 }
 

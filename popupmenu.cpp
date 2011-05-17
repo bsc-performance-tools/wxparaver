@@ -530,25 +530,25 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
              ITEMRADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x1,
-             timeline->GetPixelSize() == 1 );
+             timeline->GetMyWindow()->getPixelSize() == 1 );
   buildItem( popUpMenuPixelSize,
              _( "x2" ),
              ITEMRADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x2,
-             timeline->GetPixelSize() == 2 );
+             timeline->GetMyWindow()->getPixelSize() == 2 );
   buildItem( popUpMenuPixelSize,
              _( "x4" ),
              ITEMRADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x4,
-             timeline->GetPixelSize() == 4 );
+             timeline->GetMyWindow()->getPixelSize() == 4 );
   buildItem( popUpMenuPixelSize,
              _( "x8" ),
              ITEMRADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x8,
-             timeline->GetPixelSize() == 8 );
+             timeline->GetMyWindow()->getPixelSize() == 8 );
 
   AppendSubMenu( popUpMenuPixelSize, _( "Pixel Size" ));
 
@@ -586,6 +586,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuDrawModeObjects = new wxMenu;
   popUpMenuDrawModeBoth = new wxMenu;
   popUpMenuGradientFunction = new wxMenu;
+  popUpMenuPixelSize = new wxMenu;
   popUpMenuSaveAsText = new wxMenu;
   popUpMenuColor2D = new wxMenu;
 
@@ -767,6 +768,33 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeObjects, _( "Objects" ));
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeBoth, _( "Both" ));
   AppendSubMenu( popUpMenuDrawMode, _( "Drawmode" ) );
+
+  buildItem( popUpMenuPixelSize,
+             _( "x1" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
+             ID_MENU_PIXEL_SIZE_x1,
+             histogram->GetHistogram()->getPixelSize() == 1 );
+  buildItem( popUpMenuPixelSize,
+             _( "x2" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
+             ID_MENU_PIXEL_SIZE_x2,
+             histogram->GetHistogram()->getPixelSize() == 2 );
+  buildItem( popUpMenuPixelSize,
+             _( "x4" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
+             ID_MENU_PIXEL_SIZE_x4,
+             histogram->GetHistogram()->getPixelSize() == 4 );
+  buildItem( popUpMenuPixelSize,
+             _( "x8" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
+             ID_MENU_PIXEL_SIZE_x8,
+             histogram->GetHistogram()->getPixelSize() == 8 );
+
+  AppendSubMenu( popUpMenuPixelSize, _( "Pixel Size" ));
 
   AppendSeparator();
   
@@ -1203,6 +1231,21 @@ void gPopUpMenu::OnMenuPixelSize( wxCommandEvent& event )
     }
 
     timeline->OnPopUpPixelSize( pixelSize );
+  }
+  else if( histogram != NULL )
+  {
+    PRV_UINT16 pixelSize;
+
+    switch( event.GetId() )
+    {
+      case ID_MENU_PIXEL_SIZE_x1: pixelSize = 1; break;
+      case ID_MENU_PIXEL_SIZE_x2: pixelSize = 2; break;
+      case ID_MENU_PIXEL_SIZE_x4: pixelSize = 4; break;
+      case ID_MENU_PIXEL_SIZE_x8: pixelSize = 8; break;
+      default:                    pixelSize = 1; break;
+    }
+
+    histogram->OnPopUpPixelSize( pixelSize );
   }
 }
 
