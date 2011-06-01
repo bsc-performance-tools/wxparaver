@@ -9,7 +9,7 @@
  *  /  /  /     \   of the License, or (at your option) any later version.   *
  * (  (  ( B S C )                                                           *
  *  \  \  \_____/   This library is distributed in hope that it will be      *
- *   \  \__         useful but WITHOUT ANY WARRANTY; without even the        *
+ *   \  \__         useful but WITHOUT ANY WARRANTY; without even thfe        *
  *    \___          implied warranty of MERCHANTABILITY or FITNESS FOR A     *
  *                  PARTICULAR PURPOSE. See the GNU LGPL for more details.   *
  *                                                                           *
@@ -1792,8 +1792,9 @@ void paraverMain::OnIdle( wxIdleEvent& event )
         {
           if( currentTrace == iTrace )
             currentTrace = -1;
-          else if( currentTrace > -1 )
+          else if ( currentTrace > -1 )
             --currentTrace;
+
           Trace *tmpTrace = *it;
           if( it == loadedTraces.begin() )
           {
@@ -2621,7 +2622,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   raiseCurrentWindow = false;
 
   dialog.ShowModal();
-  if( dialog.GetReturnCode() == wxID_OK )
+  if ( dialog.GetReturnCode() == wxID_OK )
     UnloadTrace( dialog.GetSelection() );
 
   raiseCurrentWindow = true;
