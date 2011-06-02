@@ -2033,9 +2033,16 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   else
     whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
 
+  TRecordTime timePerPixel = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
+                             ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
+  TRecordTime stepTime = timePerPixel * ParaverConfig::getInstance()->getTimelineWhatWhereEventPixels();
+  TRecordTime fromTime = whatWhereTime - stepTime;
+  if( fromTime < 0.0 ) fromTime = 0.0;
+  TRecordTime toTime = whatWhereTime + stepTime;
+
   while( it != rl->end() && 
-         (*it).getTime() <= myWindow->getWindowEndTime() &&
-         (*it).getTime() <= myWindow->getEndTime( whichRow ) )
+         (*it).getTime() >= fromTime &&
+         (*it).getTime() <= toTime )
   {
     if( (*it).getType() & EVENT )
     {

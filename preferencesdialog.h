@@ -84,6 +84,7 @@ class wxColourPickerCtrl;
 #define ID_CHECKBOX_TIMELINE_WW_PREVIOUS_NEXT 10096
 #define ID_CHECKBOX_TIMELINE_WW_TEXT 10097
 #define ID_PREFERENCES_TIMELINE_WW_PRECISION 10000
+#define ID_PREFERENCES_TIMELINE_WW_EVENT_PIXELS 10167
 #define ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE 10014
 #define ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT 10017
 #define ID_PREFERENCES_HISTOGRAM 10071
@@ -345,6 +346,9 @@ public:
   bool GetSingleInstance() const { return singleInstance ; }
   void SetSingleInstance(bool value) { singleInstance = value ; }
 
+  PRV_INT16 GetTimelineWWEventPixels() const { return timelineWWEventPixels ; }
+  void SetTimelineWWEventPixels(PRV_INT16 value) { timelineWWEventPixels = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -381,6 +385,7 @@ public:
   wxCheckBox* checkTimelineWWPreviousNext;
   wxCheckBox* checkTimelineWWText;
   wxSpinCtrl* txtTimelineWWPrecision;
+  wxSpinCtrl* txtTimelineWWEventPixels;
   wxChoice* choiceTimelineSaveImageFormat;
   wxChoice* choiceTimelineSaveTextFormat;
   wxTextCtrl* txtHistogramNameFormatPrefix;
@@ -471,6 +476,7 @@ private:
   rgb timelineColourZero;
   float maximumTraceSize;
   bool singleInstance;
+  PRV_INT16 timelineWWEventPixels;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

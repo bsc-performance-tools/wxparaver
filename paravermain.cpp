@@ -2401,6 +2401,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetTimelineWWCommunications( paraverConfig->getTimelineWhatWhereCommunications() );
   preferences.SetTimelineWWPreviousNext( paraverConfig->getTimelineWhatWherePreviousNext() );
   preferences.SetTimelineWWText( paraverConfig->getTimelineWhatWhereText() );
+  preferences.SetTimelineWWEventPixels( paraverConfig->getTimelineWhatWhereEventPixels() );
   preferences.SetTimelineSaveImageFormat( ( PRV_UINT32 )paraverConfig->getTimelineSaveImageFormat() );
   preferences.SetTimelineSaveTextFormat( ( PRV_UINT32 )paraverConfig->getTimelineSaveTextFormat() );
 
@@ -2480,6 +2481,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setTimelineWhatWhereCommunications( preferences.GetTimelineWWCommunications() );
     paraverConfig->setTimelineWhatWherePreviousNext( preferences.GetTimelineWWPreviousNext() );
     paraverConfig->setTimelineWhatWhereText( preferences.GetTimelineWWText() );
+    paraverConfig->setTimelineWhatWhereEventPixels( preferences.GetTimelineWWEventPixels() );
     paraverConfig->setTimelineSaveImageFormat( (ParaverConfig::TImageFormat)preferences.GetTimelineSaveImageFormat() );
     paraverConfig->setTimelineSaveTextFormat( (ParaverConfig::TTextFormat)preferences.GetTimelineSaveTextFormat() );
 
