@@ -1,7 +1,7 @@
 
-bin_PROGRAMS = wxparaver
+bin_PROGRAMS = wxparaver.bin
 
-wxparaver_SOURCES = connection.cpp \
+wxparaver_bin_SOURCES = connection.cpp \
                     connection.h \
                     copypaste.cpp \
                     copypaste.h \
@@ -70,6 +70,6 @@ noinst_HEADERS = \
               timeline.xpm\
               window_properties.xpm
 
-wxparaver_LDADD = @LIBS@ -l@WXPROPGRID_NAME@ -lparaver-kernel -lparaver-api
-wxparaver_CXXFLAGS = @CXXFLAGS@
+wxparaver_bin_LDADD = @LIBS@ -l@WXPROPGRID_NAME@ -lparaver-kernel -lparaver-api
+wxparaver_bin_CXXFLAGS = @CXXFLAGS@
 
