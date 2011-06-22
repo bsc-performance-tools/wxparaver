@@ -1254,13 +1254,22 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
     currentPage->CollapseAllChildren( currentWindowId2 );
   }
 
+
+  clonedTimeline->SetBufferImage( bufferImage );
+  clonedTimeline->SetCommImage( commImage );
+  clonedTimeline->SetEventImage( eventImage );
+  clonedTimeline->SetDrawImage( drawImage );
+  clonedTimeline->SetDrawCaution( drawCaution );
+  clonedTimeline->SetObjectAxisPos( objectAxisPos );
+  clonedTimeline->SetTimeAxisPos( timeAxisPos );
+  clonedTimeline->SetObjectPosList( objectPosList );
+  clonedTimeline->SetForegroundColour( foregroundColour );
+  clonedTimeline->SetBackgroundColour( backgroundColour );
+  clonedTimeline->SetReady( true );
   if( mustRedraw )
   {
     if( myWindow->getShowWindow() )
-    {
       clonedTimeline->Show();
-      clonedTimeline->redraw();
-    }
     else
       clonedTimeline->Show(false);
   }
@@ -1268,6 +1277,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   {
     clonedWindow->setShowWindow( false );
     clonedTimeline->Show( false );
+    clonedTimeline->SetReady( false );
   }
 
   return clonedTimeline;

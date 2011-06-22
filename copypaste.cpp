@@ -61,19 +61,17 @@ void gPasteWindowProperties::commonMenuSettings( )
 
 void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
 {
-  TRecordTime sourceBeginTime, sourceEndTime;
+  TRecordTime sourceBeginTime;
   int source;
 
   if ( timeline != NULL )
   {
     sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
-    sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
     source          = TIMELINE;
   }
   else
   {
     sourceBeginTime = histogram->GetHistogram()->getBeginTime();
-    sourceEndTime   = histogram->GetHistogram()->getEndTime();
     source          = HISTOGRAM;
   }
 
