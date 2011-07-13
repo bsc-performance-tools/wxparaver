@@ -50,6 +50,7 @@
 #include "wxparaverapp.h"
 #include "connection.h"
 #include <wx/filename.h>
+#include "sessionsaver.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -360,9 +361,9 @@ int wxparaverApp::OnExit()
 ////@end wxparaverApp cleanup
 }
 
-#ifdef WIN32
 int wxparaverApp::FilterEvent(wxEvent& event)
 {
+#ifdef WIN32
   if ( event.GetEventType()==wxEVT_KEY_DOWN && 
        ((wxKeyEvent&)event).ControlDown() &&
        ((wxKeyEvent&)event).GetKeyCode() == (long) 'C'
@@ -371,18 +372,37 @@ int wxparaverApp::FilterEvent(wxEvent& event)
     mainWindow->OnKeyCopy();
     return true;
   }
-  else if ( event.GetEventType()==wxEVT_KEY_DOWN && 
-            ((wxKeyEvent&)event).ControlDown() &&
-            ((wxKeyEvent&)event).GetKeyCode() == (long) 'V'
-          )
+  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
+       ((wxKeyEvent&)event).ControlDown() &&
+       ((wxKeyEvent&)event).GetKeyCode() == (long) 'V'
+     )
   {
     mainWindow->OnKeyPaste();
+    return true;
+  }
+#endif
+  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
+       ((wxKeyEvent&)event).ControlDown() &&
+       ((wxKeyEvent&)event).GetKeyCode() == (long) 'S'
+     )
+  {
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver_default_session" );
+    SessionSaver::SaveSession( wxT( file.c_str() ), wxparaverApp::mainWindow->GetLoadedTraces() );
+    return true;
+  }
+
+  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
+       ((wxKeyEvent&)event).ControlDown() &&
+       ((wxKeyEvent&)event).GetKeyCode() == (long) 'L'
+     )
+  {
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver_default_session" );
+    SessionSaver::LoadSession( wxT( file.c_str() ) );
     return true;
   }
   
   return -1;
 }
-#endif
 
 void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
 {
@@ -400,7 +420,6 @@ void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
 
 void wxparaverApp::DeactivateGlobalTiming()
 {
-cout << "DeactivateGlobalTiming" << endl;
   wxSetCursor( wxNullCursor );
   globalTiming = false;
   globalTimingBeginIsSet = false;

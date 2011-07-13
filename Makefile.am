@@ -31,6 +31,8 @@ wxparaver_bin_SOURCES = connection.cpp \
                     rowsselectiondialog.h \
                     saveconfigurationdialog.cpp \
                     saveconfigurationdialog.h \
+                    sessionsaver.cpp \
+                    sessionsaver.h \
                     windows_tree.cpp \
                     windows_tree.h \
                     wxparaverapp.cpp \

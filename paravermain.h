@@ -378,6 +378,10 @@ public:
   void OnKeyPaste();
 #endif
 
+  bool DoLoadTrace( const string &path );
+  void UnloadTrace( int whichTrace );
+  bool DoLoadCFG( const string &path );
+
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
   static wxSize defaultTitleBarSize; // solves the problem of properly get timeline window height
@@ -428,14 +432,11 @@ private:
 
   wxImageList *getImageList();
 
-  bool DoLoadTrace( const string &path );
-  void UnloadTrace( int whichTrace );
 /*
   void BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
                   wxTreeCtrl *root2, wxTreeItemId idRoot2,
                   Window *window );
 */
-  bool DoLoadCFG( const string &path );
   void ShowDerivedDialog();
   void ShowHistogramDialog();
 

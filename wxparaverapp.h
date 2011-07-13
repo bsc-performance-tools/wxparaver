@@ -77,9 +77,7 @@ public:
     /// Called on exit
     virtual int OnExit();
 
-#ifdef WIN32
     int FilterEvent(wxEvent& event);
-#endif
 
 #ifndef WIN32
     // Signal handling
