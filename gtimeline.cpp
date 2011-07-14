@@ -2491,7 +2491,11 @@ void gTimeline::saveImage()
         break;
     }
 
-    baseLayer.SaveFile( saveDialog.GetPath() + imageSuffix , imageType );
+    if ( saveDialog.GetPath().EndsWith( imageSuffix )) 
+//       || saveDialog.GetPath().EndsWith( wxString( imageSuffix ).MakeUpper() ) )
+      baseLayer.SaveFile( saveDialog.GetPath(), imageType );
+    else
+      baseLayer.SaveFile( saveDialog.GetPath() + imageSuffix , imageType );
   }
 }
 
