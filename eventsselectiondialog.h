@@ -39,6 +39,7 @@
 using namespace std;
 
 #include "paraverkerneltypes.h"
+#include "gtimeline.h"
 
 ////@begin includes
 #include "wx/statline.h"
@@ -54,19 +55,25 @@ using namespace std;
 class wxBoxSizer;
 ////@end forward declarations
 
+class gTimeline;
+class Filter;
+
 /*!
  * Control identifiers
  */
 
 ////@begin control identifiers
 #define ID_EVENTSSELECTIONDIALOG 10053
-#define ID_CHOICE_OPERATOR_SELECT_TYPES 10054
-#define ID_CHOICE_COMBINED_SELECTION 10055
-#define ID_CHOICE_OPERATOR_SELECT_VALUES 10056
+#define ID_STATIC_TEXT_FUNCTION_TYPES 10170
+#define ID_CHOICE_OPERATOR_FUNCTION_TYPES 10054
 #define ID_CHECKLISTBOX_TYPES 10161
 #define ID_BUTTON_SET_ALL_TYPES 10163
 #define ID_BUTTON_UNSET_ALL_TYPES 10164
+#define ID_CHOICE_OPERATOR_TYPE_VALUE 10055
+#define ID_CHOICE_OPERATOR_FUNCTION_VALUES 10056
 #define ID_CHECKLISTBOX_VALUES 10162
+#define ID_TEXTCTRL_ADD_VALUES 10168
+#define ID_BUTTON_ADD_VALUES 10169
 #define ID_BUTTON_SET_ALL_VALUES 10165
 #define ID_BUTTON_UNSET_ALL_VALUES 10166
 #define SYMBOL_EVENTSSELECTIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
@@ -89,6 +96,18 @@ class EventsSelectionDialog: public wxDialog
 public:
   /// Constructors
   EventsSelectionDialog();
+
+  EventsSelectionDialog( wxWindow* parent,
+                         Window *whichWindow,
+//                         wxArrayString &whichSelectedEventTypes,
+//                         wxArrayString &whichSelectedEventValues,
+                         bool hideOperatorsList = false,
+                         const wxString& caption = SYMBOL_EVENTSSELECTIONDIALOG_TITLE,
+                         wxWindowID id = SYMBOL_EVENTSSELECTIONDIALOG_IDNAME,
+                         const wxPoint& pos = SYMBOL_EVENTSSELECTIONDIALOG_POSITION,
+                         const wxSize& size = SYMBOL_EVENTSSELECTIONDIALOG_SIZE,
+                         long style = SYMBOL_EVENTSSELECTIONDIALOG_STYLE );
+
   EventsSelectionDialog( wxWindow* parent,
                          vector<TEventType> types,
                          vector<TEventValue> values,
@@ -98,6 +117,19 @@ public:
                          const wxPoint& pos = SYMBOL_EVENTSSELECTIONDIALOG_POSITION,
                          const wxSize& size = SYMBOL_EVENTSSELECTIONDIALOG_SIZE,
                          long style = SYMBOL_EVENTSSELECTIONDIALOG_STYLE );
+  EventsSelectionDialog( wxWindow* parent,
+                         wxArrayString &whichTypes,
+                         wxArrayInt &whichSelectedEventTypes,
+                         //bool whichSelectedOpTypeValue,
+                         //int &whichSelectedFunctionValue,
+                         //vector<TEventValue> &whichValues,
+                         //vector<TEventValue> &whichSelectedValues,
+                         bool whichHideOperatorsList,
+                         const wxString& caption,
+                         wxWindowID id,
+                         const wxPoint& pos,
+                         const wxSize& size,
+                         long style);
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_EVENTSSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_EVENTSSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_EVENTSSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_EVENTSSELECTIONDIALOG_SIZE, long style = SYMBOL_EVENTSSELECTIONDIALOG_STYLE );
@@ -106,12 +138,60 @@ public:
   ~EventsSelectionDialog();
 
   /// Initialises member variables
-  void Init( bool whichHideOperatorsList );
+  void Init();
 
   /// Creates the controls and sizers
   void CreateControls();
 
 ////@begin EventsSelectionDialog event handler declarations
+
+  /// wxEVT_IDLE event handler for ID_EVENTSSELECTIONDIALOG
+  void OnIdle( wxIdleEvent& event );
+
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_OPERATOR_FUNCTION_TYPES
+  void OnChoiceOperatorFunctionTypesSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_CHECKLISTBOX_TYPES
+  void OnChecklistboxTypesDoubleClicked( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX_TYPES
+  void OnChecklistboxTypesSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKLISTBOX_TOGGLED event handler for ID_CHECKLISTBOX_TYPES
+  void OnChecklistboxTypesToggled( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_TYPES
+  void OnButtonSetAllTypesClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_TYPES
+  void OnButtonUnsetAllTypesClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_OPERATOR_TYPE_VALUE
+  void OnChoiceOperatorTypeValueSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_OPERATOR_FUNCTION_VALUES
+  void OnChoiceOperatorFunctionValuesSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_CHECKLISTBOX_VALUES
+  void OnChecklistboxValuesDoubleClicked( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKLISTBOX_TOGGLED event handler for ID_CHECKLISTBOX_VALUES
+  void OnChecklistboxValuesToggled( wxCommandEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_TEXTCTRL_ADD_VALUES
+  void OnTextCtrlKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ADD_VALUES
+  void OnButtonAddValuesClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_VALUES
+  void OnButtonSetAllValuesClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_VALUES
+  void OnButtonUnsetAllValuesClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_APPLY
+  void OnApplyClick( wxCommandEvent& event );
 
 ////@end EventsSelectionDialog event handler declarations
 
@@ -127,26 +207,96 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
+  int GetEventTypesFunction( string &whichName ) const;
+  wxArrayInt GetEventTypesSelection() const;
+  int GetOperatorTypeValue( string &whichName ) const;
+  int GetEventValuesFunction( string &whichName ) const;
+  wxArrayInt GetEventValues() const;
+
+  bool ChangedEventTypesFunction() const;
+  bool ChangedEventTypesSelection() const;
+  bool ChangedOperatorTypeValue() const ;
+  bool ChangedEventValuesFunction() const;
+  bool ChangedEventValues() const;
+
+  private:
+
 ////@begin EventsSelectionDialog member variables
-  wxStaticText* textWindowName;
-  wxBoxSizer* boxSizerOperatorsChoice;
-  wxChoice* choiceOperatorSelectTypes;
-  wxChoice* combinedSelection;
-  wxChoice* choiceOperatorSelectValues;
-  wxCheckListBox* checkboxSelectTypes;
+  wxBoxSizer* boxSizerFunctionTypes;
+  wxStaticText* staticTextFunctionTypes;
+  wxChoice* choiceOperatorFunctionTypes;
+  wxCheckListBox* checkListSelectTypes;
   wxButton* buttonSetAllTypes;
   wxButton* buttonUnsetAllTypes;
-  wxCheckListBox* checkboxSelectValues;
+  wxChoice* choiceOperatorTypeValue;
+  wxBoxSizer* boxSizerFunctionValues;
+  wxStaticText* staticTextFunctionValues;
+  wxChoice* choiceOperatorFunctionValues;
+  wxCheckListBox* checkListSelectValues;
+  wxTextCtrl* textCtrlAddValues;
+  wxButton* buttonAddValues;
   wxButton* buttonSetAllValues;
   wxButton* buttonUnsetAllValues;
+  wxBoxSizer* boxSizerOperatorsChoice;
 ////@end EventsSelectionDialog member variables
-
-
 
   bool hideOperatorsList; // let the dialog show or not the type/values/and-or selectors
                           // Useful when called from filters
-  vector<TEventType>  types;
-  vector<TEventValue> values;
+                          // ( TODO: please consider the alternative of inheritance design)
+
+  // *** To ease access to the data of the filter ***
+  Window               *currentWindow;
+  Filter               *currentFilter;     // To set/get events info, and operator or/and
+
+  // *** Related to selector of event types function ***
+  int                  selectedEventTypesFunction;
+  bool                 changedEventTypesFunction;
+
+  // *** Related to event types check list ***
+  TEventType           currentType;
+  vector< TEventType > eventTypes;         // FULL LIST of event types
+  wxArrayString        labeledEventTypes;  // Labeled names of eventTypes
+  wxArrayInt           selectedEventTypes; // INDEX to eventTypes (Selected/checked events)
+  bool                 changedEventTypesSelection;
+
+  // *** Related to selector of and/or operator ***
+  int                  selectedOperatorTypeValue;
+  bool                 changedOperatorTypeValue;
+
+  // *** Related to selector of event values function ***
+  int                  selectedEventValuesFunction;
+  bool                 changedEventValuesFunction;
+
+  // *** Related to event values check list ***
+  unsigned int         firstEventTypePos;
+  wxArrayInt           eventValues;         // related to the current selected type
+  wxArrayInt           selectedEventValues; // global selected event type
+  wxArrayInt           originalSelectedEventValues; // global selected event type
+  bool                 changedEventValues;
+
+  void checkAll( wxCheckListBox *boxlist, bool value );
+  void GetEventValueLabels( wxArrayString & whichEventValues );
+  void BackupCheckListboxValues();
+  void UpdateCheckListboxValues( TEventType type );
+
+  bool HasChanged( wxChoice *choice, int selectedFunction ) const;
+  bool HasChanged( wxCheckListBox *checkList, wxArrayInt &index ) const;
+  bool HasChanged( wxArrayInt &arr1, wxArrayInt &arr2 ) const;
+
+  bool CopyChanges( wxChoice *choice, int &selectedFunction );
+  bool CopyChanges( wxCheckListBox *checkList,
+                    wxArrayInt &index,
+                    wxArrayString &selected,
+                    bool copyStrings = false );
+  void InsertValueFromTextCtrl();
+
+  //int compare_int(int *a, int *b);
+
+  void TransferDataToWindowPreCreateControls( Window *whichWindow,
+                                              bool whichHideOperatorsList);
+  void TransferDataToWindowPostCreateControls();
+
+  void TransferWindowToData();
 };
 
 #endif

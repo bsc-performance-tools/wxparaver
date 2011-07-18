@@ -62,10 +62,10 @@ static bool eventFilterTypeCollapsed  = true;
 static bool eventFilterValueCollapsed = true;
 static bool semanticCatCollapsed      = true;
 
-static bool statCatCollapsed      = true;
-static bool ctrlCatCollapsed      = true;
-static bool dataCatCollapsed      = true;
-static bool thirdWinCatCollapsed = true;
+static bool statCatCollapsed          = true;
+static bool ctrlCatCollapsed          = true;
+static bool dataCatCollapsed          = true;
+static bool thirdWinCatCollapsed      = true;
 
 inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat, const wxString& catName )
 {
@@ -73,6 +73,8 @@ inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat,
   if( tmpProp != NULL )
     categoryStat = tmpProp->GetFlagsAsString( wxPG_PROP_COLLAPSED ) == _( "COLLAPSED" );
 }
+
+
 inline void updateCategoriesState( wxPropertyGrid *windowProperties )
 {
   updateStateOf( windowProperties, filterCatCollapsed,        wxT( "Filter" ) );
@@ -500,19 +502,15 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
     pos = 0;
     selected = -1;
-    for( vector<string>::iterator it = filterFunctions.begin();
-         it != filterFunctions.end(); ++it )
+    for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
     {
       if( (*it) == filter->getEventTypeFunction() )
         selected = pos;
       pos++;
     }
 
-//#define EVENTS_WINDOW
-#ifndef EVENTS_WINDOW
     wxEnumProperty *typeFunction = new wxEnumProperty( wxT("Function"), wxT("TypeFunction"),
                                     arrayFilterFunctions, arrayFilterFunctionsPos, selected );
-#endif
     windowProperties->AppendIn( eventFilterType, typeFunction );
 
     set<TEventType> allTypes;
@@ -529,14 +527,13 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       whichWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
       arrayStr.Add( wxString() << (*it) << _( " " ) << wxString::FromAscii( tmpstr.c_str() ) );
     }
-    
+
     wxPGChoices typeChoices( arrayStr, arrayInt );
-    wxArrayInt values;
-    vector<TEventType> typesSel;
-    filter->getEventType( typesSel );
-    for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
-      values.Add( (*it ) );
-    prvEventTypeProperty *tmpEventProperty = new prvEventTypeProperty( wxT("Types"), wxPG_LABEL, typeChoices, values );
+
+    prvEventInfoProperty *tmpEventProperty = new prvEventInfoProperty( wxT("Types"),
+                                                                       wxPG_LABEL,
+                                                                       typeChoices,
+                                                                       whichWindow );
     wxPGId eventFilterTypeValues = windowProperties->AppendIn( eventFilterType, tmpEventProperty );
     windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
 
@@ -581,28 +578,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                     arrayFilterFunctions, arrayFilterFunctionsPos, selected );
     windowProperties->AppendIn( eventFilterValue, valueFunction );
 
-    arrayStr.Clear();
-    vector<TEventValue> valuesSel;
-    filter->getEventValue( valuesSel );
-    for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); it++ )
-      arrayStr.Add( wxString() << (*it) );
-    prvNumbersListProperty *valueProperty = new prvNumbersListProperty( wxT("Values"), wxPG_LABEL, arrayStr );
+    prvEventInfoProperty *valueProperty = new prvEventInfoProperty( wxT("Values"),
+                                                                    wxPG_LABEL,
+                                                                    typeChoices, // are the same
+                                                                    whichWindow );
     wxPGId eventFilterValueValues = windowProperties->AppendIn( eventFilterValue, valueProperty );
-
+    windowProperties->SetPropertyAttribute( valueProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
     if( filter->getEventValueFunction() == "All" || 
         filter->getEventValueFunction() == "None" )
       eventFilterValueValues->SetFlagsFromString( _( "DISABLED" ) );
   }
-
-#ifdef EVENTS_WINDOW
-    
-    EventsSelectionDialog *eventsDialog = new EventsSelectionDialog( whichWindow,
-                                              vector<TEventType> types,
-                                              vector<TEventValue> values,
-                                              false,
-                                              wxT("Events Selection") );
-#endif
-
 
   // END of Filter related properties
 

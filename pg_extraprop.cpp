@@ -44,6 +44,10 @@
 #include "selectionrowsutils.h"
 #include "labelconstructor.h"
 
+#include "filter.h"
+#include "eventsselectiondialog.h"
+#include <wx/event.h>
+
 /**********************************************************
  **       prvEventTypeProperty
  **********************************************************/
@@ -264,7 +268,328 @@ wxArrayInt prvEventTypeProperty::GetValueAsArrayInt() const
   return retValue;
 }
 
+/**********************************************************
+ **       prvEventInfoProperty
+ **********************************************************/
 
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvEventInfoProperty, wxPGProperty,
+                                wxArrayInt, const wxArrayInt&, TextCtrlAndButton )
+
+prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
+                                            const wxString& name,
+                                            const wxArrayString& strings,
+                                            const wxArrayInt& value)
+                                              : wxPGProperty( label, name )
+{
+  m_choices.Set( strings );
+
+  wxArrayString tmpArray;
+  for ( unsigned int i = 0; i < value.GetCount(); ++i )
+    tmpArray.Add( wxString().Format( _( "%d" ), value[ i ] ) );
+
+  SetValue( tmpArray );
+}
+
+#ifndef SWIG
+
+prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
+                                            const wxString& name,
+                                            const wxPGChoices& choices,
+                                            Window *whichWindow )
+                                              : wxPGProperty( label, name )
+{
+  m_choices.Assign( choices );
+
+  currentWindow = whichWindow;
+
+  wxArrayString tmpArray;
+
+  if( GetName().Cmp( _("Types") ) == 0 )
+  {
+    vector<TEventType> typesSel;
+    currentWindow->getFilter()->getEventType( typesSel );
+    for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
+    {
+      tmpArray.Add( wxString().Format( _( "%d" ), (*it ) ) );
+    }
+  }
+  else if( GetName().Cmp( _("Values") ) == 0 )
+  {
+    vector<TEventValue> valuesSel;
+    currentWindow->getFilter()->getEventValue( valuesSel );
+    for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
+    {
+      tmpArray.Add( wxString().Format( _( "%d" ), (*it ) ) );
+    }
+  }
+
+  SetValue( tmpArray );
+}
+
+
+prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
+                                            const wxString& name,
+                                            const wxArrayInt& value)
+                                              : wxPGProperty(label,name)
+{
+  wxArrayString strings;
+  m_choices.Set( strings );
+
+  wxArrayString tmpArray;
+  for ( unsigned int i = 0; i < value.GetCount(); ++i )
+    tmpArray.Add( wxString().Format( _( "%d" ), value[ i ] ) );
+
+  SetValue( tmpArray );
+}
+
+#endif
+
+
+prvEventInfoProperty::~prvEventInfoProperty()
+{
+}
+
+
+void prvEventInfoProperty::OnSetValue()
+{
+  GenerateValueAsString();
+}
+
+
+wxString prvEventInfoProperty::GetValueAsString( int ) const
+{
+  return m_display;
+}
+
+
+void prvEventInfoProperty::GenerateValueAsString()
+{
+  wxString &tempStr = m_display;
+  tempStr = GetValue().GetString();
+}
+
+
+wxArrayInt prvEventInfoProperty::GetValueAsIndices() const
+{
+  const wxArrayInt& valueArr = wxArrayIntFromVariant( GetValue() );
+  unsigned int i;
+
+  // Translate values to string indices.
+  wxArrayInt selections;
+
+  if ( !m_choices.IsOk() || !m_choices.GetCount() || !( &valueArr ) )
+  {
+    for ( i = 0; i < valueArr.GetCount(); ++i )
+      selections.Add( -1 );
+  }
+  else
+  {
+    for ( i = 0; i < valueArr.GetCount(); ++i )
+    {
+      int sIndex = m_choices.Index( valueArr[ i ] );
+      if ( sIndex >= 0 )
+        selections.Add( sIndex );
+    }
+  }
+
+  return selections;
+}
+
+
+bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
+                                    wxWindow* WXUNUSED( primary ),
+                                    wxEvent& event )
+{
+  if ( propgrid->IsMainButtonEvent( event ))
+  {
+    wxArrayString labels;
+    unsigned int numLabels = 0;
+
+    // Update the value
+    PrepareValueForDialogEditing( propgrid );
+
+    if ( m_choices.IsOk() )
+    {
+      labels    = m_choices.GetLabels();
+      numLabels = m_choices.GetCount();
+    }
+
+    bool hideChoiceOperators = false;
+    const wxString windowTitle( "Events Selection" );
+
+    wxArrayString labelsSelected = m_value.GetArrayString();
+
+    EventsSelectionDialog eventsDialog( propgrid,
+                                        currentWindow,
+                                        hideChoiceOperators,
+                                        windowTitle
+                                      );
+
+    eventsDialog.Move( propgrid->GetGoodEditorDialogPosition( this, eventsDialog.GetSize() ) );
+
+    if ( eventsDialog.ShowModal() == wxID_OK && numLabels )
+    {
+//      int userStringMode = GetAttributeAsLong( wxT( "UserStringMode" ), 0 );
+
+//      wxArrayInt arrInt = eventsDialog.GetEventTypesSelections();
+
+//      wxVariant variant;
+
+      // Strings that were not in list of choices
+//      wxArrayString value;
+
+      // Translate string indices to strings
+//      if ( userStringMode == 1 )
+//      {
+//        for ( unsigned int n = 0; n < unknownEventTypes.size(); ++n )
+//          value.push_back( unknownEventTypes[ n ] );
+//      }
+
+//      for ( unsigned int i = 0; i < arrInt.GetCount(); ++i )
+//        value.Add( wxString() << m_choices.GetValue( arrInt.Item( i ) ) );
+
+//      if ( userStringMode == 2 )
+//      {
+//        for ( unsigned int n = 0; n < unknownEventTypes.size(); ++n )
+//          value.push_back( unknownEventTypes[ n ] );
+//      }
+
+//      value.Sort();
+
+//      variant = WXVARIANT( value );
+
+      if ( eventsDialog.ChangedEventTypesFunction() )
+      {
+        string auxname;
+        int func = eventsDialog.GetEventTypesFunction( auxname );
+        wxVariant tmpVal =  WXVARIANT( func ); 
+        propgrid->GetProperty( _("Event type.TypeFunction") )->SetValue( tmpVal );
+        currentWindow->getFilter()->setEventTypeFunction( auxname );
+      }
+
+      if ( eventsDialog.ChangedEventValuesFunction() )
+      {
+        string auxname;
+        int func = eventsDialog.GetEventValuesFunction( auxname );
+        wxVariant tmpVal =  WXVARIANT( func ); 
+        propgrid->GetProperty( _("Event value.ValueFunction") )->SetValue( tmpVal );
+        currentWindow->getFilter()->setEventValueFunction( auxname );
+      }
+
+      if ( eventsDialog.ChangedOperatorTypeValue() )
+      {
+        string auxname;
+        int func = eventsDialog.GetOperatorTypeValue( auxname );
+        wxVariant tmpVal =  WXVARIANT( func ); 
+        propgrid->GetProperty( _("TypeValueOp") )->SetValue( tmpVal );
+
+        if ( func == 0 )
+          currentWindow->getFilter()->setOpTypeValueAnd();
+        else 
+          currentWindow->getFilter()->setOpTypeValueOr();
+      }
+
+      if ( eventsDialog.ChangedEventValues() )
+      {
+        wxArrayString tmpStrEventValues;
+        wxArrayInt tmpEventValues = eventsDialog.GetEventValues();
+
+        Filter *filter = currentWindow->getFilter();
+        filter->clearEventValues();
+
+        for( unsigned int i = 0; i < tmpEventValues.GetCount(); ++i )
+        {
+          wxString tmpVal;
+          tmpVal << tmpEventValues[ i ];
+          tmpStrEventValues.Add( tmpVal );
+
+          filter->insertEventValue( (TEventValue)tmpEventValues[ i ] );
+        }
+
+        wxVariant tmpVar( WXVARIANT( tmpStrEventValues ));
+
+        if ( GetName().Cmp( _("Event value.Values") ) != 0 )
+        {
+          propgrid->GetProperty( _("Event value.Values") )->SetValue( tmpVar );
+          // Try to not left the control disabled
+          propgrid->GetProperty( _("Event value.Values") )->ChangeFlag( wxPG_PROP_DISABLED, true );
+        }
+        else
+          SetValueInEvent( tmpVar );
+      }
+
+      if ( eventsDialog.ChangedEventTypesSelection() )
+      {
+        wxArrayString tmpStrEventTypes;
+        wxArrayInt tmpEventTypes = eventsDialog.GetEventTypesSelection();
+
+        Filter *filter = currentWindow->getFilter();
+        filter->clearEventTypes();
+
+        for( unsigned int i = 0; i < tmpEventTypes.GetCount(); ++i )
+        {
+          wxString tmpVal;
+          tmpVal << tmpEventTypes[ i ];
+          tmpStrEventTypes.Add( tmpVal );
+          filter->insertEventType( (TEventType)tmpEventTypes[ i ] );
+        }
+
+        wxVariant tmpVar( WXVARIANT( tmpStrEventTypes ));
+
+        if ( GetName().Cmp( _("Event type.Types") ) != 0 )
+          propgrid->GetProperty( _("Event type.Types") )->SetValue( tmpVar );
+        else
+          SetValueInEvent( tmpVar );
+      }
+
+/*
+      SetValueInEvent( variant );
+*/
+      return true;
+    }
+  }
+
+  return false;
+}
+
+int prvEventInfoProperty::GetChoiceInfo( wxPGChoiceInfo* choiceinfo )
+{
+    if ( choiceinfo )
+        choiceinfo->m_choices = &m_choices;
+    return -1;
+}
+
+bool prvEventInfoProperty::StringToValue( wxVariant& variant, const wxString& text, int ) const
+{
+    wxArrayString arr;
+
+    int userStringMode = GetAttributeAsLong(wxT("UserStringMode"), 0);
+
+    WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
+        if ( userStringMode > 0 || (m_choices.IsOk() && m_choices.Index( token ) != wxNOT_FOUND) )
+            arr.Add(token);
+    WX_PG_TOKENIZER1_END()
+
+    wxVariant v( WXVARIANT(arr) );
+    variant = v;
+
+    return true;
+}
+
+wxArrayInt prvEventInfoProperty::GetValueAsArrayInt() const
+{
+  wxArrayInt retValue;
+  wxArrayString strValues = m_value.GetArrayString();
+  
+  for( unsigned int idx = 0; idx < strValues.GetCount(); idx++ )
+  {
+    long tmpInt;
+    strValues[ idx ].ToLong( &tmpInt );
+    retValue.Add( tmpInt );
+  }
+    
+  return retValue;
+}
 
 /**********************************************************
  **       prvSemanticThreadProperty
