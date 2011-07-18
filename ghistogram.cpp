@@ -1915,10 +1915,10 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       extraControlCloned->setLevelFunction( onLevel, "Is In Range [)" );
       
     TParamValue param;
-    if( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
-      param.push_back( extraMax );
-    else if( extraDelta == 1 )
+    if( extraDelta == 1 )
       param.push_back( ( plane * extraDelta ) + extraMin );
+    else if( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
+      param.push_back( extraMax );
     else
       param.push_back( ( plane * extraDelta ) + extraMin + extraDelta );
     extraControlCloned->setFunctionParam( onLevel, 0, param );
