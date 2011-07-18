@@ -47,7 +47,7 @@
 
 #include "eventsselectiondialog.h"
 #include "labelconstructor.h"
-#include "semanticcolor.h"
+//#include "semanticcolor.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -952,7 +952,7 @@ void EventsSelectionDialog::GetEventValueLabels( wxArrayString & whichEventValue
   TSemanticValue lastMin = currentWindow->getMinimumY();
   TSemanticValue lastMax = currentWindow->getMaximumY();
   bool codeColorSet = currentWindow->IsCodeColorSet();
-  GradientColor::TGradientFunction gradientFunc = currentWindow->getGradientColor().getGradientFunction();
+//  GradientColor::TGradientFunction gradientFunc = currentWindow->getGradientColor().getGradientFunction();
 
   if( codeColorSet )
   {
