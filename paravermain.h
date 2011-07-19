@@ -84,6 +84,8 @@ class wxPropertyGridEvent;
 #define ID_MENULOADCFG 10006
 #define ID_RECENTCFGS 10009
 #define ID_MENUSAVECFG 10011
+#define ID_MENULOADSESSION 10170
+#define ID_MENUSAVESESSION 10169
 #define ID_PREFERENCES 10001
 #define ID_TOOLBAR 10003
 #define ID_NEW_WINDOW 10030
@@ -199,6 +201,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_MENUSAVECFG
   void OnMenusavecfgUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADSESSION
+  void OnMenuloadsessionClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVESESSION
+  void OnMenusavesessionClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_PREFERENCES
   void OnPreferencesClick( wxCommandEvent& event );
@@ -344,6 +352,9 @@ public:
   queue<string> GetLoadFilesQueue() const { return loadFilesQueue ; }
   void SetLoadFilesQueue(queue<string> value) { loadFilesQueue = value ; }
 
+  wxTimer * GetSessionTimer() const { return sessionTimer ; }
+  void SetSessionTimer(wxTimer * value) { sessionTimer = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -424,6 +435,7 @@ private:
   wxString CFGPath;
   bool canServeSignal;
   queue<string> loadFilesQueue;
+  wxTimer * sessionTimer;
 ////@end paraverMain member variables
 
   map< string, PRV_UINT32 > traceInstance;
@@ -447,6 +459,9 @@ private:
   void ShowCutTraceWindow( const string& filename, bool loadTrace );
   
   void PrepareToExit();
+  
+  void OnSessionTimer( wxTimerEvent& event );
+
 };
 
 void progressFunction( ProgressController *progress );

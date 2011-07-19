@@ -65,6 +65,7 @@
 #include "preferencesdialog.h"
 #include "cutfilterdialog.h"
 #include "labelconstructor.h"
+#include "sessionsaver.h"
 
 
 #include <signal.h>
@@ -136,6 +137,10 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
 
+  EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+
+  EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
+
   EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
 
@@ -174,7 +179,10 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
   
-  EVT_ACTIVATE(paraverMain::OnActivate) 
+  EVT_ACTIVATE(paraverMain::OnActivate)
+  
+  EVT_TIMER( wxID_ANY, paraverMain::OnSessionTimer )
+
 END_EVENT_TABLE()
 
 
@@ -355,6 +363,7 @@ void paraverMain::Init()
   numNewDerived = 0;
   raiseCurrentWindow = true;
   canServeSignal = true;
+  sessionTimer = new wxTimer( this );
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -391,6 +400,9 @@ void paraverMain::CreateControls()
   menuFile->Append(ID_RECENTCFGS, _("Previous Configurations"), itemMenu9);
   menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
+  menuFile->Append(ID_MENULOADSESSION, _("Load Session...\tCTRL+l"), wxEmptyString, wxITEM_NORMAL);
+  menuFile->Append(ID_MENUSAVESESSION, _("Save Session...\tCTRL+S"), wxEmptyString, wxITEM_NORMAL);
+  menuFile->AppendSeparator();
   menuFile->Append(ID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
@@ -401,26 +413,26 @@ void paraverMain::CreateControls()
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxWANTS_CHARS );
-  wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
-  wxBitmap itemtool18BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
+  wxBitmap itemtool21Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
+  wxBitmap itemtool21BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool21Bitmap, itemtool21BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_WINDOW, false);
-  wxBitmap itemtool19Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
-  wxBitmap itemtool19BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool19Bitmap, itemtool19BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
+  wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
+  wxBitmap itemtool22BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
-  wxBitmap itemtool20Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
-  wxBitmap itemtool20BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool20Bitmap, itemtool20BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
+  wxBitmap itemtool23Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  wxBitmap itemtool23BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool23Bitmap, itemtool23BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->AddSeparator();
-  wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
-  wxBitmap itemtool22BitmapDisabled;
-  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
+  wxBitmap itemtool25Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
+  wxBitmap itemtool25BitmapDisabled;
+  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool25Bitmap, itemtool25BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
   tbarMain->AddSeparator();
-  wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
-  wxBitmap itemtool24BitmapDisabled;
-  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
+  wxBitmap itemtool27Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
+  wxBitmap itemtool27BitmapDisabled;
+  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool27Bitmap, itemtool27BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -1826,6 +1838,17 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   if ( sig1 || sig2 )
     OnSignal();
 #endif
+
+
+  if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() == 0 )
+    sessionTimer->Stop();
+  else if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 &&
+           sessionTimer->GetInterval() != ParaverConfig::getInstance()->getGlobalSessionSaveTime() )
+  {
+    sessionTimer->Stop();
+    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 1E3 * 60 );
+  }
+
 }
 
 
@@ -2381,6 +2404,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetTmpPath( paraverConfig->getGlobalTmpPath() );
   preferences.SetMaximumTraceSize( paraverConfig->getFiltersFilterTraceUpToMB() );
   preferences.SetSingleInstance( paraverConfig->getGlobalSingleInstance() );
+  preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
 
   // TIMELINE
 
@@ -2462,6 +2486,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setGlobalTmpPath( preferences.GetTmpPath() );
     paraverConfig->setFiltersFilterTraceUpToMB( (float)preferences.GetMaximumTraceSize() );
     paraverConfig->setGlobalSingleInstance( preferences.GetSingleInstance() );
+    paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );
@@ -3207,3 +3232,43 @@ void paraverMain::OnSize( wxSizeEvent& event )
   
   event.Skip();
 }
+
+
+void paraverMain::OnSessionTimer( wxTimerEvent& event )
+{
+#ifdef WIN32
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\paraver_default_session" );
+#else
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver_default_session" );
+#endif
+  SessionSaver::SaveSession( wxT( file.c_str() ), GetLoadedTraces() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADSESSION
+ */
+
+void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
+{
+  wxFileDialog dialog( this, wxT( "Load session" ) );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    SessionSaver::LoadSession( dialog.GetPath() );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVESESSION
+ */
+
+void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
+{
+  wxFileDialog dialog( this, wxT( "Save session" ) );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    SessionSaver::SaveSession( dialog.GetPath(), GetLoadedTraces() );
+  }
+}
+

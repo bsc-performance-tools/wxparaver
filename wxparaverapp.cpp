@@ -242,7 +242,9 @@ bool wxparaverApp::OnInit()
   if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
     const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
+    wxLogNull *tmpLogNull = new wxLogNull();
     m_checker = new wxSingleInstanceChecker(name);
+    delete tmpLogNull;
     if ( !m_checker->IsAnotherRunning() )
     {
       m_server = new stServer;
@@ -386,8 +388,11 @@ int wxparaverApp::FilterEvent(wxEvent& event)
        ((wxKeyEvent&)event).GetKeyCode() == (long) 'S'
      )
   {
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver_default_session" );
-    SessionSaver::SaveSession( wxT( file.c_str() ), wxparaverApp::mainWindow->GetLoadedTraces() );
+    wxFileDialog dialog( mainWindow, wxT( "Save session" ) );
+    if( dialog.ShowModal() == wxID_OK )
+    {
+      SessionSaver::SaveSession( dialog.GetPath(), wxparaverApp::mainWindow->GetLoadedTraces() );
+    }
     return true;
   }
 
@@ -396,8 +401,11 @@ int wxparaverApp::FilterEvent(wxEvent& event)
        ((wxKeyEvent&)event).GetKeyCode() == (long) 'L'
      )
   {
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver_default_session" );
-    SessionSaver::LoadSession( wxT( file.c_str() ) );
+    wxFileDialog dialog( mainWindow, wxT( "Load session" ) );
+    if( dialog.ShowModal() == wxID_OK )
+    {
+      SessionSaver::LoadSession( dialog.GetPath() );
+    }
     return true;
   }
   
@@ -444,3 +452,4 @@ void wxparaverApp::PrintVersion()
 
   cout << auxDate << endl;
 }
+
