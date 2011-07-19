@@ -59,9 +59,6 @@
 #include "arrow_down.xpm"
 ////@end XPM images
 
-
-
-
 /*!
  * CutFilterDialog type definition
  */
@@ -80,6 +77,8 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
 
   EVT_BUTTON( ID_BUTTON_LOAD_XML, CutFilterDialog::OnButtonLoadXMLClick )
+
+  EVT_BUTTON( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlClick )
 
   EVT_LISTBOX( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderSelected )
   EVT_UPDATE_UI( ID_CHECKLISTBOX, CutFilterDialog::OnCheckListToolOrderUpdate )
@@ -240,6 +239,7 @@ void CutFilterDialog::Init()
   buttonSCKeepEventsDelete = NULL;
   globalOk = NULL;
 ////@end CutFilterDialog member initialisation
+  pathXML = "";
 }
 
 
@@ -1049,10 +1049,14 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
 
     textCutterBeginCut->GetValue().ToULongLong( &auxULong );
     traceOptions->set_min_cutting_time( (unsigned long long)auxULong );
+    if( radioCutterCutByTime->GetValue() )
+      auxULong = 0;
     traceOptions->set_minimum_time_percentage( (unsigned long long)auxULong );
 
     textCutterEndCut->GetValue().ToULongLong( &auxULong );
     traceOptions->set_max_cutting_time( (unsigned long long)auxULong );
+    if( radioCutterCutByTime->GetValue() )
+      auxULong = 100;
     traceOptions->set_maximum_time_percentage( (unsigned long long)auxULong );
 
     traceOptions->set_original_time( checkCutterUseOriginalTime->IsChecked() );
@@ -1960,6 +1964,7 @@ void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
 {
   filePickerTrace->SetPath( wxString( nameSourceTrace.c_str(), wxConvUTF8 ) );
   checkLoadResultingTrace->SetValue( loadResultingTrace );
+  pathXML = nameSourceTrace;
 }
 
 // order only contains the identifiers of the selected tools
@@ -2220,7 +2225,8 @@ void CutFilterDialog::TransferDataToWindow( vector<int> order, TraceOptions *tra
 
 void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
 {
-  wxFileName auxDirectory( wxString( nameSourceTrace.c_str(), wxConvUTF8 ));
+  // wxFileName auxDirectory( wxString( nameSourceTrace.c_str(), wxConvUTF8 ));
+  wxFileName auxDirectory( wxString( pathXML.c_str(), wxConvUTF8 )  );
 
   if( !auxDirectory.IsDir() )
     auxDirectory = auxDirectory.GetPathWithSep();
@@ -2238,6 +2244,8 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
   {
     TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
     wxString path = xmlSelectionDialog.GetPath();
+    // we must add the proper slash to enter the directory next time
+    pathXML = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
     vector<int> toolsOrder = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
     TransferDataToWindow( toolsOrder, traceOptions );
   }
@@ -2267,5 +2275,70 @@ void CutFilterDialog::OnOkUpdate( wxUpdateUIEvent& event )
       enable = true;
 
   globalOk->Enable( enable );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SAVE_XML
+ */
+
+void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
+{
+  //wxFileName auxDirectory( wxString( nameSourceTrace.c_str(), wxConvUTF8 ));
+  wxFileName auxDirectory( wxString( pathXML.c_str(), wxConvUTF8 )); 
+
+  if( !auxDirectory.IsDir() )
+    auxDirectory = auxDirectory.GetPathWithSep();
+
+  wxString directory( auxDirectory.GetFullPath() );
+
+  wxFileDialog xmlSelectionDialog( this,
+                        _( "Save XML Cut/Filter configuration file" ),
+                        directory,
+                        _( "" ), 
+                        _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
+                        wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT );
+
+  if( xmlSelectionDialog.ShowModal() == wxID_OK )
+  {
+    wxString path = xmlSelectionDialog.GetPath();
+    // we must add the proper slash to enter the directory next time
+    pathXML = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
+    bool previousWarning = false;
+
+    CheckCommonOptions( previousWarning );
+    TransferWindowToCommonData( previousWarning );
+
+    if ( !previousWarning )
+    {
+      // Which tools are selected?
+      for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
+      {
+        if ( checkListToolOrder->IsChecked( i ) )
+        {
+          if ( listToolOrder[ i ] == "Cutter" )
+          {
+            CheckCutterOptions( previousWarning );
+            TransferWindowToCutterData( previousWarning );
+          }
+          if ( listToolOrder[ i ] == "Filter" )
+          {
+            CheckFilterOptions( previousWarning );
+            TransferWindowToFilterData( previousWarning );
+          }
+          if ( listToolOrder[ i ] == "Software Counters" )
+          {
+            CheckSoftwareCountersOptions( previousWarning );
+            TransferWindowToSoftwareCountersData( previousWarning );
+          }
+        }
+      }
+
+      if( !previousWarning )
+      {
+        traceOptions->saveXML( filterToolOrder, string( path.mb_str()) );
+      }
+    }
+  }
 }
 

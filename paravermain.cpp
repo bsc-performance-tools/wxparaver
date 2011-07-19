@@ -97,12 +97,6 @@
 
 #include <algorithm>
 
-#ifdef WIN32
-  char PATH_SEP('\\');
-#else
-  char PATH_SEP('/');
-#endif
-
 /*!
  * paraverMain type definition
  */

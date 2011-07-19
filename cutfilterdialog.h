@@ -58,6 +58,13 @@ class wxSpinCtrl;
 
 #include "traceoptions.h"
 
+// find a common place; moved from paravermain.cpp
+#ifdef WIN32
+  const char PATH_SEP('\\');
+#else
+  const char PATH_SEP('/');
+#endif
+
 /*!
  * Control identifiers
  */
@@ -159,6 +166,9 @@ public:
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_LOAD_XML
   void OnButtonLoadXMLClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SAVE_XML
+  void OnButtonSaveXmlClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
   void OnCheckListToolOrderSelected( wxCommandEvent& event );
@@ -366,6 +376,7 @@ private:
 ////@end CutFilterDialog member variables
 
   vector< string > listToolOrder; // Names of the tools
+  string pathXML;
 };
 
 #endif
