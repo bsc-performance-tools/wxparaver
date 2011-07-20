@@ -1341,8 +1341,8 @@ char *CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox *selecte
 
   for( size_t i = 0; i < selectedEvents->GetCount(); ++i )
   {
-    string lineStr = string( selectedEvents->GetString( i ).mb_str() );
-    listStr += lineStr;
+    string auxLineStr = string( selectedEvents->GetString( i ).mb_str() );
+    listStr += auxLineStr;
     if ( i != selectedEvents->GetCount() - 1 )
       listStr += string(";");
   }
