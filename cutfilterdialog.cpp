@@ -288,7 +288,6 @@ void CutFilterDialog::CreateControls()
   wxButton* itemButton10 = new wxButton( itemDialog1, ID_BUTTON_SAVE_XML, _("Save XML..."), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     itemButton10->SetToolTip(_("Save current settings to an XML file."));
-  itemButton10->Enable(false);
   itemBoxSizer8->Add(itemButton10, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxVERTICAL);
@@ -1364,9 +1363,11 @@ void CutFilterDialog::TransferWindowToSoftwareCountersData( bool previousWarning
   {
     // Region
     traceOptions->set_sc_onInterval( radioSCOnIntervals->GetValue() );
-
-    traceOptions->set_sc_sampling_interval( (unsigned long long)textSCSamplingInterval->GetValue().ToULong( &auxULong ) );
-    traceOptions->set_sc_minimum_burst_time( (unsigned long long)textSCMinimumBurstTime->GetValue().ToULong( &auxULong ) );
+    
+    textSCSamplingInterval->GetValue().ToULong( &auxULong );
+    traceOptions->set_sc_sampling_interval( (unsigned long long)auxULong );
+    textSCMinimumBurstTime->GetValue().ToULong( &auxULong );
+    traceOptions->set_sc_minimum_burst_time( (unsigned long long)auxULong );
 
     // Selected events
     traceOptions->set_sc_types( GetSoftwareCountersEventsListToString( listSCSelectedEvents ) );
@@ -2284,60 +2285,61 @@ void CutFilterDialog::OnOkUpdate( wxUpdateUIEvent& event )
 
 void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
 {
-  //wxFileName auxDirectory( wxString( nameSourceTrace.c_str(), wxConvUTF8 ));
-  wxFileName auxDirectory( wxString( pathXML.c_str(), wxConvUTF8 )); 
+  // first, test if all parameters are ready
+  bool previousWarning = false;
 
-  if( !auxDirectory.IsDir() )
-    auxDirectory = auxDirectory.GetPathWithSep();
+  CheckCommonOptions( previousWarning );
+  TransferWindowToCommonData( previousWarning );
 
-  wxString directory( auxDirectory.GetFullPath() );
-
-  wxFileDialog xmlSelectionDialog( this,
-                        _( "Save XML Cut/Filter configuration file" ),
-                        directory,
-                        _( "" ), 
-                        _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
-                        wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT );
-
-  if( xmlSelectionDialog.ShowModal() == wxID_OK )
+  if ( !previousWarning )
   {
-    wxString path = xmlSelectionDialog.GetPath();
-    // we must add the proper slash to enter the directory next time
-    pathXML = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
-    bool previousWarning = false;
-
-    CheckCommonOptions( previousWarning );
-    TransferWindowToCommonData( previousWarning );
-
-    if ( !previousWarning )
+    // Which tools are selected?
+    for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
     {
-      // Which tools are selected?
-      for (size_t i = 0; i < checkListToolOrder->GetCount(); ++i )
+      if ( checkListToolOrder->IsChecked( i ) )
       {
-        if ( checkListToolOrder->IsChecked( i ) )
+        if ( listToolOrder[ i ] == "Cutter" )
         {
-          if ( listToolOrder[ i ] == "Cutter" )
-          {
-            CheckCutterOptions( previousWarning );
-            TransferWindowToCutterData( previousWarning );
-          }
-          if ( listToolOrder[ i ] == "Filter" )
-          {
-            CheckFilterOptions( previousWarning );
-            TransferWindowToFilterData( previousWarning );
-          }
-          if ( listToolOrder[ i ] == "Software Counters" )
-          {
-            CheckSoftwareCountersOptions( previousWarning );
-            TransferWindowToSoftwareCountersData( previousWarning );
-          }
+          CheckCutterOptions( previousWarning );
+          TransferWindowToCutterData( previousWarning );
+        }
+        if ( listToolOrder[ i ] == "Filter" )
+        {
+          CheckFilterOptions( previousWarning );
+          TransferWindowToFilterData( previousWarning );
+        }
+        if ( listToolOrder[ i ] == "Software Counters" )
+        {
+          CheckSoftwareCountersOptions( previousWarning );
+          TransferWindowToSoftwareCountersData( previousWarning );
         }
       }
+    }
+  }
 
-      if( !previousWarning )
-      {
-        traceOptions->saveXML( filterToolOrder, string( path.mb_str()) );
-      }
+  if ( !previousWarning )
+  {
+    //wxFileName auxDirectory( wxString( nameSourceTrace.c_str(), wxConvUTF8 ));
+    wxFileName auxDirectory( wxString( pathXML.c_str(), wxConvUTF8 )); 
+
+    if( !auxDirectory.IsDir() )
+      auxDirectory = auxDirectory.GetPathWithSep();
+
+    wxString directory( auxDirectory.GetFullPath() );
+
+    wxFileDialog xmlSelectionDialog( this,
+                          _( "Save XML Cut/Filter configuration file" ),
+                          directory,
+                          _( "" ), 
+                          _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
+                          wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT );
+
+    if( xmlSelectionDialog.ShowModal() == wxID_OK )
+    {
+      wxString path = xmlSelectionDialog.GetPath();
+      // we must add the proper slash to enter the directory next time
+      pathXML = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
+      traceOptions->saveXML( filterToolOrder, string( path.mb_str()) );
     }
   }
 }
