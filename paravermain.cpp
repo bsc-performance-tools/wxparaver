@@ -3241,7 +3241,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
 #else
   string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver_default_session" );
 #endif
-  SessionSaver::SaveSession( wxT( file.c_str() ), GetLoadedTraces() );
+  SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
 }
 
 
@@ -3251,7 +3251,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
 
 void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, wxT( "Load session" ), "", "", "*", wxFD_OPEN|wxFD_FILE_MUST_EXIST );
+  wxFileDialog dialog( this, wxT( "Load session" ), _(""), _(""), _("*"), wxFD_OPEN|wxFD_FILE_MUST_EXIST );
   if( dialog.ShowModal() == wxID_OK )
   {
     SessionSaver::LoadSession( dialog.GetPath() );
@@ -3265,7 +3265,7 @@ void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
 
 void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, wxT( "Save session" ), "", "", "*", wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
+  wxFileDialog dialog( this, wxT( "Save session" ), _(""), _(""), _("*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
   if( dialog.ShowModal() == wxID_OK )
   {
     SessionSaver::SaveSession( dialog.GetPath(), GetLoadedTraces() );

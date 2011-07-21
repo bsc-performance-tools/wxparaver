@@ -388,7 +388,7 @@ int wxparaverApp::FilterEvent(wxEvent& event)
        ((wxKeyEvent&)event).GetKeyCode() == (long) 'S'
      )
   {
-    wxFileDialog dialog( mainWindow, wxT( "Save session" ), "", "", "*", wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
+    wxFileDialog dialog( mainWindow, wxT( "Save session" ), _(""), _(""), _("*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
     if( dialog.ShowModal() == wxID_OK )
     {
       SessionSaver::SaveSession( dialog.GetPath(), wxparaverApp::mainWindow->GetLoadedTraces() );
@@ -401,7 +401,7 @@ int wxparaverApp::FilterEvent(wxEvent& event)
        ((wxKeyEvent&)event).GetKeyCode() == (long) 'L'
      )
   {
-    wxFileDialog dialog( mainWindow, wxT( "Load session" ), "", "", "*", wxFD_OPEN|wxFD_FILE_MUST_EXIST );
+    wxFileDialog dialog( mainWindow, wxT( "Load session" ), _(""), _(""), _("*"), wxFD_OPEN|wxFD_FILE_MUST_EXIST );
     if( dialog.ShowModal() == wxID_OK )
     {
       SessionSaver::LoadSession( dialog.GetPath() );

@@ -55,7 +55,7 @@ void SessionSaver::SaveSession( wxString onFile, const vector<Trace *>& traces )
   {
     file << (*it)->getFileName() << endl;
     wxFileName path( onFile.c_str() );
-    wxFileName traceFileName( (*it)->getFileName().c_str() );
+    wxFileName traceFileName( wxString::FromAscii( (*it)->getFileName().c_str() ) );
     wxFileName cfgFileName( path.GetPathWithSep() + traceFileName.GetFullName() + wxT( ".cfg" ) );
     
     vector<Window *> vTimelines;
@@ -83,7 +83,7 @@ void SessionSaver::LoadSession( wxString whichFile )
       wxparaverApp::mainWindow->DoLoadTrace( traceFile );
 
       wxFileName path( whichFile.c_str() );
-      wxFileName traceFileName( traceFile.c_str() );
+      wxFileName traceFileName( wxString::FromAscii( traceFile.c_str() ) );
       wxFileName cfgFileName( path.GetPathWithSep() + traceFileName.GetFullName() + wxT( ".cfg" ) );
       
       wxparaverApp::mainWindow->DoLoadCFG( string( cfgFileName.GetFullPath().mb_str() ) );

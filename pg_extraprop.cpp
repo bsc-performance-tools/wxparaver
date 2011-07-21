@@ -415,7 +415,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
     }
 
     bool hideChoiceOperators = false;
-    const wxString windowTitle( "Events Selection" );
+    const wxString windowTitle( _("Events Selection") );
 
     wxArrayString labelsSelected = m_value.GetArrayString();
 
