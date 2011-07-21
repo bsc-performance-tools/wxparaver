@@ -1046,7 +1046,6 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
   if ( !previousWarning )
   {
     traceOptions->set_max_trace_size( textCutterMaximumTraceSize->GetValue() );
-
     traceOptions->set_by_time( radioCutterCutByTime->GetValue() );
 
     textCutterBeginCut->GetValue().ToULongLong( &auxULong );
@@ -2049,9 +2048,10 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
   aux << traceOptions->get_max_trace_size();
   textCutterMaximumTraceSize->SetValue( wxString::FromAscii( aux.str().c_str() ) );
 
-//cout << "es cero?" << traceOptions->get_by_time() << endl;
-  radioCutterCutByTime->SetValue( traceOptions->get_by_time() == 0 );
-  //radioCutterCutByTimePercent->SetValue( traceOptions->get_by_time() != 0 );
+  if ( traceOptions->get_by_time() )
+    radioCutterCutByTime->SetValue( true );
+  else
+    radioCutterCutByTimePercent->SetValue( true );
 
   if ( radioCutterCutByTime->GetValue() )
   {
@@ -2073,11 +2073,7 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
     aux << traceOptions->get_maximum_time_percentage();
     textCutterEndCut->SetValue( wxString::FromAscii( aux.str().c_str() ) );
   }
-/*cout << "emitiendo evento" << endl;
-wxCommandEvent ev( wxEVT_COMMAND_RADIOBUTTON_SELECTED, radioCutterCutByTime->GetId() );
-//radioCutterCutByTime->GetEventHandler()->ProcessEvent( ev );
-radioCutterCutByTime->GetEventHandler()->AddPendingEvent( ev );
-*/
+
   checkCutterUseOriginalTime->SetValue( traceOptions->get_original_time() );
   if ( traceOptions->get_original_time() )
   {
@@ -2193,7 +2189,10 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
   stringstream aux;
 
   // Region
-  radioSCOnIntervals->SetValue( traceOptions->get_sc_onInterval() );
+  if ( traceOptions->get_sc_onInterval() )
+    radioSCOnIntervals->SetValue( true );
+  else
+    radioSCOnStates->SetValue( true );
 
   aux.str("");
   aux << traceOptions->get_sc_sampling_interval();
