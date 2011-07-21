@@ -1021,6 +1021,8 @@ void CutFilterDialog::TransferWindowToCommonData( bool previousWarning )
 
     loadResultingTrace = checkLoadResultingTrace->IsChecked();
 
+    filterToolOrder.clear();
+
     for ( size_t i = 0; i < listToolOrder.size(); ++i )
     {
       if ( checkListToolOrder->IsChecked( i ) )
