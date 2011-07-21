@@ -1242,8 +1242,8 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
     // Was it an experimental feature?
     traceOptions->set_filter_by_call_time( false );
 
-    if ( !checkFilterDiscardStateRecords->IsChecked() )
-    {
+    //if ( !checkFilterDiscardStateRecords->IsChecked() )
+    //{
       bool allStatesSelected = true;
       for( size_t i = 0; i < checkListFilterStates->GetCount(); ++i )
       {
@@ -1299,10 +1299,10 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
         textFilterMinBurstTime->GetValue().ToULong( &auxULong );
         traceOptions->set_min_state_time( (unsigned long long)auxULong );
       }
-    }
+    //}
 
-    if ( !checkFilterDiscardEventRecords->IsChecked() )
-    {
+    //if ( !checkFilterDiscardEventRecords->IsChecked() )
+    //{
       traceOptions->set_discard_given_types( checkFilterDiscardListedEvents->IsChecked() );
       TraceOptions::TFilterTypes auxEvents;
       int lastType = 0;
@@ -1311,12 +1311,12 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
       // To fix: always do set_filter_last_type first than set_filter_types
       traceOptions->set_filter_last_type( lastType );
       traceOptions->set_filter_types( auxEvents );
-    }
+    //}
 
-    if ( !checkFilterDiscardCommunicationRecords->IsChecked() )
-    {
+    //if ( !checkFilterDiscardCommunicationRecords->IsChecked() )
+    //{
       traceOptions->set_min_comm_size( textFilterSize->GetValue() );
-    }
+    //}
   }
 }
 

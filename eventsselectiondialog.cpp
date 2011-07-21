@@ -235,7 +235,8 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
 
   for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
   {
-    int i = choiceOperatorFunctionTypes->Append( _((*it).c_str()) );
+    // int i = choiceOperatorFunctionTypes->Append( _((*it).c_str()) );
+    int i = choiceOperatorFunctionTypes->Append( wxString::FromAscii( (*it).c_str() ) );
     if( (*it) == currentFilter->getEventTypeFunction() )
       choiceOperatorFunctionTypes->SetSelection( i );
   }
@@ -261,7 +262,8 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
   // Get functions list for event values and set the selected one
   for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
   {
-    int i = choiceOperatorFunctionValues->Append( _((*it).c_str()) );
+    //int i = choiceOperatorFunctionValues->Append( _((*it).c_str()) );
+    int i = choiceOperatorFunctionValues->Append( wxString::FromAscii( (*it).c_str() ) );
     if( (*it) == currentFilter->getEventValueFunction() )
       choiceOperatorFunctionValues->SetSelection( i );
   }
