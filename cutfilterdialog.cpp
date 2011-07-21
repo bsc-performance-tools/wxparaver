@@ -2267,10 +2267,11 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
   {
     TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
     wxString path = xmlSelectionDialog.GetPath();
-    // we must add the proper slash to enter the directory next time
-    globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
     vector<int> toolsOrder = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
     TransferDataToWindow( toolsOrder, traceOptions );
+
+    // we must add the proper slash to enter the directory next time
+    globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
     newXMLsPath = true;
   }
 }
