@@ -3251,7 +3251,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
 
 void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, wxT( "Load session" ) );
+  wxFileDialog dialog( this, wxT( "Load session" ), "", "", "*", wxFD_OPEN|wxFD_FILE_MUST_EXIST );
   if( dialog.ShowModal() == wxID_OK )
   {
     SessionSaver::LoadSession( dialog.GetPath() );
@@ -3265,7 +3265,7 @@ void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
 
 void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, wxT( "Save session" ) );
+  wxFileDialog dialog( this, wxT( "Save session" ), "", "", "*", wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
   if( dialog.ShowModal() == wxID_OK )
   {
     SessionSaver::SaveSession( dialog.GetPath(), GetLoadedTraces() );
