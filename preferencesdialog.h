@@ -57,7 +57,6 @@ class wxColourPickerCtrl;
 /*!
  * Control identifiers
  */
-
 ////@begin control identifiers
 #define ID_PREFERENCESDIALOG 10069
 #define ID_PREFERENCES_GLOBAL 10073
@@ -65,6 +64,7 @@ class wxColourPickerCtrl;
 #define ID_TEXTCTRL_MAXIMUM_LOADABLE_TRACE_SIZE 10156
 #define ID_DIRPICKERCTRL_TRACES 10089
 #define ID_DIRPICKERCTRL_CFG 10010
+#define ID_DIRPICKERCTRL_XML 10033
 #define ID_DIRPICKERCTRL_TMP 10011
 #define ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE 10158
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
@@ -353,6 +353,9 @@ public:
   PRV_UINT16 GetSessionSaveTime() const { return sessionSaveTime ; }
   void SetSessionSaveTime(PRV_UINT16 value) { sessionSaveTime = value ; }
 
+  string GetFiltersXMLPath() const { return filtersXMLPath ; }
+  void SetFiltersXMLPath(string value) { filtersXMLPath = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -371,6 +374,7 @@ public:
   wxSpinCtrl* txtMaximumTraceSize;
   wxDirPickerCtrl* dirPickerTrace;
   wxDirPickerCtrl* dirPickerCFG;
+  wxDirPickerCtrl* dirPickerXML;
   wxDirPickerCtrl* dirPickerTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
@@ -483,6 +487,7 @@ private:
   bool singleInstance;
   PRV_INT16 timelineWWEventPixels;
   PRV_UINT16 sessionSaveTime;
+  string filtersXMLPath;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

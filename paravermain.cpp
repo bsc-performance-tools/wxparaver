@@ -3205,7 +3205,6 @@ void paraverMain::ShowCutTraceWindow( const string& filename, bool loadTrace )
       DoLoadTrace( resultingTrace );
 
     XMLLoadedBefore = cutFilterDialog.GetLoadedXMLPath( XMLPath );
-cout << XMLPath << endl;
   }
 
   cutFilterDialog.MakeModal( false );

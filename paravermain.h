@@ -355,6 +355,12 @@ public:
   wxTimer * GetSessionTimer() const { return sessionTimer ; }
   void SetSessionTimer(wxTimer * value) { sessionTimer = value ; }
 
+  string GetXMLPath() const { return XMLPath ; }
+  void SetXMLPath(string value) { XMLPath = value ; }
+
+  bool GetXMLLoadedBefore() const { return XMLLoadedBefore ; }
+  void SetXMLLoadedBefore(bool value) { XMLLoadedBefore = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -436,6 +442,8 @@ private:
   bool canServeSignal;
   queue<string> loadFilesQueue;
   wxTimer * sessionTimer;
+  string XMLPath;
+  bool XMLLoadedBefore;
 ////@end paraverMain member variables
 
   map< string, PRV_UINT32 > traceInstance;
