@@ -183,6 +183,8 @@ void CutFilterDialog::Init()
   nameSourceTrace = "";
   waitingGlobalTiming = false;
   localKernel = NULL;
+  globalXMLsPath = "";
+  newXMLsPath = false;
   filePickerTrace = NULL;
   checkLoadResultingTrace = NULL;
   checkListToolOrder = NULL;
@@ -239,7 +241,6 @@ void CutFilterDialog::Init()
   buttonSCKeepEventsDelete = NULL;
   globalOk = NULL;
 ////@end CutFilterDialog member initialisation
-  pathXML = "";
 }
 
 
@@ -331,7 +332,7 @@ void CutFilterDialog::CreateControls()
   itemStaticBoxSizer21->Add(itemBoxSizer22, 0, wxGROW|wxLEFT|wxTOP, 5);
   wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer22->Add(itemBoxSizer23, 1, wxGROW|wxLEFT|wxTOP, 5);
-  radioCutterCutByTime = new wxRadioButton( itemPanel19, ID_RADIOBUTTON_CUTTER_CUT_BY_TIME, _("Cut by time"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioCutterCutByTime = new wxRadioButton( itemPanel19, ID_RADIOBUTTON_CUTTER_CUT_BY_TIME, _("Cut by time"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioCutterCutByTime->SetValue(true);
   if (CutFilterDialog::ShowToolTips())
     radioCutterCutByTime->SetToolTip(_("Select this to cut [begin time, end time] region of the trace."));
@@ -1948,7 +1949,7 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
     
     if( !wxGetApp().GetGlobalTiming() )
     {
-      radioCutterCutByTime->SetValue( true );
+    //  radioCutterCutByTime->SetValue( true ); // why?
       waitingGlobalTiming = false;
     }
     
@@ -1965,7 +1966,8 @@ void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
 {
   filePickerTrace->SetPath( wxString( nameSourceTrace.c_str(), wxConvUTF8 ) );
   checkLoadResultingTrace->SetValue( loadResultingTrace );
-  pathXML = nameSourceTrace;
+  if ( globalXMLsPath.compare( "" ) == 0 )
+    globalXMLsPath = nameSourceTrace;
 }
 
 // order only contains the identifiers of the selected tools
@@ -1997,10 +1999,11 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
     }
 
     // Add the non-selected to the end of the vector and remember if they were checked
-    vector<bool> checkedNotUsedTools;
+    //vector<bool> checkedNotUsedTools;
     for( size_t i = 0; i < listToolOrder.size(); ++i )
     {
       auxListToolOrder.push_back( listToolOrder[i] );
+    /*
       for( size_t j = 0; j < checkListToolOrder->GetCount(); ++j )
       {
         wxString currentCheckName = checkListToolOrder->GetString( j );
@@ -2008,6 +2011,7 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
         if( currentCheckNameClean == wxString( listToolOrder[i].c_str(),  wxConvUTF8 ) )
           checkedNotUsedTools.push_back( checkListToolOrder->IsChecked( j ) );
       }
+    */
     }
 
     // Set the new vector
@@ -2019,11 +2023,14 @@ void CutFilterDialog::TransferCommonDataToWindow( vector<int> order )
     {
       checkListToolOrder->Check( i, true );
     }
+    
     // But keep the remembered check state of the unused tools.
-    int j = 0;
-    for( size_t i = order.size(); i < order.size() + checkedNotUsedTools.size(); ++i )
+    //int j = 0;
+    //for( size_t i = order.size(); i < order.size() + checkedNotUsedTools.size(); ++i )
+    for( size_t i = order.size(); i < order.size() + checkListToolOrder->GetCount(); ++i )
     {
-      checkListToolOrder->Check( i, checkedNotUsedTools[ j++ ] );
+    //  checkListToolOrder->Check( i, checkedNotUsedTools[ j++ ] );
+      checkListToolOrder->Check( i, false );
     }
 
     // Finally, select first one to allow UpdateUi raise it properly.
@@ -2040,7 +2047,9 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
   aux << traceOptions->get_max_trace_size();
   textCutterMaximumTraceSize->SetValue( wxString::FromAscii( aux.str().c_str() ) );
 
-  radioCutterCutByTime->SetValue( (bool)traceOptions->get_by_time() );
+//cout << "es cero?" << traceOptions->get_by_time() << endl;
+  radioCutterCutByTime->SetValue( traceOptions->get_by_time() == 0 );
+  //radioCutterCutByTimePercent->SetValue( traceOptions->get_by_time() != 0 );
 
   if ( radioCutterCutByTime->GetValue() )
   {
@@ -2062,9 +2071,23 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
     aux << traceOptions->get_maximum_time_percentage();
     textCutterEndCut->SetValue( wxString::FromAscii( aux.str().c_str() ) );
   }
-
+/*cout << "emitiendo evento" << endl;
+wxCommandEvent ev( wxEVT_COMMAND_RADIOBUTTON_SELECTED, radioCutterCutByTime->GetId() );
+//radioCutterCutByTime->GetEventHandler()->ProcessEvent( ev );
+radioCutterCutByTime->GetEventHandler()->AddPendingEvent( ev );
+*/
   checkCutterUseOriginalTime->SetValue( traceOptions->get_original_time() );
-  checkCutterDontBreakStates->SetValue( !traceOptions->get_break_states() );
+  if ( traceOptions->get_original_time() )
+  {
+    checkCutterDontBreakStates->SetValue( false );
+    checkCutterDontBreakStates->Disable();
+  }
+  else
+  {
+    checkCutterDontBreakStates->SetValue( !traceOptions->get_break_states() );
+    checkCutterDontBreakStates->Enable();
+  }
+
   checkCutterRemoveFirstState->SetValue( traceOptions->get_remFirstStates() );
   checkCutterRemoveLastState->SetValue( traceOptions->get_remLastStates() );
 
@@ -2200,7 +2223,7 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
 
 void CutFilterDialog::TransferDataToWindow( vector<int> order, TraceOptions *traceOptions )
 {
-  Freeze();
+  //Freeze();
 
   TransferCommonDataToWindow( order );
 
@@ -2220,14 +2243,13 @@ void CutFilterDialog::TransferDataToWindow( vector<int> order, TraceOptions *tra
     }
   }
 
-  Thaw();
+  //Thaw();
 }
 
 
 void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
 {
-  // wxFileName auxDirectory( wxString( nameSourceTrace.c_str(), wxConvUTF8 ));
-  wxFileName auxDirectory( wxString( pathXML.c_str(), wxConvUTF8 )  );
+  wxFileName auxDirectory( wxString( globalXMLsPath.c_str(), wxConvUTF8 )  );
 
   if( !auxDirectory.IsDir() )
     auxDirectory = auxDirectory.GetPathWithSep();
@@ -2238,7 +2260,7 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
                         _( "Load XML Cut/Filter configuration file" ),
                         directory,
                         _( "" ), 
-                        _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
+                        _( "XML configuration file (*.xml)|*.xml|All files|*" ),
                         wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
 
   if( xmlSelectionDialog.ShowModal() == wxID_OK )
@@ -2246,9 +2268,10 @@ void CutFilterDialog::OnButtonLoadXMLClick( wxCommandEvent& event )
     TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
     wxString path = xmlSelectionDialog.GetPath();
     // we must add the proper slash to enter the directory next time
-    pathXML = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
+    globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
     vector<int> toolsOrder = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
     TransferDataToWindow( toolsOrder, traceOptions );
+    newXMLsPath = true;
   }
 }
 
@@ -2319,8 +2342,7 @@ void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
 
   if ( !previousWarning )
   {
-    //wxFileName auxDirectory( wxString( nameSourceTrace.c_str(), wxConvUTF8 ));
-    wxFileName auxDirectory( wxString( pathXML.c_str(), wxConvUTF8 )); 
+    wxFileName auxDirectory( wxString( globalXMLsPath.c_str(), wxConvUTF8 )); 
 
     if( !auxDirectory.IsDir() )
       auxDirectory = auxDirectory.GetPathWithSep();
@@ -2337,10 +2359,29 @@ void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
     if( xmlSelectionDialog.ShowModal() == wxID_OK )
     {
       wxString path = xmlSelectionDialog.GetPath();
+      wxString xmlSuffix = _(".xml");
+      wxString pathWithExtension;
+      
+      if ( path.EndsWith( xmlSuffix )) 
+        pathWithExtension = path;
+      else
+        pathWithExtension = path + xmlSuffix;
+
+      traceOptions->saveXML( filterToolOrder, string( pathWithExtension.mb_str()) );
+
       // we must add the proper slash to enter the directory next time
-      pathXML = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
-      traceOptions->saveXML( filterToolOrder, string( path.mb_str()) );
+      globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
+      newXMLsPath = true;
     }
   }
 }
 
+bool CutFilterDialog::GetLoadedXMLPath( string &XMLPath )
+{
+  if ( newXMLsPath )
+  {
+    XMLPath = globalXMLsPath;
+  }
+
+  return newXMLsPath;
+}

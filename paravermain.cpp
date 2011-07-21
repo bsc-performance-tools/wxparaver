@@ -356,8 +356,11 @@ void paraverMain::Init()
   numNewHistograms = 0;
   numNewDerived = 0;
   raiseCurrentWindow = true;
+  traceLoadedBefore = false;
+  CFGLoadedBefore = false;
   canServeSignal = true;
   sessionTimer = new wxTimer( this );
+  XMLLoadedBefore = false;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -2463,6 +2466,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetGradientColourTop( paraverConfig->getColorsTopGradient() );
 
   // FILTER
+  preferences.SetFiltersXMLPath( paraverConfig->getFiltersXMLPath() );
 
   preferences.TransferDataToWindow();
 
@@ -2540,6 +2544,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setColorsTopGradient( preferences.GetGradientColourTop() );
 
     // FILTER
+    paraverConfig->setFiltersXMLPath( preferences.GetFiltersXMLPath() );
 
     // Save Preferences to File
     paraverConfig->writeParaverConfigFile();
@@ -3129,7 +3134,6 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   }
 
   // Delete utilities
-  // delete traceOptions;
   for( PRV_UINT16 i = 0; i < filterToolOrder.size(); ++i )
   {
     switch( filterToolOrder[i] )
@@ -3180,7 +3184,12 @@ void paraverMain::ShowCutTraceWindow( const string& filename, bool loadTrace )
     cutFilterDialog.SetNameSourceTrace( filename );
     cutFilterDialog.SetLoadResultingTrace( loadTrace );
   }
-  
+
+  if ( !XMLLoadedBefore )
+    XMLPath =  paraverConfig->getFiltersXMLPath() + PATH_SEP;
+
+  cutFilterDialog.SetGlobalXMLsPath( XMLPath );
+
   if( cutFilterDialog.ShowModal() == wxID_OK )
   {
     vector< int > filterToolOrder = cutFilterDialog.GetFilterToolOrder();
@@ -3194,9 +3203,13 @@ void paraverMain::ShowCutTraceWindow( const string& filename, bool loadTrace )
 
     if ( cutFilterDialog.GetLoadResultingTrace() )
       DoLoadTrace( resultingTrace );
+
+    XMLLoadedBefore = cutFilterDialog.GetLoadedXMLPath( XMLPath );
+cout << XMLPath << endl;
   }
-  
+
   cutFilterDialog.MakeModal( false );
+  delete traceOptions;
 }
 
 

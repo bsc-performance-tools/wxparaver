@@ -258,6 +258,12 @@ public:
   KernelConnection * GetLocalKernel() const { return localKernel ; }
   void SetLocalKernel(KernelConnection * value) { localKernel = value ; }
 
+  string GetGlobalXMLsPath() const { return globalXMLsPath ; }
+  void SetGlobalXMLsPath(string value) { globalXMLsPath = value ; }
+
+  bool GetNewXMLsPath() const { return newXMLsPath ; }
+  void SetNewXMLsPath(bool value) { newXMLsPath = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -308,6 +314,8 @@ public:
   void TransferFilterDataToWindow( TraceOptions *traceOptions );
   void TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions );
   void TransferDataToWindow( vector<int> order, TraceOptions *traceOptions );
+
+  bool GetLoadedXMLPath( string &XML );
 
 ////@begin CutFilterDialog member variables
   wxFilePickerCtrl* filePickerTrace;
@@ -373,10 +381,11 @@ private:
   string pathOutputTrace;
   bool waitingGlobalTiming;
   KernelConnection * localKernel;
+  string globalXMLsPath;
+  bool newXMLsPath;
 ////@end CutFilterDialog member variables
 
   vector< string > listToolOrder; // Names of the tools
-  string pathXML;
 };
 
 #endif
