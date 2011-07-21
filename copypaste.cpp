@@ -244,6 +244,9 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
       TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
 
+      sourceBeginTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, timeline->GetMyWindow()->getTrace()->getTimeUnit() );
+      sourceEndTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, timeline->GetMyWindow()->getTrace()->getTimeUnit() );
+      
       whichTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
       whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
     }
@@ -466,8 +469,8 @@ bool gPasteWindowProperties::isAllowed( gTimeline *whichTimeline, const string p
   if ( timeline == NULL && histogram == NULL )
     return false;
 
-  if ( property == STR_TIME )
-    commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );
+  /*if ( property == STR_TIME )
+    commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );*/
   
   if ( property == STR_FILTER ||
        property == STR_FILTER_ALL ||
