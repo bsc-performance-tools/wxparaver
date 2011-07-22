@@ -254,7 +254,7 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
   // fill and/or 
   choiceOperatorTypeValue->Append( _( "And" ) );
   choiceOperatorTypeValue->Append( _( "Or" ) );
-  if( currentFilter->getOpTagSize() == Filter::AND )
+  if( currentFilter->getOpTypeValue() == Filter::AND )
     choiceOperatorTypeValue->SetSelection( 0 );
   else
     choiceOperatorTypeValue->SetSelection( 1 );
