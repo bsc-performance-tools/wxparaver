@@ -889,6 +889,8 @@ void EventsSelectionDialog::BackupCheckListboxValues()
         selectedEventValues.RemoveAt( pos );
     }
   }
+
+  selectedEventValues.Sort( compare_int );
 }
 
 void EventsSelectionDialog::UpdateCheckListboxValues( TEventType type )
