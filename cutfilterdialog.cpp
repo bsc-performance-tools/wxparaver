@@ -2224,7 +2224,7 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
 
 void CutFilterDialog::TransferDataToWindow( vector<int> order, TraceOptions *traceOptions )
 {
-  //Freeze();
+  Freeze();
 
   TransferCommonDataToWindow( order );
 
@@ -2244,7 +2244,7 @@ void CutFilterDialog::TransferDataToWindow( vector<int> order, TraceOptions *tra
     }
   }
 
-  //Thaw();
+  Thaw();
 }
 
 
