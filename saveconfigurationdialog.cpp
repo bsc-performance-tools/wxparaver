@@ -335,7 +335,11 @@ void SaveConfigurationDialog::OnSaveClick( wxCommandEvent& event )
   TransferDataFromWindow();
   if( timelines.begin() == timelines.end() &&
       histograms.begin() == histograms.end() )
-    EndModal( wxID_OK );//EndModal( wxID_CANCEL );
+  {
+    wxMessageDialog message( this, _( "No timeline or histogram selected." ), _( "Warning" ), wxOK );
+    message.ShowModal();
+    //EndModal( wxID_OK );//EndModal( wxID_CANCEL );
+  }
   else
     EndModal( wxID_OK );
 }
