@@ -351,18 +351,26 @@ void EventsSelectionDialog::Init()
   currentWindow = NULL;
   currentFilter = NULL;
 
-  firstEventTypePos = 0;
+  changedEventTypesFunction = false;
+  selectedEventTypesFunction = 0;
+
+  changedEventTypesSelection = false;
   eventTypes.clear();
   labeledEventTypes.Clear();
   selectedEventTypes.Clear();
+  currentType = TEventType( 0 );
 
+  changedOperatorTypeValue = false;
+  selectedOperatorTypeValue = 0;
+
+  changedEventValuesFunction = false;
+  selectedEventValuesFunction = 0;
+
+  changedEventValues = false;
+  firstEventTypePos = 0;
   eventValues.Clear();
   selectedEventValues.Clear();
-
-  changedEventTypesFunction = false;
-  changedEventTypesSelection = false;
-  changedEventValuesFunction = false;
-  changedEventValues = false;
+  originalSelectedEventValues.Clear();
 }
 
 
