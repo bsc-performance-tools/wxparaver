@@ -319,8 +319,6 @@ bool EventsSelectionDialog::Create( wxWindow* parent,
  */
 EventsSelectionDialog::~EventsSelectionDialog()
 {
-////@begin EventsSelectionDialog destruction
-////@end EventsSelectionDialog destruction
 }
 
 

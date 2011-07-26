@@ -474,6 +474,9 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         wxVariant tmpVal =  WXVARIANT( func ); 
         propgrid->GetProperty( _("Event value.ValueFunction") )->SetValue( tmpVal );
         currentWindow->getFilter()->setEventValueFunction( auxname );
+
+        bool disable = ( auxname.compare( "All" ) == 0 || auxname.compare( "None" ) == 0 );
+        propgrid->GetProperty( _("Event value.Values") )->ChangeFlag( wxPG_PROP_DISABLED, disable );
       }
 
       if ( eventsDialog.ChangedOperatorTypeValue() )
@@ -511,8 +514,11 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         if ( GetName().Cmp( _("Event value.Values") ) != 0 )
         {
           propgrid->GetProperty( _("Event value.Values") )->SetValue( tmpVar );
-          // Try to not left the control disabled
-          propgrid->GetProperty( _("Event value.Values") )->ChangeFlag( wxPG_PROP_DISABLED, true );
+          // Try leave the control enabled
+          string auxname;
+          int func = eventsDialog.GetEventValuesFunction( auxname );
+          bool disable = ( auxname.compare( "All" ) == 0 || auxname.compare( "None" ) == 0 );
+          propgrid->GetProperty( _("Event value.Values") )->ChangeFlag( wxPG_PROP_DISABLED, disable );
         }
         else
           SetValueInEvent( tmpVar );
@@ -587,7 +593,7 @@ wxArrayInt prvEventInfoProperty::GetValueAsArrayInt() const
     strValues[ idx ].ToLong( &tmpInt );
     retValue.Add( tmpInt );
   }
-    
+
   return retValue;
 }
 
