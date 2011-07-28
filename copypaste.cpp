@@ -453,9 +453,16 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     {
       Histogram *srcHisto = histogram->GetHistogram();
       Histogram *dstHisto = whichHistogram->GetHistogram();
+      if( dstHisto->getExtraControlDelta() == srcHisto->getExtraControlDelta() )
+      {
+        double planeMin = dstHisto->getPlaneMinValue();
+        dstHisto->setExtraControlDelta( srcHisto->getExtraControlDelta() );
+        dstHisto->setPlaneMinValue( planeMin );
+      }
+      else
+        dstHisto->setExtraControlDelta( srcHisto->getExtraControlDelta() );
       dstHisto->setExtraControlMin( srcHisto->getExtraControlMin() );
       dstHisto->setExtraControlMax( srcHisto->getExtraControlMax() );
-      dstHisto->setExtraControlDelta( srcHisto->getExtraControlDelta() );
     }
     else
     {
