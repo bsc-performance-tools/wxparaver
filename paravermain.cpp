@@ -1193,6 +1193,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       filter->insertEventType( value[ idx ] );
     
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "TypeValueOp" ) )
   {
@@ -1225,6 +1226,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     }
 
     currentTimeline->setRedraw( true );
+    currentTimeline->setChanged( true );
   }
   else if( propName == _( "Top Compose 1" ) )
   {
