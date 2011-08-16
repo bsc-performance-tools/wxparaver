@@ -3239,7 +3239,7 @@ void paraverMain::OnSize( wxSizeEvent& event )
 void paraverMain::OnSessionTimer( wxTimerEvent& event )
 {
 #ifdef WIN32
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\paraver_default_session" );
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver_default_session" );
 #else
   string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver_default_session" );
 #endif
