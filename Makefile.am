@@ -9,9 +9,11 @@ wxparaver_bin_SOURCES = connection.cpp \
                     cutfilterdialog.h \
                     derivedtimelinedialog.cpp \
                     derivedtimelinedialog.h \
-										eventsselectiondialog.cpp \
-										eventsselectiondialog.h \
-										ghistogram.cpp \
+                    eventsselectiondialog.cpp \
+                    eventsselectiondialog.h \
+                    finddialog.cpp \
+                    finddialog.h \
+                    ghistogram.cpp \
                     ghistogram.h \
                     gtimeline.cpp \
                     gtimeline.h \
