@@ -394,7 +394,8 @@ public:
   void OnKeyCopy();
   void OnKeyPaste();
 #endif
-
+  void OnFindDialog();
+  
   bool DoLoadTrace( const string &path );
   void UnloadTrace( int whichTrace );
   bool DoLoadCFG( const string &path );

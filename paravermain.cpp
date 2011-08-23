@@ -3030,6 +3030,15 @@ void paraverMain::OnKeyPaste()
 }
 #endif
 
+void paraverMain::OnFindDialog()
+{
+  wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
+  if( !tree->GetSelection().IsOk() )
+    return;
+  TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
+  if( item->getTimeline() != NULL )
+    item->getTimeline()->OnFindDialog();
+}
 
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_CUT_TRACE

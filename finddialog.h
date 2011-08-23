@@ -36,13 +36,18 @@
  */
 
 ////@begin includes
+#include "wx/spinctrl.h"
+#include "wx/statline.h"
 ////@end includes
+
+#include "window.h"
 
 /*!
  * Forward declarations
  */
 
 ////@begin forward declarations
+class wxSpinCtrl;
 ////@end forward declarations
 
 /*!
@@ -51,6 +56,15 @@
 
 ////@begin control identifiers
 #define ID_FINDDIALOG 10171
+#define ID_RADIOOBJECTS 10178
+#define ID_CHOICEOBJECT 10172
+#define ID_CHOICEPOSITION 10173
+#define ID_RADIOEVENTS 10174
+#define ID_STATICTYPE 10179
+#define ID_CHOICEEVENTS 10175
+#define ID_RADIOSEMANTIC 10176
+#define ID_STATICSEMANTIC 10180
+#define ID_TEXTSEMANTIC 10177
 #define SYMBOL_FINDDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_FINDDIALOG_TITLE _("Find")
 #define SYMBOL_FINDDIALOG_IDNAME ID_FINDDIALOG
@@ -86,9 +100,26 @@ public:
   void CreateControls();
 
 ////@begin FindDialog event handler declarations
+
+  /// wxEVT_UPDATE_UI event handler for ID_STATICTYPE
+  void OnStatictypeUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHOICEEVENTS
+  void OnChoiceeventsUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_STATICSEMANTIC
+  void OnStaticsemanticUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TEXTSEMANTIC
+  void OnTextsemanticUpdate( wxUpdateUIEvent& event );
+
 ////@end FindDialog event handler declarations
 
 ////@begin FindDialog member function declarations
+
+  Window * GetMyWindow() const { return myWindow ; }
+  void SetMyWindow(Window * value) { myWindow = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -99,7 +130,18 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
+  void InitControlsBeforeShow();
+  
 ////@begin FindDialog member variables
+  wxRadioButton* radioObjects;
+  wxListBox* choiceObjects;
+  wxChoice* choicePosition;
+  wxRadioButton* radioEvents;
+  wxChoice* choiceEventType;
+  wxRadioButton* radioSemantic;
+  wxSpinCtrl* txtSemantic;
+private:
+  Window * myWindow;
 ////@end FindDialog member variables
 };
 

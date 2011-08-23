@@ -46,14 +46,13 @@
 
 #include "wxparaverapp.h"
 #include "gtimeline.h"
+#include "finddialog.h"
 #include "window.h"
 #include "labelconstructor.h"
 #include "drawmode.h"
 #include "loadedwindows.h"
 #include "windows_tree.h"
 #include "caution.xpm"
-//#include "paraverconfig.h"
-//#include "paraverkerneltypes.h"
 #include "textoutput.h"
 
 #define wxTEST_GRAPHICS 1
@@ -2869,5 +2868,71 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   Update();
   computeWhatWhere( time, endRow, checkWWText->IsChecked() );
   printWhatWhere();
+}
+
+void gTimeline::OnFindDialog()
+{
+  FindDialog dialog( this );
+  dialog.SetMyWindow( myWindow );
+  dialog.InitControlsBeforeShow();
+  
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    TRecordTime beginTime, endTime;
+    unsigned int objectSelection = dialog.choiceObjects->GetSelection();
+    if( dialog.radioObjects->GetValue() )
+    {
+      beginTime = myWindow->getWindowBeginTime();
+      endTime = myWindow->getWindowEndTime();
+    }
+    else if( dialog.radioEvents->GetValue() )
+    {
+    
+    }
+    else if( dialog.radioSemantic->GetValue() )
+    {
+    
+    }
+    
+    TObjectOrder first, last;
+    unsigned int objectsToShow = floor( ( timeAxisPos - drawBorder ) / 20 );
+    vector<TObjectOrder> selectedObjects;
+    myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
+
+/*
+  FALTAN CASOS-----------------------------------
+  y puede que se tengan que retocar estos.
+  Mejor esperar a terminar lo anterior
+*/
+    if( objectsToShow >= selectedObjects.size() )
+    {
+      first = selectedObjects[ 0 ];
+      last = selectedObjects[ selectedObjects.size() - 1 ];
+    }
+    else if( dialog.choicePosition->GetSelection() == 0 ) // position begin
+    {
+      first = selectedObjects[ objectSelection ];
+      if( objectSelection + objectsToShow >= selectedObjects.size() )
+        last = selectedObjects[ selectedObjects.size() - 1 ];
+      else
+        last = selectedObjects[ objectSelection + objectsToShow ];
+    }
+    else if( dialog.choicePosition->GetSelection() == 2 ) // position end
+    {
+      last = selectedObjects[ objectSelection ];
+      if( objectsToShow > objectSelection )
+        first = selectedObjects[ 0 ];
+      else
+        first = selectedObjects[ objectsToShow - objectSelection ];
+    }
+    else // position middle
+    { 
+      first = selectedObjects[ 0 ];
+      last = selectedObjects[ objectSelection - objectsToShow ];
+    }
+//-----------------------------------------------
+    myWindow->addZoom( beginTime, endTime, first, last );
+    myWindow->setRedraw( true );
+  }
 }
 

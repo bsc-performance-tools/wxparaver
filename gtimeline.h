@@ -451,6 +451,8 @@ public:
   void OnPopUpInfoPanel();
   
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
+  
+  void OnFindDialog();
 
   gTimeline *clone( Window *clonedWindow,
                     wxWindow *parent,

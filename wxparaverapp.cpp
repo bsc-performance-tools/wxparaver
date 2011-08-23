@@ -408,7 +408,14 @@ int wxparaverApp::FilterEvent(wxEvent& event)
     }
     return true;
   }
-  
+  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
+       ((wxKeyEvent&)event).ControlDown() &&
+       ((wxKeyEvent&)event).GetKeyCode() == (long) 'F'
+     )
+  {
+    mainWindow->OnFindDialog();
+    return true;
+  }
   return -1;
 }
 

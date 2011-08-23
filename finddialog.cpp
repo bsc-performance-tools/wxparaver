@@ -42,9 +42,9 @@
 ////@end includes
 
 #include "finddialog.h"
+#include "labelconstructor.h"
 
 ////@begin XPM images
-
 ////@end XPM images
 
 
@@ -62,6 +62,14 @@ IMPLEMENT_DYNAMIC_CLASS( FindDialog, wxDialog )
 BEGIN_EVENT_TABLE( FindDialog, wxDialog )
 
 ////@begin FindDialog event table entries
+  EVT_UPDATE_UI( ID_STATICTYPE, FindDialog::OnStatictypeUpdate )
+
+  EVT_UPDATE_UI( ID_CHOICEEVENTS, FindDialog::OnChoiceeventsUpdate )
+
+  EVT_UPDATE_UI( ID_STATICSEMANTIC, FindDialog::OnStaticsemanticUpdate )
+
+  EVT_UPDATE_UI( ID_TEXTSEMANTIC, FindDialog::OnTextsemanticUpdate )
+
 ////@end FindDialog event table entries
 
 END_EVENT_TABLE()
@@ -122,6 +130,14 @@ FindDialog::~FindDialog()
 void FindDialog::Init()
 {
 ////@begin FindDialog member initialisation
+  myWindow = NULL;
+  radioObjects = NULL;
+  choiceObjects = NULL;
+  choicePosition = NULL;
+  radioEvents = NULL;
+  choiceEventType = NULL;
+  radioSemantic = NULL;
+  txtSemantic = NULL;
 ////@end FindDialog member initialisation
 }
 
@@ -137,6 +153,81 @@ void FindDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemDialog1->SetSizer(itemBoxSizer2);
+
+  wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer3, 1, wxGROW|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer4Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Objects"));
+  wxStaticBoxSizer* itemStaticBoxSizer4 = new wxStaticBoxSizer(itemStaticBoxSizer4Static, wxVERTICAL);
+  itemBoxSizer3->Add(itemStaticBoxSizer4, 3, wxGROW|wxALL, 5);
+
+  radioObjects = new wxRadioButton( itemDialog1, ID_RADIOOBJECTS, _("Zoom on"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioObjects->SetValue(true);
+  itemStaticBoxSizer4->Add(radioObjects, 0, wxGROW|wxALL, 5);
+
+  wxArrayString choiceObjectsStrings;
+  choiceObjects = new wxListBox( itemDialog1, ID_CHOICEOBJECT, wxDefaultPosition, wxSize(-1, 100), choiceObjectsStrings, wxLB_SINGLE|wxLB_ALWAYS_SB );
+  itemStaticBoxSizer4->Add(choiceObjects, 1, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer4->Add(itemBoxSizer7, 0, wxGROW|wxALL, 5);
+
+  wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("position"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer7->Add(itemStaticText8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxArrayString choicePositionStrings;
+  choicePositionStrings.Add(_("begin"));
+  choicePositionStrings.Add(_("middle"));
+  choicePositionStrings.Add(_("end"));
+  choicePosition = new wxChoice( itemDialog1, ID_CHOICEPOSITION, wxDefaultPosition, wxDefaultSize, choicePositionStrings, 0 );
+  choicePosition->SetStringSelection(_("middle"));
+  itemBoxSizer7->Add(choicePosition, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer3->Add(itemBoxSizer10, 4, wxGROW|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer11Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Events"));
+  wxStaticBoxSizer* itemStaticBoxSizer11 = new wxStaticBoxSizer(itemStaticBoxSizer11Static, wxHORIZONTAL);
+  itemBoxSizer10->Add(itemStaticBoxSizer11, 1, wxGROW|wxALL, 5);
+
+  radioEvents = new wxRadioButton( itemDialog1, ID_RADIOEVENTS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  radioEvents->SetValue(false);
+  itemStaticBoxSizer11->Add(radioEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+  wxStaticText* itemStaticText13 = new wxStaticText( itemDialog1, ID_STATICTYPE, _("Type"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer11->Add(itemStaticText13, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxArrayString choiceEventTypeStrings;
+  choiceEventType = new wxChoice( itemDialog1, ID_CHOICEEVENTS, wxDefaultPosition, wxDefaultSize, choiceEventTypeStrings, 0 );
+  itemStaticBoxSizer11->Add(choiceEventType, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer15Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Semantic"));
+  wxStaticBoxSizer* itemStaticBoxSizer15 = new wxStaticBoxSizer(itemStaticBoxSizer15Static, wxHORIZONTAL);
+  itemBoxSizer10->Add(itemStaticBoxSizer15, 1, wxGROW|wxALL, 5);
+
+  radioSemantic = new wxRadioButton( itemDialog1, ID_RADIOSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  radioSemantic->SetValue(false);
+  itemStaticBoxSizer15->Add(radioSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+  wxStaticText* itemStaticText17 = new wxStaticText( itemDialog1, ID_STATICSEMANTIC, _("Value"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer15->Add(itemStaticText17, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  txtSemantic = new wxSpinCtrl( itemDialog1, ID_TEXTSEMANTIC, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+  itemStaticBoxSizer15->Add(txtSemantic, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxStaticLine* itemStaticLine19 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine19, 0, wxGROW|wxALL, 5);
+
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer20 = new wxStdDialogButtonSizer;
+
+  itemBoxSizer2->Add(itemStdDialogButtonSizer20, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxButton* itemButton21 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer20->AddButton(itemButton21);
+
+  wxButton* itemButton22 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer20->AddButton(itemButton22);
+
+  itemStdDialogButtonSizer20->Realize();
 
 ////@end FindDialog content construction
 }
@@ -175,4 +266,61 @@ wxIcon FindDialog::GetIconResource( const wxString& name )
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end FindDialog icon retrieval
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHOICE
+ */
+
+void FindDialog::OnChoiceeventsUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( radioEvents->GetValue() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TEXTSEMANTIC
+ */
+
+void FindDialog::OnTextsemanticUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( radioSemantic->GetValue() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_STATICTYPE
+ */
+
+void FindDialog::OnStatictypeUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( radioEvents->GetValue() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_STATICSEMANTIC
+ */
+
+void FindDialog::OnStaticsemanticUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( radioSemantic->GetValue() );
+}
+
+void FindDialog::InitControlsBeforeShow()
+{
+  vector<TObjectOrder> selectedObjects;
+  myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
+  
+  for( vector<TObjectOrder>::iterator it = selectedObjects.begin();
+       it != selectedObjects.end(); ++it )
+  {
+    string strObject = LabelConstructor::objectLabel( *it,
+                                                      myWindow->getLevel(),
+                                                      myWindow->getTrace() );
+    choiceObjects->Append( wxT( strObject.c_str() ) );
+  }
+  choiceObjects->SetSelection( 0 );
+  
 }
