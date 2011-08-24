@@ -36,7 +36,6 @@
  */
 
 ////@begin includes
-#include "wx/spinctrl.h"
 #include "wx/statline.h"
 ////@end includes
 
@@ -47,7 +46,6 @@
  */
 
 ////@begin forward declarations
-class wxSpinCtrl;
 ////@end forward declarations
 
 /*!
@@ -59,12 +57,16 @@ class wxSpinCtrl;
 #define ID_RADIOOBJECTS 10178
 #define ID_CHOICEOBJECT 10172
 #define ID_CHOICEPOSITION 10173
+#define ID_CHECKNEXTOBJECT 10181
 #define ID_RADIOEVENTS 10174
 #define ID_STATICTYPE 10179
 #define ID_CHOICEEVENTS 10175
 #define ID_RADIOSEMANTIC 10176
-#define ID_STATICSEMANTIC 10180
-#define ID_TEXTSEMANTIC 10177
+#define ID_STATICSEMANTICVALUE 10180
+#define ID_COMBOSEMANTICVALUE 10177
+#define ID_STATICSEMANTICDURATION 10184
+#define ID_CHOICEDURATIONFUNCTION 10182
+#define ID_COMBOSEMANTICDURATION 10183
 #define SYMBOL_FINDDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_FINDDIALOG_TITLE _("Find")
 #define SYMBOL_FINDDIALOG_IDNAME ID_FINDDIALOG
@@ -101,17 +103,29 @@ public:
 
 ////@begin FindDialog event handler declarations
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKNEXTOBJECT
+  void OnChecknextobjectUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_STATICTYPE
   void OnStatictypeUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHOICEEVENTS
   void OnChoiceeventsUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_STATICSEMANTIC
-  void OnStaticsemanticUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_STATICSEMANTICVALUE
+  void OnStaticsemanticvalueUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_TEXTSEMANTIC
-  void OnTextsemanticUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_COMBOSEMANTICVALUE
+  void OnCombosemanticvalueUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_STATICSEMANTICDURATION
+  void OnStaticsemanticdurationUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHOICEDURATIONFUNCTION
+  void OnChoicedurationfunctionUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_COMBOSEMANTICDURATION
+  void OnCombosemanticdurationUpdate( wxUpdateUIEvent& event );
 
 ////@end FindDialog event handler declarations
 
@@ -139,7 +153,9 @@ public:
   wxRadioButton* radioEvents;
   wxChoice* choiceEventType;
   wxRadioButton* radioSemantic;
-  wxSpinCtrl* txtSemantic;
+  wxComboBox* comboSemanticValue;
+  wxChoice* choiceDuractionFunction;
+  wxComboBox* comboSemanticDuration;
 private:
   Window * myWindow;
 ////@end FindDialog member variables

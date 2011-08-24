@@ -2891,7 +2891,8 @@ void gTimeline::OnFindDialog()
     }
     else if( dialog.radioSemantic->GetValue() )
     {
-    
+      // El zoom en tiempo sera el minimo entre la duracion del intervalo semantico encontrado
+      // y un porcentaje de la duracion de la vista actual
     }
     
     TObjectOrder first, last;
@@ -2899,11 +2900,6 @@ void gTimeline::OnFindDialog()
     vector<TObjectOrder> selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
 
-/*
-  FALTAN CASOS-----------------------------------
-  y puede que se tengan que retocar estos.
-  Mejor esperar a terminar lo anterior
-*/
     if( objectsToShow >= selectedObjects.size() )
     {
       first = selectedObjects[ 0 ];
@@ -2927,10 +2923,24 @@ void gTimeline::OnFindDialog()
     }
     else // position middle
     { 
-      first = selectedObjects[ 0 ];
-      last = selectedObjects[ objectSelection - objectsToShow ];
+      objectsToShow /= 2;
+      if( objectsToShow > objectSelection )
+      {
+        first = selectedObjects[ 0 ];
+        last = selectedObjects[ objectSelection + objectsToShow ];
+      }
+      else if( objectSelection + objectsToShow > selectedObjects.size() )
+      {
+        first = selectedObjects[ objectSelection - objectsToShow ];
+        last = selectedObjects[ selectedObjects.size() ];
+      }
+      else
+      {
+        first = selectedObjects[ objectSelection - objectsToShow ];
+        last = selectedObjects[ objectSelection + objectsToShow ];
+      }
     }
-//-----------------------------------------------
+
     myWindow->addZoom( beginTime, endTime, first, last );
     myWindow->setRedraw( true );
   }

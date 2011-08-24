@@ -62,13 +62,21 @@ IMPLEMENT_DYNAMIC_CLASS( FindDialog, wxDialog )
 BEGIN_EVENT_TABLE( FindDialog, wxDialog )
 
 ////@begin FindDialog event table entries
+  EVT_UPDATE_UI( ID_CHECKNEXTOBJECT, FindDialog::OnChecknextobjectUpdate )
+
   EVT_UPDATE_UI( ID_STATICTYPE, FindDialog::OnStatictypeUpdate )
 
   EVT_UPDATE_UI( ID_CHOICEEVENTS, FindDialog::OnChoiceeventsUpdate )
 
-  EVT_UPDATE_UI( ID_STATICSEMANTIC, FindDialog::OnStaticsemanticUpdate )
+  EVT_UPDATE_UI( ID_STATICSEMANTICVALUE, FindDialog::OnStaticsemanticvalueUpdate )
 
-  EVT_UPDATE_UI( ID_TEXTSEMANTIC, FindDialog::OnTextsemanticUpdate )
+  EVT_UPDATE_UI( ID_COMBOSEMANTICVALUE, FindDialog::OnCombosemanticvalueUpdate )
+
+  EVT_UPDATE_UI( ID_STATICSEMANTICDURATION, FindDialog::OnStaticsemanticdurationUpdate )
+
+  EVT_UPDATE_UI( ID_CHOICEDURATIONFUNCTION, FindDialog::OnChoicedurationfunctionUpdate )
+
+  EVT_UPDATE_UI( ID_COMBOSEMANTICDURATION, FindDialog::OnCombosemanticdurationUpdate )
 
 ////@end FindDialog event table entries
 
@@ -137,7 +145,9 @@ void FindDialog::Init()
   radioEvents = NULL;
   choiceEventType = NULL;
   radioSemantic = NULL;
-  txtSemantic = NULL;
+  comboSemanticValue = NULL;
+  choiceDuractionFunction = NULL;
+  comboSemanticDuration = NULL;
 ////@end FindDialog member initialisation
 }
 
@@ -183,51 +193,77 @@ void FindDialog::CreateControls()
   choicePosition->SetStringSelection(_("middle"));
   itemBoxSizer7->Add(choicePosition, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer3->Add(itemBoxSizer10, 4, wxGROW|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer10Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Search by time"));
+  wxStaticBoxSizer* itemStaticBoxSizer10 = new wxStaticBoxSizer(itemStaticBoxSizer10Static, wxVERTICAL);
+  itemBoxSizer3->Add(itemStaticBoxSizer10, 4, wxGROW|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer11Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Events"));
-  wxStaticBoxSizer* itemStaticBoxSizer11 = new wxStaticBoxSizer(itemStaticBoxSizer11Static, wxHORIZONTAL);
-  itemBoxSizer10->Add(itemStaticBoxSizer11, 1, wxGROW|wxALL, 5);
+  wxCheckBox* itemCheckBox11 = new wxCheckBox( itemDialog1, ID_CHECKNEXTOBJECT, _("Continue on next object"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemCheckBox11->SetValue(false);
+  itemStaticBoxSizer10->Add(itemCheckBox11, 0, wxALIGN_LEFT|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer12Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Events"));
+  wxStaticBoxSizer* itemStaticBoxSizer12 = new wxStaticBoxSizer(itemStaticBoxSizer12Static, wxHORIZONTAL);
+  itemStaticBoxSizer10->Add(itemStaticBoxSizer12, 0, wxGROW|wxALL, 5);
 
   radioEvents = new wxRadioButton( itemDialog1, ID_RADIOEVENTS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   radioEvents->SetValue(false);
-  itemStaticBoxSizer11->Add(radioEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+  itemStaticBoxSizer12->Add(radioEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  wxStaticText* itemStaticText13 = new wxStaticText( itemDialog1, ID_STATICTYPE, _("Type"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer11->Add(itemStaticText13, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, ID_STATICTYPE, _("Type"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer12->Add(itemStaticText14, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString choiceEventTypeStrings;
   choiceEventType = new wxChoice( itemDialog1, ID_CHOICEEVENTS, wxDefaultPosition, wxDefaultSize, choiceEventTypeStrings, 0 );
-  itemStaticBoxSizer11->Add(choiceEventType, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemStaticBoxSizer12->Add(choiceEventType, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer15Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Semantic"));
-  wxStaticBoxSizer* itemStaticBoxSizer15 = new wxStaticBoxSizer(itemStaticBoxSizer15Static, wxHORIZONTAL);
-  itemBoxSizer10->Add(itemStaticBoxSizer15, 1, wxGROW|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer16Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Semantic"));
+  wxStaticBoxSizer* itemStaticBoxSizer16 = new wxStaticBoxSizer(itemStaticBoxSizer16Static, wxVERTICAL);
+  itemStaticBoxSizer10->Add(itemStaticBoxSizer16, 1, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer16->Add(itemBoxSizer17, 0, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   radioSemantic = new wxRadioButton( itemDialog1, ID_RADIOSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   radioSemantic->SetValue(false);
-  itemStaticBoxSizer15->Add(radioSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+  itemBoxSizer17->Add(radioSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  wxStaticText* itemStaticText17 = new wxStaticText( itemDialog1, ID_STATICSEMANTIC, _("Value"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer15->Add(itemStaticText17, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticText* itemStaticText19 = new wxStaticText( itemDialog1, ID_STATICSEMANTICVALUE, _("Value"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer17->Add(itemStaticText19, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  txtSemantic = new wxSpinCtrl( itemDialog1, ID_TEXTSEMANTIC, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
-  itemStaticBoxSizer15->Add(txtSemantic, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxArrayString comboSemanticValueStrings;
+  comboSemanticValue = new wxComboBox( itemDialog1, ID_COMBOSEMANTICVALUE, wxEmptyString, wxDefaultPosition, wxDefaultSize, comboSemanticValueStrings, wxCB_DROPDOWN );
+  itemBoxSizer17->Add(comboSemanticValue, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticLine* itemStaticLine19 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine19, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer16->Add(itemBoxSizer21, 0, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer20 = new wxStdDialogButtonSizer;
+  wxStaticText* itemStaticText22 = new wxStaticText( itemDialog1, ID_STATICSEMANTICDURATION, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer21->Add(itemStaticText22, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemBoxSizer2->Add(itemStdDialogButtonSizer20, 0, wxALIGN_RIGHT|wxALL, 5);
-  wxButton* itemButton21 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer20->AddButton(itemButton21);
+  wxArrayString choiceDuractionFunctionStrings;
+  choiceDuractionFunctionStrings.Add(_(">"));
+  choiceDuractionFunctionStrings.Add(_("<"));
+  choiceDuractionFunction = new wxChoice( itemDialog1, ID_CHOICEDURATIONFUNCTION, wxDefaultPosition, wxDefaultSize, choiceDuractionFunctionStrings, 0 );
+  choiceDuractionFunction->SetStringSelection(_(">"));
+  itemBoxSizer21->Add(choiceDuractionFunction, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxButton* itemButton22 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer20->AddButton(itemButton22);
+  wxArrayString comboSemanticDurationStrings;
+  comboSemanticDuration = new wxComboBox( itemDialog1, ID_COMBOSEMANTICDURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, comboSemanticDurationStrings, wxCB_DROPDOWN );
+  itemBoxSizer21->Add(comboSemanticDuration, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemStdDialogButtonSizer20->Realize();
+  wxStaticLine* itemStaticLine25 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine25, 0, wxGROW|wxALL, 5);
+
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer26 = new wxStdDialogButtonSizer;
+
+  itemBoxSizer2->Add(itemStdDialogButtonSizer26, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxButton* itemButton27 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer26->AddButton(itemButton27);
+
+  wxButton* itemButton28 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer26->AddButton(itemButton28);
+
+  itemStdDialogButtonSizer26->Realize();
 
 ////@end FindDialog content construction
 }
@@ -283,7 +319,7 @@ void FindDialog::OnChoiceeventsUpdate( wxUpdateUIEvent& event )
  * wxEVT_UPDATE_UI event handler for ID_TEXTSEMANTIC
  */
 
-void FindDialog::OnTextsemanticUpdate( wxUpdateUIEvent& event )
+void FindDialog::OnCombosemanticvalueUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( radioSemantic->GetValue() );
 }
@@ -303,10 +339,11 @@ void FindDialog::OnStatictypeUpdate( wxUpdateUIEvent& event )
  * wxEVT_UPDATE_UI event handler for ID_STATICSEMANTIC
  */
 
-void FindDialog::OnStaticsemanticUpdate( wxUpdateUIEvent& event )
+void FindDialog::OnStaticsemanticvalueUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( radioSemantic->GetValue() );
 }
+
 
 void FindDialog::InitControlsBeforeShow()
 {
@@ -322,5 +359,54 @@ void FindDialog::InitControlsBeforeShow()
     choiceObjects->Append( wxT( strObject.c_str() ) );
   }
   choiceObjects->SetSelection( 0 );
+
+  set<TEventType> events = myWindow->getTrace()->getLoadedEvents();
   
+  for( set<TEventType>::iterator it = events.begin(); it != events.end(); ++it )
+  {
+    string strEvent = LabelConstructor::eventTypeLabel( myWindow, *it, true );
+    choiceEventType->Append( wxT( strEvent.c_str() ) );
+  }
+  choiceEventType->SetSelection( 0 );
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKNEXTOBJECT
+ */
+
+void FindDialog::OnChecknextobjectUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( radioEvents->GetValue() || radioSemantic->GetValue() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_STATICSEMANTICDURATION
+ */
+
+void FindDialog::OnStaticsemanticdurationUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( radioSemantic->GetValue() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHOICEDURATIONFUNCTION
+ */
+
+void FindDialog::OnChoicedurationfunctionUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( radioSemantic->GetValue() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_COMBOSEMANTICDURATION
+ */
+
+void FindDialog::OnCombosemanticdurationUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( radioSemantic->GetValue() );
+}
+
