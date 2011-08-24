@@ -43,6 +43,7 @@
 
 #include "finddialog.h"
 #include "labelconstructor.h"
+#include "paraverconfig.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -345,32 +346,6 @@ void FindDialog::OnStaticsemanticvalueUpdate( wxUpdateUIEvent& event )
 }
 
 
-void FindDialog::InitControlsBeforeShow()
-{
-  vector<TObjectOrder> selectedObjects;
-  myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
-  
-  for( vector<TObjectOrder>::iterator it = selectedObjects.begin();
-       it != selectedObjects.end(); ++it )
-  {
-    string strObject = LabelConstructor::objectLabel( *it,
-                                                      myWindow->getLevel(),
-                                                      myWindow->getTrace() );
-    choiceObjects->Append( wxT( strObject.c_str() ) );
-  }
-  choiceObjects->SetSelection( 0 );
-
-  set<TEventType> events = myWindow->getTrace()->getLoadedEvents();
-  
-  for( set<TEventType>::iterator it = events.begin(); it != events.end(); ++it )
-  {
-    string strEvent = LabelConstructor::eventTypeLabel( myWindow, *it, true );
-    choiceEventType->Append( wxT( strEvent.c_str() ) );
-  }
-  choiceEventType->SetSelection( 0 );
-}
-
-
 /*!
  * wxEVT_UPDATE_UI event handler for ID_CHECKNEXTOBJECT
  */
@@ -409,4 +384,43 @@ void FindDialog::OnCombosemanticdurationUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( radioSemantic->GetValue() );
 }
+
+
+void FindDialog::InitControlsBeforeShow()
+{
+  vector<TObjectOrder> selectedObjects;
+  myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
+  
+  for( vector<TObjectOrder>::iterator it = selectedObjects.begin();
+       it != selectedObjects.end(); ++it )
+  {
+    string strObject = LabelConstructor::objectLabel( *it,
+                                                      myWindow->getLevel(),
+                                                      myWindow->getTrace() );
+    choiceObjects->Append( wxT( strObject.c_str() ) );
+  }
+  choiceObjects->SetSelection( 0 );
+
+  set<TEventType> events = myWindow->getTrace()->getLoadedEvents();
+  
+  for( set<TEventType>::iterator it = events.begin(); it != events.end(); ++it )
+  {
+    string strEvent = LabelConstructor::eventTypeLabel( myWindow, *it, true );
+    choiceEventType->Append( wxT( strEvent.c_str() ) );
+  }
+  choiceEventType->SetSelection( 0 );
+  
+  TSemanticValue max = myWindow->getMaximumY() - myWindow->getMinimumY() > 200 ? 
+                       myWindow->getMinimumY() + 200 : myWindow->getMaximumY();
+  for( TSemanticValue val = myWindow->getMinimumY(); val <= max; ++val )
+  {
+    string strSemantic = LabelConstructor::semanticLabel( myWindow, val, true, 
+                                                          ParaverConfig::getInstance()->getTimelinePrecision() );
+    comboSemanticValue->Append( wxT( strSemantic.c_str() ) );
+  }
+  comboSemanticValue->SetSelection( 0 );
+  
+  comboSemanticDuration->SetValue( wxT( "0" ) );
+}
+
 
