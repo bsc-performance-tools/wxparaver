@@ -187,6 +187,7 @@ void gTimeline::Init()
   infoZoneLastSize = 200;
   escapePressed = false;
   timerMotion = new wxTimer( this, ID_TIMER_MOTION );
+  lastEventFoundTime = 0;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -2880,6 +2881,9 @@ void gTimeline::OnFindDialog()
   {
     TRecordTime beginTime, endTime;
     unsigned int objectSelection = dialog.choiceObjects->GetSelection();
+    vector<TObjectOrder> selectedObjects;
+    myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
+
     if( dialog.radioObjects->GetValue() )
     {
       beginTime = myWindow->getWindowBeginTime();
@@ -2887,18 +2891,81 @@ void gTimeline::OnFindDialog()
     }
     else if( dialog.radioEvents->GetValue() )
     {
-    
+      bool found = false;
+      TRecordTime newFoundTime, timeToSearch;
+      set<TEventType> events = myWindow->getTrace()->getLoadedEvents();
+      set<TEventType>::iterator itEvt = events.begin();
+      int i = 0;
+      while( i < dialog.choiceEventType->GetSelection() )
+      {
+        ++i; ++itEvt;
+      }
+      TEventType eventType = *itEvt;
+      if( lastEventFoundTime >= myWindow->getWindowBeginTime() &&
+          lastEventFoundTime <= myWindow->getWindowEndTime() )
+        timeToSearch = lastEventFoundTime;
+      else
+        timeToSearch = myWindow->getWindowBeginTime();
+      
+      if( dialog.checkNextObject->GetValue() )
+      {
+        while( !found && objectSelection < selectedObjects.size() )
+        {
+          if( ( found = myWindow->getTrace()->findNextEvent( selectedObjects[ objectSelection ],
+                                                             timeToSearch,
+                                                             eventType,
+                                                             newFoundTime ) ) )
+            break;
+          ++objectSelection;
+          timeToSearch = 0.0;
+        }
+      }
+      else
+      {
+        found = myWindow->getTrace()->findNextEvent( selectedObjects[ objectSelection ],
+                                                     timeToSearch,
+                                                     eventType,
+                                                     newFoundTime );
+      }
+
+      if( !found )
+      {
+        wxMessageBox( wxT( "Event '" ) + dialog.choiceEventType->GetStringSelection() + wxT( "' not found." ),
+                      wxT( "Not found" ) );
+        return;
+      }
+
+      beginTime = newFoundTime - myWindow->getTrace()->getEndTime() * 0.001;
+      if( beginTime < 0.0 ) beginTime = 0.0;
+      endTime = newFoundTime + myWindow->getTrace()->getEndTime() * 0.001;
+      
+      lastEventFoundTime = newFoundTime;
     }
     else if( dialog.radioSemantic->GetValue() )
     {
       // El zoom en tiempo sera el minimo entre la duracion del intervalo semantico encontrado
       // y un porcentaje de la duracion de la vista actual
+      bool found = false;
+
+      if( dialog.checkNextObject->GetValue() )
+      {
+      
+      }
+      else
+      {
+      
+      }
+
+      if( !found )
+      {
+        wxMessageBox( wxT( "Semantic '" ) + dialog.choiceEventType->GetStringSelection() + wxT( "' not found." ),
+                      wxT( "Not found" ) );
+        return;
+      }
     }
     
     TObjectOrder first, last;
     unsigned int objectsToShow = floor( ( timeAxisPos - drawBorder ) / 20 );
-    vector<TObjectOrder> selectedObjects;
-    myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
 
     if( objectsToShow >= selectedObjects.size() )
     {
@@ -2941,6 +3008,8 @@ void gTimeline::OnFindDialog()
       }
     }
 
+    myWindow->setWindowBeginTime( beginTime );
+    myWindow->setWindowEndTime( endTime );
     myWindow->addZoom( beginTime, endTime, first, last );
     myWindow->setRedraw( true );
   }

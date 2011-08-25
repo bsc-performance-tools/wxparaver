@@ -376,6 +376,9 @@ public:
   wxMouseEvent GetFirstMotionEvent() const { return firstMotionEvent ; }
   void SetFirstMotionEvent(wxMouseEvent value) { firstMotionEvent = value ; }
 
+  TRecordTime GetLastEventFoundTime() const { return lastEventFoundTime ; }
+  void SetLastEventFoundTime(TRecordTime value) { lastEventFoundTime = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -543,6 +546,7 @@ private:
   wxFont semanticFont;
   wxMouseEvent motionEvent;
   wxMouseEvent firstMotionEvent;
+  TRecordTime lastEventFoundTime;
 ////@end gTimeline member variables
 
   SemanticInfoType lastType;

@@ -36,6 +36,7 @@
  */
 
 ////@begin includes
+#include "wx/spinctrl.h"
 #include "wx/statline.h"
 ////@end includes
 
@@ -46,6 +47,7 @@
  */
 
 ////@begin forward declarations
+class wxSpinCtrl;
 ////@end forward declarations
 
 /*!
@@ -66,7 +68,7 @@
 #define ID_COMBOSEMANTICVALUE 10177
 #define ID_STATICSEMANTICDURATION 10184
 #define ID_CHOICEDURATIONFUNCTION 10182
-#define ID_COMBOSEMANTICDURATION 10183
+#define ID_TEXTSEMANTICDURATION 10183
 #define SYMBOL_FINDDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_FINDDIALOG_TITLE _("Find")
 #define SYMBOL_FINDDIALOG_IDNAME ID_FINDDIALOG
@@ -124,8 +126,8 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_CHOICEDURATIONFUNCTION
   void OnChoicedurationfunctionUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_COMBOSEMANTICDURATION
-  void OnCombosemanticdurationUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_TEXTSEMANTICDURATION
+  void OnTextsemanticdurationUpdate( wxUpdateUIEvent& event );
 
 ////@end FindDialog event handler declarations
 
@@ -150,12 +152,13 @@ public:
   wxRadioButton* radioObjects;
   wxListBox* choiceObjects;
   wxChoice* choicePosition;
+  wxCheckBox* checkNextObject;
   wxRadioButton* radioEvents;
   wxChoice* choiceEventType;
   wxRadioButton* radioSemantic;
   wxComboBox* comboSemanticValue;
   wxChoice* choiceDuractionFunction;
-  wxComboBox* comboSemanticDuration;
+  wxSpinCtrl* spinSemanticDuration;
 private:
   Window * myWindow;
 ////@end FindDialog member variables

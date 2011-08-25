@@ -77,7 +77,7 @@ BEGIN_EVENT_TABLE( FindDialog, wxDialog )
 
   EVT_UPDATE_UI( ID_CHOICEDURATIONFUNCTION, FindDialog::OnChoicedurationfunctionUpdate )
 
-  EVT_UPDATE_UI( ID_COMBOSEMANTICDURATION, FindDialog::OnCombosemanticdurationUpdate )
+  EVT_UPDATE_UI( ID_TEXTSEMANTICDURATION, FindDialog::OnTextsemanticdurationUpdate )
 
 ////@end FindDialog event table entries
 
@@ -143,12 +143,13 @@ void FindDialog::Init()
   radioObjects = NULL;
   choiceObjects = NULL;
   choicePosition = NULL;
+  checkNextObject = NULL;
   radioEvents = NULL;
   choiceEventType = NULL;
   radioSemantic = NULL;
   comboSemanticValue = NULL;
   choiceDuractionFunction = NULL;
-  comboSemanticDuration = NULL;
+  spinSemanticDuration = NULL;
 ////@end FindDialog member initialisation
 }
 
@@ -198,9 +199,9 @@ void FindDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer10 = new wxStaticBoxSizer(itemStaticBoxSizer10Static, wxVERTICAL);
   itemBoxSizer3->Add(itemStaticBoxSizer10, 4, wxGROW|wxALL, 5);
 
-  wxCheckBox* itemCheckBox11 = new wxCheckBox( itemDialog1, ID_CHECKNEXTOBJECT, _("Continue on next object"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemCheckBox11->SetValue(false);
-  itemStaticBoxSizer10->Add(itemCheckBox11, 0, wxALIGN_LEFT|wxALL, 5);
+  checkNextObject = new wxCheckBox( itemDialog1, ID_CHECKNEXTOBJECT, _("Continue on next object"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkNextObject->SetValue(false);
+  itemStaticBoxSizer10->Add(checkNextObject, 0, wxALIGN_LEFT|wxALL, 5);
 
   wxStaticBox* itemStaticBoxSizer12Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Events"));
   wxStaticBoxSizer* itemStaticBoxSizer12 = new wxStaticBoxSizer(itemStaticBoxSizer12Static, wxHORIZONTAL);
@@ -248,9 +249,8 @@ void FindDialog::CreateControls()
   choiceDuractionFunction->SetStringSelection(_(">"));
   itemBoxSizer21->Add(choiceDuractionFunction, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxArrayString comboSemanticDurationStrings;
-  comboSemanticDuration = new wxComboBox( itemDialog1, ID_COMBOSEMANTICDURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, comboSemanticDurationStrings, wxCB_DROPDOWN );
-  itemBoxSizer21->Add(comboSemanticDuration, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  spinSemanticDuration = new wxSpinCtrl( itemDialog1, ID_TEXTSEMANTICDURATION, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+  itemBoxSizer21->Add(spinSemanticDuration, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine25 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine25, 0, wxGROW|wxALL, 5);
@@ -380,7 +380,7 @@ void FindDialog::OnChoicedurationfunctionUpdate( wxUpdateUIEvent& event )
  * wxEVT_UPDATE_UI event handler for ID_COMBOSEMANTICDURATION
  */
 
-void FindDialog::OnCombosemanticdurationUpdate( wxUpdateUIEvent& event )
+void FindDialog::OnTextsemanticdurationUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( radioSemantic->GetValue() );
 }
@@ -420,7 +420,8 @@ void FindDialog::InitControlsBeforeShow()
   }
   comboSemanticValue->SetSelection( 0 );
   
-  comboSemanticDuration->SetValue( wxT( "0" ) );
+  spinSemanticDuration->SetRange( 0, numeric_limits<int>::max() );
+  spinSemanticDuration->SetValue( 0 );
 }
 
 
