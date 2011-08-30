@@ -3011,6 +3011,7 @@ void gTimeline::OnFindDialog()
     myWindow->setWindowBeginTime( beginTime );
     myWindow->setWindowEndTime( endTime );
     myWindow->addZoom( beginTime, endTime, first, last );
+    myWindow->setChanged( true );
     myWindow->setRedraw( true );
   }
 }
