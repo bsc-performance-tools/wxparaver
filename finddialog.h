@@ -157,7 +157,7 @@ public:
   wxChoice* choiceEventType;
   wxRadioButton* radioSemantic;
   wxComboBox* comboSemanticValue;
-  wxChoice* choiceDuractionFunction;
+  wxChoice* choiceDurationFunction;
   wxSpinCtrl* spinSemanticDuration;
 private:
   Window * myWindow;

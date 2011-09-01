@@ -188,6 +188,7 @@ void gTimeline::Init()
   escapePressed = false;
   timerMotion = new wxTimer( this, ID_TIMER_MOTION );
   lastEventFoundTime = 0;
+  lastSemanticFoundTime = 0;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -2943,25 +2944,113 @@ void gTimeline::OnFindDialog()
     }
     else if( dialog.radioSemantic->GetValue() )
     {
-      // El zoom en tiempo sera el minimo entre la duracion del intervalo semantico encontrado
-      // y un porcentaje de la duracion de la vista actual
       bool found = false;
+      TRecordTime timeToSearch, duration;
+      TSemanticValue valueToSearch;
+
+      if( lastSemanticFoundTime >= myWindow->getWindowBeginTime() &&
+          lastSemanticFoundTime <= myWindow->getWindowEndTime() )
+        timeToSearch = lastSemanticFoundTime;
+      else
+        timeToSearch = myWindow->getWindowBeginTime();
+
+      if( dialog.comboSemanticValue->GetSelection() == wxNOT_FOUND )
+      {
+        wxString tmpStr = dialog.comboSemanticValue->GetValue();
+        tmpStr.ToDouble( &valueToSearch );
+      }
+      else
+        valueToSearch = dialog.comboSemanticValue->GetSelection() + myWindow->getMinimumY();
+
+      duration = dialog.spinSemanticDuration->GetValue();
+      
+      myWindow->init( timeToSearch, NOCREATE, false );
+      myWindow->initRow( selectedObjects[ objectSelection ], timeToSearch, NOCREATE, false );
+      while( lastSemanticFoundTime == myWindow->getBeginTime( selectedObjects[ objectSelection ] ) )
+        myWindow->calcNext( selectedObjects[ objectSelection ] );
 
       if( dialog.checkNextObject->GetValue() )
       {
-      
+        while( !found && objectSelection < selectedObjects.size() )
+        {
+          while( !found && myWindow->getBeginTime( selectedObjects[ objectSelection ] ) < myWindow->getTrace()->getEndTime() )
+          {
+            if( myWindow->getValue( selectedObjects[ objectSelection ] ) == valueToSearch )
+            {
+              if( dialog.choiceDurationFunction->GetSelection() == 0 &&
+                  myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] )
+                  > duration )
+              {
+                found = true;
+                break;
+              }
+              else if( dialog.choiceDurationFunction->GetSelection() == 1 &&
+                       myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] )
+                       < duration )
+              {
+                found = true;
+                break;
+              }
+            }
+            myWindow->calcNext( selectedObjects[ objectSelection ] );
+          }
+          ++objectSelection;
+          timeToSearch = 0.0;
+          myWindow->init( timeToSearch, NOCREATE, false );
+          myWindow->initRow( selectedObjects[ objectSelection ], timeToSearch, NOCREATE, false );
+        }
       }
       else
       {
-      
+        while( !found && myWindow->getBeginTime( selectedObjects[ objectSelection ] ) < myWindow->getTrace()->getEndTime() )
+        {
+          if( myWindow->getValue( selectedObjects[ objectSelection ] ) == valueToSearch )
+          {
+            if( dialog.choiceDurationFunction->GetSelection() == 0 &&
+                myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] )
+                > duration )
+            {
+              found = true;
+              break;
+            }
+            else if( dialog.choiceDurationFunction->GetSelection() == 1 &&
+                     myWindow->getEndTime( selectedObjects[ objectSelection ] ) - myWindow->getBeginTime( selectedObjects[ objectSelection ] )
+                     < duration )
+            {
+              found = true;
+              break;
+            }
+          }
+          myWindow->calcNext( selectedObjects[ objectSelection ] );
+        }
       }
 
       if( !found )
       {
-        wxMessageBox( wxT( "Semantic '" ) + dialog.choiceEventType->GetStringSelection() + wxT( "' not found." ),
+        wxMessageBox( wxT( "Semantic '" ) + dialog.comboSemanticValue->GetValue() + wxT( "' not found." ),
                       wxT( "Not found" ) );
         return;
       }
+
+      TRecordTime addTime = ( myWindow->getEndTime( selectedObjects[ objectSelection ] ) 
+                              - myWindow->getBeginTime( selectedObjects[ objectSelection ] ) )
+                            * 0.1;
+      if( myWindow->getBeginTime( selectedObjects[ objectSelection ] ) - myWindow->getEndTime( selectedObjects[ objectSelection ] )
+          <
+          ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) * 0.25 )
+      {
+        beginTime = myWindow->getBeginTime( selectedObjects[ objectSelection ] ) - addTime;
+        if( beginTime < 0.0 ) beginTime = 0.0;
+        endTime = myWindow->getEndTime( selectedObjects[ objectSelection ] ) + addTime;
+      }
+      else
+      {
+        beginTime = myWindow->getBeginTime( selectedObjects[ objectSelection ] ) - addTime;
+        if( beginTime < 0.0 ) beginTime = 0.0;
+        endTime = beginTime + ( ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) * 0.25 );
+      }
+
+      lastSemanticFoundTime = myWindow->getBeginTime( selectedObjects[ objectSelection ] );
     }
     
     TObjectOrder first, last;

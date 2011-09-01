@@ -379,6 +379,9 @@ public:
   TRecordTime GetLastEventFoundTime() const { return lastEventFoundTime ; }
   void SetLastEventFoundTime(TRecordTime value) { lastEventFoundTime = value ; }
 
+  TRecordTime GetLastSemanticFoundTime() const { return lastSemanticFoundTime ; }
+  void SetLastSemanticFoundTime(TRecordTime value) { lastSemanticFoundTime = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -547,6 +550,7 @@ private:
   wxMouseEvent motionEvent;
   wxMouseEvent firstMotionEvent;
   TRecordTime lastEventFoundTime;
+  TRecordTime lastSemanticFoundTime;
 ////@end gTimeline member variables
 
   SemanticInfoType lastType;

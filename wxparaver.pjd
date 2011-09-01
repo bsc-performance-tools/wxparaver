@@ -3296,6 +3296,7 @@
           <string name="variable-37">"motionEvent|wxMouseEvent|MotionEvent||2|0|"</string>
           <string name="variable-38">"firstMotionEvent|wxMouseEvent|FirstMotionEvent||2|0|"</string>
           <string name="variable-39">"lastEventFoundTime|TRecordTime|LastEventFoundTime|0|2|0|"</string>
+          <string name="variable-40">"lastSemanticFoundTime|TRecordTime|LastSemanticFoundTime|0|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||gTimeline"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||gTimeline"</string>
           <string name="event-handler-2">"wxEVT_RIGHT_DOWN|OnRightDown|NONE||gTimeline"</string>
@@ -20236,6 +20237,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -28881,7 +28890,7 @@
                       <bool name="proxy-Separate files">0</bool>
                       <string name="proxy-Implementation filename">""</string>
                       <string name="proxy-Header filename">""</string>
-                      <string name="proxy-Member variable name">"choiceDuractionFunction"</string>
+                      <string name="proxy-Member variable name">"choiceDurationFunction"</string>
                       <string name="proxy-Strings">"&gt;|&lt;"</string>
                       <string name="proxy-Initial value">"&gt;"</string>
                       <string name="proxy-Help text">""</string>

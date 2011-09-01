@@ -148,7 +148,7 @@ void FindDialog::Init()
   choiceEventType = NULL;
   radioSemantic = NULL;
   comboSemanticValue = NULL;
-  choiceDuractionFunction = NULL;
+  choiceDurationFunction = NULL;
   spinSemanticDuration = NULL;
 ////@end FindDialog member initialisation
 }
@@ -242,12 +242,12 @@ void FindDialog::CreateControls()
   wxStaticText* itemStaticText22 = new wxStaticText( itemDialog1, ID_STATICSEMANTICDURATION, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer21->Add(itemStaticText22, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxArrayString choiceDuractionFunctionStrings;
-  choiceDuractionFunctionStrings.Add(_(">"));
-  choiceDuractionFunctionStrings.Add(_("<"));
-  choiceDuractionFunction = new wxChoice( itemDialog1, ID_CHOICEDURATIONFUNCTION, wxDefaultPosition, wxDefaultSize, choiceDuractionFunctionStrings, 0 );
-  choiceDuractionFunction->SetStringSelection(_(">"));
-  itemBoxSizer21->Add(choiceDuractionFunction, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxArrayString choiceDurationFunctionStrings;
+  choiceDurationFunctionStrings.Add(_(">"));
+  choiceDurationFunctionStrings.Add(_("<"));
+  choiceDurationFunction = new wxChoice( itemDialog1, ID_CHOICEDURATIONFUNCTION, wxDefaultPosition, wxDefaultSize, choiceDurationFunctionStrings, 0 );
+  choiceDurationFunction->SetStringSelection(_(">"));
+  itemBoxSizer21->Add(choiceDurationFunction, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   spinSemanticDuration = new wxSpinCtrl( itemDialog1, ID_TEXTSEMANTICDURATION, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
   itemBoxSizer21->Add(spinSemanticDuration, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
