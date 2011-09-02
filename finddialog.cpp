@@ -397,7 +397,7 @@ void FindDialog::InitControlsBeforeShow()
     string strObject = LabelConstructor::objectLabel( *it,
                                                       myWindow->getLevel(),
                                                       myWindow->getTrace() );
-    choiceObjects->Append( wxT( strObject.c_str() ) );
+    choiceObjects->Append( wxString::FromAscii( strObject.c_str() ) );
   }
   choiceObjects->SetSelection( 0 );
 
@@ -406,7 +406,7 @@ void FindDialog::InitControlsBeforeShow()
   for( set<TEventType>::iterator it = events.begin(); it != events.end(); ++it )
   {
     string strEvent = LabelConstructor::eventTypeLabel( myWindow, *it, true );
-    choiceEventType->Append( wxT( strEvent.c_str() ) );
+    choiceEventType->Append( wxString::FromAscii( strEvent.c_str() ) );
   }
   choiceEventType->SetSelection( 0 );
   
@@ -416,7 +416,7 @@ void FindDialog::InitControlsBeforeShow()
   {
     string strSemantic = LabelConstructor::semanticLabel( myWindow, val, true, 
                                                           ParaverConfig::getInstance()->getTimelinePrecision() );
-    comboSemanticValue->Append( wxT( strSemantic.c_str() ) );
+    comboSemanticValue->Append( wxString::FromAscii( strSemantic.c_str() ) );
   }
   comboSemanticValue->SetSelection( 0 );
   
