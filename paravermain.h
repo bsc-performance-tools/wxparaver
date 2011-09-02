@@ -57,7 +57,7 @@
 
 #ifdef WIN32
 #undef VERSION
-#define VERSION "4.0.12"
+#define VERSION "4.1.0"
 #endif
 /*!
  * Forward declarations
