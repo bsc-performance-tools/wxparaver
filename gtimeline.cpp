@@ -2462,7 +2462,7 @@ void gTimeline::saveImage()
 #else
                            _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
 #endif
-                           wxSAVE );
+                           wxSAVE|wxFD_OVERWRITE_PROMPT );
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveImageFormat() );
   if ( saveDialog.ShowModal() == wxID_OK )
