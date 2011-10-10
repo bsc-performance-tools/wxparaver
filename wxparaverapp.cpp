@@ -237,7 +237,17 @@ bool wxparaverApp::OnInit()
     return false;
   }
 
-  ParaverConfig::getInstance()->readParaverConfigFile();
+  try
+  {
+    ParaverConfig::getInstance()->readParaverConfigFile();
+  }
+  catch( ... )
+  {
+    wxMessageBox( wxT( "Error while loading preferences. Using default options." ),
+                  wxT( "Preferences error" ),
+                  wxOK|wxICON_ERROR );
+  }
+
   
   if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {

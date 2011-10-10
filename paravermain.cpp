@@ -250,7 +250,6 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
   LocalKernel::init();
   localKernel = new LocalKernel( userMessage );
   paraverConfig = ParaverConfig::getInstance();
-  paraverConfig->readParaverConfigFile();
   myParaverMain = this;
   
   Init();
