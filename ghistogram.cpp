@@ -2241,18 +2241,19 @@ void gHistogram::saveText( bool onlySelectedPlane )
 #endif
 
   wxFileDialog saveDialog( this,
-                           _("Save as text"),
+                           _("Save as..."),
                            defaultDir,
                            fileName,
-                           _( "*.*" ),
+                           _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
                            wxSAVE | wxFD_OVERWRITE_PROMPT );
 
   if ( saveDialog.ShowModal() == wxID_OK )
   {
-    TextOutput output;
-    output.setMultipleFiles( false );
+    Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
+    output->setMultipleFiles( false );
     string tmpStr = string( saveDialog.GetPath().mb_str() );
-    output.dumpHistogram( myHistogram, tmpStr, onlySelectedPlane, myHistogram->getHideColumns() );
+    output->dumpHistogram( myHistogram, tmpStr, onlySelectedPlane, myHistogram->getHideColumns() );
+    delete output;
   }
 }
 
