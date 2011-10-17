@@ -558,7 +558,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
   buildItem( this, _( "Save Image..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
-  buildItem( this, _( "Save as text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TIMELINE_AS_TEXT );
+  buildItem( this, _( "Save as..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TIMELINE_AS_TEXT );
 
   AppendSeparator();
   buildItem( this, 
@@ -809,12 +809,12 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
                ITEMNORMAL,
                (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText,
                ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
-    AppendSubMenu( popUpMenuSaveAsText, _( "Save as text" ) );
+    AppendSubMenu( popUpMenuSaveAsText, _( "Save as..." ) );
 
   }
   else
   {
-    buildItem( this, _( "Save as text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
+    buildItem( this, _( "Save as..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
   }
   
   enableMenu( histogram );

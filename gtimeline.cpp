@@ -53,7 +53,7 @@
 #include "loadedwindows.h"
 #include "windows_tree.h"
 #include "caution.xpm"
-#include "textoutput.h"
+#include "output.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -2515,18 +2515,19 @@ void gTimeline::saveText()
 #endif
 
   wxFileDialog saveDialog( this,
-                           _("Save as text"),
+                           _("Save as..."),
                            defaultDir,
                            fileName,
-                           _( "*.*" ),
+                           _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
                            wxSAVE | wxFD_OVERWRITE_PROMPT );
 
   if ( saveDialog.ShowModal() == wxID_OK )
   {
-    TextOutput output;
-    output.setMultipleFiles( false );
+    Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
+    output->setMultipleFiles( false );
     string tmpStr = string( saveDialog.GetPath().mb_str() );
-    output.dumpWindow( myWindow, tmpStr );
+    output->dumpWindow( myWindow, tmpStr );
+    delete output;
   }
 }
 
