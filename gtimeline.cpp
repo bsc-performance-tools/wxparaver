@@ -2625,17 +2625,34 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     rgb color = { (ParaverColor)tmpColor.Red(), (ParaverColor)tmpColor.Green(), (ParaverColor)tmpColor.Blue() };
     TSemanticValue firstValue, secondValue;
     if( !myWindow->calcValueFromColor( color, firstValue, secondValue ) )
-      return;
-
-    if( myWindow->IsCodeColorSet() )
-      label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, true, 
-                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+    {
+      if( !myWindow->IsCodeColorSet() )
+      {
+        //GradientColor& grad = myWindow->getGradientColor();
+        if( color == myWindow->getGradientColor().getAboveOutlierColor() )
+          label = wxT( "> " ) + wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, myWindow->getMaximumY(), false, 
+                                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+        else if( color == myWindow->getGradientColor().getBelowOutlierColor() )
+          label = wxT( "< " ) + wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, myWindow->getMinimumY(), false, 
+                                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+        else
+          return;
+      }
+      else
+        return;
+    }
     else
     {
-      label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, false, 
-                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
-      label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, secondValue, false, 
-                                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+      if( myWindow->IsCodeColorSet() )
+        label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, true, 
+                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+      else
+      {
+        label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, false, 
+                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+        label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, secondValue, false, 
+                                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+      }
     }
   }
   
