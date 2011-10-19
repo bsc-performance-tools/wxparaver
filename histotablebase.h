@@ -61,5 +61,8 @@ class HistoTableBase : public wxGridTableBase
     vector<TObjectOrder> *selectedRows;
     wxFont cellFontBold;
     
+    string tmpStr;
+    wxString label;
+
     const wxColour *getLuminance( wxColour fromColour ) const;
 };

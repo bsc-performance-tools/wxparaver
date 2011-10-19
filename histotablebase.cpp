@@ -67,7 +67,7 @@ int HistoTableBase::GetNumberCols()
 
 wxString HistoTableBase::GetRowLabelValue( int row )
 {
-  wxString label;
+  label.Clear();
   
   if( myHisto->getHorizontal() && myHisto->getFirstRowColored() )
   {
@@ -149,11 +149,11 @@ wxString HistoTableBase::GetValue( int row, int col )
   }
 
   PRV_UINT16 idStat;
+  label.Clear();
+  tmpStr.clear();
   if( !myHisto->getIdStat( myHisto->getCurrentStat(), idStat ) )
     throw( std::exception() );
 
-  string tmpStr;
-  wxString label;
   TSemanticValue semValue;
   if( ( myHisto->getHorizontal() && row >= myHisto->getNumRows() ) ||
       ( !myHisto->getHorizontal() && col >= (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) ) )
