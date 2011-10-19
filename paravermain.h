@@ -101,7 +101,7 @@ class wxPropertyGridEvent;
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(300, 600)
-#define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, -1)
+#define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, 0)
 ////@end control identifiers
 
 

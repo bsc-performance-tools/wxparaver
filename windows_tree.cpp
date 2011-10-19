@@ -236,7 +236,11 @@ void BuildTree( paraverMain *parent,
   gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), tmpPos );
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
+#ifdef WIN32
+  tmpTimeline->SetSize( wxSize( window->getWidth(), window->getHeight() ) );
+#else
   tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
+#endif
 
   if( window->getShowWindow() )
   {

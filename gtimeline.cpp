@@ -898,7 +898,11 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
   {
     if( !splitChanged )
     {
+#ifdef WIN32
+      myWindow->setWidth( GetSize().GetWidth() );
+#else
       myWindow->setWidth( event.GetSize().GetWidth() );
+#endif
       myWindow->setHeight( event.GetSize().GetHeight() );
     }
     timerSize->Start( 100, true );
@@ -3072,7 +3076,7 @@ void gTimeline::OnFindDialog()
     }
     
     TObjectOrder first, last;
-    unsigned int objectsToShow = floor( ( timeAxisPos - drawBorder ) / 20 );
+    unsigned int objectsToShow = floor( (double)( timeAxisPos - drawBorder ) / 20 );
 
     if( objectsToShow >= selectedObjects.size() )
     {
