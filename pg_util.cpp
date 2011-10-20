@@ -141,19 +141,19 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   else
     filter = whichWindow->getFilter();
   
-  windowProperties->Append( new wxStringProperty( wxT("Name"), wxPG_LABEL, wxString::FromAscii( whichWindow->getName().c_str() ) ) );
-  windowProperties->Append( new wxStringProperty( wxT("Begin time"), wxPG_LABEL, 
+  windowProperties->Append( new wxStringProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_NAME ] ), wxPG_LABEL, wxString::FromAscii( whichWindow->getName().c_str() ) ) );
+  windowProperties->Append( new wxStringProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_BEGINTIME ] ), wxPG_LABEL, 
                             wxString::FromAscii( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowBeginTime() ),
                                                                               whichWindow->getTimeUnit(),
                                                                               precision ).c_str() ) ) );
-  windowProperties->Append( new wxStringProperty( wxT("End time"), wxPG_LABEL, 
+  windowProperties->Append( new wxStringProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_ENDTIME ] ), wxPG_LABEL, 
                             wxString::FromAscii( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowEndTime() ),
                                                                               whichWindow->getTimeUnit(),
                                                                               precision ).c_str() ) ) );
 
-  windowProperties->Append( new wxFloatProperty( wxT("Semantic Minimum"), wxPG_LABEL,
+  windowProperties->Append( new wxFloatProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_SEMANTICMINIMUM ] ), wxPG_LABEL,
                                                  whichWindow->getMinimumY() ) );
-  windowProperties->Append( new wxFloatProperty( wxT("Semantic Maximum"), wxPG_LABEL,
+  windowProperties->Append( new wxFloatProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_SEMANTICMAXIMUM ] ), wxPG_LABEL,
                                                  whichWindow->getMaximumY() ) );
                             
   if( !whichWindow->isDerivedWindow() )
@@ -179,7 +179,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     arrayLevels.Add( _( "Thread" ) );
     arrayLevelsPos.Add( THREAD );
     
-    windowProperties->Append( new wxEnumProperty( wxT("Level"), wxPG_LABEL,
+    windowProperties->Append( new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_LEVEL ] ), wxPG_LABEL,
                                                   arrayLevels, arrayLevelsPos, whichWindow->getLevel() ) );
   }
   else
@@ -230,7 +230,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       }
     }
     
-    windowProperties->Append( new wxEnumProperty( wxT("Level"), wxPG_LABEL,
+    windowProperties->Append( new wxEnumProperty( wxT( DerivedTimelinePropertyLabels[ DERIVED_LEVEL ] ), wxPG_LABEL,
                                                   arrayLevels, arrayLevelsPos, whichWindow->getLevel() ) );
   }
   
