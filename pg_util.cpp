@@ -141,19 +141,20 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   else
     filter = whichWindow->getFilter();
   
-  windowProperties->Append( new wxStringProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_NAME ] ), wxPG_LABEL, wxString::FromAscii( whichWindow->getName().c_str() ) ) );
-  windowProperties->Append( new wxStringProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_BEGINTIME ] ), wxPG_LABEL, 
+  windowProperties->Append( new wxStringProperty( wxString::FromAscii( SingleTimelinePropertyLabels[ SINGLE_NAME ].c_str() ),
+                                                  wxPG_LABEL, wxString::FromAscii( whichWindow->getName().c_str() ) ) );
+  windowProperties->Append( new wxStringProperty( wxString::FromAscii( SingleTimelinePropertyLabels[ SINGLE_BEGINTIME ].c_str() ), wxPG_LABEL, 
                             wxString::FromAscii( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowBeginTime() ),
                                                                               whichWindow->getTimeUnit(),
                                                                               precision ).c_str() ) ) );
-  windowProperties->Append( new wxStringProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_ENDTIME ] ), wxPG_LABEL, 
+  windowProperties->Append( new wxStringProperty( wxString::FromAscii( SingleTimelinePropertyLabels[ SINGLE_ENDTIME ].c_str() ), wxPG_LABEL, 
                             wxString::FromAscii( LabelConstructor::timeLabel( whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowEndTime() ),
                                                                               whichWindow->getTimeUnit(),
                                                                               precision ).c_str() ) ) );
 
-  windowProperties->Append( new wxFloatProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_SEMANTICMINIMUM ] ), wxPG_LABEL,
+  windowProperties->Append( new wxFloatProperty( wxString::FromAscii( SingleTimelinePropertyLabels[ SINGLE_SEMANTICMINIMUM ].c_str() ), wxPG_LABEL,
                                                  whichWindow->getMinimumY() ) );
-  windowProperties->Append( new wxFloatProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_SEMANTICMAXIMUM ] ), wxPG_LABEL,
+  windowProperties->Append( new wxFloatProperty( wxString::FromAscii( SingleTimelinePropertyLabels[ SINGLE_SEMANTICMAXIMUM ].c_str() ), wxPG_LABEL,
                                                  whichWindow->getMaximumY() ) );
                             
   if( !whichWindow->isDerivedWindow() )
@@ -179,7 +180,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     arrayLevels.Add( _( "Thread" ) );
     arrayLevelsPos.Add( THREAD );
     
-    windowProperties->Append( new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_LEVEL ] ), wxPG_LABEL,
+    windowProperties->Append( new wxEnumProperty( wxString::FromAscii( SingleTimelinePropertyLabels[ SINGLE_LEVEL ].c_str() ), wxPG_LABEL,
                                                   arrayLevels, arrayLevelsPos, whichWindow->getLevel() ) );
   }
   else
@@ -230,7 +231,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       }
     }
     
-    windowProperties->Append( new wxEnumProperty( wxT( DerivedTimelinePropertyLabels[ DERIVED_LEVEL ] ), wxPG_LABEL,
+    windowProperties->Append( new wxEnumProperty( wxString::FromAscii( DerivedTimelinePropertyLabels[ DERIVED_LEVEL ].c_str() ), wxPG_LABEL,
                                                   arrayLevels, arrayLevelsPos, whichWindow->getLevel() ) );
   }
   
