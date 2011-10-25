@@ -242,7 +242,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     arrayStr.Add( wxString::FromAscii( FULL_LABEL_TIMEUNIT[ iUnit ].c_str() ) );
     arrayInt.Add( iUnit );
   }
-  windowProperties->Append( new wxEnumProperty( wxT( "Time Unit" ), wxPG_LABEL, arrayStr, arrayInt,
+  windowProperties->Append( new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_TIMEUNIT ].c_str() ), wxPG_LABEL, arrayStr, arrayInt,
                                                 whichWindow->getTimeUnit() ) );
 
   //-------------------------------------------------------------------------
@@ -272,9 +272,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       commFilterCat->SetFlagsFromString( _( "COLLAPSED" ) );
     
     windowProperties->AppendIn( commFilterCat, 
-        new wxBoolProperty( wxT("Logical"), wxPG_LABEL, filter->getLogical() ) );
+        new wxBoolProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMMLOGICAL ].c_str() ), wxPG_LABEL, filter->getLogical() ) );
     windowProperties->AppendIn( commFilterCat, 
-        new wxBoolProperty( wxT("Physical"), wxPG_LABEL, filter->getPhysical() ) );
+        new wxBoolProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMMPHYSICAL ].c_str() ), wxPG_LABEL, filter->getPhysical() ) );
 
     // Comm From
     wxPGId commFilterFrom = windowProperties->AppendIn( commFilterCat, 
@@ -296,7 +296,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       pos++;
     }
 
-    wxEnumProperty *fromFunction = new wxEnumProperty( wxT("Function"), wxT("FromFunction"),
+    wxEnumProperty *fromFunction = new wxEnumProperty( wxT( "Function" ), wxT("FromFunction"),
                                     arrayFilterFunctions, arrayFilterFunctionsPos, selected );
     windowProperties->AppendIn( commFilterFrom, (wxPGProperty*)fromFunction );
     
@@ -309,7 +309,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                   whichWindow,
                                                                   _("From - Rows Selection"),
                                                                   fromSel,
-                                                                  wxT("From"),
+                                                                  wxT( "From" ),
                                                                   wxPG_LABEL ) );
 
     if( filter->getCommFromFunction() == "All" || 
@@ -326,7 +326,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       selected = 0;
     else
       selected = 1;
-    wxEnumProperty *fromToOp = new wxEnumProperty( wxT("From/To Op"), wxT("FromToOp"), 
+    wxEnumProperty *fromToOp = new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMMFROMTOOP ].c_str() ), wxT("FromToOp"), 
                                arrayStr, arrayInt, selected );
     windowProperties->AppendIn( commFilterCat, fromToOp );
         
@@ -349,7 +349,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         selected = pos;
       pos++;
     }
-    wxEnumProperty *toFunction = new wxEnumProperty( wxT("Function"), wxT("ToFunction"),
+    wxEnumProperty *toFunction = new wxEnumProperty( wxT( "Function" ), wxT("ToFunction"),
                                     arrayFilterFunctions, arrayFilterFunctionsPos, selected );
     windowProperties->AppendIn( commFilterTo, toFunction );
 
@@ -361,7 +361,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                                 whichWindow,
                                                                 _("To - Rows Selection"),
                                                                 toSel,
-                                                                wxT("To"),
+                                                                wxT( "To" ),
                                                                 wxPG_LABEL ) );
 
     if( filter->getCommToFunction() == "All" || 
@@ -387,7 +387,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         selected = pos;
       pos++;
     }
-    wxEnumProperty *tagFunction = new wxEnumProperty( wxT("Function"), wxT("TagFunction"),
+    wxEnumProperty *tagFunction = new wxEnumProperty( wxT( "Function" ), wxT("TagFunction"),
                                     arrayFilterFunctions, arrayFilterFunctionsPos, selected );
     windowProperties->AppendIn( commFilterTag, tagFunction );
 
@@ -396,7 +396,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     filter->getCommTag( tagSel );
     for( vector<TCommTag>::iterator it = tagSel.begin(); it != tagSel.end(); it++ )
       arrayStr.Add( wxString() << (*it) );
-    prvNumbersListProperty *tagProperty = new prvNumbersListProperty( wxT("Tag"), wxPG_LABEL, arrayStr );
+    prvNumbersListProperty *tagProperty = new prvNumbersListProperty( wxT( "Tag" ), wxPG_LABEL, arrayStr );
     wxPGId commFilterTagValues = windowProperties->AppendIn( commFilterTag, tagProperty );
 
     if( filter->getCommTagFunction() == "All" || 
@@ -413,7 +413,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       selected = 0;
     else
       selected = 1;
-    wxEnumProperty *tagSizeOp = new wxEnumProperty( wxT("Tag/Size Op"), wxT("TagSizeOp"), 
+    wxEnumProperty *tagSizeOp = new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMMTAGSIZEOP ].c_str() ), wxT("TagSizeOp"), 
                                 arrayStr, arrayInt, selected );
     windowProperties->AppendIn( commFilterCat, tagSizeOp );
 
@@ -552,7 +552,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       selected = 0;
     else
       selected = 1;
-    wxEnumProperty *typeValueOp = new wxEnumProperty( wxT("Type/Value Op"), wxT("TypeValueOp"), 
+    wxEnumProperty *typeValueOp = new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUESOP ].c_str() ), wxT("TypeValueOp"), 
                                   arrayStr, arrayInt, selected );
     windowProperties->AppendIn( eventFilterCat, typeValueOp );
 
@@ -622,7 +622,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     pos++;
   }
   windowProperties->AppendIn( semanticCat,
-                              new wxEnumProperty( wxT("Top Compose 1"),
+                              new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_TOPCOMPOSE1 ].c_str() ),
                               wxPG_LABEL,
                               arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
   semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TOPCOMPOSE1 );
@@ -637,7 +637,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     ++pos;
   }
   windowProperties->AppendIn( semanticCat,
-                              new wxEnumProperty( wxT("Top Compose 2"),
+                              new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_TOPCOMPOSE2 ].c_str() ),
                               wxPG_LABEL,
                               arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
   semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TOPCOMPOSE2 );
@@ -671,7 +671,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose Workload"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMPOSEWORKLOAD ].c_str() ),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEWORKLOAD );
@@ -686,7 +686,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Workload"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_WORKLOAD ].c_str() ),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, WORKLOAD );
@@ -704,7 +704,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose Appl"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMPOSEAPPL ].c_str() ),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEAPPLICATION );
@@ -719,7 +719,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Application"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_APPLICATION ].c_str() ),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, APPLICATION );
@@ -737,7 +737,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose Task"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMPOSETASK ].c_str() ),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETASK );
@@ -752,7 +752,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Task"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_TASK ].c_str() ),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TASK );
@@ -770,7 +770,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose Thread"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMPOSETHREAD ].c_str() ),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETHREAD );
@@ -790,7 +790,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose System"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMPOSESYSTEM ].c_str() ),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSESYSTEM );
@@ -805,7 +805,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("System"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_SYSTEM ].c_str() ),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, SYSTEM );
@@ -823,7 +823,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose Node"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMPOSENODE ].c_str() ),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSENODE );
@@ -838,7 +838,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Node"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_NODE ].c_str() ),
                                   wxPG_LABEL,
                                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected ) );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, NODE );
@@ -856,7 +856,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
         ++pos;
       }
       windowProperties->AppendIn( semanticCat,
-                                  new wxEnumProperty( wxT("Compose CPU"),
+                                  new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMPOSECPU ].c_str() ),
                                   wxPG_LABEL,
                                   arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
                                   
@@ -880,7 +880,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
           ++pos;
         }
         windowProperties->AppendIn( semanticCat,
-                                    new wxEnumProperty( wxT("CPU"),
+                                    new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_CPU ].c_str() ),
                                     wxPG_LABEL,
                                     arrayStr, arrayInt, selected ) );
         semanticFunctionParameter( windowProperties, whichWindow, semanticCat, CPU );
@@ -888,7 +888,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     }
   }
   
-  if( ! whichWindow->isDerivedWindow() )
+  if( !whichWindow->isDerivedWindow() )
   {
     pos = 0;
     selected = -1;
@@ -900,7 +900,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       ++pos;
     }
     windowProperties->AppendIn( semanticCat,
-                                new wxEnumProperty( wxT("Compose Thread"),
+                                new wxEnumProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_COMPOSETHREAD ].c_str() ),
                                 wxPG_LABEL,
                                 arrayComposeFunctions, arrayComposeFunctionsPos, selected ) );
     semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETHREAD );
@@ -921,7 +921,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     whichWindow->getAllSemanticFunctions( OBJECT_GROUP, threadFunctions[ 3 ] );
     
     windowProperties->AppendIn( semanticCat,
-                                new prvSemanticThreadProperty( wxT("Thread"),
+                                new prvSemanticThreadProperty( wxT( SingleTimelinePropertyLabels[ SINGLE_THREAD ].c_str() ),
                                 wxPG_LABEL,
                                 levels,
                                 threadFunctions,
@@ -931,7 +931,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   
   if( whichWindow->isDerivedWindow() )
   {
-    windowProperties->Append( new wxFloatProperty( wxT("Factor #1"), wxPG_LABEL,
+    windowProperties->Append( new wxFloatProperty( wxT( DerivedTimelinePropertyLabels[ DERIVED_FACTOR1 ].c_str() ), wxPG_LABEL,
                                                  whichWindow->getFactor( 0 ) ) );
 
     vector<string> derivedFunctions;
@@ -950,12 +950,12 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
       ++pos;
     }
     windowProperties->AppendIn( semanticCat,
-                                new wxEnumProperty( wxT("Derived"),
+                                new wxEnumProperty( wxT( DerivedTimelinePropertyLabels[ DERIVED_DERIVED ].c_str() ),
                                 wxPG_LABEL,
                                 arrayStr, arrayInt, selected ) );
     semanticFunctionParameter( windowProperties, whichWindow, semanticCat, DERIVED );
 
-    windowProperties->Append( new wxFloatProperty( wxT("Factor #2"), wxPG_LABEL,
+    windowProperties->Append( new wxFloatProperty( wxT( DerivedTimelinePropertyLabels[ DERIVED_FACTOR2 ].c_str() ), wxPG_LABEL,
                                                  whichWindow->getFactor( 1 ) ) );
   }
   // END of Semantic related properties
