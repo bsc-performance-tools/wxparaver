@@ -389,7 +389,7 @@ void paraverMain::CreateControls()
   menuFile->Append(wxID_OPEN, _("Load &Trace..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu5 = new wxMenu;
   menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
-  menuFile->Append(ID_UNLOADTRACE, _("Unload Trace..."), wxEmptyString, wxITEM_NORMAL);
+  menuFile->Append(ID_UNLOADTRACE, _("Unload Traces..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu9 = new wxMenu;
@@ -2648,13 +2648,17 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
 
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     choices.Add( wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() ) );
-  wxSingleChoiceDialog dialog( this, _("Select the trace to unload:"), _("Unload Trace"), choices );
+  wxMultiChoiceDialog dialog( this, _("Select the traces to unload:"), _("Unload Traces"), choices );
   
   raiseCurrentWindow = false;
 
   dialog.ShowModal();
   if ( dialog.GetReturnCode() == wxID_OK )
-    UnloadTrace( dialog.GetSelection() );
+  {
+    wxArrayInt sel = dialog.GetSelections();
+    for( size_t i = 0; i < sel.GetCount(); ++i )
+      UnloadTrace( sel.Item( i ) );
+  }
 
   raiseCurrentWindow = true;
 }

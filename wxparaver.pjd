@@ -1357,7 +1357,7 @@
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
-                <string name="title">"Unload Trace...: ID_UNLOADTRACE"</string>
+                <string name="title">"Unload Traces...: ID_UNLOADTRACE"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"menuitem"</string>
@@ -1370,7 +1370,7 @@
                 <string name="event-handler-1">"wxEVT_UPDATE_UI|OnUnloadtraceUpdate|NONE||"</string>
                 <string name="proxy-Id name">"ID_UNLOADTRACE"</string>
                 <long name="proxy-Id value">10082</long>
-                <string name="proxy-Label">"Unload Trace..."</string>
+                <string name="proxy-Label">"Unload Traces..."</string>
                 <string name="proxy-Kind">"Normal"</string>
                 <bool name="proxy-Checked">0</bool>
                 <bool name="proxy-Enabled">1</bool>
@@ -27847,6 +27847,14 @@
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
