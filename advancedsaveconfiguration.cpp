@@ -475,10 +475,10 @@ void AdvancedSaveConfiguration::TransferDataFromPanel()
   {
     wxString currentTagName = wxString::FromAscii( it->first.c_str() );
 
-    enabledTag[ currentTagName ] = GetCheckBoxByName( currentTagName )->GetValue();
-    if ( enabledTag[ currentTagName ] )
+    enabledTag[ it->first ] = GetCheckBoxByName( currentTagName )->GetValue();
+    if ( enabledTag[ it->first ] )
     {
-      auxActiveTags[ currentTagName ] = GetTextCtrlByName( currentTagName )->GetValue().mb_str();
+      auxActiveTags[ it->first ] = GetTextCtrlByName( currentTagName )->GetValue().mb_str();
     }
   }
 
