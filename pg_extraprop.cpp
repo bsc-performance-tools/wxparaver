@@ -304,7 +304,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
   wxArrayString tmpArray;
 
-  if( GetName().Cmp( _("Types") ) == 0 )
+  if( GetName().Cmp( _("Event type.Types") ) == 0 || GetName().Cmp( _("Types") ) == 0 )
   {
     vector<TEventType> typesSel;
     currentWindow->getFilter()->getEventType( typesSel );
@@ -313,7 +313,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
       tmpArray.Add( wxString().Format( _( "%d" ), (*it ) ) );
     }
   }
-  else if( GetName().Cmp( _("Values") ) == 0 )
+  else if( GetName().Cmp( _("Event value.Values") ) == 0 || GetName().Cmp( _("Values") ) == 0 )
   {
     vector<TEventValue> valuesSel;
     currentWindow->getFilter()->getEventValue( valuesSel );

@@ -1,7 +1,9 @@
 
 bin_PROGRAMS = wxparaver.bin
 
-wxparaver_bin_SOURCES = connection.cpp \
+wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
+										advancedsaveconfiguration.cpp \
+										connection.cpp \
                     connection.h \
                     copypaste.cpp \
                     copypaste.h \

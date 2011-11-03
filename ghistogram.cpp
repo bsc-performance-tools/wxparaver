@@ -284,7 +284,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -1970,7 +1970,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     productWin->setPosY( controlCloned->getPosY() );
     productWin->setWidth( controlCloned->getWidth() );
     productWin->setHeight( controlCloned->getHeight() );
-    
+
     productWin->setWindowBeginTime( myHistogram->getBeginTime() );
     productWin->setWindowEndTime( myHistogram->getEndTime() );
     productWin->addZoom( myHistogram->getBeginTime(), myHistogram->getEndTime(), 

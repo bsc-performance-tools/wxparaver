@@ -615,8 +615,10 @@ bool paraverMain::DoLoadCFG( const string &path )
   {
     vector<Window *> newWindows;
     vector<Histogram *> newHistograms;
-      
-    if( !CFGLoader::loadCFG( localKernel, path, loadedTraces[ currentTrace ], newWindows, newHistograms ) )
+    SaveOptions options;
+
+    if( !CFGLoader::loadCFG( localKernel, path, loadedTraces[ currentTrace ],
+                             newWindows, newHistograms, options ) )
     {
       wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
       wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK );
@@ -816,7 +818,24 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     
   const wxString& propName = property->GetName();
 
-  if( propName == _( "Name" ) )
+  if( propName == _( "Mode" ) )
+  {
+    if( currentTimeline != NULL )
+    {
+      currentTimeline->setCFG4DMode( property->GetValue().GetLong() == 1 );
+      currentTimeline->setRedraw( true );
+
+      // no change if we don't update directly!
+      updateTimelineProperties( windowProperties, currentTimeline );
+
+    }
+    else if ( currentHisto != NULL )
+    {
+      currentHisto->setCFG4DMode( property->GetValue().GetLong() == 1 );
+      currentHisto->setRedraw( true );
+    }
+  }
+  else if( propName == _( "Name" ) )
   {
     wxString tmpName = property->GetValue().GetString();
     if( currentTimeline != NULL )
@@ -992,7 +1011,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentHisto->setCurrentStat( std::string( property->GetDisplayedString().mb_str() ) );
     currentHisto->setRedraw( true );
   }
-  else if( propName == _( "3rd Window" ) )
+  else if( propName == _( "3D3rdWindow" ) )
   {
     if( property->GetValue().GetLong() == -1 )
       currentHisto->clearExtraControlWindow();
@@ -1898,15 +1917,31 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
   LoadedWindows::getInstance()->getAll( histograms );
   saveDialog.SetTimelines( timelines );
   saveDialog.SetHistograms( histograms );
-  
+
+  // Find trace to put in the selector
+  Trace *selectedTrace = NULL;
+  vector<Window *> auxWindows;
+  vector<Histogram *> auxHistograms;
+
+  int currentPage = choiceWindowBrowser->GetSelection();
+  LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], auxWindows );
+  LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], auxHistograms );
+
+  if (( currentPage != 0 ) && ( auxWindows.size() > 0 || auxHistograms.size() > 0 ))
+  {
+    selectedTrace = loadedTraces[ currentTrace ];
+  }
+  saveDialog.SetInitialTrace( selectedTrace );
+
+
   raiseCurrentWindow = false;
   if( saveDialog.ShowModal() == wxID_OK )
   {
     if ( !CFGLoadedBefore )
       CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
 
-    timelines = saveDialog.GetTimelines();
-    histograms = saveDialog.GetHistograms();
+    timelines = saveDialog.GetSelectedTimelines();
+    histograms = saveDialog.GetSelectedHistograms();
     options = saveDialog.GetOptions();
     wxFileDialog dialog( this, _( "Save Configuration" ), CFGPath, _( "" ),
       _("Paraver configuration file (*.cfg)|*.cfg" ),
@@ -1920,6 +1955,16 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
         path += _( ".cfg" );
       CFGLoader::saveCFG( std::string( path.mb_str() ), options, timelines, histograms );
       previousCFGs->add( std::string( path.mb_str() ) );
+    }
+
+    // Disable CFG4D once it is saved
+    for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+    {
+      (*it)->setCFG4DEnabled( false );
+    }
+    for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
+    {
+      (*it)->setCFG4DEnabled( false );
     }
   }
   raiseCurrentWindow = true;

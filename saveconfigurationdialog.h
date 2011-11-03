@@ -54,8 +54,13 @@
 
 ////@begin control identifiers
 #define ID_SAVECONFIGURATIONDIALOG 10012
+#define ID_CHOICE_TRACE_SELECTOR 10191
 #define ID_LISTTIMELINES 10013
+#define ID_BUTTON_SET_ALL_TIMELINES 10188
+#define ID_BUTTON_UNSET_ALL_TIMELINES 10189
 #define ID_LISTHISTOGRAMS 10014
+#define ID_BUTTON_SET_ALL_HISTOGRAMS 10000
+#define ID_BUTTON_UNSET_ALL_HISTOGRAMS 10001
 #define ID_CHECKBEGIN 10016
 #define ID_CHECKEND 10017
 #define ID_CHECKSEMANTIC 10018
@@ -64,6 +69,7 @@
 #define ID_CHECKLIMITS 10021
 #define ID_CHECKGRADIENT 10022
 #define ID_TEXTDESCRIPTION 10015
+#define ID_CHECKBOX_SAVE_BASIC_MODE 10190
 #define SYMBOL_SAVECONFIGURATIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxSTAY_ON_TOP|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVECONFIGURATIONDIALOG_TITLE _("Save configuration")
 #define SYMBOL_SAVECONFIGURATIONDIALOG_IDNAME ID_SAVECONFIGURATIONDIALOG
@@ -100,6 +106,21 @@ public:
 
 ////@begin SaveConfigurationDialog event handler declarations
 
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_TRACE_SELECTOR
+  void OnChoiceTraceSelectorSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_TIMELINES
+  void OnButtonSetAllTimelinesClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_TIMELINES
+  void OnButtonUnsetAllTimelinesClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_HISTOGRAMS
+  void OnButtonSetAllHistogramsClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_HISTOGRAMS
+  void OnButtonUnsetAllHistogramsClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_SAVE
   void OnSaveClick( wxCommandEvent& event );
 
@@ -116,6 +137,15 @@ public:
   vector<Histogram *> GetHistograms() const { return histograms ; }
   void SetHistograms(vector<Histogram *> value) { histograms = value ; }
 
+  Trace * GetInitialTrace() const { return initialTrace ; }
+  void SetInitialTrace(Trace * value) { initialTrace = value ; }
+
+  vector< Window * > GetSelectedTimelines() const { return selectedTimelines ; }
+  void SetSelectedTimelines(vector< Window * > value) { selectedTimelines = value ; }
+
+  vector< Histogram * > GetSelectedHistograms() const { return selectedHistograms ; }
+  void SetSelectedHistograms(vector< Histogram * > value) { selectedHistograms = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -130,8 +160,13 @@ public:
   bool TransferDataFromWindow();
   
 ////@begin SaveConfigurationDialog member variables
+  wxChoice* choiceTraceSelector;
   wxCheckListBox* listTimelines;
+  wxButton* buttonSetAllTimelines;
+  wxButton* buttonUnsetAllTimelines;
   wxCheckListBox* listHistograms;
+  wxButton* buttonSetAllHistograms;
+  wxButton* buttonUnsetAllHistograms;
   wxCheckBox* optRelativeBegin;
   wxCheckBox* optRelativeEnd;
   wxCheckBox* optComputeSemantic;
@@ -140,11 +175,20 @@ public:
   wxCheckBox* optComputeLimits;
   wxCheckBox* optComputeGradient;
   wxTextCtrl* textDescription;
+  wxCheckBox* checkboxSaveCFGBasicMode;
 private:
   SaveOptions options;
   vector<Window *> timelines;
   vector<Histogram *> histograms;
+  Trace * initialTrace;
+  vector< Window * > selectedTimelines;
+  vector< Histogram * > selectedHistograms;
 ////@end SaveConfigurationDialog member variables
+  vector< string > traces;
+
+  Window    *FindWindow( const wxString &windowName );
+  Histogram *FindHistogram( const wxString &windowName );
+
 };
 
 #endif

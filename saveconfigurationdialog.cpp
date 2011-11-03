@@ -42,6 +42,7 @@
 ////@end includes
 
 #include "saveconfigurationdialog.h"
+#include "advancedsaveconfiguration.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -61,6 +62,16 @@ IMPLEMENT_DYNAMIC_CLASS( SaveConfigurationDialog, wxDialog )
 BEGIN_EVENT_TABLE( SaveConfigurationDialog, wxDialog )
 
 ////@begin SaveConfigurationDialog event table entries
+  EVT_CHOICE( ID_CHOICE_TRACE_SELECTOR, SaveConfigurationDialog::OnChoiceTraceSelectorSelected )
+
+  EVT_BUTTON( ID_BUTTON_SET_ALL_TIMELINES, SaveConfigurationDialog::OnButtonSetAllTimelinesClick )
+
+  EVT_BUTTON( ID_BUTTON_UNSET_ALL_TIMELINES, SaveConfigurationDialog::OnButtonUnsetAllTimelinesClick )
+
+  EVT_BUTTON( ID_BUTTON_SET_ALL_HISTOGRAMS, SaveConfigurationDialog::OnButtonSetAllHistogramsClick )
+
+  EVT_BUTTON( ID_BUTTON_UNSET_ALL_HISTOGRAMS, SaveConfigurationDialog::OnButtonUnsetAllHistogramsClick )
+
   EVT_BUTTON( wxID_SAVE, SaveConfigurationDialog::OnSaveClick )
 
 ////@end SaveConfigurationDialog event table entries
@@ -123,8 +134,14 @@ SaveConfigurationDialog::~SaveConfigurationDialog()
 void SaveConfigurationDialog::Init()
 {
 ////@begin SaveConfigurationDialog member initialisation
+  initialTrace = NULL;
+  choiceTraceSelector = NULL;
   listTimelines = NULL;
+  buttonSetAllTimelines = NULL;
+  buttonUnsetAllTimelines = NULL;
   listHistograms = NULL;
+  buttonSetAllHistograms = NULL;
+  buttonUnsetAllHistograms = NULL;
   optRelativeBegin = NULL;
   optRelativeEnd = NULL;
   optComputeSemantic = NULL;
@@ -133,6 +150,7 @@ void SaveConfigurationDialog::Init()
   optComputeLimits = NULL;
   optComputeGradient = NULL;
   textDescription = NULL;
+  checkboxSaveCFGBasicMode = NULL;
 ////@end SaveConfigurationDialog member initialisation
 }
 
@@ -153,83 +171,124 @@ void SaveConfigurationDialog::CreateControls()
   itemBoxSizer2->Add(itemBoxSizer3, 2, wxGROW|wxALL, 0);
 
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer3->Add(itemBoxSizer4, 1, wxGROW|wxALL, 5);
+  itemBoxSizer3->Add(itemBoxSizer4, 2, wxGROW|wxALL, 5);
 
-  wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timelines"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
+  wxArrayString choiceTraceSelectorStrings;
+  choiceTraceSelector = new wxChoice( itemDialog1, ID_CHOICE_TRACE_SELECTOR, wxDefaultPosition, wxDefaultSize, choiceTraceSelectorStrings, 0 );
+  itemBoxSizer4->Add(choiceTraceSelector, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer4->Add(itemBoxSizer6, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+
+  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer6->Add(itemBoxSizer7, 1, wxGROW|wxRIGHT|wxTOP, 5);
+
+  wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timelines"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer7->Add(itemStaticText8, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   wxArrayString listTimelinesStrings;
   listTimelines = new wxCheckListBox( itemDialog1, ID_LISTTIMELINES, wxDefaultPosition, wxSize(200, -1), listTimelinesStrings, wxLB_SINGLE );
-  itemBoxSizer4->Add(listTimelines, 1, wxGROW|wxALL, 5);
+  itemBoxSizer7->Add(listTimelines, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer3->Add(itemBoxSizer7, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer7->Add(itemBoxSizer10, 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
-  wxStaticText* itemStaticText8 = new wxStaticText( itemDialog1, wxID_STATIC, _("Histograms"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer7->Add(itemStaticText8, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
+  buttonSetAllTimelines = new wxButton( itemDialog1, ID_BUTTON_SET_ALL_TIMELINES, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(buttonSetAllTimelines, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  buttonUnsetAllTimelines = new wxButton( itemDialog1, ID_BUTTON_UNSET_ALL_TIMELINES, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer10->Add(buttonUnsetAllTimelines, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer6->Add(itemBoxSizer13, 1, wxGROW|wxLEFT|wxTOP, 5);
+
+  wxStaticText* itemStaticText14 = new wxStaticText( itemDialog1, wxID_STATIC, _("Histograms"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer13->Add(itemStaticText14, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   wxArrayString listHistogramsStrings;
   listHistograms = new wxCheckListBox( itemDialog1, ID_LISTHISTOGRAMS, wxDefaultPosition, wxSize(200, -1), listHistogramsStrings, wxLB_SINGLE );
-  itemBoxSizer7->Add(listHistograms, 1, wxGROW|wxALL, 5);
+  itemBoxSizer13->Add(listHistograms, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer3->Add(itemBoxSizer10, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer13->Add(itemBoxSizer16, 0, wxALIGN_CENTER_HORIZONTAL, 5);
 
-  wxStaticBox* itemStaticBoxSizer11Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Timeline options"));
-  wxStaticBoxSizer* itemStaticBoxSizer11 = new wxStaticBoxSizer(itemStaticBoxSizer11Static, wxVERTICAL);
-  itemBoxSizer10->Add(itemStaticBoxSizer11, 3, wxGROW|wxALL, 5);
+  buttonSetAllHistograms = new wxButton( itemDialog1, ID_BUTTON_SET_ALL_HISTOGRAMS, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer16->Add(buttonSetAllHistograms, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  buttonUnsetAllHistograms = new wxButton( itemDialog1, ID_BUTTON_UNSET_ALL_HISTOGRAMS, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer16->Add(buttonUnsetAllHistograms, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer3->Add(itemBoxSizer19, 1, wxGROW|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer20Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Timeline options "));
+  wxStaticBoxSizer* itemStaticBoxSizer20 = new wxStaticBoxSizer(itemStaticBoxSizer20Static, wxVERTICAL);
+  itemBoxSizer19->Add(itemStaticBoxSizer20, 3, wxGROW|wxALL, 5);
 
   optRelativeBegin = new wxCheckBox( itemDialog1, ID_CHECKBEGIN, _("Relative begin time"), wxDefaultPosition, wxDefaultSize, 0 );
   optRelativeBegin->SetValue(false);
-  itemStaticBoxSizer11->Add(optRelativeBegin, 1, wxALIGN_LEFT|wxALL, 5);
+  itemStaticBoxSizer20->Add(optRelativeBegin, 1, wxALIGN_LEFT|wxALL, 5);
 
   optRelativeEnd = new wxCheckBox( itemDialog1, ID_CHECKEND, _("Relative end time"), wxDefaultPosition, wxDefaultSize, 0 );
   optRelativeEnd->SetValue(false);
-  itemStaticBoxSizer11->Add(optRelativeEnd, 1, wxALIGN_LEFT|wxALL, 5);
+  itemStaticBoxSizer20->Add(optRelativeEnd, 1, wxALIGN_LEFT|wxALL, 5);
 
   optComputeSemantic = new wxCheckBox( itemDialog1, ID_CHECKSEMANTIC, _("Compute semantic scale"), wxDefaultPosition, wxDefaultSize, 0 );
   optComputeSemantic->SetValue(false);
-  itemStaticBoxSizer11->Add(optComputeSemantic, 1, wxALIGN_LEFT|wxALL, 5);
+  itemStaticBoxSizer20->Add(optComputeSemantic, 1, wxALIGN_LEFT|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer15Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Histogram options"));
-  wxStaticBoxSizer* itemStaticBoxSizer15 = new wxStaticBoxSizer(itemStaticBoxSizer15Static, wxVERTICAL);
-  itemBoxSizer10->Add(itemStaticBoxSizer15, 5, wxGROW|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer24Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Histogram options "));
+  wxStaticBoxSizer* itemStaticBoxSizer24 = new wxStaticBoxSizer(itemStaticBoxSizer24Static, wxVERTICAL);
+  itemBoxSizer19->Add(itemStaticBoxSizer24, 5, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   radioAllTrace = new wxRadioButton( itemDialog1, ID_RADIOALLTRACE, _("All trace"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioAllTrace->SetValue(false);
-  itemStaticBoxSizer15->Add(radioAllTrace, 1, wxALIGN_LEFT|wxALL, 5);
+  itemStaticBoxSizer24->Add(radioAllTrace, 1, wxALIGN_LEFT|wxALL, 5);
 
   radioAllWindow = new wxRadioButton( itemDialog1, ID_RADIOALLWINDOW, _("All window"), wxDefaultPosition, wxDefaultSize, 0 );
   radioAllWindow->SetValue(false);
-  itemStaticBoxSizer15->Add(radioAllWindow, 1, wxGROW|wxALL, 5);
+  itemStaticBoxSizer24->Add(radioAllWindow, 1, wxGROW|wxALL, 5);
 
-  wxStaticLine* itemStaticLine18 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemStaticBoxSizer15->Add(itemStaticLine18, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticLine* itemStaticLine27 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemStaticBoxSizer24->Add(itemStaticLine27, 1, wxGROW|wxLEFT|wxRIGHT, 5);
 
   optComputeLimits = new wxCheckBox( itemDialog1, ID_CHECKLIMITS, _("Compute min, max, delta limits"), wxDefaultPosition, wxDefaultSize, 0 );
   optComputeLimits->SetValue(false);
-  itemStaticBoxSizer15->Add(optComputeLimits, 1, wxALIGN_LEFT|wxALL, 5);
+  itemStaticBoxSizer24->Add(optComputeLimits, 1, wxALIGN_LEFT|wxALL, 5);
 
   optComputeGradient = new wxCheckBox( itemDialog1, ID_CHECKGRADIENT, _("Compute gradient limits"), wxDefaultPosition, wxDefaultSize, 0 );
   optComputeGradient->SetValue(false);
-  itemStaticBoxSizer15->Add(optComputeGradient, 1, wxALIGN_LEFT|wxALL, 5);
+  itemStaticBoxSizer24->Add(optComputeGradient, 1, wxALIGN_LEFT|wxALL, 5);
 
-  wxStaticText* itemStaticText21 = new wxStaticText( itemDialog1, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer2->Add(itemStaticText21, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 5);
+  wxStaticText* itemStaticText30 = new wxStaticText( itemDialog1, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer2->Add(itemStaticText30, 0, wxALIGN_LEFT|wxALL, 5);
 
   textDescription = new wxTextCtrl( itemDialog1, ID_TEXTDESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
-  itemBoxSizer2->Add(textDescription, 1, wxGROW|wxALL, 5);
+  itemBoxSizer2->Add(textDescription, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer23 = new wxStdDialogButtonSizer;
+  wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer32, 0, wxGROW|wxALL, 5);
 
-  itemBoxSizer2->Add(itemStdDialogButtonSizer23, 0, wxALIGN_RIGHT|wxALL, 5);
-  wxButton* itemButton24 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer23->AddButton(itemButton24);
+  itemBoxSizer32->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxButton* itemButton25 = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer23->AddButton(itemButton25);
+  checkboxSaveCFGBasicMode = new wxCheckBox( itemDialog1, ID_CHECKBOX_SAVE_BASIC_MODE, _("Save whole CFG in basic mode"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkboxSaveCFGBasicMode->SetValue(false);
+  if (SaveConfigurationDialog::ShowToolTips())
+    checkboxSaveCFGBasicMode->SetToolTip(_("In basic mode, for every timeline or histogram selected in this dialog you can declare which properties can be renamed or hidden. Differences will be displayed in main window every time CFG's been loaded.\nIn normal mode all properties are showed in main window."));
+  itemBoxSizer32->Add(checkboxSaveCFGBasicMode, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemStdDialogButtonSizer23->Realize();
+  itemBoxSizer32->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer36 = new wxStdDialogButtonSizer;
+
+  itemBoxSizer32->Add(itemStdDialogButtonSizer36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxButton* itemButton37 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer36->AddButton(itemButton37);
+
+  wxButton* itemButton38 = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer36->AddButton(itemButton38);
+
+  itemStdDialogButtonSizer36->Realize();
 
 ////@end SaveConfigurationDialog content construction
 }
@@ -273,14 +332,77 @@ wxIcon SaveConfigurationDialog::GetIconResource( const wxString& name )
 
 bool SaveConfigurationDialog::TransferDataToWindow()
 {
+  // Build selector of traces from list of windows/histograms ( we can have loaded traces without windows )
+  set< string > auxTraces;
+  
+  for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  {
+    auxTraces.insert( (*it)->getTrace()->getTraceNameNumbered() );
+  }
+
+  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  {
+    auxTraces.insert( (*it)->getTrace()->getTraceNameNumbered() );
+  }
+
+
+  traces.push_back( "All traces" );
+  traces.insert( ++traces.begin(), auxTraces.begin(), auxTraces.end() );
+  
+  wxString aux;
+  int firstSelection = 0;
+  int pos = 0;
+  for( vector< string >::iterator it = traces.begin(); it != traces.end(); ++it )
+  {
+    // Append trace to widget
+    aux << wxString::FromAscii( (*it).c_str() );
+    choiceTraceSelector->Append( aux );
+    aux.clear();
+
+    // Autoselection
+    if ( initialTrace != NULL )
+    {
+      if( initialTrace->getTraceNameNumbered() != (*it) )
+      {
+        pos++;
+      }
+      else
+      {
+        firstSelection = pos;
+      }
+    }
+  }
+
+  choiceTraceSelector->SetSelection( firstSelection );
+
+  // Timelines
   wxArrayString items;
   for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
-    items.Add( wxString::FromAscii( (*it)->getName().c_str() ) + _( " @ " ) + wxString::FromAscii( (*it)->getTrace()->getTraceName().c_str() ) );
+  {
+    if ( firstSelection == 0 ||
+         initialTrace->getTraceNameNumbered() == (*it)->getTrace()->getTraceNameNumbered()  )
+    {
+      items.Add( wxString::FromAscii(
+              (*it)->getName().c_str() ) +
+              _( " @ " ) +
+              wxString::FromAscii( (*it)->getTrace()->getTraceNameNumbered().c_str() ) );
+    }
+  }
   listTimelines->InsertItems( items, 0 );
 
+  // Histograms
   items.Clear();
   for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
-    items.Add( wxString::FromAscii( (*it)->getName().c_str() ) + _( " @ " ) + wxString::FromAscii( (*it)->getTrace()->getTraceName().c_str() ) );
+  {
+    if ( firstSelection == 0 ||
+         initialTrace->getTraceNameNumbered() == (*it)->getTrace()->getTraceNameNumbered()  )
+    {
+      items.Add( wxString::FromAscii(
+              (*it)->getName().c_str() ) +
+              _( " @ " ) +
+              wxString::FromAscii( (*it)->getTrace()->getTraceNameNumbered().c_str() ) );
+    }
+  }
   listHistograms->InsertItems( items, 0 );
 
   optRelativeBegin->SetValue( options.windowBeginTimeRelative );
@@ -290,9 +412,51 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   optComputeLimits->SetValue( options.histoComputeYScale );
   optComputeGradient->SetValue( options.histoComputeGradient );
 
+  // CFG4D
+  checkboxSaveCFGBasicMode->SetValue( options.enabledCFG4DMode );
+
   return true;
 }
 
+
+Window *SaveConfigurationDialog::FindWindow( const wxString &windowName )
+{
+  Window *elem = NULL;
+
+  for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  {
+    if ( wxString::FromAscii(
+                (*it)->getName().c_str() ) +
+                _( " @ " ) +
+                wxString::FromAscii( (*it)->getTrace()->getTraceNameNumbered().c_str() ) ==
+         windowName )
+    {
+      elem = (*it);
+    }
+  }
+
+  return elem;
+}
+
+
+Histogram *SaveConfigurationDialog::FindHistogram( const wxString &windowName )
+{
+  Histogram *elem = NULL;
+
+  for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  {
+    if ( wxString::FromAscii(
+                (*it)->getName().c_str() ) +
+                _( " @ " ) +
+                wxString::FromAscii( (*it)->getTrace()->getTraceNameNumbered().c_str() ) ==
+         windowName )
+    {
+      elem = (*it);
+    }
+  }
+
+  return elem;
+}
 
 bool SaveConfigurationDialog::TransferDataFromWindow()
 {
@@ -300,19 +464,19 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   for( size_t i = 0; i < listTimelines->GetCount(); ++i )
   {
     if( listTimelines->IsChecked( i ) )
-      tmpTimelines.push_back( timelines[ i ] );
+      tmpTimelines.push_back( FindWindow( listTimelines->GetString( i ) ) );
   }
-  timelines.clear();
-  timelines = tmpTimelines;
+  selectedTimelines.clear();
+  selectedTimelines = tmpTimelines;
   
   vector<Histogram *> tmpHistograms;
   for( size_t i = 0; i < listHistograms->GetCount(); ++i )
   {
     if( listHistograms->IsChecked( i ) )
-      tmpHistograms.push_back( histograms[ i ] );
+      tmpHistograms.push_back( FindHistogram( listHistograms->GetString( i ) ) );
   }
-  histograms.clear();
-  histograms = tmpHistograms;
+  selectedHistograms.clear();
+  selectedHistograms = tmpHistograms;
   
   options.windowBeginTimeRelative = optRelativeBegin->GetValue();
   options.windowScaleRelative = optRelativeEnd->GetValue();
@@ -321,6 +485,9 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   options.histoComputeYScale = optComputeLimits->GetValue();
   options.histoComputeGradient = optComputeGradient->GetValue();
   options.description = std::string( textDescription->GetValue().mb_str() );
+
+  // CFG4D
+  options.enabledCFG4DMode = checkboxSaveCFGBasicMode->GetValue();
 
   return true;
 }
@@ -333,14 +500,124 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
 void SaveConfigurationDialog::OnSaveClick( wxCommandEvent& event )
 {
   TransferDataFromWindow();
-  if( timelines.begin() == timelines.end() &&
-      histograms.begin() == histograms.end() )
+  if( selectedTimelines.begin() == selectedTimelines.end() && 
+      selectedHistograms.begin() == selectedHistograms.end() )
   {
     wxMessageDialog message( this, _( "No timeline or histogram selected." ), _( "Warning" ), wxOK );
     message.ShowModal();
     //EndModal( wxID_OK );//EndModal( wxID_CANCEL );
   }
   else
-    EndModal( wxID_OK );
+  {
+    // CFG4D mode?
+    if ( options.enabledCFG4DMode )
+    {
+      AdvancedSaveConfiguration tagEditorDialog( (wxWindow *)this, selectedTimelines, selectedHistograms );
+      if ( tagEditorDialog.ShowModal() == wxID_OK )
+      {
+        EndModal( wxID_OK );
+      }
+    }
+    else
+    {
+      EndModal( wxID_OK );
+    }
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_TIMELINES
+ */
+
+void SaveConfigurationDialog::OnButtonSetAllTimelinesClick( wxCommandEvent& event )
+{
+  for( unsigned int i = 0; i <= listTimelines->GetCount(); ++i )
+  {
+    listTimelines->Check( i, true );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_TIMELINES
+ */
+
+void SaveConfigurationDialog::OnButtonUnsetAllTimelinesClick( wxCommandEvent& event )
+{
+  for( unsigned int i = 0; i <= listTimelines->GetCount(); ++i )
+  {
+    listTimelines->Check( i, false );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_HISTOGRAMS
+ */
+
+void SaveConfigurationDialog::OnButtonSetAllHistogramsClick( wxCommandEvent& event )
+{
+  for( unsigned  int i = 0; i <= listHistograms->GetCount(); ++i )
+  {
+    listHistograms->Check( i, true );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_UNSET_ALL_HISTOGRAMS
+ */
+
+void SaveConfigurationDialog::OnButtonUnsetAllHistogramsClick( wxCommandEvent& event )
+{
+  for( unsigned int i = 0; i <= listHistograms->GetCount(); ++i )
+  {
+    listHistograms->Check( i, false );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_TRACE_SELECTOR
+ */
+
+void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& event )
+{
+  int index = choiceTraceSelector->GetSelection();
+  string selectedTrace;
+  if ( index > 0 )
+    selectedTrace = traces[ index ];
+
+  wxArrayString items;
+
+  // Timelines
+  listTimelines->Clear();
+  for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  {
+    string currentTrace = (*it)->getTrace()->getTraceNameNumbered();
+    if ( index == 0 || selectedTrace == currentTrace )
+    {
+      items.Add( wxString::FromAscii( (*it)->getName().c_str() ) +
+                                      _( " @ " ) +
+                                      wxString::FromAscii( currentTrace.c_str() ) );
+    }
+  }
+  listTimelines->InsertItems( items, 0 );
+
+  // Histograms
+  listHistograms->Clear();
+  items.Clear();
+  for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
+  {
+    string currentTrace = (*it)->getTrace()->getTraceNameNumbered();
+    if ( index == 0 || selectedTrace == currentTrace )
+    {
+      items.Add( wxString::FromAscii( (*it)->getName().c_str() ) +
+                                      _( " @ " ) +
+                                      wxString::FromAscii( currentTrace.c_str() ) );
+    }
+  }
+  listHistograms->InsertItems( items, 0 );
 }
 
