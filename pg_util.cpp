@@ -812,20 +812,6 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     windowProperties->Append( tmpSelector );
   }
 
- wxPropertyGridIterator it = windowProperties->GetIterator();
- while (!it.AtEnd())
- {
-   wxPGProperty *auxProp = it.GetProperty();
-   cout << auxProp->GetName() << endl;
-   if ( auxProp->GetName().Cmp(_("Event type.TypeFunction")) == 0 )
-     cout << "FOUND" << endl;
-        
-   it.Next();
- }
-
-
-
-
   wxPGId dummyPGId = (wxPGId)NULL; // used to append always to windowProperties
 
   // windowProperties->Append( new wxStringProperty( wxT( "Name" ), wxPG_LABEL, wxString::FromAscii( whichWindow->getName().c_str() ) ) );
