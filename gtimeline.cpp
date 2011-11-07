@@ -898,11 +898,7 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
   {
     if( !splitChanged )
     {
-#ifdef WIN32
-      myWindow->setWidth( GetSize().GetWidth() );
-#else
       myWindow->setWidth( event.GetSize().GetWidth() );
-#endif
       myWindow->setHeight( event.GetSize().GetHeight() );
     }
     timerSize->Start( 100, true );
@@ -1191,18 +1187,15 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
     titleBarSize = paraverMain::defaultTitleBarSize;
   wxPoint position =  wxPoint( GetPosition().x + titleBarSize.GetHeight(),
                                GetPosition().y + titleBarSize.GetHeight() );
-#ifdef WIN32
-  wxSize size = wxSize( clonedWindow->getWidth(), clonedWindow->getHeight() + titleBarSize.GetHeight() );
-#else
   wxSize size = wxSize( clonedWindow->getWidth(), clonedWindow->getHeight() );
-#endif
 
   string composedName = myWindow->getName() + " @ " +
                         myWindow->getTrace()->getTraceNameNumbered();
 
 //  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxT( myWindow->getName().c_str() ), position, size );
-  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), position, size );
+  gTimeline *clonedTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), position );
   clonedTimeline->SetMyWindow( clonedWindow );
+  clonedTimeline->SetClientSize( size );
   clonedWindow->setPixelSize( myWindow->getPixelSize() );
 
   // add to loaded windows list
@@ -2149,7 +2142,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
 void gTimeline::resizeDrawZone( int width, int height )
 {
   canRedraw = false;
-  drawZone->SetClientSize( width, height );
+//  drawZone->SetClientSize( width, height );
   if( !splitter->IsSplit() )
     this->SetClientSize( width, height );
   else

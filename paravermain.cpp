@@ -1983,11 +1983,7 @@ void paraverMain::OnMenusavecfgUpdate( wxUpdateUIEvent& event )
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL
  */
-#ifdef WIN32
-wxSize paraverMain::defaultWindowSize = wxSize( 600, 130 );
-#else
 wxSize paraverMain::defaultWindowSize = wxSize( 600, 115 );
-#endif
 int paraverMain::initialPosX = 0;
 int paraverMain::initialPosY = 0;
 
