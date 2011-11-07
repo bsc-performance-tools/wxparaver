@@ -94,7 +94,7 @@ void AppendCFG4DBoolPropertyWindow( wxPropertyGrid* windowProperties,
       windowProperties->Append( auxProperty );
     }
   }
-  else if ( !whichWindow->isDerivedWindow() && 
+  else if ( !whichWindow->isDerivedWindow() &&
             whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
   {
     // CFG4D mode (single timeline)
@@ -105,7 +105,7 @@ void AppendCFG4DBoolPropertyWindow( wxPropertyGrid* windowProperties,
 
     windowProperties->Append( auxProperty );
   }
-  else if ( whichWindow->isDerivedWindow() && 
+  else if ( whichWindow->isDerivedWindow() &&
             whichWindow->existsCFG4DAlias(
                     DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
   {
