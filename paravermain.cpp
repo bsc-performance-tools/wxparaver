@@ -823,16 +823,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     if( currentTimeline != NULL )
     {
       currentTimeline->setCFG4DMode( property->GetValue().GetLong() == 1 );
-      currentTimeline->setRedraw( true );
-
-      // no change if we don't update directly!
-      updateTimelineProperties( windowProperties, currentTimeline );
-
+      currentTimeline->setChanged( true );
     }
     else if ( currentHisto != NULL )
     {
       currentHisto->setCFG4DMode( property->GetValue().GetLong() == 1 );
-      currentHisto->setRedraw( true );
+      currentHisto->setChanged( true );
     }
   }
   else if( propName == _( "Name" ) )
