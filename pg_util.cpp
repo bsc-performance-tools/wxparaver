@@ -2158,17 +2158,32 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   tmpV.clear();
   arrayStr.Clear();
   arrayInt.Clear();
-  whichHisto->getStatisticsLabels( tmpV, selected );
+
+  bool getOriginalList = ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() );
+  whichHisto->getStatisticsLabels( tmpV, selected, getOriginalList );
+
+  string selectedStat;
+  if ( getOriginalList )
+  {
+    selectedStat = whichHisto->getCurrentStat();
+  }
+  else
+  {
+    map< string, string > statList( whichHisto->getCFG4DStatisticsAliasList() );
+    selectedStat = statList[  whichHisto->getCurrentStat() ];
+  }
+
   pos = 0;
   selected = -1;
   for( vector<string>::iterator it = tmpV.begin(); it != tmpV.end(); ++it )
   {
     arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
     arrayInt.Add( pos );
-    if( (*it) == whichHisto->getCurrentStat() )
+    if( (*it) == selectedStat )
       selected = pos;
     pos++;
   }
+
   if( selected == -1 ) selected = 0;
 
 //  windowProperties->AppendIn( statCat, new wxEnumProperty( wxT("Statistic"), wxPG_LABEL, arrayStr, arrayInt, selected ) );

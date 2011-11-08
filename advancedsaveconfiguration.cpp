@@ -74,6 +74,8 @@ const wxString AdvancedSaveConfiguration::KTextCtrlSuffix = AdvancedSaveConfigur
                                                             _( "TXTCTRL" );
 const wxString AdvancedSaveConfiguration::KCheckBoxSuffix = AdvancedSaveConfiguration::KSuffixSeparator +
                                                             _( "CHECKBOX" );
+const wxString AdvancedSaveConfiguration::KButtonSuffix   = AdvancedSaveConfiguration::KSuffixSeparator +
+                                                            _( "BUTTON" );
 
 /*!
  * AdvancedSaveConfiguration constructors
@@ -99,6 +101,7 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
 AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
                                                       const vector< Window * > &whichTimelines,
                                                       const vector< Histogram * > &whichHistograms,
+                                                      TEditorMode whichMode,
                                                       wxWindowID id,
                                                       const wxString& caption,
                                                       const wxPoint& pos,
@@ -109,6 +112,7 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
 
   timelines  = whichTimelines;
   histograms = whichHistograms;
+  editionMode = whichMode;
 
   Create( parent, id, caption, pos, size, style );
 }
@@ -154,9 +158,11 @@ void AdvancedSaveConfiguration::Init()
 ////@begin AdvancedSaveConfiguration member initialisation
   choiceWindow = NULL;
   scrolledWindow = NULL;
+  buttonSave = NULL;
 ////@end AdvancedSaveConfiguration member initialisation
   isTimeline = true;
   currentItem = 0;
+  editionMode = PROPERTIES_TAGS;
 }
 
 
@@ -189,8 +195,8 @@ void AdvancedSaveConfiguration::CreateControls()
   wxButton* itemButton7 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStdDialogButtonSizer6->AddButton(itemButton7);
 
-  wxButton* itemButton8 = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer6->AddButton(itemButton8);
+  buttonSave = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer6->AddButton(buttonSave);
 
   itemStdDialogButtonSizer6->Realize();
 
@@ -221,6 +227,17 @@ void AdvancedSaveConfiguration::CreateControls()
   }
 
   choiceWindow->SetSelection( currentItem );
+
+  if ( editionMode == HISTOGRAM_STATISTIC_TAGS )
+  {
+    SetTitle( _("Save Basic CFG - Statistics Editor") );
+    buttonSave->SetLabel( _("Ok") );
+    choiceWindow->Enable( false );
+
+    // doesn't work
+    SetPosition( wxPoint( GetParent()->GetPosition().x + 20 ,
+                          GetParent()->GetPosition().y + 20 ));
+  }
 }
 
 
@@ -295,6 +312,7 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
   wxBoxSizer *auxBoxSizer;
   wxCheckBox *auxCheckBox;
   wxTextCtrl *auxTextCtrl;
+  wxButton   *auxButton;
 
   wxBoxSizer *boxSizerCurrentItem = new wxBoxSizer( wxVERTICAL );
 
@@ -313,8 +331,16 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
                                   0,
                                   wxDefaultValidator,
                                   wxString::FromAscii( it->first.c_str() ) + KCheckBoxSuffix );
-    auxCheckBox->SetValue( enabledTag[ it->first ] );
-    auxBoxSizer->Add( auxCheckBox, 1, wxALIGN_LEFT | wxGROW | wxALL, 2 );
+    /*if ( editionMode == HISTOGRAM_STATISTIC_TAGS ) // && complete
+    {
+      auxCheckBox->SetValue( true );
+    }
+    else*/
+    {
+      auxCheckBox->SetValue( enabledTag[ it->first ] );
+    }
+
+    auxBoxSizer->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
 
     wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_LIST );
     wxArrayString forbiddenChars;
@@ -330,10 +356,45 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
                                   // wxTextValidator( wxFILTER_ALPHANUMERIC ),
                                   //excludeVerticalBar,
                                   wxString::FromAscii( it->first.c_str() ) + KTextCtrlSuffix ); 
-    auxTextCtrl->Enable( enabledTag[ it->first ] );
+    //if ( editionMode == HISTOGRAM_STATISTIC_TAGS ) // && complete
+    //{
+    //  auxCheckBox->SetValue( true );
+    //}
+    //else
+    {
+      auxTextCtrl->Enable( enabledTag[ it->first ] );
+    }
+
     auxTextCtrl->SetValidator( excludeVerticalBar );
 
-    auxBoxSizer->Add( auxTextCtrl, 1, wxEXPAND | wxGROW | wxALL, 2 );
+    auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
+
+    if ( editionMode == PROPERTIES_TAGS )
+    {
+      if( wxString::FromAscii( it->first.c_str() ) == _( "Statistic" ) )
+      {
+        auxButton = new wxButton( scrolledWindow,
+                                  wxID_ANY, _("..."),
+                                  wxDefaultPosition,
+                                  wxDefaultSize,
+                                  wxBU_EXACTFIT,
+                                  wxDefaultValidator,
+                                  wxString::FromAscii( it->first.c_str() ) + KButtonSuffix );
+        // auxBoxSizer->Add( auxButton, 0, wxEXPAND | wxGROW | wxALL, 2 );
+        auxButton->Enable( enabledTag[ it->first ] );
+        auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+
+        auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                        wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
+                        NULL,
+                        this ); 
+
+      }
+      else
+      {
+        auxBoxSizer->Add(2, 2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 1 );
+      }
+    }
 
     auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
                           wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
@@ -355,18 +416,44 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow )
                 currentWindow->getCFG4DAliasList(),
                 enabledTag,
                 renamedTag );
+
   BuildTagWidgets( currentWindow->getCFG4DFullTagList() );
 }
 
 
 void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram )
 {
+  vector< string > fullTagList;
+  int selected;
+
   // Build renamedTag and enabledTag maps
-  BuildTagMaps( currentHistogram->getCFG4DFullTagList(),
-                currentHistogram->getCFG4DAliasList(),
-                enabledTag,
-                renamedTag );
-  BuildTagWidgets( currentHistogram->getCFG4DFullTagList() );
+  switch ( editionMode )
+  {
+    case HISTOGRAM_STATISTIC_TAGS:
+      selected = ( currentHistogram->itsCommunicationStat( currentHistogram->getCurrentStat() ) )? 0 : 1;
+      currentHistogram->getStatisticsLabels( fullTagList, selected );
+      BuildTagMaps( fullTagList,
+                    currentHistogram->getCFG4DStatisticsAliasList(),
+                    enabledTag,
+                    renamedTag );
+      break;
+    case PROPERTIES_TAGS:
+      fullTagList = currentHistogram->getCFG4DFullTagList();
+      BuildTagMaps( fullTagList,
+                    currentHistogram->getCFG4DAliasList(),
+                    enabledTag,
+                    renamedTag );
+      break;
+    default: // PROPERTIES_TAGS
+      fullTagList = currentHistogram->getCFG4DFullTagList();
+      BuildTagMaps( fullTagList,
+                    currentHistogram->getCFG4DAliasList(),
+                    enabledTag,
+                    renamedTag );
+      break;
+  }
+
+  BuildTagWidgets( fullTagList );
 }
 
 /*!
@@ -421,13 +508,23 @@ wxTextCtrl *AdvancedSaveConfiguration::GetTextCtrlByName( const wxString& widget
 }
 
 
+wxButton *AdvancedSaveConfiguration::GetButtonByName( const wxString& widgetName ) const
+{
+  wxString currentButtonName = widgetName + KButtonSuffix;
+  wxWindow *relatedwxWidget = scrolledWindow->FindWindowByName( currentButtonName );
+  return static_cast<wxButton *>( relatedwxWidget );
+}
+
 void AdvancedSaveConfiguration::OnCheckBoxClicked( wxCommandEvent& event )
 {
   wxCheckBox *currentCheckBox = static_cast<wxCheckBox *>( event.GetEventObject() );
   wxString currentTextCtrlName = currentCheckBox->GetName().BeforeLast( KSuffixSeparator[0] );
   GetTextCtrlByName( currentTextCtrlName )->Enable( currentCheckBox->GetValue() );
-}
 
+  wxButton *relatedButton = GetButtonByName( currentTextCtrlName );
+  if ( relatedButton != NULL )
+    relatedButton->Enable( currentCheckBox->GetValue() );
+}
 
 void AdvancedSaveConfiguration::PreparePanel()
 {
@@ -441,7 +538,18 @@ void AdvancedSaveConfiguration::PreparePanel()
   }
   else
   {
-    auxMap = histograms[ currentItem ]->getCFG4DAliasList();
+    switch ( editionMode )
+    {
+      case HISTOGRAM_STATISTIC_TAGS:
+        auxMap = histograms[ currentItem ]->getCFG4DStatisticsAliasList();
+        break;
+      case PROPERTIES_TAGS:
+        auxMap = histograms[ currentItem ]->getCFG4DAliasList();
+        break;
+      default:
+        auxMap = histograms[ currentItem ]->getCFG4DAliasList();
+        break;
+    }
   }
 
 
@@ -494,7 +602,17 @@ void AdvancedSaveConfiguration::TransferDataFromPanel()
   {
     histograms[ currentItem ]->setCFG4DEnabled( true );
     histograms[ currentItem ]->setCFG4DMode( true );
-    histograms[ currentItem ]->setCFG4DAliasList( renamedTag );
+
+    switch ( editionMode )
+    {
+      case HISTOGRAM_STATISTIC_TAGS:
+        histograms[ currentItem ]->setCFG4DStatisticsAliasList( renamedTag );
+        break;
+      case PROPERTIES_TAGS:
+        histograms[ currentItem ]->setCFG4DAliasList( renamedTag );
+      default:
+        break;
+    }
   }
 }
 
@@ -541,4 +659,20 @@ int AdvancedSaveConfiguration::GetSelectionIndexCorrected( int index, bool &isTi
   }
 
   return index;
+}
+
+
+void AdvancedSaveConfiguration::OnStatisticsButtonClick( wxCommandEvent& event )
+{
+  vector< Window * > dummy;
+  vector< Histogram * > onlyCurrentHistogram;
+
+  onlyCurrentHistogram.push_back( histograms[ currentItem ] );
+
+  AdvancedSaveConfiguration statisticsEditorDialog(
+          (wxWindow *)this, dummy, onlyCurrentHistogram,
+          AdvancedSaveConfiguration::HISTOGRAM_STATISTIC_TAGS );
+  if ( statisticsEditorDialog.ShowModal() == wxID_OK )
+  {
+  }
 }

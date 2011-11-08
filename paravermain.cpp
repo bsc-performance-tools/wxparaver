@@ -1004,7 +1004,25 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   }
   else if( propName == _( "Statistic" ) )
   {
-    currentHisto->setCurrentStat( std::string( property->GetDisplayedString().mb_str() ) );
+    bool getOriginalList = ( !currentHisto->getCFG4DEnabled() || !currentHisto->getCFG4DMode() );
+    if ( getOriginalList )
+    {
+      currentHisto->setCurrentStat( std::string( property->GetDisplayedString().mb_str() ) );
+    }
+    else
+    {
+      map< string, string > statList( currentHisto->getCFG4DStatisticsAliasList() );
+      string selected( std::string( property->GetDisplayedString().mb_str() ) );
+      for ( map< string, string >::iterator it = statList.begin(); it != statList.end(); ++it )
+      {
+        if ( it->second == selected )
+        {
+          selected = it->first;
+        }
+      }
+      currentHisto->setCurrentStat( selected );
+    }
+
     currentHisto->setRedraw( true );
   }
   else if( propName == _( "3D3rdWindow" ) )

@@ -78,6 +78,13 @@ class AdvancedSaveConfiguration: public wxDialog
   DECLARE_EVENT_TABLE()
 
 public:
+
+  enum TEditorMode
+  {
+    PROPERTIES_TAGS,
+    HISTOGRAM_STATISTIC_TAGS
+  };
+
   /// Constructors
   AdvancedSaveConfiguration();
   AdvancedSaveConfiguration( wxWindow* parent,
@@ -89,23 +96,13 @@ public:
   AdvancedSaveConfiguration( wxWindow* parent,
                              const vector< Window * > &whichTimelines,
                              const vector< Histogram * > &whichHistograms,
+                             TEditorMode mode = PROPERTIES_TAGS,
                              wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
                              const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
                              const wxPoint& pos = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION,
                              const wxSize& size = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
                              long style = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
-  AdvancedSaveConfiguration( wxWindow* parent,
-                             const wxString &whichWindowName,
-                             const bool isTimeline,
-                             const unsigned int currentNumber,
-                             const unsigned int numberOfWindows,
-                             const map< string, string > &whichRenamedTags,
-                             const vector< string > &allTags,
-                             wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
-                             const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
-                             const wxPoint& pos = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION,
-                             const wxSize& size = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
-                             long style = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
+
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME, const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE, const wxPoint& pos = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION, const wxSize& size = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE, long style = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
 
@@ -143,6 +140,7 @@ public:
 ////@begin AdvancedSaveConfiguration member variables
   wxChoice* choiceWindow;
   wxScrolledWindow* scrolledWindow;
+  wxButton* buttonSave;
 ////@end AdvancedSaveConfiguration member variables
 
     //bool TransferDataFromWindow();
@@ -154,6 +152,7 @@ public:
     const static wxString KSuffixSeparator;
     const static wxString KCheckBoxSuffix;
     const static wxString KTextCtrlSuffix;
+    const static wxString KButtonSuffix;
 
   private:
     bool isTimeline;
@@ -165,6 +164,8 @@ public:
     map< string, string > renamedTag;
     map< string, bool > enabledTag;
     bool enabledCFG4DMode;
+
+    TEditorMode editionMode;
 
     int GetSelectionIndexCorrected( int index, bool &isTimeline );
 
@@ -187,7 +188,10 @@ public:
 
     wxCheckBox *GetCheckBoxByName( const wxString& widgetName ) const;
     wxTextCtrl *GetTextCtrlByName( const wxString& widgetName ) const;
+    wxButton *GetButtonByName( const wxString& widgetName ) const;
+
     void OnCheckBoxClicked( wxCommandEvent& event );
+    void OnStatisticsButtonClick( wxCommandEvent& event );
 };
 
 #endif
