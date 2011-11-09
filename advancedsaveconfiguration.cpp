@@ -265,12 +265,15 @@ void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel()
 {
   for( map< string, string >::iterator it = renamedTag.begin(); it != renamedTag.end(); ++it )
   {
-    wxString currentCheckBoxName = wxString::FromAscii( it->first.c_str() );
-    GetCheckBoxByName( currentCheckBoxName )->Disconnect(
-            wxEVT_COMMAND_CHECKBOX_CLICKED,
-            wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
-            NULL,
-            this );
+    if ( allowedLevel( it->first ) )
+    {
+      wxString currentCheckBoxName = wxString::FromAscii( it->first.c_str() );
+      GetCheckBoxByName( currentCheckBoxName )->Disconnect(
+              wxEVT_COMMAND_CHECKBOX_CLICKED,
+              wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
+              NULL,
+              this );
+    }
   }
 }
 
@@ -304,6 +307,64 @@ void AdvancedSaveConfiguration::BuildTagMaps( const vector< string > &fullTagLis
   whichRenamedFullTagList = auxRenamedFullTagsList;
 }
 
+bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
+{
+  bool allowed = false;
+ 
+
+  if ( isTimeline )
+  {
+    Window *currentWindow = timelines[ currentItem ];
+    if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSEWORKLOAD ] ||
+         tag == SingleTimelinePropertyLabels[ SINGLE_WORKLOAD ] )
+    {
+      if ( currentWindow->getLevel() == WORKLOAD )
+        allowed = true;
+    }
+    else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSEAPPL ] ||
+              tag == SingleTimelinePropertyLabels[ SINGLE_APPLICATION ] )
+    {
+      if ( currentWindow->getLevel() >= WORKLOAD && currentWindow->getLevel() <= APPLICATION )
+        allowed = true;
+    }
+    else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSETASK ] ||
+              tag == SingleTimelinePropertyLabels[ SINGLE_TASK ] )
+    {
+      if ( currentWindow->getLevel() >= WORKLOAD && currentWindow->getLevel() <= TASK )
+        allowed = true;
+    }
+    else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSETHREAD ] ||
+              tag == SingleTimelinePropertyLabels[ SINGLE_THREAD ] )
+    {
+      allowed = true;
+    }
+    else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSESYSTEM ] ||
+              tag == SingleTimelinePropertyLabels[ SINGLE_SYSTEM ] )
+    {
+      if ( currentWindow->getLevel() == SYSTEM )
+        allowed = true;
+    }
+    else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSENODE ] ||
+              tag == SingleTimelinePropertyLabels[ SINGLE_NODE ] )
+    {
+      if ( currentWindow->getLevel() >= SYSTEM && currentWindow->getLevel() <= NODE )
+        allowed = true;
+    }
+    else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSECPU ] ||
+              tag == SingleTimelinePropertyLabels[ SINGLE_CPU ] )
+    {
+      if ( currentWindow->getLevel() >= SYSTEM && currentWindow->getLevel() <= CPU )
+        allowed = true;
+    }
+    else
+      allowed = true;
+  }
+  else
+    allowed = true;
+
+  return allowed;
+}
+
 
 void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTagList )
 {
@@ -319,88 +380,91 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
 
   for( vector< string >::const_iterator itOrd = fullTagList.begin(); itOrd != fullTagList.end(); ++itOrd )
   {
-    it = renamedTag.find( *itOrd );
-    auxBoxSizer = new wxBoxSizer( wxHORIZONTAL );
-
-    auxCheckBox = new wxCheckBox( scrolledWindow,
-                                  wxID_ANY,
-                                  wxString::FromAscii( it->first.c_str() ),
-                                  wxDefaultPosition,
-                                  wxDefaultSize,
-                                  0,
-                                  wxDefaultValidator,
-                                  wxString::FromAscii( it->first.c_str() ) + KCheckBoxSuffix );
-    /*if ( editionMode == HISTOGRAM_STATISTIC_TAGS ) // && complete
+    if ( allowedLevel( *itOrd ) )
     {
-      auxCheckBox->SetValue( true );
-    }
-    else*/
-    {
-      auxCheckBox->SetValue( enabledTag[ it->first ] );
-    }
+      it = renamedTag.find( *itOrd );
+      auxBoxSizer = new wxBoxSizer( wxHORIZONTAL );
 
-    auxBoxSizer->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
-
-    wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_LIST );
-    wxArrayString forbiddenChars;
-    forbiddenChars.Add( wxT('|') );
-    excludeVerticalBar.SetExcludes( forbiddenChars );
-    auxTextCtrl = new wxTextCtrl( scrolledWindow,
-                                  wxID_ANY,
-                                  wxString::FromAscii( it->second.c_str() ),
-                                  wxDefaultPosition,
-                                  wxDefaultSize,
-                                  0,
-                                  wxDefaultValidator,
-                                  // wxTextValidator( wxFILTER_ALPHANUMERIC ),
-                                  //excludeVerticalBar,
-                                  wxString::FromAscii( it->first.c_str() ) + KTextCtrlSuffix ); 
-    //if ( editionMode == HISTOGRAM_STATISTIC_TAGS ) // && complete
-    //{
-    //  auxCheckBox->SetValue( true );
-    //}
-    //else
-    {
-      auxTextCtrl->Enable( enabledTag[ it->first ] );
-    }
-
-    auxTextCtrl->SetValidator( excludeVerticalBar );
-
-    auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
-
-    if ( editionMode == PROPERTIES_TAGS )
-    {
-      if( wxString::FromAscii( it->first.c_str() ) == _( "Statistic" ) )
+      auxCheckBox = new wxCheckBox( scrolledWindow,
+                                    wxID_ANY,
+                                    wxString::FromAscii( it->first.c_str() ),
+                                    wxDefaultPosition,
+                                    wxDefaultSize,
+                                    0,
+                                    wxDefaultValidator,
+                                    wxString::FromAscii( it->first.c_str() ) + KCheckBoxSuffix );
+      /*if ( editionMode == HISTOGRAM_STATISTIC_TAGS ) // && complete
       {
-        auxButton = new wxButton( scrolledWindow,
-                                  wxID_ANY, _("..."),
-                                  wxDefaultPosition,
-                                  wxDefaultSize,
-                                  wxBU_EXACTFIT,
-                                  wxDefaultValidator,
-                                  wxString::FromAscii( it->first.c_str() ) + KButtonSuffix );
-        // auxBoxSizer->Add( auxButton, 0, wxEXPAND | wxGROW | wxALL, 2 );
-        auxButton->Enable( enabledTag[ it->first ] );
-        auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
-
-        auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
-                        wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
-                        NULL,
-                        this ); 
-
+        auxCheckBox->SetValue( true );
       }
-      else
+      else*/
       {
-        auxBoxSizer->Add(2, 2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 1 );
+        auxCheckBox->SetValue( enabledTag[ it->first ] );
       }
-    }
 
-    auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
-                          wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
+      auxBoxSizer->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
+
+      wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_LIST );
+      wxArrayString forbiddenChars;
+      forbiddenChars.Add( wxT('|') );
+      excludeVerticalBar.SetExcludes( forbiddenChars );
+      auxTextCtrl = new wxTextCtrl( scrolledWindow,
+                                    wxID_ANY,
+                                    wxString::FromAscii( it->second.c_str() ),
+                                    wxDefaultPosition,
+                                    wxDefaultSize,
+                                    0,
+                                    wxDefaultValidator,
+                                    // wxTextValidator( wxFILTER_ALPHANUMERIC ),
+                                    //excludeVerticalBar,
+                                    wxString::FromAscii( it->first.c_str() ) + KTextCtrlSuffix ); 
+      //if ( editionMode == HISTOGRAM_STATISTIC_TAGS ) // && complete
+      //{
+      //  auxCheckBox->SetValue( true );
+      //}
+      //else
+      {
+        auxTextCtrl->Enable( enabledTag[ it->first ] );
+      }
+
+      auxTextCtrl->SetValidator( excludeVerticalBar );
+
+      auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
+
+      if ( editionMode == PROPERTIES_TAGS )
+      {
+        if( wxString::FromAscii( it->first.c_str() ) == _( "Statistic" ) )
+        {
+          auxButton = new wxButton( scrolledWindow,
+                                    wxID_ANY, _("..."),
+                                    wxDefaultPosition,
+                                    wxDefaultSize,
+                                    wxBU_EXACTFIT,
+                                    wxDefaultValidator,
+                                    wxString::FromAscii( it->first.c_str() ) + KButtonSuffix );
+          // auxBoxSizer->Add( auxButton, 0, wxEXPAND | wxGROW | wxALL, 2 );
+          auxButton->Enable( enabledTag[ it->first ] );
+          auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+
+          auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                          wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
                           NULL,
                           this ); 
 
-    boxSizerCurrentItem->Add( auxBoxSizer, 0, wxGROW|wxALL, 2 );
+        }
+        else
+        {
+          auxBoxSizer->Add(2, 2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 1 );
+        }
+      }
+
+      auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
+                            wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
+                            NULL,
+                            this ); 
+
+      boxSizerCurrentItem->Add( auxBoxSizer, 0, wxGROW|wxALL, 2 );
+    }
   }
 
   scrolledWindow->SetSizer( boxSizerCurrentItem );
@@ -548,6 +612,9 @@ void AdvancedSaveConfiguration::PreparePanel()
 
   for( map< string, string >::iterator it = renamedTag.begin(); it != renamedTag.end(); ++it )
   {
+    if ( !allowedLevel( it->first ) )
+      continue;
+
     wxString currentTagName = wxString::FromAscii( it->first.c_str() );
     currentTextCtrl = GetTextCtrlByName( currentTagName );
 
@@ -574,6 +641,9 @@ void AdvancedSaveConfiguration::TransferDataFromPanel()
 
   for( map< string, string >::iterator it = renamedTag.begin(); it != renamedTag.end(); ++it )
   {
+    if ( !allowedLevel( it->first ) )
+      continue;
+
     wxString currentTagName = wxString::FromAscii( it->first.c_str() );
 
     enabledTag[ it->first ] = GetCheckBoxByName( currentTagName )->GetValue();

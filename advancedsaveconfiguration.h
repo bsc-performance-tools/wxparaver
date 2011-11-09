@@ -172,6 +172,8 @@ public:
     wxString BuildName( Window *current );
     wxString BuildName( Histogram *current );
 
+    bool allowedLevel( const string &tag );
+
     void BuildTagMaps( const vector< string > &fullTagList,
                        const map< string, string > &renamedTagMap,
                        map< string, bool > &whichEnabledFullTagList,
