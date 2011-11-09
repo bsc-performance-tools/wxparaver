@@ -444,12 +444,7 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram )
                     enabledTag,
                     renamedTag );
       break;
-    default: // PROPERTIES_TAGS
-      fullTagList = currentHistogram->getCFG4DFullTagList();
-      BuildTagMaps( fullTagList,
-                    currentHistogram->getCFG4DAliasList(),
-                    enabledTag,
-                    renamedTag );
+    default:
       break;
   }
 
@@ -547,7 +542,6 @@ void AdvancedSaveConfiguration::PreparePanel()
         auxMap = histograms[ currentItem ]->getCFG4DAliasList();
         break;
       default:
-        auxMap = histograms[ currentItem ]->getCFG4DAliasList();
         break;
     }
   }
