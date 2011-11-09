@@ -230,13 +230,12 @@ void AdvancedSaveConfiguration::CreateControls()
 
   if ( editionMode == HISTOGRAM_STATISTIC_TAGS )
   {
-    SetTitle( _("Save Basic CFG - Statistics Editor") );
     buttonSave->SetLabel( _("Ok") );
     choiceWindow->Enable( false );
 
     // doesn't work
-    SetPosition( wxPoint( GetParent()->GetPosition().x + 20 ,
-                          GetParent()->GetPosition().y + 20 ));
+    //SetPosition( wxPoint( GetParent()->GetPosition().x + 20 ,
+    //                      GetParent()->GetPosition().y + 20 ));
   }
 }
 
@@ -664,8 +663,14 @@ void AdvancedSaveConfiguration::OnStatisticsButtonClick( wxCommandEvent& event )
   onlyCurrentHistogram.push_back( histograms[ currentItem ] );
 
   AdvancedSaveConfiguration statisticsEditorDialog(
-          (wxWindow *)this, dummy, onlyCurrentHistogram,
-          AdvancedSaveConfiguration::HISTOGRAM_STATISTIC_TAGS );
+          (wxWindow *)this,
+          dummy,
+          onlyCurrentHistogram,
+          AdvancedSaveConfiguration::HISTOGRAM_STATISTIC_TAGS,
+          wxID_ANY,
+          _("Save Basic CFG - Statistics Editor"),
+          wxPoint( GetPosition().x + 20 , GetPosition().y + 20 ) ); // doesn't reposition
+
   if ( statisticsEditorDialog.ShowModal() == wxID_OK )
   {
   }
