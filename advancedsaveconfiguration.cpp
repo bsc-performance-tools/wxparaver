@@ -217,13 +217,13 @@ void AdvancedSaveConfiguration::CreateControls()
   currentItem = 0;
   if ( timelines.size() > 0 )
   {
-    BuildTagsPanel( timelines[ currentItem ] );
     isTimeline = true;
+    BuildTagsPanel( timelines[ currentItem ] );
   }
   else
   {
-    BuildTagsPanel( histograms[ currentItem ] );
     isTimeline = false;
+    BuildTagsPanel( histograms[ currentItem ] );
   }
 
   choiceWindow->SetSelection( currentItem );
