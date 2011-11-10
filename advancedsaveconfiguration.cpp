@@ -393,14 +393,7 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
                                     0,
                                     wxDefaultValidator,
                                     wxString::FromAscii( it->first.c_str() ) + KCheckBoxSuffix );
-      /*if ( editionMode == HISTOGRAM_STATISTIC_TAGS ) // && complete
-      {
-        auxCheckBox->SetValue( true );
-      }
-      else*/
-      {
-        auxCheckBox->SetValue( enabledTag[ it->first ] );
-      }
+      auxCheckBox->SetValue( enabledTag[ it->first ] );
 
       auxBoxSizer->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
 
@@ -418,14 +411,7 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
                                     // wxTextValidator( wxFILTER_ALPHANUMERIC ),
                                     //excludeVerticalBar,
                                     wxString::FromAscii( it->first.c_str() ) + KTextCtrlSuffix ); 
-      //if ( editionMode == HISTOGRAM_STATISTIC_TAGS ) // && complete
-      //{
-      //  auxCheckBox->SetValue( true );
-      //}
-      //else
-      {
-        auxTextCtrl->Enable( enabledTag[ it->first ] );
-      }
+      auxTextCtrl->Enable( enabledTag[ it->first ] );
 
       auxTextCtrl->SetValidator( excludeVerticalBar );
 
