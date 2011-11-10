@@ -397,19 +397,18 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
 
       auxBoxSizer->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
 
-      wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_LIST );
       wxArrayString forbiddenChars;
-      forbiddenChars.Add( wxT('|') );
+      forbiddenChars.Add( wxT("|") );
+      wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_CHAR_LIST );
       excludeVerticalBar.SetExcludes( forbiddenChars );
+
       auxTextCtrl = new wxTextCtrl( scrolledWindow,
                                     wxID_ANY,
                                     wxString::FromAscii( it->second.c_str() ),
                                     wxDefaultPosition,
                                     wxDefaultSize,
                                     0,
-                                    wxDefaultValidator,
-                                    // wxTextValidator( wxFILTER_ALPHANUMERIC ),
-                                    //excludeVerticalBar,
+                                    excludeVerticalBar,
                                     wxString::FromAscii( it->first.c_str() ) + KTextCtrlSuffix ); 
       auxTextCtrl->Enable( enabledTag[ it->first ] );
 
