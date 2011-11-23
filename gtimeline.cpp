@@ -189,6 +189,11 @@ void gTimeline::Init()
   timerMotion = new wxTimer( this, ID_TIMER_MOTION );
   lastEventFoundTime = 0;
   lastSemanticFoundTime = 0;
+  findBeginTime = 0;
+  findEndTime = 0;
+  findFirstObject = 0;
+  findLastObject = 0;
+  lastFoundObject = 0;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -3112,11 +3117,47 @@ void gTimeline::OnFindDialog()
       }
     }
 
-    myWindow->setWindowBeginTime( beginTime );
-    myWindow->setWindowEndTime( endTime );
-    myWindow->addZoom( beginTime, endTime, first, last );
-    myWindow->setChanged( true );
-    myWindow->setRedraw( true );
+    findBeginTime   = beginTime;
+    findEndTime     = endTime;
+    findFirstObject = first;
+    findLastObject  = last;
+    lastFoundObject = objectSelection;
+
+    wxMemoryDC bufferDraw;
+
+    if( !ready )
+      return;
+
+    bufferDraw.SelectObject(wxNullBitmap);
+    bufferDraw.SelectObject( drawImage );
+    bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
+
+    if( drawCaution )
+    {
+      wxBitmap cautionImage( caution_xpm );
+      bufferDraw.DrawBitmap( cautionImage,
+                             drawBorder,
+                             drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                             true );
+    }
+
+    if( myWindow->getDrawFlags() )
+      bufferDraw.DrawBitmap( eventImage, 0, 0, true );
+
+    if( myWindow->getDrawCommLines() )
+      bufferDraw.DrawBitmap( commImage, 0, 0, true );
+
+    wxCoord xTime = ( ( ( lastSemanticFoundTime - myWindow->getWindowBeginTime() ) * ( drawZone->GetSize().GetWidth() - objectAxisPos - drawBorder ) )
+                      / ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) )
+                    + objectAxisPos;
+    // draw found object cross
+    bufferDraw.SetPen( wxPen( *wxRED, 2 ) );
+    bufferDraw.DrawLine( xTime - 5, objectPosList[ lastFoundObject ] - 5, xTime + 5, objectPosList[ lastFoundObject ] + 5 );
+    bufferDraw.DrawLine( xTime - 5, objectPosList[ lastFoundObject ] + 5, xTime + 5, objectPosList[ lastFoundObject ] - 5 );
+    // draw found time line
+    bufferDraw.SetPen( wxPen( *wxRED, 2, wxSHORT_DASH ) );
+    bufferDraw.DrawLine( xTime + 1, 0, xTime + 1, drawZone->GetSize().GetHeight() );
+    drawZone->Refresh();
   }
 }
 

@@ -382,6 +382,21 @@ public:
   TRecordTime GetLastSemanticFoundTime() const { return lastSemanticFoundTime ; }
   void SetLastSemanticFoundTime(TRecordTime value) { lastSemanticFoundTime = value ; }
 
+  TRecordTime GetFindBeginTime() const { return findBeginTime ; }
+  void SetFindBeginTime(TRecordTime value) { findBeginTime = value ; }
+
+  TRecordTime GetFindEndTime() const { return findEndTime ; }
+  void SetFindEndTime(TRecordTime value) { findEndTime = value ; }
+
+  TObjectOrder GetFindFirstObject() const { return findFirstObject ; }
+  void SetFindFirstObject(TObjectOrder value) { findFirstObject = value ; }
+
+  TObjectOrder GetFindLastObject() const { return findLastObject ; }
+  void SetFindLastObject(TObjectOrder value) { findLastObject = value ; }
+
+  TObjectOrder GetLastFoundObject() const { return lastFoundObject ; }
+  void SetLastFoundObject(TObjectOrder value) { lastFoundObject = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -551,6 +566,11 @@ private:
   wxMouseEvent firstMotionEvent;
   TRecordTime lastEventFoundTime;
   TRecordTime lastSemanticFoundTime;
+  TRecordTime findBeginTime;
+  TRecordTime findEndTime;
+  TObjectOrder findFirstObject;
+  TObjectOrder findLastObject;
+  TObjectOrder lastFoundObject;
 ////@end gTimeline member variables
 
   SemanticInfoType lastType;
