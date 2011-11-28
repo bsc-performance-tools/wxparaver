@@ -40,6 +40,7 @@
 
 ////@begin includes
 ////@end includes
+#include <string>
 
 #include "helpcontents.h"
 //#include "wx/html/htmlfilt.h"
@@ -130,6 +131,7 @@ HelpContents::~HelpContents()
  */
 void HelpContents::Init()
 {
+  currentTutorialDir = _("");
 }
 
 
@@ -326,30 +328,64 @@ wxIcon HelpContents::GetIconResource( const wxString& name )
 }
 
 
+std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent &event )
+{
+  string hrefFullPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+  hrefFullPath += wxString( wxFileName::GetPathSeparator() ).mb_str();
+  hrefFullPath += currentTutorialDir.mb_str();
+  hrefFullPath += wxString( wxFileName::GetPathSeparator() ).mb_str();
+  hrefFullPath += std::string( event.GetLinkInfo().GetHref().mb_str() );
+
+  return hrefFullPath;
+}
+
+
+bool HelpContents::matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension )
+{
+  return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
+}
+
+
 /*!
  * wxEVT_COMMAND_HTML_LINK_CLICKED event handler for ID_HTMLWINDOW
  */
 
 void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 {
-  if ( event.GetLinkInfo().GetHref().Right( 7 ).Cmp( _(".prv.gz") ) == 0 )
+  if ( matchHrefExtension( event, _(".prv") ) || matchHrefExtension( event, _(".prv.gz")))
   {
-    paraverMain::myParaverMain->DoLoadTrace(
-        std::string( event.GetLinkInfo().GetHref().mb_str() ) );
+    paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
-  else if ( event.GetLinkInfo().GetHref().Right( 4 ).Cmp( _(".cfg") ) == 0)
+  else if ( matchHrefExtension( event, _(".cfg")))
   {
-    paraverMain::myParaverMain->DoLoadCFG(
-            std::string( event.GetLinkInfo().GetHref().mb_str() ) );
+    if ( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
+    {
+      paraverMain::myParaverMain->DoLoadCFG( getHrefFullPath( event )  );
+    }
+    else
+    {
+      wxMessageDialog message( this, _("No trace loaded."), _( "Warning" ), wxOK );
+    }
+    // if no trace loaded, we do nothing
   }
   else if ( event.GetLinkInfo().GetHref().Cmp( _("init_preferences") ) == 0 )
   {
     paraverMain::myParaverMain->ShowPreferences();
+
     // we rebuild it anyway
     buildIndex();
   }
   else
   {
+    // we keep the current tutorial directory, allowing relative references
+    wxFileName currentTutorialName( event.GetLinkInfo().GetHref() );
+    
+    if ( currentTutorialName.GetFullName().Cmp( _("index.html") ) == 0 )
+    {
+      wxArrayString dirs = currentTutorialName.GetDirs();
+      currentTutorialDir = dirs[ currentTutorialName.GetDirCount() - 1 ];
+    }
+
     event.Skip();
   }
 }
