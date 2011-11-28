@@ -44,6 +44,10 @@
 
 #include "wx/tipdlg.h"
 #include "wx/aboutdlg.h"
+#include "wx/html/htmlwin.h"
+#include "wx/html/helpctrl.h" // pruebas wxHtmlModalHelp
+#include "wx/help.h"    // pruebas wxHelpController
+#include "wx/fs_zip.h"  // pruebas wxHelpController
 
 #include "paravermain.h"
 #include "paraverkernelexception.h"
@@ -66,7 +70,7 @@
 #include "cutfilterdialog.h"
 #include "labelconstructor.h"
 #include "sessionsaver.h"
-
+#include "helpcontents.h"
 
 #include <signal.h>
 #include <iostream>
@@ -139,6 +143,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
 
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
+
+  EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
 
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
 
@@ -404,31 +410,32 @@ void paraverMain::CreateControls()
   menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
   menuHelp = new wxMenu;
+  menuHelp->Append(wxID_TUTORIALS, _("&Tutorials..."), wxEmptyString, wxITEM_NORMAL);
   menuHelp->Append(wxID_ABOUT, _("&About..."), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuHelp, _("&Help"));
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxWANTS_CHARS );
-  wxBitmap itemtool21Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
-  wxBitmap itemtool21BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool21Bitmap, itemtool21BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
-  tbarMain->EnableTool(ID_NEW_WINDOW, false);
-  wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
+  wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
   wxBitmap itemtool22BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
-  tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
-  wxBitmap itemtool23Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_WINDOW, false);
+  wxBitmap itemtool23Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
   wxBitmap itemtool23BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool23Bitmap, itemtool23BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
+  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool23Bitmap, itemtool23BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
+  tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
+  wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  wxBitmap itemtool24BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->AddSeparator();
-  wxBitmap itemtool25Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
-  wxBitmap itemtool25BitmapDisabled;
-  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool25Bitmap, itemtool25BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
+  wxBitmap itemtool26Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
+  wxBitmap itemtool26BitmapDisabled;
+  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool26Bitmap, itemtool26BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
   tbarMain->AddSeparator();
-  wxBitmap itemtool27Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
-  wxBitmap itemtool27BitmapDisabled;
-  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool27Bitmap, itemtool27BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
+  wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
+  wxBitmap itemtool28BitmapDisabled;
+  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -2446,11 +2453,7 @@ void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_MENU_SELECTED event handler for ID_PREFERENCES
- */
-
-void paraverMain::OnPreferencesClick( wxCommandEvent& event )
+void paraverMain::ShowPreferences()
 {
   PreferencesDialog preferences( this );
 
@@ -2458,6 +2461,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
   preferences.SetGlobalFillStateGaps( paraverConfig->getGlobalFillStateGaps() );
   preferences.SetTracesPath( paraverConfig->getGlobalTracesPath() );
   preferences.SetCfgsPath( paraverConfig->getGlobalCFGsPath() );
+  preferences.SetTutorialsPath( paraverConfig->getGlobalTutorialsPath() );
   preferences.SetTmpPath( paraverConfig->getGlobalTmpPath() );
   preferences.SetMaximumTraceSize( paraverConfig->getFiltersFilterTraceUpToMB() );
   preferences.SetSingleInstance( paraverConfig->getGlobalSingleInstance() );
@@ -2541,6 +2545,7 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->setGlobalFillStateGaps( preferences.GetGlobalFillStateGaps() );
     paraverConfig->setGlobalTracesPath( preferences.GetTracesPath() );
     paraverConfig->setGlobalCFGsPath( preferences.GetCfgsPath() );
+    paraverConfig->setGlobalTutorialsPath( preferences.GetTutorialsPath() );
     paraverConfig->setGlobalTmpPath( preferences.GetTmpPath() );
     paraverConfig->setFiltersFilterTraceUpToMB( (float)preferences.GetMaximumTraceSize() );
     paraverConfig->setGlobalSingleInstance( preferences.GetSingleInstance() );
@@ -2610,6 +2615,16 @@ void paraverMain::OnPreferencesClick( wxCommandEvent& event )
     paraverConfig->writeParaverConfigFile();
   }
   raiseCurrentWindow = false;
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_PREFERENCES
+ */
+
+void paraverMain::OnPreferencesClick( wxCommandEvent& event )
+{
+  ShowPreferences();
 }
 
 
@@ -3020,36 +3035,6 @@ void paraverMain::OnSignal( )
 
 
 /*!
- * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_ABOUT
- */
-
-void paraverMain::OnAboutClick( wxCommandEvent& event )
-{
-  wxAboutDialogInfo info;
-  wxArrayString developers;
-  wxString description;
-  
-  info.SetName( _("wxParaver") );
-  info.SetVersion( wxString() << _( VERSION ) << _( " (Build " ) + \
-                   wxString() << _( __DATE__ ) << _( ")" ) );
-  description << _( "\nwxParaver is a graphical displaying tool developed at BSC :\n" );
-  description << _( "Barcelona Supercomputing Center.\n\n" );
-  description << _( "wxParaver allows the programmer to examine graphically a " );
-  description << _( "tracefile, with the possibility to choose different filters in " );
-  description << _( "order to select what is displayed.\n" );
-  description << _( "\n(paraver@bsc.es)\n" );
-  info.SetDescription( description );
-  developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
-  developers.Add( _("Pedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
-  info.SetDevelopers( developers );
-  info.SetWebSite( _("http://www.bsc.es/paraver") );
-  //info.SetCopyright(_T(""));
-
-  wxAboutBox(info);
-}
-
-
-/*!
  * wxEVT_UPDATE_UI event handler for ID_TOOL_CUT_TRACE
  */
 
@@ -3342,6 +3327,57 @@ void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
   if( dialog.ShowModal() == wxID_OK )
   {
     SessionSaver::SaveSession( dialog.GetPath(), GetLoadedTraces() );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_ABOUT
+ */
+
+void paraverMain::OnAboutClick( wxCommandEvent& event )
+{
+  wxAboutDialogInfo info;
+  wxArrayString developers;
+  wxString description;
+  
+  info.SetName( _("wxParaver") );
+  info.SetVersion( wxString() << _( VERSION ) << _( " (Build " ) + \
+                   wxString() << _( __DATE__ ) << _( ")" ) );
+/*
+  Paraver is a trace-based flexible visualization and analysis tool designed to 
+  study quantitative detailed metrics the whole performance of applications, libraries, processors d whole architectures
+  qualitative knowledge 
+*/
+  description << _( "wxParaver allows the programmer to examine graphically a " );
+  description << _( "tracefile, with the possibility to choose different filters in " );
+  description << _( "order to select what is displayed.\n" );
+
+  description << _( "\nwxParaver is a graphical displaying tool developed at BSC :\n" );
+  description << _( "Barcelona Supercomputing Center.\n\n" );
+
+  description << _( "\n(paraver@bsc.es)\n" );
+  info.SetDescription( description );
+  developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
+  developers.Add( _("Pedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
+  info.SetDevelopers( developers );
+  info.SetWebSite( _("http://www.bsc.es/paraver") );
+  //info.SetCopyright(_T(""));
+
+  wxAboutBox(info);
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_ABOUT
+ */
+
+void paraverMain::OnTutorialsClick( wxCommandEvent& event )
+{
+  HelpContents helpDialog( this, wxID_ANY, _("Tutorials") );
+
+  if( helpDialog.ShowModal() == wxID_OK )
+  {
   }
 }
 

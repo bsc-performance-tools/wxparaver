@@ -87,6 +87,7 @@ class wxPropertyGridEvent;
 #define ID_MENULOADSESSION 10170
 #define ID_MENUSAVESESSION 10169
 #define ID_PREFERENCES 10001
+#define wxID_TUTORIALS 10196
 #define ID_TOOLBAR 10003
 #define ID_NEW_WINDOW 10030
 #define ID_NEW_DERIVED_WINDOW 10031
@@ -216,6 +217,9 @@ public:
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
   void OnExitClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_TUTORIALS
+  void OnTutorialsClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_ABOUT
   void OnAboutClick( wxCommandEvent& event );
@@ -399,6 +403,7 @@ public:
   bool DoLoadTrace( const string &path );
   void UnloadTrace( int whichTrace );
   bool DoLoadCFG( const string &path );
+  void ShowPreferences();
 
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows

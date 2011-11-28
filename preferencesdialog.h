@@ -65,6 +65,7 @@ class wxColourPickerCtrl;
 #define ID_DIRPICKERCTRL_TRACES 10089
 #define ID_DIRPICKERCTRL_CFG 10010
 #define ID_DIRPICKERCTRL_XML 10033
+#define ID_DIRPICKERCTRL_TUTORIALS 10034
 #define ID_DIRPICKERCTRL_TMP 10011
 #define ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE 10158
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
@@ -356,6 +357,9 @@ public:
   string GetFiltersXMLPath() const { return filtersXMLPath ; }
   void SetFiltersXMLPath(string value) { filtersXMLPath = value ; }
 
+  string GetTutorialsPath() const { return tutorialsPath ; }
+  void SetTutorialsPath(string value) { tutorialsPath = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -375,6 +379,7 @@ public:
   wxDirPickerCtrl* dirPickerTrace;
   wxDirPickerCtrl* dirPickerCFG;
   wxDirPickerCtrl* dirPickerXML;
+  wxDirPickerCtrl* dirPickerTutorials;
   wxDirPickerCtrl* dirPickerTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
@@ -488,6 +493,7 @@ private:
   PRV_INT16 timelineWWEventPixels;
   PRV_UINT16 sessionSaveTime;
   string filtersXMLPath;
+  string tutorialsPath;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
