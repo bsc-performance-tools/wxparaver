@@ -125,6 +125,11 @@ public:
 ////@end HelpContents member variables
 
 private:
+  wxString currentTutorialDir;
+
+  std::string getHrefFullPath( wxHtmlLinkEvent &event );
+  bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
+
   const wxString getHtmlIndex( const wxString& path );
   const wxString getTitle( const wxString& path );
   void appendTutorial( const wxString& title, const wxString& path, wxString& htmlDoc );

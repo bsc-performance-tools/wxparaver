@@ -365,8 +365,8 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
     else
     {
       wxMessageDialog message( this, _("No trace loaded."), _( "Warning" ), wxOK );
+      message.ShowModal();
     }
-    // if no trace loaded, we do nothing
   }
   else if ( event.GetLinkInfo().GetHref().Cmp( _("init_preferences") ) == 0 )
   {
