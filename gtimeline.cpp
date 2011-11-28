@@ -2993,7 +2993,7 @@ void gTimeline::OnFindDialog()
       {
         while( !found && objectSelection < selectedObjects.size() )
         {
-          while( !found && myWindow->getBeginTime( selectedObjects[ objectSelection ] ) < myWindow->getTrace()->getEndTime() )
+          while( !found && myWindow->getBeginTime( selectedObjects[ objectSelection ] ) < myWindow->getWindowEndTime() )
           {
             if( myWindow->getValue( selectedObjects[ objectSelection ] ) == valueToSearch )
             {
@@ -3015,14 +3015,11 @@ void gTimeline::OnFindDialog()
             myWindow->calcNext( selectedObjects[ objectSelection ] );
           }
           ++objectSelection;
-          timeToSearch = 0.0;
-          myWindow->init( timeToSearch, NOCREATE, false );
-          myWindow->initRow( selectedObjects[ objectSelection ], timeToSearch, NOCREATE, false );
         }
       }
       else
       {
-        while( !found && myWindow->getBeginTime( selectedObjects[ objectSelection ] ) < myWindow->getTrace()->getEndTime() )
+        while( !found && myWindow->getBeginTime( selectedObjects[ objectSelection ] ) < myWindow->getWindowEndTime() )
         {
           if( myWindow->getValue( selectedObjects[ objectSelection ] ) == valueToSearch )
           {
@@ -3128,7 +3125,7 @@ void gTimeline::OnFindDialog()
     if( !ready )
       return;
 
-    bufferDraw.SelectObject(wxNullBitmap);
+    bufferDraw.SelectObject( wxNullBitmap );
     bufferDraw.SelectObject( drawImage );
     bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 

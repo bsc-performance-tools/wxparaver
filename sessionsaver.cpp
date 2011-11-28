@@ -45,6 +45,7 @@
 #include "loadedwindows.h"
 #include "cfg.h"
 #include "wxparaverapp.h"
+#include "window.h"
 
 
 void SessionSaver::SaveSession( wxString onFile, const vector<Trace *>& traces )
@@ -58,11 +59,16 @@ void SessionSaver::SaveSession( wxString onFile, const vector<Trace *>& traces )
     wxFileName traceFileName( wxString::FromAscii( (*it)->getFileName().c_str() ) );
     wxFileName cfgFileName( path.GetPathWithSep() + traceFileName.GetFullName() + wxT( ".cfg" ) );
     
-    vector<Window *> vTimelines;
+    vector<Window *> vTimelines, tmpVTimelines;
     vector<Histogram *> vHistograms;
-    LoadedWindows::getInstance()->getAll( *it, vTimelines );
+    LoadedWindows::getInstance()->getAll( *it, tmpVTimelines );
     LoadedWindows::getInstance()->getAll( *it, vHistograms );
 
+    for( vector<Window *>::iterator it = tmpVTimelines.begin(); it != tmpVTimelines.end(); ++it )
+    {
+      if( !(*it)->getUsedByHistogram() && (*it)->getChild() == NULL )
+        vTimelines.push_back( *it );
+    }
     CFGLoader::saveCFG( string( cfgFileName.GetFullPath().mb_str() ), SaveOptions(), vTimelines, vHistograms );
   }
   
