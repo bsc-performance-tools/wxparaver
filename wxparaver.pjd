@@ -1221,6 +1221,7 @@
           <string name="variable-23">"sessionTimer|wxTimer *|SessionTimer|new wxTimer( this )|2|0|"</string>
           <string name="variable-24">"XMLPath|string|XMLPath||2|0|"</string>
           <string name="variable-25">"XMLLoadedBefore|bool|XMLLoadedBefore|false|2|0|"</string>
+          <string name="variable-26">"tutorialsWindow|HelpContents *|TutorialsWindow|NULL|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||paraverMain"</string>
           <string name="event-handler-1">"wxEVT_ICONIZE|OnIconize|NONE||paraverMain"</string>
           <string name="event-handler-2">"wxEVT_SIZE|OnSize|NONE||"</string>
@@ -30472,7 +30473,7 @@ In normal mode all properties are showed in main window."</string>
           <bool name="proxy-wxCLOSE_BOX">1</bool>
           <bool name="proxy-wxMAXIMIZE_BOX">0</bool>
           <bool name="proxy-wxMINIMIZE_BOX">0</bool>
-          <bool name="proxy-wxDIALOG_MODAL">1</bool>
+          <bool name="proxy-wxDIALOG_MODAL">0</bool>
           <bool name="proxy-wxNO_BORDER">0</bool>
           <bool name="proxy-wxSIMPLE_BORDER">0</bool>
           <bool name="proxy-wxDOUBLE_BORDER">0</bool>

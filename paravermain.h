@@ -108,6 +108,7 @@ class wxPropertyGridEvent;
 
 class gTimeline;
 class gHistogram;
+class HelpContents;
 
 class TreeBrowserItemData: public wxTreeItemData
 {
@@ -365,6 +366,9 @@ public:
   bool GetXMLLoadedBefore() const { return XMLLoadedBefore ; }
   void SetXMLLoadedBefore(bool value) { XMLLoadedBefore = value ; }
 
+  HelpContents * GetTutorialsWindow() const { return tutorialsWindow ; }
+  void SetTutorialsWindow(HelpContents * value) { tutorialsWindow = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -450,6 +454,7 @@ private:
   wxTimer * sessionTimer;
   string XMLPath;
   bool XMLLoadedBefore;
+  HelpContents * tutorialsWindow;
 ////@end paraverMain member variables
 
   map< string, PRV_UINT32 > traceInstance;

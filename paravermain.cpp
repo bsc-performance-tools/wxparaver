@@ -339,6 +339,10 @@ paraverMain::~paraverMain()
   delete localKernel;
   
   delete imageList;
+  if ( tutorialsWindow != NULL )
+  {
+    delete tutorialsWindow;
+  }
 }
 
 
@@ -366,6 +370,7 @@ void paraverMain::Init()
   canServeSignal = true;
   sessionTimer = new wxTimer( this );
   XMLLoadedBefore = false;
+  tutorialsWindow = NULL;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -3374,10 +3379,9 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
 
 void paraverMain::OnTutorialsClick( wxCommandEvent& event )
 {
-  HelpContents helpDialog( this, wxID_ANY, _("Tutorials") );
+  if ( tutorialsWindow == NULL )
+    tutorialsWindow = new HelpContents( this, wxID_ANY, _("Tutorials") );
 
-  if( helpDialog.ShowModal() == wxID_OK )
-  {
-  }
+  tutorialsWindow->Show( true );
 }
 
