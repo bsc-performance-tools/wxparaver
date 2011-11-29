@@ -149,11 +149,12 @@ const wxString HelpContents::getHtmlIndex( const wxString& path )
 }
 
 
-const wxString HelpContents::getTitle( const wxString& path )
+const wxString HelpContents::getTitle( int numTutorial, const wxString& path )
 {
   // Titles:
   //   2) if !found, first line of file "tutorial_title".
-  wxString tutorialTitle("Tutorial");
+  wxString tutorialTitle("Tutorial ");
+  tutorialTitle << numTutorial;
 
   string auxStrTitleFileName( path + wxFileName::GetPathSeparator() + _("tutorial_title") );
   string auxLine;
@@ -231,7 +232,7 @@ void HelpContents::buildIndex()
         // index.html found! => we consider this is a tutorial
         numTutorials++;
 
-        appendTutorial( getTitle( currentDir ), currentTutorialHtmlIndex, tutorialsList );
+        appendTutorial( getTitle( numTutorials, currentDir ), currentTutorialHtmlIndex, tutorialsList );
       }
 
       currentDir = wxFindNextFile();

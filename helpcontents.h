@@ -131,7 +131,7 @@ private:
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
 
   const wxString getHtmlIndex( const wxString& path );
-  const wxString getTitle( const wxString& path );
+  const wxString getTitle( int numTutorial, const wxString& path );
   void appendTutorial( const wxString& title, const wxString& path, wxString& htmlDoc );
   void buildIndex();
 
