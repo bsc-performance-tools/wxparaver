@@ -377,15 +377,36 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   }
   else
   {
-    // we keep the current tutorial directory, allowing relative references
-    wxFileName currentTutorialName( event.GetLinkInfo().GetHref() );
-    
-    if ( currentTutorialName.GetFullName().Cmp( _("index.html") ) == 0 )
+    // If current clicked link points to a tutorial index.html file, keep its
+    //   tutorial directory name to allow relative references.
+    // Idea to detect tutorial:
+    //   /home/user/root-tutorials/ => dir depth tutorials = 3
+    //   vs.
+    //   /home/user/root-tutorials/tutorial1/index.html => dir depth current = 4
+    //   /home/user/root-tutorials/tutorial1/html/.../anyotherpage.html => dir depth current > 4
+    wxString anyTutorialPath =
+            wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str() );
+    if ( anyTutorialPath[ anyTutorialPath.Len() - 1 ] != wxString( wxFileName::GetPathSeparator() ))
     {
-      wxArrayString dirs = currentTutorialName.GetDirs();
-      currentTutorialDir = dirs[ currentTutorialName.GetDirCount() - 1 ];
+      // last separator needed to count properly
+      anyTutorialPath += wxString( wxFileName::GetPathSeparator() );
     }
 
+    wxFileName anyTutorialDir( anyTutorialPath );
+
+    size_t dirsDepthTutorials = anyTutorialDir.GetDirCount();
+
+    wxFileName currentLink( event.GetLinkInfo().GetHref() );
+    size_t dirsDepthCurrentLink = currentLink.GetDirCount();
+
+    if (( dirsDepthCurrentLink == dirsDepthTutorials + 1 ) &&
+        ( currentLink.GetFullName().Cmp( _("index.html") ) == 0 ))
+    {
+      wxArrayString dirs = currentLink.GetDirs();
+      currentTutorialDir = dirs[ dirsDepthCurrentLink - 1 ];
+    }
+
+    // and let the html window browse it.
     event.Skip();
   }
 }
