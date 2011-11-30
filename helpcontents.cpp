@@ -151,24 +151,40 @@ const wxString HelpContents::getHtmlIndex( const wxString& path )
 
 const wxString HelpContents::getTitle( int numTutorial, const wxString& path )
 {
-  // Titles:
-  //   2) if !found, first line of file "tutorial_title".
-  wxString tutorialTitle("Tutorial ");
-  tutorialTitle << numTutorial;
+  wxString tutorialTitle;
 
-  string auxStrTitleFileName( path + wxFileName::GetPathSeparator() + _("tutorial_title") );
-  string auxLine;
-
-  ifstream titleFile;
-  titleFile.open( auxStrTitleFileName.c_str() );
-  if ( titleFile.good() )
+  wxHtmlWindow auxHtml( this );
+  auxHtml.LoadPage( path  + wxFileName::GetPathSeparator() + _("index.html") );
+  tutorialTitle = auxHtml.GetOpenedPageTitle();
+  if ( tutorialTitle.empty() || tutorialTitle == _("index.html") ) // never is empty !?!
   {
-    std::getline( titleFile, auxLine );
+    string auxStrTitleFileName( path + wxFileName::GetPathSeparator() + _("tutorial_title") );
+    string auxLine;
+
+    ifstream titleFile;
+    titleFile.open( auxStrTitleFileName.c_str() );
+    if ( titleFile.good() )
+    {
+      std::getline( titleFile, auxLine );
     
-    if ( auxLine.size() > 0 )
-      tutorialTitle = wxString::FromAscii( auxLine.c_str() );
+      if ( auxLine.size() > 0 )
+      {
+        tutorialTitle = wxString::FromAscii( auxLine.c_str() );
+      }
+      else
+      {
+        tutorialTitle = _("Tutorial ");
+        tutorialTitle << numTutorial;
+      }
+    }
+    else
+    {
+      tutorialTitle = _("Tutorial ");
+      tutorialTitle << numTutorial;
+    }
+
+    titleFile.close();
   }
-  titleFile.close();
 
   return tutorialTitle;
 }
