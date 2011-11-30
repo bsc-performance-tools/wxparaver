@@ -201,20 +201,30 @@ void HelpContents::appendTutorial( const wxString& title,
 void HelpContents::htmlMessage( wxString& htmlDoc )
 {
   htmlDoc += _("<P><H3>No tutorial found!</H3></P>");
-  htmlDoc += _("<P>Please check that <B>root directory</B> to tutorials is properly defined:</P>");
+  htmlDoc += _("<P>Before going on, please have in mind that:</P>");
+  htmlDoc += _("<UL>");
+  htmlDoc += _("<LI>A single <B>tutorials root directory</B> must contain all ");
+  htmlDoc += _("the <B>tutorials directories</B> that you want <B>visible</B> for wxparaver.</LI>");
+  htmlDoc += _("<LI>In their own directories, every tutorial has a <B>first page</B> called <TT>index.html</TT>, and also related content (like traces, cfgs, etc.).</LI>");
+  htmlDoc += _("<LI>You <B>don't</B> need to <B>write</B> any global tutorials page; we walk through the included tutorials ");
+  htmlDoc += _("in the given root directory and build it for you.</LI>");
+  htmlDoc += _("<LI>The tutorial title showed in this automatically built main index is read from:</LI>");
+  htmlDoc += _("<OL type=\"1\">");
+  htmlDoc += _("<LI>The <TT>TITLE</TT> tag in the<TT>index.html</TT> file.</LI>");
+  htmlDoc += _("<LI>If this tag is missing or empty, from a single line file named <TT>tutorial_title</TT>");
+  htmlDoc += _(", also local to this tutorial.</LI>");
+  htmlDoc += _("<LI>If no <TT>tutorial_title</TT> file is found, we give a numbered 'Tutorial #'.</LI>");
+  htmlDoc += _("</OL>");
+  htmlDoc += _("</UL>");
+  htmlDoc += _("<P>Now, please check that <B>root directory</B> to tutorials is properly defined:</P>");
   htmlDoc += _("<OL type=\"1\">");
   htmlDoc += _("<LI>Open <A HREF=\"init_preferences\"><I>Preferences Window</I></A>.</LI>");
-  htmlDoc += _("<LI>Select <I>Global tab</I>.</LI>");
-  htmlDoc += _("<LI>Change default tutorials root directory and click OK. Please have in mind that:</LI>");
-  htmlDoc += _("<UL>");
-  htmlDoc += _("<LI>Into this root directory, every tutorial has its own one</LI>");
-  htmlDoc += _("<LI>Every tutorial directory must contain an <TT>index.html</TT> file</LI>");
-  htmlDoc += _("<LI>Every tutorial directory must declare its title writing it in a file named <TT>tutorial_title</TT></LI>");
-  htmlDoc += _("<LI>You don't need to write the main index to tutorials; we build it for you</LI>");
-  htmlDoc += _("</UL>");
-  htmlDoc += _("<LI>Close this tutorials window and open it again.</LI>");
+  htmlDoc += _("<LI>Select <I>Global</I> tab.</LI>");
+  htmlDoc += _("<LI>In the <I>Default directories</I> box, change the <I>Tutorials root</I> directory");
+  htmlDoc += _("<LI>The tutorials list will be immediately rebuilt after you save your ");
+  htmlDoc += _("new settings clicking the <I>Ok</I> button in the <A HREF=\"init_preferences\"><I>Preferences Window</I></A>.</LI>");
   htmlDoc += _("</OL>");
-  htmlDoc += _("<P>If you still get this help, check again step 3, or please contact us at paraver@bsc.es.</P>");
+  htmlDoc += _("<P>If you still get this help, check these steps again, or please contact us at paraver@bsc.es.</P>");
 }
 
 
@@ -274,7 +284,7 @@ void HelpContents::buildIndex()
   // close html index
   tutorialsHtmlIndex += _("</BODY></HTML>");
 
-  htmlWindow->SetPage( tutorialsHtmlIndex );
+  htmlWindow->SetPage( tutorialsHtmlIndex.ToUTF8() );
 }
 
 
