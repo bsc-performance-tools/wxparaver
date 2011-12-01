@@ -224,7 +224,7 @@ void HelpContents::htmlMessage( wxString& htmlDoc )
   htmlDoc += _("<LI>Select <I>Global</I> tab.</LI>");
   htmlDoc += _("<LI>In the <I>Default directories</I> box, change the <I>Tutorials root</I> directory");
   htmlDoc += _("<LI>The tutorials list will be immediately rebuilt after you save your ");
-  htmlDoc += _("new settings clicking the <I>Ok</I> button in the <A HREF=\"init_preferences\"><I>Preferences Window</I></A>.</LI>");
+  htmlDoc += _("new settings clicking the <I>Ok</I> button in the <I>Preferences Window</I>.</LI>");
   htmlDoc += _("</OL>");
   htmlDoc += _("<P>If you still get this help, check these steps again, or please contact us at paraver@bsc.es.</P>");
 }
