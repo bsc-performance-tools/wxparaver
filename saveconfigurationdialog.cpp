@@ -147,7 +147,6 @@ void SaveConfigurationDialog::Init()
   optComputeSemantic = NULL;
   radioAllTrace = NULL;
   radioAllWindow = NULL;
-  optComputeLimits = NULL;
   optComputeGradient = NULL;
   textDescription = NULL;
   checkboxSaveCFGBasicMode = NULL;
@@ -223,7 +222,7 @@ void SaveConfigurationDialog::CreateControls()
 
   wxStaticBox* itemStaticBoxSizer20Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Timeline options "));
   wxStaticBoxSizer* itemStaticBoxSizer20 = new wxStaticBoxSizer(itemStaticBoxSizer20Static, wxVERTICAL);
-  itemBoxSizer19->Add(itemStaticBoxSizer20, 3, wxGROW|wxALL, 5);
+  itemBoxSizer19->Add(itemStaticBoxSizer20, 1, wxGROW|wxALL, 5);
 
   optRelativeBegin = new wxCheckBox( itemDialog1, ID_CHECKBEGIN, _("Relative begin time"), wxDefaultPosition, wxDefaultSize, 0 );
   optRelativeBegin->SetValue(false);
@@ -239,7 +238,7 @@ void SaveConfigurationDialog::CreateControls()
 
   wxStaticBox* itemStaticBoxSizer24Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Histogram options "));
   wxStaticBoxSizer* itemStaticBoxSizer24 = new wxStaticBoxSizer(itemStaticBoxSizer24Static, wxVERTICAL);
-  itemBoxSizer19->Add(itemStaticBoxSizer24, 5, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  itemBoxSizer19->Add(itemStaticBoxSizer24, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   radioAllTrace = new wxRadioButton( itemDialog1, ID_RADIOALLTRACE, _("All trace"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioAllTrace->SetValue(false);
@@ -252,43 +251,39 @@ void SaveConfigurationDialog::CreateControls()
   wxStaticLine* itemStaticLine27 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemStaticBoxSizer24->Add(itemStaticLine27, 1, wxGROW|wxLEFT|wxRIGHT, 5);
 
-  optComputeLimits = new wxCheckBox( itemDialog1, ID_CHECKLIMITS, _("Compute min, max, delta limits"), wxDefaultPosition, wxDefaultSize, 0 );
-  optComputeLimits->SetValue(false);
-  itemStaticBoxSizer24->Add(optComputeLimits, 1, wxALIGN_LEFT|wxALL, 5);
-
   optComputeGradient = new wxCheckBox( itemDialog1, ID_CHECKGRADIENT, _("Compute gradient limits"), wxDefaultPosition, wxDefaultSize, 0 );
   optComputeGradient->SetValue(false);
   itemStaticBoxSizer24->Add(optComputeGradient, 1, wxALIGN_LEFT|wxALL, 5);
 
-  wxStaticText* itemStaticText30 = new wxStaticText( itemDialog1, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer2->Add(itemStaticText30, 0, wxALIGN_LEFT|wxALL, 5);
+  wxStaticText* itemStaticText29 = new wxStaticText( itemDialog1, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer2->Add(itemStaticText29, 0, wxALIGN_LEFT|wxALL, 5);
 
   textDescription = new wxTextCtrl( itemDialog1, ID_TEXTDESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
   itemBoxSizer2->Add(textDescription, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 10);
 
-  wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer32, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer31, 0, wxGROW|wxALL, 5);
 
-  itemBoxSizer32->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer31->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   checkboxSaveCFGBasicMode = new wxCheckBox( itemDialog1, ID_CHECKBOX_SAVE_BASIC_MODE, _("Save whole CFG in basic mode"), wxDefaultPosition, wxDefaultSize, 0 );
   checkboxSaveCFGBasicMode->SetValue(false);
   if (SaveConfigurationDialog::ShowToolTips())
     checkboxSaveCFGBasicMode->SetToolTip(_("In basic mode, for every timeline or histogram selected in this dialog you can declare which properties can be renamed or hidden. Differences will be displayed in main window every time CFG's been loaded.\nIn normal mode all properties are showed in main window."));
-  itemBoxSizer32->Add(checkboxSaveCFGBasicMode, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer31->Add(checkboxSaveCFGBasicMode, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemBoxSizer32->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer31->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer36 = new wxStdDialogButtonSizer;
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer35 = new wxStdDialogButtonSizer;
 
-  itemBoxSizer32->Add(itemStdDialogButtonSizer36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-  wxButton* itemButton37 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer36->AddButton(itemButton37);
+  itemBoxSizer31->Add(itemStdDialogButtonSizer35, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxButton* itemButton36 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer35->AddButton(itemButton36);
 
-  wxButton* itemButton38 = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer36->AddButton(itemButton38);
+  wxButton* itemButton37 = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer35->AddButton(itemButton37);
 
-  itemStdDialogButtonSizer36->Realize();
+  itemStdDialogButtonSizer35->Realize();
 
 ////@end SaveConfigurationDialog content construction
 }
@@ -409,7 +404,6 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   optRelativeEnd->SetValue( options.windowScaleRelative );
   optComputeSemantic->SetValue( options.windowComputeYMaxOnLoad );
   radioAllTrace->SetValue( options.histoAllTrace );
-  optComputeLimits->SetValue( options.histoComputeYScale );
   optComputeGradient->SetValue( options.histoComputeGradient );
 
   // CFG4D
@@ -482,8 +476,6 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   options.windowScaleRelative = optRelativeEnd->GetValue();
   options.windowComputeYMaxOnLoad = optComputeSemantic->GetValue();
   options.histoAllTrace = radioAllTrace->GetValue();
-  options.histoComputeYScale = optComputeLimits->GetValue();
-  options.histoComputeGradient = optComputeGradient->GetValue();
   options.description = std::string( textDescription->GetValue().mb_str() );
 
   // CFG4D

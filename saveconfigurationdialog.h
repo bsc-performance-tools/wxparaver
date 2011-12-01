@@ -66,7 +66,6 @@
 #define ID_CHECKSEMANTIC 10018
 #define ID_RADIOALLTRACE 10019
 #define ID_RADIOALLWINDOW 10020
-#define ID_CHECKLIMITS 10021
 #define ID_CHECKGRADIENT 10022
 #define ID_TEXTDESCRIPTION 10015
 #define ID_CHECKBOX_SAVE_BASIC_MODE 10190
@@ -172,7 +171,6 @@ public:
   wxCheckBox* optComputeSemantic;
   wxRadioButton* radioAllTrace;
   wxRadioButton* radioAllWindow;
-  wxCheckBox* optComputeLimits;
   wxCheckBox* optComputeGradient;
   wxTextCtrl* textDescription;
   wxCheckBox* checkboxSaveCFGBasicMode;
