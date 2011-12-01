@@ -201,6 +201,7 @@ void HelpContents::appendTutorial( const wxString& title,
 void HelpContents::htmlMessage( wxString& htmlDoc )
 {
   htmlDoc += _("<P><H3>No tutorial found!</H3></P>");
+/*
   htmlDoc += _("<P>Before going on, please have in mind that:</P>");
   htmlDoc += _("<UL>");
   htmlDoc += _("<LI>A single <B>tutorials root directory</B> must contain all ");
@@ -216,7 +217,8 @@ void HelpContents::htmlMessage( wxString& htmlDoc )
   htmlDoc += _("<LI>If no <TT>tutorial_title</TT> file is found, we give a numbered 'Tutorial #'.</LI>");
   htmlDoc += _("</OL>");
   htmlDoc += _("</UL>");
-  htmlDoc += _("<P>Now, please check that <B>root directory</B> to tutorials is properly defined:</P>");
+*/
+  htmlDoc += _("<P>Please check that <B>root directory</B> to tutorials is properly defined:</P>");
   htmlDoc += _("<OL type=\"1\">");
   htmlDoc += _("<LI>Open <A HREF=\"init_preferences\"><I>Preferences Window</I></A>.</LI>");
   htmlDoc += _("<LI>Select <I>Global</I> tab.</LI>");
