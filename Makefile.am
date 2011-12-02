@@ -19,6 +19,8 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
                     ghistogram.h \
                     gtimeline.cpp \
                     gtimeline.h \
+                    helpcontents.cpp \
+										helpcontents.h \
                     histogramdialog.cpp \
                     histogramdialog.h \
                     histotablebase.cpp \
