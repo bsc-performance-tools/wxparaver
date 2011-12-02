@@ -158,7 +158,9 @@ const wxString HelpContents::getTitle( int numTutorial, const wxString& path )
   tutorialTitle = auxHtml.GetOpenedPageTitle();
   if ( tutorialTitle.empty() || tutorialTitle == _("index.html") ) // never is empty !?!
   {
-    string auxStrTitleFileName( path + wxFileName::GetPathSeparator() + _("tutorial_title") );
+    string auxStrTitleFileName( ( path +
+                                   wxFileName::GetPathSeparator() +
+                                   _("tutorial_title") ).mb_str() );
     string auxLine;
 
     ifstream titleFile;
@@ -286,7 +288,7 @@ void HelpContents::buildIndex()
   // close html index
   tutorialsHtmlIndex += _("</BODY></HTML>");
 
-  htmlWindow->SetPage( tutorialsHtmlIndex.ToUTF8() );
+  htmlWindow->SetPage( tutorialsHtmlIndex );
 }
 
 
@@ -414,7 +416,7 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
     //   /home/user/root-tutorials/tutorial1/index.html => dir depth current = 4
     //   /home/user/root-tutorials/tutorial1/html/.../anyotherpage.html => dir depth current > 4
     wxString anyTutorialPath =
-            wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str() );
+            wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str() );
     if ( anyTutorialPath[ anyTutorialPath.Len() - 1 ] != wxString( wxFileName::GetPathSeparator() ))
     {
       // last separator needed to count properly
