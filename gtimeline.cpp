@@ -1662,11 +1662,12 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
   wxColour foregroundColour = wxColour( rgbForegroundColour.red,
                                        rgbForegroundColour.green,
                                        rgbForegroundColour.blue );
+  
   rgb rgbBackgroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineBackground();
   wxColour backgroundColour = wxColour( rgbBackgroundColour.red,
                                        rgbBackgroundColour.green,
                                        rgbBackgroundColour.blue );
-
+  
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
 
@@ -2469,7 +2470,78 @@ void gTimeline::saveImage()
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveImageFormat() );
   if ( saveDialog.ShowModal() == wxID_OK )
   {
-    wxImage baseLayer = drawImage.ConvertToImage();
+    // Build image to be saved as: title image + timeline image
+
+    // Get title
+    wxString longTitle = wxString::FromAscii(
+            ( myWindow->getName() + " @ " +
+              myWindow->getTrace()->getTraceNameNumbered() ).c_str());
+    wxString shortTitle = wxString::FromAscii( ( myWindow->getName() ).c_str() );
+    wxString writtenTitle = longTitle;
+
+    // Get colors
+    wxColour foregroundColour = GetForegroundColour();
+    wxColour backgroundColour = GetBackgroundColour();
+
+    // Get font
+    wxFont titleFont = semanticFont;
+
+    // Get dimensions
+    wxImage img = drawImage.ConvertToImage();
+    int timelineWidth = img.GetWidth();
+    int timelineHeight = img.GetHeight();
+
+    int titleMargin = 5; // used in 4 sides
+    int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // left + rigth
+    int titleWidth = timelineWidth;
+    int titleWritableWidth = titleWidth - ( 2 * titleMargin );
+
+    int imageHeigth = titleHeigth + timelineHeight;
+    int imageWidth = timelineWidth;
+
+    // Build DC for title
+    wxBitmap titleBitmap( titleWidth, titleHeigth );
+    wxMemoryDC titleDC( titleBitmap );
+
+    // Set font and check if using it the title will fit
+    titleDC.SetFont( titleFont );
+    wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
+
+    if ( titleSize.GetWidth() > titleWritableWidth )
+    {
+      titleSize = titleDC.GetTextExtent( shortTitle );
+      writtenTitle = shortTitle;
+    }
+
+    // Set colors
+    titleDC.SetBackground( wxBrush( backgroundColour ) );
+    titleDC.Clear();
+
+    titleDC.SetPen( wxPen( backgroundColour, 1 ) );
+    titleDC.SetTextBackground( backgroundColour );
+    titleDC.SetTextForeground( foregroundColour );
+
+    // Compute title image size
+    titleDC.DrawText( writtenTitle, titleMargin, titleMargin );
+
+    wxBitmap imageBitmap( imageWidth, imageHeigth );
+    wxMemoryDC imageDC( imageBitmap );
+    wxCoord xsrc = 0;
+    wxCoord ysrc = 0;
+    wxCoord xdst = 0;
+    wxCoord ydst = 0;
+    imageDC.Blit( xdst, ydst, titleWidth, titleHeigth, &titleDC, xsrc, ysrc );
+  
+    wxMemoryDC timelineDC( drawImage );
+    xsrc = 0;
+    ysrc = 0;
+    xdst = 0;
+    ydst = titleHeigth;
+    imageDC.Blit( xdst, ydst, timelineWidth, timelineHeight, &timelineDC, xsrc, ysrc );
+
+    // Get extension and save
+    wxImage baseLayer = imageBitmap.ConvertToImage();
+
     switch( saveDialog.GetFilterIndex() )
     {
       case 0:
