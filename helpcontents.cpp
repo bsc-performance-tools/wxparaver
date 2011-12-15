@@ -46,6 +46,10 @@
 //#include "wx/html/htmlfilt.h"
 
 #include "paravermain.h"
+
+#include "trace.h"        // load xml
+#include "traceoptions.h" // load xml
+
 ////@begin XPM images
 ////@end XPM images
 
@@ -359,12 +363,19 @@ wxIcon HelpContents::GetIconResource( const wxString& name )
 }
 
 
+std::string HelpContents::getCurrentTutorialFullPath()
+{
+  string fullPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+  fullPath += wxString( wxFileName::GetPathSeparator() ).mb_str();
+  fullPath += currentTutorialDir.mb_str();
+  fullPath += wxString( wxFileName::GetPathSeparator() ).mb_str();
+
+  return fullPath;
+}
+
 std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent &event )
 {
-  string hrefFullPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
-  hrefFullPath += wxString( wxFileName::GetPathSeparator() ).mb_str();
-  hrefFullPath += currentTutorialDir.mb_str();
-  hrefFullPath += wxString( wxFileName::GetPathSeparator() ).mb_str();
+  string hrefFullPath = getCurrentTutorialFullPath();
   hrefFullPath += std::string( event.GetLinkInfo().GetHref().mb_str() );
 
   return hrefFullPath;
@@ -398,6 +409,14 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
       wxMessageDialog message( this, _("No trace loaded."), _( "Warning" ), wxOK );
       message.ShowModal();
     }
+  }
+  else if ( matchHrefExtension( event, _(".xml")))
+  {
+    string traceName = getCurrentTutorialFullPath();
+    bool loadTrace = true;
+    string strXmlFile = getHrefFullPath( event );
+
+    paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
   }
   else if ( event.GetLinkInfo().GetHref().Cmp( _("init_preferences") ) == 0 )
   {
