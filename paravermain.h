@@ -408,6 +408,10 @@ public:
   void UnloadTrace( int whichTrace );
   bool DoLoadCFG( const string &path );
   void ShowPreferences();
+  void ShowCutTraceWindow( const string& filename = "",
+                           bool loadTrace = false,
+                           const string& xmlFile = "" );
+
 
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
@@ -475,8 +479,7 @@ private:
                               string traceFilePath,
                               TraceOptions *traceOptions,
                               vector< int > &filterToolOrder );
-  void ShowCutTraceWindow( const string& filename, bool loadTrace );
-  
+
   void PrepareToExit();
   
   void OnSessionTimer( wxTimerEvent& event );

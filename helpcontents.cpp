@@ -47,9 +47,6 @@
 
 #include "paravermain.h"
 
-#include "trace.h"        // load xml
-#include "traceoptions.h" // load xml
-
 ////@begin XPM images
 ////@end XPM images
 

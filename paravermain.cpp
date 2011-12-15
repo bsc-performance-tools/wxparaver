@@ -1763,11 +1763,9 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
 {
-  if( currentTrace == -1 )
-    event.Enable( false );
-  else
-    event.Enable( true );
-      
+  //event.Enable( loadedTraces.size() > 0 ); // why not this one?
+  event.Enable( currentTrace != -1 );
+
   vector<string> v = previousCFGs->getFiles();
 
   wxMenuItem *tmpItem = menuFile->FindItem( ID_RECENTCFGS );
@@ -1874,7 +1872,8 @@ void paraverMain::OnIdle( wxIdleEvent& event )
       else
         ++iTrace;
     }
-    if( currentTrace == -1 ) currentTrace = loadedTraces.size() - 1;
+    if( currentTrace == -1 && loadedTraces.size() > 0 )
+      currentTrace = loadedTraces.size() - 1;
   }
 
 #ifndef WIN32
@@ -2724,7 +2723,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     choices.Add( wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() ) );
   wxMultiChoiceDialog dialog( this, _("Select the traces to unload:"), _("Unload Traces"), choices );
-  
+
   raiseCurrentWindow = false;
 
   dialog.ShowModal();
@@ -3097,10 +3096,10 @@ void paraverMain::OnFindDialog()
  */
 void paraverMain::OnToolCutTraceClick( wxCommandEvent& event )
 {
-  if( currentTrace == -1 )
-    ShowCutTraceWindow( "", false ); // Default XML dir in both branches of the if?
+  if ( currentTrace == -1)
+    ShowCutTraceWindow();
   else
-    ShowCutTraceWindow( loadedTraces[ currentTrace ]->getFileName(), false );
+    ShowCutTraceWindow( loadedTraces[ currentTrace ]->getFileName() );
 }
 
 
@@ -3221,35 +3220,64 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   return string( tmpNameOut );
 }
 
-void paraverMain::ShowCutTraceWindow( const string& filename, bool loadTrace )
+void paraverMain::ShowCutTraceWindow( const string& filename,
+                                      bool loadTrace,
+                                      const string& xmlFile )
 {
-  TraceOptions *traceOptions = TraceOptions::create( localKernel );
-
   CutFilterDialog cutFilterDialog( this );  
-  cutFilterDialog.SetLocalKernel( localKernel );
-  cutFilterDialog.SetTraceOptions( traceOptions->getConcrete() );
 
-  if( filename == "" )
+  cutFilterDialog.SetLocalKernel( localKernel );
+  cutFilterDialog.SetLoadResultingTrace( loadTrace );
+
+  // Set trace
+  if( filename != "" )
   {
-    if ( !traceLoadedBefore )
-      cutFilterDialog.SetNameSourceTrace( paraverConfig->getGlobalTracesPath() + PATH_SEP );
-    else
-      cutFilterDialog.SetNameSourceTrace( std::string( tracePath.mb_str() ) + PATH_SEP );
+    // 1) given by parameter
+    cutFilterDialog.SetNameSourceTrace( filename );
+  }
+  else if ( loadedTraces.size() > 0 && currentTrace == -1 )
+  {
+    // 2) tracePath if "All Traces" selected
+    cutFilterDialog.SetNameSourceTrace( std::string( tracePath.mb_str() ) + PATH_SEP );
   }
   else
   {
-    cutFilterDialog.SetNameSourceTrace( filename );
-    cutFilterDialog.SetLoadResultingTrace( loadTrace );
+    // 3) Default
+    cutFilterDialog.SetNameSourceTrace( paraverConfig->getGlobalTracesPath() + PATH_SEP );
   }
 
-  if ( !XMLLoadedBefore )
-    XMLPath =  paraverConfig->getFiltersXMLPath() + PATH_SEP;
+  // Set TraceOptions
+  vector< int > filterToolOrder;
+  TraceOptions *traceOptions = TraceOptions::create( localKernel );
+  if ( xmlFile != "" )
+  {
+    filterToolOrder = traceOptions->parseDoc( (char *)xmlFile.c_str() );
+    //cutFilterDialog.SetFilterToolOrder( filterToolOrder );
+    cutFilterDialog.SetTraceOptions( traceOptions->getConcrete() );
+    cutFilterDialog.TransferDataToWindow( filterToolOrder, traceOptions );
+
+    wxString auxName = wxString::FromAscii( xmlFile.c_str() );
+    wxString auxPath = wxFileName( auxName ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
+    XMLPath = std::string( auxPath.mb_str() );
+  }
+  else
+  {
+    // Default XML
+    cutFilterDialog.SetTraceOptions( traceOptions->getConcrete() );
+    if ( !XMLLoadedBefore )
+    {
+      // Default Path
+      XMLPath =  paraverConfig->getFiltersXMLPath() + PATH_SEP;
+    }
+  }
 
   cutFilterDialog.SetGlobalXMLsPath( XMLPath );
 
+  // Show
+
   if( cutFilterDialog.ShowModal() == wxID_OK )
   {
-    vector< int > filterToolOrder = cutFilterDialog.GetFilterToolOrder();
+    filterToolOrder = cutFilterDialog.GetFilterToolOrder();
 
     string traceFileName = cutFilterDialog.GetNameSourceTrace();
     string traceFileOutputPath = cutFilterDialog.GetPathOutputTrace();

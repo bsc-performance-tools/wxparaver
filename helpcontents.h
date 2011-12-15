@@ -127,6 +127,7 @@ public:
 private:
   wxString currentTutorialDir;
 
+  std::string getCurrentTutorialFullPath();
   std::string getHrefFullPath( wxHtmlLinkEvent &event );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
 
