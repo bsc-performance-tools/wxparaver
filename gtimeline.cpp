@@ -2594,7 +2594,9 @@ void gTimeline::saveText()
                            fileName,
                            _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
                            wxSAVE | wxFD_OVERWRITE_PROMPT );
-
+                           
+  saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveTextFormat() );
+  
   if ( saveDialog.ShowModal() == wxID_OK )
   {
     Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );

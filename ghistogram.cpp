@@ -287,7 +287,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2254,6 +2254,8 @@ void gHistogram::saveText( bool onlySelectedPlane )
                            _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
                            wxSAVE | wxFD_OVERWRITE_PROMPT );
 
+  saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getHistogramSaveTextFormat() );
+  
   if ( saveDialog.ShowModal() == wxID_OK )
   {
     Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );

@@ -527,7 +527,7 @@ void PreferencesDialog::CreateControls()
   itemStaticText71->SetHelpText(_("Pixels to look around for events"));
   if (PreferencesDialog::ShowToolTips())
     itemStaticText71->SetToolTip(_("Pixels to look around for events"));
-  itemBoxSizer70->Add(itemStaticText71, 0, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer70->Add(itemStaticText71, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   txtTimelineWWEventPixels = new wxSpinCtrl( itemPanel31, ID_PREFERENCES_TIMELINE_WW_EVENT_PIXELS, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
   txtTimelineWWEventPixels->SetHelpText(_("Pixels to look around for events"));
@@ -535,7 +535,7 @@ void PreferencesDialog::CreateControls()
     txtTimelineWWEventPixels->SetToolTip(_("Pixels to look around for events"));
   itemBoxSizer70->Add(txtTimelineWWEventPixels, 3, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxStaticBox* itemStaticBoxSizer73Static = new wxStaticBox(itemPanel31, wxID_ANY, _("  Save Options  "));
+  wxStaticBox* itemStaticBoxSizer73Static = new wxStaticBox(itemPanel31, wxID_ANY, _("  Default Save Options  "));
   wxStaticBoxSizer* itemStaticBoxSizer73 = new wxStaticBoxSizer(itemStaticBoxSizer73Static, wxVERTICAL);
   itemBoxSizer60->Add(itemStaticBoxSizer73, 1, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer74 = new wxBoxSizer(wxHORIZONTAL);
@@ -556,14 +556,12 @@ void PreferencesDialog::CreateControls()
   wxStaticText* itemStaticText78 = new wxStaticText( itemPanel31, wxID_STATIC, _("Text as"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     itemStaticText78->SetToolTip(_("Default text format selected."));
-  itemStaticText78->Enable(false);
   itemBoxSizer77->Add(itemStaticText78, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceTimelineSaveTextFormatStrings;
   choiceTimelineSaveTextFormat = new wxChoice( itemPanel31, ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT, wxDefaultPosition, wxDefaultSize, choiceTimelineSaveTextFormatStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineSaveTextFormat->SetToolTip(_("Default text format selected."));
-  choiceTimelineSaveTextFormat->Enable(false);
   itemBoxSizer77->Add(choiceTimelineSaveTextFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
 
   GetBookCtrl()->AddPage(itemPanel31, _("Timeline"));
@@ -746,9 +744,8 @@ void PreferencesDialog::CreateControls()
     txtHistogramNumColumns->SetToolTip(_("Initial number of columns for new histograms."));
   itemBoxSizer117->Add(txtHistogramNumColumns, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer120Static = new wxStaticBox(itemPanel80, wxID_ANY, _("  Save Options  "));
+  wxStaticBox* itemStaticBoxSizer120Static = new wxStaticBox(itemPanel80, wxID_ANY, _("  Default Save Options  "));
   wxStaticBoxSizer* itemStaticBoxSizer120 = new wxStaticBoxSizer(itemStaticBoxSizer120Static, wxVERTICAL);
-  itemStaticBoxSizer120Static->Enable(false);
   itemBoxSizer105->Add(itemStaticBoxSizer120, 1, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer121 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer120->Add(itemBoxSizer121, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
@@ -770,14 +767,12 @@ void PreferencesDialog::CreateControls()
   wxStaticText* itemStaticText125 = new wxStaticText( itemPanel80, wxID_STATIC, _("Text as"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     itemStaticText125->SetToolTip(_("Default text format selected."));
-  itemStaticText125->Enable(false);
   itemBoxSizer124->Add(itemStaticText125, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceHistogramSaveTextFormatStrings;
   choiceHistogramSaveTextFormat = new wxChoice( itemPanel80, ID_PREFERENCES_HISTOGRAM_SAVE_TXT_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveTextFormatStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramSaveTextFormat->SetToolTip(_("Default text format selected."));
-  choiceHistogramSaveTextFormat->Enable(false);
   itemBoxSizer124->Add(choiceHistogramSaveTextFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
 
   GetBookCtrl()->AddPage(itemPanel80, _("Histogram"));
