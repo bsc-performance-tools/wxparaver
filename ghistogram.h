@@ -348,7 +348,8 @@ public:
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
   
   void saveText( bool onlySelectedPlane = false );
-  
+  void saveImage();
+
   void rightDownManager();
 
 ////@begin gHistogram member variables

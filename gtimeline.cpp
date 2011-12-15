@@ -2492,7 +2492,7 @@ void gTimeline::saveImage()
     int timelineHeight = img.GetHeight();
 
     int titleMargin = 5; // used in 4 sides
-    int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // left + rigth
+    int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
     int titleWidth = timelineWidth;
     int titleWritableWidth = titleWidth - ( 2 * titleMargin );
 

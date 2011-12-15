@@ -185,7 +185,7 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
 }
 
 
-void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
+void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
 {
   gPasteWindowProperties* sharedProperties = gPasteWindowProperties::pasteWindowProperties->getInstance();
 
@@ -211,6 +211,8 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram  )
     Enable( FindItem( _( STR_3D_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_3D_SCALE) );
   else
     Enable( FindItem( _( STR_3D_SCALE ) ), false );
+
+  Enable( FindItem( _( STR_SAVE_IMAGE ) ), whichHistogram->GetHistogram()->getZoom() );
 }
 
 
@@ -557,7 +559,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( this, _( "Select Rows..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
 
   AppendSeparator();
-  buildItem( this, _( "Save Image..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
+  buildItem( this, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
   buildItem( this, _( "Save as..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TIMELINE_AS_TEXT );
 
   AppendSeparator();
@@ -814,6 +816,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   }
   else
   {
+    buildItem( this, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
     buildItem( this, _( "Save as..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
   }
   
@@ -1259,6 +1262,10 @@ void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->saveImage();
+  else if ( histogram != NULL )
+  {
+    histogram->saveImage();
+  }
 }
 
 void gPopUpMenu::OnMenuSaveTimelineAsText( wxCommandEvent& event )

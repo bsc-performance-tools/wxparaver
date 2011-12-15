@@ -287,7 +287,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2265,6 +2265,151 @@ void gHistogram::saveText( bool onlySelectedPlane )
     delete output;
   }
 }
+
+
+void gHistogram::saveImage()
+{
+  wxString imageName, imageSuffix, defaultDir;
+  long imageType;
+
+  wxString fileName;
+  string auxName = myHistogram->getName() + "_";
+
+  // alway selected plane
+  bool isCommStatistic = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+  if ( !isCommStatistic )
+    auxName += myHistogram->getPlaneLabel( myHistogram->getSelectedPlane() ) + "_";
+  else
+    auxName += myHistogram->getPlaneLabel( myHistogram->getCommSelectedPlane() ) + "_";
+
+  auxName += myHistogram->getTrace()->getTraceNameNumbered();
+
+  fileName = wxString::FromAscii( auxName.c_str() );
+
+#ifdef WIN32
+  defaultDir = _(".\\");
+#else
+  defaultDir = _("./");
+#endif
+
+  wxFileDialog saveDialog( this,
+                           _("Save Image"),
+                           defaultDir,
+                           fileName, // default name ->window name!
+#ifdef WIN32
+                           _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
+#else
+                           _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
+#endif
+                           wxSAVE|wxFD_OVERWRITE_PROMPT );
+
+  saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getHistogramSaveImageFormat() );
+  if ( saveDialog.ShowModal() == wxID_OK )
+  {
+    // Build image to be saved as: title image + timeline image
+
+    // Get title
+    wxString longTitle = wxString::FromAscii(
+            ( myHistogram->getName() + " @ " +
+              myHistogram->getTrace()->getTraceNameNumbered() ).c_str());
+    wxString shortTitle = wxString::FromAscii( ( myHistogram->getName() ).c_str() );
+    wxString writtenTitle = longTitle;
+
+    // Get colors
+    wxColour foregroundColour = *wxWHITE;
+    wxColour backgroundColour = *wxBLACK;
+
+    // Get font
+    wxFont titleFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
+
+    // Get dimensions
+    wxImage img = drawImage.ConvertToImage();
+    int histogramWidth = img.GetWidth();
+    int histogramHeight = img.GetHeight();
+
+    int titleMargin = 5; // used in 4 sides
+    int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
+    int titleWidth = histogramWidth;
+    int titleWritableWidth = titleWidth - ( 2 * titleMargin );
+
+    int imageHeigth = titleHeigth + histogramHeight;
+    int imageWidth = histogramWidth;
+
+    // Build DC for title
+    wxBitmap titleBitmap( titleWidth, titleHeigth );
+    wxMemoryDC titleDC( titleBitmap );
+
+    // Set font and check if using it the title will fit
+    titleDC.SetFont( titleFont );
+    wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
+
+    if ( titleSize.GetWidth() > titleWritableWidth )
+    {
+      titleSize = titleDC.GetTextExtent( shortTitle );
+      writtenTitle = shortTitle;
+    }
+
+    // Set colors
+    titleDC.SetBackground( wxBrush( backgroundColour ) );
+    titleDC.Clear();
+
+    titleDC.SetPen( wxPen( backgroundColour, 1 ) );
+    titleDC.SetTextBackground( backgroundColour );
+    titleDC.SetTextForeground( foregroundColour );
+
+    // Compute title image size
+    titleDC.DrawText( writtenTitle, titleMargin, titleMargin );
+
+    wxBitmap imageBitmap( imageWidth, imageHeigth );
+    wxMemoryDC imageDC( imageBitmap );
+    wxCoord xsrc = 0;
+    wxCoord ysrc = 0;
+    wxCoord xdst = 0;
+    wxCoord ydst = 0;
+    imageDC.Blit( xdst, ydst, titleWidth, titleHeigth, &titleDC, xsrc, ysrc );
+  
+    wxMemoryDC histogramDC( drawImage );
+    xsrc = 0;
+    ysrc = 0;
+    xdst = 0;
+    ydst = titleHeigth;
+    imageDC.Blit( xdst, ydst, histogramWidth, histogramHeight, &histogramDC, xsrc, ysrc );
+
+    // Get extension and save
+    wxImage baseLayer = imageBitmap.ConvertToImage();
+
+    switch( saveDialog.GetFilterIndex() )
+    {
+      case 0:
+        imageType =  wxBITMAP_TYPE_BMP;
+        imageSuffix = _(".bmp");
+        break;
+      case 1:
+        imageType =  wxBITMAP_TYPE_JPEG;
+        imageSuffix = _(".jpg");
+        break;
+      case 2:
+        imageType =  wxBITMAP_TYPE_PNG;
+        imageSuffix = _(".png");
+        break;
+      case 3:
+        imageType = wxBITMAP_TYPE_XPM;
+        imageSuffix = _(".xpm");
+        break;
+      default:
+        imageType =  wxBITMAP_TYPE_PNG;
+        imageSuffix = _(".png");
+        break;
+    }
+
+    if ( saveDialog.GetPath().EndsWith( imageSuffix )) 
+//       || saveDialog.GetPath().EndsWith( wxString( imageSuffix ).MakeUpper() ) )
+      baseLayer.SaveFile( saveDialog.GetPath(), imageType );
+    else
+      baseLayer.SaveFile( saveDialog.GetPath() + imageSuffix , imageType );
+  }
+}
+
 
 
 /*!

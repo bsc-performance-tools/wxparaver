@@ -752,14 +752,12 @@ void PreferencesDialog::CreateControls()
   wxStaticText* itemStaticText122 = new wxStaticText( itemPanel80, wxID_STATIC, _("Image as"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     itemStaticText122->SetToolTip(_("Default image format selected."));
-  itemStaticText122->Enable(false);
   itemBoxSizer121->Add(itemStaticText122, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceHistogramSaveImageFormatStrings;
   choiceHistogramSaveImageFormat = new wxChoice( itemPanel80, ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveImageFormatStrings, 0 );
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramSaveImageFormat->SetToolTip(_("Default image format selected."));
-  choiceHistogramSaveImageFormat->Enable(false);
   itemBoxSizer121->Add(choiceHistogramSaveImageFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
 
   wxBoxSizer* itemBoxSizer124 = new wxBoxSizer(wxHORIZONTAL);
