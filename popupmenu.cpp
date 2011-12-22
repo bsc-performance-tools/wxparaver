@@ -815,10 +815,9 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   }
   else
-  {
-    buildItem( this, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
     buildItem( this, _( "Save as..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
-  }
+
+  buildItem( this, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
   
   enableMenu( histogram );
 }
