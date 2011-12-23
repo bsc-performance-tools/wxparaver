@@ -1974,7 +1974,7 @@ void gTimeline::printWhatWhere( )
 
           if ( allowedLine )
             whatWhereText->AppendText( it->second );
-          else if( recordsCount == 200 )
+          else if( recordsCount >= 100 )
           {
             whatWhereText->BeginBold();
             whatWhereText->AppendText( _( "Too much records. Reduce time scale.\n" ) );
@@ -2053,6 +2053,10 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   TRecordTime fromTime = whatWhereTime - stepTime;
   if( fromTime < 0.0 ) fromTime = 0.0;
   TRecordTime toTime = whatWhereTime + stepTime;
+
+  while( it != rl->end() &&
+         (*it).getTime() < fromTime )
+    ++it;
 
   while( it != rl->end() && 
          (*it).getTime() >= fromTime &&
