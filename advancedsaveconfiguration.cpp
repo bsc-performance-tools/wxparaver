@@ -630,9 +630,8 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
       continue;
 
     wxString currentTagName = wxString::FromAscii( it->first.c_str() );
-cout << currentTagName << endl;
+
     currentTextCtrl = GetTextCtrlByName( currentTagName );
-cout << currentTextCtrl->GetValue() << endl;
     if ( GetCheckBoxByName( currentTagName )->GetValue() && currentTextCtrl->GetValue().IsEmpty() )
     {
       if ( auxMap.find( it->first ) != auxMap.end() )

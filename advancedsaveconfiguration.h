@@ -36,6 +36,7 @@
 
 
 ////@begin includes
+#include "wx/tglbtn.h"
 ////@end includes
 
 #include <vector>
@@ -51,6 +52,7 @@
  */
 
 ////@begin forward declarations
+class wxToggleButton;
 ////@end forward declarations
 
 /*!
@@ -61,6 +63,7 @@
 #define ID_ADVANCEDSAVECONFIGURATION 10186
 #define ID_CHOICE_WINDOW 10185
 #define ID_SCROLLEDWINDOW1 10187
+#define ID_TOGGLEBUTTON_LIST_SELECTED 10197
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE _("Save Basic CFG - Properties Editor")
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME ID_ADVANCEDSAVECONFIGURATION
@@ -120,6 +123,9 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_WINDOW
   void OnChoiceWindowSelected( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_TOGGLEBUTTON_LIST_SELECTED
+  void OnToggleOnlySelectedClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_SAVE
   void OnSaveClick( wxCommandEvent& event );
 
@@ -140,6 +146,7 @@ public:
 ////@begin AdvancedSaveConfiguration member variables
   wxChoice* choiceWindow;
   wxScrolledWindow* scrolledWindow;
+  wxToggleButton* toggleOnlySelected;
   wxButton* buttonSave;
 ////@end AdvancedSaveConfiguration member variables
 
@@ -177,16 +184,17 @@ public:
     void BuildTagMaps( const vector< string > &fullTagList,
                        const map< string, string > &renamedTagMap,
                        map< string, bool > &whichEnabledFullTagList,
-                       map< string, string > &whichRenamedFullTagList );
-    void BuildTagWidgets( const vector< string > &fullTagList );
-    void BuildTagsPanel( Window *currentWindow );
-    void BuildTagsPanel( Histogram *currentHistogram );
+                       map< string, string > &whichRenamedFullTagList,
+                       bool showFullList );
+    void BuildTagWidgets( const vector< string > &fullTagList, bool showFullList );
+    void BuildTagsPanel( Window *currentWindow, bool showFullList );
+    void BuildTagsPanel( Histogram *currentHistogram, bool showFullList );
 
-    void PreparePanel();
-    void TransferDataFromPanel();
+    void PreparePanel( bool showFullList );
+    void TransferDataFromPanel( bool showFullList );
 
-    void DisconnectWidgetsTagsPanel();
-    void CleanTagsPanel();
+    void DisconnectWidgetsTagsPanel( bool showFullList );
+    void CleanTagsPanel( bool showFullList );
 
     wxCheckBox *GetCheckBoxByName( const wxString& widgetName ) const;
     wxTextCtrl *GetTextCtrlByName( const wxString& widgetName ) const;
@@ -194,6 +202,8 @@ public:
 
     void OnCheckBoxClicked( wxCommandEvent& event );
     void OnStatisticsButtonClick( wxCommandEvent& event );
+    
+    void RefreshList( bool showFullList );
 };
 
 #endif
