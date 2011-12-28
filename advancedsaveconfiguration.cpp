@@ -63,6 +63,8 @@ BEGIN_EVENT_TABLE( AdvancedSaveConfiguration, wxDialog )
 ////@begin AdvancedSaveConfiguration event table entries
   EVT_CHOICE( ID_CHOICE_WINDOW, AdvancedSaveConfiguration::OnChoiceWindowSelected )
 
+  EVT_TOGGLEBUTTON( ID_TOGGLEBUTTON_LIST_SELECTED, AdvancedSaveConfiguration::OnToggleOnlySelectedClick )
+
   EVT_BUTTON( wxID_SAVE, AdvancedSaveConfiguration::OnSaveClick )
 
 ////@end AdvancedSaveConfiguration event table entries
@@ -145,7 +147,7 @@ bool AdvancedSaveConfiguration::Create( wxWindow* parent, wxWindowID id, const w
 
 AdvancedSaveConfiguration::~AdvancedSaveConfiguration()
 {
-  DisconnectWidgetsTagsPanel();
+  DisconnectWidgetsTagsPanel( !toggleOnlySelected->GetValue() );
 }
 
 
@@ -158,6 +160,7 @@ void AdvancedSaveConfiguration::Init()
 ////@begin AdvancedSaveConfiguration member initialisation
   choiceWindow = NULL;
   scrolledWindow = NULL;
+  toggleOnlySelected = NULL;
   buttonSave = NULL;
 ////@end AdvancedSaveConfiguration member initialisation
   isTimeline = true;
@@ -189,16 +192,26 @@ void AdvancedSaveConfiguration::CreateControls()
   itemBoxSizer2->Add(scrolledWindow, 1, wxGROW|wxALL|wxFIXED_MINSIZE, 5);
   scrolledWindow->SetScrollbars(15, 15, 0, 0);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer6 = new wxStdDialogButtonSizer;
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer6, 0, wxGROW|wxALL, 5);
 
-  itemBoxSizer2->Add(itemStdDialogButtonSizer6, 0, wxALIGN_RIGHT|wxALL, 5);
-  wxButton* itemButton7 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer6->AddButton(itemButton7);
+  toggleOnlySelected = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON_LIST_SELECTED, _("View selected"), wxDefaultPosition, wxDefaultSize, 0 );
+  toggleOnlySelected->SetValue(false);
+  toggleOnlySelected->SetName(_T("List Selected"));
+  itemBoxSizer6->Add(toggleOnlySelected, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  itemBoxSizer6->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer9 = new wxStdDialogButtonSizer;
+
+  itemBoxSizer6->Add(itemStdDialogButtonSizer9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxButton* itemButton10 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer9->AddButton(itemButton10);
 
   buttonSave = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer6->AddButton(buttonSave);
+  itemStdDialogButtonSizer9->AddButton(buttonSave);
 
-  itemStdDialogButtonSizer6->Realize();
+  itemStdDialogButtonSizer9->Realize();
 
 ////@end AdvancedSaveConfiguration content construction
 
@@ -215,15 +228,16 @@ void AdvancedSaveConfiguration::CreateControls()
   }
 
   currentItem = 0;
+  bool showFullList = !toggleOnlySelected->GetValue();
   if ( timelines.size() > 0 )
   {
     isTimeline = true;
-    BuildTagsPanel( timelines[ currentItem ] );
+    BuildTagsPanel( timelines[ currentItem ], showFullList );
   }
   else
   {
     isTimeline = false;
-    BuildTagsPanel( histograms[ currentItem ] );
+    BuildTagsPanel( histograms[ currentItem ], showFullList );
   }
 
   choiceWindow->SetSelection( currentItem );
@@ -254,18 +268,18 @@ wxString AdvancedSaveConfiguration::BuildName( Histogram *current )
 }
 
 
-void AdvancedSaveConfiguration::CleanTagsPanel()
+void AdvancedSaveConfiguration::CleanTagsPanel( bool showFullList )
 {
-  DisconnectWidgetsTagsPanel();
+  DisconnectWidgetsTagsPanel( showFullList );
   scrolledWindow->DestroyChildren();
 }
 
 
-void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel()
+void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel( bool showFullList )
 {
   for( map< string, string >::iterator it = renamedTag.begin(); it != renamedTag.end(); ++it )
   {
-    if ( allowedLevel( it->first ) )
+    if ( allowedLevel( it->first ) && ( showFullList || enabledTag[ it->first ] ))
     {
       wxString currentCheckBoxName = wxString::FromAscii( it->first.c_str() );
       GetCheckBoxByName( currentCheckBoxName )->Disconnect(
@@ -281,7 +295,8 @@ void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel()
 void AdvancedSaveConfiguration::BuildTagMaps( const vector< string > &fullTagList,
                                               const map< string, string > &renamedTagMap,
                                               map< string, bool > &whichEnabledFullTagList,
-                                              map< string, string > &whichRenamedFullTagList )
+                                              map< string, string > &whichRenamedFullTagList,
+                                              bool showFullList )
 {
   map< string, bool > auxEnabledFullTagList;
   map< string, string > auxRenamedFullTagsList;
@@ -290,6 +305,7 @@ void AdvancedSaveConfiguration::BuildTagMaps( const vector< string > &fullTagLis
   {
     // check only the present in renamedTagMap
     bool exists = renamedTagMap.find( *it ) != renamedTagMap.end();
+
     auxEnabledFullTagList[ *it ] = exists;
     
     // and fill the whole list
@@ -299,7 +315,14 @@ void AdvancedSaveConfiguration::BuildTagMaps( const vector< string > &fullTagLis
     }
     else
     {
-      auxRenamedFullTagsList[ *it ] = *it; // doesn't exist => copy the tag/key
+      if ( showFullList )
+      {
+        auxRenamedFullTagsList[ *it ] = *it; // doesn't exist => copy the tag/key
+      }
+      else
+      {
+        auxRenamedFullTagsList[ *it ] = "";
+      }
     }
   }
 
@@ -366,7 +389,8 @@ bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
 }
 
 
-void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTagList )
+void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTagList,
+                                                 bool showFullList )
 {
   // Create widgets (checkboxes and textboxes ) and connect them
   wxBoxSizer *auxBoxSizer;
@@ -383,72 +407,75 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
     if ( allowedLevel( *itOrd ) )
     {
       it = renamedTag.find( *itOrd );
-      auxBoxSizer = new wxBoxSizer( wxHORIZONTAL );
-
-      auxCheckBox = new wxCheckBox( scrolledWindow,
-                                    wxID_ANY,
-                                    wxString::FromAscii( it->first.c_str() ),
-                                    wxDefaultPosition,
-                                    wxDefaultSize,
-                                    0,
-                                    wxDefaultValidator,
-                                    wxString::FromAscii( it->first.c_str() ) + KCheckBoxSuffix );
-      auxCheckBox->SetValue( enabledTag[ it->first ] );
-
-      auxBoxSizer->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
-
-      wxArrayString forbiddenChars;
-      forbiddenChars.Add( wxT("|") );
-      wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_CHAR_LIST );
-      excludeVerticalBar.SetExcludes( forbiddenChars );
-
-      auxTextCtrl = new wxTextCtrl( scrolledWindow,
-                                    wxID_ANY,
-                                    wxString::FromAscii( it->second.c_str() ),
-                                    wxDefaultPosition,
-                                    wxDefaultSize,
-                                    0,
-                                    excludeVerticalBar,
-                                    wxString::FromAscii( it->first.c_str() ) + KTextCtrlSuffix ); 
-      auxTextCtrl->Enable( enabledTag[ it->first ] );
-
-      auxTextCtrl->SetValidator( excludeVerticalBar );
-
-      auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
-
-      if ( editionMode == PROPERTIES_TAGS )
+      if ( showFullList || enabledTag[ it->first ] )
       {
-        if( wxString::FromAscii( it->first.c_str() ) == _( "Statistic" ) )
+        auxBoxSizer = new wxBoxSizer( wxHORIZONTAL );
+
+        auxCheckBox = new wxCheckBox( scrolledWindow,
+                                      wxID_ANY,
+                                      wxString::FromAscii( it->first.c_str() ),
+                                      wxDefaultPosition,
+                                      wxDefaultSize,
+                                      0,
+                                      wxDefaultValidator,
+                                      wxString::FromAscii( it->first.c_str() ) + KCheckBoxSuffix );
+        auxCheckBox->SetValue( enabledTag[ it->first ] );
+
+        auxBoxSizer->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
+
+        wxArrayString forbiddenChars;
+        forbiddenChars.Add( wxT("|") );
+        wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_CHAR_LIST );
+        excludeVerticalBar.SetExcludes( forbiddenChars );
+
+        auxTextCtrl = new wxTextCtrl( scrolledWindow,
+                                      wxID_ANY,
+                                      wxString::FromAscii( it->second.c_str() ),
+                                      wxDefaultPosition,
+                                      wxDefaultSize,
+                                      0,
+                                      excludeVerticalBar,
+                                      wxString::FromAscii( it->first.c_str() ) + KTextCtrlSuffix ); 
+        auxTextCtrl->Enable( enabledTag[ it->first ] );
+
+        auxTextCtrl->SetValidator( excludeVerticalBar );
+
+        auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
+
+        if ( editionMode == PROPERTIES_TAGS )
         {
-          auxButton = new wxButton( scrolledWindow,
-                                    wxID_ANY, _("..."),
-                                    wxDefaultPosition,
-                                    wxDefaultSize,
-                                    wxBU_EXACTFIT,
-                                    wxDefaultValidator,
-                                    wxString::FromAscii( it->first.c_str() ) + KButtonSuffix );
-          // auxBoxSizer->Add( auxButton, 0, wxEXPAND | wxGROW | wxALL, 2 );
-          auxButton->Enable( enabledTag[ it->first ] );
-          auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+          if( wxString::FromAscii( it->first.c_str() ) == _( "Statistic" ) )
+          {
+            auxButton = new wxButton( scrolledWindow,
+                                      wxID_ANY, _("..."),
+                                      wxDefaultPosition,
+                                      wxDefaultSize,
+                                      wxBU_EXACTFIT,
+                                      wxDefaultValidator,
+                                      wxString::FromAscii( it->first.c_str() ) + KButtonSuffix );
+            // auxBoxSizer->Add( auxButton, 0, wxEXPAND | wxGROW | wxALL, 2 );
+            auxButton->Enable( enabledTag[ it->first ] );
+            auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
 
-          auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
-                          wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
-                          NULL,
-                          this ); 
-
-        }
-        else
-        {
-          auxBoxSizer->Add(2, 2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 1 );
-        }
-      }
-
-      auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
-                            wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
+            auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                            wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
                             NULL,
                             this ); 
 
-      boxSizerCurrentItem->Add( auxBoxSizer, 0, wxGROW|wxALL, 2 );
+          }
+          else
+          {
+            auxBoxSizer->Add(2, 2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 1 );
+          }
+        }
+
+        auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
+                              wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
+                              NULL,
+                              this ); 
+
+        boxSizerCurrentItem->Add( auxBoxSizer, 0, wxGROW|wxALL, 2 );
+      }
     }
   }
 
@@ -457,19 +484,20 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
 }
 
 
-void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow )
+void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow, bool showFullList )
 {
   // Build renamedTag and enabledTag maps
   BuildTagMaps( currentWindow->getCFG4DFullTagList(),
                 currentWindow->getCFG4DAliasList(),
                 enabledTag,
-                renamedTag );
+                renamedTag,
+                showFullList );
 
-  BuildTagWidgets( currentWindow->getCFG4DFullTagList() );
+  BuildTagWidgets( currentWindow->getCFG4DFullTagList(), showFullList );
 }
 
 
-void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram )
+void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram, bool showFullList )
 {
   vector< string > fullTagList;
   int selected;
@@ -483,20 +511,22 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram )
       BuildTagMaps( fullTagList,
                     currentHistogram->getCFG4DStatisticsAliasList(),
                     enabledTag,
-                    renamedTag );
+                    renamedTag,
+                    showFullList );
       break;
     case PROPERTIES_TAGS:
       fullTagList = currentHistogram->getCFG4DFullTagList();
       BuildTagMaps( fullTagList,
                     currentHistogram->getCFG4DAliasList(),
                     enabledTag,
-                    renamedTag );
+                    renamedTag,
+                    showFullList );
       break;
     default:
       break;
   }
 
-  BuildTagWidgets( fullTagList );
+  BuildTagWidgets( fullTagList, showFullList );
 }
 
 /*!
@@ -569,7 +599,7 @@ void AdvancedSaveConfiguration::OnCheckBoxClicked( wxCommandEvent& event )
     relatedButton->Enable( currentCheckBox->GetValue() );
 }
 
-void AdvancedSaveConfiguration::PreparePanel()
+void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
 {
   // Check if some selected textctrl is empty => rewritten with value
   wxTextCtrl *currentTextCtrl;
@@ -594,15 +624,15 @@ void AdvancedSaveConfiguration::PreparePanel()
     }
   }
 
-
   for( map< string, string >::iterator it = renamedTag.begin(); it != renamedTag.end(); ++it )
   {
-    if ( !allowedLevel( it->first ) )
+    if ( !allowedLevel( it->first ) || ( !showFullList && !enabledTag[ it->first ] ))
       continue;
 
     wxString currentTagName = wxString::FromAscii( it->first.c_str() );
+cout << currentTagName << endl;
     currentTextCtrl = GetTextCtrlByName( currentTagName );
-
+cout << currentTextCtrl->GetValue() << endl;
     if ( GetCheckBoxByName( currentTagName )->GetValue() && currentTextCtrl->GetValue().IsEmpty() )
     {
       if ( auxMap.find( it->first ) != auxMap.end() )
@@ -620,15 +650,14 @@ void AdvancedSaveConfiguration::PreparePanel()
 }
 
 
-void AdvancedSaveConfiguration::TransferDataFromPanel()
+void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
 {
   map< string, string > auxActiveTags;
 
   for( map< string, string >::iterator it = renamedTag.begin(); it != renamedTag.end(); ++it )
   {
-    if ( !allowedLevel( it->first ) )
+    if ( !allowedLevel( it->first ) || ( !showFullList && !enabledTag[ it->first ] ))
       continue;
-
     wxString currentTagName = wxString::FromAscii( it->first.c_str() );
 
     enabledTag[ it->first ] = GetCheckBoxByName( currentTagName )->GetValue();
@@ -670,10 +699,29 @@ void AdvancedSaveConfiguration::TransferDataFromPanel()
  */
 void AdvancedSaveConfiguration::OnSaveClick( wxCommandEvent& event )
 {
-  PreparePanel();
-  TransferDataFromPanel();
+  bool showFullList = !toggleOnlySelected->GetValue();
+  PreparePanel( showFullList );
+  TransferDataFromPanel( showFullList );
   EndModal( wxID_OK );
 }
+
+void AdvancedSaveConfiguration::RefreshList( bool showFullList )
+{
+  PreparePanel( showFullList );
+  TransferDataFromPanel( showFullList );
+  CleanTagsPanel( showFullList );
+
+  currentItem = GetSelectionIndexCorrected( choiceWindow->GetSelection(), isTimeline );
+  if ( isTimeline )
+  {
+    BuildTagsPanel( timelines[ currentItem ], showFullList );
+  }
+  else
+  {
+    BuildTagsPanel( histograms[ currentItem ], showFullList );
+  }
+}
+
 
 
 /*!
@@ -682,19 +730,7 @@ void AdvancedSaveConfiguration::OnSaveClick( wxCommandEvent& event )
 
 void AdvancedSaveConfiguration::OnChoiceWindowSelected( wxCommandEvent& event )
 {
-  PreparePanel();
-  TransferDataFromPanel();
-  CleanTagsPanel();
-
-  currentItem = GetSelectionIndexCorrected( choiceWindow->GetSelection(), isTimeline );
-  if ( isTimeline )
-  {
-    BuildTagsPanel( timelines[ currentItem ] );
-  }
-  else
-  {
-    BuildTagsPanel( histograms[ currentItem ] );
-  }
+  RefreshList( !toggleOnlySelected->GetValue() );
 }
 
 
@@ -730,3 +766,33 @@ void AdvancedSaveConfiguration::OnStatisticsButtonClick( wxCommandEvent& event )
   {
   }
 }
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_TOGGLEBUTTON
+ */
+
+void AdvancedSaveConfiguration::OnToggleOnlySelectedClick( wxCommandEvent& event )
+{
+  // First, save current information and destroy widgets
+  bool previousState = toggleOnlySelected->GetValue();
+
+  PreparePanel( previousState );
+  TransferDataFromPanel( previousState );
+  CleanTagsPanel( previousState );
+
+  // Second, rebuild widgets list
+  bool currentState = !toggleOnlySelected->GetValue();
+
+  currentItem = GetSelectionIndexCorrected( choiceWindow->GetSelection(), isTimeline );
+  if ( isTimeline )
+  {
+    BuildTagsPanel( timelines[ currentItem ], currentState );
+  }
+  else
+  {
+    BuildTagsPanel( histograms[ currentItem ], currentState );
+  }
+}
+
+
