@@ -287,7 +287,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -543,7 +543,7 @@ void gHistogram::fillZoom()
   bufferDraw.DrawRectangle( 0, 0, bufferDraw.GetSize().GetWidth(), cellHeight * pixelSize);
   bufferDraw.DrawRectangle( 0, 0, cellWidth * pixelSize, bufferDraw.GetSize().GetHeight() );
 
-  for( THistogramColumn iCol = 0; iCol < tmpNumCols; iCol++ )
+  for( THistogramColumn iCol = 0; iCol < tmpNumCols; ++iCol )
   {
     THistogramColumn realCol = iCol;
     if( myHistogram->getHideColumns() )
@@ -559,8 +559,8 @@ void gHistogram::fillZoom()
     THistogramColumn endCol = beginCol;
     if( horizontal )
     {
-      while( ( endCol + 1 ) <= tmpNumCols 
-             && ( endCol + 2 ) * cellWidth == ( beginCol + 1 ) * cellWidth )
+      while( ( endCol + 1 ) < tmpNumCols 
+             && rint( ( endCol + 2 ) * cellWidth ) == rint( ( beginCol + 1 ) * cellWidth ) )
       {
         ++endCol;
         THistogramColumn tmpEndCol = endCol;
@@ -574,8 +574,8 @@ void gHistogram::fillZoom()
     }
     else
     {
-      while( ( endCol + 1 ) <= tmpNumCols 
-             && ( endCol + 2 ) * cellHeight == ( beginCol + 1 ) * cellHeight )
+      while( ( endCol + 1 ) < tmpNumCols 
+             && rint( ( endCol + 2 ) * cellHeight ) == rint( ( beginCol + 1 ) * cellHeight ) )
       {
         ++endCol;
         THistogramColumn tmpEndCol = endCol;
@@ -587,7 +587,7 @@ void gHistogram::fillZoom()
           myHistogram->setFirstCell( tmpEndCol, curPlane );
       }
     }
-    
+
     drawColumn( beginCol, endCol, noVoidColumns, bufferDraw );
     if( endCol > iCol )
       iCol = endCol;
@@ -637,14 +637,9 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
   else
     curPlane = myHistogram->getSelectedPlane();
 
-  for( TObjectOrder iRow = 0; iRow < numRows; iRow++ )
+  valuesObjects.clear();
+  for( TObjectOrder iRow = 0; iRow < numRows; ++iRow )
   {
-    if( iRow == 0 || 
-        ( horizontal && rint( iRow * cellHeight ) == rint( ( iRow + 1 ) * cellHeight ) ) ||
-        ( !horizontal && rint( iRow * cellWidth ) == rint( ( iRow + 1 ) * cellWidth ) )
-      )
-      valuesObjects.clear();
-      
     valuesColumns.clear();
 
     for( THistogramColumn drawCol = beginColumn; drawCol <= endColumn; ++drawCol )
