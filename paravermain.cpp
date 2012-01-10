@@ -2005,10 +2005,11 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
 
 void paraverMain::OnMenusavecfgUpdate( wxUpdateUIEvent& event )
 {
-  if( currentTimeline != NULL || currentHisto != NULL )
-    event.Enable( true );
-  else
+  if( LoadedWindows::getInstance()->emptyWindows() && 
+      LoadedWindows::getInstance()->emptyHistograms() )
     event.Enable( false );
+  else
+    event.Enable( true );
 }
 
 
