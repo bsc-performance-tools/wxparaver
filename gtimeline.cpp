@@ -387,7 +387,7 @@ void gTimeline::redraw()
   }
 #endif
 #ifdef TRACING_ENABLED
-  Extrae_user_function( 1 );
+  Extrae_user_function( 2 );
 #endif
 
   redoColors = true;
@@ -511,6 +511,9 @@ void gTimeline::redraw()
     drawRow( bufferDraw, firstObj, lastObj, selectedSet, selected );
 
     wxCoord rowPos = objectPosList[ firstObj ];
+#ifdef TRACING_ENABLED
+    Extrae_event( 100, 10 );
+#endif
     for( hash_set<wxCoord>::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
     {
       eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
@@ -527,7 +530,13 @@ void gTimeline::redraw()
       eventmaskdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
 #endif
     }
+#ifdef TRACING_ENABLED
+    Extrae_event( 100, 0 );
+#endif
 
+#ifdef TRACING_ENABLED
+    Extrae_event( 100, 11 );
+#endif
 #ifdef WIN32
     for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
@@ -545,6 +554,10 @@ void gTimeline::redraw()
                            it->fromTime, rowPos );
 #endif
     }
+#ifdef TRACING_ENABLED
+    Extrae_event( 100, 0 );
+#endif
+
   }
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
@@ -705,7 +718,7 @@ void gTimeline::drawRow( wxDC& dc, TObjectOrder firstRow, TObjectOrder lastRow,
                          vector<TObjectOrder>& selectedSet, vector<bool>& selected )
 {
 #ifdef TRACING_ENABLED
-  Extrae_user_function( 2 );
+  Extrae_user_function( 3 );
 #endif
   float magnify = float( myWindow->getPixelSize() );
 
