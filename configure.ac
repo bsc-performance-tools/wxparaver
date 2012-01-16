@@ -82,7 +82,7 @@ if test "${enable_tracing}" = "yes" ; then
   CXXFLAGS="$CXXFLAGS -I$EXTRAE_DIR/include"
   CFLAGS="$CFLAGS -L$EXTRAE_DIR/include"
   LIBS="$LIBS -L$EXTRAE_LIBS/lib"
-  LDFLAGS="$LDFLAGS -lseqtrace"
+  LDFLAGS="$LDFLAGS -L$EXTRAE_LIBS/lib -lseqtrace"
 fi
 
 
