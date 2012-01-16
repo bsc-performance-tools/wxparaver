@@ -386,6 +386,9 @@ void gTimeline::redraw()
     return;
   }
 #endif
+#ifdef TRACING_ENABLED
+  Extrae_user_function( 1 );
+#endif
 
   redoColors = true;
 
@@ -473,6 +476,9 @@ void gTimeline::redraw()
   {
     ready = true;
     SetTitle( winTitle );
+#ifdef TRACING_ENABLED
+  Extrae_user_function( 0 );
+#endif
     return;
   }
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
@@ -587,6 +593,9 @@ void gTimeline::redraw()
 
   ready = true;
   SetTitle( winTitle );
+#ifdef TRACING_ENABLED
+  Extrae_user_function( 0 );
+#endif
 }
 
 
@@ -695,6 +704,9 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 void gTimeline::drawRow( wxDC& dc, TObjectOrder firstRow, TObjectOrder lastRow,
                          vector<TObjectOrder>& selectedSet, vector<bool>& selected )
 {
+#ifdef TRACING_ENABLED
+  Extrae_user_function( 2 );
+#endif
   float magnify = float( myWindow->getPixelSize() );
 
   TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
@@ -807,6 +819,9 @@ void gTimeline::drawRow( wxDC& dc, TObjectOrder firstRow, TObjectOrder lastRow,
     RecordList *rl = myWindow->getRecordList( *row );
     rl->erase( rl->begin(), rl->end() );
   }
+#ifdef TRACING_ENABLED
+  Extrae_user_function( 0 );
+#endif
 }
 
 
