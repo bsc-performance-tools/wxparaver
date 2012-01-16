@@ -192,6 +192,9 @@ void wxparaverApp::presetUserSignals()
 
 bool wxparaverApp::OnInit()
 {
+#ifdef TRACING_ENABLED
+  Extrae_init();
+#endif
   wxCmdLineEntryDesc argumentsParseSyntax[] =
   {
     { wxCMD_LINE_SWITCH, 
@@ -367,6 +370,10 @@ int wxparaverApp::OnExit()
     
   if( m_server != NULL )
     delete m_server;
+
+#ifdef TRACING_ENABLED
+  Extrae_fini();
+#endif
 
 ////@begin wxparaverApp cleanup
 	return wxApp::OnExit();

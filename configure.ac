@@ -53,6 +53,38 @@ AC_CHECK_TYPES([int64_t, uint64_t, int8_t, uint8_t, int32_t, uint32_t, int16_t, 
 # Checks for library functions.
 AC_CHECK_FUNCS([floor rint])
 
+# Optional features
+AC_ARG_ENABLE(tracing,
+  AC_HELP_STRING(
+    [--enable-tracing],
+    [Enable tracing generation. (Disabled by default)]
+  ),
+  [enable_tracing="${enableval}"],
+  [enable_tracing="no"]
+)
+if test "${enable_tracing}" = "yes" ; then
+  AC_DEFINE([TRACING_ENABLED], 1, [Tracing enabled by user.])
+  CPPFLAGS="$CPPFLAGS -g"
+  CXXFLAGS="$CXXFLAGS -g"
+  CFLAGS="$CFLAGS -g"
+fi
+
+AC_ARG_WITH(extrae,
+  AC_HELP_STRING(
+    [--with-extrae@<:@=DIR@:>@],
+    [Specify extrae library base install directory. Default: /usr/local]
+  ),
+  [EXTRAE_DIR=${withval}],
+  [EXTRAE_DIR=/usr/local]
+)
+if test "${enable_tracing}" = "yes" ; then
+  CPPFLAGS="$CPPFLAGS -I$EXTRAE_DIR/include"
+  CXXFLAGS="$CXXFLAGS -I$EXTRAE_DIR/include"
+  CFLAGS="$CFLAGS -L$EXTRAE_DIR/include"
+  LIBS="$LIBS -L$EXTRAE_LIBS/lib"
+  LDFLAGS="$LDFLAGS -lseqtrace"
+fi
+
 
 CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS $BOOST_CPPFLAGS -I./ -I../common-files/ -I$PARAVER_DIR/include"
 CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY $BOOST_CPPFLAGS -I./ -I../common-files/ -I$PARAVER_DIR/include"

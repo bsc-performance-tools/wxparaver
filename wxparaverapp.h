@@ -40,6 +40,9 @@
 #include "paravermain.h"
 ////@end includes
 #include <wx/snglinst.h>
+#ifdef TRACING_ENABLED
+#include "extrae_user_events.h"
+#endif
 
 /*!
  * Forward declarations
