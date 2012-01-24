@@ -3122,6 +3122,16 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   string strOutputFile;
   vector< string > tmpFiles;
 
+  // Only for cutter
+  vector< TEventType > allTypes;
+  vector< TEventType > typesWithValueZero;
+  EventLabels labels;
+  map< TEventValue, string > currentEventValues;
+  ParaverTraceConfig *myConfig;
+  char *pcf_name;
+  FILE *pcfFile;
+
+
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction );
 
@@ -3157,9 +3167,34 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
     switch( filterToolOrder[i] )
     {
       case INC_CHOP_COUNTER:
+
+        pcf_name = localKernel->composeName( tmpNameIn, (char *)"pcf" );
+        if(( pcfFile = fopen( pcf_name, "r" )) != NULL )
+        {
+          fclose( pcfFile );
+
+          myConfig = new ParaverTraceConfig( string( pcf_name ) );
+          labels = EventLabels( *myConfig, set<TEventType>() );
+          labels.getTypes( allTypes );
+          for( vector< TEventType >::iterator it = allTypes.begin(); it != allTypes.end(); ++it )
+          {
+            if ( labels.getValues( *it, currentEventValues ) )
+            {
+              if ( currentEventValues.find( TEventValue( 0 )) != currentEventValues.end() )
+              {
+                typesWithValueZero.push_back( *it );
+              }
+              currentEventValues.clear();
+            }
+          }
+
+          delete myConfig;
+        }
+
         traceCutter = localKernel->newTraceCutter( tmpNameIn,
                                                    tmpNameOut,
                                                    traceOptions,
+                                                   typesWithValueZero,
                                                    progress );
         localKernel->copyPCF( tmpNameIn, tmpNameOut );
         break;
@@ -3381,17 +3416,15 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   info.SetName( _("wxParaver") );
   info.SetVersion( wxString() << _( VERSION ) << _( " (Build " ) + \
                    wxString() << _( __DATE__ ) << _( ")" ) );
-/*
-  Paraver is a trace-based flexible visualization and analysis tool designed to 
-  study quantitative detailed metrics the whole performance of applications, libraries, processors d whole architectures
-  qualitative knowledge 
-*/
-  description << _( "wxParaver allows the programmer to examine graphically a " );
-  description << _( "tracefile, with the possibility to choose different filters in " );
-  description << _( "order to select what is displayed.\n" );
 
-  description << _( "\nwxParaver is a graphical displaying tool developed at BSC :\n" );
-  description << _( "Barcelona Supercomputing Center.\n\n" );
+  description << _( "wxParaver is a trace-based visualization and analysis tool " );
+  description << _( "designed to study quantitative detailed metrics and obtain " );
+  description << _( "qualitative knowledge of the performance of applications, " );
+  description << _( "libraries, processors and whole architectures.\n" );
+
+  description << _( "\nwxParaver, Extrae, and Dimemas belong to the Performance ");
+  description << _( "Tools Suite developed at BSC-CNS :\n" );
+  description << _( "Barcelona Supercomputing Center - Centro Nacional de Supercomputación\n\n" );
 
   description << _( "\n(paraver@bsc.es)\n" );
   info.SetDescription( description );

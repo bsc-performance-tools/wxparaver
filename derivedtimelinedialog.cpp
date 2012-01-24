@@ -847,9 +847,9 @@ void DerivedTimelineDialog::OnTopcompose2Selected( wxCommandEvent& event )
 
   // Show widgets for its parameters
   if ( currentWindow2->getParametersOfFunction( nameFunction, 
-                                                 numParameters,
-                                                 namesParameters,
-                                                 defaultParameters ) )
+                                                numParameters,
+                                                namesParameters,
+                                                defaultParameters ) )
     setParametersCompose( 1, nameFunction, numParameters, namesParameters, defaultParameters );
 }
 
