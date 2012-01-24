@@ -191,6 +191,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
   void OnButtonCutterSelectRegionClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_CUTTER_SELECT_REGION
+  void OnButtonCutterSelectRegionUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_ALL_TRACE
   void OnButtonCutterAllTraceClick( wxCommandEvent& event );
 

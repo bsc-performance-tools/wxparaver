@@ -53,6 +53,7 @@
 #include "paraverconfig.h"
 #include "kernelconnection.h"
 #include "wxparaverapp.h"
+#include "loadedwindows.h"
 
 ////@begin XPM images
 #include "arrow_up.xpm"
@@ -91,6 +92,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_UPDATE_UI( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsUpdate )
 
   EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionClick )
+  EVT_UPDATE_UI( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionUpdate )
 
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_TRACE, CutFilterDialog::OnButtonCutterAllTraceClick )
 
@@ -2387,3 +2389,13 @@ bool CutFilterDialog::GetLoadedXMLPath( string &XMLPath )
 
   return newXMLsPath;
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_CUTTER_SELECT_REGION
+ */
+void CutFilterDialog::OnButtonCutterSelectRegionUpdate( wxUpdateUIEvent& event )
+{
+  buttonCutterSelectRegion->Enable( !LoadedWindows::getInstance()->emptyWindows() );
+}
+
