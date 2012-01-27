@@ -226,10 +226,19 @@ void HelpContents::htmlMessage( wxString& htmlDoc )
   htmlDoc += _("<LI>Open <A HREF=\"init_preferences\"><I>Preferences Window</I></A>.</LI>");
   htmlDoc += _("<LI>Select <I>Global</I> tab.</LI>");
   htmlDoc += _("<LI>In the <I>Default directories</I> box, change the <I>Tutorials root</I> directory");
-  htmlDoc += _("<LI>The tutorials list will be immediately rebuilt after you save your ");
-  htmlDoc += _("new settings clicking the <I>Ok</I> button in the <I>Preferences Window</I>.</LI>");
+  htmlDoc += _("<LI>Save your new settings clicking the <I>Ok</I> button in the <I>Preferences Window</I>.</LI>");
+  htmlDoc += _("<LI>After that, we automatically refresh the tutorials list.</LI>");
+  htmlDoc += _("<LI>If nothing happens, come back here and press the button <I>Index</I> to rebuild the tutorials list.");
   htmlDoc += _("</OL>");
-  htmlDoc += _("<P>If you still get this help, check these steps again, or please contact us at paraver@bsc.es.</P>");
+  htmlDoc += _("<P>If the button <I>Index</I> doesn't seem to work (you're still reading this help!), please verify that:</P>");
+  htmlDoc += _("<UL>");
+  htmlDoc += _("<LI>Every tutorial is <B>uncompressed</B>.</LI>");
+  htmlDoc += _("<LI>Every tutorial is inside its own <B>subdirectory</B>.</LI>");
+  htmlDoc += _("<LI>These subdirectories (or tutorials) are copied/linked into the root directory that ");
+  htmlDoc += _("you selected before (i.e: /home/myuser/mytutorials/tut1/, /home/myuser/mytutorials/tut2/, etc).</LI>");
+  htmlDoc += _("<LI>Every tutorial has a main <B>index.html</B> (i.e: /home/myuser/mytutorials/tut1/index.html ).</LI>");
+  htmlDoc += _("</UL>");
+  htmlDoc += _("<P>If you still get this help after checking these steps again, please contact us at paraver@bsc.es.</P>");
 }
 
 

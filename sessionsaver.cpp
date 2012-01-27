@@ -80,19 +80,23 @@ void SessionSaver::LoadSession( wxString whichFile )
 {
   ifstream file( whichFile.mb_str() );
   string traceFile;
+  bool opened;
   
   while( !file.eof() )
   {
     getline( file, traceFile );
     if( traceFile != "" && traceFile[ 0 ] != '#' ) 
     {
-      wxparaverApp::mainWindow->DoLoadTrace( traceFile );
+      opened = wxparaverApp::mainWindow->DoLoadTrace( traceFile );
 
-      wxFileName path( whichFile.c_str() );
-      wxFileName traceFileName( wxString::FromAscii( traceFile.c_str() ) );
-      wxFileName cfgFileName( path.GetPathWithSep() + traceFileName.GetFullName() + wxT( ".cfg" ) );
-      
-      wxparaverApp::mainWindow->DoLoadCFG( string( cfgFileName.GetFullPath().mb_str() ) );
+      if ( opened )
+      {
+        wxFileName path( whichFile.c_str() );
+        wxFileName traceFileName( wxString::FromAscii( traceFile.c_str() ) );
+        wxFileName cfgFileName( path.GetPathWithSep() + traceFileName.GetFullName() + wxT( ".cfg" ) );
+        
+        wxparaverApp::mainWindow->DoLoadCFG( string( cfgFileName.GetFullPath().mb_str() ) );
+      }
     }
   }
   
