@@ -156,6 +156,8 @@ public:
 //    const map< string, bool >&   GetCFG4DEnabledList() const { return enabledTag; };
 
   protected:
+    const static wxString KParamSeparator;
+    const static wxString KPreffixSeparator;
     const static wxString KSuffixSeparator;
     const static wxString KCheckBoxSuffix;
     const static wxString KTextCtrlSuffix;
@@ -167,7 +169,8 @@ public:
                                        // position of Window * or Histogram * in next vectors.
     vector< Window * > timelines;
     vector< Histogram * > histograms;
-    
+
+    vector< string > fullTagList;
     map< string, string > renamedTag;
     map< string, bool > enabledTag;
     bool enabledCFG4DMode;
@@ -181,14 +184,16 @@ public:
 
     bool allowedLevel( const string &tag );
 
-    void BuildTagMaps( const vector< string > &fullTagList,
-                       const map< string, string > &renamedTagMap,
-                       map< string, bool > &whichEnabledFullTagList,
-                       map< string, string > &whichRenamedFullTagList,
-                       bool showFullList );
-    void BuildTagWidgets( const vector< string > &fullTagList, bool showFullList );
-    void BuildTagsPanel( Window *currentWindow, bool showFullList );
-    void BuildTagsPanel( Histogram *currentHistogram, bool showFullList );
+    void BuildTagMaps( const map< string, string > &renamedTagMap,
+                       const bool showFullList );
+    void InsertParametersToTagMaps( const vector< Window::TParamAliasKey > &fullParamList,
+                                    const Window::TParamAlias &renamedParamAlias,
+                                    const bool showFullList );
+    wxBoxSizer *BuildTagRowWidgets( map< string, string >::iterator it,
+                                    bool showFullList );
+    void BuildTagWidgets( const bool showFullList );
+    void BuildTagsPanel( Window *currentWindow, const bool showFullList );
+    void BuildTagsPanel( Histogram *currentHistogram, const bool showFullList );
 
     void PreparePanel( bool showFullList );
     void TransferDataFromPanel( bool showFullList );

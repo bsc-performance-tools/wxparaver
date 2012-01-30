@@ -40,7 +40,6 @@
 
 ////@begin includes
 ////@end includes
-
 #include "advancedsaveconfiguration.h"
 
 ////@begin XPM images
@@ -71,6 +70,8 @@ BEGIN_EVENT_TABLE( AdvancedSaveConfiguration, wxDialog )
 
 END_EVENT_TABLE()
 
+#define PARAM_SEPARATOR "%"
+const wxString AdvancedSaveConfiguration::KParamSeparator = _( PARAM_SEPARATOR );
 const wxString AdvancedSaveConfiguration::KSuffixSeparator = _( "_" );
 const wxString AdvancedSaveConfiguration::KTextCtrlSuffix = AdvancedSaveConfiguration::KSuffixSeparator +
                                                             _( "TXTCTRL" );
@@ -216,7 +217,7 @@ void AdvancedSaveConfiguration::CreateControls()
 ////@end AdvancedSaveConfiguration content construction
 
 
-  // Build choice list
+  // Build choice selector
   for ( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
     choiceWindow->Append( BuildName( *it ) );
@@ -227,6 +228,7 @@ void AdvancedSaveConfiguration::CreateControls()
     choiceWindow->Append( BuildName( *it ) );
   }
 
+  // Build tags panel
   currentItem = 0;
   bool showFullList = !toggleOnlySelected->GetValue();
   if ( timelines.size() > 0 )
@@ -292,43 +294,120 @@ void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel( bool showFullList )
 }
 
 
-void AdvancedSaveConfiguration::BuildTagMaps( const vector< string > &fullTagList,
-                                              const map< string, string > &renamedTagMap,
-                                              map< string, bool > &whichEnabledFullTagList,
-                                              map< string, string > &whichRenamedFullTagList,
-                                              bool showFullList )
+void AdvancedSaveConfiguration::BuildTagMaps( const map< string, string > &renamedTagMap,
+                                              const bool showFullList )
 {
   map< string, bool > auxEnabledFullTagList;
   map< string, string > auxRenamedFullTagsList;
 
   for( vector< string >::const_iterator it = fullTagList.begin(); it != fullTagList.end(); ++it )
   {
-    // check only the present in renamedTagMap
-    bool exists = renamedTagMap.find( *it ) != renamedTagMap.end();
+    // Check only the present in renamedTagMap (used by checkboxes)
+    bool aliasExists = renamedTagMap.find( *it ) != renamedTagMap.end();
 
-    auxEnabledFullTagList[ *it ] = exists;
-    
-    // and fill the whole list
-    if ( exists )
+    auxEnabledFullTagList[ *it ] = aliasExists;
+
+    if ( aliasExists )
     {
-      auxRenamedFullTagsList[ *it ] =  renamedTagMap.find( *it )->second; // found!
+      // Insert the relation between the tag and its alias 
+      auxRenamedFullTagsList[ *it ] =  renamedTagMap.find( *it )->second;
     }
     else
     {
+      // Doesn't exist => insert the tag twice if allowed.
       if ( showFullList )
       {
-        auxRenamedFullTagsList[ *it ] = *it; // doesn't exist => copy the tag/key
+        auxRenamedFullTagsList[ *it ] = *it;
       }
       else
       {
-        auxRenamedFullTagsList[ *it ] = "";
+        auxRenamedFullTagsList[ *it ] = string( "" );
       }
     }
   }
 
-  whichEnabledFullTagList = auxEnabledFullTagList;
-  whichRenamedFullTagList = auxRenamedFullTagsList;
+  // Finally, copy both maps.
+  enabledTag = auxEnabledFullTagList;
+  renamedTag = auxRenamedFullTagsList;
 }
+
+
+void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window::TParamAliasKey > &fullParamList, // maybe not needed, but window
+                                                           const Window::TParamAlias &renamedParamAlias,
+                                                           const bool showFullList )
+{
+  vector< string > auxFullTagList;
+  map< string, bool > auxEnabledFullTagsList;
+  map< string, string > auxRenamedFullTagsList;
+
+  string semanticLevel, function, paramAlias;
+  string innerKey;
+  PRV_UINT32 numParameter;
+  string nameParameter;
+  bool enabled;
+  Window *currentWindow = timelines[ currentItem ]; // TRY to set this static
+  vector< Window::TParamAliasKey > semanticLevelParamKeys;
+
+  // For every given tag:
+  for( vector< string >::const_iterator it = fullTagList.begin(); it != fullTagList.end(); ++it )
+  {
+    if ( allowedLevel( *it ) )
+    {
+      // first, we copy its information.
+      auxFullTagList.push_back( *it );
+      auxRenamedFullTagsList[ *it ] = renamedTag[ *it ];
+      auxEnabledFullTagsList[ *it ] = enabledTag[ *it ];
+
+      // And then insert its parameters if they exist.
+      semanticLevelParamKeys = currentWindow->getCFG4DParamKeysBySemanticLevel( *it, fullParamList );
+
+      TParamIndex curP = 0;
+      for( vector< Window::TParamAliasKey >::const_iterator it2 = semanticLevelParamKeys.begin();
+           it2 != semanticLevelParamKeys.end(); ++it2 )
+      {
+        // Tag with parameters!
+        currentWindow->splitCFG4DParamAliasKey( *it2, semanticLevel, function, numParameter );
+
+        stringstream auxStr;
+        auxStr << numParameter;
+
+        int iSemLevel;
+        for( iSemLevel = 0; iSemLevel < DERIVED; ++iSemLevel )
+        {
+          if( TimelineLevelLabels[ iSemLevel ] == semanticLevel )
+            break;
+        }
+        nameParameter = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
+        innerKey = *it + string( PARAM_SEPARATOR ) + auxStr.str() + string( PARAM_SEPARATOR ) + function + string(".") + nameParameter;
+
+        if ( renamedParamAlias.find( *it2 ) != renamedParamAlias.end() )
+        {
+          // if parameter has an alias, insert it.
+          enabled = true;
+          paramAlias = currentWindow->getCFG4DParamAlias( *it2 );
+        }
+        else
+        {
+          // No alias; insert something, like the original name.
+          enabled = false;
+          paramAlias = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), curP );
+        }
+
+        auxFullTagList.push_back( innerKey );
+        auxEnabledFullTagsList[ innerKey ] = enabled;
+        auxRenamedFullTagsList[ innerKey ] = paramAlias;
+
+        curP++;
+      }
+    }
+  }
+
+  // Finally, copy information to attributes.
+  fullTagList = auxFullTagList;
+  enabledTag  = auxEnabledFullTagsList;
+  renamedTag  = auxRenamedFullTagsList;
+}
+
 
 bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
 {
@@ -389,91 +468,116 @@ bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
 }
 
 
-void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTagList,
-                                                 bool showFullList )
+wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >::iterator it,
+                                                           bool showFullList )
 {
-  // Create widgets (checkboxes and textboxes ) and connect them
-  wxBoxSizer *auxBoxSizer;
+  wxBoxSizer *auxBoxSizer = NULL;
+  wxBoxSizer *auxBoxSizerLeft = NULL;
   wxCheckBox *auxCheckBox;
   wxTextCtrl *auxTextCtrl;
   wxButton   *auxButton;
 
+  wxString rowLabel;
+  wxString rowBaseName;
+
+  if ( showFullList || enabledTag[ it->first ] )
+  {
+    auxBoxSizer = new wxBoxSizer( wxHORIZONTAL );
+    auxBoxSizerLeft = new wxBoxSizer( wxHORIZONTAL );
+
+    rowLabel = wxString::FromAscii( it->first.c_str() );
+    rowBaseName = rowLabel;
+    if ( rowLabel.AfterLast( KParamSeparator[0] ) != rowLabel )
+    {
+       rowLabel = rowLabel.AfterLast( KParamSeparator[0] );
+       auxBoxSizerLeft->Add( 0, 0, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    }
+
+    auxCheckBox = new wxCheckBox( scrolledWindow,
+                                  wxID_ANY,
+                                  rowLabel,
+                                  wxDefaultPosition,
+                                  wxDefaultSize,
+                                  0,
+                                  wxDefaultValidator,
+                                  rowBaseName + KCheckBoxSuffix );
+    auxCheckBox->SetValue( enabledTag[ it->first ] );
+
+    auxBoxSizerLeft->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
+    auxBoxSizer->Add( auxBoxSizerLeft, 2, wxALIGN_LEFT | wxALL, 2 );
+
+    wxArrayString forbiddenChars;
+    forbiddenChars.Add( wxT("|") );
+    wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_CHAR_LIST );
+    excludeVerticalBar.SetExcludes( forbiddenChars );
+
+    auxTextCtrl = new wxTextCtrl( scrolledWindow,
+                                  wxID_ANY,
+                                  wxString::FromAscii( it->second.c_str() ),
+                                  wxDefaultPosition,
+                                  wxDefaultSize,
+                                  0,
+                                  excludeVerticalBar,
+                                  rowBaseName + KTextCtrlSuffix ); 
+    auxTextCtrl->Enable( enabledTag[ it->first ] );
+
+    auxTextCtrl->SetValidator( excludeVerticalBar );
+
+    auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
+
+    if ( editionMode == PROPERTIES_TAGS )
+    {
+      if( wxString::FromAscii( it->first.c_str() ) == _( "Statistic" ) )
+      {
+        auxButton = new wxButton( scrolledWindow,
+                                  wxID_ANY, _("..."),
+                                  wxDefaultPosition,
+                                  wxDefaultSize,
+                                  wxBU_EXACTFIT,
+                                  wxDefaultValidator,
+                                  wxString::FromAscii( it->first.c_str() ) + KButtonSuffix );
+        // auxBoxSizer->Add( auxButton, 0, wxEXPAND | wxGROW | wxALL, 2 );
+        auxButton->Enable( enabledTag[ it->first ] );
+        auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+
+        auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                        wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
+                        NULL,
+                        this ); 
+
+      }
+      else
+      {
+        auxBoxSizer->Add(2, 2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 1 );
+      }
+    }
+
+    auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
+                          wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
+                          NULL,
+                          this ); 
+  }
+
+  return auxBoxSizer;
+}
+
+
+void AdvancedSaveConfiguration::BuildTagWidgets( const bool showFullList )
+{
+  // Create widgets (checkboxes and textboxes ) and connect them
+  wxBoxSizer *auxBoxSizer;
   wxBoxSizer *boxSizerCurrentItem = new wxBoxSizer( wxVERTICAL );
 
   map< string, string >::iterator it;
-
   for( vector< string >::const_iterator itOrd = fullTagList.begin(); itOrd != fullTagList.end(); ++itOrd )
   {
     if ( allowedLevel( *itOrd ) )
     {
       it = renamedTag.find( *itOrd );
-      if ( showFullList || enabledTag[ it->first ] )
+
+      auxBoxSizer = BuildTagRowWidgets( it, showFullList );
+      if ( auxBoxSizer != NULL )
       {
-        auxBoxSizer = new wxBoxSizer( wxHORIZONTAL );
-
-        auxCheckBox = new wxCheckBox( scrolledWindow,
-                                      wxID_ANY,
-                                      wxString::FromAscii( it->first.c_str() ),
-                                      wxDefaultPosition,
-                                      wxDefaultSize,
-                                      0,
-                                      wxDefaultValidator,
-                                      wxString::FromAscii( it->first.c_str() ) + KCheckBoxSuffix );
-        auxCheckBox->SetValue( enabledTag[ it->first ] );
-
-        auxBoxSizer->Add( auxCheckBox, 2, wxALIGN_LEFT | wxGROW | wxALL, 2 );
-
-        wxArrayString forbiddenChars;
-        forbiddenChars.Add( wxT("|") );
-        wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_CHAR_LIST );
-        excludeVerticalBar.SetExcludes( forbiddenChars );
-
-        auxTextCtrl = new wxTextCtrl( scrolledWindow,
-                                      wxID_ANY,
-                                      wxString::FromAscii( it->second.c_str() ),
-                                      wxDefaultPosition,
-                                      wxDefaultSize,
-                                      0,
-                                      excludeVerticalBar,
-                                      wxString::FromAscii( it->first.c_str() ) + KTextCtrlSuffix ); 
-        auxTextCtrl->Enable( enabledTag[ it->first ] );
-
-        auxTextCtrl->SetValidator( excludeVerticalBar );
-
-        auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
-
-        if ( editionMode == PROPERTIES_TAGS )
-        {
-          if( wxString::FromAscii( it->first.c_str() ) == _( "Statistic" ) )
-          {
-            auxButton = new wxButton( scrolledWindow,
-                                      wxID_ANY, _("..."),
-                                      wxDefaultPosition,
-                                      wxDefaultSize,
-                                      wxBU_EXACTFIT,
-                                      wxDefaultValidator,
-                                      wxString::FromAscii( it->first.c_str() ) + KButtonSuffix );
-            // auxBoxSizer->Add( auxButton, 0, wxEXPAND | wxGROW | wxALL, 2 );
-            auxButton->Enable( enabledTag[ it->first ] );
-            auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
-
-            auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
-                            wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
-                            NULL,
-                            this ); 
-
-          }
-          else
-          {
-            auxBoxSizer->Add(2, 2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 1 );
-          }
-        }
-
-        auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
-                              wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
-                              NULL,
-                              this ); 
-
         boxSizerCurrentItem->Add( auxBoxSizer, 0, wxGROW|wxALL, 2 );
       }
     }
@@ -484,22 +588,21 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const vector< string > &fullTag
 }
 
 
-void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow, bool showFullList )
+void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow, const bool showFullList )
 {
   // Build renamedTag and enabledTag maps
-  BuildTagMaps( currentWindow->getCFG4DFullTagList(),
-                currentWindow->getCFG4DAliasList(),
-                enabledTag,
-                renamedTag,
-                showFullList );
+  fullTagList = currentWindow->getCFG4DFullTagList();
+  BuildTagMaps( currentWindow->getCFG4DAliasList(), showFullList );
+  InsertParametersToTagMaps( currentWindow->getCFG4DCurrentSelectedFullParamList(),
+                             currentWindow->getCFG4DParamAliasList(),
+                             showFullList );
 
-  BuildTagWidgets( currentWindow->getCFG4DFullTagList(), showFullList );
+  BuildTagWidgets( showFullList );
 }
 
 
-void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram, bool showFullList )
+void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram, const bool showFullList )
 {
-  vector< string > fullTagList;
   int selected;
 
   // Build renamedTag and enabledTag maps
@@ -508,25 +611,19 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram, boo
     case HISTOGRAM_STATISTIC_TAGS:
       selected = ( currentHistogram->itsCommunicationStat( currentHistogram->getCurrentStat() ) )? 0 : 1;
       currentHistogram->getStatisticsLabels( fullTagList, selected );
-      BuildTagMaps( fullTagList,
-                    currentHistogram->getCFG4DStatisticsAliasList(),
-                    enabledTag,
-                    renamedTag,
-                    showFullList );
+      BuildTagMaps( currentHistogram->getCFG4DStatisticsAliasList(), showFullList );
       break;
+
     case PROPERTIES_TAGS:
       fullTagList = currentHistogram->getCFG4DFullTagList();
-      BuildTagMaps( fullTagList,
-                    currentHistogram->getCFG4DAliasList(),
-                    enabledTag,
-                    renamedTag,
-                    showFullList );
+      BuildTagMaps( currentHistogram->getCFG4DAliasList(), showFullList );
       break;
+
     default:
       break;
   }
 
-  BuildTagWidgets( fullTagList, showFullList );
+  BuildTagWidgets( showFullList );
 }
 
 /*!
@@ -588,6 +685,7 @@ wxButton *AdvancedSaveConfiguration::GetButtonByName( const wxString& widgetName
   return static_cast<wxButton *>( relatedwxWidget );
 }
 
+
 void AdvancedSaveConfiguration::OnCheckBoxClicked( wxCommandEvent& event )
 {
   wxCheckBox *currentCheckBox = static_cast<wxCheckBox *>( event.GetEventObject() );
@@ -598,6 +696,7 @@ void AdvancedSaveConfiguration::OnCheckBoxClicked( wxCommandEvent& event )
   if ( relatedButton != NULL )
     relatedButton->Enable( currentCheckBox->GetValue() );
 }
+
 
 void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
 {
@@ -651,28 +750,55 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
 
 void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
 {
-  map< string, string > auxActiveTags;
+  map< string, string > auxActivePropertyTags;
+  Window::TParamAliasKey auxParamKey;
+  Window::TParamAlias auxActiveParametersTags;
+  string semanticLevel;
+  string function;
+  PRV_UINT32 numParameter;
+  string newAlias;
 
   for( map< string, string >::iterator it = renamedTag.begin(); it != renamedTag.end(); ++it )
   {
     if ( !allowedLevel( it->first ) || ( !showFullList && !enabledTag[ it->first ] ))
       continue;
-    wxString currentTagName = wxString::FromAscii( it->first.c_str() );
 
+    wxString currentTagName = wxString::FromAscii( it->first.c_str() );
     enabledTag[ it->first ] = GetCheckBoxByName( currentTagName )->GetValue();
+
     if ( enabledTag[ it->first ] )
     {
-      auxActiveTags[ it->first ] = GetTextCtrlByName( currentTagName )->GetValue().mb_str();
+      if ( currentTagName.AfterLast( KParamSeparator[0] ) != currentTagName )
+      {
+        if ( isTimeline )  // by construction, this the only possibility
+        {
+          semanticLevel = currentTagName.BeforeFirst( KParamSeparator[0] ).mb_str();
+          function = currentTagName.AfterLast( KParamSeparator[0] ).BeforeFirst( wxChar('.') ).mb_str();
+          istringstream tmpValue(
+                  currentTagName.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() );
+          tmpValue >> numParameter;
+
+          auxParamKey = timelines[ currentItem ]->buildCFG4DParamAliasKey( semanticLevel, function, numParameter );
+          newAlias = GetTextCtrlByName( currentTagName )->GetValue().mb_str();
+
+          auxActiveParametersTags[ auxParamKey ] = newAlias;
+        }
+      }
+      else
+      {
+        auxActivePropertyTags[ it->first ] = GetTextCtrlByName( currentTagName )->GetValue().mb_str();
+      }
     }
   }
 
-  renamedTag = auxActiveTags;
+  renamedTag = auxActivePropertyTags;
 
   if ( isTimeline )
   {
     timelines[ currentItem ]->setCFG4DEnabled( true );
     timelines[ currentItem ]->setCFG4DMode( true );
     timelines[ currentItem ]->setCFG4DAliasList( renamedTag );
+    timelines[ currentItem ]->setCFG4DParamAlias( auxActiveParametersTags );
   }
   else
   {
