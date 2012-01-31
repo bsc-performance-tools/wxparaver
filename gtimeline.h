@@ -34,6 +34,8 @@
 /*!
  * Includes
  */
+#include "prvtypes.h"
+
 #ifdef WIN32
 #include <hash_set>
 #else
@@ -104,9 +106,9 @@ class Window;
 
 struct commCoord
 {
-  wxCoord fromTime;
-  wxCoord toTime;
-  wxCoord toRow;
+  PRV_UINT16 fromTime;
+  PRV_UINT16 toTime;
+  PRV_UINT16 toRow;
   TRecordType recType;
   
   bool operator==( const commCoord& b ) const
@@ -361,8 +363,8 @@ public:
   wxPen GetPhysicalPen() const { return physicalPen ; }
   void SetPhysicalPen(wxPen value) { physicalPen = value ; }
 
-  hash_set<wxCoord> GetEventsToDraw() const { return eventsToDraw ; }
-  void SetEventsToDraw(hash_set<wxCoord> value) { eventsToDraw = value ; }
+  hash_set<PRV_UINT16> GetEventsToDraw() const { return eventsToDraw ; }
+  void SetEventsToDraw(hash_set<PRV_UINT16> value) { eventsToDraw = value ; }
 
   wxTimer * GetTimerMotion() const { return timerMotion ; }
   void SetTimerMotion(wxTimer * value) { timerMotion = value ; }
@@ -559,7 +561,7 @@ private:
   bool escapePressed;
   wxPen logicalPen;
   wxPen physicalPen;
-  hash_set<wxCoord> eventsToDraw;
+  hash_set<PRV_UINT16> eventsToDraw;
   wxTimer * timerMotion;
   wxFont semanticFont;
   wxMouseEvent motionEvent;

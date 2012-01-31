@@ -846,13 +846,19 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       currentHisto->setChanged( true );
     }
   }
-  else if( propName == _( "Name" ) )
+  else if( propName == wxString( "Name", wxConvUTF8 ) )
   {
     wxString tmpName = property->GetValue().GetString();
     if( currentTimeline != NULL )
+    {
       currentTimeline->setName( std::string( tmpName.mb_str() ) );
+      currentTimeline->setChanged( true );
+    }
     else if( currentHisto != NULL )
+    {
       currentHisto->setName( std::string( tmpName.mb_str() ) );
+      currentHisto->setChanged( true );
+    }
   }
   else if( propName == _( "Begin time" ) )
   {
@@ -3227,8 +3233,8 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   char *pcfName, *rowName;
   for( PRV_UINT16 i = 0; i < tmpFiles.size() - 1; ++i )
   {
-    pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), "pcf" );
-    rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), "row" );
+    pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"pcf" );
+    rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"row" );
     remove( tmpFiles[ i ].c_str() );
     remove( pcfName );
     remove( rowName );
@@ -3424,7 +3430,7 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
 
   description << _( "\nwxParaver, Extrae, and Dimemas belong to the Performance ");
   description << _( "Tools Suite developed at BSC-CNS :\n" );
-  description << _( "Barcelona Supercomputing Center - Centro Nacional de Supercomputación\n\n" );
+  description << _( "Barcelona Supercomputing Center - Centro Nacional de Supercomputacion\n\n" );
 
   description << _( "\n(paraver@bsc.es)\n" );
   info.SetDescription( description );

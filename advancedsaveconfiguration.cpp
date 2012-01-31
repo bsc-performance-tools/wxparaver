@@ -775,7 +775,7 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
           semanticLevel = currentTagName.BeforeFirst( KParamSeparator[0] ).mb_str();
           function = currentTagName.AfterLast( KParamSeparator[0] ).BeforeFirst( wxChar('.') ).mb_str();
           istringstream tmpValue(
-                  currentTagName.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() );
+                  string( currentTagName.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() ) );
           tmpValue >> numParameter;
 
           auxParamKey = timelines[ currentItem ]->buildCFG4DParamAliasKey( semanticLevel, function, numParameter );
