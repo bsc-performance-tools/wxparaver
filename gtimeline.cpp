@@ -691,7 +691,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   vector< TObjectOrder >::iterator it = selected.begin();
 
   wxCoord accumHeight = 0;
-  wxCoord stepHeight = dc.GetCharHeight();
+  wxCoord stepHeight = objectExt.GetHeight();
   
   // for every object
   for( TObjectOrder obj = (TObjectOrder)0; obj < numObjects; obj++ )
