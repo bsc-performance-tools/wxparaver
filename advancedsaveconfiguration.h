@@ -126,6 +126,9 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_TOGGLEBUTTON_LIST_SELECTED
   void OnToggleOnlySelectedClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
+  void OnCancelClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_SAVE
   void OnSaveClick( wxCommandEvent& event );
 
@@ -169,6 +172,15 @@ public:
                                        // position of Window * or Histogram * in next vectors.
     vector< Window * > timelines;
     vector< Histogram * > histograms;
+
+    map< Window *, bool > backupTimelinesCFG4DEnabled;
+    map< Window *, bool > backupTimelinesCFG4DMode;
+    map< Window *, map< string, string > > backupTimelinesCFG4DAliasList;
+    map< Window *, Window::TParamAlias > backupTimelinesCFG4DParamAlias;
+    map< Histogram *, bool > backupHistogramsCFG4DEnabled;
+    map< Histogram *, bool > backupHistogramsCFG4DMode;
+    map< Histogram *, map< string, string > > backupHistogramsCFG4DAliasList;
+    map< Histogram *, map< string, string > > backupHistogramsCFG4DStatisticsAliasList;
 
     vector< string > fullTagList;
     map< string, string > renamedTag;

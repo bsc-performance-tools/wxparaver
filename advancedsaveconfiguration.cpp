@@ -64,13 +64,15 @@ BEGIN_EVENT_TABLE( AdvancedSaveConfiguration, wxDialog )
 
   EVT_TOGGLEBUTTON( ID_TOGGLEBUTTON_LIST_SELECTED, AdvancedSaveConfiguration::OnToggleOnlySelectedClick )
 
+  EVT_BUTTON( wxID_CANCEL, AdvancedSaveConfiguration::OnCancelClick )
+
   EVT_BUTTON( wxID_SAVE, AdvancedSaveConfiguration::OnSaveClick )
 
 ////@end AdvancedSaveConfiguration event table entries
 
 END_EVENT_TABLE()
 
-#define PARAM_SEPARATOR "%"
+#define PARAM_SEPARATOR "|"
 const wxString AdvancedSaveConfiguration::KParamSeparator = _( PARAM_SEPARATOR );
 const wxString AdvancedSaveConfiguration::KSuffixSeparator = _( "_" );
 const wxString AdvancedSaveConfiguration::KTextCtrlSuffix = AdvancedSaveConfiguration::KSuffixSeparator +
@@ -116,6 +118,42 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
   timelines  = whichTimelines;
   histograms = whichHistograms;
   editionMode = whichMode;
+
+  // Backup 
+  switch ( editionMode )
+  {
+    case HISTOGRAM_STATISTIC_TAGS:
+      // Recover previous tags for that histogram
+      for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
+      {
+        backupHistogramsCFG4DStatisticsAliasList[ *it ] = (*it)->getCFG4DStatisticsAliasList();
+      }
+      break;
+
+    case PROPERTIES_TAGS:
+      // Recover previous state for all windows and histograms
+      for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+      {
+        backupTimelinesCFG4DEnabled[ *it ] = (*it)->getCFG4DEnabled();
+        backupTimelinesCFG4DMode[ *it ] = (*it)->getCFG4DMode();
+        backupTimelinesCFG4DAliasList[ *it ] = (*it)->getCFG4DAliasList();
+        backupTimelinesCFG4DParamAlias[ *it ] = (*it)->getCFG4DParamAliasList();
+      }
+
+      for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
+      {
+        backupHistogramsCFG4DEnabled[ *it ] = (*it)->getCFG4DEnabled();
+        backupHistogramsCFG4DMode[ *it ] = (*it)->getCFG4DMode();
+        backupHistogramsCFG4DAliasList[ *it ] = (*it)->getCFG4DAliasList();
+        backupHistogramsCFG4DStatisticsAliasList[ *it ] = (*it)->getCFG4DStatisticsAliasList();
+      }
+      break;
+
+    default:
+      break;
+  }
+
+
 
   Create( parent, id, caption, pos, size, style );
 }
@@ -593,9 +631,12 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow, const boo
   // Build renamedTag and enabledTag maps
   fullTagList = currentWindow->getCFG4DFullTagList();
   BuildTagMaps( currentWindow->getCFG4DAliasList(), showFullList );
-  InsertParametersToTagMaps( currentWindow->getCFG4DCurrentSelectedFullParamList(),
-                             currentWindow->getCFG4DParamAliasList(),
-                             showFullList );
+  if ( editionMode == PROPERTIES_TAGS )
+  {
+    InsertParametersToTagMaps( currentWindow->getCFG4DCurrentSelectedFullParamList(),
+                               currentWindow->getCFG4DParamAliasList(),
+                               showFullList );
+  }
 
   BuildTagWidgets( showFullList );
 }
@@ -920,4 +961,47 @@ void AdvancedSaveConfiguration::OnToggleOnlySelectedClick( wxCommandEvent& event
   }
 }
 
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
+ */
+
+void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
+{
+  switch ( editionMode )
+  {
+    case HISTOGRAM_STATISTIC_TAGS:
+      // Recover previous tags for that histogram
+      for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
+      {
+        (*it)->setCFG4DStatisticsAliasList( backupHistogramsCFG4DStatisticsAliasList[ *it ] );
+      }
+      break;
+
+    case PROPERTIES_TAGS:
+      // Recover previous state for all windows and histograms
+      for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+      {
+        (*it)->setCFG4DEnabled( backupTimelinesCFG4DEnabled[ *it ] );
+        (*it)->setCFG4DMode( backupTimelinesCFG4DMode[ *it ] );
+        (*it)->setCFG4DAliasList( backupTimelinesCFG4DAliasList[ *it ] );
+        (*it)->setCFG4DParamAlias( backupTimelinesCFG4DParamAlias[ *it ] );
+      }
+
+      for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
+      {
+        (*it)->setCFG4DEnabled( backupHistogramsCFG4DEnabled[ *it ] );
+        (*it)->setCFG4DMode( backupHistogramsCFG4DMode[ *it ] );
+        (*it)->setCFG4DAliasList( backupHistogramsCFG4DAliasList[ *it ] );
+        (*it)->setCFG4DStatisticsAliasList( backupHistogramsCFG4DStatisticsAliasList[ *it ] );
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  EndModal( wxID_CANCEL );
+}
 
