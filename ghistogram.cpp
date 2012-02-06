@@ -287,7 +287,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2220,7 +2220,7 @@ void gHistogram::OnMenuGradientFunction( GradientColor::TGradientFunction functi
 
 void gHistogram::saveText( bool onlySelectedPlane )
 {
-  wxString fileName, defaultDir;
+  wxString fileName, fileSuffix, defaultDir;
   string auxName = myHistogram->getName() + "_";
   
   if ( onlySelectedPlane )
@@ -2250,12 +2250,32 @@ void gHistogram::saveText( bool onlySelectedPlane )
                            wxSAVE | wxFD_OVERWRITE_PROMPT );
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getHistogramSaveTextFormat() );
-  
+
   if ( saveDialog.ShowModal() == wxID_OK )
   {
+
+    switch( saveDialog.GetFilterIndex() )
+    {
+      case 0:
+        fileSuffix = _(".csv");
+        break;
+      case 1:
+        fileSuffix = _(".gnuplot");
+        break;
+      default:
+        fileSuffix = _(".txt");
+        break;
+    }
+
+    if ( saveDialog.GetPath().EndsWith( fileSuffix )) 
+    //       || saveDialog.GetPath().EndsWith( wxString( imageSuffix ).MakeUpper() ) )
+      fileName = saveDialog.GetPath();
+    else
+      fileName = saveDialog.GetPath() + fileSuffix;
+
     Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
-    string tmpStr = string( saveDialog.GetPath().mb_str() );
+    string tmpStr = string( fileName.mb_str() );
     output->dumpHistogram( myHistogram, tmpStr, onlySelectedPlane, myHistogram->getHideColumns() );
     delete output;
   }
