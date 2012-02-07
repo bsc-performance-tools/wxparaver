@@ -104,66 +104,6 @@ class Window;
 #define ID_TIMER_SIZE 40000
 #define ID_TIMER_MOTION 40001
 
-struct commCoord
-{
-  PRV_UINT16 fromTime;
-  PRV_UINT16 toTime;
-  PRV_UINT16 toRow;
-  TRecordType recType;
-  
-  bool operator==( const commCoord& b ) const
-  {
-    return fromTime == b.fromTime &&
-           toTime   == b.toTime   &&
-           toRow    == b.toRow    &&
-           recType  == b.recType;
-  }
-  
-#ifdef WIN32
-  bool operator<( const commCoord& b ) const
-  {
-    return true;
-  }
-
-  size_t hash() const {
-    return ( ( fromTime + toTime + toRow ) * 100 ) + recType;
-  }
-#endif
-};
-
-#ifdef WIN32
-  namespace stdext 
-  {
-    template<> class hash_compare<commCoord> 
-    {
-      public :
-        static const size_t bucket_size = 4;
-        static const size_t min_buckets = 8;
-        hash_compare() { }
- 
-        size_t operator()(const commCoord &cc) const 
-        {
-          return cc.hash();
-        }
- 
-        bool operator()(const commCoord &cc1, const commCoord &cc2) const
-        {
-          return (cc1 < cc2);
-        }
-    };
-  }
-#endif
-
-#ifndef WIN32
-struct hashCommCoord
-{
-  size_t operator()( const commCoord& x ) const
-  {
-    return ( ( x.fromTime + x.toTime + x.toRow ) * 100 ) + x.recType;
-  }
-};
-#endif
-
 #ifdef WIN32
 using namespace stdext;
 #else
@@ -270,11 +210,11 @@ public:
   Window* GetMyWindow() const { return myWindow ; }
   void SetMyWindow(Window* value) { myWindow = value ; }
 
-  wxCoord GetObjectAxisPos() const { return objectAxisPos ; }
-  void SetObjectAxisPos(wxCoord value) { objectAxisPos = value ; }
+  PRV_INT32 GetObjectAxisPos() const { return objectAxisPos ; }
+  void SetObjectAxisPos(PRV_INT32 value) { objectAxisPos = value ; }
 
-  wxCoord GetTimeAxisPos() const { return timeAxisPos ; }
-  void SetTimeAxisPos(wxCoord value) { timeAxisPos = value ; }
+  PRV_INT32 GetTimeAxisPos() const { return timeAxisPos ; }
+  void SetTimeAxisPos(PRV_INT32 value) { timeAxisPos = value ; }
 
   wxFont GetObjectFont() const { return objectFont ; }
   void SetObjectFont(wxFont value) { objectFont = value ; }
@@ -282,8 +222,8 @@ public:
   wxFont GetTimeFont() const { return timeFont ; }
   void SetTimeFont(wxFont value) { timeFont = value ; }
 
-  vector<wxCoord> GetObjectPosList() const { return objectPosList ; }
-  void SetObjectPosList(vector<wxCoord> value) { objectPosList = value ; }
+  vector<PRV_INT32> GetObjectPosList() const { return objectPosList ; }
+  void SetObjectPosList(vector<PRV_INT32> value) { objectPosList = value ; }
 
   int GetObjectHeight() const { return objectHeight ; }
   void SetObjectHeight(int value) { objectHeight = value ; }
@@ -535,11 +475,11 @@ public:
 private:
   bool ready;
   Window* myWindow;
-  wxCoord objectAxisPos;
-  wxCoord timeAxisPos;
+  PRV_INT32 objectAxisPos;
+  PRV_INT32 timeAxisPos;
   wxFont objectFont;
   wxFont timeFont;
-  vector<wxCoord> objectPosList;
+  vector<PRV_INT32> objectPosList;
   int objectHeight;
   bool zooming;
   long zoomBeginX;
