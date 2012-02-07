@@ -70,3 +70,19 @@ AC_DEFUN([AX_PROG_WITH_EXTRAE],
   fi
 ])
 
+# AX_PROG_ENABLE_PARALLEL
+# -----------
+AC_DEFUN([AX_PROG_ENABLE_PARALLEL],
+[
+  AC_ARG_ENABLE(parallel,
+    AC_HELP_STRING(
+      [--enable-parallel],
+      [Enable parallel version. (Disabled by default)]
+    ),
+    [enable_parallel="${enableval}"],
+    [enable_parallel="no"]
+  )
+  if test "${enable_parallel}" = "yes" ; then
+    AC_DEFINE([PARALLEL_ENABLED], 1, [Parallel version enabled by user.])
+  fi
+])
