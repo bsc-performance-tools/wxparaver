@@ -442,10 +442,15 @@ void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
   wxSetCursor( *wxCROSS_CURSOR );
   globalTiming = true;
   globalTimingBeginIsSet = false;
+#ifndef __WXMAC__
   globalTimingCallDialog->Enable( false );
+#endif
   globalTimingCallDialog->MakeModal( false );
 #ifdef WIN32
   globalTimingCallDialog->Iconize( true );
+#endif
+#ifdef __WXMAC__
+  globalTimingCallDialog->Lower();
 #endif
   mainWindow->Raise();
 }

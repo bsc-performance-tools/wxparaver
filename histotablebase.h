@@ -29,6 +29,7 @@
 
 #include "wx/grid.h"
 #include <vector>
+#include <string>
 #include "paraverkerneltypes.h"
 
 class Histogram;
