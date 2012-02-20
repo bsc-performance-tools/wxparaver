@@ -42,6 +42,12 @@
 #include <ext/hash_set>
 #endif
 
+#ifdef WIN32
+using namespace stdext;
+#else
+using namespace __gnu_cxx;
+#endif
+
 ////@begin includes
 #include "wx/frame.h"
 #include "wx/splitter.h"
@@ -303,9 +309,6 @@ public:
   wxPen GetPhysicalPen() const { return physicalPen ; }
   void SetPhysicalPen(wxPen value) { physicalPen = value ; }
 
-  hash_set<PRV_UINT16> GetEventsToDraw() const { return eventsToDraw ; }
-  void SetEventsToDraw(hash_set<PRV_UINT16> value) { eventsToDraw = value ; }
-
   wxTimer * GetTimerMotion() const { return timerMotion ; }
   void SetTimerMotion(wxTimer * value) { timerMotion = value ; }
 
@@ -351,10 +354,25 @@ public:
 
   void redraw();
   bool drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
-  void drawRow( wxDC& dc, TObjectOrder firstRow, TObjectOrder lastRow,
-                vector<TObjectOrder>& selectedSet, vector<bool>& selected );
-  void drawRecords( RecordList *records,
-                    TTime from, TTime to, TTime step, wxCoord pos, vector<bool>& selected );
+#ifdef WIN32
+  void drawRow( wxDC& dc,
+                TObjectOrder firstRow, TObjectOrder lastRow,
+                vector<TObjectOrder>& selectedSet, vector<bool>& selected,
+                vector< TSemanticValue >& valuesToDraw,              // I
+                hash_set< PRV_INT32 >& eventsToDraw,                 // I
+                hash_set< commCoord >& commsToDraw,                   // I
+                wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
+                wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
+#else
+  void drawRow( wxDC& dc,
+                TObjectOrder firstRow, TObjectOrder lastRow,
+                vector<TObjectOrder>& selectedSet, vector<bool>& selected,
+                vector< TSemanticValue >& valuesToDraw,              // I
+                hash_set< PRV_INT32 >& eventsToDraw,                 // I
+                hash_set< commCoord, hashCommCoord >& commsToDraw,    // I
+                wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
+                wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
+#endif
 
   void drawCommunicationLines( bool draw );
   void drawEventFlags( bool draw );
@@ -501,7 +519,6 @@ private:
   bool escapePressed;
   wxPen logicalPen;
   wxPen physicalPen;
-  hash_set<PRV_UINT16> eventsToDraw;
   wxTimer * timerMotion;
   wxFont semanticFont;
   wxMouseEvent motionEvent;
@@ -520,12 +537,6 @@ private:
   TSemanticValue lastMax;
   bool codeColorSet;
   GradientColor::TGradientFunction gradientFunc;
-
-#ifdef WIN32
-  hash_set<commCoord> commsToDraw;
-#else
-  hash_set<commCoord,hashCommCoord> commsToDraw;
-#endif
 
   wxWindow *parent;
   
