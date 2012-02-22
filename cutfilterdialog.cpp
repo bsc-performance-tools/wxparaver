@@ -1280,7 +1280,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
           {
 #ifdef WIN32
             auxNames[ pos++ ] = _strdup( (char *)checkListFilterStates->GetString( i ).c_str());
-#elif UNICODE
+#elif defined UNICODE
             auxNames[ pos++ ] = strdup( (char *)(checkListFilterStates->GetString( i ).mb_str().data() ));
 #else
             auxNames[ pos++ ] = strdup( (char *)(checkListFilterStates->GetString( i ).mb_str() ));
