@@ -700,8 +700,12 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 #ifdef TRACING_ENABLED
       Extrae_event( 100, 14 );
 #endif
-      dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
-                   drawBorder, y );
+      if( myWindow->getLevel() == CPU )
+        dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
+                     drawBorder, y );
+      else
+        dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
+                     drawBorder, y );
       accumHeight += stepHeight;
 #ifdef TRACING_ENABLED
       Extrae_event( 100, 0 );
@@ -1870,7 +1874,10 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 
   wxString txt;
 
-  txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+  if( myWindow->getLevel() == CPU )
+    txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+  else
+    txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
   txt << _( "\t  Click time: " ) << wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
                                                                                       myWindow->getTimeUnit(), 0 ).c_str() );
   txt << _( "\n" );
@@ -2296,7 +2303,7 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
         else if( lastType == NODE_TYPE )
           endLimit = myWindow->getTrace()->totalNodes() - 1;
         else if( lastType == CPU_TYPE )
-          endLimit = myWindow->getTrace()->totalCPUs() - 1;
+          endLimit = myWindow->getTrace()->totalCPUs();
         else if( lastMax - lastMin > 200 )
           endLimit = 200 + floor( lastMin );
       }

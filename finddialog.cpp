@@ -150,6 +150,7 @@ void FindDialog::Init()
   comboSemanticValue = NULL;
   choiceDurationFunction = NULL;
   spinSemanticDuration = NULL;
+  boxSizerOperatorsChoice = NULL;
 ////@end FindDialog member initialisation
 }
 
@@ -265,6 +266,9 @@ void FindDialog::CreateControls()
   itemStdDialogButtonSizer26->AddButton(itemButton28);
 
   itemStdDialogButtonSizer26->Realize();
+
+  boxSizerOperatorsChoice = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(boxSizerOperatorsChoice, 0, wxGROW|wxALL, 5);
 
 ////@end FindDialog content construction
 }
@@ -394,9 +398,16 @@ void FindDialog::InitControlsBeforeShow()
   for( vector<TObjectOrder>::iterator it = selectedObjects.begin();
        it != selectedObjects.end(); ++it )
   {
-    string strObject = LabelConstructor::objectLabel( *it,
-                                                      myWindow->getLevel(),
-                                                      myWindow->getTrace() );
+    string strObject;
+    if( myWindow->getLevel() == CPU )
+      strObject = LabelConstructor::objectLabel( *it + 1,
+                                                 myWindow->getLevel(),
+                                                 myWindow->getTrace() );
+    else
+      strObject = LabelConstructor::objectLabel( *it,
+                                                 myWindow->getLevel(),
+                                                 myWindow->getTrace() );
+
     choiceObjects->Append( wxString::FromAscii( strObject.c_str() ) );
   }
   choiceObjects->SetSelection( 0 );

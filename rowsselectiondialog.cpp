@@ -95,10 +95,17 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   wxArrayString choices;
   Trace *myTrace = myTimeline->getTrace();
   for ( size_t row = (size_t)0; row < myTrace->getLevelObjects( whichLevel ); ++row )
-    choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
-                                                                     whichLevel,
-                                                                     myTrace ).c_str() ) );
-
+  {
+    if( myTimeline->getLevel() == CPU )
+      choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row + 1,
+                                                                       whichLevel,
+                                                                       myTrace ).c_str() ) );
+    else
+      choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
+                                                                       whichLevel,
+                                                                       myTrace ).c_str() ) );
+  }
+  
   vector< TObjectOrder > selectedIndex;
   mySelectedRows->getSelected( selectedIndex, whichLevel );
   wxCheckListBox * auxCheckList = new wxCheckListBox( myPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices );

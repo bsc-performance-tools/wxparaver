@@ -820,10 +820,16 @@ void prvRowsSelectionProperty::GetStringValueFromVector( vector<TObjectOrder> &w
       onString += _(", ");
     }
 
-    onString += wxString::FromAscii( LabelConstructor::objectLabel( *it,
-                                                                    myTimeline->getLevel(),
-                                                                    myTimeline->getTrace(),
-                                                                    false ).c_str() );
+    if( myTimeline->getLevel() == CPU )
+      onString += wxString::FromAscii( LabelConstructor::objectLabel( *it + 1,
+                                                                      myTimeline->getLevel(),
+                                                                      myTimeline->getTrace(),
+                                                                      false ).c_str() );
+    else
+      onString += wxString::FromAscii( LabelConstructor::objectLabel( *it,
+                                                                      myTimeline->getLevel(),
+                                                                      myTimeline->getTrace(),
+                                                                      false ).c_str() );
   }
 }
 

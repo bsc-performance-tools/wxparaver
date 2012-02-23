@@ -48,6 +48,7 @@
 
 ////@begin forward declarations
 class wxSpinCtrl;
+class wxBoxSizer;
 ////@end forward declarations
 
 /*!
@@ -159,6 +160,7 @@ public:
   wxComboBox* comboSemanticValue;
   wxChoice* choiceDurationFunction;
   wxSpinCtrl* spinSemanticDuration;
+  wxBoxSizer* boxSizerOperatorsChoice;
 private:
   Window * myWindow;
 ////@end FindDialog member variables
