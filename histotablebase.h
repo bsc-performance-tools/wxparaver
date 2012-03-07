@@ -35,6 +35,7 @@
 class Histogram;
 
 using std::vector;
+using std::string;
 
 class HistoTableBase : public wxGridTableBase
 {
