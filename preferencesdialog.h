@@ -228,20 +228,20 @@ public:
   rgb GetGradientColourTop() const { return gradientColourTop ; }
   void SetGradientColourTop(rgb value) { gradientColourTop = value ; }
 
-  string GetTracesPath() const { return tracesPath ; }
-  void SetTracesPath(string value) { tracesPath = value ; }
+  std::string GetTracesPath() const { return tracesPath ; }
+  void SetTracesPath(std::string value) { tracesPath = value ; }
 
-  string GetCfgsPath() const { return cfgsPath ; }
-  void SetCfgsPath(string value) { cfgsPath = value ; }
+  std::string GetCfgsPath() const { return cfgsPath ; }
+  void SetCfgsPath(std::string value) { cfgsPath = value ; }
 
-  string GetTmpPath() const { return tmpPath ; }
-  void SetTmpPath(string value) { tmpPath = value ; }
+  std::string GetTmpPath() const { return tmpPath ; }
+  void SetTmpPath(std::string value) { tmpPath = value ; }
 
-  string GetTimelineNameFormatPrefix() const { return timelineNameFormatPrefix ; }
-  void SetTimelineNameFormatPrefix(string value) { timelineNameFormatPrefix = value ; }
+  std::string GetTimelineNameFormatPrefix() const { return timelineNameFormatPrefix ; }
+  void SetTimelineNameFormatPrefix(std::string value) { timelineNameFormatPrefix = value ; }
 
-  string GetTimelineNameFormatFull() const { return timelineNameFormatFull ; }
-  void SetTimelineNameFormatFull(string value) { timelineNameFormatFull = value ; }
+  std::string GetTimelineNameFormatFull() const { return timelineNameFormatFull ; }
+  void SetTimelineNameFormatFull(std::string value) { timelineNameFormatFull = value ; }
 
   bool GetTimelineEventLines() const { return timelineEventLines ; }
   void SetTimelineEventLines(bool value) { timelineEventLines = value ; }
@@ -288,11 +288,11 @@ public:
   PRV_UINT32 GetTimelineSaveTextFormat() const { return timelineSaveTextFormat ; }
   void SetTimelineSaveTextFormat(PRV_UINT32 value) { timelineSaveTextFormat = value ; }
 
-  string GetHistogramNameFormatPrefix() const { return histogramNameFormatPrefix ; }
-  void SetHistogramNameFormatPrefix(string value) { histogramNameFormatPrefix = value ; }
+  std::string GetHistogramNameFormatPrefix() const { return histogramNameFormatPrefix ; }
+  void SetHistogramNameFormatPrefix(std::string value) { histogramNameFormatPrefix = value ; }
 
-  string GetHistogramNameFormatFull() const { return histogramNameFormatFull ; }
-  void SetHistogramNameFormatFull(string value) { histogramNameFormatFull = value ; }
+  std::string GetHistogramNameFormatFull() const { return histogramNameFormatFull ; }
+  void SetHistogramNameFormatFull(std::string value) { histogramNameFormatFull = value ; }
 
   bool GetHistogramZoom() const { return histogramZoom ; }
   void SetHistogramZoom(bool value) { histogramZoom = value ; }
@@ -354,11 +354,11 @@ public:
   PRV_UINT16 GetSessionSaveTime() const { return sessionSaveTime ; }
   void SetSessionSaveTime(PRV_UINT16 value) { sessionSaveTime = value ; }
 
-  string GetFiltersXMLPath() const { return filtersXMLPath ; }
-  void SetFiltersXMLPath(string value) { filtersXMLPath = value ; }
+  std::string GetFiltersXMLPath() const { return filtersXMLPath ; }
+  void SetFiltersXMLPath(std::string value) { filtersXMLPath = value ; }
 
-  string GetTutorialsPath() const { return tutorialsPath ; }
-  void SetTutorialsPath(string value) { tutorialsPath = value ; }
+  std::string GetTutorialsPath() const { return tutorialsPath ; }
+  void SetTutorialsPath(std::string value) { tutorialsPath = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -450,11 +450,11 @@ private:
   rgb gradientColourEnd;
   rgb gradientColourLow;
   rgb gradientColourTop;
-  string tracesPath;
-  string cfgsPath;
-  string tmpPath;
-  string timelineNameFormatPrefix;
-  string timelineNameFormatFull;
+  std::string tracesPath;
+  std::string cfgsPath;
+  std::string tmpPath;
+  std::string timelineNameFormatPrefix;
+  std::string timelineNameFormatFull;
   bool timelineEventLines;
   bool timelineCommunicationLines;
   bool timelineFunctionAsColor;
@@ -470,8 +470,8 @@ private:
   PRV_UINT32 timelinePixelSize;
   PRV_UINT32 timelineSaveImageFormat;
   PRV_UINT32 timelineSaveTextFormat;
-  string histogramNameFormatPrefix;
-  string histogramNameFormatFull;
+  std::string histogramNameFormatPrefix;
+  std::string histogramNameFormatFull;
   bool histogramZoom;
   bool histogramHideEmpty;
   bool histogramHorizontal;
@@ -492,12 +492,12 @@ private:
   bool singleInstance;
   PRV_INT16 timelineWWEventPixels;
   PRV_UINT16 sessionSaveTime;
-  string filtersXMLPath;
-  string tutorialsPath;
+  std::string filtersXMLPath;
+  std::string tutorialsPath;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
-  void setLabelsChoiceBox( const vector< string > &list,
+  void setLabelsChoiceBox( const std::vector< std::string > &list,
                            const PRV_UINT32 &selected,
                            wxChoice *choiceBox );
   rgb wxColourToRGB( wxColour colour ) ;

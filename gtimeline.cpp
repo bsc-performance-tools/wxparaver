@@ -378,8 +378,6 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 void gTimeline::redraw()
 {
-  cout << "[GUI::gTimeline::redraw ] Entry!" << endl;
-
 #ifdef __WXGTK__
   if( splitChanged )
   {
@@ -432,7 +430,6 @@ void gTimeline::redraw()
 //  vector<bool>         tmpSel;
 //  myWindow->getSelectedRows( THREAD, tmpSel );
 //    for (int i=0;i<tmpSel.size();++i)
-//      cout << "REDRAW tmpSel[" <<i<<"] = "<< tmpSel[i] << endl;
 
   // To avoid empty zooms (probably due to other bug)
   TObjectOrder maxObj;
@@ -534,8 +531,6 @@ void gTimeline::redraw()
                                      maxObj,
                                      drawCaution,
                                      valuesToDraw, eventsToDraw, commsToDraw );
-                                     
-cout << "[GUI::gTimeline::redraw ] after call computeSemanticParallel" << endl;
 
   // Drawmode: Group objects with same wxCoord in objectPosList
   PRV_UINT32 rowToDraw = 0;
@@ -558,7 +553,6 @@ cout << "[GUI::gTimeline::redraw ] after call computeSemanticParallel" << endl;
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
-cout << "[GUI::gTimeline::redraw ] after drawRow for{}" << endl;
 
   if( drawCaution )
   {
@@ -606,8 +600,6 @@ cout << "[GUI::gTimeline::redraw ] after drawRow for{}" << endl;
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
 #endif
-cout << "[GUI::gTimeline::redraw ] exiting" << endl;
-
 }
 
 
@@ -978,8 +970,6 @@ void gTimeline::OnIdle( wxIdleEvent& event )
 #else
   canRedraw = true;
 #endif
-cout << "[GUI::gTimeline::OnIdle ]" << endl;
-
 
   if( !wxparaverApp::mainWindow->IsIconized() && myWindow->getShowWindow() )
   {
@@ -1004,8 +994,6 @@ cout << "[GUI::gTimeline::OnIdle ]" << endl;
   
   myWindow->setPosX( this->GetPosition().x );
   myWindow->setPosY( this->GetPosition().y );
-  cout << "[GUI::gTimeline::OnIdle ] Exit." << endl;
-
 }
 
 
