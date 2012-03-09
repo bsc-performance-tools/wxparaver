@@ -48,6 +48,7 @@
 ////@begin XPM images
 ////@end XPM images
 
+using namespace std;
 
 /*!
  * FindDialog type definition

@@ -82,8 +82,8 @@ private:
   Window *myTimeline;
   SelectionManagement< TObjectOrder, TWindowLevel > *mySelectedRows;
   TWindowLevel minLevel; 
-  vector< wxButton * > selectionButtons;
-  vector< wxCheckListBox* > levelCheckList;
+  std::vector< wxButton * > selectionButtons;
+  std::vector< wxCheckListBox* > levelCheckList;
 
   void OnSelectAllButtonClicked( wxCommandEvent& event );
   void OnUnselectAllButtonClicked( wxCommandEvent& event );

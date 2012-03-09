@@ -47,6 +47,7 @@
 ////@begin XPM images
 ////@end XPM images
 
+using namespace std;
 
 /*!
  * SaveConfigurationDialog type definition

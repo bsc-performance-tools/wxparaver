@@ -182,7 +182,7 @@ private:
   vector< Window * > selectedTimelines;
   vector< Histogram * > selectedHistograms;
 ////@end SaveConfigurationDialog member variables
-  vector< string > traces;
+  std::vector< std::string > traces;
 
   Window    *FindWindow( const wxString &windowName );
   Histogram *FindHistogram( const wxString &windowName );

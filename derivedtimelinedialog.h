@@ -127,14 +127,14 @@ public:
   double GetFactorTimeline2() const { return factorTimeline2 ; }
   void SetFactorTimeline2(double value) { factorTimeline2 = value ; }
 
-  vector< Window * > GetTimelines1() const { return timelines1 ; }
-  void SetTimelines1(vector< Window * > value) { timelines1 = value ; }
+  std::vector< Window * > GetTimelines1() const { return timelines1 ; }
+  void SetTimelines1(std::vector< Window * > value) { timelines1 = value ; }
 
-  vector< Window * > GetTimelines2() const { return timelines2 ; }
-  void SetTimelines2(vector< Window * > value) { timelines2 = value ; }
+  std::vector< Window * > GetTimelines2() const { return timelines2 ; }
+  void SetTimelines2(std::vector< Window * > value) { timelines2 = value ; }
 
-  vector< string > GetOperations() const { return operations ; }
-  void SetOperations(vector< string > value) { operations = value ; }
+  std::vector< std::string > GetOperations() const { return operations ; }
+  void SetOperations(std::vector< std::string > value) { operations = value ; }
 
   Window * GetCurrentWindow1() const { return currentWindow1 ; }
   void SetCurrentWindow1(Window * value) { currentWindow1 = value ; }
@@ -142,14 +142,14 @@ public:
   Window * GetCurrentWindow2() const { return currentWindow2 ; }
   void SetCurrentWindow2(Window * value) { currentWindow2 = value ; }
 
-  vector< string > GetTopCompose1() const { return topCompose1 ; }
-  void SetTopCompose1(vector< string > value) { topCompose1 = value ; }
+  std::vector< std::string > GetTopCompose1() const { return topCompose1 ; }
+  void SetTopCompose1(std::vector< std::string > value) { topCompose1 = value ; }
 
-  vector< string > GetTopCompose2() const { return topCompose2 ; }
-  void SetTopCompose2(vector< string > value) { topCompose2 = value ; }
+  std::vector< std::string > GetTopCompose2() const { return topCompose2 ; }
+  void SetTopCompose2(std::vector< std::string > value) { topCompose2 = value ; }
 
-  string GetTimelineName() const { return timelineName ; }
-  void SetTimelineName(string value) { timelineName = value ; }
+  std::string GetTimelineName() const { return timelineName ; }
+  void SetTimelineName(std::string value) { timelineName = value ; }
 
   TParamValue GetMinCompose1() const { return minCompose1 ; }
   void SetMinCompose1(TParamValue value) { minCompose1 = value ; }
@@ -199,14 +199,14 @@ public:
 private:
   double factorTimeline1;
   double factorTimeline2;
-  vector< Window * > timelines1;
-  vector< Window * > timelines2;
-  vector< string > operations;
+  std::vector< Window * > timelines1;
+  std::vector< Window * > timelines2;
+  std::vector< std::string > operations;
   Window * currentWindow1;
   Window * currentWindow2;
-  vector< string > topCompose1;
-  vector< string > topCompose2;
-  string timelineName;
+  std::vector< std::string > topCompose1;
+  std::vector< std::string > topCompose2;
+  std::string timelineName;
   TParamValue minCompose1;
   TParamValue maxCompose1;
   TParamValue minCompose2;
@@ -216,20 +216,20 @@ private:
   void presetTimelineComboBox( vector< Window * > timelines,
                                Window *currentWindow,
                                wxComboBox *comboBox );
-  void presetStringChoiceBox( vector< string > list, wxChoice *choiceBox );
+  void presetStringChoiceBox( std::vector< std::string > list, wxChoice *choiceBox );
   void presetFactorField( double value, wxTextCtrl *field );
-  void presetNameField( string whichName, wxTextCtrl *field );
+  void presetNameField( std::string whichName, wxTextCtrl *field );
 
-  void getSelectedString( wxChoice *choiceBox, vector< string > &selection ) const;
-  void getSelectedWindow( wxComboBox *comboBox, vector< Window * > &selection ) const;
-  void getName( wxTextCtrl *field, string &whichName ) const;
+  void getSelectedString( wxChoice *choiceBox, std::vector< std::string > &selection ) const;
+  void getSelectedWindow( wxComboBox *comboBox, std::vector< Window * > &selection ) const;
+  void getName( wxTextCtrl *field, std::string &whichName ) const;
   bool getFactorFields( double &whichFactor1,
                         double &whichFactor2 );
   void setParametersCompose( PRV_UINT32 compose,
-                             string nameFunction,
+                             std::string nameFunction,
                              PRV_UINT32 numParameters,
-                             vector< string > namesParameters,
-                             vector< vector< double > > defaultValues );
+                             std::vector< std::string > namesParameters,
+                             std::vector< std::vector< double > > defaultValues );
 
   bool getParameterCompose( wxTextCtrl *field,
                             TParamValue &parameter,

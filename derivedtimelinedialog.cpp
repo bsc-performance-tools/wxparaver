@@ -46,6 +46,7 @@
 ////@begin XPM images
 ////@end XPM images
 
+using namespace std;
 
 /*!
  * DerivedTimelineDialog type definition

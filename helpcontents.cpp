@@ -50,6 +50,7 @@
 ////@begin XPM images
 ////@end XPM images
 
+using namespace std;
 
 /*!
  * HelpContents type definition
