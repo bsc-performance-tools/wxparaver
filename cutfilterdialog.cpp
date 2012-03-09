@@ -2489,7 +2489,7 @@ void CutFilterDialog::setOutputName( bool enable )
 {
   if ( enable )
   {
-    wxString outputName = buildOutputName();
+    wxString outputName = buildOutputName( false );
     filePickerOutputTrace->SetPath( outputName );
   }
 }
