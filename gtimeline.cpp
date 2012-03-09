@@ -378,6 +378,7 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 
 void gTimeline::redraw()
 {
+//  cout << "[GUI::gTimeline::redraw ] Entry!" << endl;
 #ifdef __WXGTK__
   if( splitChanged )
   {
@@ -532,6 +533,8 @@ void gTimeline::redraw()
                                      drawCaution,
                                      valuesToDraw, eventsToDraw, commsToDraw );
 
+// cout << "[GUI::gTimeline::redraw ] after call computeSemanticParallel" << endl;
+
   // Drawmode: Group objects with same wxCoord in objectPosList
   PRV_UINT32 rowToDraw = 0;
   for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != selectedSet.end(); ++obj )
@@ -553,6 +556,7 @@ void gTimeline::redraw()
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
+// cout << "[GUI::gTimeline::redraw ] after drawRow for{}" << endl;
 
   if( drawCaution )
   {
@@ -600,6 +604,7 @@ void gTimeline::redraw()
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
 #endif
+// cout << "[GUI::gTimeline::redraw ] exiting" << endl;
 }
 
 
@@ -970,6 +975,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
 #else
   canRedraw = true;
 #endif
+// cout << "[GUI::gTimeline::OnIdle ]" << endl;
 
   if( !wxparaverApp::mainWindow->IsIconized() && myWindow->getShowWindow() )
   {
@@ -994,6 +1000,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   
   myWindow->setPosX( this->GetPosition().x );
   myWindow->setPosY( this->GetPosition().y );
+//  cout << "[GUI::gTimeline::OnIdle ] Exit." << endl;
 }
 
 

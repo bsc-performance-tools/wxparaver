@@ -478,7 +478,7 @@ private:
   string DoLoadFilteredTrace( string traceFileName,
                               string traceFilePath,
                               TraceOptions *traceOptions,
-                              vector< int > &filterToolOrder );
+                              vector< string > &filterToolOrder );
 
   void PrepareToExit();
   

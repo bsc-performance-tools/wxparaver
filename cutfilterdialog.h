@@ -37,6 +37,7 @@
 
 ////@begin includes
 #include "wx/filepicker.h"
+#include "wx/tglbtn.h"
 #include "wx/notebook.h"
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
@@ -52,11 +53,18 @@ using namespace std;
 
 ////@begin forward declarations
 class wxFilePickerCtrl;
+class wxBoxSizer;
+class wxToggleButton;
 class wxNotebook;
 class wxSpinCtrl;
 ////@end forward declarations
 
 #include "traceoptions.h"
+
+#include "tracecutter.h"
+#include "tracefilter.h"
+#include "tracesoftwarecounters.h"
+//#include "paravermain.h"
 
 // find a common place; moved from paravermain.cpp
 #ifdef WIN32
@@ -71,13 +79,15 @@ class wxSpinCtrl;
 
 ////@begin control identifiers
 #define ID_CUTFILTERDIALOG 10103
-#define ID_FILECTRL_CUTFILTER_TRACE_SELECTION 10106
+#define ID_FILECTRL_CUTFILTER_INPUT_TRACE_SELECTOR 10106
+#define ID_FILECTRL_CUTFILTER_OUTPUT_TRACE_SELECTOR 10000
 #define ID_CHECKBOX_LOAD_RESULTING_TRACE 10152
-#define ID_BUTTON_LOAD_XML 10153
+#define ID_FILECTRL_CUTFILTER_XML_SELECTOR 10144
+#define ID_CHECKLISTBOX_EXECUTION_CHAIN 10107
+#define ID_BITMAPBUTTON_PUSH_UP_FILTER 10109
+#define ID_BITMAPBUTTON_PUSH_DOWN_FILTER 10001
+#define ID_BUTTON_EDIT_XML 10153
 #define ID_BUTTON_SAVE_XML 10154
-#define ID_CHECKLISTBOX 10107
-#define ID_BITMAPBUTTON_PUSH_UP 10109
-#define ID_BITMAPBUTTON_PUSH_DOWN 10110
 #define ID_NOTEBOOK_CUT_FILTER_OPTIONS 10108
 #define ID_PANEL_CUTTER 10111
 #define ID_RADIOBUTTON_CUTTER_CUT_BY_TIME 10116
@@ -86,6 +96,7 @@ class wxSpinCtrl;
 #define ID_TEXTCTRL_CUTTER_END_CUT 10119
 #define ID_TEXTCTRL_CUTTER_TASKS 10157
 #define ID_BUTTON_CUTTER_SELECT_REGION 10114
+#define ID_BUTTON_CUTTER_ALL_WINDOW 10198
 #define ID_BUTTON_CUTTER_ALL_TRACE 10115
 #define ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME 10120
 #define ID_CHECKBOX_CUTTER_REMOVE_FIRST_STATE 10121
@@ -164,23 +175,35 @@ public:
   /// wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
   void OnIdle( wxIdleEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_LOAD_XML
-  void OnButtonLoadXMLClick( wxCommandEvent& event );
+  /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_INPUT_TRACE_SELECTOR
+  void OnFilectrlCutfilterInputTraceSelectorFilePickerChanged( wxFileDirPickerEvent& event );
+
+  /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_XML_SELECTOR
+  void OnFilectrlCutfilterXmlSelectorFilePickerChanged( wxFileDirPickerEvent& event );
+
+  /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_CHECKLISTBOX_EXECUTION_CHAIN
+  void OnChecklistboxExecutionChainDoubleClicked( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX_EXECUTION_CHAIN
+  void OnCheckListExecutionChainSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKLISTBOX_TOGGLED event handler for ID_CHECKLISTBOX_EXECUTION_CHAIN
+  void OnChecklistboxExecutionChainToggled( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKLISTBOX_EXECUTION_CHAIN
+  void OnCheckListExecutionChainUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_UP_FILTER
+  void OnBitmapbuttonPushUpFilterClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_DOWN_FILTER
+  void OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_EDIT_XML
+  void OnButtonViewEditXmlUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SAVE_XML
   void OnButtonSaveXmlClick( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_CHECKLISTBOX
-  void OnCheckListToolOrderSelected( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_CHECKLISTBOX
-  void OnCheckListToolOrderUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_UP
-  void OnBitmapbuttonPushUpClick( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_DOWN
-  void OnBitmapbuttonPushDownClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
   void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
@@ -230,11 +253,11 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SC_KEEP_EVENTS_DELETE
   void OnButtonScKeepEventsDeleteClick( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
-  void OnOkClick( wxCommandEvent& event );
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_APPLY
+  void OnApplyClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for wxID_OK
-  void OnOkUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for wxID_APPLY
+  void OnApplyUpdate( wxUpdateUIEvent& event );
 
 ////@end CutFilterDialog event handler declarations
 
@@ -242,9 +265,6 @@ public:
 
   TraceOptions * GetTraceOptions() const { return traceOptions ; }
   void SetTraceOptions(TraceOptions * value) { traceOptions = value ; }
-
-  vector< int > GetFilterToolOrder() const { return filterToolOrder ; }
-  void SetFilterToolOrder(vector< int > value) { filterToolOrder = value ; }
 
   bool GetLoadResultingTrace() const { return loadResultingTrace ; }
   void SetLoadResultingTrace(bool value) { loadResultingTrace = value ; }
@@ -267,6 +287,12 @@ public:
   bool GetNewXMLsPath() const { return newXMLsPath ; }
   void SetNewXMLsPath(bool value) { newXMLsPath = value ; }
 
+  bool GetChangedXMLParameters() const { return changedXMLParameters ; }
+  void SetChangedXMLParameters(bool value) { changedXMLParameters = value ; }
+
+  vector< string > GetFilterToolOrder() const { return filterToolOrder ; }
+  void SetFilterToolOrder(vector< string > value) { filterToolOrder = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -277,7 +303,7 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
-  void UpdateToolList();
+  void UpdateExecutionChain();
   wxString formatNumber( double value );
 
   string GetTraceFileName();
@@ -287,7 +313,7 @@ public:
   void ChangePageSelectionFromToolsOrderListToTabs();
   void ChangePageSelectionFromTabsToToolsOrderList();
 
-  void CheckCommonOptions( bool &previousWarning );
+  void CheckCommonOptions( bool &previousWarning, bool showWarning = true );
   void CheckCutterOptions( bool &previousWarning );
   void CheckFilterOptions( bool &previousWarning );
   void CheckSoftwareCountersOptions( bool &previousWarning );
@@ -312,20 +338,27 @@ public:
   void TransferWindowToFilterData( bool previousWarning );
   void TransferWindowToSoftwareCountersData( bool previousWarning );
 
-  void TransferCommonDataToWindow( vector<int> order );
+  void TransferCommonDataToWindow( vector< string > order );
   void TransferCutterDataToWindow( TraceOptions *traceOptions );
   void TransferFilterDataToWindow( TraceOptions *traceOptions );
   void TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions );
-  void TransferDataToWindow( vector<int> order, TraceOptions *traceOptions );
+  void TransferDataToWindow( vector< string > order, TraceOptions *traceOptions );
 
   bool GetLoadedXMLPath( string &XML );
 
 ////@begin CutFilterDialog member variables
-  wxFilePickerCtrl* filePickerTrace;
+  wxFilePickerCtrl* filePickerInputTrace;
+  wxStaticText* txtOutputTrace;
+  wxFilePickerCtrl* filePickerOutputTrace;
   wxCheckBox* checkLoadResultingTrace;
-  wxCheckListBox* checkListToolOrder;
+  wxFilePickerCtrl* filePickerXMLCfg;
+  wxBoxSizer* boxSizerExecutionChain;
+  wxStaticText* txtExecutionChain;
+  wxCheckListBox* checkListExecutionChain;
   wxBitmapButton* buttonUp;
   wxBitmapButton* buttonDown;
+  wxToggleButton* buttonViewEditXml;
+  wxButton* buttonSaveXml;
   wxNotebook* notebookTools;
   wxRadioButton* radioCutterCutByTime;
   wxRadioButton* radioCutterCutByTimePercent;
@@ -333,6 +366,7 @@ public:
   wxTextCtrl* textCutterEndCut;
   wxTextCtrl* textCutterTasks;
   wxButton* buttonCutterSelectRegion;
+  wxButton* buttonCutterAllWindow;
   wxButton* buttonCutterAllTrace;
   wxCheckBox* checkCutterUseOriginalTime;
   wxCheckBox* checkCutterRemoveFirstState;
@@ -375,10 +409,9 @@ public:
   wxListBox* listSCKeepEvents;
   wxButton* buttonSCKeepEventsAdd;
   wxButton* buttonSCKeepEventsDelete;
-  wxButton* globalOk;
+  wxButton* buttonApply;
 private:
   TraceOptions * traceOptions;
-  vector< int > filterToolOrder;
   bool loadResultingTrace;
   string nameSourceTrace;
   string pathOutputTrace;
@@ -386,9 +419,26 @@ private:
   KernelConnection * localKernel;
   string globalXMLsPath;
   bool newXMLsPath;
+  bool changedXMLParameters;
+  vector< string > filterToolOrder;
 ////@end CutFilterDialog member variables
 
-  vector< string > listToolOrder; // Names of the tools
+  vector< string > listToolOrder; // Full list of names of the tools
+
+  bool isFileSelected( wxFilePickerCtrl *fpc );
+  bool isExecutionChainEmpty();
+  const vector< string > changeToolsNameToID( const vector< string >& listToolWithNames );
+  const vector< string > changeToolsIDsToNames( const vector< string >& listToolIDs );
+  bool globalEnable();
+  void setOutputName( bool enable );
+  void enableOutputTraceWidgets( bool enable );
+
+
+  // saveGeneratedName keeps it internally ( see getNewTraceName )
+  // saveGeneratedName = false => useful to compute new ouput trace name,
+  //   (i.e. when filter execution chain modified ).
+  // saveGeneratedName = true => just before real trace save
+  wxString buildOutputName( bool saveGeneratedName );
 };
 
 #endif
