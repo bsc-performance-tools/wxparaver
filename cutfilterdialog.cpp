@@ -42,6 +42,7 @@
 #include "wx/imaglist.h"
 ////@end includes
 
+#include <string>
 #include <sstream>
 #include <iostream>
 #include <algorithm>
@@ -59,6 +60,8 @@
 #include "arrow_up.xpm"
 #include "arrow_down.xpm"
 ////@end XPM images
+
+using namespace std;
 
 /*!
  * CutFilterDialog type definition
@@ -2445,7 +2448,11 @@ wxString CutFilterDialog::buildOutputName( bool saveGeneratedName )
 {
   string currentName = "";
   string currentPath = "";
+#ifdef UNICODE
+  string pathSeparator =  wxString( wxFileName::GetPathSeparator() ).mb_str().data();
+#else
   string pathSeparator =  wxString( wxFileName::GetPathSeparator() ).mb_str();
+#endif
   char tmpNameIn[1024], tmpNameOut[1024];
 
   bool previousWarning = false;

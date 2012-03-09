@@ -97,8 +97,8 @@ public:
                              const wxSize& size = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
                              long style = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
   AdvancedSaveConfiguration( wxWindow* parent,
-                             const vector< Window * > &whichTimelines,
-                             const vector< Histogram * > &whichHistograms,
+                             const std::vector< Window * > &whichTimelines,
+                             const std::vector< Histogram * > &whichHistograms,
                              TEditorMode mode = PROPERTIES_TAGS,
                              wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
                              const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
@@ -155,8 +155,8 @@ public:
 
     //bool TransferDataFromWindow();
 
-//    const map< string, string >& GetCFG4DAliasList() const { return renamedTag; };
-//    const map< string, bool >&   GetCFG4DEnabledList() const { return enabledTag; };
+//    const std::map< std::string, std::string >& GetCFG4DAliasList() const { return renamedTag; };
+//    const std::map< std::string, bool >&   GetCFG4DEnabledList() const { return enabledTag; };
 
   protected:
     const static wxString KParamSeparator;
@@ -170,21 +170,21 @@ public:
     bool isTimeline;
     int currentItem;                   // Index to selected item in choice widget. Used to compute
                                        // position of Window * or Histogram * in next vectors.
-    vector< Window * > timelines;
-    vector< Histogram * > histograms;
+    std::vector< Window * > timelines;
+    std::vector< Histogram * > histograms;
 
-    map< Window *, bool > backupTimelinesCFG4DEnabled;
-    map< Window *, bool > backupTimelinesCFG4DMode;
-    map< Window *, map< string, string > > backupTimelinesCFG4DAliasList;
-    map< Window *, Window::TParamAlias > backupTimelinesCFG4DParamAlias;
-    map< Histogram *, bool > backupHistogramsCFG4DEnabled;
-    map< Histogram *, bool > backupHistogramsCFG4DMode;
-    map< Histogram *, map< string, string > > backupHistogramsCFG4DAliasList;
-    map< Histogram *, map< string, string > > backupHistogramsCFG4DStatisticsAliasList;
+    std::map< Window *, bool > backupTimelinesCFG4DEnabled;
+    std::map< Window *, bool > backupTimelinesCFG4DMode;
+    std::map< Window *, std::map< std::string, std::string > > backupTimelinesCFG4DAliasList;
+    std::map< Window *, Window::TParamAlias > backupTimelinesCFG4DParamAlias;
+    std::map< Histogram *, bool > backupHistogramsCFG4DEnabled;
+    std::map< Histogram *, bool > backupHistogramsCFG4DMode;
+    std::map< Histogram *, std::map< std::string, std::string > > backupHistogramsCFG4DAliasList;
+    std::map< Histogram *, std::map< std::string, std::string > > backupHistogramsCFG4DStatisticsAliasList;
 
-    vector< string > fullTagList;
-    map< string, string > renamedTag;
-    map< string, bool > enabledTag;
+    std::vector< std::string > fullTagList;
+    std::map< std::string, std::string > renamedTag;
+    std::map< std::string, bool > enabledTag;
     bool enabledCFG4DMode;
 
     TEditorMode editionMode;
@@ -194,14 +194,14 @@ public:
     wxString BuildName( Window *current );
     wxString BuildName( Histogram *current );
 
-    bool allowedLevel( const string &tag );
+    bool allowedLevel( const std::string &tag );
 
-    void BuildTagMaps( const map< string, string > &renamedTagMap,
+    void BuildTagMaps( const std::map< std::string, std::string > &renamedTagMap,
                        const bool showFullList );
-    void InsertParametersToTagMaps( const vector< Window::TParamAliasKey > &fullParamList,
+    void InsertParametersToTagMaps( const std::vector< Window::TParamAliasKey > &fullParamList,
                                     const Window::TParamAlias &renamedParamAlias,
                                     const bool showFullList );
-    wxBoxSizer *BuildTagRowWidgets( map< string, string >::iterator it,
+    wxBoxSizer *BuildTagRowWidgets( std::map< std::string, std::string >::iterator it,
                                     bool showFullList );
     void BuildTagWidgets( const bool showFullList );
     void BuildTagsPanel( Window *currentWindow, const bool showFullList );

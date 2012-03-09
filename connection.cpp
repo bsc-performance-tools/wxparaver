@@ -41,6 +41,8 @@
 #include "connection.h"
 #include "wxparaverapp.h"
 
+using namespace std;
+
 wxConnectionBase *stServer::OnAcceptConnection( const wxString& topic )
 {
   if( topic.Lower() == wxT( "wxparaver" ) )

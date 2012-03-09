@@ -288,8 +288,8 @@ public:
   /// Returns the AUI manager object
   wxAuiManager& GetAuiManager() { return m_auiManager; }
 
-  vector<Trace *> GetLoadedTraces() const { return loadedTraces ; }
-  void SetLoadedTraces(vector<Trace *> value) { loadedTraces = value ; }
+  std::vector<Trace *> GetLoadedTraces() const { return loadedTraces ; }
+  void SetLoadedTraces(std::vector<Trace *> value) { loadedTraces = value ; }
 
   KernelConnection* GetLocalKernel() const { return localKernel ; }
   void SetLocalKernel(KernelConnection* value) { localKernel = value ; }
@@ -336,8 +336,8 @@ public:
   bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
   void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
 
-  set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
-  void SetActiveWindows(set<wxWindow *> value) { activeWindows = value ; }
+  std::set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
+  void SetActiveWindows(std::set<wxWindow *> value) { activeWindows = value ; }
 
   bool GetTraceLoadedBefore() const { return traceLoadedBefore ; }
   void SetTraceLoadedBefore(bool value) { traceLoadedBefore = value ; }
@@ -354,14 +354,14 @@ public:
   bool GetCanServeSignal() const { return canServeSignal ; }
   void SetCanServeSignal(bool value) { canServeSignal = value ; }
 
-  queue<string> GetLoadFilesQueue() const { return loadFilesQueue ; }
-  void SetLoadFilesQueue(queue<string> value) { loadFilesQueue = value ; }
+  std::queue<std::string> GetLoadFilesQueue() const { return loadFilesQueue ; }
+  void SetLoadFilesQueue(std::queue<std::string> value) { loadFilesQueue = value ; }
 
   wxTimer * GetSessionTimer() const { return sessionTimer ; }
   void SetSessionTimer(wxTimer * value) { sessionTimer = value ; }
 
-  string GetXMLPath() const { return XMLPath ; }
-  void SetXMLPath(string value) { XMLPath = value ; }
+  std::string GetXMLPath() const { return XMLPath ; }
+  void SetXMLPath(std::string value) { XMLPath = value ; }
 
   bool GetXMLLoadedBefore() const { return XMLLoadedBefore ; }
   void SetXMLLoadedBefore(bool value) { XMLLoadedBefore = value ; }
@@ -389,13 +389,13 @@ public:
   
   void clearProperties();
   
-  void enqueueFile( string whichFile );
+  void enqueueFile( std::string whichFile );
   
 #ifndef WIN32
   void OnSignal();
-  bool matchTraceNames( const string &fileName1, 
-                        const string &traceName1,
-                        const string &fileName2 );
+  bool matchTraceNames( const std::string &fileName1, 
+                        const std::string &traceName1,
+                        const std::string &fileName2 );
 #endif
 
 #ifdef WIN32
@@ -404,13 +404,13 @@ public:
 #endif
   void OnFindDialog();
   
-  bool DoLoadTrace( const string &path );
+  bool DoLoadTrace( const std::string &path );
   void UnloadTrace( int whichTrace );
-  bool DoLoadCFG( const string &path );
+  bool DoLoadCFG( const std::string &path );
   void ShowPreferences();
-  void ShowCutTraceWindow( const string& filename = "",
+  void ShowCutTraceWindow( const std::string& filename = "",
                            bool loadTrace = false,
-                           const string& xmlFile = "" );
+                           const std::string& xmlFile = "" );
 
 
   static wxProgressDialog *dialogProgress;
@@ -432,7 +432,7 @@ public:
   wxGenericDirCtrl* dirctrlFiles;
   wxPropertyGrid* windowProperties;
 private:
-  vector<Trace *> loadedTraces;
+  std::vector<Trace *> loadedTraces;
   KernelConnection* localKernel;
   ParaverConfig* paraverConfig;
   PRV_INT16 currentTrace;
@@ -448,20 +448,20 @@ private:
   int numNewHistograms;
   int numNewDerived;
   bool raiseCurrentWindow;
-  set<wxWindow *> activeWindows;
+  std::set<wxWindow *> activeWindows;
   bool traceLoadedBefore;
   bool CFGLoadedBefore;
   wxString tracePath;
   wxString CFGPath;
   bool canServeSignal;
-  queue<string> loadFilesQueue;
+  std::queue<std::string> loadFilesQueue;
   wxTimer * sessionTimer;
-  string XMLPath;
+  std::string XMLPath;
   bool XMLLoadedBefore;
   HelpContents * tutorialsWindow;
 ////@end paraverMain member variables
 
-  map< string, PRV_UINT32 > traceInstance;
+  std::map< std::string, PRV_UINT32 > traceInstance;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
 
@@ -475,10 +475,10 @@ private:
   void ShowDerivedDialog();
   void ShowHistogramDialog();
 
-  string DoLoadFilteredTrace( string traceFileName,
-                              string traceFilePath,
-                              TraceOptions *traceOptions,
-                              vector< string > &filterToolOrder );
+  std::string DoLoadFilteredTrace( std::string traceFileName,
+                                   std::string traceFilePath,
+                                   TraceOptions *traceOptions,
+                                   std::vector< std::string > &filterToolOrder );
 
   void PrepareToExit();
   
