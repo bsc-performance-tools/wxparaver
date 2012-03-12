@@ -242,7 +242,6 @@
         <string name="Include path">"%AUTO%"</string>
         <string name="Resource flags">"%AUTO%"</string>
         <string name="Resource path">"%AUTO%"</string>
-        <string name="Extra dependencies">"%AUTO%"</string>
         <bool name="Suppress source rules">0</bool>
         <bool name="Enable makefile generation">1</bool>
         <document>
@@ -314,7 +313,6 @@
           <string name="Include path">"%AUTO% -I../common-files -I../paraver-kernel -I../paraver-kernel/api"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Command for wx-config">"%AUTO%"</string>
@@ -393,7 +391,6 @@
           <string name="Include path">"%AUTO% -I../common-files -I../paraver-kernel -I../paraver-kernel/api"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Command for wx-config">"%AUTO%"</string>
@@ -472,7 +469,6 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Command for wx-config">"%AUTO%"</string>
@@ -551,7 +547,6 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Command for wx-config">"%AUTO%"</string>
@@ -628,7 +623,6 @@
           <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Ignore libraries">"%AUTO%"</string>
@@ -700,7 +694,6 @@
           <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Ignore libraries">"%AUTO%"</string>
@@ -772,7 +765,6 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Ignore libraries">"%AUTO%"</string>
@@ -844,7 +836,6 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Ignore libraries">"%AUTO%"</string>
@@ -916,7 +907,6 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
         </document>
@@ -987,7 +977,6 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
         </document>
@@ -1058,7 +1047,6 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
         </document>
@@ -1129,7 +1117,6 @@
           <string name="Include path">"%AUTO%"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
-          <string name="Extra dependencies">"%AUTO%"</string>
           <bool name="Suppress source rules">0</bool>
           <bool name="Enable makefile generation">1</bool>
         </document>
@@ -5818,7 +5805,6 @@
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -5833,6 +5819,7 @@
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxCheckBox: ID_CHECKBEGIN"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -6042,7 +6029,6 @@
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -6057,6 +6043,7 @@
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxRadioButton: ID_RADIOALLTRACE"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -6862,6 +6849,14 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -7118,7 +7113,6 @@ In normal mode all properties are showed in main window."</string>
               <string name="proxy-Font">""</string>
               <bool name="proxy-Hidden">0</bool>
               <bool name="proxy-Enabled">1</bool>
-              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <string name="proxy-Static box class">"wxStaticBox"</string>
               <string name="proxy-Orientation">"Vertical"</string>
               <string name="proxy-AlignH">"Expand"</string>
@@ -7133,6 +7127,7 @@ In normal mode all properties are showed in main window."</string>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <document>
                 <string name="title">"wxBoxSizer H"</string>
                 <string name="type">"dialog-control-document"</string>
@@ -9643,7 +9638,6 @@ In normal mode all properties are showed in main window."</string>
               <string name="proxy-Font">""</string>
               <bool name="proxy-Hidden">0</bool>
               <bool name="proxy-Enabled">1</bool>
-              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <string name="proxy-Static box class">"wxStaticBox"</string>
               <string name="proxy-Orientation">"Vertical"</string>
               <string name="proxy-AlignH">"Expand"</string>
@@ -9658,6 +9652,7 @@ In normal mode all properties are showed in main window."</string>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <document>
                 <string name="title">"wxBoxSizer H"</string>
                 <string name="type">"dialog-control-document"</string>
@@ -11374,7 +11369,6 @@ In normal mode all properties are showed in main window."</string>
               <string name="proxy-Font">""</string>
               <bool name="proxy-Hidden">0</bool>
               <bool name="proxy-Enabled">1</bool>
-              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <string name="proxy-Static box class">"wxStaticBox"</string>
               <string name="proxy-Orientation">"Vertical"</string>
               <string name="proxy-AlignH">"Expand"</string>
@@ -11389,6 +11383,7 @@ In normal mode all properties are showed in main window."</string>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <document>
                 <string name="title">"wxBoxSizer H"</string>
                 <string name="type">"dialog-control-document"</string>
@@ -12454,7 +12449,6 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Font">""</string>
                 <bool name="proxy-Hidden">0</bool>
                 <bool name="proxy-Enabled">1</bool>
-                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <string name="proxy-Static box class">"wxStaticBox"</string>
                 <string name="proxy-Orientation">"Vertical"</string>
                 <string name="proxy-AlignH">"Expand"</string>
@@ -12469,6 +12463,7 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <document>
                   <string name="title">"wxCheckBox: ID_PREFERENCES_GLOBAL_FILLGAPS"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -12716,7 +12711,6 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Font">""</string>
                 <bool name="proxy-Hidden">0</bool>
                 <bool name="proxy-Enabled">1</bool>
-                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <string name="proxy-Static box class">"wxStaticBox"</string>
                 <string name="proxy-Orientation">"Vertical"</string>
                 <string name="proxy-AlignH">"Expand"</string>
@@ -12731,6 +12725,7 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <document>
                   <string name="title">"wxBoxSizer H"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -13571,7 +13566,6 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Font">""</string>
                 <bool name="proxy-Hidden">0</bool>
                 <bool name="proxy-Enabled">1</bool>
-                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <string name="proxy-Static box class">"wxStaticBox"</string>
                 <string name="proxy-Orientation">"Vertical"</string>
                 <string name="proxy-AlignH">"Expand"</string>
@@ -13586,6 +13580,7 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <document>
                   <string name="title">"wxCheckBox: ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -14028,7 +14023,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">0</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -14043,6 +14037,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxBoxSizer H"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -14417,7 +14412,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -14432,6 +14426,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxCheckBox: ID_PREFERENCES_TIMELINE_COMMUNICATION_LINES"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -15436,7 +15431,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -15451,6 +15445,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxCheckBox: ID_CHECKBOX_TIMELINE_WW_SEMANTIC"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -16114,7 +16109,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -16129,6 +16123,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxBoxSizer H"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -16583,7 +16578,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">0</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -16598,6 +16592,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxBoxSizer H"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -16972,7 +16967,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -16987,6 +16981,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxCheckBox: ID_PREFERENCES_HISTOGRAM_MATRIX_ZOOM"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -17809,7 +17804,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -17824,6 +17818,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxCheckBox: ID_PREFERENCES_HISTOGRAM_SCIENTIFIC_NOTATION"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -18197,7 +18192,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -18212,6 +18206,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxCheckBox: ID_PREFERENCES_HISTOGRAM_AUTOFIT_CONTROL"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -18585,7 +18580,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -18600,6 +18594,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxBoxSizer H"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -19030,7 +19025,6 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Font">""</string>
                 <bool name="proxy-Hidden">0</bool>
                 <bool name="proxy-Enabled">1</bool>
-                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <string name="proxy-Static box class">"wxStaticBox"</string>
                 <string name="proxy-Orientation">"Vertical"</string>
                 <string name="proxy-AlignH">"Expand"</string>
@@ -19045,6 +19039,7 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <document>
                   <string name="title">"wxBoxSizer H"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -19936,7 +19931,6 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Font">""</string>
                 <bool name="proxy-Hidden">0</bool>
                 <bool name="proxy-Enabled">1</bool>
-                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <string name="proxy-Static box class">"wxStaticBox"</string>
                 <string name="proxy-Orientation">"Vertical"</string>
                 <string name="proxy-AlignH">"Expand"</string>
@@ -19951,6 +19945,7 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <document>
                   <string name="title">"wxBoxSizer H"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -20850,14 +20845,14 @@ In normal mode all properties are showed in main window."</string>
           <long name="working-mode">0</long>
           <string name="variable-0">"traceOptions|TraceOptions *|TraceOptions||2|0|"</string>
           <string name="variable-1">"loadResultingTrace|bool|LoadResultingTrace|false|2|0|"</string>
-          <string name="variable-2">"nameSourceTrace|string|NameSourceTrace|&quot;&quot;|2|0|"</string>
-          <string name="variable-3">"pathOutputTrace|string|PathOutputTrace||2|0|"</string>
+          <string name="variable-2">"nameSourceTrace|std::string|NameSourceTrace|&quot;&quot;|2|0|"</string>
+          <string name="variable-3">"pathOutputTrace|std::string|PathOutputTrace||2|0|"</string>
           <string name="variable-4">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
           <string name="variable-5">"localKernel|KernelConnection *|LocalKernel|NULL|2|0|"</string>
-          <string name="variable-6">"globalXMLsPath|string|GlobalXMLsPath|&quot;&quot;|2|0|"</string>
+          <string name="variable-6">"globalXMLsPath|std::string|GlobalXMLsPath|&quot;&quot;|2|0|"</string>
           <string name="variable-7">"newXMLsPath|bool|NewXMLsPath|false|2|0|"</string>
           <string name="variable-8">"changedXMLParameters|bool|ChangedXMLParameters|false|2|0|"</string>
-          <string name="variable-9">"filterToolOrder|vector&lt; string &gt;|FilterToolOrder||2|0|"</string>
+          <string name="variable-9">"filterToolOrder|std::vector&lt; std::string &gt;|FilterToolOrder||2|0|"</string>
           <string name="event-handler-0">"wxEVT_INIT_DIALOG|OnInitDialog|NONE||CutFilterDialog"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||CutFilterDialog"</string>
           <string name="proxy-Id name">"ID_CUTFILTERDIALOG"</string>
@@ -20933,14 +20928,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -20964,7 +20951,6 @@ In normal mode all properties are showed in main window."</string>
               <string name="proxy-Font">""</string>
               <bool name="proxy-Hidden">0</bool>
               <bool name="proxy-Enabled">1</bool>
-              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <string name="proxy-Static box class">"wxStaticBox"</string>
               <string name="proxy-Orientation">"Vertical"</string>
               <string name="proxy-AlignH">"Expand"</string>
@@ -20979,6 +20965,7 @@ In normal mode all properties are showed in main window."</string>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <document>
                 <string name="title">"wxBoxSizer V"</string>
                 <string name="type">"dialog-control-document"</string>
@@ -21499,7 +21486,6 @@ In normal mode all properties are showed in main window."</string>
               <string name="proxy-Font">""</string>
               <bool name="proxy-Hidden">0</bool>
               <bool name="proxy-Enabled">1</bool>
-              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <string name="proxy-Static box class">"wxStaticBox"</string>
               <string name="proxy-Orientation">"Vertical"</string>
               <string name="proxy-AlignH">"Expand"</string>
@@ -21514,6 +21500,7 @@ In normal mode all properties are showed in main window."</string>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <document>
                 <string name="title">"wxBoxSizer H"</string>
                 <string name="type">"dialog-control-document"</string>
@@ -22471,7 +22458,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Vertical"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -22486,6 +22472,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxBoxSizer H"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -23512,7 +23499,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Vertical"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -23527,6 +23513,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxBoxSizer H"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -23850,7 +23837,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -23865,6 +23851,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxStaticText: wxID_STATIC"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -24196,7 +24183,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -24211,6 +24197,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxCheckBox: ID_CHECKBOX_FILTER_DISCARD_STATE"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -24420,7 +24407,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -24435,6 +24421,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxCheckListBox: ID_CHECKLISTBOX_FILTER_STATES"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -24861,7 +24848,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -24876,6 +24862,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxListBox: ID_LISTBOX_FILTER_EVENTS"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -25189,7 +25176,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -25204,6 +25190,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxStaticText: wxID_STATIC"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -25535,7 +25522,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -25550,6 +25536,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxBoxSizer V"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -26151,7 +26138,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -26166,6 +26152,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxBoxSizer H"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -26441,7 +26428,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -26456,6 +26442,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxBoxSizer H"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -26983,7 +26970,6 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-Font">""</string>
                       <bool name="proxy-Hidden">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <string name="proxy-Static box class">"wxStaticBox"</string>
                       <string name="proxy-Orientation">"Horizontal"</string>
                       <string name="proxy-AlignH">"Expand"</string>
@@ -26998,6 +26984,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxListBox: ID_LISTBOX_SC_KEEP_EVENTS"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -27570,7 +27557,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Centre"</string>
@@ -27585,6 +27571,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxBoxSizer H"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -28212,7 +28199,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Centre"</string>
@@ -28227,6 +28213,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxBoxSizer H"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -29182,7 +29169,6 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Font">""</string>
                 <bool name="proxy-Hidden">0</bool>
                 <bool name="proxy-Enabled">1</bool>
-                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <string name="proxy-Static box class">"wxStaticBox"</string>
                 <string name="proxy-Orientation">"Vertical"</string>
                 <string name="proxy-AlignH">"Expand"</string>
@@ -29197,6 +29183,7 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <document>
                   <string name="title">"wxRadioButton: ID_RADIOOBJECTS"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -29505,7 +29492,6 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Font">""</string>
                 <bool name="proxy-Hidden">0</bool>
                 <bool name="proxy-Enabled">1</bool>
-                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <string name="proxy-Static box class">"wxStaticBox"</string>
                 <string name="proxy-Orientation">"Vertical"</string>
                 <string name="proxy-AlignH">"Centre"</string>
@@ -29520,6 +29506,7 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                <string name="proxy-Parenting">"Use wxWidgets version"</string>
                 <document>
                   <string name="title">"wxCheckBox: ID_CHECKNEXTOBJECT"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -29603,7 +29590,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Horizontal"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -29618,6 +29604,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxRadioButton: ID_RADIOEVENTS"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -29830,7 +29817,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Font">""</string>
                   <bool name="proxy-Hidden">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <string name="proxy-Static box class">"wxStaticBox"</string>
                   <string name="proxy-Orientation">"Vertical"</string>
                   <string name="proxy-AlignH">"Expand"</string>
@@ -29845,6 +29831,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Parenting">"Use wxWidgets version"</string>
                   <document>
                     <string name="title">"wxBoxSizer H"</string>
                     <string name="type">"dialog-control-document"</string>

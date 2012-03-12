@@ -43,7 +43,6 @@
 #include "wx/spinctrl.h"
 ////@end includes
 
-using namespace std;
 #include <string>
 #include <vector>
 
@@ -269,11 +268,11 @@ public:
   bool GetLoadResultingTrace() const { return loadResultingTrace ; }
   void SetLoadResultingTrace(bool value) { loadResultingTrace = value ; }
 
-  string GetNameSourceTrace() const { return nameSourceTrace ; }
-  void SetNameSourceTrace(string value) { nameSourceTrace = value ; }
+  std::string GetNameSourceTrace() const { return nameSourceTrace ; }
+  void SetNameSourceTrace(std::string value) { nameSourceTrace = value ; }
 
-  string GetPathOutputTrace() const { return pathOutputTrace ; }
-  void SetPathOutputTrace(string value) { pathOutputTrace = value ; }
+  std::string GetPathOutputTrace() const { return pathOutputTrace ; }
+  void SetPathOutputTrace(std::string value) { pathOutputTrace = value ; }
 
   bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
   void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
@@ -281,8 +280,8 @@ public:
   KernelConnection * GetLocalKernel() const { return localKernel ; }
   void SetLocalKernel(KernelConnection * value) { localKernel = value ; }
 
-  string GetGlobalXMLsPath() const { return globalXMLsPath ; }
-  void SetGlobalXMLsPath(string value) { globalXMLsPath = value ; }
+  std::string GetGlobalXMLsPath() const { return globalXMLsPath ; }
+  void SetGlobalXMLsPath(std::string value) { globalXMLsPath = value ; }
 
   bool GetNewXMLsPath() const { return newXMLsPath ; }
   void SetNewXMLsPath(bool value) { newXMLsPath = value ; }
@@ -290,8 +289,8 @@ public:
   bool GetChangedXMLParameters() const { return changedXMLParameters ; }
   void SetChangedXMLParameters(bool value) { changedXMLParameters = value ; }
 
-  vector< string > GetFilterToolOrder() const { return filterToolOrder ; }
-  void SetFilterToolOrder(vector< string > value) { filterToolOrder = value ; }
+  std::vector< std::string > GetFilterToolOrder() const { return filterToolOrder ; }
+  void SetFilterToolOrder(std::vector< std::string > value) { filterToolOrder = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -306,8 +305,8 @@ public:
   void UpdateExecutionChain();
   wxString formatNumber( double value );
 
-  string GetTraceFileName();
-  vector< int > GetToolsOrder();
+  std::string GetTraceFileName();
+  std::vector< int > GetToolsOrder();
   bool LoadResultingTrace();
 
   void ChangePageSelectionFromToolsOrderListToTabs();
@@ -330,7 +329,7 @@ public:
   void CheckStatesList( TraceOptions::TStateNames statesList );
 
 
-  bool SetSoftwareCountersEventsListToString( string listEvents, wxListBox *selectedEvents );
+  bool SetSoftwareCountersEventsListToString( std::string listEvents, wxListBox *selectedEvents );
   char *GetSoftwareCountersEventsListToString( wxListBox *selectedEvents );
 
   void TransferWindowToCommonData( bool previousWarning );
@@ -338,13 +337,13 @@ public:
   void TransferWindowToFilterData( bool previousWarning );
   void TransferWindowToSoftwareCountersData( bool previousWarning );
 
-  void TransferCommonDataToWindow( vector< string > order );
+  void TransferCommonDataToWindow( std::vector< std::string > order );
   void TransferCutterDataToWindow( TraceOptions *traceOptions );
   void TransferFilterDataToWindow( TraceOptions *traceOptions );
   void TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions );
-  void TransferDataToWindow( vector< string > order, TraceOptions *traceOptions );
+  void TransferDataToWindow( std::vector< std::string > order, TraceOptions *traceOptions );
 
-  bool GetLoadedXMLPath( string &XML );
+  bool GetLoadedXMLPath( std::string &XML );
 
 ////@begin CutFilterDialog member variables
   wxFilePickerCtrl* filePickerInputTrace;
@@ -413,24 +412,24 @@ public:
 private:
   TraceOptions * traceOptions;
   bool loadResultingTrace;
-  string nameSourceTrace;
-  string pathOutputTrace;
+  std::string nameSourceTrace;
+  std::string pathOutputTrace;
   bool waitingGlobalTiming;
   KernelConnection * localKernel;
-  string globalXMLsPath;
+  std::string globalXMLsPath;
   bool newXMLsPath;
   bool changedXMLParameters;
-  vector< string > filterToolOrder;
+  std::vector< std::string > filterToolOrder;
 ////@end CutFilterDialog member variables
 
-  vector< string > listToolOrder; // Full list of names of the tools
+  std::vector< std::string > listToolOrder; // Full list of names of the tools
 
   bool isFileSelected( wxFilePickerCtrl *fpc );
   bool isExecutionChainEmpty();
-  const vector< string > changeToolsNameToID( const vector< string >& listToolWithNames );
-  const vector< string > changeToolsIDsToNames( const vector< string >& listToolIDs );
+  const std::vector< std::string > changeToolsNameToID( const std::vector< std::string >& listToolWithNames );
+  const std::vector< std::string > changeToolsIDsToNames( const std::vector< std::string >& listToolIDs );
   bool globalEnable();
-  void setOutputName( bool enable );
+  void setOutputName( bool enable, bool saveGeneratedName  );
   void enableOutputTraceWidgets( bool enable );
 
 

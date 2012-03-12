@@ -2262,7 +2262,7 @@ void CutFilterDialog::OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event )
     // Keep the selection
     checkListExecutionChain->SetSelection( ++lastItemSelected );
 
-    setOutputName( globalEnable() );
+    setOutputName( globalEnable(), false );
   }
 }
 
@@ -2485,11 +2485,11 @@ wxString CutFilterDialog::buildOutputName( bool saveGeneratedName )
 }
 
 
-void CutFilterDialog::setOutputName( bool enable )
+void CutFilterDialog::setOutputName( bool enable, bool saveGeneratedName )
 {
   if ( enable )
   {
-    wxString outputName = buildOutputName( false );
+    wxString outputName = buildOutputName( saveGeneratedName );
     filePickerOutputTrace->SetPath( outputName );
   }
 }
@@ -2509,7 +2509,7 @@ void CutFilterDialog::enableOutputTraceWidgets( bool enable )
 {
   txtOutputTrace->Enable( enable );
   filePickerOutputTrace->Enable( enable );
-  setOutputName( enable );
+  setOutputName( enable, false );
   checkLoadResultingTrace->Enable( enable );
 }
 
@@ -2560,7 +2560,7 @@ void CutFilterDialog::OnBitmapbuttonPushUpFilterClick( wxCommandEvent& event )
     // Keep the selection
     checkListExecutionChain->SetSelection( --lastItemSelected );
 
-    setOutputName( globalEnable() );
+    setOutputName( globalEnable(), false );
   }
 }
 
