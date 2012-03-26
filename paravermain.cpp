@@ -371,6 +371,7 @@ void paraverMain::Init()
   sessionTimer = new wxTimer( this );
   XMLLoadedBefore = false;
   tutorialsWindow = NULL;
+  previousCutFilteredTraces = PreviousFiles::createPreviousCutFilteredTraces();
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -3210,9 +3211,12 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
     }
     else  if ( filterToolOrder[ i ] == TraceFilter::getID() )
     {
+      map< TTypeValuePair, TTypeValuePair > dummyTranslation;
+
       traceFilter = localKernel->newTraceFilter( tmpNameIn,
                                                  tmpNameOut,
                                                  traceOptions,
+                                                 dummyTranslation, //  being empty, it's ignored
                                                  progress );
       localKernel->copyPCF( tmpNameIn, tmpNameOut );
     }

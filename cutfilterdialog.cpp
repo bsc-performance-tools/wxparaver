@@ -501,8 +501,8 @@ void CutFilterDialog::CreateControls()
   wxStaticBox* itemStaticBoxSizer62Static = new wxStaticBox(itemPanel33, wxID_STATIC, _(" Output Trace "));
   wxStaticBoxSizer* itemStaticBoxSizer62 = new wxStaticBoxSizer(itemStaticBoxSizer62Static, wxHORIZONTAL);
   itemBoxSizer34->Add(itemStaticBoxSizer62, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText63 = new wxStaticText( itemPanel33, wxID_STATIC, _("Maximum trace size"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer62->Add(itemStaticText63, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  wxStaticText* itemStaticText63 = new wxStaticText( itemPanel33, wxID_STATIC, _("Maximum trace size"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+  itemStaticBoxSizer62->Add(itemStaticText63, 1, wxGROW|wxALL, 2);
 
   textCutterMaximumTraceSize = new wxSpinCtrl( itemPanel33, ID_SPINCTRL_CUTTER_MAXIMUM_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000000, 0 );
   if (CutFilterDialog::ShowToolTips())
@@ -2454,7 +2454,7 @@ wxString CutFilterDialog::buildOutputName( bool saveGeneratedName )
   string pathSeparator =  wxString( wxFileName::GetPathSeparator() ).mb_str();
 #endif
   char tmpNameIn[1024], tmpNameOut[1024];
-
+  string strNameOut;
   bool previousWarning = false;
   CheckCommonOptions( previousWarning );
   TransferWindowToCommonData( previousWarning ); // get nameSourceTrace
@@ -2464,6 +2464,7 @@ wxString CutFilterDialog::buildOutputName( bool saveGeneratedName )
     currentName = nameSourceTrace;
     currentPath = pathOutputTrace;
     string currentId = "";
+/*
     for ( vector< string >::const_iterator it = filterToolOrder.begin(); it != filterToolOrder.end(); ++it )
     {
       currentId = *it;
@@ -2471,6 +2472,7 @@ wxString CutFilterDialog::buildOutputName( bool saveGeneratedName )
       strcpy( tmpNameOut, (char *)currentPath.c_str() );
       paraverMain::myParaverMain->GetLocalKernel()->getNewTraceName(
               tmpNameIn, tmpNameOut, currentId, false );
+
       currentName = string( tmpNameOut );
       currentPath = currentName.substr( 0, currentName.rfind( pathSeparator ) );
 // cout << " name: " << currentId << " " << currentName << endl;
@@ -2479,6 +2481,8 @@ wxString CutFilterDialog::buildOutputName( bool saveGeneratedName )
 
     if( currentName == nameSourceTrace )
       currentName = pathOutputTrace;
+*/
+  currentName = paraverMain::myParaverMain->GetLocalKernel()->getNewTraceName( currentName, filterToolOrder );
   }
 
   return wxString( currentName.c_str(), wxConvUTF8 );

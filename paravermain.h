@@ -369,6 +369,9 @@ public:
   HelpContents * GetTutorialsWindow() const { return tutorialsWindow ; }
   void SetTutorialsWindow(HelpContents * value) { tutorialsWindow = value ; }
 
+  PreviousFiles * GetPreviousCutFilteredTraces() const { return previousCutFilteredTraces ; }
+  void SetPreviousCutFilteredTraces(PreviousFiles * value) { previousCutFilteredTraces = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -459,6 +462,7 @@ private:
   std::string XMLPath;
   bool XMLLoadedBefore;
   HelpContents * tutorialsWindow;
+  PreviousFiles * previousCutFilteredTraces;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;
