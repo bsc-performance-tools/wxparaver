@@ -371,7 +371,7 @@ void paraverMain::Init()
   sessionTimer = new wxTimer( this );
   XMLLoadedBefore = false;
   tutorialsWindow = NULL;
-  previousCutFilteredTraces = PreviousFiles::createPreviousCutFilteredTraces();
+  previousCutFilteredTraces = PreviousFiles::createPreviousTreatedTraces();
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -2035,9 +2035,7 @@ int paraverMain::initialPosY = 0;
 void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
 {
   // Create new window
-cout << "antes create" << endl;
   Window *newWindow = Window::create( localKernel, loadedTraces[ currentTrace ] );
-cout << "tras create" << endl;
   ++numNewWindows;
   wxString tmpName( _( "New window #" ) );
   tmpName << numNewWindows;
@@ -3120,18 +3118,13 @@ void paraverMain::OnToolCutTraceClick( wxCommandEvent& event )
 }
 
 
-string paraverMain::DoLoadFilteredTrace( string traceFileName,
-                                         string traceFilePath,
+string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
+                                         string traceDstFileName,
                                          TraceOptions *traceOptions,
-                                         vector< string > &filterToolOrder )
+                                         vector< string > &filterToolIDs )
 {
-  TraceCutter *traceCutter;
-  TraceFilter *traceFilter;
-  TraceSoftwareCounters *traceSoftwareCounters;
-  //TraceCommunicationsFusion *traceCommunicationsFusion;
-
   string tmpTraceIn, tmpTraceOut;
-  char tmpNameIn[1024], tmpNameOut[1024], tmpPathOut[1024], tmpPathOutBackup[1024];
+  string tmpNameIn, tmpNameOut, tmpPathOut, tmpPathOutBackup;
   string strOutputFile;
   vector< string > tmpFiles;
 
@@ -3143,7 +3136,6 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
   ParaverTraceConfig *myConfig;
   char *pcf_name;
   FILE *pcfFile;
-
 
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction );
@@ -3158,28 +3150,24 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
 
-  // Concatenate Filter Utilities
-  strcpy( tmpNameOut, (char *)traceFileName.c_str() );
-  strcpy( tmpPathOut, (char *)traceFilePath.c_str() );
-  strcpy( tmpPathOutBackup, (char *)traceFilePath.c_str() );
+  tmpNameOut = traceSrcFileName;
 
-  for( PRV_UINT16 i = 0; i < filterToolOrder.size(); ++i )
+  for( PRV_UINT16 i = 0; i < filterToolIDs.size(); ++i )
   {
-    strcpy( tmpNameIn, tmpNameOut );
+    tmpNameIn = tmpNameOut;
 
-    // Please change this to:
-    // tmpNameOut = localKernel->getNewTraceName( tmpNameIn, tmpPathOut, filterToolOrder[ i ] );
-    localKernel->getNewTraceName( tmpNameIn, tmpPathOut, filterToolOrder[ i ] );
-    strcpy( tmpNameOut, tmpPathOut );
-    strcpy( tmpPathOut, tmpPathOutBackup );
+    if ( i == filterToolIDs.size() - 1 )
+      tmpNameOut = traceDstFileName;
+    else
+      tmpNameOut = localKernel->getNewTraceName( tmpNameIn, filterToolIDs[ i ], false );
 
-    paraverMain::dialogProgress->Pulse( wxString::FromAscii( tmpNameOut ) );
+    paraverMain::dialogProgress->Pulse( wxString::FromAscii( tmpNameOut.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
-    if ( filterToolOrder[ i ] == TraceCutter::getID() )
+    if ( filterToolIDs[ i ] == TraceCutter::getID() )
     {
-      pcf_name = localKernel->composeName( tmpNameIn, (char *)"pcf" );
+      pcf_name = localKernel->composeName( (char *)tmpNameIn.c_str(), (char *)"pcf" );
       if(( pcfFile = fopen( pcf_name, "r" )) != NULL )
       {
         fclose( pcfFile );
@@ -3202,37 +3190,41 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
         delete myConfig;
       }
 
-      traceCutter = localKernel->newTraceCutter( tmpNameIn,
-                                                 tmpNameOut,
-                                                 traceOptions,
-                                                 typesWithValueZero,
-                                                 progress );
-      localKernel->copyPCF( tmpNameIn, tmpNameOut );
+      TraceCutter *traceCutter = localKernel->newTraceCutter( (char *)tmpNameIn.c_str(),
+                                                              (char *)tmpNameOut.c_str(),
+                                                              traceOptions,
+                                                              typesWithValueZero,
+                                                              progress );
+      localKernel->copyPCF( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str() );
+      delete traceCutter;
     }
-    else  if ( filterToolOrder[ i ] == TraceFilter::getID() )
+    else  if ( filterToolIDs[ i ] == TraceFilter::getID() )
     {
-      map< TTypeValuePair, TTypeValuePair > dummyTranslation;
+      map< TTypeValuePair, TTypeValuePair > dummyTranslation; // it it's empty, it's ignored
 
-      traceFilter = localKernel->newTraceFilter( tmpNameIn,
-                                                 tmpNameOut,
-                                                 traceOptions,
-                                                 dummyTranslation, //  being empty, it's ignored
-                                                 progress );
-      localKernel->copyPCF( tmpNameIn, tmpNameOut );
+      TraceFilter *traceFilter = localKernel->newTraceFilter( (char *)tmpNameIn.c_str(),
+                                                              (char *)tmpNameOut.c_str(),
+                                                              traceOptions,
+                                                              dummyTranslation,
+                                                              progress );
+      localKernel->copyPCF( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str() );
+      delete traceFilter;
     }
-    else if ( filterToolOrder[ i ] == TraceSoftwareCounters::getID() )
+    else if ( filterToolIDs[ i ] == TraceSoftwareCounters::getID() )
     {
-      traceSoftwareCounters = localKernel->newTraceSoftwareCounters( tmpNameIn,
-                                                                  tmpNameOut,
-                                                                  traceOptions,
-                                                                  progress );
+      TraceSoftwareCounters *traceSoftwareCounters =
+              localKernel->newTraceSoftwareCounters( (char *)tmpNameIn.c_str(),
+                                                     (char *)tmpNameOut.c_str(),
+                                                     traceOptions,
+                                                     progress );
       // traceSoftwareCounters modifies the pcf, don't copy here!
+      delete traceSoftwareCounters;
     }
     else
     {
     }
 
-    localKernel->copyROW( tmpNameIn, tmpNameOut );
+    localKernel->copyROW( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str() );
     tmpFiles.push_back( tmpNameOut );
   }
 
@@ -3247,33 +3239,16 @@ string paraverMain::DoLoadFilteredTrace( string traceFileName,
     remove( rowName );
   }
 
-  // Delete utilities
-  for( PRV_UINT16 i = 0; i < filterToolOrder.size(); ++i )
-  {
-    if ( filterToolOrder[ i ] == TraceCutter::getID() )
-    {
-      //delete *traceCutter;
-    }
-    else if ( filterToolOrder[ i ] == TraceCutter::getID() )
-    {
-      //delete *traceFilter;
-    }
-    if ( filterToolOrder[ i ] == TraceCutter::getID() )
-    {
-      //delete *traceSoftwareCounters;
-    }
-    else
-    {
-    } 
-  }
+  localKernel->commitNewTraceName( traceDstFileName );
 
   paraverMain::dialogProgress->Show( false );
   delete paraverMain::dialogProgress;
   paraverMain::dialogProgress = NULL;
   delete progress;
 
-  return string( tmpNameOut );
+  return tmpNameOut;
 }
+
 
 void paraverMain::ShowCutTraceWindow( const string& filename,
                                       bool loadTrace,
@@ -3328,21 +3303,15 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
 
   cutFilterDialog.SetGlobalXMLsPath( XMLPath );
 
-  // Show
-
   if( cutFilterDialog.ShowModal() == wxID_OK )
   {
-    filterToolOrder = cutFilterDialog.GetFilterToolOrder();
-
-    string traceFileName = cutFilterDialog.GetNameSourceTrace();
-    string traceFileOutputPath = cutFilterDialog.GetPathOutputTrace();
-    string resultingTrace = DoLoadFilteredTrace( traceFileName,
-                                                 traceFileOutputPath,
-                                                 cutFilterDialog.GetTraceOptions(),
-                                                 filterToolOrder );
+    filterToolOrder   = cutFilterDialog.GetFilterToolOrder();
+    string srcTrace   = cutFilterDialog.GetNameSourceTrace();
+    string dstTrace   = cutFilterDialog.GetNameDestinyTrace();
+    DoLoadFilteredTrace( srcTrace, dstTrace, cutFilterDialog.GetTraceOptions(), filterToolOrder );
 
     if ( cutFilterDialog.GetLoadResultingTrace() )
-      DoLoadTrace( resultingTrace );
+      DoLoadTrace( dstTrace );
 
     XMLLoadedBefore = cutFilterDialog.GetLoadedXMLPath( XMLPath );
   }

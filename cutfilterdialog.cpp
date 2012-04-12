@@ -87,7 +87,6 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnChecklistboxExecutionChainDoubleClicked )
   EVT_LISTBOX( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnCheckListExecutionChainSelected )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnChecklistboxExecutionChainToggled )
-  EVT_UPDATE_UI( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnCheckListExecutionChainUpdate )
 
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_UP_FILTER, CutFilterDialog::OnBitmapbuttonPushUpFilterClick )
 
@@ -96,9 +95,9 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_UPDATE_UI( ID_BUTTON_EDIT_XML, CutFilterDialog::OnButtonViewEditXmlUpdate )
 
   EVT_BUTTON( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlClick )
+  EVT_UPDATE_UI( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlUpdate )
 
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
-  EVT_UPDATE_UI( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsUpdate )
 
   EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionClick )
   EVT_UPDATE_UI( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionUpdate )
@@ -107,7 +106,11 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
   EVT_CHECKBOX( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckOriginalTimeClick )
 
-  EVT_UPDATE_UI( ID_PANEL_FILTER, CutFilterDialog::OnPanelFilterUpdate )
+  EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_STATE, CutFilterDialog::OnCheckboxFilterDiscardStateClick )
+
+  EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_EVENT, CutFilterDialog::OnCheckboxFilterDiscardEventClick )
+
+  EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, CutFilterDialog::OnCheckboxFilterDiscardCommunicationClick )
 
   EVT_BUTTON( ID_BUTTON_FILTER_SELECT_ALL, CutFilterDialog::OnButtonFilterSelectAllClick )
 
@@ -261,6 +264,7 @@ void CutFilterDialog::Init()
   buttonSCKeepEventsDelete = NULL;
   buttonApply = NULL;
 ////@end CutFilterDialog member initialisation
+  outputPath = "";
 }
 
 
@@ -767,24 +771,33 @@ void CutFilterDialog::CreateControls()
 
 ////@end CutFilterDialog content construction
 
+
   // Other initializations
 
-  // Fill vector with tool names; sort here as you want them to appear in the tools list widget.
+  // INDEX OF TABS
+  // Current implementation uses static tabs for filters, so TABINDEX is constant
+  TABINDEX[ TraceCutter::getName() ] = 0;
+  TABINDEX[ TraceFilter::getName() ] = 1;
+  TABINDEX[ TraceSoftwareCounters::getName() ] = 2;
+
+  // TOOL NAMES
+  // Sort here as you want them to appear in the tools list widget.
   listToolOrder.push_back( TraceCutter::getName() );
   listToolOrder.push_back( TraceFilter::getName() );
   listToolOrder.push_back( TraceSoftwareCounters::getName() );
 
   UpdateExecutionChain();
+  EnableAllTabsFromToolsList();
 
   filePickerInputTrace->SetName( _( "Load Trace" ) );
   //filePickerInputTrace->SetPath( wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() ) );
 
   filePickerOutputTrace->SetName( _( "Save Trace" ) );
-  enableOutputTraceWidgets( false );
+  enableOutputTraceWidgets( false ); // depends on checked tools
 
   filePickerXMLCfg->SetName( _( "Load XML Cut/Filter configuration file" ) );
   wxFileName auxDirectory( wxString( globalXMLsPath.c_str(), wxConvUTF8 )  );
-   if( !auxDirectory.IsDir() )
+  if( !auxDirectory.IsDir() )
     auxDirectory = auxDirectory.GetPathWithSep();
   wxString directory( auxDirectory.GetFullPath() );
   filePickerXMLCfg->SetPath( directory );
@@ -852,6 +865,16 @@ bool CutFilterDialog::isFileSelected( wxFilePickerCtrl *fpc )
 
   return !( path == _("") || tmpName.IsDir() );
 }
+
+
+bool CutFilterDialog::isFileSelected( const string& fpc )
+{
+  wxString path = wxString( fpc.c_str(), wxConvUTF8 );
+  wxFileName tmpName( path );
+
+  return !( path == _("") || tmpName.IsDir() );
+}
+
 
 /*!
  * wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
@@ -1280,7 +1303,11 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
 }
 
 
-void CutFilterDialog::OnPanelFilterUpdate( wxUpdateUIEvent& event )
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_STATE
+ */
+
+void CutFilterDialog::OnCheckboxFilterDiscardStateClick( wxCommandEvent& event )
 {
   staticBoxSizerFilterStates->Enable( !checkFilterDiscardStateRecords->IsChecked() );
   checkListFilterStates->Enable( !checkFilterDiscardStateRecords->IsChecked() );
@@ -1288,18 +1315,35 @@ void CutFilterDialog::OnPanelFilterUpdate( wxUpdateUIEvent& event )
   buttonFilterUnselectAll->Enable( !checkFilterDiscardStateRecords->IsChecked() );
   labelFilterMinBurstTime->Enable( !checkFilterDiscardStateRecords->IsChecked() );
   textFilterMinBurstTime->Enable( !checkFilterDiscardStateRecords->IsChecked() );
+}
 
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_EVENT
+ */
+
+void CutFilterDialog::OnCheckboxFilterDiscardEventClick( wxCommandEvent& event )
+{
   staticBoxSizerFilterEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
   listboxFilterEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
   buttonFilterAdd->Enable( !checkFilterDiscardEventRecords->IsChecked() );
   buttonFilterDelete->Enable( !checkFilterDiscardEventRecords->IsChecked() );
   checkFilterDiscardListedEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
+}
 
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION
+ */
+
+void CutFilterDialog::OnCheckboxFilterDiscardCommunicationClick( wxCommandEvent& event )
+{
   staticBoxSizerFilterCommunications->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
   staticTextFilterSize->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
   textFilterSize->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
   staticTextFilterSizeUnit->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
 }
+
 
 
 /*!
@@ -2033,7 +2077,8 @@ void CutFilterDialog::TransferDataToWindow( vector< string > order, TraceOptions
 {
   Freeze();
 
-  TransferCommonDataToWindow( order );
+  vector< string > toolsName = changeToolsIDsToNames( order );
+  TransferCommonDataToWindow( toolsName );
 
   for( size_t i = 0; i < order.size(); ++i )
   {
@@ -2114,14 +2159,6 @@ void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
 }
 
 
-/*!
- * wxEVT_UPDATE_UI event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
- */
-
-void CutFilterDialog::OnNotebookCutFilterOptionsUpdate( wxUpdateUIEvent& event )
-{
-  ChangePageSelectionFromToolsOrderListToTabs();
-}
 
 
 /*!
@@ -2133,8 +2170,9 @@ void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
   // first, test if all parameters are ready
   bool previousWarning = false;
 
-  CheckCommonOptions( previousWarning );
-  TransferWindowToCommonData( previousWarning );
+  //CheckCommonOptions( previousWarning, true );
+  //TransferWindowToCommonData( previousWarning );
+  TransferToolOrderToCommonData();
 
   if ( !previousWarning )
   {
@@ -2233,7 +2271,7 @@ void CutFilterDialog::OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event )
 {
   int lastItemSelected = checkListExecutionChain->GetSelection();
 
-  if ( lastItemSelected != wxNOT_FOUND && lastItemSelected < 2 )
+  if ( lastItemSelected != wxNOT_FOUND && lastItemSelected < 2  && lastItemSelected > -1 )
   {
     // Save current check state, because UpdateToolList clears it
     vector< bool > checked;
@@ -2262,7 +2300,7 @@ void CutFilterDialog::OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event )
     // Keep the selection
     checkListExecutionChain->SetSelection( ++lastItemSelected );
 
-    setOutputName( globalEnable(), false );
+    setOutputName( globalEnable(), false, std::string( filePickerInputTrace->GetPath().mb_str() ) );
   }
 }
 
@@ -2271,11 +2309,9 @@ void CutFilterDialog::OnFilectrlCutfilterXmlSelectorFilePickerChanged( wxFileDir
 {
   TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
   wxString path = filePickerXMLCfg->GetPath();
-  vector< string > toolsOrderIDS = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
-  
-  vector< string > toolsOrder = changeToolsIDsToNames( toolsOrderIDS );
+  vector< string > toolsOrderIDs = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
 
-  TransferDataToWindow( toolsOrder, traceOptions );
+  TransferDataToWindow( toolsOrderIDs, traceOptions );
 
   // we must add the proper slash to enter the directory next time
   //globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
@@ -2286,7 +2322,16 @@ void CutFilterDialog::OnFilectrlCutfilterXmlSelectorFilePickerChanged( wxFileDir
 
   globalXMLsPath = string( directory.mb_str() ) + PATH_SEP;
   newXMLsPath = true;
-  enableOutputTraceWidgets( globalEnable() );
+
+  bool allowChangeOutputTrace = globalEnable();
+  if ( allowChangeOutputTrace )
+  {
+    enableOutputTraceWidgets( globalEnable() );
+    setOutputName( globalEnable(), false, std::string( filePickerInputTrace->GetPath().mb_str() ) );
+  }
+
+  EnableAllTabsFromToolsList();
+  ChangePageSelectionFromToolsOrderListToTabs( 0 );
 }
 
 
@@ -2295,26 +2340,11 @@ const vector< string > CutFilterDialog::changeToolsNameToID( const vector< strin
   vector< string > listToolWithIDs;
   for ( vector< string >::const_iterator it = listToolWithNames.begin(); it != listToolWithNames.end(); ++it )
   {
-    if ( *it == TraceCutter::getName() )
-    {
-      listToolWithIDs.push_back( TraceCutter::getID() );
-    }
-    else if ( *it == TraceFilter::getName() )
-    {
-      listToolWithIDs.push_back( TraceFilter::getID() );
-    }
-    else if ( *it == TraceSoftwareCounters::getName() )
-    {
-      listToolWithIDs.push_back( TraceSoftwareCounters::getID() );
-    }
-    else
-    {
-    }
+    listToolWithIDs.push_back( paraverMain::myParaverMain->GetLocalKernel()->getToolID( *it ) );
   }
-  
+
   return listToolWithIDs;
 }
-
 
 
 const vector< string > CutFilterDialog::changeToolsIDsToNames( const vector< string >& listToolIDs )
@@ -2322,21 +2352,7 @@ const vector< string > CutFilterDialog::changeToolsIDsToNames( const vector< str
   vector< string > listToolWithNames;
   for ( vector< string >::const_iterator it = listToolIDs.begin(); it != listToolIDs.end(); ++it )
   {
-    if ( *it == TraceCutter::getID() )
-    {
-      listToolWithNames.push_back( TraceCutter::getName() );
-    }
-    else if ( *it == TraceFilter::getID() )
-    {
-      listToolWithNames.push_back( TraceFilter::getName() );
-    }
-    else if ( *it == TraceSoftwareCounters::getID() )
-    {
-      listToolWithNames.push_back( TraceSoftwareCounters::getName() );
-    }
-    else
-    {
-    }
+    listToolWithNames.push_back( paraverMain::myParaverMain->GetLocalKernel()->getToolName( *it ) );
   }
 
   return listToolWithNames;
@@ -2365,6 +2381,7 @@ bool CutFilterDialog::isExecutionChainEmpty()
 {
   // Any tool selected?
   bool emptyChain = true;
+
   for ( size_t i = 0; i < checkListExecutionChain->GetCount(); ++i )
   {
     if ( checkListExecutionChain->IsChecked( (int)i ) )
@@ -2384,22 +2401,17 @@ bool CutFilterDialog::isExecutionChainEmpty()
 
 void CutFilterDialog::OnFilectrlCutfilterInputTraceSelectorFilePickerChanged( wxFileDirPickerEvent& event )
 {
-  enableOutputTraceWidgets( globalEnable() );
-}
+  wxFileName auxDirectory( event.GetPath() );
+  if( !auxDirectory.IsDir() )
+    auxDirectory = auxDirectory.GetPathWithSep();
+  wxString directory( auxDirectory.GetFullPath() );
+  outputPath = string( directory.mb_str() );
 
+  string auxSourceTrace = string( event.GetPath().mb_str() ); // why? Widget still empty!!
 
-void CutFilterDialog::ChangePageSelectionFromToolsOrderListToTabs()
-{
-  int lastItemSelected = checkListExecutionChain->GetSelection();
-
-  if ( lastItemSelected != wxNOT_FOUND )
-  {
-    for( size_t i = 0; i < notebookTools->GetPageCount(); ++i )
-    {
-      if ( listToolOrder[ lastItemSelected ] == string( notebookTools->GetPageText( i ).mb_str()))
-        notebookTools->ChangeSelection( i );
-    }
-  }
+  bool localEnable = globalEnable( auxSourceTrace );
+  enableOutputTraceWidgets( localEnable );
+  setOutputName( localEnable, false, auxSourceTrace );
 }
 
 
@@ -2412,6 +2424,7 @@ void CutFilterDialog::ChangePageSelectionFromTabsToToolsOrderList()
     if ( *it == string( notebookTools->GetPageText( notebookTools->GetSelection() ).mb_str()) )
     {
       checkListExecutionChain->SetSelection( pos );
+      break; // you can't have two of them at the same time
     }
     pos++;
   }
@@ -2424,7 +2437,10 @@ void CutFilterDialog::ChangePageSelectionFromTabsToToolsOrderList()
 
 void CutFilterDialog::OnCheckListExecutionChainSelected( wxCommandEvent& event )
 {
-  ChangePageSelectionFromToolsOrderListToTabs();
+  int iSel = event.GetSelection();
+  
+  if ( iSel > -1 )
+    ChangePageSelectionFromToolsOrderListToTabs( iSel );
 }
 
 
@@ -2438,63 +2454,38 @@ void CutFilterDialog::OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& ev
 }
 
 
+bool CutFilterDialog::globalEnable( const string& auxInputTrace )
+{
+  return ( isFileSelected( auxInputTrace ) && !isExecutionChainEmpty() );
+}
+
+
 bool CutFilterDialog::globalEnable()
 {
-  return isFileSelected( filePickerInputTrace ) && !isExecutionChainEmpty();
+  return ( isFileSelected( filePickerInputTrace ) && !isExecutionChainEmpty() );
 }
 
 
-wxString CutFilterDialog::buildOutputName( bool saveGeneratedName )
-{
-  string currentName = "";
-  string currentPath = "";
-#ifdef UNICODE
-  string pathSeparator =  wxString( wxFileName::GetPathSeparator() ).mb_str().data();
-#else
-  string pathSeparator =  wxString( wxFileName::GetPathSeparator() ).mb_str();
-#endif
-  char tmpNameIn[1024], tmpNameOut[1024];
-  string strNameOut;
-  bool previousWarning = false;
-  CheckCommonOptions( previousWarning );
-  TransferWindowToCommonData( previousWarning ); // get nameSourceTrace
-
-  if ( !previousWarning )
-  {
-    currentName = nameSourceTrace;
-    currentPath = pathOutputTrace;
-    string currentId = "";
-/*
-    for ( vector< string >::const_iterator it = filterToolOrder.begin(); it != filterToolOrder.end(); ++it )
-    {
-      currentId = *it;
-      strcpy( tmpNameIn, (char *)currentName.c_str() );
-      strcpy( tmpNameOut, (char *)currentPath.c_str() );
-      paraverMain::myParaverMain->GetLocalKernel()->getNewTraceName(
-              tmpNameIn, tmpNameOut, currentId, false );
-
-      currentName = string( tmpNameOut );
-      currentPath = currentName.substr( 0, currentName.rfind( pathSeparator ) );
-// cout << " name: " << currentId << " " << currentName << endl;
-// cout << " path: " << currentId << " " << currentPath << endl;
-    }
-
-    if( currentName == nameSourceTrace )
-      currentName = pathOutputTrace;
-*/
-  currentName = paraverMain::myParaverMain->GetLocalKernel()->getNewTraceName( currentName, filterToolOrder );
-  }
-
-  return wxString( currentName.c_str(), wxConvUTF8 );
-}
-
-
-void CutFilterDialog::setOutputName( bool enable, bool saveGeneratedName )
+// saveGeneratedName keeps it internally ( see getNewTraceName )
+// saveGeneratedName = false => useful to compute new ouput trace name,
+//   (i.e. when filter execution chain modified ).
+// saveGeneratedName = true => just before real trace save
+void CutFilterDialog::setOutputName( bool enable,
+                                     bool saveGeneratedName,
+                                     const string& sourceTrace )
 {
   if ( enable )
   {
-    wxString outputName = buildOutputName( saveGeneratedName );
+    TransferToolOrderToCommonData();
+
+    string currentDstTrace =
+            paraverMain::myParaverMain->GetLocalKernel()->getNewTraceName(
+                    sourceTrace, outputPath, filterToolOrder, saveGeneratedName );
+
+    wxString outputName = wxString( currentDstTrace.c_str(), wxConvUTF8 );
     filePickerOutputTrace->SetPath( outputName );
+
+    outputPath = std::string( wxFileName( wxString( currentDstTrace.c_str(), wxConvUTF8 ) ).GetPathWithSep().mb_str() );
   }
 }
 
@@ -2504,16 +2495,22 @@ void CutFilterDialog::setOutputName( bool enable, bool saveGeneratedName )
 
 void CutFilterDialog::OnChecklistboxExecutionChainDoubleClicked( wxCommandEvent& event )
 {
-  int i = checkListExecutionChain->GetSelection();
-  checkListExecutionChain->Check( i, !checkListExecutionChain->IsChecked( i ) );
-  enableOutputTraceWidgets( globalEnable() );
+  int iSel = event.GetSelection();
+  if ( iSel > -1 )
+  {
+    checkListExecutionChain->Check( iSel, !checkListExecutionChain->IsChecked( iSel ) );
+    enableOutputTraceWidgets( globalEnable() );
+    setOutputName( globalEnable(), false, std::string( filePickerInputTrace->GetPath().mb_str() ) );
+
+    EnableSingleTab( iSel );
+    ChangePageSelectionFromToolsOrderListToTabs( iSel );
+  }
 }
 
 void CutFilterDialog::enableOutputTraceWidgets( bool enable )
 {
   txtOutputTrace->Enable( enable );
   filePickerOutputTrace->Enable( enable );
-  setOutputName( enable, false );
   checkLoadResultingTrace->Enable( enable );
 }
 
@@ -2524,7 +2521,16 @@ void CutFilterDialog::enableOutputTraceWidgets( bool enable )
 
 void CutFilterDialog::OnChecklistboxExecutionChainToggled( wxCommandEvent& event )
 {
-  enableOutputTraceWidgets( globalEnable() );
+  int iSel = event.GetSelection();
+
+  if ( iSel > -1 )
+  {
+    enableOutputTraceWidgets( globalEnable() );
+    setOutputName( globalEnable(), false, std::string( filePickerInputTrace->GetPath().mb_str() ) );
+
+    EnableSingleTab( iSel );
+    ChangePageSelectionFromToolsOrderListToTabs( iSel );
+  }
 }
 
 /*!
@@ -2564,7 +2570,7 @@ void CutFilterDialog::OnBitmapbuttonPushUpFilterClick( wxCommandEvent& event )
     // Keep the selection
     checkListExecutionChain->SetSelection( --lastItemSelected );
 
-    setOutputName( globalEnable(), false );
+    setOutputName( globalEnable(), false, std::string( filePickerInputTrace->GetPath().mb_str() ) );
   }
 }
 
@@ -2585,28 +2591,36 @@ void CutFilterDialog::UpdateExecutionChain()
 }
 
 
+void CutFilterDialog::ChangePageSelectionFromToolsOrderListToTabs( int selected )
+{
+  for( size_t i = 0; i < notebookTools->GetPageCount(); ++i )
+  {
+    if ( listToolOrder[ selected ] == string( notebookTools->GetPageText( i ).mb_str()) )
+    {
+      notebookTools->ChangeSelection( i );
+    }
+  }
+}
+
+
+void CutFilterDialog::EnableSingleTab( int selected )
+{
+  int iTab = TABINDEX[ listToolOrder[ selected ] ];
+  bool isChecked = checkListExecutionChain->IsChecked( selected );
+  (notebookTools->GetPage( iTab ))->Enable( isChecked );
+}
+
+
 /*!
  * wxEVT_UPDATE_UI event handler for ID_CHECKLISTBOX
  */
-
-void CutFilterDialog::OnCheckListExecutionChainUpdate( wxUpdateUIEvent& event )
+// PRECOND: selected is an index to listToolOrder/checkListExecutionChain
+void CutFilterDialog::EnableAllTabsFromToolsList()
 {
-  int pos = 0;
-
-  for( vector< string >::iterator it = listToolOrder.begin(); it != listToolOrder.end(); ++it )
+  for( size_t i = 0; i < listToolOrder.size(); ++i )
   {
-    for( size_t i = 0; i < notebookTools->GetPageCount(); ++i )
-    {
-      if ( *it == string( notebookTools->GetPageText( i ).mb_str()))
-      {
-        (notebookTools->GetPage( i ))->Enable( checkListExecutionChain->IsChecked( pos ) );
-      }
-    }
-
-    pos++;
+    EnableSingleTab( (int)i );
   }
-
-  enableOutputTraceWidgets( globalEnable() );
 }
 
 
@@ -2615,24 +2629,53 @@ void CutFilterDialog::CheckCommonOptions( bool &previousWarning, bool showWarnin
   // Any trace selected?
   if ( !previousWarning && !isFileSelected( filePickerInputTrace ) )
   {
-    if ( !showWarning )
+    if ( showWarning )
     {
-      wxMessageDialog message( this, _("Missing trace name.\nPlease choose one trace."), _("Warning"), wxOK );
+      wxMessageDialog message( this, _("Missing trace name.\nPlease choose the source trace."), _("Warning"), wxOK );
       message.ShowModal();
     }
+
     filePickerInputTrace->SetFocus();
+    previousWarning = true;
+  }
+
+  if ( !previousWarning && !isFileSelected( filePickerOutputTrace ) )
+  {
+    if ( showWarning )
+    {
+      wxMessageDialog message( this, _("Missing trace name.\nPlease choose name for final trace."), _("Warning"), wxOK );
+      message.ShowModal();
+    }
+
+    filePickerOutputTrace->SetFocus();
     previousWarning = true;
   }
 
   if ( !previousWarning && isExecutionChainEmpty() )
   {
-    if ( !showWarning )
+    if ( showWarning )
     {
       wxMessageDialog message( this, _("No utility selected.\nPlease choose the utilities to apply."), _( "Warning" ), wxOK );
       message.ShowModal();
     }
+
     checkListExecutionChain->SetFocus();
     previousWarning = true;
+  }
+}
+
+
+void CutFilterDialog::TransferToolOrderToCommonData()
+{
+  filterToolOrder.clear();
+
+  for ( size_t i = 0; i < listToolOrder.size(); ++i )
+  {
+    if ( checkListExecutionChain->IsChecked( i ) )
+    {
+      filterToolOrder.push_back(
+              paraverMain::myParaverMain->GetLocalKernel()->getToolID( listToolOrder[ i ] ));
+    }
   }
 }
 
@@ -2641,28 +2684,11 @@ void CutFilterDialog::TransferWindowToCommonData( bool previousWarning )
 {
   if ( !previousWarning )
   {
-    wxString fullPath = filePickerInputTrace->GetPath();  // includes path + name
-    wxString path = fullPath.BeforeLast('/'); // only path
-
-    nameSourceTrace = std::string( fullPath.mb_str() );
-    pathOutputTrace = std::string( path.mb_str() );
-
+    nameSourceTrace = std::string( filePickerInputTrace->GetPath().mb_str() );
+    nameDestinyTrace = std::string( filePickerOutputTrace->GetPath().mb_str() );
     loadResultingTrace = checkLoadResultingTrace->IsChecked();
 
-    filterToolOrder.clear();
-
-    for ( size_t i = 0; i < listToolOrder.size(); ++i )
-    {
-      if ( checkListExecutionChain->IsChecked( i ) )
-      {
-        if ( listToolOrder[ i ] == TraceCutter::getName() )
-          filterToolOrder.push_back( TraceCutter::getID() );
-        if ( listToolOrder[ i ] == TraceFilter::getName() )
-          filterToolOrder.push_back( TraceFilter::getID() );
-        if ( listToolOrder[ i ] == TraceSoftwareCounters::getName() )
-          filterToolOrder.push_back( TraceSoftwareCounters::getID() );
-      }
-    }
+    TransferToolOrderToCommonData();
   }
 }
 
@@ -2686,7 +2712,7 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
   // To avoid annoying multiple warning windows at the same time, and also final filter creation
   bool previousWarning = false;
 
-  CheckCommonOptions( previousWarning );
+  CheckCommonOptions( previousWarning, true );
   TransferWindowToCommonData( previousWarning );
 
   if ( !previousWarning )
@@ -2721,5 +2747,15 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
   }
   else
     return;
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_SAVE_XML
+ */
+
+void CutFilterDialog::OnButtonSaveXmlUpdate( wxUpdateUIEvent& event )
+{
+  buttonSaveXml->Enable( !isExecutionChainEmpty() );
 }
 

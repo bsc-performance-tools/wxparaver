@@ -189,9 +189,6 @@ public:
   /// wxEVT_COMMAND_CHECKLISTBOX_TOGGLED event handler for ID_CHECKLISTBOX_EXECUTION_CHAIN
   void OnChecklistboxExecutionChainToggled( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_CHECKLISTBOX_EXECUTION_CHAIN
-  void OnCheckListExecutionChainUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_UP_FILTER
   void OnBitmapbuttonPushUpFilterClick( wxCommandEvent& event );
 
@@ -204,11 +201,11 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SAVE_XML
   void OnButtonSaveXmlClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_SAVE_XML
+  void OnButtonSaveXmlUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
   void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
-  void OnNotebookCutFilterOptionsUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
   void OnButtonCutterSelectRegionClick( wxCommandEvent& event );
@@ -222,8 +219,14 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
   void OnCheckOriginalTimeClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_PANEL_FILTER
-  void OnPanelFilterUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_STATE
+  void OnCheckboxFilterDiscardStateClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_EVENT
+  void OnCheckboxFilterDiscardEventClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION
+  void OnCheckboxFilterDiscardCommunicationClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_SELECT_ALL
   void OnButtonFilterSelectAllClick( wxCommandEvent& event );
@@ -271,9 +274,6 @@ public:
   std::string GetNameSourceTrace() const { return nameSourceTrace ; }
   void SetNameSourceTrace(std::string value) { nameSourceTrace = value ; }
 
-  std::string GetPathOutputTrace() const { return pathOutputTrace ; }
-  void SetPathOutputTrace(std::string value) { pathOutputTrace = value ; }
-
   bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
   void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
 
@@ -292,6 +292,9 @@ public:
   std::vector< std::string > GetFilterToolOrder() const { return filterToolOrder ; }
   void SetFilterToolOrder(std::vector< std::string > value) { filterToolOrder = value ; }
 
+  std::string GetNameDestinyTrace() const { return nameDestinyTrace ; }
+  void SetNameDestinyTrace(std::string value) { nameDestinyTrace = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -309,10 +312,7 @@ public:
   std::vector< int > GetToolsOrder();
   bool LoadResultingTrace();
 
-  void ChangePageSelectionFromToolsOrderListToTabs();
-  void ChangePageSelectionFromTabsToToolsOrderList();
-
-  void CheckCommonOptions( bool &previousWarning, bool showWarning = true );
+  void CheckCommonOptions( bool &previousWarning, bool showWarning = false );
   void CheckCutterOptions( bool &previousWarning );
   void CheckFilterOptions( bool &previousWarning );
   void CheckSoftwareCountersOptions( bool &previousWarning );
@@ -413,31 +413,42 @@ private:
   TraceOptions * traceOptions;
   bool loadResultingTrace;
   std::string nameSourceTrace;
-  std::string pathOutputTrace;
   bool waitingGlobalTiming;
   KernelConnection * localKernel;
   std::string globalXMLsPath;
   bool newXMLsPath;
   bool changedXMLParameters;
   std::vector< std::string > filterToolOrder;
+  std::string nameDestinyTrace;
 ////@end CutFilterDialog member variables
 
   std::vector< std::string > listToolOrder; // Full list of names of the tools
+  std::map< std::string, int > TABINDEX;   // CONSTANT map ( tool names -> widget tabs index )
+  std::string outputPath;
 
   bool isFileSelected( wxFilePickerCtrl *fpc );
+  bool isFileSelected( const std::string& fpc );
+
   bool isExecutionChainEmpty();
   const std::vector< std::string > changeToolsNameToID( const std::vector< std::string >& listToolWithNames );
   const std::vector< std::string > changeToolsIDsToNames( const std::vector< std::string >& listToolIDs );
   bool globalEnable();
-  void setOutputName( bool enable, bool saveGeneratedName  );
+  bool globalEnable( const std::string& auxInputTrace );
+
+  void setOutputName( bool enable,
+                      bool saveGeneratedName,
+                      const std::string& sourceTrace = std::string("") );
   void enableOutputTraceWidgets( bool enable );
 
+  void EnableSingleTab( int selected );
+  void EnableAllTabsFromToolsList();
 
-  // saveGeneratedName keeps it internally ( see getNewTraceName )
-  // saveGeneratedName = false => useful to compute new ouput trace name,
-  //   (i.e. when filter execution chain modified ).
-  // saveGeneratedName = true => just before real trace save
-  wxString buildOutputName( bool saveGeneratedName );
+  void ChangePageSelectionFromToolsOrderListToTabs( int selected );
+  void ChangePageSelectionFromTabsToToolsOrderList();
+
+  void TransferToolOrderToCommonData();
+
+
 };
 
 #endif

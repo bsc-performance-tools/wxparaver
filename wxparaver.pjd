@@ -144,7 +144,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Release"</string>
+    <string name="configuration">"GCC Debug"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -1222,7 +1222,7 @@
           <string name="variable-24">"XMLPath|std::string|XMLPath||2|0|"</string>
           <string name="variable-25">"XMLLoadedBefore|bool|XMLLoadedBefore|false|2|0|"</string>
           <string name="variable-26">"tutorialsWindow|HelpContents *|TutorialsWindow|NULL|2|0|"</string>
-          <string name="variable-27">"previousCutFilteredTraces|PreviousFiles *|PreviousCutFilteredTraces|PreviousFiles::createPreviousCutFilteredTraces()|2|0|"</string>
+          <string name="variable-27">"previousCutFilteredTraces|PreviousFiles *|PreviousCutFilteredTraces|PreviousFiles::createPreviousTreatedTraces()|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||paraverMain"</string>
           <string name="event-handler-1">"wxEVT_ICONIZE|OnIconize|NONE||paraverMain"</string>
           <string name="event-handler-2">"wxEVT_SIZE|OnSize|NONE||"</string>
@@ -20847,13 +20847,13 @@ In normal mode all properties are showed in main window."</string>
           <string name="variable-0">"traceOptions|TraceOptions *|TraceOptions||2|0|"</string>
           <string name="variable-1">"loadResultingTrace|bool|LoadResultingTrace|false|2|0|"</string>
           <string name="variable-2">"nameSourceTrace|std::string|NameSourceTrace|&quot;&quot;|2|0|"</string>
-          <string name="variable-3">"pathOutputTrace|std::string|PathOutputTrace||2|0|"</string>
-          <string name="variable-4">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
-          <string name="variable-5">"localKernel|KernelConnection *|LocalKernel|NULL|2|0|"</string>
-          <string name="variable-6">"globalXMLsPath|std::string|GlobalXMLsPath|&quot;&quot;|2|0|"</string>
-          <string name="variable-7">"newXMLsPath|bool|NewXMLsPath|false|2|0|"</string>
-          <string name="variable-8">"changedXMLParameters|bool|ChangedXMLParameters|false|2|0|"</string>
-          <string name="variable-9">"filterToolOrder|std::vector&lt; std::string &gt;|FilterToolOrder||2|0|"</string>
+          <string name="variable-3">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
+          <string name="variable-4">"localKernel|KernelConnection *|LocalKernel|NULL|2|0|"</string>
+          <string name="variable-5">"globalXMLsPath|std::string|GlobalXMLsPath|&quot;&quot;|2|0|"</string>
+          <string name="variable-6">"newXMLsPath|bool|NewXMLsPath|false|2|0|"</string>
+          <string name="variable-7">"changedXMLParameters|bool|ChangedXMLParameters|false|2|0|"</string>
+          <string name="variable-8">"filterToolOrder|std::vector&lt; std::string &gt;|FilterToolOrder||2|0|"</string>
+          <string name="variable-9">"nameDestinyTrace|std::string|NameDestinyTrace||2|0|"</string>
           <string name="event-handler-0">"wxEVT_INIT_DIALOG|OnInitDialog|NONE||CutFilterDialog"</string>
           <string name="event-handler-1">"wxEVT_IDLE|OnIdle|NONE||CutFilterDialog"</string>
           <string name="proxy-Id name">"ID_CUTFILTERDIALOG"</string>
@@ -21501,7 +21501,6 @@ In normal mode all properties are showed in main window."</string>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-              <string name="proxy-Parenting">"Use wxWidgets version"</string>
               <document>
                 <string name="title">"wxBoxSizer H"</string>
                 <string name="type">"dialog-control-document"</string>
@@ -21827,7 +21826,6 @@ In normal mode all properties are showed in main window."</string>
                     <string name="event-handler-0">"wxEVT_COMMAND_LISTBOX_DOUBLECLICKED|OnChecklistboxExecutionChainDoubleClicked|NONE||CutFilterDialog"</string>
                     <string name="event-handler-1">"wxEVT_COMMAND_LISTBOX_SELECTED|OnCheckListExecutionChainSelected|NONE||CutFilterDialog"</string>
                     <string name="event-handler-2">"wxEVT_COMMAND_CHECKLISTBOX_TOGGLED|OnChecklistboxExecutionChainToggled|NONE||CutFilterDialog"</string>
-                    <string name="event-handler-3">"wxEVT_UPDATE_UI|OnCheckListExecutionChainUpdate|NONE||CutFilterDialog"</string>
                     <string name="proxy-Id name">"ID_CHECKLISTBOX_EXECUTION_CHAIN"</string>
                     <long name="proxy-Id value">10107</long>
                     <string name="proxy-Name">""</string>
@@ -22182,6 +22180,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbButtonProxy"</string>
                     <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonSaveXmlClick|NONE||CutFilterDialog"</string>
+                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnButtonSaveXmlUpdate|NONE||CutFilterDialog"</string>
                     <string name="proxy-Id name">"ID_BUTTON_SAVE_XML"</string>
                     <long name="proxy-Id value">10154</long>
                     <string name="proxy-Name">""</string>
@@ -22275,7 +22274,6 @@ In normal mode all properties are showed in main window."</string>
                 <long name="locked">0</long>
                 <string name="proxy-type">"wbNotebookProxy"</string>
                 <string name="event-handler-0">"wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED|OnNotebookCutFilterOptionsPageChanged|NONE||CutFilterDialog"</string>
-                <string name="event-handler-1">"wxEVT_UPDATE_UI|OnNotebookCutFilterOptionsUpdate|NONE||CutFilterDialog"</string>
                 <string name="proxy-Id name">"ID_NOTEBOOK_CUT_FILTER_OPTIONS"</string>
                 <long name="proxy-Id value">10108</long>
                 <string name="proxy-Name">""</string>
@@ -22473,7 +22471,6 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                      <string name="proxy-Parenting">"Use wxWidgets version"</string>
                       <document>
                         <string name="title">"wxBoxSizer H"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -24075,7 +24072,6 @@ In normal mode all properties are showed in main window."</string>
                   <long name="title-mode">0</long>
                   <long name="locked">0</long>
                   <string name="proxy-type">"wbPanelProxy"</string>
-                  <string name="event-handler-0">"wxEVT_UPDATE_UI|OnPanelFilterUpdate|NONE||CutFilterDialog"</string>
                   <string name="proxy-Id name">"ID_PANEL_FILTER"</string>
                   <long name="proxy-Id value">10112</long>
                   <string name="proxy-Name">""</string>
@@ -24209,6 +24205,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbCheckBoxProxy"</string>
+                        <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnCheckboxFilterDiscardStateClick|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_CHECKBOX_FILTER_DISCARD_STATE"</string>
                         <long name="proxy-Id value">10124</long>
                         <string name="proxy-Name">""</string>
@@ -24272,6 +24269,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbCheckBoxProxy"</string>
+                        <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnCheckboxFilterDiscardEventClick|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_CHECKBOX_FILTER_DISCARD_EVENT"</string>
                         <long name="proxy-Id value">10125</long>
                         <string name="proxy-Name">""</string>
@@ -24335,6 +24333,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbCheckBoxProxy"</string>
+                        <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnCheckboxFilterDiscardCommunicationClick|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION"</string>
                         <long name="proxy-Id value">10126</long>
                         <string name="proxy-Name">""</string>
