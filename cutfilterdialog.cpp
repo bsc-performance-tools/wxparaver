@@ -776,9 +776,9 @@ void CutFilterDialog::CreateControls()
 
   // INDEX OF TABS
   // Current implementation uses static tabs for filters, so TABINDEX is constant
-  TABINDEX[ TraceCutter::getName() ] = 0;
-  TABINDEX[ TraceFilter::getName() ] = 1;
-  TABINDEX[ TraceSoftwareCounters::getName() ] = 2;
+  TABINDEX[ TraceCutter::getID() ] = 0;
+  TABINDEX[ TraceFilter::getID() ] = 1;
+  TABINDEX[ TraceSoftwareCounters::getID() ] = 2;
 
   // TOOL NAMES
   // Sort here as you want them to appear in the tools list widget.
@@ -2605,7 +2605,8 @@ void CutFilterDialog::ChangePageSelectionFromToolsOrderListToTabs( int selected 
 
 void CutFilterDialog::EnableSingleTab( int selected )
 {
-  int iTab = TABINDEX[ listToolOrder[ selected ] ];
+  string id = paraverMain::myParaverMain->GetLocalKernel()->getToolID( listToolOrder[ selected ] );
+  int iTab = TABINDEX[ id ];
   bool isChecked = checkListExecutionChain->IsChecked( selected );
   (notebookTools->GetPage( iTab ))->Enable( isChecked );
 }
