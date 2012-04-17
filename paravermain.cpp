@@ -273,12 +273,12 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
   {
     fileName = parser.GetParam( i ).mb_str();
 
-    if (( fileName.substr( fileName.length() - 6 ) == "prv.gz" ) || 
-        ( fileName.substr( fileName.length() - 3 ) == "prv" ))
+    if (( fileName.substr( fileName.length() - GZIPPEDPRVSUFFIX.length() ) == GZIPPEDPRVSUFFIX ) || 
+        ( fileName.substr( fileName.length() - PRVSUFFIX.length() ) == PRVSUFFIX ))
     {
       DoLoadTrace( fileName );
     }
-    else if (( fileName.substr( fileName.length() - 3 ) == "cfg" ) && !loadedTraces.empty() )
+    else if (( fileName.substr( fileName.length() - CFGSUFFIX.length() ) == CFGSUFFIX ) && !loadedTraces.empty() )
     {
       DoLoadCFG( fileName );
     }
