@@ -1,5 +1,5 @@
 /* XPM */
-static char * file_browser_xpm[] = {
+static const char * file_browser_xpm[] = {
 "16 16 137 2",
 "  	c None",
 ". 	c #D9B434",

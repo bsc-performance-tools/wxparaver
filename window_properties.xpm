@@ -1,5 +1,5 @@
 /* XPM */
-static char * window_properties_xpm[] = {
+static const char * window_properties_xpm[] = {
 "16 16 134 2",
 "  	c None",
 ". 	c #8DB1DD",
