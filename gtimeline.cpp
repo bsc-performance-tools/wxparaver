@@ -456,7 +456,6 @@ void gTimeline::redraw()
   eventdc.SetBackgroundMode( wxTRANSPARENT );
   eventdc.SetBackground( *wxTRANSPARENT_BRUSH );
   eventdc.Clear();
-#ifndef __WXMAC__
   wxBitmap commMask;
   commMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC commmaskdc( commMask );
@@ -469,7 +468,6 @@ void gTimeline::redraw()
   eventmaskdc.SetBackground( *wxBLACK_BRUSH );
   eventmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   eventmaskdc.Clear();
-#endif
 #ifdef TRACING_ENABLED
     Extrae_event( 100, 0 );
 #endif
@@ -477,9 +475,9 @@ void gTimeline::redraw()
   bufferDraw.SetBackground( wxBrush( backgroundColour ) );
   bufferDraw.Clear();
   
-#ifdef __WXGTK__
   // Paint blank image while redrawing
   wxClientDC dc( drawZone );
+#ifdef __WXGTK__
   dc.DrawBitmap( bufferImage, 0, 0, false );
   drawZone->Update();
 #endif
