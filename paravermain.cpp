@@ -3167,7 +3167,8 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 
     if ( filterToolIDs[ i ] == TraceCutter::getID() )
     {
-      pcf_name = localKernel->composeName( (char *)tmpNameIn.c_str(), (char *)"pcf" );
+      //pcf_name = localKernel->composeName( (char *)tmpNameIn.c_str(), (char *)"pcf" );
+      pcf_name = LocalKernel::composeName( (char *)tmpNameIn.c_str(), (char *)"pcf" );
       if(( pcfFile = fopen( pcf_name, "r" )) != NULL )
       {
         fclose( pcfFile );
@@ -3232,8 +3233,10 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   char *pcfName, *rowName;
   for( PRV_UINT16 i = 0; i < tmpFiles.size() - 1; ++i )
   {
-    pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"pcf" );
-    rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"row" );
+    //pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"pcf" );
+    pcfName = LocalKernel::composeName( (char *)tmpFiles[ i ].c_str(), (char *)"pcf" );
+    //rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"row" );
+    rowName = LocalKernel::composeName( (char *)tmpFiles[ i ].c_str(), (char *)"row" );
     remove( tmpFiles[ i ].c_str() );
     remove( pcfName );
     remove( rowName );
