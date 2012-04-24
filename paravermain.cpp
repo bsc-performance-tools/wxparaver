@@ -272,13 +272,12 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
   for ( unsigned int i = 0; i < parser.GetParamCount(); ++i )
   {
     fileName = parser.GetParam( i ).mb_str();
-
-    if (( fileName.substr( fileName.length() - GZIPPEDPRVSUFFIX.length() ) == GZIPPEDPRVSUFFIX ) || 
-        ( fileName.substr( fileName.length() - PRVSUFFIX.length() ) == PRVSUFFIX ))
+    
+    if ( Trace::isTraceFile( fileName ) )
     {
       DoLoadTrace( fileName );
     }
-    else if (( fileName.substr( fileName.length() - CFGSUFFIX.length() ) == CFGSUFFIX ) && !loadedTraces.empty() )
+    else if ( CFGLoader::isCFGFile( fileName ) && !loadedTraces.empty() )
     {
       DoLoadCFG( fileName );
     }
@@ -1511,11 +1510,11 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
     wxFileName fileName( dirctrlFiles->GetPath() );
     if( !fileName.IsDir() )
     {
-      wxString fileExt( fileName.GetExt() );
-      if( fileExt == wxT( "prv" ) || fileExt == wxT( "gz" ) )
-        DoLoadTrace( std::string( fileName.GetFullPath().mb_str() ) );
-      else if( fileExt == wxT( "cfg" ) && loadedTraces.size() > 0 )
-        DoLoadCFG( std::string( fileName.GetFullPath().mb_str() ) );
+      string auxFile = std::string( fileName.GetFullPath().mb_str() );
+      if( Trace::isTraceFile( auxFile ))
+        DoLoadTrace( auxFile );
+      else if( CFGLoader::isCFGFile( auxFile ) && loadedTraces.size() > 0 )
+        DoLoadCFG( auxFile );
     }
     event.Skip();
     return;
