@@ -893,6 +893,19 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
     tmpsstr.str( "" );
     tmpsstr << wxGetApp().GetGlobalTimingEnd();
     textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(),  wxConvUTF8 ) );
+
+    // Avoid [ max, min ] times
+    double auxBeginTime, auxEndTime;
+    textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
+    textCutterEndCut->GetValue().ToDouble( &auxEndTime );
+    
+    if ( auxBeginTime > auxEndTime )
+    {
+      // Swap
+      wxString auxwxStrBegin = textCutterBeginCut->GetValue();
+      textCutterBeginCut->SetValue( textCutterEndCut->GetValue() );
+      textCutterEndCut->SetValue( auxwxStrBegin );
+    }
     
     if( !wxGetApp().GetGlobalTiming() )
     {
