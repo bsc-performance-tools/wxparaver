@@ -104,12 +104,12 @@ wxparaverApp::wxparaverApp()
 void wxparaverApp::Init()
 {
 ////@begin wxparaverApp member initialisation
+	eventTypeForCode = 60000119;
 	globalTiming = false;
 	globalTimingBegin = 0;
-	globalTimingEnd = 0;
-	globalTimingCallDialog = NULL;
 	globalTimingBeginIsSet = false;
-	eventTypeForCode = 60000119;
+	globalTimingCallDialog = NULL;
+	globalTimingEnd = 0;
 ////@end wxparaverApp member initialisation
   m_locale.Init();
 }

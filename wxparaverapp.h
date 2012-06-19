@@ -97,23 +97,23 @@ public:
 
 ////@begin wxparaverApp member function declarations
 
+	TEventType GetEventTypeForCode() const { return eventTypeForCode ; }
+	void SetEventTypeForCode(TEventType value) { eventTypeForCode = value ; }
+
 	bool GetGlobalTiming() const { return globalTiming ; }
 	void SetGlobalTiming(bool value) { globalTiming = value ; }
 
 	TTime GetGlobalTimingBegin() const { return globalTimingBegin ; }
 	void SetGlobalTimingBegin(TTime value) { globalTimingBegin = value ; }
 
-	TTime GetGlobalTimingEnd() const { return globalTimingEnd ; }
-	void SetGlobalTimingEnd(TTime value) { globalTimingEnd = value ; }
+	bool GetGlobalTimingBeginIsSet() const { return globalTimingBeginIsSet ; }
+	void SetGlobalTimingBeginIsSet(bool value) { globalTimingBeginIsSet = value ; }
 
 	wxDialog* GetGlobalTimingCallDialog() const { return globalTimingCallDialog ; }
 	void SetGlobalTimingCallDialog(wxDialog* value) { globalTimingCallDialog = value ; }
 
-	bool GetGlobalTimingBeginIsSet() const { return globalTimingBeginIsSet ; }
-	void SetGlobalTimingBeginIsSet(bool value) { globalTimingBeginIsSet = value ; }
-
-	TEventType GetEventTypeForCode() const { return eventTypeForCode ; }
-	void SetEventTypeForCode(TEventType value) { eventTypeForCode = value ; }
+	TTime GetGlobalTimingEnd() const { return globalTimingEnd ; }
+	void SetGlobalTimingEnd(TTime value) { globalTimingEnd = value ; }
 
 ////@end wxparaverApp member function declarations
 
@@ -121,12 +121,12 @@ public:
 
 ////@begin wxparaverApp member variables
 private:
+	TEventType eventTypeForCode;
 	bool globalTiming;
 	TTime globalTimingBegin;
-	TTime globalTimingEnd;
-	wxDialog* globalTimingCallDialog;
 	bool globalTimingBeginIsSet;
-	TEventType eventTypeForCode;
+	wxDialog* globalTimingCallDialog;
+	TTime globalTimingEnd;
 ////@end wxparaverApp member variables
 
     wxLocale m_locale;

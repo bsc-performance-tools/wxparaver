@@ -265,35 +265,35 @@ public:
 
 ////@begin CutFilterDialog member function declarations
 
-  TraceOptions * GetTraceOptions() const { return traceOptions ; }
-  void SetTraceOptions(TraceOptions * value) { traceOptions = value ; }
-
-  bool GetLoadResultingTrace() const { return loadResultingTrace ; }
-  void SetLoadResultingTrace(bool value) { loadResultingTrace = value ; }
-
-  std::string GetNameSourceTrace() const { return nameSourceTrace ; }
-  void SetNameSourceTrace(std::string value) { nameSourceTrace = value ; }
-
-  bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
-  void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
-
-  KernelConnection * GetLocalKernel() const { return localKernel ; }
-  void SetLocalKernel(KernelConnection * value) { localKernel = value ; }
-
-  std::string GetGlobalXMLsPath() const { return globalXMLsPath ; }
-  void SetGlobalXMLsPath(std::string value) { globalXMLsPath = value ; }
-
-  bool GetNewXMLsPath() const { return newXMLsPath ; }
-  void SetNewXMLsPath(bool value) { newXMLsPath = value ; }
-
   bool GetChangedXMLParameters() const { return changedXMLParameters ; }
   void SetChangedXMLParameters(bool value) { changedXMLParameters = value ; }
 
   std::vector< std::string > GetFilterToolOrder() const { return filterToolOrder ; }
   void SetFilterToolOrder(std::vector< std::string > value) { filterToolOrder = value ; }
 
+  std::string GetGlobalXMLsPath() const { return globalXMLsPath ; }
+  void SetGlobalXMLsPath(std::string value) { globalXMLsPath = value ; }
+
+  bool GetLoadResultingTrace() const { return loadResultingTrace ; }
+  void SetLoadResultingTrace(bool value) { loadResultingTrace = value ; }
+
+  KernelConnection * GetLocalKernel() const { return localKernel ; }
+  void SetLocalKernel(KernelConnection * value) { localKernel = value ; }
+
   std::string GetNameDestinyTrace() const { return nameDestinyTrace ; }
   void SetNameDestinyTrace(std::string value) { nameDestinyTrace = value ; }
+
+  std::string GetNameSourceTrace() const { return nameSourceTrace ; }
+  void SetNameSourceTrace(std::string value) { nameSourceTrace = value ; }
+
+  bool GetNewXMLsPath() const { return newXMLsPath ; }
+  void SetNewXMLsPath(bool value) { newXMLsPath = value ; }
+
+  TraceOptions * GetTraceOptions() const { return traceOptions ; }
+  void SetTraceOptions(TraceOptions * value) { traceOptions = value ; }
+
+  bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
+  void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -410,16 +410,16 @@ public:
   wxButton* buttonSCKeepEventsDelete;
   wxButton* buttonApply;
 private:
-  TraceOptions * traceOptions;
-  bool loadResultingTrace;
-  std::string nameSourceTrace;
-  bool waitingGlobalTiming;
-  KernelConnection * localKernel;
-  std::string globalXMLsPath;
-  bool newXMLsPath;
   bool changedXMLParameters;
   std::vector< std::string > filterToolOrder;
+  std::string globalXMLsPath;
+  bool loadResultingTrace;
+  KernelConnection * localKernel;
   std::string nameDestinyTrace;
+  std::string nameSourceTrace;
+  bool newXMLsPath;
+  TraceOptions * traceOptions;
+  bool waitingGlobalTiming;
 ////@end CutFilterDialog member variables
 
   std::vector< std::string > listToolOrder; // Full list of names of the tools

@@ -288,89 +288,89 @@ public:
   /// Returns the AUI manager object
   wxAuiManager& GetAuiManager() { return m_auiManager; }
 
+  bool GetCFGLoadedBefore() const { return CFGLoadedBefore ; }
+  void SetCFGLoadedBefore(bool value) { CFGLoadedBefore = value ; }
+
+  wxString GetCFGPath() const { return CFGPath ; }
+  void SetCFGPath(wxString value) { CFGPath = value ; }
+
+  bool GetXMLLoadedBefore() const { return XMLLoadedBefore ; }
+  void SetXMLLoadedBefore(bool value) { XMLLoadedBefore = value ; }
+
+  std::string GetXMLPath() const { return XMLPath ; }
+  void SetXMLPath(std::string value) { XMLPath = value ; }
+
+  std::set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
+  void SetActiveWindows(std::set<wxWindow *> value) { activeWindows = value ; }
+
+  bool GetCanServeSignal() const { return canServeSignal ; }
+  void SetCanServeSignal(bool value) { canServeSignal = value ; }
+
+  Histogram * GetCurrentHisto() const { return currentHisto ; }
+  void SetCurrentHisto(Histogram * value) { currentHisto = value ; }
+
+  Window * GetCurrentTimeline() const { return currentTimeline ; }
+  void SetCurrentTimeline(Window * value) { currentTimeline = value ; }
+
+  PRV_INT16 GetCurrentTrace() const { return currentTrace ; }
+  void SetCurrentTrace(PRV_INT16 value) { currentTrace = value ; }
+
+  wxWindow * GetCurrentWindow() const { return currentWindow ; }
+  void SetCurrentWindow(wxWindow * value) { currentWindow = value ; }
+
+  wxImageList* GetImageList() const { return imageList ; }
+  void SetImageList(wxImageList* value) { imageList = value ; }
+
+  Histogram * GetLastHisto() const { return lastHisto ; }
+  void SetLastHisto(Histogram * value) { lastHisto = value ; }
+
+  Window * GetLastTimeline() const { return lastTimeline ; }
+  void SetLastTimeline(Window * value) { lastTimeline = value ; }
+
+  std::queue<std::string> GetLoadFilesQueue() const { return loadFilesQueue ; }
+  void SetLoadFilesQueue(std::queue<std::string> value) { loadFilesQueue = value ; }
+
   std::vector<Trace *> GetLoadedTraces() const { return loadedTraces ; }
   void SetLoadedTraces(std::vector<Trace *> value) { loadedTraces = value ; }
 
   KernelConnection* GetLocalKernel() const { return localKernel ; }
   void SetLocalKernel(KernelConnection* value) { localKernel = value ; }
 
-  ParaverConfig* GetParaverConfig() const { return paraverConfig ; }
-  void SetParaverConfig(ParaverConfig* value) { paraverConfig = value ; }
-
-  PRV_INT16 GetCurrentTrace() const { return currentTrace ; }
-  void SetCurrentTrace(PRV_INT16 value) { currentTrace = value ; }
-
-  wxImageList* GetImageList() const { return imageList ; }
-  void SetImageList(wxImageList* value) { imageList = value ; }
-
-  Window * GetCurrentTimeline() const { return currentTimeline ; }
-  void SetCurrentTimeline(Window * value) { currentTimeline = value ; }
-
-  Histogram * GetCurrentHisto() const { return currentHisto ; }
-  void SetCurrentHisto(Histogram * value) { currentHisto = value ; }
-
-  PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
-  void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
-
-  PreviousFiles * GetPreviousCFGs() const { return previousCFGs ; }
-  void SetPreviousCFGs(PreviousFiles * value) { previousCFGs = value ; }
-
-  Window * GetLastTimeline() const { return lastTimeline ; }
-  void SetLastTimeline(Window * value) { lastTimeline = value ; }
-
-  Histogram * GetLastHisto() const { return lastHisto ; }
-  void SetLastHisto(Histogram * value) { lastHisto = value ; }
-
-  wxWindow * GetCurrentWindow() const { return currentWindow ; }
-  void SetCurrentWindow(wxWindow * value) { currentWindow = value ; }
-
-  int GetNumNewWindows() const { return numNewWindows ; }
-  void SetNumNewWindows(int value) { numNewWindows = value ; }
+  int GetNumNewDerived() const { return numNewDerived ; }
+  void SetNumNewDerived(int value) { numNewDerived = value ; }
 
   int GetNumNewHistograms() const { return numNewHistograms ; }
   void SetNumNewHistograms(int value) { numNewHistograms = value ; }
 
-  int GetNumNewDerived() const { return numNewDerived ; }
-  void SetNumNewDerived(int value) { numNewDerived = value ; }
+  int GetNumNewWindows() const { return numNewWindows ; }
+  void SetNumNewWindows(int value) { numNewWindows = value ; }
+
+  ParaverConfig* GetParaverConfig() const { return paraverConfig ; }
+  void SetParaverConfig(ParaverConfig* value) { paraverConfig = value ; }
+
+  PreviousFiles * GetPreviousCFGs() const { return previousCFGs ; }
+  void SetPreviousCFGs(PreviousFiles * value) { previousCFGs = value ; }
+
+  PreviousFiles * GetPreviousCutFilteredTraces() const { return previousCutFilteredTraces ; }
+  void SetPreviousCutFilteredTraces(PreviousFiles * value) { previousCutFilteredTraces = value ; }
+
+  PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
+  void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
 
   bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
   void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
 
-  std::set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
-  void SetActiveWindows(std::set<wxWindow *> value) { activeWindows = value ; }
+  wxTimer * GetSessionTimer() const { return sessionTimer ; }
+  void SetSessionTimer(wxTimer * value) { sessionTimer = value ; }
 
   bool GetTraceLoadedBefore() const { return traceLoadedBefore ; }
   void SetTraceLoadedBefore(bool value) { traceLoadedBefore = value ; }
 
-  bool GetCFGLoadedBefore() const { return CFGLoadedBefore ; }
-  void SetCFGLoadedBefore(bool value) { CFGLoadedBefore = value ; }
-
   wxString GetTracePath() const { return tracePath ; }
   void SetTracePath(wxString value) { tracePath = value ; }
 
-  wxString GetCFGPath() const { return CFGPath ; }
-  void SetCFGPath(wxString value) { CFGPath = value ; }
-
-  bool GetCanServeSignal() const { return canServeSignal ; }
-  void SetCanServeSignal(bool value) { canServeSignal = value ; }
-
-  std::queue<std::string> GetLoadFilesQueue() const { return loadFilesQueue ; }
-  void SetLoadFilesQueue(std::queue<std::string> value) { loadFilesQueue = value ; }
-
-  wxTimer * GetSessionTimer() const { return sessionTimer ; }
-  void SetSessionTimer(wxTimer * value) { sessionTimer = value ; }
-
-  std::string GetXMLPath() const { return XMLPath ; }
-  void SetXMLPath(std::string value) { XMLPath = value ; }
-
-  bool GetXMLLoadedBefore() const { return XMLLoadedBefore ; }
-  void SetXMLLoadedBefore(bool value) { XMLLoadedBefore = value ; }
-
   HelpContents * GetTutorialsWindow() const { return tutorialsWindow ; }
   void SetTutorialsWindow(HelpContents * value) { tutorialsWindow = value ; }
-
-  PreviousFiles * GetPreviousCutFilteredTraces() const { return previousCutFilteredTraces ; }
-  void SetPreviousCutFilteredTraces(PreviousFiles * value) { previousCutFilteredTraces = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -435,34 +435,34 @@ public:
   wxGenericDirCtrl* dirctrlFiles;
   wxPropertyGrid* windowProperties;
 private:
+  bool CFGLoadedBefore;
+  wxString CFGPath;
+  bool XMLLoadedBefore;
+  std::string XMLPath;
+  std::set<wxWindow *> activeWindows;
+  bool canServeSignal;
+  Histogram * currentHisto;
+  Window * currentTimeline;
+  PRV_INT16 currentTrace;
+  wxWindow * currentWindow;
+  wxImageList* imageList;
+  Histogram * lastHisto;
+  Window * lastTimeline;
+  std::queue<std::string> loadFilesQueue;
   std::vector<Trace *> loadedTraces;
   KernelConnection* localKernel;
-  ParaverConfig* paraverConfig;
-  PRV_INT16 currentTrace;
-  wxImageList* imageList;
-  Window * currentTimeline;
-  Histogram * currentHisto;
-  PreviousFiles * previousTraces;
-  PreviousFiles * previousCFGs;
-  Window * lastTimeline;
-  Histogram * lastHisto;
-  wxWindow * currentWindow;
-  int numNewWindows;
-  int numNewHistograms;
   int numNewDerived;
-  bool raiseCurrentWindow;
-  std::set<wxWindow *> activeWindows;
-  bool traceLoadedBefore;
-  bool CFGLoadedBefore;
-  wxString tracePath;
-  wxString CFGPath;
-  bool canServeSignal;
-  std::queue<std::string> loadFilesQueue;
-  wxTimer * sessionTimer;
-  std::string XMLPath;
-  bool XMLLoadedBefore;
-  HelpContents * tutorialsWindow;
+  int numNewHistograms;
+  int numNewWindows;
+  ParaverConfig* paraverConfig;
+  PreviousFiles * previousCFGs;
   PreviousFiles * previousCutFilteredTraces;
+  PreviousFiles * previousTraces;
+  bool raiseCurrentWindow;
+  wxTimer * sessionTimer;
+  bool traceLoadedBefore;
+  wxString tracePath;
+  HelpContents * tutorialsWindow;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;

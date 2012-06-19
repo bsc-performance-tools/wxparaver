@@ -352,25 +352,25 @@ paraverMain::~paraverMain()
 void paraverMain::Init()
 {
 ////@begin paraverMain member initialisation
-  currentTrace = -1;
-  currentTimeline = NULL;
-  currentHisto = NULL;
-  previousTraces = PreviousFiles::createPreviousTraces();
-  previousCFGs = PreviousFiles::createPreviousCFGs();
-  lastTimeline = NULL;
-  lastHisto = NULL;
-  currentWindow = NULL;
-  numNewWindows = 0;
-  numNewHistograms = 0;
-  numNewDerived = 0;
-  raiseCurrentWindow = true;
-  traceLoadedBefore = false;
   CFGLoadedBefore = false;
-  canServeSignal = true;
-  sessionTimer = new wxTimer( this );
   XMLLoadedBefore = false;
-  tutorialsWindow = NULL;
+  canServeSignal = true;
+  currentHisto = NULL;
+  currentTimeline = NULL;
+  currentTrace = -1;
+  currentWindow = NULL;
+  lastHisto = NULL;
+  lastTimeline = NULL;
+  numNewDerived = 0;
+  numNewHistograms = 0;
+  numNewWindows = 0;
+  previousCFGs = PreviousFiles::createPreviousCFGs();
   previousCutFilteredTraces = PreviousFiles::createPreviousTreatedTraces();
+  previousTraces = PreviousFiles::createPreviousTraces();
+  raiseCurrentWindow = true;
+  sessionTimer = new wxTimer( this );
+  traceLoadedBefore = false;
+  tutorialsWindow = NULL;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
