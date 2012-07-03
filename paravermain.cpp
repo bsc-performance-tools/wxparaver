@@ -830,7 +830,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
 
   if( !property )
     return;
-    
+
   const wxString& propName = property->GetName();
 
   if( propName == _( "Mode" ) )
@@ -1014,7 +1014,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentHisto->setRedraw( true );
   }
   // Histogram related properties
-  else if( propName == _( "Type" ) )
+  else if( propName == wxString( "Type", wxConvUTF8 ) )
   {
     if( property->GetValue().GetLong() == 0 )
       currentHisto->setCurrentStat( currentHisto->getFirstCommStatistic() );
