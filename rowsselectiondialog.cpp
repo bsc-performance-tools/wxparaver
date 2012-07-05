@@ -46,6 +46,131 @@ RowsSelectionDialog::RowsSelectionDialog()
   Init();
 }
 
+
+wxString RowsSelectionDialog::buildRegularExpressionString( const wxString& enteredRE )
+{
+  wxString parsedRE;
+
+  for( size_t i = 0; i < enteredRE.Len(); ++i )
+  {
+    switch ( enteredRE.GetChar( i ) )
+    {
+      case wxChar('.'):
+        parsedRE += wxString("[.]");
+        break;
+      case wxChar('+'):
+        parsedRE += wxString("[[:alnum:]]+");
+        break;
+      case wxChar('*'):
+        parsedRE += wxString("[[:alnum:]]*");
+        break;
+      case wxChar('#'):
+        parsedRE += wxString("[[:digit:]]");
+        break;
+      case wxChar('$'):
+        parsedRE += wxString("[[:alpha:]]");
+        break;
+      default:
+        parsedRE += enteredRE.GetChar( i );
+        break;
+    }
+  }
+
+  return parsedRE;
+}
+
+
+int RowsSelectionDialog::countMatches( int iTab, wxRegEx *&levelRE )
+{
+  int matches = 0;
+
+  wxCheckListBox * myLevelCheckList = levelCheckList[ iTab ];
+  for ( unsigned int i = 0; i < myLevelCheckList->GetCount(); ++i )
+  {
+    wxString currentRow( myLevelCheckList->GetString( i ) );
+    if ( levelRE->Matches( currentRow ) )
+    {
+      matches++;
+    }
+  }
+
+  return matches;
+}
+
+
+void RowsSelectionDialog::checkMatches( const int &iTab, wxRegEx *&levelRE )
+{
+  lockedByUpdate = true;
+
+  wxCheckListBox * myLevelCheckList = levelCheckList[ iTab ];
+  for ( unsigned int i = 0; i < myLevelCheckList->GetCount(); ++i )
+  {
+    wxString currentRow( myLevelCheckList->GetString( i ) );
+    if ( levelRE->Matches( currentRow ) )
+    {
+      myLevelCheckList->Check( i );
+    }
+  }
+
+  lockedByUpdate = false;
+}
+
+
+void RowsSelectionDialog::OnRegularExpressionApply( wxCommandEvent& event )
+{
+  // Get wxString that represents regular expression
+  int iTab = GetBookCtrl()->GetSelection();
+  // wxString parsedRE = event.GetString();  // DOESN'T WORK WITH BUTTON APPLY
+  wxString parsedRE  = textCtrlRegularExpr[ iTab ]->GetValue();
+
+  if ( !checkBoxPosixBasicRegExp[ iTab ]->GetValue() )
+  {
+    // It is Quick Form; we must adapt it. 
+    parsedRE = buildRegularExpressionString( parsedRE );
+  }
+
+  // Build regular expression
+  wxRegEx *levelRE = new wxRegEx();
+  if ( levelRE->Compile( parsedRE ) )
+  {
+    // Any match?
+    int matches = countMatches( iTab, levelRE );
+    if( matches > 0 )
+    {
+      // Save this regular expression as a valid one.
+    //    validRE[ iTab ] = levelRE; 
+
+      checkMatches( iTab, levelRE );
+
+      // Message
+      wxString msg = wxString::Format( wxT( "%i" ), matches );
+      if ( matches > 1 )
+      {
+        msg += wxString( " matches " );
+      }
+      else
+      {
+        msg += wxString( " match " );
+      }
+      msg += wxString( " has been checked." );
+
+      messageMatchesFound[ iTab ]->SetLabel( msg );
+    }
+    else
+    {
+      messageMatchesFound[ iTab ]->SetLabel( wxString( "No matches found." ) );
+    //    delete levelRE;
+    }
+  }
+  else
+  {
+    messageMatchesFound[ iTab ]->SetLabel( wxString( "Syntax error in regular expression!" ) );
+  }
+  
+  delete levelRE;
+}
+
+
 void RowsSelectionDialog::OnSelectAllButtonClicked( wxCommandEvent& event )
 {
   wxCheckListBox * myLevelCheckList = levelCheckList[ GetBookCtrl()->GetSelection() ];
@@ -70,6 +195,98 @@ void RowsSelectionDialog::OnInvertButtonClicked( wxCommandEvent& event )
 
   for ( unsigned int i = 0; i < myLevelCheckList->GetCount(); ++i )
     myLevelCheckList->Check( i, !myLevelCheckList->IsChecked( i ) );
+}
+
+
+// false: simple mode
+// true : basicPosixRegExprMode 
+wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
+{
+  wxTextValidator *myValidator;
+
+  if ( !basicPosixRegExprMode )
+  {
+    wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
+                                _("5"), _("6"), _("7"), _("8"), _("9"),
+                                _("."),  // level separator
+                                _("+"),  // any alphanum, but '.'
+                                _("*"),  // many alphanum, but '.'
+                                _("#"),  // any number
+                                _("$")   // any char
+                                };
+    myValidator = new wxTextValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
+    wxArrayString charIncludes( (size_t)15, allowedChars );
+    myValidator->SetIncludes( charIncludes );
+  }
+  else
+  {
+    wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
+                                _("5"), _("6"), _("7"), _("8"), _("9"),
+                                _("."),  // level separator
+                                _("+"),  // any alphanum, but '.'
+                                _("*"),  // many alphanum, but '.'
+                                _("#"),  // any number
+                                _("$")   // any char
+                                };
+    myValidator = new wxTextValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
+    wxArrayString charIncludes( (size_t)15, allowedChars );
+    myValidator->SetIncludes( charIncludes );
+  }
+
+  return myValidator;
+}
+
+
+wxString RowsSelectionDialog::getMyToolTip( const bool posixBasicRegExpTip )
+{
+  return ( posixBasicRegExpTip?
+           _( "Posix basic regular expression form:\n"
+              "  . : any character (use [.] for dot)\n"
+              "  ? : zero or one repetition of preceeding item\n"
+              "  + : one or many repetitions of preceeding item\n"
+              "  * : zero or many repetitions of preceeding item\n"
+              "  [12345] : set that matches from 1 to 5\n"
+              "  [1-3] : range that matches from 1 to 3\n\n"
+              "Examples:\n"
+              "  .* (anything)\n"
+              "  THREAD 1[.][1][.][1-9]  (THREAD 1.1.1, ...THREAD 1.1.9)\n"
+              "  1[.][13]+[.]1    (1.1.1, 1.11.1, 1.13.1, 1.31.1, ...)\n\n") :
+           _( "Quick form:\n"
+              "  . : '.' (dot character)\n"
+              "  # : only one number\n"
+              "  $ : only one character\n"
+              "  + : one or many alfanumeric\n"
+              "  * : zero or many alfanumeric\n"
+              "  [12345] : set that matches from 1 to 5\n"
+              "  [1-3] : range that matches from 1 to 3\n\n"
+              "Examples:\n"
+              "  THREAD 1.2##.1  (3 digits per task)\n"
+              "  TASK 1.3[1-3] (1.31, 1.32, 1.33)\n\n" ) );
+}
+
+
+void RowsSelectionDialog::OnCheckBoxMatchPosixRegExpClicked( wxCommandEvent& event )
+{
+  int iTab = GetBookCtrl()->GetSelection();
+  bool posixBasicRegExpTip = checkBoxPosixBasicRegExp[ iTab ]->IsChecked();
+  textCtrlRegularExpr[ iTab ]->SetToolTip( getMyToolTip( posixBasicRegExpTip ) );
+  checkBoxPosixBasicRegExp[ iTab ]->SetToolTip( getMyToolTip( posixBasicRegExpTip ) );
+}
+
+
+void RowsSelectionDialog::OnCheckListBoxSelected( wxCommandEvent& event )
+{
+  if ( lockedByUpdate )
+  {
+    event.Skip();
+  }
+  else
+  {
+    // Copy selected to Reg. Exp. Text box.
+    int tabNumber = GetBookCtrl()->GetSelection();
+    wxString currentRow = event.GetString();
+    textCtrlRegularExpr[ tabNumber ]->SetValue( currentRow );
+  }
 }
 
 
@@ -105,18 +322,25 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
                                                                        whichLevel,
                                                                        myTrace ).c_str() ) );
   }
-  
+
   vector< TObjectOrder > selectedIndex;
   mySelectedRows->getSelected( selectedIndex, whichLevel );
   wxCheckListBox * auxCheckList = new wxCheckListBox( myPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, choices );
+  auxCheckList->Connect(
+          wxEVT_COMMAND_LISTBOX_SELECTED,
+          wxCommandEventHandler( RowsSelectionDialog::OnCheckListBoxSelected ),
+          NULL,
+          this );
   levelCheckList.push_back( auxCheckList );
 
   for ( unsigned int i = 0; i < (unsigned int)selectedIndex.size(); ++i )
     auxCheckList->Check( selectedIndex[ i ] );
 
   panelSizer->Add( auxCheckList, 3, wxALL | wxALIGN_CENTER | wxGROW, 5 );
-
-  // Add Buttons
+  
+  //
+  // BUTTONS
+  //
   wxButton *auxButton = new wxButton( myPanel, wxID_ANY, _("Select All") );
   selectionButtons.push_back( auxButton );
   auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
@@ -142,7 +366,71 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   buttonsSizer->Add( auxButton, 1, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
 
   // Build Panel
-  panelSizer->Add( buttonsSizer, 0, wxALL | wxALIGN_BOTTOM, 5 );
+  panelSizer->Add( buttonsSizer, 0, wxGROW | wxALL | wxALIGN_BOTTOM, 5 );
+
+
+  //
+  // REGULAR EXPRESSION BOX
+  //
+
+  // RE: Text box
+  bool initialCheckState = false;
+
+  wxStaticBox* regularExpressionBox = new wxStaticBox(myPanel, wxID_ANY, _(" Add checks by rows matching "));
+  wxStaticBoxSizer* regularExpressionBoxSizer = new wxStaticBoxSizer( regularExpressionBox, wxVERTICAL );
+  wxBoxSizer *regularExpressionSizerUp = new wxBoxSizer( wxHORIZONTAL );
+  wxBoxSizer *regularExpressionSizerDown = new wxBoxSizer( wxVERTICAL );
+
+
+  wxTextCtrl *auxTextCtrl =
+          new wxTextCtrl( myPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+  auxTextCtrl->Connect(
+          wxEVT_COMMAND_TEXT_ENTER ,
+          wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionApply ),
+          NULL,
+          this );
+  auxTextCtrl->SetToolTip( getMyToolTip( initialCheckState ) );
+  textCtrlRegularExpr.push_back( auxTextCtrl );
+  regularExpressionSizerUp->Add( auxTextCtrl, 1, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+
+  // userRegularExpr->SetValidator( getValidator(  ) );
+
+  //wxRegEx *aux = new wxRegEx( wxString("[:alpha]* ?1[.][12][.][0-9]") );// ejemplo para thread 1.1.1
+  wxRegEx *aux = new wxRegEx( wxString("([:alnum:]|[_-. ])+") );// ejemplo para bastante cosa
+  validRE.push_back( aux );
+
+  // RE: APPLY button
+  auxButton = new wxButton( myPanel, wxID_ANY, _("Apply") );
+  auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                      wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionApply ),
+                      NULL,
+                      this );
+  auxButton->Enable( true );
+  applyButtons.push_back( auxButton );
+
+  regularExpressionSizerUp->Add( auxButton, 0, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+
+  // RE: Check
+  wxCheckBox *auxCheckBox = new wxCheckBox( myPanel, wxID_ANY, _("Match as Posix Basic Regular Expression"), wxDefaultPosition, wxDefaultSize, 0 );
+  auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
+                        wxCommandEventHandler( RowsSelectionDialog::OnCheckBoxMatchPosixRegExpClicked ),
+                        NULL,
+                        this );
+  auxCheckBox->SetValue( initialCheckState );
+  auxCheckBox->SetToolTip( getMyToolTip( initialCheckState ) );
+  checkBoxPosixBasicRegExp.push_back( auxCheckBox );
+  regularExpressionSizerDown->Add( auxCheckBox, 0, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+
+  // RE: Message
+  wxStaticText *auxStaticText = new wxStaticText( myPanel, wxID_ANY, _("" ) );
+  messageMatchesFound.push_back( auxStaticText );
+  regularExpressionSizerDown->Add( auxStaticText, 0, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+
+  // RE: Final Build
+  regularExpressionBoxSizer->Add( regularExpressionSizerUp, 0, wxGROW | wxALL | wxALIGN_BOTTOM, 0 );
+  regularExpressionBoxSizer->Add( regularExpressionSizerDown, 0, wxGROW | wxALL | wxALIGN_BOTTOM, 0 );
+
+  panelSizer->Add( regularExpressionBoxSizer, 0, wxGROW | wxALL | wxALIGN_BOTTOM, 5 );
 }
 
 
@@ -162,6 +450,7 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   Create( parent, id, caption, pos, size, style );
 
   TWindowLevel level = myTimeline->getLevel();
+  lockedByUpdate = false;
 
   if (( level >= SYSTEM ) && ( level <= CPU ))
   {
@@ -222,6 +511,30 @@ RowsSelectionDialog::~RowsSelectionDialog()
     ++it; 
     (*it)->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED,
                        wxCommandEventHandler( RowsSelectionDialog::OnInvertButtonClicked )); 
+  }
+
+  TWindowLevel level = myTimeline->getLevel();
+  TWindowLevel beginLevel, endLevel;
+  if (( level >= SYSTEM ) && ( level <= CPU ))
+  {
+    beginLevel = NODE;
+    endLevel = CPU;
+  }
+  else if (( level >= WORKLOAD ) && ( level <= THREAD ))
+  {
+    beginLevel = APPLICATION;
+    endLevel = THREAD;
+  }
+
+  for( int l = 0; l <= (int)endLevel - (int)beginLevel; ++l )
+  {
+    delete selectionButtons[ l ];
+    delete levelCheckList[ l ];
+    delete messageMatchesFound[ l ];
+    delete checkBoxPosixBasicRegExp[ l ];
+    delete textCtrlRegularExpr[ l ];
+    delete applyButtons[ l ];
+    delete validRE[ l ];
   }
 }
 

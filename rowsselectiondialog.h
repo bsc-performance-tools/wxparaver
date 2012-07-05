@@ -10,6 +10,11 @@
 #include <wx/sizer.h>
 #include <wx/checklst.h>
 
+#include <wx/regex.h>
+#include <wx/checkbox.h>
+#include <wx/valtext.h> // DELETE ME?
+#include <wx/stattext.h>
+
 #include <map>
 
 #include "paraverkerneltypes.h"
@@ -84,6 +89,23 @@ private:
   TWindowLevel minLevel; 
   std::vector< wxButton * > selectionButtons;
   std::vector< wxCheckListBox* > levelCheckList;
+
+  // RE
+  bool lockedByUpdate;
+  std::vector< wxStaticText *> messageMatchesFound;
+  std::vector< wxCheckBox *> checkBoxPosixBasicRegExp;
+  std::vector< wxTextCtrl *> textCtrlRegularExpr;
+  std::vector< wxButton * > applyButtons;
+  std::vector< wxRegEx * > validRE;
+  wxString getMyToolTip( const bool posixBasicRegExpTip );
+  void OnCheckBoxMatchPosixRegExpClicked( wxCommandEvent& event );
+  wxTextValidator *getValidator( bool basicPosixRegExprMode ); // DELETE ME?
+  // void CheckRegularExpression( wxCommandEvent& event );
+  wxString buildRegularExpressionString( const wxString& enteredRE );
+  int countMatches( int iTab, wxRegEx *&levelRE );
+  void checkMatches( const int &iTab, wxRegEx *&levelRE );
+  void OnRegularExpressionApply( wxCommandEvent& event );
+  void OnCheckListBoxSelected( wxCommandEvent& event );
 
   void OnSelectAllButtonClicked( wxCommandEvent& event );
   void OnUnselectAllButtonClicked( wxCommandEvent& event );
