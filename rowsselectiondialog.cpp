@@ -56,19 +56,19 @@ wxString RowsSelectionDialog::buildRegularExpressionString( const wxString& ente
     switch ( enteredRE.GetChar( i ) )
     {
       case wxChar('.'):
-        parsedRE += wxString("[.]");
+        parsedRE += wxString( wxT( "[.]" ) );
         break;
       case wxChar('+'):
-        parsedRE += wxString("[[:alnum:]]+");
+        parsedRE += wxString( wxT( "[[:alnum:]]+" ) );
         break;
       case wxChar('*'):
-        parsedRE += wxString("[[:alnum:]]*");
+        parsedRE += wxString( wxT( "[[:alnum:]]*" ) );
         break;
       case wxChar('#'):
-        parsedRE += wxString("[[:digit:]]");
+        parsedRE += wxString( wxT( "[[:digit:]]" ) );
         break;
       case wxChar('$'):
-        parsedRE += wxString("[[:alpha:]]");
+        parsedRE += wxString( wxT( "[[:alpha:]]" ) );
         break;
       default:
         parsedRE += enteredRE.GetChar( i );
@@ -146,25 +146,25 @@ void RowsSelectionDialog::OnRegularExpressionApply( wxCommandEvent& event )
       wxString msg = wxString::Format( wxT( "%i" ), matches );
       if ( matches > 1 )
       {
-        msg += wxString( " matches " );
+        msg += wxString( wxT( " matches " ) );
       }
       else
       {
-        msg += wxString( " match " );
+        msg += wxString( wxT( " match " ) );
       }
-      msg += wxString( " has been checked." );
+      msg += wxString( wxT( " has been checked." ) );
 
       messageMatchesFound[ iTab ]->SetLabel( msg );
     }
     else
     {
-      messageMatchesFound[ iTab ]->SetLabel( wxString( "No matches found." ) );
+      messageMatchesFound[ iTab ]->SetLabel( wxString( wxT( "No matches found." ) ) );
     //    delete levelRE;
     }
   }
   else
   {
-    messageMatchesFound[ iTab ]->SetLabel( wxString( "Syntax error in regular expression!" ) );
+    messageMatchesFound[ iTab ]->SetLabel( wxString( wxT( "Syntax error in regular expression!" ) ) );
   }
   
   delete levelRE;
@@ -396,7 +396,8 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   // userRegularExpr->SetValidator( getValidator(  ) );
 
   //wxRegEx *aux = new wxRegEx( wxString("[:alpha]* ?1[.][12][.][0-9]") );// ejemplo para thread 1.1.1
-  wxRegEx *aux = new wxRegEx( wxString("([:alnum:]|[_-. ])+") );// ejemplo para bastante cosa
+  //wxRegEx *aux = new wxRegEx( wxString( wxT( "([:alnum:]|[_-. ])+" ) ) );// ejemplo para bastante cosa
+  wxRegEx *aux = new wxRegEx( wxString( wxT( ".*" ) ) );// ejemplo para bastante cosa
   validRE.push_back( aux );
 
   // RE: APPLY button
