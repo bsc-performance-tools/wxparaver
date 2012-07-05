@@ -183,41 +183,41 @@ public:
 
 ////@begin HistogramDialog member function declarations
 
-  vector< TWindowID > GetControlTimelines() const { return controlTimelines ; }
-  void SetControlTimelines(vector< TWindowID > value) { controlTimelines = value ; }
-
-  double GetControlTimelineMin() const { return controlTimelineMin ; }
-  void SetControlTimelineMin(double value) { controlTimelineMin = value ; }
-
-  double GetControlTimelineMax() const { return controlTimelineMax ; }
-  void SetControlTimelineMax(double value) { controlTimelineMax = value ; }
+  bool GetControlTimelineAutofit() const { return controlTimelineAutofit ; }
+  void SetControlTimelineAutofit(bool value) { controlTimelineAutofit = value ; }
 
   double GetControlTimelineDelta() const { return controlTimelineDelta ; }
   void SetControlTimelineDelta(double value) { controlTimelineDelta = value ; }
 
-  vector< TWindowID > GetDataTimelines() const { return dataTimelines ; }
-  void SetDataTimelines(vector< TWindowID > value) { dataTimelines = value ; }
+  double GetControlTimelineMax() const { return controlTimelineMax ; }
+  void SetControlTimelineMax(double value) { controlTimelineMax = value ; }
 
-  double GetExtraControlTimelineMin() const { return extraControlTimelineMin ; }
-  void SetExtraControlTimelineMin(double value) { extraControlTimelineMin = value ; }
+  double GetControlTimelineMin() const { return controlTimelineMin ; }
+  void SetControlTimelineMin(double value) { controlTimelineMin = value ; }
 
-  double GetExtraControlTimelineMax() const { return extraControlTimelineMax ; }
-  void SetExtraControlTimelineMax(double value) { extraControlTimelineMax = value ; }
+  std::vector< TWindowID > GetControlTimelines() const { return controlTimelines ; }
+  void SetControlTimelines(std::vector< TWindowID > value) { controlTimelines = value ; }
+
+  std::vector< TWindowID > GetDataTimelines() const { return dataTimelines ; }
+  void SetDataTimelines(std::vector< TWindowID > value) { dataTimelines = value ; }
+
+  bool GetExtraControlTimelineAutofit() const { return extraControlTimelineAutofit ; }
+  void SetExtraControlTimelineAutofit(bool value) { extraControlTimelineAutofit = value ; }
 
   double GetExtraControlTimelineDelta() const { return extraControlTimelineDelta ; }
   void SetExtraControlTimelineDelta(double value) { extraControlTimelineDelta = value ; }
 
-  vector< pair< TRecordTime, TRecordTime > > GetTimeRange() const { return timeRange ; }
-  void SetTimeRange(vector< pair< TRecordTime, TRecordTime > > value) { timeRange = value ; }
+  double GetExtraControlTimelineMax() const { return extraControlTimelineMax ; }
+  void SetExtraControlTimelineMax(double value) { extraControlTimelineMax = value ; }
 
-  vector< TWindowID > GetExtraControlTimelines() const { return extraControlTimelines ; }
-  void SetExtraControlTimelines(vector< TWindowID > value) { extraControlTimelines = value ; }
+  double GetExtraControlTimelineMin() const { return extraControlTimelineMin ; }
+  void SetExtraControlTimelineMin(double value) { extraControlTimelineMin = value ; }
 
-  bool GetControlTimelineAutofit() const { return controlTimelineAutofit ; }
-  void SetControlTimelineAutofit(bool value) { controlTimelineAutofit = value ; }
+  std::vector< TWindowID > GetExtraControlTimelines() const { return extraControlTimelines ; }
+  void SetExtraControlTimelines(std::vector< TWindowID > value) { extraControlTimelines = value ; }
 
-  bool GetExtraControlTimelineAutofit() const { return extraControlTimelineAutofit ; }
-  void SetExtraControlTimelineAutofit(bool value) { extraControlTimelineAutofit = value ; }
+  std::vector< std::pair< TRecordTime, TRecordTime > > GetTimeRange() const { return timeRange ; }
+  void SetTimeRange(std::vector< std::pair< TRecordTime, TRecordTime > > value) { timeRange = value ; }
 
   bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
   void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
@@ -260,32 +260,32 @@ public:
   wxRadioButton* radioManual;
   wxButton* buttonSelect;
 private:
-  vector< TWindowID > controlTimelines;
-  double controlTimelineMin;
-  double controlTimelineMax;
-  double controlTimelineDelta;
-  vector< TWindowID > dataTimelines;
-  double extraControlTimelineMin;
-  double extraControlTimelineMax;
-  double extraControlTimelineDelta;
-  vector< pair< TRecordTime, TRecordTime > > timeRange;
-  vector< TWindowID > extraControlTimelines;
   bool controlTimelineAutofit;
+  double controlTimelineDelta;
+  double controlTimelineMax;
+  double controlTimelineMin;
+  std::vector< TWindowID > controlTimelines;
+  std::vector< TWindowID > dataTimelines;
   bool extraControlTimelineAutofit;
+  double extraControlTimelineDelta;
+  double extraControlTimelineMax;
+  double extraControlTimelineMin;
+  std::vector< TWindowID > extraControlTimelines;
+  std::vector< std::pair< TRecordTime, TRecordTime > > timeRange;
   bool waitingGlobalTiming;
 ////@end HistogramDialog member variables
 
   wxString formatNumber( double value );
 
-  // getSelectedWindow deletes previous information in vector selection
+  // getSelectedWindow deletes previous information in std::std::vector selection
   void getSelectedWindowID( wxChoice * listWidget,
-                            vector< TWindowID > &selection,
+                            std::vector< TWindowID > &selection,
                             bool listWithFirstVoidOption );
   TSemanticValue computeDelta( TSemanticValue min, TSemanticValue max );
   void computeColumns( Window *timeline, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta );
   void updateControlTimelineAutofit();
   void updateExtraControlTimelineAutofit();
-  PRV_UINT32 fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget );
+  PRV_UINT32 fillList( Window *current, std::vector< TWindowID > listTimelines, wxChoice *listWidget );
   void enable3DFields( bool autofit );
 };
 

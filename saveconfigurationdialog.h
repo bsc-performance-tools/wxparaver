@@ -127,23 +127,23 @@ public:
 
 ////@begin SaveConfigurationDialog member function declarations
 
-  SaveOptions GetOptions() const { return options ; }
-  void SetOptions(SaveOptions value) { options = value ; }
-
-  vector<Window *> GetTimelines() const { return timelines ; }
-  void SetTimelines(vector<Window *> value) { timelines = value ; }
-
-  vector<Histogram *> GetHistograms() const { return histograms ; }
-  void SetHistograms(vector<Histogram *> value) { histograms = value ; }
+  std::vector<Histogram *> GetHistograms() const { return histograms ; }
+  void SetHistograms(std::vector<Histogram *> value) { histograms = value ; }
 
   Trace * GetInitialTrace() const { return initialTrace ; }
   void SetInitialTrace(Trace * value) { initialTrace = value ; }
 
-  vector< Window * > GetSelectedTimelines() const { return selectedTimelines ; }
-  void SetSelectedTimelines(vector< Window * > value) { selectedTimelines = value ; }
+  SaveOptions GetOptions() const { return options ; }
+  void SetOptions(SaveOptions value) { options = value ; }
 
-  vector< Histogram * > GetSelectedHistograms() const { return selectedHistograms ; }
-  void SetSelectedHistograms(vector< Histogram * > value) { selectedHistograms = value ; }
+  std::vector< Histogram * > GetSelectedHistograms() const { return selectedHistograms ; }
+  void SetSelectedHistograms(std::vector< Histogram * > value) { selectedHistograms = value ; }
+
+  std::vector< Window * > GetSelectedTimelines() const { return selectedTimelines ; }
+  void SetSelectedTimelines(std::vector< Window * > value) { selectedTimelines = value ; }
+
+  std::vector<Window *> GetTimelines() const { return timelines ; }
+  void SetTimelines(std::vector<Window *> value) { timelines = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -175,12 +175,12 @@ public:
   wxTextCtrl* textDescription;
   wxCheckBox* checkboxSaveCFGBasicMode;
 private:
-  SaveOptions options;
-  vector<Window *> timelines;
-  vector<Histogram *> histograms;
+  std::vector<Histogram *> histograms;
   Trace * initialTrace;
-  vector< Window * > selectedTimelines;
-  vector< Histogram * > selectedHistograms;
+  SaveOptions options;
+  std::vector< Histogram * > selectedHistograms;
+  std::vector< Window * > selectedTimelines;
+  std::vector<Window *> timelines;
 ////@end SaveConfigurationDialog member variables
   std::vector< std::string > traces;
 

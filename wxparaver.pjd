@@ -144,7 +144,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"GCC Debug"</string>
+    <string name="configuration">"VC++ Release"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -571,7 +571,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
@@ -643,7 +643,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
@@ -676,7 +676,7 @@
           <string name="wxWidgets makefile">"%AUTO%"</string>
           <string name="wxWidgets location">"%AUTO%"</string>
           <string name="wxWidgets build path">"%AUTO%"</string>
-          <string name="wxWidgets build command">"nmake /nologo -f makefile.vc INCLUDE=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\include;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\include&quot; LIB=&quot;C:\Archivos de programa\Microsoft Visual Studio 9.0\vc\lib;C:\Archivos de programa\Microsoft SDKs\Windows\v6.0A\lib&quot; USE_XRC=1 BUILD=release UNICODE=0 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_GUI=1  USE_GDIPLUS=1 RUNTIME_LIBS=static SHARED=0 all"</string>
+          <string name="wxWidgets build command">"nmake /nologo -f makefile.vc INCLUDE=&quot;C:\Program Files (x86)\Microsoft Visual Studio 9.0\vc\include;C:\Program Files\Microsoft SDKs\Windows\v6.0A\include&quot; LIB=&quot;C:\Program Files (x86)\Microsoft Visual Studio 9.0\vc\lib;C:\Program Files\Microsoft SDKs\Windows\v6.0A\lib&quot; USE_XRC=1 BUILD=release UNICODE=0 WXUNIV=0 MONOLITHIC=0 USE_EXCEPTIONS=1 USE_ODBC=0 USE_OPENGL=0 USE_GUI=1  USE_GDIPLUS=1 RUNTIME_LIBS=static SHARED=0 all"</string>
           <string name="wxWidgets clean command">"%AUTO%"</string>
           <string name="CFG">""</string>
           <string name="Compiler location">"%AUTO%"</string>
@@ -696,7 +696,7 @@
           <string name="Extra compile flags">"%AUTO%"</string>
           <string name="Libraries">"%AUTO% api.lib paraver-kernel.lib wxcode_msw28_propgrid.lib gdiplus.lib libxml2.lib"</string>
           <string name="Library path">"%AUTO%,../paraver-kernel/paraver-kernel-win32/Release,C:\Archivos de programa\libxml2\lib"</string>
-          <string name="Linker flags">"%AUTO%"</string>
+          <string name="Linker flags">"%AUTO% /LTCG"</string>
           <string name="Include path">"%AUTO%,../common-files,../common-files/win32,../paraver-kernel,../paraver-kernel/api,C:/Archivos de programa/boost"</string>
           <string name="Resource flags">"%AUTO%"</string>
           <string name="Resource path">"%AUTO%"</string>
@@ -715,7 +715,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Debug"</string>
@@ -787,7 +787,7 @@
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <string name="template-name">"VC++"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <long name="makefile-last-written">8470657</long>
           <string name="Compiler name">"VC++"</string>
           <string name="Build mode">"Release"</string>
@@ -4903,12 +4903,12 @@
           <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
-          <string name="variable-0">"options|SaveOptions|Options||2|0|"</string>
-          <string name="variable-1">"timelines|vector&lt;Window *&gt;|Timelines||2|0|"</string>
-          <string name="variable-2">"histograms|vector&lt;Histogram *&gt;|Histograms||2|0|"</string>
-          <string name="variable-3">"initialTrace|Trace *|InitialTrace|NULL|2|0|"</string>
-          <string name="variable-4">"selectedTimelines|vector&lt; Window * &gt;|SelectedTimelines||2|0|"</string>
-          <string name="variable-5">"selectedHistograms|vector&lt; Histogram * &gt;|SelectedHistograms||2|0|"</string>
+          <string name="variable-0">"histograms|std::vector&lt;Histogram *&gt;|Histograms||2|0|"</string>
+          <string name="variable-1">"initialTrace|Trace *|InitialTrace|NULL|2|0|"</string>
+          <string name="variable-2">"options|SaveOptions|Options||2|0|"</string>
+          <string name="variable-3">"selectedHistograms|std::vector&lt; Histogram * &gt;|SelectedHistograms||2|0|"</string>
+          <string name="variable-4">"selectedTimelines|std::vector&lt; Window * &gt;|SelectedTimelines||2|0|"</string>
+          <string name="variable-5">"timelines|std::vector&lt;Window *&gt;|Timelines||2|0|"</string>
           <string name="proxy-Id name">"ID_SAVECONFIGURATIONDIALOG"</string>
           <long name="proxy-Id value">10012</long>
           <string name="proxy-Class">"SaveConfigurationDialog"</string>

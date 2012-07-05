@@ -121,11 +121,35 @@ public:
 
 ////@begin DerivedTimelineDialog member function declarations
 
+  Window * GetCurrentWindow1() const { return currentWindow1 ; }
+  void SetCurrentWindow1(Window * value) { currentWindow1 = value ; }
+
+  Window * GetCurrentWindow2() const { return currentWindow2 ; }
+  void SetCurrentWindow2(Window * value) { currentWindow2 = value ; }
+
   double GetFactorTimeline1() const { return factorTimeline1 ; }
   void SetFactorTimeline1(double value) { factorTimeline1 = value ; }
 
   double GetFactorTimeline2() const { return factorTimeline2 ; }
   void SetFactorTimeline2(double value) { factorTimeline2 = value ; }
+
+  TParamValue GetMaxCompose1() const { return maxCompose1 ; }
+  void SetMaxCompose1(TParamValue value) { maxCompose1 = value ; }
+
+  TParamValue GetMaxCompose2() const { return maxCompose2 ; }
+  void SetMaxCompose2(TParamValue value) { maxCompose2 = value ; }
+
+  TParamValue GetMinCompose1() const { return minCompose1 ; }
+  void SetMinCompose1(TParamValue value) { minCompose1 = value ; }
+
+  TParamValue GetMinCompose2() const { return minCompose2 ; }
+  void SetMinCompose2(TParamValue value) { minCompose2 = value ; }
+
+  std::vector< std::string > GetOperations() const { return operations ; }
+  void SetOperations(std::vector< std::string > value) { operations = value ; }
+
+  std::string GetTimelineName() const { return timelineName ; }
+  void SetTimelineName(std::string value) { timelineName = value ; }
 
   std::vector< Window * > GetTimelines1() const { return timelines1 ; }
   void SetTimelines1(std::vector< Window * > value) { timelines1 = value ; }
@@ -133,35 +157,11 @@ public:
   std::vector< Window * > GetTimelines2() const { return timelines2 ; }
   void SetTimelines2(std::vector< Window * > value) { timelines2 = value ; }
 
-  std::vector< std::string > GetOperations() const { return operations ; }
-  void SetOperations(std::vector< std::string > value) { operations = value ; }
-
-  Window * GetCurrentWindow1() const { return currentWindow1 ; }
-  void SetCurrentWindow1(Window * value) { currentWindow1 = value ; }
-
-  Window * GetCurrentWindow2() const { return currentWindow2 ; }
-  void SetCurrentWindow2(Window * value) { currentWindow2 = value ; }
-
   std::vector< std::string > GetTopCompose1() const { return topCompose1 ; }
   void SetTopCompose1(std::vector< std::string > value) { topCompose1 = value ; }
 
   std::vector< std::string > GetTopCompose2() const { return topCompose2 ; }
   void SetTopCompose2(std::vector< std::string > value) { topCompose2 = value ; }
-
-  std::string GetTimelineName() const { return timelineName ; }
-  void SetTimelineName(std::string value) { timelineName = value ; }
-
-  TParamValue GetMinCompose1() const { return minCompose1 ; }
-  void SetMinCompose1(TParamValue value) { minCompose1 = value ; }
-
-  TParamValue GetMaxCompose1() const { return maxCompose1 ; }
-  void SetMaxCompose1(TParamValue value) { maxCompose1 = value ; }
-
-  TParamValue GetMinCompose2() const { return minCompose2 ; }
-  void SetMinCompose2(TParamValue value) { minCompose2 = value ; }
-
-  TParamValue GetMaxCompose2() const { return maxCompose2 ; }
-  void SetMaxCompose2(TParamValue value) { maxCompose2 = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -197,23 +197,23 @@ public:
   wxTextCtrl* widgetFactorTimeline2;
   wxButton* swapWindowsButton;
 private:
-  double factorTimeline1;
-  double factorTimeline2;
-  std::vector< Window * > timelines1;
-  std::vector< Window * > timelines2;
-  std::vector< std::string > operations;
   Window * currentWindow1;
   Window * currentWindow2;
+  double factorTimeline1;
+  double factorTimeline2;
+  TParamValue maxCompose1;
+  TParamValue maxCompose2;
+  TParamValue minCompose1;
+  TParamValue minCompose2;
+  std::vector< std::string > operations;
+  std::string timelineName;
+  std::vector< Window * > timelines1;
+  std::vector< Window * > timelines2;
   std::vector< std::string > topCompose1;
   std::vector< std::string > topCompose2;
-  std::string timelineName;
-  TParamValue minCompose1;
-  TParamValue maxCompose1;
-  TParamValue minCompose2;
-  TParamValue maxCompose2;
 ////@end DerivedTimelineDialog member variables
 
-  void presetTimelineComboBox( vector< Window * > timelines,
+  void presetTimelineComboBox( std::vector< Window * > timelines,
                                Window *currentWindow,
                                wxComboBox *comboBox );
   void presetStringChoiceBox( std::vector< std::string > list, wxChoice *choiceBox );
