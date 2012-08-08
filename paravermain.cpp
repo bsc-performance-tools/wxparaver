@@ -2023,7 +2023,6 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     if( dialog.ShowModal() == wxID_OK )
     {
       CFGPath = dialog.GetPath();
-std::cout << "paravermain: " << CFGPath << std::endl;
       CFGLoadedBefore = true;
       CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms );
       previousCFGs->add( std::string( CFGPath.mb_str() ) );
