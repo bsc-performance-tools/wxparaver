@@ -54,6 +54,7 @@
 #include "windows_tree.h"
 #include "caution.xpm"
 #include "output.h"
+#include "filedialogext.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -174,26 +175,26 @@ gTimeline::~gTimeline()
 void gTimeline::Init()
 {
 ////@begin gTimeline member initialisation
-  ready = false;
-  myWindow = NULL;
-  objectHeight = 1;
-  zooming = false;
   canRedraw = false;
-  firstUnsplit = false;
-  redoColors = false;
   drawCaution = false;
-  splitChanged = false;
-  timerSize = new wxTimer( this, ID_TIMER_SIZE );
-  infoZoneLastSize = 200;
   escapePressed = false;
-  timerMotion = new wxTimer( this, ID_TIMER_MOTION );
-  lastEventFoundTime = 0;
-  lastSemanticFoundTime = 0;
   findBeginTime = 0;
   findEndTime = 0;
   findFirstObject = 0;
   findLastObject = 0;
+  firstUnsplit = false;
+  infoZoneLastSize = 200;
+  lastEventFoundTime = 0;
   lastFoundObject = 0;
+  lastSemanticFoundTime = 0;
+  myWindow = NULL;
+  objectHeight = 1;
+  ready = false;
+  redoColors = false;
+  splitChanged = false;
+  timerMotion = new wxTimer( this, ID_TIMER_MOTION );
+  timerSize = new wxTimer( this, ID_TIMER_SIZE );
+  zooming = false;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -2630,12 +2631,19 @@ void gTimeline::saveText()
   defaultDir = _("./");
 #endif
 
-  wxFileDialog saveDialog( this,
-                           _("Save as..."),
-                           defaultDir,
-                           fileName,
-                           _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
-                           wxSAVE | wxFD_OVERWRITE_PROMPT );
+  vector< wxString > extensions;
+  extensions.push_back( wxString( ".csv" ) );
+  extensions.push_back( wxString( ".gnuplot" ) );
+  FileDialogExtension saveDialog( this,
+                                  _("Save as..."),
+                                  defaultDir,
+                                  fileName,
+                                  _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
+                                  wxSAVE | wxFD_OVERWRITE_PROMPT,
+                                  wxDefaultPosition,
+                                  wxDefaultSize,
+                                  _( "filedlg" ),
+                                  extensions );
                            
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveTextFormat() );
   

@@ -233,17 +233,14 @@ public:
 
 ////@begin gHistogram member function declarations
 
-  Histogram* GetHistogram() const { return myHistogram ; }
-  void SetHistogram(Histogram* value) { myHistogram = value ; }
+  SelectionManagement<THistogramColumn,int> GetColumnSelection() const { return columnSelection ; }
+  void SetColumnSelection(SelectionManagement<THistogramColumn,int> value) { columnSelection = value ; }
 
-  bool GetReady() const { return ready ; }
-  void SetReady(bool value) { ready = value ; }
+  wxBitmap GetDrawImage() const { return drawImage ; }
+  void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
-  wxBitmap GetZoomImage() const { return zoomImage ; }
-  void SetZoomImage(wxBitmap value) { zoomImage = value ; }
-
-  wxTimer * GetTimerZoom() const { return timerZoom ; }
-  void SetTimerZoom(wxTimer * value) { timerZoom = value ; }
+  bool GetEscapePressed() const { return escapePressed ; }
+  void SetEscapePressed(bool value) { escapePressed = value ; }
 
   double GetLastPosZoomX() const { return lastPosZoomX ; }
   void SetLastPosZoomX(double value) { lastPosZoomX = value ; }
@@ -251,38 +248,41 @@ public:
   double GetLastPosZoomY() const { return lastPosZoomY ; }
   void SetLastPosZoomY(double value) { lastPosZoomY = value ; }
 
-  double GetZoomCellWidth() const { return zoomCellWidth ; }
-  void SetZoomCellWidth(double value) { zoomCellWidth = value ; }
+  Histogram* GetHistogram() const { return myHistogram ; }
+  void SetHistogram(Histogram* value) { myHistogram = value ; }
+
+  bool GetOpenControlActivated() const { return openControlActivated ; }
+  void SetOpenControlActivated(bool value) { openControlActivated = value ; }
+
+  bool GetReady() const { return ready ; }
+  void SetReady(bool value) { ready = value ; }
+
+  vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
+  void SetSelectedRows(vector<TObjectOrder> value) { selectedRows = value ; }
+
+  HistoTableBase* GetTableBase() const { return tableBase ; }
+  void SetTableBase(HistoTableBase* value) { tableBase = value ; }
+
+  wxTimer * GetTimerZoom() const { return timerZoom ; }
+  void SetTimerZoom(wxTimer * value) { timerZoom = value ; }
 
   double GetZommCellHeight() const { return zoomCellHeight ; }
   void SetZommCellHeight(double value) { zoomCellHeight = value ; }
 
-  bool GetOpenControlActivated() const { return openControlActivated ; }
-  void SetOpenControlActivated(bool value) { openControlActivated = value ; }
+  double GetZoomCellWidth() const { return zoomCellWidth ; }
+  void SetZoomCellWidth(double value) { zoomCellWidth = value ; }
+
+  bool GetZoomDragging() const { return zoomDragging ; }
+  void SetZoomDragging(bool value) { zoomDragging = value ; }
+
+  wxBitmap GetZoomImage() const { return zoomImage ; }
+  void SetZoomImage(wxBitmap value) { zoomImage = value ; }
 
   wxPoint GetZoomPointBegin() const { return zoomPointBegin ; }
   void SetZoomPointBegin(wxPoint value) { zoomPointBegin = value ; }
 
   wxPoint GetZoomPointEnd() const { return zoomPointEnd ; }
   void SetZoomPointEnd(wxPoint value) { zoomPointEnd = value ; }
-
-  wxBitmap GetDrawImage() const { return drawImage ; }
-  void SetDrawImage(wxBitmap value) { drawImage = value ; }
-
-  bool GetZoomDragging() const { return zoomDragging ; }
-  void SetZoomDragging(bool value) { zoomDragging = value ; }
-
-  vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
-  void SetSelectedRows(vector<TObjectOrder> value) { selectedRows = value ; }
-
-  SelectionManagement<THistogramColumn,int> GetColumnSelection() const { return columnSelection ; }
-  void SetColumnSelection(SelectionManagement<THistogramColumn,int> value) { columnSelection = value ; }
-
-  bool GetEscapePressed() const { return escapePressed ; }
-  void SetEscapePressed(bool value) { escapePressed = value ; }
-
-  HistoTableBase* GetTableBase() const { return tableBase ; }
-  void SetTableBase(HistoTableBase* value) { tableBase = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -361,23 +361,23 @@ public:
   wxStaticBitmap* xtraWarning;
   wxStatusBar* histoStatus;
 private:
-  Histogram* myHistogram;
-  bool ready;
-  wxBitmap zoomImage;
-  wxTimer * timerZoom;
+  SelectionManagement<THistogramColumn,int> columnSelection;
+  wxBitmap drawImage;
+  bool escapePressed;
   double lastPosZoomX;
   double lastPosZoomY;
-  double zoomCellWidth;
-  double zoomCellHeight;
+  Histogram* myHistogram;
   bool openControlActivated;
+  bool ready;
+  vector<TObjectOrder> selectedRows;
+  HistoTableBase* tableBase;
+  wxTimer * timerZoom;
+  double zoomCellHeight;
+  double zoomCellWidth;
+  bool zoomDragging;
+  wxBitmap zoomImage;
   wxPoint zoomPointBegin;
   wxPoint zoomPointEnd;
-  wxBitmap drawImage;
-  bool zoomDragging;
-  vector<TObjectOrder> selectedRows;
-  SelectionManagement<THistogramColumn,int> columnSelection;
-  bool escapePressed;
-  HistoTableBase* tableBase;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
   HistogramProxy::TZoomInfo zoomRow;

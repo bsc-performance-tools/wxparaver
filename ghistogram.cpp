@@ -55,6 +55,7 @@
 #include "textoutput.h"
 #include "paraverkernelexception.h"
 #include "histotablebase.h"
+#include "filedialogext.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -221,15 +222,15 @@ gHistogram::~gHistogram()
 void gHistogram::Init()
 {
 ////@begin gHistogram member initialisation
-  myHistogram = NULL;
-  ready = false;
-  timerZoom = new wxTimer( this );
+  escapePressed = false;
   lastPosZoomX = 0;
   lastPosZoomY = 0;
+  myHistogram = NULL;
   openControlActivated = false;
-  zoomDragging = false;
-  escapePressed = false;
+  ready = false;
   tableBase = NULL;
+  timerZoom = new wxTimer( this );
+  zoomDragging = false;
   mainSizer = NULL;
   zoomHisto = NULL;
   gridHisto = NULL;
@@ -287,7 +288,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(17, 20, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2242,37 +2243,25 @@ void gHistogram::saveText( bool onlySelectedPlane )
   defaultDir = _("./");
 #endif
 
-  wxFileDialog saveDialog( this,
-                           _("Save as..."),
-                           defaultDir,
-                           fileName,
-                           _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
-                           wxSAVE | wxFD_OVERWRITE_PROMPT );
+  vector< wxString > extensions;
+  extensions.push_back( wxString( ".csv" ) );
+  extensions.push_back( wxString( ".gnuplot" ) );
+  FileDialogExtension saveDialog( this,
+                                  _("Save as..."),
+                                  defaultDir,
+                                  fileName,
+                                  _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
+                                  wxFD_SAVE|wxFD_OVERWRITE_PROMPT,
+                                  wxDefaultPosition,
+                                  wxDefaultSize,
+                                  _( "filedlg" ),
+                                  extensions );
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getHistogramSaveTextFormat() );
 
   if ( saveDialog.ShowModal() == wxID_OK )
   {
-
-    switch( saveDialog.GetFilterIndex() )
-    {
-      case 0:
-        fileSuffix = _(".csv");
-        break;
-      case 1:
-        fileSuffix = _(".gnuplot");
-        break;
-      default:
-        fileSuffix = _(".txt");
-        break;
-    }
-
-    if ( saveDialog.GetPath().EndsWith( fileSuffix )) 
-    //       || saveDialog.GetPath().EndsWith( wxString( imageSuffix ).MakeUpper() ) )
-      fileName = saveDialog.GetPath();
-    else
-      fileName = saveDialog.GetPath() + fileSuffix;
-
+    fileName = saveDialog.GetPath();
     Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
     string tmpStr = string( fileName.mb_str() );
@@ -2316,7 +2305,7 @@ void gHistogram::saveImage()
 #else
                            _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
 #endif
-                           wxSAVE|wxFD_OVERWRITE_PROMPT );
+                           wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getHistogramSaveImageFormat() );
   if ( saveDialog.ShowModal() == wxID_OK )

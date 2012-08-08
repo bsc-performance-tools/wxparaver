@@ -87,6 +87,7 @@ class wxSpinCtrl;
 #define ID_BITMAPBUTTON_PUSH_DOWN_FILTER 10001
 #define ID_BUTTON_EDIT_XML 10153
 #define ID_BUTTON_SAVE_XML 10154
+#define ID_BUTTON_RUN_APP2 10208
 #define ID_NOTEBOOK_CUT_FILTER_OPTIONS 10108
 #define ID_PANEL_CUTTER 10111
 #define ID_RADIOBUTTON_CUTTER_CUT_BY_TIME 10116
@@ -358,6 +359,7 @@ public:
   wxBitmapButton* buttonDown;
   wxToggleButton* buttonViewEditXml;
   wxButton* buttonSaveXml;
+  wxButton* runApplication;
   wxNotebook* notebookTools;
   wxRadioButton* radioCutterCutByTime;
   wxRadioButton* radioCutterCutByTimePercent;

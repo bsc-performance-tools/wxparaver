@@ -207,125 +207,35 @@ public:
 
 ////@begin gTimeline member function declarations
 
-  wxBitmap GetBufferImage() const { return bufferImage ; }
-  void SetBufferImage(wxBitmap value) { bufferImage = value ; }
-
-  bool GetReady() const { return ready ; }
-  void SetReady(bool value) { ready = value ; }
-
-  Window* GetMyWindow() const { return myWindow ; }
-  void SetMyWindow(Window* value) { myWindow = value ; }
-
-  PRV_INT32 GetObjectAxisPos() const { return objectAxisPos ; }
-  void SetObjectAxisPos(PRV_INT32 value) { objectAxisPos = value ; }
-
-  PRV_INT32 GetTimeAxisPos() const { return timeAxisPos ; }
-  void SetTimeAxisPos(PRV_INT32 value) { timeAxisPos = value ; }
-
-  wxFont GetObjectFont() const { return objectFont ; }
-  void SetObjectFont(wxFont value) { objectFont = value ; }
-
-  wxFont GetTimeFont() const { return timeFont ; }
-  void SetTimeFont(wxFont value) { timeFont = value ; }
-
-  vector<PRV_INT32> GetObjectPosList() const { return objectPosList ; }
-  void SetObjectPosList(vector<PRV_INT32> value) { objectPosList = value ; }
-
-  int GetObjectHeight() const { return objectHeight ; }
-  void SetObjectHeight(int value) { objectHeight = value ; }
-
-  bool GetZooming() const { return zooming ; }
-  void SetZooming(bool value) { zooming = value ; }
-
-  long GetZoomBegin() const { return zoomBeginX ; }
-  void SetZoomBegin(long value) { zoomBeginX = value ; }
-
-  long GetZoomEnd() const { return zoomEndX ; }
-  void SetZoomEnd(long value) { zoomEndX = value ; }
-
-  wxBitmap GetDrawImage() const { return drawImage ; }
-  void SetDrawImage(wxBitmap value) { drawImage = value ; }
-
-  wxBitmap GetCommImage() const { return commImage ; }
-  void SetCommImage(wxBitmap value) { commImage = value ; }
-
-  bool GetZoomXY() const { return zoomXY ; }
-  void SetZoomXY(bool value) { zoomXY = value ; }
-
-  long GetZoomBeginY() const { return zoomBeginY ; }
-  void SetZoomBeginY(long value) { zoomBeginY = value ; }
+  wxColour GetBackgroundColour() const { return backgroundColour ; }
+  void SetBackgroundColour(wxColour value) { backgroundColour = value ; }
 
   long GetBeginRow() const { return beginRow ; }
   void SetBeginRow(long value) { beginRow = value ; }
 
-  long GetEndRow() const { return endRow ; }
-  void SetEndRow(long value) { endRow = value ; }
-
-  long GetZoomEndY() const { return zoomEndY ; }
-  void SetZoomEndY(long value) { zoomEndY = value ; }
+  wxBitmap GetBufferImage() const { return bufferImage ; }
+  void SetBufferImage(wxBitmap value) { bufferImage = value ; }
 
   bool GetCanRedraw() const { return canRedraw ; }
   void SetCanRedraw(bool value) { canRedraw = value ; }
 
-  bool GetFirstUnsplit() const { return firstUnsplit ; }
-  void SetFirstUnsplit(bool value) { firstUnsplit = value ; }
-
-  bool GetRedoColors() const { return redoColors ; }
-  void SetRedoColors(bool value) { redoColors = value ; }
-
-  wxBitmap GetEventImage() const { return eventImage ; }
-  void SetEventImage(wxBitmap value) { eventImage = value ; }
+  wxBitmap GetCommImage() const { return commImage ; }
+  void SetCommImage(wxBitmap value) { commImage = value ; }
 
   bool GetDrawCaution() const { return drawCaution ; }
   void SetDrawCaution(bool value) { drawCaution = value ; }
 
-  bool GetSplitChanged() const { return splitChanged ; }
-  void SetSplitChanged(bool value) { splitChanged = value ; }
+  wxBitmap GetDrawImage() const { return drawImage ; }
+  void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
-  wxTimer * GetTimerSize() const { return timerSize ; }
-  void SetTimerSize(wxTimer * value) { timerSize = value ; }
-
-  int GetInfoZoneLastSize() const { return infoZoneLastSize ; }
-  void SetInfoZoneLastSize(int value) { infoZoneLastSize = value ; }
-
-  wxColour GetForegroundColour() const { return foregroundColour ; }
-  void SetForegroundColour(wxColour value) { foregroundColour = value ; }
-
-  wxColour GetBackgroundColour() const { return backgroundColour ; }
-  void SetBackgroundColour(wxColour value) { backgroundColour = value ; }
-
-  wxColour GetLogicalColour() const { return logicalColour ; }
-  void SetLogicalColour(wxColour value) { logicalColour = value ; }
-
-  wxColour GetPhysicalColour() const { return physicalColour ; }
-  void SetPhysicalColour(wxColour value) { physicalColour = value ; }
+  long GetEndRow() const { return endRow ; }
+  void SetEndRow(long value) { endRow = value ; }
 
   bool GetEscapePressed() const { return escapePressed ; }
   void SetEscapePressed(bool value) { escapePressed = value ; }
 
-  wxPen GetLogicalPen() const { return logicalPen ; }
-  void SetLogicalPen(wxPen value) { logicalPen = value ; }
-
-  wxPen GetPhysicalPen() const { return physicalPen ; }
-  void SetPhysicalPen(wxPen value) { physicalPen = value ; }
-
-  wxTimer * GetTimerMotion() const { return timerMotion ; }
-  void SetTimerMotion(wxTimer * value) { timerMotion = value ; }
-
-  wxFont GetSemanticFont() const { return semanticFont ; }
-  void SetSemanticFont(wxFont value) { semanticFont = value ; }
-
-  wxMouseEvent GetMotionEvent() const { return motionEvent ; }
-  void SetMotionEvent(wxMouseEvent value) { motionEvent = value ; }
-
-  wxMouseEvent GetFirstMotionEvent() const { return firstMotionEvent ; }
-  void SetFirstMotionEvent(wxMouseEvent value) { firstMotionEvent = value ; }
-
-  TRecordTime GetLastEventFoundTime() const { return lastEventFoundTime ; }
-  void SetLastEventFoundTime(TRecordTime value) { lastEventFoundTime = value ; }
-
-  TRecordTime GetLastSemanticFoundTime() const { return lastSemanticFoundTime ; }
-  void SetLastSemanticFoundTime(TRecordTime value) { lastSemanticFoundTime = value ; }
+  wxBitmap GetEventImage() const { return eventImage ; }
+  void SetEventImage(wxBitmap value) { eventImage = value ; }
 
   TRecordTime GetFindBeginTime() const { return findBeginTime ; }
   void SetFindBeginTime(TRecordTime value) { findBeginTime = value ; }
@@ -339,8 +249,98 @@ public:
   TObjectOrder GetFindLastObject() const { return findLastObject ; }
   void SetFindLastObject(TObjectOrder value) { findLastObject = value ; }
 
+  wxMouseEvent GetFirstMotionEvent() const { return firstMotionEvent ; }
+  void SetFirstMotionEvent(wxMouseEvent value) { firstMotionEvent = value ; }
+
+  bool GetFirstUnsplit() const { return firstUnsplit ; }
+  void SetFirstUnsplit(bool value) { firstUnsplit = value ; }
+
+  wxColour GetForegroundColour() const { return foregroundColour ; }
+  void SetForegroundColour(wxColour value) { foregroundColour = value ; }
+
+  int GetInfoZoneLastSize() const { return infoZoneLastSize ; }
+  void SetInfoZoneLastSize(int value) { infoZoneLastSize = value ; }
+
+  TRecordTime GetLastEventFoundTime() const { return lastEventFoundTime ; }
+  void SetLastEventFoundTime(TRecordTime value) { lastEventFoundTime = value ; }
+
   TObjectOrder GetLastFoundObject() const { return lastFoundObject ; }
   void SetLastFoundObject(TObjectOrder value) { lastFoundObject = value ; }
+
+  TRecordTime GetLastSemanticFoundTime() const { return lastSemanticFoundTime ; }
+  void SetLastSemanticFoundTime(TRecordTime value) { lastSemanticFoundTime = value ; }
+
+  wxColour GetLogicalColour() const { return logicalColour ; }
+  void SetLogicalColour(wxColour value) { logicalColour = value ; }
+
+  wxPen GetLogicalPen() const { return logicalPen ; }
+  void SetLogicalPen(wxPen value) { logicalPen = value ; }
+
+  wxMouseEvent GetMotionEvent() const { return motionEvent ; }
+  void SetMotionEvent(wxMouseEvent value) { motionEvent = value ; }
+
+  Window* GetMyWindow() const { return myWindow ; }
+  void SetMyWindow(Window* value) { myWindow = value ; }
+
+  PRV_INT32 GetObjectAxisPos() const { return objectAxisPos ; }
+  void SetObjectAxisPos(PRV_INT32 value) { objectAxisPos = value ; }
+
+  wxFont GetObjectFont() const { return objectFont ; }
+  void SetObjectFont(wxFont value) { objectFont = value ; }
+
+  int GetObjectHeight() const { return objectHeight ; }
+  void SetObjectHeight(int value) { objectHeight = value ; }
+
+  vector<PRV_INT32> GetObjectPosList() const { return objectPosList ; }
+  void SetObjectPosList(vector<PRV_INT32> value) { objectPosList = value ; }
+
+  wxColour GetPhysicalColour() const { return physicalColour ; }
+  void SetPhysicalColour(wxColour value) { physicalColour = value ; }
+
+  wxPen GetPhysicalPen() const { return physicalPen ; }
+  void SetPhysicalPen(wxPen value) { physicalPen = value ; }
+
+  bool GetReady() const { return ready ; }
+  void SetReady(bool value) { ready = value ; }
+
+  bool GetRedoColors() const { return redoColors ; }
+  void SetRedoColors(bool value) { redoColors = value ; }
+
+  wxFont GetSemanticFont() const { return semanticFont ; }
+  void SetSemanticFont(wxFont value) { semanticFont = value ; }
+
+  bool GetSplitChanged() const { return splitChanged ; }
+  void SetSplitChanged(bool value) { splitChanged = value ; }
+
+  PRV_INT32 GetTimeAxisPos() const { return timeAxisPos ; }
+  void SetTimeAxisPos(PRV_INT32 value) { timeAxisPos = value ; }
+
+  wxFont GetTimeFont() const { return timeFont ; }
+  void SetTimeFont(wxFont value) { timeFont = value ; }
+
+  wxTimer * GetTimerMotion() const { return timerMotion ; }
+  void SetTimerMotion(wxTimer * value) { timerMotion = value ; }
+
+  wxTimer * GetTimerSize() const { return timerSize ; }
+  void SetTimerSize(wxTimer * value) { timerSize = value ; }
+
+  long GetZoomBegin() const { return zoomBeginX ; }
+  void SetZoomBegin(long value) { zoomBeginX = value ; }
+
+  long GetZoomBeginY() const { return zoomBeginY ; }
+  void SetZoomBeginY(long value) { zoomBeginY = value ; }
+
+  long GetZoomEnd() const { return zoomEndX ; }
+  void SetZoomEnd(long value) { zoomEndX = value ; }
+
+  long GetZoomEndY() const { return zoomEndY ; }
+  void SetZoomEndY(long value) { zoomEndY = value ; }
+
+  bool GetZoomXY() const { return zoomXY ; }
+  void SetZoomXY(bool value) { zoomXY = value ; }
+
+  bool GetZooming() const { return zooming ; }
+  void SetZooming(bool value) { zooming = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -485,51 +485,51 @@ public:
   wxScrolledWindow* colorsPanel;
   wxBoxSizer* colorsSizer;
   wxBitmap bufferImage;
-  wxBitmap drawImage;
   wxBitmap commImage;
-  wxBitmap eventImage;
   bool drawCaution;
+  wxBitmap drawImage;
+  wxBitmap eventImage;
   wxColour physicalColour;
 private:
-  bool ready;
-  Window* myWindow;
-  PRV_INT32 objectAxisPos;
-  PRV_INT32 timeAxisPos;
-  wxFont objectFont;
-  wxFont timeFont;
-  vector<PRV_INT32> objectPosList;
-  int objectHeight;
-  bool zooming;
-  long zoomBeginX;
-  long zoomEndX;
-  bool zoomXY;
-  long zoomBeginY;
-  long beginRow;
-  long endRow;
-  long zoomEndY;
-  bool canRedraw;
-  bool firstUnsplit;
-  bool redoColors;
-  bool splitChanged;
-  wxTimer * timerSize;
-  int infoZoneLastSize;
-  wxColour foregroundColour;
   wxColour backgroundColour;
-  wxColour logicalColour;
+  long beginRow;
+  bool canRedraw;
+  long endRow;
   bool escapePressed;
-  wxPen logicalPen;
-  wxPen physicalPen;
-  wxTimer * timerMotion;
-  wxFont semanticFont;
-  wxMouseEvent motionEvent;
-  wxMouseEvent firstMotionEvent;
-  TRecordTime lastEventFoundTime;
-  TRecordTime lastSemanticFoundTime;
   TRecordTime findBeginTime;
   TRecordTime findEndTime;
   TObjectOrder findFirstObject;
   TObjectOrder findLastObject;
+  wxMouseEvent firstMotionEvent;
+  bool firstUnsplit;
+  wxColour foregroundColour;
+  int infoZoneLastSize;
+  TRecordTime lastEventFoundTime;
   TObjectOrder lastFoundObject;
+  TRecordTime lastSemanticFoundTime;
+  wxColour logicalColour;
+  wxPen logicalPen;
+  wxMouseEvent motionEvent;
+  Window* myWindow;
+  PRV_INT32 objectAxisPos;
+  wxFont objectFont;
+  int objectHeight;
+  vector<PRV_INT32> objectPosList;
+  wxPen physicalPen;
+  bool ready;
+  bool redoColors;
+  wxFont semanticFont;
+  bool splitChanged;
+  PRV_INT32 timeAxisPos;
+  wxFont timeFont;
+  wxTimer * timerMotion;
+  wxTimer * timerSize;
+  long zoomBeginX;
+  long zoomBeginY;
+  long zoomEndX;
+  long zoomEndY;
+  bool zoomXY;
+  bool zooming;
 ////@end gTimeline member variables
 
   SemanticInfoType lastType;
