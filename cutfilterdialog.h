@@ -205,6 +205,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_SAVE_XML
   void OnButtonSaveXmlUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN_APP2
+  void OnButtonRunApplicationClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
   void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
 

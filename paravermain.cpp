@@ -176,8 +176,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
 
-  EVT_MENU( ID_TOOL_RUN_SCRIPT, paraverMain::OnToolRunScriptClick )
-  EVT_UPDATE_UI( ID_TOOL_RUN_SCRIPT, paraverMain::OnToolRunScriptUpdate )
+  EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
+  EVT_UPDATE_UI( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationUpdate )
 
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
@@ -459,7 +459,8 @@ void paraverMain::CreateControls()
   tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
   wxBitmap itemtool29Bitmap(itemFrame1->GetBitmapResource(wxT("run_script.xpm")));
   wxBitmap itemtool29BitmapDisabled;
-  tbarMain->AddTool(ID_TOOL_RUN_SCRIPT, _("Run Application"), itemtool29Bitmap, itemtool29BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
+  tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool29Bitmap, itemtool29BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
+  tbarMain->EnableTool(ID_TOOL_RUN_APPLICATION, false);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -3474,11 +3475,11 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_RUN_SCRIPT
  */
 
-void paraverMain::OnToolRunScriptClick( wxCommandEvent& event )
+void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
 {
-  RunScript runScript( this );
+  RunScript runApplication( this );
   
-  if ( runScript.ShowModal() == wxID_OK )
+  if ( runApplication.ShowModal() == wxID_OK )
   {
   }
 }
@@ -3488,7 +3489,7 @@ void paraverMain::OnToolRunScriptClick( wxCommandEvent& event )
  * wxEVT_UPDATE_UI event handler for ID_TOOL_RUN_SCRIPT
  */
 
-void paraverMain::OnToolRunScriptUpdate( wxUpdateUIEvent& event )
+void paraverMain::OnToolRunApplicationUpdate( wxUpdateUIEvent& event )
 {
 ////@begin wxEVT_UPDATE_UI event handler for ID_TOOL_RUN_SCRIPT in paraverMain.
   // Before editing this code, remove the block markers.

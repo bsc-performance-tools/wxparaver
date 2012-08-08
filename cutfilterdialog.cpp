@@ -55,6 +55,7 @@
 #include "kernelconnection.h"
 #include "wxparaverapp.h"
 #include "loadedwindows.h"
+#include "runscript.h"
 
 ////@begin XPM images
 #include "arrow_up.xpm"
@@ -96,6 +97,8 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
   EVT_BUTTON( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlClick )
   EVT_UPDATE_UI( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlUpdate )
+
+  EVT_BUTTON( ID_BUTTON_RUN_APP2, CutFilterDialog::OnButtonRunApplicationClick )
 
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
 
@@ -392,7 +395,8 @@ void CutFilterDialog::CreateControls()
 
   runApplication = new wxButton( itemDialog1, ID_BUTTON_RUN_APP2, _("Run Application"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
-    runApplication->SetToolTip(_("Run registered application"));
+    runApplication->SetToolTip(_("Opens window to select and parametrize external application."));
+  runApplication->Enable(false);
   itemBoxSizer28->Add(runApplication, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   boxSizerExecutionChain->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -2783,5 +2787,19 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonSaveXmlUpdate( wxUpdateUIEvent& event )
 {
   buttonSaveXml->Enable( !isExecutionChainEmpty() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN_APP2
+ */
+
+void CutFilterDialog::OnButtonRunApplicationClick( wxCommandEvent& event )
+{
+  RunScript runApplication( this );
+  
+  if ( runApplication.ShowModal() == wxID_OK )
+  {
+  }
 }
 

@@ -1921,7 +1921,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             </document>
             <document>
-              <string name="title">"Run Application: ID_TOOL_RUN_SCRIPT"</string>
+              <string name="title">"Run Application: ID_TOOL_RUN_APPLICATION"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
               <string name="icon-name">"menuitem"</string>
@@ -1930,15 +1930,15 @@
               <long name="title-mode">0</long>
               <long name="locked">0</long>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
-              <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolRunScriptClick|NONE||paraverMain"</string>
-              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolRunScriptUpdate|NONE||paraverMain"</string>
-              <string name="proxy-Id name">"ID_TOOL_RUN_SCRIPT"</string>
+              <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolRunApplicationClick|NONE||paraverMain"</string>
+              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolRunApplicationUpdate|NONE||paraverMain"</string>
+              <string name="proxy-Id name">"ID_TOOL_RUN_APPLICATION"</string>
               <long name="proxy-Id value">10004</long>
               <string name="proxy-Bitmap">"run_script.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
               <string name="proxy-Label">"Run Application"</string>
               <string name="proxy-Kind">"Normal"</string>
-              <bool name="proxy-Enabled">1</bool>
+              <bool name="proxy-Enabled">0</bool>
               <string name="proxy-Tooltip">"Run Application"</string>
               <string name="proxy-Help text">""</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
@@ -22283,6 +22283,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbButtonProxy"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonRunApplicationClick|NONE||CutFilterDialog"</string>
                     <string name="proxy-Id name">"ID_BUTTON_RUN_APP2"</string>
                     <long name="proxy-Id value">10208</long>
                     <string name="proxy-Name">""</string>
@@ -22296,7 +22297,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-Label">"Run Application"</string>
                     <bool name="proxy-Default">0</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">"Run registered application"</string>
+                    <string name="proxy-Tooltip text">"Opens window to select and parametrize external application."</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -22308,7 +22309,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
                     <bool name="proxy-Hidden">0</bool>
-                    <bool name="proxy-Enabled">1</bool>
+                    <bool name="proxy-Enabled">0</bool>
                     <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                     <bool name="proxy-wxBU_LEFT">0</bool>
                     <bool name="proxy-wxBU_RIGHT">0</bool>

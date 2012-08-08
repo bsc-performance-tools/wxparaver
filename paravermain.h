@@ -94,7 +94,7 @@ class wxPropertyGridEvent;
 #define ID_NEW_HISTOGRAM 10060
 #define ID_TOOLDELETE 10081
 #define ID_TOOL_CUT_TRACE 10100
-#define ID_TOOL_RUN_SCRIPT 10004
+#define ID_TOOL_RUN_APPLICATION 10004
 #define ID_CHOICEWINBROWSER 10002
 #define ID_TOOLBOOKFILESANDPROPERTIES 10159
 #define ID_DIRCTRLFILES 10160
@@ -256,11 +256,11 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_CUT_TRACE
   void OnToolCutTraceUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_RUN_SCRIPT
-  void OnToolRunScriptClick( wxCommandEvent& event );
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_RUN_APPLICATION
+  void OnToolRunApplicationClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_TOOL_RUN_SCRIPT
-  void OnToolRunScriptUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_RUN_APPLICATION
+  void OnToolRunApplicationUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );
