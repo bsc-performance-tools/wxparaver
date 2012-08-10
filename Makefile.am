@@ -80,6 +80,7 @@ noinst_HEADERS = \
               opencontrol.xpm\
               opendata.xpm\
               openfiltered.xpm\
+							run_script.xpm\
               semantic_color.xpm\
               table.xpm\
               timeline.xpm\
