@@ -43,14 +43,14 @@ class FileDialogExtension : public wxFileDialog
   public:
     FileDialogExtension( // same than wxFileDialog
                          wxWindow* parent,
-                         const wxString& message = "Choose a file",
-                         const wxString& defaultDir = "",
-                         const wxString& defaultFile = "",
-                         const wxString& wildcard = "*.*",
+                         const wxString& message = wxT("Choose a file"),
+                         const wxString& defaultDir = wxT(""),
+                         const wxString& defaultFile = wxT(""),
+                         const wxString& wildcard = wxT( "*.*"),
                          long style = wxFD_DEFAULT_STYLE,
                          const wxPoint& pos = wxDefaultPosition,
                          const wxSize& sz = wxDefaultSize,
-                         const wxString& name = "filedlg",
+                         const wxString& name = wxT("filedlg"),
                          // added extensions
                          const std::vector< wxString >& whichExtensions = std::vector< wxString >() );
                          

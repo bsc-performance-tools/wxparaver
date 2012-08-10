@@ -2010,7 +2010,7 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     options = saveDialog.GetOptions();
     
     vector< wxString > extensions;
-    extensions.push_back( wxString( ".cfg" ) );
+    extensions.push_back( wxT( ".cfg" ) );
     FileDialogExtension dialog( (wxWindow *)this,
                                 _( "Save Configuration" ),
                                 CFGPath,

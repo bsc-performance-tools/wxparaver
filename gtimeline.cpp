@@ -2632,8 +2632,8 @@ void gTimeline::saveText()
 #endif
 
   vector< wxString > extensions;
-  extensions.push_back( wxString( ".csv" ) );
-  extensions.push_back( wxString( ".gnuplot" ) );
+  extensions.push_back( wxT( ".csv" ) );
+  extensions.push_back( wxT( ".gnuplot" ) );
   FileDialogExtension saveDialog( this,
                                   _("Save as..."),
                                   defaultDir,
