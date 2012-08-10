@@ -37,6 +37,8 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
                     preferencesdialog.h \
                     rowsselectiondialog.cpp \
                     rowsselectiondialog.h \
+                    runscript.cpp \
+                    runscript.h \
                     saveconfigurationdialog.cpp \
                     saveconfigurationdialog.h \
                     sessionsaver.cpp \
@@ -68,6 +70,7 @@ noinst_HEADERS = \
               histo_horvert.xpm\
               histo_zoom.xpm\
               inclusive.xpm\
+              logoBSC.xpm\
               new_derived_window.xpm\
               new_histogram.xpm\
               new_window.xpm\
