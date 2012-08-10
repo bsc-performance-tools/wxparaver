@@ -127,3 +127,4 @@ int FileDialogExtension::ShowModal()
   
   return ( validName? wxID_OK : wxID_CANCEL );
 }
+

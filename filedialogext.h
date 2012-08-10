@@ -65,3 +65,4 @@ class FileDialogExtension : public wxFileDialog
 };
 
 #endif // _FILEDIALOGEXT_H_
+
