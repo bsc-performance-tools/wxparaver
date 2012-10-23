@@ -264,7 +264,7 @@ void HelpContents::buildIndex()
   wxMemoryFSHandler::AddFile( wxT("logoBSC.xpm"),
                               wxBITMAP( logoBSC ),
                               wxBITMAP_TYPE_XPM );
-  tutorialsHtmlIndex += _("<P ALIGN=CENTER><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALIGN=BOTTOM BORDER=0></P>" );
+  tutorialsHtmlIndex += _("<P ALIGN=LEFT><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALIGN=BOTTOM BORDER=0></P>" );
 
   // look for tutorials directories, and for index.html inside them
   if ( wxDirExists( auxPath ) )
