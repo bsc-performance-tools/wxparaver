@@ -38,17 +38,20 @@
 #include "wx/wx.h"
 #endif
 
+#include "wx/fs_mem.h"
+#include "wx/filesys.h"
+#include "wx/wfstream.h"
+
 ////@begin includes
 ////@end includes
 #include <string>
 
 #include "helpcontents.h"
-//#include "wx/html/htmlfilt.h"
-
 #include "paravermain.h"
 
 ////@begin XPM images
 ////@end XPM images
+#include "logoBSC.xpm"
 
 using namespace std;
 
@@ -255,6 +258,14 @@ void HelpContents::buildIndex()
   tutorialsHtmlIndex += _("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
   tutorialsHtmlIndex += _("<HTML><HEAD><TITLE>Tutorials</TITLE></HEAD><BODY>");
 
+  
+  // Place logoBSC
+  wxFileSystem::AddHandler( new wxMemoryFSHandler() );
+  wxMemoryFSHandler::AddFile( wxT("logoBSC.xpm"),
+                              wxBITMAP( logoBSC ),
+                              wxBITMAP_TYPE_XPM );
+  tutorialsHtmlIndex += _("<P ALIGN=CENTER><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALIGN=BOTTOM BORDER=0></P>" );
+
   // look for tutorials directories, and for index.html inside them
   if ( wxDirExists( auxPath ) )
   {
@@ -300,6 +311,8 @@ void HelpContents::buildIndex()
   tutorialsHtmlIndex += _("</BODY></HTML>");
 
   htmlWindow->SetPage( tutorialsHtmlIndex );
+
+  wxMemoryFSHandler::RemoveFile( wxT("logoBSC.xpm") );
 }
 
 
