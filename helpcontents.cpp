@@ -207,7 +207,7 @@ void HelpContents::appendTutorial( const wxString& title,
 
 void HelpContents::htmlMessage( wxString& htmlDoc )
 {
-  htmlDoc += _("<P><H3>No tutorial found!</H3></P>");
+  htmlDoc += _("<P><H3>No tutorial found!?</H3></P>");
 /*
   htmlDoc += _("<P>Before going on, please have in mind that:</P>");
   htmlDoc += _("<UL>");
@@ -256,7 +256,12 @@ void HelpContents::buildIndex()
   // open html index
   wxString tutorialsHtmlIndex, tutorialsList;
   tutorialsHtmlIndex += _("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
-  tutorialsHtmlIndex += _("<HTML><HEAD><TITLE>Tutorials</TITLE></HEAD><BODY>");
+  tutorialsHtmlIndex += _("<HTML>");
+  tutorialsHtmlIndex += _("<HEAD>");
+  tutorialsHtmlIndex += _("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
+  tutorialsHtmlIndex += _("<TITLE>Tutorials</TITLE>");
+  tutorialsHtmlIndex += _("</HEAD>");
+  tutorialsHtmlIndex += _("<BODY>");
 
   
   // Place logoBSC
@@ -269,28 +274,37 @@ void HelpContents::buildIndex()
   // look for tutorials directories, and for index.html inside them
   if ( wxDirExists( auxPath ) )
   {
-    tutorialsList += _("<UL>");
+    tutorialsList += _("<OL>");
     int numTutorials = 0;
 
     wxString currentDir = wxFindFirstFile(
             tutorialsGlobalPath.GetLongPath() + wxFileName::GetPathSeparator() + _("*"),
             wxDIR );
+    wxArrayString tutorials;
     while( !currentDir.empty() )
     {
-      wxString currentTutorialHtmlIndex( getHtmlIndex( currentDir ) );
-
-      if ( currentTutorialHtmlIndex != _("")  )
+      if ( getHtmlIndex( currentDir ) != _("")  )
       {
         // index.html found! => we consider this is a tutorial
         numTutorials++;
-
-        appendTutorial( getTitle( numTutorials, currentDir ), currentTutorialHtmlIndex, tutorialsList );
+        tutorials.Add( currentDir );
       }
 
       currentDir = wxFindNextFile();
     }
+    
+    // Order them: every tutorial dir must have a numbered prefix
+    //   tutorialsPath/ #_title_bla_bla /index.html
+    tutorials.Sort();
+    
+    for( int i = 0; i < numTutorials; ++i )
+    {
+      appendTutorial( getTitle( numTutorials, tutorials[ i ] ),
+                      getHtmlIndex( tutorials[ i ] ),
+                      tutorialsList );
+    }
 
-    tutorialsList += _("</UL>");
+    tutorialsList += _("</OL>");
 
     if ( numTutorials == 0 )
     {
@@ -404,6 +418,7 @@ std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent &event )
 
 bool HelpContents::matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension )
 {
+  //return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
   return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
 }
 
@@ -414,7 +429,25 @@ bool HelpContents::matchHrefExtension( wxHtmlLinkEvent &event, const wxString ex
 
 void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 {
-  if ( matchHrefExtension( event, _(".prv") ) || matchHrefExtension( event, _(".prv.gz")))
+  wxString auxCommand;
+
+  if ( event.GetLinkInfo().GetHref().StartsWith( _("init_command:"), &auxCommand ) )
+  {
+    string app("");
+    string trace("");
+    string command( auxCommand.mb_str() );
+    bool runNow = true;
+    paraverMain::myParaverMain->ShowRunCommand( app, trace, command, runNow );
+  }
+  else if ( event.GetLinkInfo().GetHref().Cmp( _("init_preferences") ) == 0 )
+  {
+    paraverMain::myParaverMain->ShowPreferences();
+
+    // we rebuild it anyway
+    buildIndex();
+  }
+  else if ( matchHrefExtension( event, _(".prv") ) ||
+            matchHrefExtension( event, _(".prv.gz")))
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
@@ -437,13 +470,6 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
     string strXmlFile = getHrefFullPath( event );
 
     paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
-  }
-  else if ( event.GetLinkInfo().GetHref().Cmp( _("init_preferences") ) == 0 )
-  {
-    paraverMain::myParaverMain->ShowPreferences();
-
-    // we rebuild it anyway
-    buildIndex();
   }
   else
   {
