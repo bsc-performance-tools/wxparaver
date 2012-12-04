@@ -386,7 +386,7 @@ void EventsSelectionDialog::CreateControls()
   itemDialog1->SetSizer(itemBoxSizer2);
 
   wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(itemBoxSizer3, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5);
+  itemBoxSizer2->Add(itemBoxSizer3, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer3->Add(itemBoxSizer4, 1, wxGROW|wxALL, 5);
@@ -406,7 +406,7 @@ void EventsSelectionDialog::CreateControls()
   boxSizerFunctionTypes->Add(choiceOperatorFunctionTypes, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
   wxArrayString checkListSelectTypesStrings;
-  checkListSelectTypes = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxDefaultSize, checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_NEEDED_SB );
+  checkListSelectTypes = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxDefaultSize, checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
   itemStaticBoxSizer5->Add(checkListSelectTypes, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
@@ -449,7 +449,7 @@ void EventsSelectionDialog::CreateControls()
   boxSizerFunctionValues->Add(choiceOperatorFunctionValues, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
   wxArrayString checkListSelectValuesStrings;
-  checkListSelectValues = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_VALUES, wxDefaultPosition, wxDefaultSize, checkListSelectValuesStrings, wxLB_EXTENDED|wxLB_NEEDED_SB );
+  checkListSelectValues = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_VALUES, wxDefaultPosition, wxDefaultSize, checkListSelectValuesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
   itemStaticBoxSizer18->Add(checkListSelectValues, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxHORIZONTAL);
