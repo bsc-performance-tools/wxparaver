@@ -437,7 +437,7 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
     string trace("");
     string command( auxCommand.mb_str() );
     bool runNow = true;
-    paraverMain::myParaverMain->ShowRunCommand( app, trace, command, runNow );
+    //paraverMain::myParaverMain->ShowRunCommand( app, trace, command, runNow );
   }
   else if ( event.GetLinkInfo().GetHref().Cmp( _("init_preferences") ) == 0 )
   {

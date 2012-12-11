@@ -3166,7 +3166,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   EventLabels labels;
   map< TEventValue, string > currentEventValues;
   ParaverTraceConfig *myConfig;
-  char *pcf_name;
+  string pcf_name;
   FILE *pcfFile;
 
   ProgressController *progress = ProgressController::create( localKernel );
@@ -3200,8 +3200,8 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
     if ( filterToolIDs[ i ] == TraceCutter::getID() )
     {
       //pcf_name = localKernel->composeName( (char *)tmpNameIn.c_str(), (char *)"pcf" );
-      pcf_name = LocalKernel::composeName( (char *)tmpNameIn.c_str(), (char *)"pcf" );
-      if(( pcfFile = fopen( pcf_name, "r" )) != NULL )
+      pcf_name = LocalKernel::composeName( tmpNameIn, string( "pcf" ) );
+      if(( pcfFile = fopen( pcf_name.c_str(), "r" )) != NULL )
       {
         fclose( pcfFile );
 
@@ -3228,7 +3228,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
                                                               traceOptions,
                                                               typesWithValueZero,
                                                               progress );
-      localKernel->copyPCF( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str() );
+      localKernel->copyPCF( tmpNameIn, tmpNameOut );
       delete traceCutter;
     }
     else  if ( filterToolIDs[ i ] == TraceFilter::getID() )
@@ -3240,7 +3240,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
                                                               traceOptions,
                                                               dummyTranslation,
                                                               progress );
-      localKernel->copyPCF( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str() );
+      localKernel->copyPCF( tmpNameIn, tmpNameOut );
       delete traceFilter;
     }
     else if ( filterToolIDs[ i ] == TraceSoftwareCounters::getID() )
@@ -3257,21 +3257,21 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
     {
     }
 
-    localKernel->copyROW( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str() );
+    localKernel->copyROW( tmpNameIn, tmpNameOut );
     tmpFiles.push_back( tmpNameOut );
   }
 
   // Delete intermediate files
-  char *pcfName, *rowName;
+  string pcfName, rowName;
   for( PRV_UINT16 i = 0; i < tmpFiles.size() - 1; ++i )
   {
     //pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"pcf" );
-    pcfName = LocalKernel::composeName( (char *)tmpFiles[ i ].c_str(), (char *)"pcf" );
+    pcfName = LocalKernel::composeName( tmpFiles[ i ], string( "pcf" ) );
     //rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"row" );
-    rowName = LocalKernel::composeName( (char *)tmpFiles[ i ].c_str(), (char *)"row" );
+    rowName = LocalKernel::composeName( tmpFiles[ i ], string( "row" ) );
     remove( tmpFiles[ i ].c_str() );
-    remove( pcfName );
-    remove( rowName );
+    remove( pcfName.c_str() );
+    remove( rowName.c_str() );
   }
 
   localKernel->commitNewTraceName( traceDstFileName );
