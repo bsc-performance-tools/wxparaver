@@ -421,6 +421,7 @@ public:
   void ShowCutTraceWindow( const std::string& filename = "",
                            bool loadTrace = false,
                            const std::string& xmlFile = "" );
+  void ShowRunCommand( std::string app, std::string traceFile, std::string command, bool runNow );
 
 
   static wxProgressDialog *dialogProgress;

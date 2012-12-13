@@ -40,6 +40,7 @@
 
 ////@begin includes
 ////@end includes
+#include <wx/utils.h> // wxShell
 
 #include "runscript.h"
 
@@ -61,6 +62,9 @@ IMPLEMENT_DYNAMIC_CLASS( RunScript, wxDialog )
 BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
+  EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
+  EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
+
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
 
 ////@end RunScript event table entries
@@ -81,6 +85,32 @@ RunScript::RunScript( wxWindow* parent, wxWindowID id, const wxString& caption, 
 {
   Init();
   Create(parent, id, caption, pos, size, style);
+}
+
+
+RunScript::RunScript( wxWindow* parent,
+                      std::string whichApp,
+                      std::string whichTrace,
+                      std::string whichCommand,
+                      bool runNow,
+                      wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+{
+  Init();
+  Create(parent, id, caption, pos, size, style);
+  
+  // Find if whichApp is in registered applications list
+  // If whichApp isn't reg -> message? turn into command?
+  // widget ---> filePickerScript
+  wxString auxCommand = wxString::FromAscii( whichCommand.c_str() );
+
+  int nextPos = auxCommand.Find("%20") ;
+  if ( nextPos != wxNOT_FOUND )
+  {
+    auxCommand.Replace( "%20", " " );
+  }
+  
+  textCtrlDefaultParameters->SetValue( auxCommand );
+  //command
 }
 
 
@@ -161,7 +191,7 @@ void RunScript::CreateControls()
   itemBoxSizer4->Add(itemStaticText5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxArrayString filePickerScriptStrings;
-  filePickerScript = new wxComboBox( itemDialog1, ID_FILEPICKERCTRL_SCRIPT, wxEmptyString, wxDefaultPosition, wxDefaultSize, filePickerScriptStrings, wxCB_READONLY );
+  filePickerScript = new wxComboBox( itemDialog1, ID_FILEPICKERCTRL_SCRIPT, wxEmptyString, wxDefaultPosition, wxDefaultSize, filePickerScriptStrings, wxCB_DROPDOWN|wxCB_SORT );
   filePickerScript->SetHelpText(_("Select registered application"));
   if (RunScript::ShowToolTips())
     filePickerScript->SetToolTip(_("Select registered application"));
@@ -279,5 +309,46 @@ wxIcon RunScript::GetIconResource( const wxString& name )
 void RunScript::OnButtonExitClick( wxCommandEvent& event )
 {
   EndModal( wxID_OK );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
+ */
+
+void RunScript::OnButtonRunClick( wxCommandEvent& event )
+{
+  // Check parameters should be done previously
+  
+  wxString command = filePickerScript->GetValue() +
+                     wxString(" ") +
+                     textCtrlDefaultParameters->GetValue();
+#if 1
+  wxShell( command );
+#else
+  wxProcess *process = wxProcess( command,
+  long pid = wxExecute( command, process );
+  if ( pid == 0 )
+  {
+    // Unable to execute
+  }
+  else
+  {
+    process->Redirect();
+    wxTextOutputStream outStr( process->GetOutputStream() );
+  }
+#endif
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_RUN
+ */
+
+void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
+{
+  // Check parameters?
+  bool parametersOk = true;
+  buttonRun->Enable( parametersOk );
 }
 
