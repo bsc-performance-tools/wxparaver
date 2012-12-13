@@ -80,62 +80,36 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 ////@begin CutFilterDialog event table entries
   EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
-
   EVT_FILEPICKER_CHANGED( ID_FILECTRL_CUTFILTER_INPUT_TRACE_SELECTOR, CutFilterDialog::OnFilectrlCutfilterInputTraceSelectorFilePickerChanged )
-
   EVT_FILEPICKER_CHANGED( ID_FILECTRL_CUTFILTER_XML_SELECTOR, CutFilterDialog::OnFilectrlCutfilterXmlSelectorFilePickerChanged )
-
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnChecklistboxExecutionChainDoubleClicked )
   EVT_LISTBOX( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnCheckListExecutionChainSelected )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnChecklistboxExecutionChainToggled )
-
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_UP_FILTER, CutFilterDialog::OnBitmapbuttonPushUpFilterClick )
-
   EVT_BUTTON( ID_BITMAPBUTTON_PUSH_DOWN_FILTER, CutFilterDialog::OnBitmapbuttonPushDownFilterClick )
-
   EVT_UPDATE_UI( ID_BUTTON_EDIT_XML, CutFilterDialog::OnButtonViewEditXmlUpdate )
-
   EVT_BUTTON( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlClick )
   EVT_UPDATE_UI( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlUpdate )
-
   EVT_BUTTON( ID_BUTTON_RUN_APP2, CutFilterDialog::OnButtonRunApplicationClick )
-
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
-
   EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionClick )
   EVT_UPDATE_UI( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionUpdate )
-
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_TRACE, CutFilterDialog::OnButtonCutterAllTraceClick )
-
   EVT_CHECKBOX( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckOriginalTimeClick )
-
   EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_STATE, CutFilterDialog::OnCheckboxFilterDiscardStateClick )
-
   EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_EVENT, CutFilterDialog::OnCheckboxFilterDiscardEventClick )
-
   EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, CutFilterDialog::OnCheckboxFilterDiscardCommunicationClick )
-
   EVT_BUTTON( ID_BUTTON_FILTER_SELECT_ALL, CutFilterDialog::OnButtonFilterSelectAllClick )
-
   EVT_BUTTON( ID_BUTTON_FILTER_UNSELECT_ALL, CutFilterDialog::OnButtonFilterUnselectAllClick )
-
   EVT_BUTTON( ID_BUTTON_FILTER_ADD, CutFilterDialog::OnButtonFilterAddClick )
-
   EVT_BUTTON( ID_BUTTON_FILTER_DELETE, CutFilterDialog::OnButtonFilterDeleteClick )
-
   EVT_UPDATE_UI( ID_PANEL_SOFTWARE_COUNTERS, CutFilterDialog::OnPanelSoftwareCountersUpdate )
-
   EVT_BUTTON( ID_BUTTON_SC_SELECTED_EVENTS_ADD, CutFilterDialog::OnButtonScSelectedEventsAddClick )
-
   EVT_BUTTON( ID_BUTTON_SC_SELECTED_EVENTS_DELETE, CutFilterDialog::OnButtonScSelectedEventsDeleteClick )
-
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_ADD, CutFilterDialog::OnButtonScKeepEventsAddClick )
-
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_DELETE, CutFilterDialog::OnButtonScKeepEventsDeleteClick )
-
   EVT_BUTTON( wxID_APPLY, CutFilterDialog::OnApplyClick )
   EVT_UPDATE_UI( wxID_APPLY, CutFilterDialog::OnApplyUpdate )
-
 ////@end CutFilterDialog event table entries
 
 END_EVENT_TABLE()
