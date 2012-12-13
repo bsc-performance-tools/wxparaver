@@ -103,10 +103,10 @@ RunScript::RunScript( wxWindow* parent,
   // widget ---> filePickerScript
   wxString auxCommand = wxString::FromAscii( whichCommand.c_str() );
 
-  int nextPos = auxCommand.Find("%20") ;
+  int nextPos = auxCommand.Find( wxT( "%20" ) ) ;
   if ( nextPos != wxNOT_FOUND )
   {
-    auxCommand.Replace( "%20", " " );
+    auxCommand.Replace( wxT( "%20" ), wxT( " " ) );
   }
   
   textCtrlDefaultParameters->SetValue( auxCommand );
@@ -321,7 +321,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   // Check parameters should be done previously
   
   wxString command = filePickerScript->GetValue() +
-                     wxString(" ") +
+                     wxString( wxT( " " ) ) +
                      textCtrlDefaultParameters->GetValue();
 #if 1
   wxShell( command );
