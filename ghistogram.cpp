@@ -210,7 +210,8 @@ gHistogram::~gHistogram()
     tableBase = NULL;
   }
 
-  delete myHistogram;
+  if( myHistogram != NULL )
+    delete myHistogram;
   myHistogram = NULL;
 }
 
