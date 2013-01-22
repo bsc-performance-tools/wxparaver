@@ -460,7 +460,6 @@ void paraverMain::CreateControls()
   wxBitmap itemtool29Bitmap(itemFrame1->GetBitmapResource(wxT("run_script.xpm")));
   wxBitmap itemtool29BitmapDisabled;
   tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool29Bitmap, itemtool29BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
-  tbarMain->EnableTool(ID_TOOL_RUN_APPLICATION, false);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));

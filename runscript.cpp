@@ -40,12 +40,54 @@
 
 ////@begin includes
 ////@end includes
-#include <wx/utils.h> // wxShell
+//#include <wx/utils.h> // wxShell
+#include <wx/txtstrm.h>
 
 #include "runscript.h"
 
 ////@begin XPM images
 ////@end XPM images
+
+
+void RunningProcess::OnTerminate( int pid, int status )
+{
+  while ( HasInput() )
+    ;
+
+  parent->OnProcessTerminated();
+}
+
+
+bool RunningProcess::HasInput()
+{
+  bool hasInput = false;
+
+  if ( IsInputAvailable() )
+  {
+      wxTextInputStream tis( *GetInputStream() );
+
+      wxString msg;
+      msg << command << _T(" (stdout): ") << tis.ReadLine();
+
+      parent->listboxRunLog->Append( msg );
+
+      hasInput = true;
+  }
+
+  if ( IsErrorAvailable() )
+  {
+      wxTextInputStream tis( *GetErrorStream() );
+
+      wxString msg;
+      msg << command << _T(" (stderr): ") << tis.ReadLine();
+
+      parent->listboxRunLog->Append( msg );
+
+      hasInput = true;
+  }
+
+  return hasInput;
+}
 
 
 /*!
@@ -62,6 +104,8 @@ IMPLEMENT_DYNAMIC_CLASS( RunScript, wxDialog )
 BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
+  EVT_IDLE( RunScript::OnIdle )
+
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
 
@@ -153,6 +197,7 @@ RunScript::~RunScript()
 void RunScript::Init()
 {
 ////@begin RunScript member initialisation
+  myProcess = NULL;
   filePickerScript = NULL;
   buttonEditApplication = NULL;
   filePickerCtrl_trace = NULL;
@@ -249,7 +294,7 @@ void RunScript::CreateControls()
   listboxRunLog = new wxListBox( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, listboxRunLogStrings, wxLB_SINGLE|wxLB_NEEDED_SB );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
-  itemBoxSizer2->Add(listboxRunLog, 0, wxGROW|wxALL, 7);
+  itemBoxSizer2->Add(listboxRunLog, 1, wxGROW|wxALL, 7);
 
   wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(itemBoxSizer19, 0, wxALIGN_RIGHT|wxALL, 5);
@@ -323,21 +368,12 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   wxString command = filePickerScript->GetValue() +
                      wxString( wxT( " " ) ) +
                      textCtrlDefaultParameters->GetValue();
-#if 1
-  wxShell( command );
-#else
-  wxProcess *process = wxProcess( command,
-  long pid = wxExecute( command, process );
-  if ( pid == 0 )
+  //adapt command
+  myProcess = new RunningProcess( this, command );
+  if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
   {
-    // Unable to execute
+    OnProcessTerminated();
   }
-  else
-  {
-    process->Redirect();
-    wxTextOutputStream outStr( process->GetOutputStream() );
-  }
-#endif
 }
 
 
@@ -350,5 +386,25 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
   // Check parameters?
   bool parametersOk = true;
   buttonRun->Enable( parametersOk );
+}
+
+
+void RunScript::OnProcessTerminated()
+{
+  delete myProcess;
+  myProcess = NULL;
+}
+
+
+/*!
+ * wxEVT_IDLE event handler for ID_RUN_APPLICATION
+ */
+
+void RunScript::OnIdle( wxIdleEvent& event )
+{
+  if ( myProcess != NULL && myProcess->HasInput() )
+  {
+    event.RequestMore();
+  }
 }
 

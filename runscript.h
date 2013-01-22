@@ -40,6 +40,28 @@
 #include "wx/statline.h"
 ////@end includes
 
+#include <wx/process.h>
+class RunScript;
+
+class RunningProcess : public wxProcess
+{
+  public:
+    RunningProcess( RunScript *whichParent, const wxString& whichCommand )
+      : wxProcess( (wxDialog *)whichParent ), command( whichCommand )
+    {    
+      parent = whichParent;
+      Redirect();
+    }    
+
+    virtual void OnTerminate( int pid, int status );
+    virtual bool HasInput();
+
+  protected:
+    RunScript *parent;
+    wxString command;
+};
+
+
 /*!
  * Forward declarations
  */
@@ -107,6 +129,9 @@ public:
 
 ////@begin RunScript event handler declarations
 
+  /// wxEVT_IDLE event handler for ID_RUN_APPLICATION
+  void OnIdle( wxIdleEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
   void OnButtonRunClick( wxCommandEvent& event );
 
@@ -120,6 +145,9 @@ public:
 
 ////@begin RunScript member function declarations
 
+  RunningProcess * GetMyProcess() const { return myProcess ; }
+  void SetMyProcess(RunningProcess * value) { myProcess = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -129,6 +157,8 @@ public:
 
   /// Should we show tooltips?
   static bool ShowToolTips();
+
+  void OnProcessTerminated();
 
 ////@begin RunScript member variables
   wxComboBox* filePickerScript;
@@ -141,7 +171,10 @@ public:
   wxButton* buttonClearLog;
   wxListBox* listboxRunLog;
   wxButton* buttonExit;
+private:
+  RunningProcess * myProcess;
 ////@end RunScript member variables
+
 };
 
 #endif // _RUNSCRIPT_H_
