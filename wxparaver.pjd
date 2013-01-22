@@ -32926,6 +32926,7 @@ In normal mode all properties are showed in main window."</string>
                 <long name="title-mode">0</long>
                 <long name="locked">0</long>
                 <string name="proxy-type">"wbButtonProxy"</string>
+                <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonClearLogClick|NONE||RunScript"</string>
                 <string name="proxy-Id name">"ID_BUTTON_CLEAR_LOG"</string>
                 <long name="proxy-Id value">10202</long>
                 <string name="proxy-Name">""</string>
@@ -32980,7 +32981,6 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
               </document>
             </document>
             <document>

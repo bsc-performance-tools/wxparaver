@@ -109,6 +109,8 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
 
+  EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
 
 ////@end RunScript event table entries
@@ -406,5 +408,15 @@ void RunScript::OnIdle( wxIdleEvent& event )
   {
     event.RequestMore();
   }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLEAR_LOG
+ */
+
+void RunScript::OnButtonClearLogClick( wxCommandEvent& event )
+{
+  listboxRunLog->Clear();
 }
 

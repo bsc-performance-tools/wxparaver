@@ -138,6 +138,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_RUN
   void OnButtonRunUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLEAR_LOG
+  void OnButtonClearLogClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_EXIT
   void OnButtonExitClick( wxCommandEvent& event );
 
