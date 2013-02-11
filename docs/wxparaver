@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/sh
 PARAVER_HOME=@inst_PARAVER_HOME@
 
 if [ -z "${PARAVER_HOME}" ] ; then

@@ -89,3 +89,17 @@ noinst_HEADERS = \
 wxparaver_bin_LDADD = @LIBS@ -l@WXPROPGRID_NAME@ -lparaver-kernel -lparaver-api
 wxparaver_bin_CXXFLAGS = @CXXFLAGS@
 
+ 
+install-data-hook:
+	cp -f ./docs/dimemas-wrapper.sh $(bindir)
+#	cp -f ./docs/paramedir          $(bindir)
+#	cp -f ./docs/wxparaver          $(bindir)
+	$(SED) "s|@inst_PARAVER_HOME@|$(prefix)|g" < ./docs/paramedir > $(bindir)/paramedir
+	$(SED) "s|@inst_PARAVER_HOME@|$(prefix)|g" < ./docs/wxparaver > $(bindir)/wxparaver
+
+dist-hook:
+	$(mkdir_p) $(distdir)/docs
+	cp -f ./docs/dimemas-wrapper.sh $(distdir)/docs
+	cp -f ./docs/paramedir          $(distdir)/docs
+	cp -f ./docs/wxparaver          $(distdir)/docs
+
