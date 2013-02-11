@@ -520,11 +520,8 @@ void RunScript::OnIdle( wxIdleEvent& event )
   // TODO: from the list of registered applications, +o- using internal table with *boxsizers
   wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
 
-  if ( currentChoice == wxString( "Dimemas" ) )
-  {
-    dimemasSection->Show( showDimemasSection );
-    Layout();
-  }
+  dimemasSection->Show( currentChoice == wxString( "Dimemas" ) );
+  Layout();
   
   if ( myProcess != NULL && myProcess->HasInput() )
   {
