@@ -1,0 +1,18 @@
+#!/bin/sh
+PARAVER_HOME=@inst_PARAVER_HOME@
+
+if [ -z "${PARAVER_HOME}" ] ; then
+  echo "Please set \$PARAVER_HOME to the paramedir installation root directory"
+  exit 1
+
+elif ! [ -d ${PARAVER_HOME}/lib/paraver-kernel ] ; then
+  echo "paraver-kernel libraries not found in \$PARAVER_HOME/lib/paraver-kernel/"
+  exit 1
+
+elif ! [ -e ${PARAVER_HOME}/bin/paramedir.bin ] ; then
+  echo "paramedir binary not found in \$PARAVER_HOME/bin/"
+  exit 1
+  
+fi
+
+LD_LIBRARY_PATH=$PARAVER_HOME/lib/paraver-kernel:$PARAVER_HOME/lib/ptools_common_files/:$LD_LIBRARY_PATH $PARAVER_HOME/bin/paramedir.bin "$@"	
