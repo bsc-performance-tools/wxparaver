@@ -3345,9 +3345,17 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
     DoLoadFilteredTrace( srcTrace, dstTrace, cutFilterDialog.GetTraceOptions(), filterToolOrder );
 
     if ( cutFilterDialog.GetLoadResultingTrace() )
+    {
       DoLoadTrace( dstTrace );
+    }
 
     XMLLoadedBefore = cutFilterDialog.GetLoadedXMLPath( XMLPath );
+    
+    if ( cutFilterDialog.GetRunAppWithResultingTrace() )
+    {
+      wxString auxTrace =  wxString::FromAscii( dstTrace.c_str() );
+      ShowRunCommand( wxT(""), auxTrace, wxT(""), false );
+    }
   }
 
   cutFilterDialog.MakeModal( false );
@@ -3470,10 +3478,10 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
 }
 
 
-
-void paraverMain::ShowRunCommand( std::string app,
-                                  std::string traceFile,
-                                  std::string command,
+// TODO: clean parameters not used
+void paraverMain::ShowRunCommand( wxString app,
+                                  wxString traceFile,
+                                  wxString command,
                                   bool runNow )
 {
   RunScript runApplication( (wxWindow *)this, app, traceFile, command, runNow );
@@ -3490,7 +3498,7 @@ void paraverMain::ShowRunCommand( std::string app,
 
 void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
 {
-  ShowRunCommand( "", "", "", false );
+  ShowRunCommand( wxT(""), wxT(""), wxT(""), false );
 }
 
 

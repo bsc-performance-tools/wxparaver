@@ -44,6 +44,14 @@
 #include "extrae_user_events.h"
 #endif
 
+// find a common place; moved from paravermain.cpp
+#ifdef WIN32
+  const char PATH_SEP('\\');
+#else
+  const char PATH_SEP('/');
+#endif
+
+
 /*!
  * Forward declarations
  */

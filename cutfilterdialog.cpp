@@ -53,7 +53,7 @@
 #include "cutfilterdialog.h"
 #include "paraverconfig.h"
 #include "kernelconnection.h"
-#include "wxparaverapp.h"
+//#include "wxparaverapp.h"
 #include "loadedwindows.h"
 #include "runscript.h"
 
@@ -97,8 +97,6 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
   EVT_BUTTON( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlClick )
   EVT_UPDATE_UI( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlUpdate )
-
-  EVT_BUTTON( ID_BUTTON_RUN_APP2, CutFilterDialog::OnButtonRunApplicationClick )
 
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
 
@@ -202,11 +200,13 @@ void CutFilterDialog::Init()
   localKernel = NULL;
   nameSourceTrace = "";
   newXMLsPath = false;
+  runAppWithResultingTrace = false;
   waitingGlobalTiming = false;
   filePickerInputTrace = NULL;
   txtOutputTrace = NULL;
   filePickerOutputTrace = NULL;
   checkLoadResultingTrace = NULL;
+  checkRunAppWithResultingTrace = NULL;
   filePickerXMLCfg = NULL;
   boxSizerExecutionChain = NULL;
   txtExecutionChain = NULL;
@@ -215,7 +215,6 @@ void CutFilterDialog::Init()
   buttonDown = NULL;
   buttonViewEditXml = NULL;
   buttonSaveXml = NULL;
-  runApplication = NULL;
   notebookTools = NULL;
   radioCutterCutByTime = NULL;
   radioCutterCutByTimePercent = NULL;
@@ -331,234 +330,239 @@ void CutFilterDialog::CreateControls()
     checkLoadResultingTrace->SetToolTip(_("After the selected tools are applied, the resulting trace is loaded."));
   itemBoxSizer12->Add(checkLoadResultingTrace, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
-  wxStaticBox* itemStaticBoxSizer15Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Cut/Filter Parameters "));
-  wxStaticBoxSizer* itemStaticBoxSizer15 = new wxStaticBoxSizer(itemStaticBoxSizer15Static, wxVERTICAL);
-  itemBoxSizer2->Add(itemStaticBoxSizer15, 1, wxGROW|wxALL, 2);
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer8->Add(itemBoxSizer15, 0, wxGROW, 2);
 
-  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer15->Add(itemBoxSizer16, 0, wxGROW|wxALL, 2);
+  itemBoxSizer15->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
 
-  wxStaticText* itemStaticText17 = new wxStaticText( itemDialog1, wxID_STATIC, _("Configuration file"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkRunAppWithResultingTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_RUN_APP_WITH_RESULTING_TRACE, _("Run application with the processed trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkRunAppWithResultingTrace->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
-    itemStaticText17->SetToolTip(_("XML filter configuration that will be used by the Cut/Filter toolkit."));
-  itemBoxSizer16->Add(itemStaticText17, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+    checkRunAppWithResultingTrace->SetToolTip(_("After the selected tools are applied, the resulting trace is passed to the external application selection window."));
+  itemBoxSizer15->Add(checkRunAppWithResultingTrace, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
+
+  wxStaticBox* itemStaticBoxSizer18Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Cut/Filter Parameters "));
+  wxStaticBoxSizer* itemStaticBoxSizer18 = new wxStaticBoxSizer(itemStaticBoxSizer18Static, wxVERTICAL);
+  itemBoxSizer2->Add(itemStaticBoxSizer18, 1, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer18->Add(itemBoxSizer19, 0, wxGROW|wxALL, 2);
+
+  wxStaticText* itemStaticText20 = new wxStaticText( itemDialog1, wxID_STATIC, _("Configuration file"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (CutFilterDialog::ShowToolTips())
+    itemStaticText20->SetToolTip(_("XML filter configuration that will be used by the Cut/Filter toolkit."));
+  itemBoxSizer19->Add(itemStaticText20, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   filePickerXMLCfg = new wxFilePickerCtrl( itemDialog1, ID_FILECTRL_CUTFILTER_XML_SELECTOR, wxEmptyString, _("XML Cut/Filter config file"), _T("XML configuration files (*.xml)|*.xml|All files (*.*)|*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_OPEN|wxFLP_FILE_MUST_EXIST|wxFLP_CHANGE_DIR );
   if (CutFilterDialog::ShowToolTips())
     filePickerXMLCfg->SetToolTip(_("Load new settings from an xml file. Not used tools won't be changed. "));
-  itemBoxSizer16->Add(filePickerXMLCfg, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
+  itemBoxSizer19->Add(filePickerXMLCfg, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
   boxSizerExecutionChain = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer15->Add(boxSizerExecutionChain, 0, wxGROW|wxALL, 2);
+  itemStaticBoxSizer18->Add(boxSizerExecutionChain, 0, wxGROW|wxALL, 2);
 
   boxSizerExecutionChain->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxVERTICAL);
-  boxSizerExecutionChain->Add(itemBoxSizer21, 2, wxGROW|wxALL, 2);
+  wxBoxSizer* itemBoxSizer24 = new wxBoxSizer(wxVERTICAL);
+  boxSizerExecutionChain->Add(itemBoxSizer24, 2, wxGROW|wxALL, 2);
 
   txtExecutionChain = new wxStaticText( itemDialog1, wxID_STATIC, _("Execution chain"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer21->Add(txtExecutionChain, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 2);
+  itemBoxSizer24->Add(txtExecutionChain, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 2);
 
   wxArrayString checkListExecutionChainStrings;
   checkListExecutionChain = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_EXECUTION_CHAIN, wxDefaultPosition, wxDefaultSize, checkListExecutionChainStrings, wxLB_SINGLE|wxLB_NEEDED_SB );
   if (CutFilterDialog::ShowToolTips())
     checkListExecutionChain->SetToolTip(_("Select the order of the Cut/Filter tools."));
-  itemBoxSizer21->Add(checkListExecutionChain, 1, wxGROW, 2);
+  itemBoxSizer24->Add(checkListExecutionChain, 1, wxGROW, 2);
 
-  wxBoxSizer* itemBoxSizer24 = new wxBoxSizer(wxVERTICAL);
-  boxSizerExecutionChain->Add(itemBoxSizer24, 0, wxALIGN_BOTTOM|wxALL, 2);
+  wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxVERTICAL);
+  boxSizerExecutionChain->Add(itemBoxSizer27, 0, wxALIGN_BOTTOM|wxALL, 2);
 
   buttonUp = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_PUSH_UP_FILTER, itemDialog1->GetBitmapResource(wxT("arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (CutFilterDialog::ShowToolTips())
     buttonUp->SetToolTip(_("Select the order of the Cut/Filter tools."));
-  itemBoxSizer24->Add(buttonUp, 1, wxGROW|wxTOP, 2);
+  itemBoxSizer27->Add(buttonUp, 1, wxGROW|wxTOP, 2);
 
   buttonDown = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_PUSH_DOWN_FILTER, itemDialog1->GetBitmapResource(wxT("arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (CutFilterDialog::ShowToolTips())
     buttonDown->SetToolTip(_("Select the order of the Cut/Filter tools."));
-  itemBoxSizer24->Add(buttonDown, 1, wxGROW|wxTOP, 2);
+  itemBoxSizer27->Add(buttonDown, 1, wxGROW|wxTOP, 2);
 
   boxSizerExecutionChain->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer28 = new wxBoxSizer(wxVERTICAL);
-  boxSizerExecutionChain->Add(itemBoxSizer28, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxVERTICAL);
+  boxSizerExecutionChain->Add(itemBoxSizer31, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   buttonViewEditXml = new wxToggleButton( itemDialog1, ID_BUTTON_EDIT_XML, _("Edit"), wxDefaultPosition, wxDefaultSize, 0 );
   buttonViewEditXml->SetValue(false);
   buttonViewEditXml->Show(false);
-  itemBoxSizer28->Add(buttonViewEditXml, 1, wxGROW|wxALL, 5);
+  itemBoxSizer31->Add(buttonViewEditXml, 1, wxGROW|wxALL, 5);
 
   buttonSaveXml = new wxButton( itemDialog1, ID_BUTTON_SAVE_XML, _("Save..."), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     buttonSaveXml->SetToolTip(_("Save current settings to an XML file."));
-  itemBoxSizer28->Add(buttonSaveXml, 1, wxGROW|wxALL, 5);
-
-  runApplication = new wxButton( itemDialog1, ID_BUTTON_RUN_APP2, _("Run Application"), wxDefaultPosition, wxDefaultSize, 0 );
-  if (CutFilterDialog::ShowToolTips())
-    runApplication->SetToolTip(_("Opens window to select and parametrize external application."));
-  runApplication->Enable(false);
-  itemBoxSizer28->Add(runApplication, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer31->Add(buttonSaveXml, 1, wxGROW|wxALL, 5);
 
   boxSizerExecutionChain->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   notebookTools = new wxNotebook( itemDialog1, ID_NOTEBOOK_CUT_FILTER_OPTIONS, wxDefaultPosition, wxSize(-1, 300), wxBK_DEFAULT );
 
-  wxScrolledWindow* itemScrolledWindow34 = new wxScrolledWindow( notebookTools, ID_PANEL_CUTTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemScrolledWindow34->SetScrollbars(1, 10, 0, 0);
-  wxBoxSizer* itemBoxSizer35 = new wxBoxSizer(wxVERTICAL);
-  itemScrolledWindow34->SetSizer(itemBoxSizer35);
+  wxScrolledWindow* itemScrolledWindow36 = new wxScrolledWindow( notebookTools, ID_PANEL_CUTTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemScrolledWindow36->SetScrollbars(1, 10, 0, 0);
+  wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxVERTICAL);
+  itemScrolledWindow36->SetSizer(itemBoxSizer37);
 
-  wxStaticBox* itemStaticBoxSizer36Static = new wxStaticBox(itemScrolledWindow34, wxID_STATIC, _(" Trace Limits "));
-  wxStaticBoxSizer* itemStaticBoxSizer36 = new wxStaticBoxSizer(itemStaticBoxSizer36Static, wxVERTICAL);
-  itemBoxSizer35->Add(itemStaticBoxSizer36, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer36->Add(itemBoxSizer37, 0, wxGROW|wxLEFT|wxTOP, 5);
-  wxBoxSizer* itemBoxSizer38 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer37->Add(itemBoxSizer38, 1, wxGROW|wxLEFT|wxTOP, 2);
-  radioCutterCutByTime = new wxRadioButton( itemScrolledWindow34, ID_RADIOBUTTON_CUTTER_CUT_BY_TIME, _("Cut by time"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+  wxStaticBox* itemStaticBoxSizer38Static = new wxStaticBox(itemScrolledWindow36, wxID_STATIC, _(" Trace Limits "));
+  wxStaticBoxSizer* itemStaticBoxSizer38 = new wxStaticBoxSizer(itemStaticBoxSizer38Static, wxVERTICAL);
+  itemBoxSizer37->Add(itemStaticBoxSizer38, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer39 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer38->Add(itemBoxSizer39, 0, wxGROW|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer40 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer39->Add(itemBoxSizer40, 1, wxGROW|wxLEFT|wxTOP, 2);
+  radioCutterCutByTime = new wxRadioButton( itemScrolledWindow36, ID_RADIOBUTTON_CUTTER_CUT_BY_TIME, _("Cut by time"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioCutterCutByTime->SetValue(true);
   if (CutFilterDialog::ShowToolTips())
     radioCutterCutByTime->SetToolTip(_("Select this to cut [begin time, end time] region of the trace."));
-  itemBoxSizer38->Add(radioCutterCutByTime, 1, wxALIGN_LEFT|wxLEFT|wxTOP, 2);
+  itemBoxSizer40->Add(radioCutterCutByTime, 1, wxALIGN_LEFT|wxLEFT|wxTOP, 2);
 
-  radioCutterCutByTimePercent = new wxRadioButton( itemScrolledWindow34, ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT, _("Cut by time %"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioCutterCutByTimePercent = new wxRadioButton( itemScrolledWindow36, ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT, _("Cut by time %"), wxDefaultPosition, wxDefaultSize, 0 );
   radioCutterCutByTimePercent->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     radioCutterCutByTimePercent->SetToolTip(_("Select this to cut [begin % time, end % time] region of the trace."));
-  itemBoxSizer38->Add(radioCutterCutByTimePercent, 1, wxALIGN_LEFT|wxLEFT, 2);
+  itemBoxSizer40->Add(radioCutterCutByTimePercent, 1, wxALIGN_LEFT|wxLEFT, 2);
 
-  wxBoxSizer* itemBoxSizer41 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer37->Add(itemBoxSizer41, 2, wxGROW|wxRIGHT, 5);
-  wxBoxSizer* itemBoxSizer42 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer41->Add(itemBoxSizer42, 0, wxGROW|wxLEFT|wxTOP, 2);
-  wxStaticText* itemStaticText43 = new wxStaticText( itemScrolledWindow34, wxID_STATIC, _("Begin"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer39->Add(itemBoxSizer43, 2, wxGROW|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer44 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer43->Add(itemBoxSizer44, 0, wxGROW|wxLEFT|wxTOP, 2);
+  wxStaticText* itemStaticText45 = new wxStaticText( itemScrolledWindow36, wxID_STATIC, _("Begin"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
-    itemStaticText43->SetToolTip(_("Initial timestamp or percent for the cut."));
-  itemBoxSizer42->Add(itemStaticText43, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
+    itemStaticText45->SetToolTip(_("Initial timestamp or percent for the cut."));
+  itemBoxSizer44->Add(itemStaticText45, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
-  textCutterBeginCut = new wxTextCtrl( itemScrolledWindow34, ID_TEXTCTRL_CUTTER_BEGIN_CUT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  textCutterBeginCut = new wxTextCtrl( itemScrolledWindow36, ID_TEXTCTRL_CUTTER_BEGIN_CUT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     textCutterBeginCut->SetToolTip(_("Initial timestamp or percent for the cut."));
-  itemBoxSizer42->Add(textCutterBeginCut, 3, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 2);
+  itemBoxSizer44->Add(textCutterBeginCut, 3, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 2);
 
-  wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer41->Add(itemBoxSizer45, 0, wxGROW|wxLEFT|wxTOP, 5);
-  wxStaticText* itemStaticText46 = new wxStaticText( itemScrolledWindow34, wxID_STATIC, _("End"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer47 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer43->Add(itemBoxSizer47, 0, wxGROW|wxLEFT|wxTOP, 5);
+  wxStaticText* itemStaticText48 = new wxStaticText( itemScrolledWindow36, wxID_STATIC, _("End"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
-    itemStaticText46->SetToolTip(_("Final timestamp or percent for the cut."));
-  itemBoxSizer45->Add(itemStaticText46, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
+    itemStaticText48->SetToolTip(_("Final timestamp or percent for the cut."));
+  itemBoxSizer47->Add(itemStaticText48, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
-  textCutterEndCut = new wxTextCtrl( itemScrolledWindow34, ID_TEXTCTRL_CUTTER_END_CUT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  textCutterEndCut = new wxTextCtrl( itemScrolledWindow36, ID_TEXTCTRL_CUTTER_END_CUT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     textCutterEndCut->SetToolTip(_("Final timestamp or percent for the cut."));
-  itemBoxSizer45->Add(textCutterEndCut, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
+  itemBoxSizer47->Add(textCutterEndCut, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
-  wxBoxSizer* itemBoxSizer48 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer36->Add(itemBoxSizer48, 0, wxGROW|wxALL, 2);
-  wxStaticText* itemStaticText49 = new wxStaticText( itemScrolledWindow34, wxID_STATIC, _("Tasks"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer48->Add(itemStaticText49, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  wxBoxSizer* itemBoxSizer50 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer38->Add(itemBoxSizer50, 0, wxGROW|wxALL, 2);
+  wxStaticText* itemStaticText51 = new wxStaticText( itemScrolledWindow36, wxID_STATIC, _("Tasks"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer50->Add(itemStaticText51, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textCutterTasks = new wxTextCtrl( itemScrolledWindow34, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  textCutterTasks = new wxTextCtrl( itemScrolledWindow36, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     textCutterTasks->SetToolTip(_("Keep only information of tasks specified, separated by commas. Ranges marked with \"-\" are allowed. I.e. \"1-32,33,64-128\". Leave it empty to select all the tasks."));
-  itemBoxSizer48->Add(textCutterTasks, 1, wxGROW|wxALL, 2);
+  itemBoxSizer50->Add(textCutterTasks, 1, wxGROW|wxALL, 2);
 
-  wxStaticLine* itemStaticLine51 = new wxStaticLine( itemScrolledWindow34, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemStaticBoxSizer36->Add(itemStaticLine51, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine53 = new wxStaticLine( itemScrolledWindow36, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemStaticBoxSizer38->Add(itemStaticLine53, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer52 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer36->Add(itemBoxSizer52, 0, wxGROW|wxALL, 2);
-  buttonCutterSelectRegion = new wxButton( itemScrolledWindow34, ID_BUTTON_CUTTER_SELECT_REGION, _("Select Region..."), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer54 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer38->Add(itemBoxSizer54, 0, wxGROW|wxALL, 2);
+  buttonCutterSelectRegion = new wxButton( itemScrolledWindow36, ID_BUTTON_CUTTER_SELECT_REGION, _("Select Region..."), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     buttonCutterSelectRegion->SetToolTip(_("Fill times range directly clicking or dragging from timelines. You can click on different timelines."));
-  itemBoxSizer52->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer54->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  buttonCutterAllWindow = new wxButton( itemScrolledWindow34, ID_BUTTON_CUTTER_ALL_WINDOW, _("All Window"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCutterAllWindow = new wxButton( itemScrolledWindow36, ID_BUTTON_CUTTER_ALL_WINDOW, _("All Window"), wxDefaultPosition, wxDefaultSize, 0 );
   buttonCutterAllWindow->Enable(false);
-  itemBoxSizer52->Add(buttonCutterAllWindow, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer54->Add(buttonCutterAllWindow, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  buttonCutterAllTrace = new wxButton( itemScrolledWindow34, ID_BUTTON_CUTTER_ALL_TRACE, _("All Trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCutterAllTrace = new wxButton( itemScrolledWindow36, ID_BUTTON_CUTTER_ALL_TRACE, _("All Trace"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     buttonCutterAllTrace->SetToolTip(_("Set range [0%, 100%]."));
-  itemBoxSizer52->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer54->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  wxStaticBox* itemStaticBoxSizer56Static = new wxStaticBox(itemScrolledWindow34, wxID_STATIC, _(" Trace Options "));
-  wxStaticBoxSizer* itemStaticBoxSizer56 = new wxStaticBoxSizer(itemStaticBoxSizer56Static, wxVERTICAL);
-  itemBoxSizer35->Add(itemStaticBoxSizer56, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer57 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer56->Add(itemBoxSizer57, 0, wxGROW|wxLEFT|wxTOP, 2);
-  checkCutterUseOriginalTime = new wxCheckBox( itemScrolledWindow34, ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, _("Use original time"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer58Static = new wxStaticBox(itemScrolledWindow36, wxID_STATIC, _(" Trace Options "));
+  wxStaticBoxSizer* itemStaticBoxSizer58 = new wxStaticBoxSizer(itemStaticBoxSizer58Static, wxVERTICAL);
+  itemBoxSizer37->Add(itemStaticBoxSizer58, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer59 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer58->Add(itemBoxSizer59, 0, wxGROW|wxLEFT|wxTOP, 2);
+  checkCutterUseOriginalTime = new wxCheckBox( itemScrolledWindow36, ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, _("Use original time"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterUseOriginalTime->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     checkCutterUseOriginalTime->SetToolTip(_("If not set, after the cut the first timestamp will be set to 0, and the difference with the original time will be substracted to all the times. If set, original time is kept."));
-  itemBoxSizer57->Add(checkCutterUseOriginalTime, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer59->Add(checkCutterUseOriginalTime, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  checkCutterRemoveFirstState = new wxCheckBox( itemScrolledWindow34, ID_CHECKBOX_CUTTER_REMOVE_FIRST_STATE, _("Remove first state"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCutterRemoveFirstState = new wxCheckBox( itemScrolledWindow36, ID_CHECKBOX_CUTTER_REMOVE_FIRST_STATE, _("Remove first state"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterRemoveFirstState->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     checkCutterRemoveFirstState->SetToolTip(_("If the begin limit is inside a burst, don't keep it."));
-  itemBoxSizer57->Add(checkCutterRemoveFirstState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer59->Add(checkCutterRemoveFirstState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  wxBoxSizer* itemBoxSizer60 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer56->Add(itemBoxSizer60, 0, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 2);
-  checkCutterDontBreakStates = new wxCheckBox( itemScrolledWindow34, ID_CHECKBOX_CUTTER_BREAK_STATES, _("Don't break states"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer62 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer58->Add(itemBoxSizer62, 0, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 2);
+  checkCutterDontBreakStates = new wxCheckBox( itemScrolledWindow36, ID_CHECKBOX_CUTTER_BREAK_STATES, _("Don't break states"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterDontBreakStates->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     checkCutterDontBreakStates->SetToolTip(_("If set, no matter the given limits, the states in the middle of the cut are maintained. If not set the limits will split them. This options is overriden if \"Use original time\" is set."));
-  itemBoxSizer60->Add(checkCutterDontBreakStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer62->Add(checkCutterDontBreakStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  checkCutterRemoveLastState = new wxCheckBox( itemScrolledWindow34, ID_CHECKBOX_CUTTER_REMOVE_LAST_STATE, _("Remove last state"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCutterRemoveLastState = new wxCheckBox( itemScrolledWindow36, ID_CHECKBOX_CUTTER_REMOVE_LAST_STATE, _("Remove last state"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterRemoveLastState->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     checkCutterRemoveLastState->SetToolTip(_("If the end limit is inside a burst, don't keep it."));
-  itemBoxSizer60->Add(checkCutterRemoveLastState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+  itemBoxSizer62->Add(checkCutterRemoveLastState, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  wxStaticBox* itemStaticBoxSizer63Static = new wxStaticBox(itemScrolledWindow34, wxID_STATIC, _(" Output Trace "));
-  wxStaticBoxSizer* itemStaticBoxSizer63 = new wxStaticBoxSizer(itemStaticBoxSizer63Static, wxHORIZONTAL);
-  itemBoxSizer35->Add(itemStaticBoxSizer63, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText64 = new wxStaticText( itemScrolledWindow34, wxID_STATIC, _("Maximum trace size"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-  itemStaticBoxSizer63->Add(itemStaticText64, 1, wxGROW|wxALL, 2);
+  wxStaticBox* itemStaticBoxSizer65Static = new wxStaticBox(itemScrolledWindow36, wxID_STATIC, _(" Output Trace "));
+  wxStaticBoxSizer* itemStaticBoxSizer65 = new wxStaticBoxSizer(itemStaticBoxSizer65Static, wxHORIZONTAL);
+  itemBoxSizer37->Add(itemStaticBoxSizer65, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText66 = new wxStaticText( itemScrolledWindow36, wxID_STATIC, _("Maximum trace size"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+  itemStaticBoxSizer65->Add(itemStaticText66, 1, wxGROW|wxALL, 2);
 
-  textCutterMaximumTraceSize = new wxSpinCtrl( itemScrolledWindow34, ID_SPINCTRL_CUTTER_MAXIMUM_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000000, 0 );
+  textCutterMaximumTraceSize = new wxSpinCtrl( itemScrolledWindow36, ID_SPINCTRL_CUTTER_MAXIMUM_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 1000000, 0 );
   if (CutFilterDialog::ShowToolTips())
     textCutterMaximumTraceSize->SetToolTip(_("Set upper limit for the size of the cutted trace  in MB. Once this limit is reached, no more records will be written to the resulting trace."));
-  itemStaticBoxSizer63->Add(textCutterMaximumTraceSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemStaticBoxSizer65->Add(textCutterMaximumTraceSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxStaticText* itemStaticText66 = new wxStaticText( itemScrolledWindow34, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer63->Add(itemStaticText66, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  wxStaticText* itemStaticText68 = new wxStaticText( itemScrolledWindow36, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer65->Add(itemStaticText68, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  itemScrolledWindow34->FitInside();
-  notebookTools->AddPage(itemScrolledWindow34, _("Cutter"));
+  itemScrolledWindow36->FitInside();
+  notebookTools->AddPage(itemScrolledWindow36, _("Cutter"));
 
-  wxScrolledWindow* itemScrolledWindow67 = new wxScrolledWindow( notebookTools, ID_PANEL_FILTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemScrolledWindow67->SetScrollbars(1, 10, 0, 0);
-  wxBoxSizer* itemBoxSizer68 = new wxBoxSizer(wxVERTICAL);
-  itemScrolledWindow67->SetSizer(itemBoxSizer68);
+  wxScrolledWindow* itemScrolledWindow69 = new wxScrolledWindow( notebookTools, ID_PANEL_FILTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemScrolledWindow69->SetScrollbars(1, 10, 0, 0);
+  wxBoxSizer* itemBoxSizer70 = new wxBoxSizer(wxVERTICAL);
+  itemScrolledWindow69->SetSizer(itemBoxSizer70);
 
-  wxStaticBox* itemStaticBoxSizer69Static = new wxStaticBox(itemScrolledWindow67, wxID_STATIC, _(" Discard Records "));
-  wxStaticBoxSizer* itemStaticBoxSizer69 = new wxStaticBoxSizer(itemStaticBoxSizer69Static, wxHORIZONTAL);
-  itemBoxSizer68->Add(itemStaticBoxSizer69, 0, wxGROW|wxALL, 3);
-  checkFilterDiscardStateRecords = new wxCheckBox( itemScrolledWindow67, ID_CHECKBOX_FILTER_DISCARD_STATE, _("State"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticBox* itemStaticBoxSizer71Static = new wxStaticBox(itemScrolledWindow69, wxID_STATIC, _(" Discard Records "));
+  wxStaticBoxSizer* itemStaticBoxSizer71 = new wxStaticBoxSizer(itemStaticBoxSizer71Static, wxHORIZONTAL);
+  itemBoxSizer70->Add(itemStaticBoxSizer71, 0, wxGROW|wxALL, 3);
+  checkFilterDiscardStateRecords = new wxCheckBox( itemScrolledWindow69, ID_CHECKBOX_FILTER_DISCARD_STATE, _("State"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardStateRecords->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     checkFilterDiscardStateRecords->SetToolTip(_("Discard all the state records from the source trace."));
-  itemStaticBoxSizer69->Add(checkFilterDiscardStateRecords, 0, wxGROW|wxALL, 2);
+  itemStaticBoxSizer71->Add(checkFilterDiscardStateRecords, 0, wxGROW|wxALL, 2);
 
-  checkFilterDiscardEventRecords = new wxCheckBox( itemScrolledWindow67, ID_CHECKBOX_FILTER_DISCARD_EVENT, _("Event"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFilterDiscardEventRecords = new wxCheckBox( itemScrolledWindow69, ID_CHECKBOX_FILTER_DISCARD_EVENT, _("Event"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardEventRecords->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     checkFilterDiscardEventRecords->SetToolTip(_("Discard all the event records from the source trace."));
-  itemStaticBoxSizer69->Add(checkFilterDiscardEventRecords, 0, wxGROW|wxALL, 2);
+  itemStaticBoxSizer71->Add(checkFilterDiscardEventRecords, 0, wxGROW|wxALL, 2);
 
-  checkFilterDiscardCommunicationRecords = new wxCheckBox( itemScrolledWindow67, ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, _("Communication"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFilterDiscardCommunicationRecords = new wxCheckBox( itemScrolledWindow69, ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, _("Communication"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardCommunicationRecords->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     checkFilterDiscardCommunicationRecords->SetToolTip(_("Discard all the communication records from the source trace."));
-  itemStaticBoxSizer69->Add(checkFilterDiscardCommunicationRecords, 0, wxGROW|wxALL, 2);
+  itemStaticBoxSizer71->Add(checkFilterDiscardCommunicationRecords, 0, wxGROW|wxALL, 2);
 
-  staticBoxSizerFilterStates = new wxStaticBox(itemScrolledWindow67, wxID_STATIC, _(" States "));
-  wxStaticBoxSizer* itemStaticBoxSizer73 = new wxStaticBoxSizer(staticBoxSizerFilterStates, wxHORIZONTAL);
-  itemBoxSizer68->Add(itemStaticBoxSizer73, 1, wxGROW|wxALL, 3);
+  staticBoxSizerFilterStates = new wxStaticBox(itemScrolledWindow69, wxID_STATIC, _(" States "));
+  wxStaticBoxSizer* itemStaticBoxSizer75 = new wxStaticBoxSizer(staticBoxSizerFilterStates, wxHORIZONTAL);
+  itemBoxSizer70->Add(itemStaticBoxSizer75, 1, wxGROW|wxALL, 3);
   wxArrayString checkListFilterStatesStrings;
   checkListFilterStatesStrings.Add(_("Idle"));
   checkListFilterStatesStrings.Add(_("Running"));
@@ -577,213 +581,213 @@ void CutFilterDialog::CreateControls()
   checkListFilterStatesStrings.Add(_("Tracing Disabled"));
   checkListFilterStatesStrings.Add(_("Others"));
   checkListFilterStatesStrings.Add(_("Send Receive"));
-  checkListFilterStates = new wxCheckListBox( itemScrolledWindow67, ID_CHECKLISTBOX_FILTER_STATES, wxDefaultPosition, wxSize(-1, 100), checkListFilterStatesStrings, wxLB_SINGLE );
+  checkListFilterStates = new wxCheckListBox( itemScrolledWindow69, ID_CHECKLISTBOX_FILTER_STATES, wxDefaultPosition, wxSize(-1, 100), checkListFilterStatesStrings, wxLB_SINGLE );
   if (CutFilterDialog::ShowToolTips())
     checkListFilterStates->SetToolTip(_("Check the states that you want to keep in the filtered trace."));
-  itemStaticBoxSizer73->Add(checkListFilterStates, 3, wxGROW|wxALL, 2);
+  itemStaticBoxSizer75->Add(checkListFilterStates, 3, wxGROW|wxALL, 2);
 
-  wxBoxSizer* itemBoxSizer75 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer73->Add(itemBoxSizer75, 2, wxGROW|wxALL, 5);
-  buttonFilterSelectAll = new wxButton( itemScrolledWindow67, ID_BUTTON_FILTER_SELECT_ALL, _("Select all"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer75->Add(buttonFilterSelectAll, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer77 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer75->Add(itemBoxSizer77, 2, wxGROW|wxALL, 5);
+  buttonFilterSelectAll = new wxButton( itemScrolledWindow69, ID_BUTTON_FILTER_SELECT_ALL, _("Select all"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer77->Add(buttonFilterSelectAll, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  buttonFilterUnselectAll = new wxButton( itemScrolledWindow67, ID_BUTTON_FILTER_UNSELECT_ALL, _("Unselect all"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer75->Add(buttonFilterUnselectAll, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  buttonFilterUnselectAll = new wxButton( itemScrolledWindow69, ID_BUTTON_FILTER_UNSELECT_ALL, _("Unselect all"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer77->Add(buttonFilterUnselectAll, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer78 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer75->Add(itemBoxSizer78, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-  labelFilterMinBurstTime = new wxStaticText( itemScrolledWindow67, wxID_STATIC, _("Min. burst time"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer80 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer77->Add(itemBoxSizer80, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  labelFilterMinBurstTime = new wxStaticText( itemScrolledWindow69, wxID_STATIC, _("Min. burst time"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     labelFilterMinBurstTime->SetToolTip(_("Specify the minimum burst time for the state records."));
-  itemBoxSizer78->Add(labelFilterMinBurstTime, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer80->Add(labelFilterMinBurstTime, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  textFilterMinBurstTime = new wxTextCtrl( itemScrolledWindow67, ID_TEXTCTRL_FILTER_MIN_BURST_TIME, _("0"), wxDefaultPosition, wxDefaultSize, 0 );
+  textFilterMinBurstTime = new wxTextCtrl( itemScrolledWindow69, ID_TEXTCTRL_FILTER_MIN_BURST_TIME, _("0"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     textFilterMinBurstTime->SetToolTip(_("Specify the minimum burst time for the state records."));
-  itemBoxSizer78->Add(textFilterMinBurstTime, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer80->Add(textFilterMinBurstTime, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  staticBoxSizerFilterEvents = new wxStaticBox(itemScrolledWindow67, wxID_STATIC, _(" Events "));
-  wxStaticBoxSizer* itemStaticBoxSizer81 = new wxStaticBoxSizer(staticBoxSizerFilterEvents, wxHORIZONTAL);
-  itemBoxSizer68->Add(itemStaticBoxSizer81, 1, wxGROW|wxALL, 3);
+  staticBoxSizerFilterEvents = new wxStaticBox(itemScrolledWindow69, wxID_STATIC, _(" Events "));
+  wxStaticBoxSizer* itemStaticBoxSizer83 = new wxStaticBoxSizer(staticBoxSizerFilterEvents, wxHORIZONTAL);
+  itemBoxSizer70->Add(itemStaticBoxSizer83, 1, wxGROW|wxALL, 3);
   wxArrayString listboxFilterEventsStrings;
-  listboxFilterEvents = new wxListBox( itemScrolledWindow67, ID_LISTBOX_FILTER_EVENTS, wxDefaultPosition, wxDefaultSize, listboxFilterEventsStrings, wxLB_SINGLE );
+  listboxFilterEvents = new wxListBox( itemScrolledWindow69, ID_LISTBOX_FILTER_EVENTS, wxDefaultPosition, wxDefaultSize, listboxFilterEventsStrings, wxLB_SINGLE );
   if (CutFilterDialog::ShowToolTips())
     listboxFilterEvents->SetToolTip(_("List of the allowed events."));
-  itemStaticBoxSizer81->Add(listboxFilterEvents, 3, wxGROW|wxALL, 2);
+  itemStaticBoxSizer83->Add(listboxFilterEvents, 3, wxGROW|wxALL, 2);
 
-  wxBoxSizer* itemBoxSizer83 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer81->Add(itemBoxSizer83, 2, wxGROW|wxALL, 5);
-  buttonFilterAdd = new wxButton( itemScrolledWindow67, ID_BUTTON_FILTER_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer83->Add(buttonFilterAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer85 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer83->Add(itemBoxSizer85, 2, wxGROW|wxALL, 5);
+  buttonFilterAdd = new wxButton( itemScrolledWindow69, ID_BUTTON_FILTER_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer85->Add(buttonFilterAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  buttonFilterDelete = new wxButton( itemScrolledWindow67, ID_BUTTON_FILTER_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer83->Add(buttonFilterDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
+  buttonFilterDelete = new wxButton( itemScrolledWindow69, ID_BUTTON_FILTER_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer85->Add(buttonFilterDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5);
 
-  checkFilterDiscardListedEvents = new wxCheckBox( itemScrolledWindow67, ID_CHECKBOX_FILTER_DISCARD_LISTED_EVENTS, _("Discard"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkFilterDiscardListedEvents = new wxCheckBox( itemScrolledWindow69, ID_CHECKBOX_FILTER_DISCARD_LISTED_EVENTS, _("Discard"), wxDefaultPosition, wxDefaultSize, 0 );
   checkFilterDiscardListedEvents->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     checkFilterDiscardListedEvents->SetToolTip(_("If set, all the listed events will be discarded instead of being kept."));
-  itemBoxSizer83->Add(checkFilterDiscardListedEvents, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer85->Add(checkFilterDiscardListedEvents, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  staticBoxSizerFilterCommunications = new wxStaticBox(itemScrolledWindow67, wxID_STATIC, _(" Communications "));
-  wxStaticBoxSizer* itemStaticBoxSizer87 = new wxStaticBoxSizer(staticBoxSizerFilterCommunications, wxHORIZONTAL);
-  itemBoxSizer68->Add(itemStaticBoxSizer87, 0, wxGROW|wxALL, 3);
-  staticTextFilterSize = new wxStaticText( itemScrolledWindow67, wxID_STATIC, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+  staticBoxSizerFilterCommunications = new wxStaticBox(itemScrolledWindow69, wxID_STATIC, _(" Communications "));
+  wxStaticBoxSizer* itemStaticBoxSizer89 = new wxStaticBoxSizer(staticBoxSizerFilterCommunications, wxHORIZONTAL);
+  itemBoxSizer70->Add(itemStaticBoxSizer89, 0, wxGROW|wxALL, 3);
+  staticTextFilterSize = new wxStaticText( itemScrolledWindow69, wxID_STATIC, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     staticTextFilterSize->SetToolTip(_("Allow only communications with a minimum size."));
-  itemStaticBoxSizer87->Add(staticTextFilterSize, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemStaticBoxSizer89->Add(staticTextFilterSize, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textFilterSize = new wxSpinCtrl( itemScrolledWindow67, ID_SPINCTRL_FILTER_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+  textFilterSize = new wxSpinCtrl( itemScrolledWindow69, ID_SPINCTRL_FILTER_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
   if (CutFilterDialog::ShowToolTips())
     textFilterSize->SetToolTip(_("Allow only communications with a minimum size."));
-  itemStaticBoxSizer87->Add(textFilterSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemStaticBoxSizer89->Add(textFilterSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  staticTextFilterSizeUnit = new wxStaticText( itemScrolledWindow67, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStaticBoxSizer87->Add(staticTextFilterSizeUnit, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  staticTextFilterSizeUnit = new wxStaticText( itemScrolledWindow69, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStaticBoxSizer89->Add(staticTextFilterSizeUnit, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  itemScrolledWindow67->FitInside();
-  notebookTools->AddPage(itemScrolledWindow67, _("Filter"));
+  itemScrolledWindow69->FitInside();
+  notebookTools->AddPage(itemScrolledWindow69, _("Filter"));
 
-  wxScrolledWindow* itemScrolledWindow91 = new wxScrolledWindow( notebookTools, ID_PANEL_SOFTWARE_COUNTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemScrolledWindow91->SetScrollbars(1, 10, 0, 0);
-  wxBoxSizer* itemBoxSizer92 = new wxBoxSizer(wxVERTICAL);
-  itemScrolledWindow91->SetSizer(itemBoxSizer92);
-
-  wxStaticBox* itemStaticBoxSizer93Static = new wxStaticBox(itemScrolledWindow91, wxID_STATIC, _(" Region "));
-  wxStaticBoxSizer* itemStaticBoxSizer93 = new wxStaticBoxSizer(itemStaticBoxSizer93Static, wxHORIZONTAL);
-  itemBoxSizer92->Add(itemStaticBoxSizer93, 0, wxGROW|wxALL, 3);
+  wxScrolledWindow* itemScrolledWindow93 = new wxScrolledWindow( notebookTools, ID_PANEL_SOFTWARE_COUNTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemScrolledWindow93->SetScrollbars(1, 10, 0, 0);
   wxBoxSizer* itemBoxSizer94 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer93->Add(itemBoxSizer94, 0, wxGROW|wxALL, 0);
-  radioSCOnIntervals = new wxRadioButton( itemScrolledWindow91, ID_RADIOBUTTON_SC_ON_INTERVALS, _("On intervals"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+  itemScrolledWindow93->SetSizer(itemBoxSizer94);
+
+  wxStaticBox* itemStaticBoxSizer95Static = new wxStaticBox(itemScrolledWindow93, wxID_STATIC, _(" Region "));
+  wxStaticBoxSizer* itemStaticBoxSizer95 = new wxStaticBoxSizer(itemStaticBoxSizer95Static, wxHORIZONTAL);
+  itemBoxSizer94->Add(itemStaticBoxSizer95, 0, wxGROW|wxALL, 3);
+  wxBoxSizer* itemBoxSizer96 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer95->Add(itemBoxSizer96, 0, wxGROW|wxALL, 0);
+  radioSCOnIntervals = new wxRadioButton( itemScrolledWindow93, ID_RADIOBUTTON_SC_ON_INTERVALS, _("On intervals"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioSCOnIntervals->SetValue(true);
   if (CutFilterDialog::ShowToolTips())
     radioSCOnIntervals->SetToolTip(_("The software counters will be written periodically after every time interval"));
-  itemBoxSizer94->Add(radioSCOnIntervals, 1, wxGROW|wxALL, 2);
+  itemBoxSizer96->Add(radioSCOnIntervals, 1, wxGROW|wxALL, 2);
 
-  radioSCOnStates = new wxRadioButton( itemScrolledWindow91, ID_RADIOBUTTON_SC_ON_STATES, _("On states"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioSCOnStates = new wxRadioButton( itemScrolledWindow93, ID_RADIOBUTTON_SC_ON_STATES, _("On states"), wxDefaultPosition, wxDefaultSize, 0 );
   radioSCOnStates->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     radioSCOnStates->SetToolTip(_("The software counters will be written after every context switch of a running burst of at least the declared duration."));
-  itemBoxSizer94->Add(radioSCOnStates, 1, wxGROW|wxALL, 2);
+  itemBoxSizer96->Add(radioSCOnStates, 1, wxGROW|wxALL, 2);
 
-  wxStaticLine* itemStaticLine97 = new wxStaticLine( itemScrolledWindow91, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-  itemStaticBoxSizer93->Add(itemStaticLine97, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine99 = new wxStaticLine( itemScrolledWindow93, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemStaticBoxSizer95->Add(itemStaticLine99, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer98 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer93->Add(itemBoxSizer98, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
-  wxBoxSizer* itemBoxSizer99 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer98->Add(itemBoxSizer99, 1, wxGROW|wxALL, 2);
-  staticTextSCSamplingInterval = new wxStaticText( itemScrolledWindow91, wxID_STATIC, _("Sampling Interval (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer100 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer95->Add(itemBoxSizer100, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
+  wxBoxSizer* itemBoxSizer101 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer100->Add(itemBoxSizer101, 1, wxGROW|wxALL, 2);
+  staticTextSCSamplingInterval = new wxStaticText( itemScrolledWindow93, wxID_STATIC, _("Sampling Interval (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     staticTextSCSamplingInterval->SetToolTip(_("The software counters will be written periodically after every time interval"));
-  itemBoxSizer99->Add(staticTextSCSamplingInterval, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer101->Add(staticTextSCSamplingInterval, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textSCSamplingInterval = new wxTextCtrl( itemScrolledWindow91, ID_TEXTCTRL_SC_SAMPLING_INTERVAL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  textSCSamplingInterval = new wxTextCtrl( itemScrolledWindow93, ID_TEXTCTRL_SC_SAMPLING_INTERVAL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     textSCSamplingInterval->SetToolTip(_("The software counters will be written periodically after every time interval."));
-  itemBoxSizer99->Add(textSCSamplingInterval, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer101->Add(textSCSamplingInterval, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxBoxSizer* itemBoxSizer102 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer98->Add(itemBoxSizer102, 1, wxGROW|wxALL, 2);
-  staticTextSCMinimumBurstTime = new wxStaticText( itemScrolledWindow91, wxID_STATIC, _("Min Burst Time (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxBoxSizer* itemBoxSizer104 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer100->Add(itemBoxSizer104, 1, wxGROW|wxALL, 2);
+  staticTextSCMinimumBurstTime = new wxStaticText( itemScrolledWindow93, wxID_STATIC, _("Min Burst Time (ns)"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     staticTextSCMinimumBurstTime->SetToolTip(_("The software counters will be written after every context switch of a running burst of at least the declared duration."));
-  itemBoxSizer102->Add(staticTextSCMinimumBurstTime, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer104->Add(staticTextSCMinimumBurstTime, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textSCMinimumBurstTime = new wxTextCtrl( itemScrolledWindow91, ID_TEXTCTRL_SC_MINIMUM_BURST_TIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  textSCMinimumBurstTime = new wxTextCtrl( itemScrolledWindow93, ID_TEXTCTRL_SC_MINIMUM_BURST_TIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     textSCMinimumBurstTime->SetToolTip(_("The software counters will be written after every context switch of a running burst of at least the declared duration."));
-  itemBoxSizer102->Add(textSCMinimumBurstTime, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer104->Add(textSCMinimumBurstTime, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxStaticBox* itemStaticBoxSizer105Static = new wxStaticBox(itemScrolledWindow91, wxID_STATIC, _(" Selected events "));
-  wxStaticBoxSizer* itemStaticBoxSizer105 = new wxStaticBoxSizer(itemStaticBoxSizer105Static, wxHORIZONTAL);
-  itemBoxSizer92->Add(itemStaticBoxSizer105, 1, wxGROW|wxALL, 3);
-  wxBoxSizer* itemBoxSizer106 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer105->Add(itemBoxSizer106, 1, wxGROW|wxALL, 0);
+  wxStaticBox* itemStaticBoxSizer107Static = new wxStaticBox(itemScrolledWindow93, wxID_STATIC, _(" Selected events "));
+  wxStaticBoxSizer* itemStaticBoxSizer107 = new wxStaticBoxSizer(itemStaticBoxSizer107Static, wxHORIZONTAL);
+  itemBoxSizer94->Add(itemStaticBoxSizer107, 1, wxGROW|wxALL, 3);
+  wxBoxSizer* itemBoxSizer108 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer107->Add(itemBoxSizer108, 1, wxGROW|wxALL, 0);
   wxArrayString listSCSelectedEventsStrings;
-  listSCSelectedEvents = new wxListBox( itemScrolledWindow91, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, listSCSelectedEventsStrings, wxLB_SINGLE );
+  listSCSelectedEvents = new wxListBox( itemScrolledWindow93, ID_CHECKLISTBOX_SC_SELECTED_EVENTS, wxDefaultPosition, wxDefaultSize, listSCSelectedEventsStrings, wxLB_SINGLE );
   if (CutFilterDialog::ShowToolTips())
     listSCSelectedEvents->SetToolTip(_("The counters will express the number of calls for every type-value specified in this list."));
-  itemBoxSizer106->Add(listSCSelectedEvents, 3, wxGROW|wxALL, 2);
+  itemBoxSizer108->Add(listSCSelectedEvents, 3, wxGROW|wxALL, 2);
 
-  wxBoxSizer* itemBoxSizer108 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer106->Add(itemBoxSizer108, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-  buttonSCSelectedEventsAdd = new wxButton( itemScrolledWindow91, ID_BUTTON_SC_SELECTED_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer108->Add(buttonSCSelectedEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer110 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer108->Add(itemBoxSizer110, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  buttonSCSelectedEventsAdd = new wxButton( itemScrolledWindow93, ID_BUTTON_SC_SELECTED_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer110->Add(buttonSCSelectedEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonSCSelectedEventsDelete = new wxButton( itemScrolledWindow91, ID_BUTTON_SC_SELECTED_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer108->Add(buttonSCSelectedEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  buttonSCSelectedEventsDelete = new wxButton( itemScrolledWindow93, ID_BUTTON_SC_SELECTED_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer110->Add(buttonSCSelectedEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer111Static = new wxStaticBox(itemScrolledWindow91, wxID_STATIC, _(" Options "));
-  wxStaticBoxSizer* itemStaticBoxSizer111 = new wxStaticBoxSizer(itemStaticBoxSizer111Static, wxHORIZONTAL);
-  itemBoxSizer92->Add(itemStaticBoxSizer111, 0, wxGROW|wxALL, 3);
-  wxBoxSizer* itemBoxSizer112 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer111->Add(itemBoxSizer112, 1, wxGROW|wxALL, 0);
-  wxBoxSizer* itemBoxSizer113 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer112->Add(itemBoxSizer113, 1, wxGROW|wxALL, 2);
-  radioSCCountEvents = new wxRadioButton( itemScrolledWindow91, ID_RADIOBUTTON_SC_COUNT_EVENTS, _("Count events"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+  wxStaticBox* itemStaticBoxSizer113Static = new wxStaticBox(itemScrolledWindow93, wxID_STATIC, _(" Options "));
+  wxStaticBoxSizer* itemStaticBoxSizer113 = new wxStaticBoxSizer(itemStaticBoxSizer113Static, wxHORIZONTAL);
+  itemBoxSizer94->Add(itemStaticBoxSizer113, 0, wxGROW|wxALL, 3);
+  wxBoxSizer* itemBoxSizer114 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer113->Add(itemBoxSizer114, 1, wxGROW|wxALL, 0);
+  wxBoxSizer* itemBoxSizer115 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer114->Add(itemBoxSizer115, 1, wxGROW|wxALL, 2);
+  radioSCCountEvents = new wxRadioButton( itemScrolledWindow93, ID_RADIOBUTTON_SC_COUNT_EVENTS, _("Count events"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioSCCountEvents->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     radioSCCountEvents->SetToolTip(_("Count how many times the type-event pairs appear in the source trace."));
-  itemBoxSizer113->Add(radioSCCountEvents, 1, wxGROW|wxALL, 2);
+  itemBoxSizer115->Add(radioSCCountEvents, 1, wxGROW|wxALL, 2);
 
-  radioSCAccumulateValues = new wxRadioButton( itemScrolledWindow91, ID_RADIOBUTTON8, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioSCAccumulateValues = new wxRadioButton( itemScrolledWindow93, ID_RADIOBUTTON8, _("Accumulate values"), wxDefaultPosition, wxDefaultSize, 0 );
   radioSCAccumulateValues->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
     radioSCAccumulateValues->SetToolTip(_("Add the values instead of counting how many times the type-event pairs appear in the source trace."));
-  itemBoxSizer113->Add(radioSCAccumulateValues, 1, wxGROW|wxALL, 2);
+  itemBoxSizer115->Add(radioSCAccumulateValues, 1, wxGROW|wxALL, 2);
 
-  wxStaticLine* itemStaticLine116 = new wxStaticLine( itemScrolledWindow91, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-  itemBoxSizer112->Add(itemStaticLine116, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine118 = new wxStaticLine( itemScrolledWindow93, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemBoxSizer114->Add(itemStaticLine118, 0, wxGROW|wxALL, 5);
 
-  wxGridSizer* itemGridSizer117 = new wxGridSizer(2, 2, 0, 0);
-  itemBoxSizer112->Add(itemGridSizer117, 2, wxGROW|wxALL, 0);
-  checkSCRemoveStates = new wxCheckBox( itemScrolledWindow91, ID_CHECKBOX_SC_REMOVE_STATES, _("Remove states"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxGridSizer* itemGridSizer119 = new wxGridSizer(2, 2, 0, 0);
+  itemBoxSizer114->Add(itemGridSizer119, 2, wxGROW|wxALL, 0);
+  checkSCRemoveStates = new wxCheckBox( itemScrolledWindow93, ID_CHECKBOX_SC_REMOVE_STATES, _("Remove states"), wxDefaultPosition, wxDefaultSize, 0 );
   checkSCRemoveStates->SetValue(false);
-  itemGridSizer117->Add(checkSCRemoveStates, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemGridSizer119->Add(checkSCRemoveStates, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  checkSCSummarizeUseful = new wxCheckBox( itemScrolledWindow91, ID_CHECKBOX_SC_SUMMARIZE_USEFUL, _("Summarize useful"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkSCSummarizeUseful = new wxCheckBox( itemScrolledWindow93, ID_CHECKBOX_SC_SUMMARIZE_USEFUL, _("Summarize useful"), wxDefaultPosition, wxDefaultSize, 0 );
   checkSCSummarizeUseful->SetValue(false);
-  itemGridSizer117->Add(checkSCSummarizeUseful, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemGridSizer119->Add(checkSCSummarizeUseful, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  checkSCGlobalCounters = new wxCheckBox( itemScrolledWindow91, ID_CHECKBOX_SC_GLOBAL_COUNTERS, _("Global counters"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkSCGlobalCounters = new wxCheckBox( itemScrolledWindow93, ID_CHECKBOX_SC_GLOBAL_COUNTERS, _("Global counters"), wxDefaultPosition, wxDefaultSize, 0 );
   checkSCGlobalCounters->SetValue(false);
-  itemGridSizer117->Add(checkSCGlobalCounters, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemGridSizer119->Add(checkSCGlobalCounters, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  checkSCOnlyInBurstsCounting = new wxCheckBox( itemScrolledWindow91, ID_CHECKBOX_SC_ONLY_IN_BURSTS_COUNTING, _("Only in bursts counting"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkSCOnlyInBurstsCounting = new wxCheckBox( itemScrolledWindow93, ID_CHECKBOX_SC_ONLY_IN_BURSTS_COUNTING, _("Only in bursts counting"), wxDefaultPosition, wxDefaultSize, 0 );
   checkSCOnlyInBurstsCounting->SetValue(false);
-  itemGridSizer117->Add(checkSCOnlyInBurstsCounting, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemGridSizer119->Add(checkSCOnlyInBurstsCounting, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxStaticBox* itemStaticBoxSizer122Static = new wxStaticBox(itemScrolledWindow91, wxID_STATIC, _(" Keep events "));
-  wxStaticBoxSizer* itemStaticBoxSizer122 = new wxStaticBoxSizer(itemStaticBoxSizer122Static, wxHORIZONTAL);
-  itemBoxSizer92->Add(itemStaticBoxSizer122, 1, wxGROW|wxALL, 3);
+  wxStaticBox* itemStaticBoxSizer124Static = new wxStaticBox(itemScrolledWindow93, wxID_STATIC, _(" Keep events "));
+  wxStaticBoxSizer* itemStaticBoxSizer124 = new wxStaticBoxSizer(itemStaticBoxSizer124Static, wxHORIZONTAL);
+  itemBoxSizer94->Add(itemStaticBoxSizer124, 1, wxGROW|wxALL, 3);
   wxArrayString listSCKeepEventsStrings;
-  listSCKeepEvents = new wxListBox( itemScrolledWindow91, ID_LISTBOX_SC_KEEP_EVENTS, wxDefaultPosition, wxDefaultSize, listSCKeepEventsStrings, wxLB_SINGLE );
-  itemStaticBoxSizer122->Add(listSCKeepEvents, 2, wxGROW|wxALL, 2);
+  listSCKeepEvents = new wxListBox( itemScrolledWindow93, ID_LISTBOX_SC_KEEP_EVENTS, wxDefaultPosition, wxDefaultSize, listSCKeepEventsStrings, wxLB_SINGLE );
+  itemStaticBoxSizer124->Add(listSCKeepEvents, 2, wxGROW|wxALL, 2);
 
-  wxBoxSizer* itemBoxSizer124 = new wxBoxSizer(wxVERTICAL);
-  itemStaticBoxSizer122->Add(itemBoxSizer124, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-  buttonSCKeepEventsAdd = new wxButton( itemScrolledWindow91, ID_BUTTON_SC_KEEP_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer124->Add(buttonSCKeepEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer126 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer124->Add(itemBoxSizer126, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  buttonSCKeepEventsAdd = new wxButton( itemScrolledWindow93, ID_BUTTON_SC_KEEP_EVENTS_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer126->Add(buttonSCKeepEventsAdd, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonSCKeepEventsDelete = new wxButton( itemScrolledWindow91, ID_BUTTON_SC_KEEP_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer124->Add(buttonSCKeepEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  buttonSCKeepEventsDelete = new wxButton( itemScrolledWindow93, ID_BUTTON_SC_KEEP_EVENTS_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer126->Add(buttonSCKeepEventsDelete, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  itemScrolledWindow91->FitInside();
-  notebookTools->AddPage(itemScrolledWindow91, _("Software Counters"));
+  itemScrolledWindow93->FitInside();
+  notebookTools->AddPage(itemScrolledWindow93, _("Software Counters"));
 
-  itemStaticBoxSizer15->Add(notebookTools, 1, wxGROW|wxALL, 2);
+  itemStaticBoxSizer18->Add(notebookTools, 1, wxGROW|wxALL, 2);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer127 = new wxStdDialogButtonSizer;
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer129 = new wxStdDialogButtonSizer;
 
-  itemBoxSizer2->Add(itemStdDialogButtonSizer127, 0, wxALIGN_RIGHT|wxALL, 2);
-  wxButton* itemButton128 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer127->AddButton(itemButton128);
+  itemBoxSizer2->Add(itemStdDialogButtonSizer129, 0, wxALIGN_RIGHT|wxALL, 2);
+  wxButton* itemButton130 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer129->AddButton(itemButton130);
 
   buttonApply = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer127->AddButton(buttonApply);
+  itemStdDialogButtonSizer129->AddButton(buttonApply);
 
-  itemStdDialogButtonSizer127->Realize();
+  itemStdDialogButtonSizer129->Realize();
 
 ////@end CutFilterDialog content construction
 
@@ -942,6 +946,7 @@ void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
 {
   filePickerInputTrace->SetPath( wxString( nameSourceTrace.c_str(), wxConvUTF8 ) );
   checkLoadResultingTrace->SetValue( loadResultingTrace );
+  checkRunAppWithResultingTrace->SetValue( runAppWithResultingTrace );
   if ( globalXMLsPath.compare( "" ) == 0 )
     globalXMLsPath = nameSourceTrace;
 }
@@ -1065,7 +1070,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // Time region selected?
   if ( !previousWarning && textCutterBeginCut->GetValue() == _("") )
   {
-    wxMessageDialog message( this, _("Please set the initial time."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nPlease set the initial time."), _( "Warning" ), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1073,7 +1078,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
 
   if ( !previousWarning && textCutterEndCut->GetValue() == _("") )
   {
-    wxMessageDialog message( this, _("Please set the final time."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nPlease set the final time."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterEndCut->SetFocus();
     previousWarning = true;
@@ -1087,7 +1092,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // negative times?
   if ( !previousWarning && cutterBeginTime < 0.0 )
   {
-    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set begin time properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nTimes must be positive numbers.\n\nPlease set begin time properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1095,7 +1100,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
 
   if ( !previousWarning && cutterEndTime < 0.0 )
   {
-    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set end time properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nTimes must be positive numbers.\n\nPlease set end time properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterEndCut->SetFocus();
     previousWarning = true;
@@ -1104,7 +1109,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // percent out of range?
   if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterBeginTime > 100.0 )
   {
-    wxMessageDialog message( this, _("Begin time percent greater than 100 %.\n\nPlease set time percent properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nBegin time percent greater than 100 %.\n\nPlease set time percent properly."), _("Warning"), wxOK );
     message.ShowModal();
     radioCutterCutByTimePercent->SetFocus();
     previousWarning = true;
@@ -1112,7 +1117,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
 
   if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterEndTime > 100.0 )
   {
-    wxMessageDialog message( this, _("End time percent greater than 100 %.\n\nPlease set time percent properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nEnd time percent greater than 100 %.\n\nPlease set time percent properly."), _("Warning"), wxOK );
     message.ShowModal();
     radioCutterCutByTimePercent->SetFocus();
     previousWarning = true;
@@ -1121,7 +1126,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // begin == end?
   if ( !previousWarning && cutterBeginTime == cutterEndTime )
   {
-    wxMessageDialog message( this, _("Same time for both limits.\n\nPlease set time range properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nSame time for both limits.\n\nPlease set time range properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1130,7 +1135,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // begin > end?
   if ( !previousWarning && cutterBeginTime > cutterEndTime ) // Idea: Maybe it could swap times in text boxes.
   {
-    wxMessageDialog message( this, _("Begin time greater than end time.\n\nPlease set time range properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nBegin time greater than end time.\n\nPlease set time range properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
@@ -1139,7 +1144,7 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   // tasks string
   if( !previousWarning && !CheckStringTasks( textCutterTasks->GetValue() ) )
   {
-    wxMessageDialog message( this, _("Not allowed format in tasks text.\n\nPlease set it properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Cutter:\nNot allowed format in tasks text.\n\nPlease set it properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterTasks->SetFocus();
     previousWarning = true;
@@ -1228,7 +1233,11 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_remFirstStates( checkCutterRemoveFirstState->IsChecked() );
     traceOptions->set_remLastStates( checkCutterRemoveLastState->IsChecked() );
 
+#ifdef UNICODE
     traceOptions->set_tasks_list( (char *)textCutterTasks->GetValue().mb_str().data() );
+#else
+    traceOptions->set_tasks_list( (char *)textCutterTasks->GetValue().mb_str() );
+#endif
   }
 }
 
@@ -1594,7 +1603,7 @@ void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
 
     if ( !statesSelected )
     {
-      wxMessageDialog message( this, _("No state selected.\n\nPlease select at least one or\ndiscard all the state records."), _( "Warning" ), wxOK );
+      wxMessageDialog message( this, _("Filter:\nNo state selected.\n\nPlease select at least one or\ndiscard all the state records."), _( "Warning" ), wxOK );
       message.ShowModal();
       checkListFilterStates->SetFocus();
       previousWarning = true;
@@ -1606,7 +1615,7 @@ void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
   textFilterMinBurstTime->GetValue().ToDouble( &filterMinBurstTime );
   if ( !previousWarning && !checkFilterDiscardStateRecords->IsChecked() && filterMinBurstTime < 0.0 )
   {
-    wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set minimum burst time properly."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Filter:\nTimes must be positive numbers.\n\nPlease set minimum burst time properly."), _("Warning"), wxOK );
     message.ShowModal();
     textFilterMinBurstTime->SetFocus();
     previousWarning = true;
@@ -1615,7 +1624,7 @@ void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
   // No events selected
   if ( !previousWarning && !checkFilterDiscardEventRecords->IsChecked() && listboxFilterEvents->GetCount() == 0 )
   {
-    wxMessageDialog message( this, _("The list of events is empty.\n\nPlease add at least one event or\ndiscard all the event records."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Filter:\nThe list of events is empty.\n\nPlease add at least one event or\ndiscard all the event records."), _( "Warning" ), wxOK );
     message.ShowModal();
     buttonFilterAdd->SetFocus();
     previousWarning = true;
@@ -1624,7 +1633,7 @@ void CutFilterDialog::CheckFilterOptions( bool &previousWarning )
   // Too much event lines
   if ( !previousWarning && !checkFilterDiscardEventRecords->IsChecked() && listboxFilterEvents->GetCount() > 20 )
   {
-    wxMessageDialog message( this, _("Too much event lines.\n\nPlease delete at least one line."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Filter:\nToo much event lines.\n\nPlease delete at least one line."), _( "Warning" ), wxOK );
     message.ShowModal();
     listboxFilterEvents->SetFocus();
     previousWarning = true;
@@ -1969,7 +1978,7 @@ void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
   // Time region selected?
   if ( !previousWarning && radioSCOnIntervals->GetValue() && textSCSamplingInterval->GetValue() == _("") )
   {
-    wxMessageDialog message( this, _("Please set the sampling interval time."), _( "Warning" ), wxOK );
+    wxMessageDialog message( this, _("Software Counters:\nPlease set the sampling interval time."), _( "Warning" ), wxOK );
     message.ShowModal();
     textSCSamplingInterval->SetFocus();
     previousWarning = true;
@@ -1977,7 +1986,7 @@ void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
 
   if ( !previousWarning && radioSCOnStates->GetValue() && textSCMinimumBurstTime->GetValue() == _("")  )
   {
-    wxMessageDialog message( this, _("Please set the minimum burst time."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Software Counters:\nPlease set the minimum burst time."), _("Warning"), wxOK );
     message.ShowModal();
     textSCMinimumBurstTime->SetFocus();
     previousWarning = true;
@@ -1996,13 +2005,13 @@ void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
   {
     if ( radioSCOnIntervals->GetValue() )
     {
-      wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set sampling interval burst time properly."), _("Warning"), wxOK );
+      wxMessageDialog message( this, _("Software Counters:\nTimes must be positive numbers.\n\nPlease set sampling interval burst time properly."), _("Warning"), wxOK );
       message.ShowModal();
       textSCSamplingInterval->SetFocus();
     }
     else
     {
-      wxMessageDialog message( this, _("Times must be positive numbers.\n\nPlease set minimum burst time properly."), _("Warning"), wxOK );
+      wxMessageDialog message( this, _("Software Counters:\nTimes must be positive numbers.\n\nPlease set minimum burst time properly."), _("Warning"), wxOK );
       message.ShowModal();
       textSCMinimumBurstTime->SetFocus();
     }
@@ -2011,7 +2020,7 @@ void CutFilterDialog::CheckSoftwareCountersOptions( bool &previousWarning )
   // Empty list of events?
   if ( !previousWarning && listSCSelectedEvents->GetCount() == 0 )
   {
-    wxMessageDialog message( this, _("The list of event types is empty.\n\nPlease add at least one event type."), _("Warning"), wxOK );
+    wxMessageDialog message( this, _("Software Counters:\nThe list of event types is empty.\n\nPlease add at least one event type."), _("Warning"), wxOK );
     message.ShowModal();
     buttonSCSelectedEventsAdd->SetFocus();
     previousWarning = true;
@@ -2541,6 +2550,7 @@ void CutFilterDialog::enableOutputTraceWidgets( bool enable )
   txtOutputTrace->Enable( enable );
   filePickerOutputTrace->Enable( enable );
   checkLoadResultingTrace->Enable( enable );
+  checkRunAppWithResultingTrace->Enable( enable );
 }
 
 
@@ -2717,6 +2727,7 @@ void CutFilterDialog::TransferWindowToCommonData( bool previousWarning )
     nameSourceTrace = std::string( filePickerInputTrace->GetPath().mb_str() );
     nameDestinyTrace = std::string( filePickerOutputTrace->GetPath().mb_str() );
     loadResultingTrace = checkLoadResultingTrace->IsChecked();
+    runAppWithResultingTrace = checkRunAppWithResultingTrace->IsChecked();
 
     TransferToolOrderToCommonData();
   }
@@ -2787,19 +2798,5 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonSaveXmlUpdate( wxUpdateUIEvent& event )
 {
   buttonSaveXml->Enable( !isExecutionChainEmpty() );
-}
-
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN_APP2
- */
-
-void CutFilterDialog::OnButtonRunApplicationClick( wxCommandEvent& event )
-{
-  RunScript runApplication( this );
-  
-  if ( runApplication.ShowModal() == wxID_OK )
-  {
-  }
 }
 

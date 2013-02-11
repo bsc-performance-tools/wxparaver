@@ -41,6 +41,7 @@
 ////@end includes
 
 #include <wx/process.h>
+
 class RunScript;
 
 class RunningProcess : public wxProcess
@@ -77,10 +78,12 @@ class wxBoxSizer;
 
 ////@begin control identifiers
 #define ID_RUN_APPLICATION 10110
-#define ID_FILEPICKERCTRL_SCRIPT 10200
+#define ID_CHOICE_APPLICATION 10200
 #define ID_BUTTON_EDIT_APPLICATION 10204
-#define ID_FILEPICKERCTRL_TRACE 10201
+#define ID_FILEPICKER_TRACE 10201
 #define ID_TEXTCTRL_DEFAULT_PARAMETERS 10205
+#define ID_FILEPICKER_DIMEMAS_CFG 10000
+#define ID_TEXTCTRL_SIMULATED_TRACE 10001
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
 #define ID_BUTTON_CLEAR_LOG 10202
@@ -109,9 +112,9 @@ public:
   RunScript( wxWindow* parent, wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
 
   RunScript( wxWindow* parent,
-             std::string whichApp,
-             std::string whichTrace,
-             std::string whichCommand,
+             wxString whichApp,
+             wxString whichTrace,
+             wxString whichCommand,
              bool runNow,
              wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
 
@@ -151,6 +154,9 @@ public:
   RunningProcess * GetMyProcess() const { return myProcess ; }
   void SetMyProcess(RunningProcess * value) { myProcess = value ; }
 
+  wxString GetParaverBin() const { return paraverBin ; }
+  void SetParaverBin(wxString value) { paraverBin = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -164,11 +170,16 @@ public:
   void OnProcessTerminated();
 
 ////@begin RunScript member variables
-  wxComboBox* filePickerScript;
+  wxChoice* choiceApplication;
   wxButton* buttonEditApplication;
-  wxFilePickerCtrl* filePickerCtrl_trace;
+  wxFilePickerCtrl* filePickerTrace;
   wxBoxSizer* boxSizerParameters;
   wxTextCtrl* textCtrlDefaultParameters;
+  wxBoxSizer* dimemasSection;
+  wxStaticText* labelFilePickerDimemasCFG;
+  wxFilePickerCtrl* filePickerDimemasCFG;
+  wxStaticText* labelTextCtrlSimulatedTrace;
+  wxTextCtrl* textCtrlSimulatedTrace;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
   wxButton* buttonClearLog;
@@ -176,6 +187,7 @@ public:
   wxButton* buttonExit;
 private:
   RunningProcess * myProcess;
+  wxString paraverBin;
 ////@end RunScript member variables
 
 };

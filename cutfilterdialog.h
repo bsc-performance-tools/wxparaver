@@ -64,13 +64,7 @@ class wxSpinCtrl;
 #include "tracefilter.h"
 #include "tracesoftwarecounters.h"
 //#include "paravermain.h"
-
-// find a common place; moved from paravermain.cpp
-#ifdef WIN32
-  const char PATH_SEP('\\');
-#else
-  const char PATH_SEP('/');
-#endif
+#include "wxparaverapp.h"
 
 /*!
  * Control identifiers
@@ -81,13 +75,13 @@ class wxSpinCtrl;
 #define ID_FILECTRL_CUTFILTER_INPUT_TRACE_SELECTOR 10106
 #define ID_FILECTRL_CUTFILTER_OUTPUT_TRACE_SELECTOR 10000
 #define ID_CHECKBOX_LOAD_RESULTING_TRACE 10152
+#define ID_CHECKBOX_RUN_APP_WITH_RESULTING_TRACE 10002
 #define ID_FILECTRL_CUTFILTER_XML_SELECTOR 10144
 #define ID_CHECKLISTBOX_EXECUTION_CHAIN 10107
 #define ID_BITMAPBUTTON_PUSH_UP_FILTER 10109
 #define ID_BITMAPBUTTON_PUSH_DOWN_FILTER 10001
 #define ID_BUTTON_EDIT_XML 10153
 #define ID_BUTTON_SAVE_XML 10154
-#define ID_BUTTON_RUN_APP2 10208
 #define ID_NOTEBOOK_CUT_FILTER_OPTIONS 10108
 #define ID_PANEL_CUTTER 10111
 #define ID_RADIOBUTTON_CUTTER_CUT_BY_TIME 10116
@@ -205,9 +199,6 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_SAVE_XML
   void OnButtonSaveXmlUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN_APP2
-  void OnButtonRunApplicationClick( wxCommandEvent& event );
-
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
   void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
 
@@ -293,6 +284,9 @@ public:
   bool GetNewXMLsPath() const { return newXMLsPath ; }
   void SetNewXMLsPath(bool value) { newXMLsPath = value ; }
 
+  bool GetRunAppWithResultingTrace() const { return runAppWithResultingTrace ; }
+  void SetRunAppWithResultingTrace(bool value) { runAppWithResultingTrace = value ; }
+
   TraceOptions * GetTraceOptions() const { return traceOptions ; }
   void SetTraceOptions(TraceOptions * value) { traceOptions = value ; }
 
@@ -354,6 +348,7 @@ public:
   wxStaticText* txtOutputTrace;
   wxFilePickerCtrl* filePickerOutputTrace;
   wxCheckBox* checkLoadResultingTrace;
+  wxCheckBox* checkRunAppWithResultingTrace;
   wxFilePickerCtrl* filePickerXMLCfg;
   wxBoxSizer* boxSizerExecutionChain;
   wxStaticText* txtExecutionChain;
@@ -362,7 +357,6 @@ public:
   wxBitmapButton* buttonDown;
   wxToggleButton* buttonViewEditXml;
   wxButton* buttonSaveXml;
-  wxButton* runApplication;
   wxNotebook* notebookTools;
   wxRadioButton* radioCutterCutByTime;
   wxRadioButton* radioCutterCutByTimePercent;
@@ -423,6 +417,7 @@ private:
   std::string nameDestinyTrace;
   std::string nameSourceTrace;
   bool newXMLsPath;
+  bool runAppWithResultingTrace;
   TraceOptions * traceOptions;
   bool waitingGlobalTiming;
 ////@end CutFilterDialog member variables
