@@ -80,7 +80,7 @@ bool RunningProcess::HasInput()
         parent->listboxRunLog->Delete( numLines - 1 );
       }
 */
-      parent->listboxRunLog->Append( msg );
+      parent->listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
 
       hasInput = true;
   }
@@ -93,7 +93,7 @@ bool RunningProcess::HasInput()
       // msg << command << _T(" (stderr): ") << tis.ReadLine();
       msg << tis.ReadLine();
 
-      parent->listboxRunLog->Append( msg );
+      parent->listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
 
       hasInput = true;
   }
@@ -363,8 +363,7 @@ void RunScript::CreateControls()
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
   itemBoxSizer22->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
-  wxArrayString listboxRunLogStrings;
-  listboxRunLog = new wxListBox( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, listboxRunLogStrings, wxLB_SINGLE|wxLB_NEEDED_SB );
+  listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 1, wxGROW|wxALL, 7);
@@ -538,7 +537,7 @@ void RunScript::OnIdle( wxIdleEvent& event )
 
 void RunScript::OnButtonClearLogClick( wxCommandEvent& event )
 {
-  listboxRunLog->Clear();
+  listboxRunLog->SetPage("");
 }
 
 

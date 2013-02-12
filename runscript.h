@@ -38,6 +38,7 @@
 ////@begin includes
 #include "wx/filepicker.h"
 #include "wx/statline.h"
+#include "wx/html/htmlwin.h"
 ////@end includes
 
 #include <wx/process.h>
@@ -70,6 +71,7 @@ class RunningProcess : public wxProcess
 ////@begin forward declarations
 class wxFilePickerCtrl;
 class wxBoxSizer;
+class wxHtmlWindow;
 ////@end forward declarations
 
 /*!
@@ -187,7 +189,7 @@ public:
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
   wxButton* buttonClearLog;
-  wxListBox* listboxRunLog;
+  wxHtmlWindow* listboxRunLog;
   wxButton* buttonExit;
 private:
   RunningProcess * myProcess;

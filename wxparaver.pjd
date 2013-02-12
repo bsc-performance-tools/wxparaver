@@ -6962,14 +6962,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -7427,7 +7419,6 @@ In normal mode all properties are showed in main window."</string>
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Custom arguments">""</string>
                     <string name="proxy-Custom ctor arguments">""</string>
-                    <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                   </document>
                 </document>
                 <document>
@@ -9684,18 +9675,18 @@ In normal mode all properties are showed in main window."</string>
           <string name="app-kind">"Standard"</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
-          <string name="variable-0">"controlTimelines|vector&lt; TWindowID &gt;|ControlTimelines||2|0|"</string>
-          <string name="variable-1">"controlTimelineMin|double|ControlTimelineMin||2|0|"</string>
+          <string name="variable-0">"controlTimelineAutofit|bool|ControlTimelineAutofit|true|2|0|"</string>
+          <string name="variable-1">"controlTimelineDelta|double|ControlTimelineDelta||2|0|"</string>
           <string name="variable-2">"controlTimelineMax|double|ControlTimelineMax||2|0|"</string>
-          <string name="variable-3">"controlTimelineDelta|double|ControlTimelineDelta||2|0|"</string>
-          <string name="variable-4">"dataTimelines|vector&lt; TWindowID &gt;|DataTimelines||2|0|"</string>
-          <string name="variable-5">"extraControlTimelineMin|double|ExtraControlTimelineMin||2|0|"</string>
-          <string name="variable-6">"extraControlTimelineMax|double|ExtraControlTimelineMax||2|0|"</string>
+          <string name="variable-3">"controlTimelineMin|double|ControlTimelineMin||2|0|"</string>
+          <string name="variable-4">"controlTimelines|vector&lt; TWindowID &gt;|ControlTimelines||2|0|"</string>
+          <string name="variable-5">"dataTimelines|vector&lt; TWindowID &gt;|DataTimelines||2|0|"</string>
+          <string name="variable-6">"extraControlTimelineAutofit|bool|ExtraControlTimelineAutofit|true|2|0|"</string>
           <string name="variable-7">"extraControlTimelineDelta|double|ExtraControlTimelineDelta||2|0|"</string>
-          <string name="variable-8">"timeRange|vector&lt; pair&lt; TRecordTime, TRecordTime &gt; &gt;|TimeRange||2|0|"</string>
-          <string name="variable-9">"extraControlTimelines|vector&lt; TWindowID &gt;|ExtraControlTimelines||2|0|"</string>
-          <string name="variable-10">"controlTimelineAutofit|bool|ControlTimelineAutofit|true|2|0|"</string>
-          <string name="variable-11">"extraControlTimelineAutofit|bool|ExtraControlTimelineAutofit|true|2|0|"</string>
+          <string name="variable-8">"extraControlTimelineMax|double|ExtraControlTimelineMax||2|0|"</string>
+          <string name="variable-9">"extraControlTimelineMin|double|ExtraControlTimelineMin||2|0|"</string>
+          <string name="variable-10">"extraControlTimelines|vector&lt; TWindowID &gt;|ExtraControlTimelines||2|0|"</string>
+          <string name="variable-11">"timeRange|vector&lt; pair&lt; TRecordTime, TRecordTime &gt; &gt;|TimeRange||2|0|"</string>
           <string name="variable-12">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
           <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||HistogramDialog"</string>
           <string name="proxy-Id name">"ID_HISTOGRAMDIALOG"</string>
@@ -9771,14 +9762,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -9974,7 +9957,6 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxToggleButton: ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT"</string>
@@ -12560,6 +12542,8 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Global"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">""</string>
             <string name="proxy-Background colour">""</string>
@@ -12613,8 +12597,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Global"</string>
-            <string name="proxy-Tab icon">""</string>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
             <document>
               <string name="title">"wxBoxSizer V"</string>
@@ -14139,6 +14121,8 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Timeline"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">""</string>
             <string name="proxy-Background colour">""</string>
@@ -14192,8 +14176,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Timeline"</string>
-            <string name="proxy-Tab icon">""</string>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
             <document>
               <string name="title">"wxBoxSizer H"</string>
@@ -16743,6 +16725,8 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Histogram"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">"Histogram preferences."</string>
             <string name="proxy-Background colour">""</string>
@@ -16796,8 +16780,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Histogram"</string>
-            <string name="proxy-Tab icon">""</string>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
             <document>
               <string name="title">"wxBoxSizer H"</string>
@@ -19261,6 +19243,8 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Color"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">""</string>
             <string name="proxy-Background colour">""</string>
@@ -19314,8 +19298,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Color"</string>
-            <string name="proxy-Tab icon">""</string>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
             <document>
               <string name="title">"wxBoxSizer V"</string>
@@ -21050,6 +21032,8 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Implementation filename">""</string>
             <string name="proxy-Header filename">""</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-Tab label">"Filters"</string>
+            <string name="proxy-Tab icon">""</string>
             <string name="proxy-Help text">""</string>
             <string name="proxy-Tooltip text">""</string>
             <string name="proxy-Background colour">""</string>
@@ -21103,8 +21087,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-Custom ctor arguments">""</string>
             <string name="proxy-Event sources">""</string>
             <bool name="proxy-AUI manager">0</bool>
-            <string name="proxy-Tab label">"Filters"</string>
-            <string name="proxy-Tab icon">""</string>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
           </document>
         </document>
@@ -28080,14 +28062,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -28333,7 +28307,6 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Custom arguments">""</string>
                       <string name="proxy-Custom ctor arguments">""</string>
-                      <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                     </document>
                   </document>
                   <document>
@@ -31825,19 +31798,10 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
             <document>
               <string name="title">"wxHtmlWindow: ID_HTMLWINDOW"</string>
               <string name="type">"dialog-control-document"</string>
@@ -31913,7 +31877,6 @@ In normal mode all properties are showed in main window."</string>
               <string name="proxy-Custom arguments">""</string>
               <string name="proxy-Custom ctor arguments">""</string>
               <string name="proxy-Event sources">""</string>
-              <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
             </document>
             <document>
               <string name="title">"wxBoxSizer H"</string>
@@ -33440,27 +33403,27 @@ In normal mode all properties are showed in main window."</string>
               </document>
             </document>
             <document>
-              <string name="title">"wxListBox: ID_LISTBOX_RUN_LOG"</string>
+              <string name="title">"wxHtmlWindow: ID_LISTBOX_RUN_LOG"</string>
               <string name="type">"dialog-control-document"</string>
               <string name="filename">""</string>
-              <string name="icon-name">"listbox"</string>
+              <string name="icon-name">"htmlwindow"</string>
               <long name="is-transient">0</long>
               <long name="owns-file">1</long>
               <long name="title-mode">0</long>
               <long name="locked">0</long>
-              <string name="proxy-type">"wbListBoxProxy"</string>
+              <string name="proxy-type">"wbHtmlWindowProxy"</string>
               <string name="proxy-Id name">"ID_LISTBOX_RUN_LOG"</string>
               <long name="proxy-Id value">10199</long>
               <string name="proxy-Name">""</string>
-              <string name="proxy-Class">"wxListBox"</string>
-              <string name="proxy-Base class">"wxListBox"</string>
+              <string name="proxy-Class">"wxHtmlWindow"</string>
+              <string name="proxy-Base class">"wxHtmlWindow"</string>
               <bool name="proxy-External implementation">1</bool>
               <bool name="proxy-Separate files">0</bool>
               <string name="proxy-Implementation filename">""</string>
               <string name="proxy-Header filename">""</string>
               <string name="proxy-Member variable name">"listboxRunLog"</string>
-              <string name="proxy-Strings">""</string>
-              <string name="proxy-Initial value">""</string>
+              <string name="proxy-URL">""</string>
+              <string name="proxy-HTML code">""</string>
               <string name="proxy-Help text">""</string>
               <string name="proxy-Tooltip text">"Execution messages"</string>
               <string name="proxy-Background colour">""</string>
@@ -33476,13 +33439,9 @@ In normal mode all properties are showed in main window."</string>
               <string name="proxy-Data class implementation filename">""</string>
               <string name="proxy-Data class header filename">""</string>
               <string name="proxy-Data class manager window">""</string>
-              <bool name="proxy-wxLB_SINGLE">1</bool>
-              <bool name="proxy-wxLB_MULTIPLE">0</bool>
-              <bool name="proxy-wxLB_EXTENDED">0</bool>
-              <bool name="proxy-wxLB_ALWAYS_SB">0</bool>
-              <bool name="proxy-wxLB_NEEDED_SB">1</bool>
-              <bool name="proxy-wxLB_HSCROLL">0</bool>
-              <bool name="proxy-wxLB_SORT">0</bool>
+              <bool name="proxy-wxHW_SCROLLBAR_NEVER">0</bool>
+              <bool name="proxy-wxHW_SCROLLBAR_AUTO">1</bool>
+              <bool name="proxy-wxHW_NO_SELECTION">0</bool>
               <bool name="proxy-wxNO_BORDER">0</bool>
               <bool name="proxy-wxSIMPLE_BORDER">0</bool>
               <bool name="proxy-wxDOUBLE_BORDER">0</bool>
@@ -33493,6 +33452,11 @@ In normal mode all properties are showed in main window."</string>
               <bool name="proxy-wxWANTS_CHARS">0</bool>
               <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
               <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+              <bool name="proxy-wxCLIP_CHILDREN">0</bool>
+              <bool name="proxy-wxHSCROLL">1</bool>
+              <bool name="proxy-wxVSCROLL">1</bool>
+              <bool name="proxy-wxALWAYS_SHOW_SB">0</bool>
+              <bool name="proxy-wxWS_EX_VALIDATE_RECURSIVELY">0</bool>
               <string name="proxy-Custom styles">""</string>
               <long name="proxy-X">-1</long>
               <long name="proxy-Y">-1</long>
@@ -33511,6 +33475,7 @@ In normal mode all properties are showed in main window."</string>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <string name="proxy-Custom arguments">""</string>
               <string name="proxy-Custom ctor arguments">""</string>
+              <string name="proxy-Event sources">""</string>
             </document>
             <document>
               <string name="title">"wxBoxSizer H"</string>
