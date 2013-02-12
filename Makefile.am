@@ -91,11 +91,11 @@ wxparaver_bin_CXXFLAGS = @CXXFLAGS@
 
  
 install-data-hook:
-	if test -f $(bindir)/dimemas-wrapper.sh ; then
-		cp -f $(bindir)/dimemas-wrapper.sh $(bindir)/dimemas-wrapper.sh.old
+	if test -f $(bindir)/dimemas-wrapper.sh ; then \
+		cp -f $(bindir)/dimemas-wrapper.sh $(bindir)/old.dimemas-wrapper.sh ; \
 	fi
-	if test -f $(bindir)/wxparaver ; then
-		cp -f $(bindir)/wxparaver $(bindir)/wxparaver.old
+	if test -f $(bindir)/wxparaver ; then \
+		cp -f $(bindir)/wxparaver $(bindir)/old.wxparaver ; \
 	fi
 	cp -f ./docs/dimemas-wrapper.sh $(bindir)
 	cp -f ./docs/wxparaver          $(bindir)
