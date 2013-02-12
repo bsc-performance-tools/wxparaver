@@ -239,9 +239,9 @@ void RunScript::Init()
 ////@end RunScript member initialisation
 
   wxString paraverHome;
-  if ( wxGetEnv( wxT("PARAVER_HOME"), &paraverHome ) )
+  if ( wxGetEnv( wxT( "PARAVER_HOME" ), &paraverHome ) )
   {
-    paraverBin = paraverHome + PATH_SEP + wxString("bin") + PATH_SEP;
+    paraverBin = paraverHome + PATH_SEP + wxString( wxT( "bin" ) ) + PATH_SEP;
   }
 }
 
@@ -374,8 +374,8 @@ void RunScript::CreateControls()
 
 ////@end RunScript content construction
 
-  choiceApplication->Append( "Dimemas" );
-  choiceApplication->Append( "User defined" );
+  choiceApplication->Append( wxT( "Dimemas" ) );
+  choiceApplication->Append( wxT( "User defined" ) );
   choiceApplication->Select( 0 ); // Dimemas
 }
 
@@ -440,7 +440,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   wxString command;
   wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
  
-  if ( currentChoice == wxString( "Dimemas" ) )
+  if ( currentChoice == wxString( wxT( "Dimemas" ) ) )
   {
     // TODO: place wrapper in package
     // First kind: Application needs a previous wrapper
@@ -454,14 +454,14 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     }
     else
     {
-      command  = paraverBin + wxString( "dimemas-wrapper.sh" );
+      command  = paraverBin + wxString( wxT( "dimemas-wrapper.sh" ) );
       command += wxT( " " ) + filePickerTrace->GetPath();
       command += wxT( " " ) + filePickerDimemasCFG->GetPath();
       command += wxT( " " ) + textCtrlSimulatedTrace->GetValue();
       command += wxT( " " ) + textCtrlDefaultParameters->GetValue();
     }
   }
-  else if ( currentChoice == wxString( "User defined" ) )
+  else if ( currentChoice == wxString( wxT( "User defined" ) ) )
   {
     // Second kind: Default parameter is directly used
     command += textCtrlDefaultParameters->GetValue();
@@ -474,7 +474,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
                 
                 
   // Run command
-  if ( currentChoice != wxString( "Dimemas" ) || !paraverBin.IsEmpty() )
+  if ( currentChoice != wxString( wxT( "Dimemas" ) ) || !paraverBin.IsEmpty() )
   {
     myProcess = new RunningProcess( this, command );
     if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
@@ -520,7 +520,7 @@ void RunScript::OnIdle( wxIdleEvent& event )
   // TODO: from the list of registered applications, +o- using internal table with *boxsizers
   wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
 
-  dimemasSection->Show( currentChoice == wxString( "Dimemas" ) );
+  dimemasSection->Show( currentChoice == wxString( wxT( "Dimemas" ) ) );
   Layout();
   
   if ( myProcess != NULL && myProcess->HasInput() )
