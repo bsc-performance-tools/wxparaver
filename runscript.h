@@ -135,6 +135,9 @@ public:
   /// wxEVT_IDLE event handler for ID_RUN_APPLICATION
   void OnIdle( wxIdleEvent& event );
 
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_APPLICATION
+  void OnChoiceApplicationSelected( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
   void OnButtonRunClick( wxCommandEvent& event );
 
@@ -174,6 +177,7 @@ public:
   wxButton* buttonEditApplication;
   wxFilePickerCtrl* filePickerTrace;
   wxBoxSizer* boxSizerParameters;
+  wxStaticText* labelTextCtrlDefaultParameters;
   wxTextCtrl* textCtrlDefaultParameters;
   wxBoxSizer* dimemasSection;
   wxStaticText* labelFilePickerDimemasCFG;
@@ -190,6 +194,8 @@ private:
   wxString paraverBin;
 ////@end RunScript member variables
 
+  void adaptWindowToApplicationSelection();
+  wxString expandVariables( wxString command );
 };
 
 #endif // _RUNSCRIPT_H_

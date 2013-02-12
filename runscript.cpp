@@ -118,6 +118,8 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
 
+  EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
+
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
 
@@ -177,6 +179,8 @@ RunScript::RunScript( wxWindow* parent,
     textCtrlDefaultParameters->SetValue( auxCommand );
   }
   
+  
+  
 }
 
 
@@ -225,6 +229,7 @@ void RunScript::Init()
   buttonEditApplication = NULL;
   filePickerTrace = NULL;
   boxSizerParameters = NULL;
+  labelTextCtrlDefaultParameters = NULL;
   textCtrlDefaultParameters = NULL;
   dimemasSection = NULL;
   labelFilePickerDimemasCFG = NULL;
@@ -296,64 +301,67 @@ void RunScript::CreateControls()
     filePickerTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(filePickerTrace, 4, wxGROW|wxLEFT|wxRIGHT, 2);
 
-  boxSizerParameters = new wxBoxSizer(wxVERTICAL);
+  boxSizerParameters = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(boxSizerParameters, 0, wxGROW|wxALL, 5);
+
+  labelTextCtrlDefaultParameters = new wxStaticText( itemDialog1, wxID_STATIC, _("Command"), wxDefaultPosition, wxDefaultSize, 0 );
+  boxSizerParameters->Add(labelTextCtrlDefaultParameters, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   textCtrlDefaultParameters = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_DEFAULT_PARAMETERS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     textCtrlDefaultParameters->SetToolTip(_("Parameters passed to the script"));
-  boxSizerParameters->Add(textCtrlDefaultParameters, 0, wxGROW, 5);
+  boxSizerParameters->Add(textCtrlDefaultParameters, 4, wxGROW, 5);
 
   dimemasSection = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(dimemasSection, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
-  dimemasSection->Add(itemBoxSizer14, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
+  dimemasSection->Add(itemBoxSizer15, 0, wxGROW|wxTOP|wxBOTTOM, 5);
 
   labelFilePickerDimemasCFG = new wxStaticText( itemDialog1, wxID_STATIC, _("Dimemas CFG"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     labelFilePickerDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
-  itemBoxSizer14->Add(labelFilePickerDimemasCFG, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer15->Add(labelFilePickerDimemasCFG, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   filePickerDimemasCFG = new wxFilePickerCtrl( itemDialog1, ID_FILEPICKER_DIMEMAS_CFG, wxEmptyString, wxEmptyString, _T("Dimemas configuration file (*.cfg)|*.cfg|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
   if (RunScript::ShowToolTips())
     filePickerDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
-  itemBoxSizer14->Add(filePickerDimemasCFG, 4, wxGROW|wxLEFT|wxRIGHT, 2);
+  itemBoxSizer15->Add(filePickerDimemasCFG, 4, wxGROW|wxLEFT|wxRIGHT, 2);
 
-  wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
-  dimemasSection->Add(itemBoxSizer17, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
+  dimemasSection->Add(itemBoxSizer18, 0, wxGROW|wxTOP|wxBOTTOM, 5);
 
   labelTextCtrlSimulatedTrace = new wxStaticText( itemDialog1, wxID_STATIC, _("Simulated trace"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     labelTextCtrlSimulatedTrace->SetToolTip(_("Write the name given to the simulated trace; if missing, suffix '.prv' will be appended"));
-  itemBoxSizer17->Add(labelTextCtrlSimulatedTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer18->Add(labelTextCtrlSimulatedTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textCtrlSimulatedTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_SIMULATED_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     textCtrlSimulatedTrace->SetToolTip(_("Write the name given to the simulated trace; if missing, suffix '.prv' will be appended"));
-  itemBoxSizer17->Add(textCtrlSimulatedTrace, 4, wxGROW|wxLEFT|wxRIGHT, 2);
+  itemBoxSizer18->Add(textCtrlSimulatedTrace, 4, wxGROW|wxLEFT|wxRIGHT, 2);
 
-  wxStaticLine* itemStaticLine20 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine20, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine21 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine21, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer21, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer22, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer21->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer22->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer21->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer22->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer21->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer22->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   wxArrayString listboxRunLogStrings;
   listboxRunLog = new wxListBox( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, listboxRunLogStrings, wxLB_SINGLE|wxLB_NEEDED_SB );
@@ -361,22 +369,23 @@ void RunScript::CreateControls()
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 1, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer26, 0, wxALIGN_RIGHT|wxALL, 5);
-
   wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer26->Add(itemBoxSizer27, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer2->Add(itemBoxSizer27, 0, wxALIGN_RIGHT|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer28 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer27->Add(itemBoxSizer28, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer27->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer28->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
   choiceApplication->Append( wxT( "Dimemas" ) );
   choiceApplication->Append( wxT( "User defined" ) );
   choiceApplication->Select( 0 ); // Dimemas
+  adaptWindowToApplicationSelection();
 }
 
 
@@ -442,7 +451,6 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
  
   if ( currentChoice == wxString( wxT( "Dimemas" ) ) )
   {
-    // TODO: place wrapper in package
     // First kind: Application needs a previous wrapper
     if ( paraverBin.IsEmpty() )
     {
@@ -458,13 +466,13 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
       command += wxT( " " ) + filePickerTrace->GetPath();
       command += wxT( " " ) + filePickerDimemasCFG->GetPath();
       command += wxT( " " ) + textCtrlSimulatedTrace->GetValue();
-      command += wxT( " " ) + textCtrlDefaultParameters->GetValue();
+      command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() );
     }
   }
   else if ( currentChoice == wxString( wxT( "User defined" ) ) )
   {
     // Second kind: Default parameter is directly used
-    command += textCtrlDefaultParameters->GetValue();
+    command += expandVariables( textCtrlDefaultParameters->GetValue() );
   }
   else 
   {
@@ -517,12 +525,6 @@ void RunScript::OnProcessTerminated()
 
 void RunScript::OnIdle( wxIdleEvent& event )
 {
-  // TODO: from the list of registered applications, +o- using internal table with *boxsizers
-  wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
-
-  dimemasSection->Show( currentChoice == wxString( wxT( "Dimemas" ) ) );
-  Layout();
-  
   if ( myProcess != NULL && myProcess->HasInput() )
   {
     event.RequestMore();
@@ -537,5 +539,47 @@ void RunScript::OnIdle( wxIdleEvent& event )
 void RunScript::OnButtonClearLogClick( wxCommandEvent& event )
 {
   listboxRunLog->Clear();
+}
+
+
+void RunScript::adaptWindowToApplicationSelection()
+{
+  // TODO: from the list of registered applications, +o- using internal table with *boxsizers
+  wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
+
+  if ( currentChoice == wxString( wxT( "User defined" ) ))
+  {
+    labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
+    textCtrlDefaultParameters->SetToolTip( wxT( "Command and parameters to execute\n"
+                                                "%TRACE refers to input trace" ) );
+    
+  }
+  else
+  {
+    labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
+    textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to the script\n"
+                                                "%TRACE refers to input trace" ) );
+  }
+  
+  dimemasSection->Show( currentChoice == wxString( wxT( "Dimemas" ) ) );
+  Layout();
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_APPLICATION
+ */
+
+void RunScript::OnChoiceApplicationSelected( wxCommandEvent& event )
+{
+  adaptWindowToApplicationSelection();
+}
+
+
+wxString RunScript::expandVariables( wxString command )
+{
+  command.Replace( wxT( "%TRACE" ), filePickerTrace->GetPath() );
+  
+  return command;
 }
 
