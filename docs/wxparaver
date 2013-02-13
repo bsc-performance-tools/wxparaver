@@ -9,9 +9,9 @@ elif ! [ -d ${PARAVER_HOME}/lib/paraver-kernel ] ; then
   echo "paraver-kernel libraries not found in \$PARAVER_HOME/lib/paraver-kernel/"
   exit 1
 
-elif ! [ -d ${PARAVER_HOME}/lib/wxparaver ] ; then
-  echo "wxparaver libraries not found in \$PARAVER_HOME/lib/wxparaver/"
-  exit 1
+##elif ! [ -d ${PARAVER_HOME}/lib/wxparaver ] ; then
+##  echo "wxparaver libraries not found in \$PARAVER_HOME/lib/wxparaver/"
+##  exit 1
 
 elif ! [ -e ${PARAVER_HOME}/bin/wxparaver.bin ] ; then
   echo "wxparaver binary not found in \$PARAVER_HOME/bin/"
