@@ -80,6 +80,7 @@ bool RunningProcess::HasInput()
         parent->listboxRunLog->Delete( numLines - 1 );
       }
 */
+      msg.Replace( wxT( " " ), wxT( "&nbsp;" ) );
       parent->listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
 
       hasInput = true;
@@ -93,6 +94,7 @@ bool RunningProcess::HasInput()
       // msg << command << _T(" (stderr): ") << tis.ReadLine();
       msg << tis.ReadLine();
 
+      msg.Replace( wxT( " " ), wxT( "&nbsp;" ) );
       parent->listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
 
       hasInput = true;
