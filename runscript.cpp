@@ -537,7 +537,7 @@ void RunScript::OnIdle( wxIdleEvent& event )
 
 void RunScript::OnButtonClearLogClick( wxCommandEvent& event )
 {
-  listboxRunLog->SetPage("");
+  listboxRunLog->SetPage( wxT( "" ) );
 }
 
 
