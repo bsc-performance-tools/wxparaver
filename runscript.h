@@ -149,6 +149,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLEAR_LOG
   void OnButtonClearLogClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_HTML_LINK_CLICKED event handler for ID_LISTBOX_RUN_LOG
+  void OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_EXIT
   void OnButtonExitClick( wxCommandEvent& event );
 
@@ -174,6 +177,8 @@ public:
 
   void OnProcessTerminated();
 
+  void AppendToLog( wxString msg );
+  
 ////@begin RunScript member variables
   wxChoice* choiceApplication;
   wxButton* buttonEditApplication;
@@ -198,6 +203,13 @@ private:
 
   void adaptWindowToApplicationSelection();
   wxString expandVariables( wxString command );
+  wxString expandLink( wxString rawLine, int initPos, int initSuffixPos, int finalPos );
+  wxString insertAllLinks( wxString rawLine );
+  
+  // TODO: This method's been copied from HelpContents; consider write new class
+  std::string getHrefFullPath( wxHtmlLinkEvent &event );
+  bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
+
 };
 
 #endif // _RUNSCRIPT_H_

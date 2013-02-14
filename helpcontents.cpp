@@ -407,6 +407,7 @@ std::string HelpContents::getCurrentTutorialFullPath()
   return fullPath;
 }
 
+
 std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent &event )
 {
   string hrefFullPath = getCurrentTutorialFullPath();

@@ -80,8 +80,7 @@ bool RunningProcess::HasInput()
         parent->listboxRunLog->Delete( numLines - 1 );
       }
 */
-      msg.Replace( wxT( " " ), wxT( "&nbsp;" ) );
-      parent->listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
+      parent->AppendToLog( msg );
 
       hasInput = true;
   }
@@ -94,8 +93,7 @@ bool RunningProcess::HasInput()
       // msg << command << _T(" (stderr): ") << tis.ReadLine();
       msg << tis.ReadLine();
 
-      msg.Replace( wxT( " " ), wxT( "&nbsp;" ) );
-      parent->listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
+      parent->AppendToLog( msg );
 
       hasInput = true;
   }
@@ -126,6 +124,8 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
 
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+
+  EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
 
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
 
@@ -180,9 +180,6 @@ RunScript::RunScript( wxWindow* parent,
     
     textCtrlDefaultParameters->SetValue( auxCommand );
   }
-  
-  
-  
 }
 
 
@@ -479,8 +476,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   {
     // Third kind: registered application doesn't need a wrapper; app has the same name
     command = choiceApplication->GetString( choiceApplication->GetSelection() );
-  }
-                
+  }                
                 
   // Run command
   if ( currentChoice != wxString( wxT( "Dimemas" ) ) || !paraverBin.IsEmpty() )
@@ -520,6 +516,13 @@ void RunScript::OnProcessTerminated()
 }
 
 
+void RunScript::AppendToLog( wxString msg )
+{
+  msg = insertAllLinks( msg );
+  listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
+}
+
+
 /*!
  * wxEVT_IDLE event handler for ID_RUN_APPLICATION
  */
@@ -552,8 +555,7 @@ void RunScript::adaptWindowToApplicationSelection()
   {
     labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
     textCtrlDefaultParameters->SetToolTip( wxT( "Command and parameters to execute\n"
-                                                "%TRACE refers to input trace" ) );
-    
+                                                "%TRACE refers to input trace" ) );    
   }
   else
   {
@@ -582,5 +584,170 @@ wxString RunScript::expandVariables( wxString command )
   command.Replace( wxT( "%TRACE" ), filePickerTrace->GetPath() );
   
   return command;
+}
+
+
+// Returns substring [initPos, finalPos] of rawLine
+// It include HREF info if file is found
+wxString RunScript::expandLink( wxString rawLine, 
+                                int initPos,
+                                int initSuffixPos,
+                                int finalPos )
+{
+  wxString subStrWithExpandedLink = rawLine;
+
+  // If available, get trace path from wxFilePickerCtrl
+  wxString selectedTracePath =
+          wxFileName( filePickerTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+  // Find trace candidate
+  wxFileName candidateFile;
+  bool candidateFound = false;
+  int currentPos = initPos;
+  while ( currentPos < initSuffixPos && !candidateFound )
+  {
+    // Normalize
+    //wxString candidateName = rawLine.Mid( currentPos, finalPos - currentPos + 1 );
+    wxString candidateName = rawLine.Mid( currentPos, finalPos - currentPos );
+    candidateFile = wxFileName( candidateName );
+    candidateFound = ( candidateFile.Normalize() && candidateFile.FileExists() );
+    
+    if ( !candidateFound )
+    {
+      candidateFile = wxFileName( candidateName );
+      candidateFound =
+              ( candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
+                candidateFile.FileExists() );
+    }
+    
+    ++currentPos;
+  }
+
+  if ( candidateFound )
+  {
+    --currentPos;
+
+    wxString trashPrefix = rawLine.Mid( initPos, currentPos - initPos );
+    trashPrefix.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+    wxString linkName = rawLine.Mid( currentPos, finalPos - currentPos );
+    linkName.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+    wxString linkFullPath = candidateFile.GetFullPath();
+    wxString currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") + linkName + wxT("</A>");
+     
+    subStrWithExpandedLink = trashPrefix + currentLink;
+  }
+
+  return subStrWithExpandedLink;
+}
+
+
+// Parse rawLine and try to substitute every trace candidate by a complete HTML link
+wxString RunScript::insertAllLinks( wxString rawLine )
+{
+  wxString lineWithLinks;
+
+  int endLine = rawLine.Len();
+  int initSubStr = 0;
+  int endSubStr = 0;
+  while ( endSubStr < endLine )
+  {
+    wxString subStr = rawLine.Mid( initSubStr, endLine - initSubStr );
+    int initSuffixPos = subStr.Find( wxT( ".prv" ) );
+    if ( initSuffixPos != wxNOT_FOUND )
+    {
+      // Compute new end of the substring 
+      endSubStr = initSuffixPos + wxString( ".prv" ).Len();
+
+      // Does it end with ".prv" or ".prv.gz"?
+      if ( initSuffixPos + int( wxString( ".prv.gz" ).Len() ) <= endLine )
+      {
+        if ( rawLine.Mid( initSuffixPos, wxString( ".prv.gz" ).Len() ) == 
+             wxString( ".prv.gz" ) )
+        {
+          // Shift end to the right
+          endSubStr += wxString( ".gz" ).Len();
+        }
+      }
+      
+      // Build HTML link and append it
+      lineWithLinks += expandLink( rawLine, initSubStr, initSuffixPos, endSubStr );
+      
+      // Advance
+      initSubStr = endSubStr;
+    }
+    else
+    {
+      // No more ".prv" found; print rest of the line
+      wxString tail = rawLine.Mid( endSubStr, endLine - endSubStr );
+      tail.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+      lineWithLinks += tail;
+      
+      // And exit the loop
+      endSubStr = endLine;
+    }
+  } 
+
+  if( lineWithLinks.IsEmpty() )
+  {
+    rawLine.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+    lineWithLinks = rawLine;
+  }
+  
+  return lineWithLinks;
+}
+
+
+std::string RunScript::getHrefFullPath( wxHtmlLinkEvent &event )
+{
+  std::string hrefFullPath = std::string( event.GetLinkInfo().GetHref().mb_str() );
+
+  return hrefFullPath;
+}
+
+
+bool RunScript::matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension )
+{
+  return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
+}
+
+
+/*!
+ * wxEVT_COMMAND_HTML_LINK_CLICKED event handler for ID_LISTBOX_RUN_LOG
+ */
+
+void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
+{
+  wxString auxCommand;
+
+  if ( matchHrefExtension( event, wxT(".prv") ) || matchHrefExtension( event, wxT(".prv.gz")))
+  {
+    paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
+  }
+/*
+  else if ( matchHrefExtension( event, _(".cfg")))
+  {
+    if ( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
+    {
+      paraverMain::myParaverMain->DoLoadCFG( getHrefFullPath( event )  );
+    }
+    else
+    {
+      wxMessageDialog message( this, _("No trace loaded."), _( "Warning" ), wxOK );
+      message.ShowModal();
+    }
+  }
+  else if ( matchHrefExtension( event, _(".xml")))
+  {
+    string traceName = getCurrentTutorialFullPath();
+    bool loadTrace = true;
+    string strXmlFile = getHrefFullPath( event );
+
+    paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
+  }
+*/
+  else
+  {
+    event.Skip();
+  }
 }
 
