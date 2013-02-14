@@ -194,10 +194,6 @@ bool RunScript::Create( wxWindow* parent, wxWindowID id, const wxString& caption
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if (GetSizer())
-  {
-    GetSizer()->SetSizeHints(this);
-  }
   Centre();
 ////@end RunScript creation
   return true;

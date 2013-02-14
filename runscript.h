@@ -94,7 +94,7 @@ class wxHtmlWindow;
 #define SYMBOL_RUNSCRIPT_STYLE wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_RUNSCRIPT_TITLE _("Run Application")
 #define SYMBOL_RUNSCRIPT_IDNAME ID_RUN_APPLICATION
-#define SYMBOL_RUNSCRIPT_SIZE wxSize(400, 300)
+#define SYMBOL_RUNSCRIPT_SIZE wxSize(600, 600)
 #define SYMBOL_RUNSCRIPT_POSITION wxDefaultPosition
 ////@end control identifiers
 
