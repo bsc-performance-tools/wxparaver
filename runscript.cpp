@@ -652,16 +652,16 @@ wxString RunScript::insertAllLinks( wxString rawLine )
     if ( initSuffixPos != wxNOT_FOUND )
     {
       // Compute new end of the substring 
-      endSubStr = initSuffixPos + wxString( ".prv" ).Len();
+      endSubStr = initSuffixPos + wxString( wxT( ".prv" ) ).Len();
 
       // Does it end with ".prv" or ".prv.gz"?
-      if ( initSuffixPos + int( wxString( ".prv.gz" ).Len() ) <= endLine )
+      if ( initSuffixPos + int( wxString( wxT( ".prv.gz" ) ).Len() ) <= endLine )
       {
-        if ( rawLine.Mid( initSuffixPos, wxString( ".prv.gz" ).Len() ) == 
-             wxString( ".prv.gz" ) )
+        if ( rawLine.Mid( initSuffixPos, wxString( wxT( ".prv.gz" ) ).Len() ) == 
+             wxString( wxT( ".prv.gz" ) ) )
         {
           // Shift end to the right
-          endSubStr += wxString( ".gz" ).Len();
+          endSubStr += wxString( wxT( ".gz" ) ).Len();
         }
       }
       
