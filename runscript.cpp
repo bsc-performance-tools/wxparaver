@@ -603,7 +603,6 @@ wxString RunScript::expandLink( wxString rawLine,
   while ( currentPos < initSuffixPos && !candidateFound )
   {
     // Normalize
-    //wxString candidateName = rawLine.Mid( currentPos, finalPos - currentPos + 1 );
     wxString candidateName = rawLine.Mid( currentPos, finalPos - currentPos );
     candidateFile = wxFileName( candidateName );
     candidateFound = ( candidateFile.Normalize() && candidateFile.FileExists() );
