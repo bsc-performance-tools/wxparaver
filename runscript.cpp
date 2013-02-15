@@ -168,7 +168,7 @@ RunScript::RunScript( wxWindow* parent,
   if ( !whichCommand.IsEmpty() )
   {
     // Find if whichApp is in registered applications list
-    // If whichApp isn't reg -> message? turn into command?
+    // If whichApp isn't registered -> message? turn into command?
     // widget ---> filePickerScript
     wxString auxCommand = whichCommand;
 
