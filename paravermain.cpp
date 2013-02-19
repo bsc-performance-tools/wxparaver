@@ -2540,6 +2540,7 @@ void paraverMain::ShowPreferences()
   preferences.SetTimelineDrawmodeTime( ( PRV_UINT32 )paraverConfig->getTimelineDrawmodeTime() );
   preferences.SetTimelineDrawmodeObjects( ( PRV_UINT32 )paraverConfig->getTimelineDrawmodeObjects() );
   preferences.SetTimelinePixelSize( ( PRV_UINT32 )paraverConfig->getTimelinePixelSize() );
+  preferences.SetTimelineObjectLabels( ( PRV_UINT32 )paraverConfig->getTimelineLabels() );
   preferences.SetTimelineWWPrecision( paraverConfig->getTimelinePrecision() );
   preferences.SetTimelineWWSemantic( paraverConfig->getTimelineWhatWhereSemantic() );
   preferences.SetTimelineWWEvents( paraverConfig->getTimelineWhatWhereEvents() );
@@ -2624,6 +2625,7 @@ void paraverMain::ShowPreferences()
     paraverConfig->setTimelineDrawmodeTime( (DrawModeMethod)preferences.GetTimelineDrawmodeTime() );
     paraverConfig->setTimelineDrawmodeObjects( (DrawModeMethod)preferences.GetTimelineDrawmodeObjects() );
     paraverConfig->setTimelinePixelSize( preferences.GetTimelinePixelSize() );
+    paraverConfig->setTimelineLabels( (Window::TObjectLabels)preferences.GetTimelineObjectLabels() );
     paraverConfig->setTimelineWhatWhereSemantic( preferences.GetTimelineWWSemantic() );
     paraverConfig->setTimelineWhatWhereEvents( preferences.GetTimelineWWEvents() );
     paraverConfig->setTimelineWhatWhereCommunications( preferences.GetTimelineWWCommunications() );

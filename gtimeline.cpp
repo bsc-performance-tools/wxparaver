@@ -662,6 +662,8 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   // Draw axis labels
   wxCoord y;
   double inc = (double)( timeAxisPos - drawBorder ) / (double)( numObjects );
+  bool drawLabel = true;
+  TObjectOrder power2 = 1;
 
   objectPosList.clear();
   objectPosList.insert( objectPosList.begin(), myWindow->getWindowLevelObjects(), 0 );
@@ -671,6 +673,27 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   wxCoord accumHeight = 0;
   wxCoord stepHeight = objectExt.GetHeight();
   
+  int numpixels = timeAxisPos - 2*drawBorder; /* Usable num pixels */
+  int everyobj = 1; /* Draw every Xth object */
+  bool printlast = numpixels > objectFont.GetPointSize(); /* Do we have space for more than 1? */
+  bool printall = numpixels > 0 && numpixels > numObjects * objectFont.GetPointSize(); /* Do we have space for all? */
+
+  /* If we have space for some, but not all, check which to print ... */
+  if (!printall && printlast)
+  {
+    /* Locate the maximum 2^n that fit on the pixels */
+    int every = 1;
+    while ((numObjects*objectFont.GetPointSize())/every > numpixels-objectFont.GetPointSize())
+      every = every << 1;
+
+    every = every << 1;
+    /* Now print 2^n equidistant elements */
+    if (numObjects > every)
+      everyobj = numObjects / (numObjects/every);
+    else
+      everyobj = numObjects;
+  }
+
   // for every object
   for( TObjectOrder obj = (TObjectOrder)0; obj < numObjects; obj++ )
   {
@@ -691,7 +714,36 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                        objectHeight = objectHeight;
     }
     objectPosList[ selected[ obj ] ] = y;
-    if( y > accumHeight )
+
+    switch( myWindow->getObjectLabels() )
+    {
+      case Window::ALL_LABELS:
+        drawLabel = true;
+        break;
+        
+      case Window::SPACED_LABELS:
+        if( ( printlast && ( obj % everyobj == 0 || obj == numObjects - 1 ) ) ||
+            ( !printlast && obj == 0 ) )
+          drawLabel = true;
+        else
+          drawLabel = false;
+        //drawLabel = y > accumHeight;
+        break;
+        
+      case Window::POWER2_LABELS:
+        if( obj == power2 - 1 )
+        {
+          drawLabel = true;
+          power2 = power2 << 1;
+        }
+        else
+          drawLabel = false;
+        break;
+      default:
+        break;
+    }
+
+    if( printall || drawLabel )
     {
 #ifdef TRACING_ENABLED
       Extrae_event( 100, 14 );

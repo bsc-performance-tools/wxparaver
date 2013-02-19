@@ -80,6 +80,7 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCES_TIMELINE_DRAWMODE_TIME 10012
 #define ID_PREFERENCES_TIMELINE_DRAWMODE_OBJECTS 10013
 #define ID_PREFERENCES_TIMELINE_PIXEL_SIZE 10016
+#define ID_PREFERENCES_TIMELINE_LABELS 10208
 #define ID_CHECKBOX_TIMELINE_WW_SEMANTIC 10093
 #define ID_CHECKBOX_TIMELINE_WW_EVENTS 10094
 #define ID_CHECKBOX_TIMELINE_WW_COMMUNICATIONS 10095
@@ -318,6 +319,9 @@ public:
   std::string GetTimelineNameFormatPrefix() const { return timelineNameFormatPrefix ; }
   void SetTimelineNameFormatPrefix(std::string value) { timelineNameFormatPrefix = value ; }
 
+  PRV_UINT32 GetTimelineObjectLabels() const { return timelineObjectLabels ; }
+  void SetTimelineObjectLabels(PRV_UINT32 value) { timelineObjectLabels = value ; }
+
   PRV_UINT32 GetTimelinePixelSize() const { return timelinePixelSize ; }
   void SetTimelinePixelSize(PRV_UINT32 value) { timelinePixelSize = value ; }
 
@@ -393,6 +397,7 @@ public:
   wxChoice* choiceTimelineDrawmodeTime;
   wxChoice* choiceTimelineDrawmodeObjects;
   wxChoice* choiceTimelinePixelSize;
+  wxChoice* choiceTimelineLabels;
   wxCheckBox* checkTimelineWWSemantic;
   wxCheckBox* checkTimelineWWEvents;
   wxCheckBox* checkTimelineWWCommunications;
@@ -480,6 +485,7 @@ private:
   PRV_UINT32 timelineGradientFunction;
   std::string timelineNameFormatFull;
   std::string timelineNameFormatPrefix;
+  PRV_UINT32 timelineObjectLabels;
   PRV_UINT32 timelinePixelSize;
   PRV_UINT32 timelineSaveImageFormat;
   PRV_UINT32 timelineSaveTextFormat;

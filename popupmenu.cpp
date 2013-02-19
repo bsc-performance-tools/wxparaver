@@ -104,6 +104,9 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_REMOVE_ALL_SYNC, gPopUpMenu::OnMenuRemoveAllSync )
   EVT_MENU( ID_MENU_CODE_COLOR_2D, gPopUpMenu::OnMenuCodeColor2D )
   EVT_MENU( ID_MENU_GRADIENT_COLOR_2D, gPopUpMenu::OnMenuGradientColor2D )
+  EVT_MENU( ID_MENU_LABELS_ALL, gPopUpMenu::OnMenuLabelsAll )
+  EVT_MENU( ID_MENU_LABELS_SPACED, gPopUpMenu::OnMenuLabelsSpaced )
+  EVT_MENU( ID_MENU_LABELS_POWER2, gPopUpMenu::OnMenuLabelsPower2 )
 
 END_EVENT_TABLE()
 
@@ -349,6 +352,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuDrawModeBoth = new wxMenu;
   popUpMenuPixelSize = new wxMenu;
   popUpMenuGradientFunction = new wxMenu;
+  popUpMenuLabels = new wxMenu;
 
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
 
@@ -557,7 +561,15 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
   buildItem( this, _( "Select Rows..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
-
+  
+  buildItem( popUpMenuLabels, _( "All" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsAll, ID_MENU_LABELS_ALL, 
+             timeline->GetMyWindow()->getObjectLabels() == Window::ALL_LABELS );
+  buildItem( popUpMenuLabels, _( "Spaced" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsSpaced, ID_MENU_LABELS_SPACED, 
+             timeline->GetMyWindow()->getObjectLabels() == Window::SPACED_LABELS );
+  buildItem( popUpMenuLabels, _( "2^n" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsPower2, ID_MENU_LABELS_POWER2, 
+             timeline->GetMyWindow()->getObjectLabels() == Window::POWER2_LABELS );
+  AppendSubMenu( popUpMenuLabels, _( "Labels to draw" ) );
+  
   AppendSeparator();
   buildItem( this, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
   buildItem( this, _( "Save as..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TIMELINE_AS_TEXT );
@@ -1355,4 +1367,22 @@ void gPopUpMenu::OnMenuGradientColor2D( wxCommandEvent& event )
 {
   histogram->GetHistogram()->setCodeColor( false );
   histogram->GetHistogram()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuLabelsAll( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectLabels( Window::ALL_LABELS );
+  timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuLabelsSpaced( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectLabels( Window::SPACED_LABELS );
+  timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuLabelsPower2( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectLabels( Window::POWER2_LABELS );
+  timeline->GetMyWindow()->setRedraw( true );
 }
