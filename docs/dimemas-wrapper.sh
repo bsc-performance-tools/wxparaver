@@ -1,4 +1,3 @@
-
 #! /bin/bash
 
 #
@@ -21,9 +20,9 @@ PARAVER_TRACE=${1}
 DIMEMAS_CFG=${2}
 SIMULATED_PARAVER_TRACE=${3}
 
-command -v ${DIMEMAS_HOME}/prv2dim > /dev/null && DIMEMAS_ENV="${DIMEMAS_HOME}/" || DIMEMAS_ENV=""
-command -v prv2dim > /dev/null && DIMEMAS_ENV="" || \
-  { echo "Unable to find Dimemas. Define \$DIMEMAS_HOME or place it in \$PATH"; exit 1 }
+{ command -v ${DIMEMAS_HOME}/bin/prv2dim > /dev/null && export DIMEMAS_ENV="${DIMEMAS_HOME}/bin/"; } || \
+{ command -v prv2dim > /dev/null && export DIMEMAS_ENV=""; } || \
+{ echo "Unable to find Dimemas. Define \$DIMEMAS_HOME or place it in \$PATH"; exit 1; }
 
 # Get tracename, without extensions
 TRACENAME=$(echo "$PARAVER_TRACE" | sed 's/\.[^\.]*$//')
