@@ -1,3 +1,4 @@
+
 #! /bin/bash
 
 #
@@ -20,15 +21,9 @@ PARAVER_TRACE=${1}
 DIMEMAS_CFG=${2}
 SIMULATED_PARAVER_TRACE=${3}
 
-echo
-
-if [ ! -f ${PARAVER_TRACE} ]; then
-  echo "Error: ${PARAVER_TRACE} not found!"
-  exit
-elif [ ! -f ${DIMEMAS_CFG} ]; then
-  echo "Error: ${DIMEMAS_CFG} not found!"
-  exit
-fi
+command -v ${DIMEMAS_HOME}/prv2dim > /dev/null && DIMEMAS_ENV="${DIMEMAS_HOME}/" || DIMEMAS_ENV=""
+command -v prv2dim > /dev/null && DIMEMAS_ENV="" || \
+  { echo "Unable to find Dimemas. Define \$DIMEMAS_HOME or place it in \$PATH"; exit 1 }
 
 # Get tracename, without extensions
 TRACENAME=$(echo "$PARAVER_TRACE" | sed 's/\.[^\.]*$//')
@@ -74,7 +69,7 @@ echo
 echo "prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE}"
 echo
 PRV2DIM_LOG=${DIMEMAS_TRACE_DIR}/prv2dim.log
-prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}
+${DIMEMAS_ENV}prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}
 echo
 
 # Simulate
@@ -82,7 +77,7 @@ echo
 echo
 echo "Dimemas -S 32K -p ${SIMULATED_PARAVER_TRACE} ${DIMEMAS_CFG} ${FINAL_PARAMETERS}"
 echo
-Dimemas -S 32K -p ${SIMULATED_PARAVER_TRACE} ${DIMEMAS_CFG} ${FINAL_PARAMETERS} 
+${DIMEMAS_ENV}Dimemas -S 32K -p ${SIMULATED_PARAVER_TRACE} ${DIMEMAS_CFG} ${FINAL_PARAMETERS} 
 echo
 
 popd

@@ -326,7 +326,7 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
   dimemasSection->Add(itemBoxSizer18, 0, wxGROW|wxTOP|wxBOTTOM, 5);
 
-  labelTextCtrlOutputTrace = new wxStaticText( itemDialog1, wxID_STATIC, _("OutputTrace"), wxDefaultPosition, wxDefaultSize, 0 );
+  labelTextCtrlOutputTrace = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Trace"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     labelTextCtrlOutputTrace->SetToolTip(_("Write the name given to the output trace; if missing, suffix '.prv' will be appended"));
   itemBoxSizer18->Add(labelTextCtrlOutputTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
