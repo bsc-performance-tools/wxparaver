@@ -20,6 +20,8 @@ PARAVER_TRACE=${1}
 DIMEMAS_CFG=${2}
 SIMULATED_PARAVER_TRACE=${3}
 
+#DIMEMAS_HOME=
+
 { command -v ${DIMEMAS_HOME}/bin/prv2dim > /dev/null && export DIMEMAS_ENV="${DIMEMAS_HOME}/bin/"; } || \
 { command -v prv2dim > /dev/null && export DIMEMAS_ENV=""; } || \
 { echo "Unable to find Dimemas. Define \$DIMEMAS_HOME or place it in \$PATH"; exit 1; }
@@ -65,7 +67,7 @@ cd ${DIMEMAS_TRACE_DIR}
 
 # Translate from prv to trf
 echo
-echo "prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE}"
+echo "${DIMEMAS_ENV}prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}"
 echo
 PRV2DIM_LOG=${DIMEMAS_TRACE_DIR}/prv2dim.log
 ${DIMEMAS_ENV}prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}
@@ -74,7 +76,7 @@ echo
 # Simulate
 # parameter -S 32K fixed by default
 echo
-echo "Dimemas -S 32K -p ${SIMULATED_PARAVER_TRACE} ${DIMEMAS_CFG} ${FINAL_PARAMETERS}"
+echo "${DIMEMAS_ENV}Dimemas -S 32K -p ${SIMULATED_PARAVER_TRACE} ${DIMEMAS_CFG} ${FINAL_PARAMETERS}"
 echo
 ${DIMEMAS_ENV}Dimemas -S 32K -p ${SIMULATED_PARAVER_TRACE} ${DIMEMAS_CFG} ${FINAL_PARAMETERS} 
 echo
