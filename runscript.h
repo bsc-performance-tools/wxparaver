@@ -85,7 +85,7 @@ class wxHtmlWindow;
 #define ID_FILEPICKER_TRACE 10201
 #define ID_TEXTCTRL_DEFAULT_PARAMETERS 10205
 #define ID_FILEPICKER_DIMEMAS_CFG 10000
-#define ID_TEXTCTRL_SIMULATED_TRACE 10001
+#define ID_TEXTCTRL_OUTPUT_TRACE 10001
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
 #define ID_BUTTON_CLEAR_LOG 10202
@@ -189,8 +189,8 @@ public:
   wxBoxSizer* dimemasSection;
   wxStaticText* labelFilePickerDimemasCFG;
   wxFilePickerCtrl* filePickerDimemasCFG;
-  wxStaticText* labelTextCtrlSimulatedTrace;
-  wxTextCtrl* textCtrlSimulatedTrace;
+  wxStaticText* labelTextCtrlOutputTrace;
+  wxTextCtrl* textCtrlOutputTrace;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
   wxButton* buttonClearLog;

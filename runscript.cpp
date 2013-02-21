@@ -229,8 +229,8 @@ void RunScript::Init()
   dimemasSection = NULL;
   labelFilePickerDimemasCFG = NULL;
   filePickerDimemasCFG = NULL;
-  labelTextCtrlSimulatedTrace = NULL;
-  textCtrlSimulatedTrace = NULL;
+  labelTextCtrlOutputTrace = NULL;
+  textCtrlOutputTrace = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
   buttonClearLog = NULL;
@@ -326,15 +326,15 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
   dimemasSection->Add(itemBoxSizer18, 0, wxGROW|wxTOP|wxBOTTOM, 5);
 
-  labelTextCtrlSimulatedTrace = new wxStaticText( itemDialog1, wxID_STATIC, _("Simulated trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  labelTextCtrlOutputTrace = new wxStaticText( itemDialog1, wxID_STATIC, _("OutputTrace"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
-    labelTextCtrlSimulatedTrace->SetToolTip(_("Write the name given to the simulated trace; if missing, suffix '.prv' will be appended"));
-  itemBoxSizer18->Add(labelTextCtrlSimulatedTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+    labelTextCtrlOutputTrace->SetToolTip(_("Write the name given to the output trace; if missing, suffix '.prv' will be appended"));
+  itemBoxSizer18->Add(labelTextCtrlOutputTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textCtrlSimulatedTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_SIMULATED_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  textCtrlOutputTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_OUTPUT_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
-    textCtrlSimulatedTrace->SetToolTip(_("Write the name given to the simulated trace; if missing, suffix '.prv' will be appended"));
-  itemBoxSizer18->Add(textCtrlSimulatedTrace, 4, wxGROW|wxLEFT|wxRIGHT, 2);
+    textCtrlOutputTrace->SetToolTip(_("Write the name given to the output trace; if missing, suffix '.prv' will be appended"));
+  itemBoxSizer18->Add(textCtrlOutputTrace, 4, wxGROW|wxLEFT|wxRIGHT, 2);
 
   wxStaticLine* itemStaticLine21 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine21, 0, wxGROW|wxALL, 5);
@@ -459,7 +459,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
       command  = paraverBin + wxString( wxT( "dimemas-wrapper.sh" ) );
       command += wxT( " " ) + filePickerTrace->GetPath();
       command += wxT( " " ) + filePickerDimemasCFG->GetPath();
-      command += wxT( " " ) + textCtrlSimulatedTrace->GetValue();
+      command += wxT( " " ) + textCtrlOutputTrace->GetValue();
       command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() );
     }
   }
