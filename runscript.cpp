@@ -326,7 +326,7 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
   dimemasSection->Add(itemBoxSizer18, 0, wxGROW|wxTOP|wxBOTTOM, 5);
 
-  labelTextCtrlOutputTrace = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  labelTextCtrlOutputTrace = new wxStaticText( itemDialog1, wxID_STATIC, _("OutputTrace"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     labelTextCtrlOutputTrace->SetToolTip(_("Write the name given to the output trace; if missing, suffix '.prv' will be appended"));
   itemBoxSizer18->Add(labelTextCtrlOutputTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -457,10 +457,10 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     else
     {
       command  = paraverBin + wxString( wxT( "dimemas-wrapper.sh" ) );
-      command += wxT( " " ) + filePickerTrace->GetPath();
-      command += wxT( " " ) + filePickerDimemasCFG->GetPath();
-      command += wxT( " " ) + textCtrlOutputTrace->GetValue();
-      command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() );
+      command += wxT( " " ) + filePickerTrace->GetPath();      // Source trace
+      command += wxT( " " ) + filePickerDimemasCFG->GetPath(); // Dimemas cfg
+      command += wxT( " " ) + textCtrlOutputTrace->GetValue(); // Final trace
+      command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
     }
   }
   else if ( currentChoice == wxString( wxT( "User defined" ) ) )
