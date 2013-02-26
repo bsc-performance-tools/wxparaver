@@ -358,7 +358,7 @@ void RunScript::CreateControls()
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
   itemBoxSizer22->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
-  listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
+  listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 1, wxGROW|wxALL, 7);
@@ -516,6 +516,10 @@ void RunScript::AppendToLog( wxString msg )
 {
   msg = insertAllLinks( msg );
   listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
+  int x, y;
+  listboxRunLog->GetVirtualSize( &x, &y );
+  listboxRunLog->Scroll( -1, y );
+  listboxRunLog->Update();
 }
 
 
@@ -631,6 +635,8 @@ wxString RunScript::expandLink( wxString rawLine,
      
     subStrWithExpandedLink = trashPrefix + currentLink;
   }
+  else
+    subStrWithExpandedLink.Replace( wxT( " " ), wxT( "&nbsp;" ) );
 
   return subStrWithExpandedLink;
 }
