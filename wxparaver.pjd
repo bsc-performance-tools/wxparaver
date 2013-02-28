@@ -21444,14 +21444,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -24831,7 +24823,6 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Custom ctor arguments">""</string>
                   <string name="proxy-Event sources">""</string>
                   <bool name="proxy-AUI manager">0</bool>
-                  <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                   <document>
                     <string name="title">"wxBoxSizer V"</string>
                     <string name="type">"dialog-control-document"</string>
@@ -25100,7 +25091,7 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-type">"wbStaticBoxSizerProxy"</string>
                       <string name="proxy-Id name">"wxID_STATIC"</string>
                       <long name="proxy-Id value">5105</long>
-                      <string name="proxy-Label">" States "</string>
+                      <string name="proxy-Label">"Keep states "</string>
                       <string name="proxy-Member variable name">"staticBoxSizerFilterStates"</string>
                       <string name="proxy-Sizer member variable name">""</string>
                       <string name="proxy-Foreground colour">""</string>
@@ -25122,7 +25113,6 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                      <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       <document>
                         <string name="title">"wxCheckListBox: ID_CHECKLISTBOX_FILTER_STATES"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -25194,7 +25184,6 @@ In normal mode all properties are showed in main window."</string>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       </document>
                       <document>
                         <string name="title">"wxBoxSizer V"</string>
@@ -25220,7 +25209,6 @@ In normal mode all properties are showed in main window."</string>
                         <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                        <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                         <document>
                           <string name="title">"wxButton: ID_BUTTON_FILTER_SELECT_ALL"</string>
                           <string name="type">"dialog-control-document"</string>
@@ -25571,7 +25559,6 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                      <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       <document>
                         <string name="title">"wxListBox: ID_LISTBOX_FILTER_EVENTS"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -25644,7 +25631,6 @@ In normal mode all properties are showed in main window."</string>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       </document>
                       <document>
                         <string name="title">"wxBoxSizer V"</string>
@@ -25670,7 +25656,6 @@ In normal mode all properties are showed in main window."</string>
                         <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                        <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                         <document>
                           <string name="title">"wxButton: ID_BUTTON_FILTER_ADD"</string>
                           <string name="type">"dialog-control-document"</string>
@@ -25883,7 +25868,7 @@ In normal mode all properties are showed in main window."</string>
                       <string name="proxy-type">"wbStaticBoxSizerProxy"</string>
                       <string name="proxy-Id name">"wxID_STATIC"</string>
                       <long name="proxy-Id value">5105</long>
-                      <string name="proxy-Label">" Communications "</string>
+                      <string name="proxy-Label">"Keep communications "</string>
                       <string name="proxy-Member variable name">"staticBoxSizerFilterCommunications"</string>
                       <string name="proxy-Sizer member variable name">""</string>
                       <string name="proxy-Foreground colour">""</string>
@@ -25905,7 +25890,6 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                      <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       <document>
                         <string name="title">"wxStaticText: wxID_STATIC"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -25926,7 +25910,7 @@ In normal mode all properties are showed in main window."</string>
                         <string name="proxy-Implementation filename">""</string>
                         <string name="proxy-Header filename">""</string>
                         <string name="proxy-Member variable name">"staticTextFilterSize"</string>
-                        <string name="proxy-Label">"Size"</string>
+                        <string name="proxy-Label">"Minimum size "</string>
                         <long name="proxy-Wrapping width">-1</long>
                         <string name="proxy-Help text">""</string>
                         <string name="proxy-Tooltip text">"Allow only communications with a minimum size."</string>
@@ -25975,7 +25959,6 @@ In normal mode all properties are showed in main window."</string>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       </document>
                       <document>
                         <string name="title">"wxSpinCtrl: ID_SPINCTRL_FILTER_SIZE"</string>
@@ -26223,7 +26206,6 @@ In normal mode all properties are showed in main window."</string>
                     <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                    <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                     <document>
                       <string name="title">"wxStaticBoxSizer H"</string>
                       <string name="type">"dialog-control-document"</string>
@@ -26886,7 +26868,6 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                      <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       <document>
                         <string name="title">"wxBoxSizer H"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -27735,7 +27716,6 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                      <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       <document>
                         <string name="title">"wxListBox: ID_LISTBOX_SC_KEEP_EVENTS"</string>
                         <string name="type">"dialog-control-document"</string>
@@ -32357,6 +32337,14 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>

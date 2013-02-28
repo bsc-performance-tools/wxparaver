@@ -560,7 +560,7 @@ void CutFilterDialog::CreateControls()
     checkFilterDiscardCommunicationRecords->SetToolTip(_("Discard all the communication records from the source trace."));
   itemStaticBoxSizer71->Add(checkFilterDiscardCommunicationRecords, 0, wxGROW|wxALL, 2);
 
-  staticBoxSizerFilterStates = new wxStaticBox(itemScrolledWindow69, wxID_STATIC, _(" States "));
+  staticBoxSizerFilterStates = new wxStaticBox(itemScrolledWindow69, wxID_STATIC, _("Keep states "));
   wxStaticBoxSizer* itemStaticBoxSizer75 = new wxStaticBoxSizer(staticBoxSizerFilterStates, wxHORIZONTAL);
   itemBoxSizer70->Add(itemStaticBoxSizer75, 1, wxGROW|wxALL, 3);
   wxArrayString checkListFilterStatesStrings;
@@ -629,10 +629,10 @@ void CutFilterDialog::CreateControls()
     checkFilterDiscardListedEvents->SetToolTip(_("If set, all the listed events will be discarded instead of being kept."));
   itemBoxSizer85->Add(checkFilterDiscardListedEvents, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  staticBoxSizerFilterCommunications = new wxStaticBox(itemScrolledWindow69, wxID_STATIC, _(" Communications "));
+  staticBoxSizerFilterCommunications = new wxStaticBox(itemScrolledWindow69, wxID_STATIC, _("Keep communications "));
   wxStaticBoxSizer* itemStaticBoxSizer89 = new wxStaticBoxSizer(staticBoxSizerFilterCommunications, wxHORIZONTAL);
   itemBoxSizer70->Add(itemStaticBoxSizer89, 0, wxGROW|wxALL, 3);
-  staticTextFilterSize = new wxStaticText( itemScrolledWindow69, wxID_STATIC, _("Size"), wxDefaultPosition, wxDefaultSize, 0 );
+  staticTextFilterSize = new wxStaticText( itemScrolledWindow69, wxID_STATIC, _("Minimum size "), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     staticTextFilterSize->SetToolTip(_("Allow only communications with a minimum size."));
   itemStaticBoxSizer89->Add(staticTextFilterSize, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
