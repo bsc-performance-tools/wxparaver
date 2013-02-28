@@ -986,6 +986,7 @@ wxString CutFilterDialog::formatNumber( double value )
 
 void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
 {
+  radioCutterCutByTime->SetValue( true );
   wxGetApp().ActivateGlobalTiming( this );
   waitingGlobalTiming = true;
 }
@@ -1067,6 +1068,38 @@ bool CutFilterDialog::CheckStringTasks( wxString taskStr )
 
 void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
 {
+  if ( !previousWarning &&
+       textCutterBeginCut->GetValue() == _("") &&
+       textCutterEndCut->GetValue() == _("") &&
+       textCutterTasks->GetValue() != _("") &&
+       CheckStringTasks( textCutterTasks->GetValue() ))
+  {
+    wxMessageDialog message( this,
+                             _("Cutter:\nEmpty times.\n\nDo you want to cut these tasks"
+                               " all along the 100% of the trace?"),
+                             _("Warning"), wxYES_NO|wxYES_DEFAULT );
+    if ( message.ShowModal() == wxID_YES )
+    {
+      radioCutterCutByTimePercent->SetValue( true );
+      textCutterBeginCut->SetValue( formatNumber( 0 ));
+      textCutterEndCut->SetValue( formatNumber( 100 ));
+    }
+    else
+    {
+      textCutterBeginCut->SetFocus();
+      previousWarning = true;
+    }
+  }
+
+  // tasks string
+  if( !previousWarning && !CheckStringTasks( textCutterTasks->GetValue() ) )
+  {
+    wxMessageDialog message( this, _("Cutter:\nNot allowed format in tasks text.\n\nPlease set it properly."), _("Warning"), wxOK );
+    message.ShowModal();
+    textCutterTasks->SetFocus();
+    previousWarning = true;
+  }
+
   // Time region selected?
   if ( !previousWarning && textCutterBeginCut->GetValue() == _("") )
   {
@@ -1138,15 +1171,6 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     wxMessageDialog message( this, _("Cutter:\nBegin time greater than end time.\n\nPlease set time range properly."), _("Warning"), wxOK );
     message.ShowModal();
     textCutterBeginCut->SetFocus();
-    previousWarning = true;
-  }
-  
-  // tasks string
-  if( !previousWarning && !CheckStringTasks( textCutterTasks->GetValue() ) )
-  {
-    wxMessageDialog message( this, _("Cutter:\nNot allowed format in tasks text.\n\nPlease set it properly."), _("Warning"), wxOK );
-    message.ShowModal();
-    textCutterTasks->SetFocus();
     previousWarning = true;
   }
 }
