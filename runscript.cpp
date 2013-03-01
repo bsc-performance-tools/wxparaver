@@ -321,17 +321,18 @@ void RunScript::CreateControls()
     labelFilePickerDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
   itemBoxSizer15->Add(labelFilePickerDimemasCFG, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
+  wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer15->Add(itemBoxSizer17, 4, wxALIGN_CENTER_VERTICAL, 5);
+
   filePickerDimemasCFG = new wxFilePickerCtrl( itemDialog1, ID_FILEPICKER_DIMEMAS_CFG, wxEmptyString, wxEmptyString, _T("Dimemas configuration file (*.cfg)|*.cfg|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
   if (RunScript::ShowToolTips())
     filePickerDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
-  itemBoxSizer15->Add(filePickerDimemasCFG, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
-
-  itemBoxSizer15->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer17->Add(filePickerDimemasCFG, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 0);
 
   buttonDimemasGUI = new wxBitmapButton( itemDialog1, ID_BUTTON_DIMEMAS_GUI, itemDialog1->GetBitmapResource(wxT("app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (RunScript::ShowToolTips())
     buttonDimemasGUI->SetToolTip(_("Edit Dimemas Configuration File using DimemasGUI."));
-  itemBoxSizer15->Add(buttonDimemasGUI, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
+  itemBoxSizer17->Add(buttonDimemasGUI, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
   wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
   dimemasSection->Add(itemBoxSizer20, 0, wxGROW|wxTOP|wxBOTTOM, 5);
