@@ -512,7 +512,6 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   // Run command
   if ( currentChoice != wxString( wxT( "Dimemas" ) ) || !paraverBin.IsEmpty() )
   {
-  std::cout << command << std::endl;
     myProcess = new RunningProcess( this, command );
     if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
     {
