@@ -315,7 +315,7 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
   dimemasSection->Add(itemBoxSizer15, 0, wxGROW|wxTOP|wxBOTTOM, 5);
 
-  labelFilePickerDimemasCFG = new wxStaticText( itemDialog1, wxID_STATIC, _("Dimemas CFG"), wxDefaultPosition, wxDefaultSize, 0 );
+  labelFilePickerDimemasCFG = new wxStaticText( itemDialog1, wxID_STATIC, _("Dimemas Cfg"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     labelFilePickerDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
   itemBoxSizer15->Add(labelFilePickerDimemasCFG, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
