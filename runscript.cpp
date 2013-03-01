@@ -48,6 +48,7 @@
 #include "runscript.h"
 
 ////@begin XPM images
+#include "app_edit.xpm"
 ////@end XPM images
 
 
@@ -302,18 +303,18 @@ void RunScript::CreateControls()
   itemBoxSizer2->Add(boxSizerParameters, 0, wxGROW|wxALL, 5);
 
   labelTextCtrlDefaultParameters = new wxStaticText( itemDialog1, wxID_STATIC, _("Command"), wxDefaultPosition, wxDefaultSize, 0 );
-  boxSizerParameters->Add(labelTextCtrlDefaultParameters, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  boxSizerParameters->Add(labelTextCtrlDefaultParameters, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textCtrlDefaultParameters = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_DEFAULT_PARAMETERS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     textCtrlDefaultParameters->SetToolTip(_("Parameters passed to the script"));
-  boxSizerParameters->Add(textCtrlDefaultParameters, 4, wxGROW, 5);
+  boxSizerParameters->Add(textCtrlDefaultParameters, 4, wxGROW|wxLEFT|wxRIGHT, 2);
 
   dimemasSection = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(dimemasSection, 0, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
-  dimemasSection->Add(itemBoxSizer15, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  dimemasSection->Add(itemBoxSizer15, 0, wxGROW|wxTOP|wxBOTTOM, 2);
 
   labelFilePickerDimemasCFG = new wxStaticText( itemDialog1, wxID_STATIC, _("Dimemas Cfg"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
@@ -323,75 +324,76 @@ void RunScript::CreateControls()
   filePickerDimemasCFG = new wxFilePickerCtrl( itemDialog1, ID_FILEPICKER_DIMEMAS_CFG, wxEmptyString, wxEmptyString, _T("Dimemas configuration file (*.cfg)|*.cfg|All files (*.*)|*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
   if (RunScript::ShowToolTips())
     filePickerDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
-  itemBoxSizer15->Add(filePickerDimemasCFG, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
+  itemBoxSizer15->Add(filePickerDimemasCFG, 3, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
-  buttonDimemasGUI = new wxButton( itemDialog1, ID_BUTTON_DIMEMAS_GUI, _("Edit..."), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer15->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  buttonDimemasGUI = new wxBitmapButton( itemDialog1, ID_BUTTON_DIMEMAS_GUI, itemDialog1->GetBitmapResource(wxT("app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (RunScript::ShowToolTips())
-    buttonDimemasGUI->SetToolTip(_("Execute DimemasGUI in order to modify parametrization."));
-  buttonDimemasGUI->Enable(false);
-  itemBoxSizer15->Add(buttonDimemasGUI, 1, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 2);
+    buttonDimemasGUI->SetToolTip(_("Edit Dimemas Configuration File using DimemasGUI."));
+  itemBoxSizer15->Add(buttonDimemasGUI, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
-  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
-  dimemasSection->Add(itemBoxSizer19, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
+  dimemasSection->Add(itemBoxSizer20, 0, wxGROW|wxTOP|wxBOTTOM, 5);
 
   labelTextCtrlOutputTrace = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Trace"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     labelTextCtrlOutputTrace->SetToolTip(_("Write the name given to the output trace; if missing, suffix '.prv' will be appended"));
-  itemBoxSizer19->Add(labelTextCtrlOutputTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer20->Add(labelTextCtrlOutputTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textCtrlOutputTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_OUTPUT_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     textCtrlOutputTrace->SetToolTip(_("Write the name given to the output trace; if missing, suffix '.prv' will be appended"));
-  itemBoxSizer19->Add(textCtrlOutputTrace, 4, wxGROW|wxLEFT|wxRIGHT, 2);
+  itemBoxSizer20->Add(textCtrlOutputTrace, 4, wxGROW|wxLEFT|wxRIGHT, 2);
 
-  wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxHORIZONTAL);
-  dimemasSection->Add(itemBoxSizer22, 0, wxGROW|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxHORIZONTAL);
+  dimemasSection->Add(itemBoxSizer23, 0, wxGROW|wxTOP|wxBOTTOM, 5);
 
-  itemBoxSizer22->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer23->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  checkboxReuseDimemasTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_DIMEMAS_REUSE, _("Reuse previous Dimemas trace if present"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkboxReuseDimemasTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_DIMEMAS_REUSE, _("Reuse Dimemas trace if previously generated"), wxDefaultPosition, wxDefaultSize, 0 );
   checkboxReuseDimemasTrace->SetValue(true);
   if (RunScript::ShowToolTips())
     checkboxReuseDimemasTrace->SetToolTip(_("Check this if you want to run many simulations varying only the Dimemas parametrization but the translated trace (obtained from given .prv trace)."));
-  itemBoxSizer22->Add(checkboxReuseDimemasTrace, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
+  itemBoxSizer23->Add(checkboxReuseDimemasTrace, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
-  wxStaticLine* itemStaticLine25 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine25, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine26 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine26, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer26, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer27, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer26->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer27->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer26->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer27->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer26->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer27->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 1, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer31, 0, wxALIGN_RIGHT|wxALL, 5);
-
   wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer31->Add(itemBoxSizer32, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer2->Add(itemBoxSizer32, 0, wxALIGN_RIGHT|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer32->Add(itemBoxSizer33, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer32->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer33->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
@@ -420,6 +422,11 @@ wxBitmap RunScript::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin RunScript bitmap retrieval
   wxUnusedVar(name);
+  if (name == _T("app_edit.xpm"))
+  {
+    wxBitmap bitmap(app_edit_xpm);
+    return bitmap;
+  }
   return wxNullBitmap;
 ////@end RunScript bitmap retrieval
 }

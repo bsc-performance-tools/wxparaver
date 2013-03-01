@@ -191,7 +191,7 @@ public:
   wxBoxSizer* dimemasSection;
   wxStaticText* labelFilePickerDimemasCFG;
   wxFilePickerCtrl* filePickerDimemasCFG;
-  wxButton* buttonDimemasGUI;
+  wxBitmapButton* buttonDimemasGUI;
   wxStaticText* labelTextCtrlOutputTrace;
   wxTextCtrl* textCtrlOutputTrace;
   wxCheckBox* checkboxReuseDimemasTrace;
