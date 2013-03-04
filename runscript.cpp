@@ -121,6 +121,9 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
 
+  EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
+  EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
+
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
 
@@ -785,5 +788,46 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   {
     event.Skip();
   }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DIMEMAS_GUI
+ */
+
+void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
+{
+  // TODO: This is mixed mechanism; create "dimemasgui-wrapper.sh"?
+  wxString dimemasHome;
+  if ( wxGetEnv( wxT( "DIMEMAS_HOME" ), &dimemasHome ) )
+  {
+    wxString dimemasBinPath = dimemasHome + PATH_SEP + wxString( wxT( "bin" ) ) + PATH_SEP;
+    wxString command  = dimemasBinPath + wxString( wxT( "DimemasGUI" ) );
+    myProcess = new RunningProcess( this, command );
+    if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
+    {
+      OnProcessTerminated();
+    }
+  }
+  else
+  {
+    wxMessageDialog message( this,
+                             _("Environment variable $DIMEMAS_HOME not found.\n"
+                               "Please set to DIMEMAS installation."),
+                             _( "Warning" ), wxOK );
+    message.ShowModal();
+  }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
+ */
+
+void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
+{
+  bool active = ( myProcess == NULL );
+          
+  buttonDimemasGUI->Enable( active );
 }
 

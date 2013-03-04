@@ -142,6 +142,12 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_APPLICATION
   void OnChoiceApplicationSelected( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DIMEMAS_GUI
+  void OnButtonDimemasGuiClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
+  void OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
   void OnButtonRunClick( wxCommandEvent& event );
 
