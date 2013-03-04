@@ -637,12 +637,12 @@ void CutFilterDialog::CreateControls()
     staticTextFilterSize->SetToolTip(_("Allow only communications with a minimum size."));
   itemStaticBoxSizer89->Add(staticTextFilterSize, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  textFilterSize = new wxSpinCtrl( itemScrolledWindow69, ID_SPINCTRL_FILTER_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+  textFilterSize = new wxSpinCtrl( itemScrolledWindow69, ID_SPINCTRL_FILTER_SIZE, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100000000, 0 );
   if (CutFilterDialog::ShowToolTips())
     textFilterSize->SetToolTip(_("Allow only communications with a minimum size."));
   itemStaticBoxSizer89->Add(textFilterSize, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  staticTextFilterSizeUnit = new wxStaticText( itemScrolledWindow69, wxID_STATIC, _("MB"), wxDefaultPosition, wxDefaultSize, 0 );
+  staticTextFilterSizeUnit = new wxStaticText( itemScrolledWindow69, wxID_STATIC, _("Bytes"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStaticBoxSizer89->Add(staticTextFilterSizeUnit, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   itemScrolledWindow69->FitInside();
