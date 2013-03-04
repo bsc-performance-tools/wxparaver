@@ -33062,7 +33062,7 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-AlignH">"Centre"</string>
                   <string name="proxy-AlignV">"Centre"</string>
                   <long name="proxy-Stretch factor">4</long>
-                  <long name="proxy-Border">5</long>
+                  <long name="proxy-Border">2</long>
                   <bool name="proxy-wxLEFT">0</bool>
                   <bool name="proxy-wxRIGHT">0</bool>
                   <bool name="proxy-wxTOP">0</bool>
@@ -33155,7 +33155,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbBitmapButtonProxy"</string>
                     <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonDimemasGuiClick|NONE||RunScript"</string>
-                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnButtonDimemasGuiUpdate|NONE||"</string>
+                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnButtonDimemasGuiUpdate|NONE||RunScript"</string>
                     <string name="proxy-Id name">"ID_BUTTON_DIMEMAS_GUI"</string>
                     <long name="proxy-Id value">10210</long>
                     <string name="proxy-Name">""</string>
@@ -33232,7 +33232,7 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-AlignH">"Expand"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
-                <long name="proxy-Border">5</long>
+                <long name="proxy-Border">2</long>
                 <bool name="proxy-wxLEFT">0</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
@@ -33409,7 +33409,7 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-AlignH">"Expand"</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <long name="proxy-Stretch factor">0</long>
-                <long name="proxy-Border">5</long>
+                <long name="proxy-Border">2</long>
                 <bool name="proxy-wxLEFT">0</bool>
                 <bool name="proxy-wxRIGHT">0</bool>
                 <bool name="proxy-wxTOP">1</bool>
