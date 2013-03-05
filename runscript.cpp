@@ -797,17 +797,27 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
 void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 {
-  // TODO: This is mixed mechanism; create "dimemasgui-wrapper.sh"?
   wxString dimemasHome;
   if ( wxGetEnv( wxT( "DIMEMAS_HOME" ), &dimemasHome ) )
   {
     wxString dimemasBinPath = dimemasHome + PATH_SEP + wxString( wxT( "bin" ) ) + PATH_SEP;
     wxString command  = dimemasBinPath + wxString( wxT( "DimemasGUI" ) );
-    myProcess = new RunningProcess( this, command );
+    RunningProcess *localProcess = new RunningProcess( this, command );
     if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
     {
-      OnProcessTerminated();
+      wxMessageDialog message( this,
+                               _("Unable to execute command."
+                                 "Please check it and rerun."),
+                               _( "Warning" ), wxOK );
+      message.ShowModal();
     }
+    else
+    {
+      localProcess->Detach();
+    }
+    
+    delete localProcess;
+    localProcess = NULL;
   }
   else
   {
