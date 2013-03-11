@@ -247,7 +247,7 @@ void RunScript::Init()
   wxString paraverHome;
   if ( wxGetEnv( wxT( "PARAVER_HOME" ), &paraverHome ) )
   {
-    paraverBin = paraverHome + PATH_SEP + wxString( wxT( "bin" ) ) + PATH_SEP;
+    paraverBin = paraverHome + wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) + wxFileName::GetPathSeparator();
   }
 }
 
@@ -637,8 +637,8 @@ wxString RunScript::expandLink( wxString rawLine,
   // If available, get trace path from wxFilePickerCtrl
   wxString selectedTracePath =
           wxFileName( filePickerTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-  // Find trace candidate
+  
+// Find trace candidate
   wxFileName candidateFile;
   bool candidateFound = false;
   int currentPos = initPos;
@@ -670,7 +670,7 @@ wxString RunScript::expandLink( wxString rawLine,
     linkName.Replace( wxT( " " ), wxT( "&nbsp;" ) );
     wxString linkFullPath = candidateFile.GetFullPath();
     wxString currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") + linkName + wxT("</A>");
-     
+    
     subStrWithExpandedLink = trashPrefix + currentLink;
   }
   else
@@ -800,7 +800,7 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
   wxString dimemasHome;
   if ( wxGetEnv( wxT( "DIMEMAS_HOME" ), &dimemasHome ) )
   {
-    wxString dimemasBinPath = dimemasHome + PATH_SEP + wxString( wxT( "bin" ) ) + PATH_SEP;
+    wxString dimemasBinPath = dimemasHome +  wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) +  wxFileName::GetPathSeparator();
     wxString command  = dimemasBinPath + wxString( wxT( "DimemasGUI" ) );
     RunningProcess *localProcess = new RunningProcess( this, command );
     if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )

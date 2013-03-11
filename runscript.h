@@ -40,6 +40,7 @@
 #include "wx/statline.h"
 #include "wx/html/htmlwin.h"
 ////@end includes
+#include <string>
 
 #include <wx/process.h>
 
