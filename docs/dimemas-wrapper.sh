@@ -58,11 +58,11 @@ if [[ ${EXTENSION} = "gz" ]]; then
   echo "...Done!"
 fi
 
-DIMEMAS_TRACE=${TRACENAME}.trf
+DIMEMAS_TRACE=${TRACENAME}.dim
 
 # Adapt Dimemas CFG with new trace name
 DIMEMAS_CFG_NAME=$(echo "$DIMEMAS_CFG" | sed 's/\.[^\.]*$//')
-OLD_DIMEMAS_TRACENAME=`grep "mapping information" ${DIMEMAS_CFG} | grep ".trf" | awk -F'"' {'print $4'}`
+OLD_DIMEMAS_TRACENAME=`grep "mapping information" ${DIMEMAS_CFG} | grep ".dim" | awk -F'"' {'print $4'}`
 NEW_DIMEMAS_TRACENAME=`basename ${DIMEMAS_TRACE}`
 sed 's/${OLD_DIMEMAS_TRACENAME}/${NEW_DIMEMAS_TRACENAME}/g' ${DIMEMAS_CFG} > ${DIMEMAS_CFG_NAME}.mod.cfg
 DIMEMAS_CFG=${DIMEMAS_CFG_NAME}.mod.cfg
@@ -80,13 +80,13 @@ while [ -n "$1" ]; do
 done
 
 
-# Change directory to see .trf
+# Change directory to see .dim
 DIMEMAS_TRACE_DIR=`dirname ${DIMEMAS_TRACE}`/
 pushd .
 cd ${DIMEMAS_TRACE_DIR}
 
 
-# Translate from prv to trf
+# Translate from .prv to .dim
 if [[ ${DIMEMAS_REUSE_TRACE} = "0" ]]; then
   echo
   echo "${DIMEMAS_ENV}prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}"
