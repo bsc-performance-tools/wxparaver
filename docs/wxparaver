@@ -1,13 +1,12 @@
 #! /bin/bash
 
-#PARAVER_HOME=$PWD
-PARAVER_HOME=@inst_PARAVER_HOME@
+PARAVER_HOME=${PARAVER_HOME:-@inst_PARAVER_HOME@}
 
-if [ -z "${PARAVER_HOME}" ] ; then
-  echo "Please set \$PARAVER_HOME to the wxparaver installation root directory"
-  exit 1
+#if [ -z "${PARAVER_HOME}" ] ; then
+#  echo "Please set \$PARAVER_HOME to the wxparaver installation root directory"
+#  exit 1
 
-elif ! [ -d ${PARAVER_HOME}/lib/paraver-kernel ] ; then
+if ! [ -d ${PARAVER_HOME}/lib/paraver-kernel ] ; then
   echo "paraver-kernel libraries not found in \$PARAVER_HOME/lib/paraver-kernel/"
   exit 1
 
