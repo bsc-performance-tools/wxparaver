@@ -95,18 +95,26 @@ install-data-hook:
 	if test -f $(bindir)/dimemas-wrapper.sh ; then \
 		cp -f $(bindir)/dimemas-wrapper.sh $(bindir)/old.dimemas-wrapper.sh ; \
 	fi
+	cp -f ./docs/dimemas-wrapper.sh $(bindir)
+	chmod a+x $(bindir)/dimemas-wrapper.sh
+	
 	if test -f $(bindir)/wxparaver ; then \
 		cp -f $(bindir)/wxparaver $(bindir)/old.wxparaver ; \
 	fi
-	cp -f ./docs/dimemas-wrapper.sh $(bindir)
 	cp -f ./docs/wxparaver          $(bindir)
 	$(SED) "s|@inst_PARAVER_HOME@|$(prefix)|g" < ./docs/wxparaver > $(bindir)/wxparaver
-	chmod a+x $(bindir)/dimemas-wrapper.sh
 	chmod a+x $(bindir)/wxparaver
-
+	
+	$(mkdir_p) $(prefix)/share/
+	$(mkdir_p) $(prefix)/share/wxparaver-signals
+	$(install_sh_DATA) ./docs/paraload.sig      $(prefix)/share/wxparaver-signals
+	$(install_sh_DATA) ./docs/paraload-v1.0.sig $(prefix)/share/wxparaver-signals
 
 dist-hook:
 	$(mkdir_p) $(distdir)/docs
 	cp -f ./docs/dimemas-wrapper.sh $(distdir)/docs
 	cp -f ./docs/wxparaver          $(distdir)/docs
+	cp -f ./docs/paraload.sig       $(distdir)/docs
+	cp -f ./docs/paraload-v1.0.sig  $(distdir)/docs
+
 
