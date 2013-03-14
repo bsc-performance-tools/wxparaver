@@ -124,6 +124,9 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
 
+  EVT_BUTTON( ID_BUTTON_STATS_RUN_GNUPLOT, RunScript::OnButtonStatsRunGnuplotClick )
+  EVT_UPDATE_UI( ID_BUTTON_STATS_RUN_GNUPLOT, RunScript::OnButtonStatsRunGnuplotUpdate )
+
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
 
@@ -236,7 +239,15 @@ void RunScript::Init()
   buttonDimemasGUI = NULL;
   labelTextCtrlOutputTrace = NULL;
   textCtrlOutputTrace = NULL;
-  checkboxReuseDimemasTrace = NULL;
+  checkBoxReuseDimemasTrace = NULL;
+  statsSection = NULL;
+  statsLabelTextCtrlOutputName = NULL;
+  statsTextCtrlOutputName = NULL;
+  statsCheckBoxShowBurstsHistogram = NULL;
+  statsCheckBoxShowCommsHistogram = NULL;
+  statsCheckBoxOnlyDatFile = NULL;
+  statsCheckBoxExclusiveTimes = NULL;
+  statsButtonRunGnuplot = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
   buttonClearLog = NULL;
@@ -355,53 +366,110 @@ void RunScript::CreateControls()
 
   itemBoxSizer23->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  checkboxReuseDimemasTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_DIMEMAS_REUSE, _("Reuse Dimemas trace if previously generated"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkboxReuseDimemasTrace->SetValue(true);
+  checkBoxReuseDimemasTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_DIMEMAS_REUSE, _("Reuse Dimemas trace if previously generated"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkBoxReuseDimemasTrace->SetValue(true);
   if (RunScript::ShowToolTips())
-    checkboxReuseDimemasTrace->SetToolTip(_("Check this if you want to run many simulations varying only the Dimemas parametrization but the translated trace (obtained from given .prv trace)."));
-  itemBoxSizer23->Add(checkboxReuseDimemasTrace, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
+    checkBoxReuseDimemasTrace->SetToolTip(_("Check this if you want to run many simulations varying only the Dimemas parametrization but the translated trace (obtained from given .prv trace)."));
+  itemBoxSizer23->Add(checkBoxReuseDimemasTrace, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
-  wxStaticLine* itemStaticLine26 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine26, 0, wxGROW|wxALL, 5);
+  statsSection = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(statsSection, 0, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer27, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  statsSection->Add(itemBoxSizer27, 0, wxGROW|wxALL, 2);
+
+  statsLabelTextCtrlOutputName = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Name"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    statsLabelTextCtrlOutputName->SetToolTip(_("Name given to resulting .dat and .gnuplot files."));
+  statsLabelTextCtrlOutputName->SetName(_T("O"));
+  itemBoxSizer27->Add(statsLabelTextCtrlOutputName, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  statsTextCtrlOutputName = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_STATS_OUTPUT_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    statsTextCtrlOutputName->SetToolTip(_("Name given to resulting .dat and .gnuplot files."));
+  itemBoxSizer27->Add(statsTextCtrlOutputName, 4, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer30 = new wxBoxSizer(wxHORIZONTAL);
+  statsSection->Add(itemBoxSizer30, 0, wxGROW|wxALL, 2);
+
+  statsCheckBoxShowBurstsHistogram = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_SHOW_BURSTS, _("Show bursts histogram"), wxDefaultPosition, wxDefaultSize, 0 );
+  statsCheckBoxShowBurstsHistogram->SetValue(false);
+  if (RunScript::ShowToolTips())
+    statsCheckBoxShowBurstsHistogram->SetToolTip(_("Show bursts histogram"));
+  itemBoxSizer30->Add(statsCheckBoxShowBurstsHistogram, 1, wxGROW|wxALL, 2);
+
+  statsCheckBoxShowCommsHistogram = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM, _("Show communications histogram"), wxDefaultPosition, wxDefaultSize, 0 );
+  statsCheckBoxShowCommsHistogram->SetValue(false);
+  if (RunScript::ShowToolTips())
+    statsCheckBoxShowCommsHistogram->SetToolTip(_("Show communications histogram"));
+  itemBoxSizer30->Add(statsCheckBoxShowCommsHistogram, 1, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
+  statsSection->Add(itemBoxSizer33, 0, wxGROW|wxALL, 2);
+
+  statsCheckBoxOnlyDatFile = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_ONLYGENERATEDATFILE, _("Only generate .dat file"), wxDefaultPosition, wxDefaultSize, 0 );
+  statsCheckBoxOnlyDatFile->SetValue(false);
+  statsCheckBoxOnlyDatFile->SetHelpText(_("If checked if won't generate .gnuplot, only .dat. If unchecked it generates both."));
+  if (RunScript::ShowToolTips())
+    statsCheckBoxOnlyDatFile->SetToolTip(_("If checked if won't generate .gnuplot, only .dat. If unchecked it generates both."));
+  itemBoxSizer33->Add(statsCheckBoxOnlyDatFile, 1, wxGROW|wxALL, 2);
+
+  statsCheckBoxExclusiveTimes = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_EXCLUSIVE_TIMES, _("Exclusive instead of inclusive times"), wxDefaultPosition, wxDefaultSize, 0 );
+  statsCheckBoxExclusiveTimes->SetValue(false);
+  if (RunScript::ShowToolTips())
+    statsCheckBoxExclusiveTimes->SetToolTip(_("Changes how the times of the routine calls are calculated; if unchecked, inclusive times are calculated; if checked, exclusive times are calculated."));
+  itemBoxSizer33->Add(statsCheckBoxExclusiveTimes, 1, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer36 = new wxBoxSizer(wxHORIZONTAL);
+  statsSection->Add(itemBoxSizer36, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  statsButtonRunGnuplot = new wxButton( itemDialog1, ID_BUTTON_STATS_RUN_GNUPLOT, _("Run gnuplot"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    statsButtonRunGnuplot->SetToolTip(_("Browse output .gnuplot file."));
+  itemBoxSizer36->Add(statsButtonRunGnuplot, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxStaticLine* itemStaticLine38 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine38, 0, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer39 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer39, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer27->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer39->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer27->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer39->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer27->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer39->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 1, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer32, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxBoxSizer* itemBoxSizer44 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer44, 0, wxALIGN_RIGHT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer32->Add(itemBoxSizer33, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer44->Add(itemBoxSizer45, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer33->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer45->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
   choiceApplication->Append( wxT( "Dimemas" ) );
+  choiceApplication->Append( wxT( "Stats" ) );
   choiceApplication->Append( wxT( "User defined" ) );
   choiceApplication->Select( 0 ); // Dimemas
   adaptWindowToApplicationSelection();
@@ -490,13 +558,49 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
       command += wxT( " " ) + filePickerTrace->GetPath();      // Source trace
       command += wxT( " " ) + filePickerDimemasCFG->GetPath(); // Dimemas cfg
       command += wxT( " " ) + textCtrlOutputTrace->GetValue(); // Final trace
-      if ( checkboxReuseDimemasTrace->IsChecked() )
+      if ( checkBoxReuseDimemasTrace->IsChecked() )
       {
         command += wxT( " 1" );
       }
       else
       {
         command += wxT( " 0" );
+      }
+      command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
+    }
+  }
+  else if ( currentChoice == wxString( wxT( "Stats" ) ) )
+  {
+    // First kind: Application needs a previous wrapper
+    if ( paraverBin.IsEmpty() )
+    {
+      wxMessageDialog message( this,
+                               _("Unable to find 'stats'\n"
+                                 "Please quit and rerun wxparaver, after setting $PARAVER_HOME."),
+                               _( "Warning" ), wxOK );
+      message.ShowModal();
+    }
+    else
+    {
+      // TODO: DEFAULT VALUES?
+      command  = paraverBin + wxString( wxT( "stats" ) );
+      command += wxT( " " ) + filePickerTrace->GetPath();      // Source trace
+      command += wxT( " -o " ) + statsTextCtrlOutputName->GetValue(); // Final name
+      if ( statsCheckBoxShowBurstsHistogram->IsChecked() )
+      {
+        command += wxT( " -bursts_histo" );
+      }
+      if ( statsCheckBoxShowCommsHistogram->IsChecked() )
+      {
+        command += wxT( " -comms_histo" );
+      }
+      if ( statsCheckBoxOnlyDatFile->IsChecked() )
+      {
+        command += wxT( " -only_dat_file" );
+      }
+      if ( statsCheckBoxExclusiveTimes->IsChecked() )
+      {
+        command += wxT( " -exclusive_times" );
       }
       command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
     }
@@ -513,8 +617,10 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   }                
                 
   // Run command
-  if ( currentChoice != wxString( wxT( "Dimemas" ) ) || !paraverBin.IsEmpty() )
+  // if ( currentChoice != wxString( wxT( "Dimemas" ) ) || !paraverBin.IsEmpty() )
+  if ( currentChoice == wxString( wxT( "User defined" ) ) || !paraverBin.IsEmpty() )
   {
+std::cout << command << std::endl;
     myProcess = new RunningProcess( this, command );
     if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
     {
@@ -595,7 +701,14 @@ void RunScript::adaptWindowToApplicationSelection()
     textCtrlDefaultParameters->SetToolTip( wxT( "Command and parameters to execute\n"
                                                 "%TRACE refers to input trace" ) );    
   }
-  else
+  else if ( currentChoice == wxString( wxT( "Stats" ) ))
+  {
+    labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
+    textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to 'stats'\n"
+                                                "-events_histo[:type1[-type2],...]\n"
+                                                "-thread_calls[:type1[-type2],...]\n" ) );
+  }
+  else // Dimemas
   {
     labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
     textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to the script\n"
@@ -603,6 +716,7 @@ void RunScript::adaptWindowToApplicationSelection()
   }
   
   dimemasSection->Show( currentChoice == wxString( wxT( "Dimemas" ) ) );
+  statsSection->Show( currentChoice == wxString( wxT( "Stats" ) ) );
   Layout();
 }
 
@@ -839,5 +953,28 @@ void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
   bool active = ( myProcess == NULL );
           
   buttonDimemasGUI->Enable( active );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_STATS_RUN_GNUPLOT
+ */
+
+void RunScript::OnButtonStatsRunGnuplotClick( wxCommandEvent& event )
+{
+
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_STATS_RUN_GNUPLOT
+ */
+
+void RunScript::OnButtonStatsRunGnuplotUpdate( wxUpdateUIEvent& event )
+{
+  // TODO: Check existence of gnuplot in path, and .gnuplot file generated
+  bool active = ( myProcess == NULL );
+          
+  statsButtonRunGnuplot->Enable( active );
 }
 

@@ -89,6 +89,12 @@ class wxHtmlWindow;
 #define ID_BUTTON_DIMEMAS_GUI 10210
 #define ID_TEXTCTRL_OUTPUT_TRACE 10001
 #define ID_CHECKBOX_DIMEMAS_REUSE 10209
+#define ID_TEXTCTRL_STATS_OUTPUT_NAME 10211
+#define ID_CHECKBOX_STATS_SHOW_BURSTS 10212
+#define ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM 10213
+#define ID_CHECKBOX_STATS_ONLYGENERATEDATFILE 10214
+#define ID_CHECKBOX_STATS_EXCLUSIVE_TIMES 10215
+#define ID_BUTTON_STATS_RUN_GNUPLOT 10216
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
 #define ID_BUTTON_CLEAR_LOG 10202
@@ -149,6 +155,12 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_STATS_RUN_GNUPLOT
+  void OnButtonStatsRunGnuplotClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_STATS_RUN_GNUPLOT
+  void OnButtonStatsRunGnuplotUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
   void OnButtonRunClick( wxCommandEvent& event );
 
@@ -201,7 +213,15 @@ public:
   wxBitmapButton* buttonDimemasGUI;
   wxStaticText* labelTextCtrlOutputTrace;
   wxTextCtrl* textCtrlOutputTrace;
-  wxCheckBox* checkboxReuseDimemasTrace;
+  wxCheckBox* checkBoxReuseDimemasTrace;
+  wxBoxSizer* statsSection;
+  wxStaticText* statsLabelTextCtrlOutputName;
+  wxTextCtrl* statsTextCtrlOutputName;
+  wxCheckBox* statsCheckBoxShowBurstsHistogram;
+  wxCheckBox* statsCheckBoxShowCommsHistogram;
+  wxCheckBox* statsCheckBoxOnlyDatFile;
+  wxCheckBox* statsCheckBoxExclusiveTimes;
+  wxButton* statsButtonRunGnuplot;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
   wxButton* buttonClearLog;
