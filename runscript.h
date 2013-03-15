@@ -94,7 +94,6 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM 10213
 #define ID_CHECKBOX_STATS_ONLYGENERATEDATFILE 10214
 #define ID_CHECKBOX_STATS_EXCLUSIVE_TIMES 10215
-#define ID_BUTTON_STATS_RUN_GNUPLOT 10216
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
 #define ID_BUTTON_CLEAR_LOG 10202
@@ -149,17 +148,14 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_APPLICATION
   void OnChoiceApplicationSelected( wxCommandEvent& event );
 
+  /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILEPICKER_TRACE
+  void OnFilepickerTraceFilePickerChanged( wxFileDirPickerEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_STATS_RUN_GNUPLOT
-  void OnButtonStatsRunGnuplotClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_STATS_RUN_GNUPLOT
-  void OnButtonStatsRunGnuplotUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
   void OnButtonRunClick( wxCommandEvent& event );
@@ -221,7 +217,6 @@ public:
   wxCheckBox* statsCheckBoxShowCommsHistogram;
   wxCheckBox* statsCheckBoxOnlyDatFile;
   wxCheckBox* statsCheckBoxExclusiveTimes;
-  wxButton* statsButtonRunGnuplot;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
   wxButton* buttonClearLog;
@@ -232,10 +227,16 @@ private:
   wxString paraverBin;
 ////@end RunScript member variables
 
+  bool helpOption;
+
   void adaptWindowToApplicationSelection();
   wxString expandVariables( wxString command );
   wxString expandLink( wxString rawLine, int initPos, int initSuffixPos, int finalPos );
   wxString insertAllLinks( wxString rawLine );
+  wxString insertTraceLinks( wxString rawLine );
+  wxString insertFileLinks( wxString rawLine, wxString extension );
+  void runDetachedProcess( wxString command );
+
   
   // TODO: This method's been copied from HelpContents; consider write new class
   std::string getHrefFullPath( wxHtmlLinkEvent &event );

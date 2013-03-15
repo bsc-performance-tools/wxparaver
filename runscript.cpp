@@ -121,11 +121,10 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
 
+  EVT_FILEPICKER_CHANGED( ID_FILEPICKER_TRACE, RunScript::OnFilepickerTraceFilePickerChanged )
+
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
-
-  EVT_BUTTON( ID_BUTTON_STATS_RUN_GNUPLOT, RunScript::OnButtonStatsRunGnuplotClick )
-  EVT_UPDATE_UI( ID_BUTTON_STATS_RUN_GNUPLOT, RunScript::OnButtonStatsRunGnuplotUpdate )
 
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
@@ -187,6 +186,7 @@ RunScript::RunScript( wxWindow* parent,
     
     textCtrlDefaultParameters->SetValue( auxCommand );
   }
+  helpOption = false;
 }
 
 
@@ -247,7 +247,6 @@ void RunScript::Init()
   statsCheckBoxShowCommsHistogram = NULL;
   statsCheckBoxOnlyDatFile = NULL;
   statsCheckBoxExclusiveTimes = NULL;
-  statsButtonRunGnuplot = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
   buttonClearLog = NULL;
@@ -378,7 +377,7 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxHORIZONTAL);
   statsSection->Add(itemBoxSizer27, 0, wxGROW|wxALL, 2);
 
-  statsLabelTextCtrlOutputName = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Name"), wxDefaultPosition, wxDefaultSize, 0 );
+  statsLabelTextCtrlOutputName = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Prefix"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     statsLabelTextCtrlOutputName->SetToolTip(_("Name given to resulting .dat and .gnuplot files."));
   statsLabelTextCtrlOutputName->SetName(_T("O"));
@@ -392,16 +391,16 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer30 = new wxBoxSizer(wxHORIZONTAL);
   statsSection->Add(itemBoxSizer30, 0, wxGROW|wxALL, 2);
 
-  statsCheckBoxShowBurstsHistogram = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_SHOW_BURSTS, _("Show bursts histogram"), wxDefaultPosition, wxDefaultSize, 0 );
+  statsCheckBoxShowBurstsHistogram = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_SHOW_BURSTS, _("Generate bursts histogram"), wxDefaultPosition, wxDefaultSize, 0 );
   statsCheckBoxShowBurstsHistogram->SetValue(false);
   if (RunScript::ShowToolTips())
-    statsCheckBoxShowBurstsHistogram->SetToolTip(_("Show bursts histogram"));
+    statsCheckBoxShowBurstsHistogram->SetToolTip(_("Generat _bursts histogram files."));
   itemBoxSizer30->Add(statsCheckBoxShowBurstsHistogram, 1, wxGROW|wxALL, 2);
 
-  statsCheckBoxShowCommsHistogram = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM, _("Show communications histogram"), wxDefaultPosition, wxDefaultSize, 0 );
+  statsCheckBoxShowCommsHistogram = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM, _("Generate communications histogram"), wxDefaultPosition, wxDefaultSize, 0 );
   statsCheckBoxShowCommsHistogram->SetValue(false);
   if (RunScript::ShowToolTips())
-    statsCheckBoxShowCommsHistogram->SetToolTip(_("Show communications histogram"));
+    statsCheckBoxShowCommsHistogram->SetToolTip(_("Generate communications histogram"));
   itemBoxSizer30->Add(statsCheckBoxShowCommsHistogram, 1, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
@@ -420,51 +419,43 @@ void RunScript::CreateControls()
     statsCheckBoxExclusiveTimes->SetToolTip(_("Changes how the times of the routine calls are calculated; if unchecked, inclusive times are calculated; if checked, exclusive times are calculated."));
   itemBoxSizer33->Add(statsCheckBoxExclusiveTimes, 1, wxGROW|wxALL, 2);
 
-  wxBoxSizer* itemBoxSizer36 = new wxBoxSizer(wxHORIZONTAL);
-  statsSection->Add(itemBoxSizer36, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  wxStaticLine* itemStaticLine36 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine36, 0, wxGROW|wxALL, 5);
 
-  statsButtonRunGnuplot = new wxButton( itemDialog1, ID_BUTTON_STATS_RUN_GNUPLOT, _("Run gnuplot"), wxDefaultPosition, wxDefaultSize, 0 );
-  if (RunScript::ShowToolTips())
-    statsButtonRunGnuplot->SetToolTip(_("Browse output .gnuplot file."));
-  itemBoxSizer36->Add(statsButtonRunGnuplot, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  wxStaticLine* itemStaticLine38 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine38, 0, wxGROW|wxALL, 5);
-
-  wxBoxSizer* itemBoxSizer39 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer39, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer37, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer39->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer37->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer39->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer37->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer39->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer37->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 1, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer44 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer44, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxBoxSizer* itemBoxSizer42 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer42, 0, wxALIGN_RIGHT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer44->Add(itemBoxSizer45, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer42->Add(itemBoxSizer43, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer45->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer43->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
@@ -534,6 +525,7 @@ void RunScript::OnButtonExitClick( wxCommandEvent& event )
 void RunScript::OnButtonRunClick( wxCommandEvent& event )
 {
   buttonRun->Enable( false );
+  helpOption = false;  
 
   // TODO: Check parameters should be done HERE
   
@@ -567,6 +559,11 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
         command += wxT( " 0" );
       }
       command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
+      
+      if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
+      {
+        helpOption = true;
+      }
     }
   }
   else if ( currentChoice == wxString( wxT( "Stats" ) ) )
@@ -580,29 +577,35 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
                                _( "Warning" ), wxOK );
       message.ShowModal();
     }
+    else if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
+    {
+      command  = paraverBin + wxString( wxT( "stats --help" ) );
+      helpOption = true;
+    }
     else
     {
       // TODO: DEFAULT VALUES?
       command  = paraverBin + wxString( wxT( "stats" ) );
-      command += wxT( " " ) + filePickerTrace->GetPath();      // Source trace
-      command += wxT( " -o " ) + statsTextCtrlOutputName->GetValue(); // Final name
+      command += wxString( wxT( " " ) ) + filePickerTrace->GetPath();      // Source trace
+      command += wxString( wxT( " -o " ) ) + statsTextCtrlOutputName->GetValue(); // Final name
       if ( statsCheckBoxShowBurstsHistogram->IsChecked() )
       {
-        command += wxT( " -bursts_histo" );
+        command += wxString( wxT( " -bursts_histo" ) );
       }
       if ( statsCheckBoxShowCommsHistogram->IsChecked() )
       {
-        command += wxT( " -comms_histo" );
+        command += wxString( wxT( " -comms_histo" ) );
       }
       if ( statsCheckBoxOnlyDatFile->IsChecked() )
       {
-        command += wxT( " -only_dat_file" );
+        command += wxString( wxT( " -only_dat_file" ) );
       }
       if ( statsCheckBoxExclusiveTimes->IsChecked() )
       {
-        command += wxT( " -exclusive_times" );
+        command += wxString( wxT( " -exclusive_times" ) );
       }
-      command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
+      command += wxString( wxT( " " ) ) +
+              expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
     }
   }
   else if ( currentChoice == wxString( wxT( "User defined" ) ) )
@@ -658,7 +661,21 @@ void RunScript::OnProcessTerminated()
 
 void RunScript::AppendToLog( wxString msg )
 {
-  msg = insertAllLinks( msg );
+  if ( !helpOption )
+  {
+    wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
+
+    if ( currentChoice == wxString( wxT( "Dimemas" ) ) )
+    {
+      msg = insertTraceLinks( msg );
+    }
+    else if ( currentChoice == wxString( wxT( "Stats" ) ) )
+    {
+      msg = insertFileLinks( msg, wxString( wxT( ".dat" ) ) );
+      msg = insertFileLinks( msg, wxString( wxT( ".gnuplot" ) ) );
+    }
+  }
+  
   listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
   int x, y;
   listboxRunLog->GetVirtualSize( &x, &y );
@@ -794,8 +811,53 @@ wxString RunScript::expandLink( wxString rawLine,
 }
 
 
+wxString RunScript::insertFileLinks( wxString rawLine, wxString extension )
+{
+  wxString lineWithLinks;
+
+  int endLine = rawLine.Len();
+  int initSubStr = 0;
+  int endSubStr = 0;
+  while ( endSubStr < endLine )
+  {
+    wxString subStr = rawLine.Mid( initSubStr, endLine - initSubStr );
+    int initSuffixPos = subStr.Find( extension );
+    if ( initSuffixPos != wxNOT_FOUND )
+    {
+      // Compute new end of the substring 
+      endSubStr = initSuffixPos + extension.Len();
+      
+      // Build HTML link and append it
+      lineWithLinks += expandLink( rawLine, initSubStr, initSuffixPos, endSubStr );
+      
+      // Advance
+      initSubStr = endSubStr;
+    }
+    else
+    {
+      // No more ".prv" found; print rest of the line
+      wxString tail = rawLine.Mid( endSubStr, endLine - endSubStr );
+      tail.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+      lineWithLinks += tail;
+      
+      // And exit the loop
+      endSubStr = endLine;
+    }
+  } 
+
+  if( lineWithLinks.IsEmpty() )
+  {
+    rawLine.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+    lineWithLinks = rawLine;
+  }
+  
+  return lineWithLinks;
+}
+
+
+
 // Parse rawLine and try to substitute every trace candidate by a complete HTML link
-wxString RunScript::insertAllLinks( wxString rawLine )
+wxString RunScript::insertTraceLinks( wxString rawLine )
 {
   wxString lineWithLinks;
 
@@ -876,6 +938,18 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
+  else if ( matchHrefExtension( event, wxT(".dat" )))
+  {
+    wxString command = wxString( wxT( "libreoffice --calc " ) ) +
+                       wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+    runDetachedProcess( command );    
+  }
+  else if ( matchHrefExtension( event, wxT(".gnuplot" )))
+  {
+    wxString command = wxString( wxT( "gnuplot -p " ) ) +
+                       wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+    runDetachedProcess( command );    
+  }
 /*
   else if ( matchHrefExtension( event, _(".cfg")))
   {
@@ -905,6 +979,27 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 }
 
 
+void RunScript::runDetachedProcess( wxString command )
+{
+  RunningProcess *localProcess = new RunningProcess( this, command );
+  if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
+  {
+    wxMessageDialog message( this,
+                             _("Unable to execute command."
+                               "Please check it and rerun."),
+                             _( "Warning" ), wxOK );
+    message.ShowModal();
+  }
+  else
+  {
+    localProcess->Detach();
+  }
+  
+  delete localProcess;
+  localProcess = NULL;
+}
+
+
 /*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DIMEMAS_GUI
  */
@@ -916,22 +1011,8 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
   {
     wxString dimemasBinPath = dimemasHome +  wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) +  wxFileName::GetPathSeparator();
     wxString command  = dimemasBinPath + wxString( wxT( "DimemasGUI" ) );
-    RunningProcess *localProcess = new RunningProcess( this, command );
-    if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
-    {
-      wxMessageDialog message( this,
-                               _("Unable to execute command."
-                                 "Please check it and rerun."),
-                               _( "Warning" ), wxOK );
-      message.ShowModal();
-    }
-    else
-    {
-      localProcess->Detach();
-    }
-    
-    delete localProcess;
-    localProcess = NULL;
+
+    runDetachedProcess( command );    
   }
   else
   {
@@ -957,24 +1038,16 @@ void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
 
 
 /*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_STATS_RUN_GNUPLOT
+ * wxEVT_FILEPICKER_CHANGED event handler for ID_FILEPICKER_TRACE
  */
 
-void RunScript::OnButtonStatsRunGnuplotClick( wxCommandEvent& event )
+void RunScript::OnFilepickerTraceFilePickerChanged( wxFileDirPickerEvent& event )
 {
+  wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
 
-}
-
-
-/*!
- * wxEVT_UPDATE_UI event handler for ID_BUTTON_STATS_RUN_GNUPLOT
- */
-
-void RunScript::OnButtonStatsRunGnuplotUpdate( wxUpdateUIEvent& event )
-{
-  // TODO: Check existence of gnuplot in path, and .gnuplot file generated
-  bool active = ( myProcess == NULL );
-          
-  statsButtonRunGnuplot->Enable( active );
+  if ( currentChoice == wxString( wxT( "Stats" ) ))
+  {
+    statsTextCtrlOutputName->SetValue( filePickerTrace->GetPath() );
+  }
 }
 
