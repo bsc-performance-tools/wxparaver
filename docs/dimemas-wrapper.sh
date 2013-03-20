@@ -87,7 +87,15 @@ cd ${DIMEMAS_TRACE_DIR}
 
 
 # Translate from .prv to .dim
-if [[ ${DIMEMAS_REUSE_TRACE} = "0" ]]; then
+if [[ ${DIMEMAS_REUSE_TRACE} = "0" || \
+      ${DIMEMAS_REUSE_TRACE} = "1" && ! -f ${DIMEMAS_TRACE} ]]; then
+
+  if [[ ${DIMEMAS_REUSE_TRACE} = "1" ]]; then
+    echo
+    echo "Warning! Unable to find ${DIMEMAS_TRACE}"
+    echo "Generating it."
+  fi
+
   echo
   echo "${DIMEMAS_ENV}prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}"
   echo
