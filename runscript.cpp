@@ -623,7 +623,6 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   // if ( currentChoice != wxString( wxT( "Dimemas" ) ) || !paraverBin.IsEmpty() )
   if ( currentChoice == wxString( wxT( "User defined" ) ) || !paraverBin.IsEmpty() )
   {
-std::cout << command << std::endl;
     myProcess = new RunningProcess( this, command );
     if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
     {
@@ -750,8 +749,10 @@ void RunScript::OnChoiceApplicationSelected( wxCommandEvent& event )
 
 wxString RunScript::expandVariables( wxString command )
 {
-  command.Replace( wxT( "%TRACE" ), filePickerTrace->GetPath() );
-  
+  command.Replace( wxT( "%TRACE" ), wxString( wxT( "\"" ) ) +
+                                    filePickerTrace->GetPath() +
+                                    wxString( wxT( "\"" ) ) );
+
   return command;
 }
 
