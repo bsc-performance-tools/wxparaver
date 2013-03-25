@@ -46,6 +46,7 @@
 #include "wxparaverapp.h" // PATH_SEP
 
 #include "runscript.h"
+#include <algorithm> // sort
 
 ////@begin XPM images
 #include "app_edit.xpm"
@@ -187,6 +188,10 @@ RunScript::RunScript( wxWindow* parent,
     textCtrlDefaultParameters->SetValue( auxCommand );
   }
   helpOption = false;
+  
+  wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"), _(".cfg"),
+                                   _(".dat"), _(".gnuplot") };
+  extensions = wxArrayString( (size_t)5, extensionsAllowed );
 }
 
 
@@ -585,7 +590,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     else
     {
       // TODO: DEFAULT VALUES?
-      command  = paraverBin + wxString( wxT( "stats" ) );
+      command  = paraverBin + wxString( wxT( "stats-wrapper.sh" ) );
       command += wxString( wxT( " " ) ) + filePickerTrace->GetPath();      // Source trace
       command += wxString( wxT( " -o " ) ) + statsTextCtrlOutputName->GetValue(); // Final name
       if ( statsCheckBoxShowBurstsHistogram->IsChecked() )
@@ -623,6 +628,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   // if ( currentChoice != wxString( wxT( "Dimemas" ) ) || !paraverBin.IsEmpty() )
   if ( currentChoice == wxString( wxT( "User defined" ) ) || !paraverBin.IsEmpty() )
   {
+//std::cout << command << std::endl;
     myProcess = new RunningProcess( this, command );
     if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
     {
@@ -660,18 +666,25 @@ void RunScript::OnProcessTerminated()
 
 void RunScript::AppendToLog( wxString msg )
 {
+  // wxString newMsg = msg;
+    
   if ( !helpOption )
   {
     wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
 
+    //bool foundLink;
     if ( currentChoice == wxString( wxT( "Dimemas" ) ) )
     {
-      msg = insertTraceLinks( msg );
+      // foundLink = insertTraceLinks( msg, newMsg );
+      msg = insertLinks( msg, extensions );
     }
     else if ( currentChoice == wxString( wxT( "Stats" ) ) )
     {
-      msg = insertFileLinks( msg, wxString( wxT( ".dat" ) ) );
-      msg = insertFileLinks( msg, wxString( wxT( ".gnuplot" ) ) );
+      msg = insertLinks( msg, extensions );
+    }
+    else if ( currentChoice == wxString( wxT( "User defined" ) ) )
+    {
+      msg = insertLinks( msg, extensions );
     }
   }
   
@@ -756,23 +769,24 @@ wxString RunScript::expandVariables( wxString command )
   return command;
 }
 
-
 // Returns substring [initPos, finalPos] of rawLine
 // It include HREF info if file is found
 wxString RunScript::expandLink( wxString rawLine, 
-                                int initPos,
-                                int initSuffixPos,
-                                int finalPos )
+                                     int initPos,
+                                     int initSuffixPos,
+                                     int finalPos,
+                                     bool candidateFound )
 {
   wxString subStrWithExpandedLink = rawLine;
+  candidateFound = false;
 
   // If available, get trace path from wxFilePickerCtrl
   wxString selectedTracePath =
           wxFileName( filePickerTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+//std::cout << "selectedTracePath: " << selectedTracePath << std::endl;
   
 // Find trace candidate
   wxFileName candidateFile;
-  bool candidateFound = false;
   int currentPos = initPos;
   while ( currentPos < initSuffixPos && !candidateFound )
   {
@@ -780,6 +794,7 @@ wxString RunScript::expandLink( wxString rawLine,
     wxString candidateName = rawLine.Mid( currentPos, finalPos - currentPos );
     candidateFile = wxFileName( candidateName );
     candidateFound = ( candidateFile.Normalize() && candidateFile.FileExists() );
+//std::cout << "candidateName: " << candidateName << std::endl;
     
     if ( !candidateFound )
     {
@@ -802,7 +817,7 @@ wxString RunScript::expandLink( wxString rawLine,
     linkName.Replace( wxT( " " ), wxT( "&nbsp;" ) );
     wxString linkFullPath = candidateFile.GetFullPath();
     wxString currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") + linkName + wxT("</A>");
-    
+//std::cout << "currentLink: " << currentLink << std::endl;
     subStrWithExpandedLink = trashPrefix + currentLink;
   }
   else
@@ -811,10 +826,212 @@ wxString RunScript::expandLink( wxString rawLine,
   return subStrWithExpandedLink;
 }
 
-
-wxString RunScript::insertFileLinks( wxString rawLine, wxString extension )
+struct gthan
 {
-  wxString lineWithLinks;
+  bool operator()( const pair< int, wxString > &a, const pair< int, wxString > &b )
+  {   
+    return ( a.first > b.first ) ||
+           ( a.first == b.first && a.second.Len() > b.second.Len() );
+  }   
+} greaterThan;
+
+
+wxString RunScript::insertLinks( wxString rawLine,
+                                 wxArrayString extensions )
+{
+  vector< pair< int, wxString > > extensionsPositions; // {(4,.cfg),(6,.prv),(6.prv.gz)}
+  
+  // Detect all the ocurrences of every given extension
+  for ( size_t i = 0; i < extensions.Count(); ++i )
+  {
+ //std::cout << extensions[i] << std::endl;
+
+    int endLine = rawLine.Len();
+    int initSubStr = 0; // Start from the begin
+    int endSubStr = 0;
+    int globalPos = 0;
+    while ( globalPos < endLine )
+    {
+      wxString subStr = rawLine.Mid( initSubStr, endLine - initSubStr );
+      int initSuffixPos = subStr.Find( extensions[i] );
+      /*
+std::cout << "initSubStr " << initSubStr << std::endl;
+std::cout << "endSubStr  " << endSubStr << std::endl;
+std::cout << "subStr     " << subStr << std::endl;
+*/
+      if ( initSuffixPos != wxNOT_FOUND )
+      {
+        // Remember (position, extension)
+        extensionsPositions.push_back( std::make_pair( initSuffixPos + globalPos,
+                                                       extensions[i] ) );
+//std::cout << "pair!!! globalPos " << initSuffixPos + globalPos << std::endl;
+
+        
+        // Advance: compute new end of the substring 
+        endSubStr = initSuffixPos + extensions[i].Len();
+        globalPos += endSubStr;
+        initSubStr = endSubStr;
+      }
+      else
+      {
+        // No more current extensions; exit loop to try next extension
+        globalPos = endLine;
+      }
+    }
+  }
+  
+  if ( extensionsPositions.size() == 0 )
+  {
+    // No match found for any extension!! -> turn spaces to &nsbp for all the line
+    rawLine.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+  }
+  else 
+  {  
+    // Sort extensionsPosition by
+    //   1. position, descending
+    //   2. longest suffix first
+    // Ex:
+    //   Before :{ (4,.cfg), (6,.prv), (25,.prv), (6,.prv.gz) }
+    //   After  :{ (25,.prv), (6,.prv.gz), (6,.prv), (4,.cfg) }
+   
+    std::sort( extensionsPositions.begin(), extensionsPositions.end(), greaterThan );
+    
+    // Clean extensionsPosition
+    //   1. with unique positions, only longest suffix is kept (.prv.gz vs .prv)
+    // Ex:
+    //   Before :{ (25,.prv), (6,.prv.gz), (6,.prv), (4,.cfg) }
+    //   After  :{ (25,.prv), (6,.prv.gz), (4,.cfg) }
+    vector< pair< int, wxString > > auxExtensionsPositions;
+    for ( vector< pair< int, wxString > >::iterator it = extensionsPositions.begin();
+            it != extensionsPositions.end(); ++it )
+    {
+    std::cout << it->second << std::endl;
+
+      if ( auxExtensionsPositions.empty() )
+      {
+        auxExtensionsPositions.push_back( *it );
+      }
+      else if ( it->first != auxExtensionsPositions.back().first )
+      {
+        auxExtensionsPositions.push_back( *it );
+      }
+    }
+    
+    std::swap( extensionsPositions, auxExtensionsPositions );
+    
+
+    // If available, get trace path from wxFilePickerCtrl
+    wxString selectedTracePath =
+        wxFileName( filePickerTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    // Now, traverse rawLine using extensionPositions.
+    wxString auxLine;  // where output line is being built, starting from the tail.
+    int endLine = rawLine.Len();
+    //int initSubStr = endLine; // Start from the end
+    int endSubStr = endLine;
+    while ( extensionsPositions.size() > 0 )
+    {
+      // New end of the substring
+      int currentEndSubStr = extensionsPositions.front().first + 
+                             extensionsPositions.front().second.Len();
+      
+      // Anything after it must be nbspaced; for sure it doesn't belong to a link
+      wxString trashTail = rawLine.Mid( currentEndSubStr, endSubStr - currentEndSubStr );
+      trashTail.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+  
+      // Advance endSubStr
+      endSubStr = currentEndSubStr;
+      
+      // Find trace candidate
+      wxFileName candidateFile;
+      int currentPos = 0; // always start from the beginning
+      bool candidateFound = false;
+      int initSuffixPos = extensionsPositions.front().first;
+      wxString candidateName;
+      while ( currentPos < initSuffixPos && !candidateFound )
+      {
+        // Normalize
+        candidateName = rawLine.Mid( currentPos, endSubStr - currentPos );
+        candidateFile = wxFileName( candidateName );
+        candidateFound = ( candidateFile.Normalize() && candidateFile.FileExists() );
+//std::cout << "candidateName: " << candidateName << std::endl;
+    
+        if ( !candidateFound )
+        {
+          candidateFile = wxFileName( candidateName );
+          candidateFound =
+              ( candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
+                candidateFile.FileExists() );
+        }
+    
+        ++currentPos;
+      }
+
+      if ( candidateFound )
+      {
+        --currentPos;
+
+        wxString linkName = candidateName;
+        linkName.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+        wxString linkFullPath = candidateFile.GetFullPath();
+        wxString currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
+                              linkName +
+                              wxT("</A>");
+//std::cout << "currentLink: " << currentLink << std::endl;
+
+        auxLine = currentLink + trashTail + auxLine;        
+        endSubStr = currentPos;
+//std::cout << "auxLine: " << auxLine << std::endl;
+        
+        // Advance vector of positions-extensions to next useful (position, ext)
+        // Ex: After succesful detection of link, any extension inside must be ignored.
+        //   Good link:                    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+        //   Dangerous line: (...) bla bla /home/user/traces/current.cfgs.chop.prv.gz
+        //   Extension to avoid!!:                                  ^^^^^
+        while ( extensionsPositions.size() > 0 )
+        {
+          if ( extensionsPositions.front().first > currentPos )
+          {
+            extensionsPositions.erase( extensionsPositions.begin() );
+          }
+          else
+          {
+            break;
+          }
+        }
+      }
+      else
+      {
+        // Advance vector positions-extensions to next useful (position, ext)
+        // It's the next one, because we didn't consume any rawLine character (no links!)
+        extensionsPositions.erase( extensionsPositions.begin() );
+      }
+    }
+    //std::cout << "auxLine: " << auxLine << std::endl;
+
+    if ( endSubStr > 0 )
+    {
+      wxString trashHead = rawLine.Mid( 0, endSubStr );
+      trashHead.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+      auxLine = trashHead + auxLine;
+    }
+    
+//std::cout << "auxLine: " << auxLine << std::endl;
+
+    // Finally we copy it.
+    rawLine = auxLine;
+  }
+
+  return rawLine;
+}
+
+
+
+bool RunScript::insertFileLinks( wxString rawLine,
+                                     wxString extension, 
+                                     wxString &lineWithLinks )
+{
+  bool foundLink = false;
 
   int endLine = rawLine.Len();
   int initSubStr = 0;
@@ -827,10 +1044,17 @@ wxString RunScript::insertFileLinks( wxString rawLine, wxString extension )
     {
       // Compute new end of the substring 
       endSubStr = initSuffixPos + extension.Len();
+
+//std::cout << "rawLine: " << rawLine << std::endl;
       
       // Build HTML link and append it
-      lineWithLinks += expandLink( rawLine, initSubStr, initSuffixPos, endSubStr );
-      
+      lineWithLinks += expandLink( rawLine,
+                                   initSubStr,
+                                   initSuffixPos,
+                                   endSubStr,
+                                   foundLink );
+      std::cout << "lineWithLinks: " << lineWithLinks << std::endl;
+
       // Advance
       initSubStr = endSubStr;
     }
@@ -844,7 +1068,7 @@ wxString RunScript::insertFileLinks( wxString rawLine, wxString extension )
       // And exit the loop
       endSubStr = endLine;
     }
-  } 
+  }
 
   if( lineWithLinks.IsEmpty() )
   {
@@ -852,15 +1076,15 @@ wxString RunScript::insertFileLinks( wxString rawLine, wxString extension )
     lineWithLinks = rawLine;
   }
   
-  return lineWithLinks;
+  return foundLink;
 }
 
 
 
 // Parse rawLine and try to substitute every trace candidate by a complete HTML link
-wxString RunScript::insertTraceLinks( wxString rawLine )
+bool RunScript::insertTraceLinks( wxString rawLine, wxString &lineWithLinks )
 {
-  wxString lineWithLinks;
+  bool foundLink = false;
 
   int endLine = rawLine.Len();
   int initSubStr = 0;
@@ -886,7 +1110,11 @@ wxString RunScript::insertTraceLinks( wxString rawLine )
       }
       
       // Build HTML link and append it
-      lineWithLinks += expandLink( rawLine, initSubStr, initSuffixPos, endSubStr );
+      lineWithLinks += expandLink( rawLine,
+                                   initSubStr,
+                                   initSuffixPos,
+                                   endSubStr,
+                                   foundLink );
       
       // Advance
       initSubStr = endSubStr;
@@ -909,7 +1137,7 @@ wxString RunScript::insertTraceLinks( wxString rawLine )
     lineWithLinks = rawLine;
   }
   
-  return lineWithLinks;
+  return foundLink;
 }
 
 

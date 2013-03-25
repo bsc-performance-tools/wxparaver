@@ -228,13 +228,15 @@ private:
 ////@end RunScript member variables
 
   bool helpOption;
+  wxArrayString extensions;
 
   void adaptWindowToApplicationSelection();
   wxString expandVariables( wxString command );
-  wxString expandLink( wxString rawLine, int initPos, int initSuffixPos, int finalPos );
+  wxString expandLink( wxString rawLine, int initPos, int initSuffixPos, int finalPos, bool candidateFound );
+  wxString insertLinks( wxString rawLine, wxArrayString extensions );
   wxString insertAllLinks( wxString rawLine );
-  wxString insertTraceLinks( wxString rawLine );
-  wxString insertFileLinks( wxString rawLine, wxString extension );
+  bool insertTraceLinks( wxString rawLine, wxString &lineWithLinks );
+  bool insertFileLinks( wxString rawLine, wxString extension, wxString &lineWithLinks );
   void runDetachedProcess( wxString command );
 
   
