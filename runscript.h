@@ -230,20 +230,16 @@ private:
   bool helpOption;
   wxArrayString extensions;
 
+  wxString doubleQuote( const wxString& path );
+  
   void adaptWindowToApplicationSelection();
   wxString expandVariables( wxString command );
-  wxString expandLink( wxString rawLine, int initPos, int initSuffixPos, int finalPos, bool candidateFound );
   wxString insertLinks( wxString rawLine, wxArrayString extensions );
-  wxString insertAllLinks( wxString rawLine );
-  bool insertTraceLinks( wxString rawLine, wxString &lineWithLinks );
-  bool insertFileLinks( wxString rawLine, wxString extension, wxString &lineWithLinks );
   void runDetachedProcess( wxString command );
 
-  
   // TODO: This method's been copied from HelpContents; consider write new class
   std::string getHrefFullPath( wxHtmlLinkEvent &event );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
-
 };
 
 #endif // _RUNSCRIPT_H_
