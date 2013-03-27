@@ -289,7 +289,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2234,9 +2234,10 @@ void gHistogram::saveText( bool onlySelectedPlane )
       auxName += myHistogram->getPlaneLabel( myHistogram->getCommSelectedPlane() ) + "_";
   }
 
-  auxName += myHistogram->getTrace()->getTraceNameNumbered();
+  wxString traceName = wxString::FromAscii( myHistogram->getTrace()->getTraceNameNumbered().c_str() );
+  traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
 
-  fileName = wxString::FromAscii( auxName.c_str() );
+  fileName = wxString::FromAscii( auxName.c_str() ) + traceName;
 
 #ifdef WIN32
   defaultDir = _(".\\");
@@ -2252,7 +2253,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
                                   defaultDir,
                                   fileName,
                                   _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
-                                  wxFD_SAVE|wxFD_OVERWRITE_PROMPT,
+                                  wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR,
                                   wxDefaultPosition,
                                   wxDefaultSize,
                                   _( "filedlg" ),
@@ -2287,9 +2288,10 @@ void gHistogram::saveImage()
   else
     auxName += myHistogram->getPlaneLabel( myHistogram->getCommSelectedPlane() ) + "_";
 
-  auxName += myHistogram->getTrace()->getTraceNameNumbered();
+  wxString traceName = wxString::FromAscii( myHistogram->getTrace()->getTraceNameNumbered().c_str() );
+  traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
 
-  fileName = wxString::FromAscii( auxName.c_str() );
+  fileName = wxString::FromAscii( auxName.c_str() ) + traceName;
 
 #ifdef WIN32
   defaultDir = _(".\\");
@@ -2306,7 +2308,7 @@ void gHistogram::saveImage()
 #else
                            _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
 #endif
-                           wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
+                           wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getHistogramSaveImageFormat() );
   if ( saveDialog.ShowModal() == wxID_OK )

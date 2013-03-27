@@ -2542,8 +2542,10 @@ void gTimeline::saveImage()
   wxString imageName, imageSuffix, defaultDir;
   long imageType;
   
-  string auxName = myWindow->getName() + "_" + myWindow->getTrace()->getTraceNameNumbered();
-  imageName = wxString::FromAscii( auxName.c_str() );
+  wxString traceName = wxString::FromAscii( myWindow->getTrace()->getTraceNameNumbered().c_str() );
+  traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
+  string auxName = myWindow->getName() + "_";
+  imageName = wxString::FromAscii( auxName.c_str() ) + traceName;
 
 #ifdef WIN32
   defaultDir = _(".\\");
@@ -2560,7 +2562,7 @@ void gTimeline::saveImage()
 #else
                            _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
 #endif
-                           wxSAVE|wxFD_OVERWRITE_PROMPT );
+                           wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveImageFormat() );
   if ( saveDialog.ShowModal() == wxID_OK )
@@ -2674,8 +2676,10 @@ void gTimeline::saveText()
 {
   wxString fileName, defaultDir;
   
-  string auxName = myWindow->getName() + "_" + myWindow->getTrace()->getTraceNameNumbered();
-  fileName = wxString::FromAscii( auxName.c_str() );
+  wxString traceName = wxString::FromAscii( myWindow->getTrace()->getTraceNameNumbered().c_str() );
+  traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
+  string auxName = myWindow->getName() + "_";
+  fileName = wxString::FromAscii( auxName.c_str() ) + traceName;
 
 #ifdef WIN32
   defaultDir = _(".\\");
@@ -2691,7 +2695,7 @@ void gTimeline::saveText()
                                   defaultDir,
                                   fileName,
                                   _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
-                                  wxSAVE | wxFD_OVERWRITE_PROMPT,
+                                  wxFD_SAVE | wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR,
                                   wxDefaultPosition,
                                   wxDefaultSize,
                                   _( "filedlg" ),

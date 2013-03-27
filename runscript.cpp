@@ -978,17 +978,17 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   else if ( matchHrefExtension( event, wxT(".dat" )))
   {
     wxString command = wxString( wxT( "libreoffice --calc " ) ) +
-                       wxString( "\"" ) +
+                       wxString( wxT( "\"" ) ) +
                        wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) +
-                       wxString( "\"" );
+                       wxString( wxT( "\"" ) );
     runDetachedProcess( command );    
   }
   else if ( matchHrefExtension( event, wxT(".gnuplot" )))
   {
     wxString command = wxString( wxT( "gnuplot -p " ) ) +
-                       wxString( "\"" ) +
+                       wxString( wxT( "\"" ) ) +
                        wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) +
-                       wxString( "\"" );
+                       wxString( wxT( "\"" ) );
     runDetachedProcess( command );    
   }
   else if ( matchHrefExtension( event, _(".cfg")))
@@ -1005,7 +1005,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".xml")))
   {
-    std::string traceName = wxFileName( filePickerTrace->GetPath() ).GetFullPath().mb_str();
+    std::string traceName = std::string( wxFileName( filePickerTrace->GetPath() ).GetFullPath().mb_str() );
 
     bool loadTrace = true;
     std::string strXmlFile = getHrefFullPath( event );
@@ -1050,7 +1050,7 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
   if ( wxGetEnv( wxT( "DIMEMAS_HOME" ), &dimemasHome ) )
   {
     wxString dimemasBinPath = dimemasHome +  wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) +  wxFileName::GetPathSeparator();
-    wxString command  = wxString("\"") + dimemasBinPath + wxString( wxT( "DimemasGUI" ) ) + wxString("\"");
+    wxString command  = wxString( wxT( "\"" ) ) + dimemasBinPath + wxString( wxT( "DimemasGUI" ) ) + wxString( wxT( "\"" ) );
 
     runDetachedProcess( command );    
   }
