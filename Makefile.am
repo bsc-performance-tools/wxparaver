@@ -98,6 +98,12 @@ install-data-hook:
 	cp -f ./docs/dimemas-wrapper.sh $(bindir)
 	chmod a+x $(bindir)/dimemas-wrapper.sh
 	
+	if test -f $(bindir)/stats-wrapper.sh ; then \
+		cp -f $(bindir)/stats-wrapper.sh $(bindir)/old.stats-wrapper.sh ; \
+	fi
+	cp -f ./docs/stats-wrapper.sh $(bindir)
+	chmod a+x $(bindir)/stats-wrapper.sh
+
 	if test -f $(bindir)/wxparaver ; then \
 		cp -f $(bindir)/wxparaver $(bindir)/old.wxparaver ; \
 	fi

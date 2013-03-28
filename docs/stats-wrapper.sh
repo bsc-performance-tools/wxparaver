@@ -13,7 +13,6 @@ function usage
   echo "  parameters:   See complete list of stats help with 'stats --help'"
 }
 
-
 PARAVER_TRACE=${1}
 
 # Read and check parameters
@@ -22,7 +21,7 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-# Check Stats availability
+# Check Dimemas availability
 
 { command -v ${PARAVER_HOME}/bin/stats > /dev/null && export STATS_ENV="${PARAVER_HOME}/bin/"; } || 
 { command -v stats > /dev/null && export STATS_ENV=""; } || \
@@ -54,7 +53,7 @@ done
 echo
 echo "${STATS_ENV}stats ${PARAVER_TRACE} ${EXTRA_PARAMETERS}"
 echo
-${STATS_ENV}stats $PARAVER_TRACE $EXTRA_PARAMETERS
+${STATS_ENV}stats ${PARAVER_TRACE} ${EXTRA_PARAMETERS}
 echo
 
 
