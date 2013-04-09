@@ -212,17 +212,17 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_ALL_TRACE
   void OnButtonCutterAllTraceClick( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
-  void OnCheckOriginalTimeClick( wxCommandEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
+  void OnCheckboxCheckCutterOriginalTimeUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_STATE
-  void OnCheckboxFilterDiscardStateClick( wxCommandEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FILTER_DISCARD_STATE
+  void OnCheckboxFilterDiscardStateUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_EVENT
-  void OnCheckboxFilterDiscardEventClick( wxCommandEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FILTER_DISCARD_EVENT
+  void OnCheckboxFilterDiscardEventUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION
-  void OnCheckboxFilterDiscardCommunicationClick( wxCommandEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION
+  void OnCheckboxFilterDiscardCommunicationUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FILTER_SELECT_ALL
   void OnButtonFilterSelectAllClick( wxCommandEvent& event );

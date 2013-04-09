@@ -24213,7 +24213,7 @@ In normal mode all properties are showed in main window."</string>
                           <long name="title-mode">0</long>
                           <long name="locked">0</long>
                           <string name="proxy-type">"wbCheckBoxProxy"</string>
-                          <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnCheckOriginalTimeClick|NONE||CutFilterDialog"</string>
+                          <string name="event-handler-0">"wxEVT_UPDATE_UI|OnCheckboxCheckCutterOriginalTimeUpdate|NONE||"</string>
                           <string name="proxy-Id name">"ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME"</string>
                           <long name="proxy-Id value">10120</long>
                           <string name="proxy-Name">""</string>
@@ -24968,7 +24968,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbCheckBoxProxy"</string>
-                        <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnCheckboxFilterDiscardStateClick|NONE||CutFilterDialog"</string>
+                        <string name="event-handler-0">"wxEVT_UPDATE_UI|OnCheckboxFilterDiscardStateUpdate|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_CHECKBOX_FILTER_DISCARD_STATE"</string>
                         <long name="proxy-Id value">10124</long>
                         <string name="proxy-Name">""</string>
@@ -25021,7 +25021,6 @@ In normal mode all properties are showed in main window."</string>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       </document>
                       <document>
                         <string name="title">"wxCheckBox: ID_CHECKBOX_FILTER_DISCARD_EVENT"</string>
@@ -25033,7 +25032,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbCheckBoxProxy"</string>
-                        <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnCheckboxFilterDiscardEventClick|NONE||CutFilterDialog"</string>
+                        <string name="event-handler-0">"wxEVT_UPDATE_UI|OnCheckboxFilterDiscardEventUpdate|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_CHECKBOX_FILTER_DISCARD_EVENT"</string>
                         <long name="proxy-Id value">10125</long>
                         <string name="proxy-Name">""</string>
@@ -25086,7 +25085,6 @@ In normal mode all properties are showed in main window."</string>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       </document>
                       <document>
                         <string name="title">"wxCheckBox: ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION"</string>
@@ -25098,7 +25096,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbCheckBoxProxy"</string>
-                        <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnCheckboxFilterDiscardCommunicationClick|NONE||CutFilterDialog"</string>
+                        <string name="event-handler-0">"wxEVT_UPDATE_UI|OnCheckboxFilterDiscardCommunicationUpdate|NONE||CutFilterDialog"</string>
                         <string name="proxy-Id name">"ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION"</string>
                         <long name="proxy-Id value">10126</long>
                         <string name="proxy-Name">""</string>
@@ -25151,7 +25149,6 @@ In normal mode all properties are showed in main window."</string>
                         <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                         <string name="proxy-Custom arguments">""</string>
                         <string name="proxy-Custom ctor arguments">""</string>
-                        <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       </document>
                     </document>
                     <document>
@@ -25349,7 +25346,6 @@ In normal mode all properties are showed in main window."</string>
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
-                          <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                         </document>
                         <document>
                           <string name="title">"wxButton: ID_BUTTON_FILTER_UNSELECT_ALL"</string>
@@ -25416,7 +25412,6 @@ In normal mode all properties are showed in main window."</string>
                           <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                           <string name="proxy-Custom arguments">""</string>
                           <string name="proxy-Custom ctor arguments">""</string>
-                          <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                         </document>
                         <document>
                           <string name="title">"wxBoxSizer H"</string>
@@ -25512,7 +25507,6 @@ In normal mode all properties are showed in main window."</string>
                             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                             <string name="proxy-Custom arguments">""</string>
                             <string name="proxy-Custom ctor arguments">""</string>
-                            <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                           </document>
                           <document>
                             <string name="title">"wxTextCtrl: ID_TEXTCTRL_FILTER_MIN_BURST_TIME"</string>
@@ -25595,7 +25589,6 @@ In normal mode all properties are showed in main window."</string>
                             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                             <string name="proxy-Custom arguments">""</string>
                             <string name="proxy-Custom ctor arguments">""</string>
-                            <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                           </document>
                         </document>
                       </document>

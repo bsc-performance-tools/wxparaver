@@ -105,13 +105,13 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_TRACE, CutFilterDialog::OnButtonCutterAllTraceClick )
 
-  EVT_CHECKBOX( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckOriginalTimeClick )
+  EVT_UPDATE_UI( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckboxCheckCutterOriginalTimeUpdate )
 
-  EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_STATE, CutFilterDialog::OnCheckboxFilterDiscardStateClick )
+  EVT_UPDATE_UI( ID_CHECKBOX_FILTER_DISCARD_STATE, CutFilterDialog::OnCheckboxFilterDiscardStateUpdate )
 
-  EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_EVENT, CutFilterDialog::OnCheckboxFilterDiscardEventClick )
+  EVT_UPDATE_UI( ID_CHECKBOX_FILTER_DISCARD_EVENT, CutFilterDialog::OnCheckboxFilterDiscardEventUpdate )
 
-  EVT_CHECKBOX( ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, CutFilterDialog::OnCheckboxFilterDiscardCommunicationClick )
+  EVT_UPDATE_UI( ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, CutFilterDialog::OnCheckboxFilterDiscardCommunicationUpdate )
 
   EVT_BUTTON( ID_BUTTON_FILTER_SELECT_ALL, CutFilterDialog::OnButtonFilterSelectAllClick )
 
@@ -999,22 +999,6 @@ void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CHECK_ORIGINAL_TIME
- */
-
-void CutFilterDialog::OnCheckOriginalTimeClick( wxCommandEvent& event )
-{
-  if ( checkCutterUseOriginalTime->IsChecked() )
-  {
-    checkCutterDontBreakStates->SetValue( false );
-    checkCutterDontBreakStates->Disable();
-  }
-  else
-  {
-    checkCutterDontBreakStates->Enable();
-  }
-}
 
 
 /*!
@@ -1374,46 +1358,10 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
 }
 
 
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_STATE
- */
-
-void CutFilterDialog::OnCheckboxFilterDiscardStateClick( wxCommandEvent& event )
-{
-  staticBoxSizerFilterStates->Enable( !checkFilterDiscardStateRecords->IsChecked() );
-  checkListFilterStates->Enable( !checkFilterDiscardStateRecords->IsChecked() );
-  buttonFilterSelectAll->Enable( !checkFilterDiscardStateRecords->IsChecked() );
-  buttonFilterUnselectAll->Enable( !checkFilterDiscardStateRecords->IsChecked() );
-  labelFilterMinBurstTime->Enable( !checkFilterDiscardStateRecords->IsChecked() );
-  textFilterMinBurstTime->Enable( !checkFilterDiscardStateRecords->IsChecked() );
-}
 
 
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_EVENT
- */
-
-void CutFilterDialog::OnCheckboxFilterDiscardEventClick( wxCommandEvent& event )
-{
-  staticBoxSizerFilterEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
-  listboxFilterEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
-  buttonFilterAdd->Enable( !checkFilterDiscardEventRecords->IsChecked() );
-  buttonFilterDelete->Enable( !checkFilterDiscardEventRecords->IsChecked() );
-  checkFilterDiscardListedEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
-}
 
 
-/*!
- * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION
- */
-
-void CutFilterDialog::OnCheckboxFilterDiscardCommunicationClick( wxCommandEvent& event )
-{
-  staticBoxSizerFilterCommunications->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
-  staticTextFilterSize->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
-  textFilterSize->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
-  staticTextFilterSizeUnit->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
-}
 
 
 
@@ -2831,5 +2779,65 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonSaveXmlUpdate( wxUpdateUIEvent& event )
 {
   buttonSaveXml->Enable( !isExecutionChainEmpty() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FILTER_DISCARD_STATE
+ */
+
+void CutFilterDialog::OnCheckboxFilterDiscardStateUpdate( wxUpdateUIEvent& event )
+{
+  staticBoxSizerFilterStates->Enable( !checkFilterDiscardStateRecords->IsChecked() );
+  checkListFilterStates->Enable( !checkFilterDiscardStateRecords->IsChecked() );
+  buttonFilterSelectAll->Enable( !checkFilterDiscardStateRecords->IsChecked() );
+  buttonFilterUnselectAll->Enable( !checkFilterDiscardStateRecords->IsChecked() );
+  labelFilterMinBurstTime->Enable( !checkFilterDiscardStateRecords->IsChecked() );
+  textFilterMinBurstTime->Enable( !checkFilterDiscardStateRecords->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FILTER_DISCARD_EVENT
+ */
+
+void CutFilterDialog::OnCheckboxFilterDiscardEventUpdate( wxUpdateUIEvent& event )
+{
+  staticBoxSizerFilterEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
+  listboxFilterEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
+  buttonFilterAdd->Enable( !checkFilterDiscardEventRecords->IsChecked() );
+  buttonFilterDelete->Enable( !checkFilterDiscardEventRecords->IsChecked() );
+  checkFilterDiscardListedEvents->Enable( !checkFilterDiscardEventRecords->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION
+ */
+
+void CutFilterDialog::OnCheckboxFilterDiscardCommunicationUpdate( wxUpdateUIEvent& event )
+{
+  staticBoxSizerFilterCommunications->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
+  staticTextFilterSize->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
+  textFilterSize->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
+  staticTextFilterSizeUnit->Enable( !checkFilterDiscardCommunicationRecords->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
+ */
+
+void CutFilterDialog::OnCheckboxCheckCutterOriginalTimeUpdate( wxUpdateUIEvent& event )
+{
+  if ( checkCutterUseOriginalTime->IsChecked() )
+  {
+    checkCutterDontBreakStates->SetValue( false );
+    checkCutterDontBreakStates->Disable();
+  }
+  else
+  {
+    checkCutterDontBreakStates->Enable();
+  }
 }
 
