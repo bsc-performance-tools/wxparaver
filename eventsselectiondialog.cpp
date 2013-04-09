@@ -386,7 +386,7 @@ void EventsSelectionDialog::CreateControls()
   itemDialog1->SetSizer(itemBoxSizer2);
 
   wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(itemBoxSizer3, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
+  itemBoxSizer2->Add(itemBoxSizer3, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer3->Add(itemBoxSizer4, 1, wxGROW|wxALL, 5);
@@ -633,7 +633,7 @@ void EventsSelectionDialog::OnIdle( wxIdleEvent& event )
 
 void EventsSelectionDialog::checkAll( wxCheckListBox *boxlist, bool value )
 {
-  for ( unsigned int i = 0; i < eventTypes.size(); ++i )
+  for ( unsigned int i = 0; i < boxlist->GetCount(); ++i )
   {
     boxlist->Check( i, value );
   }
