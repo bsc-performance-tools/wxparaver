@@ -1845,7 +1845,14 @@ void progressFunction( ProgressController *progress )
   else 
     p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
 
-  if( !paraverMain::dialogProgress->Update( p ) )
+  wxString newMessage;
+  if( progress->getMessageChanged() )
+  {
+    newMessage = wxString::FromAscii( progress->getMessage().c_str() );
+    progress->clearMessageChanged();
+  }
+  
+  if( !paraverMain::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 //  app->Yield();
 }
@@ -3198,7 +3205,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
                                                         wxT(""),
                                                         numeric_limits<int>::max(),
                                                         this,
-                                                        wxPD_AUTO_HIDE|\
+                                                        wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
