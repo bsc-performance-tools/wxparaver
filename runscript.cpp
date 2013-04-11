@@ -119,23 +119,15 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
-
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
-
   EVT_FILEPICKER_CHANGED( ID_FILEPICKER_TRACE, RunScript::OnFilepickerTraceFilePickerChanged )
-
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
-
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
-
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
-
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
-
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
-
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -774,7 +766,7 @@ wxString RunScript::expandVariables( wxString command )
 
 struct gthan
 {
-  bool operator()( const pair< int, wxString > &a, const pair< int, wxString > &b )
+  bool operator()( const std::pair< int, wxString > &a, const std::pair< int, wxString > &b )
   {   
     return ( a.first > b.first ) ||
            ( a.first == b.first && a.second.Len() > b.second.Len() );
@@ -785,7 +777,7 @@ struct gthan
 wxString RunScript::insertLinks( wxString rawLine,
                                  wxArrayString extensions )
 {
-  vector< pair< int, wxString > > extensionsPositions; // {(4,.cfg),(6,.prv),(6.prv.gz)}
+  std::vector< std::pair< int, wxString > > extensionsPositions; // {(4,.cfg),(6,.prv),(6.prv.gz)}
   
   // Detect all the ocurrences of every given extension
   for ( size_t i = 0; i < extensions.Count(); ++i )
@@ -836,8 +828,8 @@ wxString RunScript::insertLinks( wxString rawLine,
     // Ex:
     //   Before :{ (25,.prv), (6,.prv.gz), (6,.prv), (4,.cfg) }
     //   After  :{ (25,.prv), (6,.prv.gz), (4,.cfg) }
-    vector< pair< int, wxString > > auxExtensionsPositions;
-    for ( vector< pair< int, wxString > >::iterator it = extensionsPositions.begin();
+    std::vector< std::pair< int, wxString > > auxExtensionsPositions;
+    for ( std::vector< std::pair< int, wxString > >::iterator it = extensionsPositions.begin();
             it != extensionsPositions.end(); ++it )
     {
       if ( auxExtensionsPositions.empty() )
