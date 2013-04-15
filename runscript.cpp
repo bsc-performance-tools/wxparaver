@@ -536,7 +536,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     if ( paraverBin.IsEmpty() )
     {
       wxMessageDialog message( this,
-                               _("Unable to find 'dimemas-wrapper.h'\n"
+                               _("Unable to find 'dimemas-wrapper.sh'\n"
                                  "Please quit and rerun wxparaver, after setting $PARAVER_HOME."),
                                _( "Warning" ), wxOK );
       message.ShowModal();
