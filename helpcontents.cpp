@@ -274,7 +274,7 @@ void HelpContents::buildIndex()
   // look for tutorials directories, and for index.html inside them
   if ( wxDirExists( auxPath ) )
   {
-    tutorialsList += _("<OL>");
+    tutorialsList += _("<UL>");
     int numTutorials = 0;
 
     wxString currentDir = wxFindFirstFile(
@@ -304,7 +304,7 @@ void HelpContents::buildIndex()
                       tutorialsList );
     }
 
-    tutorialsList += _("</OL>");
+    tutorialsList += _("</UL>");
 
     if ( numTutorials == 0 )
     {
