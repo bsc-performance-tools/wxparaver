@@ -1,7 +1,8 @@
 #! /bin/bash
 
-PARAVER_HOME="$( cd "$( dirname "$0" )" && pwd )"
-export PARAVER_HOME=${PARAVER_HOME%/bin}
+REAL_PATH=`readlink -f $0`
+PARAVER_HOME="$( cd "$( dirname "$REAL_PATH" )" && pwd )"
+PARAVER_HOME=${PARAVER_HOME%/bin}
 
 #if [ -z "${PARAVER_HOME}" ] ; then
 #  echo "Please set \$PARAVER_HOME to the wxparaver installation root directory"
