@@ -29,6 +29,8 @@
 
 
 #include <vector>
+#include <string>
+#include <fstream>
 #include "wx/string.h"
 #include "trace.h"
 
@@ -40,4 +42,10 @@ class SessionSaver
     static void SaveSession( wxString onFile, const vector<Trace *>& traces );
     static void LoadSession( wxString whichFile );
   
+  private:
+    static std::string v2Label;
+
+    static void SaveSession_v2( wxString onFile, const vector<Trace *>& traces );
+    static void LoadSession_v2( ifstream& whichFile, wxString filename );
+
 };
