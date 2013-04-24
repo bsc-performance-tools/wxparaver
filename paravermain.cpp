@@ -3451,7 +3451,18 @@ void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
 
 void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
 {
-  wxFileDialog dialog( this, wxT( "Save session" ), _(""), _(""), _("Paraver session (*.session)|*.session|All files|*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
+  vector< wxString > extensions;
+  extensions.push_back( wxT( ".session" ) );
+  FileDialogExtension dialog( this,
+                              wxT( "Save session" ),
+                              _(""),
+                              _(""),
+                              _("Paraver session (*.session)|*.session"),
+                              wxFD_SAVE|wxFD_OVERWRITE_PROMPT,
+                              wxDefaultPosition,
+                              wxDefaultSize,
+                              _( "filedlg" ),
+                              extensions );
   if( dialog.ShowModal() == wxID_OK )
   {
     wxFileName tmpFile( dialog.GetPath() );
