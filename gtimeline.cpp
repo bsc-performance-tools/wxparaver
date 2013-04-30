@@ -992,7 +992,7 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
       myWindow->setWidth( event.GetSize().GetWidth() );
       myWindow->setHeight( event.GetSize().GetHeight() );
     }
-    timerSize->Start( 100, true );
+    timerSize->Start( 250, true );
   }
 }
 

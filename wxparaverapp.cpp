@@ -47,6 +47,7 @@
 #include <signal.h>
 #include <stdio.h>
 
+#include "config.h"
 #include "wxparaverapp.h"
 #include "connection.h"
 #include <wx/filename.h>

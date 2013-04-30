@@ -49,6 +49,7 @@
 #include "wx/help.h"    // pruebas wxHelpController
 #include "wx/fs_zip.h"  // pruebas wxHelpController
 
+#include "config.h"
 #include "paravermain.h"
 #include "paraverkernelexception.h"
 #include "cfg.h"
