@@ -328,6 +328,7 @@ public:
   void OnPopUpDrawModeSemanticMaximum();
   void OnPopUpDrawModeSemanticMinimumNotZero();
   void OnPopUpDrawModeSemanticAverage();
+  void OnPopUpDrawModeSemanticAverageNotZero();
 
   void OnPopUpDrawModeObjectsLast();
   void OnPopUpDrawModeObjectsRandom();
@@ -335,6 +336,7 @@ public:
   void OnPopUpDrawModeObjectsMaximum();
   void OnPopUpDrawModeObjectsMinimumNotZero();
   void OnPopUpDrawModeObjectsAverage();
+  void OnPopUpDrawModeObjectsAverageNotZero();
 
   void OnPopUpDrawModeBothLast();
   void OnPopUpDrawModeBothRandom();
@@ -342,6 +344,7 @@ public:
   void OnPopUpDrawModeBothMaximum();
   void OnPopUpDrawModeBothMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
+  void OnPopUpDrawModeBothAverageNotZero();
 
   void OnPopUpPixelSize( PRV_UINT16 whichPixelSize );
   

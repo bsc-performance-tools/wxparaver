@@ -70,18 +70,21 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_DRAWMODE_TIME_RANDOM, gPopUpMenu::OnMenuDrawModeTimeRandom )
   EVT_MENU( ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeRandomNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_TIME_AVERAGE, gPopUpMenu::OnMenuDrawModeTimeAverage )
+  EVT_MENU( ID_MENU_DRAWMODE_TIME_AVERAGE_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeAverageNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_LAST, gPopUpMenu::OnMenuDrawModeObjectsLast )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_MAXIMUM, gPopUpMenu::OnMenuDrawModeObjectsMaximum )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_RANDOM, gPopUpMenu::OnMenuDrawModeObjectsRandom )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_AVERAGE, gPopUpMenu::OnMenuDrawModeObjectsAverage )
+  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_LAST, gPopUpMenu::OnMenuDrawModeBothLast )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_MAXIMUM, gPopUpMenu::OnMenuDrawModeBothMaximum )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothMinimumNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_RANDOM, gPopUpMenu::OnMenuDrawModeBothRandom )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothRandomNotZero )
   EVT_MENU( ID_MENU_DRAWMODE_BOTH_AVERAGE, gPopUpMenu::OnMenuDrawModeBothAverage )
+  EVT_MENU( ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothAverageNotZero )
   EVT_MENU( ID_MENU_PIXEL_SIZE_x1, gPopUpMenu::OnMenuPixelSize )
   EVT_MENU( ID_MENU_PIXEL_SIZE_x2, gPopUpMenu::OnMenuPixelSize )
   EVT_MENU( ID_MENU_PIXEL_SIZE_x4, gPopUpMenu::OnMenuPixelSize )
@@ -445,6 +448,12 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverage,
              ID_MENU_DRAWMODE_TIME_AVERAGE,
              timeline->GetMyWindow()->getDrawModeTime() == DRAW_AVERAGE );
+  buildItem( popUpMenuDrawModeTime,
+             _( "Average not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverageNotZero,
+             ID_MENU_DRAWMODE_TIME_AVERAGE_NOT_ZERO,
+             timeline->GetMyWindow()->getDrawModeTime() == DRAW_AVERAGENOTZERO );
 
   buildItem( popUpMenuDrawModeObjects,
              _( "Last" ),
@@ -482,6 +491,12 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverage,
              ID_MENU_DRAWMODE_OBJECTS_AVERAGE,
              timeline->GetMyWindow()->getDrawModeObject() == DRAW_AVERAGE );
+  buildItem( popUpMenuDrawModeObjects,
+             _( "Average not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero,
+             ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO,
+             timeline->GetMyWindow()->getDrawModeObject() == DRAW_AVERAGENOTZERO );
 
   buildItem( popUpMenuDrawModeBoth,
              _( "Last" ),
@@ -525,6 +540,13 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
              ID_MENU_DRAWMODE_BOTH_AVERAGE,
              timeline->GetMyWindow()->getDrawModeObject() == DRAW_AVERAGE &&
              timeline->GetMyWindow()->getDrawModeTime() == DRAW_AVERAGE );
+  buildItem( popUpMenuDrawModeBoth,
+             _( "Average not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAverageNotZero,
+             ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO,
+             timeline->GetMyWindow()->getDrawModeObject() == DRAW_AVERAGENOTZERO &&
+             timeline->GetMyWindow()->getDrawModeTime() == DRAW_AVERAGENOTZERO );
 
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeTime, _( "Time" ));
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeObjects, _( "Objects" ));
@@ -697,6 +719,12 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverage,
              ID_MENU_DRAWMODE_TIME_AVERAGE,
              histogram->GetHistogram()->getDrawModeColumns() == DRAW_AVERAGE );
+  buildItem( popUpMenuDrawModeTime,
+             _( "Average not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverageNotZero,
+             ID_MENU_DRAWMODE_TIME_AVERAGE_NOT_ZERO,
+             histogram->GetHistogram()->getDrawModeColumns() == DRAW_AVERAGENOTZERO );
 
   buildItem( popUpMenuDrawModeObjects,
              _( "Last" ),
@@ -734,6 +762,12 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverage,
              ID_MENU_DRAWMODE_OBJECTS_AVERAGE,
              histogram->GetHistogram()->getDrawModeObjects() == DRAW_AVERAGE );
+  buildItem( popUpMenuDrawModeObjects,
+             _( "Average not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero,
+             ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO,
+             histogram->GetHistogram()->getDrawModeObjects() == DRAW_AVERAGENOTZERO );
 
   buildItem( popUpMenuDrawModeBoth,
              _( "Last" ),
@@ -777,6 +811,13 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              ID_MENU_DRAWMODE_BOTH_AVERAGE,
              histogram->GetHistogram()->getDrawModeObjects() == DRAW_AVERAGE &&
              histogram->GetHistogram()->getDrawModeColumns() == DRAW_AVERAGE );
+  buildItem( popUpMenuDrawModeBoth,
+             _( "Average not zero" ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAverageNotZero,
+             ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO,
+             histogram->GetHistogram()->getDrawModeObjects() == DRAW_AVERAGENOTZERO &&
+             histogram->GetHistogram()->getDrawModeColumns() == DRAW_AVERAGENOTZERO );
 
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeTime, _( "Semantic" ));
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeObjects, _( "Objects" ));
@@ -1133,6 +1174,14 @@ void gPopUpMenu::OnMenuDrawModeTimeAverage( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticAverage();
 }
 
+void gPopUpMenu::OnMenuDrawModeTimeAverageNotZero( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeTimeAverageNotZero();
+  else if( histogram != NULL )
+    histogram->OnPopUpDrawModeSemanticAverageNotZero();
+}
+
 void gPopUpMenu::OnMenuDrawModeObjectsLast( wxCommandEvent& event)
 {
   if ( timeline != NULL )
@@ -1181,6 +1230,14 @@ void gPopUpMenu::OnMenuDrawModeObjectsAverage( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsAverage();
 }
 
+void gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeObjectsAverageNotZero();
+  else if( histogram != NULL )
+    histogram->OnPopUpDrawModeObjectsAverageNotZero();
+}
+
 void gPopUpMenu::OnMenuDrawModeBothLast( wxCommandEvent& event)
 {
   if ( timeline != NULL )
@@ -1227,6 +1284,14 @@ void gPopUpMenu::OnMenuDrawModeBothAverage( wxCommandEvent& event)
     timeline->OnPopUpDrawModeBothAverage();
   else if( histogram != NULL )
     histogram->OnPopUpDrawModeBothAverage();
+}
+
+void gPopUpMenu::OnMenuDrawModeBothAverageNotZero( wxCommandEvent& event)
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpDrawModeBothAverageNotZero();
+  else if( histogram != NULL )
+    histogram->OnPopUpDrawModeBothAverageNotZero();
 }
 
 void gPopUpMenu::OnMenuPixelSize( wxCommandEvent& event )

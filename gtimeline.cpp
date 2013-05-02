@@ -1599,6 +1599,12 @@ void gTimeline::OnPopUpDrawModeTimeAverage()
   myWindow->setRedraw( true );
 }
 
+void gTimeline::OnPopUpDrawModeTimeAverageNotZero()
+{
+  myWindow->setDrawModeTime( DRAW_AVERAGENOTZERO );
+  myWindow->setRedraw( true );
+}
+
 void gTimeline::OnPopUpDrawModeObjectsLast()
 {
   myWindow->setDrawModeObject( DRAW_LAST );
@@ -1632,6 +1638,12 @@ void gTimeline::OnPopUpDrawModeObjectsMinimumNotZero()
 void gTimeline::OnPopUpDrawModeObjectsAverage()
 {
   myWindow->setDrawModeObject( DRAW_AVERAGE );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeObjectsAverageNotZero()
+{
+  myWindow->setDrawModeObject( DRAW_AVERAGENOTZERO );
   myWindow->setRedraw( true );
 }
 
@@ -1674,6 +1686,13 @@ void gTimeline::OnPopUpDrawModeBothAverage()
 {
   myWindow->setDrawModeObject( DRAW_AVERAGE );
   myWindow->setDrawModeTime( DRAW_AVERAGE );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeBothAverageNotZero()
+{
+  myWindow->setDrawModeObject( DRAW_AVERAGENOTZERO );
+  myWindow->setDrawModeTime( DRAW_AVERAGENOTZERO );
   myWindow->setRedraw( true );
 }
 
