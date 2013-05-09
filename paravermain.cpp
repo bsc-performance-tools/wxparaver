@@ -1617,7 +1617,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   bool destroyed = false;
 
   // Update loop and delete
-  for( unsigned int iPage = 0; iPage < choiceWindowBrowser->GetPageCount(); iPage++ )
+  for( unsigned int iPage = 0; iPage < choiceWindowBrowser->GetPageCount(); ++iPage )
   {
     if( iPage > 0 && choiceWindowBrowser->GetSelection() > 0 )
       currentWindow = NULL;
@@ -1888,7 +1888,8 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   if( wxTheApp->IsActive() )
   {
     int iTrace = 0;
-    for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
+    vector<Trace *>::iterator it = loadedTraces.begin();
+    while( it != loadedTraces.end() )
     {
       if( (*it)->getUnload() )
       {
@@ -1916,18 +1917,21 @@ void paraverMain::OnIdle( wxIdleEvent& event )
             vector<Trace *>::iterator tmpIt = it;
             --tmpIt;
             loadedTraces.erase( it );
+            ++tmpIt;
             it = tmpIt;
           }
           delete tmpTrace;
           choiceWindowBrowser->DeletePage( iTrace + 1 );
-          if( it == loadedTraces.end() )
-            break;
+
+          continue;
         }
         else
           ++iTrace;
       }
       else
         ++iTrace;
+
+      ++it;
     }
     if( currentTrace == -1 && loadedTraces.size() > 0 )
       currentTrace = loadedTraces.size() - 1;
