@@ -338,10 +338,10 @@ void HelpContents::buildIndex()
 
   //htmlWindow->SetPage( tutorialsHtmlIndex );
 
-  wxString indexFileName = paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir() + 
+  wxString indexFileName = wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) + 
                            PATH_SEP +
                            _( "index.html" );
-  wxFile indexFile( (char * )indexFileName.mb_str(), wxFile::write );
+  wxFile indexFile( indexFileName, wxFile::write );
   if ( indexFile.IsOpened() )
   {
     indexFile.Write( tutorialsHtmlIndex );
