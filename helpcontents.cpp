@@ -50,8 +50,12 @@
 #include "paravermain.h"
 
 ////@begin XPM images
+#include "arrow_left.xpm"
+#include "arrow_right.xpm"
 ////@end XPM images
 #include "logoBSC.xpm"
+
+#include "wxparaverapp.h" // PATH_SEP
 
 using namespace std;
 
@@ -72,6 +76,12 @@ BEGIN_EVENT_TABLE( HelpContents, wxDialog )
   EVT_HTML_LINK_CLICKED( ID_HTMLWINDOW, HelpContents::OnHtmlwindowLinkClicked )
 
   EVT_BUTTON( ID_BUTTON_INDEX, HelpContents::OnButtonIndexClick )
+
+  EVT_BUTTON( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackClick )
+  EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackUpdate )
+
+  EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardClick )
+  EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardUpdate )
 
   EVT_BUTTON( ID_BUTTON_CLOSE, HelpContents::OnButtonCloseClick )
 
@@ -128,6 +138,7 @@ bool HelpContents::Create( wxWindow* parent, wxWindowID id, const wxString& capt
 
 HelpContents::~HelpContents()
 {
+  wxMemoryFSHandler::RemoveFile( wxT("logoBSC.xpm") );
 }
 
 
@@ -265,10 +276,11 @@ void HelpContents::buildIndex()
 
   
   // Place logoBSC
-  wxFileSystem::AddHandler( new wxMemoryFSHandler() );
+/*  wxFileSystem::AddHandler( new wxMemoryFSHandler() );
   wxMemoryFSHandler::AddFile( wxT("logoBSC.xpm"),
                               wxBITMAP( logoBSC ),
                               wxBITMAP_TYPE_XPM );
+*/
   tutorialsHtmlIndex += _("<P ALIGN=LEFT><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALIGN=BOTTOM BORDER=0></P>" );
 
   // look for tutorials directories, and for index.html inside them
@@ -324,9 +336,24 @@ void HelpContents::buildIndex()
   // close html index
   tutorialsHtmlIndex += _("</BODY></HTML>");
 
-  htmlWindow->SetPage( tutorialsHtmlIndex );
+  //htmlWindow->SetPage( tutorialsHtmlIndex );
 
-  wxMemoryFSHandler::RemoveFile( wxT("logoBSC.xpm") );
+  wxString indexFileName = paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir() + 
+                           PATH_SEP +
+                           _( "index.html" );
+  wxFile indexFile( (char * )indexFileName.mb_str(), wxFile::write );
+  if ( indexFile.IsOpened() )
+  {
+    indexFile.Write( tutorialsHtmlIndex );
+    indexFile.Close();
+    htmlWindow->LoadPage( indexFileName );
+  }
+  else
+  {
+    htmlWindow->SetPage( tutorialsHtmlIndex );
+  }
+
+//  wxMemoryFSHandler::RemoveFile( wxT("logoBSC.xpm") );
 }
 
 
@@ -350,12 +377,22 @@ void HelpContents::CreateControls()
   wxButton* itemButton5 = new wxButton( itemDialog1, ID_BUTTON_INDEX, _("Index"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer4->Add(itemButton5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+  buttonHistoryBack = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_BACK, itemDialog1->GetBitmapResource(wxT("arrow_left.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer4->Add(buttonHistoryBack, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  buttonHistoryForward = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_FORWARD, itemDialog1->GetBitmapResource(wxT("arrow_right.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer4->Add(buttonHistoryForward, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
   itemBoxSizer4->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxButton* itemButton7 = new wxButton( itemDialog1, ID_BUTTON_CLOSE, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer4->Add(itemButton7, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON_CLOSE, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer4->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 ////@end HelpContents content construction
+  wxFileSystem::AddHandler( new wxMemoryFSHandler() );
+  wxMemoryFSHandler::AddFile( wxT("logoBSC.xpm"),
+                              wxBITMAP( logoBSC ),
+                              wxBITMAP_TYPE_XPM );
 
   buildIndex();
 }
@@ -379,6 +416,16 @@ wxBitmap HelpContents::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin HelpContents bitmap retrieval
   wxUnusedVar(name);
+  if (name == _T("arrow_left.xpm"))
+  {
+    wxBitmap bitmap(arrow_left_xpm);
+    return bitmap;
+  }
+  else if (name == _T("arrow_right.xpm"))
+  {
+    wxBitmap bitmap(arrow_right_xpm);
+    return bitmap;
+  }
   return wxNullBitmap;
 ////@end HelpContents bitmap retrieval
 }
@@ -528,5 +575,45 @@ void HelpContents::OnButtonCloseClick( wxCommandEvent& event )
 void HelpContents::OnButtonIndexClick( wxCommandEvent& event )
 {
   buildIndex();
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_BACK
+ */
+
+void HelpContents::OnBitmapbuttonBackClick( wxCommandEvent& event )
+{
+  htmlWindow->HistoryBack();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_BACK
+ */
+
+void HelpContents::OnBitmapbuttonBackUpdate( wxUpdateUIEvent& event )
+{
+  buttonHistoryBack->Enable( htmlWindow->HistoryCanBack() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_FORWARD
+ */
+
+void HelpContents::OnBitmapbuttonForwardClick( wxCommandEvent& event )
+{
+  htmlWindow->HistoryForward();
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_FORWARD
+ */
+
+void HelpContents::OnBitmapbuttonForwardUpdate( wxUpdateUIEvent& event )
+{
+  buttonHistoryForward->Enable( htmlWindow->HistoryCanForward() );
 }
 

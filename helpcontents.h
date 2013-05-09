@@ -58,6 +58,8 @@ class wxHtmlWindow;
 #define ID_HELPCONTENTS 10192
 #define ID_HTMLWINDOW 10193
 #define ID_BUTTON_INDEX 10194
+#define ID_BITMAPBUTTON_BACK 10217
+#define ID_BITMAPBUTTON_FORWARD 10218
 #define ID_BUTTON_CLOSE 10195
 #define SYMBOL_HELPCONTENTS_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_HELPCONTENTS_TITLE _("Help Contents")
@@ -103,6 +105,18 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_INDEX
   void OnButtonIndexClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_BACK
+  void OnBitmapbuttonBackClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_BACK
+  void OnBitmapbuttonBackUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_FORWARD
+  void OnBitmapbuttonForwardClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_FORWARD
+  void OnBitmapbuttonForwardUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLOSE
   void OnButtonCloseClick( wxCommandEvent& event );
 
@@ -122,6 +136,8 @@ public:
 
 ////@begin HelpContents member variables
   wxHtmlWindow* htmlWindow;
+  wxBitmapButton* buttonHistoryBack;
+  wxBitmapButton* buttonHistoryForward;
 ////@end HelpContents member variables
 
 private:
