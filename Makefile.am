@@ -75,6 +75,7 @@ noinst_HEADERS = \
               histo_horvert.xpm\
               histo_zoom.xpm\
               inclusive.xpm\
+							index.xpm\
               logoBSC.xpm\
               new_derived_window.xpm\
               new_histogram.xpm\

@@ -50,6 +50,7 @@
 #include "paravermain.h"
 
 ////@begin XPM images
+#include "index.xpm"
 #include "arrow_left.xpm"
 #include "arrow_right.xpm"
 ////@end XPM images
@@ -274,13 +275,6 @@ void HelpContents::buildIndex()
   tutorialsHtmlIndex += _("</HEAD>");
   tutorialsHtmlIndex += _("<BODY>");
 
-  
-  // Place logoBSC
-/*  wxFileSystem::AddHandler( new wxMemoryFSHandler() );
-  wxMemoryFSHandler::AddFile( wxT("logoBSC.xpm"),
-                              wxBITMAP( logoBSC ),
-                              wxBITMAP_TYPE_XPM );
-*/
   tutorialsHtmlIndex += _("<P ALIGN=LEFT><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALIGN=BOTTOM BORDER=0></P>" );
 
   // look for tutorials directories, and for index.html inside them
@@ -336,8 +330,6 @@ void HelpContents::buildIndex()
   // close html index
   tutorialsHtmlIndex += _("</BODY></HTML>");
 
-  //htmlWindow->SetPage( tutorialsHtmlIndex );
-
   wxString indexFileName = wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) + 
                            PATH_SEP +
                            _( "index.html" );
@@ -352,8 +344,6 @@ void HelpContents::buildIndex()
   {
     htmlWindow->SetPage( tutorialsHtmlIndex );
   }
-
-//  wxMemoryFSHandler::RemoveFile( wxT("logoBSC.xpm") );
 }
 
 
@@ -374,13 +364,19 @@ void HelpContents::CreateControls()
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(itemBoxSizer4, 0, wxGROW|wxALL, 5);
 
-  wxButton* itemButton5 = new wxButton( itemDialog1, ID_BUTTON_INDEX, _("Index"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer4->Add(itemButton5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBitmapButton* itemBitmapButton5 = new wxBitmapButton( itemDialog1, ID_BUTTON_INDEX, itemDialog1->GetBitmapResource(wxT("index.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (HelpContents::ShowToolTips())
+    itemBitmapButton5->SetToolTip(_("Tutorials index page"));
+  itemBoxSizer4->Add(itemBitmapButton5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonHistoryBack = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_BACK, itemDialog1->GetBitmapResource(wxT("arrow_left.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (HelpContents::ShowToolTips())
+    buttonHistoryBack->SetToolTip(_("Previous page"));
   itemBoxSizer4->Add(buttonHistoryBack, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonHistoryForward = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_FORWARD, itemDialog1->GetBitmapResource(wxT("arrow_right.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (HelpContents::ShowToolTips())
+    buttonHistoryForward->SetToolTip(_("Next page"));
   itemBoxSizer4->Add(buttonHistoryForward, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   itemBoxSizer4->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -416,7 +412,12 @@ wxBitmap HelpContents::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin HelpContents bitmap retrieval
   wxUnusedVar(name);
-  if (name == _T("arrow_left.xpm"))
+  if (name == _T("index.xpm"))
+  {
+    wxBitmap bitmap(text_list_bullets_xpm);
+    return bitmap;
+  }
+  else if (name == _T("arrow_left.xpm"))
   {
     wxBitmap bitmap(arrow_left_xpm);
     return bitmap;
