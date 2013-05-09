@@ -53,6 +53,8 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
 noinst_HEADERS = \
 							app_edit.xpm\
 							arrow_down.xpm\
+							arrow_left.xpm\
+							arrow_right.xpm\
               arrow_up.xpm\
               caution.xpm\
               cut_trace.xpm\
