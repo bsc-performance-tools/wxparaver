@@ -258,7 +258,7 @@ void HelpContents::buildIndex()
   tutorialsHtmlIndex += _("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
   tutorialsHtmlIndex += _("<HTML>");
   tutorialsHtmlIndex += _("<HEAD>");
-  tutorialsHtmlIndex += _("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />");
+  tutorialsHtmlIndex += _("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=us-ascii\" />");
   tutorialsHtmlIndex += _("<TITLE>Tutorials</TITLE>");
   tutorialsHtmlIndex += _("</HEAD>");
   tutorialsHtmlIndex += _("<BODY>");
