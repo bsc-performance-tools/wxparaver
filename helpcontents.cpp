@@ -265,7 +265,7 @@ void HelpContents::buildIndex()
   wxString auxPath = wxString::FromAscii( auxStrPath.c_str() );
   wxFileName tutorialsGlobalPath( auxPath );
 
-  // open html index
+  // write html index
   wxString tutorialsHtmlIndex, tutorialsList;
   tutorialsHtmlIndex += _("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
   tutorialsHtmlIndex += _("<HTML>");
