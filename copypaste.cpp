@@ -123,14 +123,20 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, Tr
 {
   if ( timeline != NULL )
   {
-    if ( timeline->GetMyWindow()->getTrace() == destinyTrace )
+    if ( timeline->GetMyWindow()->getTrace() == destinyTrace ||
+         ( property == STR_OBJECTS &&
+           timeline->GetMyWindow()->getTrace()->isSameObjectStruct( destinyTrace ) )
+       )
       return allowed[property][SAME_TRACE][TIMELINE][destiny];
     else
       return allowed[property][DIFF_TRACE][TIMELINE][destiny];
   }
   else
   {
-    if ( histogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace )
+    if ( histogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace ||
+         ( property == STR_OBJECTS &&
+           histogram->GetHistogram()->getControlWindow()->getTrace()->isSameObjectStruct( destinyTrace ) )
+       )
       return allowed[property][SAME_TRACE][HISTOGRAM][destiny];
     else
       return allowed[property][DIFF_TRACE][HISTOGRAM][destiny];
