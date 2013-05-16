@@ -3471,8 +3471,8 @@ void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
   if( dialog.ShowModal() == wxID_OK )
   {
     wxFileName tmpFile( dialog.GetPath() );
-    if( tmpFile.GetExt() != wxString( wxT( ".session" ) ) );
-      tmpFile.SetExt( wxString( wxT( ".session" ) ) );
+    if( tmpFile.GetExt() != wxString( wxT( "session" ) ) )
+      tmpFile.SetExt( wxString( wxT( "session" ) ) );
     SessionSaver::SaveSession( tmpFile.GetFullPath(), GetLoadedTraces() );
   }
 }
