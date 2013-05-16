@@ -330,9 +330,8 @@ void HelpContents::buildIndex()
   // close html index
   tutorialsHtmlIndex += _("</BODY></HTML>");
 
-  wxString indexFileName = wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) + 
-                           PATH_SEP +
-                           _( "index.html" );
+  wxString indexFileName = wxString::FromAscii( std::string( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir() + 
+                                                             PATH_SEP + "index.html" ).c_str() );
   wxFile indexFile( indexFileName, wxFile::write );
   if ( indexFile.IsOpened() )
   {
