@@ -576,7 +576,7 @@ void gTimeline::redraw()
   eventmaskdc.SetPen( *wxBLACK_PEN );
   eventmaskdc.SetBrush( *wxBLACK_BRUSH );
   eventmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
-  eventmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
+//  eventmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
   eventmaskdc.SelectObject(wxNullBitmap);
   wxMask *mask = new wxMask( eventMask );
   eventImage.SetMask( mask );
