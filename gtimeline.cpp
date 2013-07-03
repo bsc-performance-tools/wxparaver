@@ -833,7 +833,7 @@ void gTimeline::drawRow( wxDC& dc,
   for( vector< TSemanticValue >::iterator it = valuesToDraw.begin(); it != valuesToDraw.end(); ++it )
   {
     valueToDraw = *it;
-    if( myWindow->getDrawFunctionLineColor() )
+    if( !myWindow->isFunctionLineColorSet() )
     {
       rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
       dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
@@ -1550,16 +1550,12 @@ void gTimeline::OnPopUpRowSelection()
 void gTimeline::OnPopUpGradientColor()
 {
   myWindow->setGradientColorMode();
-  myWindow->getGradientColor().allowOutOfScale( true );
-  myWindow->getGradientColor().allowOutliers( true );
   myWindow->setRedraw( true );
 }
 
 void gTimeline::OnPopUpNotNullGradientColor()
 {
-  myWindow->setGradientColorMode();
-  myWindow->getGradientColor().allowOutOfScale( false );
-  myWindow->getGradientColor().allowOutliers( true );
+  myWindow->setNotNullGradientColorMode();
   myWindow->setRedraw( true );
 }
 
@@ -2338,14 +2334,14 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
       ( myWindow->getSemanticInfoType() != lastType ||
         myWindow->getMinimumY() != lastMin ||
         myWindow->getMaximumY() != lastMax ||
-        myWindow->IsCodeColorSet() != codeColorSet ||
+        myWindow->isCodeColorSet() != codeColorSet ||
         myWindow->getGradientColor().getGradientFunction() != gradientFunc )
     )
   {
     lastType = myWindow->getSemanticInfoType();
     lastMin = myWindow->getMinimumY();
     lastMax = myWindow->getMaximumY();
-    codeColorSet = myWindow->IsCodeColorSet();
+    codeColorSet = myWindow->isCodeColorSet();
     gradientFunc = myWindow->getGradientColor().getGradientFunction();
 
     colorsSizer->Clear( true );
@@ -2353,7 +2349,7 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
     wxStaticText *itemText;
     wxPanel *itemColor;
     
-    if( myWindow->IsCodeColorSet() )
+    if( myWindow->isCodeColorSet() )
     {
       int endLimit = ceil( lastMax );
     
@@ -2550,9 +2546,9 @@ void gTimeline::drawEventFlags( bool draw )
 }
 
 
-void gTimeline::drawFunctionLineColor( bool draw )
+void gTimeline::drawFunctionLineColor()
 {
-  myWindow->setDrawFunctionLineColor( draw );
+  myWindow->setFunctionLineColorMode();
   myWindow->setRedraw( true );
 }
 
@@ -2817,7 +2813,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     TSemanticValue firstValue, secondValue;
     if( !myWindow->calcValueFromColor( color, firstValue, secondValue ) )
     {
-      if( !myWindow->IsCodeColorSet() )
+      if( !myWindow->isCodeColorSet() )
       {
         //GradientColor& grad = myWindow->getGradientColor();
         if( color == myWindow->getGradientColor().getAboveOutlierColor() )
@@ -2834,7 +2830,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     }
     else
     {
-      if( myWindow->IsCodeColorSet() )
+      if( myWindow->isCodeColorSet() )
         label = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, firstValue, true, 
                                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
       else

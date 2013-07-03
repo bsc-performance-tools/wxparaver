@@ -961,7 +961,7 @@ void EventsSelectionDialog::GetEventValueLabels( wxArrayString & whichEventValue
   SemanticInfoType lastType = currentWindow->getSemanticInfoType();
   TSemanticValue lastMin = currentWindow->getMinimumY();
   TSemanticValue lastMax = currentWindow->getMaximumY();
-  bool codeColorSet = currentWindow->IsCodeColorSet();
+  bool codeColorSet = currentWindow->isCodeColorSet();
 //  GradientColor::TGradientFunction gradientFunc = currentWindow->getGradientColor().getGradientFunction();
 
   if( codeColorSet )

@@ -242,7 +242,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       TSemanticValue tmpValue = ( col / myHisto->getControlDelta() ) +
                                 myHisto->getControlMin();
       rgb tmpCol;
-      if( controlWindow->IsCodeColorSet() )
+      if( controlWindow->isCodeColorSet() )
         tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                           controlWindow->getMinimumY(),
                                                           controlWindow->getMaximumY() );
@@ -269,7 +269,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         TSemanticValue tmpValue = ( row / myHisto->getControlDelta() ) +
                                   myHisto->getControlMin();
         rgb tmpCol;
-        if( controlWindow->IsCodeColorSet() )
+        if( controlWindow->isCodeColorSet() )
           tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                             controlWindow->getMinimumY(),
                                                             controlWindow->getMaximumY() );

@@ -356,9 +356,12 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuPixelSize = new wxMenu;
   popUpMenuGradientFunction = new wxMenu;
   popUpMenuLabels = new wxMenu;
+  popUpMenuSave = new wxMenu;
 
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
 
+  buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
+  popUpMenuPaste->AppendSeparator();
   buildItem( popUpMenuPaste, _( STR_TIME ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuTime, ID_MENU_TIME );
   buildItem( popUpMenuPaste, _( STR_OBJECTS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjects, ID_MENU_OBJECTS );
   buildItem( popUpMenuPaste, _( STR_SIZE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSize, ID_MENU_SIZE );
@@ -371,12 +374,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuPasteFilter, _( STR_FILTER_EVENTS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterEvents, ID_MENU_FILTER_EVENTS );
   popUpMenuPaste->AppendSubMenu( popUpMenuPasteFilter, _( STR_FILTER ) );
 
+  buildItem( popUpMenuPaste, _( STR_PASTE_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteSpecial, ID_MENU_PASTE_SPECIAL );
+
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
-  buildItem( this, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_DEFAULT_SPECIAL );
-  buildItem( this, _( STR_PASTE_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_SPECIAL );
-  buildItem( this, _( STR_SYNCHRONIZE ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize, ID_MENU_SYNCHRONIZE, timeline->GetMyWindow()->isSync() );
-  buildItem( this, _( STR_SYNC_REMOVEALL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllSync, ID_MENU_REMOVE_ALL_SYNC );
   buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
 
   AppendSeparator();
@@ -384,33 +385,38 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( this, _( "Undo Zoom" ), ITEMNORMAL, NULL, ID_MENU_UNDO_ZOOM );
   buildItem( this, _( "Redo Zoom" ), ITEMNORMAL, NULL, ID_MENU_REDO_ZOOM );
 
-  AppendSeparator();
-
   buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
-  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
   buildItem( popUpMenuFitSemantic, _( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
   buildItem( popUpMenuFitSemantic, _( "Fit Maximum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
   buildItem( popUpMenuFitSemantic, _( "Fit Both" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
   AppendSubMenu( popUpMenuFitSemantic, _( STR_FIT_SEMANTIC ) );
 
+  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
+  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
+
   AppendSeparator();
 
   buildItem( popUpMenuView, _( "Communication Lines" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewCommunicationLines, ID_MENU_VIEW_COMMUNICATION_LINES, timeline->GetMyWindow()->getDrawCommLines() );
   buildItem( popUpMenuView, _( "Event Flags" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewEventFlags, ID_MENU_VIEW_EVENT_FLAGS, timeline->GetMyWindow()->getDrawFlags() );
-  buildItem( popUpMenuView, _( "Function Line With Color" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFunctionLine, ID_MENU_VIEW_FUNCTION_LINE, timeline->GetMyWindow()->getDrawFunctionLineColor() );
   AppendSubMenu( popUpMenuView, _( "View" ));
 
-  buildItem( popUpMenuColor, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->IsCodeColorSet() );
-  buildItem( popUpMenuColor, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->IsGradientColorSet() );
-  buildItem( popUpMenuColor, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->IsNotNullGradientColorSet() );
-  AppendSubMenu( popUpMenuColor, _( "Color" ));
+  buildItem( popUpMenuColor, _( "Function Line" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFunctionLine, ID_MENU_VIEW_FUNCTION_LINE, timeline->GetMyWindow()->isFunctionLineColorSet() );
+  buildItem( popUpMenuColor, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->isCodeColorSet() );
+  buildItem( popUpMenuColor, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->isGradientColorSet() );
+  buildItem( popUpMenuColor, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->isNotNullGradientColorSet() );
+
+  popUpMenuColor->AppendSeparator();
 
   buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
   buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
   buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
   buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
-  wxMenuItem *tmpGradFunc = AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
-  Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->IsCodeColorSet() == false );
+  wxMenuItem *tmpGradFunc = popUpMenuColor->AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
+  popUpMenuColor->Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->isCodeColorSet() == false &&
+                                                timeline->GetMyWindow()->isFunctionLineColorSet() == false );
+
+  AppendSubMenu( popUpMenuColor, _( "Paint As" ));
+
 
   buildItem( popUpMenuDrawModeTime,
              _( "Last" ),
@@ -580,23 +586,27 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSubMenu( popUpMenuPixelSize, _( "Pixel Size" ));
 
-
-  AppendSeparator();
-  buildItem( this, _( "Select Rows..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
-  
   buildItem( popUpMenuLabels, _( "All" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsAll, ID_MENU_LABELS_ALL, 
              timeline->GetMyWindow()->getObjectLabels() == Window::ALL_LABELS );
   buildItem( popUpMenuLabels, _( "Spaced" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsSpaced, ID_MENU_LABELS_SPACED, 
              timeline->GetMyWindow()->getObjectLabels() == Window::SPACED_LABELS );
   buildItem( popUpMenuLabels, _( "2^n" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsPower2, ID_MENU_LABELS_POWER2, 
              timeline->GetMyWindow()->getObjectLabels() == Window::POWER2_LABELS );
-  AppendSubMenu( popUpMenuLabels, _( "Labels to draw" ) );
-  
-  AppendSeparator();
-  buildItem( this, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
-  buildItem( this, _( "Save as..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TIMELINE_AS_TEXT );
+  AppendSubMenu( popUpMenuLabels, _( "Object Labels" ) );
 
   AppendSeparator();
+
+  buildItem( this, _( STR_SYNCHRONIZE ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize, ID_MENU_SYNCHRONIZE, timeline->GetMyWindow()->isSync() );
+  buildItem( this, _( STR_SYNC_REMOVEALL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllSync, ID_MENU_REMOVE_ALL_SYNC );
+
+  AppendSeparator();
+
+  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
+  buildItem( popUpMenuSave, _( "Save text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TIMELINE_AS_TEXT );
+  AppendSubMenu( popUpMenuSave, _( "Save" ) );
+
+  AppendSeparator();
+
   buildItem( this, 
              _( "Info Panel" ),
              ITEMCHECK,
@@ -1105,7 +1115,7 @@ void gPopUpMenu::OnMenuViewEventFlags( wxCommandEvent& event )
 void gPopUpMenu::OnMenuViewFunctionLine( wxCommandEvent& event )
 {
   if ( timeline != NULL )
-    timeline->drawFunctionLineColor( event.IsChecked() );
+    timeline->drawFunctionLineColor();
 }
 
 void gPopUpMenu::OnMenuCodeColor( wxCommandEvent& event)

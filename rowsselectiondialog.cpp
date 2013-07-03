@@ -376,7 +376,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   // RE: Text box
   bool initialCheckState = false;
 
-  wxStaticBox* regularExpressionBox = new wxStaticBox(myPanel, wxID_ANY, _(" Add checks by rows matching "));
+  wxStaticBox* regularExpressionBox = new wxStaticBox(myPanel, wxID_ANY, _(" Add checks by objects matching "));
   wxStaticBoxSizer* regularExpressionBoxSizer = new wxStaticBoxSizer( regularExpressionBox, wxVERTICAL );
   wxBoxSizer *regularExpressionSizerUp = new wxBoxSizer( wxHORIZONTAL );
   wxBoxSizer *regularExpressionSizerDown = new wxBoxSizer( wxVERTICAL );

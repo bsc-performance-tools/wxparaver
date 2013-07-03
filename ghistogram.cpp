@@ -708,7 +708,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
         tmpBeginCol = noVoidColumns[ beginColumn ];
       TSemanticValue tmpValue = ( tmpBeginCol / myHistogram->getControlDelta() ) +
                                 myHistogram->getControlMin();
-      if( myHistogram->getControlWindow()->IsCodeColorSet() )
+      if( myHistogram->getControlWindow()->isCodeColorSet() )
         tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                           controlWindow->getMinimumY(),
                                                           controlWindow->getMaximumY() );
@@ -2003,21 +2003,15 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     productWin->setTimeUnit( controlCloned->getTimeUnit() );
     productWin->setDrawCommLines( controlCloned->getDrawCommLines() );
     productWin->setDrawFlags( controlCloned->getDrawFlags() );
-    productWin->setDrawFunctionLineColor( controlCloned->getDrawFunctionLineColor() );
-    if( controlCloned->IsCodeColorSet() )
+    if( controlCloned->isCodeColorSet() )
       productWin->setCodeColorMode();
-    else if( controlCloned->IsGradientColorSet() )
-    {
+    else if( controlCloned->isGradientColorSet() )
       productWin->setGradientColorMode();
-      productWin->allowOutOfScale( true );
-      productWin->allowOutliers( true );
-    }
-    else
-    {
-      productWin->setGradientColorMode();
-      productWin->allowOutOfScale( false );
-      productWin->allowOutliers( true );
-    }
+    else if( controlCloned->isNotNullGradientColorSet() )
+      productWin->setNotNullGradientColorMode();
+    else if( controlCloned->isFunctionLineColorSet() )
+      productWin->setFunctionLineColorMode();
+      
     productWin->setDrawModeObject( controlCloned->getDrawModeObject() );
     productWin->setDrawModeTime( controlCloned->getDrawModeTime() );
     productWin->getGradientColor().setGradientFunction(

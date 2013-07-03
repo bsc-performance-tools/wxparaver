@@ -376,7 +376,7 @@ public:
 
   void drawCommunicationLines( bool draw );
   void drawEventFlags( bool draw );
-  void drawFunctionLineColor( bool draw );
+  void drawFunctionLineColor();
 
   void OnPopUpRightDown( void );
 

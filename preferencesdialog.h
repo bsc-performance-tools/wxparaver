@@ -74,7 +74,6 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
 #define ID_PREFERENCES_TIMELINE_COMMUNICATION_LINES 10090
 #define ID_PREFERENCES_TIMELINE_EVENT_LINES 10088
-#define ID_PREFERENCES_TIMELINE_SEMANTIC_AS_COLOR 10091
 #define ID_PREFERENCES_TIMELINE_COLOR 10086
 #define ID_PREFERENCES_TIMELINE_GRADIENT 10015
 #define ID_PREFERENCES_TIMELINE_DRAWMODE_TIME 10012
@@ -307,9 +306,6 @@ public:
   bool GetTimelineEventLines() const { return timelineEventLines ; }
   void SetTimelineEventLines(bool value) { timelineEventLines = value ; }
 
-  bool GetTimelineFunctionAsColor() const { return timelineFunctionAsColor ; }
-  void SetTimelineFunctionAsColor(bool value) { timelineFunctionAsColor = value ; }
-
   PRV_UINT32 GetTimelineGradientFunction() const { return timelineGradientFunction ; }
   void SetTimelineGradientFunction(PRV_UINT32 value) { timelineGradientFunction = value ; }
 
@@ -391,7 +387,6 @@ public:
   wxTextCtrl* txtTimelineNameFormatFull;
   wxCheckBox* checkTimelineCommunicationLines;
   wxCheckBox* checkTimelineEventLines;
-  wxCheckBox* checkTimelineFunctionAsColor;
   wxChoice* choiceTimelineColor;
   wxChoice* choiceTimelineGradientFunction;
   wxChoice* choiceTimelineDrawmodeTime;
@@ -481,7 +476,6 @@ private:
   PRV_UINT32 timelineDrawmodeObjects;
   PRV_UINT32 timelineDrawmodeTime;
   bool timelineEventLines;
-  bool timelineFunctionAsColor;
   PRV_UINT32 timelineGradientFunction;
   std::string timelineNameFormatFull;
   std::string timelineNameFormatPrefix;
