@@ -635,9 +635,12 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuPixelSize = new wxMenu;
   popUpMenuSaveAsText = new wxMenu;
   popUpMenuColor2D = new wxMenu;
-
+  popUpMenuSave = new wxMenu;
+  
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
 
+  buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
+  popUpMenuPaste->AppendSeparator();
   buildItem( popUpMenuPaste, _( STR_TIME ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuTime, ID_MENU_TIME );
   buildItem( popUpMenuPaste, _( STR_OBJECTS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjects, ID_MENU_OBJECTS );
   buildItem( popUpMenuPaste, _( STR_SIZE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSize, ID_MENU_SIZE );
@@ -645,19 +648,16 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( popUpMenuPaste, _( STR_SEMANTIC_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScale, ID_MENU_SEMANTIC_SCALE );
   buildItem( popUpMenuPaste, _( STR_CONTROL_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlScale, ID_MENU_PASTE_CONTROL_SCALE );
   buildItem( popUpMenuPaste, _( STR_3D_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPaste3DScale, ID_MENU_PASTE_3D_SCALE );
+  buildItem( popUpMenuPaste, _( STR_PASTE_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteSpecial, ID_MENU_PASTE_SPECIAL );
 
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
-  buildItem( this, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_DEFAULT_SPECIAL );
-  buildItem( this, _( STR_PASTE_SPECIAL ), ITEMNORMAL, NULL, ID_MENU_PASTE_SPECIAL );
   buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
 
   AppendSeparator();
 
   buildItem( this, _( "Undo Zoom" ), ITEMNORMAL, NULL, ID_MENU_UNDO_ZOOM );
   buildItem( this, _( "Redo Zoom" ), ITEMNORMAL, NULL, ID_MENU_REDO_ZOOM );
-
-  AppendSeparator();
 
   buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
   buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
@@ -681,6 +681,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              ID_MENU_AUTO_DATA_GRADIENT,
              histogram->GetHistogram()->getComputeGradient() );
 
+  AppendSeparator();
+
   buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getCodeColor() );
   buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, !histogram->GetHistogram()->getCodeColor() );
   AppendSubMenu( popUpMenuColor2D, _( "Color Mode" ) );
@@ -690,8 +692,6 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
   buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
   AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function " ) );
-
-  AppendSeparator();
   
   buildItem( popUpMenuDrawModeTime,
              _( "Last" ),
@@ -874,13 +874,14 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
                ITEMNORMAL,
                (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText,
                ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
-    AppendSubMenu( popUpMenuSaveAsText, _( "Save as..." ) );
+    popUpMenuSave->AppendSubMenu( popUpMenuSaveAsText, _( "Save text..." ) );
 
   }
   else
-    buildItem( this, _( "Save as..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
+    buildItem( popUpMenuSave, _( "Save text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
 
-  buildItem( this, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
+  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
+  AppendSubMenu( popUpMenuSave, _( "Save" ) );
   
   enableMenu( histogram );
 }
