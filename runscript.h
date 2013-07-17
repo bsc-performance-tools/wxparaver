@@ -94,6 +94,7 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM 10213
 #define ID_CHECKBOX_STATS_ONLYGENERATEDATFILE 10214
 #define ID_CHECKBOX_STATS_EXCLUSIVE_TIMES 10215
+#define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
 #define ID_BUTTON_CLEAR_LOG 10202
@@ -157,6 +158,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
+  void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
   void OnButtonRunClick( wxCommandEvent& event );
 
@@ -196,6 +200,8 @@ public:
 
   void AppendToLog( wxString msg );
   
+  wxString GetCommandString();
+  
 ////@begin RunScript member variables
   wxChoice* choiceApplication;
   wxButton* buttonEditApplication;
@@ -217,6 +223,7 @@ public:
   wxCheckBox* statsCheckBoxShowCommsHistogram;
   wxCheckBox* statsCheckBoxOnlyDatFile;
   wxCheckBox* statsCheckBoxExclusiveTimes;
+  wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
   wxButton* buttonClearLog;

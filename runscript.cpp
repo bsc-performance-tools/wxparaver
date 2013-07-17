@@ -119,15 +119,25 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
+
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
+
   EVT_FILEPICKER_CHANGED( ID_FILEPICKER_TRACE, RunScript::OnFilepickerTraceFilePickerChanged )
+
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
+
+  EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
+
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
+
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
+
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
+
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -244,6 +254,7 @@ void RunScript::Init()
   statsCheckBoxShowCommsHistogram = NULL;
   statsCheckBoxOnlyDatFile = NULL;
   statsCheckBoxExclusiveTimes = NULL;
+  labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
   buttonClearLog = NULL;
@@ -420,39 +431,48 @@ void RunScript::CreateControls()
   itemBoxSizer2->Add(itemStaticLine36, 0, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer37, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer2->Add(itemBoxSizer37, 1, wxGROW, 5);
+
+  wxStaticText* itemStaticText38 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer37->Add(itemStaticText38, 1, wxALIGN_TOP|wxALL, 5);
+
+  labelCommandPreview = new wxTextCtrl( itemDialog1, wxID_LABELCOMMANDPREVIEW, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
+  itemBoxSizer37->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer40 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer40, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer37->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer40->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer37->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer40->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer37->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer40->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
-  itemBoxSizer2->Add(listboxRunLog, 1, wxGROW|wxALL, 7);
+  itemBoxSizer2->Add(listboxRunLog, 3, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer42 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer42, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer45, 0, wxALIGN_RIGHT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer42->Add(itemBoxSizer43, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer46 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer45->Add(itemBoxSizer46, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer43->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer46->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
@@ -514,19 +534,8 @@ void RunScript::OnButtonExitClick( wxCommandEvent& event )
   EndModal( wxID_OK );
 }
 
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
- */
-
-void RunScript::OnButtonRunClick( wxCommandEvent& event )
+wxString RunScript::GetCommandString()
 {
-  buttonRun->Enable( false );
-  helpOption = false;  
-
-  // TODO: Check parameters should be done HERE
-  
-  // Build command
   wxString command;
   wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );
  
@@ -615,7 +624,25 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     // Third kind: registered application doesn't need a wrapper; app has the same name
     command = choiceApplication->GetString( choiceApplication->GetSelection() );
   }                
-                
+
+  return command;
+}
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
+ */
+
+void RunScript::OnButtonRunClick( wxCommandEvent& event )
+{
+  buttonRun->Enable( false );
+  helpOption = false;  
+
+  // TODO: Check parameters should be done HERE
+  
+  // Build command
+  wxString command = GetCommandString();
+  wxString currentChoice = choiceApplication->GetString( choiceApplication->GetSelection() );  
+  
   // Run command
   // if ( currentChoice != wxString( wxT( "Dimemas" ) ) || !paraverBin.IsEmpty() )
   if ( currentChoice == wxString( wxT( "User defined" ) ) || !paraverBin.IsEmpty() )
@@ -1081,5 +1108,17 @@ void RunScript::OnFilepickerTraceFilePickerChanged( wxFileDirPickerEvent& event 
   {
     statsTextCtrlOutputName->SetValue( filePickerTrace->GetPath() );
   }
+}
+
+
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
+ */
+
+void RunScript::OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event )
+{
+  event.SetText( GetCommandString() );
 }
 
