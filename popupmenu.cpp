@@ -601,8 +601,8 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
 
-  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE ), ITEMNORMAL, NULL, ID_MENU_SAVE_IMAGE );
-  buildItem( popUpMenuSave, _( "Save text..." ), ITEMNORMAL, NULL, ID_MENU_SAVE_TIMELINE_AS_TEXT );
+  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
+  buildItem( popUpMenuSave, _( "Save text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsText, ID_MENU_SAVE_TIMELINE_AS_TEXT );
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
 
   AppendSeparator();
