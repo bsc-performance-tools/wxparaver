@@ -2,8 +2,8 @@
 bin_PROGRAMS = wxparaver.bin
 
 wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
-										advancedsaveconfiguration.cpp \
-										connection.cpp \
+                    advancedsaveconfiguration.cpp \
+                    connection.cpp \
                     connection.h \
                     copypaste.cpp \
                     copypaste.h \
@@ -13,8 +13,8 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
                     derivedtimelinedialog.h \
                     eventsselectiondialog.cpp \
                     eventsselectiondialog.h \
-										filedialogext.cpp \
-										filedialogext.h \
+                    filedialogext.cpp \
+                    filedialogext.h \
                     finddialog.cpp \
                     finddialog.h \
                     ghistogram.cpp \
@@ -22,7 +22,7 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
                     gtimeline.cpp \
                     gtimeline.h \
                     helpcontents.cpp \
-										helpcontents.h \
+                    helpcontents.h \
                     histogramdialog.cpp \
                     histogramdialog.h \
                     histotablebase.cpp \
@@ -43,6 +43,8 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
                     runscript.h \
                     saveconfigurationdialog.cpp \
                     saveconfigurationdialog.h \
+                    sequencedriver.cpp \
+                    sequencedriver.h \
                     sessionsaver.cpp \
                     sessionsaver.h \
                     windows_tree.cpp \
@@ -51,10 +53,10 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
                     wxparaverapp.h
 
 noinst_HEADERS = \
-							app_edit.xpm\
-							arrow_down.xpm\
-							arrow_left.xpm\
-							arrow_right.xpm\
+              app_edit.xpm\
+              arrow_down.xpm\
+              arrow_left.xpm\
+              arrow_right.xpm\
               arrow_up.xpm\
               caution.xpm\
               cut_trace.xpm\
@@ -75,7 +77,7 @@ noinst_HEADERS = \
               histo_horvert.xpm\
               histo_zoom.xpm\
               inclusive.xpm\
-							index.xpm\
+              index.xpm\
               logoBSC.xpm\
               new_derived_window.xpm\
               new_histogram.xpm\
@@ -84,7 +86,7 @@ noinst_HEADERS = \
               opencontrol.xpm\
               opendata.xpm\
               openfiltered.xpm\
-							run_script.xpm\
+              run_script.xpm\
               semantic_color.xpm\
               table.xpm\
               timeline.xpm\

@@ -32474,6 +32474,14 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Stretch factor">0</long>
+            <long name="proxy-Border">5</long>
+            <bool name="proxy-wxLEFT">1</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
+            <bool name="proxy-wxTOP">1</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
@@ -35063,6 +35071,30 @@ In normal mode all properties are showed in main window."</string>
           <long name="title-mode">1</long>
           <long name="locked">0</long>
           <string name="created">"6/7/2011"</string>
+          <string name="language">""</string>
+        </document>
+        <document>
+          <string name="title">"sequencedriver.h"</string>
+          <string name="type">"source-editor-document"</string>
+          <string name="filename">"sequencedriver.h"</string>
+          <string name="icon-name">"source-editor"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">1</long>
+          <long name="locked">0</long>
+          <string name="created">"20/8/2013"</string>
+          <string name="language">""</string>
+        </document>
+        <document>
+          <string name="title">"sequencedriver.cpp"</string>
+          <string name="type">"source-editor-document"</string>
+          <string name="filename">"sequencedriver.cpp"</string>
+          <string name="icon-name">"source-editor"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">1</long>
+          <long name="locked">0</long>
+          <string name="created">"20/8/2013"</string>
           <string name="language">""</string>
         </document>
       </document>
