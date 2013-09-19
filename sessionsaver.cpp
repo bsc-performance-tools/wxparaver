@@ -85,7 +85,7 @@ void SessionSaver::SaveSession_v2( wxString onFile, const vector<Trace *>& trace
   wxFileName dirName( onFile );
   dirName.ClearExt();
   dirName = wxFileName( dirName.GetFullPath() + wxString( wxT( "_session" ) ) );
-  wxFileName::Mkdir( dirName.GetFullPath() );
+  wxFileName::Mkdir( dirName.GetFullPath(), 0777, wxPATH_MKDIR_FULL );
 
   file << SessionSaver::v2Label <<endl;
 
