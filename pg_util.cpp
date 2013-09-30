@@ -1492,20 +1492,23 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEWORKLOAD );
 
-      pos = 0;
-      selected = -1;
-      for( vector<string>::iterator it = notThreadFunctions.begin();
-           it != notThreadFunctions.end(); ++it )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > WORKLOAD )
       {
-        if( (*it) == whichWindow->getLevelFunction( WORKLOAD ) )
-          selected = pos;
-        ++pos;
-      }
+        pos = 0;
+        selected = -1;
+        for( vector<string>::iterator it = notThreadFunctions.begin();
+             it != notThreadFunctions.end(); ++it )
+        {
+          if( (*it) == whichWindow->getLevelFunction( WORKLOAD ) )
+            selected = pos;
+          ++pos;
+        }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
-                wxT("Workload"), wxT(""), wxT("Workload"), SINGLE_WORKLOAD,
-                arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, WORKLOAD );
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+                  wxT("Workload"), wxT(""), wxT("Workload"), SINGLE_WORKLOAD,
+                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
+        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, WORKLOAD );
+      }
     }
       
     if( level <= APPLICATION && minAcceptLevel >= APPLICATION )
@@ -1525,20 +1528,23 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEAPPLICATION );
 
-      pos = 0;
-      selected = -1;
-      for( vector<string>::iterator it = notThreadFunctions.begin();
-           it != notThreadFunctions.end(); ++it )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > APPLICATION )
       {
-        if( (*it) == whichWindow->getLevelFunction( APPLICATION ) )
-          selected = pos;
-        ++pos;
-      }
+        pos = 0;
+        selected = -1;
+        for( vector<string>::iterator it = notThreadFunctions.begin();
+             it != notThreadFunctions.end(); ++it )
+        {
+          if( (*it) == whichWindow->getLevelFunction( APPLICATION ) )
+            selected = pos;
+          ++pos;
+        }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
-                wxT("Application"), wxT(""), wxT("Application"), SINGLE_APPLICATION,
-                arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, APPLICATION );
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+                  wxT("Application"), wxT(""), wxT("Application"), SINGLE_APPLICATION,
+                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
+        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, APPLICATION );
+      }
     }
 
     if( level <= TASK && minAcceptLevel >= TASK )
@@ -1558,20 +1564,23 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETASK );
 
-      pos = 0;
-      selected = -1;
-      for( vector<string>::iterator it = notThreadFunctions.begin();
-           it != notThreadFunctions.end(); ++it )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > TASK )
       {
-        if( (*it) == whichWindow->getLevelFunction( TASK ) )
-          selected = pos;
-        ++pos;
-      }
+        pos = 0;
+        selected = -1;
+        for( vector<string>::iterator it = notThreadFunctions.begin();
+             it != notThreadFunctions.end(); ++it )
+        {
+          if( (*it) == whichWindow->getLevelFunction( TASK ) )
+            selected = pos;
+          ++pos;
+        }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
-                wxT("Task"), wxT(""), wxT("Task"), SINGLE_TASK,
-                arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TASK );
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+                  wxT("Task"), wxT(""), wxT("Task"), SINGLE_TASK,
+                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
+        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TASK );
+      }
     }
     
     if( whichWindow->isDerivedWindow() && minAcceptLevel >= THREAD )
@@ -1611,20 +1620,23 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSESYSTEM );
 
-      pos = 0;
-      selected = -1;
-      for( vector<string>::iterator it = notThreadFunctions.begin();
-           it != notThreadFunctions.end(); ++it )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > SYSTEM )
       {
-        if( (*it) == whichWindow->getLevelFunction( SYSTEM ) )
-          selected = pos;
-        ++pos;
-      }
+        pos = 0;
+        selected = -1;
+        for( vector<string>::iterator it = notThreadFunctions.begin();
+             it != notThreadFunctions.end(); ++it )
+        {
+          if( (*it) == whichWindow->getLevelFunction( SYSTEM ) )
+            selected = pos;
+          ++pos;
+        }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
-                wxT("System"), wxT(""), wxT("System"), SINGLE_SYSTEM,
-                arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, SYSTEM );
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+                  wxT("System"), wxT(""), wxT("System"), SINGLE_SYSTEM,
+                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
+        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, SYSTEM );
+      }
     }
       
     if( level <= NODE && minAcceptLevel >= NODE )
@@ -1644,20 +1656,23 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSENODE );
 
-      pos = 0;
-      selected = -1;
-      for( vector<string>::iterator it = notThreadFunctions.begin();
-           it != notThreadFunctions.end(); ++it )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > NODE )
       {
-        if( (*it) == whichWindow->getLevelFunction( NODE ) )
-          selected = pos;
-        ++pos;
-      }
+        pos = 0;
+        selected = -1;
+        for( vector<string>::iterator it = notThreadFunctions.begin();
+             it != notThreadFunctions.end(); ++it )
+        {
+          if( (*it) == whichWindow->getLevelFunction( NODE ) )
+            selected = pos;
+          ++pos;
+        }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
-                wxT("Node"), wxT(""), wxT("Node"), SINGLE_NODE,
-                arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, NODE );
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+                  wxT("Node"), wxT(""), wxT("Node"), SINGLE_NODE,
+                  arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
+        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, NODE );
+      }
     }
       
     if( level <= CPU && minAcceptLevel >= CPU )
