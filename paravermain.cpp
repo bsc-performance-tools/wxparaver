@@ -2229,7 +2229,7 @@ void paraverMain::ShowDerivedDialog()
     else if( beginDragWindow->isGradientColorSet() )
       newWindow->setGradientColorMode();
     else if( beginDragWindow->isNotNullGradientColorSet() )
-      newWindow->setGradientColorMode();
+      newWindow->setNotNullGradientColorMode();
     else if( beginDragWindow->isFunctionLineColorSet() )
       newWindow->setFunctionLineColorMode();
     
