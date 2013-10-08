@@ -94,6 +94,8 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM 10213
 #define ID_CHECKBOX_STATS_ONLYGENERATEDATFILE 10214
 #define ID_CHECKBOX_STATS_EXCLUSIVE_TIMES 10215
+#define ID_FILECTRL_CLUSTERING_XML 10220
+#define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
@@ -223,6 +225,10 @@ public:
   wxCheckBox* statsCheckBoxShowCommsHistogram;
   wxCheckBox* statsCheckBoxOnlyDatFile;
   wxCheckBox* statsCheckBoxExclusiveTimes;
+  wxBoxSizer* clusteringSection;
+  wxFilePickerCtrl* filePickerClusteringXML;
+  wxCheckBox* checkBoxClusteringCSVValueAsDimension;
+  wxBoxSizer* foldingSection;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
