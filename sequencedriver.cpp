@@ -27,4 +27,33 @@
  | @version:     $Revision$
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
+#include <string>
+#include "sequencedriver.h"
+#include "kernelconnection.h"
+#include "gtimeline.h"
+#include "traceeditsequence.h"
+#include "traceeditstates.h"
+#include "traceoptions.h"
 
+void SequenceDriver::sequenceCutter( gTimeline *whichTimeline )
+{
+  KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
+  TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
+
+  mySequence->pushbackAction( TraceEditSequence::traceCutterAction );
+  TraceOptions *tmpOptions = TraceOptions::create( myKernel );
+  
+  tmpOptions->set_by_time( true );
+  tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
+  tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
+  
+  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
+  tmpOptionsState->setData( tmpOptions );
+  mySequence->addState( TraceEditSequence::traceOptionsState, tmpOptionsState );
+  
+  vector<std::string> traces;
+  traces.push_back( whichTimeline->GetMyWindow()->getTrace()->getFileName() );
+  mySequence->execute( traces );
+  
+  delete mySequence;
+}

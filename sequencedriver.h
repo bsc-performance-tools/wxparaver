@@ -27,3 +27,11 @@
  | @version:     $Revision$
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
+class gTimeline;
+
+class SequenceDriver
+{
+  public:
+    static void sequenceCutter( gTimeline *whichTimeline );
+
+};

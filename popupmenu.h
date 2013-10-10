@@ -245,6 +245,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuColor2D;
     wxMenu *popUpMenuLabels;
     wxMenu *popUpMenuSave;
+    wxMenu *popUpMenuRun;
 
     void buildItem( wxMenu *popUp,
                     const wxString &title,
