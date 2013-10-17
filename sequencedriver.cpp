@@ -46,7 +46,9 @@ void SequenceDriver::sequenceCutter( gTimeline *whichTimeline )
   tmpOptions->set_by_time( true );
   tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
   tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
-  
+  tmpOptions->set_original_time( true );
+  tmpOptions->set_break_states( false );
+
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
   mySequence->addState( TraceEditSequence::traceOptionsState, tmpOptionsState );

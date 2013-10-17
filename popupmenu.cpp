@@ -35,6 +35,7 @@
 #include <wx/event.h>
 #include <iostream>
 #include <cmath>
+#include "sequencedriver.h"
 
 using namespace std;
 
@@ -110,6 +111,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_LABELS_ALL, gPopUpMenu::OnMenuLabelsAll )
   EVT_MENU( ID_MENU_LABELS_SPACED, gPopUpMenu::OnMenuLabelsSpaced )
   EVT_MENU( ID_MENU_LABELS_POWER2, gPopUpMenu::OnMenuLabelsPower2 )
+  EVT_MENU( ID_MENU_CUT_TRACE, gPopUpMenu::OnMenuCutTrace )
 
 END_EVENT_TABLE()
 
@@ -357,6 +359,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuGradientFunction = new wxMenu;
   popUpMenuLabels = new wxMenu;
   popUpMenuSave = new wxMenu;
+  popUpMenuRun = new wxMenu;
 
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
 
@@ -596,6 +599,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
   
+  buildItem( popUpMenuRun, _( "Cut trace" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCutTrace, ID_MENU_CUT_TRACE );
   AppendSubMenu( popUpMenuRun, _( "Run" ) );
   
   AppendSeparator();
@@ -1465,4 +1469,9 @@ void gPopUpMenu::OnMenuLabelsPower2( wxCommandEvent& event )
 {
   timeline->GetMyWindow()->setObjectLabels( Window::POWER2_LABELS );
   timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuCutTrace( wxCommandEvent& event )
+{
+  SequenceDriver::sequenceCutter( timeline );
 }
