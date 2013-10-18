@@ -646,21 +646,13 @@ wxString RunScript::GetCommandString()
   }
   else if ( currentChoice == wxString( wxT( "Clustering" ) ) )
   {
-    // Compute CSV : Is it done by wrapper?
-
-    // TODO: dummy command!! rewrite
-    command = paraverBin + wxString( wxT( "clustering-wrapper.sh" ) );
-    command += wxT( " " ) + doubleQuote( filePickerTrace->GetPath() );      // Source trace
-    command += wxT( " " ) + doubleQuote( filePickerClusteringXML->GetPath() );
+    command = paraverBin + wxString( wxT( "BurstClustering -p" ) );
     if ( checkBoxClusteringCSVValueAsDimension->IsChecked() )
     {
-      command += wxT( " 1" );
+      command += wxT( " -c" );
     }
-    else
-    {
-      command += wxT( " 0" );
-    }
-    command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // needed??
+    command += wxT( " -d " ) + doubleQuote( filePickerClusteringXML->GetPath() );
+    command += wxT( " -i " ) + doubleQuote( filePickerTrace->GetPath() );
   }
   else if ( currentChoice == wxString( wxT( "Folding" ) ) )
   {
