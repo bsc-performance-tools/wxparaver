@@ -56,7 +56,7 @@ class RunningProcess : public wxProcess
       Redirect();
     }    
 
-    virtual void OnTerminate( int pid, int status );
+    virtual void OnTerminate( int piwxChoiced, int status );
     virtual bool HasInput();
 
   protected:
@@ -125,10 +125,16 @@ public:
   RunScript( wxWindow* parent, wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
 
   RunScript( wxWindow* parent,
-             wxString whichApp,
              wxString whichTrace,
-             wxString whichCommand,
-             bool runNow,
+             wxString whichClusteringCSV,
+             wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
+
+
+  RunScript( wxWindow* parent,
+             //wxString whichApp,
+             wxString whichTrace,
+             //wxString whichCommand,
+             //bool runNow,
              wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
 
   /// Creation
@@ -240,6 +246,7 @@ private:
   wxString paraverBin;
 ////@end RunScript member variables
 
+  wxString clusteringCSV;
   bool helpOption;
   wxArrayString extensions;
 

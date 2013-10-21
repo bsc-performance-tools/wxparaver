@@ -3380,7 +3380,8 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
     if ( cutFilterDialog.GetRunAppWithResultingTrace() )
     {
       wxString auxTrace =  wxString::FromAscii( dstTrace.c_str() );
-      ShowRunCommand( wxT(""), auxTrace, wxT(""), false );
+      // ShowRunCommand( wxT(""), auxTrace, wxT(""), false );
+      ShowRunCommand( auxTrace );
     }
   }
 
@@ -3519,12 +3520,14 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
 
 
 // TODO: clean parameters not used
-void paraverMain::ShowRunCommand( wxString app,
-                                  wxString traceFile,
-                                  wxString command,
-                                  bool runNow )
+void paraverMain::ShowRunCommand( // wxString app,
+                                  wxString traceFile
+                                  // wxString command,
+                                  //bool runNow
+                                  )
 {
-  RunScript runApplication( (wxWindow *)this, app, traceFile, command, runNow );
+  // RunScript runApplication( (wxWindow *)this, app, traceFile, command, runNow );
+  RunScript runApplication( (wxWindow *)this, traceFile );
   
   if ( runApplication.ShowModal() == wxID_OK )
   {
@@ -3538,7 +3541,8 @@ void paraverMain::ShowRunCommand( wxString app,
 
 void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
 {
-  ShowRunCommand( wxT(""), wxT(""), wxT(""), false );
+  // ShowRunCommand( wxT(""), wxT(""), wxT(""), false );
+  ShowRunCommand( wxT("") );
 }
 
 

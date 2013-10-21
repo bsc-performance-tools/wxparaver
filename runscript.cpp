@@ -152,6 +152,7 @@ RunScript::RunScript()
   Init();
 }
 
+
 RunScript::RunScript( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
@@ -160,10 +161,10 @@ RunScript::RunScript( wxWindow* parent, wxWindowID id, const wxString& caption, 
 
 
 RunScript::RunScript( wxWindow* parent,
-                      wxString whichApp,
+                      //wxString whichApp,
                       wxString whichTrace,
-                      wxString whichCommand,
-                      bool runNow,
+                      //wxString whichCommand,
+                      //bool runNow,
                       wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
@@ -174,11 +175,9 @@ RunScript::RunScript( wxWindow* parent,
      filePickerTrace->SetPath( whichTrace );
   }
   
+/*
   if ( !whichCommand.IsEmpty() )
   {
-    // Find if whichApp is in registered applications list
-    // If whichApp isn't registered -> message? turn into command?
-    // widget ---> filePickerScript
     wxString auxCommand = whichCommand;
 
     int nextPos = auxCommand.Find( wxT( "%20" ) ) ;
@@ -189,6 +188,45 @@ RunScript::RunScript( wxWindow* parent,
     
     textCtrlDefaultParameters->SetValue( auxCommand );
   }
+*/
+  helpOption = false;
+  
+  wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"), _(".cfg"),
+                                   _(".dat"), _(".gnuplot"), _(".xml") };
+  extensions = wxArrayString( (size_t)6, extensionsAllowed );
+}
+
+
+RunScript::RunScript( wxWindow* parent,
+                      wxString whichTrace,
+                      wxString whichClusteringCSV,
+                      wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+{
+  Init();
+
+  clusteringCSV = whichClusteringCSV;
+
+  Create(parent, id, caption, pos, size, style);
+  
+  if ( !whichTrace.IsEmpty() )
+  {
+     filePickerTrace->SetPath( whichTrace );
+  }
+  
+/*
+  if ( !whichCommand.IsEmpty() )
+  {
+    wxString auxCommand = whichCommand;
+
+    int nextPos = auxCommand.Find( wxT( "%20" ) ) ;
+    if ( nextPos != wxNOT_FOUND )
+    {
+      auxCommand.Replace( wxT( "%20" ), wxT( " " ) );
+    }
+    
+    textCtrlDefaultParameters->SetValue( auxCommand );
+  }
+*/
   helpOption = false;
   
   wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"), _(".cfg"),
@@ -504,12 +542,19 @@ void RunScript::CreateControls()
 
 ////@end RunScript content construction
 
-  choiceApplication->Append( wxT( "Dimemas" ) );
-  choiceApplication->Append( wxT( "Stats" ) );
-  choiceApplication->Append( wxT( "Clustering" ) );
-  choiceApplication->Append( wxT( "Folding" ) );
-  choiceApplication->Append( wxT( "User defined" ) );
-  choiceApplication->Select( 0 ); // Dimemas
+  choiceApplication->Append( wxT( "Dimemas" ) );      // 0
+  choiceApplication->Append( wxT( "Stats" ) );        // 1
+  choiceApplication->Append( wxT( "Clustering" ) );   // 2
+  choiceApplication->Append( wxT( "Folding" ) );      // 3
+  choiceApplication->Append( wxT( "User defined" ) ); // 4
+  
+  int appNumber = 0; // Dimemas
+  if ( !clusteringCSV.IsEmpty() )
+  {
+    appNumber = 2;
+  }
+  choiceApplication->Select( appNumber ); 
+  
   adaptWindowToApplicationSelection();
 }
 
@@ -647,12 +692,20 @@ wxString RunScript::GetCommandString()
   else if ( currentChoice == wxString( wxT( "Clustering" ) ) )
   {
     command = paraverBin + wxString( wxT( "BurstClustering -p" ) );
+    
     if ( checkBoxClusteringCSVValueAsDimension->IsChecked() )
     {
       command += wxT( " -c" );
     }
+    
     command += wxT( " -d " ) + doubleQuote( filePickerClusteringXML->GetPath() );
-    command += wxT( " -i " ) + doubleQuote( filePickerTrace->GetPath() );
+    
+    command += wxT( " -i " );
+    if ( !clusteringCSV.IsEmpty() )
+    {
+      command += doubleQuote( clusteringCSV ) + wxT( "," );
+    }
+    command += doubleQuote( filePickerTrace->GetPath() );
   }
   else if ( currentChoice == wxString( wxT( "Folding" ) ) )
   {
@@ -813,6 +866,17 @@ void RunScript::adaptWindowToApplicationSelection()
   }
   else if ( currentChoice == wxString( wxT( "Clustering" ) ))
   {
+    labelTextCtrlDefaultParameters->Hide();
+    textCtrlDefaultParameters->Hide();
+    if ( clusteringCSV.IsEmpty() )
+    {
+      // 
+      checkBoxClusteringCSVValueAsDimension->Enable( false );
+    }
+    else
+    {
+      //
+    }
   }
   else if ( currentChoice == wxString( wxT( "Folding" ) ))
   {
