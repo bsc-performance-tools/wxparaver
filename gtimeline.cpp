@@ -2722,6 +2722,11 @@ void gTimeline::saveText()
   {
     Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
+    
+    // Clustering default options
+    output->setObjectHierarchy( true );
+    output->setWindowTimeUnits( false );
+    
     string tmpStr = string( saveDialog.GetPath().mb_str() );
     output->dumpWindow( myWindow, tmpStr );
     delete output;
