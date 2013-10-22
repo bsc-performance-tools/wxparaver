@@ -127,6 +127,8 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
 
+  EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
+
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
 
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
@@ -295,6 +297,7 @@ void RunScript::Init()
   clusteringSection = NULL;
   filePickerClusteringXML = NULL;
   checkBoxClusteringCSVValueAsDimension = NULL;
+  checkBoxClusteringNormalize = NULL;
   foldingSection = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
@@ -490,55 +493,64 @@ void RunScript::CreateControls()
   checkBoxClusteringCSVValueAsDimension->SetValue(false);
   itemBoxSizer40->Add(checkBoxClusteringCSVValueAsDimension, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
+  wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxHORIZONTAL);
+  clusteringSection->Add(itemBoxSizer43, 0, wxGROW|wxALL, 2);
+
+  itemBoxSizer43->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  checkBoxClusteringNormalize = new wxCheckBox( itemDialog1, ID_CHECKBOX_CLUSTERING_NORMALIZE, _("Apply logarithmic normalization to semantic value"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkBoxClusteringNormalize->SetValue(false);
+  itemBoxSizer43->Add(checkBoxClusteringNormalize, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+
   foldingSection = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(foldingSection, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
 
-  wxStaticLine* itemStaticLine44 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine44, 0, wxGROW|wxALL, 5);
-
-  wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer45, 1, wxGROW, 5);
-
-  wxStaticText* itemStaticText46 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer45->Add(itemStaticText46, 1, wxALIGN_TOP|wxALL, 5);
-
-  labelCommandPreview = new wxTextCtrl( itemDialog1, wxID_LABELCOMMANDPREVIEW, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
-  itemBoxSizer45->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine47 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine47, 0, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer48 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer48, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer2->Add(itemBoxSizer48, 1, wxGROW, 5);
+
+  wxStaticText* itemStaticText49 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer48->Add(itemStaticText49, 1, wxALIGN_TOP|wxALL, 5);
+
+  labelCommandPreview = new wxTextCtrl( itemDialog1, wxID_LABELCOMMANDPREVIEW, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
+  itemBoxSizer48->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer51 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer51, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer48->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer51->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer48->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer51->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer48->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer51->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 3, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer53 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer53, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxBoxSizer* itemBoxSizer56 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer56, 0, wxALIGN_RIGHT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer54 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer53->Add(itemBoxSizer54, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxBoxSizer* itemBoxSizer57 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer56->Add(itemBoxSizer57, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer54->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer57->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
@@ -696,6 +708,10 @@ wxString RunScript::GetCommandString()
     if ( checkBoxClusteringCSVValueAsDimension->IsChecked() )
     {
       command += wxT( " -c" );
+      if ( checkBoxClusteringNormalize->IsChecked() )
+      {
+        command += wxT( "l" );
+      }
     }
     
     command += wxT( " -d " ) + doubleQuote( filePickerClusteringXML->GetPath() );
@@ -1241,5 +1257,17 @@ void RunScript::OnFilepickerTraceFilePickerChanged( wxFileDirPickerEvent& event 
 void RunScript::OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event )
 {
   event.SetText( GetCommandString() );
+}
+
+
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION
+ */
+
+void RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event )
+{
+  checkBoxClusteringNormalize->Enable( checkBoxClusteringCSVValueAsDimension->GetValue() );
 }
 

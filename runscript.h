@@ -96,6 +96,7 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_STATS_EXCLUSIVE_TIMES 10215
 #define ID_FILECTRL_CLUSTERING_XML 10220
 #define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
+#define ID_CHECKBOX_CLUSTERING_NORMALIZE 10002
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
@@ -166,6 +167,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION
+  void OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
 
@@ -234,6 +238,7 @@ public:
   wxBoxSizer* clusteringSection;
   wxFilePickerCtrl* filePickerClusteringXML;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
+  wxCheckBox* checkBoxClusteringNormalize;
   wxBoxSizer* foldingSection;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
