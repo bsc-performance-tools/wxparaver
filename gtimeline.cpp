@@ -2724,8 +2724,8 @@ void gTimeline::saveText()
     output->setMultipleFiles( false );
     
     // Clustering default options
-    //output->setObjectHierarchy( true );
-    //output->setWindowTimeUnits( false );
+    output->setObjectHierarchy( true );
+    output->setWindowTimeUnits( false );
     
     string tmpStr = string( saveDialog.GetPath().mb_str() );
     output->dumpWindow( myWindow, tmpStr );
