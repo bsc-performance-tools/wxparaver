@@ -27,11 +27,43 @@
  | @version:     $Revision$
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
+#ifndef _SEQUENCEDRIVER_H_ 
+#define _SEQUENCEDRIVER_H_
+
+#include "traceeditactions.h"
+
 class gTimeline;
 
+/****************************************************************************
+ ********             RunAppClusteringAction                         ********
+ ****************************************************************************/
+class RunAppClusteringAction: public TraceToTraceAction
+{
+  public:
+    RunAppClusteringAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~RunAppClusteringAction()
+    {}
+
+    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+
+    virtual void execute( std::string whichTrace );
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
+ ********                 SequenceDriver                             ********
+ ****************************************************************************/
 class SequenceDriver
 {
   public:
     static void sequenceClustering( gTimeline *whichTimeline );
 
 };
+
+#endif //_SEQUENCEDRIVER_H_

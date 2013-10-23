@@ -27,6 +27,17 @@
  | @version:     $Revision$
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
 #include <string>
 #include <wx/filename.h>
 #include "sequencedriver.h"
@@ -35,7 +46,32 @@
 #include "traceeditsequence.h"
 #include "traceeditstates.h"
 #include "traceoptions.h"
+#include "runscript.h"
+#include "wxparaverapp.h"
 
+/****************************************************************************
+ ********             RunAppClusteringAction                         ********
+ ****************************************************************************/
+vector<TraceEditSequence::TSequenceStates> RunAppClusteringAction::getStateDependencies() const
+{
+  vector<TraceEditSequence::TSequenceStates> tmpStates;
+  return tmpStates;
+}
+
+void RunAppClusteringAction::execute( std::string whichTrace )
+{
+  TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+  std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
+  RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ), wxString::FromAscii( tmpFileName.c_str() ) );
+  
+  if( runAppDialog.ShowModal() == wxID_OK )
+  {}
+}
+
+
+/****************************************************************************
+ ********                 SequenceDriver                             ********
+ ****************************************************************************/
 void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
 {
   KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
@@ -43,6 +79,7 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
 
   mySequence->pushbackAction( TraceEditSequence::traceCutterAction );
   mySequence->pushbackAction( TraceEditSequence::csvOutputAction );
+  mySequence->pushbackAction( new RunAppClusteringAction( mySequence ) );
   
   TraceOptions *tmpOptions = TraceOptions::create( myKernel );
   tmpOptions->set_by_time( true );
@@ -74,7 +111,7 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
   std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
-  tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
+  tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) + std::string( ".csv" );
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TraceEditSequence::csvFileNameState, tmpCSVFilenameState );
   
