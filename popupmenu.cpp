@@ -111,7 +111,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_LABELS_ALL, gPopUpMenu::OnMenuLabelsAll )
   EVT_MENU( ID_MENU_LABELS_SPACED, gPopUpMenu::OnMenuLabelsSpaced )
   EVT_MENU( ID_MENU_LABELS_POWER2, gPopUpMenu::OnMenuLabelsPower2 )
-  EVT_MENU( ID_MENU_CUT_TRACE, gPopUpMenu::OnMenuCutTrace )
+  EVT_MENU( ID_MENU_CLUSTERING, gPopUpMenu::OnMenuClustering )
 
 END_EVENT_TABLE()
 
@@ -599,7 +599,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
   
-  buildItem( popUpMenuRun, _( "Cut trace" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCutTrace, ID_MENU_CUT_TRACE );
+  buildItem( popUpMenuRun, _( "Clustering" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuClustering, ID_MENU_CLUSTERING );
   AppendSubMenu( popUpMenuRun, _( "Run" ) );
   
   AppendSeparator();
@@ -1471,7 +1471,7 @@ void gPopUpMenu::OnMenuLabelsPower2( wxCommandEvent& event )
   timeline->GetMyWindow()->setRedraw( true );
 }
 
-void gPopUpMenu::OnMenuCutTrace( wxCommandEvent& event )
+void gPopUpMenu::OnMenuClustering( wxCommandEvent& event )
 {
-  SequenceDriver::sequenceCutter( timeline );
+  SequenceDriver::sequenceClustering( timeline );
 }

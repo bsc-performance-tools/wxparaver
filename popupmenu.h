@@ -117,7 +117,7 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_TIME_AVERAGE_NOT_ZERO    30069
 #define ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO 30070
 #define ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO    30071
-#define ID_MENU_CUT_TRACE                         30072
+#define ID_MENU_CLUSTERING                        30072
 
 class gPopUpMenu : public wxMenu
 {
@@ -227,7 +227,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuLabelsSpaced( wxCommandEvent& event );
     void OnMenuLabelsPower2( wxCommandEvent& event );
     
-    void OnMenuCutTrace( wxCommandEvent& event );
+    void OnMenuClustering( wxCommandEvent& event );
     
   private:
     gTimeline *timeline;
