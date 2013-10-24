@@ -164,40 +164,6 @@ RunScript::RunScript( wxWindow* parent, wxWindowID id, const wxString& caption, 
 
 RunScript::RunScript( wxWindow* parent,
                       wxString whichTrace,
-                      wxString whichClusteringCSV,
-                      wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
-{
-  Init();
-  clusteringCSV = whichClusteringCSV;
-  
-  Create(parent, id, caption, pos, size, style);
-  
-  if ( !whichTrace.IsEmpty() )
-  {
-     filePickerTrace->SetPath( whichTrace );
-  }
-  
-/*
-  if ( !whichCommand.IsEmpty() )
-  {
-    wxString auxCommand = whichCommand;
-
-    int nextPos = auxCommand.Find( wxT( "%20" ) ) ;
-    if ( nextPos != wxNOT_FOUND )
-    {
-      auxCommand.Replace( wxT( "%20" ), wxT( " " ) );
-    }
-    
-    textCtrlDefaultParameters->SetValue( auxCommand );
-  }
-*/
-  helpOption = false;
-}
-
-
-
-RunScript::RunScript( wxWindow* parent,
-                      wxString whichTrace,
                       wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
@@ -556,11 +522,8 @@ void RunScript::CreateControls()
     choiceApplication->Append( applicationsList[i] );
   }
   
-  int appNumber = DIMEMAS;
-  if ( !clusteringCSV.IsEmpty() )
-    appNumber = CLUSTERING;
+  int appNumber = DIMEMAS; // Default is 0
   choiceApplication->Select( appNumber ); 
-
   adaptWindowToApplicationSelection();
 }
 
@@ -746,10 +709,9 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
 
   // Build command
   wxString command = GetCommandString();
-  int currentChoice = choiceApplication->GetSelection();  
   
   // Run command
-  if ( currentChoice == USER_DEFINED || !paraverBin.IsEmpty() )
+  if ( choiceApplication->GetSelection() == USER_DEFINED || !paraverBin.IsEmpty() )
   {
     myProcess = new RunningProcess( this, command );
     if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
@@ -837,6 +799,8 @@ void RunScript::adaptWindowToApplicationSelection()
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
       textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to the script\n"
                                                   "%TRACE refers to input trace" ) );
+      labelTextCtrlDefaultParameters->Show();
+      textCtrlDefaultParameters->Show();
       break;
       
     case STATS:
@@ -844,6 +808,8 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to 'stats'\n"
                                                   "-events_histo[:type1[-type2],...]\n"
                                                   "-thread_calls[:type1[-type2],...]\n" ) );
+      labelTextCtrlDefaultParameters->Show();
+      textCtrlDefaultParameters->Show();
       break;
       
     case CLUSTERING:
@@ -856,12 +822,19 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
       
     case FOLDING:
+      labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
+      textCtrlDefaultParameters->SetToolTip( wxT( "Command and parameters to execute\n"
+                                                  "%TRACE refers to input trace" ) );    
+      labelTextCtrlDefaultParameters->Show();
+      textCtrlDefaultParameters->Show();
       break;
       
     case USER_DEFINED:
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
       textCtrlDefaultParameters->SetToolTip( wxT( "Command and parameters to execute\n"
                                                   "%TRACE refers to input trace" ) );    
+      labelTextCtrlDefaultParameters->Show();
+      textCtrlDefaultParameters->Show();
       break;
       
     default:
@@ -1204,9 +1177,7 @@ void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
 
 void RunScript::OnFilepickerTraceFilePickerChanged( wxFileDirPickerEvent& event )
 {
-  int currentChoice = choiceApplication->GetSelection();
-
-  if ( currentChoice == STATS )
+  if ( choiceApplication->GetSelection() == STATS )
   {
     statsTextCtrlOutputName->SetValue( filePickerTrace->GetPath() );
   }
@@ -1233,27 +1204,39 @@ void RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEven
 }
 
 
+void RunScript::setApp( int whichApp )
+{
+  choiceApplication->Select( whichApp ); 
+  adaptWindowToApplicationSelection();
+}
+
+
 void RunScript::setDimemas()
 {
-  int appNumber = DIMEMAS;
-  choiceApplication->Select( appNumber ); 
-  adaptWindowToApplicationSelection();
+  setApp( DIMEMAS );
+}
+
+
+void RunScript::setStats()
+{
+  setApp( STATS );
 }
 
 
 void RunScript::setClustering( wxString whichClusteringCSV )
 {
-  int appNumber = CLUSTERING;
   clusteringCSV = whichClusteringCSV;
-  choiceApplication->Select( appNumber );
-  adaptWindowToApplicationSelection();
+  setApp( CLUSTERING );
 }
 
 
 void RunScript::setFolding()
 {
-  int appNumber = FOLDING;
-  choiceApplication->Select( appNumber ); 
-  adaptWindowToApplicationSelection();
+  setApp( FOLDING );
 }
 
+
+void RunScript::setUserDefined()
+{
+  setApp( USER_DEFINED );
+}

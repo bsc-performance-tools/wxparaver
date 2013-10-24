@@ -133,19 +133,10 @@ public:
 
   /// Constructors
   RunScript();
-  RunScript( wxWindow* parent, wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
-
   RunScript( wxWindow* parent,
-             wxString whichTrace,
-             wxString whichClusteringCSV,
              wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
-
-
   RunScript( wxWindow* parent,
-             //wxString whichApp,
              wxString whichTrace,
-             //wxString whichCommand,
-             //bool runNow,
              wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
 
   /// Creation
@@ -225,8 +216,10 @@ public:
   wxString GetCommandString();
   
   void setDimemas();
+  void setStats();
   void setClustering( wxString whichClusteringCSV );
   void setFolding();
+  void setUserDefined();
   
 ////@begin RunScript member variables
   wxChoice* choiceApplication;
@@ -276,6 +269,8 @@ private:
   wxString expandVariables( wxString command );
   wxString insertLinks( wxString rawLine, wxArrayString extensions );
   void runDetachedProcess( wxString command );
+
+  void setApp( int whichApp );
 
   // TODO: This method's been copied from HelpContents; consider write new class
   std::string getHrefFullPath( wxHtmlLinkEvent &event );
