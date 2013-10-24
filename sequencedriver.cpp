@@ -62,8 +62,9 @@ void RunAppClusteringAction::execute( std::string whichTrace )
 {
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
-  RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ), wxString::FromAscii( tmpFileName.c_str() ) );
-  
+  RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
+  runAppDialog.setClustering( wxString::FromAscii( tmpFileName.c_str() ) );
+
   if( runAppDialog.ShowModal() == wxID_OK )
   {}
 }
@@ -108,10 +109,12 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
   wxFileName tmpTraceName( wxString::FromAscii( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
   tmpTraceName.ClearExt();
   tmpTraceName.AppendDir( wxString::FromAscii( TraceEditSequence::dirNameClustering.c_str() ) );
+  
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
   std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
   tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) + std::string( ".csv" );
+
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TraceEditSequence::csvFileNameState, tmpCSVFilenameState );
   

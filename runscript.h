@@ -121,6 +121,16 @@ class RunScript: public wxDialog
   DECLARE_EVENT_TABLE()
 
 public:
+  enum TExternalApp
+  {
+    DIMEMAS = 0,
+    STATS,
+    CLUSTERING,
+    FOLDING,
+    USER_DEFINED
+  };
+
+
   /// Constructors
   RunScript();
   RunScript( wxWindow* parent, wxWindowID id = SYMBOL_RUNSCRIPT_IDNAME, const wxString& caption = SYMBOL_RUNSCRIPT_TITLE, const wxPoint& pos = SYMBOL_RUNSCRIPT_POSITION, const wxSize& size = SYMBOL_RUNSCRIPT_SIZE, long style = SYMBOL_RUNSCRIPT_STYLE );
@@ -214,6 +224,10 @@ public:
   
   wxString GetCommandString();
   
+  void setDimemas();
+  void setClustering( wxString whichClusteringCSV );
+  void setFolding();
+  
 ////@begin RunScript member variables
   wxChoice* choiceApplication;
   wxButton* buttonEditApplication;
@@ -253,6 +267,7 @@ private:
 
   wxString clusteringCSV;
   bool helpOption;
+  wxArrayString applicationsList;
   wxArrayString extensions;
 
   wxString doubleQuote( const wxString& path );
