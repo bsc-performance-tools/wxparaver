@@ -734,7 +734,6 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     {
       OnProcessTerminated();
     }
-    else
   }
   else
   {

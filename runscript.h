@@ -218,7 +218,7 @@ public:
   void setDimemas();
   void setStats();
   void setClustering( wxString whichClusteringCSV );
-  void setFolding();
+  void setFolding( wxString whichFoldingCSV );
   void setUserDefined();
   
 ////@begin RunScript member variables
@@ -259,6 +259,7 @@ private:
 ////@end RunScript member variables
 
   wxString clusteringCSV;
+  wxString foldingCSV;
   bool helpOption;
   wxArrayString applicationsList;
   wxArrayString extensions;
