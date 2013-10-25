@@ -850,11 +850,8 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
       
     case FOLDING:
-      labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
-      textCtrlDefaultParameters->SetToolTip( wxT( "Command and parameters to execute\n"
-                                                  "%TRACE refers to input trace" ) );    
-      labelTextCtrlDefaultParameters->Show();
-      textCtrlDefaultParameters->Show();
+      labelTextCtrlDefaultParameters->Hide();
+      textCtrlDefaultParameters->Hide();
       break;
       
     case USER_DEFINED:
