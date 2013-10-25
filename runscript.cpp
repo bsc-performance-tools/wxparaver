@@ -697,6 +697,7 @@ wxString RunScript::GetCommandString()
     case FOLDING:
       command = wxString( wxT( "folding " ) );
       command += doubleQuote( filePickerTrace->GetPath() );
+      command += wxT(" ");
       command += doubleQuote( foldingCSV );
       break;
       
@@ -730,10 +731,21 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   if ( choiceApplication->GetSelection() == USER_DEFINED || !paraverBin.IsEmpty() )
   {
     myProcess = new RunningProcess( this, command );
-    if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
+    int exit = wxExecute( command, wxEXEC_ASYNC, myProcess );
+//    std::cout << exit << std::endl;
+    if( exit == 0 )
     {
       OnProcessTerminated();
     }
+/*
+    else
+    {
+       wxMessageDialog message( this,
+                                _("Unable to execute command."
+                                  "Please check it or PATH enviroment variable"),
+                                _( "Warning" ), wxOK );
+    }    
+*/
   }
   else
   {
