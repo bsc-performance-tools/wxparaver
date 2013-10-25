@@ -118,6 +118,7 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO 30070
 #define ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO    30071
 #define ID_MENU_CLUSTERING                        30072
+#define ID_MENU_FOLDING                           30073
 
 class gPopUpMenu : public wxMenu
 {
@@ -228,6 +229,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuLabelsPower2( wxCommandEvent& event );
     
     void OnMenuClustering( wxCommandEvent& event );
+    void OnMenuFolding( wxCommandEvent& event );
     
   private:
     gTimeline *timeline;

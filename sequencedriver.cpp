@@ -138,6 +138,10 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
 
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TraceEditSequence::csvFileNameState, tmpCSVFilenameState );
+
+  OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
+  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameClustering );
+  mySequence->addState( TraceEditSequence::outputDirSuffixState, tmpOutputDirSuffixState );
   
   vector<std::string> traces;
   traces.push_back( whichTimeline->GetMyWindow()->getTrace()->getFileName() );
@@ -191,6 +195,10 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
 
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TraceEditSequence::csvFileNameState, tmpCSVFilenameState );
+
+  OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
+  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameFolding );
+  mySequence->addState( TraceEditSequence::outputDirSuffixState, tmpOutputDirSuffixState );
   
   vector<std::string> traces;
   traces.push_back( whichTimeline->GetMyWindow()->getTrace()->getFileName() );
