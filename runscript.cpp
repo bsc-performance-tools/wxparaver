@@ -581,6 +581,9 @@ void RunScript::OnButtonExitClick( wxCommandEvent& event )
 wxString RunScript::GetCommandString()
 {
   wxString command;
+  wxFileName tmpFilename;
+  wxString tmpPath;
+  wxString tmpNameWOExtension;  
  
   switch ( choiceApplication->GetSelection() )
   {
@@ -660,7 +663,7 @@ wxString RunScript::GetCommandString()
       break;
       
     case CLUSTERING:
-      command = paraverBin + wxString( wxT( "BurstClustering -p" ) );
+      command = wxString( wxT( "BurstClustering -s" ) );
       
       if ( checkBoxClusteringCSVValueAsDimension->IsChecked() )
       {
@@ -676,12 +679,25 @@ wxString RunScript::GetCommandString()
       command += wxT( " -i " );
       if ( !clusteringCSV.IsEmpty() )
       {
-        command += doubleQuote( clusteringCSV ) + wxT( "," );
+        command += doubleQuote( clusteringCSV + wxString( wxT( "," ) ) + filePickerTrace->GetPath() ) ;
       }
-      command += doubleQuote( filePickerTrace->GetPath() );
+      else
+      {
+        command += doubleQuote( filePickerTrace->GetPath() );
+      }
+      
+      command += wxT(" -o ");
+      tmpFilename = wxFileName( filePickerTrace->GetPath() );
+      tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
+      tmpNameWOExtension = tmpFilename.GetName();
+      command += doubleQuote( tmpPath + tmpNameWOExtension + wxString( wxT( ".clustered.prv" )));
+
       break;
       
     case FOLDING:
+      command = wxString( wxT( "folding " ) );
+      command += doubleQuote( filePickerTrace->GetPath() );
+      command += doubleQuote( foldingCSV );
       break;
       
     case USER_DEFINED:
@@ -718,6 +734,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     {
       OnProcessTerminated();
     }
+    else
   }
   else
   {
@@ -1230,8 +1247,9 @@ void RunScript::setClustering( wxString whichClusteringCSV )
 }
 
 
-void RunScript::setFolding()
+void RunScript::setFolding( wxString whichFoldingCSV )
 {
+  foldingCSV = whichFoldingCSV;
   setApp( FOLDING );
 }
 
