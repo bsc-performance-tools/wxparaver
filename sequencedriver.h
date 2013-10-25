@@ -57,12 +57,35 @@ class RunAppClusteringAction: public TraceToTraceAction
 
 
 /****************************************************************************
+ ********              RunAppFoldingAction                           ********
+ ****************************************************************************/
+class RunAppFoldingAction: public TraceToTraceAction
+{
+  public:
+    RunAppFoldingAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~RunAppFoldingAction()
+    {}
+
+    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+
+    virtual void execute( std::string whichTrace );
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
  ********                 SequenceDriver                             ********
  ****************************************************************************/
 class SequenceDriver
 {
   public:
     static void sequenceClustering( gTimeline *whichTimeline );
+    static void sequenceFolding( gTimeline *whichTimeline );
 
 };
 
