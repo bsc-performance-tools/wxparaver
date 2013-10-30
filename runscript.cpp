@@ -40,13 +40,17 @@
 
 ////@begin includes
 ////@end includes
+
 #include <wx/utils.h> // wxGetEnv
 #include <wx/txtstrm.h>
+#include <wx/filefn.h> // wxPathList
 
-#include "wxparaverapp.h" // PATH_SEP
+#include <vector>
+#include <algorithm>
 
+#include "wxparaverapp.h" // paraverMain
 #include "runscript.h"
-#include <algorithm> // sort
+
 
 ////@begin XPM images
 #include "app_edit.xpm"
@@ -228,7 +232,6 @@ void RunScript::Init()
 {
 ////@begin RunScript member initialisation
   myProcess = NULL;
-  paraverBin = wxT( "" );
   choiceApplication = NULL;
   buttonEditApplication = NULL;
   filePickerTrace = NULL;
@@ -262,19 +265,68 @@ void RunScript::Init()
   buttonExit = NULL;
 ////@end RunScript member initialisation
 
-  wxString paraverHome;
-  if ( wxGetEnv( wxT( "PARAVER_HOME" ), &paraverHome ) )
-  {
-    paraverBin = paraverHome + wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) + wxFileName::GetPathSeparator();
-  }
-  
   wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"), _(".cfg"),
                                    _(".dat"), _(".gnuplot"), _(".xml") };
   extensions = wxArrayString( (size_t)6, extensionsAllowed );
 
-  wxString tmpApps[] = { _("Dimemas"), _("Stats"), _("Clustering"),
-                          _("Folding"), _("User defined") };
-  applicationsList = wxArrayString( (size_t)5, tmpApps );                             
+  // Names of environment variables
+  environmentVariable[ PATH ]         = wxString( wxT("PATH") );
+  environmentVariable[ PARAVER_HOME ] = wxString( wxT("PARAVER_HOME") );
+  environmentVariable[ DIMEMAS_HOME ] = wxString( wxT("DIMEMAS_HOME") );
+  
+  // Labels to construct selector & warning dialogs
+  applicationLabel[ DIMEMAS_WRAPPER ]= wxString( wxT("Dimemas") );                          
+  applicationLabel[ STATS_WRAPPER ]  = wxString( wxT("Stats") );                             
+  applicationLabel[ CLUSTERING ]     = wxString( wxT("Clustering") );                             
+  applicationLabel[ FOLDING ]        = wxString( wxT("Folding") );                             
+  applicationLabel[ USER_DEFINED ]   = wxString( wxT("User defined") );
+  // Following only for warning dialogs
+  applicationLabel[ DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
+  applicationLabel[ STATS ]          = wxString( wxT("Stats") );
+
+  // application names
+  application[ DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );                             
+  application[ STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );                             
+  application[ CLUSTERING ]          = wxString( wxT("BurstClustering") );                             
+  application[ FOLDING ]             = wxString( wxT("folding") );                             
+  application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED                           
+  application[ DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
+  application[ STATS ]               = wxString( wxT("stats") );
+}
+
+
+wxString RunScript::getEnvironmentPath( TEnvironmentVar envVar, wxString command )
+{
+  wxString pathToBin;
+  wxString tmpEnv;
+  wxPathList currentPathEnv;
+  wxFileName auxName;
+  
+  switch( envVar )
+  {
+    case PATH:
+      currentPathEnv.AddEnvList( "PATH" );
+      pathToBin = currentPathEnv.FindAbsoluteValidPath( command );
+      auxName  = wxFileName( pathToBin );
+      pathToBin = auxName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
+      
+      break;
+      
+    case PARAVER_HOME:
+    case DIMEMAS_HOME:
+      
+      if ( wxGetEnv( environmentVariable[ envVar ], &tmpEnv ) )
+      {
+        pathToBin = tmpEnv + wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) + wxFileName::GetPathSeparator();
+      }
+      
+      break;
+      
+    default:
+      break;
+  }
+    
+  return pathToBin;
 }
 
 
@@ -517,12 +569,12 @@ void RunScript::CreateControls()
 
 ////@end RunScript content construction
 
-  for ( int i = 0; i < (int)applicationsList.GetCount(); ++i )
+  for ( int i = DIMEMAS_WRAPPER; i <= USER_DEFINED; i++ )
   {
-    choiceApplication->Append( applicationsList[i] );
+    choiceApplication->Append( applicationLabel[ TExternalApp(i) ] );
   }
   
-  int appNumber = DIMEMAS; // Default is 0
+  int appNumber = DIMEMAS_WRAPPER; // Default is 0
   choiceApplication->Select( appNumber ); 
   adaptWindowToApplicationSelection();
 }
@@ -578,143 +630,286 @@ void RunScript::OnButtonExitClick( wxCommandEvent& event )
 }
 
 
-wxString RunScript::GetCommandString()
+wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExternalApp selectedApp )
 {
-  wxString command;
   wxFileName tmpFilename;
   wxString tmpPath;
-  wxString tmpNameWOExtension;  
+  wxString tmpNameWOExtension;
+  wxString tmpParams;
+  wxString fullCommand;
+  
+  command.Clear();
+  parameters.Clear();
  
-  switch ( choiceApplication->GetSelection() )
+  if ( selectedApp == DEFAULT )
   {
-    case DIMEMAS:
-      // First kind: Application needs a previous wrapper
-      if ( paraverBin.IsEmpty() )
+    selectedApp = (TExternalApp)choiceApplication->GetSelection();
+  }
+ 
+  switch ( selectedApp )
+  {
+    case DIMEMAS_WRAPPER:
+      command = application[ DIMEMAS_WRAPPER ];
+
+      parameters = doubleQuote( filePickerTrace->GetPath() );      // Source trace
+      parameters += wxT( " " ) + doubleQuote( filePickerDimemasCFG->GetPath() ); // Dimemas cfg
+      parameters += wxT( " " ) + doubleQuote( textCtrlOutputTrace->GetValue() ); // Final trace
+      if ( checkBoxReuseDimemasTrace->IsChecked() )
       {
-        wxMessageDialog message( this,
-                                 _("Unable to find 'dimemas-wrapper.sh'\n"
-                                   "Please quit and rerun wxparaver, after setting $PARAVER_HOME."),
-                                 _( "Warning" ), wxOK );
-        message.ShowModal();
+        parameters += wxT( " 1" );
       }
       else
       {
-        command  = paraverBin + wxString( wxT( "dimemas-wrapper.sh" ) );
-        command += wxT( " " ) + doubleQuote( filePickerTrace->GetPath() );      // Source trace
-        command += wxT( " " ) + doubleQuote( filePickerDimemasCFG->GetPath() ); // Dimemas cfg
-        command += wxT( " " ) + doubleQuote( textCtrlOutputTrace->GetValue() ); // Final trace
-        if ( checkBoxReuseDimemasTrace->IsChecked() )
-        {
-          command += wxT( " 1" );
-        }
-        else
-        {
-          command += wxT( " 0" );
-        }
-        command += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
-        
-        if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
-        {
-          helpOption = true;
-        }
+        parameters += wxT( " 0" );
       }
+      parameters += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
+      
+      if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
+      {
+        helpOption = true;
+      }
+
+      break;
+    
+    case DIMEMAS_GUI:
+      command = application[ DIMEMAS_GUI ];
+    
       break;
       
+    case STATS_WRAPPER:
     case STATS:
-      // First kind: Application needs a previous wrapper
-      if ( paraverBin.IsEmpty() )
+    
+      if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
       {
-        wxMessageDialog message( this,
-                                 _("Unable to find 'stats'\n"
-                                   "Please quit and rerun wxparaver, after setting $PARAVER_HOME."),
-                                 _( "Warning" ), wxOK );
-        message.ShowModal();
-      }
-      else if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
-      {
-        command  = paraverBin + wxString( wxT( "stats --help" ) );
+        command  = application[ STATS ];
+        parameters = textCtrlDefaultParameters->GetValue();
         helpOption = true;
       }
       else
       {
         // TODO: DEFAULT VALUES?
-        command  = paraverBin + wxString( wxT( "stats-wrapper.sh" ) );
-        command += wxString( wxT( " " ) ) + doubleQuote( filePickerTrace->GetPath() );      // Source trace
-        command += wxString( wxT( " -o " ) ) + doubleQuote( statsTextCtrlOutputName->GetValue() ); // Final name
+        command  = application[ STATS_WRAPPER ];
+
+        parameters = doubleQuote( filePickerTrace->GetPath() );      // Source trace
+        parameters += wxString( wxT( " -o " ) ) + doubleQuote( statsTextCtrlOutputName->GetValue() ); // Final name
         if ( statsCheckBoxShowBurstsHistogram->IsChecked() )
         {
-          command += wxString( wxT( " -bursts_histo" ) );
+          parameters += wxString( wxT( " -bursts_histo" ) );
         }
         if ( statsCheckBoxShowCommsHistogram->IsChecked() )
         {
-          command += wxString( wxT( " -comms_histo" ) );
+          parameters += wxString( wxT( " -comms_histo" ) );
         }
         if ( statsCheckBoxOnlyDatFile->IsChecked() )
         {
-          command += wxString( wxT( " -only_dat_file" ) );
+          parameters += wxString( wxT( " -only_dat_file" ) );
         }
         if ( statsCheckBoxExclusiveTimes->IsChecked() )
         {
-          command += wxString( wxT( " -exclusive_times" ) );
+          parameters += wxString( wxT( " -exclusive_times" ) );
         }
-        command += wxString( wxT( " " ) ) +
+        parameters += wxString( wxT( " " ) ) +
                 expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
       }
+      
       break;
       
     case CLUSTERING:
-      command = wxString( wxT( "BurstClustering -s" ) );
+      command = application[ CLUSTERING ];
+      
+      parameters = wxT( " -s" );
       
       if ( checkBoxClusteringCSVValueAsDimension->IsChecked() )
       {
-        command += wxT( " -c" );
+        parameters += wxT( " -c" );
         if ( checkBoxClusteringNormalize->IsChecked() )
         {
-          command += wxT( "l" );
+          parameters += wxT( "l" );
         }
       }
       
-      command += wxT( " -d " ) + doubleQuote( filePickerClusteringXML->GetPath() );
+      parameters += wxT( " -d " ) + doubleQuote( filePickerClusteringXML->GetPath() );
       
-      command += wxT( " -i " );
+      parameters += wxT( " -i " );
       if ( !clusteringCSV.IsEmpty() )
       {
-        command += doubleQuote( clusteringCSV + wxString( wxT( "," ) ) + filePickerTrace->GetPath() ) ;
+        parameters += doubleQuote( clusteringCSV + wxString( wxT( "," ) ) + filePickerTrace->GetPath() ) ;
       }
       else
       {
-        command += doubleQuote( filePickerTrace->GetPath() );
+        parameters += doubleQuote( filePickerTrace->GetPath() );
       }
       
-      command += wxT(" -o ");
+      parameters += wxT(" -o ");
       tmpFilename = wxFileName( filePickerTrace->GetPath() );
       tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
       tmpNameWOExtension = tmpFilename.GetName();
-      command += doubleQuote( tmpPath + tmpNameWOExtension + wxString( wxT( ".clustered.prv" )));
+      parameters += doubleQuote( tmpPath + tmpNameWOExtension + wxString( wxT( ".clustered.prv" )));
 
       break;
       
     case FOLDING:
-      command = wxString( wxT( "folding " ) );
-      command += doubleQuote( filePickerTrace->GetPath() );
-      command += wxT(" ");
-      command += doubleQuote( foldingCSV );
+      command = application[ FOLDING ];
+
+      parameters = doubleQuote( filePickerTrace->GetPath() );
+      parameters += wxT(" ");
+      parameters += doubleQuote( foldingCSV );
+      
       break;
       
     case USER_DEFINED:
-      // Second kind: Default parameter is directly used
-      command += expandVariables( textCtrlDefaultParameters->GetValue() );
+      
+      tmpParams = expandVariables( textCtrlDefaultParameters->GetValue() );
+      command = tmpParams.BeforeFirst( ' ' );
+      parameters = tmpParams.AfterFirst( ' ' );
+      
       break;
       
     default:
       // Third kind: registered application doesn't need a wrapper; app has the same name
       command = choiceApplication->GetString( choiceApplication->GetSelection() );
+      
       break;
   }
- 
-  return command;
+  
+  fullCommand = command;
+  if ( !command.IsEmpty() )
+  { 
+    // extend with parameters
+    fullCommand += wxString( wxT( " " ) ) + parameters;
+  }
+  
+  return ( fullCommand );
 }
 
+
+void RunScript::ShowWarning( wxString whichMessage )
+{
+  wxMessageDialog message( this, whichMessage, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
+  message.ShowModal();
+}
+
+
+void RunScript::ShowWarningUnreachableProgram( wxString program, TEnvironmentVar envVar, bool alsoPrintPath )
+{
+  wxString auxMessage;
+  
+  if ( envVar == PATH && alsoPrintPath )
+  {
+    alsoPrintPath = false;
+  }
+  
+  auxMessage = wxString( wxT( "Unable to find:" ) );
+  auxMessage += wxString( wxT( "\n\n\t" ) ) + program + wxString( wxT( "\n\n" ) );
+  auxMessage += wxString( wxT("Please check that the program is reachable through the environment variable " ) );
+  if ( alsoPrintPath )
+  {
+    auxMessage += wxString( wxT( "$PATH or " ) )  + environmentVariable[ envVar ] + wxString( wxT( "." ) );
+  }
+  auxMessage += wxString( wxT( "$" ) )  + environmentVariable[ envVar ] + wxString( wxT( "." ) );
+  
+  ShowWarning( auxMessage );
+}
+  
+
+wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
+{
+  wxString program, parameters;
+  wxString readyCommand;
+  wxString pathToProgram;
+
+  //readyCommand.Clear();
+  
+  wxString candidateCommand = GetCommand( program, parameters, selectedApp );
+  if ( candidateCommand.IsEmpty() )
+  {
+    ShowWarning( wxString( wxT( "Empty command." )) );
+  }
+  else
+  {
+    if ( selectedApp == DEFAULT )
+    {
+      selectedApp = (TExternalApp)choiceApplication->GetSelection();
+    } 
+   
+    switch ( selectedApp )
+    {
+        
+      case DIMEMAS_GUI:
+        pathToProgram = getEnvironmentPath( DIMEMAS_HOME );
+        if ( !pathToProgram.IsEmpty() )
+        {
+          readyCommand = doubleQuote( pathToProgram + candidateCommand );
+        }
+        else
+        {
+          ShowWarningUnreachableProgram( program, DIMEMAS_HOME );
+        }
+
+        break;
+        
+      case DIMEMAS_WRAPPER:
+        pathToProgram = getEnvironmentPath( PATH, program );
+        if ( !pathToProgram.IsEmpty() )
+        {
+          readyCommand =  pathToProgram + candidateCommand;
+        }
+        else
+        {
+          pathToProgram = getEnvironmentPath( PARAVER_HOME );
+          if ( !pathToProgram.IsEmpty() )
+          {
+            readyCommand =  pathToProgram + candidateCommand;
+          }
+          else
+          {
+            ShowWarningUnreachableProgram( program, PARAVER_HOME, true );
+          }
+        }
+        
+        break;
+        
+      case STATS_WRAPPER:
+        pathToProgram = getEnvironmentPath( PATH, program );
+        if ( !pathToProgram.IsEmpty() )
+        {
+          readyCommand =  pathToProgram + candidateCommand;
+        }
+        else
+        {
+          pathToProgram = getEnvironmentPath( PARAVER_HOME );
+          if ( !pathToProgram.IsEmpty() )
+          {
+            readyCommand =  pathToProgram + candidateCommand;
+          }
+          else
+          {
+            ShowWarningUnreachableProgram( program, PARAVER_HOME, true );
+          }
+        }
+        
+        break;
+        
+      case CLUSTERING:
+      case FOLDING:
+      case USER_DEFINED:
+      default:
+        pathToProgram = getEnvironmentPath( PATH, program );
+        if ( !pathToProgram.IsEmpty() )
+        {
+          readyCommand =  pathToProgram + candidateCommand;
+        }
+        else
+        {
+          ShowWarningUnreachableProgram( program, PATH );
+        }      
+        
+        break;
+    }
+  }
+  
+  return ( readyCommand );
+}
 
 /*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_RUN
@@ -724,33 +919,17 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   buttonRun->Enable( false );
   helpOption = false;  
 
-  // Build command
-  wxString command = GetCommandString();
-  
-  // Run command
-  if ( choiceApplication->GetSelection() == USER_DEFINED || !paraverBin.IsEmpty() )
+  wxString readyCommand = GetReachableCommand();
+  if ( !readyCommand.IsEmpty() )
   {
-    myProcess = new RunningProcess( this, command );
-    int exit = wxExecute( command, wxEXEC_ASYNC, myProcess );
-//    std::cout << exit << std::endl;
-    if( exit == 0 )
+    myProcess = new RunningProcess( this, readyCommand );
+    if( !wxExecute( readyCommand, wxEXEC_ASYNC, myProcess ) )
     {
       OnProcessTerminated();
     }
-/*
-    else
-    {
-       wxMessageDialog message( this,
-                                _("Unable to execute command."
-                                  "Please check it or PATH enviroment variable"),
-                                _( "Warning" ), wxOK );
-    }    
-*/
   }
-  else
-  {
-    buttonRun->Enable( true );
-  }
+
+  buttonRun->Enable( true );
 }
 
 
@@ -823,7 +1002,7 @@ void RunScript::adaptWindowToApplicationSelection()
   
   switch ( currentChoice )
   {
-    case DIMEMAS:
+    case DIMEMAS_WRAPPER:
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
       textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to the script\n"
                                                   "%TRACE refers to input trace" ) );
@@ -831,7 +1010,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
       
-    case STATS:
+    case STATS_WRAPPER:
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
       textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to 'stats'\n"
                                                   "-events_histo[:type1[-type2],...]\n"
@@ -866,8 +1045,8 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
   }
 
-  dimemasSection->Show( currentChoice == DIMEMAS );
-  statsSection->Show( currentChoice == STATS );
+  dimemasSection->Show( currentChoice == DIMEMAS_WRAPPER );
+  statsSection->Show( currentChoice == STATS_WRAPPER );
   clusteringSection->Show( currentChoice == CLUSTERING );
   foldingSection->Show( currentChoice == FOLDING );
 
@@ -1119,8 +1298,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     }
     else
     {
-      wxMessageDialog message( this, _("No trace loaded."), _( "Warning" ), wxOK );
-      message.ShowModal();
+      ShowWarning( wxString( wxT( "No trace loaded." ) ) );
     }
   }
   else if ( matchHrefExtension( event, _(".xml")))
@@ -1144,11 +1322,7 @@ void RunScript::runDetachedProcess( wxString command )
   RunningProcess *localProcess = new RunningProcess( this, command );
   if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
   {
-    wxMessageDialog message( this,
-                             _("Unable to execute command."
-                               "Please check it and rerun."),
-                             _( "Warning" ), wxOK );
-    message.ShowModal();
+    ShowWarning( wxT( "Unable to execute command. Please check it and rerun" ) );
   }
   else
   {
@@ -1165,12 +1339,21 @@ void RunScript::runDetachedProcess( wxString command )
  */
 void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 {
+/*
   wxString dimemasHome;
   if ( wxGetEnv( wxT( "DIMEMAS_HOME" ), &dimemasHome ) )
   {
     wxString dimemasBinPath = dimemasHome +  wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) +  wxFileName::GetPathSeparator();
     wxString command  = wxString( wxT( "\"" ) ) + dimemasBinPath + wxString( wxT( "DimemasGUI" ) ) + wxString( wxT( "\"" ) );
 
+*/
+  
+  wxString command = GetReachableCommand( DIMEMAS_GUI );
+  if( !command.IsEmpty() )
+  {  
+    
+    //wxString command  = wxString( wxT( "\"" ) ) + dimemasBinPath + wxString( wxT( "DimemasGUI" ) ) + wxString( wxT( "\"" ) );
+    // wxString command  = doubleQuote( dimemasBinPath + application[ DIMEMAS_GUI ] );
     runDetachedProcess( command );    
   }
   else
@@ -1215,7 +1398,8 @@ void RunScript::OnFilepickerTraceFilePickerChanged( wxFileDirPickerEvent& event 
 
 void RunScript::OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event )
 {
-  event.SetText( GetCommandString() );
+  wxString dummyCommand, dummyParameter;
+  event.SetText( GetCommand( dummyCommand, dummyParameter ) );
 }
 
 
@@ -1229,7 +1413,7 @@ void RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEven
 }
 
 
-void RunScript::setApp( int whichApp )
+void RunScript::setApp( TExternalApp whichApp )
 {
   choiceApplication->Select( whichApp ); 
   adaptWindowToApplicationSelection();
@@ -1238,13 +1422,13 @@ void RunScript::setApp( int whichApp )
 
 void RunScript::setDimemas()
 {
-  setApp( DIMEMAS );
+  setApp( DIMEMAS_WRAPPER );
 }
 
 
 void RunScript::setStats()
 {
-  setApp( STATS );
+  setApp( STATS_WRAPPER );
 }
 
 

@@ -40,7 +40,9 @@
 #include "wx/statline.h"
 #include "wx/html/htmlwin.h"
 ////@end includes
+
 #include <string>
+#include <map>
 
 #include <wx/process.h>
 
@@ -121,15 +123,7 @@ class RunScript: public wxDialog
   DECLARE_EVENT_TABLE()
 
 public:
-  enum TExternalApp
-  {
-    DIMEMAS = 0,
-    STATS,
-    CLUSTERING,
-    FOLDING,
-    USER_DEFINED
-  };
-
+  
 
   /// Constructors
   RunScript();
@@ -196,9 +190,6 @@ public:
   RunningProcess * GetMyProcess() const { return myProcess ; }
   void SetMyProcess(RunningProcess * value) { myProcess = value ; }
 
-  wxString GetParaverBin() const { return paraverBin ; }
-  void SetParaverBin(wxString value) { paraverBin = value ; }
-
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -212,8 +203,6 @@ public:
   void OnProcessTerminated();
 
   void AppendToLog( wxString msg );
-  
-  wxString GetCommandString();
   
   void setDimemas();
   void setStats();
@@ -255,27 +244,68 @@ public:
   wxButton* buttonExit;
 private:
   RunningProcess * myProcess;
-  wxString paraverBin;
 ////@end RunScript member variables
 
+  enum TExternalApp
+  {
+    DEFAULT = -1,
+
+    // --- Called through choice selector widget --- 
+    DIMEMAS_WRAPPER,     // Dimemas      selected in choice widget
+    STATS_WRAPPER,       // Stats        selected in choice widget
+    CLUSTERING,          // Clustering   selected in choice widget
+    FOLDING,             // Folding      selected in choice widget
+                         // <-- add new apps here at most
+    USER_DEFINED,        // User defined selected in choice widget
+
+    // --- Called by different widget ---
+    DIMEMAS_GUI,         // DimemasGui   invoked through button
+    STATS                // stats binary invoked by help
+  };
+
+  // Application list: labels and names
+  std::map< TExternalApp, wxString > applicationLabel;
+  std::map< TExternalApp, wxString > application;
+
+  // extensions to detect in log
+  wxArrayString extensions;
+  
+  // Hidden app parameters
   wxString clusteringCSV;
   wxString foldingCSV;
-  bool helpOption;
-  wxArrayString applicationsList;
-  wxArrayString extensions;
 
-  wxString doubleQuote( const wxString& path );
-  
+  bool helpOption; // delete?
+
+  enum TEnvironmentVar
+  {
+    PATH = 0,
+    PARAVER_HOME,
+    DIMEMAS_HOME
+  };
+  std::map< TEnvironmentVar, wxString > environmentVariable;
+
+  // Selection
+  void setApp( TExternalApp whichApp );
   void adaptWindowToApplicationSelection();
+
+  // Command check and build
+  void ShowWarning( wxString message );
+  void ShowWarningUnreachableProgram( wxString program, TEnvironmentVar envVar, bool alsoPrintPath = false );
+  wxString getEnvironmentPath( TEnvironmentVar envVar, wxString command = wxString( wxT("") ) );
+  wxString doubleQuote( const wxString& path );
   wxString expandVariables( wxString command );
+  
+  wxString GetCommand( wxString &command, wxString &parameters, TExternalApp selectedApp = DEFAULT );
+  wxString GetReachableCommand( TExternalApp selectedApp = DEFAULT ); // adds path to the binary
+
+  // Log related
   wxString insertLinks( wxString rawLine, wxArrayString extensions );
-  void runDetachedProcess( wxString command );
-
-  void setApp( int whichApp );
-
   // TODO: This method's been copied from HelpContents; consider write new class
   std::string getHrefFullPath( wxHtmlLinkEvent &event );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
+  
+  // Execution
+  void runDetachedProcess( wxString command );
 };
 
 #endif // _RUNSCRIPT_H_

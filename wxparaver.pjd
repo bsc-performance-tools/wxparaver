@@ -32399,7 +32399,6 @@ In normal mode all properties are showed in main window."</string>
           <long name="use-xrc">0</long>
           <long name="working-mode">0</long>
           <string name="variable-0">"myProcess|RunningProcess *|MyProcess|NULL|2|0|"</string>
-          <string name="variable-1">"paraverBin|wxString|ParaverBin|wxT( &quot;&quot; )|2|0|"</string>
           <string name="event-handler-0">"wxEVT_IDLE|OnIdle|NONE||RunScript"</string>
           <string name="proxy-Id name">"ID_RUN_APPLICATION"</string>
           <long name="proxy-Id value">10110</long>
