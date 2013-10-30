@@ -773,7 +773,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
   }
   
   fullCommand = command;
-  if ( !command.IsEmpty() )
+  if ( !command.IsEmpty() && !parameters.IsEmpty() )
   { 
     // extend with parameters
     fullCommand += wxString( wxT( " " ) ) + parameters;
@@ -801,12 +801,12 @@ void RunScript::ShowWarningUnreachableProgram( wxString program, TEnvironmentVar
   
   auxMessage = wxString( wxT( "Unable to find:" ) );
   auxMessage += wxString( wxT( "\n\n\t" ) ) + program + wxString( wxT( "\n\n" ) );
-  auxMessage += wxString( wxT("Please check that the program is reachable through the environment variable " ) );
+  auxMessage += wxString( wxT("Please check that the program is reachable through the environment variable" ) );
   if ( alsoPrintPath )
   {
-    auxMessage += wxString( wxT( "$PATH or " ) )  + environmentVariable[ envVar ] + wxString( wxT( "." ) );
+    auxMessage += wxString( wxT( " $PATH or " ) )  + environmentVariable[ envVar ];
   }
-  auxMessage += wxString( wxT( "$" ) )  + environmentVariable[ envVar ] + wxString( wxT( "." ) );
+  auxMessage += wxString( wxT( " $" ) )  + environmentVariable[ envVar ] + wxString( wxT( "." ) );
   
   ShowWarning( auxMessage );
 }
@@ -818,8 +818,6 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
   wxString readyCommand;
   wxString pathToProgram;
 
-  //readyCommand.Clear();
-  
   wxString candidateCommand = GetCommand( program, parameters, selectedApp );
   if ( candidateCommand.IsEmpty() )
   {
@@ -1277,17 +1275,13 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   else if ( matchHrefExtension( event, wxT(".dat" )))
   {
     wxString command = wxString( wxT( "libreoffice --calc " ) ) +
-                       wxString( wxT( "\"" ) ) +
-                       wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) +
-                       wxString( wxT( "\"" ) );
+                       doubleQuote( wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) );
     runDetachedProcess( command );    
   }
   else if ( matchHrefExtension( event, wxT(".gnuplot" )))
   {
     wxString command = wxString( wxT( "gnuplot -p " ) ) +
-                       wxString( wxT( "\"" ) ) +
-                       wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) +
-                       wxString( wxT( "\"" ) );
+                       doubleQuote( wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) );
     runDetachedProcess( command );    
   }
   else if ( matchHrefExtension( event, _(".cfg")))
@@ -1339,30 +1333,10 @@ void RunScript::runDetachedProcess( wxString command )
  */
 void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 {
-/*
-  wxString dimemasHome;
-  if ( wxGetEnv( wxT( "DIMEMAS_HOME" ), &dimemasHome ) )
-  {
-    wxString dimemasBinPath = dimemasHome +  wxFileName::GetPathSeparator() + wxString( wxT( "bin" ) ) +  wxFileName::GetPathSeparator();
-    wxString command  = wxString( wxT( "\"" ) ) + dimemasBinPath + wxString( wxT( "DimemasGUI" ) ) + wxString( wxT( "\"" ) );
-
-*/
-  
   wxString command = GetReachableCommand( DIMEMAS_GUI );
   if( !command.IsEmpty() )
   {  
-    
-    //wxString command  = wxString( wxT( "\"" ) ) + dimemasBinPath + wxString( wxT( "DimemasGUI" ) ) + wxString( wxT( "\"" ) );
-    // wxString command  = doubleQuote( dimemasBinPath + application[ DIMEMAS_GUI ] );
     runDetachedProcess( command );    
-  }
-  else
-  {
-    wxMessageDialog message( this,
-                             _("Environment variable $DIMEMAS_HOME not found.\n"
-                               "Please set to DIMEMAS installation."),
-                             _( "Warning" ), wxOK );
-    message.ShowModal();
   }
 }
 
