@@ -1280,9 +1280,19 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, wxT(".gnuplot" )))
   {
+    // gnuplot needs to be executed in the same dir where .csv is
+    wxString currentWorkingDir = wxGetCwd();
+    wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+    wxFileName tmpDir( tmpFile );
+    tmpDir = wxFileName( tmpDir.GetPathWithSep() );
+    tmpDir.SetCwd();
+    
     wxString command = wxString( wxT( "gnuplot -p " ) ) +
-                       doubleQuote( wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 ) );
-    runDetachedProcess( command );    
+                       doubleQuote( tmpFile );
+    
+    runDetachedProcess( command );
+    
+    wxFileName::SetCwd( currentWorkingDir );
   }
   else if ( matchHrefExtension( event, _(".cfg")))
   {
