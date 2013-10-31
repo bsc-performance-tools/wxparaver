@@ -265,9 +265,12 @@ void RunScript::Init()
   buttonExit = NULL;
 ////@end RunScript member initialisation
 
-  wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"), _(".cfg"),
-                                   _(".dat"), _(".gnuplot"), _(".xml") };
-  extensions = wxArrayString( (size_t)6, extensionsAllowed );
+  wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"),
+                                   _(".cfg"),
+                                   _(".xml"),
+                                   _(".csv"), _(".dat"),
+                                   _(".gnuplot") };
+  extensions = wxArrayString( (size_t)7, extensionsAllowed );
 
   // Names of environment variables
   environmentVariable[ PATH ]         = wxString( wxT("PATH") );
@@ -305,9 +308,9 @@ wxString RunScript::getEnvironmentPath( TEnvironmentVar envVar, wxString command
   switch( envVar )
   {
     case PATH:
-      currentPathEnv.AddEnvList( "PATH" );
+      currentPathEnv.AddEnvList( environmentVariable[ envVar ] );
       pathToBin = currentPathEnv.FindAbsoluteValidPath( command );
-      auxName  = wxFileName( pathToBin );
+      auxName   = wxFileName( pathToBin );
       pathToBin = auxName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
       
       break;
@@ -652,17 +655,17 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       command = application[ DIMEMAS_WRAPPER ];
 
       parameters = doubleQuote( filePickerTrace->GetPath() );      // Source trace
-      parameters += wxT( " " ) + doubleQuote( filePickerDimemasCFG->GetPath() ); // Dimemas cfg
-      parameters += wxT( " " ) + doubleQuote( textCtrlOutputTrace->GetValue() ); // Final trace
+      parameters += wxString( wxT( " " ) ) + doubleQuote( filePickerDimemasCFG->GetPath() ); // Dimemas cfg
+      parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlOutputTrace->GetValue() ); // Final trace
       if ( checkBoxReuseDimemasTrace->IsChecked() )
       {
-        parameters += wxT( " 1" );
+        parameters += wxString( wxT( " 1" ) );
       }
       else
       {
-        parameters += wxT( " 0" );
+        parameters += wxString( wxT( " 0" ) );
       }
-      parameters += wxT( " " ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
+      parameters += wxString( wxT( " " ) ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
       
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
       {
@@ -717,20 +720,20 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case CLUSTERING:
       command = application[ CLUSTERING ];
       
-      parameters = wxT( " -s" );
+      parameters = wxString( wxT( " -s" ) );
       
       if ( checkBoxClusteringCSVValueAsDimension->IsChecked() )
       {
-        parameters += wxT( " -c" );
+        parameters += wxString( wxT( " -c" ) );
         if ( checkBoxClusteringNormalize->IsChecked() )
         {
-          parameters += wxT( "l" );
+          parameters += wxString( wxT( "l" ) );
         }
       }
       
-      parameters += wxT( " -d " ) + doubleQuote( filePickerClusteringXML->GetPath() );
+      parameters += wxString( wxT( " -d " ) ) + doubleQuote( filePickerClusteringXML->GetPath() );
       
-      parameters += wxT( " -i " );
+      parameters += wxString( wxT( " -i " ) );
       if ( !clusteringCSV.IsEmpty() )
       {
         parameters += doubleQuote( clusteringCSV + wxString( wxT( "," ) ) + filePickerTrace->GetPath() ) ;
@@ -740,7 +743,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += doubleQuote( filePickerTrace->GetPath() );
       }
       
-      parameters += wxT(" -o ");
+      parameters += wxString( wxT(" -o ") );
       tmpFilename = wxFileName( filePickerTrace->GetPath() );
       tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
       tmpNameWOExtension = tmpFilename.GetName();
@@ -752,7 +755,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       command = application[ FOLDING ];
 
       parameters = doubleQuote( filePickerTrace->GetPath() );
-      parameters += wxT(" ");
+      parameters += wxString( wxT(" ") );
       parameters += doubleQuote( foldingCSV );
       
       break;
