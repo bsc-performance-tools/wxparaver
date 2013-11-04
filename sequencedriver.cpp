@@ -99,8 +99,8 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
   KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
 
-  mySequence->pushbackAction( TraceEditSequence::traceCutterAction );
   mySequence->pushbackAction( TraceEditSequence::csvOutputAction );
+  mySequence->pushbackAction( TraceEditSequence::traceCutterAction );
   mySequence->pushbackAction( new RunAppClusteringAction( mySequence ) );
   
   TraceOptions *tmpOptions = TraceOptions::create( myKernel );
@@ -155,8 +155,8 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
   KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
 
-  mySequence->pushbackAction( TraceEditSequence::traceCutterAction );
   mySequence->pushbackAction( TraceEditSequence::csvOutputAction );
+  mySequence->pushbackAction( TraceEditSequence::traceCutterAction );
   mySequence->pushbackAction( new RunAppFoldingAction( mySequence ) );
   
   TraceOptions *tmpOptions = TraceOptions::create( myKernel );
