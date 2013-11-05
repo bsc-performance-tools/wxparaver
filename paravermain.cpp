@@ -279,8 +279,6 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
   Create( parent, id, caption, pos, size, style );
   
   defaultTitleBarSize = GetSize() - GetClientSize();
-//std::cout << GetSize().GetWidth() << GetSize().GetHeight() << std::endl;
-//std::cout << GetClientSize().GetWidth() << GetClientSize().GetHeight() << std::endl;
   ShowToolTips();
 }
 
