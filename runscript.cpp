@@ -50,7 +50,7 @@
 
 #include "wxparaverapp.h" // paraverMain
 #include "runscript.h"
-
+#include "filter.h"
 
 ////@begin XPM images
 #include "app_edit.xpm"
@@ -295,6 +295,8 @@ void RunScript::Init()
   application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED                           
   application[ DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
   application[ STATS ]               = wxString( wxT("stats") );
+  
+  tunePrvLinksForClustering = false;
 }
 
 
@@ -961,6 +963,9 @@ void RunScript::AppendToLog( wxString msg )
   }
   
   listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
+  
+  //std::cout << msg << std::endl;
+  
   int x, y;
   listboxRunLog->GetVirtualSize( &x, &y );
   listboxRunLog->Scroll( -1, y );
@@ -1208,11 +1213,27 @@ wxString RunScript::insertLinks( wxString rawLine,
         wxString linkName = candidateName;
         linkName.Replace( wxT( " " ), wxT( "&nbsp;" ) );
         wxString linkFullPath = candidateFile.GetFullPath();
-        wxString currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
-                              linkName +
-                              wxT("</A>");
-
-        auxLine = currentLink + trashTail + auxLine;        
+        
+        wxString currentLink;
+        if ( !tunePrvLinksForClustering ||
+              ( extensionsPositions[i].second.Cmp( wxString( wxT( ".prv" ))) != 0 ))
+        {
+          currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
+                        linkName +
+                        wxT("</A>");
+        }
+        else
+        {
+          currentLink = linkName + wxString( wxT(" ") );
+          currentLink += wxT("<A HREF=\"") + linkFullPath +
+                         //wxT(",") +
+                         //wxString( wxT( "/home/pgonzalez/bsccns/cfgs/cfgs/clustering/clusterID_window.cfg" ) ) +
+                         wxT("\">") +
+                         wxString( wxT("(analyze ClusterIds)") ) +
+                         wxT("</A>");
+        }
+        
+        auxLine = currentLink + trashTail + auxLine;
         endSubStr = currentPos;
         
         // Advance vector of positions-extensions to next useful (position, ext)
@@ -1270,8 +1291,51 @@ bool RunScript::matchHrefExtension( wxHtmlLinkEvent &event, const wxString exten
 void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 {
   wxString auxCommand;
+  
+  if ( tunePrvLinksForClustering && matchHrefExtension( event, wxT(".clustered.prv") ) )
+  {
+    paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
+    std::vector< Trace * > loadedTraces = paraverMain::myParaverMain->GetLoadedTraces();
+    Trace *clusteredTrace = loadedTraces.back();
+    
+    // Create cluster id window
+    Window *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
+    Window *newWindow = paraverMain::myParaverMain->createBaseWindow();
+    newWindow->setWindowBeginTime( 0 );
+    newWindow->setWindowEndTime( clusteredTrace->getEndTime() );
+    TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterOffset();      
+    //TTime beginZoomTime = 0;      
+    TTime endZoomTime = sourceWindow->getWindowEndTime() - clusteredTrace->getCutterOffset();
+    //TTime endZoomTime = clusteredTrace->getEndTime();
+    newWindow->addZoom( beginZoomTime, endZoomTime, 0, newWindow->getWindowLevelObjects() - 1 );
 
-  if ( matchHrefExtension( event, wxT(".prv") ) || matchHrefExtension( event, wxT(".prv.gz")))
+    Filter *filter = newWindow->getFilter();
+    filter->insertEventType( (TEventType)90000001 );
+    filter->setEventTypeFunction( std::string( "=" ) ); // how to get name?
+
+    newWindow->setLevelFunction( THREAD, "Last Evt Val" );
+
+    newWindow->setDrawCommLines( false );
+    newWindow->setDrawFlags( false );
+    newWindow->setCodeColorMode();
+    newWindow->setDrawModeObject( DRAW_MAXIMUM );
+    newWindow->setDrawModeTime( DRAW_MAXIMUM );
+    
+    newWindow->setWidth( sourceWindow->getWidth() ); 
+    newWindow->setHeight( sourceWindow->getHeight() );
+    newWindow->setPosX( sourceWindow->getPosX() );
+    newWindow->setPosY( sourceWindow->getPosY() +
+                        sourceWindow->getHeight() +
+                        paraverMain::myParaverMain->GetDefaultTitleBarHeight() );
+
+std::cout << sourceWindow->getPosY() << " + " << paraverMain::myParaverMain->GetDefaultTitleBarHeight() << std::endl;
+std::cout << paraverMain::myParaverMain->GetSize().GetWidth() << " " << paraverMain::myParaverMain->GetSize().GetHeight() << std::endl;
+std::cout << paraverMain::myParaverMain->GetClientSize().GetWidth() << " " << paraverMain::myParaverMain->GetClientSize().GetHeight() << std::endl;
+std::cout << paraverMain::myParaverMain->GetWindowBorderSize().GetHeight() << std::endl;
+
+    paraverMain::myParaverMain->insertInTree( newWindow );
+  }
+  else if ( matchHrefExtension( event, wxT(".prv") ) || matchHrefExtension( event, wxT(".prv.gz")))
   {
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event ) );
   }
@@ -1409,12 +1473,14 @@ void RunScript::setApp( TExternalApp whichApp )
 
 void RunScript::setDimemas()
 {
+  tunePrvLinksForClustering = false;
   setApp( DIMEMAS_WRAPPER );
 }
 
 
 void RunScript::setStats()
 {
+  tunePrvLinksForClustering = false;
   setApp( STATS_WRAPPER );
 }
 
@@ -1422,6 +1488,7 @@ void RunScript::setStats()
 void RunScript::setClustering( wxString whichClusteringCSV )
 {
   clusteringCSV = whichClusteringCSV;
+  tunePrvLinksForClustering = true;
   setApp( CLUSTERING );
 }
 
@@ -1429,11 +1496,13 @@ void RunScript::setClustering( wxString whichClusteringCSV )
 void RunScript::setFolding( wxString whichFoldingCSV )
 {
   foldingCSV = whichFoldingCSV;
+  tunePrvLinksForClustering = false;
   setApp( FOLDING );
 }
 
 
 void RunScript::setUserDefined()
 {
+  tunePrvLinksForClustering = false;
   setApp( USER_DEFINED );
 }

@@ -313,6 +313,9 @@ public:
   bool GetCanServeSignal() const { return canServeSignal ; }
   void SetCanServeSignal(bool value) { canServeSignal = value ; }
 
+  Window * GetClusteringWindow() const { return clusteringWindow ; }
+  void SetClusteringWindow(Window * value) { clusteringWindow = value ; }
+
   Histogram * GetCurrentHisto() const { return currentHisto ; }
   void SetCurrentHisto(Histogram * value) { currentHisto = value ; }
 
@@ -392,6 +395,7 @@ public:
   
   int GetNextPosX();
   int GetNextPosY();
+  int GetDefaultTitleBarHeight();
   void selectTrace( Trace *trace );
   PRV_UINT16 getTracePosition( Trace *trace );
 
@@ -424,6 +428,9 @@ public:
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
 
+  Window *createBaseWindow( wxString whichName = wxString(wxT("")) );
+  void insertInTree( Window *whichWindow );
+
 
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows
@@ -450,6 +457,7 @@ private:
   std::string XMLPath;
   std::set<wxWindow *> activeWindows;
   bool canServeSignal;
+  Window * clusteringWindow;
   Histogram * currentHisto;
   Window * currentTimeline;
   PRV_INT16 currentTrace;

@@ -36,6 +36,7 @@
 #include <iostream>
 #include <cmath>
 #include "sequencedriver.h"
+#include "paravermain.h"
 
 using namespace std;
 
@@ -1475,6 +1476,8 @@ void gPopUpMenu::OnMenuLabelsPower2( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuClustering( wxCommandEvent& event )
 {
+  //paraverMain::myParaverMain->SetClusteringGTimeline( timeline );
+  paraverMain::myParaverMain->SetClusteringWindow( timeline->GetMyWindow() );
   SequenceDriver::sequenceClustering( timeline );
 }
 

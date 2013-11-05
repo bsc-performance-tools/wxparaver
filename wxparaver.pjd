@@ -1236,6 +1236,7 @@
           <string name="variable-25">"traceLoadedBefore|bool|TraceLoadedBefore|false|2|0|"</string>
           <string name="variable-26">"tracePath|wxString|TracePath||2|0|"</string>
           <string name="variable-27">"tutorialsWindow|HelpContents *|TutorialsWindow|NULL|2|0|"</string>
+          <string name="variable-28">"clusteringWindow|Window *|ClusteringWindow|NULL|2|0|"</string>
           <string name="event-handler-0">"wxEVT_CLOSE_WINDOW|OnCloseWindow|NONE||paraverMain"</string>
           <string name="event-handler-1">"wxEVT_ICONIZE|OnIconize|NONE||paraverMain"</string>
           <string name="event-handler-2">"wxEVT_SIZE|OnSize|NONE||"</string>

@@ -279,6 +279,8 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
   Create( parent, id, caption, pos, size, style );
   
   defaultTitleBarSize = GetSize() - GetClientSize();
+//std::cout << GetSize().GetWidth() << GetSize().GetHeight() << std::endl;
+//std::cout << GetClientSize().GetWidth() << GetClientSize().GetHeight() << std::endl;
   ShowToolTips();
 }
 
@@ -372,6 +374,7 @@ void paraverMain::Init()
   CFGLoadedBefore = false;
   XMLLoadedBefore = false;
   canServeSignal = true;
+  clusteringWindow = NULL;
   currentHisto = NULL;
   currentTimeline = NULL;
   currentTrace = -1;
@@ -2085,32 +2088,42 @@ wxSize paraverMain::defaultWindowSize = wxSize( 600, 115 );
 int paraverMain::initialPosX = 0;
 int paraverMain::initialPosY = 0;
 
-void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
+
+Window *paraverMain::createBaseWindow( wxString whichName )
 {
   // Create new window
   Window *newWindow = Window::create( localKernel, loadedTraces[ currentTrace ] );
   ++numNewWindows;
-  wxString tmpName( _( "New window #" ) );
-  tmpName << numNewWindows;
-  newWindow->setName( std::string( tmpName.mb_str() ) );
-  newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit() );
+  
+  if ( whichName.IsEmpty() )
+  {
+    whichName = wxString( wxT( "New window #" ) );
+    whichName << numNewWindows;
+  }
+  
+  newWindow->setName( std::string( whichName.mb_str() ) );
+  newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit());
   newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
                       0, newWindow->getWindowLevelObjects() - 1 );
 
   // Position window in screen
   newWindow->setWidth( defaultWindowSize.GetWidth() ); // magic numbers!
   newWindow->setHeight( defaultWindowSize.GetHeight() );
-  
+
+  /*
   if ( initialPosX != 0 )
     initialPosX += defaultTitleBarSize.GetHeight();
   else
     initialPosX += GetSize().GetWidth();
+  */
+
 #ifdef __WXMAC__
   if( initialPosY < GetPosition().y )
     initialPosY = GetPosition().y;
 #endif
 
-  newWindow->setPosX( initialPosX );
+  //newWindow->setPosX( initialPosX );
+  newWindow->setPosX( GetNextPosX() );
   newWindow->setPosY( initialPosY );
   initialPosY += defaultTitleBarSize.GetHeight();
 
@@ -2123,7 +2136,13 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
     newWindow->setLevelFunction( THREAD, semanticFunction );
   else
     newWindow->setLevelFunction( THREAD, "State As Is" );
+    
+  return newWindow;
+}
 
+
+void paraverMain::insertInTree( Window *whichWindow )
+{
   // Build gtimeline and append new window to windows tree
   wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
   wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
@@ -2131,7 +2150,13 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
   BuildTree( this,
              allTracesPage, allTracesPage->GetRootItem(), 
              currentPage,   currentPage->GetRootItem(),
-             newWindow );
+             whichWindow );
+}
+
+
+void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
+{
+  insertInTree( createBaseWindow() );
 }
 
 
@@ -2449,10 +2474,16 @@ void paraverMain::OnTreeBeginDrag( wxTreeEvent& event )
 }
 
 
+int paraverMain::GetDefaultTitleBarHeight()
+{
+  return defaultTitleBarSize.GetHeight();
+}
+
+
 int paraverMain::GetNextPosX()
 {
   if ( initialPosX != 0 )
-    initialPosX += defaultTitleBarSize.GetHeight();
+    initialPosX += GetDefaultTitleBarHeight();
   else
     initialPosX += GetSize().GetWidth();
     
@@ -2462,7 +2493,7 @@ int paraverMain::GetNextPosX()
 
 int paraverMain::GetNextPosY()
 {
-  initialPosY += defaultTitleBarSize.GetHeight();
+  initialPosY += GetDefaultTitleBarHeight();
   
   return initialPosY;
 }

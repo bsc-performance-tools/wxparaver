@@ -275,6 +275,7 @@ private:
   wxString foldingCSV;
 
   bool helpOption; // delete?
+  bool tunePrvLinksForClustering;
 
   enum TEnvironmentVar
   {
