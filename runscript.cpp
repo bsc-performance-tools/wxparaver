@@ -1300,13 +1300,15 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     
     // Create cluster id window
     Window *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
-    Window *newWindow = paraverMain::myParaverMain->createBaseWindow();
-    newWindow->setWindowBeginTime( 0 );
-    newWindow->setWindowEndTime( clusteredTrace->getEndTime() );
-    TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterOffset();      
-    //TTime beginZoomTime = 0;      
+    Window *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
+    TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterOffset();
+std::cout<<std::fixed;
+std::cout<<sourceWindow->getWindowBeginTime()<<" "<<clusteredTrace->getCutterOffset()<<std::endl;
+    //TTime beginZoomTime = 0;
     TTime endZoomTime = sourceWindow->getWindowEndTime() - clusteredTrace->getCutterOffset();
     //TTime endZoomTime = clusteredTrace->getEndTime();
+    newWindow->setWindowBeginTime( beginZoomTime );
+    newWindow->setWindowEndTime( endZoomTime );
     newWindow->addZoom( beginZoomTime, endZoomTime, 0, newWindow->getWindowLevelObjects() - 1 );
 
     Filter *filter = newWindow->getFilter();
