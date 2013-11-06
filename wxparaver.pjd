@@ -36132,7 +36132,7 @@ In normal mode all properties are showed in main window."</string>
                       <long name="proxy-Height">5</long>
                       <string name="proxy-AlignH">"Centre"</string>
                       <string name="proxy-AlignV">"Centre"</string>
-                      <long name="proxy-Stretch factor">10</long>
+                      <long name="proxy-Stretch factor">9</long>
                       <long name="proxy-Border">2</long>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxRIGHT">1</bool>

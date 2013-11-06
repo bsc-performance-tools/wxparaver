@@ -632,7 +632,7 @@ void RunScript::CreateControls()
   clusteringTextBoxRefinementMinPoints = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, _("4"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer70->Add(clusteringTextBoxRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  itemBoxSizer70->Add(5, 5, 10, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer70->Add(5, 5, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   foldingSection = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(foldingSection, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
