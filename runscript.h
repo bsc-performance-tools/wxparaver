@@ -99,6 +99,17 @@ class wxHtmlWindow;
 #define ID_FILECTRL_CLUSTERING_XML 10220
 #define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
 #define ID_CHECKBOX_CLUSTERING_NORMALIZE 10002
+#define ID_RADIOBUTTON_CLUSTERING_XMLDEFINED 10221
+#define ID_RADIOBUTTON_CLUSTERING_DBSCAN 10222
+#define ID_RADIOBUTTON_CLUSTERING_REFINEMENT 10223
+#define ID_TEXTCTRL_CLUSTERING_DBSCAN_EPSILON 10224
+#define ID_TEXTCTRL3 10225
+#define ID_CHECKBOX_CLUSTERING_REFINEMENT_PRINT_DATA 10226
+#define ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE 10227
+#define ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MIN 10228
+#define ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MAX 10229
+#define ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS 10230
+#define ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS 10231
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
@@ -108,7 +119,7 @@ class wxHtmlWindow;
 #define SYMBOL_RUNSCRIPT_STYLE wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_RUNSCRIPT_TITLE _("Run Application")
 #define SYMBOL_RUNSCRIPT_IDNAME ID_RUN_APPLICATION
-#define SYMBOL_RUNSCRIPT_SIZE wxSize(600, 600)
+#define SYMBOL_RUNSCRIPT_SIZE wxDefaultSize
 #define SYMBOL_RUNSCRIPT_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -235,6 +246,19 @@ public:
   wxFilePickerCtrl* filePickerClusteringXML;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;
+  wxRadioButton* clusteringRadioXMLDefined;
+  wxRadioButton* clusteringRadioDBScan;
+  wxRadioButton* clusteringRadioRefinement;
+  wxBoxSizer* clusteringSizerDBScan;
+  wxTextCtrl* clusteringTextBoxDBScanEpsilon;
+  wxTextCtrl* clusteringTextBoxDBScanMinPoints;
+  wxBoxSizer* clusteringSizerRefinement;
+  wxCheckBox* clusteringCheckBoxRefinementPrintData;
+  wxCheckBox* clusteringCheckBoxRefinementTune;
+  wxTextCtrl* clusteringTextBoxRefinementEpsilonMin;
+  wxTextCtrl* clusteringTextBoxRefinementEpsilonMax;
+  wxTextCtrl* clusteringTextBoxRefinementSteps;
+  wxTextCtrl* clusteringTextBoxRefinementMinPoints;
   wxBoxSizer* foldingSection;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
