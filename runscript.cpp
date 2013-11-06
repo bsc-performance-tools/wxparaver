@@ -847,6 +847,33 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       
       parameters += wxString( wxT( " -d " ) ) + doubleQuote( filePickerClusteringXML->GetPath() );
       
+      if ( clusteringRadioDBScan->GetValue() )
+      {
+        parameters += wxString( wxT( " -dbscan " ) );
+        parameters += clusteringTextBoxDBScanEpsilon->GetValue() + wxString( wxT( "," ) );
+        parameters += clusteringTextBoxDBScanMinPoints->GetValue();
+      }
+      else if ( clusteringRadioRefinement->GetValue() )
+      {
+        parameters += wxString( wxT( " -ra" ) );
+        
+        if ( clusteringCheckBoxRefinementPrintData->GetValue() )
+        {
+          parameters += wxString( wxT( "p " ) );
+        }
+        
+        if  ( clusteringCheckBoxRefinementTune->GetValue() )
+        {
+          parameters += clusteringTextBoxRefinementMinPoints->GetValue();
+          parameters += wxString( wxT( "," ) );
+          parameters += clusteringTextBoxRefinementEpsilonMax->GetValue();
+          parameters += wxString( wxT( "," ) );
+          parameters += clusteringTextBoxRefinementEpsilonMin->GetValue();
+          parameters += wxString( wxT( "," ) );
+          parameters += clusteringTextBoxRefinementSteps->GetValue();
+        }
+      }
+      
       parameters += wxString( wxT( " -i " ) );
       if ( !clusteringCSV.IsEmpty() )
       {
@@ -895,7 +922,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     // extend with parameters
     fullCommand += wxString( wxT( " " ) ) + parameters;
   }
-  
+std::cout << fullCommand <<std::endl;
   return ( fullCommand );
 }
 
@@ -1144,6 +1171,9 @@ void RunScript::adaptWindowToApplicationSelection()
       {
         checkBoxClusteringCSVValueAsDimension->Enable( false );
       }
+      clusteringSizerDBScan->Show( clusteringRadioDBScan->GetValue() );
+      clusteringSizerRefinement->Show( clusteringRadioRefinement->GetValue() );
+      clusteringAlgorithmLineSeparator->Show( !clusteringRadioXMLDefined->GetValue() );
       break;
       
     case FOLDING:
@@ -1640,10 +1670,9 @@ void RunScript::OnClusteringAlgorithmUpdate( wxUpdateUIEvent& event )
   clusteringTextBoxRefinementMinPoints->Enable( tuneByHand );
 
   int currentChoice = choiceApplication->GetSelection();
-  bool showExtraParameters = ( currentChoice == CLUSTERING ) && !clusteringRadioXMLDefined->GetValue();
-  clusteringSizerDBScan->Show( showExtraParameters && clusteringRadioDBScan->GetValue() );
-  clusteringSizerRefinement->Show( showExtraParameters && clusteringRadioRefinement->GetValue() );
-  clusteringAlgorithmLineSeparator->Show( showExtraParameters );
+  clusteringSizerDBScan->Show( ( currentChoice == CLUSTERING ) && clusteringRadioDBScan->GetValue() );
+  clusteringSizerRefinement->Show( ( currentChoice == CLUSTERING ) && clusteringRadioRefinement->GetValue() );
+  clusteringAlgorithmLineSeparator->Show( ( currentChoice == CLUSTERING ) && !clusteringRadioXMLDefined->GetValue() );
 
   Layout();
 }
