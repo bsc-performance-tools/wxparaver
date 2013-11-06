@@ -74,6 +74,7 @@ class RunningProcess : public wxProcess
 ////@begin forward declarations
 class wxFilePickerCtrl;
 class wxBoxSizer;
+class wxStaticLine;
 class wxHtmlWindow;
 ////@end forward declarations
 
@@ -119,7 +120,7 @@ class wxHtmlWindow;
 #define SYMBOL_RUNSCRIPT_STYLE wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_RUNSCRIPT_TITLE _("Run Application")
 #define SYMBOL_RUNSCRIPT_IDNAME ID_RUN_APPLICATION
-#define SYMBOL_RUNSCRIPT_SIZE wxDefaultSize
+#define SYMBOL_RUNSCRIPT_SIZE wxSize(600, 1000)
 #define SYMBOL_RUNSCRIPT_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -175,6 +176,9 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION
   void OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_ANY
+  void OnClusteringAlgorithmUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
@@ -246,18 +250,25 @@ public:
   wxFilePickerCtrl* filePickerClusteringXML;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;
+  wxStaticBox* clusteringSizerAlgorithm;
   wxRadioButton* clusteringRadioXMLDefined;
   wxRadioButton* clusteringRadioDBScan;
   wxRadioButton* clusteringRadioRefinement;
+  wxStaticLine* clusteringAlgorithmLineSeparator;
   wxBoxSizer* clusteringSizerDBScan;
   wxTextCtrl* clusteringTextBoxDBScanEpsilon;
   wxTextCtrl* clusteringTextBoxDBScanMinPoints;
   wxBoxSizer* clusteringSizerRefinement;
   wxCheckBox* clusteringCheckBoxRefinementPrintData;
   wxCheckBox* clusteringCheckBoxRefinementTune;
+  wxStaticText* clusteringLabelRefinementEpsilon;
+  wxStaticText* clusteringLabelRefinementEpsilonMin;
   wxTextCtrl* clusteringTextBoxRefinementEpsilonMin;
+  wxStaticText* clusteringLabelRefinementEpsilonMax;
   wxTextCtrl* clusteringTextBoxRefinementEpsilonMax;
+  wxStaticText* clusteringLabelRefinementSteps;
   wxTextCtrl* clusteringTextBoxRefinementSteps;
+  wxStaticText* clusteringLabelRefinementMinPoints;
   wxTextCtrl* clusteringTextBoxRefinementMinPoints;
   wxBoxSizer* foldingSection;
   wxTextCtrl* labelCommandPreview;
