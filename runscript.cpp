@@ -866,8 +866,10 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         
         if ( clusteringCheckBoxRefinementPrintData->GetValue() )
         {
-          parameters += wxString( wxT( "p " ) );
+          parameters += wxString( wxT( "p" ) );
         }
+        parameters += wxString( wxT( " " ) );
+
         
         if  ( clusteringCheckBoxRefinementTune->GetValue() )
         {
