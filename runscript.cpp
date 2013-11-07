@@ -1674,9 +1674,10 @@ void RunScript::adaptClusteringAlgorithmParameters()
   clusteringLabelRefinementMinPoints->Enable( tuneByHand );
   clusteringTextBoxRefinementMinPoints->Enable( tuneByHand );
 
-  clusteringSizerDBScan->Show( clusteringRadioDBScan->GetValue() );
-  clusteringSizerRefinement->Show( clusteringRadioRefinement->GetValue() );
-  clusteringAlgorithmLineSeparator->Show(!clusteringRadioXMLDefined->GetValue() );
+  bool clusteringSelected = ( choiceApplication->GetSelection() == CLUSTERING );
+  clusteringSizerDBScan->Show( clusteringSelected && clusteringRadioDBScan->GetValue() );
+  clusteringSizerRefinement->Show( clusteringSelected && clusteringRadioRefinement->GetValue() );
+  clusteringAlgorithmLineSeparator->Show( clusteringSelected && !clusteringRadioXMLDefined->GetValue() );
 }
 
 
