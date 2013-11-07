@@ -177,8 +177,17 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION
   void OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for wxID_ANY
-  void OnClusteringAlgorithmUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CLUSTERING_XMLDEFINED
+  void OnRadiobuttonClusteringXmldefinedSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CLUSTERING_DBSCAN
+  void OnRadiobuttonClusteringDbscanSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CLUSTERING_REFINEMENT
+  void OnRadiobuttonClusteringRefinementSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE
+  void OnCheckboxClusteringRefinementTuneClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
@@ -322,6 +331,7 @@ private:
 
   // Selection
   void setApp( TExternalApp whichApp );
+  void adaptClusteringAlgorithmParameters();
   void adaptWindowToApplicationSelection();
 
   // Command check and build

@@ -10216,7 +10216,6 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxStaticText: wxID_STATIC"</string>
@@ -12383,7 +12382,6 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
               </document>
             </document>
           </document>
@@ -34574,7 +34572,6 @@ In normal mode all properties are showed in main window."</string>
                 <long name="title-mode">0</long>
                 <long name="locked">0</long>
                 <string name="proxy-type">"wbStaticBoxSizerProxy"</string>
-                <string name="event-handler-0">"wxEVT_UPDATE_UI|OnClusteringAlgorithmUpdate|NONE||RunScript"</string>
                 <string name="proxy-Id name">"wxID_ANY"</string>
                 <long name="proxy-Id value">-1</long>
                 <string name="proxy-Label">" Algorithm "</string>
@@ -34633,6 +34630,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbRadioButtonProxy"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_RADIOBUTTON_SELECTED|OnRadiobuttonClusteringXmldefinedSelected|NONE||RunScript"</string>
                     <string name="proxy-Id name">"ID_RADIOBUTTON_CLUSTERING_XMLDEFINED"</string>
                     <long name="proxy-Id value">10221</long>
                     <string name="proxy-Name">""</string>
@@ -34694,6 +34692,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbRadioButtonProxy"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_RADIOBUTTON_SELECTED|OnRadiobuttonClusteringDbscanSelected|NONE||RunScript"</string>
                     <string name="proxy-Id name">"ID_RADIOBUTTON_CLUSTERING_DBSCAN"</string>
                     <long name="proxy-Id value">10222</long>
                     <string name="proxy-Name">""</string>
@@ -34755,6 +34754,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbRadioButtonProxy"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_RADIOBUTTON_SELECTED|OnRadiobuttonClusteringRefinementSelected|NONE||RunScript"</string>
                     <string name="proxy-Id name">"ID_RADIOBUTTON_CLUSTERING_REFINEMENT"</string>
                     <long name="proxy-Id value">10223</long>
                     <string name="proxy-Name">""</string>
@@ -35313,6 +35313,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbCheckBoxProxy"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnCheckboxClusteringRefinementTuneClick|NONE||RunScript"</string>
                     <string name="proxy-Id name">"ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE"</string>
                     <long name="proxy-Id value">10227</long>
                     <string name="proxy-Name">""</string>

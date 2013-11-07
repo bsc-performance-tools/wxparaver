@@ -133,7 +133,13 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
 
-  EVT_UPDATE_UI( wxID_ANY, RunScript::OnClusteringAlgorithmUpdate )
+  EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, RunScript::OnRadiobuttonClusteringXmldefinedSelected )
+
+  EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
+
+  EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
+
+  EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
 
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
 
@@ -692,7 +698,8 @@ void RunScript::CreateControls()
   }
   
   int appNumber = DIMEMAS_WRAPPER; // Default is 0
-  choiceApplication->Select( appNumber ); 
+  choiceApplication->Select( appNumber );
+  
   adaptWindowToApplicationSelection();
 }
 
@@ -922,7 +929,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     // extend with parameters
     fullCommand += wxString( wxT( " " ) ) + parameters;
   }
-std::cout << fullCommand <<std::endl;
+
   return ( fullCommand );
 }
 
@@ -1171,9 +1178,7 @@ void RunScript::adaptWindowToApplicationSelection()
       {
         checkBoxClusteringCSVValueAsDimension->Enable( false );
       }
-      clusteringSizerDBScan->Show( clusteringRadioDBScan->GetValue() );
-      clusteringSizerRefinement->Show( clusteringRadioRefinement->GetValue() );
-      clusteringAlgorithmLineSeparator->Show( !clusteringRadioXMLDefined->GetValue() );
+      //adaptClusteringAlgorithmParameters();
       break;
       
     case FOLDING:
@@ -1196,6 +1201,7 @@ void RunScript::adaptWindowToApplicationSelection()
   dimemasSection->Show( currentChoice == DIMEMAS_WRAPPER );
   statsSection->Show( currentChoice == STATS_WRAPPER );
   clusteringSection->Show( currentChoice == CLUSTERING );
+  adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentChoice == FOLDING );
 
   Layout();
@@ -1652,12 +1658,9 @@ void RunScript::setUserDefined()
 }
 
 
-/*!
- * wxEVT_UPDATE_UI event handler for wxID_ANY
- */
-
-void RunScript::OnClusteringAlgorithmUpdate( wxUpdateUIEvent& event )
+void RunScript::adaptClusteringAlgorithmParameters()
 {
+  // Refinement parameters remain visible, but enabled/disabled
   bool tuneByHand = clusteringCheckBoxRefinementTune->IsChecked();
   clusteringLabelRefinementEpsilon->Enable( tuneByHand );
   clusteringLabelRefinementEpsilonMin->Enable( tuneByHand );
@@ -1669,13 +1672,40 @@ void RunScript::OnClusteringAlgorithmUpdate( wxUpdateUIEvent& event )
   clusteringLabelRefinementMinPoints->Enable( tuneByHand );
   clusteringTextBoxRefinementMinPoints->Enable( tuneByHand );
 
-  int currentChoice = choiceApplication->GetSelection();
-  clusteringSizerDBScan->Show( ( currentChoice == CLUSTERING ) && clusteringRadioDBScan->GetValue() );
-  clusteringSizerRefinement->Show( ( currentChoice == CLUSTERING ) && clusteringRadioRefinement->GetValue() );
-  clusteringAlgorithmLineSeparator->Show( ( currentChoice == CLUSTERING ) && !clusteringRadioXMLDefined->GetValue() );
+  clusteringSizerDBScan->Show( clusteringRadioDBScan->GetValue() );
+  clusteringSizerRefinement->Show( clusteringRadioRefinement->GetValue() );
+  clusteringAlgorithmLineSeparator->Show(!clusteringRadioXMLDefined->GetValue() );
+}
 
+
+void RunScript::OnRadiobuttonClusteringXmldefinedSelected( wxCommandEvent& event )
+{
+  adaptClusteringAlgorithmParameters();
   Layout();
 }
 
 
+void RunScript::OnRadiobuttonClusteringDbscanSelected( wxCommandEvent& event )
+{
+  adaptClusteringAlgorithmParameters();
+  Layout();
+}
+
+
+void RunScript::OnRadiobuttonClusteringRefinementSelected( wxCommandEvent& event )
+{
+  adaptClusteringAlgorithmParameters();
+  Layout();
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE
+ */
+
+void RunScript::OnCheckboxClusteringRefinementTuneClick( wxCommandEvent& event )
+{
+  adaptClusteringAlgorithmParameters();
+  Layout();
+}
 
