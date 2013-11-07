@@ -45,6 +45,10 @@
 #include <wx/txtstrm.h>
 #include <wx/filefn.h> // wxPathList
 
+// Validators
+#include <wx/arrstr.h>
+#include <wx/validate.h>
+
 #include <vector>
 #include <algorithm>
 
@@ -589,7 +593,7 @@ void RunScript::CreateControls()
   wxStaticText* itemStaticText56 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringSizerDBScan->Add(itemStaticText56, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxDBScanMinPoints = new wxTextCtrl( itemDialog1, ID_TEXTCTRL3, _("4"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringTextBoxDBScanMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_DBSCAN_MIN_POINTS, _T("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 4 );
   clusteringSizerDBScan->Add(clusteringTextBoxDBScanMinPoints, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   clusteringSizerRefinement = new wxBoxSizer(wxVERTICAL);
@@ -626,7 +630,7 @@ void RunScript::CreateControls()
   clusteringLabelRefinementSteps = new wxStaticText( itemDialog1, wxID_STATIC, _("Steps"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer61->Add(clusteringLabelRefinementSteps, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
-  clusteringTextBoxRefinementSteps = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS, _("10"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringTextBoxRefinementSteps = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS, _T("10"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 30, 10 );
   itemBoxSizer61->Add(clusteringTextBoxRefinementSteps, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer70 = new wxBoxSizer(wxHORIZONTAL);
@@ -635,7 +639,7 @@ void RunScript::CreateControls()
   clusteringLabelRefinementMinPoints = new wxStaticText( itemDialog1, wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer70->Add(clusteringLabelRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxRefinementMinPoints = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, _("4"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringTextBoxRefinementMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, _T("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4 );
   itemBoxSizer70->Add(clusteringTextBoxRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   itemBoxSizer70->Add(5, 5, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -696,6 +700,15 @@ void RunScript::CreateControls()
   {
     choiceApplication->Append( applicationLabel[ TExternalApp(i) ] );
   }
+
+  // Filter forbidden chars
+  wxArrayString forbidden;
+  forbidden.Add( _( "-" ) );
+  wxTextValidator validator( wxFILTER_NUMERIC | wxFILTER_EXCLUDE_CHAR_LIST );
+  validator.SetExcludes( forbidden );
+  clusteringTextBoxDBScanEpsilon->SetValidator( validator );
+  clusteringTextBoxRefinementEpsilonMin->SetValidator( validator );
+  clusteringTextBoxRefinementEpsilonMax->SetValidator( validator );
   
   int appNumber = DIMEMAS_WRAPPER; // Default is 0
   choiceApplication->Select( appNumber );
@@ -761,6 +774,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
   wxString tmpNameWOExtension;
   wxString tmpParams;
   wxString fullCommand;
+  wxString tmpValue;
   
   command.Clear();
   parameters.Clear();
@@ -858,7 +872,9 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       {
         parameters += wxString( wxT( " -dbscan " ) );
         parameters += clusteringTextBoxDBScanEpsilon->GetValue() + wxString( wxT( "," ) );
-        parameters += clusteringTextBoxDBScanMinPoints->GetValue();
+        tmpValue.Clear();
+        tmpValue << clusteringTextBoxDBScanMinPoints->GetValue();
+        parameters += tmpValue;
       }
       else if ( clusteringRadioRefinement->GetValue() )
       {
@@ -872,14 +888,18 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
         
         if  ( clusteringCheckBoxRefinementTune->GetValue() )
-        {
-          parameters += clusteringTextBoxRefinementMinPoints->GetValue();
+        { 
+          tmpValue.Clear();
+          tmpValue << clusteringTextBoxRefinementMinPoints->GetValue();
+          parameters += tmpValue;
           parameters += wxString( wxT( "," ) );
           parameters += clusteringTextBoxRefinementEpsilonMax->GetValue();
           parameters += wxString( wxT( "," ) );
           parameters += clusteringTextBoxRefinementEpsilonMin->GetValue();
           parameters += wxString( wxT( "," ) );
-          parameters += clusteringTextBoxRefinementSteps->GetValue();
+          tmpValue.Clear();
+          tmpValue << clusteringTextBoxRefinementSteps->GetValue();
+          parameters += tmpValue;
         }
       }
       

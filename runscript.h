@@ -38,6 +38,7 @@
 ////@begin includes
 #include "wx/filepicker.h"
 #include "wx/statline.h"
+#include "wx/spinctrl.h"
 #include "wx/html/htmlwin.h"
 ////@end includes
 
@@ -75,6 +76,7 @@ class RunningProcess : public wxProcess
 class wxFilePickerCtrl;
 class wxBoxSizer;
 class wxStaticLine;
+class wxSpinCtrl;
 class wxHtmlWindow;
 ////@end forward declarations
 
@@ -104,7 +106,7 @@ class wxHtmlWindow;
 #define ID_RADIOBUTTON_CLUSTERING_DBSCAN 10222
 #define ID_RADIOBUTTON_CLUSTERING_REFINEMENT 10223
 #define ID_TEXTCTRL_CLUSTERING_DBSCAN_EPSILON 10224
-#define ID_TEXTCTRL3 10225
+#define ID_TEXTCTRL_DBSCAN_MIN_POINTS 10225
 #define ID_CHECKBOX_CLUSTERING_REFINEMENT_PRINT_DATA 10226
 #define ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE 10227
 #define ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MIN 10228
@@ -266,7 +268,7 @@ public:
   wxStaticLine* clusteringAlgorithmLineSeparator;
   wxBoxSizer* clusteringSizerDBScan;
   wxTextCtrl* clusteringTextBoxDBScanEpsilon;
-  wxTextCtrl* clusteringTextBoxDBScanMinPoints;
+  wxSpinCtrl* clusteringTextBoxDBScanMinPoints;
   wxBoxSizer* clusteringSizerRefinement;
   wxCheckBox* clusteringCheckBoxRefinementPrintData;
   wxCheckBox* clusteringCheckBoxRefinementTune;
@@ -276,9 +278,9 @@ public:
   wxStaticText* clusteringLabelRefinementEpsilonMax;
   wxTextCtrl* clusteringTextBoxRefinementEpsilonMax;
   wxStaticText* clusteringLabelRefinementSteps;
-  wxTextCtrl* clusteringTextBoxRefinementSteps;
+  wxSpinCtrl* clusteringTextBoxRefinementSteps;
   wxStaticText* clusteringLabelRefinementMinPoints;
-  wxTextCtrl* clusteringTextBoxRefinementMinPoints;
+  wxSpinCtrl* clusteringTextBoxRefinementMinPoints;
   wxBoxSizer* foldingSection;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
