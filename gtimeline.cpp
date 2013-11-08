@@ -2559,8 +2559,12 @@ void gTimeline::saveImage()
   
   wxString traceName = wxString::FromAscii( myWindow->getTrace()->getTraceNameNumbered().c_str() );
   traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
-  string auxName = myWindow->getName() + "_";
-  imageName = wxString::FromAscii( auxName.c_str() ) + traceName;
+
+  std::string nameNoSpaces = myWindow->getName();
+  std::replace( nameNoSpaces.begin(), nameNoSpaces.end(), ' ', '_' );
+  imageName = wxString::FromAscii( nameNoSpaces.c_str() ) +
+              wxString( wxT( '@' ) ) +
+              traceName;
 
 #ifdef WIN32
   defaultDir = _(".\\");
