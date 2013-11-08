@@ -289,7 +289,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2233,24 +2233,36 @@ void gHistogram::OnMenuGradientFunction( GradientColor::TGradientFunction functi
   myHistogram->setRedraw( true );
 }
 
+
+// Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
+wxString gHistogram::buildFormattedFileName( bool onlySelectedPlane ) const
+{
+  std::string histoNameNoSpaces = myHistogram->getName();
+
+  if ( onlySelectedPlane )
+  {
+    histoNameNoSpaces += "_";
+    bool isCommStatistic = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+    if ( !isCommStatistic )
+      histoNameNoSpaces += myHistogram->getPlaneLabel( myHistogram->getSelectedPlane() );
+    else
+      histoNameNoSpaces += myHistogram->getPlaneLabel( myHistogram->getCommSelectedPlane() );
+  }
+
+  std::replace( histoNameNoSpaces.begin(), histoNameNoSpaces.end(), ' ', '_' );
+
+  wxString auxTraceName = wxString::FromAscii( myHistogram->getTrace()->getTraceNameNumbered().c_str() );
+  auxTraceName.Remove( auxTraceName.Find( wxT( ".prv" ) ) );
+
+  return ( wxString::FromAscii( histoNameNoSpaces.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
+}
+
+
 void gHistogram::saveText( bool onlySelectedPlane )
 {
   wxString fileName, fileSuffix, defaultDir;
-  string auxName = myHistogram->getName() + "_";
   
-  if ( onlySelectedPlane )
-  {
-    bool isCommStatistic = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
-    if ( !isCommStatistic )
-      auxName += myHistogram->getPlaneLabel( myHistogram->getSelectedPlane() ) + "_";
-    else
-      auxName += myHistogram->getPlaneLabel( myHistogram->getCommSelectedPlane() ) + "_";
-  }
-
-  wxString traceName = wxString::FromAscii( myHistogram->getTrace()->getTraceNameNumbered().c_str() );
-  traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
-
-  fileName = wxString::FromAscii( auxName.c_str() ) + traceName;
+  fileName = buildFormattedFileName( onlySelectedPlane );
 
 #ifdef WIN32
   defaultDir = _(".\\");
@@ -2291,20 +2303,7 @@ void gHistogram::saveImage()
   wxString imageName, imageSuffix, defaultDir;
   long imageType;
 
-  wxString fileName;
-  string auxName = myHistogram->getName() + "_";
-
-  // alway selected plane
-  bool isCommStatistic = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
-  if ( !isCommStatistic )
-    auxName += myHistogram->getPlaneLabel( myHistogram->getSelectedPlane() ) + "_";
-  else
-    auxName += myHistogram->getPlaneLabel( myHistogram->getCommSelectedPlane() ) + "_";
-
-  wxString traceName = wxString::FromAscii( myHistogram->getTrace()->getTraceNameNumbered().c_str() );
-  traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
-
-  fileName = wxString::FromAscii( auxName.c_str() ) + traceName;
+  wxString fileName = buildFormattedFileName();
 
 #ifdef WIN32
   defaultDir = _(".\\");

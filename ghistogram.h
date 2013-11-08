@@ -385,6 +385,9 @@ private:
   wxWindow *parent; // for clone
   HistogramProxy::TZoomInfo zoomRow;
 
+  // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
+  wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
+
   void updateHistogram();
   void OnTimerZoom( wxTimerEvent& event );
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;

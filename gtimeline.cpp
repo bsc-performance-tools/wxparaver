@@ -2552,20 +2552,27 @@ void gTimeline::drawFunctionLineColor()
   myWindow->setRedraw( true );
 }
 
+
+// Returns: fileName_with_spaces_underscored@traceName (without extension PRV)
+wxString gTimeline::buildFormattedFileName() const
+{
+  std::string nameNoSpaces = myWindow->getName();
+  std::replace( nameNoSpaces.begin(), nameNoSpaces.end(), ' ', '_' );
+  
+  wxString auxTraceName = wxString::FromAscii( myWindow->getTrace()->getTraceNameNumbered().c_str() );
+  auxTraceName.Remove( auxTraceName.Find( wxT( ".prv" ) ) );
+
+  return ( wxString::FromAscii( nameNoSpaces.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
+}
+
+
 void gTimeline::saveImage()
 {
   wxString imageName, imageSuffix, defaultDir;
   long imageType;
+
+  imageName = buildFormattedFileName();
   
-  wxString traceName = wxString::FromAscii( myWindow->getTrace()->getTraceNameNumbered().c_str() );
-  traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
-
-  std::string nameNoSpaces = myWindow->getName();
-  std::replace( nameNoSpaces.begin(), nameNoSpaces.end(), ' ', '_' );
-  imageName = wxString::FromAscii( nameNoSpaces.c_str() ) +
-              wxString( wxT( '@' ) ) +
-              traceName;
-
 #ifdef WIN32
   defaultDir = _(".\\");
 #else
@@ -2576,11 +2583,7 @@ void gTimeline::saveImage()
                            _("Save Image"),
                            defaultDir,
                            imageName, // default name ->window name!
-#ifdef WIN32
                            _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
-#else
-                           _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
-#endif
                            wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveImageFormat() );
@@ -2694,11 +2697,8 @@ void gTimeline::saveImage()
 void gTimeline::saveText()
 {
   wxString fileName, defaultDir;
-  
-  wxString traceName = wxString::FromAscii( myWindow->getTrace()->getTraceNameNumbered().c_str() );
-  traceName.Remove( traceName.Find( wxT( ".prv" ) ) );
-  string auxName = myWindow->getName() + "_";
-  fileName = wxString::FromAscii( auxName.c_str() ) + traceName;
+
+  fileName = buildFormattedFileName();
 
 #ifdef WIN32
   defaultDir = _(".\\");

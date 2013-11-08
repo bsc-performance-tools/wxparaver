@@ -556,6 +556,9 @@ private:
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode );
   void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode );
 
+  // Returns: window_name_with_spaces_underscored@traceName (without extension PRV)
+  wxString buildFormattedFileName() const;
+
   void Unsplit();
   void Split();
   void OnTimerSize( wxTimerEvent& event );
