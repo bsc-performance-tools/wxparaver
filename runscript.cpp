@@ -1472,11 +1472,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     Window *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
     Window *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
     TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterOffset();
-std::cout<<std::fixed;
-std::cout<<sourceWindow->getWindowBeginTime()<<" "<<clusteredTrace->getCutterOffset()<<std::endl;
-    //TTime beginZoomTime = 0;
+
     TTime endZoomTime = sourceWindow->getWindowEndTime() - clusteredTrace->getCutterOffset();
-    //TTime endZoomTime = clusteredTrace->getEndTime();
     newWindow->setWindowBeginTime( beginZoomTime );
     newWindow->setWindowEndTime( endZoomTime );
     newWindow->addZoom( beginZoomTime, endZoomTime, 0, newWindow->getWindowLevelObjects() - 1 );
@@ -1500,11 +1497,8 @@ std::cout<<sourceWindow->getWindowBeginTime()<<" "<<clusteredTrace->getCutterOff
                         sourceWindow->getHeight() +
                         paraverMain::myParaverMain->GetDefaultTitleBarHeight() );
 
-std::cout << sourceWindow->getPosY() << " + " << paraverMain::myParaverMain->GetDefaultTitleBarHeight() << std::endl;
-std::cout << paraverMain::myParaverMain->GetSize().GetWidth() << " " << paraverMain::myParaverMain->GetSize().GetHeight() << std::endl;
-std::cout << paraverMain::myParaverMain->GetClientSize().GetWidth() << " " << paraverMain::myParaverMain->GetClientSize().GetHeight() << std::endl;
-std::cout << paraverMain::myParaverMain->GetWindowBorderSize().GetHeight() << std::endl;
-
+    newWindow->setComputeYMaxOnInit( true );
+    
     paraverMain::myParaverMain->insertInTree( newWindow );
   }
   else if ( matchHrefExtension( event, wxT(".prv") ) || matchHrefExtension( event, wxT(".prv.gz")))
