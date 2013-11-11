@@ -129,6 +129,7 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
   tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
   tmpOptions->set_original_time( false );
   tmpOptions->set_break_states( false );
+  tmpOptions->set_keep_events( true );
 
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
@@ -185,6 +186,7 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
   tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
   tmpOptions->set_original_time( false );
   tmpOptions->set_break_states( false );
+  tmpOptions->set_keep_events( true );
 
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
@@ -242,6 +244,7 @@ void SequenceDriver::sequenceDimemas( gTimeline *whichTimeline )
   tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
   tmpOptions->set_original_time( false );
   tmpOptions->set_break_states( false );
+  tmpOptions->set_keep_events( true );
 
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
