@@ -94,6 +94,7 @@ END_EVENT_TABLE()
 
 wxparaverApp::wxparaverApp()
 {
+  wxSetEnv(wxT("UBUNTU_MENUPROXY"), wxT("0"));
   Init();
 }
 
