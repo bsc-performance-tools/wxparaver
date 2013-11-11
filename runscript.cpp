@@ -1528,6 +1528,8 @@ std::cout << paraverMain::myParaverMain->GetWindowBorderSize().GetHeight() << st
     wxFileName tmpDir( tmpFile );
     tmpDir = wxFileName( tmpDir.GetPathWithSep() );
     tmpDir.SetCwd();
+
+std::cout << std::endl << std::endl << "cd " << tmpDir.GetPath() << std::endl << std::endl;
     
     // prepare command
     wxString command = wxString( wxT( "gnuplot -p " ) ) +
@@ -1536,6 +1538,8 @@ std::cout << paraverMain::myParaverMain->GetWindowBorderSize().GetHeight() << st
     runDetachedProcess( command );
     
     wxFileName::SetCwd( currentWorkingDir ); // restore the old
+std::cout << std::endl << std::endl << "cd " <<wxGetCwd() << std::endl << std::endl;
+    
   }
   else if ( matchHrefExtension( event, _(".cfg")))
   {
@@ -1566,7 +1570,7 @@ std::cout << paraverMain::myParaverMain->GetWindowBorderSize().GetHeight() << st
 
 void RunScript::runDetachedProcess( wxString command )
 {
-std::cout << << std::endl << std::endl << command << std::endl << std::endl;
+std::cout << std::endl << std::endl << command << std::endl << std::endl;
 
   RunningProcess *localProcess = new RunningProcess( this, command );
   if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
