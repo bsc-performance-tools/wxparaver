@@ -1523,8 +1523,6 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     tmpDir = wxFileName( tmpDir.GetPathWithSep() );
     tmpDir.SetCwd();
 
-std::cout << std::endl << std::endl << "cd " << tmpDir.GetPath() << std::endl << std::endl;
-    
     // prepare command
     wxString command = wxString( wxT( "gnuplot -p " ) ) +
                        doubleQuote( tmpFile );
@@ -1532,8 +1530,6 @@ std::cout << std::endl << std::endl << "cd " << tmpDir.GetPath() << std::endl <<
     runDetachedProcess( command );
     
     wxFileName::SetCwd( currentWorkingDir ); // restore the old
-std::cout << std::endl << std::endl << "cd " <<wxGetCwd() << std::endl << std::endl;
-    
   }
   else if ( matchHrefExtension( event, _(".cfg")))
   {
