@@ -1520,18 +1520,22 @@ std::cout << paraverMain::myParaverMain->GetWindowBorderSize().GetHeight() << st
   else if ( matchHrefExtension( event, wxT(".gnuplot" )))
   {
     // gnuplot needs to be executed in the same dir where .csv is
-    wxString currentWorkingDir = wxGetCwd();
+    
+    wxString currentWorkingDir = wxGetCwd(); // keep the old
+    
+    // change to dir pointed by link
     wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
     wxFileName tmpDir( tmpFile );
     tmpDir = wxFileName( tmpDir.GetPathWithSep() );
     tmpDir.SetCwd();
     
+    // prepare command
     wxString command = wxString( wxT( "gnuplot -p " ) ) +
                        doubleQuote( tmpFile );
     
     runDetachedProcess( command );
     
-    wxFileName::SetCwd( currentWorkingDir );
+    wxFileName::SetCwd( currentWorkingDir ); // restore the old
   }
   else if ( matchHrefExtension( event, _(".cfg")))
   {
@@ -1562,6 +1566,8 @@ std::cout << paraverMain::myParaverMain->GetWindowBorderSize().GetHeight() << st
 
 void RunScript::runDetachedProcess( wxString command )
 {
+std::cout << << std::endl << std::endl << command << std::endl << std::endl;
+
   RunningProcess *localProcess = new RunningProcess( this, command );
   if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
   {
