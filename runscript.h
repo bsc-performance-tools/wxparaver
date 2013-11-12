@@ -59,7 +59,7 @@ class RunningProcess : public wxProcess
       Redirect();
     }    
 
-    virtual void OnTerminate( int piwxChoiced, int status );
+    virtual void OnTerminate( int pid, int status );
     virtual bool HasInput();
 
   protected:
