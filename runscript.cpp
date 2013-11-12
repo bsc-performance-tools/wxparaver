@@ -61,6 +61,8 @@
 ////@end XPM images
 
 
+wxString RunScript::clusteringXML = wxString("");
+
 void RunningProcess::OnTerminate( int pid, int status )
 {
   while ( HasInput() )
@@ -712,8 +714,13 @@ void RunScript::CreateControls()
   
   int appNumber = DIMEMAS_WRAPPER; // Default is 0
   choiceApplication->Select( appNumber );
-  
+
   adaptWindowToApplicationSelection();
+  
+  if ( !clusteringXML.IsEmpty() )
+  {
+    filePickerClusteringXML->SetPath( clusteringXML );
+  }
 }
 
 
@@ -855,7 +862,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case CLUSTERING:
       command = application[ CLUSTERING ];
       
-      parameters = wxString( wxT( " -s" ) );
+      parameters = wxString( wxT( " -p" ) );
       
       if ( checkBoxClusteringCSVValueAsDimension->IsChecked() )
       {
@@ -1093,6 +1100,12 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   wxString readyCommand = GetReachableCommand();
   if ( !readyCommand.IsEmpty() )
   {
+    if ( choiceApplication->GetSelection() == CLUSTERING )
+    {
+      // PRECOND: not empty
+      clusteringXML = filePickerClusteringXML->GetPath();
+    }
+  
     myProcess = new RunningProcess( this, readyCommand );
     if( !wxExecute( readyCommand, wxEXEC_ASYNC, myProcess ) )
     {
@@ -1560,8 +1573,6 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
 void RunScript::runDetachedProcess( wxString command )
 {
-std::cout << std::endl << std::endl << command << std::endl << std::endl;
-
   RunningProcess *localProcess = new RunningProcess( this, command );
   if( !wxExecute( command, wxEXEC_ASYNC, localProcess ) )
   {
