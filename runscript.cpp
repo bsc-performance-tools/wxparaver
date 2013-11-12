@@ -1563,7 +1563,7 @@ void RunScript::runDetachedProcess( wxString command )
 std::cout << std::endl << std::endl << command << std::endl << std::endl;
 
   RunningProcess *localProcess = new RunningProcess( this, command );
-  if( !wxExecute( command, wxEXEC_ASYNC, myProcess ) )
+  if( !wxExecute( command, wxEXEC_ASYNC, localProcess ) )
   {
     ShowWarning( wxT( "Unable to execute command. Please check it and rerun" ) );
   }
