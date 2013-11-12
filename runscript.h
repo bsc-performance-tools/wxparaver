@@ -292,6 +292,8 @@ private:
   RunningProcess * myProcess;
 ////@end RunScript member variables
 
+  static wxString clusteringXML;
+
   enum TExternalApp
   {
     DEFAULT = -1,

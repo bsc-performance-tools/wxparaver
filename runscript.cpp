@@ -61,7 +61,7 @@
 ////@end XPM images
 
 
-wxString RunScript::clusteringXML = wxString("");
+wxString RunScript::clusteringXML = wxString( wxT("") );
 
 void RunningProcess::OnTerminate( int pid, int status )
 {
