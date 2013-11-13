@@ -34519,7 +34519,7 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
                   <string name="proxy-Member variable name">"checkBoxClusteringCSVValueAsDimension"</string>
-                  <string name="proxy-Label">"CSV Semantic values as clustering dimensions"</string>
+                  <string name="proxy-Label">"Use semantic values as clustering dimensions"</string>
                   <bool name="proxy-Initial value">0</bool>
                   <string name="proxy-Help text">""</string>
                   <string name="proxy-Tooltip text">""</string>
@@ -34622,7 +34622,7 @@ In normal mode all properties are showed in main window."</string>
                   <long name="title-mode">0</long>
                   <long name="locked">0</long>
                   <string name="proxy-type">"wbCheckBoxProxy"</string>
-                  <string name="event-handler-0">"wxEVT_UPDATE_UI|OnCheckboxClusteringNormalizeUpdate|NONE||"</string>
+                  <string name="event-handler-0">"wxEVT_UPDATE_UI|OnCheckboxClusteringNormalizeUpdate|NONE||RunScript"</string>
                   <string name="proxy-Id name">"ID_CHECKBOX_CLUSTERING_NORMALIZE"</string>
                   <long name="proxy-Id value">10002</long>
                   <string name="proxy-Name">""</string>
