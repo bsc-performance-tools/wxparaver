@@ -928,9 +928,10 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       }
       
       parameters += wxString( wxT( " -i " ) );
-      if ( checkBoxClusteringUseSemanticWindow->IsEnabled() &&
-           checkBoxClusteringUseSemanticWindow->IsChecked() &&
-           !clusteringCSV.IsEmpty() )
+      
+      // !clusteringCSV.IsEmpty() ==> checkBoxClusteringUseSemanticWindow->IsEnabled()
+      if ( !clusteringCSV.IsEmpty() && 
+            checkBoxClusteringUseSemanticWindow->IsChecked() )
       {
         parameters += doubleQuote( clusteringCSV + wxString( wxT( "," ) ) + filePickerTrace->GetPath() ) ;
       }
