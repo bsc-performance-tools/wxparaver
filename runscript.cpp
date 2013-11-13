@@ -862,7 +862,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case CLUSTERING:
       command = application[ CLUSTERING ];
       
-      parameters = wxString( wxT( " -p" ) );
+      //parameters = wxString( wxT( " -p" ) ); // TODO: CHANGE TO THIS
+      parameters = wxString( wxT( " -s" ) );
       
       if ( checkBoxClusteringCSVValueAsDimension->IsChecked() )
       {
@@ -1577,14 +1578,16 @@ void RunScript::runDetachedProcess( wxString command )
   if( !wxExecute( command, wxEXEC_ASYNC, localProcess ) )
   {
     ShowWarning( wxT( "Unable to execute command. Please check it and rerun" ) );
+    
+    delete localProcess;
+    localProcess = NULL;
   }
   else
   {
     localProcess->Detach();
-  }
-  
-  delete localProcess;
-  localProcess = NULL;
+    
+    // After Detach is done, localProcess shouldn't be deleted!
+  }  
 }
 
 
