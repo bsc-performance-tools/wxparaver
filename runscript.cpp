@@ -156,6 +156,9 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
 
+  EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
+  EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
+
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
 
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
@@ -253,6 +256,7 @@ void RunScript::Init()
 {
 ////@begin RunScript member initialisation
   myProcess = NULL;
+  myProcessPid = 0;
   choiceApplication = NULL;
   buttonEditApplication = NULL;
   filePickerTrace = NULL;
@@ -302,6 +306,7 @@ void RunScript::Init()
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
+  buttonKill = NULL;
   buttonClearLog = NULL;
   listboxRunLog = NULL;
   buttonExit = NULL;
@@ -689,6 +694,9 @@ void RunScript::CreateControls()
     buttonRun->SetToolTip(_("Runs the application"));
   itemBoxSizer82->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
+  buttonKill = new wxButton( itemDialog1, ID_BUTTON_KILL, _("Kill"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer82->Add(buttonKill, 0, wxGROW|wxALL, 5);
+
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
@@ -699,16 +707,16 @@ void RunScript::CreateControls()
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 3, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer87 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer87, 0, wxALIGN_RIGHT|wxALL, 5);
-
   wxBoxSizer* itemBoxSizer88 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer87->Add(itemBoxSizer88, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer2->Add(itemBoxSizer88, 0, wxALIGN_RIGHT|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer89 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer88->Add(itemBoxSizer89, 0, wxALIGN_CENTER_VERTICAL|wxALL, 1);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer88->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer89->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
@@ -1127,7 +1135,8 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     }
   
     myProcess = new RunningProcess( this, readyCommand );
-    if( !wxExecute( readyCommand, wxEXEC_ASYNC, myProcess ) )
+    myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC, myProcess );
+    if( !myProcessPid )
     {
       OnProcessTerminated();
     }
@@ -1182,6 +1191,7 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
 
 void RunScript::OnProcessTerminated()
 {
+  myProcessPid = 0;
   delete myProcess;
   myProcess = NULL;
 }
@@ -1826,4 +1836,27 @@ void RunScript::OnCheckboxClusteringRefinementTuneClick( wxCommandEvent& event )
   Layout();
 }
 
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_KILL
+ */
+
+void RunScript::OnButtonKillUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( myProcess != NULL );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_KILL
+ */
+
+void RunScript::OnButtonKillClick( wxCommandEvent& event )
+{
+  if( myProcessPid != 0 )
+  {
+    wxProcess::Kill( myProcessPid, wxSIGKILL );
+    AppendToLog( wxT( "Process killed!" ) );
+  }
+}
 

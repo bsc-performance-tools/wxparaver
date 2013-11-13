@@ -117,6 +117,7 @@ class wxHtmlWindow;
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
+#define ID_BUTTON_KILL 10232
 #define ID_BUTTON_CLEAR_LOG 10202
 #define ID_LISTBOX_RUN_LOG 10199
 #define ID_BUTTON_EXIT 10206
@@ -207,6 +208,12 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_RUN
   void OnButtonRunUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_KILL
+  void OnButtonKillClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_KILL
+  void OnButtonKillUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLEAR_LOG
   void OnButtonClearLogClick( wxCommandEvent& event );
 
@@ -222,6 +229,9 @@ public:
 
   RunningProcess * GetMyProcess() const { return myProcess ; }
   void SetMyProcess(RunningProcess * value) { myProcess = value ; }
+
+  long GetMyProcessPid() const { return myProcessPid ; }
+  void SetMyProcessPid(long value) { myProcessPid = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -293,11 +303,13 @@ public:
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
+  wxButton* buttonKill;
   wxButton* buttonClearLog;
   wxHtmlWindow* listboxRunLog;
   wxButton* buttonExit;
 private:
   RunningProcess * myProcess;
+  long myProcessPid;
 ////@end RunScript member variables
 
   static wxString clusteringXML;
