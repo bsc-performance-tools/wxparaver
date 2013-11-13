@@ -1584,6 +1584,7 @@ void RunScript::runDetachedProcess( wxString command )
   }
   else
   {
+    localProcess->HasInput();
     localProcess->Detach();
     
     // After Detach is done, localProcess shouldn't be deleted!
