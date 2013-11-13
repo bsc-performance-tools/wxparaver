@@ -929,7 +929,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       
       parameters += wxString( wxT( " -i " ) );
       if ( checkBoxClusteringUseSemanticWindow->IsEnabled() &&
-           !checkBoxClusteringUseSemanticWindow->IsChecked() &&
+           checkBoxClusteringUseSemanticWindow->IsChecked() &&
            !clusteringCSV.IsEmpty() )
       {
         parameters += doubleQuote( clusteringCSV + wxString( wxT( "," ) ) + filePickerTrace->GetPath() ) ;
@@ -1261,7 +1261,12 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Hide();
       if ( clusteringCSV.IsEmpty() )
       {
+        checkBoxClusteringUseSemanticWindow->Enable( false );
+        
+        // This two others are chained by their own Update_UI with previous one
+        // Anyway, it's made her
         checkBoxClusteringCSVValueAsDimension->Enable( false );
+        checkBoxClusteringNormalize->Enable( false );
       }
       break;
       
