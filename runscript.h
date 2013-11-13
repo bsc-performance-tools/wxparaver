@@ -100,6 +100,7 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_STATS_ONLYGENERATEDATFILE 10214
 #define ID_CHECKBOX_STATS_EXCLUSIVE_TIMES 10215
 #define ID_FILECTRL_CLUSTERING_XML 10220
+#define ID_CHECKBOX_CLUSTERING_USE_SEMANTIC_WINDOW 10003
 #define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
 #define ID_CHECKBOX_CLUSTERING_NORMALIZE 10002
 #define ID_RADIOBUTTON_CLUSTERING_XMLDEFINED 10221
@@ -176,8 +177,14 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_USE_SEMANTIC_WINDOW
+  void OnCheckboxClusteringUseSemanticWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION
   void OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_NORMALIZE
+  void OnCheckboxClusteringNormalizeUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CLUSTERING_XMLDEFINED
   void OnRadiobuttonClusteringXmldefinedSelected( wxCommandEvent& event );
@@ -259,6 +266,7 @@ public:
   wxCheckBox* statsCheckBoxExclusiveTimes;
   wxBoxSizer* clusteringSection;
   wxFilePickerCtrl* filePickerClusteringXML;
+  wxCheckBox* checkBoxClusteringUseSemanticWindow;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;
   wxStaticBox* clusteringSizerAlgorithm;
