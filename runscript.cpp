@@ -884,8 +884,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case CLUSTERING:
       command = application[ CLUSTERING ];
       
-      //parameters = wxString( wxT( " -p" ) ); // TODO: CHANGE TO THIS
-      parameters = wxString( wxT( " -s" ) );
+      parameters = wxString( wxT( " -p" ) );
       
       if ( checkBoxClusteringCSVValueAsDimension->IsEnabled() && 
            checkBoxClusteringCSVValueAsDimension->IsChecked() )
