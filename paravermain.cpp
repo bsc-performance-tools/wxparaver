@@ -3277,11 +3277,8 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
         delete myConfig;
       }
 
-      TraceCutter *traceCutter = localKernel->newTraceCutter( (char *)tmpNameIn.c_str(),
-                                                              (char *)tmpNameOut.c_str(),
-                                                              traceOptions,
-                                                              typesWithValueZero,
-                                                              progress );
+      TraceCutter *traceCutter = localKernel->newTraceCutter( traceOptions, typesWithValueZero );
+      traceCutter->execute( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str(), progress );
       localKernel->copyPCF( tmpNameIn, tmpNameOut );
       delete traceCutter;
     }
