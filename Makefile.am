@@ -13,6 +13,8 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.h \
                     derivedtimelinedialog.h \
                     eventsselectiondialog.cpp \
                     eventsselectiondialog.h \
+                    filebrowserbutton.cpp \
+                    filebrowserbutton.h \
                     filedialogext.cpp \
                     filedialogext.h \
                     finddialog.cpp \
