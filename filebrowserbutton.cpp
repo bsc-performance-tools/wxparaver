@@ -37,9 +37,30 @@ END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS( FileBrowserButton, wxButton )
 
+
+void FileBrowserButton::Init()
+{
+  myTextCtrl = NULL;
+    
+  fileDialogMessage = wxT( "Choose a file" );
+  fileDialogDefaultDir = wxT( "" );
+  fileDialogDefaultFile = wxT( "" );
+  fileDialogWildcard = wxT( "" );
+  fileDialogStyle = 0;
+    
+  fileDialogMode = FILE_MODE;
+}
+
+
 FileBrowserButton::FileBrowserButton( wxWindow* parent,
                        wxWindowID id,
                        wxTextCtrl *whichTextCtrl,
+                       const wxString& whichFileDialogMessage,
+                       const wxString& whichFileDialogDefaultDir,
+                       const wxString& whichFileDialogDefaultFile,
+                       const wxString& whichFileDialogWildcard,
+                       long whichFileDialogStyle,
+                       TFileDialogMode whichFileDialogMode,
                        const wxString& label,
                        const wxPoint& pos,
                        const wxSize& size,
@@ -47,15 +68,49 @@ FileBrowserButton::FileBrowserButton( wxWindow* parent,
                        const wxValidator& validator,
                        const wxString& name )
         : wxButton( parent, id, label, pos, size, style, validator, name ), myTextCtrl( whichTextCtrl ) 
-{}
+{
+  // Idea: button enabled only if textCtrl is associated
+  Enable( whichTextCtrl != NULL );
+}
+
+
+wxString FileBrowserButton::GetPath() const
+{
+  // First approach: dummy GetPath
+  wxString path;
+  
+  if ( myTextCtrl != NULL )
+  {
+    path = myTextCtrl->GetValue();
+  }
+  
+  return path;
+}
 
 
 void FileBrowserButton::OnButton( wxMouseEvent& event )
 {
-  wxFileDialog myDialog;
+  wxFileDialog myDialog( this,
+                         fileDialogMessage,
+                         fileDialogDefaultDir,
+                         fileDialogDefaultFile,
+                         fileDialogWildcard, 
+                         fileDialogStyle );
   
   if ( myDialog.ShowModal() == wxID_OK )
   {
+    switch ( fileDialogMode )
+    {
+      case DIRECTORY_MODE:
+        myTextCtrl->SetValue( myDialog.GetDirectory() );
+        break;
+        
+      case FILE_MODE:
+      default:
+        myTextCtrl->SetValue( myDialog.GetFilename() );
+        break;
+    }
   }
 }
+
 
