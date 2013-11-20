@@ -50,6 +50,11 @@ class FileBrowserButton : public wxButton
     FileBrowserButton() { Init(); }
     FileBrowserButton( wxWindow* parent,
                        wxWindowID id,
+                       const wxString& label = wxEmptyString,
+                       const wxPoint& pos = wxDefaultPosition,
+                       const wxSize& size = wxDefaultSize,
+                       long style = 0,
+
                        wxTextCtrl *whichTextCtrl = NULL, // associated text control
                        const wxString& whichFileDialogMessage = wxT( "Choose a file" ),
                        const wxString& whichFileDialogDefaultDir = wxT( "" ),
@@ -57,17 +62,14 @@ class FileBrowserButton : public wxButton
                        const wxString& whichFileDialogWildcard = wxT( "*.*" ),
                        long whichFileDialogStyle = wxFD_DEFAULT_STYLE, // set wxFileDialog style
                        TFileDialogMode whichFileDialogMode = FILE_MODE,   // to recover files or dirs
-                       const wxString& label = wxEmptyString,
-                       const wxPoint& pos = wxDefaultPosition,
-                       const wxSize& size = wxDefaultSize,
-                       long style = 0,
+
                        const wxValidator& validator = wxDefaultValidator,
                        const wxString& name = wxT( "button" ) );
     ~FileBrowserButton() {}
     
 
     void setTextBox( wxTextCtrl *whichTextCtrl )
-    { myTextCtrl = whichTextCtrl; }
+    { associatedTextCtrl = whichTextCtrl; Enable( whichTextCtrl != NULL ); }
     
     void setFileDialogDefaultDir( const wxString& whichFileDialogDefaultDir )
     { fileDialogDefaultDir = whichFileDialogDefaultDir; }
@@ -86,11 +88,18 @@ class FileBrowserButton : public wxButton
  
 
     void OnButton( wxMouseEvent& event );
+    
+    // Remembers passed path and informs textCtrl
+    void SetPath( const wxString& whichPath );
+    
+    // Gathers from last set path
     wxString GetPath() const;
 
     
   private:
-    wxTextCtrl *myTextCtrl;
+    wxString fullPath; // Contains file name
+    
+    wxTextCtrl *associatedTextCtrl; // Will show only file name, path through tooltip
     
     // wxFileDialog properties
     wxString fileDialogMessage;

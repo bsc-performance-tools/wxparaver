@@ -28,6 +28,7 @@
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
 #include <wx/filedlg.h>
+#include <wx/filename.h>
 
 #include "filebrowserbutton.h"
 
@@ -40,7 +41,8 @@ IMPLEMENT_DYNAMIC_CLASS( FileBrowserButton, wxButton )
 
 void FileBrowserButton::Init()
 {
-  myTextCtrl = NULL;
+  associatedTextCtrl = NULL;
+  fullPath = wxT( "" );
     
   fileDialogMessage = wxT( "Choose a file" );
   fileDialogDefaultDir = wxT( "" );
@@ -54,6 +56,11 @@ void FileBrowserButton::Init()
 
 FileBrowserButton::FileBrowserButton( wxWindow* parent,
                        wxWindowID id,
+                       const wxString& label,
+                       const wxPoint& pos,
+                       const wxSize& size,
+                       long style,
+
                        wxTextCtrl *whichTextCtrl,
                        const wxString& whichFileDialogMessage,
                        const wxString& whichFileDialogDefaultDir,
@@ -61,30 +68,48 @@ FileBrowserButton::FileBrowserButton( wxWindow* parent,
                        const wxString& whichFileDialogWildcard,
                        long whichFileDialogStyle,
                        TFileDialogMode whichFileDialogMode,
-                       const wxString& label,
-                       const wxPoint& pos,
-                       const wxSize& size,
-                       long style,
+
                        const wxValidator& validator,
                        const wxString& name )
-        : wxButton( parent, id, label, pos, size, style, validator, name ), myTextCtrl( whichTextCtrl ) 
+        : wxButton( parent, id, label, pos, size, style, validator, name ), associatedTextCtrl( whichTextCtrl ) 
 {
   // Idea: button enabled only if textCtrl is associated
   Enable( whichTextCtrl != NULL );
 }
 
 
+void FileBrowserButton::SetPath( const wxString& whichFullPath )
+{
+  fullPath = whichFullPath;
+  
+  wxFileName tmpFileName( whichFullPath );
+  wxString path( tmpFileName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ) );
+  wxString fileName( tmpFileName.GetFullName() );
+  
+  // Next time OnButton will navigate directly to the dir and file given
+  fileDialogDefaultDir = path;
+  fileDialogDefaultFile = fileName;
+
+  switch ( fileDialogMode )
+  {
+    case DIRECTORY_MODE:
+      // In this case should be the same than whichFullPath
+      associatedTextCtrl->SetToolTip( path );
+      associatedTextCtrl->SetValue( path );
+      break;
+      
+    case FILE_MODE:
+    default:
+      associatedTextCtrl->SetToolTip( whichFullPath );
+      associatedTextCtrl->SetValue( fileName );
+      break;
+  }
+}
+
+
 wxString FileBrowserButton::GetPath() const
 {
-  // First approach: dummy GetPath
-  wxString path;
-  
-  if ( myTextCtrl != NULL )
-  {
-    path = myTextCtrl->GetValue();
-  }
-  
-  return path;
+  return ( !fullPath.IsEmpty()? fullPath: wxString( wxT("") ) );
 }
 
 
@@ -99,17 +124,12 @@ void FileBrowserButton::OnButton( wxMouseEvent& event )
   
   if ( myDialog.ShowModal() == wxID_OK )
   {
-    switch ( fileDialogMode )
-    {
-      case DIRECTORY_MODE:
-        myTextCtrl->SetValue( myDialog.GetDirectory() );
-        break;
-        
-      case FILE_MODE:
-      default:
-        myTextCtrl->SetValue( myDialog.GetFilename() );
-        break;
-    }
+  /*
+    std::cout << "dir     :" << myDialog.GetDirectory() << std::endl;
+    std::cout << "path    :" << myDialog.GetPath() << std::endl;
+    std::cout << "filename:" << myDialog.GetFilename() << std::endl;
+    */
+    SetPath( myDialog.GetPath() );
   }
 }
 

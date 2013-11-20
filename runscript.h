@@ -36,6 +36,7 @@
  */
 
 ////@begin includes
+#include "filebrowserbutton.h"
 #include "wx/filepicker.h"
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
@@ -73,8 +74,9 @@ class RunningProcess : public wxProcess
  */
 
 ////@begin forward declarations
-class wxFilePickerCtrl;
+class FileBrowserButton;
 class wxBoxSizer;
+class wxFilePickerCtrl;
 class wxStaticLine;
 class wxSpinCtrl;
 class wxHtmlWindow;
@@ -88,7 +90,8 @@ class wxHtmlWindow;
 #define ID_RUN_APPLICATION 10110
 #define ID_CHOICE_APPLICATION 10200
 #define ID_BUTTON_EDIT_APPLICATION 10204
-#define ID_FILEPICKER_TRACE 10201
+#define ID_TEXTCTRL_TRACE 10233
+#define ID_BUTTON_TRACE_BROWSER 10234
 #define ID_TEXTCTRL_DEFAULT_PARAMETERS 10205
 #define ID_FILEPICKER_DIMEMAS_CFG 10000
 #define ID_BUTTON_DIMEMAS_GUI 10210
@@ -169,8 +172,8 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_APPLICATION
   void OnChoiceApplicationSelected( wxCommandEvent& event );
 
-  /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILEPICKER_TRACE
-  void OnFilepickerTraceFilePickerChanged( wxFileDirPickerEvent& event );
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_TRACE
+  void OnTextctrlTraceTextUpdated( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiClick( wxCommandEvent& event );
@@ -256,7 +259,8 @@ public:
 ////@begin RunScript member variables
   wxChoice* choiceApplication;
   wxButton* buttonEditApplication;
-  wxFilePickerCtrl* filePickerTrace;
+  wxTextCtrl* textCtrlTrace;
+  FileBrowserButton* fileBrowserButtonTrace;
   wxBoxSizer* boxSizerParameters;
   wxStaticText* labelTextCtrlDefaultParameters;
   wxTextCtrl* textCtrlDefaultParameters;
