@@ -89,7 +89,11 @@ class FileBrowserButton : public wxButton
 
     void OnButton( wxMouseEvent& event );
     
-    // Remembers passed path and informs textCtrl
+    // Makes wxTextCtrl association, presets frequent wxFileDialog properties and
+    // then enables button
+    void enableButton( wxTextCtrl *whichTextCtrl, const wxString& whichWildcard );
+    
+    // Remember this path and modify associated wxTextCtrl
     void SetPath( const wxString& whichPath );
     
     // Gathers from last set path

@@ -73,8 +73,17 @@ FileBrowserButton::FileBrowserButton( wxWindow* parent,
                        const wxString& name )
         : wxButton( parent, id, label, pos, size, style, validator, name ), associatedTextCtrl( whichTextCtrl ) 
 {
-  // Idea: button enabled only if textCtrl is associated
+  // Button enabled only if textCtrl is associated
   Enable( whichTextCtrl != NULL );
+}
+
+
+void FileBrowserButton::enableButton( wxTextCtrl *whichTextCtrl, const wxString& whichWildcard )
+{
+  setFileDialogWildcard( whichWildcard );
+  setFileDialogStyle( wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR );
+  whichTextCtrl->SetWindowStyle( wxTE_READONLY );
+  setTextBox( whichTextCtrl ); // When association is done, button's enabled 
 }
 
 

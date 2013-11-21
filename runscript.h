@@ -37,7 +37,6 @@
 
 ////@begin includes
 #include "filebrowserbutton.h"
-#include "wx/filepicker.h"
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
 #include "wx/html/htmlwin.h"
@@ -76,7 +75,6 @@ class RunningProcess : public wxProcess
 ////@begin forward declarations
 class FileBrowserButton;
 class wxBoxSizer;
-class wxFilePickerCtrl;
 class wxStaticLine;
 class wxSpinCtrl;
 class wxHtmlWindow;
@@ -93,7 +91,8 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_TRACE 10233
 #define ID_BUTTON_TRACE_BROWSER 10234
 #define ID_TEXTCTRL_DEFAULT_PARAMETERS 10205
-#define ID_FILEPICKER_DIMEMAS_CFG 10000
+#define ID_TEXTCTRL_DIMEMAS_CFG 10201
+#define ID_BUTTON_DIMEMAS_CFG_BROWSER 10235
 #define ID_BUTTON_DIMEMAS_GUI 10210
 #define ID_TEXTCTRL_OUTPUT_TRACE 10001
 #define ID_CHECKBOX_DIMEMAS_REUSE 10209
@@ -102,7 +101,8 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM 10213
 #define ID_CHECKBOX_STATS_ONLYGENERATEDATFILE 10214
 #define ID_CHECKBOX_STATS_EXCLUSIVE_TIMES 10215
-#define ID_FILECTRL_CLUSTERING_XML 10220
+#define ID_TEXTCTRL_CLUSTERING_XML 10236
+#define ID_BUTTON_CLUSTERING_XML 10237
 #define ID_CHECKBOX_CLUSTERING_USE_SEMANTIC_WINDOW 10003
 #define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
 #define ID_CHECKBOX_CLUSTERING_NORMALIZE 10002
@@ -180,9 +180,6 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_USE_SEMANTIC_WINDOW
-  void OnCheckboxClusteringUseSemanticWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION
   void OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event );
@@ -266,7 +263,8 @@ public:
   wxTextCtrl* textCtrlDefaultParameters;
   wxBoxSizer* dimemasSection;
   wxStaticText* labelFilePickerDimemasCFG;
-  wxFilePickerCtrl* filePickerDimemasCFG;
+  wxTextCtrl* textCtrlDimemasCFG;
+  FileBrowserButton* fileBrowserButtonDimemasCFG;
   wxBitmapButton* buttonDimemasGUI;
   wxStaticText* labelTextCtrlOutputTrace;
   wxTextCtrl* textCtrlOutputTrace;
@@ -279,7 +277,8 @@ public:
   wxCheckBox* statsCheckBoxOnlyDatFile;
   wxCheckBox* statsCheckBoxExclusiveTimes;
   wxBoxSizer* clusteringSection;
-  wxFilePickerCtrl* filePickerClusteringXML;
+  wxTextCtrl* textCtrlClusteringXML;
+  FileBrowserButton* fileBrowserButtonClusteringXML;
   wxCheckBox* checkBoxClusteringUseSemanticWindow;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;
