@@ -38,6 +38,7 @@
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
+#include "filebrowserbutton.h"
 #include "wx/filepicker.h"
 #include "wx/clrpicker.h"
 ////@end includes
@@ -50,6 +51,7 @@
 
 ////@begin forward declarations
 class wxSpinCtrl;
+class DirBrowserButton;
 class wxDirPickerCtrl;
 class wxColourPickerCtrl;
 ////@end forward declarations
@@ -62,7 +64,8 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCES_GLOBAL 10073
 #define ID_PREFERENCES_GLOBAL_FILLGAPS 10085
 #define ID_TEXTCTRL_MAXIMUM_LOADABLE_TRACE_SIZE 10156
-#define ID_DIRPICKERCTRL_TRACES 10089
+#define ID_TEXTCTRL_DEFAULT_TRACE 10220
+#define ID_BUTTON_DIR_BROWSER_TRACE 10238
 #define ID_DIRPICKERCTRL_CFG 10010
 #define ID_DIRPICKERCTRL_XML 10033
 #define ID_DIRPICKERCTRL_TUTORIALS 10034
@@ -376,7 +379,8 @@ public:
 ////@begin PreferencesDialog member variables
   wxCheckBox* checkGlobalFillStateGaps;
   wxSpinCtrl* txtMaximumTraceSize;
-  wxDirPickerCtrl* dirPickerTrace;
+  wxTextCtrl* textCtrlTrace;
+  DirBrowserButton* dirBrowserButtonTrace;
   wxDirPickerCtrl* dirPickerCFG;
   wxDirPickerCtrl* dirPickerXML;
   wxDirPickerCtrl* dirPickerTutorials;

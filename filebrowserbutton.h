@@ -32,21 +32,71 @@
 
 #include <wx/button.h>
 #include <wx/textctrl.h>
-//#include <wx/string.h>
 
-class FileBrowserButton : public wxButton
+class BrowserButton : public wxButton
+{
+  DECLARE_DYNAMIC_CLASS( BrowserButton )
+  DECLARE_EVENT_TABLE()
+
+  public:
+    static const wxString DEFAULT_WILDCARD;
+
+    BrowserButton() {}
+    BrowserButton( wxWindow* parent,
+                   wxWindowID id,
+                   const wxString& label = wxEmptyString,
+                   const wxPoint& pos = wxDefaultPosition,
+                   const wxSize& size = wxDefaultSize,
+                   long style = 0,
+
+                   wxTextCtrl *whichTextCtrl = NULL, // associated text control
+                   const wxString& whichDialogMessage = wxT( "Choose a file" ),
+                   const wxString& whichDialogDefaultDir = wxT( "" ),
+                   long whichDialogStyle = wxFD_DEFAULT_STYLE, // set wxFileDialog style
+
+                   const wxValidator& validator = wxDefaultValidator,
+                   const wxString& name = wxT( "button" ) );
+    ~BrowserButton() {}
+  
+    void SetTextBox( wxTextCtrl *whichTextCtrl )
+    { associatedTextCtrl = whichTextCtrl; Enable( whichTextCtrl != NULL ); }
+    
+    void SetDialogDefaultDir( const wxString& defaultDir )
+    { dialogDefaultDir = defaultDir; }
+
+    void SetDialogStyle( long whichDialogStyle )
+    { dialogStyle = whichDialogStyle; }
+
+    void SetPath( const wxString& whichFullPath );
+
+    // Mimics FilePicker
+    wxString GetPath() const;
+
+    // Makes wxTextCtrl association, presets frequent wxFileDialog properties and
+    // then enables button
+    void EnableButton( wxTextCtrl* whichTextCtrl );
+
+    void OnButton( wxMouseEvent& event ) {} // Can't be pure virtual
+
+  protected:  
+    wxString fullPath; // Contains file name
+    wxTextCtrl *associatedTextCtrl; // Will show only file name, path through tooltip
+
+    // FileDialog common properties
+    wxString dialogMessage;
+    wxString dialogDefaultDir;
+    long dialogStyle;
+
+    void Init();
+};
+
+
+class FileBrowserButton : public BrowserButton
 {
   DECLARE_DYNAMIC_CLASS( FileBrowserButton )
   DECLARE_EVENT_TABLE()
   
   public:
-  
-    enum TFileDialogMode
-    {
-      FILE_MODE,
-      DIRECTORY_MODE
-    };
-  
     FileBrowserButton() { Init(); }
     FileBrowserButton( wxWindow* parent,
                        wxWindowID id,
@@ -56,67 +106,68 @@ class FileBrowserButton : public wxButton
                        long style = 0,
 
                        wxTextCtrl *whichTextCtrl = NULL, // associated text control
-                       const wxString& whichFileDialogMessage = wxT( "Choose a file" ),
-                       const wxString& whichFileDialogDefaultDir = wxT( "" ),
+                       const wxString& whichDialogMessage = wxT( "Choose a file" ),
+                       const wxString& whichDialogDefaultDir = wxT( "" ),
                        const wxString& whichFileDialogDefaultFile = wxT( "" ),
-                       const wxString& whichFileDialogWildcard = wxT( "*.*" ),
-                       long whichFileDialogStyle = wxFD_DEFAULT_STYLE, // set wxFileDialog style
-                       TFileDialogMode whichFileDialogMode = FILE_MODE,   // to recover files or dirs
+                       const wxString& whichFileDialogWildcard = DEFAULT_WILDCARD,
+                       long whichDialogStyle = wxFD_DEFAULT_STYLE, // set wxFileDialog style
 
                        const wxValidator& validator = wxDefaultValidator,
                        const wxString& name = wxT( "button" ) );
-    ~FileBrowserButton() {}
-    
+    ~FileBrowserButton() {}    
 
-    void setTextBox( wxTextCtrl *whichTextCtrl )
-    { associatedTextCtrl = whichTextCtrl; Enable( whichTextCtrl != NULL ); }
+    void SetFileDialogDefaultFile( const wxString& defaultFile )
+    { fileDialogDefaultFile = defaultFile; }
     
-    void setFileDialogDefaultDir( const wxString& whichFileDialogDefaultDir )
-    { fileDialogDefaultDir = whichFileDialogDefaultDir; }
-    
-    void setFileDialogDefaultFile( const wxString& whichFileDialogDefaultFile )
-    { fileDialogDefaultFile = whichFileDialogDefaultFile; }
-    
-    void setFileDialogWildcard( const wxString& whichFileDialogWildcard )
+    void SetFileDialogWildcard( const wxString& whichFileDialogWildcard )
     { fileDialogWildcard = whichFileDialogWildcard; }
-    
-    void setFileDialogStyle( long whichFileDialogStyle )
-    { fileDialogStyle = whichFileDialogStyle; }
-    
-    void setFileDialogMode( TFileDialogMode whichFileDialogMode )
-    { fileDialogMode = whichFileDialogMode; }
- 
-
-    void OnButton( wxMouseEvent& event );
-    
-    // Makes wxTextCtrl association, presets frequent wxFileDialog properties and
-    // then enables button
-    void enableButton( wxTextCtrl *whichTextCtrl, const wxString& whichWildcard );
     
     // Remember this path and modify associated wxTextCtrl
     void SetPath( const wxString& whichPath );
-    
-    // Gathers from last set path
-    wxString GetPath() const;
 
+    // Makes wxTextCtrl association, presets frequent wxFileDialog properties and
+    // then enables button
+    void EnableButton( wxTextCtrl *whichTextCtrl, const wxString& whichWildcard );
+    
+    void OnButton( wxMouseEvent& event );
+    
     
   private:
-    wxString fullPath; // Contains file name
-    
-    wxTextCtrl *associatedTextCtrl; // Will show only file name, path through tooltip
-    
     // wxFileDialog properties
-    wxString fileDialogMessage;
-    wxString fileDialogDefaultDir;
     wxString fileDialogDefaultFile;
     wxString fileDialogWildcard;
-    long fileDialogStyle;
-    
-    // Changes the way OnButton recovers the information from wxFileDialog
-    TFileDialogMode fileDialogMode;
     
     void Init();
 };
 
+
+class DirBrowserButton : public BrowserButton
+{
+  DECLARE_DYNAMIC_CLASS( FileBrowserButton )
+  DECLARE_EVENT_TABLE()
+  
+  public:
+    DirBrowserButton() { Init(); }
+    DirBrowserButton( wxWindow* parent,
+                       wxWindowID id,
+                       const wxString& label = wxEmptyString,
+                       const wxPoint& pos = wxDefaultPosition,
+                       const wxSize& size = wxDefaultSize,
+                       long style = 0,
+
+                       wxTextCtrl *whichTextCtrl = NULL, // associated text control
+                       const wxString& whichDialogMessage = wxT( "Choose a file" ),
+                       const wxString& whichDialogDefaultDir = wxT( "" ),
+                       long whichDialogStyle = wxFD_DEFAULT_STYLE, // set wxFileDialog style
+
+                       const wxValidator& validator = wxDefaultValidator,
+                       const wxString& name = wxT( "button" ) );
+    ~DirBrowserButton() {}    
+
+    // Remember this path and modify associated wxTextCtrl
+    void SetPath( const wxString& whichPath );
+    
+    void OnButton( wxMouseEvent& event );
+};
 
 #endif // _FILEBROWSERBUTTON_H_

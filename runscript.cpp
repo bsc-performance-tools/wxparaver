@@ -738,13 +738,13 @@ void RunScript::CreateControls()
   
   // Trace browser
   wxString tmpWildCard = wxT( "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*" );
-  fileBrowserButtonTrace->enableButton( textCtrlTrace, tmpWildCard );
+  fileBrowserButtonTrace->EnableButton( textCtrlTrace, tmpWildCard );
 
   tmpWildCard = wxT( "Dimemas configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" );
-  fileBrowserButtonDimemasCFG->enableButton( textCtrlDimemasCFG, tmpWildCard ); 
+  fileBrowserButtonDimemasCFG->EnableButton( textCtrlDimemasCFG, tmpWildCard ); 
 
   tmpWildCard = wxT( "Clustering configuration file (*.xml)|*.xml|All files (*.*)|*.*" );
-  fileBrowserButtonClusteringXML->enableButton( textCtrlClusteringXML, tmpWildCard ); 
+  fileBrowserButtonClusteringXML->EnableButton( textCtrlClusteringXML, tmpWildCard ); 
   
   // Filter forbidden chars
   wxArrayString forbidden;
