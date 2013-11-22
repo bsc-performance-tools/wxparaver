@@ -183,6 +183,7 @@ void FileBrowserButton::OnButton( wxMouseEvent& event )
   }
 }
 
+
 /*
   ***************************************************************************
     DIR BROWSER BUTTON
@@ -224,7 +225,7 @@ void DirBrowserButton::SetPath( const wxString& whichFullPath )
   // Next time OnButton will navigate directly to the dir
   dialogDefaultDir = whichFullPath;
 
-  associatedTextCtrl->SetToolTip( whichFullPath );
+  associatedTextCtrl->SetToolTip( whichFullPath ); // Maybe unnecessary
   associatedTextCtrl->SetValue( whichFullPath );
 
 }

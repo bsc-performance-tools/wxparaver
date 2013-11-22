@@ -39,7 +39,6 @@
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
 #include "filebrowserbutton.h"
-#include "wx/filepicker.h"
 #include "wx/clrpicker.h"
 ////@end includes
 
@@ -52,7 +51,6 @@
 ////@begin forward declarations
 class wxSpinCtrl;
 class DirBrowserButton;
-class wxDirPickerCtrl;
 class wxColourPickerCtrl;
 ////@end forward declarations
 
@@ -66,10 +64,14 @@ class wxColourPickerCtrl;
 #define ID_TEXTCTRL_MAXIMUM_LOADABLE_TRACE_SIZE 10156
 #define ID_TEXTCTRL_DEFAULT_TRACE 10220
 #define ID_BUTTON_DIR_BROWSER_TRACE 10238
-#define ID_DIRPICKERCTRL_CFG 10010
-#define ID_DIRPICKERCTRL_XML 10033
-#define ID_DIRPICKERCTRL_TUTORIALS 10034
-#define ID_DIRPICKERCTRL_TMP 10011
+#define ID_TEXTCTRL_DEFAULT_CFGS 10089
+#define ID_DIRBROWSERBUTTON_DEFAULT_CFGS 10243
+#define ID_TEXTCTRL_DEFAULT_XMLS 10239
+#define ID_BUTTON_DEFAULT_XMLS 10242
+#define ID_TEXTCTRL_DEFAULT_TUTORIALS 10240
+#define ID_DIRBROWSERBUTTON_DEFAULT_TUTORIALS 10244
+#define ID_TEXTCTRL_DEFAULT_TMP 10241
+#define ID_DIRBROWSERBUTTON_DEFAULT_TMP 10245
 #define ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE 10158
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
 #define ID_PREFERENCES_TIMELINE 10072
@@ -381,10 +383,14 @@ public:
   wxSpinCtrl* txtMaximumTraceSize;
   wxTextCtrl* textCtrlTrace;
   DirBrowserButton* dirBrowserButtonTrace;
-  wxDirPickerCtrl* dirPickerCFG;
-  wxDirPickerCtrl* dirPickerXML;
-  wxDirPickerCtrl* dirPickerTutorials;
-  wxDirPickerCtrl* dirPickerTmp;
+  wxTextCtrl* textCtrlCFG;
+  DirBrowserButton* dirBrowserButtonCFG;
+  wxTextCtrl* textCtrlXML;
+  DirBrowserButton* dirBrowserButtonXML;
+  wxTextCtrl* textCtrlTutorials;
+  DirBrowserButton* dirBrowserButtonTutorials;
+  wxTextCtrl* textCtrlTmp;
+  DirBrowserButton* dirBrowserButtonTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
   wxTextCtrl* txtTimelineNameFormatPrefix;
