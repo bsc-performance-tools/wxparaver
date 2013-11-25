@@ -62,10 +62,14 @@ DIMEMAS_TRACE=${TRACENAME}.dim
 
 # Adapt Dimemas CFG with new trace name
 DIMEMAS_CFG_NAME=$(echo "$DIMEMAS_CFG" | sed 's/\.[^\.]*$//')
+
+DIMEMAS_COPY_CFG_NAME=`basename ${DIMEMAS_CFG_NAME}`
 OLD_DIMEMAS_TRACENAME=`grep "mapping information" ${DIMEMAS_CFG} | grep ".dim" | awk -F'"' {'print $4'}`
 NEW_DIMEMAS_TRACENAME=`basename ${DIMEMAS_TRACE}`
-sed 's/${OLD_DIMEMAS_TRACENAME}/${NEW_DIMEMAS_TRACENAME}/g' ${DIMEMAS_CFG} > ${DIMEMAS_CFG_NAME}.mod.cfg
-DIMEMAS_CFG=${DIMEMAS_CFG_NAME}.mod.cfg
+DIMEMAS_CFG_PATH=`dirname ${DIMEMAS_TRACE}`
+
+cat ${DIMEMAS_CFG} | sed "s/${OLD_DIMEMAS_TRACENAME}/${NEW_DIMEMAS_TRACENAME}/g" > ${DIMEMAS_CFG_PATH}/${DIMEMAS_COPY_CFG_NAME}.mod.cfg
+DIMEMAS_CFG=${DIMEMAS_CFG_PATH}/${DIMEMAS_COPY_CFG_NAME}.mod.cfg
 
 
 # Append extra parameters if they exist
@@ -96,10 +100,10 @@ if [[ ${DIMEMAS_REUSE_TRACE} = "0" || \
     echo "Generating it."
   fi
 
+  PRV2DIM_LOG=${DIMEMAS_TRACE_DIR}/prv2dim.log
   echo
   echo "${DIMEMAS_ENV}prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}"
   echo
-  PRV2DIM_LOG=${DIMEMAS_TRACE_DIR}/prv2dim.log
   ${DIMEMAS_ENV}prv2dim ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}
   echo
 fi
