@@ -65,7 +65,8 @@ BrowserButton::BrowserButton( wxWindow* parent,
           associatedTextCtrl( whichTextCtrl )
 {
   // Button enabled only if textCtrl is associated
-  Enable( whichTextCtrl != NULL );
+  SetTextBox( whichTextCtrl );
+  Enable( associatedTextCtrl != NULL );
 }
 
 
@@ -80,23 +81,27 @@ void BrowserButton::Init()
 }
 
 
-void BrowserButton::SetPath( const wxString& whichFullPath )
+void BrowserButton::SetTextBox( wxTextCtrl *whichTextCtrl )
 {
-  fullPath = whichFullPath;
+  associatedTextCtrl = whichTextCtrl; 
+  
+  if ( associatedTextCtrl != NULL )
+  {
+    SetDialogStyle( wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR );
+    whichTextCtrl->SetWindowStyle( wxTE_READONLY );
+  }
 }
 
 
-wxString BrowserButton::GetPath() const
+bool BrowserButton::Enable( bool enable )
 {
-  return ( !fullPath.IsEmpty()? fullPath: wxString( wxT("") ) );
-}
+  if ( associatedTextCtrl != NULL )
+  {
+    wxButton::Enable( enable );
+    associatedTextCtrl->Enable( enable );
+  }
 
-
-void BrowserButton::EnableButton( wxTextCtrl* whichTextCtrl )
-{
-  SetDialogStyle( wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR );
-  whichTextCtrl->SetWindowStyle( wxTE_READONLY );
-  SetTextBox( whichTextCtrl ); // When association is done, button's enabled 
+  return ( associatedTextCtrl != NULL );
 }
 
 
@@ -145,13 +150,6 @@ void FileBrowserButton::Init()
 }
 
 
-void FileBrowserButton::EnableButton( wxTextCtrl *whichTextCtrl, const wxString& whichWildcard )
-{
-  SetFileDialogWildcard( whichWildcard );
-  BrowserButton::EnableButton( whichTextCtrl ); 
-}
-
-
 void FileBrowserButton::SetPath( const wxString& whichFullPath )
 {
   BrowserButton::SetPath( whichFullPath );
@@ -164,8 +162,11 @@ void FileBrowserButton::SetPath( const wxString& whichFullPath )
   dialogDefaultDir = path;
   fileDialogDefaultFile = fileName;
 
-  associatedTextCtrl->SetToolTip( whichFullPath );
-  associatedTextCtrl->SetValue( fileName );
+  if ( associatedTextCtrl != NULL )
+  {
+    associatedTextCtrl->SetToolTip( whichFullPath );
+    associatedTextCtrl->SetValue( fileName );
+  }
 }
 
 

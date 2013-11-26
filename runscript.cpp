@@ -737,14 +737,23 @@ void RunScript::CreateControls()
   }
   
   // Trace browser
+  fileBrowserButtonTrace->SetTextBox( textCtrlTrace );
+  fileBrowserButtonTrace->SetDialogMessage( _( "Load Trace" ) );
   wxString tmpWildCard = wxT( "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*" );
-  fileBrowserButtonTrace->EnableButton( textCtrlTrace, tmpWildCard );
+  fileBrowserButtonTrace->SetFileDialogWildcard( tmpWildCard );
+  fileBrowserButtonTrace->Enable();
 
+  fileBrowserButtonDimemasCFG->SetTextBox( textCtrlDimemasCFG ); 
+  fileBrowserButtonDimemasCFG->SetDialogMessage( _( "Load Dimemas Configuration" ) );
   tmpWildCard = wxT( "Dimemas configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" );
-  fileBrowserButtonDimemasCFG->EnableButton( textCtrlDimemasCFG, tmpWildCard ); 
+  fileBrowserButtonDimemasCFG->SetFileDialogWildcard( tmpWildCard );
+  fileBrowserButtonDimemasCFG->Enable(); 
 
+  fileBrowserButtonClusteringXML->SetTextBox( textCtrlClusteringXML );
+  fileBrowserButtonClusteringXML->SetDialogMessage( _( "Load Clustering Configuration" ) );
   tmpWildCard = wxT( "Clustering configuration file (*.xml)|*.xml|All files (*.*)|*.*" );
-  fileBrowserButtonClusteringXML->EnableButton( textCtrlClusteringXML, tmpWildCard ); 
+  fileBrowserButtonClusteringXML->SetFileDialogWildcard( tmpWildCard );
+  fileBrowserButtonClusteringXML->Enable();
   
   // Filter forbidden chars
   wxArrayString forbidden;

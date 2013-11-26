@@ -36,7 +36,7 @@
  */
 
 ////@begin includes
-#include "wx/filepicker.h"
+#include "filebrowserbutton.h"
 #include "wx/tglbtn.h"
 #include "wx/notebook.h"
 #include "wx/statline.h"
@@ -51,7 +51,7 @@
  */
 
 ////@begin forward declarations
-class wxFilePickerCtrl;
+class FileBrowserButton;
 class wxBoxSizer;
 class wxToggleButton;
 class wxNotebook;
@@ -72,11 +72,14 @@ class wxSpinCtrl;
 
 ////@begin control identifiers
 #define ID_CUTFILTERDIALOG 10103
-#define ID_FILECTRL_CUTFILTER_INPUT_TRACE_SELECTOR 10106
-#define ID_FILECTRL_CUTFILTER_OUTPUT_TRACE_SELECTOR 10000
+#define ID_TEXTCTRL_CUT_FILTER_INPUT_TRACE 10247
+#define ID_BUTTON_FILE_BROWSER_INPUT_TRACE 10246
+#define ID_TEXTCTRL_CUT_FILTER_OUTPUT_TRACE 10248
+#define ID_BUTTON_FILE_BROWSER_OUTPUT_TRACE 10249
 #define ID_CHECKBOX_LOAD_RESULTING_TRACE 10152
 #define ID_CHECKBOX_RUN_APP_WITH_RESULTING_TRACE 10002
-#define ID_FILECTRL_CUTFILTER_XML_SELECTOR 10144
+#define ID_TEXTCTRL_CUT_FILTER_XML 10250
+#define ID_FILEBROWSERBUTTON_CUT_FILTER_XML 10251
 #define ID_CHECKLISTBOX_EXECUTION_CHAIN 10107
 #define ID_BITMAPBUTTON_PUSH_UP_FILTER 10109
 #define ID_BITMAPBUTTON_PUSH_DOWN_FILTER 10001
@@ -170,11 +173,11 @@ public:
   /// wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
   void OnIdle( wxIdleEvent& event );
 
-  /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_INPUT_TRACE_SELECTOR
-  void OnFilectrlCutfilterInputTraceSelectorFilePickerChanged( wxFileDirPickerEvent& event );
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_CUT_FILTER_INPUT_TRACE
+  void OnTextctrlCutFilterInputTraceTextUpdated( wxCommandEvent& event );
 
-  /// wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_XML_SELECTOR
-  void OnFilectrlCutfilterXmlSelectorFilePickerChanged( wxFileDirPickerEvent& event );
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_CUT_FILTER_XML
+  void OnTextctrlCutFilterXmlTextUpdated( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_CHECKLISTBOX_EXECUTION_CHAIN
   void OnChecklistboxExecutionChainDoubleClicked( wxCommandEvent& event );
@@ -345,12 +348,15 @@ public:
   bool GetLoadedXMLPath( std::string &XML );
 
 ////@begin CutFilterDialog member variables
-  wxFilePickerCtrl* filePickerInputTrace;
+  wxTextCtrl* textCtrlInputTrace;
+  FileBrowserButton* fileBrowserButtonInputTrace;
   wxStaticText* txtOutputTrace;
-  wxFilePickerCtrl* filePickerOutputTrace;
+  wxTextCtrl* textCtrlOutputTrace;
+  FileBrowserButton* fileBrowserButtonOutputTrace;
   wxCheckBox* checkLoadResultingTrace;
   wxCheckBox* checkRunAppWithResultingTrace;
-  wxFilePickerCtrl* filePickerXMLCfg;
+  wxTextCtrl* textCtrlXML;
+  FileBrowserButton* fileBrowserButtonXML;
   wxBoxSizer* boxSizerExecutionChain;
   wxStaticText* txtExecutionChain;
   wxCheckListBox* checkListExecutionChain;
@@ -428,7 +434,7 @@ private:
   std::map< std::string, int > TABINDEX;   // CONSTANT map ( tool names -> widget tabs index )
   std::string outputPath;
 
-  bool isFileSelected( wxFilePickerCtrl *fpc );
+  bool isFileSelected( FileBrowserButton *fpc );
   bool isFileSelected( const std::string& fpc );
 
   bool isExecutionChainEmpty();

@@ -58,8 +58,10 @@ class BrowserButton : public wxButton
                    const wxString& name = wxT( "button" ) );
     ~BrowserButton() {}
   
-    void SetTextBox( wxTextCtrl *whichTextCtrl )
-    { associatedTextCtrl = whichTextCtrl; Enable( whichTextCtrl != NULL ); }
+    void SetTextBox( wxTextCtrl *whichTextCtrl );
+    
+    void SetDialogMessage( const wxString& whichDialogMessage )
+    { dialogMessage = whichDialogMessage; }
     
     void SetDialogDefaultDir( const wxString& defaultDir )
     { dialogDefaultDir = defaultDir; }
@@ -67,14 +69,14 @@ class BrowserButton : public wxButton
     void SetDialogStyle( long whichDialogStyle )
     { dialogStyle = whichDialogStyle; }
 
-    void SetPath( const wxString& whichFullPath );
+    void SetPath( const wxString& whichFullPath )
+    { fullPath = whichFullPath; }
 
     // Mimics FilePicker
-    wxString GetPath() const;
+    wxString GetPath() const
+    { return ( !fullPath.IsEmpty()? fullPath: wxString( wxT("") ) ); }
 
-    // Makes wxTextCtrl association, presets frequent wxFileDialog properties and
-    // then enables button
-    void EnableButton( wxTextCtrl* whichTextCtrl );
+    bool Enable( bool enable = true );
 
     void OnButton( wxMouseEvent& event ) {} // Can't be pure virtual
 
@@ -125,10 +127,6 @@ class FileBrowserButton : public BrowserButton
     // Remember this path and modify associated wxTextCtrl
     void SetPath( const wxString& whichPath );
 
-    // Makes wxTextCtrl association, presets frequent wxFileDialog properties and
-    // then enables button
-    void EnableButton( wxTextCtrl *whichTextCtrl, const wxString& whichWildcard );
-    
     void OnButton( wxMouseEvent& event );
     
     

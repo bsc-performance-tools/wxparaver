@@ -979,11 +979,25 @@ void PreferencesDialog::CreateControls()
   txtTimelineWWPrecision->SetValidator( validator );
 */
   
-  dirBrowserButtonTrace->EnableButton( textCtrlTrace );
-  dirBrowserButtonCFG->EnableButton( textCtrlCFG );
-  dirBrowserButtonXML->EnableButton( textCtrlXML );
-  dirBrowserButtonTutorials->EnableButton( textCtrlTutorials );
-  dirBrowserButtonTmp->EnableButton( textCtrlTmp );
+  dirBrowserButtonTrace->SetTextBox( textCtrlTrace );
+  dirBrowserButtonTrace->SetDialogMessage( _( "Select Traces Default Directory" ) );
+  dirBrowserButtonTrace->Enable();
+  
+  dirBrowserButtonCFG->SetTextBox( textCtrlCFG );
+  dirBrowserButtonCFG->SetDialogMessage( _( "Select Paraver CFGs Default Directory" ) );
+  dirBrowserButtonCFG->Enable();
+  
+  dirBrowserButtonXML->SetTextBox( textCtrlXML );
+  dirBrowserButtonXML->SetDialogMessage( _( "Select Cut/Filter XMLs Default Directory" ) );
+  dirBrowserButtonXML->Enable();
+  
+  dirBrowserButtonTutorials->SetTextBox( textCtrlTutorials );
+  dirBrowserButtonTutorials->SetDialogMessage( _( "Select Tutorials Root Directory" ) );
+  dirBrowserButtonTutorials->Enable();
+  
+  dirBrowserButtonTmp->SetTextBox( textCtrlTmp );
+  dirBrowserButtonTmp->SetDialogMessage( _( "Select TMP Default Directory" ) );
+  dirBrowserButtonTmp->Enable();
 }
 
 
