@@ -35130,6 +35130,7 @@ In normal mode all properties are showed in main window."</string>
                   <long name="locked">0</long>
                   <string name="proxy-type">"wbBitmapButtonProxy"</string>
                   <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnBitmapbuttonClusteringXmlClick|NONE||RunScript"</string>
+                  <string name="event-handler-1">"wxEVT_UPDATE_UI|OnBitmapbuttonClusteringXmlUpdate|NONE||RunScript"</string>
                   <string name="proxy-Id name">"ID_BITMAPBUTTON_CLUSTERING_XML"</string>
                   <long name="proxy-Id value">10106</long>
                   <string name="proxy-Name">""</string>

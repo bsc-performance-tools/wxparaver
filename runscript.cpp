@@ -138,6 +138,7 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
 
   EVT_BUTTON( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlClick )
+  EVT_UPDATE_UI( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlUpdate )
 
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
 
@@ -1890,12 +1891,39 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
 /*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_CLUSTERING_XML
  */
-
+// Idea taken from wxMakeShellCommand
+// TODO Put apart in a class
 void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_CLUSTERING_XML in RunScript.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_CLUSTERING_XML in RunScript. 
+  wxString fileToEdit = fileBrowserButtonClusteringXML->GetPath();
+  wxString command;
+#ifdef WIN32
+  command = _( "wordpad.exe " ) + fileToEdit;
+  wxExecute( command );
+#else
+  command = _( "sh -c 'zvim " ) + fileToEdit + _(" 1>&- 2>&-'"); // last part closes stdout stderr
+  if( wxExecute( command ) != 0 )
+  {
+    command = _( "sh -c 'tedit " ) + fileToEdit + _(" 1>&- 2>&-'");
+    if( wxExecute( command ) != 0 )
+    {
+      command = _( "sh -c 'gedit " ) + fileToEdit + _(" 1>&- 2>&-'");
+      if( wxExecute( command ) == 0 )
+      {
+        wxMessageBox( _( "Install gvim or nedit to edit Clustering XML" ), _( "Show source code" ) );
+      }
+    }
+  }
+#endif
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_CLUSTERING_XML
+ */
+
+void RunScript::OnBitmapbuttonClusteringXmlUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( !textCtrlClusteringXML->GetValue().IsEmpty() );
 }
 

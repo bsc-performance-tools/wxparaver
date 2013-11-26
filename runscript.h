@@ -185,6 +185,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_CLUSTERING_XML
   void OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON_CLUSTERING_XML
+  void OnBitmapbuttonClusteringXmlUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION
   void OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event );
 
