@@ -1901,13 +1901,13 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   command = _( "wordpad.exe " ) + fileToEdit;
   wxExecute( command );
 #else
-  command = _( "sh -c 'zvim " ) + fileToEdit + _(" 1>&- 2>&-'"); // last part closes stdout stderr
+  command = _( "/bin/sh -c 'zvim " ) + fileToEdit + _(" 1>&- 2>&-'"); // last part closes stdout stderr
   if( wxExecute( command ) != 0 )
   {
-    command = _( "sh -c 'tedit " ) + fileToEdit + _(" 1>&- 2>&-'");
+    command = _( "/bin/sh -c 'tedit " ) + fileToEdit + _(" 1>&- 2>&-'");
     if( wxExecute( command ) != 0 )
     {
-      command = _( "sh -c 'gedit " ) + fileToEdit + _(" 1>&- 2>&-'");
+      command = _( "/bin/sh -c 'gedit " ) + fileToEdit + _(" 1>&- 2>&-'");
       if( wxExecute( command ) == 0 )
       {
         wxMessageBox( _( "Install gvim or nedit to edit Clustering XML" ), _( "Show source code" ) );
