@@ -103,6 +103,7 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_STATS_EXCLUSIVE_TIMES 10215
 #define ID_TEXTCTRL_CLUSTERING_XML 10236
 #define ID_BUTTON_CLUSTERING_XML 10237
+#define ID_BITMAPBUTTON_CLUSTERING_XML 10106
 #define ID_CHECKBOX_CLUSTERING_USE_SEMANTIC_WINDOW 10003
 #define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
 #define ID_CHECKBOX_CLUSTERING_NORMALIZE 10002
@@ -180,6 +181,9 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_DIMEMAS_GUI
   void OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_CLUSTERING_XML
+  void OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION
   void OnCheckboxClusteringSemvalAsClustdimensionUpdate( wxUpdateUIEvent& event );
@@ -279,6 +283,7 @@ public:
   wxBoxSizer* clusteringSection;
   wxTextCtrl* textCtrlClusteringXML;
   FileBrowserButton* fileBrowserButtonClusteringXML;
+  wxBitmapButton* buttonClusteringXML;
   wxCheckBox* checkBoxClusteringUseSemanticWindow;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;
