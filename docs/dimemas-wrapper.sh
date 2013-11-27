@@ -45,15 +45,15 @@ fi
 
 
 # Get tracename, without extensions
-TRACENAME=$(echo "$PARAVER_TRACE" | sed 's/\.[^\.]*$//')
-EXTENSION=$(echo "$PARAVER_TRACE" | sed 's/^.*\.//')
+TRACENAME=$(echo "$PARAVER_TRACE" | sed "s/\.[^\.]*$//")
+EXTENSION=$(echo "$PARAVER_TRACE" | sed "s/^.*\.//")
 
 # Is gzipped?
 if [[ ${EXTENSION} = "gz" ]]; then
   echo
   echo -n "Decompressing $PARAVER_TRACE trace..."
   gunzip ${PARAVER_TRACE}
-  TRACENAME=$(echo "${TRACENAME}" | sed 's/\.[^\.]*$//')
+  TRACENAME=$(echo "${TRACENAME}" | sed "s/\.[^\.]*$//")
   PARAVER_TRACE=${TRACENAME}.prv
   echo "...Done!"
 fi
@@ -61,7 +61,7 @@ fi
 DIMEMAS_TRACE=${TRACENAME}.dim
 
 # Adapt Dimemas CFG with new trace name
-DIMEMAS_CFG_NAME=$(echo "$DIMEMAS_CFG" | sed 's/\.[^\.]*$//')
+DIMEMAS_CFG_NAME=$(echo "$DIMEMAS_CFG" | sed "s/\.[^\.]*$//")
 
 DIMEMAS_COPY_CFG_NAME=`basename ${DIMEMAS_CFG_NAME}`
 OLD_DIMEMAS_TRACENAME=`grep "mapping information" ${DIMEMAS_CFG} | grep ".dim" | awk -F'"' {'print $4'}`
