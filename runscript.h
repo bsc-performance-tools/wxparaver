@@ -56,6 +56,7 @@ class RunningProcess : public wxProcess
       : wxProcess( (wxDialog *)whichParent ), command( whichCommand )
     {    
       parent = whichParent;
+      
       Redirect();
     }    
 
@@ -324,6 +325,12 @@ private:
   RunningProcess * myProcess;
   long myProcessPid;
 ////@end RunScript member variables
+/*
+public:
+  int executionStatus;
+
+private:
+*/
 
   static wxString clusteringXML;
 
@@ -388,6 +395,11 @@ private:
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
   
   // Execution
+  //void OnTerminateShellCommand( int pid, int status );
+
+  //bool shellCommand( const wxString& program, const wxString& whichFile );
+  bool existCommand( const wxString& program, const wxString& parameter );
+  void runCommand( const wxString& program, const wxString& parameter );
   void runDetachedProcess( wxString command );
 };
 

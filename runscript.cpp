@@ -68,6 +68,8 @@ void RunningProcess::OnTerminate( int pid, int status )
   while ( HasInput() )
     ;
 
+  //std::cout << "RunningProcess::OnTerminate: STATUS " << status << std::endl;
+  //parent->executionStatus = status;
   parent->OnProcessTerminated();
 }
 
@@ -317,6 +319,8 @@ void RunScript::Init()
   listboxRunLog = NULL;
   buttonExit = NULL;
 ////@end RunScript member initialisation
+
+  //executionStatus = -2;
 
   wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"),
                                    _(".cfg"),
@@ -1184,9 +1188,11 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
       // PRECOND: not empty
       clusteringXML = fileBrowserButtonClusteringXML->GetPath();
     }
-  
+    
+    //executionStatus = -2;
     myProcess = new RunningProcess( this, readyCommand );
     myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC, myProcess );
+    //std::cout << myProcessPid << std::endl;
     if( !myProcessPid )
     {
       OnProcessTerminated();
@@ -1689,6 +1695,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
 void RunScript::runDetachedProcess( wxString command )
 {
+  //executionStatus = -2;
   RunningProcess *localProcess = new RunningProcess( this, command );
   if( !wxExecute( command, wxEXEC_ASYNC, localProcess ) )
   {
@@ -1901,9 +1908,50 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_CLUSTERING_XML
- */
+//bool RunScript::shellCommand( const wxString& program, const wxString& whichFile )
+//{
+  //wxString command = _( "/bin/sh -c '" ) + program + _(" ") + whichFile + _(" 1>&- 2>&- ; echo $?'");
+/*
+  wxString command = program + _(" ") + whichFile + _(" 1>&- 2>&- ; echo $?");
+
+  wxArrayString outputArray;
+  int executionPid = wxExecute( command, wxEXEC_ASYNC, outputArray );
+  
+  std::cout << command << " " << executionPid << std::endl;
+  for ( unsigned int i = 0; i < outputArray.GetCount(); ++i )
+  {
+    std::cout <<  "exit: " << outputArray[ i ] << std::endl;
+  }  
+  
+  return ( outputArray.Last() == _("0") );
+*/  
+  //wxString command = _( "/bin/sh -c '" ) + program + _(" ") + whichFile + _(" 1>&- 2>&-'");
+/*  wxString command = program + _(" ") + whichFile;
+  executionStatus = -2;
+  wxProcess* tmpmyProcess = new RunningProcess( this, command );
+  int tmpmyProcessPid = wxExecute( command, wxEXEC_ASYNC, tmpmyProcess );
+std::cout << "Pid: " << command << " " << tmpmyProcessPid 
+  << " executionStatus: " << executionStatus << std::endl;
+
+
+  //return ( executionStatus == 0 );
+  */
+//}
+
+
+bool RunScript::existCommand( const wxString& program, const wxString& parameter )
+{
+  wxString command = _( "/bin/sh -c '" ) + program + _(" ") + parameter + _(" 1>&- 2>&-'");
+  return ( wxExecute( command, wxEXEC_SYNC ) == 0 );
+}
+
+void RunScript::runCommand( const wxString& program, const wxString& parameter )
+{
+  wxString command = _( "/bin/sh -c '" ) + program + _(" ") + parameter + _(" 1>&- 2>&-'");
+  wxExecute( command ); // ASYNC
+}
+
+
 // Idea taken from wxMakeShellCommand
 // TODO Put apart in a class
 void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
@@ -1914,18 +1962,31 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   command = _( "wordpad.exe " ) + fileToEdit;
   wxExecute( command );
 #else
-  command = _( "/bin/sh -c 'gvim " ) + fileToEdit + _(" 1>&- 2>&-'"); // last part closes stdout stderr
-  if( wxExecute( command ) != 0 )
+  
+  // TODO -> PUT IN CLASSES
+  vector< wxString > editor;
+  vector< wxString > versionParameter;
+  
+  editor.push_back( _( "gvim" ) );
+  versionParameter.push_back( _( "--version" ) );
+  editor.push_back( _( "nedit" ) );
+  versionParameter.push_back( _( "-version" ) );
+  editor.push_back( _( "gedit" ) );
+  versionParameter.push_back( _( "--version" ) );
+
+  size_t i;
+  for ( i = 0; i < editor.size(); ++i )
   {
-    command = _( "/bin/sh -c 'nedit " ) + fileToEdit + _(" 1>&- 2>&-'");
-    if( wxExecute( command ) != 0 )
+    if ( existCommand( editor[ i ], versionParameter[ i ] ) )
     {
-      command = _( "/bin/sh -c 'gedit " ) + fileToEdit + _(" 1>&- 2>&-'");
-      if( wxExecute( command ) == 0 )
-      {
-        wxMessageBox( _( "Install gvim or nedit to edit Clustering XML" ), _( "Edit Clustering Configuration XML" ) );
-      }
+      runCommand( editor[ i ], fileToEdit );
+      break;
     }
+  }
+  
+  if ( i == 3 )
+  {
+    wxMessageBox( _( "Unable to find gvim, nedit or gedit. Please check $PATH variable." ), _( "Edit Clustering Configuration XML" ) );
   }
 #endif
 }
