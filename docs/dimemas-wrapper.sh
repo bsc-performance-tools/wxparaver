@@ -8,14 +8,14 @@ set -e
 
 function usage
 {
-  echo "Usage: $0  source_trace  dimemas_cfg  output_trace  reuse_dimemas_trace [-n] [extra_parameters]"
+  echo "Usage: $0  source_trace  dimemas_cfg  output_trace  reuse_dimemas_trace [extra_parameters] [-n]"
   echo "  source_trace:        Paraver trace"
   echo "  dimemas_cfg:         Simulation parameters"
   echo "  output_trace:        Output trace of Dimemas; must end with '.prv'"
   echo "  reuse_dimemas_trace: 0 -> don't reuse, rerun prv2dim"
   echo "                       1 -> reuse, don't rerun prv2dim"
-  echo "  -n:                  prv2dim -n parameter => no generate initial idle states"
   echo "  extra_parameters:    See complete list of Dimemas help with 'Dimemas -h'"
+  echo "  -n:                  prv2dim -n parameter => no generate initial idle states"
 }
 
 
@@ -30,12 +30,6 @@ DIMEMAS_CFG=${2}
 OUTPUT_PARAVER_TRACE=${3}
 DIMEMAS_REUSE_TRACE=${4}
 
-PRV2DIM_N=""
-if [ $# -ge 5 ]; then
-  if [[ ${5} == "-n" ]]; then
-    PRV2DIM_N="-n"
-  fi
-fi
 
 if [[ ${DIMEMAS_REUSE_TRACE} != "0"  && ${DIMEMAS_REUSE_TRACE} != "1" ]]; then
   usage
@@ -86,8 +80,13 @@ shift
 shift
 shift
 EXTRA_PARAMETERS=""
+PRV2DIM_N=""
 while [ -n "$1" ]; do
-  EXTRA_PARAMETERS="$EXTRA_PARAMETERS $1"
+  if [[ ${1} == "-n" ]]; then # caution! this works because no -n parameters exists in Dimemas
+    PRV2DIM_N="-n"
+  else
+    EXTRA_PARAMETERS="$EXTRA_PARAMETERS $1"
+  fi
   shift
 done
 
