@@ -876,6 +876,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
   
+  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
+
   if ( histogram->GetHistogram()->getThreeDimensions() )
   {
     buildItem( popUpMenuSaveAsText, 
@@ -893,7 +895,6 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   else
     buildItem( popUpMenuSave, _( "Save text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
 
-  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
   
   enableMenu( histogram );
