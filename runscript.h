@@ -98,6 +98,7 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_OUTPUT_TRACE 10001
 #define ID_CHECKBOX_DIMEMAS_REUSE 10209
 #define ID_CHECKBOX_VERBOSE 10252
+#define ID_CHECKBOX_PRV2DIM_N 10253
 #define ID_TEXTCTRL_STATS_OUTPUT_NAME 10211
 #define ID_CHECKBOX_STATS_SHOW_BURSTS 10212
 #define ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM 10213
@@ -279,6 +280,7 @@ public:
   wxTextCtrl* textCtrlOutputTrace;
   wxCheckBox* checkBoxReuseDimemasTrace;
   wxCheckBox* checkBoxDimemasVerbose;
+  wxCheckBox* checkBoxDontTranslateIdleStates;
   wxBoxSizer* statsSection;
   wxStaticText* statsLabelTextCtrlOutputName;
   wxTextCtrl* statsTextCtrlOutputName;
