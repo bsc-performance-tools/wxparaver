@@ -133,37 +133,57 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_ICONIZE( paraverMain::OnIconize )
   EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
+
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
+
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
+
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
+
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
+
   EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
+
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
+
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
+
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
+
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
+
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
+
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
+
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
+
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
+
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
-  EVT_UPDATE_UI( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationUpdate )
+
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
+
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
+
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -3232,7 +3252,6 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 
     if ( filterToolIDs[ i ] == TraceCutter::getID() )
     {
-      //pcf_name = localKernel->composeName( (char *)tmpNameIn.c_str(), (char *)"pcf" );
       pcf_name = LocalKernel::composeName( tmpNameIn, string( "pcf" ) );
       if(( pcfFile = fopen( pcf_name.c_str(), "r" )) != NULL )
       {
@@ -3295,9 +3314,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   string pcfName, rowName;
   for( PRV_UINT16 i = 0; i < tmpFiles.size() - 1; ++i )
   {
-    //pcfName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"pcf" );
     pcfName = LocalKernel::composeName( tmpFiles[ i ], string( "pcf" ) );
-    //rowName = localKernel->composeName( (char *)tmpFiles[ i ].c_str(), (char *)"row" );
     rowName = LocalKernel::composeName( tmpFiles[ i ], string( "row" ) );
     remove( tmpFiles[ i ].c_str() );
     remove( pcfName.c_str() );
@@ -3385,7 +3402,6 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
     if ( cutFilterDialog.GetRunAppWithResultingTrace() )
     {
       wxString auxTrace =  wxString::FromAscii( dstTrace.c_str() );
-      // ShowRunCommand( wxT(""), auxTrace, wxT(""), false );
       ShowRunCommand( auxTrace );
     }
   }
@@ -3524,14 +3540,8 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
 }
 
 
-// TODO: clean parameters not used
-void paraverMain::ShowRunCommand( // wxString app,
-                                  wxString traceFile
-                                  // wxString command,
-                                  //bool runNow
-                                  )
+void paraverMain::ShowRunCommand( wxString traceFile )
 {
-  // RunScript runApplication( (wxWindow *)this, app, traceFile, command, runNow );
   RunScript runApplication( (wxWindow *)this, traceFile );
   
   if ( runApplication.ShowModal() == wxID_OK )
@@ -3546,7 +3556,6 @@ void paraverMain::ShowRunCommand( // wxString app,
 
 void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
 {
-  // ShowRunCommand( wxT(""), wxT(""), wxT(""), false );
   if( !loadedTraces.empty() )
   {
     wxString tmpStr( loadedTraces[ currentTrace ]->getFileName().c_str(), wxConvUTF8 );
@@ -3555,17 +3564,3 @@ void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
   else
     ShowRunCommand( wxT("") );
 }
-
-
-/*!
- * wxEVT_UPDATE_UI event handler for ID_TOOL_RUN_SCRIPT
- */
-
-void paraverMain::OnToolRunApplicationUpdate( wxUpdateUIEvent& event )
-{
-////@begin wxEVT_UPDATE_UI event handler for ID_TOOL_RUN_SCRIPT in paraverMain.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_UPDATE_UI event handler for ID_TOOL_RUN_SCRIPT in paraverMain. 
-}
-

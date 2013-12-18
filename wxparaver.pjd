@@ -1933,7 +1933,6 @@
               <long name="locked">0</long>
               <string name="proxy-type">"wbToolBarButtonProxy"</string>
               <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolRunApplicationClick|NONE||paraverMain"</string>
-              <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolRunApplicationUpdate|NONE||paraverMain"</string>
               <string name="proxy-Id name">"ID_TOOL_RUN_APPLICATION"</string>
               <long name="proxy-Id value">10004</long>
               <string name="proxy-Bitmap">"run_script.xpm"</string>

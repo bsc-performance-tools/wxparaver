@@ -259,9 +259,6 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_RUN_APPLICATION
   void OnToolRunApplicationClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_TOOL_RUN_APPLICATION
-  void OnToolRunApplicationUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );
 
