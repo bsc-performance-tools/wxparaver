@@ -520,7 +520,7 @@ void RunScript::CreateControls()
 
   itemBoxSizer28->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  checkBoxDontTranslateIdleStates = new wxCheckBox( itemDialog1, ID_CHECKBOX_PRV2DIM_N, _("Don't generate initial idle states when tranlating"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkBoxDontTranslateIdleStates = new wxCheckBox( itemDialog1, ID_CHECKBOX_PRV2DIM_N, _("Don't generate initial idle states when translating"), wxDefaultPosition, wxDefaultSize, 0 );
   checkBoxDontTranslateIdleStates->SetValue(false);
   if (RunScript::ShowToolTips())
     checkBoxDontTranslateIdleStates->SetToolTip(_("If checked, parameter -n passed to prv2dim translator, forbidding generation of initial idle states. prv2dim translation phase is engaged only if Dimemas trace is missing or you don't want to reuse it (previous \"Reuse Dimemas\" unchecked)"));

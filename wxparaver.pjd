@@ -34489,7 +34489,7 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-Implementation filename">""</string>
                   <string name="proxy-Header filename">""</string>
                   <string name="proxy-Member variable name">"checkBoxDontTranslateIdleStates"</string>
-                  <string name="proxy-Label">"Don't generate initial idle states when tranlating"</string>
+                  <string name="proxy-Label">"Don't generate initial idle states when translating"</string>
                   <bool name="proxy-Initial value">0</bool>
                   <string name="proxy-Help text">""</string>
                   <string name="proxy-Tooltip text">"If checked, parameter -n passed to prv2dim translator, forbidding generation of initial idle states. prv2dim translation phase is engaged only if Dimemas trace is missing or you don't want to reuse it (previous &quot;Reuse Dimemas&quot; unchecked)"</string>
