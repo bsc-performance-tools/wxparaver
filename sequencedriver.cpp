@@ -296,7 +296,19 @@ void SequenceDriver::sequenceTraceShifter( std::string trace )
   mySequence->pushbackAction( TraceEditSequence::traceWriterAction );
   //mySequence->pushbackAction( TraceEditSequence::traceSortAction ); //?
 
-  // Add state for output trace name
+  // State: max trace time
+  //   Initialized by TraceParserAction
+  //   Modified    by RecordTimeShifterAction
+  //   Read        by TraceWriterAction
+  MaxTraceTimeState *tmpMaxTraceTimeState = new MaxTraceTimeState( mySequence );
+  tmpMaxTraceTimeState->init();
+  mySequence->addState( TraceEditSequence::maxTraceTimeState, tmpMaxTraceTimeState );
+  
+  // State: shift times
+
+
+  // State: output trace name
+  //   Read by TraceWriterAction
   vector< std::string > idTool;
   idTool.push_back( TraceShifter::getID() );
   bool rememberIt = true;
