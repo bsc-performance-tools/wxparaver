@@ -303,9 +303,14 @@ void SequenceDriver::sequenceTraceShifter( std::string trace )
   MaxTraceTimeState *tmpMaxTraceTimeState = new MaxTraceTimeState( mySequence );
   tmpMaxTraceTimeState->init();
   mySequence->addState( TraceEditSequence::maxTraceTimeState, tmpMaxTraceTimeState );
+/*
+  // with templates something like
+  State<TTime> *tmpMaxTraceTimeState = new State<TTime>( mySequence );
+  tmpMaxTraceTimeState->setData( (TTime)0.0 );
+  mySequence->addState( TraceEditSequence::maxTraceTimeState, tmpMaxTraceTimeState );
+*/
   
   // State: shift times
-
 
   // State: output trace name
   //   Read by TraceWriterAction
