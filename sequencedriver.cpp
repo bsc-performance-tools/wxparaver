@@ -102,12 +102,27 @@ vector<TraceEditSequence::TSequenceStates> RunAppDimemasAction::getStateDependen
 
 void RunAppDimemasAction::execute( std::string whichTrace )
 {
-  TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+  //TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
   runAppDialog.setDimemas();
 
   if( runAppDialog.ShowModal() == wxID_OK )
   {}
+}
+
+
+/****************************************************************************
+ ********              ExternalSortAction                            ********
+ ****************************************************************************/
+vector<TraceEditSequence::TSequenceStates> ExternalSortAction::getStateDependencies() const
+{
+  vector<TraceEditSequence::TSequenceStates> tmpStates;
+  return tmpStates;
+}
+
+void ExternalSortAction::execute( std::string whichTrace )
+{
+  TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
 }
 
 
@@ -269,3 +284,31 @@ void SequenceDriver::sequenceDimemas( gTimeline *whichTimeline )
   
   delete mySequence;
 }
+
+
+void SequenceDriver::sequenceTraceShifter( std::string trace )
+{
+  KernelConnection *myKernel =  paraverMain::myParaverMain->GetLocalKernel();
+  TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
+
+  mySequence->pushbackAction( TraceEditSequence::traceParserAction );
+  mySequence->pushbackAction( TraceEditSequence::recordTimeShifterAction );
+  mySequence->pushbackAction( TraceEditSequence::traceWriterAction );
+  //mySequence->pushbackAction( TraceEditSequence::traceSortAction ); //?
+
+  // Add state for output trace name
+  vector< std::string > idTool;
+  idTool.push_back( TraceShifter::getID() );
+  bool rememberIt = true;
+  std::string shiftedTraceName = myKernel->getNewTraceName( trace, idTool, rememberIt );
+  OutputTraceFileNameState *tmpOutputTraceFileNameState = new OutputTraceFileNameState( mySequence );
+  tmpOutputTraceFileNameState->setData( shiftedTraceName );
+  mySequence->addState( TraceEditSequence::outputTraceFileNameState, tmpOutputTraceFileNameState );
+
+  vector<std::string> traces;
+  traces.push_back( trace );
+  mySequence->execute( traces );
+
+  delete mySequence;
+}
+

@@ -101,6 +101,28 @@ class RunAppDimemasAction: public TraceToTraceAction
 
 
 /****************************************************************************
+ ********              ExternalSortAction                            ********
+ ****************************************************************************/
+class ExternalSortAction: public TraceToTraceAction
+{
+  public:
+    ExternalSortAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~ExternalSortAction()
+    {}
+
+    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+
+    virtual void execute( std::string whichTrace );
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
  ********                 SequenceDriver                             ********
  ****************************************************************************/
 class SequenceDriver
@@ -109,7 +131,7 @@ class SequenceDriver
     static void sequenceClustering( gTimeline *whichTimeline );
     static void sequenceFolding( gTimeline *whichTimeline );
     static void sequenceDimemas( gTimeline *whichTimeline );
-
+    static void sequenceTraceShifter( std::string trace );
 };
 
 #endif //_SEQUENCEDRIVER_H_
