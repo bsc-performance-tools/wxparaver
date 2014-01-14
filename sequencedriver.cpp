@@ -122,7 +122,7 @@ vector<TraceEditSequence::TSequenceStates> ExternalSortAction::getStateDependenc
 
 void ExternalSortAction::execute( std::string whichTrace )
 {
-  TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+ // TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
 }
 
 
