@@ -90,26 +90,16 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
-
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
-
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
-
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
-
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
-
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
-
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -641,9 +631,58 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   // Get the text extent for the last object (probably the larger one)
   dc.SetFont( objectFont );
   // +1!
-  wxSize objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1,
-                                                                                           myWindow->getLevel(),
-                                                                                           myWindow->getTrace() ).c_str() ) );
+  wxSize objectExt, tmpExt;
+  int endLevel = THREAD;
+
+  switch( myWindow->getObjectAxisSize() )
+  {
+    case Window::CURRENT_LEVEL:
+      objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1,
+                                                                                        myWindow->getLevel(),
+                                                                                        myWindow->getTrace() ).c_str() ) );
+      break;
+
+    case Window::ALL_LEVELS:
+      if( myWindow->getTrace()->existResourceInfo() )
+        endLevel = CPU;
+        
+      for( int iLevel = WORKLOAD; iLevel <= endLevel; ++iLevel )
+      {
+        if( iLevel == WORKLOAD )
+          objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( (TWindowLevel) iLevel ) - 1,
+                                                                                            (TWindowLevel) iLevel,
+                                                                                            myWindow->getTrace() ).c_str() ) );
+        else
+        {
+          tmpExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( (TWindowLevel) iLevel ) - 1,
+                                                                                         (TWindowLevel) iLevel,
+                                                                                         myWindow->getTrace() ).c_str() ) );
+          if( tmpExt.GetWidth() > objectExt.GetWidth() )
+            objectExt = tmpExt;
+        }
+      }
+      break;
+
+    case Window::ZERO_PERC:
+      objectExt = wxSize( 0 , 0 );
+      break;
+
+    case Window::FIVE_PERC:
+      objectExt = wxSize( dc.GetSize().GetWidth() * 0.05 , 0 );
+      break;
+
+    case Window::TEN_PERC:
+      objectExt = wxSize( dc.GetSize().GetWidth() * 0.10 , 0 );
+      break;
+
+    case Window::TWENTYFIVE_PERC:
+      objectExt = wxSize( dc.GetSize().GetWidth() * 0.25 , 0 );
+      break;
+
+    default:
+      break;
+  }
+  
   objectAxisPos = drawBorder + objectExt.GetWidth() + drawBorder;
   if( objectAxisPos + drawBorder + 1 > dc.GetSize().GetWidth() )
   {

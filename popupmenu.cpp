@@ -112,6 +112,12 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_LABELS_ALL, gPopUpMenu::OnMenuLabelsAll )
   EVT_MENU( ID_MENU_LABELS_SPACED, gPopUpMenu::OnMenuLabelsSpaced )
   EVT_MENU( ID_MENU_LABELS_POWER2, gPopUpMenu::OnMenuLabelsPower2 )
+  EVT_MENU( ID_MENU_OBJECT_AXIS_CURRENT, gPopUpMenu::OnMenuObjectAxisCurrent )
+  EVT_MENU( ID_MENU_OBJECT_AXIS_ALL, gPopUpMenu::OnMenuObjectAxisAll )
+  EVT_MENU( ID_MENU_OBJECT_AXIS_ZERO, gPopUpMenu::OnMenuObjectAxisZero )
+  EVT_MENU( ID_MENU_OBJECT_AXIS_FIVE, gPopUpMenu::OnMenuObjectAxisFive )
+  EVT_MENU( ID_MENU_OBJECT_AXIS_TEN, gPopUpMenu::OnMenuObjectAxisTen )
+  EVT_MENU( ID_MENU_OBJECT_AXIS_TWENTYFIVE, gPopUpMenu::OnMenuObjectAxisTwentyFive )
   EVT_MENU( ID_MENU_CLUSTERING, gPopUpMenu::OnMenuClustering )
   EVT_MENU( ID_MENU_FOLDING, gPopUpMenu::OnMenuFolding )
   EVT_MENU( ID_MENU_DIMEMAS, gPopUpMenu::OnMenuDimemas )
@@ -361,6 +367,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuPixelSize = new wxMenu;
   popUpMenuGradientFunction = new wxMenu;
   popUpMenuLabels = new wxMenu;
+  popUpMenuObjectAxis = new wxMenu;
   popUpMenuSave = new wxMenu;
   popUpMenuRun = new wxMenu;
 
@@ -599,6 +606,20 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuLabels, _( "2^n" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsPower2, ID_MENU_LABELS_POWER2, 
              timeline->GetMyWindow()->getObjectLabels() == Window::POWER2_LABELS );
   AppendSubMenu( popUpMenuLabels, _( "Object Labels" ) );
+
+  buildItem( popUpMenuObjectAxis, _( "Fit Current Level" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisCurrent, ID_MENU_OBJECT_AXIS_CURRENT, 
+             timeline->GetMyWindow()->getObjectAxisSize() == Window::CURRENT_LEVEL );
+  buildItem( popUpMenuObjectAxis, _( "Fit All Levels" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisAll, ID_MENU_OBJECT_AXIS_ALL, 
+             timeline->GetMyWindow()->getObjectAxisSize() == Window::ALL_LEVELS );
+  buildItem( popUpMenuObjectAxis, _( "0%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisZero, ID_MENU_OBJECT_AXIS_ZERO, 
+             timeline->GetMyWindow()->getObjectAxisSize() == Window::ZERO_PERC );
+  buildItem( popUpMenuObjectAxis, _( "5%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisFive, ID_MENU_OBJECT_AXIS_FIVE, 
+             timeline->GetMyWindow()->getObjectAxisSize() == Window::FIVE_PERC );
+  buildItem( popUpMenuObjectAxis, _( "10%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTen, ID_MENU_OBJECT_AXIS_TEN, 
+             timeline->GetMyWindow()->getObjectAxisSize() == Window::TEN_PERC );
+  buildItem( popUpMenuObjectAxis, _( "25%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTwentyFive, ID_MENU_OBJECT_AXIS_TWENTYFIVE, 
+             timeline->GetMyWindow()->getObjectAxisSize() == Window::TWENTYFIVE_PERC );
+  AppendSubMenu( popUpMenuObjectAxis, _( "Object Axis" ) );
 
   AppendSeparator();
   
@@ -1474,6 +1495,42 @@ void gPopUpMenu::OnMenuLabelsSpaced( wxCommandEvent& event )
 void gPopUpMenu::OnMenuLabelsPower2( wxCommandEvent& event )
 {
   timeline->GetMyWindow()->setObjectLabels( Window::POWER2_LABELS );
+  timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuObjectAxisCurrent( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectAxisSize( Window::CURRENT_LEVEL );
+  timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuObjectAxisAll( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectAxisSize( Window::ALL_LEVELS );
+  timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuObjectAxisZero( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectAxisSize( Window::ZERO_PERC );
+  timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuObjectAxisFive( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectAxisSize( Window::FIVE_PERC );
+  timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuObjectAxisTen( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectAxisSize( Window::TEN_PERC );
+  timeline->GetMyWindow()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuObjectAxisTwentyFive( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setObjectAxisSize( Window::TWENTYFIVE_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
