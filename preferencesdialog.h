@@ -85,6 +85,7 @@ class wxColourPickerCtrl;
 #define ID_PREFERENCES_TIMELINE_DRAWMODE_OBJECTS 10013
 #define ID_PREFERENCES_TIMELINE_PIXEL_SIZE 10016
 #define ID_PREFERENCES_TIMELINE_LABELS 10208
+#define ID_PREFERENCES_TIMELINE_OBJECT_AXIS 10254
 #define ID_CHECKBOX_TIMELINE_WW_SEMANTIC 10093
 #define ID_CHECKBOX_TIMELINE_WW_EVENTS 10094
 #define ID_CHECKBOX_TIMELINE_WW_COMMUNICATIONS 10095
@@ -365,6 +366,9 @@ public:
   PRV_UINT32 GetWhatWhereMaxPrecision() const { return whatWhereMaxPrecision ; }
   void SetWhatWhereMaxPrecision(PRV_UINT32 value) { whatWhereMaxPrecision = value ; }
 
+  PRV_UINT32 GetTimelineObjectAxis() const { return timelineObjectAxis ; }
+  void SetTimelineObjectAxis(PRV_UINT32 value) { timelineObjectAxis = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -403,6 +407,7 @@ public:
   wxChoice* choiceTimelineDrawmodeObjects;
   wxChoice* choiceTimelinePixelSize;
   wxChoice* choiceTimelineLabels;
+  wxChoice* choiceTimelineObjectAxis;
   wxCheckBox* checkTimelineWWSemantic;
   wxCheckBox* checkTimelineWWEvents;
   wxCheckBox* checkTimelineWWCommunications;
@@ -504,6 +509,7 @@ private:
   std::string tracesPath;
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
+  PRV_UINT32 timelineObjectAxis;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

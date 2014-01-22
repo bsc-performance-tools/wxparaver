@@ -782,6 +782,9 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
         break;
     }
 
+    if( myWindow->getObjectAxisSize() == Window::ZERO_PERC )
+      drawLabel = false;
+
     if( printall || drawLabel )
     {
 #ifdef TRACING_ENABLED
@@ -826,6 +829,10 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                                                                                      myWindow->getTimeUnit(), precision ).c_str() ) )
                .GetWidth() + drawBorder ),
                timeAxisPos + drawBorder );
+
+  dc.SetPen( *wxBLACK_PEN );
+  dc.SetBrush( *wxBLACK_BRUSH );
+  dc.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetSize().GetWidth(), timeAxisPos );
                
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
