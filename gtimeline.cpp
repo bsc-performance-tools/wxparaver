@@ -782,10 +782,8 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
         break;
     }
 
-    if( myWindow->getObjectAxisSize() == Window::ZERO_PERC )
-      drawLabel = false;
-
-    if( printall || drawLabel )
+    if( ( printall || drawLabel ) &&
+        !( myWindow->getObjectAxisSize() == Window::ZERO_PERC ) )
     {
 #ifdef TRACING_ENABLED
       Extrae_event( 100, 14 );
