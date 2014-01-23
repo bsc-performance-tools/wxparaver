@@ -37,8 +37,9 @@
 
 ////@begin includes
 #include "filebrowserbutton.h"
-#include "wx/statline.h"
+#include "wx/notebook.h"
 #include "wx/spinctrl.h"
+#include "wx/statline.h"
 #include "wx/html/htmlwin.h"
 ////@end includes
 
@@ -76,8 +77,8 @@ class RunningProcess : public wxProcess
 ////@begin forward declarations
 class FileBrowserButton;
 class wxBoxSizer;
-class wxStaticLine;
 class wxSpinCtrl;
+class wxStaticLine;
 class wxHtmlWindow;
 ////@end forward declarations
 
@@ -96,9 +97,19 @@ class wxHtmlWindow;
 #define ID_BUTTON_DIMEMAS_CFG_BROWSER 10235
 #define ID_BUTTON_DIMEMAS_GUI 10210
 #define ID_TEXTCTRL_OUTPUT_TRACE 10001
+#define ID_NOTEBOOK1 10254
+#define ID_SCROLLEDWINDOW4 10256
+#define ID_CHECKBOX_PRV2DIM_N 10253
 #define ID_CHECKBOX_DIMEMAS_REUSE 10209
 #define ID_CHECKBOX_VERBOSE 10252
-#define ID_CHECKBOX_PRV2DIM_N 10253
+#define ID_SCROLLEDWINDOW3 10255
+#define ID_TEXTCTRL_DIMEMAS_BANDWIDTH 10257
+#define ID_TEXTCTRL_DIMEMAS_LATENCY 10004
+#define ID_RADIOBUTTON_DIMEMAS_DEFAULT_TASKS_MAPPING 10258
+#define ID_RADIOBUTTON_DIMEMAS_FILL_NODES 10263
+#define ID_RADIOBUTTON_DIMEMAS_INTERLEAVED 10262
+#define ID_RADIOBUTTON_DIMEMAS_TASKS_PER_NODE 10260
+#define ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE 10259
 #define ID_TEXTCTRL_STATS_OUTPUT_NAME 10211
 #define ID_CHECKBOX_STATS_SHOW_BURSTS 10212
 #define ID_CHECKBOX_STATS_SHOW_COMMS_HISTOGRAM 10213
@@ -131,7 +142,7 @@ class wxHtmlWindow;
 #define SYMBOL_RUNSCRIPT_STYLE wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_RUNSCRIPT_TITLE _("Run Application")
 #define SYMBOL_RUNSCRIPT_IDNAME ID_RUN_APPLICATION
-#define SYMBOL_RUNSCRIPT_SIZE wxSize(600, 1000)
+#define SYMBOL_RUNSCRIPT_SIZE wxSize(600, 1400)
 #define SYMBOL_RUNSCRIPT_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -278,9 +289,16 @@ public:
   wxBitmapButton* buttonDimemasGUI;
   wxStaticText* labelTextCtrlOutputTrace;
   wxTextCtrl* textCtrlOutputTrace;
+  wxCheckBox* checkBoxDontTranslateIdleStates;
   wxCheckBox* checkBoxReuseDimemasTrace;
   wxCheckBox* checkBoxDimemasVerbose;
-  wxCheckBox* checkBoxDontTranslateIdleStates;
+  wxTextCtrl* textCtrlDimemasBandwidth;
+  wxTextCtrl* textCtrlDimemasLatency;
+  wxRadioButton* radioButtonDimemasDefaultTasksMapping;
+  wxRadioButton* radioButtonDimemasFillNodes;
+  wxRadioButton* radioButtonDimemasInterleaved;
+  wxRadioButton* radioButtonDimemasTasksPerNode;
+  wxSpinCtrl* spinCtrlDimemasTasksPerNode;
   wxBoxSizer* statsSection;
   wxStaticText* statsLabelTextCtrlOutputName;
   wxTextCtrl* statsTextCtrlOutputName;
