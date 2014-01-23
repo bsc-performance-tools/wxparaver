@@ -468,7 +468,7 @@ void RunScript::CreateControls()
   boxSizerParameters->Add(textCtrlDefaultParameters, 12, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   dimemasSection = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(dimemasSection, 2, wxGROW|wxALL, 2);
+  itemBoxSizer2->Add(dimemasSection, 3, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
   dimemasSection->Add(itemBoxSizer16, 0, wxGROW|wxTOP|wxBOTTOM, 2);
@@ -506,9 +506,9 @@ void RunScript::CreateControls()
     textCtrlOutputTrace->SetToolTip(_("Write the name given to the output trace; if missing, suffix '.prv' will be appended"));
   itemBoxSizer21->Add(textCtrlOutputTrace, 12, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
-  wxNotebook* itemNotebook24 = new wxNotebook( itemDialog1, ID_NOTEBOOK_DIMEMAS, wxDefaultPosition, wxSize(-1, 190), wxBK_TOP );
+  wxNotebook* itemNotebook24 = new wxNotebook( itemDialog1, ID_NOTEBOOK_DIMEMAS, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
 
-  wxScrolledWindow* itemScrolledWindow25 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_MAIN, wxDefaultPosition, wxSize(100, 100), wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
+  wxScrolledWindow* itemScrolledWindow25 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_MAIN, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
   itemScrolledWindow25->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxVERTICAL);
   itemScrolledWindow25->SetSizer(itemBoxSizer26);
@@ -534,7 +534,7 @@ void RunScript::CreateControls()
   itemScrolledWindow25->FitInside();
   itemNotebook24->AddPage(itemScrolledWindow25, _("Main"));
 
-  wxScrolledWindow* itemScrolledWindow30 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_ADVANCED, wxDefaultPosition, wxSize(100, 100), wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
+  wxScrolledWindow* itemScrolledWindow30 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_ADVANCED, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
   itemScrolledWindow30->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxHORIZONTAL);
   itemScrolledWindow30->SetSizer(itemBoxSizer31);
@@ -542,7 +542,7 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer31->Add(itemBoxSizer32, 0, wxGROW|wxALL, 2);
   wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer32->Add(itemBoxSizer33, 0, wxGROW|wxALL, 5);
+  itemBoxSizer32->Add(itemBoxSizer33, 0, wxGROW|wxTOP, 20);
   wxStaticText* itemStaticText34 = new wxStaticText( itemScrolledWindow30, wxID_STATIC, _("Bandwidth (Mbps)"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer33->Add(itemStaticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
@@ -550,7 +550,7 @@ void RunScript::CreateControls()
   itemBoxSizer33->Add(textCtrlDimemasBandwidth, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
   wxBoxSizer* itemBoxSizer36 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer32->Add(itemBoxSizer36, 0, wxGROW|wxALL, 5);
+  itemBoxSizer32->Add(itemBoxSizer36, 0, wxGROW|wxTOP, 5);
   wxStaticText* itemStaticText37 = new wxStaticText( itemScrolledWindow30, wxID_STATIC, _("Latency (s)"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer36->Add(itemStaticText37, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
@@ -559,7 +559,7 @@ void RunScript::CreateControls()
 
   wxStaticBox* itemStaticBoxSizer39Static = new wxStaticBox(itemScrolledWindow30, wxID_ANY, _(" Tasks Mapping  "));
   wxStaticBoxSizer* itemStaticBoxSizer39 = new wxStaticBoxSizer(itemStaticBoxSizer39Static, wxVERTICAL);
-  itemBoxSizer31->Add(itemStaticBoxSizer39, 1, wxALIGN_TOP|wxALL, 4);
+  itemBoxSizer31->Add(itemStaticBoxSizer39, 1, wxALIGN_TOP|wxLEFT|wxRIGHT|wxTOP, 4);
   wxBoxSizer* itemBoxSizer40 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer39->Add(itemBoxSizer40, 0, wxGROW|wxALL, 2);
   radioButtonDimemasDefaultTasksMapping = new wxRadioButton( itemScrolledWindow30, ID_RADIOBUTTON_DIMEMAS_DEFAULT_TASKS_MAPPING, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -596,7 +596,7 @@ void RunScript::CreateControls()
   itemScrolledWindow30->FitInside();
   itemNotebook24->AddPage(itemScrolledWindow30, _("Advanced"));
 
-  dimemasSection->Add(itemNotebook24, 0, wxGROW|wxALL, 4);
+  dimemasSection->Add(itemNotebook24, 2, wxGROW|wxALL, 4);
 
   statsSection = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(statsSection, 0, wxGROW|wxALL, 2);
