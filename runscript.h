@@ -99,12 +99,13 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_OUTPUT_TRACE 10001
 #define ID_NOTEBOOK_DIMEMAS 10254
 #define ID_SCROLLEDWINDOW_DIMEMAS_MAIN 10256
-#define ID_CHECKBOX_PRV2DIM_N 10253
 #define ID_CHECKBOX_DIMEMAS_REUSE 10209
+#define ID_CHECKBOX_PRV2DIM_N 10253
 #define ID_CHECKBOX_VERBOSE 10252
 #define ID_SCROLLEDWINDOW_DIMEMAS_ADVANCED 10255
 #define ID_TEXTCTRL_DIMEMAS_BANDWIDTH 10257
 #define ID_TEXTCTRL_DIMEMAS_LATENCY 10004
+#define ID_PANEL_DUMMY 10264
 #define ID_RADIOBUTTON_DIMEMAS_DEFAULT_TASKS_MAPPING 10258
 #define ID_RADIOBUTTON_DIMEMAS_FILL_NODES 10263
 #define ID_RADIOBUTTON_DIMEMAS_INTERLEAVED 10262
@@ -289,8 +290,8 @@ public:
   wxBitmapButton* buttonDimemasGUI;
   wxStaticText* labelTextCtrlOutputTrace;
   wxTextCtrl* textCtrlOutputTrace;
-  wxCheckBox* checkBoxDontTranslateIdleStates;
   wxCheckBox* checkBoxReuseDimemasTrace;
+  wxCheckBox* checkBoxDontTranslateIdleStates;
   wxCheckBox* checkBoxDimemasVerbose;
   wxTextCtrl* textCtrlDimemasBandwidth;
   wxTextCtrl* textCtrlDimemasLatency;
