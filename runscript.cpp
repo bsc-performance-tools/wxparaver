@@ -506,9 +506,9 @@ void RunScript::CreateControls()
     textCtrlOutputTrace->SetToolTip(_("Write the name given to the output trace; if missing, suffix '.prv' will be appended"));
   itemBoxSizer21->Add(textCtrlOutputTrace, 12, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
-  wxNotebook* itemNotebook24 = new wxNotebook( itemDialog1, ID_NOTEBOOK1, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
+  wxNotebook* itemNotebook24 = new wxNotebook( itemDialog1, ID_NOTEBOOK_DIMEMAS, wxDefaultPosition, wxSize(-1, 190), wxBK_TOP );
 
-  wxScrolledWindow* itemScrolledWindow25 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW4, wxDefaultPosition, wxSize(100, 100), wxSUNKEN_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
+  wxScrolledWindow* itemScrolledWindow25 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_MAIN, wxDefaultPosition, wxSize(100, 100), wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
   itemScrolledWindow25->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxVERTICAL);
   itemScrolledWindow25->SetSizer(itemBoxSizer26);
@@ -534,7 +534,7 @@ void RunScript::CreateControls()
   itemScrolledWindow25->FitInside();
   itemNotebook24->AddPage(itemScrolledWindow25, _("Main"));
 
-  wxScrolledWindow* itemScrolledWindow30 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW3, wxDefaultPosition, wxSize(100, 100), wxSUNKEN_BORDER|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
+  wxScrolledWindow* itemScrolledWindow30 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_ADVANCED, wxDefaultPosition, wxSize(100, 100), wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
   itemScrolledWindow30->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxHORIZONTAL);
   itemScrolledWindow30->SetSizer(itemBoxSizer31);
@@ -542,20 +542,20 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer31->Add(itemBoxSizer32, 0, wxGROW|wxALL, 2);
   wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer32->Add(itemBoxSizer33, 0, wxGROW|wxALL, 2);
+  itemBoxSizer32->Add(itemBoxSizer33, 0, wxGROW|wxALL, 5);
   wxStaticText* itemStaticText34 = new wxStaticText( itemScrolledWindow30, wxID_STATIC, _("Bandwidth (Mbps)"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer33->Add(itemStaticText34, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textCtrlDimemasBandwidth = new wxTextCtrl( itemScrolledWindow30, ID_TEXTCTRL_DIMEMAS_BANDWIDTH, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer33->Add(textCtrlDimemasBandwidth, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer33->Add(textCtrlDimemasBandwidth, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
   wxBoxSizer* itemBoxSizer36 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer32->Add(itemBoxSizer36, 0, wxGROW|wxALL, 2);
+  itemBoxSizer32->Add(itemBoxSizer36, 0, wxGROW|wxALL, 5);
   wxStaticText* itemStaticText37 = new wxStaticText( itemScrolledWindow30, wxID_STATIC, _("Latency (s)"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer36->Add(itemStaticText37, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   textCtrlDimemasLatency = new wxTextCtrl( itemScrolledWindow30, ID_TEXTCTRL_DIMEMAS_LATENCY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer36->Add(textCtrlDimemasLatency, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer36->Add(textCtrlDimemasLatency, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
   wxStaticBox* itemStaticBoxSizer39Static = new wxStaticBox(itemScrolledWindow30, wxID_ANY, _(" Tasks Mapping  "));
   wxStaticBoxSizer* itemStaticBoxSizer39 = new wxStaticBoxSizer(itemStaticBoxSizer39Static, wxVERTICAL);
@@ -596,7 +596,7 @@ void RunScript::CreateControls()
   itemScrolledWindow30->FitInside();
   itemNotebook24->AddPage(itemScrolledWindow30, _("Advanced"));
 
-  dimemasSection->Add(itemNotebook24, 2, wxGROW|wxALL, 4);
+  dimemasSection->Add(itemNotebook24, 0, wxGROW|wxALL, 4);
 
   statsSection = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(statsSection, 0, wxGROW|wxALL, 2);
@@ -862,6 +862,8 @@ void RunScript::CreateControls()
   forbidden.Add( _( "-" ) );
   wxTextValidator validator( wxFILTER_NUMERIC | wxFILTER_EXCLUDE_CHAR_LIST );
   validator.SetExcludes( forbidden );
+  textCtrlDimemasBandwidth->SetValidator( validator );
+  textCtrlDimemasLatency->SetValidator( validator );
   clusteringTextBoxDBScanEpsilon->SetValidator( validator );
   clusteringTextBoxRefinementEpsilonMin->SetValidator( validator );
   clusteringTextBoxRefinementEpsilonMax->SetValidator( validator );
@@ -973,6 +975,41 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += wxString( wxT( " -n" ) );
       }
 
+      tmpValue.Clear();
+      tmpValue = textCtrlDimemasBandwidth->GetValue();
+      if ( !tmpValue.IsEmpty() )
+      {
+        parameters += wxString( wxT( " --bw" ) );
+        parameters += wxString( wxT( " " ) ) + tmpValue;
+      }
+
+      tmpValue.Clear();
+      tmpValue = textCtrlDimemasLatency->GetValue();
+      if ( !tmpValue.IsEmpty() )
+      {
+        parameters += wxString( wxT( " --lat" ) );
+        parameters += wxString( wxT( " " ) ) + tmpValue;
+      }
+
+      if ( !radioButtonDimemasDefaultTasksMapping->GetValue() ) // default and common
+      {
+        if ( radioButtonDimemasTasksPerNode->GetValue() )
+        {
+          parameters += wxString( wxT( " --ppn" ) );
+          tmpValue.Clear();
+          tmpValue << spinCtrlDimemasTasksPerNode->GetValue();
+          parameters += wxString( wxT( " " ) ) + tmpValue;
+        }
+        else if ( radioButtonDimemasFillNodes->GetValue() )
+        {
+          parameters += wxString( wxT( " --fill" ) );
+        }
+        else //  radioButtonDimemasInterleaved->GetValue()
+        {
+          parameters += wxString( wxT( " --interlvd" ) );
+        }
+      }
+      
       parameters += wxString( wxT( " " ) ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Extra params
       
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
