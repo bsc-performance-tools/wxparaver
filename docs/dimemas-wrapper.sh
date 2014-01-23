@@ -70,11 +70,27 @@ OLD_DIMEMAS_TRACENAME=`grep "mapping information" ${DIMEMAS_CFG} | grep ".dim" |
 NEW_DIMEMAS_TRACENAME=`basename ${DIMEMAS_TRACE}`
 DIMEMAS_CFG_PATH=`dirname ${DIMEMAS_TRACE}`
 
-# Substitution of dimemas trace in cfg
-# This is obsolete, now passed through --dim
-#cat ${DIMEMAS_CFG} | sed "s/${OLD_DIMEMAS_TRACENAME}/${NEW_DIMEMAS_TRACENAME}/g" > ${DIMEMAS_CFG_PATH}/${DIMEMAS_COPY_CFG_NAME}.mod.cfg
-#DIMEMAS_CFG=${DIMEMAS_CFG_PATH}/${DIMEMAS_COPY_CFG_NAME}.mod.cfg
+# DETECTION OF DIMEMAS VERSION
+# Transforms "Dimemas version x.x.x" to a number xxx
+DIMEMAS_VERSION=`Dimemas -h | grep version | head -n 1 | awk -F ' ' '{ print $3; };' | sed 's/\.//g' | sed 's/[a-zA-Z]//g'`
+DIMEMAS_MINIMUM_VERSION=512
 
+if [ "$DIMEMAS_VERSION" -gt "$DIMEMAS_MINIMUM_VERSION" ]; then
+  DIMEMAS_DIM_PARAMETER=1
+else
+  DIMEMAS_DIM_PARAMETER=0
+
+  # Am I executing old Dimemas with new CFG?
+  SHEBANG_OLD_CFG=`grep "SDDFA" ${DIMEMAS_CFG}`
+  if [[ ${SHEBANG_OLD_CFG} != "SDDFA" ]]; then
+    echo "ERROR: Trying to simulate using old version of Dimemas with new incompatible Dimemas cfg"
+    echo "       Please update Dimemas package."
+    exit 1 
+  fi
+
+  cat ${DIMEMAS_CFG} | sed "s/${OLD_DIMEMAS_TRACENAME}/${NEW_DIMEMAS_TRACENAME}/g" > ${DIMEMAS_CFG_PATH}/${DIMEMAS_COPY_CFG_NAME}.mod.cfg
+  DIMEMAS_CFG=${DIMEMAS_CFG_PATH}/${DIMEMAS_COPY_CFG_NAME}.mod.cfg
+fi
 
 # Append extra parameters if they exist
 shift
@@ -120,11 +136,18 @@ fi
 
 # Simulate
 # parameter -S 32K fixed by default
-echo
-echo "${DIMEMAS_ENV}Dimemas ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG}"
-echo
-#${DIMEMAS_ENV}Dimemas ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG} 
-${DIMEMAS_ENV}Dimemas --dim ${NEW_DIMEMAS_TRACENAME} ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG} 
+if [[ ${DIMEMAS_DIM_PARAMETER} = "0" ]]; then
+  echo
+  echo "${DIMEMAS_ENV}Dimemas ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG}"
+  echo
+  ${DIMEMAS_ENV}Dimemas ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG} 
+else
+  echo
+  echo "${DIMEMAS_ENV}Dimemas --dim ${NEW_DIMEMAS_TRACENAME} ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG}"
+  echo
+  ${DIMEMAS_ENV}Dimemas --dim ${NEW_DIMEMAS_TRACENAME} ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG} 
+fi
+
 echo
 
 popd
