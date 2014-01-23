@@ -588,7 +588,7 @@ void RunScript::CreateControls()
     radioButtonDimemasTasksPerNode->SetToolTip(_("Tasks assigned to a Node"));
   itemBoxSizer44->Add(radioButtonDimemasTasksPerNode, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  spinCtrlDimemasTasksPerNode = new wxSpinCtrl( itemScrolledWindow30, ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE, _T("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 1 );
+  spinCtrlDimemasTasksPerNode = new wxSpinCtrl( itemScrolledWindow30, ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE, _T("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 2048, 1 );
   if (RunScript::ShowToolTips())
     spinCtrlDimemasTasksPerNode->SetToolTip(_("Tasks assigned to a Node"));
   itemBoxSizer44->Add(spinCtrlDimemasTasksPerNode, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
