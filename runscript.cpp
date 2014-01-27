@@ -56,6 +56,8 @@
 #include "wxparaverapp.h" // paraverMain
 #include "runscript.h"
 #include "filter.h"
+#include "cfg.h"
+
 
 ////@begin XPM images
 #include "app_edit.xpm"
@@ -337,6 +339,8 @@ void RunScript::Init()
                                    _(".csv"), _(".dat"),
                                    _(".gnuplot") };
   extensions = wxArrayString( (size_t)7, extensionsAllowed );
+  extensionsDimemas = extensions;
+  extensionsDimemas.Remove(_(".cfg"));
 
   // Names of environment variables
   environmentVariable[ PATH ]         = wxString( wxT("PATH") );
@@ -1394,7 +1398,18 @@ void RunScript::AppendToLog( wxString msg )
 {
   if ( !helpOption )
   {
-    msg = insertLinks( msg, extensions );
+    TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
+   
+    switch ( selectedApp )
+    {
+ //     case DIMEMAS_WRAPPER:
+ //       msg = insertLinks( msg, extensionsDimemas );
+ //       break;
+        
+      default:
+        msg = insertLinks( msg, extensions );
+        break;
+    }
   }
   
   listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
@@ -1643,6 +1658,10 @@ wxString RunScript::insertLinks( wxString rawLine,
               ( candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
                 candidateFile.FileExists() );
         }
+
+        if ( candidateFound && 
+             CFGLoader::isDimemasCFGFile ( std::string( candidateFile.GetFullPath().mb_str() )))
+          candidateFound = false;
     
         ++currentPos;
       }
@@ -1804,13 +1823,16 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".cfg")))
   {
-    if ( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
+    if ( CFGLoader::isCFGFile( getHrefFullPath( event ) ) )
     {
-      paraverMain::myParaverMain->DoLoadCFG( getHrefFullPath( event )  );
-    }
-    else
-    {
-      ShowWarning( wxString( wxT( "No trace loaded." ) ) );
+      if ( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
+      {
+        paraverMain::myParaverMain->DoLoadCFG( getHrefFullPath( event )  );
+      }
+      else
+      {
+        ShowWarning( wxString( wxT( "No trace loaded." ) ) );
+      }
     }
   }
   else if ( matchHrefExtension( event, _(".xml")))
