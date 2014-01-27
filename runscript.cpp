@@ -1659,6 +1659,7 @@ wxString RunScript::insertLinks( wxString rawLine,
                 candidateFile.FileExists() );
         }
 
+        // At this moment, always filter cfgs from Dimemas
         if ( candidateFound && 
              CFGLoader::isDimemasCFGFile ( std::string( candidateFile.GetFullPath().mb_str() )))
           candidateFound = false;

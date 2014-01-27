@@ -378,6 +378,7 @@ private:
 
   // extensions to detect in log
   wxArrayString extensions;
+  wxArrayString extensionsDimemas;
   
   // Hidden app parameters
   wxString clusteringCSV;
