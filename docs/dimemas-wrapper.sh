@@ -36,6 +36,7 @@ if [[ ${DIMEMAS_REUSE_TRACE} != "0"  && ${DIMEMAS_REUSE_TRACE} != "1" ]]; then
   exit 1
 fi
 
+echo "* =========================================================================== *" 
 
 # Check Dimemas availability
 
@@ -43,17 +44,17 @@ fi
 
 { command -v ${DIMEMAS_HOME}/bin/prv2dim > /dev/null && export DIMEMAS_ENV="${DIMEMAS_HOME}/bin/"; } || \
 { command -v prv2dim > /dev/null && export DIMEMAS_ENV=""; } || \
-{ echo "Unable to find Dimemas. Define \$DIMEMAS_HOME or place it in \$PATH"; exit 1; }
+{ echo "[ERR] Unable to find Dimemas. Define \$DIMEMAS_HOME or place it in \$PATH"; exit 1; }
 
 
 # Get tracename, without extensions
 TRACENAME=$(echo "$PARAVER_TRACE" | sed "s/\.[^\.]*$//")
 EXTENSION=$(echo "$PARAVER_TRACE" | sed "s/^.*\.//")
 
-# Is gzipped?
+#Is gzipped?
 if [[ ${EXTENSION} = "gz" ]]; then
   echo
-  echo -n "Decompressing $PARAVER_TRACE trace..."
+  echo -n "[MSG] Decompressing $PARAVER_TRACE trace..."
   gunzip ${PARAVER_TRACE}
   TRACENAME=$(echo "${TRACENAME}" | sed "s/\.[^\.]*$//")
   PARAVER_TRACE=${TRACENAME}.prv
@@ -83,8 +84,8 @@ else
   # Am I executing old Dimemas with new CFG?
   SHEBANG_OLD_CFG=`grep "SDDFA" ${DIMEMAS_CFG}`
   if [[ ${SHEBANG_OLD_CFG} != "SDDFA" ]]; then
-    echo "ERROR: Trying to simulate using old version of Dimemas with new incompatible Dimemas cfg"
-    echo "       Please update Dimemas package."
+    echo "[ERR] Trying to simulate using old version of Dimemas with new incompatible Dimemas cfg"
+    echo "[ERR] Please update Dimemas package."
     exit 1 
   fi
 
@@ -108,10 +109,9 @@ while [ -n "$1" ]; do
   shift
 done
 
-
 # Change directory to see .dim
 DIMEMAS_TRACE_DIR=`dirname ${DIMEMAS_TRACE}`/
-pushd .
+pushd . > /dev/null
 cd ${DIMEMAS_TRACE_DIR}
 
 
@@ -121,34 +121,33 @@ if [[ ${DIMEMAS_REUSE_TRACE} = "0" || \
 
   if [[ ${DIMEMAS_REUSE_TRACE} = "1" ]]; then
     echo
-    echo "Warning! Unable to find ${DIMEMAS_TRACE}"
-    echo "Generating it."
+    echo "[WARN] Unable to find ${DIMEMAS_TRACE}"
+    echo "[WARN] Generating it."
   fi
 
   PRV2DIM_LOG=${DIMEMAS_TRACE_DIR}/prv2dim.log
   echo
-  echo "${DIMEMAS_ENV}prv2dim ${PRV2DIM_N} ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}"
+  echo "[COM] ${DIMEMAS_ENV}prv2dim ${PRV2DIM_N} ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}"
   echo
   ${DIMEMAS_ENV}prv2dim ${PRV2DIM_N} ${PARAVER_TRACE} ${DIMEMAS_TRACE} &> ${PRV2DIM_LOG}
   echo
 fi
 
-
 # Simulate
 # parameter -S 32K fixed by default
 if [[ ${DIMEMAS_DIM_PARAMETER} = "0" ]]; then
   echo
-  echo "${DIMEMAS_ENV}Dimemas ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG}"
+  echo "[COM] ${DIMEMAS_ENV}Dimemas ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG}"
   echo
   ${DIMEMAS_ENV}Dimemas ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG} 
 else
   echo
-  echo "${DIMEMAS_ENV}Dimemas --dim ${NEW_DIMEMAS_TRACENAME} ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG}"
+  echo "[COM] ${DIMEMAS_ENV}Dimemas --dim ${NEW_DIMEMAS_TRACENAME} ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG}"
   echo
   ${DIMEMAS_ENV}Dimemas --dim ${NEW_DIMEMAS_TRACENAME} ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG} 
 fi
 
-echo
+echo "* =========================================================================== *" 
 
-popd
+popd > /dev/null
 
