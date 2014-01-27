@@ -286,7 +286,7 @@ void SequenceDriver::sequenceDimemas( gTimeline *whichTimeline )
 }
 
 
-void SequenceDriver::sequenceTraceShifter( std::string trace )
+void SequenceDriver::sequenceTraceShifter( std::string trace, std::string timesFile )
 {
   KernelConnection *myKernel =  paraverMain::myParaverMain->GetLocalKernel();
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
@@ -301,17 +301,15 @@ void SequenceDriver::sequenceTraceShifter( std::string trace )
   //   Modified    by RecordTimeShifterAction
   //   Read        by TraceWriterAction
   MaxTraceTimeState *tmpMaxTraceTimeState = new MaxTraceTimeState( mySequence );
-  tmpMaxTraceTimeState->init();
   mySequence->addState( TraceEditSequence::maxTraceTimeState, tmpMaxTraceTimeState );
-/*
-  // with templates something like
-  State<TTime> *tmpMaxTraceTimeState = new State<TTime>( mySequence );
-  tmpMaxTraceTimeState->setData( (TTime)0.0 );
-  mySequence->addState( TraceEditSequence::maxTraceTimeState, tmpMaxTraceTimeState );
-*/
   
   // State: shift times
-
+  vector< TTime > times;
+  //times = readShiftTimes( timesFile ); // TODO: add to the api
+  ShiftTimesState *tmpShiftTimesState = new ShiftTimesState( mySequence );
+  tmpShiftTimesState->setData( times );
+  mySequence->addState( TraceEditSequence::shiftTimesState, tmpShiftTimesState );  
+  
   // State: output trace name
   //   Read by TraceWriterAction
   vector< std::string > idTool;

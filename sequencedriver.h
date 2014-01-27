@@ -131,7 +131,8 @@ class SequenceDriver
     static void sequenceClustering( gTimeline *whichTimeline );
     static void sequenceFolding( gTimeline *whichTimeline );
     static void sequenceDimemas( gTimeline *whichTimeline );
-    static void sequenceTraceShifter( std::string trace );
+    static void sequenceTraceShifter( std::string trace,
+                                        std::string timesFile );
 };
 
 #endif //_SEQUENCEDRIVER_H_

@@ -35819,7 +35819,7 @@ In normal mode all properties are showed in main window."</string>
                               <string name="proxy-Header filename">""</string>
                               <string name="proxy-Member variable name">"spinCtrlDimemasTasksPerNode"</string>
                               <long name="proxy-Minimum value">1</long>
-                              <long name="proxy-Maximum value">2048</long>
+                              <long name="proxy-Maximum value">65536</long>
                               <long name="proxy-Initial value">1</long>
                               <string name="proxy-Help text">"Tasks assigned to a Node"</string>
                               <string name="proxy-Tooltip text">"Tasks assigned to a Node"</string>
