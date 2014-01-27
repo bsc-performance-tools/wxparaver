@@ -2064,6 +2064,12 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
   {
     statsTextCtrlOutputName->SetValue( fileBrowserButtonTrace->GetPath() );
   }
+  else if ( choiceApplication->GetSelection() == DIMEMAS_WRAPPER )
+  {
+    textCtrlOutputTrace->SetValue(
+            LocalKernel::composeName( std::string( event.GetString().mb_str()),
+                                       std::string("sim") ) + PRV_SUFFIX );
+  }
 }
 
 
