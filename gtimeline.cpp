@@ -2041,7 +2041,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 void gTimeline::printWhatWhere( )
 {
   int fontSize = 8;
-  bool allowedLine, allowedSection = false;
+  bool allowedLine, allowedSection = false, tooMuchMessage = true;
   int recordsCount = 0;
 
   whatWhereText->Clear();
@@ -2096,15 +2096,19 @@ void gTimeline::printWhatWhere( )
               if( recordsCount >= 100 )
                 allowedLine = false;
               else
+              {
                 allowedLine = checkWWEvents->IsChecked();
-              ++recordsCount;
+                if( allowedLine ) ++recordsCount;
+              }
               break;
             case COMMUNICATION_LINE:
               if( recordsCount >= 100 )
                 allowedLine = false;
               else
+              {
                 allowedLine = checkWWCommunications->IsChecked();
-              ++recordsCount;
+                if( allowedLine ) ++recordsCount;
+              }
               break;
 
             case SEMANTIC_LINE:
@@ -2124,11 +2128,12 @@ void gTimeline::printWhatWhere( )
 
           if ( allowedLine )
             whatWhereText->AppendText( it->second );
-          else if( recordsCount >= 100 )
+          else if( tooMuchMessage && recordsCount >= 100 )
           {
             whatWhereText->BeginBold();
             whatWhereText->AppendText( _( "Too much records. Reduce time scale.\n" ) );
             whatWhereText->EndBold();
+            tooMuchMessage = false;
           }
 
         break;
