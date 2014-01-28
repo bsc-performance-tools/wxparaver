@@ -75,6 +75,11 @@
 #include <signal.h>
 #include <iostream>
 
+#ifdef WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
+
 ////@begin XPM images
 #include "new_window.xpm"
 #include "new_derived_window.xpm"
@@ -3198,7 +3203,6 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   map< TEventValue, string > currentEventValues;
   ParaverTraceConfig *myConfig;
   string pcf_name;
-  FILE *pcfFile;
 
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction );
@@ -3230,10 +3234,18 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 
     if ( filterToolIDs[ i ] == TraceCutter::getID() )
     {
+#ifdef WIN32
+      struct _stat tmpStatBuffer;
+#else
       struct stat tmpStatBuffer;
+#endif
 
       pcf_name = LocalKernel::composeName( tmpNameIn, string( "pcf" ) );
+#ifdef WIN32
+      _stat( pcf_name.c_str(), &tmpStatBuffer );
+#else
       stat( pcf_name.c_str(), &tmpStatBuffer );
+#endif
       
       if( tmpStatBuffer.st_size > 0 )
       {
