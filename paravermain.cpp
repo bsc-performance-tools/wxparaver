@@ -3233,11 +3233,13 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 
     if ( filterToolIDs[ i ] == TraceCutter::getID() )
     {
-      pcf_name = LocalKernel::composeName( tmpNameIn, string( "pcf" ) );
-      if(( pcfFile = fopen( pcf_name.c_str(), "r" )) != NULL )
-      {
-        fclose( pcfFile );
+      struct stat tmpStatBuffer;
 
+      pcf_name = LocalKernel::composeName( tmpNameIn, string( "pcf" ) );
+      stat( pcf_name.c_str(), &tmpStatBuffer );
+      
+      if( tmpStatBuffer.st_size > 0 )
+      {
         myConfig = new ParaverTraceConfig( string( pcf_name ) );
         labels = EventLabels( *myConfig, set<TEventType>() );
         labels.getTypes( allTypes );
