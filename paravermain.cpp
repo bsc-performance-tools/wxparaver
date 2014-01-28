@@ -45,9 +45,6 @@
 #include "wx/tipdlg.h"
 #include "wx/aboutdlg.h"
 #include "wx/html/htmlwin.h"
-#include "wx/html/helpctrl.h" // pruebas wxHtmlModalHelp
-#include "wx/help.h"    // pruebas wxHelpController
-#include "wx/fs_zip.h"  // pruebas wxHelpController
 
 #include "config.h"
 #include "paravermain.h"
