@@ -44,7 +44,7 @@ echo "* ========================================================================
 
 { command -v ${DIMEMAS_HOME}/bin/prv2dim > /dev/null && export DIMEMAS_ENV="${DIMEMAS_HOME}/bin/"; } || \
 { command -v prv2dim > /dev/null && export DIMEMAS_ENV=""; } || \
-{ echo "[ERR] Unable to find Dimemas. Define \$DIMEMAS_HOME or place it in \$PATH"; exit 1; }
+{ echo "[ERR] Unable to find prv2dim or Dimemas binaries. Please check installation, define \$DIMEMAS_HOME or place it in \$PATH"; exit 1; }
 
 
 # Get tracename, without extensions
