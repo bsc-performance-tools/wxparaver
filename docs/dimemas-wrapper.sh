@@ -25,7 +25,8 @@ if [ $# -lt 4 ]; then
   exit 1
 fi
 
-PARAVER_TRACE=${1}
+#PARAVER_TRACE=${1}
+PARAVER_TRACE=`readlink -eqs ${1}`
 DIMEMAS_CFG=${2}
 OUTPUT_PARAVER_TRACE=${3}
 DIMEMAS_REUSE_TRACE=${4}
@@ -36,7 +37,7 @@ if [[ ${DIMEMAS_REUSE_TRACE} != "0"  && ${DIMEMAS_REUSE_TRACE} != "1" ]]; then
   exit 1
 fi
 
-echo "* =========================================================================== *" 
+echo "===============================================================================" 
 
 # Check Dimemas availability
 
@@ -147,7 +148,7 @@ else
   ${DIMEMAS_ENV}Dimemas --dim ${NEW_DIMEMAS_TRACENAME} ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG} 
 fi
 
-echo "* =========================================================================== *" 
+echo "===============================================================================" 
 
 popd > /dev/null
 
