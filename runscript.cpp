@@ -1798,7 +1798,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     tmpDir.SetCwd();
 
     // prepare command
-    wxString command = wxString( wxT( "gnuplot -p " ) ) +
+    wxString command = wxString( wxT( "gnuplot -persist " ) ) +
                        doubleQuote( tmpFile );
     
     runDetachedProcess( command );
