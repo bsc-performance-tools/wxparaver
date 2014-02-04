@@ -288,6 +288,7 @@ void SequenceDriver::sequenceDimemas( gTimeline *whichTimeline )
 
 void SequenceDriver::sequenceTraceShifter( std::string trace, std::string timesFile )
 {
+/*
   KernelConnection *myKernel =  paraverMain::myParaverMain->GetLocalKernel();
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
 
@@ -325,5 +326,7 @@ void SequenceDriver::sequenceTraceShifter( std::string trace, std::string timesF
   mySequence->execute( traces );
 
   delete mySequence;
+*/
+  
 }
 
