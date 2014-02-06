@@ -72,6 +72,8 @@ class wxPropertyGrid;
 ////@end forward declarations
 class ProgressController;
 class wxPropertyGridEvent;
+class CutFilterDialog;
+class TraceOptions;
 
 /*!
  * Control identifiers
@@ -419,9 +421,20 @@ public:
   void UnloadTrace( int whichTrace );
   bool DoLoadCFG( const std::string &path );
   void ShowPreferences();
+  
+  void MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
+                                     const std::string& filename,
+                                     bool loadTrace );
+  void OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialog,
+                                       TraceOptions *traceOptions,
+                                       const std::string& xmlFile,
+                                       std::vector< std::string > &filterToolOrder );
+  void OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
+                             std::vector< std::string > filterToolOrder );
   void ShowCutTraceWindow( const std::string& filename = "",
-                           bool loadTrace = false,
-                           const std::string& xmlFile = "" );
+                            bool loadTrace = true,
+                            const std::string& xmlFile = "" );
+                            
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
 

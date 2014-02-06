@@ -346,6 +346,8 @@ public:
   void TransferDataToWindow( std::vector< std::string > order, TraceOptions *traceOptions );
 
   bool GetLoadedXMLPath( std::string &XML );
+  void EnableAllTabsFromToolsList();
+
 
 ////@begin CutFilterDialog member variables
   wxTextCtrl* textCtrlInputTrace;
@@ -449,7 +451,6 @@ private:
   void enableOutputTraceWidgets( bool enable );
 
   void EnableSingleTab( int selected );
-  void EnableAllTabsFromToolsList();
 
   void ChangePageSelectionFromToolsOrderListToTabs( int selected );
   void ChangePageSelectionFromTabsToToolsOrderList();
