@@ -57,14 +57,14 @@ class RunAppClusteringAction: public TraceToTraceAction
 
 
 /****************************************************************************
- ********              RunAppFoldingAction                           ********
+ ********              RunAppCutterAction                            ********
  ****************************************************************************/
-class RunAppFoldingAction: public TraceToTraceAction
+class RunAppCutterAction: public TraceToTraceAction
 {
   public:
-    RunAppFoldingAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    RunAppCutterAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
     {}
-    ~RunAppFoldingAction()
+    ~RunAppCutterAction()
     {}
 
     virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
@@ -87,6 +87,29 @@ class RunAppDimemasAction: public TraceToTraceAction
     RunAppDimemasAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
     {}
     ~RunAppDimemasAction()
+    {}
+
+    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+
+    virtual void execute( std::string whichTrace );
+
+  protected:
+
+  private:
+
+};
+
+
+
+/****************************************************************************
+ ********              RunAppFoldingAction                           ********
+ ****************************************************************************/
+class RunAppFoldingAction: public TraceToTraceAction
+{
+  public:
+    RunAppFoldingAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~RunAppFoldingAction()
     {}
 
     virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
@@ -129,10 +152,11 @@ class SequenceDriver
 {
   public:
     static void sequenceClustering( gTimeline *whichTimeline );
-    static void sequenceFolding( gTimeline *whichTimeline );
+    static void sequenceCutter( gTimeline *whichTimeline );
     static void sequenceDimemas( gTimeline *whichTimeline );
-    static void sequenceTraceShifter( std::string trace,
-                                        std::string timesFile );
+    static void sequenceFolding( gTimeline *whichTimeline );
+    //static void sequenceTraceShifter( std::string trace,
+    //                                    std::string timesFile );
 };
 
 #endif //_SEQUENCEDRIVER_H_

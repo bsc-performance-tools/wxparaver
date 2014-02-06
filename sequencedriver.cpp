@@ -48,6 +48,7 @@
 #include "traceoptions.h"
 #include "runscript.h"
 #include "wxparaverapp.h"
+#include "cutfilterdialog.h"
 
 /****************************************************************************
  ********             RunAppClusteringAction                         ********
@@ -108,6 +109,44 @@ void RunAppDimemasAction::execute( std::string whichTrace )
 
   if( runAppDialog.ShowModal() == wxID_OK )
   {}
+}
+
+
+/****************************************************************************
+ ********              RunAppCutterAction                            ********
+ ****************************************************************************/
+vector<TraceEditSequence::TSequenceStates> RunAppCutterAction::getStateDependencies() const
+{
+  vector<TraceEditSequence::TSequenceStates> tmpStates;
+  return tmpStates;
+}
+
+
+void RunAppCutterAction::execute( std::string whichTrace )
+{
+  CutFilterDialog *cutFilterDialog = new CutFilterDialog( wxparaverApp::mainWindow );
+  
+
+  wxparaverApp::mainWindow->MainSettingsCutFilterDialog( cutFilterDialog, whichTrace, true );
+  TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+  TraceOptions *traceOptions = ( (TraceOptionsState *)tmpSequence->getState( TraceEditSequence::traceOptionsState ) )->getData();
+  string dummyXmlName = "";
+  vector< string > toolOrder;
+  wxparaverApp::mainWindow->OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, dummyXmlName, toolOrder );
+  toolOrder.push_back( TraceCutter::getID() ); // Could be done before, because empty xml lefts toolOrder untouched
+
+  cutFilterDialog->TransferDataToWindow( toolOrder, traceOptions );
+  cutFilterDialog->EnableAllTabsFromToolsList(); // TODO: Probably shouldn't be here, it should be in CutFilterDialog
+  
+  if( cutFilterDialog->ShowModal() == wxID_OK )
+  {  
+    wxparaverApp::mainWindow->OnOKCutFilterDialog( cutFilterDialog, toolOrder );
+  }
+
+  cutFilterDialog->MakeModal( false );
+  
+  delete traceOptions;
+  delete cutFilterDialog;
 }
 
 
@@ -185,6 +224,76 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
   delete mySequence;
 }
 
+
+void SequenceDriver::sequenceCutter( gTimeline *whichTimeline )
+{
+  KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
+  TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
+
+  mySequence->pushbackAction( new RunAppCutterAction( mySequence ) );
+  
+  TraceOptions *tmpOptions = TraceOptions::create( myKernel );
+  tmpOptions->set_by_time( true );
+  tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
+  tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
+  tmpOptions->set_original_time( true );
+  tmpOptions->set_break_states( false );
+
+  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
+  tmpOptionsState->setData( tmpOptions );
+  mySequence->addState( TraceEditSequence::traceOptionsState, tmpOptionsState );
+
+  vector<std::string> traces;
+  traces.push_back( whichTimeline->GetMyWindow()->getTrace()->getFileName() );
+  mySequence->execute( traces );
+  
+  delete mySequence;
+}
+
+
+void SequenceDriver::sequenceDimemas( gTimeline *whichTimeline )
+{
+  KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
+  TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
+
+  mySequence->pushbackAction( TraceEditSequence::traceCutterAction );
+  mySequence->pushbackAction( new RunAppDimemasAction( mySequence ) );
+  
+  TraceOptions *tmpOptions = TraceOptions::create( myKernel );
+  tmpOptions->set_by_time( true );
+  tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
+  tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
+  tmpOptions->set_original_time( false );
+  tmpOptions->set_break_states( false );
+
+  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
+  tmpOptionsState->setData( tmpOptions );
+  mySequence->addState( TraceEditSequence::traceOptionsState, tmpOptionsState );
+
+  CSVWindowState *tmpWindowState = new CSVWindowState( mySequence );
+  tmpWindowState->setData( whichTimeline->GetMyWindow() );
+  mySequence->addState( TraceEditSequence::csvWindowState, tmpWindowState );
+
+  std::string tmpFileName;
+  wxFileName tmpTraceName( wxString::FromAscii( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
+  tmpTraceName.ClearExt();
+  tmpTraceName.AppendDir( wxString::FromAscii( TraceEditSequence::dirNameDimemas.c_str() ) );
+  
+  if( !tmpTraceName.DirExists() )
+    tmpTraceName.Mkdir();
+  
+  OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
+  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameDimemas );
+  mySequence->addState( TraceEditSequence::outputDirSuffixState, tmpOutputDirSuffixState );
+  
+  vector<std::string> traces;
+  traces.push_back( whichTimeline->GetMyWindow()->getTrace()->getFileName() );
+  mySequence->execute( traces );
+  
+  delete mySequence;
+}
+
+
 void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
 {
   KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
@@ -242,45 +351,3 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
   delete mySequence;
 }
 
-
-void SequenceDriver::sequenceDimemas( gTimeline *whichTimeline )
-{
-  KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
-  TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
-
-  mySequence->pushbackAction( TraceEditSequence::traceCutterAction );
-  mySequence->pushbackAction( new RunAppDimemasAction( mySequence ) );
-  
-  TraceOptions *tmpOptions = TraceOptions::create( myKernel );
-  tmpOptions->set_by_time( true );
-  tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
-  tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
-  tmpOptions->set_original_time( false );
-  tmpOptions->set_break_states( false );
-
-  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
-  tmpOptionsState->setData( tmpOptions );
-  mySequence->addState( TraceEditSequence::traceOptionsState, tmpOptionsState );
-
-  CSVWindowState *tmpWindowState = new CSVWindowState( mySequence );
-  tmpWindowState->setData( whichTimeline->GetMyWindow() );
-  mySequence->addState( TraceEditSequence::csvWindowState, tmpWindowState );
-
-  std::string tmpFileName;
-  wxFileName tmpTraceName( wxString::FromAscii( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
-  tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromAscii( TraceEditSequence::dirNameDimemas.c_str() ) );
-  
-  if( !tmpTraceName.DirExists() )
-    tmpTraceName.Mkdir();
-  
-  OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
-  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameDimemas );
-  mySequence->addState( TraceEditSequence::outputDirSuffixState, tmpOutputDirSuffixState );
-  
-  vector<std::string> traces;
-  traces.push_back( whichTimeline->GetMyWindow()->getTrace()->getFileName() );
-  mySequence->execute( traces );
-  
-  delete mySequence;
-}

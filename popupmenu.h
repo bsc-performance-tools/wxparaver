@@ -118,14 +118,15 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO 30070
 #define ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO    30071
 #define ID_MENU_CLUSTERING                        30072
-#define ID_MENU_FOLDING                           30073
+#define ID_MENU_CUTTER                            30073
 #define ID_MENU_DIMEMAS                           30074
-#define ID_MENU_OBJECT_AXIS_CURRENT               30075
-#define ID_MENU_OBJECT_AXIS_ALL                   30076
-#define ID_MENU_OBJECT_AXIS_ZERO                  30077
-#define ID_MENU_OBJECT_AXIS_FIVE                  30078
-#define ID_MENU_OBJECT_AXIS_TEN                   30079
-#define ID_MENU_OBJECT_AXIS_TWENTYFIVE            30080
+#define ID_MENU_FOLDING                           30075
+#define ID_MENU_OBJECT_AXIS_CURRENT               30076
+#define ID_MENU_OBJECT_AXIS_ALL                   30077
+#define ID_MENU_OBJECT_AXIS_ZERO                  30078
+#define ID_MENU_OBJECT_AXIS_FIVE                  30079
+#define ID_MENU_OBJECT_AXIS_TEN                   30080
+#define ID_MENU_OBJECT_AXIS_TWENTYFIVE            30081
 
 class gPopUpMenu : public wxMenu
 {
@@ -243,8 +244,9 @@ class gPopUpMenu : public wxMenu
     void OnMenuObjectAxisTwentyFive( wxCommandEvent& event );
     
     void OnMenuClustering( wxCommandEvent& event );
-    void OnMenuFolding( wxCommandEvent& event );
+    void OnMenuCutter( wxCommandEvent& event );
     void OnMenuDimemas( wxCommandEvent& event );
+    void OnMenuFolding( wxCommandEvent& event );
     
   private:
     gTimeline *timeline;
