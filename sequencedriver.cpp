@@ -128,6 +128,7 @@ void RunAppCutterAction::execute( std::string whichTrace )
   
 
   wxparaverApp::mainWindow->MainSettingsCutFilterDialog( cutFilterDialog, whichTrace, true );
+  
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   TraceOptions *traceOptions = ( (TraceOptionsState *)tmpSequence->getState( TraceEditSequence::traceOptionsState ) )->getData();
   string dummyXmlName = "";
