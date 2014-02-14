@@ -828,8 +828,8 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                .GetWidth() + drawBorder ),
                timeAxisPos + drawBorder );
 
-  dc.SetPen( *wxBLACK_PEN );
-  dc.SetBrush( *wxBLACK_BRUSH );
+  dc.SetPen( wxPen( backgroundColour ) );
+  dc.SetBrush( wxBrush( backgroundColour ) );
   dc.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetSize().GetWidth(), timeAxisPos );
                
 #ifdef TRACING_ENABLED
