@@ -321,6 +321,9 @@ public:
   std::string GetTimelineNameFormatPrefix() const { return timelineNameFormatPrefix ; }
   void SetTimelineNameFormatPrefix(std::string value) { timelineNameFormatPrefix = value ; }
 
+  PRV_UINT32 GetTimelineObjectAxis() const { return timelineObjectAxis ; }
+  void SetTimelineObjectAxis(PRV_UINT32 value) { timelineObjectAxis = value ; }
+
   PRV_UINT32 GetTimelineObjectLabels() const { return timelineObjectLabels ; }
   void SetTimelineObjectLabels(PRV_UINT32 value) { timelineObjectLabels = value ; }
 
@@ -365,9 +368,6 @@ public:
 
   PRV_UINT32 GetWhatWhereMaxPrecision() const { return whatWhereMaxPrecision ; }
   void SetWhatWhereMaxPrecision(PRV_UINT32 value) { whatWhereMaxPrecision = value ; }
-
-  PRV_UINT32 GetTimelineObjectAxis() const { return timelineObjectAxis ; }
-  void SetTimelineObjectAxis(PRV_UINT32 value) { timelineObjectAxis = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -494,6 +494,7 @@ private:
   PRV_UINT32 timelineGradientFunction;
   std::string timelineNameFormatFull;
   std::string timelineNameFormatPrefix;
+  PRV_UINT32 timelineObjectAxis;
   PRV_UINT32 timelineObjectLabels;
   PRV_UINT32 timelinePixelSize;
   PRV_UINT32 timelineSaveImageFormat;
@@ -509,7 +510,6 @@ private:
   std::string tracesPath;
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
-  PRV_UINT32 timelineObjectAxis;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );

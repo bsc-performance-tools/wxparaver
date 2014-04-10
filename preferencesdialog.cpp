@@ -167,6 +167,7 @@ void PreferencesDialog::Init()
   timelineGradientFunction = 0;
   timelineNameFormatFull = "%W @ %T";
   timelineNameFormatPrefix = "New Window # %N";
+  timelineObjectAxis = 0;
   timelineObjectLabels = 0;
   timelinePixelSize = 0;
   timelineSaveImageFormat = 0;
@@ -181,7 +182,6 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  timelineObjectAxis = 0;
   checkGlobalFillStateGaps = NULL;
   txtMaximumTraceSize = NULL;
   textCtrlTrace = NULL;
@@ -621,8 +621,6 @@ void PreferencesDialog::CreateControls()
   GetBookCtrl()->AddPage(itemPanel36, _("Timeline"));
 
   wxPanel* itemPanel90 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_HISTOGRAM, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  if (PreferencesDialog::ShowToolTips())
-    itemPanel90->SetToolTip(_("Histogram preferences."));
   wxBoxSizer* itemBoxSizer91 = new wxBoxSizer(wxHORIZONTAL);
   itemPanel90->SetSizer(itemBoxSizer91);
 
