@@ -59,8 +59,10 @@ vector<TraceEditSequence::TSequenceStates> RunAppClusteringAction::getStateDepen
   return tmpStates;
 }
 
-void RunAppClusteringAction::execute( std::string whichTrace )
+bool RunAppClusteringAction::execute( std::string whichTrace )
 {
+  bool errorFound = false;
+
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
   RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
@@ -68,6 +70,8 @@ void RunAppClusteringAction::execute( std::string whichTrace )
 
   if( runAppDialog.ShowModal() == wxID_OK )
   {}
+  
+ return errorFound;
 }
 
 
@@ -80,8 +84,10 @@ vector<TraceEditSequence::TSequenceStates> RunAppFoldingAction::getStateDependen
   return tmpStates;
 }
 
-void RunAppFoldingAction::execute( std::string whichTrace )
+bool RunAppFoldingAction::execute( std::string whichTrace )
 {
+  bool errorFound = false;
+
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
   RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
@@ -89,6 +95,8 @@ void RunAppFoldingAction::execute( std::string whichTrace )
 
   if( runAppDialog.ShowModal() == wxID_OK )
   {}
+
+  return errorFound;
 }
 
 
@@ -101,14 +109,18 @@ vector<TraceEditSequence::TSequenceStates> RunAppDimemasAction::getStateDependen
   return tmpStates;
 }
 
-void RunAppDimemasAction::execute( std::string whichTrace )
+bool RunAppDimemasAction::execute( std::string whichTrace )
 {
+  bool errorFound = false;
+
   //TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
   runAppDialog.setDimemas();
 
   if( runAppDialog.ShowModal() == wxID_OK )
   {}
+  
+  return errorFound;
 }
 
 
@@ -122,8 +134,10 @@ vector<TraceEditSequence::TSequenceStates> RunAppCutterAction::getStateDependenc
 }
 
 
-void RunAppCutterAction::execute( std::string whichTrace )
+bool RunAppCutterAction::execute( std::string whichTrace )
 {
+  bool errorFound = false;
+
   CutFilterDialog *cutFilterDialog = new CutFilterDialog( wxparaverApp::mainWindow );
   
 
@@ -148,6 +162,8 @@ void RunAppCutterAction::execute( std::string whichTrace )
   
   delete traceOptions;
   delete cutFilterDialog;
+  
+  return errorFound;
 }
 
 
@@ -160,7 +176,7 @@ vector<TraceEditSequence::TSequenceStates> ExternalSortAction::getStateDependenc
   return tmpStates;
 }
 
-void ExternalSortAction::execute( std::string whichTrace )
+bool ExternalSortAction::execute( std::string whichTrace )
 {
  // TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
 }
