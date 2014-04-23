@@ -71,9 +71,8 @@ void RunningProcess::OnTerminate( int pid, int status )
   while ( HasInput() )
     ;
 
-  //std::cout << "RunningProcess::OnTerminate: STATUS " << status << std::endl;
   //parent->executionStatus = status;
-  parent->OnProcessTerminated();
+  parent->OnProcessTerminated( pid );
 }
 
 
@@ -134,26 +133,43 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
+
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
+
   EVT_TEXT( ID_TEXTCTRL_TRACE, RunScript::OnTextctrlTraceTextUpdated )
+
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
+
   EVT_BUTTON( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlUpdate )
+
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
+
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_NORMALIZE, RunScript::OnCheckboxClusteringNormalizeUpdate )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, RunScript::OnRadiobuttonClusteringXmldefinedSelected )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
+
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
+
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
+
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
+
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
+
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
+
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
+
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -350,6 +366,8 @@ void RunScript::Init()
   application[ STATS ]               = wxString( wxT("stats") );
   
   tunePrvLinksForClustering = false;
+  
+  pidDimemasGUI = 0;
 }
 
 
@@ -1315,10 +1333,10 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     //executionStatus = -2;
     myProcess = new RunningProcess( this, readyCommand );
     myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC, myProcess );
-    //std::cout << myProcessPid << std::endl;
+
     if( !myProcessPid )
     {
-      OnProcessTerminated();
+      OnProcessTerminated( myProcessPid );
     }
   }
 
@@ -1369,9 +1387,13 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
 }
 
 
-void RunScript::OnProcessTerminated()
+void RunScript::OnProcessTerminated( int pid )
 {
   myProcessPid = 0;
+  
+  if ( pid != 0 && pid == pidDimemasGUI )
+    pidDimemasGUI = 0;
+    
   delete myProcess;
   myProcess = NULL;
 }
@@ -1835,11 +1857,13 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 }
 
 
-void RunScript::runDetachedProcess( wxString command )
+void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
 {
   //executionStatus = -2;
   RunningProcess *localProcess = new RunningProcess( this, command );
-  if( !wxExecute( command, wxEXEC_ASYNC, localProcess ) )
+
+  int myProcessPid = wxExecute( command, wxEXEC_ASYNC, localProcess );
+  if( !myProcessPid )
   {
     ShowWarning( wxT( "Unable to execute command. Please check it and rerun" ) );
     
@@ -1848,6 +1872,9 @@ void RunScript::runDetachedProcess( wxString command )
   }
   else
   {
+    if ( checkPidDimemasGUI )
+      pidDimemasGUI = myProcessPid;
+      
     localProcess->HasInput();
     localProcess->Detach();
     
@@ -1862,9 +1889,10 @@ void RunScript::runDetachedProcess( wxString command )
 void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 {
   wxString command = GetReachableCommand( DIMEMAS_GUI );
-  if( !command.IsEmpty() )
+  if( !command.IsEmpty() && pidDimemasGUI == 0 )
   {  
-    runDetachedProcess( command );    
+    bool checkPidDimemasGUI = true;
+    runDetachedProcess( command, checkPidDimemasGUI );
   }
 }
 
@@ -1875,7 +1903,14 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 
 void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
 {
-  bool active = ( myProcess == NULL );
+  // bool active = ( myProcess == NULL );
+  bool active = ( pidDimemasGUI == 0 );
+  
+  if ( active && !buttonDimemasGUI->IsEnabled() )
+    buttonDimemasGUI->SetToolTip( _("Edit Dimemas Configuration File using DimemasGUI.") );
+    
+  if ( !active && buttonDimemasGUI->IsEnabled() )
+    buttonDimemasGUI->SetToolTip( _("DimemasGUI instance running...") );    
           
   buttonDimemasGUI->Enable( active );
 }

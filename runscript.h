@@ -67,6 +67,7 @@ class RunningProcess : public wxProcess
   protected:
     RunScript *parent;
     wxString command;
+    static int pidDimemasGUI;
 };
 
 
@@ -265,7 +266,7 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
-  void OnProcessTerminated();
+  void OnProcessTerminated( int pid );
 
   void AppendToLog( wxString msg );
   
@@ -346,6 +347,7 @@ private:
   RunningProcess * myProcess;
   long myProcessPid;
 ////@end RunScript member variables
+  int pidDimemasGUI;
 /*
 public:
   int executionStatus;
@@ -422,7 +424,7 @@ private:
   //bool shellCommand( const wxString& program, const wxString& whichFile );
   bool existCommand( const wxString& program, const wxString& parameter );
   void runCommand( const wxString& program, const wxString& parameter );
-  void runDetachedProcess( wxString command );
+  void runDetachedProcess( wxString command, bool checkPidDimemasGUI = false );
 };
 
 #endif // _RUNSCRIPT_H_
