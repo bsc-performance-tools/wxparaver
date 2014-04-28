@@ -178,7 +178,11 @@ vector<TraceEditSequence::TSequenceStates> ExternalSortAction::getStateDependenc
 
 bool ExternalSortAction::execute( std::string whichTrace )
 {
+  bool errorFound = false;
+
  // TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+
+  return errorFound;
 }
 
 

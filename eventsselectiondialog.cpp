@@ -93,6 +93,7 @@ BEGIN_EVENT_TABLE( EventsSelectionDialog, wxDialog )
   EVT_BUTTON( ID_BUTTON_UNSET_ALL_VALUES, EventsSelectionDialog::OnButtonUnsetAllValuesClick )
 
   EVT_BUTTON( wxID_APPLY, EventsSelectionDialog::OnApplyClick )
+  EVT_UPDATE_UI( wxID_APPLY, EventsSelectionDialog::OnApplyUpdate )
 
 ////@end EventsSelectionDialog event table entries
 
@@ -141,7 +142,7 @@ void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Window *which
     currentWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
     labeledEventTypes.Add( wxString() << (*it) << _( " " ) << wxString::FromAscii( tmpstr.c_str() ) );
 
-    // to check if selected
+    // Check if selected
     vector< TEventType >::iterator itaux = find( selectedTypes.begin(), selectedTypes.end(), ( *it ) );
     if ( itaux != selectedTypes.end() )
     {
@@ -229,18 +230,20 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
     boxSizerFunctionValues->Hide( recursive );
   }
 
-  // Get functions list for event types and set the selected one
   vector<string> filterFunctions;
   currentFilter->getAllFilterFunctions( filterFunctions );
 
   for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
   {
-    // int i = choiceOperatorFunctionTypes->Append( _((*it).c_str()) );
+    // Fill wxChoice and select the current
     int i = choiceOperatorFunctionTypes->Append( wxString::FromAscii( (*it).c_str() ) );
     if( (*it) == currentFilter->getEventTypeFunction() )
+    {
       choiceOperatorFunctionTypes->SetSelection( i );
+      previousEventTypesFunction = i;
+    }
   }
-
+  
   // fill event types, check them, and position the selection in the first one
   checkListSelectTypes->InsertItems( labeledEventTypes, 0 );
 
@@ -255,22 +258,32 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
   choiceOperatorTypeValue->Append( _( "And" ) );
   choiceOperatorTypeValue->Append( _( "Or" ) );
   if( currentFilter->getOpTypeValue() == Filter::AND )
+  {
     choiceOperatorTypeValue->SetSelection( 0 );
+    previousOperatorTypeValue = 0;
+  }
   else
+  {
     choiceOperatorTypeValue->SetSelection( 1 );
+    previousOperatorTypeValue = 1;
+  }
 
-  // Get functions list for event values and set the selected one
   for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
   {
-    //int i = choiceOperatorFunctionValues->Append( _((*it).c_str()) );
     int i = choiceOperatorFunctionValues->Append( wxString::FromAscii( (*it).c_str() ) );
     if( (*it) == currentFilter->getEventValueFunction() )
+    {
       choiceOperatorFunctionValues->SetSelection( i );
+      previousEventValuesFunction = i;
+    }
   }
 
   // fill and set event values
   currentType = eventTypes[ firstEventTypePos ];
   UpdateCheckListboxValues( currentType );
+  
+  // Button Apply selected?
+  EnableApplyButton();
 }
 
 
@@ -343,6 +356,7 @@ void EventsSelectionDialog::Init()
   buttonAddValues = NULL;
   buttonSetAllValues = NULL;
   buttonUnsetAllValues = NULL;
+  applyButton = NULL;
   boxSizerOperatorsChoice = NULL;
 ////@end EventsSelectionDialog member initialisation
 
@@ -352,7 +366,7 @@ void EventsSelectionDialog::Init()
   currentFilter = NULL;
 
   changedEventTypesFunction = false;
-  selectedEventTypesFunction = 0;
+  previousEventTypesFunction = 0;
 
   changedEventTypesSelection = false;
   eventTypes.clear();
@@ -361,10 +375,10 @@ void EventsSelectionDialog::Init()
   currentType = TEventType( 0 );
 
   changedOperatorTypeValue = false;
-  selectedOperatorTypeValue = 0;
+  previousOperatorTypeValue = 0;
 
   changedEventValuesFunction = false;
-  selectedEventValuesFunction = 0;
+  previousEventValuesFunction = 0;
 
   changedEventValues = false;
   firstEventTypePos = 0;
@@ -479,8 +493,8 @@ void EventsSelectionDialog::CreateControls()
   wxButton* itemButton31 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStdDialogButtonSizer30->AddButton(itemButton31);
 
-  wxButton* itemButton32 = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer30->AddButton(itemButton32);
+  applyButton = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer30->AddButton(applyButton);
 
   itemStdDialogButtonSizer30->Realize();
 
@@ -532,11 +546,15 @@ wxIcon EventsSelectionDialog::GetIconResource( const wxString& name )
 }
 
 
-int EventsSelectionDialog::GetEventTypesFunction( string &whichName ) const
+int EventsSelectionDialog::GetIndexEventTypesFunction() const
 {
-  whichName = choiceOperatorFunctionTypes->GetString( selectedEventTypesFunction ).mb_str( wxConvUTF8 );
+  return choiceOperatorFunctionTypes->GetSelection();
+}
 
-  return selectedEventTypesFunction;
+
+std::string EventsSelectionDialog::GetNameEventTypesFunction() const
+{
+  return choiceOperatorFunctionTypes->GetString( choiceOperatorFunctionTypes->GetSelection() ).mb_str( wxConvUTF8 );
 }
 
 
@@ -566,19 +584,27 @@ wxArrayInt EventsSelectionDialog::GetEventTypesSelection() const
 }
 
 
-int EventsSelectionDialog::GetOperatorTypeValue( string &whichName ) const
+int EventsSelectionDialog::GetIndexOperatorTypeValue() const
 {
-  whichName = choiceOperatorTypeValue->GetString( selectedOperatorTypeValue ).mb_str( wxConvUTF8 );
-
   return choiceOperatorTypeValue->GetSelection();
 }
 
 
-int EventsSelectionDialog::GetEventValuesFunction( string &whichName ) const
+std::string  EventsSelectionDialog::GetNameOperatorTypeValue() const
 {
-  whichName = choiceOperatorFunctionValues->GetString( selectedEventValuesFunction ).mb_str( wxConvUTF8 );
+  return choiceOperatorTypeValue->GetString( choiceOperatorTypeValue->GetSelection() ).mb_str( wxConvUTF8 );
+}
 
-  return selectedEventValuesFunction;
+
+int EventsSelectionDialog::GetIndexEventValuesFunction() const
+{
+  return choiceOperatorFunctionValues->GetSelection();
+}
+
+
+std::string EventsSelectionDialog::GetNameEventValuesFunction() const
+{
+  return choiceOperatorFunctionValues->GetString( choiceOperatorFunctionValues->GetSelection() ).mb_str( wxConvUTF8 );
 }
 
 
@@ -697,12 +723,8 @@ bool EventsSelectionDialog::HasChanged( wxChoice *choice, int selectedFunction )
 }
 
 
-bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayInt &index ) const
+unsigned int EventsSelectionDialog::GetSelections( wxCheckListBox *checkList, wxArrayInt &index ) const
 {
-  bool changed = false;
-
-  wxArrayInt tmpIndex;
-
 //  unsigned int numSelections = checkList->GetSelections( tmpIndex );  // DOESNT WORK!!!???
   unsigned int numSelections = 0;
   for( unsigned int i = 0; i < checkList->GetCount(); ++i )
@@ -710,9 +732,22 @@ bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayInt &i
     if ( checkList->IsChecked( i ) )
     {
       numSelections++;
-      tmpIndex.Add( i );
+      index.Add( i );
     }
   }
+
+  return numSelections;
+}
+
+
+
+bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayInt &index ) const
+{
+  bool changed = false;
+
+  
+  wxArrayInt tmpIndex;
+  unsigned int numSelections = GetSelections( checkList, tmpIndex ); 
 
   if ( index.Count() == numSelections )
   {
@@ -771,16 +806,8 @@ bool EventsSelectionDialog::CopyChanges( wxCheckListBox *checkList,
   bool changed = HasChanged( checkList, index );
 
   index.Clear();
-  //unsigned int numSelections = checkList->GetSelections( index );
-  unsigned int numSelections = 0;
-  for( unsigned int i = 0; i < checkList->GetCount(); ++i )
-  {
-    if ( checkList->IsChecked( i ) )
-    {
-      numSelections++;
-      index.Add( i );
-    }
-  }
+
+  unsigned int numSelections = GetSelections( checkList, index ); 
 
   if ( copyStrings )
   {
@@ -798,14 +825,14 @@ bool EventsSelectionDialog::CopyChanges( wxCheckListBox *checkList,
 
 void EventsSelectionDialog::TransferWindowToData()
 {
-  changedEventTypesFunction = CopyChanges( choiceOperatorFunctionTypes, selectedEventTypesFunction );
+  changedEventTypesFunction = CopyChanges( choiceOperatorFunctionTypes, previousEventTypesFunction );
 
   wxArrayString unused;
   changedEventTypesSelection = CopyChanges( checkListSelectTypes, selectedEventTypes, unused );
 
-  changedOperatorTypeValue = CopyChanges( choiceOperatorTypeValue, selectedOperatorTypeValue );
+  changedOperatorTypeValue = CopyChanges( choiceOperatorTypeValue, previousOperatorTypeValue );
 
-  changedEventValuesFunction = CopyChanges( choiceOperatorFunctionValues, selectedEventValuesFunction );
+  changedEventValuesFunction = CopyChanges( choiceOperatorFunctionValues, previousEventValuesFunction );
 
   BackupCheckListboxValues();
   changedEventValues = HasChanged( selectedEventValues, originalSelectedEventValues );
@@ -841,7 +868,8 @@ void EventsSelectionDialog::OnChecklistboxValuesToggled( wxCommandEvent& event )
 
 void EventsSelectionDialog::OnChoiceOperatorFunctionTypesSelected( wxCommandEvent& event )
 {
-  changedEventTypesFunction = HasChanged( choiceOperatorFunctionTypes, selectedEventTypesFunction );
+  changedEventTypesFunction = HasChanged( choiceOperatorFunctionTypes, previousEventTypesFunction );
+  //changedEventTypesFunction = CopyChanges( choiceOperatorFunctionTypes, previousEventTypesFunction );
 }
 
 
@@ -851,7 +879,8 @@ void EventsSelectionDialog::OnChoiceOperatorFunctionTypesSelected( wxCommandEven
 
 void EventsSelectionDialog::OnChoiceOperatorFunctionValuesSelected( wxCommandEvent& event )
 {
-  changedEventValuesFunction = HasChanged( choiceOperatorFunctionValues, selectedEventValuesFunction );
+  changedEventValuesFunction = HasChanged( choiceOperatorFunctionValues, previousEventValuesFunction );
+  //changedEventValuesFunction = CopyChanges( choiceOperatorFunctionValues, previousEventValuesFunction );
 }
 
 
@@ -861,7 +890,8 @@ void EventsSelectionDialog::OnChoiceOperatorFunctionValuesSelected( wxCommandEve
 
 void EventsSelectionDialog::OnChoiceOperatorTypeValueSelected( wxCommandEvent& event )
 {
-  changedOperatorTypeValue = HasChanged( choiceOperatorTypeValue, selectedOperatorTypeValue );
+  changedOperatorTypeValue = HasChanged( choiceOperatorTypeValue, previousOperatorTypeValue );
+  //changedOperatorTypeValue = CopyChanges( choiceOperatorTypeValue, previousOperatorTypeValue );
 }
 
 
@@ -898,6 +928,7 @@ void EventsSelectionDialog::BackupCheckListboxValues()
 
   selectedEventValues.Sort( compare_int );
 }
+
 
 void EventsSelectionDialog::UpdateCheckListboxValues( TEventType type )
 {
@@ -1094,5 +1125,44 @@ void EventsSelectionDialog::OnTextCtrlKeyDown( wxKeyEvent& event )
     InsertValueFromTextCtrl();
   else
     event.Skip();
+}
+
+
+
+void EventsSelectionDialog::EnableApplyButton()
+{
+  // Save current Filter state
+  string tmpCurrentTypeFunc  = currentFilter->getEventTypeFunction();
+  string tmpCurrentValueFunc = currentFilter->getEventValueFunction();
+  
+  currentFilter->setEventTypeFunction( GetNameEventTypesFunction() );
+  currentFilter->setEventValueFunction( GetNameEventValuesFunction() );
+  
+  wxArrayInt dummyIndex;
+  unsigned int numTypesSelected  = GetSelections( checkListSelectTypes, dummyIndex ); 
+  unsigned int numValuesSelected = GetSelections( checkListSelectValues, dummyIndex );
+  bool enabledByFunctionTypes = currentFilter->allowedEventTypeFunctionNumParams( numTypesSelected );
+  bool enabledByFunctionValues = currentFilter->allowedEventValueFunctionNumParams( numValuesSelected );
+  
+  // Restore Filter state
+  currentFilter->setEventTypeFunction( tmpCurrentTypeFunc );
+  currentFilter->setEventValueFunction( tmpCurrentValueFunc );
+
+  // Be consistent with and/or operation  
+  bool on;
+  if ( choiceOperatorTypeValue->GetSelection() == 0 )
+    on = enabledByFunctionTypes && enabledByFunctionValues;
+  else
+    on = enabledByFunctionTypes || enabledByFunctionValues;
+
+  applyButton->Enable( on );
+}
+
+/*!
+ * wxEVT_UPDATE_UI event handler for wxID_APPLY
+ */
+void EventsSelectionDialog::OnApplyUpdate( wxUpdateUIEvent& event )
+{
+  EnableApplyButton();
 }
 

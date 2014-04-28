@@ -193,6 +193,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_APPLY
   void OnApplyClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for wxID_APPLY
+  void OnApplyUpdate( wxUpdateUIEvent& event );
+
 ////@end EventsSelectionDialog event handler declarations
 
 ////@begin EventsSelectionDialog member function declarations
@@ -207,10 +210,15 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
-  int GetEventTypesFunction( string &whichName ) const;
+  int GetIndexEventTypesFunction() const;
+  std::string GetNameEventTypesFunction() const;
   wxArrayInt GetEventTypesSelection() const;
-  int GetOperatorTypeValue( string &whichName ) const;
-  int GetEventValuesFunction( string &whichName ) const;
+
+  int GetIndexOperatorTypeValue() const;
+  std::string  GetNameOperatorTypeValue() const;
+
+  int GetIndexEventValuesFunction() const;
+  std::string  GetNameEventValuesFunction() const;
   wxArrayInt GetEventValues() const;
 
   bool ChangedEventTypesFunction() const;
@@ -237,6 +245,7 @@ public:
   wxButton* buttonAddValues;
   wxButton* buttonSetAllValues;
   wxButton* buttonUnsetAllValues;
+  wxButton* applyButton;
   wxBoxSizer* boxSizerOperatorsChoice;
 ////@end EventsSelectionDialog member variables
 
@@ -249,7 +258,7 @@ public:
   Filter               *currentFilter;     // To set/get events info, and operator or/and
 
   // *** Related to selector of event types function ***
-  int                  selectedEventTypesFunction;
+  int                  previousEventTypesFunction;
   bool                 changedEventTypesFunction;
 
   // *** Related to event types check list ***
@@ -260,15 +269,15 @@ public:
   bool                 changedEventTypesSelection;
 
   // *** Related to selector of and/or operator ***
-  int                  selectedOperatorTypeValue;
+  int                  previousOperatorTypeValue;
   bool                 changedOperatorTypeValue;
 
   // *** Related to selector of event values function ***
-  int                  selectedEventValuesFunction;
+  int                  previousEventValuesFunction;
   bool                 changedEventValuesFunction;
 
   // *** Related to event values check list ***
-  unsigned int         firstEventTypePos;
+  unsigned int        firstEventTypePos;
   wxArrayInt           eventValues;         // related to the current selected type
   wxArrayInt           selectedEventValues; // global selected event type
   wxArrayInt           originalSelectedEventValues; // global selected event type
@@ -294,9 +303,12 @@ public:
 
   void TransferDataToWindowPreCreateControls( Window *whichWindow,
                                               bool whichHideOperatorsList);
+  void EnableApplyButton();
   void TransferDataToWindowPostCreateControls();
 
   void TransferWindowToData();
+  unsigned int GetSelections( wxCheckListBox *checkList, wxArrayInt &index ) const;
+
 };
 
 #endif

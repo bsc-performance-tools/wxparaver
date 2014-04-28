@@ -422,8 +422,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
     EventsSelectionDialog eventsDialog( propgrid,
                                         currentWindow,
                                         hideChoiceOperators,
-                                        windowTitle
-                                      );
+                                        windowTitle );
 
     eventsDialog.Move( propgrid->GetGoodEditorDialogPosition( this, eventsDialog.GetSize() ) );
 
@@ -460,20 +459,16 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
       if ( eventsDialog.ChangedEventTypesFunction() )
       {
-        string auxname;
-        int func = eventsDialog.GetEventTypesFunction( auxname );
-        wxVariant tmpVal =  WXVARIANT( func ); 
+        wxVariant tmpVal =  WXVARIANT( eventsDialog.GetIndexEventTypesFunction() ); 
         propgrid->GetProperty( _("Event type.TypeFunction") )->SetValue( tmpVal );
-        currentWindow->getFilter()->setEventTypeFunction( auxname );
+        currentWindow->getFilter()->setEventTypeFunction( eventsDialog.GetNameEventTypesFunction() );
       }
 
       if ( eventsDialog.ChangedEventValuesFunction() )
       {
-        string auxname;
-        int func = eventsDialog.GetEventValuesFunction( auxname );
-        wxVariant tmpVal =  WXVARIANT( func ); 
+        wxVariant tmpVal =  WXVARIANT( eventsDialog.GetIndexEventValuesFunction() ); 
         propgrid->GetProperty( _("Event value.ValueFunction") )->SetValue( tmpVal );
-        currentWindow->getFilter()->setEventValueFunction( auxname );
+        currentWindow->getFilter()->setEventValueFunction( eventsDialog.GetNameEventValuesFunction() );
 
 /*        bool disable = ( auxname.compare( "All" ) == 0 || auxname.compare( "None" ) == 0 );
         propgrid->GetProperty( _("Event value.Values") )->ChangeFlag( wxPG_PROP_DISABLED, disable );*/
@@ -481,8 +476,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
       if ( eventsDialog.ChangedOperatorTypeValue() )
       {
-        string auxname;
-        int func = eventsDialog.GetOperatorTypeValue( auxname );
+        int func = eventsDialog.GetIndexOperatorTypeValue();
         wxVariant tmpVal =  WXVARIANT( func ); 
         propgrid->GetProperty( _("TypeValueOp") )->SetValue( tmpVal );
 
@@ -515,8 +509,8 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         {
           propgrid->GetProperty( _("Event value.Values") )->SetValue( tmpVar );
           // Try leave the control enabled
-          string auxname;
-          int func = eventsDialog.GetEventValuesFunction( auxname );
+          //string auxname;
+          //int func = eventsDialog.GetEventValuesFunction( auxname );
 /*          bool disable = ( auxname.compare( "All" ) == 0 || auxname.compare( "None" ) == 0 );
           propgrid->GetProperty( _("Event value.Values") )->ChangeFlag( wxPG_PROP_DISABLED, disable );*/
         }
