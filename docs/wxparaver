@@ -1,6 +1,6 @@
 #! /bin/bash
 
-REAL_PATH=`readlink -f $0`
+REAL_PATH=`readlink -f "${0}"`
 PARAVER_HOME="$( cd "$( dirname "$REAL_PATH" )" && pwd )"
 PARAVER_HOME=${PARAVER_HOME%/bin}
 
@@ -8,7 +8,7 @@ PARAVER_HOME=${PARAVER_HOME%/bin}
 #  echo "Please set \$PARAVER_HOME to the wxparaver installation root directory"
 #  exit 1
 
-if ! [ -d ${PARAVER_HOME}/lib/paraver-kernel ] ; then
+if ! [ -d "${PARAVER_HOME}/lib/paraver-kernel" ] ; then
   echo "paraver-kernel libraries not found in \$PARAVER_HOME/lib/paraver-kernel/"
   exit 1
 
@@ -16,11 +16,11 @@ if ! [ -d ${PARAVER_HOME}/lib/paraver-kernel ] ; then
 ##  echo "wxparaver libraries not found in \$PARAVER_HOME/lib/wxparaver/"
 ##  exit 1
 
-elif ! [ -e ${PARAVER_HOME}/bin/wxparaver.bin ] ; then
+elif ! [ -e "${PARAVER_HOME}/bin/wxparaver.bin" ] ; then
   echo "wxparaver binary not found in \$PARAVER_HOME/bin/"
   exit 1
   
 fi
 
-LD_LIBRARY_PATH=$PARAVER_HOME/lib/ptools_common_files/:$PARAVER_HOME/lib/paraver-kernel:$PARAVER_HOME/lib/wxparaver:$LD_LIBRARY_PATH $PARAVER_HOME/bin/wxparaver.bin "$@"
+LD_LIBRARY_PATH="${PARAVER_HOME}/lib/ptools_common_files/:${PARAVER_HOME}/lib/paraver-kernel:${PARAVER_HOME}/lib/wxparaver:$LD_LIBRARY_PATH" "${PARAVER_HOME}/bin/wxparaver.bin" "$@"
 	

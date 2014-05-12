@@ -13,7 +13,7 @@ function usage
   echo "  parameters:   See complete list of stats help with 'stats --help'"
 }
 
-PARAVER_TRACE=`readlink -eqs ${1}`
+PARAVER_TRACE=`readlink -eqs "${1}"`
 
 # Read and check parameters
 if [ $# -lt 1 ]; then

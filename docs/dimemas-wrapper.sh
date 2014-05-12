@@ -26,7 +26,7 @@ if [ $# -lt 4 ]; then
 fi
 
 #PARAVER_TRACE=${1}
-PARAVER_TRACE=`readlink -eqs ${1}`
+PARAVER_TRACE=`readlink -eqs "${1}"`
 DIMEMAS_CFG=${2}
 OUTPUT_PARAVER_TRACE=${3}
 DIMEMAS_REUSE_TRACE=${4}
