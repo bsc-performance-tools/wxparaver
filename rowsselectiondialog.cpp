@@ -337,10 +337,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   for ( unsigned int i = 0; i < (unsigned int)selectedIndex.size(); ++i )
   {
     if ( firstFound == -1 )
-    {
-//std::cout << "i = " << i << std::endl;
       firstFound = selectedIndex[ i ];
-    }
     
     auxCheckList->Check( selectedIndex[ i ] );
   }
