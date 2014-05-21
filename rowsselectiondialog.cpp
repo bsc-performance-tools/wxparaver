@@ -333,8 +333,20 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
           this );
   levelCheckList.push_back( auxCheckList );
 
+  PRV_INT8 firstFound = -1;
   for ( unsigned int i = 0; i < (unsigned int)selectedIndex.size(); ++i )
+  {
+    if ( firstFound == -1 )
+    {
+//std::cout << "i = " << i << std::endl;
+      firstFound = selectedIndex[ i ];
+    }
+    
     auxCheckList->Check( selectedIndex[ i ] );
+  }
+  
+  if ( firstFound != -1 )
+    auxCheckList->SetFirstItem( (int)firstFound );
 
   panelSizer->Add( auxCheckList, 3, wxALL | wxALIGN_CENTER | wxGROW, 5 );
   
