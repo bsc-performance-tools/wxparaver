@@ -238,12 +238,6 @@ void BuildTree( paraverMain *parent,
   tmpTimeline->SetMyWindow( window );
   tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
 
-  if( window->getShowWindow() )
-  {
-    tmpTimeline->Show();
-    tmpTimeline->redraw();
-  }
-
   currentData =  new TreeBrowserItemData( wxString::FromAscii( window->getName().c_str() ), tmpTimeline );
 
   int iconNumber = 1; // number of timeline icon

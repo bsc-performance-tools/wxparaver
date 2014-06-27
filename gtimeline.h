@@ -34,6 +34,7 @@
 /*!
  * Includes
  */
+#include <wx/progdlg.h>
 #include "prvtypes.h"
 
 #ifdef WIN32
@@ -79,6 +80,8 @@ class wxRichTextCtrl;
 class wxBoxSizer;
 ////@end forward declarations
 class Window;
+class ProgressController;
+
 /*!
  * Control identifiers
  */
@@ -469,6 +472,8 @@ public:
                   COMMUNICATION_LINE,
                   END_RECORDS_SECTION } TWWLine;
 
+  static wxProgressDialog *dialogProgress;
+  
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
   wxSplitterWindow* splitter;
@@ -564,5 +569,7 @@ private:
   void OnTimerSize( wxTimerEvent& event );
   void OnTimerMotion( wxTimerEvent& event );
 };
+
+void progressFunctionTimeline( ProgressController *progress );
 
 #endif  // _GTIMELINE_H_

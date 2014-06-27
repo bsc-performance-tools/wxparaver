@@ -55,6 +55,7 @@
 #include "caution.xpm"
 #include "output.h"
 #include "filedialogext.h"
+#include "progresscontroller.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -106,6 +107,8 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_TIMER( ID_TIMER_MOTION, gTimeline::OnTimerMotion )
   
 END_EVENT_TABLE()
+
+wxProgressDialog *gTimeline::dialogProgress = NULL;
 
 /*!
  * gTimeline constructors
@@ -381,7 +384,6 @@ void gTimeline::redraw()
 #ifdef TRACING_ENABLED
   Extrae_user_function( 2 );
 #endif
-
   redoColors = true;
 
   rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
@@ -404,6 +406,22 @@ void gTimeline::redraw()
 
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );
+
+  ProgressController *progress = ProgressController::create( myWindow->getKernel() );
+  progress->setHandler( progressFunctionTimeline );
+
+  if( gTimeline::dialogProgress == NULL )
+    gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
+                                                      wxT(""),
+                                                      numeric_limits<int>::max(),
+                                                      this,
+                                                      wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
+                                                      wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                      wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
+  gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
+  gTimeline::dialogProgress->Fit();
+  gTimeline::dialogProgress->Show();
 
 #ifdef TRACING_ENABLED
     Extrae_event( 100, 10 );
@@ -433,7 +451,7 @@ void gTimeline::redraw()
 #ifdef TRACING_ENABLED
     Extrae_event( 100, 11 );
 #endif
-  ready = false;
+  //ready = false;
   bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
@@ -475,7 +493,6 @@ void gTimeline::redraw()
   
   if( !drawAxis( bufferDraw, selectedSet ) )
   {
-    ready = true;
     SetTitle( winTitle );
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
@@ -520,7 +537,8 @@ void gTimeline::redraw()
                                      objectPosList,
                                      maxObj,
                                      drawCaution,
-                                     valuesToDraw, eventsToDraw, commsToDraw );
+                                     valuesToDraw, eventsToDraw, commsToDraw,
+                                     progress );
 
 // cout << "[GUI::gTimeline::redraw ] after call computeSemanticParallel" << endl;
 
@@ -540,6 +558,8 @@ void gTimeline::redraw()
              valuesToDraw[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
              eventdc, eventmaskdc, commdc, commmaskdc );
     ++rowToDraw;
+    if( rowToDraw >= valuesToDraw.size() )
+      break;
   }
 
   bufferDraw.SelectObject(wxNullBitmap);
@@ -588,7 +608,14 @@ void gTimeline::redraw()
   if( myWindow->getDrawCommLines() )
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 
-  ready = true;
+  gTimeline::dialogProgress->Show( false );
+  if( gTimeline::dialogProgress != NULL )
+  {
+    delete gTimeline::dialogProgress;
+    gTimeline::dialogProgress = NULL;
+  }
+  delete progress;
+
   SetTitle( winTitle );
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
@@ -1076,7 +1103,10 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   {
     this->Show();
     if( !ready )
+    {
+      ready = true;
       redraw();
+    }
   }
   else
   {
@@ -1291,6 +1321,8 @@ void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
   {
     if( myWindow->getRedraw() )
     {
+      if( gTimeline::dialogProgress != NULL )
+        return;
       myWindow->setRedraw( false );
       splitChanged = false;
       redraw();
@@ -2792,7 +2824,7 @@ void gTimeline::saveText()
 void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
   if( ready )
-    redraw();
+    myWindow->setRedraw( true );
   Refresh();
 }
 
@@ -3403,3 +3435,23 @@ void gTimeline::OnFindDialog()
   }
 }
 
+
+void progressFunctionTimeline( ProgressController *progress )
+{
+  int p;
+  if ( progress->getCurrentProgress() > progress->getEndLimit() )
+    p = numeric_limits<int>::max();
+  else 
+    p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
+
+  wxString newMessage;
+  if( progress->getMessageChanged() )
+  {
+    newMessage = wxString::FromAscii( progress->getMessage().c_str() );
+    progress->clearMessageChanged();
+  }
+  
+  if( !gTimeline::dialogProgress->Update( p, newMessage ) )
+    progress->setStop( true );
+//  app->Yield();
+}
