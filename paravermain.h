@@ -517,7 +517,7 @@ private:
 
 };
 
-void progressFunction( ProgressController *progress );
+void progressFunction( ProgressController *progress, void *callerWindow );
   
 
 #endif

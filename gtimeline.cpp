@@ -141,6 +141,7 @@ bool gTimeline::Create( wxWindow* parent, wxWindowID id, const wxString& caption
   CreateControls();
 ////@end gTimeline creation
   splitter->Unsplit();
+  redrawStopWatch->Pause();
   return true;
 }
 
@@ -184,6 +185,7 @@ void gTimeline::Init()
   objectHeight = 1;
   ready = false;
   redoColors = false;
+  redrawStopWatch = new wxStopWatch();
   splitChanged = false;
   timerMotion = new wxTimer( this, ID_TIMER_MOTION );
   timerSize = new wxTimer( this, ID_TIMER_SIZE );
@@ -404,11 +406,13 @@ void gTimeline::redraw()
   logicalPen = wxPen( logicalColour );
   physicalPen = wxPen( physicalColour );
 
+  redrawStopWatch->Start();
+  
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );
 
   ProgressController *progress = ProgressController::create( myWindow->getKernel() );
-  progress->setHandler( progressFunctionTimeline );
+  progress->setHandler( progressFunctionTimeline, this );
 
   if( gTimeline::dialogProgress == NULL )
     gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
@@ -419,9 +423,9 @@ void gTimeline::redraw()
                                                       wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                       wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
+  gTimeline::dialogProgress->Show( false );
   gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gTimeline::dialogProgress->Fit();
-  gTimeline::dialogProgress->Show();
 
 #ifdef TRACING_ENABLED
     Extrae_event( 100, 10 );
@@ -616,10 +620,13 @@ void gTimeline::redraw()
   }
   delete progress;
 
+  redrawStopWatch->Pause();
+  
   SetTitle( winTitle );
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
 #endif
+  drawZone->Refresh();
 // cout << "[GUI::gTimeline::redraw ] exiting" << endl;
 }
 
@@ -1830,9 +1837,12 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
  */
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
+  if( gTimeline::dialogProgress != NULL )
+    return;
+
   motionEvent = event;
   timerMotion->Start( 20, true );
-  
+
   wxMemoryDC dc( bufferImage );
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   PRV_UINT32 precision = 0;
@@ -3436,7 +3446,7 @@ void gTimeline::OnFindDialog()
 }
 
 
-void progressFunctionTimeline( ProgressController *progress )
+void progressFunctionTimeline( ProgressController *progress, void *callerWindow )
 {
   int p;
   if ( progress->getCurrentProgress() > progress->getEndLimit() )
@@ -3449,6 +3459,12 @@ void progressFunctionTimeline( ProgressController *progress )
   {
     newMessage = wxString::FromAscii( progress->getMessage().c_str() );
     progress->clearMessageChanged();
+  }
+
+  if( ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
+  {
+    gTimeline::dialogProgress->Show();
+    ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
   
   if( !gTimeline::dialogProgress->Update( p, newMessage ) )

@@ -309,6 +309,9 @@ public:
   bool GetRedoColors() const { return redoColors ; }
   void SetRedoColors(bool value) { redoColors = value ; }
 
+  wxStopWatch * GetRedrawStopWatch() const { return redrawStopWatch ; }
+  void SetRedrawStopWatch(wxStopWatch * value) { redrawStopWatch = value ; }
+
   wxFont GetSemanticFont() const { return semanticFont ; }
   void SetSemanticFont(wxFont value) { semanticFont = value ; }
 
@@ -526,6 +529,7 @@ private:
   wxPen physicalPen;
   bool ready;
   bool redoColors;
+  wxStopWatch * redrawStopWatch;
   wxFont semanticFont;
   bool splitChanged;
   PRV_INT32 timeAxisPos;
@@ -570,6 +574,6 @@ private:
   void OnTimerMotion( wxTimerEvent& event );
 };
 
-void progressFunctionTimeline( ProgressController *progress );
+void progressFunctionTimeline( ProgressController *progress, void *callerWindow );
 
 #endif  // _GTIMELINE_H_
