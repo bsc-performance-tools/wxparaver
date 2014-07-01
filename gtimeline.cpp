@@ -3469,5 +3469,4 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
   
   if( !gTimeline::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
-//  app->Yield();
 }

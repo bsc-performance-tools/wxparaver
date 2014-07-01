@@ -257,6 +257,9 @@ public:
   bool GetReady() const { return ready ; }
   void SetReady(bool value) { ready = value ; }
 
+  wxStopWatch * GetRedrawStopWatch() const { return redrawStopWatch ; }
+  void SetRedrawStopWatch(wxStopWatch * value) { redrawStopWatch = value ; }
+
   vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
   void SetSelectedRows(vector<TObjectOrder> value) { selectedRows = value ; }
 
@@ -355,6 +358,8 @@ public:
 
   void rightDownManager();
 
+  static wxProgressDialog *dialogProgress;
+
 ////@begin gHistogram member variables
   wxBoxSizer* mainSizer;
   wxScrolledWindow* zoomHisto;
@@ -372,6 +377,7 @@ private:
   Histogram* myHistogram;
   bool openControlActivated;
   bool ready;
+  wxStopWatch * redrawStopWatch;
   vector<TObjectOrder> selectedRows;
   HistoTableBase* tableBase;
   wxTimer * timerZoom;
@@ -401,6 +407,8 @@ private:
   void zoom( THistogramLimit newColumnBegin, THistogramLimit newColumnEnd,
              TObjectOrder newObjectBegin, TObjectOrder newObjectEnd, THistogramLimit newDelta = -1.0 );
 };
+
+void progressFunctionHistogram( ProgressController *progress, void *callerWindow );
 
 #endif
   // _GHISTOGRAM_H_

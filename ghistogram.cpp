@@ -41,6 +41,7 @@
 ////@begin includes
 ////@end includes
 
+#include <wx/progdlg.h>
 #include <wx/clipbrd.h>
 #include <sstream>
 #include <iostream>
@@ -56,6 +57,7 @@
 #include "paraverkernelexception.h"
 #include "histotablebase.h"
 #include "filedialogext.h"
+#include "progresscontroller.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -143,6 +145,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   
 END_EVENT_TABLE()
 
+wxProgressDialog *gHistogram::dialogProgress = NULL;
 
 /*!
  * gHistogram constructors
@@ -214,6 +217,7 @@ void gHistogram::Init()
   myHistogram = NULL;
   openControlActivated = false;
   ready = false;
+  redrawStopWatch = new wxStopWatch();
   tableBase = NULL;
   timerZoom = new wxTimer( this );
   zoomDragging = false;
@@ -341,6 +345,23 @@ void gHistogram::execute()
   gridHisto->Show( false );
   Update();
 
+  redrawStopWatch->Start();
+  ProgressController *progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
+  progress->setHandler( progressFunctionHistogram, this );
+
+  if( gHistogram::dialogProgress == NULL )
+    gHistogram::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
+                                                       wxT(""),
+                                                       numeric_limits<int>::max(),
+                                                       this,
+                                                       wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
+                                                       wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                       wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
+  gHistogram::dialogProgress->Show( false );
+  gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
+  gHistogram::dialogProgress->Fit();
+
   TObjectOrder beginRow, endRow;
   selectedRows.clear();
   if( myHistogram->isZoomEmpty() )
@@ -358,7 +379,7 @@ void gHistogram::execute()
   myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                     selectedRows, beginRow, endRow, true );
 
-  myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows );
+  myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
 
   if( myHistogram->getZoom() )
     fillZoom();
@@ -366,6 +387,16 @@ void gHistogram::execute()
     fillGrid();
 
   ready = true;
+  
+  gHistogram::dialogProgress->Show( false );
+  if( gHistogram::dialogProgress != NULL )
+  {
+    delete gHistogram::dialogProgress;
+    gHistogram::dialogProgress = NULL;
+  }
+  delete progress;
+
+  redrawStopWatch->Pause();
 
   this->Refresh();
 
@@ -2509,3 +2540,27 @@ void gHistogram::OnToolInclusiveUpdate( wxUpdateUIEvent& event )
   event.Check( myHistogram->getInclusive() );
 }
 
+void progressFunctionHistogram( ProgressController *progress, void *callerWindow )
+{
+  int p;
+  if ( progress->getCurrentProgress() > progress->getEndLimit() )
+    p = numeric_limits<int>::max();
+  else 
+    p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
+
+  wxString newMessage;
+  if( progress->getMessageChanged() )
+  {
+    newMessage = wxString::FromAscii( progress->getMessage().c_str() );
+    progress->clearMessageChanged();
+  }
+
+  if( ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
+  {
+    gHistogram::dialogProgress->Show();
+    ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Pause();
+  }
+  
+  if( !gHistogram::dialogProgress->Update( p, newMessage ) )
+    progress->setStop( true );
+}
