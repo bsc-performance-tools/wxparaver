@@ -68,21 +68,33 @@ BEGIN_EVENT_TABLE( EventsSelectionDialog, wxDialog )
 
 ////@begin EventsSelectionDialog event table entries
   EVT_IDLE( EventsSelectionDialog::OnIdle )
+
   EVT_CHOICE( ID_CHOICE_OPERATOR_FUNCTION_TYPES, EventsSelectionDialog::OnChoiceOperatorFunctionTypesSelected )
+
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesDoubleClicked )
   EVT_LISTBOX( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesSelected )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesToggled )
+
   EVT_BUTTON( ID_BUTTON_SET_ALL_TYPES, EventsSelectionDialog::OnButtonSetAllTypesClick )
+
   EVT_BUTTON( ID_BUTTON_UNSET_ALL_TYPES, EventsSelectionDialog::OnButtonUnsetAllTypesClick )
+
   EVT_CHOICE( ID_CHOICE_OPERATOR_TYPE_VALUE, EventsSelectionDialog::OnChoiceOperatorTypeValueSelected )
+
   EVT_CHOICE( ID_CHOICE_OPERATOR_FUNCTION_VALUES, EventsSelectionDialog::OnChoiceOperatorFunctionValuesSelected )
+
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_VALUES, EventsSelectionDialog::OnChecklistboxValuesDoubleClicked )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_VALUES, EventsSelectionDialog::OnChecklistboxValuesToggled )
+
   EVT_BUTTON( ID_BUTTON_ADD_VALUES, EventsSelectionDialog::OnButtonAddValuesClick )
+
   EVT_BUTTON( ID_BUTTON_SET_ALL_VALUES, EventsSelectionDialog::OnButtonSetAllValuesClick )
+
   EVT_BUTTON( ID_BUTTON_UNSET_ALL_VALUES, EventsSelectionDialog::OnButtonUnsetAllValuesClick )
+
   EVT_BUTTON( wxID_APPLY, EventsSelectionDialog::OnApplyClick )
   EVT_UPDATE_UI( wxID_APPLY, EventsSelectionDialog::OnApplyUpdate )
+
 ////@end EventsSelectionDialog event table entries
 
 END_EVENT_TABLE()

@@ -2011,6 +2011,8 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     histograms = saveDialog.GetSelectedHistograms();
     options = saveDialog.GetOptions();
     
+    // 
+   
     vector< wxString > extensions;
     extensions.push_back( wxT( ".cfg" ) );
     FileDialogExtension dialog( (wxWindow *)this,

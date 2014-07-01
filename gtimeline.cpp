@@ -91,16 +91,26 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
+
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
+
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
+
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
+
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
+
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -369,6 +379,17 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
   wxUnusedVar(name);
   return wxNullIcon;
 ////@end gTimeline icon retrieval
+}
+
+
+std::vector< TObjectOrder > gTimeline::getCurrentZoomRange()
+{
+  vector< TObjectOrder > zoomRange;
+
+  zoomRange.push_back( myWindow->getZoomSecondDimension().first );
+  zoomRange.push_back( myWindow->getZoomSecondDimension().second );
+  
+  return zoomRange;
 }
 
 
@@ -1282,12 +1303,32 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
   double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
+
+  
   beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
+ /* double auxRow =  floor( (zoomBeginY - drawBorder - 1) / heightPerRow );
+ 
+cout << "beginRow " << beginRow << endl;
+cout << "endRow   " << endRow << endl;
+cout << "numObjects " << numObjects << endl;
+cout << "auxRow " << auxRow << endl;
+cout << "numObjects " << numObjects << endl;
+  //if ( auxRow < 0 )
+  //  auxRow = 0;
+  
+  beginRow = TObjectOrder( auxRow );
+  auxRow = floor( (zoomEndY - drawBorder - 1) / heightPerRow );
+  //if ( auxRow < 0 )
+  //  auxRow = 0;
+  */
   endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
+  //endRow = TObjectOrder( auxRow );
 
   if( endRow >= numObjects )
+  //if( endRow >= numObjects && numObjects > 0 )
     endRow = numObjects - 1;
   if( beginRow >= numObjects )
+  //if( beginRow >= numObjects && numObjects > 0 )
     beginRow = numObjects - 1;
     
   beginRow = selected[ beginRow ];
@@ -1622,6 +1663,11 @@ void gTimeline::OnPopUpRowSelection()
 
   if ( dialog->ShowModal() == wxID_OK )
   {
+    if ( dialog->ShouldChangeTimelineZoom() )
+    {
+      myWindow->addZoom( dialog->GetNewBeginZoom(), dialog->GetNewEndZoom() );
+    }
+  
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
   }
@@ -1788,11 +1834,28 @@ void gTimeline::OnPopUpUndoZoom()
   if ( !myWindow->emptyPrevZoom() )
   {
     myWindow->prevZoom();
-    myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
-    myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
+    
+    TObjectOrder prevZoomBegin = myWindow->getZoomSecondDimension().first;
+    TObjectOrder prevZoomEnd = myWindow->getZoomSecondDimension().second;
+    if ( prevZoomBegin <= GetBeginRow() && GetEndRow() <= prevZoomEnd )
+    {
+      // as before
+      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
+      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
 
-    myWindow->setRedraw( true );
-    myWindow->setChanged( true );
+      myWindow->setRedraw( true );
+      myWindow->setChanged( true );
+    }
+    else
+    {
+      myWindow->nextZoom();
+      wxString tmpMsg("Unable to browse current objects in previous zoom!\n\nPlease select objects again.");
+      wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
+      if ( tmpDialog.ShowModal() == wxID_OK )
+      {
+        OnPopUpRowSelection();
+      }
+    }
   }
 }
 
@@ -1802,11 +1865,28 @@ void gTimeline::OnPopUpRedoZoom()
   if ( !myWindow->emptyNextZoom() )
   {
     myWindow->nextZoom();
-    myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
-    myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
 
-    myWindow->setRedraw( true );
-    myWindow->setChanged( true );
+    TObjectOrder nextZoomBegin = myWindow->getZoomSecondDimension().first;
+    TObjectOrder nextZoomEnd = myWindow->getZoomSecondDimension().second;
+    if ( nextZoomBegin <= GetBeginRow() && GetEndRow() <= nextZoomEnd )
+    {
+      // as before
+      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
+      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
+
+      myWindow->setRedraw( true );
+      myWindow->setChanged( true );
+    }
+    else
+    {
+      myWindow->prevZoom();
+      wxString tmpMsg("Unable to browse current objects in next zoom!\n\nPlease select objects again.");
+      wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
+      if ( tmpDialog.ShowModal() == wxID_OK )
+      {
+        OnPopUpRowSelection();
+      }
+    }
   }
 }
 

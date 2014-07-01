@@ -358,6 +358,8 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
+  std::vector< TObjectOrder > getCurrentZoomRange();
+
   void redraw();
   bool drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
 #ifdef WIN32
