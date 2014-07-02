@@ -708,7 +708,7 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
   int numberSelected = GetSelections( myTimeline->getLevel(), dialogSelections );
   if ( numberSelected == 0 )
   {
-    wxString tmpMsg("No object selected!");
+    wxString tmpMsg( wxT( "No object selected!" ) );
     wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
     if ( tmpDialog.ShowModal() == wxID_OK )
     {
@@ -733,7 +733,7 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
     }
     else
     {
-      wxString tmpMsg("Do you want to extend the zoom to fit selected objects?");
+      wxString tmpMsg( wxT( "Do you want to extend the zoom to fit selected objects?" ) );
       wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
       if ( tmpDialog.ShowModal() == wxID_YES )
       {

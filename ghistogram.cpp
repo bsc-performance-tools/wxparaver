@@ -350,7 +350,7 @@ void gHistogram::execute()
   progress->setHandler( progressFunctionHistogram, this );
 
   if( gHistogram::dialogProgress == NULL )
-    gHistogram::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
+    gHistogram::dialogProgress = new wxProgressDialog( wxT("Computing window..."),
                                                        wxT(""),
                                                        numeric_limits<int>::max(),
                                                        this,
