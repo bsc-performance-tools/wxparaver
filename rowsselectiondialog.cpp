@@ -182,7 +182,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
           this );
   levelCheckList.push_back( auxCheckList );
 
-  PRV_INT8 firstFound = -1;
+  PRV_INT16 firstFound = -1;
   for ( unsigned int i = 0; i < (unsigned int)selectedIndex[ whichLevel ].size(); ++i )
   {
     if ( firstFound == -1 )
@@ -438,13 +438,6 @@ bool RowsSelectionDialog::TransferDataFromWindow()
                                    whichLevel );
     }
   }
-
-  /*
-  if ( originalSelectedRows == *mySelectedRows )
-    std::cout << "IGUAL " << std::endl;
-  else
-    std::cout << "diff " << std::endl;
-  */    
   
   return true;
 }
@@ -621,7 +614,7 @@ void RowsSelectionDialog::OnRegularExpressionApply( wxCommandEvent& event )
     if( matches > 0 )
     {
       // Save this regular expression as a valid one.
-    //    validRE[ iTab ] = levelRE; 
+      //    validRE[ iTab ] = levelRE; 
 
       checkMatches( iTab, levelRE );
 
@@ -720,12 +713,7 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
     TObjectOrder newEnd( dialogSelections.Last() );
     TObjectOrder curBegin( timelineSelection.front() );
     TObjectOrder curEnd( timelineSelection.back() );
-    /*
-    std::cout << "newBegin " << newBegin << std::endl;
-    std::cout << "newEnd " << newEnd << std::endl;
-    std::cout << "curBegin " << curBegin << std::endl;
-    std::cout << "curEnd " << curEnd << std::endl;
-    */
+
     if ( curBegin <= newBegin && newEnd <= curEnd ) // Are new limits inside/visible?
     {      
       if ( TransferDataFromWindow() )
@@ -743,10 +731,7 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
           shouldChangeTimelineZoom = true;
           beginZoom = curBegin < newBegin ? curBegin : newBegin;
           endZoom = curEnd > newEnd ? curEnd : newEnd;
-/*       
-          std::cout << "beginZoom " << beginZoom << std::endl;
-          std::cout << "endZoom " << endZoom << std::endl;
-*/      
+
           EndModal( wxID_OK );        
         }
       }
