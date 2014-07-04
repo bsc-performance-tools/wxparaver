@@ -388,6 +388,10 @@ private:
 
   bool helpOption; // delete?
   bool tunePrvLinksForClustering;
+  bool tunePrvLinksForFolding;
+
+  wxString tagFoldingOutputDirectory;
+  wxString foldingOutputDirectory;
 
   enum TEnvironmentVar
   {
@@ -413,7 +417,11 @@ private:
   wxString GetReachableCommand( TExternalApp selectedApp = DEFAULT ); // adds path to the binary
 
   // Log related
+  bool readFoldingTag( wxString rawLine );
+  wxString rawFormat( wxString rawLine );
   wxString insertLinks( wxString rawLine, wxArrayString extensions );
+  wxString insertLog( wxString rawLine, wxArrayString extensions );
+
   // TODO: This method's been copied from HelpContents; consider write new class
   std::string getHrefFullPath( wxHtmlLinkEvent &event );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );

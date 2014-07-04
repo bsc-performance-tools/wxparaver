@@ -133,26 +133,43 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
+
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
+
   EVT_TEXT( ID_TEXTCTRL_TRACE, RunScript::OnTextctrlTraceTextUpdated )
+
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
+
   EVT_BUTTON( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlUpdate )
+
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
+
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_NORMALIZE, RunScript::OnCheckboxClusteringNormalizeUpdate )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, RunScript::OnRadiobuttonClusteringXmldefinedSelected )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
+
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
+
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
+
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
+
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
+
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
+
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
+
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -347,8 +364,11 @@ void RunScript::Init()
   application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED                           
   application[ DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
   application[ STATS ]               = wxString( wxT("stats") );
+
+  tagFoldingOutputDirectory = wxString( wxT("Output directory:") );
   
   tunePrvLinksForClustering = false;
+  tunePrvLinksForFolding = false;
   
   pidDimemasGUI = 0;
 }
@@ -1140,6 +1160,12 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       parameters = doubleQuote( fileBrowserButtonTrace->GetPath() );
       parameters += wxString( wxT(" ") );
       parameters += doubleQuote( foldingCSV );
+      parameters += wxString( wxT( " " ) ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Event type
+      
+      if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
+      {
+        helpOption = true;
+      }
       
       break;
       
@@ -1391,11 +1417,11 @@ void RunScript::AppendToLog( wxString msg )
     switch ( selectedApp )
     {
  //     case DIMEMAS_WRAPPER:
- //       msg = insertLinks( msg, extensionsDimemas );
+ //       msg = insertLog( msg, extensionsDimemas );
  //       break;
         
       default:
-        msg = insertLinks( msg, extensions );
+        msg = insertLog( msg, extensions );
         break;
     }
   }
@@ -1450,6 +1476,9 @@ void RunScript::adaptWindowToApplicationSelection()
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
       textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to the script\n"
                                                   "%TRACE refers to input trace" ) );
+
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
       break;
@@ -1459,6 +1488,9 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to 'stats'\n"
                                                   "-events_histo[:type1[-type2],...]\n"
                                                   "-thread_calls[:type1[-type2],...]\n" ) );
+                                                  
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+                                                  
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
       break;
@@ -1478,19 +1510,29 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
       
     case FOLDING:
-      labelTextCtrlDefaultParameters->Hide();
-      textCtrlDefaultParameters->Hide();
+      labelTextCtrlDefaultParameters->SetLabel( wxT( "Event type" ) ); 
+      textCtrlDefaultParameters->SetToolTip( wxT( "Event type passed to the script" ) );
+      
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+
+      labelTextCtrlDefaultParameters->Show();
+      textCtrlDefaultParameters->Show();
       break;
       
     case USER_DEFINED:
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
       textCtrlDefaultParameters->SetToolTip( wxT( "Command and parameters to execute\n"
-                                                  "%TRACE refers to input trace" ) );    
+                                                  "%TRACE refers to input trace" ) );
+                                                  
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+                                                  
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
       break;
       
     default:
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+
       break;
   }
 
@@ -1531,12 +1573,35 @@ struct gthan
 } greaterThan;
 
 
-wxString RunScript::insertLinks( wxString rawLine,
-                                 wxArrayString extensions )
+bool RunScript::readFoldingTag( wxString rawLine )
 {
+  int initTag = rawLine.Find( tagFoldingOutputDirectory );
+  if ( initTag != wxNOT_FOUND )
+  {
+    int endLine = rawLine.Len();
+    int initPath = initTag + tagFoldingOutputDirectory.Len();
+    
+    foldingOutputDirectory = rawLine.Mid( initPath, endLine - initPath );
+  }
+  
+  return ( initTag != wxNOT_FOUND );
+}
+
+
+// Turn spaces to &nsbp for all the line
+wxString RunScript::rawFormat( wxString rawLine )
+{
+  rawLine.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+
+  return rawLine;
+}
+
+
+wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
+{
+  // Detect all the ocurrences of every given extension
   std::vector< std::pair< int, wxString > > extensionsPositions; // {(4,.cfg),(6,.prv),(6.prv.gz)}
   
-  // Detect all the ocurrences of every given extension
   for ( size_t i = 0; i < extensions.Count(); ++i )
   {
     int endLine = rawLine.Len();
@@ -1566,8 +1631,8 @@ wxString RunScript::insertLinks( wxString rawLine,
   
   if ( extensionsPositions.size() == 0 )
   {
-    // No match found for any extension!! -> turn spaces to &nsbp for all the line
-    rawLine.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+    // No match found for any extension!!
+    rawLine = rawFormat( rawLine );
   }
   else 
   {  
@@ -1619,9 +1684,9 @@ wxString RunScript::insertLinks( wxString rawLine,
                              extensionsPositions[i].second.Len();
       
       // Anything after it must be nbspaced; for sure it doesn't belong to a link
-      wxString trashTail = rawLine.Mid( currentEndSubStr, endSubStr - currentEndSubStr );
-      trashTail.Replace( wxT( " " ), wxT( "&nbsp;" ) );
-  
+      wxString trashTail = rawFormat(
+              rawLine.Mid( currentEndSubStr, endSubStr - currentEndSubStr ) );
+        
       // Advance endSubStr, keeping the old one
       oldEndSubStr = endSubStr;
       endSubStr = currentEndSubStr;
@@ -1659,11 +1724,44 @@ wxString RunScript::insertLinks( wxString rawLine,
       {
         --currentPos;
 
-        wxString linkName = candidateName;
-        linkName.Replace( wxT( " " ), wxT( "&nbsp;" ) );
+        wxString linkName = rawFormat( candidateName );
         wxString linkFullPath = candidateFile.GetFullPath();
         
         wxString currentLink;
+        if ( extensionsPositions[i].second.Cmp( wxString( wxT( ".prv" ))) == 0 )
+        {
+          if ( tunePrvLinksForClustering )
+          {
+            currentLink = linkName + wxString( wxT(" ") );
+            currentLink += wxT("<A HREF=\"") + linkFullPath +
+                           wxT("\">") +
+                           wxString( wxT("(analyze ClusterIds)") ) +
+                           wxT("</A>");
+          }
+          else if ( tunePrvLinksForFolding )
+          {
+            linkFullPath = foldingOutputDirectory +
+                           wxString( wxFileName::GetPathSeparator() ) +
+                           candidateFile.GetFullName();
+            currentLink += wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
+                           linkName +  
+                           wxT("</A>");
+          }
+          else
+          {
+            currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
+                          linkName +
+                          wxT("</A>");
+          }
+        }
+        else
+        {
+          currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
+                        linkName +
+                        wxT("</A>");
+        }
+        
+        /*
         if ( !tunePrvLinksForClustering ||
               ( extensionsPositions[i].second.Cmp( wxString( wxT( ".prv" ))) != 0 ))
         {
@@ -1681,7 +1779,7 @@ wxString RunScript::insertLinks( wxString rawLine,
                          wxString( wxT("(analyze ClusterIds)") ) +
                          wxT("</A>");
         }
-        
+        */
         auxLine = currentLink + trashTail + auxLine;
         endSubStr = currentPos;
         
@@ -1707,15 +1805,31 @@ wxString RunScript::insertLinks( wxString rawLine,
     if ( endSubStr > 0 )
     {
       wxString trashHead = rawLine.Mid( 0, endSubStr );
-      trashHead.Replace( wxT( " " ), wxT( "&nbsp;" ) );
-      auxLine = trashHead + auxLine;
+      auxLine = rawFormat( trashHead ) + auxLine;
     }
 
     // Finally we copy it.
     rawLine = auxLine;
   }
-
+  
   return rawLine;
+}
+
+
+wxString RunScript::insertLog( wxString rawLine, wxArrayString extensions )
+{
+  wxString formattedLine;
+
+  if (( choiceApplication->GetSelection() == FOLDING ) && readFoldingTag( rawLine ) )
+  {
+    formattedLine = rawFormat( rawLine );
+  }
+  else
+  {
+    formattedLine = insertLinks( rawLine, extensions );
+  }
+  
+  return formattedLine;
 }
 
 
@@ -1944,6 +2058,8 @@ void RunScript::setApp( TExternalApp whichApp )
 void RunScript::setDimemas()
 {
   tunePrvLinksForClustering = false;
+  tunePrvLinksForFolding = false;
+
   setApp( DIMEMAS_WRAPPER );
 }
 
@@ -1951,6 +2067,8 @@ void RunScript::setDimemas()
 void RunScript::setStats()
 {
   tunePrvLinksForClustering = false;
+  tunePrvLinksForFolding = false;
+
   setApp( STATS_WRAPPER );
 }
 
@@ -1959,6 +2077,8 @@ void RunScript::setClustering( wxString whichClusteringCSV )
 {
   clusteringCSV = whichClusteringCSV;
   tunePrvLinksForClustering = true;
+  tunePrvLinksForFolding = false;
+
   setApp( CLUSTERING );
 }
 
@@ -1967,6 +2087,8 @@ void RunScript::setFolding( wxString whichFoldingCSV )
 {
   foldingCSV = whichFoldingCSV;
   tunePrvLinksForClustering = false;
+  tunePrvLinksForFolding = true;
+
   setApp( FOLDING );
 }
 
@@ -1974,6 +2096,8 @@ void RunScript::setFolding( wxString whichFoldingCSV )
 void RunScript::setUserDefined()
 {
   tunePrvLinksForClustering = false;
+  tunePrvLinksForFolding = false;
+
   setApp( USER_DEFINED );
 }
 
