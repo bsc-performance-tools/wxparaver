@@ -1536,11 +1536,15 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
   }
 
+  tunePrvLinksForFolding = ( currentChoice == FOLDING );
+
   dimemasSection->Show( currentChoice == DIMEMAS_WRAPPER );
   statsSection->Show( currentChoice == STATS_WRAPPER );
   clusteringSection->Show( currentChoice == CLUSTERING );
   adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentChoice == FOLDING );
+
+  
 
   Layout();
 }
@@ -1697,13 +1701,26 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
       bool candidateFound = false;
       int initSuffixPos = extensionsPositions[i].first;
       wxString candidateName;
+      bool TRIM_LEFT = false;
       while ( currentPos < initSuffixPos && !candidateFound )
       {
         // Normalize
         candidateName = rawLine.Mid( currentPos, endSubStr - currentPos );
         candidateFile = wxFileName( candidateName );
-        candidateFound = ( candidateFile.Normalize() && candidateFile.FileExists() );
-    
+        //candidateFound = ( candidateFile.Normalize() && candidateFile.FileExists() );
+        
+        if ( tunePrvLinksForFolding )
+        {
+          candidateFound = candidateFile.MakeAbsolute( foldingOutputDirectory );
+        }
+        else
+        {
+          candidateFound = candidateFile.Normalize();
+        }
+     
+        candidateFound = candidateFound &&
+                         wxFileName::FileExists( candidateFile.GetFullPath().Trim( TRIM_LEFT ) ); 
+
         if ( !candidateFound )
         {
           candidateFile = wxFileName( candidateName );
@@ -1714,7 +1731,8 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
 
         // At this moment, always filter cfgs from Dimemas
         if ( candidateFound && 
-             CFGLoader::isDimemasCFGFile ( std::string( candidateFile.GetFullPath().mb_str() )))
+             CFGLoader::isDimemasCFGFile (
+                    std::string( candidateFile.GetFullPath().Trim( TRIM_LEFT ).mb_str() )))
           candidateFound = false;
     
         ++currentPos;
@@ -1725,61 +1743,22 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
         --currentPos;
 
         wxString linkName = rawFormat( candidateName );
-        wxString linkFullPath = candidateFile.GetFullPath();
+        wxString linkFullPath = candidateFile.GetFullPath().Trim( TRIM_LEFT );
         
         wxString currentLink;
-        if ( extensionsPositions[i].second.Cmp( wxString( wxT( ".prv" ))) == 0 )
-        {
-          if ( tunePrvLinksForClustering )
-          {
-            currentLink = linkName + wxString( wxT(" ") );
-            currentLink += wxT("<A HREF=\"") + linkFullPath +
-                           wxT("\">") +
-                           wxString( wxT("(analyze ClusterIds)") ) +
-                           wxT("</A>");
-          }
-          else if ( tunePrvLinksForFolding )
-          {
-            linkFullPath = foldingOutputDirectory +
-                           wxString( wxFileName::GetPathSeparator() ) +
-                           candidateFile.GetFullName();
-            currentLink += wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
-                           linkName +  
-                           wxT("</A>");
-          }
-          else
-          {
-            currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
-                          linkName +
-                          wxT("</A>");
-          }
-        }
-        else
-        {
-          currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
-                        linkName +
-                        wxT("</A>");
-        }
-        
-        /*
-        if ( !tunePrvLinksForClustering ||
-              ( extensionsPositions[i].second.Cmp( wxString( wxT( ".prv" ))) != 0 ))
-        {
-          currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
-                        linkName +
-                        wxT("</A>");
-        }
-        else
+        if ( tunePrvLinksForClustering && 
+              extensionsPositions[i].second.Cmp( wxString( wxT( ".prv" ))) == 0 )
         {
           currentLink = linkName + wxString( wxT(" ") );
-          currentLink += wxT("<A HREF=\"") + linkFullPath +
-                         //wxT(",") +
-                         //wxString( wxT( "/home/pgonzalez/bsccns/cfgs/cfgs/clustering/clusterID_window.cfg" ) ) +
-                         wxT("\">") +
+          currentLink += wxT("<A HREF=\"") + linkFullPath + wxT("\">") +
                          wxString( wxT("(analyze ClusterIds)") ) +
                          wxT("</A>");
         }
-        */
+        else
+        {
+          currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") + linkName + wxT("</A>");
+        }
+        
         auxLine = currentLink + trashTail + auxLine;
         endSubStr = currentPos;
         
