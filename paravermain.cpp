@@ -135,36 +135,57 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_ICONIZE( paraverMain::OnIconize )
   EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
+
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
+
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
+
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
+
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
+
   EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
+
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
+
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
+
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
+
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
+
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
+
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
+
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
+
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
+
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
+
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
+
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
+
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -1968,6 +1989,37 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
 }
 
 
+void paraverMain::SaveConfigurationFile( wxWindow *parent,
+                                          SaveOptions options,
+                                          vector< Window * > timelines,
+                                          vector< Histogram * > histograms )
+{
+  if ( !CFGLoadedBefore )
+    CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
+ 
+  vector< wxString > extensions;
+  extensions.push_back( wxT( ".cfg" ) );
+  FileDialogExtension dialog( parent,
+                              _( "Save Configuration" ),
+                              CFGPath,
+                              _( "" ),
+                              _( "Paraver configuration file (*.cfg)|*.cfg" ),
+                              wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR,
+                              wxDefaultPosition,
+                              wxDefaultSize,
+                              _( "filedlg" ),
+                              extensions );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    CFGPath = dialog.GetPath();
+    CFGLoadedBefore = true;
+    CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms );
+    previousCFGs->add( std::string( CFGPath.mb_str() ) );
+  }
+}   
+
+
+
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVECFG
  */
@@ -2004,35 +2056,12 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
   raiseCurrentWindow = false;
   if( saveDialog.ShowModal() == wxID_OK )
   {
-    if ( !CFGLoadedBefore )
-      CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
-
     timelines = saveDialog.GetSelectedTimelines();
     histograms = saveDialog.GetSelectedHistograms();
     options = saveDialog.GetOptions();
-    
-    // 
-   
-    vector< wxString > extensions;
-    extensions.push_back( wxT( ".cfg" ) );
-    FileDialogExtension dialog( (wxWindow *)this,
-                                _( "Save Configuration" ),
-                                CFGPath,
-                                _( "" ),
-                                _( "Paraver configuration file (*.cfg)|*.cfg" ),
-                                wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR,
-                                wxDefaultPosition,
-                                wxDefaultSize,
-                                _( "filedlg" ),
-                                extensions );
-    if( dialog.ShowModal() == wxID_OK )
-    {
-      CFGPath = dialog.GetPath();
-      CFGLoadedBefore = true;
-      CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms );
-      previousCFGs->add( std::string( CFGPath.mb_str() ) );
-    }
-    
+
+    SaveConfigurationFile( (wxWindow *)this, options, timelines, histograms );
+
     // Disable CFG4D once it is saved
     for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
     {

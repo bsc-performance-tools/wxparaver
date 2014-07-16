@@ -54,6 +54,7 @@
 #include "localkernel.h"
 #include "paraverconfig.h"
 #include "previousfiles.h"
+#include "cfg.h" // SaveOptions
 
 #ifdef WIN32
 #undef VERSION
@@ -420,6 +421,12 @@ public:
   bool DoLoadTrace( const std::string &path );
   void UnloadTrace( int whichTrace );
   bool DoLoadCFG( const std::string &path );
+  
+  void SaveConfigurationFile( wxWindow *parent,
+                               SaveOptions options,
+                               vector< Window * > timelines,
+                               vector< Histogram * > histograms );
+
   void ShowPreferences();
   
   void MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,

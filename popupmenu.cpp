@@ -95,6 +95,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_SAVE_IMAGE, gPopUpMenu::OnMenuSaveImage )
   EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_TEXT, gPopUpMenu::OnMenuSaveTimelineAsText )
   EVT_MENU( ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT, gPopUpMenu::OnMenuSaveCurrentPlaneAsText )
+  EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_CFG, gPopUpMenu::OnMenuSaveTimelineAsCFG )
   EVT_MENU( ID_MENU_SAVE_ALL_PLANES_AS_TEXT, gPopUpMenu::OnMenuSaveAllPlanesAsText )
   EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
   EVT_MENU( ID_MENU_AUTO_3D_SCALE, gPopUpMenu::OnMenuAuto3DScale )
@@ -230,7 +231,7 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
   else
     Enable( FindItem( _( STR_3D_SCALE ) ), false );
 
-  Enable( FindItem( _( STR_SAVE_IMAGE ) ), whichHistogram->GetHistogram()->getZoom() );
+  Enable( FindItem( _( "Image..." ) ), whichHistogram->GetHistogram()->getZoom() );
 }
 
 
@@ -637,8 +638,9 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
 
-  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
-  buildItem( popUpMenuSave, _( "Save text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsText, ID_MENU_SAVE_TIMELINE_AS_TEXT );
+  buildItem( popUpMenuSave, _( "Configuration..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsCFG, ID_MENU_SAVE_TIMELINE_AS_CFG );
+  buildItem( popUpMenuSave, _( "Image..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
+  buildItem( popUpMenuSave, _( "Text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsText, ID_MENU_SAVE_TIMELINE_AS_TEXT );
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
 
   AppendSeparator();
@@ -899,7 +901,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
   
-  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
+  buildItem( popUpMenuSave, _( "Image..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
 
   if ( histogram->GetHistogram()->getThreeDimensions() )
   {
@@ -912,11 +914,11 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
                ITEMNORMAL,
                (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText,
                ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
-    popUpMenuSave->AppendSubMenu( popUpMenuSaveAsText, _( "Save text..." ) );
+    popUpMenuSave->AppendSubMenu( popUpMenuSaveAsText, _( "Text..." ) );
 
   }
   else
-    buildItem( popUpMenuSave, _( "Save text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
+    buildItem( popUpMenuSave, _( "Text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
 
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
   
@@ -1395,6 +1397,12 @@ void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 void gPopUpMenu::OnMenuSaveTimelineAsText( wxCommandEvent& event )
 {
   timeline->saveText();
+}
+
+
+void gPopUpMenu::OnMenuSaveTimelineAsCFG( wxCommandEvent& event )
+{
+  timeline->saveCFG();
 }
 
 

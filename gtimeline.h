@@ -460,6 +460,7 @@ public:
 
   void saveImage();
   void saveText();
+  void saveCFG();
 
   typedef enum {  RAW_LINE = 0,
                   BEGIN_OBJECT_SECTION,
