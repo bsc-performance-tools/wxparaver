@@ -128,6 +128,7 @@ class gHistogram;
 #define ID_MENU_OBJECT_AXIS_TEN                   30080
 #define ID_MENU_OBJECT_AXIS_TWENTYFIVE            30081
 #define ID_MENU_SAVE_TIMELINE_AS_CFG              30082
+#define ID_MENU_SAVE_HISTOGRAM_AS_CFG             30083
 
 class gPopUpMenu : public wxMenu
 {
@@ -214,11 +215,15 @@ class gPopUpMenu : public wxMenu
 
     void OnMenuRowSelection( wxCommandEvent& event);
 
-    void OnMenuSaveImage( wxCommandEvent& event );
+    // Save 
+    void OnMenuSaveImage( wxCommandEvent& event ); // both
+
+    void OnMenuSaveTimelineAsCFG( wxCommandEvent& event );
     void OnMenuSaveTimelineAsText( wxCommandEvent& event );
+
+    void OnMenuSaveHistogramAsCFG( wxCommandEvent& event );
     void OnMenuSaveAllPlanesAsText( wxCommandEvent& event );
     void OnMenuSaveCurrentPlaneAsText( wxCommandEvent& event );
-    void OnMenuSaveTimelineAsCFG( wxCommandEvent& event );
 
     void OnMenuInfoPanel( wxCommandEvent& event );
     

@@ -900,7 +900,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   AppendSubMenu( popUpMenuPixelSize, _( "Pixel Size" ));
 
   AppendSeparator();
-  
+
+  buildItem( popUpMenuSave, _( "Configuration..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveHistogramAsCFG, ID_MENU_SAVE_HISTOGRAM_AS_CFG );
   buildItem( popUpMenuSave, _( "Image..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
 
   if ( histogram->GetHistogram()->getThreeDimensions() )
@@ -1383,6 +1384,13 @@ void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event)
   if ( timeline != NULL )
     timeline->OnPopUpRowSelection();
 }
+
+
+void gPopUpMenu::OnMenuSaveHistogramAsCFG( wxCommandEvent& event )
+{
+  histogram->saveCFG();
+}
+
 
 void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 {
