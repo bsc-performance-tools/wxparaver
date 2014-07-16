@@ -1158,8 +1158,11 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       command = application[ FOLDING ];
 
       parameters = doubleQuote( fileBrowserButtonTrace->GetPath() );
-      parameters += wxString( wxT(" ") );
-      parameters += doubleQuote( foldingCSV );
+      if ( !foldingCSV.IsEmpty() )
+      {
+        parameters += wxString( wxT(" ") );
+        parameters += doubleQuote( foldingCSV );
+      }
       parameters += wxString( wxT( " " ) ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Event type
       
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
@@ -1513,7 +1516,7 @@ void RunScript::adaptWindowToApplicationSelection()
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Event type" ) ); 
       textCtrlDefaultParameters->SetToolTip( wxT( "Event type passed to the script" ) );
       
-      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
+      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
