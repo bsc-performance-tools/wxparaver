@@ -1163,7 +1163,9 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += wxString( wxT(" ") );
         parameters += doubleQuote( foldingCSV );
       }
-      parameters += wxString( wxT( " " ) ) + expandVariables( textCtrlDefaultParameters->GetValue() ); // Event type
+      
+      parameters += wxString( wxT( " " ) );
+      parameters += doubleQuote( expandVariables( textCtrlDefaultParameters->GetValue() ) ); // Event type
       
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
       {
