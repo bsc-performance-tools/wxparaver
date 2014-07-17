@@ -1473,28 +1473,35 @@ wxString RunScript::doubleQuote( const wxString& path )
 
 void RunScript::adaptWindowToApplicationSelection()
 {
+  wxString toolTip;
   int currentChoice = choiceApplication->GetSelection();
   
   switch ( currentChoice )
   {
     case DIMEMAS_WRAPPER:
-      labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
-      textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to the script\n"
-                                                  "%TRACE refers to input trace" ) );
+      toolTip = wxString( wxT( "Extra parameters passed to the script\n"
+                               "%TRACE refers to input trace" ) );
 
+      labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
+      labelTextCtrlDefaultParameters->SetToolTip( toolTip );
+                                                  
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+      textCtrlDefaultParameters->SetToolTip( toolTip );
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
       break;
       
     case STATS_WRAPPER:
+      toolTip = wxString( wxT( "Extra parameters passed to 'stats'\n"
+                               "-events_histo[:type1[-type2],...]\n"
+                               "-thread_calls[:type1[-type2],...]\n" ) );
+      
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
-      textCtrlDefaultParameters->SetToolTip( wxT( "Extra parameters passed to 'stats'\n"
-                                                  "-events_histo[:type1[-type2],...]\n"
-                                                  "-thread_calls[:type1[-type2],...]\n" ) );
+      labelTextCtrlDefaultParameters->SetToolTip( toolTip );
                                                   
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+      textCtrlDefaultParameters->SetToolTip( toolTip );
                                                   
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
@@ -1508,36 +1515,40 @@ void RunScript::adaptWindowToApplicationSelection()
         checkBoxClusteringUseSemanticWindow->Enable( false );
         
         // This two others are chained by their own Update_UI with previous one
-        // Anyway, it's made her
+        // Anyway, it's made here
         checkBoxClusteringCSVValueAsDimension->Enable( false );
         checkBoxClusteringNormalize->Enable( false );
       }
       break;
       
     case FOLDING:
+      toolTip = wxString( wxT( "Event type that determines the folded regions."
+                               " Allowed formats include either numerical or string"
+                               " (i.e. 90000001 or 'Cluster ID')." ) );  
+    
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Event type" ) ); 
-      textCtrlDefaultParameters->SetToolTip( wxT( "Event type passed to the script" ) );
-      
+      labelTextCtrlDefaultParameters->SetToolTip( toolTip );
+
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+      textCtrlDefaultParameters->SetToolTip( toolTip );
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
       break;
       
     case USER_DEFINED:
+    default:
+      toolTip = wxString( wxT( "Command and parameters to execute\n"
+                               "%TRACE refers to input trace" ) );
+                               
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
-      textCtrlDefaultParameters->SetToolTip( wxT( "Command and parameters to execute\n"
-                                                  "%TRACE refers to input trace" ) );
-                                                  
+      labelTextCtrlDefaultParameters->SetToolTip( toolTip );
+                                                 
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
+      textCtrlDefaultParameters->SetToolTip( toolTip );
                                                   
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
-      break;
-      
-    default:
-      textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
-
       break;
   }
 
@@ -1548,8 +1559,6 @@ void RunScript::adaptWindowToApplicationSelection()
   clusteringSection->Show( currentChoice == CLUSTERING );
   adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentChoice == FOLDING );
-
-  
 
   Layout();
 }
