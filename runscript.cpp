@@ -371,6 +371,8 @@ void RunScript::Init()
   tunePrvLinksForFolding = false;
   
   pidDimemasGUI = 0;
+  
+  putenv( "PARAVER_LOADED=1" );
 }
 
 
