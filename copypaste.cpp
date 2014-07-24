@@ -288,6 +288,10 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     {
       TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
       TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
+
+      sourceBeginTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, timeline->GetMyWindow()->getTrace()->getTimeUnit() );
+      sourceEndTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, timeline->GetMyWindow()->getTrace()->getTimeUnit() );
+
       TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
       TRecordTime newEndTime      = whichTimeline->GetMyWindow()->getWindowBeginTime() + sourceDuration;
 
@@ -323,6 +327,9 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
       TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
       TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
 
+      sourceBeginTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, histogram->GetHistogram()->getTrace()->getTimeUnit() );
+      sourceEndTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, histogram->GetHistogram()->getTrace()->getTimeUnit() );
+
       whichTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
       whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
     }
@@ -343,6 +350,10 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     {
       TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
       TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
+
+      sourceBeginTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, histogram->GetHistogram()->getTrace()->getTimeUnit() );
+      sourceEndTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, histogram->GetHistogram()->getTrace()->getTimeUnit() );
+
       TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
       TRecordTime newEndTime      = whichTimeline->GetMyWindow()->getWindowBeginTime() + sourceDuration;
 

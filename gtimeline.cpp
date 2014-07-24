@@ -91,26 +91,16 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
-
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
-
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
-
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
-
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
-
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
-
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -1345,11 +1335,11 @@ cout << "numObjects " << numObjects << endl;
     }
     if( ( endTime - beginTime ) < 10 )
       endTime = beginTime + 10;
-    myWindow->addZoom( beginTime, endTime, beginRow, endRow );
 
     // Update window properties
-    myWindow->setWindowBeginTime( beginTime );
-    myWindow->setWindowEndTime( endTime );
+    myWindow->setWindowBeginTime( beginTime, true );
+    myWindow->setWindowEndTime( endTime, true );
+    myWindow->addZoom( beginTime, endTime, beginRow, endRow );
 
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
@@ -1507,8 +1497,8 @@ void gTimeline::OnPopUpClone()
 
 void gTimeline::OnPopUpFitTimeScale()
 {
-  myWindow->setWindowBeginTime( 0 );
-  myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime() );
+  myWindow->setWindowBeginTime( 0, true );
+  myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime(), true );
   myWindow->addZoom( 0, myWindow->getTrace()->getEndTime() );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
@@ -1842,8 +1832,8 @@ void gTimeline::OnPopUpUndoZoom()
     {
       // as before
       myWindow->prevZoom();
-      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
-      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
+      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first, true );
+      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second, true );
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
     }
@@ -1873,8 +1863,8 @@ void gTimeline::OnPopUpRedoZoom()
     {
       // as before
       myWindow->nextZoom();
-      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first );
-      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second );
+      myWindow->setWindowBeginTime( myWindow->getZoomFirstDimension().first, true );
+      myWindow->setWindowEndTime( myWindow->getZoomFirstDimension().second, true );
       myWindow->setRedraw( true );
       myWindow->setChanged( true );
     }
