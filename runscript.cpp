@@ -1504,6 +1504,8 @@ void RunScript::adaptWindowToApplicationSelection()
                                                   
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
       textCtrlDefaultParameters->SetToolTip( toolTip );
+
+      statsTextCtrlOutputName->SetValue( fileBrowserButtonTrace->GetPath() );
                                                   
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
