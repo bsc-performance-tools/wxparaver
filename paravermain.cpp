@@ -532,9 +532,14 @@ bool paraverMain::DoLoadTrace( const string &path )
     wxString tmpSize;
     tmpSize << rint( traceSize / 1E6 );
     wxMessageDialog maxSizeDialog( this, 
-                                   wxString( wxT( "The maximum size for trace " ),  wxConvUTF8 ) + wxString::FromAscii( tmpPath.c_str() ) + wxString( wxT( " is reached ( " ) ) + tmpSize + wxString( wxT( "MB ).\nWould you like to cut or filter the trace?" ),  wxConvUTF8 ),
-                                   wxT( "Maximum size reached" ),
-                                   wxYES_NO|wxCANCEL|wxICON_QUESTION );
+            wxString( wxT( "The trace\n\n    " ),  wxConvUTF8 ) +
+                    wxString::FromAscii( tmpPath.c_str() ) +
+                    wxString( wxT( "\n\nwith size " ) ) +
+                    tmpSize +
+                    wxString( wxT( " MB exceeds the maximum loadable size currently defined"
+                    " in Preferences.\n\nWould you like to cut or filter the trace?" ),  wxConvUTF8 ),
+            wxT( "Maximum trace size" ),
+            wxYES_NO|wxCANCEL|wxICON_QUESTION );
 
     switch( maxSizeDialog.ShowModal() )
     {
