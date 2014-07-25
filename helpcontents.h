@@ -150,6 +150,7 @@ private:
   const wxString getHtmlIndex( const wxString& path );
   const wxString getTitle( int numTutorial, const wxString& path );
   void appendTutorial( const wxString& title, const wxString& path, wxString& htmlDoc );
+  bool tutorialFound( wxArrayString & tutorials );
   void buildIndex();
 
   void htmlMessage( wxString& htmlDoc );

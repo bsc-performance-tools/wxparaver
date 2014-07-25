@@ -258,13 +258,33 @@ void HelpContents::htmlMessage( wxString& htmlDoc )
 }
 
 
-void HelpContents::buildIndex()
+bool HelpContents::tutorialFound( wxArrayString & tutorials )
 {
   // get tutorials directory
   string auxStrPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
   wxString auxPath = wxString::FromAscii( auxStrPath.c_str() );
   wxFileName tutorialsGlobalPath( auxPath );
 
+  wxString currentDir = wxFindFirstFile(
+          tutorialsGlobalPath.GetLongPath() + wxFileName::GetPathSeparator() + _("*"),
+          wxDIR );
+  while( !currentDir.empty() )
+  {
+    if ( getHtmlIndex( currentDir ) != _("")  )
+    {
+      // index.html found! => we consider this is a tutorial
+      tutorials.Add( currentDir );
+    }
+
+    currentDir = wxFindNextFile();
+  }
+  
+  return ( tutorials.GetCount() > (size_t)0 );
+}
+
+
+void HelpContents::buildIndex()
+{
   // write html index
   wxString tutorialsHtmlIndex, tutorialsList;
   tutorialsHtmlIndex += _("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
@@ -277,31 +297,13 @@ void HelpContents::buildIndex()
 
   tutorialsHtmlIndex += _("<P ALIGN=LEFT><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALIGN=BOTTOM BORDER=0></P>" );
 
-  // look for tutorials directories, and for index.html inside them
-  if ( wxDirExists( auxPath ) )
-  {
-    tutorialsList += _("<UL>");
-    int numTutorials = 0;
-
-    wxString currentDir = wxFindFirstFile(
-            tutorialsGlobalPath.GetLongPath() + wxFileName::GetPathSeparator() + _("*"),
-            wxDIR );
-    wxArrayString tutorials;
-    while( !currentDir.empty() )
-    {
-      if ( getHtmlIndex( currentDir ) != _("")  )
-      {
-        // index.html found! => we consider this is a tutorial
-        numTutorials++;
-        tutorials.Add( currentDir );
-      }
-
-      currentDir = wxFindNextFile();
-    }
-    
+  wxArrayString tutorials;
+  if ( tutorialFound( tutorials ) )
+  {  
     // Order them: every tutorial dir must have a numbered prefix
     //   tutorialsPath/ #_title_bla_bla /index.html
     tutorials.Sort();
+    int numTutorials = int( tutorials.GetCount() );
     
     for( int i = 0; i < numTutorials; ++i )
     {
@@ -312,15 +314,8 @@ void HelpContents::buildIndex()
 
     tutorialsList += _("</UL>");
 
-    if ( numTutorials == 0 )
-    {
-      htmlMessage( tutorialsHtmlIndex );
-    }
-    else
-    {
-      tutorialsHtmlIndex += _("<P><H3><B>Index</B></H3></P>");
-      tutorialsHtmlIndex += tutorialsList;
-    }
+    tutorialsHtmlIndex += _("<P><H3><B>Index</B></H3></P>");
+    tutorialsHtmlIndex += tutorialsList;
   }
   else
   {
@@ -499,10 +494,17 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( event.GetLinkInfo().GetHref().Cmp( _("init_preferences") ) == 0 )
   {
+    string oldTutorialsPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+
     paraverMain::myParaverMain->ShowPreferences();
 
-    // we rebuild it anyway
-    buildIndex();
+    string newTutorialsPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+ 
+    if ( newTutorialsPath.compare( oldTutorialsPath ) != 0 )
+    {
+      // We rebuild the index
+      buildIndex();
+    }
   }
   else if ( matchHrefExtension( event, _(".prv") ) ||
             matchHrefExtension( event, _(".prv.gz")))
