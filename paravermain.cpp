@@ -537,7 +537,7 @@ bool paraverMain::DoLoadTrace( const string &path )
                     wxString( wxT( "\n\nwith size " ) ) +
                     tmpSize +
                     wxString( wxT( " MB exceeds the maximum loadable size currently defined"
-                    " in Preferences.\n\nWould you like to cut or filter the trace?" ),  wxConvUTF8 ),
+                    " in Preferences.\n\nWould you like to cut/filter the trace?" ),  wxConvUTF8 ),
             wxT( "Maximum trace size" ),
             wxYES_NO|wxCANCEL|wxICON_QUESTION );
 
