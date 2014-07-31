@@ -123,6 +123,9 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_CLUSTERING_USE_SEMANTIC_WINDOW 10003
 #define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
 #define ID_CHECKBOX_CLUSTERING_NORMALIZE 10002
+#define ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES 10000
+#define ID_RADIOBUTTON_CLUSTERING_GEN_SEQ_NUMBERED 10261
+#define ID_RADIOBUTTON_CLUSTERING_GEN_SEQ_FASTA 10265
 #define ID_RADIOBUTTON_CLUSTERING_XMLDEFINED 10221
 #define ID_RADIOBUTTON_CLUSTERING_DBSCAN 10222
 #define ID_RADIOBUTTON_CLUSTERING_REFINEMENT 10223
@@ -209,6 +212,9 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_NORMALIZE
   void OnCheckboxClusteringNormalizeUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES
+  void OnCheckboxClusteringGenerateSequencesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CLUSTERING_XMLDEFINED
   void OnRadiobuttonClusteringXmldefinedSelected( wxCommandEvent& event );
@@ -315,6 +321,9 @@ public:
   wxCheckBox* checkBoxClusteringUseSemanticWindow;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;
+  wxCheckBox* checkBoxClusteringGenerateSeq;
+  wxRadioButton* clusteringRadioGenerateSeqNumbered;
+  wxRadioButton* clusteringRadioGenerateSeqFASTA;
   wxStaticBox* clusteringSizerAlgorithm;
   wxRadioButton* clusteringRadioXMLDefined;
   wxRadioButton* clusteringRadioDBScan;
