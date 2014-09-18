@@ -376,8 +376,10 @@ void RunScript::Init()
   tunePrvLinksForFolding = false;
   
   pidDimemasGUI = 0;
-  
-  putenv( "PARAVER_LOADED=1" );
+
+  std::stringstream tmpPID;
+  tmpPID << ::getpid();
+  setenv( "PARAVER_LOADED", (const char *)std::string( tmpPID.str() ).c_str(), 1 );
 }
 
 
@@ -2011,7 +2013,7 @@ void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
   {
     if ( checkPidDimemasGUI )
       pidDimemasGUI = myProcessPid;
-      
+    
     localProcess->HasInput();
     localProcess->Detach();
     
