@@ -56,10 +56,6 @@
 ////@end XPM images
 #include "logoBSC.xpm"
 
-#include "wxparaverapp.h" // PATH_SEP
-
-using namespace std;
-
 /*!
  * HelpContents type definition
  */
@@ -149,6 +145,7 @@ HelpContents::~HelpContents()
 void HelpContents::Init()
 {
   currentTutorialDir = _("");
+  SetTutorialsRoot( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath() );
 }
 
 
@@ -175,12 +172,12 @@ const wxString HelpContents::getTitle( int numTutorial, const wxString& path )
   tutorialTitle = auxHtml.GetOpenedPageTitle();
   if ( tutorialTitle.empty() || tutorialTitle == _("index.html") ) // never is empty !?!
   {
-    string auxStrTitleFileName( ( path +
+    std::string auxStrTitleFileName( ( path +
                                 wxFileName::GetPathSeparator() +
                                 _("tutorial_title") ).mb_str() );
-    string auxLine;
+    std::string auxLine;
 
-    ifstream titleFile;
+    std::ifstream titleFile;
     titleFile.open( auxStrTitleFileName.c_str() );
     if ( titleFile.good() )
     {
@@ -261,9 +258,7 @@ void HelpContents::htmlMessage( wxString& htmlDoc )
 bool HelpContents::tutorialFound( wxArrayString & tutorials )
 {
   // get tutorials directory
-  string auxStrPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
-  wxString auxPath = wxString::FromAscii( auxStrPath.c_str() );
-  wxFileName tutorialsGlobalPath( auxPath );
+  wxFileName tutorialsGlobalPath( GetTutorialsRoot() );
 
   wxString currentDir = wxFindFirstFile(
           tutorialsGlobalPath.GetLongPath() + wxFileName::GetPathSeparator() + _("*"),
@@ -325,8 +320,10 @@ void HelpContents::buildIndex()
   // close html index
   tutorialsHtmlIndex += _("</BODY></HTML>");
 
-  wxString indexFileName = wxString::FromAscii( std::string( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir() + 
-                                                             PATH_SEP + "index.html" ).c_str() );
+  wxString indexFileName = wxString::FromAscii( 
+          std::string( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir() + 
+                       wxString( wxFileName::GetPathSeparator() ) +
+                       "index.html" ).c_str() );
   wxFile indexFile( indexFileName, wxFile::write );
   if ( indexFile.IsOpened() )
   {
@@ -449,7 +446,7 @@ wxIcon HelpContents::GetIconResource( const wxString& name )
 
 std::string HelpContents::getCurrentTutorialFullPath()
 {
-  string fullPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+  std::string fullPath = GetTutorialsRootStr();
   fullPath += wxString( wxFileName::GetPathSeparator() ).mb_str();
   fullPath += currentTutorialDir.mb_str();
   fullPath += wxString( wxFileName::GetPathSeparator() ).mb_str();
@@ -460,7 +457,7 @@ std::string HelpContents::getCurrentTutorialFullPath()
 
 std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent &event )
 {
-  string hrefFullPath = getCurrentTutorialFullPath();
+  std::string hrefFullPath = getCurrentTutorialFullPath();
   hrefFullPath += std::string( event.GetLinkInfo().GetHref().mb_str() );
 
   return hrefFullPath;
@@ -469,10 +466,116 @@ std::string HelpContents::getHrefFullPath( wxHtmlLinkEvent &event )
 
 bool HelpContents::matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension )
 {
-  //return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
   return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
 }
 
+
+// Path or file exist? If so, change TutorialsRoot and load it
+bool HelpContents::SetTutorial( const wxString& whichPath )
+{
+  bool htmlFound = false;
+
+  wxFileName candidate( whichPath );
+
+  if ( ( candidate.GetExt().Cmp( _("html") ) == 0 ) ||
+       ( candidate.GetExt().Cmp( _("htm") ) == 0  ) ||
+       ( candidate.GetExt().Cmp( _("HTML") ) == 0 ) ||
+       ( candidate.GetExt().Cmp( _("HTM") ) == 0 ) )
+  {
+    if ( candidate.FileExists() )
+    {
+      SetTutorialsRoot( candidate.GetPathWithSep() );
+      htmlWindow->LoadPage( whichPath );
+      htmlFound = true;
+    }
+  }
+  else if ( candidate.DirExists() && candidate.IsDirReadable() )
+  {
+    wxString tmpTutorial = getHtmlIndex( candidate.GetPathWithSep() );
+    if ( !tmpTutorial.IsEmpty() )
+    {
+      htmlWindow->LoadPage( tmpTutorial );
+      htmlFound = true;
+    }
+  }
+  
+  return htmlFound;
+}
+
+
+bool HelpContents::SetTutorialsRoot( const wxString& whichRoot )
+{
+  bool changedRoot = false;
+  
+  if ( wxFileName::IsDirReadable( whichRoot ) )
+  {
+    tutorialsRoot = whichRoot;
+    changedRoot = true;
+  }
+    
+  return changedRoot;
+}
+
+
+bool HelpContents::SetTutorialsRoot( const std::string& whichRoot )
+{
+  return SetTutorialsRoot( wxString::FromAscii( whichRoot.c_str() ) );
+}
+
+
+const wxString HelpContents::GetTutorialsRoot()
+{
+  return tutorialsRoot;
+}
+
+
+const std::string HelpContents::GetTutorialsRootStr()
+{
+  return std::string( GetTutorialsRoot().mb_str() );
+}
+
+
+// TODO: CHANGE COMPARISON
+bool HelpContents::DetectTutorialIndexInPath( const wxString& whichPath )
+{
+  bool indexFound = false;
+
+  // Idea to detect tutorial:
+  //   /home/user/root-tutorials/ => dir depth tutorials = 3
+  //   vs.
+  //   /home/user/root-tutorials/tutorial1/index.html => dir depth current = 4
+  //   /home/user/root-tutorials/tutorial1/html/.../anyotherpage.html => dir depth current > 4
+  wxString anyTutorialPath =
+          wxString::FromAscii( GetTutorialsRoot().c_str() );
+  if ( anyTutorialPath[ anyTutorialPath.Len() - 1 ] != wxString( wxFileName::GetPathSeparator() ))
+  {
+    // last separator needed to count properly
+    anyTutorialPath += wxString( wxFileName::GetPathSeparator() );
+  }
+
+  wxFileName anyTutorialDir( anyTutorialPath );
+
+  size_t dirsDepthTutorials = anyTutorialDir.GetDirCount();
+
+  wxFileName currentLink( whichPath );
+  size_t dirsDepthCurrentLink = currentLink.GetDirCount();
+
+  if (( dirsDepthCurrentLink == dirsDepthTutorials + 1 ) && // innocent comparison!
+                                                             // path may differ?
+      ( currentLink.GetFullName().Cmp( _("index.html") ) == 0 ))
+  {
+    wxArrayString dirs = currentLink.GetDirs();
+    // From /home/user/root-tutorials/tutorial1/index.html GetDirs returns:
+    //   home
+    //   user
+    //   root-tutorials
+    //   tutorial1 --> currentTutorialDir
+    currentTutorialDir = dirs[ dirsDepthCurrentLink - 1 ];
+    indexFound = true;
+  }
+  
+  return indexFound;
+}
 
 /*!
  * wxEVT_COMMAND_HTML_LINK_CLICKED event handler for ID_HTMLWINDOW
@@ -494,12 +597,15 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( event.GetLinkInfo().GetHref().Cmp( _("init_preferences") ) == 0 )
   {
-    string oldTutorialsPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+    std::string oldTutorialsPath = GetTutorialsRootStr();
 
     paraverMain::myParaverMain->ShowPreferences();
 
-    string newTutorialsPath = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+    std::string newTutorialsPath =
+            paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
  
+    SetTutorialsRoot( newTutorialsPath );
+    
     if ( newTutorialsPath.compare( oldTutorialsPath ) != 0 )
     {
       // We rebuild the index
@@ -525,9 +631,9 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".xml")))
   {
-    string traceName = getCurrentTutorialFullPath();
+    std::string traceName = getCurrentTutorialFullPath();
     bool loadTrace = true;
-    string strXmlFile = getHrefFullPath( event );
+    std::string strXmlFile = getHrefFullPath( event );
 
     paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
   }
@@ -535,32 +641,7 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   {
     // If current clicked link points to a tutorial index.html file, keep its
     //   tutorial directory name to allow relative references.
-    // Idea to detect tutorial:
-    //   /home/user/root-tutorials/ => dir depth tutorials = 3
-    //   vs.
-    //   /home/user/root-tutorials/tutorial1/index.html => dir depth current = 4
-    //   /home/user/root-tutorials/tutorial1/html/.../anyotherpage.html => dir depth current > 4
-    wxString anyTutorialPath =
-            wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str() );
-    if ( anyTutorialPath[ anyTutorialPath.Len() - 1 ] != wxString( wxFileName::GetPathSeparator() ))
-    {
-      // last separator needed to count properly
-      anyTutorialPath += wxString( wxFileName::GetPathSeparator() );
-    }
-
-    wxFileName anyTutorialDir( anyTutorialPath );
-
-    size_t dirsDepthTutorials = anyTutorialDir.GetDirCount();
-
-    wxFileName currentLink( event.GetLinkInfo().GetHref() );
-    size_t dirsDepthCurrentLink = currentLink.GetDirCount();
-
-    if (( dirsDepthCurrentLink == dirsDepthTutorials + 1 ) &&
-        ( currentLink.GetFullName().Cmp( _("index.html") ) == 0 ))
-    {
-      wxArrayString dirs = currentLink.GetDirs();
-      currentTutorialDir = dirs[ dirsDepthCurrentLink - 1 ];
-    }
+    DetectTutorialIndexInPath( event.GetLinkInfo().GetHref() );
 
     // and let the html window browse it.
     event.Skip();

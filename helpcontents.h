@@ -82,11 +82,19 @@ public:
   /// Constructors
   HelpContents();
   HelpContents( wxWindow* parent,
-                //bool borrame, wxHelpController *help, 
-                wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME, const wxString& caption = SYMBOL_HELPCONTENTS_TITLE, const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION, const wxSize& size = SYMBOL_HELPCONTENTS_SIZE, long style = SYMBOL_HELPCONTENTS_STYLE );
+                wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
+                const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
+                const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
+                const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
+                long style = SYMBOL_HELPCONTENTS_STYLE );
 
   /// Creation
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME, const wxString& caption = SYMBOL_HELPCONTENTS_TITLE, const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION, const wxSize& size = SYMBOL_HELPCONTENTS_SIZE, long style = SYMBOL_HELPCONTENTS_STYLE );
+  bool Create( wxWindow* parent,
+                wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
+                const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
+                const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
+                const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
+                long style = SYMBOL_HELPCONTENTS_STYLE );
 
   /// Destructor
   ~HelpContents();
@@ -140,7 +148,15 @@ public:
   wxBitmapButton* buttonHistoryForward;
 ////@end HelpContents member variables
 
+  bool SetTutorialsRoot( const std::string& whichRoot );
+  bool SetTutorialsRoot( const wxString& whichRoot );
+  const std::string GetTutorialsRootStr();
+  const wxString GetTutorialsRoot();
+
+  bool SetTutorial( const wxString& whichTutorial );
+
 private:
+  wxString tutorialsRoot;
   wxString currentTutorialDir;
 
   std::string getCurrentTutorialFullPath();
@@ -154,6 +170,7 @@ private:
   void buildIndex();
 
   void htmlMessage( wxString& htmlDoc );
+  bool DetectTutorialIndexInPath( const wxString& whichTutorial );
 };
 
 #endif

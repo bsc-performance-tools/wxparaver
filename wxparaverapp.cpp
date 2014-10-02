@@ -52,6 +52,7 @@
 #include "connection.h"
 #include <wx/filename.h>
 #include "sessionsaver.h"
+#include "helpcontents.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -213,13 +214,22 @@ bool wxparaverApp::OnInit()
       wxCMD_LINE_OPTION_HELP },
 
     { wxCMD_LINE_OPTION, 
-      wxT("t"),
-      wxT("type"),
+      wxT("e"),
+      wxT("event"),
       wxT("Event type to code linking."),
       wxCMD_LINE_VAL_NUMBER,
       wxCMD_LINE_PARAM_OPTIONAL },
 
-    { wxCMD_LINE_PARAM, 
+    { wxCMD_LINE_OPTION, 
+      wxT("t"),
+      wxT("tutorial"),
+      wxT("Load tutorial. <str> can be the path to the tutorial "
+          "containing the index.html file, or the whole url, like "
+          "path/file.html (then, other names than 'index' are allowed)."),
+      wxCMD_LINE_VAL_STRING,
+      wxCMD_LINE_PARAM_OPTIONAL },
+
+     { wxCMD_LINE_PARAM, 
       NULL,
       NULL,
       wxT( "(trace.prv | trace.prv.gz) (configuration.cfg)" ),
@@ -333,8 +343,22 @@ bool wxparaverApp::OnInit()
   mainWindow->Show(true);
 
   long int tmpType;
-  if( paraverCommandLineParser.Found( wxT("t"), &tmpType ) )
+  if( paraverCommandLineParser.Found( wxT("e"), &tmpType ) )
     eventTypeForCode = tmpType;
+
+  wxString tmpTutorial;    
+  if ( paraverCommandLineParser.Found( wxT("t"), &tmpTutorial ) )
+  {
+    if ( mainWindow->GetTutorialsWindow() == NULL )
+      mainWindow->SetTutorialsWindow( new HelpContents( mainWindow, wxID_ANY, _("Tutorials") ) );
+    
+    if ( !mainWindow->GetTutorialsWindow()->SetTutorial( tmpTutorial ) )
+      wxMessageBox( wxT( "Unable to find index.html in tutorial dir.\n\n"
+                          "Please check whole path or create/place index.html file." ),
+                    wxT( "Tutorial" ), wxICON_INFORMATION|wxOK );
+    else
+      mainWindow->GetTutorialsWindow()->Show( true );
+  }
   
   mainWindow->commandLineLoadings( paraverCommandLineParser );
 
