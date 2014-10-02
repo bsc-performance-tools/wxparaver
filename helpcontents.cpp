@@ -71,17 +71,12 @@ BEGIN_EVENT_TABLE( HelpContents, wxDialog )
 
 ////@begin HelpContents event table entries
   EVT_HTML_LINK_CLICKED( ID_HTMLWINDOW, HelpContents::OnHtmlwindowLinkClicked )
-
   EVT_BUTTON( ID_BUTTON_INDEX, HelpContents::OnButtonIndexClick )
-
   EVT_BUTTON( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackUpdate )
-
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardUpdate )
-
   EVT_BUTTON( ID_BUTTON_CLOSE, HelpContents::OnButtonCloseClick )
-
 ////@end HelpContents event table entries
 
 END_EVENT_TABLE()
@@ -320,10 +315,9 @@ void HelpContents::buildIndex()
   // close html index
   tutorialsHtmlIndex += _("</BODY></HTML>");
 
-  wxString indexFileName = wxString::FromAscii( 
-          std::string( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir() + 
-                       wxString( wxFileName::GetPathSeparator() ) +
-                       "index.html" ).c_str() );
+  wxString indexFileName = wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) + 
+                           wxString( wxFileName::GetPathSeparator() ) +
+                           wxT( "index.html" );
   wxFile indexFile( indexFileName, wxFile::write );
   if ( indexFile.IsOpened() )
   {
@@ -545,8 +539,7 @@ bool HelpContents::DetectTutorialIndexInPath( const wxString& whichPath )
   //   vs.
   //   /home/user/root-tutorials/tutorial1/index.html => dir depth current = 4
   //   /home/user/root-tutorials/tutorial1/html/.../anyotherpage.html => dir depth current > 4
-  wxString anyTutorialPath =
-          wxString::FromAscii( GetTutorialsRoot().c_str() );
+  wxString anyTutorialPath = GetTutorialsRoot();
   if ( anyTutorialPath[ anyTutorialPath.Len() - 1 ] != wxString( wxFileName::GetPathSeparator() ))
   {
     // last separator needed to count properly
