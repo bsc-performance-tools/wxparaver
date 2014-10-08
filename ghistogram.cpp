@@ -41,7 +41,7 @@
 ////@begin includes
 ////@end includes
 
-#include <wx/version.h> 
+#include <wx/version.h>
 #if wxMAJOR_VERSION>=3
 #include <wx/dcgraph.h>
 #endif

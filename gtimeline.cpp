@@ -37,6 +37,11 @@
 #include "wx/wx.h"
 #endif
 
+#include <wx/version.h>
+#if wxMAJOR_VERSION>=3
+#include <wx/dcgraph.h>
+#endif
+
 ////@begin includes
 #include "wx/imaglist.h"
 ////@end includes
