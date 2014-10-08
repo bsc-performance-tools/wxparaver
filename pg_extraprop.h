@@ -71,7 +71,9 @@ class prvEventTypeProperty: public wxPGProperty
     virtual void OnSetValue();
     virtual wxString GetValueAsString( int flags = 0 ) const;
     virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
+#if wxMAJOR_VERSION<3
     WX_PG_DECLARE_EVENT_METHODS()
+#endif
 
     virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
 
