@@ -1122,8 +1122,11 @@ void gTimeline::OnIdle( wxIdleEvent& event )
     this->Show();
     if( !ready )
     {
-      ready = true;
-      redraw();
+      if( gTimeline::dialogProgress == NULL )
+      {
+        ready = true;
+        redraw();
+      }
     }
   }
   else
