@@ -31,7 +31,12 @@
 #include <string>
 
 #include <wx/propgrid/propgrid.h>
+#include <wx/version.h>
+#if wxMAJOR_VERSION>=3
+#include <wx/propgrid/property.h>
+#else
 #include <wx/propgrid/propdev.h>
+#endif
 
 #include "rowsselectiondialog.h"
 //#include "window.h"
