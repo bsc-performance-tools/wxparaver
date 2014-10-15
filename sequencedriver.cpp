@@ -147,11 +147,11 @@ bool RunAppCutterAction::execute( std::string whichTrace )
   TraceOptions *traceOptions = ( (TraceOptionsState *)tmpSequence->getState( TraceEditSequence::traceOptionsState ) )->getData();
   string dummyXmlName = "";
   vector< string > toolOrder;
+  toolOrder.push_back( TraceCutter::getID() );
   wxparaverApp::mainWindow->OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, dummyXmlName, toolOrder );
-  toolOrder.push_back( TraceCutter::getID() ); // Could be done before, because empty xml lefts toolOrder untouched
 
-  cutFilterDialog->TransferDataToWindow( toolOrder, traceOptions );
-  cutFilterDialog->EnableAllTabsFromToolsList(); // TODO: Probably shouldn't be here, it should be in CutFilterDialog
+  //cutFilterDialog->TransferDataToWindow( toolOrder, traceOptions );
+  //cutFilterDialog->EnableAllTabsFromToolsList(); // TODO: Probably shouldn't be here, it should be in CutFilterDialog
   
   if( cutFilterDialog->ShowModal() == wxID_OK )
   {  

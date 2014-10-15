@@ -71,12 +71,17 @@ BEGIN_EVENT_TABLE( HelpContents, wxDialog )
 
 ////@begin HelpContents event table entries
   EVT_HTML_LINK_CLICKED( ID_HTMLWINDOW, HelpContents::OnHtmlwindowLinkClicked )
+
   EVT_BUTTON( ID_BUTTON_INDEX, HelpContents::OnButtonIndexClick )
+
   EVT_BUTTON( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackUpdate )
+
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardUpdate )
+
   EVT_BUTTON( ID_BUTTON_CLOSE, HelpContents::OnButtonCloseClick )
+
 ////@end HelpContents event table entries
 
 END_EVENT_TABLE()
@@ -624,10 +629,19 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".xml")))
   {
-    std::string traceName = getCurrentTutorialFullPath();
+    std::string traceName;
+    if ( paraverMain::myParaverMain->GetLoadedTraces().size() > 0 )
+    {
+      traceName = paraverMain::myParaverMain->GetLoadedTraces().front()->getFileName();
+    }
+    else
+    {
+      traceName = getCurrentTutorialFullPath();
+    }
+    
     bool loadTrace = true;
     std::string strXmlFile = getHrefFullPath( event );
-
+    
     paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
   }
   else

@@ -3368,7 +3368,7 @@ void paraverMain::MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
   cutFilterDialog->SetLoadResultingTrace( loadTrace );
 
   // Set trace
-  if( filename != "" )
+  if( !filename.empty() )
   {
     // 1) given by parameter
     cutFilterDialog->SetNameSourceTrace( filename );
@@ -3391,29 +3391,27 @@ void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialo
                                                   const string& xmlFile,
                                                   vector< string > &filterToolOrder )
 {
-  if ( xmlFile != "" )
+  if ( !xmlFile.empty() )
   {
     filterToolOrder = traceOptions->parseDoc( (char *)xmlFile.c_str() );
-    //cutFilterDialog.SetFilterToolOrder( filterToolOrder );
-    cutFilterDialog->SetTraceOptions( traceOptions->getConcrete() );
-    cutFilterDialog->TransferDataToWindow( filterToolOrder, traceOptions );
 
+    // Keep my XMLPath
     wxString auxName = wxString::FromAscii( xmlFile.c_str() );
     wxString auxPath = wxFileName( auxName ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
     XMLPath = std::string( auxPath.mb_str() );
-  }
-  else
-  {
-    // Default XML
-    cutFilterDialog->SetTraceOptions( traceOptions->getConcrete() );
-    if ( !XMLLoadedBefore )
-    {
-      // Default Path
-      XMLPath =  paraverConfig->getFiltersXMLPath() + PATH_SEP;
-    }
-  }
 
-  cutFilterDialog->SetGlobalXMLsPath( XMLPath );
+    bool refresh = false;
+    cutFilterDialog->SetXMLFile( auxName, refresh );
+    //cutFilterDialog->TransferTraceOptionsToWindow( traceOptions, filterToolOrder );
+  }
+  else if ( !XMLLoadedBefore )
+  {
+    // Default Path
+    XMLPath =  paraverConfig->getFiltersXMLPath() + PATH_SEP;
+  }
+  
+  // If xmlFile empty we consider that information is given by parameter
+  cutFilterDialog->TransferTraceOptionsToWindow( traceOptions, filterToolOrder );
 }
 
 
@@ -3423,6 +3421,7 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
   filterToolOrder   = cutFilterDialog->GetFilterToolOrder();
   string srcTrace   = cutFilterDialog->GetNameSourceTrace();
   string dstTrace   = cutFilterDialog->GetNameDestinyTrace();
+  
   DoLoadFilteredTrace( srcTrace, dstTrace, cutFilterDialog->GetTraceOptions(), filterToolOrder );
 
   if ( cutFilterDialog->GetLoadResultingTrace() )

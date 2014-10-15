@@ -148,9 +148,17 @@ CutFilterDialog::CutFilterDialog()
   Init();
 }
 
-CutFilterDialog::CutFilterDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+CutFilterDialog::CutFilterDialog(
+        wxWindow* parent,
+        const wxString& whichXMLConfigurationFile, // useful when built from tutorial
+        wxWindowID id,
+        const wxString& caption,
+        const wxPoint& pos,
+        const wxSize& size,
+        long style )
 {
   Init();
+  xmlConfigurationFile = whichXMLConfigurationFile;
   Create(parent, id, caption, pos, size, style);
 }
 
@@ -272,6 +280,10 @@ void CutFilterDialog::Init()
   buttonApply = NULL;
 ////@end CutFilterDialog member initialisation
   outputPath = "";
+  xmlConfigurationFile.Clear(); // paranoic
+  
+  localKernel = paraverMain::myParaverMain->GetLocalKernel();
+  traceOptions = TraceOptions::create( GetLocalKernel() );
 }
 
 
@@ -856,14 +868,21 @@ void CutFilterDialog::CreateControls()
 
   enableOutputTraceWidgets( false ); // depends on checked tools
 
-  if ( !globalXMLsPath.empty() )
+  wxString directory;
+
+  if ( !xmlConfigurationFile.empty() )
+  {
+    directory = xmlConfigurationFile;
+  }
+  else if ( !globalXMLsPath.empty() )
   {
     wxFileName auxDirectory( wxString( globalXMLsPath.c_str(), wxConvUTF8 )  );
     if( !auxDirectory.IsDir() )
       auxDirectory = auxDirectory.GetPathWithSep();
-    wxString directory( auxDirectory.GetFullPath() );
+    directory = auxDirectory.GetFullPath();
     fileBrowserButtonXML->SetPath( directory );
   }
+
 
   // Allow only numeric character for text boxes.
   textCutterBeginCut->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));
@@ -2127,37 +2146,6 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
 //                                             
 // **********************************************************************************
 // **********************************************************************************
-
-void CutFilterDialog::TransferDataToWindow( vector< string > order, TraceOptions *traceOptions )
-{
-  Freeze();
-
-  vector< string > toolsName = changeToolsIDsToNames( order );
-  TransferCommonDataToWindow( toolsName );
-
-  for( size_t i = 0; i < order.size(); ++i )
-  {
-    if ( order[ i ] == TraceCutter::getID() )
-    {
-      TransferCutterDataToWindow( traceOptions );
-    }
-    else if ( order[ i ] == TraceFilter::getID() )
-    {
-      TransferFilterDataToWindow( traceOptions );
-    }
-    else if ( order[ i ] == TraceSoftwareCounters::getID() )
-    {
-      TransferSoftwareCountersDataToWindow( traceOptions );
-    }
-    else
-    {
-    }
-  }
-
-  Thaw();
-}
-
-
 // order only contains the identifiers of the selected tools
 void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
 {
@@ -2359,43 +2347,13 @@ void CutFilterDialog::OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event )
   }
 }
 
-/*
-void CutFilterDialog::OnFilectrlCutfilterXmlSelectorFilePickerChanged( wxFileDirPickerEvent& event )
-{
-  TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
-  wxString path = fileBrowserButtonXML->GetPath();
-  vector< string > toolsOrderIDs = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
-
-  TransferDataToWindow( toolsOrderIDs, traceOptions );
-
-  // we must add the proper slash to enter the directory next time
-  //globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
-  wxFileName auxDirectory( fileBrowserButtonXML->GetPath() );
-  if( !auxDirectory.IsDir() )
-    auxDirectory = auxDirectory.GetPathWithSep();
-  wxString directory( auxDirectory.GetFullPath() );
-
-  globalXMLsPath = string( directory.mb_str() ) + PATH_SEP;
-  newXMLsPath = true;
-
-  bool allowChangeOutputTrace = globalEnable();
-  if ( allowChangeOutputTrace )
-  {
-    enableOutputTraceWidgets( globalEnable() );
-    setOutputName( globalEnable(), false, std::string( fileBrowserButtonInputTrace->GetPath().mb_str() ) );
-  }
-
-  EnableAllTabsFromToolsList();
-  ChangePageSelectionFromToolsOrderListToTabs( 0 );
-}
-*/
 
 const vector< string > CutFilterDialog::changeToolsNameToID( const vector< string >& listToolWithNames )
 {
   vector< string > listToolWithIDs;
   for ( vector< string >::const_iterator it = listToolWithNames.begin(); it != listToolWithNames.end(); ++it )
   {
-    listToolWithIDs.push_back( paraverMain::myParaverMain->GetLocalKernel()->getToolID( *it ) );
+    listToolWithIDs.push_back( GetLocalKernel()->getToolID( *it ) );
   }
 
   return listToolWithIDs;
@@ -2407,7 +2365,7 @@ const vector< string > CutFilterDialog::changeToolsIDsToNames( const vector< str
   vector< string > listToolWithNames;
   for ( vector< string >::const_iterator it = listToolIDs.begin(); it != listToolIDs.end(); ++it )
   {
-    listToolWithNames.push_back( paraverMain::myParaverMain->GetLocalKernel()->getToolName( *it ) );
+    listToolWithNames.push_back( GetLocalKernel()->getToolName( *it ) );
   }
 
   return listToolWithNames;
@@ -2449,26 +2407,6 @@ bool CutFilterDialog::isExecutionChainEmpty()
   return emptyChain;
 }
 
-
-/*!
- * wxEVT_FILEPICKER_CHANGED event handler for ID_FILECTRL_CUTFILTER_INPUT_TRACE_SELECTOR
- */
-/*
-void CutFilterDialog::OnFilectrlCutfilterInputTraceSelectorFilePickerChanged( wxFileDirPickerEvent& event )
-{
-  wxFileName auxDirectory( event.GetPath() );
-  if( !auxDirectory.IsDir() )
-    auxDirectory = auxDirectory.GetPathWithSep();
-  wxString directory( auxDirectory.GetFullPath() );
-  outputPath = string( directory.mb_str() );
-
-  string auxSourceTrace = string( event.GetPath().mb_str() ); // why? Widget still empty!!
-
-  bool localEnable = globalEnable( auxSourceTrace );
-  enableOutputTraceWidgets( localEnable );
-  setOutputName( localEnable, false, auxSourceTrace );
-}
-*/
 
 void CutFilterDialog::ChangePageSelectionFromTabsToToolsOrderList()
 {
@@ -2534,9 +2472,8 @@ void CutFilterDialog::setOutputName( bool enable,
     TransferToolOrderToCommonData();
 
     string currentDstTrace =
-            paraverMain::myParaverMain->GetLocalKernel()->getNewTraceName(
+            GetLocalKernel()->getNewTraceName(
                     sourceTrace, outputPath, filterToolOrder, saveGeneratedName );
-
     wxString outputName = wxString( currentDstTrace.c_str(), wxConvUTF8 );
     fileBrowserButtonOutputTrace->SetPath( outputName );
 
@@ -2562,6 +2499,7 @@ void CutFilterDialog::OnChecklistboxExecutionChainDoubleClicked( wxCommandEvent&
   }
 }
 
+
 void CutFilterDialog::enableOutputTraceWidgets( bool enable )
 {
   txtOutputTrace->Enable( enable );
@@ -2581,11 +2519,8 @@ void CutFilterDialog::OnChecklistboxExecutionChainToggled( wxCommandEvent& event
 
   if ( iSel > -1 )
   {
-    enableOutputTraceWidgets( globalEnable() );
-    setOutputName( globalEnable(), false, std::string( fileBrowserButtonInputTrace->GetPath().mb_str() ) );
-
-    EnableSingleTab( iSel );
-    ChangePageSelectionFromToolsOrderListToTabs( iSel );
+    UpdateOutputTraceName();
+    EnableToolTab( iSel );
   }
 }
 
@@ -2661,7 +2596,7 @@ void CutFilterDialog::ChangePageSelectionFromToolsOrderListToTabs( int selected 
 
 void CutFilterDialog::EnableSingleTab( int selected )
 {
-  string id = paraverMain::myParaverMain->GetLocalKernel()->getToolID( listToolOrder[ selected ] );
+  string id = GetLocalKernel()->getToolID( listToolOrder[ selected ] );
   int iTab = TABINDEX[ id ];
   bool isChecked = checkListExecutionChain->IsChecked( selected );
   (notebookTools->GetPage( iTab ))->Enable( isChecked );
@@ -2731,7 +2666,7 @@ void CutFilterDialog::TransferToolOrderToCommonData()
     if ( checkListExecutionChain->IsChecked( i ) )
     {
       filterToolOrder.push_back(
-              paraverMain::myParaverMain->GetLocalKernel()->getToolID( listToolOrder[ i ] ));
+              GetLocalKernel()->getToolID( listToolOrder[ i ] ));
     }
   }
 }
@@ -2769,7 +2704,7 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
 {
   // To avoid annoying multiple warning windows at the same time, and also final filter creation
   bool previousWarning = false;
-
+  
   CheckCommonOptions( previousWarning, true );
   TransferWindowToCommonData( previousWarning );
 
@@ -2878,37 +2813,130 @@ void CutFilterDialog::OnCheckboxCheckCutterOriginalTimeUpdate( wxUpdateUIEvent& 
 }
 
 
-/*!
- * wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_CUT_FILTER_XML
- */
-
-void CutFilterDialog::OnTextctrlCutFilterXmlTextUpdated( wxCommandEvent& event )
+void CutFilterDialog::SetXMLFile( const wxString& whichXMLFile, bool refresh )
 {
-  TraceOptions *traceOptions = TraceOptions::create( GetLocalKernel() );
-  wxString path = fileBrowserButtonXML->GetPath();
-  vector< string > toolsOrderIDs = traceOptions->parseDoc( (char *)string( path.mb_str()).c_str() );
+  wxString xmlSuffix = _(".xml");
+  wxString pathWithExtension;
+      
+  if ( whichXMLFile.EndsWith( xmlSuffix )) 
+  {
+    wxString tmpFile = wxFileName( whichXMLFile ).GetFullPath();
+    if ( wxFileName::IsFileReadable( tmpFile ) )
+    {
+      fileBrowserButtonXML->SetPath( tmpFile );
+      
+      if ( refresh )
+        TransferXMLFileToWindow( tmpFile );
+    }
+  }
+}
 
-  TransferDataToWindow( toolsOrderIDs, traceOptions );
 
-  // we must add the proper slash to enter the directory next time
+void CutFilterDialog::TransferDataToWindow( vector< string > order, TraceOptions* traceOptions )
+{
+  Freeze();
+
+  vector< string > toolsName = changeToolsIDsToNames( order );
+  TransferCommonDataToWindow( toolsName );
+
+  for( size_t i = 0; i < order.size(); ++i )
+  {
+    if ( order[ i ] == TraceCutter::getID() )
+    {
+      TransferCutterDataToWindow( traceOptions );
+    }
+    else if ( order[ i ] == TraceFilter::getID() )
+    {
+      TransferFilterDataToWindow( traceOptions );
+    }
+    else if ( order[ i ] == TraceSoftwareCounters::getID() )
+    {
+      TransferSoftwareCountersDataToWindow( traceOptions );
+    }
+    else
+    {
+    }
+  }
+  
+  Thaw();  
+}
+
+
+void CutFilterDialog::UpdateGuiXMLSectionFromFile( TraceOptions *traceOptions,
+                                                    vector< string > &toolIDsOrder )
+{
+  TransferDataToWindow( toolIDsOrder, traceOptions );
+  EnableAllTabsFromToolsList();
+  ChangePageSelectionFromToolsOrderListToTabs( 0 );
+}
+
+
+void CutFilterDialog::UpdateGlobalXMLPath( const wxString& whichPath )
+{
+ // we must add the proper slash to enter the directory next time
   //globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
-  wxFileName auxDirectory( fileBrowserButtonXML->GetPath() );
+  wxFileName auxDirectory( whichPath );
   if( !auxDirectory.IsDir() )
     auxDirectory = auxDirectory.GetPathWithSep();
   wxString directory( auxDirectory.GetFullPath() );
 
   globalXMLsPath = string( directory.mb_str() ) + PATH_SEP;
   newXMLsPath = true;
+}
 
+
+void CutFilterDialog::EnableToolTab( int i )
+{
+  EnableSingleTab( i );
+  ChangePageSelectionFromToolsOrderListToTabs( i );
+}
+
+
+void CutFilterDialog::UpdateOutputTraceName()
+{
   bool allowChangeOutputTrace = globalEnable();
   if ( allowChangeOutputTrace )
   {
-    enableOutputTraceWidgets( globalEnable() );
-    setOutputName( globalEnable(), false, std::string( fileBrowserButtonInputTrace->GetPath().mb_str() ) );
+    enableOutputTraceWidgets( allowChangeOutputTrace );
+    setOutputName( allowChangeOutputTrace,
+                   false,
+                   std::string( fileBrowserButtonInputTrace->GetPath().mb_str() ) );
   }
+}
 
-  EnableAllTabsFromToolsList();
-  ChangePageSelectionFromToolsOrderListToTabs( 0 );
+
+// Needed by sequence!
+void CutFilterDialog::TransferTraceOptionsToWindow( TraceOptions *traceOptions, 
+                                                     vector< string > &whichToolIDsOrder )
+{
+  UpdateGuiXMLSectionFromFile( traceOptions, whichToolIDsOrder );
+}
+
+
+void CutFilterDialog::TransferXMLFileToWindow( const wxString& whichXMLFile )
+{
+  if ( traceOptions != NULL )
+  {
+    delete traceOptions;
+    traceOptions = TraceOptions::create( GetLocalKernel() );
+  }
+  
+  vector< string > toolIDsOrder = traceOptions->parseDoc( (char *)whichXMLFile.c_str() );
+
+  UpdateGuiXMLSectionFromFile( traceOptions, toolIDsOrder );
+  UpdateGlobalXMLPath( whichXMLFile );
+
+  // Needs filterToolOrder updated
+  UpdateOutputTraceName();
+}
+
+
+/*!
+ * wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_CUT_FILTER_XML
+ */
+void CutFilterDialog::OnTextctrlCutFilterXmlTextUpdated( wxCommandEvent& event )
+{
+  TransferXMLFileToWindow( fileBrowserButtonXML->GetPath() );
 }
 
 

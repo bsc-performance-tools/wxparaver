@@ -151,7 +151,14 @@ class CutFilterDialog: public wxDialog
 public:
   /// Constructors
   CutFilterDialog();
-  CutFilterDialog( wxWindow* parent, wxWindowID id = SYMBOL_CUTFILTERDIALOG_IDNAME, const wxString& caption = SYMBOL_CUTFILTERDIALOG_TITLE, const wxPoint& pos = SYMBOL_CUTFILTERDIALOG_POSITION, const wxSize& size = SYMBOL_CUTFILTERDIALOG_SIZE, long style = SYMBOL_CUTFILTERDIALOG_STYLE );
+  CutFilterDialog(
+          wxWindow* parent,
+          const wxString& whichXMLConfigurationFile = "",
+          wxWindowID id = SYMBOL_CUTFILTERDIALOG_IDNAME,
+          const wxString& caption = SYMBOL_CUTFILTERDIALOG_TITLE,
+          const wxPoint& pos = SYMBOL_CUTFILTERDIALOG_POSITION,
+          const wxSize& size = SYMBOL_CUTFILTERDIALOG_SIZE,
+          long style = SYMBOL_CUTFILTERDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_CUTFILTERDIALOG_IDNAME, const wxString& caption = SYMBOL_CUTFILTERDIALOG_TITLE, const wxPoint& pos = SYMBOL_CUTFILTERDIALOG_POSITION, const wxSize& size = SYMBOL_CUTFILTERDIALOG_SIZE, long style = SYMBOL_CUTFILTERDIALOG_STYLE );
@@ -343,11 +350,17 @@ public:
   void TransferCutterDataToWindow( TraceOptions *traceOptions );
   void TransferFilterDataToWindow( TraceOptions *traceOptions );
   void TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions );
-  void TransferDataToWindow( std::vector< std::string > order, TraceOptions *traceOptions );
+  void TransferDataToWindow( std::vector< std::string > order, TraceOptions* traceOptions );
 
+  void TransferXMLDataToWindow( TraceOptions *traceOptions,
+                                 
+                                 std::vector< std::string > &toolIDsOrder );
+  
   bool GetLoadedXMLPath( std::string &XML );
   void EnableAllTabsFromToolsList();
-
+  void ChangePageSelectionFromTabsToToolsOrderList();
+  void SetXMLFile( const wxString& whichXMLFile, bool refresh = true );
+  void TransferTraceOptionsToWindow( TraceOptions *traceOptions, vector< std::string > &whichToolIDsOrder );
 
 ////@begin CutFilterDialog member variables
   wxTextCtrl* textCtrlInputTrace;
@@ -432,6 +445,8 @@ private:
   bool waitingGlobalTiming;
 ////@end CutFilterDialog member variables
 
+  wxString xmlConfigurationFile;
+
   std::vector< std::string > listToolOrder; // Full list of names of the tools
   std::map< std::string, int > TABINDEX;   // CONSTANT map ( tool names -> widget tabs index )
   std::string outputPath;
@@ -453,11 +468,17 @@ private:
   void EnableSingleTab( int selected );
 
   void ChangePageSelectionFromToolsOrderListToTabs( int selected );
-  void ChangePageSelectionFromTabsToToolsOrderList();
+  // void ChangePageSelectionFromTabsToToolsOrderList(); -->public
 
   void TransferToolOrderToCommonData();
-
-
+  void EnableToolTab( int i );
+  
+  void UpdateGuiXMLSectionFromFile( TraceOptions *traceOptions, 
+                                     std::vector< std::string > &toolIDsOrder );
+  void UpdateGlobalXMLPath( const wxString& whichPath );
+  void UpdateOutputTraceName();
+  
+  void TransferXMLFileToWindow(  const wxString& whichXMLFile );
 };
 
 #endif
