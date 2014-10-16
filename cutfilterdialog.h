@@ -153,7 +153,7 @@ public:
   CutFilterDialog();
   CutFilterDialog(
           wxWindow* parent,
-          const wxString& whichXMLConfigurationFile = "",
+          const wxString& whichXMLConfigurationFile = wxT( "" ),
           wxWindowID id = SYMBOL_CUTFILTERDIALOG_IDNAME,
           const wxString& caption = SYMBOL_CUTFILTERDIALOG_TITLE,
           const wxPoint& pos = SYMBOL_CUTFILTERDIALOG_POSITION,
