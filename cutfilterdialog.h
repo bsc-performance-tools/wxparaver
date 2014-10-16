@@ -360,7 +360,7 @@ public:
   void EnableAllTabsFromToolsList();
   void ChangePageSelectionFromTabsToToolsOrderList();
   void SetXMLFile( const wxString& whichXMLFile, bool refresh = true );
-  void TransferTraceOptionsToWindow( TraceOptions *traceOptions, vector< std::string > &whichToolIDsOrder );
+  void TransferTraceOptionsToWindow( TraceOptions *traceOptions, std::vector< std::string > &whichToolIDsOrder );
 
 ////@begin CutFilterDialog member variables
   wxTextCtrl* textCtrlInputTrace;

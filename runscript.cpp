@@ -42,6 +42,10 @@
 #include "wx/imaglist.h"
 ////@end includes
 
+#ifdef WIN32
+#include <process.h>
+#endif
+
 #include <wx/utils.h> // wxGetEnv
 #include <wx/txtstrm.h>
 #include <wx/filefn.h> // wxPathList
@@ -133,45 +137,27 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
-
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
-
   EVT_TEXT( ID_TEXTCTRL_TRACE, RunScript::OnTextctrlTraceTextUpdated )
-
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
-
   EVT_BUTTON( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_NORMALIZE, RunScript::OnCheckboxClusteringNormalizeUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES, RunScript::OnCheckboxClusteringGenerateSequencesUpdate )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, RunScript::OnRadiobuttonClusteringXmldefinedSelected )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
-
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
-
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
-
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
-
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
-
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
-
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
-
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
-
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -378,8 +364,13 @@ void RunScript::Init()
   pidDimemasGUI = 0;
 
   std::stringstream tmpPID;
+#ifdef WIN32
+  tmpPID << _getpid();
+  _putenv_s( "PARAVER_LOADED", (const char *)std::string( tmpPID.str() ).c_str() );
+#else
   tmpPID << ::getpid();
   setenv( "PARAVER_LOADED", (const char *)std::string( tmpPID.str() ).c_str(), 1 );
+#endif
 }
 
 
@@ -468,7 +459,7 @@ void RunScript::CreateControls()
     textCtrlTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(textCtrlTrace, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Button"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     fileBrowserButtonTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(fileBrowserButtonTrace, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);

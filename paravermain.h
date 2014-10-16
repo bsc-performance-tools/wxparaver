@@ -424,8 +424,8 @@ public:
   
   void SaveConfigurationFile( wxWindow *parent,
                                SaveOptions options,
-                               vector< Window * > timelines,
-                               vector< Histogram * > histograms );
+                               std::vector< Window * > timelines,
+                               std::vector< Histogram * > histograms );
 
   void ShowPreferences();
   
