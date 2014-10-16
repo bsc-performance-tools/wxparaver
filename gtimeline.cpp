@@ -430,6 +430,9 @@ void gTimeline::redraw()
   ProgressController *progress = ProgressController::create( myWindow->getKernel() );
   progress->setHandler( progressFunctionTimeline, this );
 
+// Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
+// Waiting for wxwidgets 3 code adaptation to prove that its solved.
+#ifndef WIN32
   if( gTimeline::dialogProgress == NULL )
     gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                       wxT(""),
@@ -442,6 +445,7 @@ void gTimeline::redraw()
   gTimeline::dialogProgress->Show( false );
   gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gTimeline::dialogProgress->Fit();
+#endif
 
 #ifdef TRACING_ENABLED
     Extrae_event( 100, 10 );
@@ -510,7 +514,7 @@ void gTimeline::redraw()
   dc.DrawBitmap( bufferImage, 0, 0, false );
   drawZone->Update();
 #endif
-  
+
   if( !drawAxis( bufferDraw, selectedSet ) )
   {
     SetTitle( winTitle );
@@ -628,20 +632,21 @@ void gTimeline::redraw()
   if( myWindow->getDrawCommLines() )
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 
-  gTimeline::dialogProgress->Show( false );
   if( gTimeline::dialogProgress != NULL )
   {
+    gTimeline::dialogProgress->Show( false );
     delete gTimeline::dialogProgress;
     gTimeline::dialogProgress = NULL;
   }
   delete progress;
 
   redrawStopWatch->Pause();
-  
+
   SetTitle( winTitle );
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
 #endif
+
   drawZone->Refresh();
 // cout << "[GUI::gTimeline::redraw ] exiting" << endl;
 }
@@ -2932,7 +2937,9 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
 {
   wxMemoryDC dc( bufferImage );
 
-#ifndef __WXGTK__
+// With this code, transparent rectangle for zooming is erased after a second it appears.
+// But without this code, symbolic information at the botton of the timeline is not shown.
+/*#ifndef __WXGTK__
   wxMemoryDC tmpDC( drawImage );
   tmpDC.SetBackgroundMode( wxTRANSPARENT );
   tmpDC.SetBackground( *wxTRANSPARENT_BRUSH );
@@ -2949,15 +2956,16 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     paintDC.DrawBitmap( eventImage, 0, 0, true );
   if( myWindow->getDrawCommLines() )
     paintDC.DrawBitmap( commImage, 0, 0, true );
-#else
+#else*/
   wxPaintDC paintDC( drawZone );
   paintDC.DrawBitmap( drawImage, 0, 0 );
-#endif
+//#endif
   wxColour tmpColor;
 
-#ifndef __WXGTK__
+// Has no effect (apparently)
+/*#ifndef __WXGTK__
   drawZone->Refresh();
-#endif
+#endif*/
 
   if( motionEvent.GetX() < objectAxisPos + 1 || motionEvent.GetX() > bufferImage.GetWidth() - drawBorder ||
       motionEvent.GetY() < drawBorder || motionEvent.GetY() > timeAxisPos - 1 )
@@ -3050,9 +3058,11 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + objectAxisPos - ( objectExt.GetWidth() / 2 ), timeAxisPos + 3 );
   else
     paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + 12, timeAxisPos + 3 );
-#ifndef __WXGTK__
+
+// Has no effect (apparently)
+/*#ifndef __WXGTK__
   drawZone->Refresh();
-#endif
+#endif*/
 }
 
 /*!
@@ -3552,10 +3562,10 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
 
   if( ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
   {
-    gTimeline::dialogProgress->Show();
+    if( gTimeline::dialogProgress != NULL ) gTimeline::dialogProgress->Show();
     ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
   
-  if( !gTimeline::dialogProgress->Update( p, newMessage ) )
+  if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }
