@@ -96,16 +96,26 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
+
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
+
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
+
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
+
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
+
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -437,12 +447,12 @@ void gTimeline::redraw()
     gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                       wxT(""),
                                                       numeric_limits<int>::max(),
-                                                      this,
+                                                      this,                                                      
                                                       wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                       wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                       wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
-  gTimeline::dialogProgress->Show( false );
+  //gTimeline::dialogProgress->Show( false );
   gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gTimeline::dialogProgress->Fit();
 #endif
