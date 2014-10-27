@@ -378,7 +378,7 @@ void gHistogram::execute()
                                                        wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                        wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
-  //gHistogram::dialogProgress->Show( false );
+  gHistogram::dialogProgress->Show( false );
   gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gHistogram::dialogProgress->Fit();
 
@@ -2587,7 +2587,12 @@ void progressFunctionHistogram( ProgressController *progress, void *callerWindow
 
   if( ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
   {
-    gHistogram::dialogProgress->Show();
+    if( gHistogram::dialogProgress != NULL )
+    {
+      gHistogram::dialogProgress->Show();
+      gHistogram::dialogProgress->Raise();
+    }
+    
     ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
   

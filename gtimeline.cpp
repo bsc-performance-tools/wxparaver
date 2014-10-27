@@ -452,7 +452,7 @@ void gTimeline::redraw()
                                                       wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                       wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
-  //gTimeline::dialogProgress->Show( false );
+  gTimeline::dialogProgress->Show( false );
   gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gTimeline::dialogProgress->Fit();
 #endif
@@ -3572,7 +3572,12 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
 
   if( ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
   {
-    if( gTimeline::dialogProgress != NULL ) gTimeline::dialogProgress->Show();
+    if( gTimeline::dialogProgress != NULL )
+    {
+      gTimeline::dialogProgress->Show();
+      gTimeline::dialogProgress->Raise();
+    }
+
     ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
   
