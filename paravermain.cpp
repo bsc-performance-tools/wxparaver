@@ -3256,13 +3256,14 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 #endif
 
       pcf_name = LocalKernel::composeName( tmpNameIn, string( "pcf" ) );
+      int statReturn;
 #ifdef WIN32
-      _stat( pcf_name.c_str(), &tmpStatBuffer );
+      statReturn = _stat( pcf_name.c_str(), &tmpStatBuffer );
 #else
-      stat( pcf_name.c_str(), &tmpStatBuffer );
+      statReturn = stat( pcf_name.c_str(), &tmpStatBuffer );
 #endif
-      
-      if( tmpStatBuffer.st_size > 0 )
+
+      if( statReturn == 0 && tmpStatBuffer.st_size > 0 )
       {
         myConfig = new ParaverTraceConfig( string( pcf_name ) );
         labels = EventLabels( *myConfig, set<TEventType>() );
