@@ -459,7 +459,7 @@ void RunScript::CreateControls()
     textCtrlTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(textCtrlTrace, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Button"), wxDefaultPosition, wxDefaultSize, 0 );
+  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     fileBrowserButtonTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(fileBrowserButtonTrace, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -637,7 +637,7 @@ void RunScript::CreateControls()
   statsSection->Add(itemBoxSizer53, 0, wxGROW|wxALL, 2);
 
   statsCheckBoxShowBurstsHistogram = new wxCheckBox( itemDialog1, ID_CHECKBOX_STATS_SHOW_BURSTS, _("Generate bursts histogram"), wxDefaultPosition, wxDefaultSize, 0 );
-  statsCheckBoxShowBurstsHistogram->SetValue(false);
+  statsCheckBoxShowBurstsHistogram->SetValue(true);
   if (RunScript::ShowToolTips())
     statsCheckBoxShowBurstsHistogram->SetToolTip(_("Generat _bursts histogram files."));
   itemBoxSizer53->Add(statsCheckBoxShowBurstsHistogram, 1, wxGROW|wxALL, 2);
