@@ -422,6 +422,7 @@ void gTimeline::redraw()
   logicalPen = wxPen( logicalColour );
   physicalPen = wxPen( physicalColour );
 
+// Disabled because some window managers can't show the progress dialog later
   redrawStopWatch->Start();
   
   wxString winTitle = GetTitle();
@@ -442,7 +443,8 @@ void gTimeline::redraw()
                                                       wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                       wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
-  gTimeline::dialogProgress->Show( false );
+  // Disabled because some window managers can't show the progress dialog later
+  //gTimeline::dialogProgress->Show( false );
   gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gTimeline::dialogProgress->Fit();
 #endif
@@ -3560,7 +3562,8 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
     progress->clearMessageChanged();
   }
 
-  if( ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
+// Disabled because some window managers can't show the dialog later
+/*  if( ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
   {
     if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->IsShown() )
     {
@@ -3570,7 +3573,7 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
 
     ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
-  
+*/
   if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }

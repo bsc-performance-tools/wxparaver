@@ -350,7 +350,8 @@ void gHistogram::execute()
   gridHisto->Show( false );
   Update();
 
-  redrawStopWatch->Start();
+// Disabled because some window managers can't show the dialog later
+  //redrawStopWatch->Start();
   ProgressController *progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
   progress->setHandler( progressFunctionHistogram, this );
 
@@ -363,7 +364,8 @@ void gHistogram::execute()
                                                        wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                        wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
-  gHistogram::dialogProgress->Show( false );
+// Disabled because some window managers can't show the dialog later
+  //gHistogram::dialogProgress->Show( false );
   gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gHistogram::dialogProgress->Fit();
 
@@ -2572,7 +2574,8 @@ void progressFunctionHistogram( ProgressController *progress, void *callerWindow
     progress->clearMessageChanged();
   }
 
-  if( ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
+// Disabled because some window managers can't show the dialog later
+/*  if( ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
   {
     if( gHistogram::dialogProgress != NULL && !gHistogram::dialogProgress->IsShown() )
     {
@@ -2582,7 +2585,7 @@ void progressFunctionHistogram( ProgressController *progress, void *callerWindow
     
     ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
-  
+  */
   if( !gHistogram::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }
