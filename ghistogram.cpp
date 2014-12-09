@@ -908,6 +908,8 @@ void gHistogram::updateHistogram()
 {
   if( myHistogram->getRecalc() )
   {
+    if( gHistogram::dialogProgress != NULL )
+      return;
     myHistogram->setRecalc( false );
     execute();
     myHistogram->setChanged( true );
