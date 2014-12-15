@@ -126,8 +126,8 @@ install-data-hook:
 	$(mkdir_p) $(prefix)/docs
 	$(mkdir_p) $(prefix)/docs/quick_reference
 	$(mkdir_p) $(prefix)/docs/quick_reference/img
-	cp -f ./docs/quick_reference/wxparaver.quick_reference.html $(prefix)/docs/quick_reference
-	cp -f ./docs/quick_reference/img/*.png                      $(prefix)/docs/quick_reference/img
+	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(prefix)/docs/quick_reference
+	cp -f ./docs/quick_reference/img/*.png                     $(prefix)/docs/quick_reference/img
 
 dist-hook:
 	$(mkdir_p) $(distdir)/docs
@@ -139,6 +139,6 @@ dist-hook:
 
 	$(mkdir_p) $(distdir)/docs/quick_reference
 	$(mkdir_p) $(distdir)/docs/quick_reference/img
-	cp -f ./docs/quick_reference/wxparaver.quick_reference.html $(distdir)/docs/quick_reference
-	cp -f ./docs/quick_reference/img/*.png                      $(distdir)/docs/quick_reference/img
+	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(distdir)/docs/quick_reference
+	cp -f ./docs/quick_reference/img/*.png                     $(distdir)/docs/quick_reference/img
 
