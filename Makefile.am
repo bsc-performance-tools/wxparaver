@@ -137,4 +137,10 @@ dist-hook:
 	cp -f ./docs/paraload.sig       $(distdir)/docs
 	cp -f ./docs/paraload-v1.0.sig  $(distdir)/docs
 
+  $(mkdir_p) $(prefix)/doc
+  $(mkdir_p) $(prefix)/doc/quick_reference
+  $(mkdir_p) $(prefix)/doc/quick_reference/img
+	cp -f ./docs/quick_reference/wxparaver.quick_reference.html $(prefix)/doc/quick_reference
+	cp -f ./docs/quick_reference/img/*.png                      $(prefix)/doc/quick_reference/img
 
+  
