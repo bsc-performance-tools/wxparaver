@@ -123,6 +123,12 @@ install-data-hook:
 	$(install_sh_DATA) ./docs/paraload.sig      $(prefix)/share/wxparaver-signals
 	$(install_sh_DATA) ./docs/paraload-v1.0.sig $(prefix)/share/wxparaver-signals
 
+  $(mkdir_p) $(prefix)/doc
+  $(mkdir_p) $(prefix)/doc/quick_reference
+  $(mkdir_p) $(prefix)/doc/quick_reference/img
+	cp -f ./docs/quick_reference/wxparaver.quick_reference.html $(prefix)/doc/quick_reference
+	cp -f ./docs/quick_reference/img/*.png                      $(prefix)/doc/quick_reference/img
+
 dist-hook:
 	$(mkdir_p) $(distdir)/docs
 	cp -f ./docs/dimemas-wrapper.sh $(distdir)/docs
