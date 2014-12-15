@@ -123,11 +123,11 @@ install-data-hook:
 	$(install_sh_DATA) ./docs/paraload.sig      $(prefix)/share/wxparaver-signals
 	$(install_sh_DATA) ./docs/paraload-v1.0.sig $(prefix)/share/wxparaver-signals
 
-  $(mkdir_p) $(prefix)/doc
-  $(mkdir_p) $(prefix)/doc/quick_reference
-  $(mkdir_p) $(prefix)/doc/quick_reference/img
-	cp -f ./docs/quick_reference/wxparaver.quick_reference.html $(prefix)/doc/quick_reference
-	cp -f ./docs/quick_reference/img/*.png                      $(prefix)/doc/quick_reference/img
+  $(mkdir_p) $(prefix)/docs
+  $(mkdir_p) $(prefix)/docs/quick_reference
+  $(mkdir_p) $(prefix)/docs/quick_reference/img
+	cp -f ./docs/quick_reference/wxparaver.quick_reference.html $(prefix)/docs/quick_reference
+	cp -f ./docs/quick_reference/img/*.png                      $(prefix)/docs/quick_reference/img
 
 dist-hook:
 	$(mkdir_p) $(distdir)/docs
@@ -137,10 +137,9 @@ dist-hook:
 	cp -f ./docs/paraload.sig       $(distdir)/docs
 	cp -f ./docs/paraload-v1.0.sig  $(distdir)/docs
 
-  $(mkdir_p) $(prefix)/doc
-  $(mkdir_p) $(prefix)/doc/quick_reference
-  $(mkdir_p) $(prefix)/doc/quick_reference/img
-	cp -f ./docs/quick_reference/wxparaver.quick_reference.html $(prefix)/doc/quick_reference
-	cp -f ./docs/quick_reference/img/*.png                      $(prefix)/doc/quick_reference/img
+	$(mkdir_p) $(distdir)/docs/quick_reference
+	$(mkdir_p) $(distdir)/docs/quick_reference/img
+	cp -f ./docs/quick_reference/wxparaver.quick_reference.html $(distdir)/docs/quick_reference
+	cp -f ./docs/quick_reference/img/*.png                      $(distdir)/docs/quick_reference/img 
 
   
