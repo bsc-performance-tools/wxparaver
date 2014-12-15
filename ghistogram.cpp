@@ -50,6 +50,7 @@
 #include <wx/clipbrd.h>
 #include <sstream>
 #include <iostream>
+#include "config_traits.h"
 #include "wxparaverapp.h"
 #include "ghistogram.h"
 #include "histogram.h"
@@ -355,6 +356,8 @@ void gHistogram::execute()
   ProgressController *progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
   progress->setHandler( progressFunctionHistogram, this );
 
+#ifndef WIN32
+#ifndef PARALLEL_ENABLED
   if( gHistogram::dialogProgress == NULL )
     gHistogram::dialogProgress = new wxProgressDialog( wxT("Computing window..."),
                                                        wxT(""),
@@ -368,6 +371,8 @@ void gHistogram::execute()
   //gHistogram::dialogProgress->Show( false );
   gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gHistogram::dialogProgress->Fit();
+#endif // PARALLEL_ENABLED
+#endif // WIN32
 
   TObjectOrder beginRow, endRow;
   selectedRows.clear();

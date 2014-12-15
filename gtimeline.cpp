@@ -49,6 +49,7 @@
 #include <wx/statline.h>
 #include <algorithm>
 
+#include "config_traits.h"
 #include "wxparaverapp.h"
 #include "gtimeline.h"
 #include "finddialog.h"
@@ -434,6 +435,7 @@ void gTimeline::redraw()
 // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
 // Waiting for wxwidgets 3 code adaptation to prove that its solved.
 #ifndef WIN32
+#ifndef PARALLEL_ENABLED
   if( gTimeline::dialogProgress == NULL )
     gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                       wxT(""),
@@ -447,7 +449,8 @@ void gTimeline::redraw()
   //gTimeline::dialogProgress->Show( false );
   gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gTimeline::dialogProgress->Fit();
-#endif
+#endif // PARALLEL_ENABLED
+#endif // WIN32
 
 #ifdef TRACING_ENABLED
     Extrae_event( 100, 10 );
