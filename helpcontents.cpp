@@ -172,9 +172,8 @@ const wxString HelpContents::getTitle( int numTutorial, const wxString& path )
   tutorialTitle = auxHtml.GetOpenedPageTitle();
   if ( tutorialTitle.empty() || tutorialTitle == _("index.html") ) // never is empty !?!
   {
-    std::string auxStrTitleFileName( ( path +
-                                wxFileName::GetPathSeparator() +
-                                _("tutorial_title") ).mb_str() );
+    std::string auxStrTitleFileName(
+            ( path + wxFileName::GetPathSeparator() + _("tutorial_title") ).mb_str() );
     std::string auxLine;
 
     std::ifstream titleFile;

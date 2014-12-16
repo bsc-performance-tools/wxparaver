@@ -90,6 +90,7 @@ class TraceOptions;
 #define ID_MENULOADSESSION 10170
 #define ID_MENUSAVESESSION 10169
 #define ID_PREFERENCES 10001
+#define wxID_HELPCONTENTS 10005
 #define wxID_TUTORIALS 10196
 #define ID_TOOLBAR 10003
 #define ID_NEW_WINDOW 10030
@@ -222,6 +223,9 @@ public:
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
   void OnExitClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_HELPCONTENTS
+  void OnHelpcontentsClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_TUTORIALS
   void OnTutorialsClick( wxCommandEvent& event );
@@ -382,6 +386,9 @@ public:
   HelpContents * GetTutorialsWindow() const { return tutorialsWindow ; }
   void SetTutorialsWindow(HelpContents * value) { tutorialsWindow = value ; }
 
+  HelpContents * GetHelpContents() const { return helpContents ; }
+  void SetHelpContents(HelpContents * value) { helpContents = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -497,6 +504,7 @@ private:
   bool traceLoadedBefore;
   wxString tracePath;
   HelpContents * tutorialsWindow;
+  HelpContents * helpContents;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;
