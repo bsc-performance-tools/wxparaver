@@ -124,10 +124,11 @@ install-data-hook:
 	$(install_sh_PROGRAM) -m 775 ./docs/paraload-v1.0.sig $(prefix)/share/wxparaver-signals
 
 	$(mkdir_p) $(prefix)/share/doc
-	$(mkdir_p) $(prefix)/share/doc/wxparaver_quick_reference
-	$(mkdir_p) $(prefix)/share/doc/wxparaver_quick_reference/img
-	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(prefix)/share/doc/wxparaver_quick_reference
-	cp -f ./docs/quick_reference/img/*.png                     $(prefix)/share/doc/wxparaver_quick_reference/img
+	$(mkdir_p) $(prefix)/share/doc/wxparaver_help
+	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/quick_reference
+	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/quick_reference/img
+	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(prefix)/share/doc/wxparaver_help/quick_reference
+	cp -f ./docs/quick_reference/img/*.png                     $(prefix)/share/doc/wxparaver_help/quick_reference/img
 
 dist-hook:
 	$(mkdir_p) $(distdir)/docs
