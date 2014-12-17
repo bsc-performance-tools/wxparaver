@@ -120,8 +120,10 @@ install-data-hook:
 	
 	$(mkdir_p) $(prefix)/share/
 	$(mkdir_p) $(prefix)/share/wxparaver-signals
-	$(install_sh_DATA) ./docs/paraload.sig      $(prefix)/share/wxparaver-signals
-	$(install_sh_DATA) ./docs/paraload-v1.0.sig $(prefix)/share/wxparaver-signals
+	#$(install_sh_DATA) ./docs/paraload.sig      $(prefix)/share/wxparaver-signals
+	#$(install_sh_DATA) ./docs/paraload-v1.0.sig $(prefix)/share/wxparaver-signals
+	$(install_sh_PROGRAM) -m 775 ./docs/paraload.sig      $(prefix)/share/wxparaver-signals
+	$(install_sh_PROGRAM) -m 775 ./docs/paraload-v1.0.sig $(prefix)/share/wxparaver-signals
 
 	$(mkdir_p) $(prefix)/share/doc
 	$(mkdir_p) $(prefix)/share/doc/wxparaver_quick_reference
