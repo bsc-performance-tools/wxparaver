@@ -125,10 +125,10 @@ install-data-hook:
 
 	$(mkdir_p) $(prefix)/share/doc
 	$(mkdir_p) $(prefix)/share/doc/wxparaver_help
-	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/quick_reference
-	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/quick_reference/img
-	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(prefix)/share/doc/wxparaver_help/quick_reference
-	cp -f ./docs/quick_reference/img/*.png                     $(prefix)/share/doc/wxparaver_help/quick_reference/img
+	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/1.quick_reference
+	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/1.quick_reference/img
+	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(prefix)/share/doc/wxparaver_help/1.quick_reference/index.html
+	cp -f ./docs/quick_reference/img/*.png                     $(prefix)/share/doc/wxparaver_help/1.quick_reference/img
 
 dist-hook:
 	$(mkdir_p) $(distdir)/docs
