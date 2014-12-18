@@ -58,7 +58,7 @@
 
 #ifdef WIN32
 #undef VERSION
-#define VERSION "4.5.6"
+#define VERSION "4.5.5"
 #endif
 /*!
  * Forward declarations
@@ -332,6 +332,9 @@ public:
   wxWindow * GetCurrentWindow() const { return currentWindow ; }
   void SetCurrentWindow(wxWindow * value) { currentWindow = value ; }
 
+  HelpContents * GetHelpContents() const { return helpContents ; }
+  void SetHelpContents(HelpContents * value) { helpContents = value ; }
+
   wxImageList* GetImageList() const { return imageList ; }
   void SetImageList(wxImageList* value) { imageList = value ; }
 
@@ -385,9 +388,6 @@ public:
 
   HelpContents * GetTutorialsWindow() const { return tutorialsWindow ; }
   void SetTutorialsWindow(HelpContents * value) { tutorialsWindow = value ; }
-
-  HelpContents * GetHelpContents() const { return helpContents ; }
-  void SetHelpContents(HelpContents * value) { helpContents = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -486,6 +486,7 @@ private:
   Window * currentTimeline;
   PRV_INT16 currentTrace;
   wxWindow * currentWindow;
+  HelpContents * helpContents;
   wxImageList* imageList;
   Histogram * lastHisto;
   Window * lastTimeline;
@@ -504,7 +505,6 @@ private:
   bool traceLoadedBefore;
   wxString tracePath;
   HelpContents * tutorialsWindow;
-  HelpContents * helpContents;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;

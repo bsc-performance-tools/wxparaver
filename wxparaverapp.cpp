@@ -350,9 +350,13 @@ bool wxparaverApp::OnInit()
   if ( paraverCommandLineParser.Found( wxT("t"), &tmpTutorial ) )
   {
     if ( mainWindow->GetTutorialsWindow() == NULL )
-      mainWindow->SetTutorialsWindow( new HelpContents( mainWindow, wxID_ANY, _("Tutorials") ) );
+      mainWindow->SetTutorialsWindow( 
+              new TutorialsBrowser( mainWindow,
+                                    paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath(),
+                                    wxID_ANY,
+                                    _("Tutorials") ) );
     
-    if ( !mainWindow->GetTutorialsWindow()->SetTutorial( tmpTutorial ) )
+    if ( !mainWindow->GetTutorialsWindow()->SetHelpContents( tmpTutorial ) )
       wxMessageBox( wxT( "Unable to find index.html in tutorial dir.\n\n"
                           "Please check whole path or create/place index.html file." ),
                     wxT( "Tutorial" ), wxICON_INFORMATION|wxOK );

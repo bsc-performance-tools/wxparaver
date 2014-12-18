@@ -68,6 +68,8 @@ class wxHtmlWindow;
 #define SYMBOL_HELPCONTENTS_POSITION wxDefaultPosition
 ////@end control identifiers
 
+#define SYMBOL_TUTORIALSBROWSER_TITLE _("Tutorials")
+
 
 /*!
  * HelpContents class declaration
@@ -82,6 +84,7 @@ public:
   /// Constructors
   HelpContents();
   HelpContents( wxWindow* parent,
+                const wxString& whichHelpContentsRoot,
                 wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
                 const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
                 const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
@@ -148,29 +151,54 @@ public:
   wxBitmapButton* buttonHistoryForward;
 ////@end HelpContents member variables
 
-  bool SetTutorialsRoot( const std::string& whichRoot );
-  bool SetTutorialsRoot( const wxString& whichRoot );
-  const std::string GetTutorialsRootStr();
-  const wxString GetTutorialsRoot();
+  bool SetHelpContentsRoot( const std::string& whichRoot );
+  bool SetHelpContentsRoot( const wxString& whichRoot );
+  const std::string GetHelpContentsRootStr();
+  const wxString GetHelpContentsRoot();
 
-  bool SetTutorial( const wxString& whichTutorial );
+  bool SetHelpContents( const wxString& whichHelpContents );
 
-private:
-  wxString tutorialsRoot;
-  wxString currentTutorialDir;
+protected:
+  wxString helpContentsRoot;
+  wxString currentHelpContentsDir;
 
-  std::string getCurrentTutorialFullPath();
+  std::string getCurrentHelpContentsFullPath();
   std::string getHrefFullPath( wxHtmlLinkEvent &event );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
 
   const wxString getHtmlIndex( const wxString& path );
   const wxString getTitle( int numTutorial, const wxString& path );
-  void appendTutorial( const wxString& title, const wxString& path, wxString& htmlDoc );
-  bool tutorialFound( wxArrayString & tutorials );
+  void appendHelpContents( const wxString& title, const wxString& path, wxString& htmlDoc );
+  bool helpContentsFound( wxArrayString & tutorials );
+  void buildIndexTemplate( wxString title, wxString filePrefix );
   void buildIndex();
 
   void htmlMessage( wxString& htmlDoc );
-  bool DetectTutorialIndexInPath( const wxString& whichTutorial );
+  bool DetectHelpContentsIndexInPath( const wxString& whichTutorial );
+};
+
+
+class TutorialsBrowser: public HelpContents
+{
+  DECLARE_DYNAMIC_CLASS( TutorialsBrowser )
+  DECLARE_EVENT_TABLE()
+
+  public:
+    TutorialsBrowser()
+    {}
+    TutorialsBrowser( wxWindow* parent,
+                      const wxString& whichHelpContentsRoot,
+                      wxWindowID id = wxID_ANY,
+                      const wxString& caption = SYMBOL_TUTORIALSBROWSER_TITLE,
+                      const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
+                      const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
+                      long style = SYMBOL_HELPCONTENTS_STYLE );
+    ~TutorialsBrowser();
+  
+    const wxString getTitle( int numTutorial, const wxString& path );
+    void OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event );
+    void buildIndex();
+    void htmlMessage( wxString& htmlDoc );
 };
 
 #endif

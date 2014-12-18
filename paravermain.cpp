@@ -46,6 +46,11 @@
 #include "wx/aboutdlg.h"
 #include "wx/html/htmlwin.h"
 
+#include "wx/fs_mem.h"
+#include "wx/filesys.h"
+#include "wx/wfstream.h"
+#include "logoBSC.xpm"
+
 #include "config.h"
 #include "paravermain.h"
 #include "paraverkernelexception.h"
@@ -366,6 +371,8 @@ paraverMain::~paraverMain()
   {
     delete helpContents;
   }
+  
+  wxMemoryFSHandler::RemoveFile( wxT("logoBSC.xpm") );
 }
 
 
@@ -384,6 +391,7 @@ void paraverMain::Init()
   currentTimeline = NULL;
   currentTrace = -1;
   currentWindow = NULL;
+  helpContents = NULL;
   lastHisto = NULL;
   lastTimeline = NULL;
   numNewDerived = 0;
@@ -396,7 +404,6 @@ void paraverMain::Init()
   sessionTimer = new wxTimer( this );
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
-  helpContents = NULL;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
@@ -408,6 +415,21 @@ void paraverMain::Init()
 
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
+
+
+
+  wxFileSystem::AddHandler( new wxMemoryFSHandler() );
+#ifdef WIN32
+  wxBitmap bmp( logoBSC_xpm );
+#endif
+
+  wxMemoryFSHandler::AddFile( wxT( "logoBSC.xpm" ),
+#ifdef WIN32
+                              bmp,
+#else
+                              wxBITMAP( logoBSC ),
+#endif
+                              wxBITMAP_TYPE_XPM );
 }
 
 /*!
@@ -3594,8 +3616,13 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
 
 void paraverMain::OnTutorialsClick( wxCommandEvent& event )
 {
+  wxString tutorialsRoot;
+
   if ( tutorialsWindow == NULL )
-    tutorialsWindow = new HelpContents( this, wxID_ANY, _("Tutorials") );
+  {
+    tutorialsRoot = paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath();
+    tutorialsWindow = new TutorialsBrowser( this, tutorialsRoot, wxID_ANY, _("Tutorials") );
+  }
 
   tutorialsWindow->Show( true );
 }
@@ -3633,9 +3660,51 @@ void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
 
 void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
 {
-  if ( helpContents == NULL )
-    helpContents = new HelpContents( this, wxID_ANY, _("Help Contents") );
+  if ( helpContents != NULL )
+  {
+    helpContents->Show( true );
+  }
+  else
+  {
+    wxString paraverHome;
+    if ( wxGetEnv( wxString( "PARAVER_HOME" ), &paraverHome ) )
+    {
+      wxString helpContentsDir =
+              wxFileName::GetPathSeparator() +
+              wxString( wxT( "share" ) ) +
+              wxFileName::GetPathSeparator() +
+              wxString( wxT( "doc" ) ) +
+              wxFileName::GetPathSeparator() +
+              wxString( wxT( "wxparaver_help" ) ) +
+              wxFileName::GetPathSeparator();
 
-  helpContents->Show( true );
+      wxString helpContentsRoot = paraverHome + helpContentsDir;                         
+
+      if ( wxFileName( helpContentsRoot ).DirExists() )
+      {
+        helpContents = new HelpContents( this, helpContentsRoot, wxID_ANY, _("Help Contents") );
+        helpContents->Show( true );
+      }
+      else
+      {
+        wxString msg =
+                wxString( wxT( "Path to Help Contents doesn't exist:\n\n  " ) ) +
+                helpContentsRoot +
+                wxString( wxT( "\n\nPlease check $PARAVER_HOME:\n\n" ) ) +
+                paraverHome;
+        
+        wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
+        message.ShowModal();
+      }
+    }
+    else
+    {
+      wxString msg =
+                wxString( wxT( "Unable to find Help Contents.\n\n$PARAVER_HOME is undefined" ) );
+        
+      wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
+      message.ShowModal();
+    }
+  }
 }
 
