@@ -2896,7 +2896,7 @@ void CutFilterDialog::TransferXMLFileToWindow( const wxString& whichXMLFile )
     traceOptions = TraceOptions::create( GetLocalKernel() );
   }
   
-  vector< string > toolIDsOrder = traceOptions->parseDoc( (char *)whichXMLFile.c_str() );
+  vector< string > toolIDsOrder = traceOptions->parseDoc( (char *)whichXMLFile.mb_str().data() );
 
   UpdateGuiXMLSectionFromFile( traceOptions, toolIDsOrder );
   UpdateGlobalXMLPath( whichXMLFile );
