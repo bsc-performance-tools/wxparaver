@@ -229,12 +229,14 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
     return false;
 }
 
+#if wxMAJOR_VERSION<3
 int prvEventTypeProperty::GetChoiceInfo( wxPGChoiceInfo* choiceinfo )
 {
     if ( choiceinfo )
         choiceinfo->m_choices = &m_choices;
     return -1;
 }
+#endif
 
 bool prvEventTypeProperty::StringToValue( wxVariant& variant, const wxString& text, int ) const
 {
@@ -553,12 +555,14 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
   return false;
 }
 
+#if wxMAJOR_VERSION<3
 int prvEventInfoProperty::GetChoiceInfo( wxPGChoiceInfo* choiceinfo )
 {
     if ( choiceinfo )
         choiceinfo->m_choices = &m_choices;
     return -1;
 }
+#endif
 
 bool prvEventInfoProperty::StringToValue( wxVariant& variant, const wxString& text, int ) const
 {
