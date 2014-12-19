@@ -183,7 +183,7 @@ const wxString HelpContents::getHtmlIndex( const wxString& path )
 const wxString HelpContents::getTitle( int numTutorial, const wxString& path )
 {
   wxString helpContentsTitle;
-std::cout << path << std::endl;
+
   wxHtmlWindow auxHtml( this );
   auxHtml.LoadPage( path  + wxFileName::GetPathSeparator() + _("index.html") );
   helpContentsTitle = auxHtml.GetOpenedPageTitle();
@@ -304,7 +304,7 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
 
 void HelpContents::buildIndex()
 {
-  buildIndexTemplate( wxString( "Help Contents" ), wxString( "help_contents" ) );
+  buildIndexTemplate( wxString( wxT( "Help Contents" ) ), wxString( wxT( "help_contents" ) ) );
 }
 
 
@@ -797,7 +797,7 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 
 void TutorialsBrowser::buildIndex()
 {
-  buildIndexTemplate( wxString( "Tutorials" ), wxString( "tutorials" ) );
+  buildIndexTemplate( wxString( wxT( "Tutorials" ) ), wxString( wxT( "tutorials" ) ) );
 /*
   // write html index
   wxString tutorialsHtmlIndex, tutorialsList;
