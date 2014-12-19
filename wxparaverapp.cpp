@@ -352,7 +352,7 @@ bool wxparaverApp::OnInit()
     if ( mainWindow->GetTutorialsWindow() == NULL )
       mainWindow->SetTutorialsWindow( 
               new TutorialsBrowser( mainWindow,
-                                    paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath(),
+                                    wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
                                     wxID_ANY,
                                     _("Tutorials") ) );
     
