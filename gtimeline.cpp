@@ -97,16 +97,26 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
+
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
+
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
+
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
+
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
+
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -2749,8 +2759,9 @@ wxString gTimeline::buildFormattedFileName() const
 
 void gTimeline::saveImage()
 {
-  wxString imageName, imageSuffix, defaultDir;
-  long imageType;
+  wxString imageName;
+  wxString tmpSuffix;
+  wxString defaultDir;
 
   imageName = buildFormattedFileName();
   
@@ -2760,12 +2771,28 @@ void gTimeline::saveImage()
   defaultDir = _("./");
 #endif
 
+  tmpSuffix = _(".") +
+          wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                  ParaverConfig::getInstance()->getTimelineSaveImageFormat() ).c_str() );
+
+  // Builds following wildcard, but the 'E' in JPEG  
+  // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+  wxString tmpWildcard;
+  for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+  {
+    wxString currentFormat =
+          wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                  ParaverConfig::TImageFormat( i ) ).c_str() );
+    tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
+  }
+  tmpWildcard = tmpWildcard.BeforeLast( '|' );
+
   wxFileDialog saveDialog( this,
                            _("Save Image"),
                            defaultDir,
-                           imageName, // default name ->window name!
-                           _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm"), // file types 
-                           wxFD_SAVE|wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR );
+                           imageName + tmpSuffix,
+                           tmpWildcard,
+                           wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR );
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveImageFormat() );
   if ( saveDialog.ShowModal() == wxID_OK )
@@ -2841,43 +2868,44 @@ void gTimeline::saveImage()
 
     // Get extension and save
     wxImage baseLayer = imageBitmap.ConvertToImage();
+    tmpSuffix = _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                    ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ) ).c_str() );
 
-    switch( saveDialog.GetFilterIndex() )
+    long imageType;
+    switch( ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ) )
     {
-      case 0:
+      case ParaverConfig::BMP:
         imageType =  wxBITMAP_TYPE_BMP;
-        imageSuffix = _(".bmp");
         break;
-      case 1:
+      case ParaverConfig::JPG:
         imageType =  wxBITMAP_TYPE_JPEG;
-        imageSuffix = _(".jpg");
         break;
-      case 2:
+      case ParaverConfig::PNG:
         imageType =  wxBITMAP_TYPE_PNG;
-        imageSuffix = _(".png");
         break;
-      case 3:
+      case ParaverConfig::XPM:
         imageType = wxBITMAP_TYPE_XPM;
-        imageSuffix = _(".xpm");
         break;
       default:
         imageType =  wxBITMAP_TYPE_PNG;
-        imageSuffix = _(".png");
         break;
     }
 
-    if ( saveDialog.GetPath().EndsWith( imageSuffix )) 
-//       || saveDialog.GetPath().EndsWith( wxString( imageSuffix ).MakeUpper() ) )
+    if ( saveDialog.GetPath().EndsWith( tmpSuffix )) 
+//       || saveDialog.GetPath().EndsWith( wxString( tmpSuffix ).MakeUpper() ) )
       baseLayer.SaveFile( saveDialog.GetPath(), imageType );
     else
-      baseLayer.SaveFile( saveDialog.GetPath() + imageSuffix , imageType );
+      baseLayer.SaveFile( saveDialog.GetPath() + tmpSuffix , imageType );
   }
 }
 
 
 void gTimeline::saveText()
 {
-  wxString fileName, defaultDir;
+  wxString fileName;
+  wxString tmpSuffix;
+  wxString defaultDir;
 
   fileName = buildFormattedFileName();
 
@@ -2887,15 +2915,32 @@ void gTimeline::saveText()
   defaultDir = _("./");
 #endif
 
+  tmpSuffix = _(".") +
+          wxString::FromAscii( LabelConstructor::getDataFileSuffix(
+                  ParaverConfig::getInstance()->getTimelineSaveTextFormat() ).c_str() );
+
+  // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
+  // Also fills extension
+  wxString tmpWildcard;
   vector< wxString > extensions;
-  extensions.push_back( wxT( ".csv" ) );
-  extensions.push_back( wxT( ".gnuplot" ) );
+  for ( PRV_UINT16 i = 0; i < PRV_UINT16( ParaverConfig::PLAIN ); ++i )
+  {
+    wxString currentFormat =
+          wxString::FromAscii( LabelConstructor::getDataFileSuffix(
+                  ParaverConfig::TTextFormat( i ) ).c_str() );
+    tmpWildcard +=
+            currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
+
+    extensions.push_back( _(".") + currentFormat );
+  }
+  tmpWildcard = tmpWildcard.BeforeLast( '|' );
+
   FileDialogExtension saveDialog( this,
                                   _("Save as..."),
                                   defaultDir,
-                                  fileName,
-                                  _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" ),
-                                  wxFD_SAVE | wxFD_OVERWRITE_PROMPT|wxFD_CHANGE_DIR,
+                                  fileName + tmpSuffix,
+                                  tmpWildcard,
+                                  wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR,
                                   wxDefaultPosition,
                                   wxDefaultSize,
                                   _( "filedlg" ),
