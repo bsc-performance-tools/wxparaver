@@ -41,6 +41,7 @@
 ////@begin includes
 ////@end includes
 #include <string>
+#include <wx/file.h>
 
 #include "helpcontents.h"
 #include "paravermain.h"
