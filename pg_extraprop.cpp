@@ -915,26 +915,54 @@ bool prvNumbersListProperty::StringToValue( wxVariant& variant,
   WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
     arr.Add(token);
   WX_PG_TOKENIZER1_END()
-  
-  // Order values
-  double tmpValue;
 
-  map< double, wxString > sortedValues;
-  for ( unsigned int i = 0; i < arr.GetCount(); ++i )
+  if ( !( wxString( GetLabel() ).Trim( false ).IsSameAs( wxT( "Translation List" ) )) )
   {
-    if ( arr[i].ToDouble( &tmpValue ))  // invalid values not used
+    // Order values
+    double tmpValue;
+
+    map< double, wxString > sortedValues;
+    for ( unsigned int i = 0; i < arr.GetCount(); ++i )
     {
-      sortedValues[ tmpValue ] = arr[i];
+      if ( arr[i].ToDouble( &tmpValue ))  // invalid values not used
+      {
+        sortedValues[ tmpValue ] = arr[i];
+      }
     }
+    
+    wxArrayString tmpArr;
+    for ( map< double, wxString >::iterator it = sortedValues.begin(); it != sortedValues.end(); ++it )
+    {
+      tmpArr.Add( (*it).second );
+    }
+    
+    arr = tmpArr;
+  }
+  else
+  {
+    // Order values
+    double tmpValue;
+
+    vector< double > values;
+    vector< wxString > labels;
+    for ( unsigned int i = 0; i < arr.GetCount(); ++i )
+    {
+      if ( arr[i].ToDouble( &tmpValue ))  // invalid values not used
+      {
+        values.push_back( tmpValue );
+        labels.push_back( arr[i] );
+      }
+    }
+    
+    wxArrayString tmpArr;
+    for ( vector< wxString >::iterator it = labels.begin(); it != labels.end(); ++it )
+    {
+      tmpArr.Add( (*it) );
+    }
+    
+    arr = tmpArr;  
   }
   
-  wxArrayString tmpArr;
-  for ( map< double, wxString >::iterator it = sortedValues.begin(); it != sortedValues.end(); ++it )
-  {
-    tmpArr.Add( (*it).second );
-  }
-
-  arr = tmpArr;
   
   wxVariant v( WXVARIANT(arr) );
   variant = v;
