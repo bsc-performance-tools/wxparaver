@@ -97,26 +97,16 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
-
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
-
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
-
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
-
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
-
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
-
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -2987,35 +2977,14 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
 {
   wxMemoryDC dc( bufferImage );
 
-// With this code, transparent rectangle for zooming is erased after a second it appears.
-// But without this code, symbolic information at the botton of the timeline is not shown.
-/*#ifndef __WXGTK__
-  wxMemoryDC tmpDC( drawImage );
-  tmpDC.SetBackgroundMode( wxTRANSPARENT );
-  tmpDC.SetBackground( *wxTRANSPARENT_BRUSH );
-  tmpDC.Clear();
-#if wxTEST_GRAPHICS == 1
-  wxGCDC paintDC( tmpDC );
-  paintDC.SetBrush( wxBrush( wxColour( 255, 255, 255, 80 ) ) );
+#ifndef __WXGTK__
+  wxClientDC paintDC( drawZone );
+  paintDC.DrawBitmap( drawImage, 0, 0 );
 #else
-  wxDC& paintDC = tmpDC;
-  paintDC.SetBrush( *wxTRANSPARENT_BRUSH );
-#endif
-  paintDC.DrawBitmap( bufferImage, 0, 0, false );
-  if( myWindow->getDrawFlags() )
-    paintDC.DrawBitmap( eventImage, 0, 0, true );
-  if( myWindow->getDrawCommLines() )
-    paintDC.DrawBitmap( commImage, 0, 0, true );
-#else*/
   wxPaintDC paintDC( drawZone );
   paintDC.DrawBitmap( drawImage, 0, 0 );
-//#endif
+#endif
   wxColour tmpColor;
-
-// Has no effect (apparently)
-/*#ifndef __WXGTK__
-  drawZone->Refresh();
-#endif*/
 
   if( motionEvent.GetX() < objectAxisPos + 1 || motionEvent.GetX() > bufferImage.GetWidth() - drawBorder ||
       motionEvent.GetY() < drawBorder || motionEvent.GetY() > timeAxisPos - 1 )
@@ -3108,11 +3077,6 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + objectAxisPos - ( objectExt.GetWidth() / 2 ), timeAxisPos + 3 );
   else
     paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + 12, timeAxisPos + 3 );
-
-// Has no effect (apparently)
-/*#ifndef __WXGTK__
-  drawZone->Refresh();
-#endif*/
 }
 
 /*!

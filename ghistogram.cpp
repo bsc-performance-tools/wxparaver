@@ -118,48 +118,33 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_SIZE( gHistogram::OnSize )
   EVT_IDLE( gHistogram::OnIdle )
-
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
-
   EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
   EVT_GRID_LABEL_LEFT_CLICK( gHistogram::OnLabelLeftClick )
   EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
   EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
-
   EVT_UPDATE_UI( wxID_CONTROLWARNING, gHistogram::OnControlWarningUpdate )
-
   EVT_UPDATE_UI( wxID_3DWARNING, gHistogram::On3dWarningUpdate )
-
   EVT_MENU( ID_TOOL_OPEN_CONTROL_WINDOW, gHistogram::OnToolOpenControlWindowClick )
-
   EVT_MENU( ID_TOOL_OPEN_DATA_WINDOW, gHistogram::OnToolOpenDataWindowClick )
-
   EVT_MENU( ID_TOOL_OPEN_EXTRA_WINDOW, gHistogram::OnToolOpenExtraWindowClick )
   EVT_UPDATE_UI( ID_TOOL_OPEN_EXTRA_WINDOW, gHistogram::OnToolOpenExtraWindowUpdate )
-
   EVT_MENU( ID_TOOLZOOM, gHistogram::OnToolzoomClick )
   EVT_UPDATE_UI( ID_TOOLZOOM, gHistogram::OnToolzoomUpdate )
-
   EVT_MENU( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, gHistogram::OnToolOpenFilteredControlWindowClick )
   EVT_UPDATE_UI( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, gHistogram::OnToolOpenFilteredControlWindowUpdate )
-
   EVT_MENU( ID_TOOLGRADIENT, gHistogram::OnToolgradientClick )
   EVT_UPDATE_UI( ID_TOOLGRADIENT, gHistogram::OnToolgradientUpdate )
-
   EVT_MENU( ID_TOOLHORIZVERT, gHistogram::OnToolhorizvertClick )
   EVT_UPDATE_UI( ID_TOOLHORIZVERT, gHistogram::OnToolhorizvertUpdate )
-
   EVT_MENU( ID_TOOL_HIDE_COLUMNS, gHistogram::OnToolHideColumnsClick )
   EVT_UPDATE_UI( ID_TOOL_HIDE_COLUMNS, gHistogram::OnToolHideColumnsUpdate )
-
   EVT_MENU( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsClick )
   EVT_UPDATE_UI( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsUpdate )
-
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
-
 ////@end gHistogram event table entries
   
   EVT_TIMER( wxID_ANY, gHistogram::OnTimerZoom )
@@ -299,7 +284,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(15, 16, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -415,9 +400,9 @@ void gHistogram::execute()
 
   ready = true;
   
-  gHistogram::dialogProgress->Show( false );
   if( gHistogram::dialogProgress != NULL )
   {
+    gHistogram::dialogProgress->Show( false );
     delete gHistogram::dialogProgress;
     gHistogram::dialogProgress = NULL;
   }
@@ -2633,6 +2618,6 @@ void progressFunctionHistogram( ProgressController *progress, void *callerWindow
     ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
   */
-  if( !gHistogram::dialogProgress->Update( p, newMessage ) )
+  if( gHistogram::dialogProgress != NULL && !gHistogram::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }
