@@ -653,6 +653,8 @@ void gTimeline::redraw()
 #endif
 
   drawZone->Refresh();
+  
+  SetFocus();
 // cout << "[GUI::gTimeline::redraw ] exiting" << endl;
 }
 
@@ -3203,6 +3205,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
 void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 {
+std::cout<<"key pressed"<<std::endl;
   if( event.ControlDown() && event.GetKeyCode() == (long) 'C' )
   {
     OnPopUpCopy();
