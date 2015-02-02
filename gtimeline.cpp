@@ -3205,7 +3205,6 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
 void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 {
-std::cout<<"key pressed"<<std::endl;
   if( event.ControlDown() && event.GetKeyCode() == (long) 'C' )
   {
     OnPopUpCopy();
