@@ -97,16 +97,26 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
+
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
+
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
+
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
+
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
+
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -1319,29 +1329,11 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 
   
   beginRow = TObjectOrder( floor( (zoomBeginY - drawBorder - 1) / heightPerRow ) );
- /* double auxRow =  floor( (zoomBeginY - drawBorder - 1) / heightPerRow );
- 
-cout << "beginRow " << beginRow << endl;
-cout << "endRow   " << endRow << endl;
-cout << "numObjects " << numObjects << endl;
-cout << "auxRow " << auxRow << endl;
-cout << "numObjects " << numObjects << endl;
-  //if ( auxRow < 0 )
-  //  auxRow = 0;
-  
-  beginRow = TObjectOrder( auxRow );
-  auxRow = floor( (zoomEndY - drawBorder - 1) / heightPerRow );
-  //if ( auxRow < 0 )
-  //  auxRow = 0;
-  */
   endRow = TObjectOrder( floor( (zoomEndY - drawBorder - 1) / heightPerRow ) );
-  //endRow = TObjectOrder( auxRow );
 
   if( endRow >= numObjects )
-  //if( endRow >= numObjects && numObjects > 0 )
     endRow = numObjects - 1;
   if( beginRow >= numObjects )
-  //if( beginRow >= numObjects && numObjects > 0 )
     beginRow = numObjects - 1;
     
   beginRow = selected[ beginRow ];
