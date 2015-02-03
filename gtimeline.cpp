@@ -242,11 +242,11 @@ void gTimeline::CreateControls()
   splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
   splitter->SetMinimumPaneSize(0);
 
-  drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
+  drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE );
   drawZone->SetScrollbars(1, 1, 0, 0);
-  infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxSize(-1, splitter->ConvertDialogToPixels(wxSize(-1, 50)).y), wxBK_DEFAULT );
+  infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW2, wxDefaultPosition, infoZone->ConvertDialogToPixels(wxSize(100, 100)), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW2, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
   whatWherePanel->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
   whatWherePanel->SetSizer(itemBoxSizer6);
@@ -424,7 +424,7 @@ void gTimeline::redraw()
   physicalPen = wxPen( physicalColour );
 
 // Disabled because some window managers can't show the progress dialog later
-  redrawStopWatch->Start();
+//  redrawStopWatch->Start();
   
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );
@@ -480,7 +480,7 @@ void gTimeline::redraw()
 #ifdef TRACING_ENABLED
     Extrae_event( 100, 11 );
 #endif
-  //ready = false;
+  ready = false;
   bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
@@ -523,6 +523,7 @@ void gTimeline::redraw()
   if( !drawAxis( bufferDraw, selectedSet ) )
   {
     SetTitle( winTitle );
+    ready = true;
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
 #endif
@@ -645,13 +646,15 @@ void gTimeline::redraw()
   }
   delete progress;
 
-  redrawStopWatch->Pause();
+// Disabled because some window managers can't show the progress dialog later
+//  redrawStopWatch->Pause();
 
   SetTitle( winTitle );
 #ifdef TRACING_ENABLED
   Extrae_user_function( 0 );
 #endif
 
+  ready = true;
   drawZone->Refresh();
   
   SetFocus();
@@ -1357,9 +1360,9 @@ cout << "numObjects " << numObjects << endl;
       endTime = beginTime + 10;
 
     // Update window properties
+    myWindow->addZoom( beginTime, endTime, beginRow, endRow );
     myWindow->setWindowBeginTime( beginTime, true );
     myWindow->setWindowEndTime( endTime, true );
-    myWindow->addZoom( beginTime, endTime, beginRow, endRow );
 
     myWindow->setRedraw( true );
     myWindow->setChanged( true );
@@ -2441,13 +2444,15 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
 void gTimeline::resizeDrawZone( int width, int height )
 {
   canRedraw = false;
-//  drawZone->SetClientSize( width, height );
+
   if( !splitter->IsSplit() )
     this->SetClientSize( width, height );
   else
   {
-    this->SetClientSize( width, height + /*infoZone->GetClientSize().GetHeight()*/infoZoneLastSize + 5 );
     splitter->SetSashPosition( height );
+    drawZone->SetClientSize( width, height );
+    infoZone->SetClientSize( width, infoZoneLastSize );
+    this->SetClientSize( width, height + infoZoneLastSize + 5 );
   }
   myWindow->setWidth( width );
   myWindow->setHeight( height );
@@ -2496,7 +2501,6 @@ void gTimeline::Split()
   this->Freeze();
   splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
   resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
-  infoZone->SetClientSize( myWindow->getWidth(), infoZoneLastSize );
   this->Thaw();
   canRedraw = true;
   splitChanged = true;
@@ -2970,7 +2974,12 @@ void gTimeline::saveCFG()
 void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
   if( ready )
-    myWindow->setRedraw( true );
+  {
+    if( splitChanged )
+      redraw();
+    else
+      myWindow->setRedraw( true );
+  }
   Refresh();
 }
 

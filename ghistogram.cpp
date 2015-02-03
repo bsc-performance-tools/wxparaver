@@ -1166,7 +1166,7 @@ void gHistogram::OnPopUpClone()
   }
 
   // Finally, execute
-  clonedGHistogram->execute();
+  clonedGHistogram->myHistogram->setRecalc( true );
 }
 
 
