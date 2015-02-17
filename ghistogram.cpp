@@ -1829,17 +1829,17 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     if( yBegin < 0 ) yBegin = 0;
     if( xEnd > zoomHisto->GetSize().GetWidth() - 5 ) xEnd = zoomHisto->GetSize().GetWidth() - 1;
     if( yEnd > zoomHisto->GetSize().GetHeight() ) yEnd = zoomHisto->GetSize().GetHeight() - 1;
-
+/*
     if ( !event.ControlDown() )
     {
       yBegin = 0;
       yEnd = zoomHisto->GetSize().GetHeight() - 1;
     }
-
+*/
     THistogramColumn columnBegin, columnEnd;
     TObjectOrder objectBegin, objectEnd;
     openControlGetParameters( xBegin, xEnd, yBegin, yEnd,
-                              columnBegin, columnEnd, objectBegin, objectEnd );
+                              columnBegin, columnEnd, objectBegin, objectEnd, event.ControlDown() );
 
     if ( openControlActivated )
     {
@@ -1862,7 +1862,7 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
 
 void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                            THistogramColumn& columnBegin, THistogramColumn& columnEnd,
-                                           TObjectOrder& objectBegin, TObjectOrder& objectEnd )
+                                           TObjectOrder& objectBegin, TObjectOrder& objectEnd, bool zoomxy )
 {
   columnBegin = myHistogram->getHorizontal() ? floor( xBegin / zoomCellWidth ) :
                                                floor( yBegin / zoomCellHeight );
@@ -1872,15 +1872,25 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
                                              floor( yEnd / zoomCellHeight );
   if( myHistogram->getControlDelta() == 1.0 && columnEnd > 0 ) --columnEnd;
   else if( columnEnd < 0 ) columnEnd = 0;
-  objectBegin = myHistogram->getHorizontal() ? floor( yBegin / zoomCellHeight ) :
-                                               floor( xBegin / zoomCellWidth );
-  if( objectBegin > 0 ) --objectBegin;
-  else if( objectBegin < 0 ) objectBegin = 0;
-  objectEnd = myHistogram->getHorizontal() ? floor( yEnd / zoomCellHeight ) :
-                                             floor( xEnd / zoomCellWidth );
-  if( objectEnd > 0 ) --objectEnd;
-  else if( objectEnd < 0 ) objectEnd = 0;
 
+  if( zoomxy )
+  {
+    objectBegin = myHistogram->getHorizontal() ? floor( yBegin / zoomCellHeight ) :
+                                                 floor( xBegin / zoomCellWidth );
+    if( objectBegin > 0 ) --objectBegin;
+    else if( objectBegin < 0 ) objectBegin = 0;
+    objectEnd = myHistogram->getHorizontal() ? floor( yEnd / zoomCellHeight ) :
+                                               floor( xEnd / zoomCellWidth );
+    if( objectEnd > 0 ) --objectEnd;
+    else if( objectEnd < 0 ) objectEnd = 0;
+  }
+  else
+  {
+    objectBegin = 0;
+    objectEnd = selectedRows.size() - 1;
+  }
+  
+  
   if( myHistogram->getHideColumns() )
   {
     vector<THistogramColumn> noVoidColumns;

@@ -402,7 +402,7 @@ private:
                    vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
   void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                  THistogramColumn& columnBegin, THistogramColumn& columnEnd,
-                                 TObjectOrder& objectBegin, TObjectOrder& objectEnd );
+                                 TObjectOrder& objectBegin, TObjectOrder& objectEnd, bool zoomxy  );
   void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
                           TObjectOrder objectBegin, TObjectOrder objectEnd );
   void zoom( THistogramLimit newColumnBegin, THistogramLimit newColumnEnd,
