@@ -97,26 +97,16 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
-
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
-
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
-
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
-
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
-
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
-
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -1106,11 +1096,15 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
            ( event.GetSize().GetWidth() != myWindow->getWidth() ||
              event.GetSize().GetHeight() != myWindow->getHeight() ) )
   {
+#ifndef WIN32
     if( !splitChanged )
     {
+#endif
       myWindow->setWidth( event.GetSize().GetWidth() );
       myWindow->setHeight( event.GetSize().GetHeight() );
+#ifndef WIN32
     }
+#endif
     timerSize->Start( 250, true );
   }
 }
@@ -2441,10 +2435,14 @@ void gTimeline::resizeDrawZone( int width, int height )
     this->SetClientSize( width, height );
   else
   {
+#ifdef WIN32
+  this->SetClientSize( width, height + /*infoZone->GetClientSize().GetHeight()*/infoZoneLastSize + 5 );
+#endif
     splitter->SetSashPosition( height );
+#ifndef WIN32
     drawZone->SetClientSize( width, height );
-    infoZone->SetClientSize( width, infoZoneLastSize );
     this->SetClientSize( width, height + infoZoneLastSize + 5 );
+#endif
   }
   myWindow->setWidth( width );
   myWindow->setHeight( height );
@@ -2493,6 +2491,7 @@ void gTimeline::Split()
   this->Freeze();
   splitter->SplitHorizontally( drawZone, infoZone, myWindow->getHeight() );
   resizeDrawZone( myWindow->getWidth(), myWindow->getHeight() );
+  infoZone->SetClientSize( myWindow->getWidth(), infoZoneLastSize );
   this->Thaw();
   canRedraw = true;
   splitChanged = true;
@@ -2967,10 +2966,14 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
   if( ready )
   {
+#ifdef WIN32
+    redraw();
+#else
     if( splitChanged )
       redraw();
     else
       myWindow->setRedraw( true );
+#endif
   }
   Refresh();
 }
