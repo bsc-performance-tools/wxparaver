@@ -167,14 +167,14 @@ protected:
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
 
   const wxString getHtmlIndex( const wxString& path );
-  const wxString getTitle( int numTutorial, const wxString& path );
   void appendHelpContents( const wxString& title, const wxString& path, wxString& htmlDoc );
   bool helpContentsFound( wxArrayString & tutorials );
-  void buildIndexTemplate( wxString title, wxString filePrefix );
-  void buildIndex();
-
-  void htmlMessage( wxString& htmlDoc );
   bool DetectHelpContentsIndexInPath( const wxString& whichTutorial );
+  
+  virtual const wxString getTitle( int numTutorial, const wxString& path );
+  virtual void buildIndexTemplate( wxString title, wxString filePrefix );
+  virtual void buildIndex();
+  virtual void htmlMessage( wxString& htmlDoc );
 };
 
 
@@ -195,8 +195,10 @@ class TutorialsBrowser: public HelpContents
                       long style = SYMBOL_HELPCONTENTS_STYLE );
     ~TutorialsBrowser();
   
-    const wxString getTitle( int numTutorial, const wxString& path );
     void OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event );
+    
+  protected:
+    const wxString getTitle( int numTutorial, const wxString& path );
     void buildIndex();
     void htmlMessage( wxString& htmlDoc );
 };

@@ -68,12 +68,17 @@ BEGIN_EVENT_TABLE( HelpContents, wxDialog )
 
 ////@begin HelpContents event table entries
   EVT_HTML_LINK_CLICKED( ID_HTMLWINDOW, HelpContents::OnHtmlwindowLinkClicked )
+
   EVT_BUTTON( ID_BUTTON_INDEX, HelpContents::OnButtonIndexClick )
+
   EVT_BUTTON( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackUpdate )
+
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardUpdate )
+
   EVT_BUTTON( ID_BUTTON_CLOSE, HelpContents::OnButtonCloseClick )
+
 ////@end HelpContents event table entries
 
 END_EVENT_TABLE()
@@ -611,9 +616,11 @@ TutorialsBrowser::TutorialsBrowser( wxWindow* parent,
                                     const wxString& caption,
                                     const wxPoint& pos,
                                     const wxSize& size,
-                                    long style) :
-        HelpContents( parent, whichHelpContentsRoot, id, caption, pos, size, style )
+                                    long style)
 {
+  helpContentsRoot = whichHelpContentsRoot;
+  Init();
+  Create(parent, id, caption, pos, size, style);
 }
 
 
@@ -790,60 +797,4 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 void TutorialsBrowser::buildIndex()
 {
   buildIndexTemplate( wxString( wxT( "Tutorials" ) ), wxString( wxT( "tutorials" ) ) );
-/*
-  // write html index
-  wxString tutorialsHtmlIndex, tutorialsList;
-  tutorialsHtmlIndex += _("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
-  tutorialsHtmlIndex += _("<HTML>");
-  tutorialsHtmlIndex += _("<HEAD>");
-  tutorialsHtmlIndex += _("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=us-ascii\" />");
-  tutorialsHtmlIndex += _("<TITLE>Tutorials</TITLE>");
-  tutorialsHtmlIndex += _("</HEAD>");
-  tutorialsHtmlIndex += _("<BODY>");
-
-  tutorialsHtmlIndex += _("<P ALIGN=LEFT><IMG SRC=\"memory:logoBSC.xpm\" NAME=\"logoBSC\" ALIGN=BOTTOM BORDER=0></P>" );
-
-  wxArrayString tutorials;
-  if ( helpContentsFound( tutorials ) )
-  {  
-    // Order them: every tutorial dir must have a numbered prefix
-    //   tutorialsPath/ #_title_bla_bla /index.html
-    tutorials.Sort();
-    int numTutorials = int( tutorials.GetCount() );
-    
-    for( int i = 0; i < numTutorials; ++i )
-    {
-      appendHelpContents( getTitle( numTutorials, tutorials[ i ] ),
-                      getHtmlIndex( tutorials[ i ] ),
-                      tutorialsList );
-    }
-
-    tutorialsList += _("</UL>");
-
-    tutorialsHtmlIndex += _("<P><H3><B>Index</B></H3></P>");
-    tutorialsHtmlIndex += tutorialsList;
-  }
-  else
-  {
-    htmlMessage( tutorialsHtmlIndex );
-  }
-
-  // close html index
-  tutorialsHtmlIndex += _("</BODY></HTML>");
-
-  wxString indexFileName = wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) + 
-                           wxString( wxFileName::GetPathSeparator() ) +
-                           wxT( "index.html" );
-  wxFile indexFile( indexFileName, wxFile::write );
-  if ( indexFile.IsOpened() )
-  {
-    indexFile.Write( tutorialsHtmlIndex );
-    indexFile.Close();
-    htmlWindow->LoadPage( indexFileName );
-  }
-  else
-  {
-    htmlWindow->SetPage( tutorialsHtmlIndex );
-  }
-  */
 }
