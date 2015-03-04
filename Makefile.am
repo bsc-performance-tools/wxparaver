@@ -146,6 +146,5 @@ dist-hook:
 
 installcheck-local:
 	test -f $(bindir)/wxparaver && \
-	test -f $(bindir)/paramedir && \
 	echo "  [wxparaver][bin] Installed " || ( echo "  [wxparaver][bin] Check failed!!!" && exit 1 )
 

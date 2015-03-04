@@ -355,7 +355,7 @@ bool wxparaverApp::OnInit()
                                     wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
                                     wxID_ANY,
                                     _("Tutorials") ) );
-    
+ asdfasdfasdf   
     if ( !mainWindow->GetTutorialsWindow()->SetHelpContents( tmpTutorial ) )
       wxMessageBox( wxT( "Unable to find index.html in tutorial dir.\n\n"
                           "Please check whole path or create/place index.html file." ),
