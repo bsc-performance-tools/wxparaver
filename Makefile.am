@@ -144,3 +144,5 @@ dist-hook:
 	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(distdir)/docs/quick_reference
 	cp -f ./docs/quick_reference/img/*.png                     $(distdir)/docs/quick_reference/img
 
+installcheck-local:
+	test -f $(bindir)/wxparaver && echo "INSTALLED"
