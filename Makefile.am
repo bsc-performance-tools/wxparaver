@@ -145,4 +145,7 @@ dist-hook:
 	cp -f ./docs/quick_reference/img/*.png                     $(distdir)/docs/quick_reference/img
 
 installcheck-local:
-	test -f $(bindir)/wxparaver && echo "INSTALLED"
+	test -f $(bindir)/wxparaver && \
+	test -f $(bindir)/paramedir && \
+	echo "  [wxparaver][bin] Installed " || ( echo "  [wxparaver][bin] Check failed!!!" && exit 1 )
+
