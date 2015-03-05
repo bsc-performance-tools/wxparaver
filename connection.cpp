@@ -66,22 +66,32 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
                               int WXUNUSED( size ),
                               wxIPCFormat WXUNUSED( format ) )
 {
-  wxString filename( data );
-
-  if( filename.IsEmpty() )
+  wxString dataStr( data );
+  static wxString tmpCommand;
+  
+  if( dataStr.IsEmpty() )
   {
     if( wxparaverApp::mainWindow )
       wxparaverApp::mainWindow->Raise();
   }
-  else if( filename == wxT( "BEGIN" ) )
+  else if( dataStr == wxT( "BEGIN" ) )
   {
     wxparaverApp::mainWindow->SetCanServeSignal( false );
+    tmpCommand.Clear();
   }
-  else if( filename == wxT( "END" ) )
+  else if( dataStr == wxT( "END" ) )
   {
     wxparaverApp::mainWindow->SetCanServeSignal( true );
+    wxCmdLineParser tmpLine( wxparaverApp::argumentsParseSyntax, tmpCommand );
+        std::cout << tmpCommand << std::endl;
+
+    wxGetApp().ParseCommandLine( tmpLine );
   }
-  else if( filename[ 0 ] == '-' )
+  else
+  {
+    tmpCommand += dataStr + wxT( " " );
+  }
+/*  else if( filename[ 0 ] == '-' )
   {
     if( filename != wxT( "-h" ) && filename != wxT( "--help" ) )
     {
@@ -100,6 +110,6 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   {
     wxparaverApp::mainWindow->enqueueFile( string( filename.mb_str() ) );
   }
-  
+*/  
   return true;
 }

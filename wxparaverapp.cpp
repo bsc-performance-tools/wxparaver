@@ -88,6 +88,53 @@ BEGIN_EVENT_TABLE( wxparaverApp, wxApp )
 
 END_EVENT_TABLE()
 
+wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
+{
+  { wxCMD_LINE_SWITCH, 
+    wxT("v"),
+    wxT("version"),
+    wxT("Show wxparaver version.") },
+
+  { wxCMD_LINE_SWITCH, 
+    wxT("h"),
+    wxT("help"),
+    wxT("Show this help."),
+    wxCMD_LINE_VAL_NONE,
+    wxCMD_LINE_OPTION_HELP },
+
+  { wxCMD_LINE_SWITCH, 
+    wxT("i"),
+    wxT("image"),
+    wxT("Save cfg last window as an image"),
+    wxCMD_LINE_VAL_NONE,
+    wxCMD_LINE_PARAM_OPTIONAL },
+
+  { wxCMD_LINE_OPTION, 
+    wxT("e"),
+    wxT("event"),
+    wxT("Event type to code linking."),
+    wxCMD_LINE_VAL_NUMBER,
+    wxCMD_LINE_PARAM_OPTIONAL },
+
+  { wxCMD_LINE_OPTION, 
+    wxT("t"),
+    wxT("tutorial"),
+    wxT("Load tutorial. <str> can be the path to the tutorial "
+        "containing the index.html file, or the whole url, like "
+        "path/file.html (then, other names than 'index' are allowed)."),
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
+
+   { wxCMD_LINE_PARAM, 
+    NULL,
+    NULL,
+    wxT( "(trace.prv | trace.prv.gz) (configuration.cfg)" ),
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
+
+  { wxCMD_LINE_NONE }
+};
+
 
 /*!
  * Constructor for wxparaverApp
@@ -198,47 +245,6 @@ bool wxparaverApp::OnInit()
 #ifdef TRACING_ENABLED
   Extrae_init();
 #endif
-  wxCmdLineEntryDesc argumentsParseSyntax[] =
-  {
-    { wxCMD_LINE_SWITCH, 
-      wxT("v"),
-      wxT("version"),
-      wxT("Show wxparaver version."),
-      wxCMD_LINE_VAL_STRING },
-
-    { wxCMD_LINE_SWITCH, 
-      wxT("h"),
-      wxT("help"),
-      wxT("Show this help."),
-      wxCMD_LINE_VAL_STRING,
-      wxCMD_LINE_OPTION_HELP },
-
-    { wxCMD_LINE_OPTION, 
-      wxT("e"),
-      wxT("event"),
-      wxT("Event type to code linking."),
-      wxCMD_LINE_VAL_NUMBER,
-      wxCMD_LINE_PARAM_OPTIONAL },
-
-    { wxCMD_LINE_OPTION, 
-      wxT("t"),
-      wxT("tutorial"),
-      wxT("Load tutorial. <str> can be the path to the tutorial "
-          "containing the index.html file, or the whole url, like "
-          "path/file.html (then, other names than 'index' are allowed)."),
-      wxCMD_LINE_VAL_STRING,
-      wxCMD_LINE_PARAM_OPTIONAL },
-
-     { wxCMD_LINE_PARAM, 
-      NULL,
-      NULL,
-      wxT( "(trace.prv | trace.prv.gz) (configuration.cfg)" ),
-      wxCMD_LINE_VAL_STRING,
-      wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
-
-    { wxCMD_LINE_NONE }
-  };
-
   wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
   if ( paraverCommandLineParser.Parse( false ) != 0 )
   {
@@ -301,11 +307,25 @@ bool wxparaverApp::OnInit()
       if( connection )
       {
         connection->Execute( wxT( "BEGIN" ) );
-        for( int i = 1; i < argc; ++i )
+        for( int i = 0; i < argc; ++i )
         {
-          wxFileName tmpFile( argv[ i ] );
-          tmpFile.Normalize();
-          connection->Execute( tmpFile.GetFullPath().c_str() );
+          if ( argv[i][0] == '-' )
+          {
+            connection->Execute( argv[i] );
+          }
+          else
+          {
+            if ( wxFileName::FileExists( wxT( argv[ i ] ) ) )
+            {
+              wxFileName tmpFile( argv[ i ] );
+              tmpFile.Normalize();
+              connection->Execute( tmpFile.GetFullPath().c_str() );
+            }
+            else
+            {
+              connection->Execute( argv[i] );
+            }
+          }          
         }
         connection->Execute( wxT( "END" ) );
         connection->Disconnect();
@@ -338,10 +358,21 @@ bool wxparaverApp::OnInit()
   wxSize mainWindowSize( ParaverConfig::getInstance()->getMainWindowWidth(),
                          ParaverConfig::getInstance()->getMainWindowHeight() );
   mainWindow = new paraverMain( NULL, SYMBOL_PARAVERMAIN_IDNAME, SYMBOL_PARAVERMAIN_TITLE, SYMBOL_PARAVERMAIN_POSITION, mainWindowSize );
-  //mainWindow = new paraverMain( NULL );
 
   mainWindow->Show(true);
 
+  ParseCommandLine( paraverCommandLineParser );
+
+#ifndef WIN32
+  presetUserSignals();
+#endif
+
+  return true;
+}
+
+
+void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )  
+{
   long int tmpType;
   if( paraverCommandLineParser.Found( wxT("e"), &tmpType ) )
     eventTypeForCode = tmpType;
@@ -365,20 +396,6 @@ bool wxparaverApp::OnInit()
   }
   
   mainWindow->commandLineLoadings( paraverCommandLineParser );
-
-/*
-  paraverMain *mainWindow;
-  mainWindow = new paraverMain( NULL );
-
-  mainWindow->Show(true);
-
-  mainWindow->commandLineLoadings( paraverCommandLineParser );
-*/
-#ifndef WIN32
-  presetUserSignals();
-#endif
-
-  return true;
 }
 
 

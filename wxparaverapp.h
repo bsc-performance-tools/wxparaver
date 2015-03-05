@@ -67,6 +67,7 @@ class stServer;
 ////@begin control identifiers
 ////@end control identifiers
 
+
 /*!
  * wxparaverApp class declaration
  */
@@ -98,6 +99,8 @@ public:
 
     void ActivateGlobalTiming( wxDialog* whichDialog );
     void DeactivateGlobalTiming();
+    
+    void ParseCommandLine( wxCmdLineParser& paraverCommandLineParser );
 
 ////@begin wxparaverApp event handler declarations
 
@@ -126,7 +129,8 @@ public:
 ////@end wxparaverApp member function declarations
 
     static paraverMain* mainWindow;
-
+    static wxCmdLineEntryDesc argumentsParseSyntax[];
+    
 ////@begin wxparaverApp member variables
 private:
 	TEventType eventTypeForCode;
