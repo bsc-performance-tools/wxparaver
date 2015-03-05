@@ -25,7 +25,7 @@ else
   echo; echo "[UPDATE-VERSION] ERROR: configure.ac not found!"
 fi
 
-if [ -f "configure.ac" ]; then
+if [ -f "paravermain.h" ]; then
   cp paravermain.h paravermain.h.oldvers
   export TAG_CONF=VERSION
   awk -F ' ' \
