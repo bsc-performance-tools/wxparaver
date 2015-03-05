@@ -22,8 +22,7 @@ if [ -f "configure.ac" ]; then
   echo; echo "[UPDATE-VERSION] Changes in configure.ac:"
   diff -s configure.ac.oldvers configure.ac
 else
-  echo; echo "[UPDATE-VERSION] ERROR: configure.ac not found!"; echo
-  exit 1
+  echo; echo "[UPDATE-VERSION] ERROR: configure.ac not found!"
 fi
 
 if [ -f "paravermain.h" ]; then
@@ -35,10 +34,11 @@ if [ -f "paravermain.h" ]; then
   mv paravermain.h.newchgvers paravermain.h
   echo; echo "[UPDATE-VERSION] Changes in paravermain.h:"
   diff -s paravermain.h.oldvers paravermain.h
+  echo
 else
-  echo; echo "[UPDATE-VERSION] ERROR: paravermain.h not found!"; echo
+  echo; echo "[UPDATE-VERSION] ERROR: paravermain.h not found!"
+  echo
   exit 1
 fi
 
-echo
 
