@@ -82,9 +82,10 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   else if( dataStr == wxT( "END" ) )
   {
     wxparaverApp::mainWindow->SetCanServeSignal( true );
-    wxCmdLineParser tmpLine( wxparaverApp::argumentsParseSyntax, tmpCommand );
-        std::cout << tmpCommand << std::endl;
-
+    wxCmdLineParser tmpLine( wxparaverApp::argumentsParseSyntax/*, tmpCommand*/ );
+    tmpLine.SetCmdLine( tmpCommand );
+    tmpLine.Parse();
+    
     wxGetApp().ParseCommandLine( tmpLine );
   }
   else

@@ -307,15 +307,16 @@ bool wxparaverApp::OnInit()
       if( connection )
       {
         connection->Execute( wxT( "BEGIN" ) );
-        for( int i = 0; i < argc; ++i )
+        connection->Execute( argv[ 0 ] );
+        for( int i = 1; i < argc; ++i )
         {
-          if ( argv[i][0] == '-' )
+          if ( argv[ i ][ 0 ] == '-' )
           {
-            connection->Execute( argv[i] );
+            connection->Execute( argv[ i ] );
           }
           else
           {
-            if ( wxFileName::FileExists( wxT( argv[ i ] ) ) )
+            if ( wxFileName::FileExists( argv[ i ] ) ) 
             {
               wxFileName tmpFile( argv[ i ] );
               tmpFile.Normalize();
@@ -323,7 +324,7 @@ bool wxparaverApp::OnInit()
             }
             else
             {
-              connection->Execute( argv[i] );
+              connection->Execute( argv[ i ] );
             }
           }          
         }
@@ -374,18 +375,18 @@ bool wxparaverApp::OnInit()
 void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )  
 {
   long int tmpType;
-  if( paraverCommandLineParser.Found( wxT("e"), &tmpType ) )
+  if( paraverCommandLineParser.Found( wxT( "e" ), &tmpType ) )
     eventTypeForCode = tmpType;
 
   wxString tmpTutorial;    
-  if ( paraverCommandLineParser.Found( wxT("t"), &tmpTutorial ) )
+  if ( paraverCommandLineParser.Found( wxT( "t" ), &tmpTutorial ) )
   {
     if ( mainWindow->GetTutorialsWindow() == NULL )
       mainWindow->SetTutorialsWindow( 
               new TutorialsBrowser( mainWindow,
                                     wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
                                     wxID_ANY,
-                                    _("Tutorials") ) );
+                                    _( "Tutorials" ) ) );
  
     if ( !mainWindow->GetTutorialsWindow()->SetHelpContents( tmpTutorial ) )
       wxMessageBox( wxT( "Unable to find index.html in tutorial dir.\n\n"
