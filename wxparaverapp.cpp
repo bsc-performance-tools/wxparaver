@@ -53,6 +53,8 @@
 #include <wx/filename.h>
 #include "sessionsaver.h"
 #include "helpcontents.h"
+#include "gtimeline.h"
+#include "ghistogram.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -374,6 +376,83 @@ bool wxparaverApp::OnInit()
 
 void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )  
 {
+  if ( paraverCommandLineParser.Found( wxT( "i" ) ) )
+  {
+    string fileName;
+    Trace *currentTrace = NULL;
+    for ( unsigned int i = 0; i < paraverCommandLineParser.GetParamCount(); ++i )
+    {
+      fileName = paraverCommandLineParser.GetParam( i ).mb_str();
+      
+      if ( Trace::isTraceFile( fileName ) )
+      {
+        if( currentTrace != NULL )
+          delete currentTrace;
+
+        wxFileName tmpFileName( wxString( fileName.c_str(), wxConvUTF8 ) );
+          
+#ifdef WIN32
+        tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                               wxPATH_NORM_LONG );
+#else
+        tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                               wxPATH_NORM_LONG | wxPATH_NORM_TILDE );
+#endif
+
+        string tmpPath = std::string( tmpFileName.GetFullPath().mb_str() );
+      
+        currentTrace = Trace::create( mainWindow->GetLocalKernel(), tmpPath, false, NULL );
+      }
+      else if ( CFGLoader::isCFGFile( fileName ) && currentTrace != NULL )
+      {
+        vector<Window *> newWindows;
+        vector<Histogram *> newHistograms;
+        SaveOptions options;
+
+        if( CFGLoader::loadCFG( mainWindow->GetLocalKernel(), fileName, currentTrace,
+                                newWindows, newHistograms, options ) )
+        {
+          if( !newHistograms.empty() )
+          {
+            // save histogram image
+          }
+          else
+          {
+            // save timeline image
+            Window *window = newWindows.back();
+            window->setRedraw( false );
+            string composedName = window->getName() + " @ " +
+                                  window->getTrace()->getTraceName();
+
+            wxPoint tmpPos( window->getPosX(), window->getPosY() );
+            gTimeline* tmpTimeline = new gTimeline( mainWindow, wxID_ANY, wxString::FromAscii( composedName.c_str() ), tmpPos );
+            tmpTimeline->SetMyWindow( window );
+            tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
+            
+            tmpTimeline->redraw();
+            tmpTimeline->saveImage( false );
+            delete tmpTimeline;
+            newWindows.pop_back();
+          }
+
+          for( vector<Histogram *>::iterator it = newHistograms.begin();
+               it != newHistograms.end(); ++it )
+            delete (*it);
+          newHistograms.clear();
+
+          for( vector<Window *>::iterator it = newWindows.begin();
+               it != newWindows.end(); ++it )
+            delete (*it);
+          newWindows.clear();
+        }
+      }
+
+      fileName.erase();
+    }
+    mainWindow->Close();
+    return;
+  }
+
   long int tmpType;
   if( paraverCommandLineParser.Found( wxT( "e" ), &tmpType ) )
     eventTypeForCode = tmpType;

@@ -458,7 +458,7 @@ public:
   
   bool IsSplit() const;
 
-  void saveImage();
+  void saveImage( bool showSaveDialog = true );
   void saveText();
   void saveCFG();
 

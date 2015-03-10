@@ -2744,7 +2744,7 @@ wxString gTimeline::buildFormattedFileName() const
 }
 
 
-void gTimeline::saveImage()
+void gTimeline::saveImage( bool showSaveDialog )
 {
   wxString imageName;
   wxString tmpSuffix;
@@ -2758,133 +2758,139 @@ void gTimeline::saveImage()
   defaultDir = _("./");
 #endif
 
+  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   tmpSuffix = _(".") +
-          wxString::FromAscii( LabelConstructor::getImageFileSuffix(
-                  ParaverConfig::getInstance()->getTimelineSaveImageFormat() ).c_str() );
+          wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
 
-  // Builds following wildcard, but the 'E' in JPEG  
-  // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
-  wxString tmpWildcard;
-  for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
-  {
-    wxString currentFormat =
-          wxString::FromAscii( LabelConstructor::getImageFileSuffix(
-                  ParaverConfig::TImageFormat( i ) ).c_str() );
-    tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
-  }
-  tmpWildcard = tmpWildcard.BeforeLast( '|' );
-
-  wxFileDialog saveDialog( this,
-                           _("Save Image"),
-                           defaultDir,
-                           imageName + tmpSuffix,
-                           tmpWildcard,
-                           wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR );
-
-  saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveImageFormat() );
-  if ( saveDialog.ShowModal() == wxID_OK )
-  {
-    // Build image to be saved as: title image + timeline image
-
-    // Get title
-    wxString longTitle = wxString::FromAscii(
-            ( myWindow->getName() + " @ " +
-              myWindow->getTrace()->getTraceNameNumbered() ).c_str());
-    wxString shortTitle = wxString::FromAscii( ( myWindow->getName() ).c_str() );
-    wxString writtenTitle = longTitle;
-
-    // Get colors
-    wxColour foregroundColour = GetForegroundColour();
-    wxColour backgroundColour = GetBackgroundColour();
-
-    // Get font
-    wxFont titleFont = semanticFont;
-
-    // Get dimensions
-    wxImage img = drawImage.ConvertToImage();
-    int timelineWidth = img.GetWidth();
-    int timelineHeight = img.GetHeight();
-
-    int titleMargin = 5; // used in 4 sides
-    int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
-    int titleWidth = timelineWidth;
-    int titleWritableWidth = titleWidth - ( 2 * titleMargin );
-
-    int imageHeigth = titleHeigth + timelineHeight;
-    int imageWidth = timelineWidth;
-
-    // Build DC for title
-    wxBitmap titleBitmap( titleWidth, titleHeigth );
-    wxMemoryDC titleDC( titleBitmap );
-
-    // Set font and check if using it the title will fit
-    titleDC.SetFont( titleFont );
-    wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
-
-    if ( titleSize.GetWidth() > titleWritableWidth )
-    {
-      titleSize = titleDC.GetTextExtent( shortTitle );
-      writtenTitle = shortTitle;
-    }
-
-    // Set colors
-    titleDC.SetBackground( wxBrush( backgroundColour ) );
-    titleDC.Clear();
-
-    titleDC.SetPen( wxPen( backgroundColour, 1 ) );
-    titleDC.SetTextBackground( backgroundColour );
-    titleDC.SetTextForeground( foregroundColour );
-
-    // Compute title image size
-    titleDC.DrawText( writtenTitle, titleMargin, titleMargin );
-
-    wxBitmap imageBitmap( imageWidth, imageHeigth );
-    wxMemoryDC imageDC( imageBitmap );
-    wxCoord xsrc = 0;
-    wxCoord ysrc = 0;
-    wxCoord xdst = 0;
-    wxCoord ydst = 0;
-    imageDC.Blit( xdst, ydst, titleWidth, titleHeigth, &titleDC, xsrc, ysrc );
+  wxString imagePath = imageName + tmpSuffix;
   
-    wxMemoryDC timelineDC( drawImage );
-    xsrc = 0;
-    ysrc = 0;
-    xdst = 0;
-    ydst = titleHeigth;
-    imageDC.Blit( xdst, ydst, timelineWidth, timelineHeight, &timelineDC, xsrc, ysrc );
-
-    // Get extension and save
-    wxImage baseLayer = imageBitmap.ConvertToImage();
-    tmpSuffix = _(".") +
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ) ).c_str() );
-
-    long imageType;
-    switch( ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ) )
+  if( showSaveDialog )
+  {
+    // Builds following wildcard, but the 'E' in JPEG  
+    // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+    wxString tmpWildcard;
+    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
     {
-      case ParaverConfig::BMP:
-        imageType =  wxBITMAP_TYPE_BMP;
-        break;
-      case ParaverConfig::JPG:
-        imageType =  wxBITMAP_TYPE_JPEG;
-        break;
-      case ParaverConfig::PNG:
-        imageType =  wxBITMAP_TYPE_PNG;
-        break;
-      case ParaverConfig::XPM:
-        imageType = wxBITMAP_TYPE_XPM;
-        break;
-      default:
-        imageType =  wxBITMAP_TYPE_PNG;
-        break;
+      wxString currentFormat =
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                    ParaverConfig::TImageFormat( i ) ).c_str() );
+      tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
     }
+    tmpWildcard = tmpWildcard.BeforeLast( '|' );
 
-    if ( saveDialog.GetPath().EndsWith( tmpSuffix )) 
-//       || saveDialog.GetPath().EndsWith( wxString( tmpSuffix ).MakeUpper() ) )
-      baseLayer.SaveFile( saveDialog.GetPath(), imageType );
-    else
-      baseLayer.SaveFile( saveDialog.GetPath() + tmpSuffix , imageType );
+    wxFileDialog saveDialog( this,
+                             _("Save Image"),
+                             defaultDir,
+                             imageName + tmpSuffix,
+                             tmpWildcard,
+                             wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR );
+
+    saveDialog.SetFilterIndex( filterIndex );
+    if ( saveDialog.ShowModal() != wxID_OK )
+      return;
+      
+    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    imagePath = saveDialog.GetPath();
   }
+  
+  // Build image to be saved as: title image + timeline image
+
+  // Get title
+  wxString longTitle = wxString::FromAscii(
+          ( myWindow->getName() + " @ " +
+            myWindow->getTrace()->getTraceNameNumbered() ).c_str());
+  wxString shortTitle = wxString::FromAscii( ( myWindow->getName() ).c_str() );
+  wxString writtenTitle = longTitle;
+
+  // Get colors
+  wxColour foregroundColour = GetForegroundColour();
+  wxColour backgroundColour = GetBackgroundColour();
+
+  // Get font
+  wxFont titleFont = semanticFont;
+
+  // Get dimensions
+  wxImage img = drawImage.ConvertToImage();
+  int timelineWidth = img.GetWidth();
+  int timelineHeight = img.GetHeight();
+
+  int titleMargin = 5; // used in 4 sides
+  int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
+  int titleWidth = timelineWidth;
+  int titleWritableWidth = titleWidth - ( 2 * titleMargin );
+
+  int imageHeigth = titleHeigth + timelineHeight;
+  int imageWidth = timelineWidth;
+
+  // Build DC for title
+  wxBitmap titleBitmap( titleWidth, titleHeigth );
+  wxMemoryDC titleDC( titleBitmap );
+
+  // Set font and check if using it the title will fit
+  titleDC.SetFont( titleFont );
+  wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
+
+  if ( titleSize.GetWidth() > titleWritableWidth )
+  {
+    titleSize = titleDC.GetTextExtent( shortTitle );
+    writtenTitle = shortTitle;
+  }
+
+  // Set colors
+  titleDC.SetBackground( wxBrush( backgroundColour ) );
+  titleDC.Clear();
+
+  titleDC.SetPen( wxPen( backgroundColour, 1 ) );
+  titleDC.SetTextBackground( backgroundColour );
+  titleDC.SetTextForeground( foregroundColour );
+
+  // Compute title image size
+  titleDC.DrawText( writtenTitle, titleMargin, titleMargin );
+
+  wxBitmap imageBitmap( imageWidth, imageHeigth );
+  wxMemoryDC imageDC( imageBitmap );
+  wxCoord xsrc = 0;
+  wxCoord ysrc = 0;
+  wxCoord xdst = 0;
+  wxCoord ydst = 0;
+  imageDC.Blit( xdst, ydst, titleWidth, titleHeigth, &titleDC, xsrc, ysrc );
+
+  wxMemoryDC timelineDC( drawImage );
+  xsrc = 0;
+  ysrc = 0;
+  xdst = 0;
+  ydst = titleHeigth;
+  imageDC.Blit( xdst, ydst, timelineWidth, timelineHeight, &timelineDC, xsrc, ysrc );
+
+  // Get extension and save
+  wxImage baseLayer = imageBitmap.ConvertToImage();
+  tmpSuffix = _(".") +
+          wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+
+  long imageType;
+  switch( filterIndex )
+  {
+    case ParaverConfig::BMP:
+      imageType =  wxBITMAP_TYPE_BMP;
+      break;
+    case ParaverConfig::JPG:
+      imageType =  wxBITMAP_TYPE_JPEG;
+      break;
+    case ParaverConfig::PNG:
+      imageType =  wxBITMAP_TYPE_PNG;
+      break;
+    case ParaverConfig::XPM:
+      imageType = wxBITMAP_TYPE_XPM;
+      break;
+    default:
+      imageType =  wxBITMAP_TYPE_PNG;
+      break;
+  }
+
+  if ( imagePath.EndsWith( tmpSuffix )) 
+    baseLayer.SaveFile( imagePath, imageType );
+  else
+    baseLayer.SaveFile( imagePath + tmpSuffix , imageType );
 }
 
 
