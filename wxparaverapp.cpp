@@ -417,17 +417,17 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             // save histogram image
             Histogram *histo = newHistograms.back();
             histo->setRedraw( false );
-            histo->setZoom( true );
             string composedName = histo->getName() + " @ " +
                                   histo->getControlWindow()->getTrace()->getTraceName();
                                   
             gHistogram* tmpGHisto = new gHistogram( mainWindow, wxID_ANY, wxString::FromAscii( composedName.c_str() ) );
             tmpGHisto->SetHistogram( histo );
-            
+
+            histo->setZoom( true );
+            histo->setRecalc( true );
             tmpGHisto->Show();
-            //tmpGHisto->Update();
-            
-            //tmpGHisto->updateHistogram();
+            tmpGHisto->updateHistogram();
+
             tmpGHisto->saveImage( false );
             
             delete tmpGHisto;
