@@ -354,12 +354,13 @@ public:
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
   
   void saveCFG();
-  void saveImage();
+  void saveImage( bool showSaveDialog = true );
   void saveText( bool onlySelectedPlane = false );
 
   void rightDownManager();
 
   static wxProgressDialog *dialogProgress;
+  void updateHistogram();
 
 ////@begin gHistogram member variables
   wxBoxSizer* mainSizer;
@@ -395,7 +396,7 @@ private:
   // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
 
-  void updateHistogram();
+//  void updateHistogram();
   void OnTimerZoom( wxTimerEvent& event );
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 

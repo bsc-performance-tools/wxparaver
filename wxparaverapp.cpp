@@ -415,6 +415,23 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
           if( !newHistograms.empty() )
           {
             // save histogram image
+            Histogram *histo = newHistograms.back();
+            histo->setRedraw( false );
+            histo->setZoom( true );
+            string composedName = histo->getName() + " @ " +
+                                  histo->getControlWindow()->getTrace()->getTraceName();
+                                  
+            gHistogram* tmpGHisto = new gHistogram( mainWindow, wxID_ANY, wxString::FromAscii( composedName.c_str() ) );
+            tmpGHisto->SetHistogram( histo );
+            
+            tmpGHisto->Show();
+            //tmpGHisto->Update();
+            
+            //tmpGHisto->updateHistogram();
+            tmpGHisto->saveImage( false );
+            
+            delete tmpGHisto;
+            newHistograms.pop_back();
           }
           else
           {
@@ -431,6 +448,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             
             tmpTimeline->redraw();
             tmpTimeline->saveImage( false );
+            
             delete tmpTimeline;
             newWindows.pop_back();
           }
