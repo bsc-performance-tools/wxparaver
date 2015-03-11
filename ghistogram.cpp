@@ -118,33 +118,48 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_SIZE( gHistogram::OnSize )
   EVT_IDLE( gHistogram::OnIdle )
+
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
+
   EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
   EVT_GRID_LABEL_LEFT_CLICK( gHistogram::OnLabelLeftClick )
   EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
   EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
+
   EVT_UPDATE_UI( wxID_CONTROLWARNING, gHistogram::OnControlWarningUpdate )
+
   EVT_UPDATE_UI( wxID_3DWARNING, gHistogram::On3dWarningUpdate )
+
   EVT_MENU( ID_TOOL_OPEN_CONTROL_WINDOW, gHistogram::OnToolOpenControlWindowClick )
+
   EVT_MENU( ID_TOOL_OPEN_DATA_WINDOW, gHistogram::OnToolOpenDataWindowClick )
+
   EVT_MENU( ID_TOOL_OPEN_EXTRA_WINDOW, gHistogram::OnToolOpenExtraWindowClick )
   EVT_UPDATE_UI( ID_TOOL_OPEN_EXTRA_WINDOW, gHistogram::OnToolOpenExtraWindowUpdate )
+
   EVT_MENU( ID_TOOLZOOM, gHistogram::OnToolzoomClick )
   EVT_UPDATE_UI( ID_TOOLZOOM, gHistogram::OnToolzoomUpdate )
+
   EVT_MENU( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, gHistogram::OnToolOpenFilteredControlWindowClick )
   EVT_UPDATE_UI( ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, gHistogram::OnToolOpenFilteredControlWindowUpdate )
+
   EVT_MENU( ID_TOOLGRADIENT, gHistogram::OnToolgradientClick )
   EVT_UPDATE_UI( ID_TOOLGRADIENT, gHistogram::OnToolgradientUpdate )
+
   EVT_MENU( ID_TOOLHORIZVERT, gHistogram::OnToolhorizvertClick )
   EVT_UPDATE_UI( ID_TOOLHORIZVERT, gHistogram::OnToolhorizvertUpdate )
+
   EVT_MENU( ID_TOOL_HIDE_COLUMNS, gHistogram::OnToolHideColumnsClick )
   EVT_UPDATE_UI( ID_TOOL_HIDE_COLUMNS, gHistogram::OnToolHideColumnsUpdate )
+
   EVT_MENU( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsClick )
   EVT_UPDATE_UI( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsUpdate )
+
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
+
 ////@end gHistogram event table entries
   
   EVT_TIMER( wxID_ANY, gHistogram::OnTimerZoom )
@@ -284,7 +299,7 @@ void gHistogram::CreateControls()
   itemStaticBitmap9->Show(false);
   warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
 
-  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(20, 21, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -2365,7 +2380,7 @@ void gHistogram::saveImage()
   wxString tmpSuffix;
   wxString defaultDir;
 
-  wxString fileName = buildFormattedFileName();
+  imageName = buildFormattedFileName();
 
 #ifdef WIN32
   defaultDir = _(".\\");
@@ -2375,25 +2390,36 @@ void gHistogram::saveImage()
   tmpSuffix = _(".") +
           wxString::FromAscii( LabelConstructor::getImageFileSuffix(
                   ParaverConfig::getInstance()->getHistogramSaveImageFormat() ).c_str() );
+  wxString imagePath = imageName + tmpSuffix;
+
 
   // Builds following wildcard, but the 'E' in JPEG  
   // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+  // Also build extensions vector -> FileDialogExtension
   wxString tmpWildcard;
+  std::vector< wxString > extensions;
   for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
   {
     wxString currentFormat =
           wxString::FromAscii( LabelConstructor::getImageFileSuffix(
                   ParaverConfig::TImageFormat( i ) ).c_str() );
+                  
+    extensions.push_back( currentFormat );
+                  
     tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
   }
   tmpWildcard = tmpWildcard.BeforeLast( '|' );
 
-  wxFileDialog saveDialog( this,
+  FileDialogExtension saveDialog( this,
                            _("Save Image"),
                            defaultDir,
-                           fileName + tmpSuffix,
+                           imageName + tmpSuffix,
                            tmpWildcard,
-                           wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR );
+                           wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR,
+                           wxDefaultPosition,
+                           wxDefaultSize,
+                           _( "filedlg" ),
+                           extensions );                          
 
   saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getHistogramSaveImageFormat() );
   if ( saveDialog.ShowModal() == wxID_OK )
@@ -2468,8 +2494,6 @@ void gHistogram::saveImage()
     imageDC.Blit( xdst, ydst, histogramWidth, histogramHeight, &histogramDC, xsrc, ysrc );
 
     // Get extension and save
-    wxImage baseLayer = imageBitmap.ConvertToImage();
-
     long imageType;
     switch( ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ) )
     {
@@ -2490,11 +2514,8 @@ void gHistogram::saveImage()
         break;
     }
 
-    if ( saveDialog.GetPath().EndsWith( tmpSuffix )) 
-//       || saveDialog.GetPath().EndsWith( wxString( tmpSuffix ).MakeUpper() ) )
-      baseLayer.SaveFile( saveDialog.GetPath(), imageType );
-    else
-      baseLayer.SaveFile( saveDialog.GetPath() + tmpSuffix , imageType );
+    wxImage baseLayer = imageBitmap.ConvertToImage();
+    baseLayer.SaveFile( saveDialog.GetPath(), imageType );
   }
 }
 
