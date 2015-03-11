@@ -97,16 +97,26 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
+
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
+
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
+
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
+
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
+
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -242,11 +252,11 @@ void gTimeline::CreateControls()
   splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
   splitter->SetMinimumPaneSize(0);
 
-  drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE );
+  drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL );
   drawZone->SetScrollbars(1, 1, 0, 0);
-  infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+  infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxSize(-1, splitter->ConvertDialogToPixels(wxSize(-1, 50)).y), wxBK_DEFAULT );
 
-  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW2, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW2, wxDefaultPosition, infoZone->ConvertDialogToPixels(wxSize(100, 100)), wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
   whatWherePanel->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
   whatWherePanel->SetSizer(itemBoxSizer6);
@@ -2761,30 +2771,37 @@ void gTimeline::saveImage( bool showSaveDialog )
   ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   tmpSuffix = _(".") +
           wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-
   wxString imagePath = imageName + tmpSuffix;
   
   if( showSaveDialog )
   {
     // Builds following wildcard, but the 'E' in JPEG  
     // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+    // Also build extensions vector -> FileDialogExtension
     wxString tmpWildcard;
+    std::vector< wxString > extensions;
     for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
     {
       wxString currentFormat =
             wxString::FromAscii( LabelConstructor::getImageFileSuffix(
                     ParaverConfig::TImageFormat( i ) ).c_str() );
+                    
+      extensions.push_back( currentFormat );
+      
       tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
     }
     tmpWildcard = tmpWildcard.BeforeLast( '|' );
 
-    wxFileDialog saveDialog( this,
+    FileDialogExtension saveDialog( this,
                              _("Save Image"),
                              defaultDir,
                              imageName + tmpSuffix,
                              tmpWildcard,
-                             wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR );
-
+                             wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR,
+                             wxDefaultPosition,
+                             wxDefaultSize,
+                             _( "filedlg" ),
+                             extensions );
     saveDialog.SetFilterIndex( filterIndex );
     if ( saveDialog.ShowModal() != wxID_OK )
       return;
@@ -2862,35 +2879,29 @@ void gTimeline::saveImage( bool showSaveDialog )
   ydst = titleHeigth;
   imageDC.Blit( xdst, ydst, timelineWidth, timelineHeight, &timelineDC, xsrc, ysrc );
 
-  // Get extension and save
-  wxImage baseLayer = imageBitmap.ConvertToImage();
-  tmpSuffix = _(".") +
-          wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-
+  // Get image type and save
   long imageType;
   switch( filterIndex )
   {
     case ParaverConfig::BMP:
-      imageType =  wxBITMAP_TYPE_BMP;
+      imageType = wxBITMAP_TYPE_BMP;
       break;
     case ParaverConfig::JPG:
-      imageType =  wxBITMAP_TYPE_JPEG;
+      imageType = wxBITMAP_TYPE_JPEG;
       break;
     case ParaverConfig::PNG:
-      imageType =  wxBITMAP_TYPE_PNG;
+      imageType = wxBITMAP_TYPE_PNG;
       break;
     case ParaverConfig::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
-      imageType =  wxBITMAP_TYPE_PNG;
+      imageType = wxBITMAP_TYPE_PNG;
       break;
   }
 
-  if ( imagePath.EndsWith( tmpSuffix )) 
-    baseLayer.SaveFile( imagePath, imageType );
-  else
-    baseLayer.SaveFile( imagePath + tmpSuffix , imageType );
+  wxImage baseLayer = imageBitmap.ConvertToImage();
+  baseLayer.SaveFile( imagePath, imageType );
 }
 
 

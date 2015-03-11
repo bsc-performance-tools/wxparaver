@@ -79,7 +79,7 @@ int FileDialogExtension::ShowModal()
       // Guarantee that finishes with proper extension
       if( !auxPath.EndsWith( suffix ) )
       {
-        auxPath += suffix;
+        auxPath += _(".") + suffix;
       
         // Does file exists?
         auxName = wxFileName( auxPath );
