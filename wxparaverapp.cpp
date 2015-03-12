@@ -424,9 +424,8 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             tmpGHisto->SetHistogram( histo );
 
             histo->setZoom( true );
-            histo->setRecalc( true );
-            tmpGHisto->Show();
-            tmpGHisto->updateHistogram();
+            histo->setRecalc( false );
+            tmpGHisto->execute();
 
             tmpGHisto->saveImage( false );
             
