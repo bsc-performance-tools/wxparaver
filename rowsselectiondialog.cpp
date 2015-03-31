@@ -46,6 +46,9 @@
 #include "labelconstructor.h"
 #include "gtimeline.h"
 #include "window.h"
+//#include "pg_extraprop.h"
+//#include "windows_tree.h"
+
 
 ////@begin XPM images
 ////@end XPM images
@@ -80,15 +83,13 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
                                           SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
                                           wxWindowID id,
                                           const wxString& caption,
+                                          bool whichParentIsGtimeline,
                                           const wxPoint& pos,
                                           const wxSize& size,
-                                          long style )
+                                          long style ) :
+        myTimeline( whichTimeline ), mySelectedRows( whichSelectedRows ), parentIsGtimeline( whichParentIsGtimeline )
+                                          
 {
-  myTimeline = whichTimeline;
-  mySelectedRows = whichSelectedRows;
-  //originalSelectedRows = new SelectionManagement< TObjectOrder, TWindowLevel >( *whichSelectedRows );
-  originalSelectedRows = *whichSelectedRows;
-  
   Init();
   Create( parent, id, caption, pos, size, style );
 
@@ -690,29 +691,15 @@ void RowsSelectionDialog::OnInvertButtonClicked( wxCommandEvent& event )
 }
 
 
-void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
+void RowsSelectionDialog::ZoomAwareTransferData( const wxArrayInt &dialogSelections,
+                                                  const vector< TObjectOrder > &timelineZoomRange )
 {
-  // Are selected into the current zoom?
-  // FIXME: Coupling/dependency problem gTimeline<-->RowSelection
-  vector< TObjectOrder > timelineSelection;
-  timelineSelection = ((gTimeline *)GetParent())->getCurrentZoomRange();
-  wxArrayInt dialogSelections;
-
-  int numberSelected = GetSelections( myTimeline->getLevel(), dialogSelections );
-  if ( numberSelected == 0 )
-  {
-    wxString tmpMsg( wxT( "No object selected!" ) );
-    wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
-    if ( tmpDialog.ShowModal() == wxID_OK )
-    {
-    }
-  }
-  else if ( timelineSelection.size() > 0 )
+  if ( timelineZoomRange.size() > 0 )
   {
     TObjectOrder newBegin( dialogSelections[0] );
     TObjectOrder newEnd( dialogSelections.Last() );
-    TObjectOrder curBegin( timelineSelection.front() );
-    TObjectOrder curEnd( timelineSelection.back() );
+    TObjectOrder curBegin( timelineZoomRange.front() );
+    TObjectOrder curEnd( timelineZoomRange.back() );
 
     if ( curBegin <= newBegin && newEnd <= curEnd ) // Are new limits inside/visible?
     {      
@@ -722,7 +709,7 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
     else
     {
       wxString tmpMsg( wxT( "Do you want to extend the zoom to fit selected objects?" ) );
-      wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
+      wxMessageDialog tmpDialog( this, tmpMsg, _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
       if ( tmpDialog.ShowModal() == wxID_YES )
       {
         if ( TransferDataFromWindow() )
@@ -736,6 +723,41 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
         }
       }
     }
+  }
+}
+
+
+void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
+{
+  // Are selected into the current zoom?
+  wxArrayInt dialogSelections;
+
+  int numberSelected = GetSelections( myTimeline->getLevel(), dialogSelections );
+  if ( numberSelected == 0 )
+  {
+    wxString tmpMsg( wxT( "No object selected!" ) );
+    wxMessageDialog tmpDialog( this, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
+    if ( tmpDialog.ShowModal() == wxID_OK )
+    {
+    }
+  }
+  else if ( parentIsGtimeline )
+  {
+    ZoomAwareTransferData( dialogSelections, ((gTimeline *)GetParent())->getCurrentZoomRange() );
+  }
+  else
+  {
+#if 0
+    bool foundGTimeline;
+    gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myTimeline, foundGTimeline );
+    if ( foundGTimeline )
+    {
+      TransferDataComputingZoom( tmpTimeline->getCurrentZoomRange() );
+    }
+#else
+    if ( TransferDataFromWindow() )
+      EndModal( wxID_OK );        
+#endif
   }
 }
 

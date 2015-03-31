@@ -342,11 +342,14 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
 
 RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gTimeline *whichTimeline )
 {
+  bool parentIsGtimeline = true;
+
   RowsSelectionDialog *myDialog = new RowsSelectionDialog( (wxWindow * )whichTimeline,
                                                            whichTimeline->GetMyWindow(),
                                                            whichTimeline->GetMyWindow()->getSelectedRows(),
                                                            ID_ROWSSELECTIONDIALOG,
-                                                           _( "Rows Selection" ));
+                                                           _( "Rows Selection" ), 
+                                                           parentIsGtimeline );
 
   return myDialog;
 }

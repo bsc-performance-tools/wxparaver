@@ -81,6 +81,7 @@ public:
                        SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
                        wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
                        const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
+                       bool parentIsGtimeline = false,
                        const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION,
                        const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE,
                        long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
@@ -125,11 +126,15 @@ public:
 private:
   Window *myTimeline;
   SelectionManagement< TObjectOrder, TWindowLevel > *mySelectedRows;
-  SelectionManagement< TObjectOrder, TWindowLevel > originalSelectedRows;
+  //SelectionManagement< TObjectOrder, TWindowLevel > originalSelectedRows;
   TWindowLevel minLevel; 
   std::vector< wxButton * > selectionButtons;
   std::vector< wxCheckListBox* > levelCheckList;
-  
+
+  bool parentIsGtimeline;   // true => we come from gTimeline --> popup menu
+                            //        don't show zoom window
+                            // false => we come from main window --> Filter button
+
   bool shouldChangeTimelineZoom;
   TObjectOrder beginZoom;
   TObjectOrder endZoom;
@@ -157,6 +162,9 @@ private:
   void OnUnselectAllButtonClicked( wxCommandEvent& event );
   void OnInvertButtonClicked( wxCommandEvent& event );
   void buildPanel( const wxString& title, TWindowLevel level );
+
+  void ZoomAwareTransferData( const wxArrayInt &dialogSelections,
+                               const std::vector< TObjectOrder > &timelineZoomRange );
   void OnOkClick( wxCommandEvent& event );
 };
 

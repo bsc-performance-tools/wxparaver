@@ -120,6 +120,8 @@ wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool 
   return root;
 }
 
+
+// TODO: Separate recursion function to remove bool from parameters in main definition
 gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found )
 {
   gTimeline *retgt = NULL;

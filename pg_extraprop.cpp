@@ -777,12 +777,13 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
 {
   if ( propgrid->IsMainButtonEvent(event) )
   {
+    bool parentIsGtimeline = false;
     RowsSelectionDialog *dialog = new RowsSelectionDialog( (wxWindow *)propgrid,
                                                            myTimeline,
                                                            &mySelectedRows,
                                                            ID_ROWSSELECTIONDIALOG,
-                                                           myWindowName );
-
+                                                           myWindowName,
+                                                           parentIsGtimeline );
     if ( dialog->ShowModal() == wxID_OK )
     {
       wxArrayInt tmpArray;
