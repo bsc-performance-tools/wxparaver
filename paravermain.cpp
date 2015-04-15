@@ -140,59 +140,37 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_ICONIZE( paraverMain::OnIconize )
   EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
-
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
-
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
-
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
-
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
-
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
-
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
-
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
-
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
-
   EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
-
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
-
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
-
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
-
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
-
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
-
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
-
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
-
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
-
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
-
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
-
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
-
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
-
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -462,6 +440,11 @@ void paraverMain::CreateControls()
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
+  wxMenu* itemMenu18 = new wxMenu;
+  itemMenu18->Append(ID_MENUITEM, _("MPI_call - Color identifies MPI call"), wxEmptyString, wxITEM_NORMAL);
+  itemMenu18->Append(ID_MENUITEM1, _("mpi_stats - Reference for statistics on MPI calls"), wxEmptyString, wxITEM_NORMAL);
+  menuBar->Append(itemMenu18, _("Hints"));
+  menuBar->EnableTop(1, false);
   menuHelp = new wxMenu;
   menuHelp->Append(wxID_HELPCONTENTS, _("&Help Contents..."), wxEmptyString, wxITEM_NORMAL);
   menuHelp->Append(wxID_TUTORIALS, _("&Tutorials..."), wxEmptyString, wxITEM_NORMAL);
@@ -470,37 +453,48 @@ void paraverMain::CreateControls()
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxWANTS_CHARS );
-  wxBitmap itemtool23Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
-  wxBitmap itemtool23BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool23Bitmap, itemtool23BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
+  wxBitmap itemtool26Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
+  wxBitmap itemtool26BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool26Bitmap, itemtool26BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_WINDOW, false);
-  wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
-  wxBitmap itemtool24BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
+  wxBitmap itemtool27Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
+  wxBitmap itemtool27BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool27Bitmap, itemtool27BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
-  wxBitmap itemtool25Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
-  wxBitmap itemtool25BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool25Bitmap, itemtool25BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
+  wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  wxBitmap itemtool28BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->AddSeparator();
-  wxBitmap itemtool27Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
-  wxBitmap itemtool27BitmapDisabled;
-  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool27Bitmap, itemtool27BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
-  tbarMain->AddSeparator();
-  wxBitmap itemtool29Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
-  wxBitmap itemtool29BitmapDisabled;
-  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool29Bitmap, itemtool29BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
-  wxBitmap itemtool30Bitmap(itemFrame1->GetBitmapResource(wxT("run_script.xpm")));
+  wxBitmap itemtool30Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
   wxBitmap itemtool30BitmapDisabled;
-  tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool30Bitmap, itemtool30BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
+  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool30Bitmap, itemtool30BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
+  tbarMain->AddSeparator();
+  wxBitmap itemtool32Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
+  wxBitmap itemtool32BitmapDisabled;
+  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool32Bitmap, itemtool32BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
+  wxBitmap itemtool33Bitmap(itemFrame1->GetBitmapResource(wxT("run_script.xpm")));
+  wxBitmap itemtool33BitmapDisabled;
+  tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool33Bitmap, itemtool33BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
 
+  wxArrayString itemChoice34Strings;
+  itemChoice34Strings.Add(_("Global"));
+  itemChoice34Strings.Add(_("MPI"));
+  itemChoice34Strings.Add(_("OpenMP"));
+  itemChoice34Strings.Add(_("MPI+OpenMP"));
+  itemChoice34Strings.Add(_("ompss"));
+  wxChoice* itemChoice34 = new wxChoice( itemFrame1, ID_CHOICE, wxDefaultPosition, wxDefaultSize, itemChoice34Strings, 0 );
+  itemChoice34->Show(false);
+  itemFrame1->GetAuiManager().AddPane(itemChoice34, wxAuiPaneInfo()
+    .Name(_T("Pane1")).Caption(_("Workspace")).Centre().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
+
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
-    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().CloseButton(false).DestroyOnClose(false).Resizable(true));
+    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true));
 
   toolBookFilesProperties = new wxToolbook( itemFrame1, ID_TOOLBOOKFILESANDPROPERTIES, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
   wxImageList* toolBookFilesPropertiesImageList = new wxImageList(16, 16, true, 2);
@@ -521,7 +515,7 @@ void paraverMain::CreateControls()
   toolBookFilesProperties->AddPage(windowProperties, wxEmptyString, false, 1);
 
   itemFrame1->GetAuiManager().AddPane(toolBookFilesProperties, wxAuiPaneInfo()
-    .Name(_T("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
+    .Name(_T("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(2).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
 
   GetAuiManager().Update();
 
