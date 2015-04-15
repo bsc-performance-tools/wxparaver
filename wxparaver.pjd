@@ -2052,7 +2052,7 @@
             <string name="proxy-Background colour">""</string>
             <string name="proxy-Foreground colour">""</string>
             <string name="proxy-Font">""</string>
-            <bool name="proxy-Hidden">1</bool>
+            <bool name="proxy-Hidden">0</bool>
             <bool name="proxy-Enabled">1</bool>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
             <string name="proxy-Data variable">""</string>
@@ -2101,7 +2101,7 @@
             <bool name="proxy-AUI destroy on close">0</bool>
             <bool name="proxy-AUI resizable">0</bool>
             <bool name="proxy-AUI floatable">0</bool>
-            <bool name="proxy-AUI hidden">0</bool>
+            <bool name="proxy-AUI hidden">1</bool>
             <bool name="proxy-AUI movable">0</bool>
             <bool name="proxy-AUI pane border">0</bool>
             <bool name="proxy-AUI maximize button">0</bool>
