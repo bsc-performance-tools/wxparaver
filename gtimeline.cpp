@@ -630,6 +630,7 @@ void gTimeline::redraw()
   commmaskdc.SetBrush( *wxBLACK_BRUSH );
   commmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
   commmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
+  commmaskdc.DrawRectangle( 0, timeAxisPos, drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() - timeAxisPos );
   commmaskdc.SelectObject(wxNullBitmap);
   mask = new wxMask( commMask );
   commImage.SetMask( mask );
@@ -1045,6 +1046,7 @@ void gTimeline::drawRow( wxDC& dc,
       commdc.SetPen( logicalPen );
     else if( it->recType & PHY )
       commdc.SetPen(  physicalPen );
+
     commdc.DrawLine( it->toTime, it->toRow,
                      it->fromTime, rowPos );
 #ifndef __WXMAC__
