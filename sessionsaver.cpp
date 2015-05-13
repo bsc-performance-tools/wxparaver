@@ -91,8 +91,9 @@ void SessionSaver::SaveSession_v2( wxString onFile, const vector<Trace *>& trace
 
   for( vector<Trace *>::const_iterator it = traces.begin(); it != traces.end(); ++it )
   {
-    file << (*it)->getFileName() << endl;
     wxFileName traceFileName( wxString::FromAscii( (*it)->getFileName().c_str() ) );
+    traceFileName.MakeRelativeTo( wxFileName::GetHomeDir() );
+    file << std::string( traceFileName.GetFullPath().mb_str() ) << endl;
     wxFileName cfgFileName( dirName.GetFullPath() + 
                             wxFileName::GetPathSeparator() +
                             traceFileName.GetFullName() + wxT( ".cfg" ) );
@@ -161,11 +162,12 @@ void SessionSaver::LoadSession_v2( ifstream& whichFile, wxString filename  )
     getline( whichFile, traceFile );
     if( traceFile != "" && traceFile[ 0 ] != '#' ) 
     {
-      opened = wxparaverApp::mainWindow->DoLoadTrace( traceFile );
+      wxFileName traceFileName( wxString::FromAscii( traceFile.c_str() ) );
+      traceFileName.MakeAbsolute( wxFileName::GetHomeDir() );
+      opened = wxparaverApp::mainWindow->DoLoadTrace( std::string( traceFileName.GetFullPath().mb_str() ) );
 
       if ( opened )
       {
-        wxFileName traceFileName( wxString::FromAscii( traceFile.c_str() ) );
         wxFileName cfgFileName( dirName.GetFullPath() + 
                                 wxFileName::GetPathSeparator() +
                                 traceFileName.GetFullName() + wxT( ".cfg" ) );
