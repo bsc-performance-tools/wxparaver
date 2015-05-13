@@ -236,8 +236,6 @@ void gHistogram::Init()
   histoStatus = NULL;
 ////@end gHistogram member initialisation
   parent = NULL;
-  zoomRow.begin = 0;
-  zoomRow.end = 0;
 }
 
 
@@ -384,10 +382,8 @@ void gHistogram::execute()
   }
   else
   {
-    //beginRow = myHistogram->getZoomSecondDimension().first;
-    beginRow = zoomRow.begin;
-    //endRow =  myHistogram->getZoomSecondDimension().second;
-    endRow = zoomRow.end;
+    beginRow = myHistogram->getZoomSecondDimension().first;
+    endRow =  myHistogram->getZoomSecondDimension().second;
   }
   myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                     selectedRows, beginRow, endRow, true );
@@ -423,8 +419,6 @@ void gHistogram::execute()
     currentZoom1.end = myHistogram->getControlMax();
     currentZoom2.begin = myHistogram->getControlDelta();
     myHistogram->addZoom( currentZoom1, currentZoom2 , beginRow, endRow );
-    zoomRow.begin = beginRow;
-    zoomRow.end = endRow;
   }
   
   SetFocus();
@@ -1194,9 +1188,6 @@ void gHistogram::OnPopUpFitObjects()
   // zoom?
   myHistogram->addZoom( currentZoom1, currentZoom2 , beginRow, endRow );
 
-  zoomRow.begin = beginRow;
-  zoomRow.end = endRow;
-
   myHistogram->setRecalc( true );
   updateHistogram();
 }
@@ -1765,8 +1756,8 @@ void gHistogram::zoom( THistogramLimit newColumnBegin,
   GetHistogram()->setControlMax( max );
   GetHistogram()->setControlDelta( delta );
   GetHistogram()->setCompute2DScale( false );
-  zoomRow.begin = newObjectBegin;
-  zoomRow.end = newObjectEnd;
+  std::pair<TObjectOrder, TObjectOrder> tmpZoomRow( newObjectBegin, newObjectEnd );
+  GetHistogram()->setZoomSecondDimension( tmpZoomRow );
 
   GetHistogram()->setRecalc( true );
   updateHistogram();

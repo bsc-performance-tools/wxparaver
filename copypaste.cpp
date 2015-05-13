@@ -395,10 +395,13 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
       timeline->GetMyWindow()->getSelectedRows( timeline->GetMyWindow()->getLevel(), auxRows, true );
       Window *controlWindow = whichHistogram->GetHistogram()->getControlWindow();
       controlWindow->setSelectedRows( controlWindow->getLevel(), auxRows );
-      controlWindow->addZoom( controlWindow->getWindowBeginTime(),
+      /*controlWindow->addZoom( controlWindow->getWindowBeginTime(),
                               controlWindow->getWindowEndTime(),
                               timeline->GetMyWindow()->getZoomSecondDimension().first,
-                              timeline->GetMyWindow()->getZoomSecondDimension().second );
+                              timeline->GetMyWindow()->getZoomSecondDimension().second );*/
+      std::pair<TObjectOrder, TObjectOrder> tmpZoom( timeline->GetMyWindow()->getZoomSecondDimension().first,
+                                                     timeline->GetMyWindow()->getZoomSecondDimension().second );
+      whichHistogram->GetHistogram()->setZoomSecondDimension( tmpZoom );
     }
     else if ( property == STR_DURATION )
     {

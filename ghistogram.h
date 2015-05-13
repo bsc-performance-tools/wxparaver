@@ -390,7 +390,6 @@ private:
   wxPoint zoomPointEnd;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
-  HistogramProxy::TZoomInfo zoomRow;
 
   // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
