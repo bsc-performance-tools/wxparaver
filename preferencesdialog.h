@@ -40,6 +40,7 @@
 #include "wx/spinctrl.h"
 #include "filebrowserbutton.h"
 #include "wx/clrpicker.h"
+#include "wx/statline.h"
 ////@end includes
 
 #include "paraverconfig.h"
@@ -52,6 +53,7 @@
 class wxSpinCtrl;
 class DirBrowserButton;
 class wxColourPickerCtrl;
+class FileBrowserButton;
 ////@end forward declarations
 
 /*!
@@ -128,6 +130,21 @@ class wxColourPickerCtrl;
 #define ID_COLOURPICKER_GRADLOW 10005
 #define ID_COLOURPICKER_GRADTOP 10006
 #define ID_BUTTON_DEFAULT_GRADIENT 10009
+#define ID_WORKSPACES 10269
+#define ID_LISTBOX_WORKSPACES 10270
+#define ID_BUTTON_WORKSPACES_ADD 10271
+#define ID_BUTTON_WORKSPACES_DELETE 10272
+#define ID_BUTTON_WORKSPACES_UP 10273
+#define ID_BUTTON_WORKSPACES_DOWN 10274
+#define ID_TEXTCTRL_WORKSPACE_NAME 10275
+#define ID_LISTBOX_HINTS_WORKSPACE 10276
+#define ID_BUTTON_WORKSPACES_HINT_ADD 10277
+#define ID_BUTTON_WORKSPACES_HINT_DELETE 10278
+#define ID_BITMAP_WORKSPACES_HINT_UP 10279
+#define ID_BUTTON_WORKSPACES_HINT_DOWN 10280
+#define ID_TEXTCTRL_WORKSPACE_HINT_PATH 10283
+#define ID_FILE_BUTTON_WORKSPACE_HINT_PATH 10282
+#define ID_TEXTCTRL_WRKSPACE_HINT_DESCRIPTION 10281
 #define ID_PREFERENCES_FILTERS 10070
 #define SYMBOL_PREFERENCESDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PREFERENCESDIALOG_TITLE _("Preferences")
@@ -447,6 +464,20 @@ public:
   wxColourPickerCtrl* colourPickerGradientEnd;
   wxColourPickerCtrl* colourPickerGradientLow;
   wxColourPickerCtrl* colourPickerGradientTop;
+  wxListBox* listWorkspaces;
+  wxBitmapButton* buttonAddWorkspace;
+  wxBitmapButton* buttonDeleteWorkspace;
+  wxBitmapButton* buttonUpWorkspace;
+  wxBitmapButton* buttonDownWorkspace;
+  wxTextCtrl* txtCtrlWorkspaceName;
+  wxListBox* listHintsWorkspace;
+  wxBitmapButton* buttonAddHint;
+  wxBitmapButton* buttonDeleteHint;
+  wxBitmapButton* buttonUpHint;
+  wxBitmapButton* buttonDownHint;
+  wxTextCtrl* txtCtrlHintPath;
+  FileBrowserButton* fileBrowserButtonHintPath;
+  wxTextCtrl* txtCtrlWorkspaceHintName;
 private:
   std::string cfgsPath;
   bool colorUseZero;
