@@ -70,9 +70,13 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
 
 ////@begin PreferencesDialog event table entries
   EVT_COLOURPICKER_CHANGED( ID_COLOURPICKER_BACKGROUND, PreferencesDialog::OnColourpickerBackgroundColourPickerChanged )
+
   EVT_UPDATE_UI( ID_COLOURPICKER_ZERO, PreferencesDialog::OnColourpickerZeroUpdate )
+
   EVT_BUTTON( ID_BUTTON_DEFAULT_TIMELINE, PreferencesDialog::OnButtonDefaultTimelineClick )
+
   EVT_BUTTON( ID_BUTTON_DEFAULT_GRADIENT, PreferencesDialog::OnButtonDefaultGradientClick )
+
 ////@end PreferencesDialog event table entries
 
 END_EVENT_TABLE()
