@@ -74,13 +74,9 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
 
 ////@begin PreferencesDialog event table entries
   EVT_COLOURPICKER_CHANGED( ID_COLOURPICKER_BACKGROUND, PreferencesDialog::OnColourpickerBackgroundColourPickerChanged )
-
   EVT_UPDATE_UI( ID_COLOURPICKER_ZERO, PreferencesDialog::OnColourpickerZeroUpdate )
-
   EVT_BUTTON( ID_BUTTON_DEFAULT_TIMELINE, PreferencesDialog::OnButtonDefaultTimelineClick )
-
   EVT_BUTTON( ID_BUTTON_DEFAULT_GRADIENT, PreferencesDialog::OnButtonDefaultGradientClick )
-
 ////@end PreferencesDialog event table entries
 
 END_EVENT_TABLE()
@@ -1010,62 +1006,67 @@ void PreferencesDialog::CreateControls()
   wxBoxSizer* itemBoxSizer180 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer171->Add(itemBoxSizer180, 4, wxGROW|wxALL, 0);
   wxBoxSizer* itemBoxSizer181 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer180->Add(itemBoxSizer181, 0, wxGROW|wxTOP, 5);
-  wxStaticText* itemStaticText182 = new wxStaticText( itemPanel170, wxID_STATIC, _("Name"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer181->Add(itemStaticText182, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
+  itemBoxSizer180->Add(itemBoxSizer181, 0, wxGROW|wxLEFT|wxTOP, 5);
   txtCtrlWorkspaceName = new wxTextCtrl( itemPanel170, ID_TEXTCTRL_WORKSPACE_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer181->Add(txtCtrlWorkspaceName, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  wxStaticBox* itemStaticBoxSizer184Static = new wxStaticBox(itemPanel170, wxID_ANY, _(" Hints "));
-  wxStaticBoxSizer* itemStaticBoxSizer184 = new wxStaticBoxSizer(itemStaticBoxSizer184Static, wxVERTICAL);
-  itemBoxSizer180->Add(itemStaticBoxSizer184, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-  wxBoxSizer* itemBoxSizer185 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer184->Add(itemBoxSizer185, 4, wxGROW, 0);
+  wxStaticBox* itemStaticBoxSizer183Static = new wxStaticBox(itemPanel170, wxID_ANY, _(" Hints "));
+  wxStaticBoxSizer* itemStaticBoxSizer183 = new wxStaticBoxSizer(itemStaticBoxSizer183Static, wxVERTICAL);
+  itemBoxSizer180->Add(itemStaticBoxSizer183, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer184 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer183->Add(itemBoxSizer184, 4, wxGROW, 0);
   wxArrayString listHintsWorkspaceStrings;
   listHintsWorkspace = new wxListBox( itemPanel170, ID_LISTBOX_HINTS_WORKSPACE, wxDefaultPosition, wxDefaultSize, listHintsWorkspaceStrings, wxLB_SINGLE );
-  itemBoxSizer185->Add(listHintsWorkspace, 1, wxGROW|wxALL, 5);
+  itemBoxSizer184->Add(listHintsWorkspace, 1, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer187 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer185->Add(itemBoxSizer187, 0, wxALIGN_TOP|wxALL, 0);
+  wxBoxSizer* itemBoxSizer186 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer184->Add(itemBoxSizer186, 0, wxALIGN_TOP|wxALL, 0);
   buttonAddHint = new wxBitmapButton( itemPanel170, ID_BUTTON_WORKSPACES_HINT_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer187->Add(buttonAddHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer186->Add(buttonAddHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDeleteHint = new wxBitmapButton( itemPanel170, ID_BUTTON_WORKSPACES_HINT_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer187->Add(buttonDeleteHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer186->Add(buttonDeleteHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonUpHint = new wxBitmapButton( itemPanel170, ID_BITMAP_WORKSPACES_HINT_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer187->Add(buttonUpHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer186->Add(buttonUpHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDownHint = new wxBitmapButton( itemPanel170, ID_BUTTON_WORKSPACES_HINT_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-  itemBoxSizer187->Add(buttonDownHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer186->Add(buttonDownHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer192 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer184->Add(itemBoxSizer192, 0, wxGROW|wxALL, 0);
+  wxBoxSizer* itemBoxSizer191 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer183->Add(itemBoxSizer191, 0, wxGROW, 5);
+  wxBoxSizer* itemBoxSizer192 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer191->Add(itemBoxSizer192, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
   wxStaticText* itemStaticText193 = new wxStaticText( itemPanel170, wxID_STATIC, _("Path"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer192->Add(itemStaticText193, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer192->Add(itemStaticText193, 0, wxALIGN_LEFT|wxALL, 5);
 
+  itemBoxSizer192->Add(5, 5, 0, wxGROW|wxTOP|wxBOTTOM, 2);
+
+  wxStaticText* itemStaticText195 = new wxStaticText( itemPanel170, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer192->Add(itemStaticText195, 0, wxALIGN_LEFT|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer196 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer191->Add(itemBoxSizer196, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer197 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer196->Add(itemBoxSizer197, 0, wxGROW|wxALL, 0);
   txtCtrlHintPath = new wxTextCtrl( itemPanel170, ID_TEXTCTRL_WORKSPACE_HINT_PATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer192->Add(txtCtrlHintPath, 1, wxGROW|wxTOP|wxBOTTOM, 5);
+  itemBoxSizer197->Add(txtCtrlHintPath, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
   fileBrowserButtonHintPath = new FileBrowserButton( itemPanel170, ID_FILE_BUTTON_WORKSPACE_HINT_PATH, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer192->Add(fileBrowserButtonHintPath, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer197->Add(fileBrowserButtonHintPath, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer196 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer184->Add(itemBoxSizer196, 1, wxGROW|wxALL, 0);
-  wxStaticText* itemStaticText197 = new wxStaticText( itemPanel170, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer196->Add(itemStaticText197, 0, wxALIGN_TOP|wxALL, 5);
-
-  txtCtrlWorkspaceHintName = new wxTextCtrl( itemPanel170, ID_TEXTCTRL_WRKSPACE_HINT_DESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
-  itemBoxSizer196->Add(txtCtrlWorkspaceHintName, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer200 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer196->Add(itemBoxSizer200, 0, wxGROW|wxALL, 0);
+  txtCtrlWorkspaceHintName = new wxTextCtrl( itemPanel170, ID_TEXTCTRL_WRKSPACE_HINT_DESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer200->Add(txtCtrlWorkspaceHintName, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   GetBookCtrl()->AddPage(itemPanel170, _("Workspaces"));
 
-  wxPanel* itemPanel199 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemPanel199->Show(false);
-  itemPanel199->Enable(false);
+  wxPanel* itemPanel202 = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemPanel202->Show(false);
+  itemPanel202->Enable(false);
 
-  GetBookCtrl()->AddPage(itemPanel199, _("Filters"));
+  GetBookCtrl()->AddPage(itemPanel202, _("Filters"));
 
 ////@end PreferencesDialog content construction
 

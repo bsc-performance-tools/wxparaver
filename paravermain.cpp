@@ -488,7 +488,7 @@ void paraverMain::CreateControls()
   itemChoice34Strings.Add(_("ompss"));
   wxChoice* itemChoice34 = new wxChoice( itemFrame1, ID_CHOICE, wxDefaultPosition, wxDefaultSize, itemChoice34Strings, 0 );
   itemFrame1->GetAuiManager().AddPane(itemChoice34, wxAuiPaneInfo()
-    .Name(_T("Pane1")).Caption(_("Workspace")).Centre().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Hide().Movable(false).PaneBorder(false));
+    .Name(_T("Pane1")).Caption(_("Workspace")).Centre().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
 
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
