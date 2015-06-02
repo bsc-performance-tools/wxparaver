@@ -84,5 +84,6 @@ AC_DEFUN([AX_PROG_ENABLE_PARALLEL],
   )
   if test "${enable_parallel}" = "yes" ; then
     AC_DEFINE([PARALLEL_ENABLED], 1, [Parallel version enabled by user.])
+    LDFLAGS="$LDFLAGS -fPIC"
   fi
 ])
