@@ -117,6 +117,8 @@ install-data-hook:
 	cp -f ./docs/wxparaver          $(bindir)
 	$(SED) "s|@inst_PARAVER_HOME@|$(prefix)|g" < ./docs/wxparaver > $(bindir)/wxparaver
 	chmod a+x $(bindir)/wxparaver
+	cp -f ./docs/wxparaver.mn3-mt   $(bindir)
+	chmod a+x $(bindir)/wxparaver.mn3-mt
 	
 	$(mkdir_p) $(prefix)/share/
 	$(mkdir_p) $(prefix)/share/wxparaver-signals
@@ -135,6 +137,7 @@ dist-hook:
 	cp -f ./docs/dimemas-wrapper.sh $(distdir)/docs
 	cp -f ./docs/stats-wrapper.sh   $(distdir)/docs
 	cp -f ./docs/wxparaver          $(distdir)/docs
+	cp -f ./docs/wxparaver.mn3-mt   $(distdir)/docs
 
 	cp -f ./docs/paraload.sig       $(distdir)/docs
 	cp -f ./docs/paraload-v1.0.sig  $(distdir)/docs
