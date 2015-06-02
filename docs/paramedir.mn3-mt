@@ -1,0 +1,21 @@
+#! /bin/bash
+
+REAL_PATH=`readlink -f $0`
+PARAVER_HOME="$( cd "$( dirname "$REAL_PATH" )" && pwd )"
+export PARAVER_HOME=${PARAVER_HOME%/bin}
+
+#if [ -z "${PARAVER_HOME}" ] ; then
+#  echo "Please set \$PARAVER_HOME to the paramedir installation root directory"
+#  exit 1
+
+if ! [ -d ${PARAVER_HOME}/lib/paraver-kernel ] ; then
+  echo "paraver-kernel libraries not found in \$PARAVER_HOME/lib/paraver-kernel/"
+  exit 1
+
+elif ! [ -e ${PARAVER_HOME}/bin/paramedir.bin ] ; then
+  echo "paramedir binary not found in \$PARAVER_HOME/bin/"
+  exit 1
+  
+fi
+
+LD_LIBRARY_PATH=$PARAVER_HOME/lib/paraver-kernel:$PARAVER_HOME/lib/ptools_common_files/:/apps/BOOST/1_52_0/lib:$LD_LIBRARY_PATH $PARAVER_HOME/bin/paramedir.bin "$@"	
