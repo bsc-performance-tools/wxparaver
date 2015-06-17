@@ -22466,7 +22466,7 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   <document>
-                    <string name="title">"wxTextCtrl: ID_TEXTCTRL_WORKSPACE_NAME"</string>
+                    <string name="title">"wxTextCtrl: ID_TEXT_WORKSPACE_NAME"</string>
                     <string name="type">"dialog-control-document"</string>
                     <string name="filename">""</string>
                     <string name="icon-name">"textctrl"</string>
@@ -22475,7 +22475,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbTextCtrlProxy"</string>
-                    <string name="proxy-Id name">"ID_TEXTCTRL_WORKSPACE_NAME"</string>
+                    <string name="proxy-Id name">"ID_TEXT_WORKSPACE_NAME"</string>
                     <long name="proxy-Id value">10275</long>
                     <string name="proxy-Name">""</string>
                     <string name="proxy-Class">"wxTextCtrl"</string>
@@ -22484,7 +22484,7 @@ In normal mode all properties are showed in main window."</string>
                     <bool name="proxy-Separate files">0</bool>
                     <string name="proxy-Implementation filename">""</string>
                     <string name="proxy-Header filename">""</string>
-                    <string name="proxy-Member variable name">"txtCtrlWorkspaceName"</string>
+                    <string name="proxy-Member variable name">"txtWorkspaceName"</string>
                     <string name="proxy-Initial value">""</string>
                     <long name="proxy-Max length">0</long>
                     <string name="proxy-Help text">""</string>
@@ -22709,7 +22709,7 @@ In normal mode all properties are showed in main window."</string>
                       <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                       <document>
-                        <string name="title">"wxBitmapButton: ID_BUTTON_WORKSPACES_HINT_ADD"</string>
+                        <string name="title">"wxBitmapButton: ID_BUTTON_HINT_ADD"</string>
                         <string name="type">"dialog-control-document"</string>
                         <string name="filename">""</string>
                         <string name="icon-name">"bitmapbutton"</string>
@@ -22718,7 +22718,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbBitmapButtonProxy"</string>
-                        <string name="proxy-Id name">"ID_BUTTON_WORKSPACES_HINT_ADD"</string>
+                        <string name="proxy-Id name">"ID_BUTTON_HINT_ADD"</string>
                         <long name="proxy-Id value">10277</long>
                         <string name="proxy-Name">""</string>
                         <string name="proxy-Class">"wxBitmapButton"</string>
@@ -22779,7 +22779,7 @@ In normal mode all properties are showed in main window."</string>
                         <string name="proxy-Custom ctor arguments">""</string>
                       </document>
                       <document>
-                        <string name="title">"wxBitmapButton: ID_BUTTON_WORKSPACES_HINT_DELETE"</string>
+                        <string name="title">"wxBitmapButton: ID_BUTTON_HINT_DELETE"</string>
                         <string name="type">"dialog-control-document"</string>
                         <string name="filename">""</string>
                         <string name="icon-name">"bitmapbutton"</string>
@@ -22788,7 +22788,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbBitmapButtonProxy"</string>
-                        <string name="proxy-Id name">"ID_BUTTON_WORKSPACES_HINT_DELETE"</string>
+                        <string name="proxy-Id name">"ID_BUTTON_HINT_DELETE"</string>
                         <long name="proxy-Id value">10278</long>
                         <string name="proxy-Name">""</string>
                         <string name="proxy-Class">"wxBitmapButton"</string>
@@ -22849,7 +22849,7 @@ In normal mode all properties are showed in main window."</string>
                         <string name="proxy-Custom ctor arguments">""</string>
                       </document>
                       <document>
-                        <string name="title">"wxBitmapButton: ID_BITMAP_WORKSPACES_HINT_UP"</string>
+                        <string name="title">"wxBitmapButton: ID_BITMAP_HINT_UP"</string>
                         <string name="type">"dialog-control-document"</string>
                         <string name="filename">""</string>
                         <string name="icon-name">"bitmapbutton"</string>
@@ -22858,7 +22858,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbBitmapButtonProxy"</string>
-                        <string name="proxy-Id name">"ID_BITMAP_WORKSPACES_HINT_UP"</string>
+                        <string name="proxy-Id name">"ID_BITMAP_HINT_UP"</string>
                         <long name="proxy-Id value">10279</long>
                         <string name="proxy-Name">""</string>
                         <string name="proxy-Class">"wxBitmapButton"</string>
@@ -22919,7 +22919,7 @@ In normal mode all properties are showed in main window."</string>
                         <string name="proxy-Custom ctor arguments">""</string>
                       </document>
                       <document>
-                        <string name="title">"wxBitmapButton: ID_BUTTON_WORKSPACES_HINT_DOWN"</string>
+                        <string name="title">"wxBitmapButton: ID_BUTTON_HINT_DOWN"</string>
                         <string name="type">"dialog-control-document"</string>
                         <string name="filename">""</string>
                         <string name="icon-name">"bitmapbutton"</string>
@@ -22928,7 +22928,7 @@ In normal mode all properties are showed in main window."</string>
                         <long name="title-mode">0</long>
                         <long name="locked">0</long>
                         <string name="proxy-type">"wbBitmapButtonProxy"</string>
-                        <string name="proxy-Id name">"ID_BUTTON_WORKSPACES_HINT_DOWN"</string>
+                        <string name="proxy-Id name">"ID_BUTTON_HINT_DOWN"</string>
                         <long name="proxy-Id value">10280</long>
                         <string name="proxy-Name">""</string>
                         <string name="proxy-Class">"wxBitmapButton"</string>
@@ -23278,7 +23278,7 @@ In normal mode all properties are showed in main window."</string>
                           <bool name="proxy-Separate files">0</bool>
                           <string name="proxy-Implementation filename">""</string>
                           <string name="proxy-Header filename">""</string>
-                          <string name="proxy-Member variable name">"txtCtrlHintPath"</string>
+                          <string name="proxy-Member variable name">"txtHintPath"</string>
                           <string name="proxy-Initial value">""</string>
                           <long name="proxy-Max length">0</long>
                           <string name="proxy-Help text">""</string>
@@ -23361,7 +23361,7 @@ In normal mode all properties are showed in main window."</string>
                           <bool name="proxy-Separate files">0</bool>
                           <string name="proxy-Implementation filename">""</string>
                           <string name="proxy-Header filename">""</string>
-                          <string name="proxy-Member variable name">"fileBrowserButtonHintPath"</string>
+                          <string name="proxy-Member variable name">"fileBrowserHintPath"</string>
                           <string name="proxy-Data source">""</string>
                           <string name="proxy-Data class name">""</string>
                           <string name="proxy-Data class implementation filename">""</string>
@@ -23453,7 +23453,7 @@ In normal mode all properties are showed in main window."</string>
                           <bool name="proxy-Separate files">0</bool>
                           <string name="proxy-Implementation filename">""</string>
                           <string name="proxy-Header filename">""</string>
-                          <string name="proxy-Member variable name">"txtCtrlWorkspaceHintName"</string>
+                          <string name="proxy-Member variable name">"txtHintDescription"</string>
                           <string name="proxy-Initial value">""</string>
                           <long name="proxy-Max length">0</long>
                           <string name="proxy-Help text">""</string>

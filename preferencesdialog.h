@@ -136,12 +136,12 @@ class FileBrowserButton;
 #define ID_BUTTON_WORKSPACES_DELETE 10272
 #define ID_BUTTON_WORKSPACES_UP 10273
 #define ID_BUTTON_WORKSPACES_DOWN 10274
-#define ID_TEXTCTRL_WORKSPACE_NAME 10275
+#define ID_TEXT_WORKSPACE_NAME 10275
 #define ID_LISTBOX_HINTS_WORKSPACE 10276
-#define ID_BUTTON_WORKSPACES_HINT_ADD 10277
-#define ID_BUTTON_WORKSPACES_HINT_DELETE 10278
-#define ID_BITMAP_WORKSPACES_HINT_UP 10279
-#define ID_BUTTON_WORKSPACES_HINT_DOWN 10280
+#define ID_BUTTON_HINT_ADD 10277
+#define ID_BUTTON_HINT_DELETE 10278
+#define ID_BITMAP_HINT_UP 10279
+#define ID_BUTTON_HINT_DOWN 10280
 #define ID_TEXTCTRL_WORKSPACE_HINT_PATH 10283
 #define ID_FILE_BUTTON_WORKSPACE_HINT_PATH 10282
 #define ID_TEXTCTRL_WRKSPACE_HINT_DESCRIPTION 10281
@@ -469,15 +469,15 @@ public:
   wxBitmapButton* buttonDeleteWorkspace;
   wxBitmapButton* buttonUpWorkspace;
   wxBitmapButton* buttonDownWorkspace;
-  wxTextCtrl* txtCtrlWorkspaceName;
+  wxTextCtrl* txtWorkspaceName;
   wxListBox* listHintsWorkspace;
   wxBitmapButton* buttonAddHint;
   wxBitmapButton* buttonDeleteHint;
   wxBitmapButton* buttonUpHint;
   wxBitmapButton* buttonDownHint;
-  wxTextCtrl* txtCtrlHintPath;
-  FileBrowserButton* fileBrowserButtonHintPath;
-  wxTextCtrl* txtCtrlWorkspaceHintName;
+  wxTextCtrl* txtHintPath;
+  FileBrowserButton* fileBrowserHintPath;
+  wxTextCtrl* txtHintDescription;
 private:
   std::string cfgsPath;
   bool colorUseZero;
