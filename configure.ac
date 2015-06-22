@@ -61,8 +61,14 @@ AX_PROG_ENABLE_PARALLEL
 CPPFLAGS="-I./ -I../common-files/ -I$PARAVER_DIR/include $CPPFLAGS $WX_CPPFLAGS $BOOST_CPPFLAGS"
 CXXFLAGS="-I./ -I../common-files/ -I$PARAVER_DIR/include $CXXFLAGS $WX_CXXFLAGS_ONLY $BOOST_CPPFLAGS"
 CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
-LIBS="$LIBS $WX_LIBS -L$PARAVER_DIR/lib/paraver-kernel"
-LDFLAGS="$LDFLAGS $BOOST_LDFLAGS $BOOST_SERIALIZATION_LIB -Wl,-rpath -Wl,../lib/paraver-kernel"
+if test -d "$PARAVER_DIR/lib/"; then
+  LIBS="$LIBS $WX_LIBS -L$PARAVER_DIR/lib/paraver-kernel"
+  LDFLAGS="$LDFLAGS $BOOST_LDFLAGS $BOOST_SERIALIZATION_LIB -Wl,-rpath -Wl,../lib/paraver-kernel"
+else if test -d "$PARAVER_DIR/lib64/"; then 
+  LIBS="$LIBS $WX_LIBS -L$PARAVER_DIR/lib64/paraver-kernel"
+  LDFLAGS="$LDFLAGS $BOOST_LDFLAGS $BOOST_SERIALIZATION_LIB -Wl,-rpath -Wl,../lib64/paraver-kernel"
+  fi
+fi
 #LDFLAGS="$LDFLAGS $BOOST_LDFLAGS $BOOST_SERIALIZATION_LIB -Wl,-rpath=../lib/ptools_common_files -Wl,-rpath=../lib/paraver-kernel -Wl,-rpath=../lib/wxparaver"
 
 AC_CONFIG_FILES([Makefile])
