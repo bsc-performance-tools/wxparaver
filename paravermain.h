@@ -55,6 +55,7 @@
 #include "paraverconfig.h"
 #include "previousfiles.h"
 #include "cfg.h" // SaveOptions
+#include "workspacemanager.h"
 
 #ifdef WIN32
 #undef VERSION
@@ -101,7 +102,7 @@ class TraceOptions;
 #define ID_TOOLDELETE 10081
 #define ID_TOOL_CUT_TRACE 10100
 #define ID_TOOL_RUN_APPLICATION 10004
-#define ID_CHOICE 10266
+#define ID_CHOICE_WORKSPACE 10266
 #define ID_CHOICEWINBROWSER 10002
 #define ID_TOOLBOOKFILESANDPROPERTIES 10159
 #define ID_DIRCTRLFILES 10160
@@ -392,6 +393,9 @@ public:
   HelpContents * GetTutorialsWindow() const { return tutorialsWindow ; }
   void SetTutorialsWindow(HelpContents * value) { tutorialsWindow = value ; }
 
+  WorkspaceManager * GetWorkspacesManager() const { return workspacesManager ; }
+  void SetWorkspacesManager(WorkspaceManager * value) { workspacesManager = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -473,6 +477,7 @@ public:
   wxMenu* menuFile;
   wxMenu* menuHelp;
   wxToolBar* tbarMain;
+  wxChoice* choiceWorkspace;
   wxChoicebook* choiceWindowBrowser;
   wxToolbook* toolBookFilesProperties;
   wxGenericDirCtrl* dirctrlFiles;
@@ -508,6 +513,7 @@ private:
   bool traceLoadedBefore;
   wxString tracePath;
   HelpContents * tutorialsWindow;
+  WorkspaceManager * workspacesManager;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;

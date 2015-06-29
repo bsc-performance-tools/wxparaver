@@ -140,37 +140,59 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_ICONIZE( paraverMain::OnIconize )
   EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
+
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
+
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
+
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
+
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
+
   EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
+
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
+
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
+
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
+
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
+
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
+
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
+
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
+
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
+
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
+
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
+
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
+
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
+
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -247,6 +269,8 @@ paraverMain::paraverMain()
   localKernel = new LocalKernel( userMessage );
   paraverConfig = ParaverConfig::getInstance();
   myParaverMain = this;
+  
+  workspacesManager = WorkspaceManager::getInstance();
 
   Init();
   ShowToolTips();
@@ -382,9 +406,11 @@ void paraverMain::Init()
   sessionTimer = new wxTimer( this );
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
+  workspacesManager = NULL;
   menuFile = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
+  choiceWorkspace = NULL;
   choiceWindowBrowser = NULL;
   toolBookFilesProperties = NULL;
   dirctrlFiles = NULL;
@@ -480,14 +506,14 @@ void paraverMain::CreateControls()
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
 
-  wxArrayString itemChoice34Strings;
-  itemChoice34Strings.Add(_("Global"));
-  itemChoice34Strings.Add(_("MPI"));
-  itemChoice34Strings.Add(_("OpenMP"));
-  itemChoice34Strings.Add(_("MPI+OpenMP"));
-  itemChoice34Strings.Add(_("ompss"));
-  wxChoice* itemChoice34 = new wxChoice( itemFrame1, ID_CHOICE, wxDefaultPosition, wxDefaultSize, itemChoice34Strings, 0 );
-  itemFrame1->GetAuiManager().AddPane(itemChoice34, wxAuiPaneInfo()
+  wxArrayString choiceWorkspaceStrings;
+  choiceWorkspaceStrings.Add(_("Global"));
+  choiceWorkspaceStrings.Add(_("MPI"));
+  choiceWorkspaceStrings.Add(_("OpenMP"));
+  choiceWorkspaceStrings.Add(_("MPI+OpenMP"));
+  choiceWorkspaceStrings.Add(_("ompss"));
+  choiceWorkspace = new wxChoice( itemFrame1, ID_CHOICE_WORKSPACE, wxDefaultPosition, wxDefaultSize, choiceWorkspaceStrings, 0 );
+  itemFrame1->GetAuiManager().AddPane(choiceWorkspace, wxAuiPaneInfo()
     .Name(_T("Pane1")).Caption(_("Workspace")).Centre().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
 
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
@@ -526,6 +552,18 @@ void paraverMain::CreateControls()
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 2, wxT("Window Properties") );
   
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
+  
+  // Workspace choice
+  wxString aux;
+  vector< string > workspaces( workspacesManager->getWorkspaces() );
+  for( vector< string >::iterator it = workspaces.begin(); it != workspaces.end(); ++it )
+  {
+    aux << wxString::FromAscii( (*it).c_str() );
+    choiceWorkspace->Append( aux );
+    aux.clear();
+  }
+
+  choiceWorkspace->Select( 0 );
 }
 
 
