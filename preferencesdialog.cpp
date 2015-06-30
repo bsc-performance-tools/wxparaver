@@ -1560,7 +1560,7 @@ void PreferencesDialog::OnButtonHintAddUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonHintDeleteUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
@@ -1571,7 +1571,7 @@ void PreferencesDialog::OnButtonHintDeleteUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnBitmapHintUpUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() > 0 );
 }
@@ -1583,7 +1583,7 @@ void PreferencesDialog::OnBitmapHintUpUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonHintDownUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() < listHintsWorkspace->GetCount() - 1 );
 }
@@ -1595,7 +1595,7 @@ void PreferencesDialog::OnButtonHintDownUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
@@ -1606,8 +1606,8 @@ void PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& even
 
 void PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND /*||
-                listHintsWorkspace->GetSelection() != wxNOT_FOUND*/ );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
+                listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
 
