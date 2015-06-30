@@ -144,7 +144,7 @@ class FileBrowserButton;
 #define ID_BUTTON_HINT_DOWN 10280
 #define ID_TEXTCTRL_WORKSPACE_HINT_PATH 10283
 #define ID_FILE_BUTTON_WORKSPACE_HINT_PATH 10282
-#define ID_TEXTCTRL_WRKSPACE_HINT_DESCRIPTION 10281
+#define ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION 10281
 #define ID_PREFERENCES_FILTERS 10070
 #define SYMBOL_PREFERENCESDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PREFERENCESDIALOG_TITLE _("Preferences")
@@ -195,6 +195,42 @@ public:
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DEFAULT_GRADIENT
   void OnButtonDefaultGradientClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_DELETE
+  void OnButtonWorkspacesDeleteUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_UP
+  void OnButtonWorkspacesUpUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_DOWN
+  void OnButtonWorkspacesDownUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_NAME
+  void OnTextWorkspaceNameUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_LISTBOX_HINTS_WORKSPACE
+  void OnListboxHintsWorkspaceUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_ADD
+  void OnButtonHintAddUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_DELETE
+  void OnButtonHintDeleteUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BITMAP_HINT_UP
+  void OnBitmapHintUpUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_DOWN
+  void OnButtonHintDownUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_WORKSPACE_HINT_PATH
+  void OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_FILE_BUTTON_WORKSPACE_HINT_PATH
+  void OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION
+  void OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEvent& event );
 
 ////@end PreferencesDialog event handler declarations
 

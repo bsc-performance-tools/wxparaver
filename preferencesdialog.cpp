@@ -77,6 +77,18 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_UPDATE_UI( ID_COLOURPICKER_ZERO, PreferencesDialog::OnColourpickerZeroUpdate )
   EVT_BUTTON( ID_BUTTON_DEFAULT_TIMELINE, PreferencesDialog::OnButtonDefaultTimelineClick )
   EVT_BUTTON( ID_BUTTON_DEFAULT_GRADIENT, PreferencesDialog::OnButtonDefaultGradientClick )
+  EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DELETE, PreferencesDialog::OnButtonWorkspacesDeleteUpdate )
+  EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_UP, PreferencesDialog::OnButtonWorkspacesUpUpdate )
+  EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownUpdate )
+  EVT_UPDATE_UI( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameUpdate )
+  EVT_UPDATE_UI( ID_LISTBOX_HINTS_WORKSPACE, PreferencesDialog::OnListboxHintsWorkspaceUpdate )
+  EVT_UPDATE_UI( ID_BUTTON_HINT_ADD, PreferencesDialog::OnButtonHintAddUpdate )
+  EVT_UPDATE_UI( ID_BUTTON_HINT_DELETE, PreferencesDialog::OnButtonHintDeleteUpdate )
+  EVT_UPDATE_UI( ID_BITMAP_HINT_UP, PreferencesDialog::OnBitmapHintUpUpdate )
+  EVT_UPDATE_UI( ID_BUTTON_HINT_DOWN, PreferencesDialog::OnButtonHintDownUpdate )
+  EVT_UPDATE_UI( ID_TEXTCTRL_WORKSPACE_HINT_PATH, PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate )
+  EVT_UPDATE_UI( ID_FILE_BUTTON_WORKSPACE_HINT_PATH, PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate )
+  EVT_UPDATE_UI( ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION, PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate )
 ////@end PreferencesDialog event table entries
 
 END_EVENT_TABLE()
@@ -1057,7 +1069,7 @@ void PreferencesDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer200 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer196->Add(itemBoxSizer200, 0, wxGROW|wxALL, 0);
-  txtHintDescription = new wxTextCtrl( itemPanel170, ID_TEXTCTRL_WRKSPACE_HINT_DESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  txtHintDescription = new wxTextCtrl( itemPanel170, ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer200->Add(txtHintDescription, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   GetBookCtrl()->AddPage(itemPanel170, _("Workspaces"));
@@ -1474,5 +1486,125 @@ void PreferencesDialog::OnColourpickerBackgroundColourPickerChanged( wxColourPic
 void PreferencesDialog::OnColourpickerZeroUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( checkZero->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_DELETE
+ */
+
+void PreferencesDialog::OnButtonWorkspacesDeleteUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_UP
+ */
+
+void PreferencesDialog::OnButtonWorkspacesUpUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_DOWN
+ */
+
+void PreferencesDialog::OnButtonWorkspacesDownUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_NAME
+ */
+
+void PreferencesDialog::OnTextWorkspaceNameUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_LISTBOX_HINTS_WORKSPACE
+ */
+
+void PreferencesDialog::OnListboxHintsWorkspaceUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_ADD
+ */
+
+void PreferencesDialog::OnButtonHintAddUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_DELETE
+ */
+
+void PreferencesDialog::OnButtonHintDeleteUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAP_HINT_UP
+ */
+
+void PreferencesDialog::OnBitmapHintUpUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_DOWN
+ */
+
+void PreferencesDialog::OnButtonHintDownUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_WORKSPACE_HINT_PATH
+ */
+
+void PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_FILE_BUTTON_WORKSPACE_HINT_PATH
+ */
+
+void PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION
+ */
+
+void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
 }
 
