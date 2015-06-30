@@ -22086,6 +22086,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbBitmapButtonProxy"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonWorkspacesAddClick|NONE||PreferencesDialog"</string>
                     <string name="proxy-Id name">"ID_BUTTON_WORKSPACES_ADD"</string>
                     <long name="proxy-Id value">10271</long>
                     <string name="proxy-Name">""</string>
@@ -23309,7 +23310,7 @@ In normal mode all properties are showed in main window."</string>
                           <bool name="proxy-wxTE_PROCESS_ENTER">0</bool>
                           <bool name="proxy-wxTE_PROCESS_TAB">0</bool>
                           <bool name="proxy-wxTE_PASSWORD">0</bool>
-                          <bool name="proxy-wxTE_READONLY">0</bool>
+                          <bool name="proxy-wxTE_READONLY">1</bool>
                           <bool name="proxy-wxTE_RICH">0</bool>
                           <bool name="proxy-wxTE_RICH2">0</bool>
                           <bool name="proxy-wxTE_AUTO_URL">0</bool>

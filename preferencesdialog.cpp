@@ -77,6 +77,7 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_UPDATE_UI( ID_COLOURPICKER_ZERO, PreferencesDialog::OnColourpickerZeroUpdate )
   EVT_BUTTON( ID_BUTTON_DEFAULT_TIMELINE, PreferencesDialog::OnButtonDefaultTimelineClick )
   EVT_BUTTON( ID_BUTTON_DEFAULT_GRADIENT, PreferencesDialog::OnButtonDefaultGradientClick )
+  EVT_BUTTON( ID_BUTTON_WORKSPACES_ADD, PreferencesDialog::OnButtonWorkspacesAddClick )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DELETE, PreferencesDialog::OnButtonWorkspacesDeleteUpdate )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_UP, PreferencesDialog::OnButtonWorkspacesUpUpdate )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownUpdate )
@@ -1061,7 +1062,7 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer191->Add(itemBoxSizer196, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
   wxBoxSizer* itemBoxSizer197 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer196->Add(itemBoxSizer197, 0, wxGROW|wxALL, 0);
-  txtHintPath = new wxTextCtrl( itemPanel170, ID_TEXTCTRL_WORKSPACE_HINT_PATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  txtHintPath = new wxTextCtrl( itemPanel170, ID_TEXTCTRL_WORKSPACE_HINT_PATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer197->Add(txtHintPath, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
   fileBrowserHintPath = new FileBrowserButton( itemPanel170, ID_FILE_BUTTON_WORKSPACE_HINT_PATH, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -1121,6 +1122,8 @@ void PreferencesDialog::CreateControls()
   dirBrowserButtonTmp->SetTextBox( textCtrlTmp );
   dirBrowserButtonTmp->SetDialogMessage( _( "Select TMP Default Directory" ) );
   dirBrowserButtonTmp->Enable();
+  
+  fileBrowserHintPath->SetTextBox( txtHintPath );
 }
 
 
@@ -1505,7 +1508,8 @@ void PreferencesDialog::OnButtonWorkspacesDeleteUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesUpUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
+                listWorkspaces->GetSelection() > 0 );
 }
 
 
@@ -1515,7 +1519,8 @@ void PreferencesDialog::OnButtonWorkspacesUpUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesDownUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
+                listWorkspaces->GetSelection() < listWorkspaces->GetCount() - 1 );
 }
 
 
@@ -1555,7 +1560,8 @@ void PreferencesDialog::OnButtonHintAddUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonHintDeleteUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+                listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
 
@@ -1565,7 +1571,9 @@ void PreferencesDialog::OnButtonHintDeleteUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnBitmapHintUpUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+                listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
+                listHintsWorkspace->GetSelection() > 0 );
 }
 
 
@@ -1575,7 +1583,9 @@ void PreferencesDialog::OnBitmapHintUpUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonHintDownUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+                listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
+                listHintsWorkspace->GetSelection() < listHintsWorkspace->GetCount() - 1 );
 }
 
 
@@ -1585,7 +1595,8 @@ void PreferencesDialog::OnButtonHintDownUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+                listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
 
@@ -1595,7 +1606,8 @@ void PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& even
 
 void PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND /*||
+                listHintsWorkspace->GetSelection() != wxNOT_FOUND*/ );
 }
 
 
@@ -1605,6 +1617,18 @@ void PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& ev
 
 void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+                listHintsWorkspace->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_ADD
+ */
+
+void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
+{
+  wxString workspaceName( _( "New Workspace") );
+  listWorkspaces->Append( workspaceName );
 }
 

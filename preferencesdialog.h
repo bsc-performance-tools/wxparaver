@@ -196,6 +196,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DEFAULT_GRADIENT
   void OnButtonDefaultGradientClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_ADD
+  void OnButtonWorkspacesAddClick( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_DELETE
   void OnButtonWorkspacesDeleteUpdate( wxUpdateUIEvent& event );
 
