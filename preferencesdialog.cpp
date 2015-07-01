@@ -77,10 +77,15 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_UPDATE_UI( ID_COLOURPICKER_ZERO, PreferencesDialog::OnColourpickerZeroUpdate )
   EVT_BUTTON( ID_BUTTON_DEFAULT_TIMELINE, PreferencesDialog::OnButtonDefaultTimelineClick )
   EVT_BUTTON( ID_BUTTON_DEFAULT_GRADIENT, PreferencesDialog::OnButtonDefaultGradientClick )
+  EVT_LISTBOX( ID_LISTBOX_WORKSPACES, PreferencesDialog::OnListboxWorkspacesSelected )
   EVT_BUTTON( ID_BUTTON_WORKSPACES_ADD, PreferencesDialog::OnButtonWorkspacesAddClick )
+  EVT_BUTTON( ID_BUTTON_WORKSPACES_DELETE, PreferencesDialog::OnButtonWorkspacesDeleteClick )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DELETE, PreferencesDialog::OnButtonWorkspacesDeleteUpdate )
+  EVT_BUTTON( ID_BUTTON_WORKSPACES_UP, PreferencesDialog::OnButtonWorkspacesUpClick )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_UP, PreferencesDialog::OnButtonWorkspacesUpUpdate )
+  EVT_BUTTON( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownClick )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownUpdate )
+  EVT_TEXT( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameTextUpdated )
   EVT_UPDATE_UI( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameUpdate )
   EVT_UPDATE_UI( ID_LISTBOX_HINTS_WORKSPACE, PreferencesDialog::OnListboxHintsWorkspaceUpdate )
   EVT_UPDATE_UI( ID_BUTTON_HINT_ADD, PreferencesDialog::OnButtonHintAddUpdate )
@@ -1628,7 +1633,74 @@ void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEven
 
 void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
 {
-  wxString workspaceName( _( "New Workspace") );
+  int n = 1;
+  wxString workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), n );
+  while( listWorkspaces->FindString( workspaceName ) != wxNOT_FOUND )
+    workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), ++n );
   listWorkspaces->Append( workspaceName );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_DELETE
+ */
+
+void PreferencesDialog::OnButtonWorkspacesDeleteClick( wxCommandEvent& event )
+{
+  listWorkspaces->Delete( listWorkspaces->GetSelection() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_WORKSPACES
+ */
+
+void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
+{
+  txtWorkspaceName->SetValue( listWorkspaces->GetStringSelection() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXT_WORKSPACE_NAME
+ */
+
+void PreferencesDialog::OnTextWorkspaceNameTextUpdated( wxCommandEvent& event )
+{
+  listWorkspaces->SetString( listWorkspaces->GetSelection(), event.GetString() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_UP
+ */
+
+void PreferencesDialog::OnButtonWorkspacesUpClick( wxCommandEvent& event )
+{
+  int tmpSel = listWorkspaces->GetSelection();
+  wxArrayString items = listWorkspaces->GetStrings();
+  wxString tmpStr = items[ tmpSel ];
+  items[ tmpSel ] = items[ tmpSel - 1 ];
+  items[ tmpSel - 1 ] = tmpStr;
+  listWorkspaces->Set( items );
+  listWorkspaces->SetSelection( tmpSel - 1 );
+  txtWorkspaceName->SetValue( listWorkspaces->GetStringSelection() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_DOWN
+ */
+
+void PreferencesDialog::OnButtonWorkspacesDownClick( wxCommandEvent& event )
+{
+  int tmpSel = listWorkspaces->GetSelection();
+  wxArrayString items = listWorkspaces->GetStrings();
+  wxString tmpStr = items[ tmpSel ];
+  items[ tmpSel ] = items[ tmpSel + 1 ];
+  items[ tmpSel + 1 ] = tmpStr;
+  listWorkspaces->Set( items );
+  listWorkspaces->SetSelection( tmpSel + 1 );
+  txtWorkspaceName->SetValue( listWorkspaces->GetStringSelection() );
 }
 

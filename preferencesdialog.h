@@ -196,17 +196,32 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_DEFAULT_GRADIENT
   void OnButtonDefaultGradientClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_WORKSPACES
+  void OnListboxWorkspacesSelected( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_ADD
   void OnButtonWorkspacesAddClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_DELETE
+  void OnButtonWorkspacesDeleteClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_DELETE
   void OnButtonWorkspacesDeleteUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_UP
+  void OnButtonWorkspacesUpClick( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_UP
   void OnButtonWorkspacesUpUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_DOWN
+  void OnButtonWorkspacesDownClick( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_DOWN
   void OnButtonWorkspacesDownUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXT_WORKSPACE_NAME
+  void OnTextWorkspaceNameTextUpdated( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_NAME
   void OnTextWorkspaceNameUpdate( wxUpdateUIEvent& event );

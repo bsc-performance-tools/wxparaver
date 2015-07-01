@@ -21987,6 +21987,7 @@ In normal mode all properties are showed in main window."</string>
                   <long name="title-mode">0</long>
                   <long name="locked">0</long>
                   <string name="proxy-type">"wbListBoxProxy"</string>
+                  <string name="event-handler-0">"wxEVT_COMMAND_LISTBOX_SELECTED|OnListboxWorkspacesSelected|NONE||PreferencesDialog"</string>
                   <string name="proxy-Id name">"ID_LISTBOX_WORKSPACES"</string>
                   <long name="proxy-Id value">10270</long>
                   <string name="proxy-Name">""</string>
@@ -22157,7 +22158,8 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbBitmapButtonProxy"</string>
-                    <string name="event-handler-0">"wxEVT_UPDATE_UI|OnButtonWorkspacesDeleteUpdate|NONE||PreferencesDialog"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonWorkspacesDeleteClick|NONE||PreferencesDialog"</string>
+                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnButtonWorkspacesDeleteUpdate|NONE||PreferencesDialog"</string>
                     <string name="proxy-Id name">"ID_BUTTON_WORKSPACES_DELETE"</string>
                     <long name="proxy-Id value">10272</long>
                     <string name="proxy-Name">""</string>
@@ -22228,7 +22230,8 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbBitmapButtonProxy"</string>
-                    <string name="event-handler-0">"wxEVT_UPDATE_UI|OnButtonWorkspacesUpUpdate|NONE||PreferencesDialog"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonWorkspacesUpClick|NONE||PreferencesDialog"</string>
+                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnButtonWorkspacesUpUpdate|NONE||PreferencesDialog"</string>
                     <string name="proxy-Id name">"ID_BUTTON_WORKSPACES_UP"</string>
                     <long name="proxy-Id value">10273</long>
                     <string name="proxy-Name">""</string>
@@ -22299,7 +22302,8 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbBitmapButtonProxy"</string>
-                    <string name="event-handler-0">"wxEVT_UPDATE_UI|OnButtonWorkspacesDownUpdate|NONE||PreferencesDialog"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonWorkspacesDownClick|NONE||PreferencesDialog"</string>
+                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnButtonWorkspacesDownUpdate|NONE||PreferencesDialog"</string>
                     <string name="proxy-Id name">"ID_BUTTON_WORKSPACES_DOWN"</string>
                     <long name="proxy-Id value">10274</long>
                     <string name="proxy-Name">""</string>
@@ -22478,7 +22482,8 @@ In normal mode all properties are showed in main window."</string>
                     <long name="title-mode">0</long>
                     <long name="locked">0</long>
                     <string name="proxy-type">"wbTextCtrlProxy"</string>
-                    <string name="event-handler-0">"wxEVT_UPDATE_UI|OnTextWorkspaceNameUpdate|NONE||PreferencesDialog"</string>
+                    <string name="event-handler-0">"wxEVT_COMMAND_TEXT_UPDATED|OnTextWorkspaceNameTextUpdated|NONE||PreferencesDialog"</string>
+                    <string name="event-handler-1">"wxEVT_UPDATE_UI|OnTextWorkspaceNameUpdate|NONE||PreferencesDialog"</string>
                     <string name="proxy-Id name">"ID_TEXT_WORKSPACE_NAME"</string>
                     <long name="proxy-Id value">10275</long>
                     <string name="proxy-Name">""</string>
@@ -23803,14 +23808,6 @@ In normal mode all properties are showed in main window."</string>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Member variable name">""</string>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Stretch factor">0</long>
-            <long name="proxy-Border">5</long>
-            <bool name="proxy-wxLEFT">1</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
-            <bool name="proxy-wxTOP">1</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
