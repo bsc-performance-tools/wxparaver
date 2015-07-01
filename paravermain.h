@@ -462,6 +462,7 @@ public:
   Window *createBaseWindow( wxString whichName = wxString(wxT("")) );
   void insertInTree( Window *whichWindow );
 
+  static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
 
   static wxProgressDialog *dialogProgress;
   static paraverMain* myParaverMain;  // for update tree of windows

@@ -43,6 +43,7 @@
 ////@end includes
 
 #include "preferencesdialog.h"
+#include "paravermain.h"
 #include "semanticcolor.h"
 #include "labelconstructor.h"
 
@@ -88,6 +89,7 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_TEXT( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameTextUpdated )
   EVT_UPDATE_UI( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameUpdate )
   EVT_UPDATE_UI( ID_LISTBOX_HINTS_WORKSPACE, PreferencesDialog::OnListboxHintsWorkspaceUpdate )
+  EVT_BUTTON( ID_BUTTON_HINT_ADD, PreferencesDialog::OnButtonHintAddClick )
   EVT_UPDATE_UI( ID_BUTTON_HINT_ADD, PreferencesDialog::OnButtonHintAddUpdate )
   EVT_UPDATE_UI( ID_BUTTON_HINT_DELETE, PreferencesDialog::OnButtonHintDeleteUpdate )
   EVT_UPDATE_UI( ID_BITMAP_HINT_UP, PreferencesDialog::OnBitmapHintUpUpdate )
@@ -1638,6 +1640,7 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
   while( listWorkspaces->FindString( workspaceName ) != wxNOT_FOUND )
     workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), ++n );
   listWorkspaces->Append( workspaceName );
+  workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace() ) );
 }
 
 
@@ -1647,6 +1650,7 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesDeleteClick( wxCommandEvent& event )
 {
+  workspaceContainer.erase( listWorkspaces->GetStringSelection() );
   listWorkspaces->Delete( listWorkspaces->GetSelection() );
 }
 
@@ -1667,6 +1671,9 @@ void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
 
 void PreferencesDialog::OnTextWorkspaceNameTextUpdated( wxCommandEvent& event )
 {
+  Workspace tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+  workspaceContainer.erase( listWorkspaces->GetStringSelection() );
+  workspaceContainer.insert( std::pair<wxString,Workspace>( event.GetString(), tmpWrk ) );
   listWorkspaces->SetString( listWorkspaces->GetSelection(), event.GetString() );
 }
 
@@ -1702,5 +1709,19 @@ void PreferencesDialog::OnButtonWorkspacesDownClick( wxCommandEvent& event )
   listWorkspaces->Set( items );
   listWorkspaces->SetSelection( tmpSel + 1 );
   txtWorkspaceName->SetValue( listWorkspaces->GetStringSelection() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_HINT_ADD
+ */
+
+void PreferencesDialog::OnButtonHintAddClick( wxCommandEvent& event )
+{
+  wxString tmpPath( _( "/some/path/new_hint.cfg" ) );
+  wxString tmpDesc( _( "New hint description..." ) );
+  std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( std::string( tmpPath.mb_str() ), std::string( tmpDesc.mb_str() ) );
+  workspaceContainer[ listWorkspaces->GetStringSelection() ].addHintCFG( tmpHint );
+  listHintsWorkspace->Append( paraverMain::getHintComposed( tmpHint ) );
 }
 

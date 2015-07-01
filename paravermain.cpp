@@ -3718,3 +3718,9 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
   }
 }
 
+
+wxString paraverMain::getHintComposed( const std::pair< std::string, std::string >& hint )
+{
+  wxFileName filename( wxString::FromAscii(  hint.first.c_str() ) );
+  return filename.GetName() + _( " - " ) + wxString::FromAscii(  hint.second.c_str() );
+}

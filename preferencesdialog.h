@@ -35,6 +35,9 @@
  * Includes
  */
 
+#include <map>
+#include <string>
+
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
@@ -44,6 +47,7 @@
 ////@end includes
 
 #include "paraverconfig.h"
+#include "workspace.h"
 
 /*!
  * Forward declarations
@@ -228,6 +232,9 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_LISTBOX_HINTS_WORKSPACE
   void OnListboxHintsWorkspaceUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_HINT_ADD
+  void OnButtonHintAddClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_ADD
   void OnButtonHintAddUpdate( wxUpdateUIEvent& event );
@@ -440,6 +447,9 @@ public:
   PRV_UINT32 GetWhatWhereMaxPrecision() const { return whatWhereMaxPrecision ; }
   void SetWhatWhereMaxPrecision(PRV_UINT32 value) { whatWhereMaxPrecision = value ; }
 
+  std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
+  void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -595,6 +605,7 @@ private:
   std::string tracesPath;
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
+  std::map<wxString,Workspace> workspaceContainer;
 ////@end PreferencesDialog member variables
 
   wxString formatNumber( long value );
