@@ -91,8 +91,6 @@ class TraceOptions;
 #define ID_MENULOADSESSION 10170
 #define ID_MENUSAVESESSION 10169
 #define ID_PREFERENCES 10001
-#define ID_MENUITEM 10267
-#define ID_MENUITEM1 10268
 #define wxID_HELPCONTENTS 10005
 #define wxID_TUTORIALS 10196
 #define ID_TOOLBAR 10003
@@ -318,6 +316,9 @@ public:
   std::set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
   void SetActiveWindows(std::set<wxWindow *> value) { activeWindows = value ; }
 
+  vector< Workspace > GetActiveWorkspaces() const { return activeWorkspaces ; }
+  void SetActiveWorkspaces(vector< Workspace > value) { activeWorkspaces = value ; }
+
   bool GetCanServeSignal() const { return canServeSignal ; }
   void SetCanServeSignal(bool value) { canServeSignal = value ; }
 
@@ -476,6 +477,7 @@ public:
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
   wxMenu* menuFile;
+  wxMenu* menuHints;
   wxMenu* menuHelp;
   wxToolBar* tbarMain;
   wxChoice* choiceWorkspace;
@@ -515,6 +517,8 @@ private:
   wxString tracePath;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
+protected:
+  vector< Workspace > activeWorkspaces;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;
@@ -539,6 +543,11 @@ private:
   void PrepareToExit();
   
   void OnSessionTimer( wxTimerEvent& event );
+  
+private:
+  void refreshActiveWorkspaces();
+  void OnHintClick( wxCommandEvent& event );
+
 
 };
 

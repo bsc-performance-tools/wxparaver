@@ -38,7 +38,7 @@
 #include "wx/wx.h"
 #endif
 
-////@begin includes
+////@begin includesMPI
 #include "wx/imaglist.h"
 ////@end includes
 
@@ -140,37 +140,59 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_ICONIZE( paraverMain::OnIconize )
   EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
+
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
+
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
+
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
+
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
+
   EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
+
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
+
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
+
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
+
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
+
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
+
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
+
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
+
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
+
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
+
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
+
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
+
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
+
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -383,6 +405,7 @@ void paraverMain::Init()
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
   menuFile = NULL;
+  menuHints = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
   choiceWorkspace = NULL;
@@ -441,11 +464,8 @@ void paraverMain::CreateControls()
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));
-  wxMenu* itemMenu18 = new wxMenu;
-  itemMenu18->Append(ID_MENUITEM, _("MPI_call - Color identifies MPI call"), wxEmptyString, wxITEM_NORMAL);
-  itemMenu18->Append(ID_MENUITEM1, _("mpi_stats - Reference for statistics on MPI calls"), wxEmptyString, wxITEM_NORMAL);
-  menuBar->Append(itemMenu18, _("Hints"));
-  menuBar->EnableTop(1, false);
+  menuHints = new wxMenu;
+  menuBar->Append(menuHints, _("Hints"));
   menuHelp = new wxMenu;
   menuHelp->Append(wxID_HELPCONTENTS, _("&Help Contents..."), wxEmptyString, wxITEM_NORMAL);
   menuHelp->Append(wxID_TUTORIALS, _("&Tutorials..."), wxEmptyString, wxITEM_NORMAL);
@@ -454,29 +474,29 @@ void paraverMain::CreateControls()
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxWANTS_CHARS );
-  wxBitmap itemtool26Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
-  wxBitmap itemtool26BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool26Bitmap, itemtool26BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
+  wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
+  wxBitmap itemtool24BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_WINDOW, false);
-  wxBitmap itemtool27Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
-  wxBitmap itemtool27BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool27Bitmap, itemtool27BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
+  wxBitmap itemtool25Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
+  wxBitmap itemtool25BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool25Bitmap, itemtool25BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
-  wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
-  wxBitmap itemtool28BitmapDisabled;
-  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
+  wxBitmap itemtool26Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  wxBitmap itemtool26BitmapDisabled;
+  tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool26Bitmap, itemtool26BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->AddSeparator();
-  wxBitmap itemtool30Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
-  wxBitmap itemtool30BitmapDisabled;
-  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool30Bitmap, itemtool30BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
+  wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
+  wxBitmap itemtool28BitmapDisabled;
+  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
   tbarMain->AddSeparator();
-  wxBitmap itemtool32Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
-  wxBitmap itemtool32BitmapDisabled;
-  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool32Bitmap, itemtool32BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
-  wxBitmap itemtool33Bitmap(itemFrame1->GetBitmapResource(wxT("run_script.xpm")));
-  wxBitmap itemtool33BitmapDisabled;
-  tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool33Bitmap, itemtool33BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
+  wxBitmap itemtool30Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
+  wxBitmap itemtool30BitmapDisabled;
+  tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool30Bitmap, itemtool30BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
+  wxBitmap itemtool31Bitmap(itemFrame1->GetBitmapResource(wxT("run_script.xpm")));
+  wxBitmap itemtool31BitmapDisabled;
+  tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool31Bitmap, itemtool31BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -529,18 +549,78 @@ void paraverMain::CreateControls()
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
   
   // Workspace choice
-  wxString aux;
-  vector< string > workspaces( workspacesManager->getWorkspaces() );
-  for( vector< string >::iterator it = workspaces.begin(); it != workspaces.end(); ++it )
+  vector< string > workspacesNames = workspacesManager->getWorkspaces();
+  for ( vector< string >::iterator it = workspacesNames.begin(); it != workspacesNames.end(); ++it )
   {
-    aux << wxString::FromAscii( (*it).c_str() );
-    choiceWorkspace->Append( aux );
-    aux.clear();
+    activeWorkspaces.push_back( workspacesManager->getWorkspace( *it ) );
   }
-
-  choiceWorkspace->Select( 0 );
+  refreshActiveWorkspaces();
 }
 
+
+void paraverMain::refreshActiveWorkspaces()
+{
+  // Destroy previous if any
+  for ( size_t i = 0; i < menuHints->GetMenuItemCount(); ++i )
+  {
+    wxMenuItem *currentItem = menuHints->FindItemByPosition( i );
+    int id = currentItem->GetId();
+    Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnHintClick );
+    menuHints->Destroy( currentItem );
+  }
+  
+  // Create new one
+  for ( vector< Workspace >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+  {
+    wxMenu *currentWorkspace = new wxMenu;
+    
+    std::vector< std::pair< std::string, std::string > > currentHints = it->getHintCFGs();
+    for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
+    {
+      wxString tmpName = getHintComposed( *it2 );
+      wxMenuItem *currentHint = new wxMenuItem( currentWorkspace, wxID_ANY, tmpName );
+      currentWorkspace->Append( currentHint );
+         cout << tmpName << endl;
+     Connect( currentHint->GetId(),
+               wxEVT_COMMAND_MENU_SELECTED,
+               (wxObjectEventFunction)&paraverMain::OnHintClick );
+    }
+    
+    menuHints->AppendSubMenu( currentWorkspace, wxString::FromAscii( it->getName().c_str() ));
+  }  
+}
+
+
+void paraverMain::OnHintClick( wxCommandEvent& event )
+{
+  int eventId = event.GetId();
+  wxMenuItem *item = menuHints->FindItem( eventId );
+  wxString selectedHint = item->GetItemLabelText();
+  wxString workspaceName = item->GetSubMenu()->GetTitle();
+          cout << selectedHint << endl;
+          cout << workspaceName << endl;
+
+  for ( vector< Workspace >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+  {
+          cout << wxString::FromAscii( it->getName().c_str() )  << endl;
+
+    if ( workspaceName == wxString::FromAscii( it->getName().c_str() ) )
+    {
+        cout << it->getName() << endl;
+      std::vector< std::pair< std::string, std::string > > currentHints = it->getHintCFGs();
+
+      for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
+      {
+        wxString hintName = getHintComposed( *it2 );
+        if ( selectedHint == hintName )
+        {     
+        cout << it2->first << endl;
+          DoLoadCFG( it2->first );
+        }
+      }
+    }
+  }
+}
 
 bool paraverMain::DoLoadTrace( const string &path )
 {
