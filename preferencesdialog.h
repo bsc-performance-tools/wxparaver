@@ -230,6 +230,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_NAME
   void OnTextWorkspaceNameUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_HINTS_WORKSPACE
+  void OnListboxHintsWorkspaceSelected( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_LISTBOX_HINTS_WORKSPACE
   void OnListboxHintsWorkspaceUpdate( wxUpdateUIEvent& event );
 
@@ -239,11 +242,20 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_ADD
   void OnButtonHintAddUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_HINT_DELETE
+  void OnButtonHintDeleteClick( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_DELETE
   void OnButtonHintDeleteUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAP_HINT_UP
+  void OnBitmapHintUpClick( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_BITMAP_HINT_UP
   void OnBitmapHintUpUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_HINT_DOWN
+  void OnButtonHintDownClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_DOWN
   void OnButtonHintDownUpdate( wxUpdateUIEvent& event );

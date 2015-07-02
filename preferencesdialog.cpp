@@ -88,11 +88,15 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownUpdate )
   EVT_TEXT( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameTextUpdated )
   EVT_UPDATE_UI( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameUpdate )
+  EVT_LISTBOX( ID_LISTBOX_HINTS_WORKSPACE, PreferencesDialog::OnListboxHintsWorkspaceSelected )
   EVT_UPDATE_UI( ID_LISTBOX_HINTS_WORKSPACE, PreferencesDialog::OnListboxHintsWorkspaceUpdate )
   EVT_BUTTON( ID_BUTTON_HINT_ADD, PreferencesDialog::OnButtonHintAddClick )
   EVT_UPDATE_UI( ID_BUTTON_HINT_ADD, PreferencesDialog::OnButtonHintAddUpdate )
+  EVT_BUTTON( ID_BUTTON_HINT_DELETE, PreferencesDialog::OnButtonHintDeleteClick )
   EVT_UPDATE_UI( ID_BUTTON_HINT_DELETE, PreferencesDialog::OnButtonHintDeleteUpdate )
+  EVT_BUTTON( ID_BITMAP_HINT_UP, PreferencesDialog::OnBitmapHintUpClick )
   EVT_UPDATE_UI( ID_BITMAP_HINT_UP, PreferencesDialog::OnBitmapHintUpUpdate )
+  EVT_BUTTON( ID_BUTTON_HINT_DOWN, PreferencesDialog::OnButtonHintDownClick )
   EVT_UPDATE_UI( ID_BUTTON_HINT_DOWN, PreferencesDialog::OnButtonHintDownUpdate )
   EVT_UPDATE_UI( ID_TEXTCTRL_WORKSPACE_HINT_PATH, PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate )
   EVT_UPDATE_UI( ID_FILE_BUTTON_WORKSPACE_HINT_PATH, PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate )
@@ -1640,7 +1644,7 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
   while( listWorkspaces->FindString( workspaceName ) != wxNOT_FOUND )
     workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), ++n );
   listWorkspaces->Append( workspaceName );
-  workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace() ) );
+  workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace( std::string( workspaceName.mb_str() ) ) ) );
 }
 
 
@@ -1661,7 +1665,22 @@ void PreferencesDialog::OnButtonWorkspacesDeleteClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
 {
+  if( listWorkspaces->GetSelection() == wxNOT_FOUND )
+  {
+    txtWorkspaceName->Clear();
+    listHintsWorkspace->Clear();
+    txtHintPath->Clear();
+    txtHintDescription->Clear();
+    return;
+  }
+  
   txtWorkspaceName->SetValue( listWorkspaces->GetStringSelection() );
+  listHintsWorkspace->Clear();
+  Workspace& currentWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+  std::vector<std::pair<std::string,std::string> > hints = currentWrk.getHintCFGs();
+  for( std::vector<std::pair<std::string,std::string> >::iterator it = hints.begin(); 
+       it != hints.end(); ++it )
+    listHintsWorkspace->Append( paraverMain::getHintComposed( *it ) );
 }
 
 
@@ -1673,6 +1692,8 @@ void PreferencesDialog::OnTextWorkspaceNameTextUpdated( wxCommandEvent& event )
 {
   Workspace tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
   workspaceContainer.erase( listWorkspaces->GetStringSelection() );
+  std::string tmpName = std::string( event.GetString().mb_str() );
+  tmpWrk.setName( tmpName );
   workspaceContainer.insert( std::pair<wxString,Workspace>( event.GetString(), tmpWrk ) );
   listWorkspaces->SetString( listWorkspaces->GetSelection(), event.GetString() );
 }
@@ -1723,5 +1744,77 @@ void PreferencesDialog::OnButtonHintAddClick( wxCommandEvent& event )
   std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( std::string( tmpPath.mb_str() ), std::string( tmpDesc.mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].addHintCFG( tmpHint );
   listHintsWorkspace->Append( paraverMain::getHintComposed( tmpHint ) );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_HINT_DELETE
+ */
+
+void PreferencesDialog::OnButtonHintDeleteClick( wxCommandEvent& event )
+{
+  workspaceContainer[ listWorkspaces->GetStringSelection() ].removeHintCFG( listHintsWorkspace->GetSelection() );
+  listHintsWorkspace->Delete( listHintsWorkspace->GetSelection() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAP_HINT_UP
+ */
+
+void PreferencesDialog::OnBitmapHintUpClick( wxCommandEvent& event )
+{
+  int tmpSel = listHintsWorkspace->GetSelection();
+  Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+  wxArrayString items = listHintsWorkspace->GetStrings();
+  wxString tmpStr = items[ tmpSel ];
+  items[ tmpSel ] = items[ tmpSel - 1 ];
+  items[ tmpSel - 1 ] = tmpStr;
+  listHintsWorkspace->Set( items );
+  listHintsWorkspace->SetSelection( tmpSel - 1 );
+  
+  std::pair< std::string, std::string > tmpHint = tmpWrk.getHintCFG( tmpSel );
+  tmpWrk.removeHintCFG( tmpSel );
+  tmpWrk.addHintCFG( tmpSel - 1, tmpHint );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_HINT_DOWN
+ */
+
+void PreferencesDialog::OnButtonHintDownClick( wxCommandEvent& event )
+{
+  int tmpSel = listHintsWorkspace->GetSelection();
+  Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+  wxArrayString items = listHintsWorkspace->GetStrings();
+  wxString tmpStr = items[ tmpSel ];
+  items[ tmpSel ] = items[ tmpSel + 1 ];
+  items[ tmpSel + 1 ] = tmpStr;
+  listHintsWorkspace->Set( items );
+  listHintsWorkspace->SetSelection( tmpSel + 1 );
+  
+  std::pair< std::string, std::string > tmpHint = tmpWrk.getHintCFG( tmpSel );
+  tmpWrk.removeHintCFG( tmpSel );
+  tmpWrk.addHintCFG( tmpSel, tmpHint );
+}
+
+
+/*!
+ * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_HINTS_WORKSPACE
+ */
+
+void PreferencesDialog::OnListboxHintsWorkspaceSelected( wxCommandEvent& event )
+{
+  if( listHintsWorkspace->GetSelection() == wxNOT_FOUND )
+  {
+    txtHintPath->Clear();
+    txtHintDescription->Clear();
+    return;
+  }
+  std::pair< std::string, std::string > tmpHint = workspaceContainer[ listWorkspaces->GetStringSelection() ]
+                                                  .getHintCFG( listHintsWorkspace->GetSelection() );
+  txtHintPath->SetValue( wxString::FromAscii( tmpHint.first.c_str() ) );
+  txtHintDescription->SetValue( wxString::FromAscii( tmpHint.second.c_str() ) );
 }
 
