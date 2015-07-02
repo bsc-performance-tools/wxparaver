@@ -260,11 +260,17 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_HINT_DOWN
   void OnButtonHintDownUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_WORKSPACE_HINT_PATH
+  void OnTextctrlWorkspaceHintPathTextUpdated( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_WORKSPACE_HINT_PATH
   void OnTextctrlWorkspaceHintPathUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_FILE_BUTTON_WORKSPACE_HINT_PATH
   void OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION
+  void OnTextctrlWorkspaceHintDescriptionTextUpdated( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION
   void OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEvent& event );

@@ -98,8 +98,10 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_UPDATE_UI( ID_BITMAP_HINT_UP, PreferencesDialog::OnBitmapHintUpUpdate )
   EVT_BUTTON( ID_BUTTON_HINT_DOWN, PreferencesDialog::OnButtonHintDownClick )
   EVT_UPDATE_UI( ID_BUTTON_HINT_DOWN, PreferencesDialog::OnButtonHintDownUpdate )
+  EVT_TEXT( ID_TEXTCTRL_WORKSPACE_HINT_PATH, PreferencesDialog::OnTextctrlWorkspaceHintPathTextUpdated )
   EVT_UPDATE_UI( ID_TEXTCTRL_WORKSPACE_HINT_PATH, PreferencesDialog::OnTextctrlWorkspaceHintPathUpdate )
   EVT_UPDATE_UI( ID_FILE_BUTTON_WORKSPACE_HINT_PATH, PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate )
+  EVT_TEXT( ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION, PreferencesDialog::OnTextctrlWorkspaceHintDescriptionTextUpdated )
   EVT_UPDATE_UI( ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION, PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate )
 ////@end PreferencesDialog event table entries
 
@@ -1135,6 +1137,8 @@ void PreferencesDialog::CreateControls()
   dirBrowserButtonTmp->Enable();
   
   fileBrowserHintPath->SetTextBox( txtHintPath );
+  fileBrowserHintPath->SetFileDialogWildcard( _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ) );
+  fileBrowserHintPath->SetDialogMessage( _( "Select Configuration File" ) );
 }
 
 
@@ -1628,7 +1632,7 @@ void PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate( wxUpdateUIEvent& ev
 
 void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND ||
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() != wxNOT_FOUND );
 }
 
@@ -1667,14 +1671,10 @@ void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
 {
   if( listWorkspaces->GetSelection() == wxNOT_FOUND )
   {
-    txtWorkspaceName->Clear();
-    listHintsWorkspace->Clear();
-    txtHintPath->Clear();
-    txtHintDescription->Clear();
     return;
   }
   
-  txtWorkspaceName->SetValue( listWorkspaces->GetStringSelection() );
+  txtWorkspaceName->ChangeValue( listWorkspaces->GetStringSelection() );
   listHintsWorkspace->Clear();
   Workspace& currentWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
   std::vector<std::pair<std::string,std::string> > hints = currentWrk.getHintCFGs();
@@ -1712,7 +1712,7 @@ void PreferencesDialog::OnButtonWorkspacesUpClick( wxCommandEvent& event )
   items[ tmpSel - 1 ] = tmpStr;
   listWorkspaces->Set( items );
   listWorkspaces->SetSelection( tmpSel - 1 );
-  txtWorkspaceName->SetValue( listWorkspaces->GetStringSelection() );
+  txtWorkspaceName->ChangeValue( listWorkspaces->GetStringSelection() );
 }
 
 
@@ -1729,7 +1729,7 @@ void PreferencesDialog::OnButtonWorkspacesDownClick( wxCommandEvent& event )
   items[ tmpSel + 1 ] = tmpStr;
   listWorkspaces->Set( items );
   listWorkspaces->SetSelection( tmpSel + 1 );
-  txtWorkspaceName->SetValue( listWorkspaces->GetStringSelection() );
+  txtWorkspaceName->ChangeValue( listWorkspaces->GetStringSelection() );
 }
 
 
@@ -1774,8 +1774,9 @@ void PreferencesDialog::OnBitmapHintUpClick( wxCommandEvent& event )
   listHintsWorkspace->SetSelection( tmpSel - 1 );
   
   std::pair< std::string, std::string > tmpHint = tmpWrk.getHintCFG( tmpSel );
-  tmpWrk.removeHintCFG( tmpSel );
-  tmpWrk.addHintCFG( tmpSel - 1, tmpHint );
+  std::pair< std::string, std::string > tmpHintPrev = std::pair< std::string, std::string >( tmpWrk.getHintCFG( tmpSel - 1 ) );
+  tmpWrk.modifyHintCFG( tmpSel, tmpHintPrev );
+  tmpWrk.modifyHintCFG( tmpSel - 1, tmpHint );
 }
 
 
@@ -1795,8 +1796,9 @@ void PreferencesDialog::OnButtonHintDownClick( wxCommandEvent& event )
   listHintsWorkspace->SetSelection( tmpSel + 1 );
   
   std::pair< std::string, std::string > tmpHint = tmpWrk.getHintCFG( tmpSel );
-  tmpWrk.removeHintCFG( tmpSel );
-  tmpWrk.addHintCFG( tmpSel, tmpHint );
+  std::pair< std::string, std::string > tmpHintNext = std::pair< std::string, std::string >( tmpWrk.getHintCFG( tmpSel + 1 ) );
+  tmpWrk.modifyHintCFG( tmpSel, tmpHintNext );
+  tmpWrk.modifyHintCFG( tmpSel + 1, tmpHint );
 }
 
 
@@ -1808,13 +1810,45 @@ void PreferencesDialog::OnListboxHintsWorkspaceSelected( wxCommandEvent& event )
 {
   if( listHintsWorkspace->GetSelection() == wxNOT_FOUND )
   {
-    txtHintPath->Clear();
-    txtHintDescription->Clear();
     return;
   }
   std::pair< std::string, std::string > tmpHint = workspaceContainer[ listWorkspaces->GetStringSelection() ]
                                                   .getHintCFG( listHintsWorkspace->GetSelection() );
-  txtHintPath->SetValue( wxString::FromAscii( tmpHint.first.c_str() ) );
-  txtHintDescription->SetValue( wxString::FromAscii( tmpHint.second.c_str() ) );
+  txtHintPath->ChangeValue( wxString::FromAscii( tmpHint.first.c_str() ) );
+  txtHintDescription->ChangeValue( wxString::FromAscii( tmpHint.second.c_str() ) );
+}
+
+
+/*!
+ * wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_WORKSPACE_HINT_PATH
+ */
+
+void PreferencesDialog::OnTextctrlWorkspaceHintPathTextUpdated( wxCommandEvent& event )
+{
+  if( listHintsWorkspace->GetSelection() == wxNOT_FOUND )
+    return;
+
+  std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( 
+                                                    std::string( txtHintPath->GetValue().mb_str() ),
+                                                    std::string( txtHintDescription->GetValue().mb_str() ) );
+  workspaceContainer[ listWorkspaces->GetStringSelection() ].modifyHintCFG( listHintsWorkspace->GetSelection(), tmpHint );
+  listHintsWorkspace->SetString( listHintsWorkspace->GetSelection(), paraverMain::getHintComposed( tmpHint ) );
+}
+
+
+/*!
+ * wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION
+ */
+
+void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionTextUpdated( wxCommandEvent& event )
+{
+  if( listHintsWorkspace->GetSelection() == wxNOT_FOUND )
+    return;
+
+  std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( 
+                                                    std::string( txtHintPath->GetValue().mb_str() ),
+                                                    std::string( txtHintDescription->GetValue().mb_str() ) );
+  workspaceContainer[ listWorkspaces->GetStringSelection() ].modifyHintCFG( listHintsWorkspace->GetSelection(), tmpHint );
+  listHintsWorkspace->SetString( listHintsWorkspace->GetSelection(), paraverMain::getHintComposed( tmpHint ) );
 }
 
