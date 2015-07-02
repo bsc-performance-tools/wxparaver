@@ -203,7 +203,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_TREE_END_DRAG( wxID_ANY, paraverMain::OnTreeEndDrag)
 
   EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
-  
+
   EVT_ACTIVATE(paraverMain::OnActivate)
   
   EVT_TIMER( wxID_ANY, paraverMain::OnSessionTimer )
@@ -548,7 +548,7 @@ void paraverMain::CreateControls()
   
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
   
-  // Workspace choice
+  // Workspace choice --> CHANGE THIS!
   vector< string > workspacesNames = workspacesManager->getWorkspaces();
   for ( vector< string >::iterator it = workspacesNames.begin(); it != workspacesNames.end(); ++it )
   {
@@ -569,10 +569,12 @@ void paraverMain::refreshActiveWorkspaces()
     menuHints->Destroy( currentItem );
   }
   
-  // Create new one
+  // Create updated one
   for ( vector< Workspace >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
   {
-    wxMenu *currentWorkspace = new wxMenu;
+    wxString currentWorkspaceName = wxString::FromAscii( it->getName().c_str() );
+    //wxMenu *currentWorkspace = new wxMenu( currentWorkspaceName );
+    wxMenu *currentWorkspace = new wxMenu();
     
     std::vector< std::pair< std::string, std::string > > currentHints = it->getHintCFGs();
     for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
@@ -580,47 +582,15 @@ void paraverMain::refreshActiveWorkspaces()
       wxString tmpName = getHintComposed( *it2 );
       wxMenuItem *currentHint = new wxMenuItem( currentWorkspace, wxID_ANY, tmpName );
       currentWorkspace->Append( currentHint );
-         cout << tmpName << endl;
-     Connect( currentHint->GetId(),
+      Connect( currentHint->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
                (wxObjectEventFunction)&paraverMain::OnHintClick );
     }
     
-    menuHints->AppendSubMenu( currentWorkspace, wxString::FromAscii( it->getName().c_str() ));
-  }  
-}
-
-
-void paraverMain::OnHintClick( wxCommandEvent& event )
-{
-  int eventId = event.GetId();
-  wxMenuItem *item = menuHints->FindItem( eventId );
-  wxString selectedHint = item->GetItemLabelText();
-  wxString workspaceName = item->GetSubMenu()->GetTitle();
-          cout << selectedHint << endl;
-          cout << workspaceName << endl;
-
-  for ( vector< Workspace >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
-  {
-          cout << wxString::FromAscii( it->getName().c_str() )  << endl;
-
-    if ( workspaceName == wxString::FromAscii( it->getName().c_str() ) )
-    {
-        cout << it->getName() << endl;
-      std::vector< std::pair< std::string, std::string > > currentHints = it->getHintCFGs();
-
-      for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
-      {
-        wxString hintName = getHintComposed( *it2 );
-        if ( selectedHint == hintName )
-        {     
-        cout << it2->first << endl;
-          DoLoadCFG( it2->first );
-        }
-      }
-    }
+    menuHints->AppendSubMenu( currentWorkspace, currentWorkspaceName );
   }
 }
+
 
 bool paraverMain::DoLoadTrace( const string &path )
 {
@@ -1996,6 +1966,10 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   OnRecenttracesUpdate( tmpEvent );
   OnMenuloadcfgUpdate( tmpEvent );
 #endif
+  
+  wxUpdateUIEvent tmpEvent;
+  OnMenuHintUpdate( tmpEvent );
+
   if( canServeSignal )
   {
     while( !loadFilesQueue.empty() )
@@ -3804,3 +3778,64 @@ wxString paraverMain::getHintComposed( const std::pair< std::string, std::string
   wxFileName filename( wxString::FromAscii(  hint.first.c_str() ) );
   return filename.GetName() + _( " - " ) + wxString::FromAscii(  hint.second.c_str() );
 }
+
+
+void paraverMain::OnHintClick( wxCommandEvent& event )
+{
+  int hintId = event.GetId();
+  wxMenu *tmpMenu;
+  wxString selectedHint = menuHints->FindItem( hintId, &tmpMenu )->GetItemLabelText();
+  
+  if ( tmpMenu != NULL )
+  {
+    cout << tmpMenu->GetTitle() << endl;
+  }
+  bool found = false;
+  wxString workspaceName;
+
+  wxMenuItemList& menuItems1 = menuHints->GetMenuItems();
+  for (wxMenuItemList::iterator menuIt = menuItems1.begin(); menuIt != menuItems1.end() ; ++menuIt )
+  {
+    workspaceName = (*menuIt)->GetItemLabelText();
+
+    wxMenuItemList& menuItems2 = (*menuIt)->GetSubMenu()->GetMenuItems();
+    for (wxMenuItemList::iterator menuIt2 = menuItems2.begin(); menuIt2 != menuItems2.end() ; ++menuIt2 )
+    {
+      if ( hintId == (*menuIt2)->GetId() )
+      {
+        found = true;
+        break;
+      }
+    }
+    
+    if (found)
+      break;
+  }
+
+  for ( vector< Workspace >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+  {
+    if ( workspaceName == wxString::FromAscii( it->getName().c_str() ) )
+    {
+      std::vector< std::pair< std::string, std::string > > currentHints = it->getHintCFGs();
+
+      for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
+      {
+        wxString hintName = getHintComposed( *it2 );
+        if ( selectedHint == hintName )
+        {     
+          DoLoadCFG( it2->first );
+        }
+      }
+    }
+  }
+}
+
+
+void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
+{
+  if( loadedTraces.empty() )
+    GetMenuBar()->EnableTop( GetMenuBar()->FindMenu( _( "Hints" ) ), false );
+  else
+    GetMenuBar()->EnableTop( GetMenuBar()->FindMenu( _( "Hints" ) ), true );
+}
+
