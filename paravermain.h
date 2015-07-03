@@ -553,7 +553,7 @@ private:
   void refreshActiveWorkspaces();
   void OnHintClick( wxCommandEvent& event );
   void OnMenuHintUpdate( wxUpdateUIEvent& event );
-
+  void setActiveWorkspacesText();
 
 };
 

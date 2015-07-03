@@ -558,13 +558,7 @@ void paraverMain::CreateControls()
   
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
   
-  // Workspace choice --> CHANGE THIS!
-  vector< string > workspacesNames = workspacesManager->getWorkspaces();
-  for ( vector< string >::iterator it = workspacesNames.begin(); it != workspacesNames.end(); ++it )
-  {
-    activeWorkspaces.push_back( *it );
-  }
-  refreshActiveWorkspaces();
+  setActiveWorkspacesText();
 }
 
 
@@ -573,6 +567,7 @@ void paraverMain::refreshActiveWorkspaces()
   // Destroy previous if any
   for ( size_t i = 0; i < menuHints->GetMenuItemCount(); ++i )
   {
+  cout << "i " << i << endl;
     wxMenuItem *currentItem = menuHints->FindItemByPosition( i );
     int id = currentItem->GetId();
     Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnHintClick );
@@ -3880,10 +3875,32 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
     activeWorkspaces.clear();
     for( int i = 0; i < tmpActive.GetCount(); ++i )
     {
-      activeWorkspaces.push_back( tmpWorkspaces[ i ] );
+      activeWorkspaces.push_back( tmpWorkspaces[ tmpActive[ i ] ] );
     }
-
+    
+    setActiveWorkspacesText();
     refreshActiveWorkspaces();
   }
 }
 
+
+void paraverMain::setActiveWorkspacesText()
+{
+  if ( activeWorkspaces.empty() )
+  {
+    txtActiveWorkspaces->SetValue( _("None") );
+  }
+  else
+  {
+    wxString tmpActive;
+    for ( vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+    {
+      if ( !tmpActive.IsEmpty() )
+        tmpActive += _( "+" );
+        
+      tmpActive += wxString::FromAscii( it->c_str() );
+    }
+    
+    txtActiveWorkspaces->SetValue( tmpActive );
+  }
+}
