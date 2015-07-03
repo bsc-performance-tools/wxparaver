@@ -3882,6 +3882,8 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
     {
       activeWorkspaces.push_back( tmpWorkspaces[ i ] );
     }
+
+    refreshActiveWorkspaces();
   }
 }
 

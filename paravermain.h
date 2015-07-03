@@ -279,6 +279,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_FOREIGN
   void OnForeignUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ACTIVE_WORKSPACES
+  void OnButtonActiveWorkspacesClick( wxCommandEvent& event );
+
 ////@end paraverMain event handler declarations
 
   /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
@@ -318,8 +321,8 @@ public:
   std::set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
   void SetActiveWindows(std::set<wxWindow *> value) { activeWindows = value ; }
 
-  vector< Workspace > GetActiveWorkspaces() const { return activeWorkspaces ; }
-  void SetActiveWorkspaces(vector< Workspace > value) { activeWorkspaces = value ; }
+  std::vector< std::string > GetActiveWorkspaces() const { return activeWorkspaces ; }
+  void SetActiveWorkspaces(std::vector< std::string > value) { activeWorkspaces = value ; }
 
   bool GetCanServeSignal() const { return canServeSignal ; }
   void SetCanServeSignal(bool value) { canServeSignal = value ; }
@@ -494,6 +497,7 @@ private:
   bool XMLLoadedBefore;
   std::string XMLPath;
   std::set<wxWindow *> activeWindows;
+  std::vector< std::string > activeWorkspaces;
   bool canServeSignal;
   Window * clusteringWindow;
   Histogram * currentHisto;
@@ -520,8 +524,6 @@ private:
   wxString tracePath;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
-protected:
-  vector< Workspace > activeWorkspaces;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;
