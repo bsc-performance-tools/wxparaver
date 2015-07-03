@@ -565,11 +565,11 @@ void paraverMain::CreateControls()
 void paraverMain::refreshActiveWorkspaces()
 {
   // Destroy previous if any
-  int maxItems = menuHints->GetMenuItemCount();
+  size_t maxItems = menuHints->GetMenuItemCount();
   for ( size_t i = 0; i < maxItems; ++i )
   {
     wxMenuItem *currentItem = menuHints->FindItemByPosition( 0 );
-    int id = currentItem->GetId();
+    //int id = currentItem->GetId();
     //Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnHintClick );
     menuHints->Destroy( currentItem );
   }
@@ -3887,7 +3887,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
   {
     tmpActive = tmpChoiceDialog.GetSelections();
     activeWorkspaces.clear();
-    for( int i = 0; i < tmpActive.GetCount(); ++i )
+    for( size_t i = 0; i < tmpActive.GetCount(); ++i )
     {
       activeWorkspaces.push_back( tmpWorkspaces[ tmpActive[ i ] ] );
     }
