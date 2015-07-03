@@ -79,6 +79,7 @@
 
 #include <signal.h>
 #include <iostream>
+#include <algorithm>
 
 #ifdef WIN32
 #include <sys/types.h>
@@ -140,37 +141,61 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_ICONIZE( paraverMain::OnIconize )
   EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
+
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
+
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
+
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
+
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
+
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
+
   EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
+
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
+
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
+
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
+
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
+
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
+
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
+
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
+
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
+
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
+
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
+
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
+
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
+
+  EVT_BUTTON( ID_BUTTON_ACTIVE_WORKSPACES, paraverMain::OnButtonActiveWorkspacesClick )
+
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -537,7 +562,7 @@ void paraverMain::CreateControls()
   vector< string > workspacesNames = workspacesManager->getWorkspaces();
   for ( vector< string >::iterator it = workspacesNames.begin(); it != workspacesNames.end(); ++it )
   {
-    activeWorkspaces.push_back( workspacesManager->getWorkspace( *it ) );
+    activeWorkspaces.push_back( *it );
   }
   refreshActiveWorkspaces();
 }
@@ -555,13 +580,13 @@ void paraverMain::refreshActiveWorkspaces()
   }
   
   // Create updated one
-  for ( vector< Workspace >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+  for ( vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
   {
-    wxString currentWorkspaceName = wxString::FromAscii( it->getName().c_str() );
+    wxString currentWorkspaceName = wxString::FromAscii( it->c_str() );
     //wxMenu *currentWorkspace = new wxMenu( currentWorkspaceName );
     wxMenu *currentWorkspace = new wxMenu();
     
-    std::vector< std::pair< std::string, std::string > > currentHints = it->getHintCFGs();
+    std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it ).getHintCFGs();
     for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
     {
       wxString tmpName = getHintComposed( *it2 );
@@ -3799,11 +3824,11 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
       break;
   }
 
-  for ( vector< Workspace >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+  for ( vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
   {
-    if ( workspaceName == wxString::FromAscii( it->getName().c_str() ) )
+    if ( workspaceName == wxString::FromAscii( it->c_str() ) )
     {
-      std::vector< std::pair< std::string, std::string > > currentHints = it->getHintCFGs();
+      std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it ).getHintCFGs();
 
       for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
       {
@@ -3824,5 +3849,39 @@ void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
     GetMenuBar()->EnableTop( GetMenuBar()->FindMenu( _( "Hints" ) ), false );
   else
     GetMenuBar()->EnableTop( GetMenuBar()->FindMenu( _( "Hints" ) ), true );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ACTIVE_WORKSPACES
+ */
+
+void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
+{
+  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces();
+  
+  wxArrayString tmpNames;
+  wxArrayInt tmpActive;
+  int position = 0;
+  for ( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
+  {
+    tmpNames.Add( wxString::FromAscii( it->c_str() ) );
+    if ( std::find( activeWorkspaces.begin(), activeWorkspaces.end(),*it ) != activeWorkspaces.end() )
+      tmpActive.Add( position );
+    ++position;
+  }
+  
+  wxMultiChoiceDialog tmpChoiceDialog( this, _("Select active workspaces"),  _( "Workspaces" ), tmpNames );  
+  tmpChoiceDialog.SetSelections( tmpActive );
+  
+  if ( tmpChoiceDialog.ShowModal() == wxID_OK )
+  {
+    tmpActive = tmpChoiceDialog.GetSelections();
+    activeWorkspaces.clear();
+    for( int i = 0; i < tmpActive.GetCount(); ++i )
+    {
+      activeWorkspaces.push_back( tmpWorkspaces[ i ] );
+    }
+  }
 }
 
