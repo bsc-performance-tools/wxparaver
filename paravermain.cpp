@@ -422,8 +422,6 @@ void paraverMain::Init()
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
 
-
-
   wxFileSystem::AddHandler( new wxMemoryFSHandler() );
 #ifdef WIN32
   wxBitmap bmp( logoBSC_xpm );
@@ -436,6 +434,8 @@ void paraverMain::Init()
                               wxBITMAP( logoBSC ),
 #endif
                               wxBITMAP_TYPE_XPM );
+                              
+  workspacesManager->loadXML();
 }
 
 /*!
@@ -2838,6 +2838,7 @@ void paraverMain::ShowPreferences()
     
     activeWorkspaces = tmpActiveWorkspaces;
     
+    workspacesManager->saveXML();
     setActiveWorkspacesText();
     refreshActiveWorkspaces();
   }
