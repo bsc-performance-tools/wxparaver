@@ -565,12 +565,12 @@ void paraverMain::CreateControls()
 void paraverMain::refreshActiveWorkspaces()
 {
   // Destroy previous if any
-  for ( size_t i = 0; i < menuHints->GetMenuItemCount(); ++i )
+  int maxItems = menuHints->GetMenuItemCount();
+  for ( size_t i = 0; i < maxItems; ++i )
   {
-  cout << "i " << i << endl;
-    wxMenuItem *currentItem = menuHints->FindItemByPosition( i );
+    wxMenuItem *currentItem = menuHints->FindItemByPosition( 0 );
     int id = currentItem->GetId();
-    Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnHintClick );
+    //Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnHintClick );
     menuHints->Destroy( currentItem );
   }
   
