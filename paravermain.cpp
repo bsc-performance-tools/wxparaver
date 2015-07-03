@@ -2827,6 +2827,10 @@ void paraverMain::ShowPreferences()
 
     // Save Preferences to File
     paraverConfig->writeParaverConfigFile();
+
+    // WORKSPACES - not paraverConfig!
+    preferences.
+
   }
   raiseCurrentWindow = false;
 }
