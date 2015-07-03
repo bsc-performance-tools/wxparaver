@@ -2829,8 +2829,17 @@ void paraverMain::ShowPreferences()
     paraverConfig->writeParaverConfigFile();
 
     // WORKSPACES - not paraverConfig!
-    preferences.
-
+    vector< string > tmpActiveWorkspaces;
+    for (vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+    {
+      if ( workspacesManager->existWorkspace( *it ) )
+        tmpActiveWorkspaces.push_back( *it );
+    }
+    
+    activeWorkspaces = tmpActiveWorkspaces;
+    
+    setActiveWorkspacesText();
+    refreshActiveWorkspaces();
   }
   raiseCurrentWindow = false;
 }
