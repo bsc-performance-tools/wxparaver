@@ -100,11 +100,13 @@ class TraceOptions;
 #define ID_TOOLDELETE 10081
 #define ID_TOOL_CUT_TRACE 10100
 #define ID_TOOL_RUN_APPLICATION 10004
-#define ID_CHOICE_WORKSPACE 10266
 #define ID_CHOICEWINBROWSER 10002
 #define ID_TOOLBOOKFILESANDPROPERTIES 10159
 #define ID_DIRCTRLFILES 10160
 #define ID_FOREIGN 10010
+#define ID_PANEL2 10266
+#define ID_TEXT_ACTIVE_WORKSPACE 10267
+#define ID_BUTTON_ACTIVE_WORKSPACES 10268
 #define SYMBOL_PARAVERMAIN_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMINIMIZE_BOX|wxCLOSE_BOX|wxWANTS_CHARS
 #define SYMBOL_PARAVERMAIN_TITLE _("Paraver")
 #define SYMBOL_PARAVERMAIN_IDNAME ID_PARAVERMAIN
@@ -480,11 +482,12 @@ public:
   wxMenu* menuHints;
   wxMenu* menuHelp;
   wxToolBar* tbarMain;
-  wxChoice* choiceWorkspace;
   wxChoicebook* choiceWindowBrowser;
   wxToolbook* toolBookFilesProperties;
   wxGenericDirCtrl* dirctrlFiles;
   wxPropertyGrid* windowProperties;
+  wxTextCtrl* txtActiveWorkspaces;
+  wxButton* btnActiveWorkspaces;
 private:
   bool CFGLoadedBefore;
   wxString CFGPath;

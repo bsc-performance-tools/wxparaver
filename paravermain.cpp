@@ -386,11 +386,12 @@ void paraverMain::Init()
   menuHints = NULL;
   menuHelp = NULL;
   tbarMain = NULL;
-  choiceWorkspace = NULL;
   choiceWindowBrowser = NULL;
   toolBookFilesProperties = NULL;
   dirctrlFiles = NULL;
   windowProperties = NULL;
+  txtActiveWorkspaces = NULL;
+  btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
 
   traceLoadedBefore = false;
@@ -479,16 +480,6 @@ void paraverMain::CreateControls()
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
 
-  wxArrayString choiceWorkspaceStrings;
-  choiceWorkspaceStrings.Add(_("Global"));
-  choiceWorkspaceStrings.Add(_("MPI"));
-  choiceWorkspaceStrings.Add(_("OpenMP"));
-  choiceWorkspaceStrings.Add(_("MPI+OpenMP"));
-  choiceWorkspaceStrings.Add(_("ompss"));
-  choiceWorkspace = new wxChoice( itemFrame1, ID_CHOICE_WORKSPACE, wxDefaultPosition, wxDefaultSize, choiceWorkspaceStrings, 0 );
-  itemFrame1->GetAuiManager().AddPane(choiceWorkspace, wxAuiPaneInfo()
-    .Name(_T("Pane1")).Caption(_("Workspace")).Centre().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
-
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
@@ -514,6 +505,22 @@ void paraverMain::CreateControls()
 
   itemFrame1->GetAuiManager().AddPane(toolBookFilesProperties, wxAuiPaneInfo()
     .Name(_T("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(2).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
+
+  wxPanel* itemPanel36 = new wxPanel( itemFrame1, ID_PANEL2, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemFrame1->GetAuiManager().AddPane(itemPanel36, wxAuiPaneInfo()
+    .Name(_T("Pane1")).Caption(_("Workspace")).Top().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
+
+  wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxHORIZONTAL);
+  itemPanel36->SetSizer(itemBoxSizer37);
+
+  txtActiveWorkspaces = new wxTextCtrl( itemPanel36, ID_TEXT_ACTIVE_WORKSPACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+  itemBoxSizer37->Add(txtActiveWorkspaces, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
+
+  btnActiveWorkspaces = new wxButton( itemPanel36, ID_BUTTON_ACTIVE_WORKSPACES, _("..."), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer37->Add(btnActiveWorkspaces, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0);
+
+  // Fit to content
+  itemFrame1->GetAuiManager().GetPane(_T("Pane1")).BestSize(itemPanel36->GetSizer()->Fit(itemPanel36)).MinSize(itemPanel36->GetSizer()->GetMinSize());
 
   GetAuiManager().Update();
 
