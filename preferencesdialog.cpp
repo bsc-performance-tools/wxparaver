@@ -1345,6 +1345,16 @@ bool PreferencesDialog::TransferDataToWindow()
 
   // FILTERS
 
+
+  // WORKSPACES
+  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces();
+  for( std::vector<std::string>::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
+  {
+    listWorkspaces->Append( wxString::FromAscii( it->c_str() ) );
+    workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromAscii( it->c_str() ),
+                                                              WorkspaceManager::getInstance()->getWorkspace( *it ) ) );
+  }
+
   return true;
 }
 
@@ -1431,7 +1441,11 @@ bool PreferencesDialog::TransferDataFromWindow()
   gradientColourLow        = wxColourToRGB( colourPickerGradientLow->GetColour() );
   gradientColourTop        = wxColourToRGB( colourPickerGradientTop->GetColour() );
 
-
+  // WORKSPACES
+  WorkspaceManager::getInstance()->clear();
+  for( int i = 0; i < listWorkspaces->GetCount(); ++i )
+    WorkspaceManager::getInstance()->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
+  
   return true;
 }
 
