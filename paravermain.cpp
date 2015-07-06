@@ -559,6 +559,7 @@ void paraverMain::CreateControls()
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
   
   setActiveWorkspacesText();
+  refreshActiveWorkspaces();
 }
 
 
