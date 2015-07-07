@@ -3783,10 +3783,6 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
   wxMenu *tmpMenu;
   wxString selectedHint = menuHints->FindItem( hintId, &tmpMenu )->GetItemLabelText();
   
-  if ( tmpMenu != NULL )
-  {
-    cout << tmpMenu->GetTitle() << endl;
-  }
   bool found = false;
   wxString workspaceName;
 
