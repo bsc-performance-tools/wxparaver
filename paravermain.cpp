@@ -1318,7 +1318,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     {
       long long tmpLong;
       value[ idx ].ToLongLong( &tmpLong );
-      cout << value[idx] << endl;
+      // cout << value[idx] << endl;
       filter->insertCommSize( tmpLong );
     }
     
