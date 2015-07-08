@@ -237,9 +237,6 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_ABOUT
   void OnAboutClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_TOOLBAR
-  void OnToolbarUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_NEW_WINDOW
   void OnToolNewWindowClick( wxCommandEvent& event );
 

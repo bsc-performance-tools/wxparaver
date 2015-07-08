@@ -158,7 +158,6 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
-  EVT_UPDATE_UI( ID_TOOLBAR, paraverMain::OnToolbarUpdate )
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
@@ -538,6 +537,10 @@ void paraverMain::CreateControls()
   
   setActiveWorkspacesText();
 //  refreshActiveWorkspaces();
+
+  // These are here because no UpdateUI for MenuBar
+  wxUpdateUIEvent tmpEvent;
+  OnMenuHintUpdate( tmpEvent );
 }
 
 
@@ -709,6 +712,11 @@ bool paraverMain::DoLoadTrace( const string &path )
   if ( sig1 || sig2 )
     OnSignal();
 #endif
+
+    
+  // These are here because no UpdateUI for MenuBar
+  wxUpdateUIEvent tmpEvent;
+  OnMenuHintUpdate( tmpEvent );
 
   return loaded;
 }
@@ -1970,6 +1978,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   if( wxTheApp->IsActive() )
   {
     int iTrace = 0;
+    int prevSize = loadedTraces.size();
     vector<Trace *>::iterator it = loadedTraces.begin();
     while( it != loadedTraces.end() )
     {
@@ -2017,6 +2026,13 @@ void paraverMain::OnIdle( wxIdleEvent& event )
     }
     if( currentTrace == -1 && loadedTraces.size() > 0 )
       currentTrace = loadedTraces.size() - 1;
+
+    // These are here because no UpdateUI for MenuBar
+    if( loadedTraces.size() != prevSize )
+    {
+      wxUpdateUIEvent tmpEvent;
+      OnMenuHintUpdate( tmpEvent );
+    }
   }
 
 #ifndef WIN32
@@ -3826,10 +3842,10 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 {
-  if( loadedTraces.empty() )
-    GetMenuBar()->EnableTop( GetMenuBar()->FindMenu( _( "Hints" ) ), false );
+  if( loadedTraces.empty() || activeWorkspaces.empty() )
+    GetMenuBar()->EnableTop( 1, false );
   else
-    GetMenuBar()->EnableTop( GetMenuBar()->FindMenu( _( "Hints" ) ), true );
+    GetMenuBar()->EnableTop( 1, true );
 }
 
 
@@ -3866,6 +3882,10 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
     
     setActiveWorkspacesText();
     refreshActiveWorkspaces();
+
+    // These are here because no UpdateUI for MenuBar
+    wxUpdateUIEvent tmpEvent;
+    OnMenuHintUpdate( tmpEvent );
   }
 }
 
@@ -3892,14 +3912,4 @@ void paraverMain::setActiveWorkspacesText()
 }
 
 
-/*!
- * wxEVT_UPDATE_UI event handler for ID_TOOLBAR
- */
-
-void paraverMain::OnToolbarUpdate( wxUpdateUIEvent& event )
-{
-  // These are here because no UpdateUI for MenuBar
-  wxUpdateUIEvent tmpEvent;
-  OnMenuHintUpdate( tmpEvent );
-}
 
