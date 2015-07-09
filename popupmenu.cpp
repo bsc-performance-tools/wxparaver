@@ -41,7 +41,7 @@
 using namespace std;
 
 BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
-  EVT_MENU( ID_MENU_COPY, gPopUpMenu::OnMenuCopy )
+  EVT_MENU( /*ID_MENU_COPY*/wxID_COPY, gPopUpMenu::OnMenuCopy )
   EVT_MENU( ID_MENU_TIME, gPopUpMenu::OnMenuTime )
   EVT_MENU( ID_MENU_OBJECTS, gPopUpMenu::OnMenuObjects )
   EVT_MENU( ID_MENU_SIZE, gPopUpMenu::OnMenuSize )
@@ -376,7 +376,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuSave = new wxMenu;
   popUpMenuRun = new wxMenu;
 
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
+  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, /*ID_MENU_COPY*/wxID_COPY );
 
   buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
   popUpMenuPaste->AppendSeparator();
@@ -678,7 +678,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuColor2D = new wxMenu;
   popUpMenuSave = new wxMenu;
   
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
+  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, /*ID_MENU_COPY*/wxID_COPY );
 
   buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
   popUpMenuPaste->AppendSeparator();
