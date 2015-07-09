@@ -144,7 +144,7 @@
     <string name="app_class_name">"Application"</string>
     <bool name="generate_app_class">0</bool>
     <string name="external_symbol_filenames">""</string>
-    <string name="configuration">"VC++ Release"</string>
+    <string name="configuration">"GCC Release"</string>
     <string name="source_encoding">"iso-8859-1"</string>
     <string name="xrc_encoding">"iso-8859-1"</string>
     <string name="project_encoding">"iso-8859-1"</string>
@@ -1548,7 +1548,7 @@
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               </document>
               <document>
-                <string name="title">"&amp;Preferences...: ID_PREFERENCES"</string>
+                <string name="title">"&amp;Preferences...: wxID_PREFERENCES"</string>
                 <string name="type">"dialog-control-document"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"menuitem"</string>
@@ -1559,8 +1559,8 @@
                 <string name="proxy-type">"wbMenuItemProxy"</string>
                 <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnPreferencesClick|NONE||paraverMain"</string>
                 <string name="event-handler-1">"wxEVT_UPDATE_UI|OnPreferencesUpdate|NONE||paraverMain"</string>
-                <string name="proxy-Id name">"ID_PREFERENCES"</string>
-                <long name="proxy-Id value">10001</long>
+                <string name="proxy-Id name">"wxID_PREFERENCES"</string>
+                <long name="proxy-Id value">5022</long>
                 <string name="proxy-Label">"&amp;Preferences..."</string>
                 <string name="proxy-Kind">"Normal"</string>
                 <bool name="proxy-Checked">0</bool>

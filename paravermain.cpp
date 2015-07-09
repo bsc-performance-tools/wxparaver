@@ -152,8 +152,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
-  EVT_MENU( ID_PREFERENCES, paraverMain::OnPreferencesClick )
-  EVT_UPDATE_UI( ID_PREFERENCES, paraverMain::OnPreferencesUpdate )
+  EVT_MENU( wxID_PREFERENCES, paraverMain::OnPreferencesClick )
+  EVT_UPDATE_UI( wxID_PREFERENCES, paraverMain::OnPreferencesUpdate )
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
@@ -441,7 +441,7 @@ void paraverMain::CreateControls()
   menuFile->Append(ID_MENULOADSESSION, _("Load Session...\tCTRL+l"), wxEmptyString, wxITEM_NORMAL);
   menuFile->Append(ID_MENUSAVESESSION, _("Save Session...\tCTRL+S"), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
-  menuFile->Append(ID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
+  menuFile->Append(wxID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT, _("&Quit"), wxEmptyString, wxITEM_NORMAL);
   menuBar->Append(menuFile, _("&File"));

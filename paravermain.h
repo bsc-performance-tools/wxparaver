@@ -90,7 +90,6 @@ class TraceOptions;
 #define ID_MENUSAVECFG 10011
 #define ID_MENULOADSESSION 10170
 #define ID_MENUSAVESESSION 10169
-#define ID_PREFERENCES 10001
 #define wxID_HELPCONTENTS 10005
 #define wxID_TUTORIALS 10196
 #define ID_TOOLBAR 10003
@@ -219,10 +218,10 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVESESSION
   void OnMenusavesessionClick( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_PREFERENCES
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_PREFERENCES
   void OnPreferencesClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_PREFERENCES
+  /// wxEVT_UPDATE_UI event handler for wxID_PREFERENCES
   void OnPreferencesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
