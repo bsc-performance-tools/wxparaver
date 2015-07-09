@@ -41,7 +41,7 @@
 using namespace std;
 
 BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
-  EVT_MENU( /*ID_MENU_COPY*/wxID_COPY, gPopUpMenu::OnMenuCopy )
+  EVT_MENU( wxID_COPY, gPopUpMenu::OnMenuCopy )
   EVT_MENU( ID_MENU_TIME, gPopUpMenu::OnMenuTime )
   EVT_MENU( ID_MENU_OBJECTS, gPopUpMenu::OnMenuObjects )
   EVT_MENU( ID_MENU_SIZE, gPopUpMenu::OnMenuSize )
@@ -53,9 +53,9 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_PASTE_DEFAULT_SPECIAL, gPopUpMenu::OnMenuPasteDefaultSpecial )
   EVT_MENU( ID_MENU_PASTE_SPECIAL, gPopUpMenu::OnMenuPasteSpecial )
   EVT_MENU( ID_MENU_CLONE, gPopUpMenu::OnMenuClone )
-  EVT_MENU( ID_MENU_UNDO_ZOOM, gPopUpMenu::OnMenuUndoZoom )
-  EVT_MENU( ID_MENU_REDO_ZOOM, gPopUpMenu::OnMenuRedoZoom )
-  EVT_MENU( ID_MENU_FIT_TIME, gPopUpMenu::OnMenuFitTime )
+  EVT_MENU( wxID_UNDO, gPopUpMenu::OnMenuUndoZoom )
+  EVT_MENU( wxID_REDO, gPopUpMenu::OnMenuRedoZoom )
+  EVT_MENU( wxID_ZOOM_100, gPopUpMenu::OnMenuFitTime )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_MIN, gPopUpMenu::OnMenuFitSemanticMin )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_MAX, gPopUpMenu::OnMenuFitSemanticMax )
   EVT_MENU( ID_MENU_FIT_SEMANTIC_BOTH, gPopUpMenu::OnMenuFitSemanticBoth )
@@ -376,7 +376,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuSave = new wxMenu;
   popUpMenuRun = new wxMenu;
 
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, /*ID_MENU_COPY*/wxID_COPY );
+  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, wxID_COPY );
 
   buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
   popUpMenuPaste->AppendSeparator();
@@ -400,10 +400,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
 
-  buildItem( this, _( "Undo Zoom" ), ITEMNORMAL, NULL, ID_MENU_UNDO_ZOOM );
-  buildItem( this, _( "Redo Zoom" ), ITEMNORMAL, NULL, ID_MENU_REDO_ZOOM );
+  buildItem( this, _( "Undo Zoom" ), ITEMNORMAL, NULL, wxID_UNDO );
+  buildItem( this, _( "Redo Zoom" ), ITEMNORMAL, NULL, wxID_REDO );
 
-  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
+  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, wxID_ZOOM_100 );
   buildItem( popUpMenuFitSemantic, _( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
   buildItem( popUpMenuFitSemantic, _( "Fit Maximum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
   buildItem( popUpMenuFitSemantic, _( "Fit Both" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
@@ -678,7 +678,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuColor2D = new wxMenu;
   popUpMenuSave = new wxMenu;
   
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, /*ID_MENU_COPY*/wxID_COPY );
+  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, wxID_COPY );
 
   buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
   popUpMenuPaste->AppendSeparator();
@@ -697,10 +697,10 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
-  buildItem( this, _( "Undo Zoom" ), ITEMNORMAL, NULL, ID_MENU_UNDO_ZOOM );
-  buildItem( this, _( "Redo Zoom" ), ITEMNORMAL, NULL, ID_MENU_REDO_ZOOM );
+  buildItem( this, _( "Undo Zoom" ), ITEMNORMAL, NULL, wxID_UNDO );
+  buildItem( this, _( "Redo Zoom" ), ITEMNORMAL, NULL, wxID_REDO );
 
-  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, ID_MENU_FIT_TIME );
+  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, wxID_ZOOM_100 );
   buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
   buildItem( this, 
              _( "Auto Fit Control Scale" ),

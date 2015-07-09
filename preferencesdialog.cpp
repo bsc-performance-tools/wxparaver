@@ -1843,7 +1843,7 @@ void PreferencesDialog::OnTextctrlWorkspaceHintPathTextUpdated( wxCommandEvent& 
     return;
 
   std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( 
-                                                    std::string( txtHintPath->GetValue().mb_str() ),
+                                                    std::string( fileBrowserHintPath->GetPath().mb_str() ),
                                                     std::string( txtHintDescription->GetValue().mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].modifyHintCFG( listHintsWorkspace->GetSelection(), tmpHint );
   listHintsWorkspace->SetString( listHintsWorkspace->GetSelection(), paraverMain::getHintComposed( tmpHint ) );
