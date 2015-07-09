@@ -508,9 +508,9 @@ void paraverMain::CreateControls()
   itemFrame1->GetAuiManager().AddPane(toolBookFilesProperties, wxAuiPaneInfo()
     .Name(_T("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(2).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
 
-  wxPanel* itemPanel36 = new wxPanel( itemFrame1, ID_PANEL2, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxPanel* itemPanel36 = new wxPanel( itemFrame1, ID_PANEL_WORKSPACES, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   itemFrame1->GetAuiManager().AddPane(itemPanel36, wxAuiPaneInfo()
-    .Name(_T("Pane1")).Caption(_("Workspace")).Top().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
+    .Name(_T("Pane1")).Caption(_("Workspaces")).Top().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
 
   wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxHORIZONTAL);
   itemPanel36->SetSizer(itemBoxSizer37);
