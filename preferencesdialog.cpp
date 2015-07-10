@@ -1828,8 +1828,9 @@ void PreferencesDialog::OnListboxHintsWorkspaceSelected( wxCommandEvent& event )
   }
   std::pair< std::string, std::string > tmpHint = workspaceContainer[ listWorkspaces->GetStringSelection() ]
                                                   .getHintCFG( listHintsWorkspace->GetSelection() );
-  txtHintPath->ChangeValue( wxString::FromAscii( tmpHint.first.c_str() ) );
+  //txtHintPath->ChangeValue( wxString::FromAscii( tmpHint.first.c_str() ) );
   txtHintDescription->ChangeValue( wxString::FromAscii( tmpHint.second.c_str() ) );
+  fileBrowserHintPath->SetPath( wxString::FromAscii( tmpHint.first.c_str() ) );
 }
 
 
@@ -1860,9 +1861,11 @@ void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionTextUpdated( wxCommand
     return;
 
   std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( 
-                                                    std::string( txtHintPath->GetValue().mb_str() ),
+                                                    std::string( fileBrowserHintPath->GetPath().mb_str() ),
                                                     std::string( txtHintDescription->GetValue().mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].modifyHintCFG( listHintsWorkspace->GetSelection(), tmpHint );
   listHintsWorkspace->SetString( listHintsWorkspace->GetSelection(), paraverMain::getHintComposed( tmpHint ) );
 }
+
+
 
