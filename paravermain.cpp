@@ -518,7 +518,7 @@ void paraverMain::CreateControls()
   txtActiveWorkspaces = new wxTextCtrl( itemPanel36, ID_TEXT_ACTIVE_WORKSPACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer37->Add(txtActiveWorkspaces, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
-  btnActiveWorkspaces = new wxButton( itemPanel36, ID_BUTTON_ACTIVE_WORKSPACES, _("..."), wxDefaultPosition, wxDefaultSize, 0 );
+  btnActiveWorkspaces = new wxButton( itemPanel36, ID_BUTTON_ACTIVE_WORKSPACES, _(" ... "), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
   itemBoxSizer37->Add(btnActiveWorkspaces, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
   // Fit to content
@@ -3856,6 +3856,20 @@ void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
 {
   vector< string > tmpWorkspaces = workspacesManager->getWorkspaces();
+  
+  if( tmpWorkspaces.empty() )
+  {
+    wxMessageDialog emptyWorkspacesDialog( this, 
+                                           _( "No Workspaces available.\nDo you want to open Preferences dialog to create any?" ),
+                                           _( "No Workspaces" ),
+                                           wxYES_NO| wxICON_QUESTION );
+    if( emptyWorkspacesDialog.ShowModal() == wxID_YES )
+    {
+      ShowPreferences();
+    }
+
+    return;
+  }
   
   wxArrayString tmpNames;
   wxArrayInt tmpActive;
