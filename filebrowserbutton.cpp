@@ -170,6 +170,26 @@ void FileBrowserButton::SetPath( const wxString& whichFullPath )
 }
 
 
+void FileBrowserButton::ChangePath( const wxString& whichFullPath )
+{
+  BrowserButton::SetPath( whichFullPath );
+  
+  wxFileName tmpFileName( whichFullPath );
+  wxString path( tmpFileName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ) );
+  wxString fileName( tmpFileName.GetFullName() );
+  
+  // Next time OnButton will navigate directly to the dir and file given
+  dialogDefaultDir = path;
+  fileDialogDefaultFile = fileName;
+
+  if ( associatedTextCtrl != NULL )
+  {
+    associatedTextCtrl->SetToolTip( whichFullPath );
+    associatedTextCtrl->ChangeValue( fileName );
+  }
+}
+
+
 void FileBrowserButton::OnButton( wxMouseEvent& event )
 {
   wxFileDialog myDialog ( this,

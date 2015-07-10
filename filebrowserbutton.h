@@ -126,6 +126,7 @@ class FileBrowserButton : public BrowserButton
     
     // Remember this path and modify associated wxTextCtrl
     void SetPath( const wxString& whichPath );
+    void ChangePath( const wxString& whichPath );
 
     void OnButton( wxMouseEvent& event );
     
