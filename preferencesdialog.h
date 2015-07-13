@@ -46,6 +46,9 @@
 #include "wx/statline.h"
 ////@end includes
 
+#include "wx/bmpbuttn.h"
+#include "wx/filedlg.h"
+
 #include "paraverconfig.h"
 #include "workspace.h"
 
@@ -134,7 +137,7 @@ class FileBrowserButton;
 #define ID_COLOURPICKER_GRADLOW 10005
 #define ID_COLOURPICKER_GRADTOP 10006
 #define ID_BUTTON_DEFAULT_GRADIENT 10009
-#define ID_WORKSPACES 10269
+#define ID_PREFERENCES_WORKSPACES 10269
 #define ID_LISTBOX_WORKSPACES 10270
 #define ID_BUTTON_WORKSPACES_ADD 10271
 #define ID_BUTTON_WORKSPACES_DELETE 10272
@@ -481,8 +484,9 @@ public:
   bool TransferDataToWindow();
   bool TransferDataFromWindow();
 
+  bool SetPanel( wxWindowID whichPanelID );
+
 ////@begin PreferencesDialog member variables
-  wxPanel* globalPanel;
   wxCheckBox* checkGlobalFillStateGaps;
   wxSpinCtrl* txtMaximumTraceSize;
   wxTextCtrl* textCtrlTrace;
@@ -497,7 +501,6 @@ public:
   DirBrowserButton* dirBrowserButtonTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
-  wxPanel* timelinePanel;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
   wxCheckBox* checkTimelineCommunicationLines;
@@ -518,7 +521,6 @@ public:
   wxSpinCtrl* txtTimelineWWEventPixels;
   wxChoice* choiceTimelineSaveImageFormat;
   wxChoice* choiceTimelineSaveTextFormat;
-  wxPanel* histogramPanel;
   wxTextCtrl* txtHistogramNameFormatPrefix;
   wxTextCtrl* txtHistogramNameFormatFull;
   wxCheckBox* checkHistogramZoom;
@@ -539,7 +541,6 @@ public:
   wxSpinCtrl* txtHistogramNumColumns;
   wxChoice* choiceHistogramSaveImageFormat;
   wxChoice* choiceHistogramSaveTextFormat;
-  wxPanel* colorPanel;
   wxColourPickerCtrl* colourPickerBackground;
   wxColourPickerCtrl* colourPickerAxis;
   wxCheckBox* checkZero;
@@ -550,7 +551,6 @@ public:
   wxColourPickerCtrl* colourPickerGradientEnd;
   wxColourPickerCtrl* colourPickerGradientLow;
   wxColourPickerCtrl* colourPickerGradientTop;
-  wxPanel* workspacesPanel;
   wxListBox* listWorkspaces;
   wxBitmapButton* buttonAddWorkspace;
   wxBitmapButton* buttonDeleteWorkspace;
@@ -631,6 +631,8 @@ private:
   std::map<wxString,Workspace> workspaceContainer;
 ////@end PreferencesDialog member variables
 
+  std::map< wxWindowID, size_t > panelID;
+  
   wxString formatNumber( long value );
   void setLabelsChoiceBox( const std::vector< std::string > &list,
                            const PRV_UINT32 &selected,

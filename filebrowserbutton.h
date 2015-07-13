@@ -31,6 +31,7 @@
 #define _FILEBROWSERBUTTON_H_
 
 #include <wx/button.h>
+#include <wx/filedlg.h>
 #include <wx/textctrl.h>
 
 class BrowserButton : public wxButton

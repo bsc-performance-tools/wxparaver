@@ -56,6 +56,7 @@
 #include "previousfiles.h"
 #include "cfg.h" // SaveOptions
 #include "workspacemanager.h"
+#include "preferencesdialog.h"
 
 #ifdef WIN32
 #undef VERSION
@@ -446,7 +447,7 @@ public:
                                std::vector< Window * > timelines,
                                std::vector< Histogram * > histograms );
 
-  void ShowPreferences();
+  void ShowPreferences( wxWindowID whichPanelID = ID_PREFERENCES_GLOBAL );
   
   void MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
                                      const std::string& filename,
