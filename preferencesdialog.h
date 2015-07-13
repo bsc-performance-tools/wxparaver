@@ -482,6 +482,7 @@ public:
   bool TransferDataFromWindow();
 
 ////@begin PreferencesDialog member variables
+  wxPanel* globalPanel;
   wxCheckBox* checkGlobalFillStateGaps;
   wxSpinCtrl* txtMaximumTraceSize;
   wxTextCtrl* textCtrlTrace;
@@ -496,6 +497,7 @@ public:
   DirBrowserButton* dirBrowserButtonTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
+  wxPanel* timelinePanel;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
   wxCheckBox* checkTimelineCommunicationLines;
@@ -516,6 +518,7 @@ public:
   wxSpinCtrl* txtTimelineWWEventPixels;
   wxChoice* choiceTimelineSaveImageFormat;
   wxChoice* choiceTimelineSaveTextFormat;
+  wxPanel* histogramPanel;
   wxTextCtrl* txtHistogramNameFormatPrefix;
   wxTextCtrl* txtHistogramNameFormatFull;
   wxCheckBox* checkHistogramZoom;
@@ -536,6 +539,7 @@ public:
   wxSpinCtrl* txtHistogramNumColumns;
   wxChoice* choiceHistogramSaveImageFormat;
   wxChoice* choiceHistogramSaveTextFormat;
+  wxPanel* colorPanel;
   wxColourPickerCtrl* colourPickerBackground;
   wxColourPickerCtrl* colourPickerAxis;
   wxCheckBox* checkZero;
@@ -546,6 +550,7 @@ public:
   wxColourPickerCtrl* colourPickerGradientEnd;
   wxColourPickerCtrl* colourPickerGradientLow;
   wxColourPickerCtrl* colourPickerGradientTop;
+  wxPanel* workspacesPanel;
   wxListBox* listWorkspaces;
   wxBitmapButton* buttonAddWorkspace;
   wxBitmapButton* buttonDeleteWorkspace;
