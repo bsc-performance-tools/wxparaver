@@ -484,6 +484,10 @@ public:
   bool TransferDataToWindow();
   bool TransferDataFromWindow();
 
+  /* SetPanel allowed values (tab IDs):
+      ID_PREFERENCES_GLOBAL, ID_PREFERENCES_TIMELINE, ID_PREFERENCES_HISTOGRAM,
+      ID_PREFERENCES_COLOR, ID_PREFERENCES_WORKSPACES
+  */
   bool SetPanel( wxWindowID whichPanelID );
 
 ////@begin PreferencesDialog member variables
