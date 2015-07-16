@@ -141,61 +141,38 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_ICONIZE( paraverMain::OnIconize )
   EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
-
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
-
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
-
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
-
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
-
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
-
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
-
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
-
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
-
   EVT_MENU( wxID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( wxID_PREFERENCES, paraverMain::OnPreferencesUpdate )
-
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
-
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
-
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
-
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
-
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
-
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
-
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
-
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
-
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
-
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
-
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
-
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
-
   EVT_BUTTON( ID_BUTTON_ACTIVE_WORKSPACES, paraverMain::OnButtonActiveWorkspacesClick )
-
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -227,9 +204,16 @@ extern volatile bool sig1;
 extern volatile bool sig2;
 extern struct sigaction act;
 
-static bool userMessage( string message )
+static const std::string wxparaverMessages[ UserMessageSize ] =
 {
-  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( message.c_str() ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
+  "None of the events specified in the filter appear in the trace. Continue loading CFG file?",
+  "Some of the events specified in the filter doesn't appear in the trace. Continue loading CFG file?",
+  "Some timeline has 0 objects selected at some level. Continue loading CFG file?"
+};
+
+static bool userMessage( UserMessageID message )
+{
+  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( wxparaverMessages[ message ].c_str() ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();
   paraverMain::myParaverMain->SetRaiseCurrentWindow( true );
