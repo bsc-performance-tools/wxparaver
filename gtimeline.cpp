@@ -854,7 +854,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 #ifdef TRACING_ENABLED
       Extrae_event( 100, 14 );
 #endif
-      if( myWindow->getLevel() == CPU )
+      if( myWindow->getLevel() == CPU || myWindow->getLevel() == NODE )
         dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
                      drawBorder, y );
       else
