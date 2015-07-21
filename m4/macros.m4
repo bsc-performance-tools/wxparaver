@@ -10,6 +10,9 @@ AC_DEFUN([AX_PROG_WXPROPGRID_NAME],
       [WXPROPGRID_NAME=${withval}],
       [WXPROPGRID_NAME=wxcode_gtk2u_propgrid-2.8]
    )
+   if test $wx_config_major_version -lt 3; then
+     LIBS="$LIBS -l$WXPROPGRID_NAME"
+   fi
    AC_SUBST(WXPROPGRID_NAME)
 ])
 

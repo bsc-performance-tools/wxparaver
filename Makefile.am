@@ -94,7 +94,7 @@ noinst_HEADERS = \
               timeline.xpm\
               window_properties.xpm
 
-wxparaver_bin_LDADD = @LIBS@ -l@WXPROPGRID_NAME@ -lparaver-kernel -lparaver-api
+wxparaver_bin_LDADD = @LIBS@ -lparaver-kernel -lparaver-api
 wxparaver_bin_CXXFLAGS = @CXXFLAGS@
 
  
