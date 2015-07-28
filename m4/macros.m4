@@ -12,6 +12,8 @@ AC_DEFUN([AX_PROG_WXPROPGRID_NAME],
    )
    if test $wx_config_major_version -lt 3; then
      PROPGRID_LIBS="-l$WXPROPGRID_NAME"
+   else
+     PROPGRID_LIBS=""
    fi
    AC_SUBST(WXPROPGRID_NAME)
 ])
