@@ -70,6 +70,7 @@ class FileBrowserButton;
 #define ID_PREFERENCESDIALOG 10069
 #define ID_PREFERENCES_GLOBAL 10073
 #define ID_PREFERENCES_GLOBAL_FILLGAPS 10085
+#define ID_PREFERENCES_GLOBAL_FULLTRACEPATH 10010
 #define ID_TEXTCTRL_MAXIMUM_LOADABLE_TRACE_SIZE 10156
 #define ID_TEXTCTRL_DEFAULT_TRACE 10220
 #define ID_BUTTON_DIR_BROWSER_TRACE 10238
@@ -471,6 +472,9 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
+  bool GetGlobalFullTracePath() const { return globalFullTracePath ; }
+  void SetGlobalFullTracePath(bool value) { globalFullTracePath = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -492,6 +496,7 @@ public:
 
 ////@begin PreferencesDialog member variables
   wxCheckBox* checkGlobalFillStateGaps;
+  wxCheckBox* checkGlobalFullTracePath;
   wxSpinCtrl* txtMaximumTraceSize;
   wxTextCtrl* textCtrlTrace;
   DirBrowserButton* dirBrowserButtonTrace;
@@ -633,6 +638,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
+  bool globalFullTracePath;
 ////@end PreferencesDialog member variables
 
   std::map< wxWindowID, size_t > panelID;

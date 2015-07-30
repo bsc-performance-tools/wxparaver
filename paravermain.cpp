@@ -141,61 +141,38 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_ICONIZE( paraverMain::OnIconize )
   EVT_SIZE( paraverMain::OnSize )
   EVT_IDLE( paraverMain::OnIdle )
-
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
-
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
-
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
-
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
   EVT_UPDATE_UI( ID_MENULOADCFG, paraverMain::OnMenuloadcfgUpdate )
-
   EVT_UPDATE_UI( ID_RECENTCFGS, paraverMain::OnMenuloadcfgUpdate )
-
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
-
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
-
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
-
   EVT_MENU( wxID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( wxID_PREFERENCES, paraverMain::OnPreferencesUpdate )
-
   EVT_MENU( wxID_EXIT, paraverMain::OnExitClick )
-
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
-
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
-
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
-
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
-
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
   EVT_UPDATE_UI( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowUpdate )
-
   EVT_MENU( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramClick )
   EVT_UPDATE_UI( ID_NEW_HISTOGRAM, paraverMain::OnNewHistogramUpdate )
-
   EVT_MENU( ID_TOOLDELETE, paraverMain::OnTooldeleteClick )
   EVT_UPDATE_UI( ID_TOOLDELETE, paraverMain::OnTooldeleteUpdate )
-
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
-
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
-
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
-
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
-
   EVT_BUTTON( ID_BUTTON_ACTIVE_WORKSPACES, paraverMain::OnButtonActiveWorkspacesClick )
-
 ////@end paraverMain event table entries
 
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
@@ -510,12 +487,12 @@ void paraverMain::CreateControls()
   tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool31Bitmap, itemtool31BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
-    .ToolbarPane().Name(_T("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
+    .ToolbarPane().Name(wxT("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
 
   choiceWindowBrowser = new wxChoicebook( itemFrame1, ID_CHOICEWINBROWSER, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT|wxWANTS_CHARS );
 
   itemFrame1->GetAuiManager().AddPane(choiceWindowBrowser, wxAuiPaneInfo()
-    .Name(_T("auiWindowBrowser")).Caption(_("Window browser")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true));
+    .Name(wxT("auiWindowBrowser")).Caption(_("Window browser")).Centre().Position(1).CloseButton(false).DestroyOnClose(false).Resizable(true));
 
   toolBookFilesProperties = new wxToolbook( itemFrame1, ID_TOOLBOOKFILESANDPROPERTIES, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
   wxImageList* toolBookFilesPropertiesImageList = new wxImageList(16, 16, true, 2);
@@ -527,7 +504,7 @@ void paraverMain::CreateControls()
   }
   toolBookFilesProperties->AssignImageList(toolBookFilesPropertiesImageList);
 
-  dirctrlFiles = new wxGenericDirCtrl( toolBookFilesProperties, ID_DIRCTRLFILES, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_SELECT_FIRST|wxDIRCTRL_SHOW_FILTERS, _T("Paraver files|*.prv;*.prv.gz;*.cfg|CFG files (*.cfg)|*.cfg|PRV Files (*.prv, *.prv.gz)|*.prv;*.prv.gz"), 0 );
+  dirctrlFiles = new wxGenericDirCtrl( toolBookFilesProperties, ID_DIRCTRLFILES, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_SELECT_FIRST|wxDIRCTRL_SHOW_FILTERS, wxT("Paraver files|*.prv;*.prv.gz;*.cfg|CFG files (*.cfg)|*.cfg|PRV Files (*.prv, *.prv.gz)|*.prv;*.prv.gz"), 0 );
 
   toolBookFilesProperties->AddPage(dirctrlFiles, wxEmptyString, false, 0);
 
@@ -536,11 +513,11 @@ void paraverMain::CreateControls()
   toolBookFilesProperties->AddPage(windowProperties, wxEmptyString, false, 1);
 
   itemFrame1->GetAuiManager().AddPane(toolBookFilesProperties, wxAuiPaneInfo()
-    .Name(_T("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(2).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
+    .Name(wxT("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(2).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
 
   wxPanel* itemPanel36 = new wxPanel( itemFrame1, ID_PANEL_WORKSPACES, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   itemFrame1->GetAuiManager().AddPane(itemPanel36, wxAuiPaneInfo()
-    .Name(_T("Pane1")).Caption(_("Workspaces")).Top().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
+    .Name(wxT("Pane1")).Caption(_("Workspaces")).Top().Dockable(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
 
   wxBoxSizer* itemBoxSizer37 = new wxBoxSizer(wxHORIZONTAL);
   itemPanel36->SetSizer(itemBoxSizer37);
@@ -552,7 +529,7 @@ void paraverMain::CreateControls()
   itemBoxSizer37->Add(btnActiveWorkspaces, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
   // Fit to content
-  itemFrame1->GetAuiManager().GetPane(_T("Pane1")).BestSize(itemPanel36->GetSizer()->Fit(itemPanel36)).MinSize(itemPanel36->GetSizer()->GetMinSize());
+  itemFrame1->GetAuiManager().GetPane(wxT("Pane1")).BestSize(itemPanel36->GetSizer()->Fit(itemPanel36)).MinSize(itemPanel36->GetSizer()->GetMinSize());
 
   GetAuiManager().Update();
 
@@ -712,7 +689,10 @@ bool paraverMain::DoLoadTrace( const string &path )
     currentTrace = loadedTraces.size() - 1;
     wxTreeCtrl *newTree = createTree( imageList );
 
-    choiceWindowBrowser->AddPage( newTree, wxString::FromAscii( tr->getFileNameNumbered().c_str() ) );
+    if( paraverConfig->getGlobalFullTracePath() )
+      choiceWindowBrowser->AddPage( newTree, wxString::FromAscii( tr->getFileNameNumbered().c_str() ) );
+    else
+      choiceWindowBrowser->AddPage( newTree, wxFileName( wxString::FromAscii( tr->getFileNameNumbered().c_str() ) ).GetFullName() );
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( tmpPath );
@@ -914,32 +894,32 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin paraverMain bitmap retrieval
   wxUnusedVar(name);
-  if (name == _T("new_window.xpm"))
+  if (name == wxT("new_window.xpm"))
   {
     wxBitmap bitmap(application_star_xpm);
     return bitmap;
   }
-  else if (name == _T("new_derived_window.xpm"))
+  else if (name == wxT("new_derived_window.xpm"))
   {
     wxBitmap bitmap(application_add_xpm);
     return bitmap;
   }
-  else if (name == _T("new_histogram.xpm"))
+  else if (name == wxT("new_histogram.xpm"))
   {
     wxBitmap bitmap(new_histogram_xpm);
     return bitmap;
   }
-  else if (name == _T("delete.xpm"))
+  else if (name == wxT("delete.xpm"))
   {
     wxBitmap bitmap(delete_xpm);
     return bitmap;
   }
-  else if (name == _T("cut_trace.xpm"))
+  else if (name == wxT("cut_trace.xpm"))
   {
     wxBitmap bitmap(cut_trace_xpm);
     return bitmap;
   }
-  else if (name == _T("run_script.xpm"))
+  else if (name == wxT("run_script.xpm"))
   {
     wxBitmap bitmap(run_script_xpm);
     return bitmap;
@@ -957,12 +937,12 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
   // Icon retrieval
 ////@begin paraverMain icon retrieval
   wxUnusedVar(name);
-  if (name == _T("file_browser.xpm"))
+  if (name == wxT("file_browser.xpm"))
   {
     wxIcon icon(file_browser_xpm);
     return icon;
   }
-  else if (name == _T("window_properties.xpm"))
+  else if (name == wxT("window_properties.xpm"))
   {
     wxIcon icon(window_properties_xpm);
     return icon;
@@ -2691,6 +2671,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 
   // GLOBAL
   preferences.SetGlobalFillStateGaps( paraverConfig->getGlobalFillStateGaps() );
+  preferences.SetGlobalFullTracePath( paraverConfig->getGlobalFullTracePath() );
   preferences.SetTracesPath( paraverConfig->getGlobalTracesPath() );
   preferences.SetCfgsPath( paraverConfig->getGlobalCFGsPath() );
   preferences.SetTutorialsPath( paraverConfig->getGlobalTutorialsPath() );
@@ -2780,6 +2761,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 
     // GLOBAL
     paraverConfig->setGlobalFillStateGaps( preferences.GetGlobalFillStateGaps() );
+    paraverConfig->setGlobalFullTracePath( preferences.GetGlobalFullTracePath() );
     paraverConfig->setGlobalTracesPath( preferences.GetTracesPath() );
     paraverConfig->setGlobalCFGsPath( preferences.GetCfgsPath() );
     paraverConfig->setGlobalTutorialsPath( preferences.GetTutorialsPath() );
