@@ -17,10 +17,12 @@ AM_INIT_AUTOMAKE
 
 # Checks for libraries.
 AM_OPTIONS_WXCONFIG
-reqwx=2.8.0
-AM_PATH_WXCONFIG($reqwx, wxWin=1)
+ifdef([WX_CONFIG_CHECK],
+      [WX_CONFIG_CHECK([3.0.0],[wxWin=1],,[std,aui,propgrid,richtext])],
+      [AM_PATH_WXCONFIG([2.8.0],[wxWin=1])]
+)
 if test "$wxWin" != 1; then
-	AC_MSG_ERROR([
+  	AC_MSG_ERROR([
 		wxWidgets must be installed on your system.
  
 		Please check that wx-config is in path, the directory
