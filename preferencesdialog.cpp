@@ -166,6 +166,7 @@ void PreferencesDialog::Init()
   colorUseZero = false;
   filtersXMLPath = "";
   globalFillStateGaps = false;
+  globalFullTracePath = false;
   histogramAutofit3DScale = true;
   histogramAutofitControlScale = true;
   histogramAutofitDataGradient = true;
@@ -212,7 +213,6 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  globalFullTracePath = false;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
   txtMaximumTraceSize = NULL;
@@ -499,7 +499,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer50->Add(itemStaticText51, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceTimelineColorStrings;
+  choiceTimelineColorStrings.Add(_("Dummy Text"));
   choiceTimelineColor = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_COLOR, wxDefaultPosition, wxDefaultSize, choiceTimelineColorStrings, 0 );
+  choiceTimelineColor->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineColor->SetToolTip(_("Color mode selected in new timeline."));
   itemBoxSizer50->Add(choiceTimelineColor, 1, wxGROW|wxRIGHT, 5);
@@ -512,7 +514,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer53->Add(itemStaticText54, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxArrayString choiceTimelineGradientFunctionStrings;
+  choiceTimelineGradientFunctionStrings.Add(_("Dummy Text"));
   choiceTimelineGradientFunction = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_GRADIENT, wxDefaultPosition, wxDefaultSize, choiceTimelineGradientFunctionStrings, 0 );
+  choiceTimelineGradientFunction->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineGradientFunction->SetToolTip(_("Gradient function selected in new timeline."));
   itemBoxSizer53->Add(choiceTimelineGradientFunction, 1, wxGROW|wxRIGHT, 5);
@@ -525,7 +529,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer56->Add(itemStaticText57, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceTimelineDrawmodeTimeStrings;
+  choiceTimelineDrawmodeTimeStrings.Add(_("Dummy Text"));
   choiceTimelineDrawmodeTime = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_DRAWMODE_TIME, wxDefaultPosition, wxDefaultSize, choiceTimelineDrawmodeTimeStrings, 0 );
+  choiceTimelineDrawmodeTime->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineDrawmodeTime->SetToolTip(_("Drawmode for time axis selected in new timeline."));
   itemBoxSizer56->Add(choiceTimelineDrawmodeTime, 1, wxGROW|wxRIGHT, 5);
@@ -538,7 +544,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer59->Add(itemStaticText60, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceTimelineDrawmodeObjectsStrings;
+  choiceTimelineDrawmodeObjectsStrings.Add(_("Dummy Text"));
   choiceTimelineDrawmodeObjects = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_DRAWMODE_OBJECTS, wxDefaultPosition, wxDefaultSize, choiceTimelineDrawmodeObjectsStrings, 0 );
+  choiceTimelineDrawmodeObjects->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineDrawmodeObjects->SetToolTip(_("Drawmode for objects axis selected in new timeline."));
   itemBoxSizer59->Add(choiceTimelineDrawmodeObjects, 1, wxGROW|wxRIGHT, 5);
@@ -551,7 +559,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer62->Add(itemStaticText63, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString choiceTimelinePixelSizeStrings;
+  choiceTimelinePixelSizeStrings.Add(_("Dummy Text"));
   choiceTimelinePixelSize = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_PIXEL_SIZE, wxDefaultPosition, wxDefaultSize, choiceTimelinePixelSizeStrings, 0 );
+  choiceTimelinePixelSize->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelinePixelSize->SetToolTip(_("Pixel size selected in new timeline."));
   itemBoxSizer62->Add(choiceTimelinePixelSize, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
@@ -564,7 +574,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer65->Add(itemStaticText66, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString choiceTimelineLabelsStrings;
+  choiceTimelineLabelsStrings.Add(_("Dummy Text"));
   choiceTimelineLabels = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_LABELS, wxDefaultPosition, wxDefaultSize, choiceTimelineLabelsStrings, 0 );
+  choiceTimelineLabels->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineLabels->SetToolTip(_("Labels to draw by default in a new timeline."));
   itemBoxSizer65->Add(choiceTimelineLabels, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
@@ -575,7 +587,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer68->Add(itemStaticText69, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString choiceTimelineObjectAxisStrings;
+  choiceTimelineObjectAxisStrings.Add(_("Dummy Text"));
   choiceTimelineObjectAxis = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_OBJECT_AXIS, wxDefaultPosition, wxDefaultSize, choiceTimelineObjectAxisStrings, 0 );
+  choiceTimelineObjectAxis->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineObjectAxis->SetToolTip(_("Object axis position by default in a new timeline."));
   itemBoxSizer68->Add(choiceTimelineObjectAxis, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
@@ -650,7 +664,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer85->Add(itemStaticText86, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceTimelineSaveImageFormatStrings;
+  choiceTimelineSaveImageFormatStrings.Add(_("Dummy Text"));
   choiceTimelineSaveImageFormat = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE, wxDefaultPosition, wxDefaultSize, choiceTimelineSaveImageFormatStrings, 0 );
+  choiceTimelineSaveImageFormat->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineSaveImageFormat->SetToolTip(_("Default image format selected."));
   itemBoxSizer85->Add(choiceTimelineSaveImageFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
@@ -663,7 +679,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer88->Add(itemStaticText89, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceTimelineSaveTextFormatStrings;
+  choiceTimelineSaveTextFormatStrings.Add(_("Dummy Text"));
   choiceTimelineSaveTextFormat = new wxChoice( itemPanel37, ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT, wxDefaultPosition, wxDefaultSize, choiceTimelineSaveTextFormatStrings, 0 );
+  choiceTimelineSaveTextFormat->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceTimelineSaveTextFormat->SetToolTip(_("Default text format selected."));
   itemBoxSizer88->Add(choiceTimelineSaveTextFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
@@ -747,7 +765,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer107->Add(itemStaticText108, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceHistogramGradientFunctionStrings;
+  choiceHistogramGradientFunctionStrings.Add(_("Dummy Text"));
   choiceHistogramGradientFunction = new wxChoice( itemPanel91, ID_PREFERENCES_HISTOGRAM_MATRIX_GRADIENT_FUNCTION, wxDefaultPosition, wxDefaultSize, choiceHistogramGradientFunctionStrings, 0 );
+  choiceHistogramGradientFunction->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramGradientFunction->SetToolTip(_("Color mode selected in new timeline."));
   itemBoxSizer107->Add(choiceHistogramGradientFunction, 1, wxGROW|wxRIGHT, 5);
@@ -760,7 +780,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer110->Add(itemStaticText111, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceHistogramDrawmodeSemanticStrings;
+  choiceHistogramDrawmodeSemanticStrings.Add(_("Dummy Text"));
   choiceHistogramDrawmodeSemantic = new wxChoice( itemPanel91, ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_SEMANTIC, wxDefaultPosition, wxDefaultSize, choiceHistogramDrawmodeSemanticStrings, 0 );
+  choiceHistogramDrawmodeSemantic->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramDrawmodeSemantic->SetToolTip(_("Color mode selected in new timeline."));
   itemBoxSizer110->Add(choiceHistogramDrawmodeSemantic, 1, wxGROW|wxRIGHT, 5);
@@ -773,7 +795,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer113->Add(itemStaticText114, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   wxArrayString choiceHistogramDrawmodeObjectsStrings;
+  choiceHistogramDrawmodeObjectsStrings.Add(_("Dummy Text"));
   choiceHistogramDrawmodeObjects = new wxChoice( itemPanel91, ID_PREFERENCES_HISTOGRAM_MATRIX_DRAWMODE_OBJECTS, wxDefaultPosition, wxDefaultSize, choiceHistogramDrawmodeObjectsStrings, 0 );
+  choiceHistogramDrawmodeObjects->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramDrawmodeObjects->SetToolTip(_("Color mode selected in new timeline."));
   itemBoxSizer113->Add(choiceHistogramDrawmodeObjects, 1, wxGROW|wxRIGHT, 5);
@@ -857,7 +881,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer132->Add(itemStaticText133, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceHistogramSaveImageFormatStrings;
+  choiceHistogramSaveImageFormatStrings.Add(_("Dummy Text"));
   choiceHistogramSaveImageFormat = new wxChoice( itemPanel91, ID_PREFERENCES_HISTOGRAM_SAVE_IMAGE_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveImageFormatStrings, 0 );
+  choiceHistogramSaveImageFormat->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramSaveImageFormat->SetToolTip(_("Default image format selected."));
   itemBoxSizer132->Add(choiceHistogramSaveImageFormat, 3, wxALIGN_CENTER_VERTICAL, 5);
@@ -870,7 +896,9 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer135->Add(itemStaticText136, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxArrayString choiceHistogramSaveTextFormatStrings;
+  choiceHistogramSaveTextFormatStrings.Add(_("Dummy Text"));
   choiceHistogramSaveTextFormat = new wxChoice( itemPanel91, ID_PREFERENCES_HISTOGRAM_SAVE_TXT_FORMAT, wxDefaultPosition, wxDefaultSize, choiceHistogramSaveTextFormatStrings, 0 );
+  choiceHistogramSaveTextFormat->SetStringSelection(_("Dummy Text"));
   if (PreferencesDialog::ShowToolTips())
     choiceHistogramSaveTextFormat->SetToolTip(_("Default text format selected."));
   itemBoxSizer135->Add(choiceHistogramSaveTextFormat, 3, wxALIGN_CENTER_VERTICAL, 5);

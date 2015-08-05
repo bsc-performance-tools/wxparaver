@@ -536,6 +536,10 @@ void paraverMain::CreateControls()
 ////@end paraverMain content construction
   wxTreeCtrl* tmpTree = createTree( imageList );
   choiceWindowBrowser->AddPage( tmpTree, _( "All Traces" ) );
+#if wxMAJOR_VERSION>=3
+  choiceWindowBrowser->AddPage( createTree( imageList ), _( "Dummy Tree" ) );
+  choiceWindowBrowser->DeletePage( 1 );
+#endif
   
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 1, wxT("Paraver Files") );
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 2, wxT("Window Properties") );
@@ -3579,7 +3583,9 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
     OnOKCutFilterDialog( cutFilterDialog, filterToolOrder );
   }
 
+#if wxMAJOR_VERSION<3
   cutFilterDialog->MakeModal( false );
+#endif
   
   delete traceOptions;
   delete cutFilterDialog;
@@ -3596,7 +3602,11 @@ void paraverMain::OnIconize( wxIconizeEvent& event )
   {
     wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( iPage );
     wxTreeItemId root = currentTree->GetRootItem();
+#if wxMAJOR_VERSION<3
     iconizeWindows( currentTree, root, event.Iconized() );
+#else
+    iconizeWindows( currentTree, root, event.IsIconized() );
+#endif
   }
 }
 

@@ -38,6 +38,7 @@
 #include <wx/button.h>
 #include <wx/sizer.h>
 #include <wx/checklst.h>
+#include <wx/textctrl.h>
 
 #include <wx/regex.h>
 #include <wx/checkbox.h>

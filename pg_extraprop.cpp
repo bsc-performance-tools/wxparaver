@@ -107,10 +107,17 @@ void prvEventTypeProperty::OnSetValue()
     GenerateValueAsString();
 }
 
+#if wxMAJOR_VERSION<3
 wxString prvEventTypeProperty::GetValueAsString( int ) const
 {
   return m_display;
 }
+#else
+wxString prvEventTypeProperty::ValueToString( wxVariant & value, int argFlags ) const
+{
+  return value.GetString();
+}
+#endif
 
 void prvEventTypeProperty::GenerateValueAsString()
 {
@@ -120,7 +127,11 @@ void prvEventTypeProperty::GenerateValueAsString()
 
 wxArrayInt prvEventTypeProperty::GetValueAsIndices() const
 {
+#if wxMAJOR_VERSION<3
     const wxArrayInt& valueArr = wxArrayIntFromVariant(GetValue());
+#else
+    const wxArrayInt& valueArr = GetValueAsArrayInt();
+#endif
     unsigned int i;
 
     // Translate values to string indices.
@@ -151,7 +162,11 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
     if ( propgrid->IsMainButtonEvent(event) )
     {
         // Update the value
+#if wxMAJOR_VERSION<3
         PrepareValueForDialogEditing(propgrid);
+#else
+        propgrid->GetUncommittedPropertyValue();
+#endif
 
         wxArrayString labels = m_choices.GetLabels();
         unsigned int choiceCount;
@@ -312,7 +327,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
     currentWindow->getFilter()->getEventType( typesSel );
     for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
     {
-      tmpArray.Add( wxString().Format( _( "%d" ), (*it ) ) );
+      tmpArray.Add( wxString().Format( _( "%d" ), (*it) ) );
     }
   }
   else if( GetName().Cmp( _("Event value.Values") ) == 0 || GetName().Cmp( _("Values") ) == 0 )
@@ -321,7 +336,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
     currentWindow->getFilter()->getEventValue( valuesSel );
     for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
     {
-      tmpArray.Add( wxString().Format( _( "%d" ), (*it ) ) );
+      tmpArray.Add( wxString().Format( _( "%lld" ), (*it) ) );
     }
   }
 
@@ -358,10 +373,17 @@ void prvEventInfoProperty::OnSetValue()
 }
 
 
+#if wxMAJOR_VERSION<3
 wxString prvEventInfoProperty::GetValueAsString( int ) const
 {
   return m_display;
 }
+#else
+wxString prvEventInfoProperty::ValueToString( wxVariant & value, int argFlags ) const
+{
+  return value.GetString();
+}
+#endif
 
 
 void prvEventInfoProperty::GenerateValueAsString()
@@ -373,7 +395,11 @@ void prvEventInfoProperty::GenerateValueAsString()
 
 wxArrayInt prvEventInfoProperty::GetValueAsIndices() const
 {
+#if wxMAJOR_VERSION<3
   const wxArrayInt& valueArr = wxArrayIntFromVariant( GetValue() );
+#else
+  const wxArrayInt& valueArr = GetValueAsArrayInt();
+#endif
   unsigned int i;
 
   // Translate values to string indices.
@@ -408,7 +434,11 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
     unsigned int numLabels = 0;
 
     // Update the value
+#if wxMAJOR_VERSION<3
     PrepareValueForDialogEditing( propgrid );
+#else
+    propgrid->GetUncommittedPropertyValue();
+#endif
 
     if ( m_choices.IsOk() )
     {
@@ -712,10 +742,17 @@ bool prvSemanticThreadProperty::OnEvent( wxPropertyGrid* propgrid,
   return true;
 }
 
+#if wxMAJOR_VERSION<3
 wxString prvSemanticThreadProperty::GetValueAsString( int ) const
 {
   return GetValue().GetString();
 }
+#else
+wxString prvSemanticThreadProperty::ValueToString( wxVariant & value, int argFlags ) const
+{
+  return value.GetString();
+}
+#endif
 
 
 /**********************************************************
@@ -757,12 +794,17 @@ prvRowsSelectionProperty::~prvRowsSelectionProperty()
 }
 
 
-
-wxString 	prvRowsSelectionProperty::GetValueAsString ( int ) const
+#if wxMAJOR_VERSION<3
+wxString prvRowsSelectionProperty::GetValueAsString ( int ) const
 {
   return GetValue().GetString();
 }
-
+#else
+wxString prvRowsSelectionProperty::ValueToString( wxVariant & value, int argFlags ) const
+{
+  return value.GetString();
+}
+#endif
 
 void prvRowsSelectionProperty::GetSelectionAsVector( TWindowLevel whichLevel,
                                                      vector<TObjectOrder> &levelSelections )
@@ -894,10 +936,17 @@ void prvNumbersListProperty::OnSetValue()
 }
 
 
+#if wxMAJOR_VERSION<3
 wxString prvNumbersListProperty::GetValueAsString( int ) const
 {
   return m_display;
 }
+#else
+wxString prvNumbersListProperty::ValueToString( wxVariant & value, int argFlags ) const
+{
+  return value.GetString();
+}
+#endif
 
 
 void prvNumbersListProperty::GenerateValueAsString()

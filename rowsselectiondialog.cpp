@@ -453,7 +453,7 @@ wxString RowsSelectionDialog::buildRegularExpressionString( const wxString& ente
 
   for( size_t i = 0; i < enteredRE.Len(); ++i )
   {
-    switch ( enteredRE.GetChar( i ) )
+    switch ( (wxChar)enteredRE.GetChar( i ) )
     {
       case wxChar('.'):
         parsedRE += wxString( wxT( "[.]" ) );

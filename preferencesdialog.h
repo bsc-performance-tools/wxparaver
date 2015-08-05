@@ -295,6 +295,9 @@ public:
   bool GetGlobalFillStateGaps() const { return globalFillStateGaps ; }
   void SetGlobalFillStateGaps(bool value) { globalFillStateGaps = value ; }
 
+  bool GetGlobalFullTracePath() const { return globalFullTracePath ; }
+  void SetGlobalFullTracePath(bool value) { globalFullTracePath = value ; }
+
   rgb GetGradientColourBegin() const { return gradientColourBegin ; }
   void SetGradientColourBegin(rgb value) { gradientColourBegin = value ; }
 
@@ -472,9 +475,6 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  bool GetGlobalFullTracePath() const { return globalFullTracePath ; }
-  void SetGlobalFullTracePath(bool value) { globalFullTracePath = value ; }
-
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -579,6 +579,7 @@ private:
   bool colorUseZero;
   std::string filtersXMLPath;
   bool globalFillStateGaps;
+  bool globalFullTracePath;
   rgb gradientColourBegin;
   rgb gradientColourEnd;
   rgb gradientColourLow;
@@ -638,7 +639,6 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  bool globalFullTracePath;
 ////@end PreferencesDialog member variables
 
   std::map< wxWindowID, size_t > panelID;

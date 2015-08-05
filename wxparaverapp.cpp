@@ -90,6 +90,7 @@ BEGIN_EVENT_TABLE( wxparaverApp, wxApp )
 
 END_EVENT_TABLE()
 
+#if wxMAJOR_VERSION<3
 wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
 {
   { wxCMD_LINE_SWITCH, 
@@ -136,7 +137,54 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
 
   { wxCMD_LINE_NONE }
 };
+#else
+wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
+{
+  { wxCMD_LINE_SWITCH, 
+    "v",
+    "version",
+    "Show wxparaver version." },
 
+  { wxCMD_LINE_SWITCH, 
+    "h",
+    "help",
+    "Show this help.",
+    wxCMD_LINE_VAL_NONE,
+    wxCMD_LINE_OPTION_HELP },
+
+  { wxCMD_LINE_SWITCH, 
+    "i",
+    "image",
+    "Save cfg last window as an image",
+    wxCMD_LINE_VAL_NONE,
+    wxCMD_LINE_PARAM_OPTIONAL },
+
+  { wxCMD_LINE_OPTION, 
+    "e",
+    "event",
+    "Event type to code linking.",
+    wxCMD_LINE_VAL_NUMBER,
+    wxCMD_LINE_PARAM_OPTIONAL },
+
+  { wxCMD_LINE_OPTION, 
+    "t",
+    "tutorial",
+    "Load tutorial. <str> can be the path to the tutorial "
+      "containing the index.html file, or the whole url, like "
+      "path/file.html (then, other names than 'index' are allowed).",
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
+
+   { wxCMD_LINE_PARAM, 
+    NULL,
+    NULL,
+    "(trace.prv | trace.prv.gz) (configuration.cfg)",
+    wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
+
+  { wxCMD_LINE_NONE }
+};
+#endif
 
 /*!
  * Constructor for wxparaverApp
@@ -589,7 +637,11 @@ void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
 #ifndef __WXMAC__
   globalTimingCallDialog->Enable( false );
 #endif
+
+#if wxMAJOR_VERSION<3
   globalTimingCallDialog->MakeModal( false );
+#endif
+
 #ifdef WIN32
   globalTimingCallDialog->Iconize( true );
 #endif
@@ -605,7 +657,11 @@ void wxparaverApp::DeactivateGlobalTiming()
   globalTiming = false;
   globalTimingBeginIsSet = false;
   globalTimingCallDialog->Enable( true );
+
+#if wxMAJOR_VERSION<3
   globalTimingCallDialog->MakeModal( true );
+#endif
+
 #ifdef WIN32
   globalTimingCallDialog->Iconize( false );
 #endif

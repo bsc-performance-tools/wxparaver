@@ -69,12 +69,20 @@ class prvEventTypeProperty: public wxPGProperty
     virtual ~prvEventTypeProperty();
 
     virtual void OnSetValue();
+#if wxMAJOR_VERSION<3
     virtual wxString GetValueAsString( int flags = 0 ) const;
+#else
+    virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
+#endif
     virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
 #if wxMAJOR_VERSION<3
     WX_PG_DECLARE_EVENT_METHODS()
 
     virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
+#else
+    bool OnEvent( wxPropertyGrid* propgrid,
+                  wxWindow* WXUNUSED(primary),
+                  wxEvent& event );
 #endif
 
     wxArrayInt GetValueAsArrayInt() const;
@@ -126,12 +134,20 @@ class prvEventInfoProperty: public wxPGProperty
     virtual ~prvEventInfoProperty();
 
     virtual void OnSetValue();
+#if wxMAJOR_VERSION<3
     virtual wxString GetValueAsString( int flags = 0 ) const;
+#else
+    virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
+#endif
     virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
 #if wxMAJOR_VERSION<3
     WX_PG_DECLARE_EVENT_METHODS()
 
     virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
+#else
+    bool OnEvent( wxPropertyGrid* propgrid,
+                  wxWindow* WXUNUSED(primary),
+                  wxEvent& event );
 #endif
     wxArrayInt GetValueAsArrayInt() const;
 
@@ -194,9 +210,18 @@ class prvSemanticThreadProperty: public wxPGProperty
                                const wxString& value );
     virtual ~prvSemanticThreadProperty();
 
-    wxString GetValueAsString( int ) const;
+#if wxMAJOR_VERSION<3
+    virtual wxString GetValueAsString( int ) const;
+#else
+    virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
+#endif
+
 #if wxMAJOR_VERSION<3
     WX_PG_DECLARE_EVENT_METHODS()
+#else
+    bool OnEvent( wxPropertyGrid* propgrid,
+                  wxWindow* WXUNUSED(primary),
+                  wxEvent& event );
 #endif
   private:
     SemanticMenu *myMenu;
@@ -222,12 +247,21 @@ class prvRowsSelectionProperty: public wxPGProperty
                                
     virtual ~prvRowsSelectionProperty();
 
-    wxString GetValueAsString ( int ) const;
+#if wxMAJOR_VERSION<3
+    virtual wxString GetValueAsString ( int ) const;
+#else
+    virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
+#endif
+
     void GetSelectionAsVector( TWindowLevel whichLevel,
                                vector<TObjectOrder> &levelSelections );
                                
 #if wxMAJOR_VERSION<3
     WX_PG_DECLARE_EVENT_METHODS()
+#else
+    bool OnEvent( wxPropertyGrid* propgrid,
+                  wxWindow* WXUNUSED(primary),
+                  wxEvent& event );
 #endif
   private:
     Window *myTimeline;
@@ -256,11 +290,20 @@ class prvNumbersListProperty: public wxPGProperty
     virtual ~prvNumbersListProperty();
 
     virtual void OnSetValue();
+#if wxMAJOR_VERSION<3
     virtual wxString GetValueAsString( int flags = 0 ) const;
+#else
+    virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
+#endif
     virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
 
 #if wxMAJOR_VERSION<3
     WX_PG_DECLARE_EVENT_METHODS()
+#else
+    bool OnEvent( wxPropertyGrid* propgrid,
+                  wxWindow* WXUNUSED(primary),
+                  wxEvent& event );
+
 #endif
 
   protected:

@@ -137,45 +137,27 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
-
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
-
   EVT_TEXT( ID_TEXTCTRL_TRACE, RunScript::OnTextctrlTraceTextUpdated )
-
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
-
   EVT_BUTTON( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_NORMALIZE, RunScript::OnCheckboxClusteringNormalizeUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES, RunScript::OnCheckboxClusteringGenerateSequencesUpdate )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, RunScript::OnRadiobuttonClusteringXmldefinedSelected )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
-
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
-
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
-
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
-
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
-
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
-
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
-
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
-
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -534,7 +516,7 @@ void RunScript::CreateControls()
 
   wxNotebook* itemNotebook24 = new wxNotebook( itemDialog1, ID_NOTEBOOK_DIMEMAS, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
 
-  wxScrolledWindow* itemScrolledWindow25 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_MAIN, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
+  wxScrolledWindow* itemScrolledWindow25 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_MAIN, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL|wxTAB_TRAVERSAL );
   itemScrolledWindow25->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxVERTICAL);
   itemScrolledWindow25->SetSizer(itemBoxSizer26);
@@ -560,7 +542,7 @@ void RunScript::CreateControls()
   itemScrolledWindow25->FitInside();
   itemNotebook24->AddPage(itemScrolledWindow25, _("Main"));
 
-  wxScrolledWindow* itemScrolledWindow30 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_ADVANCED, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxTAB_TRAVERSAL );
+  wxScrolledWindow* itemScrolledWindow30 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_ADVANCED, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL|wxTAB_TRAVERSAL );
   itemScrolledWindow30->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxHORIZONTAL);
   itemScrolledWindow30->SetSizer(itemBoxSizer31);
@@ -586,7 +568,7 @@ void RunScript::CreateControls()
   wxStaticBox* itemStaticBoxSizer39Static = new wxStaticBox(itemScrolledWindow30, wxID_ANY, _(" Tasks Mapping  "));
   wxStaticBoxSizer* itemStaticBoxSizer39 = new wxStaticBoxSizer(itemStaticBoxSizer39Static, wxVERTICAL);
   itemBoxSizer31->Add(itemStaticBoxSizer39, 1, wxALIGN_TOP|wxLEFT|wxRIGHT|wxTOP, 4);
-  wxPanel* itemPanel40 = new wxPanel( itemScrolledWindow30, ID_PANEL_DUMMY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+  wxPanel* itemPanel40 = new wxPanel( itemStaticBoxSizer39->GetStaticBox(), ID_PANEL_DUMMY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
   itemStaticBoxSizer39->Add(itemPanel40, 0, wxGROW, 0);
   wxBoxSizer* itemBoxSizer41 = new wxBoxSizer(wxVERTICAL);
   itemPanel40->SetSizer(itemBoxSizer41);
@@ -623,7 +605,7 @@ void RunScript::CreateControls()
     radioButtonDimemasTasksPerNode->SetToolTip(_("Tasks assigned to a Node"));
   itemBoxSizer46->Add(radioButtonDimemasTasksPerNode, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  spinCtrlDimemasTasksPerNode = new wxSpinCtrl( itemPanel40, ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE, _T("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 65536, 1 );
+  spinCtrlDimemasTasksPerNode = new wxSpinCtrl( itemPanel40, ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 65536, 1 );
   spinCtrlDimemasTasksPerNode->SetHelpText(_("Tasks assigned to a Node"));
   if (RunScript::ShowToolTips())
     spinCtrlDimemasTasksPerNode->SetToolTip(_("Tasks assigned to a Node"));
@@ -643,7 +625,7 @@ void RunScript::CreateControls()
   statsLabelTextCtrlOutputName = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Prefix"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     statsLabelTextCtrlOutputName->SetToolTip(_("Name given to resulting .dat and .gnuplot files."));
-  statsLabelTextCtrlOutputName->SetName(_T("O"));
+  statsLabelTextCtrlOutputName->SetName(wxT("O"));
   itemBoxSizer50->Add(statsLabelTextCtrlOutputName, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   statsTextCtrlOutputName = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_STATS_OUTPUT_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -762,82 +744,82 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer80 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer79->Add(itemBoxSizer80, 0, wxGROW|wxALL, 2);
 
-  clusteringRadioXMLDefined = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, _("XML defined"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+  clusteringRadioXMLDefined = new wxRadioButton( itemStaticBoxSizer79->GetStaticBox(), ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, _("XML defined"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   clusteringRadioXMLDefined->SetValue(true);
   itemBoxSizer80->Add(clusteringRadioXMLDefined, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringRadioDBScan = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_CLUSTERING_DBSCAN, _("DBScan"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringRadioDBScan = new wxRadioButton( itemStaticBoxSizer79->GetStaticBox(), ID_RADIOBUTTON_CLUSTERING_DBSCAN, _("DBScan"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringRadioDBScan->SetValue(false);
   itemBoxSizer80->Add(clusteringRadioDBScan, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringRadioRefinement = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_CLUSTERING_REFINEMENT, _("Aggregative refinement"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringRadioRefinement = new wxRadioButton( itemStaticBoxSizer79->GetStaticBox(), ID_RADIOBUTTON_CLUSTERING_REFINEMENT, _("Aggregative refinement"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringRadioRefinement->SetValue(false);
   itemBoxSizer80->Add(clusteringRadioRefinement, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringAlgorithmLineSeparator = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  clusteringAlgorithmLineSeparator = new wxStaticLine( itemStaticBoxSizer79->GetStaticBox(), wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemStaticBoxSizer79->Add(clusteringAlgorithmLineSeparator, 0, wxGROW|wxALL, 2);
 
   clusteringSizerDBScan = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer79->Add(clusteringSizerDBScan, 0, wxGROW|wxALL, 2);
 
-  wxStaticText* itemStaticText86 = new wxStaticText( itemDialog1, wxID_STATIC, _("Epsilon"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticText* itemStaticText86 = new wxStaticText( itemStaticBoxSizer79->GetStaticBox(), wxID_STATIC, _("Epsilon"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringSizerDBScan->Add(itemStaticText86, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxDBScanEpsilon = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_DBSCAN_EPSILON, _("0.01"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringTextBoxDBScanEpsilon = new wxTextCtrl( itemStaticBoxSizer79->GetStaticBox(), ID_TEXTCTRL_CLUSTERING_DBSCAN_EPSILON, _("0.01"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringSizerDBScan->Add(clusteringTextBoxDBScanEpsilon, 4, wxGROW|wxALL, 2);
 
   clusteringSizerDBScan->Add(5, 5, 1, wxGROW|wxALL, 2);
 
-  wxStaticText* itemStaticText89 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticText* itemStaticText89 = new wxStaticText( itemStaticBoxSizer79->GetStaticBox(), wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringSizerDBScan->Add(itemStaticText89, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxDBScanMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_DBSCAN_MIN_POINTS, _T("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 4 );
+  clusteringTextBoxDBScanMinPoints = new wxSpinCtrl( itemStaticBoxSizer79->GetStaticBox(), ID_TEXTCTRL_DBSCAN_MIN_POINTS, wxT("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 4 );
   clusteringSizerDBScan->Add(clusteringTextBoxDBScanMinPoints, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   clusteringSizerRefinement = new wxBoxSizer(wxVERTICAL);
   itemStaticBoxSizer79->Add(clusteringSizerRefinement, 0, wxGROW|wxALL, 2);
 
-  clusteringCheckBoxRefinementPrintData = new wxCheckBox( itemDialog1, ID_CHECKBOX_CLUSTERING_REFINEMENT_PRINT_DATA, _("Print intermediate data"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringCheckBoxRefinementPrintData = new wxCheckBox( itemStaticBoxSizer79->GetStaticBox(), ID_CHECKBOX_CLUSTERING_REFINEMENT_PRINT_DATA, _("Print intermediate data"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringCheckBoxRefinementPrintData->SetValue(false);
   clusteringSizerRefinement->Add(clusteringCheckBoxRefinementPrintData, 0, wxALIGN_LEFT|wxALL, 2);
 
-  clusteringCheckBoxRefinementTune = new wxCheckBox( itemDialog1, ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, _("Tune manually"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringCheckBoxRefinementTune = new wxCheckBox( itemStaticBoxSizer79->GetStaticBox(), ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, _("Tune manually"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringCheckBoxRefinementTune->SetValue(false);
   clusteringSizerRefinement->Add(clusteringCheckBoxRefinementTune, 0, wxALIGN_LEFT|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer94 = new wxBoxSizer(wxHORIZONTAL);
   clusteringSizerRefinement->Add(itemBoxSizer94, 0, wxGROW|wxALL, 2);
 
-  clusteringLabelRefinementEpsilon = new wxStaticText( itemDialog1, wxID_STATIC, _("Epsilon"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringLabelRefinementEpsilon = new wxStaticText( itemStaticBoxSizer79->GetStaticBox(), wxID_STATIC, _("Epsilon"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer94->Add(clusteringLabelRefinementEpsilon, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringLabelRefinementEpsilonMin = new wxStaticText( itemDialog1, wxID_STATIC, _("Min"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringLabelRefinementEpsilonMin = new wxStaticText( itemStaticBoxSizer79->GetStaticBox(), wxID_STATIC, _("Min"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer94->Add(clusteringLabelRefinementEpsilonMin, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxRefinementEpsilonMin = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MIN, _("0.001"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringTextBoxRefinementEpsilonMin = new wxTextCtrl( itemStaticBoxSizer79->GetStaticBox(), ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MIN, _("0.001"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer94->Add(clusteringTextBoxRefinementEpsilonMin, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringLabelRefinementEpsilonMax = new wxStaticText( itemDialog1, wxID_STATIC, _("Max"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringLabelRefinementEpsilonMax = new wxStaticText( itemStaticBoxSizer79->GetStaticBox(), wxID_STATIC, _("Max"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer94->Add(clusteringLabelRefinementEpsilonMax, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxRefinementEpsilonMax = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MAX, _("0.01"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringTextBoxRefinementEpsilonMax = new wxTextCtrl( itemStaticBoxSizer79->GetStaticBox(), ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MAX, _("0.01"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer94->Add(clusteringTextBoxRefinementEpsilonMax, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   itemBoxSizer94->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringLabelRefinementSteps = new wxStaticText( itemDialog1, wxID_STATIC, _("Steps"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringLabelRefinementSteps = new wxStaticText( itemStaticBoxSizer79->GetStaticBox(), wxID_STATIC, _("Steps"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer94->Add(clusteringLabelRefinementSteps, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
-  clusteringTextBoxRefinementSteps = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS, _T("10"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 30, 10 );
+  clusteringTextBoxRefinementSteps = new wxSpinCtrl( itemStaticBoxSizer79->GetStaticBox(), ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS, wxT("10"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 30, 10 );
   itemBoxSizer94->Add(clusteringTextBoxRefinementSteps, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer103 = new wxBoxSizer(wxHORIZONTAL);
   clusteringSizerRefinement->Add(itemBoxSizer103, 0, wxGROW|wxALL, 2);
 
-  clusteringLabelRefinementMinPoints = new wxStaticText( itemDialog1, wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringLabelRefinementMinPoints = new wxStaticText( itemStaticBoxSizer79->GetStaticBox(), wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer103->Add(clusteringLabelRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxRefinementMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, _T("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4 );
+  clusteringTextBoxRefinementMinPoints = new wxSpinCtrl( itemStaticBoxSizer79->GetStaticBox(), ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, wxT("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4 );
   itemBoxSizer103->Add(clusteringTextBoxRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   itemBoxSizer103->Add(5, 5, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -879,7 +861,7 @@ void RunScript::CreateControls()
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
   itemBoxSizer112->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
-  listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
+  listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 3, wxGROW|wxALL, 7);
@@ -897,6 +879,12 @@ void RunScript::CreateControls()
 
 ////@end RunScript content construction
 
+#if wxMAJOR_VERSION<3
+  listboxRunLog->SetWindowStyleFlag( wxALWAYS_SHOW_SB|wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
+#else
+  listboxRunLog->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
+#endif
+  
   for ( int i = DIMEMAS_WRAPPER; i <= USER_DEFINED; i++ )
   {
     choiceApplication->Append( applicationLabel[ TExternalApp(i) ] );
@@ -965,7 +953,7 @@ wxBitmap RunScript::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin RunScript bitmap retrieval
   wxUnusedVar(name);
-  if (name == _T("app_edit.xpm"))
+  if (name == wxT("app_edit.xpm"))
   {
     wxBitmap bitmap(app_edit_xpm);
     return bitmap;

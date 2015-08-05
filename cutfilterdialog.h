@@ -37,7 +37,6 @@
 
 ////@begin includes
 #include "filebrowserbutton.h"
-#include "wx/tglbtn.h"
 #include "wx/notebook.h"
 #include "wx/statline.h"
 #include "wx/spinctrl.h"
@@ -53,7 +52,6 @@
 ////@begin forward declarations
 class FileBrowserButton;
 class wxBoxSizer;
-class wxToggleButton;
 class wxNotebook;
 class wxSpinCtrl;
 ////@end forward declarations
@@ -83,7 +81,6 @@ class wxSpinCtrl;
 #define ID_CHECKLISTBOX_EXECUTION_CHAIN 10107
 #define ID_BITMAPBUTTON_PUSH_UP_FILTER 10109
 #define ID_BITMAPBUTTON_PUSH_DOWN_FILTER 10001
-#define ID_BUTTON_EDIT_XML 10153
 #define ID_BUTTON_SAVE_XML 10154
 #define ID_NOTEBOOK_CUT_FILTER_OPTIONS 10108
 #define ID_PANEL_CUTTER 10111
@@ -200,9 +197,6 @@ public:
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON_PUSH_DOWN_FILTER
   void OnBitmapbuttonPushDownFilterClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_EDIT_XML
-  void OnButtonViewEditXmlUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SAVE_XML
   void OnButtonSaveXmlClick( wxCommandEvent& event );
@@ -377,7 +371,6 @@ public:
   wxCheckListBox* checkListExecutionChain;
   wxBitmapButton* buttonUp;
   wxBitmapButton* buttonDown;
-  wxToggleButton* buttonViewEditXml;
   wxButton* buttonSaveXml;
   wxNotebook* notebookTools;
   wxRadioButton* radioCutterCutByTime;

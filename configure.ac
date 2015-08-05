@@ -33,6 +33,7 @@ if test "$wxWin" != 1; then
 		])
 fi
 
+
 AX_BOOST_BASE(1.36)
 AX_BOOST_SERIALIZATION
 AX_PROG_WXPROPGRID_NAME

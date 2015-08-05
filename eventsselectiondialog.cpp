@@ -68,33 +68,21 @@ BEGIN_EVENT_TABLE( EventsSelectionDialog, wxDialog )
 
 ////@begin EventsSelectionDialog event table entries
   EVT_IDLE( EventsSelectionDialog::OnIdle )
-
   EVT_CHOICE( ID_CHOICE_OPERATOR_FUNCTION_TYPES, EventsSelectionDialog::OnChoiceOperatorFunctionTypesSelected )
-
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesDoubleClicked )
   EVT_LISTBOX( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesSelected )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_TYPES, EventsSelectionDialog::OnChecklistboxTypesToggled )
-
   EVT_BUTTON( ID_BUTTON_SET_ALL_TYPES, EventsSelectionDialog::OnButtonSetAllTypesClick )
-
   EVT_BUTTON( ID_BUTTON_UNSET_ALL_TYPES, EventsSelectionDialog::OnButtonUnsetAllTypesClick )
-
   EVT_CHOICE( ID_CHOICE_OPERATOR_TYPE_VALUE, EventsSelectionDialog::OnChoiceOperatorTypeValueSelected )
-
   EVT_CHOICE( ID_CHOICE_OPERATOR_FUNCTION_VALUES, EventsSelectionDialog::OnChoiceOperatorFunctionValuesSelected )
-
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_VALUES, EventsSelectionDialog::OnChecklistboxValuesDoubleClicked )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_VALUES, EventsSelectionDialog::OnChecklistboxValuesToggled )
-
   EVT_BUTTON( ID_BUTTON_ADD_VALUES, EventsSelectionDialog::OnButtonAddValuesClick )
-
   EVT_BUTTON( ID_BUTTON_SET_ALL_VALUES, EventsSelectionDialog::OnButtonSetAllValuesClick )
-
   EVT_BUTTON( ID_BUTTON_UNSET_ALL_VALUES, EventsSelectionDialog::OnButtonUnsetAllValuesClick )
-
   EVT_BUTTON( wxID_APPLY, EventsSelectionDialog::OnApplyClick )
   EVT_UPDATE_UI( wxID_APPLY, EventsSelectionDialog::OnApplyUpdate )
-
 ////@end EventsSelectionDialog event table entries
 
 END_EVENT_TABLE()
@@ -412,24 +400,24 @@ void EventsSelectionDialog::CreateControls()
   boxSizerFunctionTypes = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer5->Add(boxSizerFunctionTypes, 0, wxALIGN_RIGHT|wxLEFT|wxRIGHT, 5);
 
-  staticTextFunctionTypes = new wxStaticText( itemDialog1, ID_STATIC_TEXT_FUNCTION_TYPES, _("Function"), wxDefaultPosition, wxDefaultSize, 0 );
+  staticTextFunctionTypes = new wxStaticText( itemStaticBoxSizer5->GetStaticBox(), ID_STATIC_TEXT_FUNCTION_TYPES, _("Function"), wxDefaultPosition, wxDefaultSize, 0 );
   boxSizerFunctionTypes->Add(staticTextFunctionTypes, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString choiceOperatorFunctionTypesStrings;
-  choiceOperatorFunctionTypes = new wxChoice( itemDialog1, ID_CHOICE_OPERATOR_FUNCTION_TYPES, wxDefaultPosition, wxDefaultSize, choiceOperatorFunctionTypesStrings, 0 );
+  choiceOperatorFunctionTypes = new wxChoice( itemStaticBoxSizer5->GetStaticBox(), ID_CHOICE_OPERATOR_FUNCTION_TYPES, wxDefaultPosition, wxDefaultSize, choiceOperatorFunctionTypesStrings, 0 );
   boxSizerFunctionTypes->Add(choiceOperatorFunctionTypes, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
   wxArrayString checkListSelectTypesStrings;
-  checkListSelectTypes = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxDefaultSize, checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
+  checkListSelectTypes = new wxCheckListBox( itemStaticBoxSizer5->GetStaticBox(), ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxDefaultSize, checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
   itemStaticBoxSizer5->Add(checkListSelectTypes, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer5->Add(itemBoxSizer10, 0, wxALIGN_RIGHT|wxLEFT, 5);
 
-  buttonSetAllTypes = new wxButton( itemDialog1, ID_BUTTON_SET_ALL_TYPES, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonSetAllTypes = new wxButton( itemStaticBoxSizer5->GetStaticBox(), ID_BUTTON_SET_ALL_TYPES, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer10->Add(buttonSetAllTypes, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  buttonUnsetAllTypes = new wxButton( itemDialog1, ID_BUTTON_UNSET_ALL_TYPES, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonUnsetAllTypes = new wxButton( itemStaticBoxSizer5->GetStaticBox(), ID_BUTTON_UNSET_ALL_TYPES, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer10->Add(buttonUnsetAllTypes, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);
@@ -455,33 +443,33 @@ void EventsSelectionDialog::CreateControls()
   boxSizerFunctionValues = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer18->Add(boxSizerFunctionValues, 0, wxALIGN_RIGHT|wxLEFT|wxRIGHT, 5);
 
-  staticTextFunctionValues = new wxStaticText( itemDialog1, wxID_STATIC, _("Function"), wxDefaultPosition, wxDefaultSize, 0 );
+  staticTextFunctionValues = new wxStaticText( itemStaticBoxSizer18->GetStaticBox(), wxID_STATIC, _("Function"), wxDefaultPosition, wxDefaultSize, 0 );
   boxSizerFunctionValues->Add(staticTextFunctionValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxArrayString choiceOperatorFunctionValuesStrings;
-  choiceOperatorFunctionValues = new wxChoice( itemDialog1, ID_CHOICE_OPERATOR_FUNCTION_VALUES, wxDefaultPosition, wxDefaultSize, choiceOperatorFunctionValuesStrings, 0 );
+  choiceOperatorFunctionValues = new wxChoice( itemStaticBoxSizer18->GetStaticBox(), ID_CHOICE_OPERATOR_FUNCTION_VALUES, wxDefaultPosition, wxDefaultSize, choiceOperatorFunctionValuesStrings, 0 );
   boxSizerFunctionValues->Add(choiceOperatorFunctionValues, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
   wxArrayString checkListSelectValuesStrings;
-  checkListSelectValues = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_VALUES, wxDefaultPosition, wxDefaultSize, checkListSelectValuesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
+  checkListSelectValues = new wxCheckListBox( itemStaticBoxSizer18->GetStaticBox(), ID_CHECKLISTBOX_VALUES, wxDefaultPosition, wxDefaultSize, checkListSelectValuesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
   itemStaticBoxSizer18->Add(checkListSelectValues, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer18->Add(itemBoxSizer23, 0, wxGROW|wxALL, 5);
 
-  textCtrlAddValues = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_ADD_VALUES, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  textCtrlAddValues = new wxTextCtrl( itemStaticBoxSizer18->GetStaticBox(), ID_TEXTCTRL_ADD_VALUES, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer23->Add(textCtrlAddValues, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  buttonAddValues = new wxButton( itemDialog1, ID_BUTTON_ADD_VALUES, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonAddValues = new wxButton( itemStaticBoxSizer18->GetStaticBox(), ID_BUTTON_ADD_VALUES, _("Add"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer23->Add(buttonAddValues, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
 
   wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer18->Add(itemBoxSizer26, 0, wxALIGN_RIGHT|wxRIGHT, 5);
 
-  buttonSetAllValues = new wxButton( itemDialog1, ID_BUTTON_SET_ALL_VALUES, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonSetAllValues = new wxButton( itemStaticBoxSizer18->GetStaticBox(), ID_BUTTON_SET_ALL_VALUES, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer26->Add(buttonSetAllValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  buttonUnsetAllValues = new wxButton( itemDialog1, ID_BUTTON_UNSET_ALL_VALUES, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonUnsetAllValues = new wxButton( itemStaticBoxSizer18->GetStaticBox(), ID_BUTTON_UNSET_ALL_VALUES, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer26->Add(buttonUnsetAllValues, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
 
   wxStaticLine* itemStaticLine29 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
@@ -963,7 +951,8 @@ void EventsSelectionDialog::UpdateCheckListboxValues( TEventType type )
   }
 
   checkListSelectValues->Clear();
-  checkListSelectValues->InsertItems( tmpEventValues, 0 );
+  if( !tmpEventValues.empty() )
+    checkListSelectValues->InsertItems( tmpEventValues, 0 );
 
   for( unsigned int i = 0; i < eventValues.GetCount(); ++i )
   {

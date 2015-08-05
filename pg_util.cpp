@@ -53,6 +53,10 @@
 // CFG4D
 #include "cfg.h"
 
+#if wxMAJOR_VERSION>=3
+typedef  wxPGProperty* wxPGId;
+#endif
+
 static bool filterCatCollapsed        = true;
 static bool commFilterCatCollapsed    = true;
 static bool commFilterFromCollapsed   = true;
@@ -737,9 +741,20 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
 
 inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat, const wxString& catName )
 {
+#if wxMAJOR_VERSION<3
   wxPGProperty *tmpProp = windowProperties->GetPropertyByLabel( catName );
+#else
+  wxPGProperty *tmpProp = windowProperties->GetProperty( catName );
+#endif
+
   if( tmpProp != NULL )
+#if wxMAJOR_VERSION<3
     categoryStat = tmpProp->GetFlagsAsString( wxPG_PROP_COLLAPSED ) == _( "COLLAPSED" );
+#else
+    categoryStat = !windowProperties->IsPropertyExpanded( tmpProp );
+#endif
+
+ 
 }
 
 
@@ -997,10 +1012,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                    new wxStringProperty( wxT("Comm from"),
                                                                          wxPG_LABEL,
                                                                          wxT("<composed>") ) );
+#if wxMAJOR_VERSION<3
       if( commFilterFromCollapsed )
         commFilterFrom->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
       else
         commFilterFrom->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      if( commFilterFromCollapsed )
+        commFilterFrom->SetFlagsFromString( _( "COLLAPSED" ) );
+      commFilterFrom->Enable( false );
+#endif
     }
 
     pos = 0;
@@ -1032,7 +1053,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       if( filter->getCommFromFunction() == "All" || filter->getCommFromFunction() == "None" )
       {
+#if wxMAJOR_VERSION<3
         commFilterFromValues->SetFlagsFromString( _( "DISABLED" ) );
+#else
+        commFilterFromValues->Enable( false );
+#endif
       }
     }
 
@@ -1059,12 +1084,17 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                  new wxStringProperty( wxT("Comm to"),
                                                                        wxPG_LABEL,
                                                                        wxT("<composed>") ) );
+#if wxMAJOR_VERSION<3
       if( commFilterToCollapsed )
         commFilterTo->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
       else
         commFilterTo->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      if( commFilterToCollapsed )
+        commFilterTo->SetFlagsFromString( _( "COLLAPSED" ) );
+      commFilterTo->Enable( false );
+#endif
     }
-
     pos = 0;
     selected = -1;
     for( vector<string>::iterator it = filterFunctions.begin();
@@ -1094,7 +1124,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       if( filter->getCommToFunction() == "All" || filter->getCommToFunction() == "None" )
       {
+#if wxMAJOR_VERSION<3
         commFilterToValues->SetFlagsFromString( _( "DISABLED" ) );
+#else
+        commFilterToValues->Enable( false );
+#endif
       }
     }
 
@@ -1106,10 +1140,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                   new wxStringProperty( wxT("Comm tag"),
                                                                         wxPG_LABEL,
                                                                         wxT("<composed>") ) );
+#if wxMAJOR_VERSION<3
       if( commFilterTagCollapsed )
         commFilterTag->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
       else
         commFilterTag->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      if( commFilterTagCollapsed )
+        commFilterTag->SetFlagsFromString( _( "COLLAPSED" ) );
+      commFilterTag->Enable( false );
+#endif
     }
 
     pos = 0;
@@ -1141,7 +1181,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     if ( commFilterTagValues != (wxPGId)NULL )
     {
       if( filter->getCommTagFunction() == "All" || filter->getCommTagFunction() == "None" )
+#if wxMAJOR_VERSION<3
         commFilterTagValues->SetFlagsFromString( _( "DISABLED" ) );
+#else
+        commFilterTagValues->Enable( false );
+#endif
     }
 
     arrayStr.Clear();
@@ -1167,10 +1211,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                    new wxStringProperty( wxT("Comm size"), 
                                                                          wxPG_LABEL,
                                                                          wxT("<composed>") ) );
+#if wxMAJOR_VERSION<3
       if( commFilterSizeCollapsed )
         commFilterSize->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
       else
         commFilterSize->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      if( commFilterSizeCollapsed )
+        commFilterSize->SetFlagsFromString( _( "COLLAPSED" ) );
+      commFilterSize->Enable( false );
+#endif
     }
 
     pos = 0;
@@ -1203,7 +1253,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       if( filter->getCommSizeFunction() == "All" || filter->getCommSizeFunction() == "None" )
       {
+#if wxMAJOR_VERSION<3
         commFilterSizeValues->SetFlagsFromString( _( "DISABLED" ) );
+#else
+        commFilterSizeValues->Enable( false );
+#endif
       }
     }
 
@@ -1215,10 +1269,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                   new wxStringProperty( wxT("Comm bandwidth"), 
                                                                         wxPG_LABEL,
                                                                         wxT("<composed>") ) );
+#if wxMAJOR_VERSION<3
       if( commFilterBWCollapsed )
         commFilterBW->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
       else
         commFilterBW->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      if( commFilterBWCollapsed )
+        commFilterBW->SetFlagsFromString( _( "COLLAPSED" ) );
+      commFilterBW->Enable( false );
+#endif
     }
 
     pos = 0;
@@ -1251,7 +1311,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       if( filter->getBandWidthFunction() == "All" || filter->getBandWidthFunction() == "None" )
       {
+#if wxMAJOR_VERSION<3
         commFilterBandWidthValues->SetFlagsFromString( _( "DISABLED" ) );
+#else
+        commFilterBandWidthValues->Enable( false );
+#endif
       }
     }
 
@@ -1272,10 +1336,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                     new wxStringProperty( wxT("Event type"), 
                                                                           wxPG_LABEL,
                                                                           wxT("<composed>") ) );
+#if wxMAJOR_VERSION<3
       if( eventFilterTypeCollapsed )
         eventFilterType->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
       else
         eventFilterType->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      if( eventFilterTypeCollapsed )
+        eventFilterType->SetFlagsFromString( _( "COLLAPSED" ) );
+      eventFilterType->Enable( false );
+#endif
     }
 
     pos = 0;
@@ -1316,19 +1386,20 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
     if ( eventFilterTypeValues != (wxPGId)NULL )
     {
-  //    windowProperties->SetPropertyAttribute( tmpEventProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
-      
-
+#if wxMAJOR_VERSION<3
       wxPGId auxValProp = windowProperties->GetProperty( wxT("Event type.Types") )->GetId();
-      //if ( auxValProp == NULL)
-      //{
-      //  auxValProp = windowProperties->GetProperty( wxT("Types") )->GetId();
-      //}
+#else
+      wxPGId auxValProp = windowProperties->GetProperty( wxT("Event type.Types") );
+#endif
       windowProperties->SetPropertyAttribute( auxValProp, wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
 
       if( filter->getEventTypeFunction() == "All" ||
           filter->getEventTypeFunction() == "None" )
+#if wxMAJOR_VERSION<3
         eventFilterTypeValues->SetFlagsFromString( _( "DISABLED" ) );
+#else
+        eventFilterTypeValues->Enable( false );
+#endif
     }
 
     arrayStr.Clear();
@@ -1354,10 +1425,16 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
                                                      new wxStringProperty( wxT("Event value"), 
                                                                            wxPG_LABEL,
                                                                            wxT("<composed>") ) );
+#if wxMAJOR_VERSION<3
       if( eventFilterValueCollapsed )
         eventFilterValue->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
       else
         eventFilterValue->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      if( eventFilterValueCollapsed )
+        eventFilterValue->SetFlagsFromString( _( "COLLAPSED" ) );
+      eventFilterValue->Enable( false );
+#endif
     }
 
     pos = 0;
@@ -1382,19 +1459,20 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
     if ( eventFilterValueValues != (wxPGId) NULL )
     {
-
+#if wxMAJOR_VERSION<3
       wxPGId auxValProp = windowProperties->GetProperty( wxT("Event value.Values") )->GetId();
-      //if ( auxValProp == (wxPGId)NULL )
-      //{
-      //  auxValProp = windowProperties->GetProperty( wxT("Values") )->GetId();
-      //}
-
-//      windowProperties->SetPropertyAttribute( valueProperty->GetId(), wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
+#else
+      wxPGId auxValProp = windowProperties->GetProperty( wxT("Event value.Values") );
+#endif
       windowProperties->SetPropertyAttribute( auxValProp, wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
 
       if( filter->getEventValueFunction() == "All" || filter->getEventValueFunction() == "None" )
       {
+#if wxMAJOR_VERSION<3
         eventFilterValueValues->SetFlagsFromString( _( "DISABLED" ) );
+#else
+        eventFilterValueValues->Enable( false );
+#endif
       }
     }
   }
@@ -2038,27 +2116,37 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   {
     wxFloatProperty *auxFloatProperty;
     auxFloatProperty = (wxFloatProperty *)windowProperties->GetProperty( wxT("3DMinimum") );
-//    tmp3dMin->SetFlagsFromString( _( "DISABLED" ) );
     if ( auxFloatProperty != NULL )
-    {
+#if wxMAJOR_VERSION<3
       auxFloatProperty->SetFlagsFromString( _( "DISABLED" ) );
-    }
+#else
+      auxFloatProperty->Enable( false );
+#endif
 
     auxFloatProperty = (wxFloatProperty *) windowProperties->GetProperty( wxT("3DMaximum") );
-//    tmp3dMax->SetFlagsFromString( _( "DISABLED" ) );
     if ( auxFloatProperty != NULL )
+#if wxMAJOR_VERSION<3
       auxFloatProperty->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      auxFloatProperty->Enable( false );
+#endif
 
     auxFloatProperty = (wxFloatProperty *)windowProperties->GetProperty( wxT("3DDelta") );
-//    tmp3dDelta->SetFlagsFromString( _( "DISABLED" ) );
     if ( auxFloatProperty != NULL )
+#if wxMAJOR_VERSION<3
       auxFloatProperty->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      auxFloatProperty->Enable( false );
+#endif
 
     wxEnumProperty *auxEnumProperty;
     auxEnumProperty = (wxEnumProperty *)windowProperties->GetProperty( wxT("3DPlane") );
-//    tmp3dPlane->SetFlagsFromString( _( "DISABLED" ) );
     if ( auxEnumProperty != NULL )
+#if wxMAJOR_VERSION<3
       auxEnumProperty->SetFlagsFromString( _( "DISABLED" ) );
+#else
+      auxEnumProperty->Enable( false );
+#endif
   }
 
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );

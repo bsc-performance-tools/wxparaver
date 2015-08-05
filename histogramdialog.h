@@ -195,11 +195,11 @@ public:
   double GetControlTimelineMin() const { return controlTimelineMin ; }
   void SetControlTimelineMin(double value) { controlTimelineMin = value ; }
 
-  std::vector< TWindowID > GetControlTimelines() const { return controlTimelines ; }
-  void SetControlTimelines(std::vector< TWindowID > value) { controlTimelines = value ; }
+  vector< TWindowID > GetControlTimelines() const { return controlTimelines ; }
+  void SetControlTimelines(vector< TWindowID > value) { controlTimelines = value ; }
 
-  std::vector< TWindowID > GetDataTimelines() const { return dataTimelines ; }
-  void SetDataTimelines(std::vector< TWindowID > value) { dataTimelines = value ; }
+  vector< TWindowID > GetDataTimelines() const { return dataTimelines ; }
+  void SetDataTimelines(vector< TWindowID > value) { dataTimelines = value ; }
 
   bool GetExtraControlTimelineAutofit() const { return extraControlTimelineAutofit ; }
   void SetExtraControlTimelineAutofit(bool value) { extraControlTimelineAutofit = value ; }
@@ -213,11 +213,11 @@ public:
   double GetExtraControlTimelineMin() const { return extraControlTimelineMin ; }
   void SetExtraControlTimelineMin(double value) { extraControlTimelineMin = value ; }
 
-  std::vector< TWindowID > GetExtraControlTimelines() const { return extraControlTimelines ; }
-  void SetExtraControlTimelines(std::vector< TWindowID > value) { extraControlTimelines = value ; }
+  vector< TWindowID > GetExtraControlTimelines() const { return extraControlTimelines ; }
+  void SetExtraControlTimelines(vector< TWindowID > value) { extraControlTimelines = value ; }
 
-  std::vector< std::pair< TRecordTime, TRecordTime > > GetTimeRange() const { return timeRange ; }
-  void SetTimeRange(std::vector< std::pair< TRecordTime, TRecordTime > > value) { timeRange = value ; }
+  vector< pair< TRecordTime, TRecordTime > > GetTimeRange() const { return timeRange ; }
+  void SetTimeRange(vector< pair< TRecordTime, TRecordTime > > value) { timeRange = value ; }
 
   bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
   void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
@@ -264,14 +264,14 @@ private:
   double controlTimelineDelta;
   double controlTimelineMax;
   double controlTimelineMin;
-  std::vector< TWindowID > controlTimelines;
-  std::vector< TWindowID > dataTimelines;
+  vector< TWindowID > controlTimelines;
+  vector< TWindowID > dataTimelines;
   bool extraControlTimelineAutofit;
   double extraControlTimelineDelta;
   double extraControlTimelineMax;
   double extraControlTimelineMin;
-  std::vector< TWindowID > extraControlTimelines;
-  std::vector< std::pair< TRecordTime, TRecordTime > > timeRange;
+  vector< TWindowID > extraControlTimelines;
+  vector< pair< TRecordTime, TRecordTime > > timeRange;
   bool waitingGlobalTiming;
 ////@end HistogramDialog member variables
 

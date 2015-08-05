@@ -255,34 +255,34 @@ void gHistogram::CreateControls()
   itemBoxSizer2->Add(mainSizer, 1, wxGROW|wxALL, 0);
 
   zoomHisto = new wxScrolledWindow( itemFrame1, ID_ZOOMHISTO, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE );
-  mainSizer->Add(zoomHisto, 1, wxGROW|wxALL, 1);
+  mainSizer->Add(zoomHisto, 1, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(1, -1)).x);
   zoomHisto->SetScrollbars(1, 1, 0, 0);
 
-  gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
-  gridHisto->SetDefaultColSize(50);
-  gridHisto->SetDefaultRowSize(25);
-  gridHisto->SetColLabelSize(25);
-  gridHisto->SetRowLabelSize(50);
-  mainSizer->Add(gridHisto, 1, wxGROW|wxALL, 1);
+  gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
+  gridHisto->SetDefaultColSize(wxDLG_UNIT(itemFrame1, wxSize(50, -1)).x);
+  gridHisto->SetDefaultRowSize(wxDLG_UNIT(itemFrame1, wxSize(-1, 25)).y);
+  gridHisto->SetColLabelSize(wxDLG_UNIT(itemFrame1, wxSize(-1, 25)).y);
+  gridHisto->SetRowLabelSize(wxDLG_UNIT(itemFrame1, wxSize(50, -1)).x);
+  mainSizer->Add(gridHisto, 1, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(1, -1)).x);
 
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
-  warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
+  warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(8, 7)), 0 );
+  xtraWarning = new wxStaticBitmap( itemFrame1, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
-  warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
+  warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxStaticBitmap* itemStaticBitmap9 = new wxStaticBitmap( itemFrame1, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, itemFrame1->ConvertDialogToPixels(wxSize(9, 9)), 0 );
+  wxStaticBitmap* itemStaticBitmap9 = new wxStaticBitmap( itemFrame1, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(9, 9)), 0 );
   itemStaticBitmap9->Show(false);
-  warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, 5);
+  warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  warningSizer->Add(20, 26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  warningSizer->Add(wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x, wxDLG_UNIT(itemFrame1, wxSize(-1, 10)).y, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
   wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
@@ -336,6 +336,11 @@ void gHistogram::CreateControls()
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
   gridHisto->SetDefaultCellAlignment( wxALIGN_RIGHT, wxALIGN_CENTRE );
+#if wxMAJOR_VERSION<3
+  gridHisto->SetWindowStyleFlag( wxALWAYS_SHOW_SB|wxHSCROLL|wxVSCROLL );
+#else
+  gridHisto->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
+#endif
 }
 
 
@@ -479,6 +484,7 @@ void gHistogram::fillGrid()
   gridHisto->AutoSizeColumns();
   gridHisto->AutoSizeRows();
   gridHisto->EndBatch();
+  gridHisto->ForceRefresh();
 }
 
 void gHistogram::fillZoom()
@@ -792,57 +798,57 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin gHistogram bitmap retrieval
   wxUnusedVar(name);
-  if (name == _T("caution.xpm"))
+  if (name == wxT("caution.xpm"))
   {
     wxBitmap bitmap(caution_xpm);
     return bitmap;
   }
-  else if (name == _T("opencontrol.xpm"))
+  else if (name == wxT("opencontrol.xpm"))
   {
     wxBitmap bitmap(opencontrol_xpm);
     return bitmap;
   }
-  else if (name == _T("opendata.xpm"))
+  else if (name == wxT("opendata.xpm"))
   {
     wxBitmap bitmap(opendata_xpm);
     return bitmap;
   }
-  else if (name == _T("open3d.xpm"))
+  else if (name == wxT("open3d.xpm"))
   {
     wxBitmap bitmap(open3d_xpm);
     return bitmap;
   }
-  else if (name == _T("histo_zoom.xpm"))
+  else if (name == wxT("histo_zoom.xpm"))
   {
     wxBitmap bitmap(histo_zoom_xpm);
     return bitmap;
   }
-  else if (name == _T("openfiltered.xpm"))
+  else if (name == wxT("openfiltered.xpm"))
   {
     wxBitmap bitmap(openfiltered_xpm);
     return bitmap;
   }
-  else if (name == _T("histo_color.xpm"))
+  else if (name == wxT("histo_color.xpm"))
   {
     wxBitmap bitmap(color_xpm);
     return bitmap;
   }
-  else if (name == _T("histo_horvert.xpm"))
+  else if (name == wxT("histo_horvert.xpm"))
   {
     wxBitmap bitmap(horvert_xpm);
     return bitmap;
   }
-  else if (name == _T("hide_cols.xpm"))
+  else if (name == wxT("hide_cols.xpm"))
   {
     wxBitmap bitmap(hide_xpm);
     return bitmap;
   }
-  else if (name == _T("semantic_color.xpm"))
+  else if (name == wxT("semantic_color.xpm"))
   {
     wxBitmap bitmap(semantic_color_xpm);
     return bitmap;
   }
-  else if (name == _T("inclusive.xpm"))
+  else if (name == wxT("inclusive.xpm"))
   {
     wxBitmap bitmap(inclusive_xpm);
     return bitmap;
@@ -1468,6 +1474,8 @@ void gHistogram::OnToolgradientClick( wxCommandEvent& event )
 {
   myHistogram->setShowColor( event.IsChecked() );
   myHistogram->setRedraw( true );
+  if( !myHistogram->getZoom() )
+    gridHisto->Refresh();
 }
 
 
@@ -1479,6 +1487,8 @@ void gHistogram::OnToolhorizvertClick( wxCommandEvent& event )
 {
   myHistogram->setHorizontal( event.IsChecked() );
   myHistogram->setRedraw( true );
+  if( !myHistogram->getZoom() )
+    gridHisto->Refresh();
 }
 
 
@@ -2225,6 +2235,8 @@ void gHistogram::OnToolHideColumnsClick( wxCommandEvent& event )
 {
   myHistogram->setHideColumns( event.IsChecked() );
   myHistogram->setRedraw( true );
+  if( !myHistogram->getZoom() )
+    gridHisto->Refresh();
 }
 
 
@@ -2480,7 +2492,11 @@ void gHistogram::saveImage( bool showSaveDialog )
   imageDC.Blit( xdst, ydst, histogramWidth, histogramHeight, &histogramDC, xsrc, ysrc );
 
   // Get extension and save
+#if wxMAJOR_VERSION<3
   long imageType;
+#else
+  wxBitmapType imageType;
+#endif
   switch( filterIndex )
   {
     case ParaverConfig::BMP:
@@ -2526,6 +2542,8 @@ void gHistogram::OnToolLabelColorsClick( wxCommandEvent& event )
   {
     myHistogram->setFirstRowColored( event.IsChecked() );
     myHistogram->setRedraw( true );
+    if( !myHistogram->getZoom() )
+      gridHisto->Refresh();
   }
 }
 
@@ -2596,6 +2614,8 @@ void gHistogram::OnToolInclusiveClick( wxCommandEvent& event )
 {
   myHistogram->setInclusive( event.IsChecked() );
   myHistogram->setRecalc( true );
+  if( !myHistogram->getZoom() )
+    gridHisto->Refresh();
 }
 
 

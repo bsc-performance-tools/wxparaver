@@ -187,6 +187,7 @@ void gTimeline::Init()
 ////@begin gTimeline member initialisation
   canRedraw = false;
   drawCaution = false;
+  drawImage = wxNullBitmap;
   escapePressed = false;
   findBeginTime = 0;
   findEndTime = 0;
@@ -250,7 +251,7 @@ void gTimeline::CreateControls()
   gTimeline* itemFrame1 = this;
 
   splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
-  splitter->SetMinimumPaneSize(0);
+  splitter->SetMinimumPaneSize(wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
 
   drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE );
   drawZone->SetScrollbars(1, 1, 0, 0);
@@ -262,29 +263,29 @@ void gTimeline::CreateControls()
   whatWherePanel->SetSizer(itemBoxSizer6);
 
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
   checkWWSemantic = new wxCheckBox( whatWherePanel, ID_CHECKBOX, _("Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWSemantic->SetValue(true);
-  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   checkWWEvents = new wxCheckBox( whatWherePanel, ID_CHECKBOX1, _("Events"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWEvents->SetValue(true);
-  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   checkWWCommunications = new wxCheckBox( whatWherePanel, ID_CHECKBOX2, _("Communications"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWCommunications->SetValue(true);
-  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _("Previous / Next"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWPreviousNext->SetValue(true);
-  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   checkWWText = new wxCheckBox( whatWherePanel, ID_CHECKBOX4, _("Text"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWText->SetValue(true);
-  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   whatWherePanel->FitInside();
   infoZone->AddPage(whatWherePanel, _("What / Where"));
@@ -295,26 +296,26 @@ void gTimeline::CreateControls()
   timingZone->SetSizer(itemBoxSizer15);
 
   wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer15->Add(itemBoxSizer16, 0, wxGROW, 5);
+  itemBoxSizer15->Add(itemBoxSizer16, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
   wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  itemBoxSizer16->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
 
   wxStaticText* itemStaticText18 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  itemBoxSizer16->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
 
   wxStaticText* itemStaticText19 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText19, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
+  itemBoxSizer16->Add(itemStaticText19, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
 
   wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer15->Add(itemBoxSizer20, 1, wxGROW, 5);
+  itemBoxSizer15->Add(itemBoxSizer20, 1, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(initialTimeText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer20->Add(initialTimeText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(finalTimeText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer20->Add(finalTimeText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(durationText, 0, wxGROW|wxALL, 5);
+  itemBoxSizer20->Add(durationText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
@@ -327,7 +328,7 @@ void gTimeline::CreateControls()
   colorsPanel->FitInside();
   infoZone->AddPage(colorsPanel, _("Colors"));
 
-  splitter->SplitHorizontally(drawZone, infoZone, 0);
+  splitter->SplitHorizontally(drawZone, infoZone, wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
 
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
@@ -1093,7 +1094,7 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
   if( !ready )
     return;
   
-  if ( drawImage.IsOk() )
+  if( drawImage.IsOk() )
     dc.DrawBitmap( drawImage, 0, 0, false );
 }
 
@@ -2886,7 +2887,11 @@ void gTimeline::saveImage( bool showSaveDialog )
   imageDC.Blit( xdst, ydst, timelineWidth, timelineHeight, &timelineDC, xsrc, ysrc );
 
   // Get image type and save
+#if wxMAJOR_VERSION<3
   long imageType;
+#else
+  wxBitmapType imageType;
+#endif
   switch( filterIndex )
   {
     case ParaverConfig::BMP:
@@ -3086,7 +3091,11 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   wxClientDC paintDC( drawZone );
   paintDC.DrawBitmap( drawImage, 0, 0 );
 #else
+#if wxMAJOR_VERSION<3
   wxPaintDC paintDC( drawZone );
+#else
+  wxClientDC paintDC( drawZone );
+#endif
   paintDC.DrawBitmap( drawImage, 0, 0 );
 #endif
 
