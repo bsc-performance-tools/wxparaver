@@ -16,6 +16,8 @@ wxWidgets best with GTK.
 WINDOWS ONLY!!!:
 modify wxGRAPHICS_CONTEXT variable to 1 in file [wxWidgets dir]\include\wx\msw\setup.h
 
+MACOSX 10.9!!!:
+define the macro _WCHAR_H_CPLUSPLUS_98_CONFORMANCE_ in order to compile with wxWidgets 3
 
 Please send any question or suggestion to tools@bsc.es
 
