@@ -2303,7 +2303,7 @@ void paraverMain::ShowDerivedDialog()
 {
   DerivedTimelineDialog derivedDialog( this );
   vector<Window *> timelines;
-  LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
+  LoadedWindows::getInstance()->getDerivedCompatible( loadedTraces[ currentTrace ], timelines );
 
   ++numNewDerived;
   wxString tmpName( _( "New Derived Window #" ) );
