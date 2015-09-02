@@ -3362,7 +3362,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   vector< TEventType > typesWithValueZero;
   EventLabels labels;
   map< TEventValue, string > currentEventValues;
-  ParaverTraceConfig *myConfig;
+  UIParaverTraceConfig *myConfig;
   string pcf_name;
 
   ProgressController *progress = ProgressController::create( localKernel );
@@ -3411,7 +3411,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 
       if( statReturn == 0 && tmpStatBuffer.st_size > 0 )
       {
-        myConfig = new ParaverTraceConfig();
+        myConfig = new UIParaverTraceConfig();
         myConfig->parse( string( pcf_name ), true );
         labels = EventLabels( *myConfig, set<TEventType>() );
         labels.getTypes( allTypes );
