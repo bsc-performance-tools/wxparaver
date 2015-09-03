@@ -3412,7 +3412,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
       if( statReturn == 0 && tmpStatBuffer.st_size > 0 )
       {
         myConfig = new UIParaverTraceConfig();
-        myConfig->parse( string( pcf_name ), true );
+        myConfig->parse( pcf_name );
         labels = EventLabels( *myConfig, set<TEventType>() );
         labels.getTypes( allTypes );
         for( vector< TEventType >::iterator it = allTypes.begin(); it != allTypes.end(); ++it )
