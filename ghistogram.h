@@ -37,8 +37,8 @@
 
 ////@begin includes
 #include "wx/frame.h"
-#include "wx/grid.h"
 #include "wx/toolbar.h"
+#include "wx/grid.h"
 #include "wx/statusbr.h"
 ////@end includes
 #include <wx/statbmp.h>
@@ -67,11 +67,7 @@ class HistoTableBase;
 
 ////@begin control identifiers
 #define ID_GHISTOGRAM 10004
-#define ID_ZOOMHISTO 10023
-#define ID_GRIDHISTO 10005
-#define wxID_CONTROLWARNING 10024
-#define wxID_3DWARNING 10057
-#define ID_AUITOOLBAR1 10059
+#define ID_HISTO_TOOLBAR 10059
 #define ID_TOOL_OPEN_CONTROL_WINDOW 10050
 #define ID_TOOL_OPEN_DATA_WINDOW 10051
 #define ID_TOOL_OPEN_EXTRA_WINDOW 10052
@@ -82,6 +78,10 @@ class HistoTableBase;
 #define ID_TOOL_HIDE_COLUMNS 10058
 #define ID_TOOL_LABEL_COLORS 10101
 #define ID_TOOL_INCLUSIVE 10105
+#define ID_ZOOMHISTO 10023
+#define ID_GRIDHISTO 10005
+#define wxID_CONTROLWARNING 10024
+#define wxID_3DWARNING 10057
 #define ID_HISTOSTATUS 10028
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
 #define SYMBOL_GHISTOGRAM_TITLE _("gHistogram")
@@ -126,54 +126,6 @@ public:
 
   /// wxEVT_IDLE event handler for ID_GHISTOGRAM
   void OnIdle( wxIdleEvent& event );
-
-  /// wxEVT_PAINT event handler for ID_ZOOMHISTO
-  void OnPaint( wxPaintEvent& event );
-
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_ZOOMHISTO
-  void OnEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_ZOOMHISTO
-  void OnLeftDown( wxMouseEvent& event );
-
-  /// wxEVT_LEFT_UP event handler for ID_ZOOMHISTO
-  void OnLeftUp( wxMouseEvent& event );
-
-  /// wxEVT_MOTION event handler for ID_ZOOMHISTO
-  void OnMotion( wxMouseEvent& event );
-
-  /// wxEVT_CONTEXT_MENU event handler for ID_ZOOMHISTO
-  void OnZoomContextMenu( wxContextMenuEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_ZOOMHISTO
-  void OnZoomHistoKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_ZOOMHISTO
-  void OnZoomhistoUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_GRID_CELL_LEFT_CLICK event handler for ID_GRIDHISTO
-  void OnCellLeftClick( wxGridEvent& event );
-
-  /// wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
-  void OnCellRightClick( wxGridEvent& event );
-
-  /// wxEVT_GRID_LABEL_LEFT_CLICK event handler for ID_GRIDHISTO
-  void OnLabelLeftClick( wxGridEvent& event );
-
-  /// wxEVT_GRID_LABEL_RIGHT_CLICK event handler for ID_GRIDHISTO
-  void OnLabelRightClick( wxGridEvent& event );
-
-  /// wxEVT_GRID_RANGE_SELECT event handler for ID_GRIDHISTO
-  void OnRangeSelect( wxGridRangeSelectEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
-  void OnGridhistoUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for wxID_CONTROLWARNING
-  void OnControlWarningUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for wxID_3DWARNING
-  void On3dWarningUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_OPEN_CONTROL_WINDOW
   void OnToolOpenControlWindowClick( wxCommandEvent& event );
@@ -228,6 +180,54 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_INCLUSIVE
   void OnToolInclusiveUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_PAINT event handler for ID_ZOOMHISTO
+  void OnPaint( wxPaintEvent& event );
+
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_ZOOMHISTO
+  void OnEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_ZOOMHISTO
+  void OnLeftDown( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_UP event handler for ID_ZOOMHISTO
+  void OnLeftUp( wxMouseEvent& event );
+
+  /// wxEVT_MOTION event handler for ID_ZOOMHISTO
+  void OnMotion( wxMouseEvent& event );
+
+  /// wxEVT_CONTEXT_MENU event handler for ID_ZOOMHISTO
+  void OnZoomContextMenu( wxContextMenuEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_ZOOMHISTO
+  void OnZoomHistoKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_ZOOMHISTO
+  void OnZoomhistoUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_GRID_CELL_LEFT_CLICK event handler for ID_GRIDHISTO
+  void OnCellLeftClick( wxGridEvent& event );
+
+  /// wxEVT_GRID_CELL_RIGHT_CLICK event handler for ID_GRIDHISTO
+  void OnCellRightClick( wxGridEvent& event );
+
+  /// wxEVT_GRID_LABEL_LEFT_CLICK event handler for ID_GRIDHISTO
+  void OnLabelLeftClick( wxGridEvent& event );
+
+  /// wxEVT_GRID_LABEL_RIGHT_CLICK event handler for ID_GRIDHISTO
+  void OnLabelRightClick( wxGridEvent& event );
+
+  /// wxEVT_GRID_RANGE_SELECT event handler for ID_GRIDHISTO
+  void OnRangeSelect( wxGridRangeSelectEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
+  void OnGridhistoUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_CONTROLWARNING
+  void OnControlWarningUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_3DWARNING
+  void On3dWarningUpdate( wxUpdateUIEvent& event );
 
 ////@end gHistogram event handler declarations
 

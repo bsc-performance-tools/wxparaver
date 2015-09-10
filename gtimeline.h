@@ -360,6 +360,9 @@ public:
 
   std::vector< TObjectOrder > getCurrentZoomRange();
 
+#ifdef __WXMAC__
+  void drawStackedImages( wxDC& dc );
+#endif
   void redraw();
   bool drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
 #ifdef WIN32
@@ -552,6 +555,9 @@ private:
   TSemanticValue lastMax;
   bool codeColorSet;
   GradientColor::TGradientFunction gradientFunc;
+#ifdef __WXMAC__
+  wxBitmap zoomBMP;
+#endif
 
   wxWindow *parent;
   

@@ -79,7 +79,6 @@
 #endif
 
 ////@begin XPM images
-#include "caution.xpm"
 #include "opencontrol.xpm"
 #include "opendata.xpm"
 #include "open3d.xpm"
@@ -90,6 +89,7 @@
 #include "hide_cols.xpm"
 #include "semantic_color.xpm"
 #include "inclusive.xpm"
+#include "caution.xpm"
 ////@end XPM images
 
 #ifdef WIN32
@@ -118,15 +118,6 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_CLOSE( gHistogram::OnCloseWindow )
   EVT_SIZE( gHistogram::OnSize )
   EVT_IDLE( gHistogram::OnIdle )
-  EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
-  EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
-  EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
-  EVT_GRID_LABEL_LEFT_CLICK( gHistogram::OnLabelLeftClick )
-  EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
-  EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
-  EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
-  EVT_UPDATE_UI( wxID_CONTROLWARNING, gHistogram::OnControlWarningUpdate )
-  EVT_UPDATE_UI( wxID_3DWARNING, gHistogram::On3dWarningUpdate )
   EVT_MENU( ID_TOOL_OPEN_CONTROL_WINDOW, gHistogram::OnToolOpenControlWindowClick )
   EVT_MENU( ID_TOOL_OPEN_DATA_WINDOW, gHistogram::OnToolOpenDataWindowClick )
   EVT_MENU( ID_TOOL_OPEN_EXTRA_WINDOW, gHistogram::OnToolOpenExtraWindowClick )
@@ -145,6 +136,15 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_UPDATE_UI( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsUpdate )
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
+  EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
+  EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
+  EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
+  EVT_GRID_LABEL_LEFT_CLICK( gHistogram::OnLabelLeftClick )
+  EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
+  EVT_GRID_RANGE_SELECT( gHistogram::OnRangeSelect )
+  EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
+  EVT_UPDATE_UI( wxID_CONTROLWARNING, gHistogram::OnControlWarningUpdate )
+  EVT_UPDATE_UI( wxID_3DWARNING, gHistogram::On3dWarningUpdate )
 ////@end gHistogram event table entries
   
   EVT_TIMER( wxID_ANY, gHistogram::OnTimerZoom )
@@ -248,17 +248,53 @@ void gHistogram::CreateControls()
 ////@begin gHistogram content construction
   gHistogram* itemFrame1 = this;
 
-  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-  itemFrame1->SetSizer(itemBoxSizer2);
+  wxToolBar* itemToolBar2 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_HISTO_TOOLBAR );
+  wxBitmap itemtool3Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
+  wxBitmap itemtool3BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool3Bitmap, itemtool3BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
+  wxBitmap itemtool4Bitmap(itemFrame1->GetBitmapResource(wxT("opendata.xpm")));
+  wxBitmap itemtool4BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOL_OPEN_DATA_WINDOW, _("Open Data Window"), itemtool4Bitmap, itemtool4BitmapDisabled, wxITEM_NORMAL, _("Open Data Window"), wxEmptyString);
+  wxBitmap itemtool5Bitmap(itemFrame1->GetBitmapResource(wxT("open3d.xpm")));
+  wxBitmap itemtool5BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open 3rd Window"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _("Open 3rd Window"), wxEmptyString);
+  itemToolBar2->AddSeparator();
+  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
+  wxBitmap itemtool7BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
+  wxBitmap itemtool8Bitmap(itemFrame1->GetBitmapResource(wxT("openfiltered.xpm")));
+  wxBitmap itemtool8BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, _("Open Filtered Control Window"), itemtool8Bitmap, itemtool8BitmapDisabled, wxITEM_NORMAL, _("Open Filtered Control Window"), wxEmptyString);
+  itemToolBar2->AddSeparator();
+  wxBitmap itemtool10Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
+  wxBitmap itemtool10BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
+  wxBitmap itemtool11Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
+  wxBitmap itemtool11BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
+  wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("hide_cols.xpm")));
+  wxBitmap itemtool12BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOL_HIDE_COLUMNS, _("Hide empty columns"), itemtool12Bitmap, itemtool12BitmapDisabled, wxITEM_CHECK, _("Hide empty columns"), wxEmptyString);
+  wxBitmap itemtool13Bitmap(itemFrame1->GetBitmapResource(wxT("semantic_color.xpm")));
+  wxBitmap itemtool13BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOL_LABEL_COLORS, _("Label colors"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_CHECK, _("Label colors"), wxEmptyString);
+  wxBitmap itemtool14Bitmap(itemFrame1->GetBitmapResource(wxT("inclusive.xpm")));
+  wxBitmap itemtool14BitmapDisabled;
+  itemToolBar2->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
+  itemToolBar2->Realize();
+  itemFrame1->SetToolBar(itemToolBar2);
+
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
+  itemFrame1->SetSizer(itemBoxSizer15);
 
   mainSizer = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(mainSizer, 1, wxGROW|wxALL, 0);
+  itemBoxSizer15->Add(mainSizer, 1, wxGROW|wxALL, 0);
 
   zoomHisto = new wxScrolledWindow( itemFrame1, ID_ZOOMHISTO, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE );
   mainSizer->Add(zoomHisto, 1, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(1, -1)).x);
   zoomHisto->SetScrollbars(1, 1, 0, 0);
 
-  gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
+  gridHisto = new wxGrid( itemFrame1, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   gridHisto->SetDefaultColSize(wxDLG_UNIT(itemFrame1, wxSize(50, -1)).x);
   gridHisto->SetDefaultRowSize(wxDLG_UNIT(itemFrame1, wxSize(-1, 25)).y);
   gridHisto->SetColLabelSize(wxDLG_UNIT(itemFrame1, wxSize(-1, 25)).y);
@@ -266,7 +302,7 @@ void gHistogram::CreateControls()
   mainSizer->Add(gridHisto, 1, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(1, -1)).x);
 
   warningSizer = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(warningSizer, 0, wxGROW|wxALL, 0);
+  itemBoxSizer15->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
   controlWarning = new wxStaticBitmap( itemFrame1, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
@@ -278,47 +314,11 @@ void gHistogram::CreateControls()
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxStaticBitmap* itemStaticBitmap9 = new wxStaticBitmap( itemFrame1, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(9, 9)), 0 );
-  itemStaticBitmap9->Show(false);
-  warningSizer->Add(itemStaticBitmap9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  wxStaticBitmap* itemStaticBitmap22 = new wxStaticBitmap( itemFrame1, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(9, 9)), 0 );
+  itemStaticBitmap22->Show(false);
+  warningSizer->Add(itemStaticBitmap22, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   warningSizer->Add(wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x, wxDLG_UNIT(itemFrame1, wxSize(-1, 10)).y, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
-
-  wxToolBar* itemToolBar11 = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_AUITOOLBAR1 );
-  wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
-  wxBitmap itemtool12BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool12Bitmap, itemtool12BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
-  wxBitmap itemtool13Bitmap(itemFrame1->GetBitmapResource(wxT("opendata.xpm")));
-  wxBitmap itemtool13BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOL_OPEN_DATA_WINDOW, _("Open Data Window"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_NORMAL, _("Open Data Window"), wxEmptyString);
-  wxBitmap itemtool14Bitmap(itemFrame1->GetBitmapResource(wxT("open3d.xpm")));
-  wxBitmap itemtool14BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open 3rd Window"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_NORMAL, _("Open 3rd Window"), wxEmptyString);
-  itemToolBar11->AddSeparator();
-  wxBitmap itemtool16Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
-  wxBitmap itemtool16BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
-  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("openfiltered.xpm")));
-  wxBitmap itemtool17BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, _("Open Filtered Control Window"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_NORMAL, _("Open Filtered Control Window"), wxEmptyString);
-  itemToolBar11->AddSeparator();
-  wxBitmap itemtool19Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
-  wxBitmap itemtool19BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool19Bitmap, itemtool19BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
-  wxBitmap itemtool20Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
-  wxBitmap itemtool20BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool20Bitmap, itemtool20BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
-  wxBitmap itemtool21Bitmap(itemFrame1->GetBitmapResource(wxT("hide_cols.xpm")));
-  wxBitmap itemtool21BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOL_HIDE_COLUMNS, _("Hide empty columns"), itemtool21Bitmap, itemtool21BitmapDisabled, wxITEM_CHECK, _("Hide empty columns"), wxEmptyString);
-  wxBitmap itemtool22Bitmap(itemFrame1->GetBitmapResource(wxT("semantic_color.xpm")));
-  wxBitmap itemtool22BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOL_LABEL_COLORS, _("Label colors"), itemtool22Bitmap, itemtool22BitmapDisabled, wxITEM_CHECK, _("Label colors"), wxEmptyString);
-  wxBitmap itemtool23Bitmap(itemFrame1->GetBitmapResource(wxT("inclusive.xpm")));
-  wxBitmap itemtool23BitmapDisabled;
-  itemToolBar11->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool23Bitmap, itemtool23BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
-  itemToolBar11->Realize();
-  itemFrame1->SetToolBar(itemToolBar11);
 
   histoStatus = new wxStatusBar( itemFrame1, ID_HISTOSTATUS, wxST_SIZEGRIP|wxNO_BORDER );
   histoStatus->SetFieldsCount(1);
@@ -798,12 +798,7 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin gHistogram bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("caution.xpm"))
-  {
-    wxBitmap bitmap(caution_xpm);
-    return bitmap;
-  }
-  else if (name == wxT("opencontrol.xpm"))
+  if (name == wxT("opencontrol.xpm"))
   {
     wxBitmap bitmap(opencontrol_xpm);
     return bitmap;
@@ -851,6 +846,11 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   else if (name == wxT("inclusive.xpm"))
   {
     wxBitmap bitmap(inclusive_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("caution.xpm"))
+  {
+    wxBitmap bitmap(caution_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -1440,7 +1440,7 @@ void gHistogram::OnPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( zoomHisto );
   
-  if( ready )
+  if( ready && drawImage.IsOk() )
     dc.DrawBitmap( drawImage, 0, 0, false );
 }
 

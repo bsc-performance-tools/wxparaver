@@ -62,6 +62,9 @@
 #include "output.h"
 #include "filedialogext.h"
 #include "progresscontroller.h"
+#ifdef __WXMAC__
+  #include <wx/rawbmp.h>
+#endif
 
 #define wxTEST_GRAPHICS 1
 
@@ -97,26 +100,16 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
-
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
-
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
-
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
-
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
-
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
-
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
-
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -187,7 +180,6 @@ void gTimeline::Init()
 ////@begin gTimeline member initialisation
   canRedraw = false;
   drawCaution = false;
-  drawImage = wxNullBitmap;
   escapePressed = false;
   findBeginTime = 0;
   findEndTime = 0;
@@ -400,6 +392,36 @@ std::vector< TObjectOrder > gTimeline::getCurrentZoomRange()
 }
 
 
+#ifdef __WXMAC__
+void gTimeline::drawStackedImages( wxDC& dc )
+{
+  dc.DrawBitmap( bufferImage, 0, 0, false );
+  if( drawCaution )
+  {
+    wxBitmap cautionImage( caution_xpm );
+    dc.SetPen( wxPen( backgroundColour ) );
+    dc.SetBrush( wxBrush( backgroundColour ) );
+    dc.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
+                      drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
+    dc.DrawBitmap( cautionImage,
+                   drawBorder,
+                   drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                   true );
+  }
+  
+  if( myWindow->getDrawFlags() )
+    dc.DrawBitmap( eventImage, 0, 0, true );
+
+  if( myWindow->getDrawCommLines() )
+    dc.DrawBitmap( commImage, 0, 0, true );
+    
+  if( zooming )
+  {
+    dc.DrawBitmap( zoomBMP, 0, 0, true );
+  }
+}
+#endif
+
 void gTimeline::redraw()
 {
 //  cout << "[GUI::gTimeline::redraw ] Entry!" << endl;
@@ -496,7 +518,12 @@ void gTimeline::redraw()
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   eventImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
+#ifdef __WXMAC__
+  wxMemoryDC tmpDC( bufferImage );
+  wxGCDC bufferDraw( tmpDC );
+#else
   wxMemoryDC bufferDraw( bufferImage );
+#endif
   wxMemoryDC commdc( commImage );
   wxMemoryDC eventdc( eventImage );
   commdc.SetBackgroundMode( wxTRANSPARENT );
@@ -603,14 +630,30 @@ void gTimeline::redraw()
       break;
   }
 
+#ifdef __WXMAC__
+  dc.DrawBitmap( bufferImage, 0, 0, false );
+#else
   bufferDraw.SelectObject(wxNullBitmap);
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
+#endif
 // cout << "[GUI::gTimeline::redraw ] after drawRow for{}" << endl;
 
   if( drawCaution )
   {
     wxBitmap cautionImage( caution_xpm );
+#ifdef __WXMAC__
+    //bufferDraw.SetPen( *wxBLACK_PEN );
+    dc.SetPen( wxPen( backgroundColour ) );
+    //bufferDraw.SetBrush( *wxBLACK_BRUSH );
+    dc.SetBrush( wxBrush( backgroundColour ) );
+    dc.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
+                      drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
+    dc.DrawBitmap( cautionImage,
+                   drawBorder,
+                   drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                   true );
+#else
     //bufferDraw.SetPen( *wxBLACK_PEN );
     bufferDraw.SetPen( wxPen( backgroundColour ) );
     //bufferDraw.SetBrush( *wxBLACK_BRUSH );
@@ -621,6 +664,7 @@ void gTimeline::redraw()
                            drawBorder,
                            drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
                            true );
+#endif
   }
   
 #ifndef __WXMAC__
@@ -634,7 +678,11 @@ void gTimeline::redraw()
 #endif
 
   if( myWindow->getDrawFlags() )
+#ifdef __WXMAC__
+    dc.DrawBitmap( eventImage, 0, 0, true );
+#else
     bufferDraw.DrawBitmap( eventImage, 0, 0, true );
+#endif
 
 #ifndef __WXMAC__
   commmaskdc.SetPen( *wxBLACK_PEN );
@@ -648,7 +696,11 @@ void gTimeline::redraw()
 #endif
 
   if( myWindow->getDrawCommLines() )
+#ifdef __WXMAC__
+    dc.DrawBitmap( commImage, 0, 0, true );
+#else
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
+#endif
 
   if( gTimeline::dialogProgress != NULL )
   {
@@ -667,7 +719,9 @@ void gTimeline::redraw()
 #endif
 
   ready = true;
+#ifndef __WXMAC__
   drawZone->Refresh();
+#endif
   
   SetFocus();
 // cout << "[GUI::gTimeline::redraw ] exiting" << endl;
@@ -1080,7 +1134,9 @@ void gTimeline::drawRow( wxDC& dc,
  */
 void gTimeline::OnScrolledWindowEraseBackground( wxEraseEvent& event )
 {
-  //event.Skip();
+#ifdef __WXMAC__
+  event.Skip();
+#endif
 }
 
 
@@ -1093,9 +1149,13 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
   
   if( !ready )
     return;
-  
+
+#ifdef __WXMAC__
+  drawStackedImages( dc );
+#else
   if( drawImage.IsOk() )
     dc.DrawBitmap( drawImage, 0, 0, false );
+#endif
 }
 
 
@@ -1987,7 +2047,15 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
     if( endX - beginX > 3.0 )
     {
+#ifdef __WXMAC__
+      if( !zoomBMP.IsOk() ||
+          zoomBMP.GetHeight() != drawImage.GetHeight() ||
+          zoomBMP.GetWidth() != drawImage.GetWidth() )
+        zoomBMP = wxBitmap( drawImage.GetWidth(), drawImage.GetHeight() );
+      wxMemoryDC memdc( zoomBMP );
+#else
       wxMemoryDC memdc( drawImage );
+#endif
       memdc.SetBackgroundMode( wxTRANSPARENT );
       memdc.SetBackground( *wxTRANSPARENT_BRUSH );
       memdc.Clear();
@@ -3048,11 +3116,19 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     tmpColor = wxColour( tmpImage.GetRed( motionEvent.GetX(), motionEvent.GetY() ),
                          tmpImage.GetGreen( motionEvent.GetX(), motionEvent.GetY() ),
                          tmpImage.GetBlue( motionEvent.GetX(), motionEvent.GetY() ) );
+/*
+    wxBitmap tmpBmp = bufferImage.GetSubBitmap( wxRect(0, 0, bufferImage.GetWidth(), bufferImage.GetHeight()));
+    wxAlphaPixelData tmpPixelData( tmpBmp );
+    wxAlphaPixelData::Iterator itImage( tmpPixelData );
+    itImage.Offset( tmpPixelData, motionEvent.GetX(), motionEvent.GetY() );
+    tmpColor = wxColour( itImage.Red(), itImage.Green(), itImage.Blue() );*/
 #else  
     dc.GetPixel( motionEvent.GetX(), motionEvent.GetY(), &tmpColor );
 #endif
+
     if( tmpColor == backgroundColour )
       return;
+
     rgb color = { (ParaverColor)tmpColor.Red(), (ParaverColor)tmpColor.Green(), (ParaverColor)tmpColor.Blue() };
     TSemanticValue firstValue, secondValue;
     if( !myWindow->calcValueFromColor( color, firstValue, secondValue ) )
@@ -3089,13 +3165,17 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
 
 #ifndef __WXGTK__
   wxClientDC paintDC( drawZone );
+  #ifdef __WXMAC__
+  drawStackedImages( paintDC );
+  #else
   paintDC.DrawBitmap( drawImage, 0, 0 );
+  #endif
 #else
-#if wxMAJOR_VERSION<3
+  #if wxMAJOR_VERSION<3
   wxPaintDC paintDC( drawZone );
-#else
+  #else
   wxClientDC paintDC( drawZone );
-#endif
+  #endif
   paintDC.DrawBitmap( drawImage, 0, 0 );
 #endif
 
