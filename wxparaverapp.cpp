@@ -298,7 +298,39 @@ bool wxparaverApp::OnInit()
   wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
   if ( paraverCommandLineParser.Parse( false ) != 0 )
   {
+    std::cout << std::endl;
     paraverCommandLineParser.Usage();
+    
+    std::cout << std::endl;
+    std::cout << "  Environment variables defined by wxParaver:" << std::endl;
+    std::cout << "  -------------------------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout << "    $PARAVER_LOADED     Once started, it's filled with wxParaver PID" << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "  Environment variables defined by user (optional):" << std::endl;
+    std::cout << "  -------------------------------------------------" << std::endl;
+    std::cout << std::endl;
+    std::cout << "    To set alien application invoked from timeline with mouse middle button (both vars needed):"  << std::endl;
+    std::cout << "      $PARAVER_ALIEN_APP  Application that will be invoked." << std::endl;
+    std::cout << "      $PARAVER_ALIEN_TYPE Event type passed as parameter" << std::endl;
+    std::cout << "                          Starting from the click, it's sought backwards" << std::endl;
+    std::cout << "                          The value passed is 1) its symbolic translation or 2) its value" << std::endl;
+    std::cout << std::endl;
+    std::cout << "        Example: Create empty file named with MPI callers at level 1" << std::endl;
+    std::cout << "          > PARAVER_ALIEN_APP=touch PARAVER_ALIEN_TYPE=70000001 wxparaver &" << std::endl;
+    std::cout << std::endl;
+    std::cout << "        Example: Writes in a file the translation of the decimal PAPI_TOT_INST counter value into morse" << std::endl;
+    std::cout << "          > PARAVER_ALIEN_APP='> in_morse.txt morse -s' PARAVER_ALIEN_TYPE=42000050 wxparaver &" << std::endl;
+    std::cout << std::endl;
+    /*
+    std::cout << "        Example: Search line of a user function label in .pcf file and write it to a file" << std::endl;
+    std::cout << "          > export PARAVER_ALIEN_APP='> label.txt xargs -I {} grep -n {} trace.pcf <<<'" << std::endl;
+    std::cout << "          > export PARAVER_ALIEN_TYPE=70000001" << std::endl;
+    std::cout << "          > wxparaver trace.prv &" << std::endl;
+    std::cout << std::endl;
+    */
     return false; 
   }
 

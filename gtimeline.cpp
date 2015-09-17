@@ -100,16 +100,26 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
+
   EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
   EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
+
   EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
+
   EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
+
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
+
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+
   EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
+
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -243,7 +253,7 @@ void gTimeline::CreateControls()
   gTimeline* itemFrame1 = this;
 
   splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
-  splitter->SetMinimumPaneSize(wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
+  splitter->SetMinimumPaneSize(0);
 
   drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE );
   drawZone->SetScrollbars(1, 1, 0, 0);
@@ -255,29 +265,29 @@ void gTimeline::CreateControls()
   whatWherePanel->SetSizer(itemBoxSizer6);
 
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, 5);
   checkWWSemantic = new wxCheckBox( whatWherePanel, ID_CHECKBOX, _("Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWSemantic->SetValue(true);
-  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   checkWWEvents = new wxCheckBox( whatWherePanel, ID_CHECKBOX1, _("Events"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWEvents->SetValue(true);
-  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   checkWWCommunications = new wxCheckBox( whatWherePanel, ID_CHECKBOX2, _("Communications"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWCommunications->SetValue(true);
-  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _("Previous / Next"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWPreviousNext->SetValue(true);
-  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   checkWWText = new wxCheckBox( whatWherePanel, ID_CHECKBOX4, _("Text"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWText->SetValue(true);
-  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   whatWherePanel->FitInside();
   infoZone->AddPage(whatWherePanel, _("What / Where"));
@@ -288,26 +298,26 @@ void gTimeline::CreateControls()
   timingZone->SetSizer(itemBoxSizer15);
 
   wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer15->Add(itemBoxSizer16, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer15->Add(itemBoxSizer16, 0, wxGROW, 5);
   wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
+  itemBoxSizer16->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
   wxStaticText* itemStaticText18 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
+  itemBoxSizer16->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
   wxStaticText* itemStaticText19 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText19, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
+  itemBoxSizer16->Add(itemStaticText19, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 10);
 
   wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer15->Add(itemBoxSizer20, 1, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer15->Add(itemBoxSizer20, 1, wxGROW, 5);
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(initialTimeText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer20->Add(initialTimeText, 0, wxGROW|wxALL, 5);
 
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(finalTimeText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer20->Add(finalTimeText, 0, wxGROW|wxALL, 5);
 
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(durationText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer20->Add(durationText, 0, wxGROW|wxALL, 5);
 
   timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
@@ -320,19 +330,19 @@ void gTimeline::CreateControls()
   colorsPanel->FitInside();
   infoZone->AddPage(colorsPanel, _("Colors"));
 
-  splitter->SplitHorizontally(drawZone, infoZone, wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
+  splitter->SplitHorizontally(drawZone, infoZone, 0);
 
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -3282,35 +3292,85 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
   TEventType type;
   TEventValue value;
   vector<TEventType> events;
-  events.push_back( wxGetApp().GetEventTypeForCode() );
-  if( myWindow->getTrace()->findLastEventValue( posRow, posTime, events, type, value ) )
+  wxString command;
+
+  wxString alienApp;
+  wxString alienType;
+  if ( wxGetEnv( wxString( wxT( "PARAVER_ALIEN_APP" ) ), &alienApp ) &&
+       wxGetEnv( wxString( wxT( "PARAVER_ALIEN_TYPE" ) ), &alienType ) )
   {
-    string valueStr = LabelConstructor::eventValueLabel( myWindow, type, value );
-    string lineStr = valueStr.substr( 0, valueStr.find_first_of( ' ', 0 ) );
-    string fileStr = valueStr.substr( valueStr.find_first_of( '(', 0 ) + 1,
-                                      valueStr.length() - valueStr.find_first_of( '(', 0 ) - 2 );
-    wxDirDialog dirDialog( NULL, _( "Choose the directory to find to source files" ) );
-    if( dirDialog.ShowModal() == wxID_OK )
+    long tmpType;
+    if (!alienType.ToLong(&tmpType))
     {
-      wxString path = dirDialog.GetPath();
-      wxString command;
-#ifdef WIN32
-      command << _( "wordpad.exe " ) /*<< " +" << lineStr << " "*/ << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
-      wxExecute( command );
-#else
-      command << _( "gvim " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
-      if( wxExecute( command ) == 0 )
+      wxMessageBox( _( "Unable to interpret $PARAVER_ALIEN_TYPE as an event type\n\nValue: " ) + alienType,
+                    _( "Application invocation" ) );
+      return;
+    }
+    else
+    {
+      events.push_back( TEventType( tmpType ) );
+      if( myWindow->getTrace()->findLastEventValue( posRow, posTime, events, type, value ) )
       {
-        command << _( "nedit " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+        string valueStr = LabelConstructor::eventValueLabel( myWindow, type, value );
+        if ( valueStr.empty() )
+        {
+          command << alienApp <<  _(" ") << value;
+        }
+        else
+        {
+          command << alienApp <<  _(" ") << wxString::FromAscii( valueStr.c_str() );
+        }
+        
+//std::cerr << alienApp << _(" ") << alienType << "-"<<valueStr << std::endl;
+//std::cerr << command << std::endl;
+
+#ifdef WIN32
+        wxExecute( command );
+#else
         if( wxExecute( command ) == 0 )
-          wxMessageBox( _( "Install gvim or nedit for view source code files." ), _( "Show source code" ) );
-      }
+        {
+        }
 #endif
+      }
+      else
+      {
+        //wxMessageBox( _( "Unable to find $PARAVER_ALIEN_TYPE as an event type" ), _( "Alien application invocation" ) );
+      }
     }
   }
   else
   {
-    wxMessageBox( _( "Event " ) + (wxString() << wxGetApp().GetEventTypeForCode()) + _( " not found." ), _( "Show source code" ) );
+    events.push_back( wxGetApp().GetEventTypeForCode() );
+    if( myWindow->getTrace()->findLastEventValue( posRow, posTime, events, type, value ) )
+    {
+      string valueStr = LabelConstructor::eventValueLabel( myWindow, type, value );
+      string lineStr = valueStr.substr( 0, valueStr.find_first_of( ' ', 0 ) );
+      string fileStr = valueStr.substr( valueStr.find_first_of( '(', 0 ) + 1,
+                                           valueStr.length() - valueStr.find_first_of( '(', 0 ) - 2 );
+      wxDirDialog dirDialog( NULL, _( "Choose the directory to find to source files" ) );
+      if( dirDialog.ShowModal() == wxID_OK )
+      {
+        wxString path = dirDialog.GetPath();
+        wxString command;
+#ifdef WIN32
+        command << _( "wordpad.exe " ) /*<< " +" << lineStr << " "*/ << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
+        wxExecute( command );
+#else
+        // As before
+        command << _( "gvim " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+        if( wxExecute( command ) == 0 )
+        {
+          command << _( "nedit " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+          if( wxExecute( command ) == 0 )
+            wxMessageBox( _( "Install gvim or nedit for view source code files." ), _( "Show source code" ) );
+        }
+#endif
+      }
+    }
+    else
+    {
+      wxMessageBox( _( "Event " ) + (wxString() << wxGetApp().GetEventTypeForCode()) + _( " not found." ), _( "Show source code" ) );
+    }
   }
 }
 
