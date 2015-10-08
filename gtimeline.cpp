@@ -48,6 +48,7 @@
 #include <wx/dcbuffer.h>
 #include <wx/statline.h>
 #include <algorithm>
+#include <wx/filename.h>
 
 #include "config_traits.h"
 #include "wxparaverapp.h"
@@ -1018,9 +1019,15 @@ void gTimeline::drawRow( wxDC& dc,
   for( vector< TSemanticValue >::iterator it = valuesToDraw.begin(); it != valuesToDraw.end(); ++it )
   {
     valueToDraw = *it;
+    
     if( !myWindow->isFunctionLineColorSet() )
     {
       rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
+      
+      // SaveImage needed info
+      //if ( myWindow->isCodeColorSet() )
+        semanticValues[ valueToDraw ] = colorToDraw;
+    
       dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
 
       if ( magnify == 1.0 ) // same than before
@@ -2895,7 +2902,7 @@ void gTimeline::saveImage( bool showSaveDialog )
     imagePath = saveDialog.GetPath();
   }
   
-  // Build image to be saved as: title image + timeline image
+  // Build image to be saved as: title image + timeline image + legend
 
   // Get title
   wxString longTitle = wxString::FromAscii(
@@ -2991,8 +2998,397 @@ void gTimeline::saveImage( bool showSaveDialog )
 
   wxImage baseLayer = imageBitmap.ConvertToImage();
   baseLayer.SaveFile( imagePath, imageType );
+  
+  bool tryHorizontal = false;
+  saveLabelsImage( backgroundColour, foregroundColour, imagePath, wxString("labels"), tryHorizontal, imageType );  
+  saveLabelsImage( foregroundColour, backgroundColour, imagePath, wxString("labels_inverted"), tryHorizontal, imageType ); 
+  tryHorizontal = true;
+  saveLabelsImage( backgroundColour, foregroundColour, imagePath, wxString("labels"), tryHorizontal, imageType );  
+  saveLabelsImage( foregroundColour, backgroundColour, imagePath, wxString("labels_inverted"), tryHorizontal, imageType ); 
 }
 
+
+void gTimeline::drawRectangle( wxMemoryDC& labelDC,
+                                wxMemoryDC& scaleDC,
+                                wxColour foregroundColour,
+                                wxColour backgroundColour,
+                                rgb semanticColour,
+                                wxString semanticValueLabel,
+                                int titleMargin,
+                                int widthRect,
+                                int heightRect,
+                                bool tryHorizontal,
+                                int& xdst,
+                                int& ydst,
+                                int xsrc,
+                                int ysrc,
+                                int imageWidth,
+                                int imageHeight,
+                                int imageStepY,
+                                int imageStepXRectangle,
+                                bool drawLabel )
+{
+  labelDC.Clear();
+
+  // Draw rectangle
+  labelDC.SetPen( wxPen( foregroundColour ) );
+  labelDC.SetBackground( wxBrush( backgroundColour ) );
+  labelDC.SetBrush( wxColour( semanticColour.red,
+                              semanticColour.green,
+                              semanticColour.blue ) );
+  int xRect = titleMargin;
+  int yRect = titleMargin;
+  labelDC.DrawRectangle( xRect, yRect, widthRect, heightRect );
+  
+  if ( drawLabel )
+  {
+    // Write text
+    labelDC.SetPen( wxPen( backgroundColour, 1 ) );
+    
+    if ( !tryHorizontal )
+    {
+      labelDC.DrawText( semanticValueLabel, xRect + widthRect + titleMargin, titleMargin );
+    }
+    else
+    {
+      labelDC.DrawText( semanticValueLabel, titleMargin, yRect + heightRect + titleMargin );
+    }
+  }
+  
+  // Paste to main image
+  scaleDC.Blit( xdst, ydst, imageWidth, imageHeight, &labelDC, xsrc, ysrc );
+
+  if ( !tryHorizontal )
+  {
+    ydst += imageStepY;
+  }
+  else
+  {
+    xdst += imageStepXRectangle + titleMargin;
+  }    
+}
+
+
+void gTimeline::saveLabelsImage( wxColour background,
+                                  wxColour foreground,
+                                  wxString& imagePath,
+                                  const wxString& imageInfix,
+                                  bool tryHorizontal,
+#if wxMAJOR_VERSION<3
+                                  long imageType )
+#else
+                                  wxBitmapType& imageType )
+#endif
+{
+  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  wxString tmpSuffix = _(".as_list.");
+  if ( tryHorizontal )
+  {
+    tmpSuffix = _(".as_row.");
+  }
+  tmpSuffix += wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+
+  // --- BUILD LEGEND v1 / Code color / Long vertical list ---
+  // Sort semantic values
+  
+  std::vector< TSemanticValue > keys;
+
+  TSemanticValue currentMin = myWindow->getMinimumY();
+  TSemanticValue currentMax = myWindow->getMaximumY();
+  bool gradientColorSet = myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet();
+  bool drawOutliers = gradientColorSet; // Think: Should be different from gradientColorSet?
+  bool symbolicDesc = myWindow->isCodeColorSet(); // Get symbolic labels
+  
+  if ( gradientColorSet )
+  {
+    semanticValues.clear(); // version 1, all values erased!!
+  
+    TSemanticValue step = ( currentMax - currentMin ) / 20.0;
+    for( int i = 0; i <= 20; ++i )
+    {
+      TSemanticValue current = ( i * step ) + currentMin;
+      keys.push_back( current );
+      semanticValues[ current ] = myWindow->getGradientColor().calcColor( current, currentMin, currentMax );
+    }
+  }
+  else
+  {  
+    for ( std::map< TSemanticValue, rgb >::iterator it = semanticValues.begin(); it != semanticValues.end(); ++it )
+    {
+      keys.push_back( it->first );
+    }  
+  }
+  
+  std::sort( keys.begin(), keys.end() );
+  
+  PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
+  
+  // Dimensions: loop for every value to build labels and measure the maximum
+  wxString curLabel;
+  wxString maxLabel;
+  size_t maxLengthLabel = 0;
+  size_t curLengthLabel;
+  TSemanticValue semanticValueWithLongestLabel;
+  std::map< TSemanticValue, wxString > semanticValueLabel;
+  for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+  {
+    // Get Labels
+    curLabel = wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, *it, symbolicDesc, precision ).c_str() );
+    semanticValueLabel[ *it ] = curLabel;
+
+    // Get Longest label
+    curLengthLabel = curLabel.Len();
+    if ( maxLengthLabel < curLengthLabel )
+    {
+      maxLengthLabel = curLengthLabel;
+      semanticValueWithLongestLabel = *it;
+    }
+  }
+  
+  wxString extraPrefixOutlier;
+  int numSquares;
+  if ( gradientColorSet )
+  {
+    numSquares = 22;
+    extraPrefixOutlier = wxT("< ");
+  }
+  if (  myWindow->isNotNullGradientColorSet() )
+  {
+    numSquares = 23;
+  }
+
+  // Get colors
+  wxColour foregroundColour = foreground;
+  wxColour backgroundColour = background;
+
+  // Get font
+  wxFont titleFont = semanticFont;
+  
+  // n labels * label height + top + bottom
+  int titleMargin = 5; // used in 4 sides
+  
+  // Colored rectangle size
+  int widthRect = 10;
+  int heightRect = titleFont.GetPointSize() + 3;
+
+  int imageStepY = titleFont.GetPointSize() + 2 * titleMargin;
+  int imageStepXRectangle = widthRect;
+  
+  // Guess max label length in pixels  
+  int imageWidth;
+  int imageHeight;
+  if ( !tryHorizontal )
+  {
+    imageWidth = 1920;
+    imageHeight = semanticValueLabel.size() * imageStepY + ( 2 * titleMargin );
+
+    if ( drawOutliers )
+      imageHeight += ( imageStepY + titleMargin ) * 2;
+
+    wxBitmap maxLabelBitmap( imageWidth, imageHeight );
+    wxMemoryDC maxlabelDC( maxLabelBitmap );
+    maxlabelDC.SetFont( titleFont );
+    wxSize maxlabelSize = maxlabelDC.GetTextExtent( extraPrefixOutlier +
+                                                    semanticValueLabel[ semanticValueWithLongestLabel ] );
+
+    imageWidth = maxlabelSize.GetWidth() + ( 2 * titleMargin ) + ( widthRect + titleMargin );
+  }
+  else
+  {
+    imageWidth = numSquares * ( widthRect + titleMargin ) + 2 * titleMargin; // 20 steps + 2 outliers + margins
+    imageHeight = 2 * semanticValueLabel.size() + 3 * titleMargin;
+  }
+  
+  // Build DC for legend
+  wxBitmap scaleBitmap( imageWidth, imageHeight );
+  wxMemoryDC scaleDC( scaleBitmap );
+
+  // Loop through labels
+  int xsrc = 0;
+  int ysrc = 0;
+  int xdst = 0;
+  int ydst = 0;
+  wxBitmap labelBitmap( imageWidth, imageHeight );
+  wxMemoryDC labelDC( labelBitmap );
+  labelDC.SetFont( titleFont );
+
+  // Set colors
+  labelDC.SetBackground( wxBrush( backgroundColour ) );
+  //labelDC.SetTextBackground( *wxBLUE );
+  labelDC.Clear();
+
+  labelDC.SetPen( wxPen( backgroundColour, 1 ) );
+  labelDC.SetTextBackground( backgroundColour );
+  labelDC.SetTextForeground( foregroundColour );
+  
+  if ( !drawOutliers )
+  {
+    for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+    {
+      bool drawLabel = !tryHorizontal || it == keys.begin() || it == --keys.end() ;
+      drawRectangle( labelDC, scaleDC,
+                  foregroundColour, backgroundColour,
+                  semanticValues[ *it ], semanticValueLabel[ *it ],
+                  titleMargin,
+                  widthRect, heightRect,
+                  tryHorizontal,
+                  xdst, ydst,
+                  xsrc, ysrc,
+                  imageWidth, imageHeight,
+                  imageStepY,
+                  imageStepXRectangle,
+                  drawLabel );
+    }
+  }
+  else
+  {
+    rgb tmprgb = myWindow->getGradientColor().getBelowOutlierColor();
+    wxString tmpSemanticValueLabel =
+            wxT("< ") +
+            wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, keys[0], symbolicDesc, precision ).c_str() );
+    bool drawLabel = !tryHorizontal;
+
+    drawRectangle( labelDC, scaleDC,
+                foregroundColour, backgroundColour,
+                tmprgb, tmpSemanticValueLabel,
+                titleMargin,
+                widthRect, heightRect,
+                tryHorizontal,
+                xdst, ydst,
+                xsrc, ysrc,
+                imageWidth, imageHeight,
+                imageStepY,
+                imageStepXRectangle,
+                drawLabel );
+
+    for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+    {
+      bool drawLabel = !tryHorizontal || it == keys.begin() || it == --keys.end() ;
+      drawRectangle( labelDC, scaleDC,
+                  foregroundColour, backgroundColour,
+                  semanticValues[ *it ], semanticValueLabel[ *it ],
+                  titleMargin,
+                  widthRect, heightRect,
+                  tryHorizontal,
+                  xdst, ydst,
+                  xsrc, ysrc,
+                  imageWidth, imageHeight,
+                  imageStepY,
+                  imageStepXRectangle,
+                  drawLabel );
+    }
+
+    tmprgb = myWindow->getGradientColor().getAboveOutlierColor();
+    tmpSemanticValueLabel =
+            wxT("> ") +
+            wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, keys.back(), symbolicDesc, precision ).c_str() );
+    drawLabel = !tryHorizontal;
+    drawRectangle( labelDC, scaleDC,
+                foregroundColour, backgroundColour,
+                tmprgb, tmpSemanticValueLabel,
+                titleMargin,
+                widthRect, heightRect,
+                tryHorizontal,
+                xdst, ydst,
+                xsrc, ysrc,
+                imageWidth, imageHeight,
+                imageStepY,
+                imageStepXRectangle,
+                drawLabel );
+  }
+  
+  wxImage scaleImage = scaleBitmap.ConvertToImage();
+  wxString scaleImagePath =
+          wxFileName( imagePath ).GetPathWithSep() +
+          wxFileName( imagePath ).GetName() +
+          _(".") +
+          imageInfix +
+          tmpSuffix;
+  scaleImage.SaveFile( scaleImagePath, imageType );
+}
+/*
+//
+// ScaleImage
+//
+gTimeline::ScaleImage::ScaleImage()
+{}
+
+gTimeline::ScaleImage::~ScaleImage()
+{}
+
+void gTimeline::ScaleImage::swapBaseColors()
+{}
+
+void gTimeline::ScaleImage::save()
+{
+  wxImage scaleImage = scaleBitmap.ConvertToImage();
+  wxString scaleImagePath =
+          wxFileName( imagePath ).GetPathWithSep() +
+          wxFileName( imagePath ).GetName() +
+          _(".") +
+          imageInfix +
+          tmpSuffix;
+  scaleImage.SaveFile( scaleImagePath, imageType );
+}
+
+void gTimeline::ScaleImage::init()
+{
+  filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+}
+
+void gTimeline::ScaleImage::drawSquare()
+{}
+
+void gTimeline::ScaleImage::computeMaxLabelSize()
+{}
+
+
+//
+// ScaleImageCodeColor
+//
+gTimeline::ScaleImageCodeColor::ScaleImageCodeColor()
+{}
+
+gTimeline::ScaleImageCodeColor::~ScaleImageCodeColor()
+{}
+
+void gTimeline::ScaleImageCodeColor::init()
+{
+  gTimeline::ScaleImage::init();
+  tmpSuffix = _(".as_list.");
+  tmpSuffix += wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+}
+
+void gTimeline::ScaleImageCodeColor::getDC()
+{}
+
+
+
+//
+// ScaleImageGradientColor
+//
+gTimeline::ScaleImageGradientColor::ScaleImageGradientColor()
+{}
+
+gTimeline::ScaleImageGradientColor::~ScaleImageGradientColor()
+{}
+
+void gTimeline::ScaleImageGradientColor::init()
+{
+  if ( tryHorizontal )
+    tmpSuffix = _(".as_row.");
+  else
+    tmpSuffix = _(".as_list.");
+  tmpSuffix += wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+}
+
+void gTimeline::ScaleImageGradientColor::getDC()
+{}
+
+void gTimeline::ScaleImageGradientColor::computeMaxLabelSize()
+{}
+
+*/
 
 void gTimeline::saveText()
 {

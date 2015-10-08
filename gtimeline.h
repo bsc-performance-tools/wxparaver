@@ -167,6 +167,15 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
+  void OnScrolledWindowMotion( wxMouseEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLEDWINDOW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -184,15 +193,6 @@ public:
 
   /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowRightDown( wxMouseEvent& event );
-
-  /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowMotion( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK
   void OnNotebookPageChanging( wxNotebookEvent& event );
@@ -561,6 +561,8 @@ private:
 
   wxWindow *parent;
   
+  std::map< TSemanticValue, rgb > semanticValues; // Stored for SaveImage scale
+  
   static const wxCoord drawBorder = 5;
 
   vector< pair< TWWLine, wxString > > whatWhereLines;
@@ -581,6 +583,125 @@ private:
   void Split();
   void OnTimerSize( wxTimerEvent& event );
   void OnTimerMotion( wxTimerEvent& event );
+
+                    
+  void saveLabelsImage( wxColour background,
+                        wxColour foreground,
+                        wxString& imagePath,
+                        const wxString& imageInfix,
+                        bool tryHorizontal,
+#if wxMAJOR_VERSION<3
+                        long imageType );
+#else
+                        wxBitmapType& imageType );
+#endif
+
+  // Called by saveLabelsImage
+  void drawRectangle( wxMemoryDC& labelDC,
+                       wxMemoryDC& scaleDC,
+                       wxColour foregroundColour,
+                       wxColour backgroundColour,
+                       rgb semanticColour,
+                       wxString semanticValueLabel,
+                       int titleMargin,
+                       int widthRect,
+                       int heightRect,
+                       bool tryHorizontal,
+                       int& xdst,
+                       int& ydst,
+                       int xsrc,
+                       int ysrc,
+                       int imageWidth,
+                       int imageHeight,
+                       int imageStepY,
+                       int imageStepXRectangle,
+                       bool drawLabel );
+/*
+  class ScaleImage
+  {
+    public:
+      ScaleImage( wxColour whichBackground,
+                  wxColour whichForeground,
+                  wxString& whichImagePath,
+                  const wxString& whichImageInfix,
+                  bool whichTryHorizontal,
+#if wxMAJOR_VERSION<3
+                  long whichImageType );
+#else
+                  wxBitmapType& whichImageType );
+#endif
+      ~ScaleImage();
+      
+      void swapBaseColors();
+      
+      void save();
+      
+    protected:
+      virtual void init();
+      virtual void computeMaxLabelSize();
+      void drawSquare();
+
+      wxColour background;
+      wxColour foreground;
+      wxString& imagePath;
+      const wxString& imageInfix;
+      bool tryHorizontal;
+
+      ParaverConfig::TImageFormat filterIndex;
+      wxString tmpSuffix;
+      
+    private:
+    
+    
+  };
+
+  class ScaleImageCodeColor : ScaleImage
+  {
+    public:
+      ScaleImageCodeColor( wxColour whichBackground,
+                           wxColour whichForeground,
+                           wxString& whichImagePath,
+                           const wxString& whichImageInfix,
+                           bool whichTryHorizontal,
+#if wxMAJOR_VERSION<3
+                           long whichImageType );
+#else
+                           wxBitmapType& whichImageType );
+#endif
+
+      ~ScaleImageCodeColor();
+
+    protected:
+      void init();
+    
+    private:
+    
+  };
+
+  class ScaleImageGradientColor : ScaleImage
+  {
+    public:
+      ScaleImageGradientColor( wxColour whichBackground,
+                               wxColour whichForeground,
+                               wxString& whichImagePath,
+                               const wxString& whichImageInfix,
+                               bool whichTryHorizontal,
+#if wxMAJOR_VERSION<3
+                               long whichImageType );
+#else
+                               wxBitmapType& whichImageType );
+#endif
+
+      ~ScaleImageGradientColor();
+
+    protected:
+      void init();
+      void computeMaxLabelSize();
+    
+    private:
+    
+  };
+*/  
 };
 
 void progressFunctionTimeline( ProgressController *progress, void *callerWindow );
