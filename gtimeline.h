@@ -483,6 +483,7 @@ public:
 
   static wxProgressDialog *dialogProgress;
   
+  
 //  void OnRightClick(wxMouseEvent& event);
 ////@begin gTimeline member variables
   wxSplitterWindow* splitter;
@@ -560,7 +561,6 @@ private:
 #endif
 
   wxWindow *parent;
-  
   std::map< TSemanticValue, rgb > semanticValues; // Stored for SaveImage scale
   
   static const wxCoord drawBorder = 5;
@@ -616,92 +616,173 @@ private:
                        int imageStepY,
                        int imageStepXRectangle,
                        bool drawLabel );
-/*
-  class ScaleImage
+
+  class ScaleImageVertical
   {
     public:
-      ScaleImage( wxColour whichBackground,
+      ScaleImageVertical(
+                  Window* whichMyWindow, 
+                  const std::map< TSemanticValue, rgb >& whichSemanticValues,
+                  wxColour whichBackground,
                   wxColour whichForeground,
+                  wxFont whichTextFont,
                   wxString& whichImagePath,
                   const wxString& whichImageInfix,
-                  bool whichTryHorizontal,
 #if wxMAJOR_VERSION<3
                   long whichImageType );
 #else
-                  wxBitmapType& whichImageType );
+                  wxBitmapType& whichImageType ); 
 #endif
-      ~ScaleImage();
-      
-      void swapBaseColors();
+                  
+      ~ScaleImageVertical();
       
       void save();
       
     protected:
       virtual void init();
+      virtual void sortSemanticValues();
       virtual void computeMaxLabelSize();
-      void drawSquare();
+      virtual void computeImageSize();
+      virtual void createDC();
+      virtual void draw();
+      virtual void drawLabeledRectangle( rgb semanticColour,
+                                           wxString semanticValueLabel,
+                                           bool drawIt = true );
+      void destroyDC();
 
+      Window *myWindow;
+      std::map< TSemanticValue, rgb > semValues;
       wxColour background;
       wxColour foreground;
+      wxFont textFont;
       wxString& imagePath;
-      const wxString& imageInfix;
-      bool tryHorizontal;
+      wxString imageInfix;
+#if wxMAJOR_VERSION<3
+      long imageType;
+#else
+      wxBitmapType& imageType;
+#endif
 
       ParaverConfig::TImageFormat filterIndex;
       wxString tmpSuffix;
+      TSemanticValue currentMin;
+      TSemanticValue currentMax;
+      std::vector< TSemanticValue > keys;
+      PRV_UINT32 precision;
+      int numSquares;
+      wxString extraPrefixOutlier;
+      std::map< TSemanticValue, wxString > semanticValueLabel;
+      TSemanticValue semanticValueWithLongestLabel;
+      int titleMargin;
+      int widthRect;
+      int heightRect;
+      int imageStepY;
+      int imageStepXRectangle;
+      bool drawOutliers;
+      bool symbolicDesc;
+      int imageWidth;
+      int imageHeight;
+      int xsrc;
+      int ysrc;
+      int xdst;
+      int ydst;
+      wxBitmap* labelBitmap;
+      wxMemoryDC* labelDC;
+      wxBitmap *scaleBitmap;
+      wxMemoryDC *scaleDC;
+
+    private:
+  };
+
+  class ScaleImageVerticalCodeColor : public ScaleImageVertical
+  {
+    public:
+      ScaleImageVerticalCodeColor(
+              Window* whichMyWindow,
+              const std::map< TSemanticValue, rgb >& whichSemanticValues,
+              wxColour whichBackground,
+              wxColour whichForeground,
+              wxFont whichTextFont,
+              wxString& whichImagePath,
+              const wxString& whichImageInfix,
+#if wxMAJOR_VERSION<3
+              long whichImageType );
+#else
+              wxBitmapType& whichImageType );
+#endif
+
+      ~ScaleImageVerticalCodeColor()
+      {}
+
+    protected:
+      virtual void init();
+    
+    private:    
+  };
+
+  class ScaleImageVerticalGradientColor : public ScaleImageVertical
+  {
+    public:
+      ScaleImageVerticalGradientColor(
+              Window* whichMyWindow,
+              const std::map< TSemanticValue, rgb >& whichSemanticValues,
+              wxColour whichBackground,
+              wxColour whichForeground,
+              wxFont whichTextFont,
+              wxString& whichImagePath,
+              const wxString& whichImageInfix,
+#if wxMAJOR_VERSION<3
+              long whichImageType );
+#else
+              wxBitmapType& whichImageType );
+#endif
+
+      ~ScaleImageVerticalGradientColor()
+      {}
+
+    protected:
+      virtual void init();
+      virtual void sortSemanticValues();
+      virtual void draw();
+    
+    private:    
+  };
+
+  class ScaleImageHorizontalGradientColor : public ScaleImageVerticalGradientColor
+  {
+    public:
+      ScaleImageHorizontalGradientColor(
+              Window* whichMyWindow,
+              const std::map< TSemanticValue, rgb >& whichSemanticValues,
+              wxColour whichBackground,
+              wxColour whichForeground,
+              wxFont whichTextFont,
+              wxString& whichImagePath,
+              const wxString& whichImageInfix,
+#if wxMAJOR_VERSION<3
+              long whichImageType );
+#else
+              wxBitmapType& whichImageType );
+#endif
+
+      ~ScaleImageHorizontalGradientColor()
+      {}
+
+    protected:
+      virtual void init();
+      virtual void computeImageSize();
+      virtual void draw();
+    
+    private:
+      typedef enum { LEFT = 0, CENTER, RIGHT } TAlign;
+      typedef enum { FIRST = 0, MIDDLE, LAST, ANY } TPosition;
       
-    private:
-    
-    
+      int outlierMargin; // Inner margin between outlier and whole scale
+
+      void drawRectangle( rgb semanticColour, TPosition position = ANY );
+      void drawLabel( wxString semanticValueLabel, bool drawIt = true, TAlign align = LEFT );    
   };
 
-  class ScaleImageCodeColor : ScaleImage
-  {
-    public:
-      ScaleImageCodeColor( wxColour whichBackground,
-                           wxColour whichForeground,
-                           wxString& whichImagePath,
-                           const wxString& whichImageInfix,
-                           bool whichTryHorizontal,
-#if wxMAJOR_VERSION<3
-                           long whichImageType );
-#else
-                           wxBitmapType& whichImageType );
-#endif
-
-      ~ScaleImageCodeColor();
-
-    protected:
-      void init();
-    
-    private:
-    
-  };
-
-  class ScaleImageGradientColor : ScaleImage
-  {
-    public:
-      ScaleImageGradientColor( wxColour whichBackground,
-                               wxColour whichForeground,
-                               wxString& whichImagePath,
-                               const wxString& whichImageInfix,
-                               bool whichTryHorizontal,
-#if wxMAJOR_VERSION<3
-                               long whichImageType );
-#else
-                               wxBitmapType& whichImageType );
-#endif
-
-      ~ScaleImageGradientColor();
-
-    protected:
-      void init();
-      void computeMaxLabelSize();
-    
-    private:
-    
-  };
-*/  
 };
 
 void progressFunctionTimeline( ProgressController *progress, void *callerWindow );
