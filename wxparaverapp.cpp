@@ -108,7 +108,7 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
   { wxCMD_LINE_SWITCH, 
     wxT("i"),
     wxT("image"),
-    wxT("Save cfg last window as an image"),
+    wxT("Save cfg last window as an image. Once done wxparaver will exit."),
     wxCMD_LINE_VAL_NONE,
     wxCMD_LINE_PARAM_OPTIONAL },
 
