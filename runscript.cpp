@@ -137,27 +137,47 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
+
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
+
   EVT_TEXT( ID_TEXTCTRL_TRACE, RunScript::OnTextctrlTraceTextUpdated )
+
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
+
   EVT_BUTTON( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlUpdate )
+
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
+
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_NORMALIZE, RunScript::OnCheckboxClusteringNormalizeUpdate )
+
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES, RunScript::OnCheckboxClusteringGenerateSequencesUpdate )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, RunScript::OnRadiobuttonClusteringXmldefinedSelected )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
+
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
+
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
+
+  EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_EVENT_TYPE, RunScript::OnCheckboxFoldingUseEventTypeUpdate )
+
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
+
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
+
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
+
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
+
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
+
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
+
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -312,6 +332,8 @@ void RunScript::Init()
   clusteringLabelRefinementMinPoints = NULL;
   clusteringTextBoxRefinementMinPoints = NULL;
   foldingSection = NULL;
+  checkboxFoldingUseEventType = NULL;
+  comboboxFoldingModel = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
@@ -605,7 +627,7 @@ void RunScript::CreateControls()
     radioButtonDimemasTasksPerNode->SetToolTip(_("Tasks assigned to a Node"));
   itemBoxSizer46->Add(radioButtonDimemasTasksPerNode, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  spinCtrlDimemasTasksPerNode = new wxSpinCtrl( itemPanel40, ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 65536, 1 );
+  spinCtrlDimemasTasksPerNode = new wxSpinCtrl( itemPanel40, ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE, _T("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 65536, 1 );
   spinCtrlDimemasTasksPerNode->SetHelpText(_("Tasks assigned to a Node"));
   if (RunScript::ShowToolTips())
     spinCtrlDimemasTasksPerNode->SetToolTip(_("Tasks assigned to a Node"));
@@ -625,7 +647,7 @@ void RunScript::CreateControls()
   statsLabelTextCtrlOutputName = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Prefix"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     statsLabelTextCtrlOutputName->SetToolTip(_("Name given to resulting .dat and .gnuplot files."));
-  statsLabelTextCtrlOutputName->SetName(wxT("O"));
+  statsLabelTextCtrlOutputName->SetName(_T("O"));
   itemBoxSizer50->Add(statsLabelTextCtrlOutputName, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   statsTextCtrlOutputName = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_STATS_OUTPUT_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -773,7 +795,7 @@ void RunScript::CreateControls()
   wxStaticText* itemStaticText89 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringSizerDBScan->Add(itemStaticText89, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxDBScanMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_DBSCAN_MIN_POINTS, wxT("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 4 );
+  clusteringTextBoxDBScanMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_DBSCAN_MIN_POINTS, _T("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 4 );
   clusteringSizerDBScan->Add(clusteringTextBoxDBScanMinPoints, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   clusteringSizerRefinement = new wxBoxSizer(wxVERTICAL);
@@ -810,7 +832,7 @@ void RunScript::CreateControls()
   clusteringLabelRefinementSteps = new wxStaticText( itemDialog1, wxID_STATIC, _("Steps"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer94->Add(clusteringLabelRefinementSteps, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
-  clusteringTextBoxRefinementSteps = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS, wxT("10"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 30, 10 );
+  clusteringTextBoxRefinementSteps = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS, _T("10"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 30, 10 );
   itemBoxSizer94->Add(clusteringTextBoxRefinementSteps, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer103 = new wxBoxSizer(wxHORIZONTAL);
@@ -819,63 +841,96 @@ void RunScript::CreateControls()
   clusteringLabelRefinementMinPoints = new wxStaticText( itemDialog1, wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer103->Add(clusteringLabelRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxRefinementMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, wxT("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4 );
+  clusteringTextBoxRefinementMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, _T("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4 );
   itemBoxSizer103->Add(clusteringTextBoxRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   itemBoxSizer103->Add(5, 5, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   foldingSection = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(foldingSection, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 2);
+  clusteringSection->Add(foldingSection, 0, wxGROW|wxALL, 2);
 
-  wxStaticLine* itemStaticLine108 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine108, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer108 = new wxBoxSizer(wxHORIZONTAL);
+  foldingSection->Add(itemBoxSizer108, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 2);
 
-  wxBoxSizer* itemBoxSizer109 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer109, 1, wxGROW, 5);
+  itemBoxSizer108->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxStaticText* itemStaticText110 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer109->Add(itemStaticText110, 1, wxALIGN_TOP|wxALL, 5);
+  checkboxFoldingUseEventType = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_USE_EVENT_TYPE, _("Use event type as region delimiter"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkboxFoldingUseEventType->SetValue(false);
+  itemBoxSizer108->Add(checkboxFoldingUseEventType, 4, wxGROW|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer111 = new wxBoxSizer(wxHORIZONTAL);
+  foldingSection->Add(itemBoxSizer111, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 2);
+
+  itemBoxSizer111->Add(5, 5, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxStaticText* itemStaticText113 = new wxStaticText( itemDialog1, wxID_STATIC, _("Model"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+  itemBoxSizer111->Add(itemStaticText113, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxArrayString comboboxFoldingModelStrings;
+  comboboxFoldingModelStrings.Add(_("none"));
+  comboboxFoldingModelStrings.Add(_("basic"));
+  comboboxFoldingModelStrings.Add(_("ibm-power5"));
+  comboboxFoldingModelStrings.Add(_("ibm-power7"));
+  comboboxFoldingModelStrings.Add(_("ibm-power8"));
+  comboboxFoldingModelStrings.Add(_("intel-haswell"));
+  comboboxFoldingModelStrings.Add(_("intel-nehalem"));
+  comboboxFoldingModelStrings.Add(_("intel-sandybridge"));
+  comboboxFoldingModelStrings.Add(_("samsung-exynos5-armv7"));
+  comboboxFoldingModel = new wxComboBox( itemDialog1, ID_COMBOBOX_FOLDING_MODEL, _("None"), wxDefaultPosition, wxDefaultSize, comboboxFoldingModelStrings, wxCB_DROPDOWN );
+  comboboxFoldingModel->SetStringSelection(_("None"));
+  itemBoxSizer111->Add(comboboxFoldingModel, 5, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  itemBoxSizer111->Add(5, 5, 6, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxStaticLine* itemStaticLine116 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine116, 0, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer117 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer117, 1, wxGROW, 5);
+
+  wxStaticText* itemStaticText118 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer117->Add(itemStaticText118, 1, wxALIGN_TOP|wxALL, 5);
 
   labelCommandPreview = new wxTextCtrl( itemDialog1, wxID_LABELCOMMANDPREVIEW, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
-  itemBoxSizer109->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
+  itemBoxSizer117->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer112 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer112, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer120 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer120, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer112->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer120->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer112->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer120->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonKill = new wxButton( itemDialog1, ID_BUTTON_KILL, _("Kill"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer112->Add(buttonKill, 0, wxGROW|wxALL, 5);
+  itemBoxSizer120->Add(buttonKill, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer112->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer120->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 3, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer118 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer118, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxBoxSizer* itemBoxSizer126 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer126, 0, wxALIGN_RIGHT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer119 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer118->Add(itemBoxSizer119, 0, wxALIGN_CENTER_VERTICAL|wxALL, 1);
+  wxBoxSizer* itemBoxSizer127 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer126->Add(itemBoxSizer127, 0, wxALIGN_CENTER_VERTICAL|wxALL, 1);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer119->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer127->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
@@ -953,7 +1008,7 @@ wxBitmap RunScript::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin RunScript bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("app_edit.xpm"))
+  if (name == _T("app_edit.xpm"))
   {
     wxBitmap bitmap(app_edit_xpm);
     return bitmap;
@@ -1201,15 +1256,27 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case FOLDING:
       command = application[ FOLDING ];
 
-      parameters = doubleQuote( fileBrowserButtonTrace->GetPath() );
-      if ( !foldingCSV.IsEmpty() )
+      if ( comboboxFoldingModel->GetValue() != wxString( wxT("none") ) )
       {
-        parameters += wxString( wxT(" ") );
-        parameters += doubleQuote( foldingCSV );
+        parameters += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
+      }
+
+      parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
+      
+      if ( !checkboxFoldingUseEventType->IsChecked() )
+      {
+        if ( !foldingCSV.IsEmpty() )
+        {
+          parameters += wxString( wxT(" ") );
+          parameters += doubleQuote( foldingCSV );
+        }
+      }
+      else
+      {
+        parameters += wxString( wxT( " " ) );
+        parameters += doubleQuote( expandVariables( textCtrlDefaultParameters->GetValue() ) ); // Event type
       }
       
-      parameters += wxString( wxT( " " ) );
-      parameters += doubleQuote( expandVariables( textCtrlDefaultParameters->GetValue() ) ); // Event type
       
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
       {
@@ -1572,11 +1639,14 @@ void RunScript::adaptWindowToApplicationSelection()
                                " Allowed formats include either numerical or string"
                                " (i.e. 90000001 or 'Cluster ID')." ) );  
     
-      labelTextCtrlDefaultParameters->SetLabel( wxT( "Event type" ) ); 
+      labelTextCtrlDefaultParameters->SetLabel( wxT( "Event type/name" ) ); 
       labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
       textCtrlDefaultParameters->SetToolTip( toolTip );
+      textCtrlDefaultParameters->SetValue( wxString( wxT( "Cluster ID" ) ) );
+      
+      comboboxFoldingModel->SetStringSelection(_("intel-sandybridge"));
 
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
@@ -2342,4 +2412,15 @@ void RunScript::OnCheckboxClusteringGenerateSequencesUpdate( wxUpdateUIEvent& ev
 }
 
 
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_EVENT_TYPE
+ */
+
+void RunScript::OnCheckboxFoldingUseEventTypeUpdate( wxUpdateUIEvent& event )
+{
+  labelTextCtrlDefaultParameters->Enable( checkboxFoldingUseEventType->IsChecked() );
+  textCtrlDefaultParameters->Enable( checkboxFoldingUseEventType->IsChecked() );
+}
 
