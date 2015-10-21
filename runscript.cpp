@@ -861,10 +861,8 @@ void RunScript::CreateControls()
   wxBoxSizer* itemBoxSizer111 = new wxBoxSizer(wxHORIZONTAL);
   foldingSection->Add(itemBoxSizer111, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 2);
 
-  itemBoxSizer111->Add(5, 5, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
-
-  wxStaticText* itemStaticText113 = new wxStaticText( itemDialog1, wxID_STATIC, _("Model"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-  itemBoxSizer111->Add(itemStaticText113, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  wxStaticText* itemStaticText112 = new wxStaticText( itemDialog1, wxID_STATIC, _("Model"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+  itemBoxSizer111->Add(itemStaticText112, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxArrayString comboboxFoldingModelStrings;
   comboboxFoldingModelStrings.Add(_("none"));
@@ -878,59 +876,57 @@ void RunScript::CreateControls()
   comboboxFoldingModelStrings.Add(_("samsung-exynos5-armv7"));
   comboboxFoldingModel = new wxComboBox( itemDialog1, ID_COMBOBOX_FOLDING_MODEL, _("None"), wxDefaultPosition, wxDefaultSize, comboboxFoldingModelStrings, wxCB_DROPDOWN );
   comboboxFoldingModel->SetStringSelection(_("None"));
-  itemBoxSizer111->Add(comboboxFoldingModel, 5, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  itemBoxSizer111->Add(comboboxFoldingModel, 12, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  itemBoxSizer111->Add(5, 5, 6, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  wxStaticLine* itemStaticLine114 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine114, 0, wxGROW|wxALL, 5);
 
-  wxStaticLine* itemStaticLine116 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine116, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer115 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer115, 1, wxGROW, 5);
 
-  wxBoxSizer* itemBoxSizer117 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer117, 1, wxGROW, 5);
-
-  wxStaticText* itemStaticText118 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer117->Add(itemStaticText118, 1, wxALIGN_TOP|wxALL, 5);
+  wxStaticText* itemStaticText116 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer115->Add(itemStaticText116, 1, wxALIGN_TOP|wxALL, 5);
 
   labelCommandPreview = new wxTextCtrl( itemDialog1, wxID_LABELCOMMANDPREVIEW, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
-  itemBoxSizer117->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
+  itemBoxSizer115->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer120 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer120, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer118 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer118, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer120->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer118->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer120->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer118->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonKill = new wxButton( itemDialog1, ID_BUTTON_KILL, _("Kill"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer120->Add(buttonKill, 0, wxGROW|wxALL, 5);
+  itemBoxSizer118->Add(buttonKill, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer120->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer118->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 3, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer126 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer126, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxBoxSizer* itemBoxSizer124 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer124, 0, wxALIGN_RIGHT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer127 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer126->Add(itemBoxSizer127, 0, wxALIGN_CENTER_VERTICAL|wxALL, 1);
+  wxBoxSizer* itemBoxSizer125 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer124->Add(itemBoxSizer125, 0, wxALIGN_CENTER_VERTICAL|wxALL, 1);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer127->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer125->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
