@@ -302,10 +302,15 @@ bool wxparaverApp::OnInit()
     paraverCommandLineParser.Usage();
     
     std::cout << std::endl;
+    std::cout << std::endl;
     std::cout << "  Environment variables defined by wxParaver:" << std::endl;
     std::cout << "  -------------------------------------------" << std::endl;
     std::cout << std::endl;
-    std::cout << "    $PARAVER_LOADED     Once started, it's filled with wxParaver PID" << std::endl;
+    std::cout << "    $PARAVER_LOADED                Once started, it's filled with wxParaver PID" << std::endl;
+    std::cout << "    $PARAVER_ALIEN_TRACE_FULL_NAME Contains the absolute path to the current loaded trace." << std::endl;
+    std::cout << "                                   Published only:" << std::endl;
+    std::cout << "                                     * when middle click is done in a timeline and" << std::endl;
+    std::cout << "                                     * if PARAVER_ALIEN* vars are defined (see below)." << std::endl;
     std::cout << std::endl;
     std::cout << std::endl;
 
@@ -324,6 +329,8 @@ bool wxparaverApp::OnInit()
     std::cout << "        Example: Writes in a file the translation of the decimal PAPI_TOT_INST counter value into morse" << std::endl;
     std::cout << "          > PARAVER_ALIEN_APP='> in_morse.txt morse -s' PARAVER_ALIEN_TYPE=42000050 wxparaver &" << std::endl;
     std::cout << std::endl;
+    std::cout << std::endl;
+    
     /*
     std::cout << "        Example: Search line of a user function label in .pcf file and write it to a file" << std::endl;
     std::cout << "          > export PARAVER_ALIEN_APP='> label.txt xargs -I {} grep -n {} trace.pcf <<<'" << std::endl;

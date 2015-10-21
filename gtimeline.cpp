@@ -3899,23 +3899,22 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
           command << alienApp <<  _(" ") << wxString::FromAscii( valueStr.c_str() );
         }
         
-//std::cerr << alienApp << _(" ") << alienType << "-"<<valueStr << std::endl;
-//std::cerr << command << std::endl;
+        //wxString currentDir = wxGetCwd();
+        //wxString myTraceDir =
+        //        wxFileName ( wxString::FromAscii( GetMyWindow()->getTrace()->getFileName().c_str() ) ).GetPath();
+        //wxSetWorkingDirectory( myTraceDir );
 
-
-        wxString currentDir = wxGetCwd();
-        wxString myTraceDir =
-            wxFileName ( wxString::FromAscii( GetMyWindow()->getTrace()->getFileName().c_str() ) ).GetPath();
-        wxSetWorkingDirectory( myTraceDir );
-
+        std::string absolutePathCurrentTrace = GetMyWindow()->getTrace()->getFileName();
 #ifdef WIN32
+        _putenv_s( "PARAVER_ALIEN_TRACE_FULL_PATH", (const char *)absolutePathCurrentTrace.c_str() );
         wxExecute( command );
 #else
+        setenv( "PARAVER_ALIEN_TRACE_FULL_PATH", (const char *)absolutePathCurrentTrace.c_str(), 1 );
         if( wxExecute( command ) == 0 )
         {
         }
 #endif
-        wxSetWorkingDirectory( currentDir );
+        //wxSetWorkingDirectory( currentDir );
       }
       else
       {
