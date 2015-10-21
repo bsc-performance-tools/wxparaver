@@ -855,7 +855,7 @@ void RunScript::CreateControls()
   itemBoxSizer108->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   checkboxFoldingUseEventType = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_USE_EVENT_TYPE, _("Use event type as region delimiter"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkboxFoldingUseEventType->SetValue(false);
+  checkboxFoldingUseEventType->SetValue(true);
   itemBoxSizer108->Add(checkboxFoldingUseEventType, 4, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer111 = new wxBoxSizer(wxHORIZONTAL);
