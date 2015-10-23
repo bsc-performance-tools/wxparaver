@@ -850,18 +850,22 @@ void RunScript::CreateControls()
   clusteringSection->Add(foldingSection, 0, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer108 = new wxBoxSizer(wxHORIZONTAL);
-  foldingSection->Add(itemBoxSizer108, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 2);
+  foldingSection->Add(itemBoxSizer108, 0, wxGROW|wxBOTTOM, 2);
 
   itemBoxSizer108->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   checkboxFoldingUseEventType = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_USE_EVENT_TYPE, _("Use event type as region delimiter"), wxDefaultPosition, wxDefaultSize, 0 );
   checkboxFoldingUseEventType->SetValue(true);
-  itemBoxSizer108->Add(checkboxFoldingUseEventType, 4, wxGROW|wxALL, 2);
+  if (RunScript::ShowToolTips())
+    checkboxFoldingUseEventType->SetToolTip(_("If unchecked, a precomputed CSV containing timeline semantic values will be used as region delimiter instead of the above event  "));
+  itemBoxSizer108->Add(checkboxFoldingUseEventType, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
   wxBoxSizer* itemBoxSizer111 = new wxBoxSizer(wxHORIZONTAL);
-  foldingSection->Add(itemBoxSizer111, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 2);
+  foldingSection->Add(itemBoxSizer111, 0, wxGROW|wxBOTTOM, 2);
 
   wxStaticText* itemStaticText112 = new wxStaticText( itemDialog1, wxID_STATIC, _("Model"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+  if (RunScript::ShowToolTips())
+    itemStaticText112->SetToolTip(_("Combine the trace-file hardware counters for the selected architecture"));
   itemBoxSizer111->Add(itemStaticText112, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxArrayString comboboxFoldingModelStrings;
@@ -876,7 +880,9 @@ void RunScript::CreateControls()
   comboboxFoldingModelStrings.Add(_("samsung-exynos5-armv7"));
   comboboxFoldingModel = new wxComboBox( itemDialog1, ID_COMBOBOX_FOLDING_MODEL, _("None"), wxDefaultPosition, wxDefaultSize, comboboxFoldingModelStrings, wxCB_DROPDOWN );
   comboboxFoldingModel->SetStringSelection(_("None"));
-  itemBoxSizer111->Add(comboboxFoldingModel, 12, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  if (RunScript::ShowToolTips())
+    comboboxFoldingModel->SetToolTip(_("Combine the trace-file hardware counters for the selected architecture"));
+  itemBoxSizer111->Add(comboboxFoldingModel, 12, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
   wxStaticLine* itemStaticLine114 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine114, 0, wxGROW|wxALL, 5);
@@ -885,9 +891,13 @@ void RunScript::CreateControls()
   itemBoxSizer2->Add(itemBoxSizer115, 1, wxGROW, 5);
 
   wxStaticText* itemStaticText116 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    itemStaticText116->SetToolTip(_("Command to execute"));
   itemBoxSizer115->Add(itemStaticText116, 1, wxALIGN_TOP|wxALL, 5);
 
   labelCommandPreview = new wxTextCtrl( itemDialog1, wxID_LABELCOMMANDPREVIEW, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
+  if (RunScript::ShowToolTips())
+    labelCommandPreview->SetToolTip(_("Command to execute"));
   itemBoxSizer115->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer118 = new wxBoxSizer(wxHORIZONTAL);
@@ -1642,6 +1652,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->SetToolTip( toolTip );
       textCtrlDefaultParameters->SetValue( wxString( wxT( "Cluster ID" ) ) );
       
+      checkboxFoldingUseEventType->Enable( !foldingCSV.empty() );
       comboboxFoldingModel->SetStringSelection(_("intel-sandybridge"));
 
       labelTextCtrlDefaultParameters->Show();

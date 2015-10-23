@@ -36401,7 +36401,6 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxADJUST_MINSIZE">0</bool>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                 <document>
                   <string name="title">"wxStaticText: wxID_STATIC"</string>
                   <string name="type">"dialog-control-document"</string>
@@ -38041,7 +38040,6 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                 </document>
                 <document>
                   <string name="title">"wxTextCtrl: ID_TEXTCTRL_STATS_OUTPUT_NAME"</string>
@@ -38124,7 +38122,6 @@ In normal mode all properties are showed in main window."</string>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <string name="proxy-Custom arguments">""</string>
                   <string name="proxy-Custom ctor arguments">""</string>
-                  <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                 </document>
               </document>
               <document>
@@ -40972,8 +40969,8 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-AlignV">"Centre"</string>
                   <long name="proxy-Stretch factor">0</long>
                   <long name="proxy-Border">2</long>
-                  <bool name="proxy-wxLEFT">1</bool>
-                  <bool name="proxy-wxRIGHT">1</bool>
+                  <bool name="proxy-wxLEFT">0</bool>
+                  <bool name="proxy-wxRIGHT">0</bool>
                   <bool name="proxy-wxTOP">0</bool>
                   <bool name="proxy-wxBOTTOM">1</bool>
                   <bool name="proxy-wxSHAPED">0</bool>
@@ -41029,7 +41026,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-Label">"Use event type as region delimiter"</string>
                     <bool name="proxy-Initial value">1</bool>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">""</string>
+                    <string name="proxy-Tooltip text">"If unchecked, a precomputed CSV containing timeline semantic values will be used as region delimiter instead of the above event  "</string>
                     <string name="proxy-Data variable">""</string>
                     <string name="proxy-Data validator">""</string>
                     <string name="proxy-Data source">""</string>
@@ -41059,7 +41056,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-AlignV">"Expand"</string>
                     <long name="proxy-Stretch factor">4</long>
                     <long name="proxy-Border">2</long>
-                    <bool name="proxy-wxLEFT">1</bool>
+                    <bool name="proxy-wxLEFT">0</bool>
                     <bool name="proxy-wxRIGHT">1</bool>
                     <bool name="proxy-wxTOP">1</bool>
                     <bool name="proxy-wxBOTTOM">1</bool>
@@ -41086,8 +41083,8 @@ In normal mode all properties are showed in main window."</string>
                   <string name="proxy-AlignV">"Centre"</string>
                   <long name="proxy-Stretch factor">0</long>
                   <long name="proxy-Border">2</long>
-                  <bool name="proxy-wxLEFT">1</bool>
-                  <bool name="proxy-wxRIGHT">1</bool>
+                  <bool name="proxy-wxLEFT">0</bool>
+                  <bool name="proxy-wxRIGHT">0</bool>
                   <bool name="proxy-wxTOP">0</bool>
                   <bool name="proxy-wxBOTTOM">1</bool>
                   <bool name="proxy-wxSHAPED">0</bool>
@@ -41117,7 +41114,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-Label">"Model"</string>
                     <long name="proxy-Wrapping width">-1</long>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">""</string>
+                    <string name="proxy-Tooltip text">"Combine the trace-file hardware counters for the selected architecture"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -41187,7 +41184,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-Strings">"none|basic|ibm-power5|ibm-power7|ibm-power8|intel-haswell|intel-nehalem|intel-sandybridge|samsung-exynos5-armv7"</string>
                     <string name="proxy-Initial value">"None"</string>
                     <string name="proxy-Help text">""</string>
-                    <string name="proxy-Tooltip text">""</string>
+                    <string name="proxy-Tooltip text">"Combine the trace-file hardware counters for the selected architecture"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Foreground colour">""</string>
                     <string name="proxy-Font">""</string>
@@ -41219,7 +41216,7 @@ In normal mode all properties are showed in main window."</string>
                     <long name="proxy-Stretch factor">12</long>
                     <long name="proxy-Border">2</long>
                     <bool name="proxy-wxLEFT">1</bool>
-                    <bool name="proxy-wxRIGHT">1</bool>
+                    <bool name="proxy-wxRIGHT">0</bool>
                     <bool name="proxy-wxTOP">1</bool>
                     <bool name="proxy-wxBOTTOM">1</bool>
                     <bool name="proxy-wxSHAPED">0</bool>
@@ -41333,7 +41330,7 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Label">"Preview:"</string>
                 <long name="proxy-Wrapping width">-1</long>
                 <string name="proxy-Help text">""</string>
-                <string name="proxy-Tooltip text">""</string>
+                <string name="proxy-Tooltip text">"Command to execute"</string>
                 <string name="proxy-Background colour">""</string>
                 <string name="proxy-Foreground colour">""</string>
                 <string name="proxy-Font">""</string>
@@ -41379,7 +41376,6 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
               </document>
               <document>
                 <string name="title">"wxTextCtrl: wxID_LABELCOMMANDPREVIEW"</string>
@@ -41405,7 +41401,7 @@ In normal mode all properties are showed in main window."</string>
                 <string name="proxy-Initial value">""</string>
                 <long name="proxy-Max length">0</long>
                 <string name="proxy-Help text">""</string>
-                <string name="proxy-Tooltip text">""</string>
+                <string name="proxy-Tooltip text">"Command to execute"</string>
                 <string name="proxy-Background colour">""</string>
                 <string name="proxy-Foreground colour">""</string>
                 <string name="proxy-Font">""</string>
@@ -41463,7 +41459,6 @@ In normal mode all properties are showed in main window."</string>
                 <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                 <string name="proxy-Custom arguments">""</string>
                 <string name="proxy-Custom ctor arguments">""</string>
-                <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
               </document>
             </document>
             <document>
