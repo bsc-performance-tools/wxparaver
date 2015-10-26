@@ -2998,43 +2998,27 @@ void gTimeline::saveImage( bool showSaveDialog )
 
   wxImage baseLayer = imageBitmap.ConvertToImage();
   baseLayer.SaveFile( imagePath, imageType );
-
   
   ScaleImageVertical *tmpImage;
   if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
   {
-    tmpImage = new ScaleImageVerticalGradientColor(
-      myWindow, semanticValues, backgroundColour, foregroundColour, titleFont, imagePath, wxString( _( "vert.labels" ) ), imageType );
-    tmpImage->save();
-    delete tmpImage;
-    
-    tmpImage = new ScaleImageVerticalGradientColor(
-      myWindow, semanticValues, foregroundColour, backgroundColour, titleFont, imagePath, wxString( _( "vert.labels_inverted" ) ), imageType );
-    tmpImage->save();
-    delete tmpImage;
- 
-    tmpImage = new ScaleImageHorizontalGradientColor(
-      myWindow, semanticValues, backgroundColour, foregroundColour, titleFont, imagePath, wxString( _( "horiz.labels" ) ), imageType );
-    tmpImage->save();
-    delete tmpImage;
-    
-    tmpImage = new ScaleImageHorizontalGradientColor(
-      myWindow, semanticValues, foregroundColour, backgroundColour, titleFont, imagePath, wxString( _( "horiz.labels_inverted" ) ), imageType );
+    tmpImage = new ScaleImageHorizontalGradientColor( myWindow, semanticValues,
+                                                       backgroundColour, foregroundColour, wxTRANSPARENT,
+                                                       titleFont,
+                                                       imagePath, wxString( _( "horiz.labels.transp" ) ),
+                                                       imageType );
     tmpImage->save();
     delete tmpImage;
    }
   else if ( myWindow->isCodeColorSet() )
   {
-    tmpImage = new ScaleImageVerticalCodeColor(
-      myWindow, semanticValues, backgroundColour, foregroundColour, titleFont, imagePath, wxString( _( "vert.labels" ) ), imageType );
+    tmpImage = new ScaleImageVerticalCodeColor( myWindow, semanticValues,
+                                                 backgroundColour, foregroundColour, wxTRANSPARENT,
+                                                 titleFont,
+                                                 imagePath, wxString( _( "vert.labels.transp" ) ),
+                                                 imageType );
     tmpImage->save();
     delete tmpImage;
-
-    tmpImage = new ScaleImageVerticalCodeColor(
-      myWindow, semanticValues, foregroundColour, backgroundColour, titleFont, imagePath, wxString( _( "vert.labels_inverted" ) ), imageType );
-    tmpImage->save();
-    delete tmpImage;
-
   }
 }
 
@@ -3049,6 +3033,7 @@ gTimeline::ScaleImageVertical::ScaleImageVertical(
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
+        int whichBackgroundMode,
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
@@ -3061,6 +3046,7 @@ gTimeline::ScaleImageVertical::ScaleImageVertical(
             semValues( whichSemanticValues ),
             background( whichBackground ),
             foreground( whichForeground ),
+            backgroundMode( whichBackgroundMode ),
             textFont( whichTextFont ),
             imagePath( whichImagePath ),
             imageInfix( whichImageInfix ),
@@ -3075,6 +3061,17 @@ gTimeline::ScaleImageVertical::~ScaleImageVertical()
 }
 
 
+void gTimeline::ScaleImageVertical::invertMask( wxDC *dcMask )
+{
+  wxCoord xcoord;
+  wxCoord ycoord;
+  dcMask->SetLogicalFunction( wxINVERT );
+  dcMask->GetSize( &xcoord, &ycoord );
+  dcMask->DrawRectangle( 0, 0, xcoord, ycoord );
+  dcMask->SetLogicalFunction( wxCOPY );
+}
+
+
 void gTimeline::ScaleImageVertical::save()
 {
   init();
@@ -3083,13 +3080,23 @@ void gTimeline::ScaleImageVertical::save()
   computeImageSize();
   createDC();
   draw();
-
+  
+  // TODO: avoid to create/handle scaleMaskDC in all the other methods if wxTRANSPARENT
+  if ( backgroundMode == wxTRANSPARENT )
+  {
+    invertMask( scaleMaskDC );
+  
+    wxMask *mask  = new wxMask( *scaleMaskBitmap );
+    scaleBitmap->SetMask( mask );
+  }
+  
   wxImage scaleImage = scaleBitmap->ConvertToImage();
   wxString scaleImagePath =
           wxFileName( imagePath ).GetPathWithSep() +
           wxFileName( imagePath ).GetName() +
           _(".") + imageInfix + _(".") + tmpSuffix;
   scaleImage.SaveFile( scaleImagePath, imageType );
+  //scaleBitmap->SaveFile( scaleImagePath, wxBITMAP_TYPE_PNG );
 }
 
 
@@ -3117,6 +3124,10 @@ void gTimeline::ScaleImageVertical::init()
 
   imageStepY = textFont.GetPointSize() + 2 * titleMargin;
   imageStepXRectangle = widthRect;
+  
+  // Loop through labels
+  xdst = titleMargin;
+  ydst = titleMargin;
 }
 
 
@@ -3141,6 +3152,13 @@ void gTimeline::ScaleImageVertical::computeMaxLabelSize()
       semanticValueWithLongestLabel = *it;
     }
   }
+
+  // Guess height and width of longest label
+  wxBitmap maxLabelBitmap( 1920, 64 );
+  wxMemoryDC maxLabelDC( maxLabelBitmap );
+  maxLabelDC.SetFont( textFont );
+  maxLabelSize = maxLabelDC.GetTextExtent( extraPrefixOutlier +
+                                           semanticValueLabel[ semanticValueWithLongestLabel ] );
 }
 
 
@@ -3162,39 +3180,35 @@ void gTimeline::ScaleImageVertical::computeImageSize()
   if ( drawOutliers )
     imageHeight += ( imageStepY + titleMargin ) * 2;
 
-  // Guess width
-  imageWidth = 1920;
-  wxBitmap maxLabelBitmap( imageWidth, imageHeight );
-  wxMemoryDC maxlabelDC( maxLabelBitmap );
-  maxlabelDC.SetFont( textFont );
-  wxSize maxlabelSize = maxlabelDC.GetTextExtent( extraPrefixOutlier +
-                                                  semanticValueLabel[ semanticValueWithLongestLabel ] );
-
-  imageWidth = maxlabelSize.GetWidth() + ( 2 * titleMargin ) + ( widthRect + titleMargin );
+  imageWidth = maxLabelSize.GetWidth() + ( 2 * titleMargin ) + ( widthRect + titleMargin );
 }
 
 
 void gTimeline::ScaleImageVertical::createDC()
 {
-  // Build DC for legend
+  // Legend
   scaleBitmap = new wxBitmap( imageWidth, imageHeight );
   scaleDC = new wxMemoryDC( *scaleBitmap );
+  scaleDC->SetFont( textFont );
+  if ( backgroundMode == wxSOLID )
+  {
+    scaleDC->SetBackground( background );
+    scaleDC->SetTextBackground( background );
+    scaleDC->SetTextForeground( foreground );
+    scaleDC->SetPen( foreground );
+  }
 
-  // Loop through labels
-  xsrc = 0;
-  ysrc = 0;
-  xdst = 0;
-  ydst = 0;
-  labelBitmap = new wxBitmap( imageWidth, imageHeight );
-  labelDC = new wxMemoryDC( *labelBitmap );
-  labelDC->SetFont( textFont );
-
-  // Set colors
-  labelDC->SetBackground( wxBrush( background ) );
-  labelDC->Clear();
-  labelDC->SetPen( wxPen( background, 1 ) );
-  labelDC->SetTextBackground( background );
-  labelDC->SetTextForeground( foreground );
+  scaleDC->Clear();  
+  
+  // Mask for legend
+  scaleMaskBitmap = new wxBitmap( imageWidth, imageHeight, 1 );
+  scaleMaskDC = new wxMemoryDC( *scaleMaskBitmap );
+  scaleMaskDC->SetBackground( *wxWHITE_BRUSH );
+  scaleMaskDC->SetBrush( *wxBLACK_BRUSH );
+  scaleMaskDC->SetPen( *wxBLACK_PEN );
+  scaleMaskDC->SetTextForeground( *wxBLACK );
+  scaleMaskDC->SetFont( textFont );
+  scaleMaskDC->Clear();  
 }
 
 
@@ -3212,34 +3226,27 @@ void gTimeline::ScaleImageVertical::drawLabeledRectangle( rgb semanticColour,
                                                            wxString semanticValueLabel,
                                                            bool drawIt )
 {
-  labelDC->Clear();
+  scaleDC->SetBrush( wxColour( semanticColour.red,
+                                semanticColour.green,
+                                semanticColour.blue ) );
+  scaleDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
+  scaleMaskDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
 
-  // Draw rectangle
-  labelDC->SetPen( wxPen( foreground ) );
-  labelDC->SetBackground( wxBrush( background ) );
-  labelDC->SetBrush( wxColour( semanticColour.red,
-                              semanticColour.green,
-                              semanticColour.blue ) );
-  int xRect = titleMargin;
-  int yRect = titleMargin;
-  labelDC->DrawRectangle( xRect, yRect, widthRect, heightRect );
-  
   if ( drawIt )
   {
     // Write text
-    labelDC->SetPen( wxPen( background, 1 ) );    
-    labelDC->DrawText( semanticValueLabel, xRect + widthRect + titleMargin, titleMargin );
+    scaleDC->DrawText( semanticValueLabel, xdst + widthRect + titleMargin, ydst );
+    scaleMaskDC->DrawText( semanticValueLabel, xdst + widthRect + titleMargin, ydst );
   }
-  
-  // Paste to main image
-  scaleDC->Blit( xdst, ydst, imageWidth, imageHeight, labelDC, xsrc, ysrc );
 }
 
 
 void gTimeline::ScaleImageVertical::destroyDC()
 {
-  delete labelDC;
-  delete labelBitmap;
+  delete scaleDC;
+  delete scaleMaskDC;
+  delete scaleBitmap;
+  delete scaleMaskBitmap;
 }
 
 
@@ -3252,6 +3259,7 @@ gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor(
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
+        int whichBackgroundMode,
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
@@ -3264,6 +3272,7 @@ gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor(
                                 whichSemanticValues,
                                 whichBackground,
                                 whichForeground,
+                                whichBackgroundMode,
                                 whichTextFont,
                                 whichImagePath,
                                 whichImageInfix,
@@ -3290,6 +3299,7 @@ gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor(
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
+        int whichBackgroundMode,
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
@@ -3302,6 +3312,7 @@ gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor(
                                 whichSemanticValues,
                                 whichBackground,
                                 whichForeground,
+                                whichBackgroundMode,
                                 whichTextFont,
                                 whichImagePath,
                                 whichImageInfix,
@@ -3321,7 +3332,7 @@ void gTimeline::ScaleImageVerticalGradientColor::init()
   if ( myWindow->isNotNullGradientColorSet() )
     numSquares = 23;
 
-  extraPrefixOutlier = wxT("< ");
+  extraPrefixOutlier = wxT( "< " );
 }
 
 
@@ -3344,7 +3355,7 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
   // Bottom Outlier
   rgb tmprgb = myWindow->getGradientColor().getBelowOutlierColor();
   wxString tmpSemanticValueLabel =
-           wxT("< ") +
+           wxT( "< " ) +
            wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, keys[0], symbolicDesc, precision ).c_str() );
   drawLabeledRectangle( tmprgb, tmpSemanticValueLabel );
   ydst += imageStepY;
@@ -3359,7 +3370,7 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
   // Top outlier
   tmprgb = myWindow->getGradientColor().getAboveOutlierColor();
   tmpSemanticValueLabel =
-          wxT("> ") +
+          wxT( "> " ) +
           wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, keys.back(), symbolicDesc, precision ).c_str() );
   drawLabeledRectangle( tmprgb, tmpSemanticValueLabel );
   ydst += imageStepY;
@@ -3375,6 +3386,7 @@ gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
+        int whichBackgroundMode,
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
@@ -3387,6 +3399,7 @@ gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
                                               whichSemanticValues,
                                               whichBackground,
                                               whichForeground,
+                                              whichBackgroundMode,
                                               whichTextFont,
                                               whichImagePath,
                                               whichImageInfix,
@@ -3404,13 +3417,14 @@ void gTimeline::ScaleImageHorizontalGradientColor::init()
   widthRect = 20;
   imageStepXRectangle = widthRect;
   outlierMargin = 2 * titleMargin;
+  SIZE_OF_TINY_MARK = 4;
 }
 
 
 void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
 {
   imageWidth = numSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
-  imageHeight = 2 * semanticValueLabel.size() + 2 * titleMargin;
+  imageHeight = heightRect + maxLabelSize.GetHeight() + 3 * titleMargin;
 }
 
 
@@ -3419,9 +3433,6 @@ void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
 void gTimeline::ScaleImageHorizontalGradientColor::draw()
 {
   // *** 1. Draw color scale ****************************************************************
-  
-  //xdst = titleMargin;
-  //ydst = titleMargin;
   
   int initialXdst = xdst;
   
@@ -3458,7 +3469,7 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
   ydst += imageStepY - titleMargin + 2;
   
   // Bottom Outlier
-  wxString tmpSemanticValueLabel = wxT("<");
+  wxString tmpSemanticValueLabel = wxT( "<" );
   drawLabel( tmpSemanticValueLabel );
   xdst += imageStepXRectangle + outlierMargin;
   
@@ -3484,7 +3495,7 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
 
   // Top outlier
   xdst += outlierMargin;
-  tmpSemanticValueLabel = wxT(">");
+  tmpSemanticValueLabel = wxT( ">" );
   drawIt = true;
   drawLabel( tmpSemanticValueLabel, drawIt, RIGHT );
 }
@@ -3492,50 +3503,44 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
 
 void gTimeline::ScaleImageHorizontalGradientColor::drawRectangle( rgb semanticColour, TPosition position )
 {
-  labelDC->Clear();
+  scaleDC->SetBrush( wxColour( semanticColour.red,
+                               semanticColour.green,
+                               semanticColour.blue ) );
+  scaleDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
 
-  // Draw rectangle
-  labelDC->SetPen( wxPen( foreground ) );
-  labelDC->SetBackground( wxBrush( background ) );
-  labelDC->SetBrush( wxColour( semanticColour.red,
-                              semanticColour.green,
-                              semanticColour.blue ) );
-  int xRect = 0;
-  int yRect = 0;
-  labelDC->DrawRectangle( xRect, yRect, widthRect, heightRect );
-
-  int SIZE_OF_TINY_MARK = 4;
+  scaleMaskDC->DrawRectangle( xdst, ydst, widthRect, heightRect );
+  
   switch( position )
   {
     case FIRST:
-      labelDC->DrawLine( xRect, yRect + heightRect,
-                         xRect, yRect + heightRect + SIZE_OF_TINY_MARK );
+      scaleDC->DrawLine( xdst, ydst + heightRect,
+                         xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleMaskDC->DrawLine( xdst, ydst + heightRect,
+                             xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
       break;
     case MIDDLE:
-      labelDC->DrawLine( xRect + ceil( widthRect / 2 ), yRect + heightRect,
-                         xRect + ceil( widthRect / 2 ), yRect + heightRect + SIZE_OF_TINY_MARK );
+      scaleDC->DrawLine( xdst + ceil( widthRect / 2 ), ydst + heightRect,
+                         xdst + ceil( widthRect / 2 ), ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleMaskDC->DrawLine( xdst + ceil( widthRect / 2 ), ydst + heightRect,
+                             xdst + ceil( widthRect / 2 ), ydst + heightRect + SIZE_OF_TINY_MARK );
       break;
     case LAST:
-      labelDC->DrawLine( xRect + widthRect - 1, yRect + heightRect,
-                         xRect + widthRect - 1, yRect + heightRect + SIZE_OF_TINY_MARK );
+      scaleDC->DrawLine( xdst + widthRect - 1, ydst + heightRect,
+                         xdst + widthRect - 1, ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleMaskDC->DrawLine( xdst + widthRect - 1, ydst + heightRect,
+                             xdst + widthRect - 1, ydst + heightRect + SIZE_OF_TINY_MARK );
       break;
     default:
       break;
   }  
-    
-  // Paste to main image
-  scaleDC->Blit( xdst, ydst, imageWidth, imageHeight + SIZE_OF_TINY_MARK, labelDC, xsrc, ysrc );
 }
 
 
 void gTimeline::ScaleImageHorizontalGradientColor::drawLabel( wxString semanticValueLabel, bool writeIt, TAlign align )
 {
-  labelDC->Clear();
-  labelDC->SetBackground( wxBrush( background ) );
-
   if ( writeIt )
   {
-    wxSize labelSize = labelDC->GetTextExtent( semanticValueLabel );
+    wxSize labelSize = scaleDC->GetTextExtent( semanticValueLabel );
 
     int shiftLeft;
     switch( align )
@@ -3560,11 +3565,8 @@ void gTimeline::ScaleImageHorizontalGradientColor::drawLabel( wxString semanticV
     }
 
     // Write text
-    labelDC->SetPen( wxPen( background, 1 ) );
-    labelDC->DrawText( semanticValueLabel, 0, 0 );
-
-    // Paste to main image
-    scaleDC->Blit( tmpXdst, ydst, labelSize.GetWidth(), imageHeight, labelDC, 0, 0 );  
+    scaleDC->DrawText( semanticValueLabel, tmpXdst, ydst);
+    scaleMaskDC->DrawText( semanticValueLabel, tmpXdst, ydst );
   }
 }
 

@@ -625,6 +625,7 @@ private:
                   const std::map< TSemanticValue, rgb >& whichSemanticValues,
                   wxColour whichBackground,
                   wxColour whichForeground,
+                  int whichBackgroundMode, // wxSOLID or wxTRANSPARENT; wxTRANSPARENT overrides fore and back
                   wxFont whichTextFont,
                   wxString& whichImagePath,
                   const wxString& whichImageInfix,
@@ -644,6 +645,7 @@ private:
       virtual void computeMaxLabelSize();
       virtual void computeImageSize();
       virtual void createDC();
+      virtual void invertMask( wxDC *dcMask );      
       virtual void draw();
       virtual void drawLabeledRectangle( rgb semanticColour,
                                            wxString semanticValueLabel,
@@ -654,6 +656,7 @@ private:
       std::map< TSemanticValue, rgb > semValues;
       wxColour background;
       wxColour foreground;
+      int backgroundMode;
       wxFont textFont;
       wxString& imagePath;
       wxString imageInfix;
@@ -686,11 +689,12 @@ private:
       int ysrc;
       int xdst;
       int ydst;
-      wxBitmap* labelBitmap;
-      wxMemoryDC* labelDC;
       wxBitmap *scaleBitmap;
       wxMemoryDC *scaleDC;
-
+      wxBitmap *scaleMaskBitmap;
+      wxMemoryDC *scaleMaskDC;
+      wxSize maxLabelSize;
+      
     private:
   };
 
@@ -702,6 +706,7 @@ private:
               const std::map< TSemanticValue, rgb >& whichSemanticValues,
               wxColour whichBackground,
               wxColour whichForeground,
+              int whichBackgroundMode,
               wxFont whichTextFont,
               wxString& whichImagePath,
               const wxString& whichImageInfix,
@@ -728,6 +733,7 @@ private:
               const std::map< TSemanticValue, rgb >& whichSemanticValues,
               wxColour whichBackground,
               wxColour whichForeground,
+              int whichBackgroundMode,
               wxFont whichTextFont,
               wxString& whichImagePath,
               const wxString& whichImageInfix,
@@ -756,6 +762,7 @@ private:
               const std::map< TSemanticValue, rgb >& whichSemanticValues,
               wxColour whichBackground,
               wxColour whichForeground,
+              int whichBackgroundMode,
               wxFont whichTextFont,
               wxString& whichImagePath,
               const wxString& whichImageInfix,
@@ -776,7 +783,8 @@ private:
     private:
       typedef enum { LEFT = 0, CENTER, RIGHT } TAlign;
       typedef enum { FIRST = 0, MIDDLE, LAST, ANY } TPosition;
-      
+
+      int SIZE_OF_TINY_MARK;
       int outlierMargin; // Inner margin between outlier and whole scale
 
       void drawRectangle( rgb semanticColour, TPosition position = ANY );
