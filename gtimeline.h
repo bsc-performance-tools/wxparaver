@@ -462,6 +462,8 @@ public:
   bool IsSplit() const;
 
   void saveImage( bool showSaveDialog = true );
+  void saveImageLegend( bool showSaveDialog = true );
+
   void saveText();
   void saveCFG();
 
@@ -582,19 +584,7 @@ private:
   void Unsplit();
   void Split();
   void OnTimerSize( wxTimerEvent& event );
-  void OnTimerMotion( wxTimerEvent& event );
-
-                    
-  void saveLabelsImage( wxColour background,
-                        wxColour foreground,
-                        wxString& imagePath,
-                        const wxString& imageInfix,
-                        bool tryHorizontal,
-#if wxMAJOR_VERSION<3
-                        long imageType );
-#else
-                        wxBitmapType& imageType );
-#endif
+  void OnTimerMotion( wxTimerEvent& event );                    
 
   // Called by saveLabelsImage
   void drawRectangle( wxMemoryDC& labelDC,
