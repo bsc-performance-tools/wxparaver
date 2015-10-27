@@ -547,7 +547,7 @@ void paraverMain::CreateControls()
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
   
   setActiveWorkspacesText();
-//  refreshActiveWorkspaces();
+//  refreshMenuHints();
 
   // These are here because no UpdateUI for MenuBar
   wxUpdateUIEvent tmpEvent;
@@ -555,7 +555,7 @@ void paraverMain::CreateControls()
 }
 
 
-void paraverMain::refreshActiveWorkspaces()
+void paraverMain::refreshMenuHints()
 {
   // Destroy previous if any
   size_t maxItems = menuHints->GetMenuItemCount();
@@ -587,6 +587,27 @@ void paraverMain::refreshActiveWorkspaces()
     
     menuHints->AppendSubMenu( currentWorkspace, currentWorkspaceName );
   }
+}
+
+
+void paraverMain::updateActiveWorkspaces( Trace *whichTrace )
+{
+  vector< string > tmpActiveWorkspaces;
+  set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
+  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces();
+  for ( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
+  {
+    if ( find( activeWorkspaces.begin(), activeWorkspaces.end(), *it ) !=  activeWorkspaces.end() )
+      tmpActiveWorkspaces.push_back( *it );
+    else
+    {
+      vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it ).getAutoTypes();
+      if ( find_first_of( tmpLoadedTypes.begin(), tmpLoadedTypes.end(), 
+                          tmpAutoTypes.begin(), tmpAutoTypes.end() ) !=  tmpLoadedTypes.end() )
+        tmpActiveWorkspaces.push_back( *it );
+    }
+  } 
+  activeWorkspaces.swap( tmpActiveWorkspaces );
 }
 
 
@@ -720,13 +741,16 @@ bool paraverMain::DoLoadTrace( const string &path )
   paraverMain::dialogProgress = NULL;
   delete progress;
 
+  updateActiveWorkspaces( tr );
+  setActiveWorkspacesText();
+  refreshMenuHints();
+
   canServeSignal = true;
   
 #ifndef WIN32
   if ( sig1 || sig2 )
     OnSignal();
 #endif
-
     
   // These are here because no UpdateUI for MenuBar
   wxUpdateUIEvent tmpEvent;
@@ -2850,7 +2874,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     
     workspacesManager->saveXML();
     setActiveWorkspacesText();
-    refreshActiveWorkspaces();
+    refreshMenuHints();
   }
   raiseCurrentWindow = false;
 }
@@ -3921,7 +3945,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
     }
     
     setActiveWorkspacesText();
-    refreshActiveWorkspaces();
+    refreshMenuHints();
 
     // These are here because no UpdateUI for MenuBar
     wxUpdateUIEvent tmpEvent;

@@ -550,7 +550,8 @@ private:
   void OnSessionTimer( wxTimerEvent& event );
   
 private:
-  void refreshActiveWorkspaces();
+  void refreshMenuHints();
+  void updateActiveWorkspaces( Trace *whichTrace );
   void OnHintClick( wxCommandEvent& event );
   void OnMenuHintUpdate( wxUpdateUIEvent& event );
   void setActiveWorkspacesText();
