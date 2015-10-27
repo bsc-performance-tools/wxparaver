@@ -567,6 +567,7 @@ void paraverMain::refreshMenuHints()
     menuHints->Destroy( currentItem );
   }
   
+  set< TEventType > tmpLoadedTypes = loadedTraces[ currentTrace ]->getLoadedEvents();
   // Create updated one
   for ( vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
   {
@@ -586,6 +587,11 @@ void paraverMain::refreshMenuHints()
     }
     
     menuHints->AppendSubMenu( currentWorkspace, currentWorkspaceName );
+    
+    vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it ).getAutoTypes();
+    bool tmpEnable = find_first_of( tmpLoadedTypes.begin(), tmpLoadedTypes.end(), 
+                                     tmpAutoTypes.begin(), tmpAutoTypes.end() ) !=  tmpLoadedTypes.end();
+    menuHints->Enable( menuHints->FindItem( currentWorkspaceName ), tmpEnable );
   }
 }
 
