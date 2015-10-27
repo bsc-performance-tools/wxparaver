@@ -51,6 +51,9 @@
 #include <wx/arrstr.h>
 #include <wx/validate.h>
 
+// Tokenizer
+#include <wx/tokenzr.h>
+
 ////@begin XPM images
 #include "derived_add.xpm"
 #include "delete.xpm"
@@ -1980,9 +1983,17 @@ void PreferencesDialog::OnTextWorkspaceAutotypesUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& event )
 {
-  Workspace tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
-  std::string tmpTxt = std::string( event.GetString().mb_str() );
+  Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+  //std::string tmpTxt = std::string( event.GetString().mb_str() );
   vector<TEventType> tmpAutoTypes;
+  wxStringTokenizer tmpTokenTypes( event.GetString(), wxT( ";" ) );
+  unsigned long tmpEventType;
+  while( tmpTokenTypes.HasMoreTokens() )
+  {
+    wxString token = tmpTokenTypes.GetNextToken();
+    if ( token.ToULong( &tmpEventType ) )
+      tmpAutoTypes.push_back( TEventType( tmpEventType ) );
+  }
   tmpWrk.setAutoTypes( tmpAutoTypes );
 }
 
