@@ -145,6 +145,8 @@ class FileBrowserButton;
 #define ID_BUTTON_WORKSPACES_UP 10273
 #define ID_BUTTON_WORKSPACES_DOWN 10274
 #define ID_TEXT_WORKSPACE_NAME 10275
+#define ID_STATIC_WORKSPACE_AUTOTYPES 10285
+#define ID_TEXT_WORKSPACE_AUTOTYPES 10011
 #define ID_LISTBOX_HINTS_WORKSPACE 10276
 #define ID_BUTTON_HINT_ADD 10277
 #define ID_BUTTON_HINT_DELETE 10278
@@ -233,6 +235,15 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_NAME
   void OnTextWorkspaceNameUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_STATIC_WORKSPACE_AUTOTYPES
+  void OnStaticWorkspaceAutotypesUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXT_WORKSPACE_AUTOTYPES
+  void OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_AUTOTYPES
+  void OnTextWorkspaceAutotypesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_HINTS_WORKSPACE
   void OnListboxHintsWorkspaceSelected( wxCommandEvent& event );
@@ -566,6 +577,7 @@ public:
   wxBitmapButton* buttonUpWorkspace;
   wxBitmapButton* buttonDownWorkspace;
   wxTextCtrl* txtWorkspaceName;
+  wxTextCtrl* txtAutoTypes;
   wxListBox* listHintsWorkspace;
   wxBitmapButton* buttonAddHint;
   wxBitmapButton* buttonDeleteHint;
