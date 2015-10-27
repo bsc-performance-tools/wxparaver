@@ -2901,8 +2901,6 @@ void gTimeline::saveImage( bool showSaveDialog )
     filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetPath();
   }
-  
-  // Build image to be saved as: title image + timeline image + legend
 
   // Get title
   wxString longTitle = wxString::FromAscii(
@@ -3019,12 +3017,12 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   tmpSuffix = _(".");
   if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
      tmpSuffix +=
-            wxString( _( "horiz.labels.transp" ) ) +
+            wxString( _( "gradient_scale" ) ) +
             _(".") +
             wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
   else
     tmpSuffix +=
-            wxString( _( "vert.labels.transp" ) ) +
+            wxString( _( "code_color_scale" ) ) +
             _(".") +
             wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
   
@@ -3080,13 +3078,16 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
 #else
   wxBitmapType imageType;
 #endif
+  int backgroundMode = wxTRANSPARENT; // default
   switch( filterIndex )
   {
     case ParaverConfig::BMP:
       imageType = wxBITMAP_TYPE_BMP;
+      backgroundMode = wxSOLID;
       break;
     case ParaverConfig::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
+      backgroundMode = wxSOLID;
       break;
     case ParaverConfig::PNG:
       imageType = wxBITMAP_TYPE_PNG;
@@ -3103,7 +3104,8 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
   {
     tmpImage = new ScaleImageHorizontalGradientColor( myWindow, semanticValues,
-                                                       backgroundColour, foregroundColour, wxTRANSPARENT,
+                                                       //backgroundColour, foregroundColour, backgroundMode,
+                                                       *wxWHITE, *wxBLACK, backgroundMode,
                                                        titleFont,
                                                        //imagePath, wxString( _( "horiz.labels.transp" ) ),
                                                        imagePath, wxString( _( "" ) ),
@@ -3114,7 +3116,8 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   else if ( myWindow->isCodeColorSet() )
   {
     tmpImage = new ScaleImageVerticalCodeColor( myWindow, semanticValues,
-                                                 backgroundColour, foregroundColour, wxTRANSPARENT,
+                                                 //backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE, *wxBLACK, backgroundMode,
                                                  titleFont,
                                                  // imagePath, wxString( _( "vert.labels.transp" ) ),
                                                  imagePath, wxString( _( "" ) ),

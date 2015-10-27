@@ -155,7 +155,7 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
   { wxCMD_LINE_SWITCH, 
     "i",
     "image",
-    "Save cfg last window as an image",
+    "Save cfg last window as an image; if it's a timeline, also saves its legend",
     wxCMD_LINE_VAL_NONE,
     wxCMD_LINE_PARAM_OPTIONAL },
 
@@ -534,6 +534,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             
             tmpTimeline->redraw();
             tmpTimeline->saveImage( false );
+            tmpTimeline->saveImageLegend( false );
             
             delete tmpTimeline;
             newWindows.pop_back();
