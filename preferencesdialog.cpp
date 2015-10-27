@@ -1186,6 +1186,15 @@ void PreferencesDialog::CreateControls()
   fileBrowserHintPath->SetFileDialogWildcard( _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ) );
   fileBrowserHintPath->SetDialogMessage( _( "Select Configuration File" ) );
   
+  // WORKSPACE PANEL
+  wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
+                              _("5"), _("6"), _("7"), _("8"), _("9"),
+                              _(";") };
+  wxTextValidator myValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
+  wxArrayString charIncludes( (size_t)11, allowedChars );
+  myValidator.SetIncludes( charIncludes );
+  txtAutoTypes->SetValidator( myValidator );
+  
   panelID[ ID_PREFERENCES_GLOBAL ] = 0;
   panelID[ ID_PREFERENCES_TIMELINE ] = 1;
   panelID[ ID_PREFERENCES_HISTOGRAM ] = 2;
