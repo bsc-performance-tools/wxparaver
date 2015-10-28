@@ -566,7 +566,10 @@ void paraverMain::refreshMenuHints()
     //Disconnect( id, wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&paraverMain::OnHintClick );
     menuHints->Destroy( currentItem );
   }
-  
+
+  if( currentTrace == -1 )
+    return;
+
   set< TEventType > tmpLoadedTypes = loadedTraces[ currentTrace ]->getLoadedEvents();
   // Create updated one
   for ( vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
