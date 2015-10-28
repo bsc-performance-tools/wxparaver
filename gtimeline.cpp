@@ -326,14 +326,14 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -396,7 +396,8 @@ std::vector< TObjectOrder > gTimeline::getCurrentZoomRange()
 #ifdef __WXMAC__
 void gTimeline::drawStackedImages( wxDC& dc )
 {
-  dc.DrawBitmap( bufferImage, 0, 0, false );
+  if( bufferImage.IsOk() )
+    dc.DrawBitmap( bufferImage, 0, 0, false );
   if( drawCaution )
   {
     wxBitmap cautionImage( caution_xpm );
@@ -410,13 +411,13 @@ void gTimeline::drawStackedImages( wxDC& dc )
                    true );
   }
   
-  if( myWindow->getDrawFlags() )
+  if( myWindow->getDrawFlags() && eventImage.IsOk() )
     dc.DrawBitmap( eventImage, 0, 0, true );
 
-  if( myWindow->getDrawCommLines() )
+  if( myWindow->getDrawCommLines() && commImage.IsOk() )
     dc.DrawBitmap( commImage, 0, 0, true );
     
-  if( zooming )
+  if( zooming && zoomBMP.IsOk() )
   {
     dc.DrawBitmap( zoomBMP, 0, 0, true );
   }
