@@ -167,7 +167,8 @@ void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Window *which
 
   // Event values: all of the current type, and only the present in the filter
   map< TEventValue, string > auxValues;
-  currentWindow->getTrace()->getEventLabels().getValues( eventTypes[ firstEventTypePos ], auxValues );
+  if( eventTypes.size() > 0 )
+    currentWindow->getTrace()->getEventLabels().getValues( eventTypes[ firstEventTypePos ], auxValues );
   for( map< TEventValue, string >::iterator it = auxValues.begin(); it != auxValues.end(); ++it )
   {
     eventValues.Add( (*it).first );
@@ -267,8 +268,11 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
   }
 
   // fill and set event values
-  currentType = eventTypes[ firstEventTypePos ];
-  UpdateCheckListboxValues( currentType );
+  if( eventTypes.size() > 0 )
+  {
+    currentType = eventTypes[ firstEventTypePos ];
+    UpdateCheckListboxValues( currentType );
+  }
   
   // Button Apply selected?
   EnableApplyButton();

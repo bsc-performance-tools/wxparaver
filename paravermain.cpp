@@ -3898,7 +3898,7 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
             tmpCFG.MakeAbsolute( tmpGlobalCFGs );
           }
 
-          DoLoadCFG( tmpCFG.GetFullPath().mb_str() );
+          DoLoadCFG( std::string( tmpCFG.GetFullPath().mb_str() ) );
         }
       }
     }
