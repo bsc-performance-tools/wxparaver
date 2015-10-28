@@ -54,6 +54,8 @@
 // Tokenizer
 #include <wx/tokenzr.h>
 
+#include <wx/filename.h>
+
 ////@begin XPM images
 #include "derived_add.xpm"
 #include "delete.xpm"
@@ -1930,8 +1932,18 @@ void PreferencesDialog::OnTextctrlWorkspaceHintPathTextUpdated( wxCommandEvent& 
   if( listHintsWorkspace->GetSelection() == wxNOT_FOUND )
     return;
 
+
+  wxString tmpCFGsPath = dirBrowserButtonCFG->GetPath();
+  wxString tmpHintPath = fileBrowserHintPath->GetPath();
+  if ( tmpHintPath.Len() > tmpCFGsPath.Len() )
+  {
+    wxString tmpPrefixPath = tmpHintPath.Left( tmpCFGsPath.Len() ) ;
+    if ( tmpPrefixPath.Cmp( tmpCFGsPath ) == 0 )
+      tmpHintPath = tmpHintPath.Right( tmpHintPath.Len() - tmpCFGsPath.Len() - 1 );
+  }
+
   std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( 
-                                                    std::string( fileBrowserHintPath->GetPath().mb_str() ),
+                                                    std::string( tmpHintPath.mb_str() ),
                                                     std::string( txtHintDescription->GetValue().mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].modifyHintCFG( listHintsWorkspace->GetSelection(), tmpHint );
   listHintsWorkspace->SetString( listHintsWorkspace->GetSelection(), paraverMain::getHintComposed( tmpHint ) );
