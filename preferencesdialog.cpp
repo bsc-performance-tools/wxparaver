@@ -1077,14 +1077,20 @@ void PreferencesDialog::CreateControls()
   wxBoxSizer* itemBoxSizer182 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer181->Add(itemBoxSizer182, 0, wxGROW|wxLEFT|wxTOP, 5);
   txtWorkspaceName = new wxTextCtrl( itemPanel171, ID_TEXT_WORKSPACE_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    txtWorkspaceName->SetToolTip(_("Workspace name"));
   itemBoxSizer182->Add(txtWorkspaceName, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   wxBoxSizer* itemBoxSizer184 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer181->Add(itemBoxSizer184, 0, wxGROW|wxLEFT, 5);
   wxStaticText* itemStaticText185 = new wxStaticText( itemPanel171, ID_STATIC_WORKSPACE_AUTOTYPES, _("Event Types"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    itemStaticText185->SetToolTip(_("Event types list for automatic workspace selection\n\nExample: 50000001;50000002[;type] "));
   itemBoxSizer184->Add(itemStaticText185, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   txtAutoTypes = new wxTextCtrl( itemPanel171, ID_TEXT_WORKSPACE_AUTOTYPES, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    txtAutoTypes->SetToolTip(_("Event types list for automatic workspace selection\n\nExample: 50000001;50000002[;type] "));
   itemBoxSizer184->Add(txtAutoTypes, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   wxStaticBox* itemStaticBoxSizer187Static = new wxStaticBox(itemPanel171, wxID_ANY, _(" Hints "));
@@ -1745,6 +1751,13 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
     workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), ++n );
   listWorkspaces->Append( workspaceName );
   workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace( std::string( workspaceName.mb_str() ) ) ) );
+    
+  // Focus in name text control  
+  listWorkspaces->Select( listWorkspaces->GetCount() - 1 );
+  wxCommandEvent tmpCmdEvent;
+  OnListboxWorkspacesSelected( tmpCmdEvent );
+  UpdateWindowUI( wxUPDATE_UI_RECURSE );
+  txtWorkspaceName->SetFocus();
 }
 
 
@@ -1848,6 +1861,13 @@ void PreferencesDialog::OnButtonHintAddClick( wxCommandEvent& event )
   std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( std::string( tmpPath.mb_str() ), std::string( tmpDesc.mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].addHintCFG( tmpHint );
   listHintsWorkspace->Append( paraverMain::getHintComposed( tmpHint ) );
+  
+  // Focus in description text control  
+  listHintsWorkspace->Select( listHintsWorkspace->GetCount() - 1 );
+  wxCommandEvent tmpCmdEvent;
+  OnListboxHintsWorkspaceSelected( tmpCmdEvent );
+  UpdateWindowUI( wxUPDATE_UI_RECURSE );
+  txtHintDescription->SetFocus();
 }
 
 
