@@ -3891,7 +3891,14 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
         wxString hintName = getHintComposed( *it2 );
         if ( selectedHint == hintName )
         {     
-          DoLoadCFG( it2->first );
+          wxFileName tmpCFG( wxString::FromAscii( it2->first.c_str() ) );
+          if ( tmpCFG.IsRelative() )
+          {
+            wxString tmpGlobalCFGs( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 );
+            tmpCFG.MakeAbsolute( tmpGlobalCFGs );
+          }
+
+          DoLoadCFG( tmpCFG.GetFullPath().mb_str() );
         }
       }
     }
