@@ -113,12 +113,6 @@ class ProgressController;
 #define ID_TIMER_SIZE 40000
 #define ID_TIMER_MOTION 40001
 
-#ifdef WIN32
-using namespace stdext;
-#else
-using namespace __gnu_cxx;
-#endif
-
 /*!
  * gTimeline class declaration
  */

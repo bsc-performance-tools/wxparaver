@@ -3620,10 +3620,10 @@ void gTimeline::ScaleImageHorizontalGradientColor::drawRectangle( rgb semanticCo
                              xdst, ydst + heightRect + SIZE_OF_TINY_MARK );
       break;
     case MIDDLE:
-      scaleDC->DrawLine( xdst + ceil( widthRect / 2 ), ydst + heightRect,
-                         xdst + ceil( widthRect / 2 ), ydst + heightRect + SIZE_OF_TINY_MARK );
-      scaleMaskDC->DrawLine( xdst + ceil( widthRect / 2 ), ydst + heightRect,
-                             xdst + ceil( widthRect / 2 ), ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleDC->DrawLine( xdst + ceil( (double)widthRect / 2 ), ydst + heightRect,
+                         xdst + ceil( (double)widthRect / 2 ), ydst + heightRect + SIZE_OF_TINY_MARK );
+      scaleMaskDC->DrawLine( xdst + ceil( (double)widthRect / 2 ), ydst + heightRect,
+                             xdst + ceil( (double)widthRect / 2 ), ydst + heightRect + SIZE_OF_TINY_MARK );
       break;
     case LAST:
       scaleDC->DrawLine( xdst + widthRect - 1, ydst + heightRect,
@@ -3650,7 +3650,7 @@ void gTimeline::ScaleImageHorizontalGradientColor::drawLabel( wxString semanticV
         shiftLeft = 0;
         break;
       case CENTER:
-        shiftLeft = ceil( labelSize.GetWidth() / 2 - widthRect / 2 );
+        shiftLeft = ceil( (double)labelSize.GetWidth() / 2 - (double)widthRect / 2 );
         break;
       case RIGHT:
         shiftLeft = labelSize.GetWidth() - widthRect;
