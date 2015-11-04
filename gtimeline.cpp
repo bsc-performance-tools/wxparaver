@@ -326,7 +326,6 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
@@ -334,6 +333,7 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -2953,7 +2953,13 @@ void gTimeline::saveImage( bool showSaveDialog )
   wxCoord ydst = 0;
   imageDC.Blit( xdst, ydst, titleWidth, titleHeigth, &titleDC, xsrc, ysrc );
 
+#ifdef __WXMAC__
+  wxBitmap tmpDrawImage( drawImage.GetWidth(), drawImage.GetHeight() );
+  wxMemoryDC timelineDC( tmpDrawImage );
+  drawStackedImages( timelineDC );
+#else
   wxMemoryDC timelineDC( drawImage );
+#endif
   xsrc = 0;
   ysrc = 0;
   xdst = 0;
@@ -2985,6 +2991,7 @@ void gTimeline::saveImage( bool showSaveDialog )
       break;
   }
 
+  imageDC.SelectObject( wxNullBitmap );
   wxImage baseLayer = imageBitmap.ConvertToImage();
   baseLayer.SaveFile( imagePath, imageType );  
 }
@@ -3183,6 +3190,7 @@ void gTimeline::ScaleImageVertical::save()
   draw();
   
   scaleDC->SelectObject( wxNullBitmap );
+#ifndef __WXMAC__
   // TODO: avoid to create/handle scaleMaskDC in all the other methods if wxTRANSPARENT
   if ( backgroundMode == wxTRANSPARENT )
   {
@@ -3192,6 +3200,7 @@ void gTimeline::ScaleImageVertical::save()
     wxMask *mask  = new wxMask( *scaleMaskBitmap );
     scaleBitmap->SetMask( mask );
   }
+#endif
 
   wxImage scaleImage = scaleBitmap->ConvertToImage();
 
@@ -3241,7 +3250,7 @@ void gTimeline::ScaleImageVertical::save()
   maskDC.SelectObject( wxNullBitmap );
   wxMask *tmpMask = new wxMask( maskbmp );
   bmp.SetMask( tmpMask );
-  bmp.SaveFile( wxT( "c:\\test.png" ), wxBITMAP_TYPE_PNG );
+  bmp.SaveFile( wxT( "./test.png" ), wxBITMAP_TYPE_PNG );
 #endif
 }
 
@@ -3344,13 +3353,12 @@ void gTimeline::ScaleImageVertical::createDC()
     scaleDC->SetTextForeground( foreground );
     scaleDC->SetPen( foreground );
   }
-#ifdef WIN32
   else
   {
     scaleDC->SetBackground( *wxTRANSPARENT_BRUSH );
     scaleDC->SetTextForeground( *wxBLACK );
   }
-#endif
+
   scaleDC->Clear();
   
   // Mask for legend
