@@ -326,14 +326,14 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -3177,15 +3177,17 @@ void gTimeline::ScaleImageVertical::save()
   createDC();
   draw();
   
+  scaleDC->SelectObject( wxNullBitmap );
   // TODO: avoid to create/handle scaleMaskDC in all the other methods if wxTRANSPARENT
   if ( backgroundMode == wxTRANSPARENT )
   {
     invertMask( scaleMaskDC );
-  
+    scaleMaskDC->SelectObject( wxNullBitmap );
+    
     wxMask *mask  = new wxMask( *scaleMaskBitmap );
     scaleBitmap->SetMask( mask );
   }
-  
+
   wxImage scaleImage = scaleBitmap->ConvertToImage();
 
   wxString scaleImagePath;
@@ -3198,6 +3200,44 @@ void gTimeline::ScaleImageVertical::save()
             _(".") + imageInfix + _(".") + tmpSuffix;
   scaleImage.SaveFile( scaleImagePath, imageType );
   //scaleBitmap->SaveFile( scaleImagePath, wxBITMAP_TYPE_PNG );
+  
+// Test code for transparency
+#if 0
+  ::wxInitAllImageHandlers();
+  wxBitmap bmp( 64, 64, 32 );
+  //bmp.UseAlpha();
+  wxBitmap maskbmp( 64, 64, 1 );
+
+//  wxMemoryDC memDC( bmp );
+//  wxGCDC dc( memDC );
+  wxMemoryDC dc( bmp );
+  wxMemoryDC maskDC( maskbmp );
+
+  dc.SetBackground( *wxTRANSPARENT_BRUSH );
+  dc.Clear();
+  dc.SetFont( textFont );
+  maskDC.SetBackground( *wxWHITE_BRUSH );
+  maskDC.Clear();
+  maskDC.SetBrush( *wxBLACK_BRUSH );
+  maskDC.SetPen( *wxBLACK_PEN );
+  maskDC.SetTextForeground( *wxBLACK );
+  maskDC.SetFont( textFont );
+
+/*  dc.SetBrush( *wxRED_BRUSH );
+  dc.SetPen( *wxTRANSPARENT_PEN );
+  dc.DrawRectangle( 10, 10, 44, 44 );
+  maskDC.DrawRectangle( 10, 10, 44, 44 );*/
+  dc.SetTextForeground( *wxBLACK );
+  dc.DrawText( wxT( "HOLA" ), 10, 10 );
+  maskDC.DrawText( wxT( "HOLA" ), 10, 10 );
+  invertMask( &maskDC );
+//  memDC.SelectObject( wxNullBitmap );
+  dc.SelectObject( wxNullBitmap );
+  maskDC.SelectObject( wxNullBitmap );
+  wxMask *tmpMask = new wxMask( maskbmp );
+  bmp.SetMask( tmpMask );
+  bmp.SaveFile( wxT( "c:\\test.png" ), wxBITMAP_TYPE_PNG );
+#endif
 }
 
 
@@ -3290,6 +3330,7 @@ void gTimeline::ScaleImageVertical::createDC()
   // Legend
   scaleBitmap = new wxBitmap( imageWidth, imageHeight );
   scaleDC = new wxMemoryDC( *scaleBitmap );
+
   scaleDC->SetFont( textFont );
   if ( backgroundMode == wxSOLID )
   {
@@ -3298,8 +3339,14 @@ void gTimeline::ScaleImageVertical::createDC()
     scaleDC->SetTextForeground( foreground );
     scaleDC->SetPen( foreground );
   }
-
-  scaleDC->Clear();  
+#ifdef WIN32
+  else
+  {
+    scaleDC->SetBackground( *wxTRANSPARENT_BRUSH );
+    scaleDC->SetTextForeground( *wxBLACK );
+  }
+#endif
+  scaleDC->Clear();
   
   // Mask for legend
   scaleMaskBitmap = new wxBitmap( imageWidth, imageHeight, 1 );
