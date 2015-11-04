@@ -326,7 +326,6 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
@@ -334,6 +333,7 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -3006,9 +3006,14 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
 
   ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   tmpSuffix = _(".");
-  if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
+  if ( myWindow->isGradientColorSet() )
      tmpSuffix +=
             wxString( _( "gradient_scale" ) ) +
+            _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  else if ( myWindow->isNotNullGradientColorSet() )
+     tmpSuffix +=
+            wxString( _( "not_null_gradient_scale" ) ) +
             _(".") +
             wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
   else
@@ -3253,7 +3258,7 @@ void gTimeline::ScaleImageVertical::init()
   precision = ParaverConfig::getInstance()->getTimelinePrecision();
   symbolicDesc = true;
   
-  numSquares = 20;
+  //numSquares = 20;
   extraPrefixOutlier = wxT("");
 
   // n labels * label height + top + bottom
@@ -3476,9 +3481,10 @@ void gTimeline::ScaleImageVerticalGradientColor::init()
   drawOutliers = true;
   symbolicDesc = false;
   
-  numSquares = 22;
+  numSquaresWithoutOutliers = 20;
   if ( myWindow->isNotNullGradientColorSet() )
-    numSquares = 23;
+    numSquaresWithoutOutliers++; // 0 black
+  totalSquares = numSquaresWithoutOutliers + 2; // gradient and outliers
 
   extraPrefixOutlier = wxT( "< " );
 }
@@ -3487,8 +3493,8 @@ void gTimeline::ScaleImageVerticalGradientColor::init()
 void gTimeline::ScaleImageVerticalGradientColor::sortSemanticValues()
 {
   semValues.clear();
-  TSemanticValue step = ( currentMax - currentMin ) / 20.0;
-  for( int i = 0; i <= 20; ++i )
+  TSemanticValue step = ( currentMax - currentMin ) / double( numSquaresWithoutOutliers );
+  for( int i = 0; i < numSquaresWithoutOutliers; ++i )
   {
     TSemanticValue current = ( i * step ) + currentMin;
     keys.push_back( current );
@@ -3571,7 +3577,7 @@ void gTimeline::ScaleImageHorizontalGradientColor::init()
 
 void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
 {
-  imageWidth = numSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
+  imageWidth = totalSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
   imageHeight = heightRect + maxLabelSize.GetHeight() + 3 * titleMargin;
 }
 

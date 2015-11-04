@@ -161,9 +161,6 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
-  /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowLeftUp( wxMouseEvent& event );
-
   /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowLeftDClick( wxMouseEvent& event );
 
@@ -187,6 +184,9 @@ public:
 
   /// wxEVT_LEFT_DOWN event handler for ID_SCROLLEDWINDOW
   void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
+  void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK
   void OnNotebookPageChanging( wxNotebookEvent& event );
@@ -656,7 +656,6 @@ private:
       TSemanticValue currentMax;
       std::vector< TSemanticValue > keys;
       PRV_UINT32 precision;
-      int numSquares;
       wxString extraPrefixOutlier;
       std::map< TSemanticValue, wxString > semanticValueLabel;
       TSemanticValue semanticValueWithLongestLabel;
@@ -731,6 +730,9 @@ private:
       {}
 
     protected:
+      int numSquaresWithoutOutliers;
+      int totalSquares;
+
       virtual void init();
       virtual void sortSemanticValues();
       virtual void draw();

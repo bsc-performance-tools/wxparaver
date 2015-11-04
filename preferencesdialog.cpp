@@ -1531,7 +1531,7 @@ bool PreferencesDialog::TransferDataFromWindow()
 
   // WORKSPACES
   WorkspaceManager::getInstance()->clear();
-  for( int i = 0; i < listWorkspaces->GetCount(); ++i )
+  for( size_t i = 0; i < listWorkspaces->GetCount(); ++i )
     WorkspaceManager::getInstance()->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
   
   return true;
