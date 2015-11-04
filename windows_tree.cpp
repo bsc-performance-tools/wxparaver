@@ -70,12 +70,13 @@ void appendHistogram2Tree( gHistogram *ghistogram )
   wxTreeCtrl *currentPage = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
   TreeBrowserItemData *currentData =  new TreeBrowserItemData( wxString::FromAscii( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
 
-  wxTreeItemId currentWindowId1 = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
-                                                             wxString::FromAscii( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
-                                                             currentData );
-  wxTreeItemId currentWindowId2 = currentPage->AppendItem( currentPage->GetRootItem(),
-                                                           wxString::FromAscii( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
-                                                           new TreeBrowserItemData( *currentData ) );
+  wxTreeItemId tmpCurrentWindowId;
+  tmpCurrentWindowId = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
+                                                   wxString::FromAscii( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
+                                                   currentData );
+  tmpCurrentWindowId = currentPage->AppendItem( currentPage->GetRootItem(),
+                                                 wxString::FromAscii( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
+                                                 new TreeBrowserItemData( *currentData ) );
 }
 
 
