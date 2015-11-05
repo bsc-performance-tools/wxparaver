@@ -509,6 +509,10 @@ void gHistogram::fillZoom()
   zoomImage.Create( zoomHisto->GetSize().GetWidth(), zoomHisto->GetSize().GetHeight() );
   drawImage.Create( zoomHisto->GetSize().GetWidth(), zoomHisto->GetSize().GetHeight() );
   wxMemoryDC bufferDraw( zoomImage );
+#ifdef __WXMAC__
+  wxGraphicsContext *gc = wxGraphicsContext::Create( bufferDraw );
+  gc->SetAntialiasMode( wxANTIALIAS_NONE );
+#endif
   bufferDraw.SetBackground( wxBrush( *wxLIGHT_GREY_BRUSH ) );
   bufferDraw.Clear();
 
@@ -643,6 +647,10 @@ void gHistogram::fillZoom()
   bufferDraw.SelectObject( wxNullBitmap );
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( zoomImage, 0, 0, false );
+#ifdef __WXMAC__
+  delete gc;
+#endif
+  
   zoomHisto->Refresh();
   ready = true;
 }
