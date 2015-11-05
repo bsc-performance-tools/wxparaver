@@ -47,6 +47,10 @@
 #include <signal.h>
 #include <stdio.h>
 
+#ifdef __WXMAC__
+#include <wx/sysopt.h>
+#endif
+
 #include "config.h"
 #include "wxparaverapp.h"
 #include "connection.h"
@@ -212,6 +216,9 @@ void wxparaverApp::Init()
 	globalTimingEnd = 0;
 ////@end wxparaverApp member initialisation
   m_locale.Init();
+#ifdef __WXMAC__
+  //wxSystemOptions::SetOption( "mac.toolbar.no-native", 1 );
+#endif
 }
 
 /*!

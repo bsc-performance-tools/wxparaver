@@ -220,9 +220,15 @@ void gTimeline::Init()
 
   zoomXY = false;
   bufferImage.Create( 1, 1 );
+#ifdef __WXMAC__
+  objectFont = wxFont( 8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
+  timeFont = wxFont( 8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
+  semanticFont = wxFont( 10, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
+#else
   objectFont = wxFont( 7, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
   timeFont = wxFont( 6, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
   semanticFont = wxFont( 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
+#endif
   whatWhereTime = 0.0;
   whatWhereRow = 0;
 
@@ -326,6 +332,7 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
@@ -333,7 +340,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -522,12 +528,20 @@ void gTimeline::redraw()
   eventImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
 #ifdef __WXMAC__
   wxMemoryDC tmpDC( bufferImage );
+  wxGraphicsContext *gc = wxGraphicsContext::Create( tmpDC );
+  gc->SetAntialiasMode( wxANTIALIAS_NONE );
   wxGCDC bufferDraw( tmpDC );
 #else
   wxMemoryDC bufferDraw( bufferImage );
 #endif
   wxMemoryDC commdc( commImage );
   wxMemoryDC eventdc( eventImage );
+#ifdef __WXMAC__
+  wxGraphicsContext *gcComm = wxGraphicsContext::Create( commdc );
+  gcComm->SetAntialiasMode( wxANTIALIAS_NONE );
+  wxGraphicsContext *gcEvent = wxGraphicsContext::Create( eventdc );
+  gcEvent->SetAntialiasMode( wxANTIALIAS_NONE );
+#endif
   commdc.SetBackgroundMode( wxTRANSPARENT );
   commdc.SetBackground( *wxTRANSPARENT_BRUSH );
   commdc.Clear();
@@ -695,6 +709,14 @@ void gTimeline::redraw()
   commmaskdc.SelectObject(wxNullBitmap);
   mask = new wxMask( commMask );
   commImage.SetMask( mask );
+#else
+  commdc.SetBrush( *wxBLACK_BRUSH );
+  commdc.SetPen( *wxBLACK_PEN );
+  commdc.SetLogicalFunction( wxCLEAR );
+  commdc.DrawRectangle( 0, 0, objectAxisPos, drawZone->GetSize().GetHeight() );
+  commdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder + 1, 0, drawBorder, drawZone->GetSize().GetHeight() );
+  commdc.DrawRectangle( 0, timeAxisPos, drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() - timeAxisPos );
+  commdc.SetLogicalFunction( wxCOPY );
 #endif
 
   if( myWindow->getDrawCommLines() )
@@ -712,6 +734,11 @@ void gTimeline::redraw()
   }
   delete progress;
 
+#ifdef __WXMAC__
+  delete gc;
+  delete gcEvent;
+  delete gcComm;
+#endif
 // Disabled because some window managers can't show the progress dialog later
 //  redrawStopWatch->Pause();
 
