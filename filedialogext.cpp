@@ -64,7 +64,6 @@ int FileDialogExtension::ShowModal()
     if( wxFileDialog::ShowModal() == wxID_OK )
     {
       auxPath = wxFileDialog::GetPath();
-
       // Know which kind of type are we working with --> extension?
       if ( wxFileDialog::GetFilterIndex() > (int)extensions.size() )
       {
@@ -77,8 +76,9 @@ int FileDialogExtension::ShowModal()
       }
       
       // Guarantee that finishes with proper extension
-      if( !auxPath.EndsWith( suffix ) )
+      if( !auxPath.EndsWith( _(".") + suffix ) )
       {
+      
         auxPath += _(".") + suffix;
       
         // Does file exists?
@@ -118,6 +118,7 @@ int FileDialogExtension::ShowModal()
         validName = true;
         path = auxPath;
       }
+      
     }
     else
     {

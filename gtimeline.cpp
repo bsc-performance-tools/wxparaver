@@ -3793,7 +3793,7 @@ void gTimeline::saveText()
     tmpWildcard +=
             currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
 
-    extensions.push_back( _(".") + currentFormat );
+    extensions.push_back( currentFormat );
   }
   tmpWildcard = tmpWildcard.BeforeLast( '|' );
 

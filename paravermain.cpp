@@ -2141,7 +2141,8 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
     CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
  
   vector< wxString > extensions;
-  extensions.push_back( wxT( ".cfg" ) );
+  extensions.push_back( wxT( "cfg" ) );
+  
   FileDialogExtension dialog( parent,
                               _( "Save Configuration" ),
                               CFGPath,
@@ -3689,7 +3690,8 @@ void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
 void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
 {
   vector< wxString > extensions;
-  extensions.push_back( wxT( ".session" ) );
+  extensions.push_back( wxT( "session" ) );
+  
   FileDialogExtension dialog( this,
                               wxT( "Save session" ),
                               _(""),
@@ -3703,8 +3705,6 @@ void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
   if( dialog.ShowModal() == wxID_OK )
   {
     wxFileName tmpFile( dialog.GetPath() );
-    if( tmpFile.GetExt() != wxString( wxT( "session" ) ) )
-      tmpFile.SetExt( wxString( wxT( "session" ) ) );
     SessionSaver::SaveSession( tmpFile.GetFullPath(), GetLoadedTraces() );
   }
 }

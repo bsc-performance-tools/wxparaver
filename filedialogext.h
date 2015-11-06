@@ -37,6 +37,7 @@
 
 // The purpose of this class is to let the user write the file to be saved with or without
 // its defined extension, automatically generating suffixed name and taking care if it exists.
+// The extensions passed to the vector DON'T have to include the final dot (i.e. DON'T pass ".png")
 
 class FileDialogExtension : public wxFileDialog
 {
