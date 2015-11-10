@@ -1758,7 +1758,7 @@ void gHistogram::zoom( THistogramLimit newColumnBegin,
     max = ( newColumnEnd * delta ) + min;
     min = ( newColumnBegin * delta ) + min;
 
-    if ( max - min == 0 )
+    if ( ( max - min == 0 ) || ( myHistogram->getControlWindow()->isCodeColorSet() && ( max - min ) <= 10000 ) )
       delta = 1.0;
     else
       delta = ( max - min ) / ParaverConfig::getInstance()->getHistogramNumColumns();
