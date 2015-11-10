@@ -745,8 +745,10 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       THistogramColumn tmpBeginCol = beginColumn;
       if( myHistogram->getHideColumns() )
         tmpBeginCol = noVoidColumns[ beginColumn ];
-      TSemanticValue tmpValue = ( tmpBeginCol / myHistogram->getControlDelta() ) +
+
+      TSemanticValue tmpValue = ( tmpBeginCol * myHistogram->getControlDelta() ) +
                                 myHistogram->getControlMin();
+
       if( myHistogram->getControlWindow()->isCodeColorSet() )
         tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                           controlWindow->getMinimumY(),

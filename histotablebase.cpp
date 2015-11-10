@@ -239,7 +239,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
       tmpAttr->SetFont( cellFontBold );
 
-      TSemanticValue tmpValue = ( col / myHisto->getControlDelta() ) +
+      TSemanticValue tmpValue = ( col * myHisto->getControlDelta() ) +
                                 myHisto->getControlMin();
       rgb tmpCol;
       if( controlWindow->isCodeColorSet() )
@@ -266,7 +266,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
 
       if( row < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) )
       {
-        TSemanticValue tmpValue = ( row / myHisto->getControlDelta() ) +
+        TSemanticValue tmpValue = ( row * myHisto->getControlDelta() ) +
                                   myHisto->getControlMin();
         rgb tmpCol;
         if( controlWindow->isCodeColorSet() )
