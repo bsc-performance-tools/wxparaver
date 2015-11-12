@@ -137,7 +137,7 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MAX 10229
 #define ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS 10230
 #define ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS 10231
-#define ID_CHECKBOX_FOLDING_USE_EVENT_TYPE 10153
+#define ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE 10153
 #define ID_COMBOBOX_FOLDING_MODEL 10284
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
@@ -230,8 +230,8 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE
   void OnCheckboxClusteringRefinementTuneClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_EVENT_TYPE
-  void OnCheckboxFoldingUseEventTypeUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE
+  void OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
@@ -350,7 +350,7 @@ public:
   wxStaticText* clusteringLabelRefinementMinPoints;
   wxSpinCtrl* clusteringTextBoxRefinementMinPoints;
   wxBoxSizer* foldingSection;
-  wxCheckBox* checkboxFoldingUseEventType;
+  wxCheckBox* checkboxFoldingUseSemanticValues;
   wxComboBox* comboboxFoldingModel;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;

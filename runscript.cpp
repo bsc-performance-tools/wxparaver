@@ -137,47 +137,28 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
 
 ////@begin RunScript event table entries
   EVT_IDLE( RunScript::OnIdle )
-
   EVT_CHOICE( ID_CHOICE_APPLICATION, RunScript::OnChoiceApplicationSelected )
-
   EVT_TEXT( ID_TEXTCTRL_TRACE, RunScript::OnTextctrlTraceTextUpdated )
-
   EVT_BUTTON( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiClick )
   EVT_UPDATE_UI( ID_BUTTON_DIMEMAS_GUI, RunScript::OnButtonDimemasGuiUpdate )
-
   EVT_BUTTON( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_NORMALIZE, RunScript::OnCheckboxClusteringNormalizeUpdate )
-
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES, RunScript::OnCheckboxClusteringGenerateSequencesUpdate )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, RunScript::OnRadiobuttonClusteringXmldefinedSelected )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
-
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
-
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
-
-  EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_EVENT_TYPE, RunScript::OnCheckboxFoldingUseEventTypeUpdate )
-
+  EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
-
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
-
   EVT_BUTTON( ID_BUTTON_KILL, RunScript::OnButtonKillClick )
   EVT_UPDATE_UI( ID_BUTTON_KILL, RunScript::OnButtonKillUpdate )
-
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
-
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
-
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
-
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -332,7 +313,7 @@ void RunScript::Init()
   clusteringLabelRefinementMinPoints = NULL;
   clusteringTextBoxRefinementMinPoints = NULL;
   foldingSection = NULL;
-  checkboxFoldingUseEventType = NULL;
+  checkboxFoldingUseSemanticValues = NULL;
   comboboxFoldingModel = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
@@ -627,7 +608,7 @@ void RunScript::CreateControls()
     radioButtonDimemasTasksPerNode->SetToolTip(_("Tasks assigned to a Node"));
   itemBoxSizer46->Add(radioButtonDimemasTasksPerNode, 0, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  spinCtrlDimemasTasksPerNode = new wxSpinCtrl( itemPanel40, ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE, _T("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 65536, 1 );
+  spinCtrlDimemasTasksPerNode = new wxSpinCtrl( itemPanel40, ID_TEXTCTRL_DIMEMAS_TASKS_PER_NODE, wxT("1"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 65536, 1 );
   spinCtrlDimemasTasksPerNode->SetHelpText(_("Tasks assigned to a Node"));
   if (RunScript::ShowToolTips())
     spinCtrlDimemasTasksPerNode->SetToolTip(_("Tasks assigned to a Node"));
@@ -647,7 +628,7 @@ void RunScript::CreateControls()
   statsLabelTextCtrlOutputName = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Prefix"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     statsLabelTextCtrlOutputName->SetToolTip(_("Name given to resulting .dat and .gnuplot files."));
-  statsLabelTextCtrlOutputName->SetName(_T("O"));
+  statsLabelTextCtrlOutputName->SetName(wxT("O"));
   itemBoxSizer50->Add(statsLabelTextCtrlOutputName, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   statsTextCtrlOutputName = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_STATS_OUTPUT_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
@@ -795,7 +776,7 @@ void RunScript::CreateControls()
   wxStaticText* itemStaticText89 = new wxStaticText( itemDialog1, wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
   clusteringSizerDBScan->Add(itemStaticText89, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxDBScanMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_DBSCAN_MIN_POINTS, _T("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 4 );
+  clusteringTextBoxDBScanMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_DBSCAN_MIN_POINTS, wxT("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 1000000, 4 );
   clusteringSizerDBScan->Add(clusteringTextBoxDBScanMinPoints, 4, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   clusteringSizerRefinement = new wxBoxSizer(wxVERTICAL);
@@ -832,7 +813,7 @@ void RunScript::CreateControls()
   clusteringLabelRefinementSteps = new wxStaticText( itemDialog1, wxID_STATIC, _("Steps"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer94->Add(clusteringLabelRefinementSteps, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
-  clusteringTextBoxRefinementSteps = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS, _T("10"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 30, 10 );
+  clusteringTextBoxRefinementSteps = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS, wxT("10"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 30, 10 );
   itemBoxSizer94->Add(clusteringTextBoxRefinementSteps, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer103 = new wxBoxSizer(wxHORIZONTAL);
@@ -841,7 +822,7 @@ void RunScript::CreateControls()
   clusteringLabelRefinementMinPoints = new wxStaticText( itemDialog1, wxID_STATIC, _("Min Points"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer103->Add(clusteringLabelRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  clusteringTextBoxRefinementMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, _T("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4 );
+  clusteringTextBoxRefinementMinPoints = new wxSpinCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS, wxT("4"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100, 4 );
   itemBoxSizer103->Add(clusteringTextBoxRefinementMinPoints, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   itemBoxSizer103->Add(5, 5, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -854,11 +835,11 @@ void RunScript::CreateControls()
 
   itemBoxSizer108->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  checkboxFoldingUseEventType = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_USE_EVENT_TYPE, _("Use event type as region delimiter"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkboxFoldingUseEventType->SetValue(true);
+  checkboxFoldingUseSemanticValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, _("Use semantic values as region delimiter"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkboxFoldingUseSemanticValues->SetValue(false);
   if (RunScript::ShowToolTips())
-    checkboxFoldingUseEventType->SetToolTip(_("If unchecked, a precomputed CSV containing timeline semantic values will be used as region delimiter instead of the above event  "));
-  itemBoxSizer108->Add(checkboxFoldingUseEventType, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
+    checkboxFoldingUseSemanticValues->SetToolTip(_("If checked, a precomputed CSV containing timeline semantic values will be used as region delimiter.\nIf unchecked the above event  type/name will be used."));
+  itemBoxSizer108->Add(checkboxFoldingUseSemanticValues, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
   wxBoxSizer* itemBoxSizer111 = new wxBoxSizer(wxHORIZONTAL);
   foldingSection->Add(itemBoxSizer111, 0, wxGROW|wxBOTTOM, 2);
@@ -1014,7 +995,7 @@ wxBitmap RunScript::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin RunScript bitmap retrieval
   wxUnusedVar(name);
-  if (name == _T("app_edit.xpm"))
+  if (name == wxT("app_edit.xpm"))
   {
     wxBitmap bitmap(app_edit_xpm);
     return bitmap;
@@ -1269,7 +1250,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
       
-      if ( !checkboxFoldingUseEventType->IsChecked() )
+      if ( checkboxFoldingUseSemanticValues->IsChecked() )
       {
         if ( !foldingCSV.IsEmpty() )
         {
@@ -1652,7 +1633,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->SetToolTip( toolTip );
       textCtrlDefaultParameters->SetValue( wxString( wxT( "Cluster ID" ) ) );
       
-      checkboxFoldingUseEventType->Enable( !foldingCSV.empty() );
+      checkboxFoldingUseSemanticValues->Enable( !foldingCSV.empty() );
       comboboxFoldingModel->SetStringSelection(_("intel-sandybridge"));
 
       labelTextCtrlDefaultParameters->Show();
@@ -2425,9 +2406,9 @@ void RunScript::OnCheckboxClusteringGenerateSequencesUpdate( wxUpdateUIEvent& ev
  * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_EVENT_TYPE
  */
 
-void RunScript::OnCheckboxFoldingUseEventTypeUpdate( wxUpdateUIEvent& event )
+void RunScript::OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event )
 {
-  labelTextCtrlDefaultParameters->Enable( checkboxFoldingUseEventType->IsChecked() );
-  textCtrlDefaultParameters->Enable( checkboxFoldingUseEventType->IsChecked() );
+  labelTextCtrlDefaultParameters->Enable( !checkboxFoldingUseSemanticValues->IsChecked() );
+  textCtrlDefaultParameters->Enable( !checkboxFoldingUseSemanticValues->IsChecked() );
 }
 
