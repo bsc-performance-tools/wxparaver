@@ -131,6 +131,11 @@ install-data-hook:
 	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/1.quick_reference/img
 	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(prefix)/share/doc/wxparaver_help/1.quick_reference/index.html
 	cp -f ./docs/quick_reference/img/*.png                     $(prefix)/share/doc/wxparaver_help/1.quick_reference/img
+	
+	if test -f ./docs/workspaces.xml ; then \
+		cp -f ./docs/workspaces.xml $(prefix)/share/ ; \
+	fi
+
 
 dist-hook:
 	$(mkdir_p) $(distdir)/docs
@@ -141,6 +146,10 @@ dist-hook:
 
 	cp -f ./docs/paraload.sig       $(distdir)/docs
 	cp -f ./docs/paraload-v1.0.sig  $(distdir)/docs
+
+	if test -f ./docs/workspaces.xml ; then \
+		cp -f ./docs/workspaces.xml  $(distdir)/docs ; \
+	fi
 
 	$(mkdir_p) $(distdir)/docs/quick_reference
 	$(mkdir_p) $(distdir)/docs/quick_reference/img
