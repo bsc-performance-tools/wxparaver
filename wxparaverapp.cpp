@@ -507,7 +507,7 @@ bool wxparaverApp::OnInit()
   mainWindow = new paraverMain( NULL, SYMBOL_PARAVERMAIN_IDNAME, SYMBOL_PARAVERMAIN_TITLE, SYMBOL_PARAVERMAIN_POSITION, mainWindowSize );
   
   if ( merge )
-    mainWindow->GetWorkspacesManager()->merge( paraverWorkspacesFile.mb_str() );
+    mainWindow->GetWorkspacesManager()->merge( std::string( paraverWorkspacesFile.mb_str() ) );
 
   mainWindow->Show(true);
 
