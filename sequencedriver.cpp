@@ -39,6 +39,7 @@
 #endif
 
 #include <string>
+#include <algorithm>
 #include <wx/filename.h>
 #include "sequencedriver.h"
 #include "kernelconnection.h"
@@ -231,6 +232,7 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
   std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
+  std::replace( auxName.begin(), auxName.end(), ',', '-' );
   tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) + std::string( ".csv" );
 
   tmpCSVFilenameState->setData( tmpFileName );
