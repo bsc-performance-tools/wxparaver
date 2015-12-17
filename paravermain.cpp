@@ -572,7 +572,7 @@ void paraverMain::refreshMenuHints()
 
   set< TEventType > tmpLoadedTypes = loadedTraces[ currentTrace ]->getLoadedEvents();
   // Create updated one
-  for ( vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+  for ( vector< string >::iterator it = traceWorkspaces[  loadedTraces[ currentTrace ]  ].begin(); it != traceWorkspaces[  loadedTraces[ currentTrace ]  ].end(); ++it )
   {
     wxString currentWorkspaceName = wxString::FromAscii( it->c_str() );
     //wxMenu *currentWorkspace = new wxMenu( currentWorkspaceName );
@@ -599,24 +599,32 @@ void paraverMain::refreshMenuHints()
 }
 
 
-void paraverMain::updateActiveWorkspaces( Trace *whichTrace )
+vector< string > paraverMain::detectTraceWorkspaces( Trace *whichTrace )
 {
   vector< string > tmpActiveWorkspaces;
   set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
   vector< string > tmpWorkspaces = workspacesManager->getWorkspaces();
   for ( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
   {
-    if ( find( activeWorkspaces.begin(), activeWorkspaces.end(), *it ) !=  activeWorkspaces.end() )
+/*    if ( find( activeWorkspaces.begin(), activeWorkspaces.end(), *it ) !=  activeWorkspaces.end() )
       tmpActiveWorkspaces.push_back( *it );
     else
     {
+    */
       vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it ).getAutoTypes();
       if ( find_first_of( tmpLoadedTypes.begin(), tmpLoadedTypes.end(), 
                           tmpAutoTypes.begin(), tmpAutoTypes.end() ) !=  tmpLoadedTypes.end() )
         tmpActiveWorkspaces.push_back( *it );
-    }
+//    }
   } 
-  activeWorkspaces.swap( tmpActiveWorkspaces );
+
+  return tmpActiveWorkspaces;
+}
+
+// Initial set, to be called after inserting new trace
+void paraverMain::setTraceWorkspaces( Trace *whichTrace )
+{
+  traceWorkspaces[ whichTrace ] = detectTraceWorkspaces( whichTrace );
 }
 
 
@@ -721,6 +729,8 @@ bool paraverMain::DoLoadTrace( const string &path )
 
     loadedTraces.push_back( tr );
     currentTrace = loadedTraces.size() - 1;
+    setTraceWorkspaces( tr );
+ 
     wxTreeCtrl *newTree = createTree( imageList );
 
     if( paraverConfig->getGlobalFullTracePath() )
@@ -750,7 +760,6 @@ bool paraverMain::DoLoadTrace( const string &path )
   paraverMain::dialogProgress = NULL;
   delete progress;
 
-  updateActiveWorkspaces( tr );
   setActiveWorkspacesText();
   refreshMenuHints();
 
@@ -2129,6 +2138,9 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
     currentHisto = item->getHistogram()->GetHistogram();
     currentTimeline = NULL;
   }
+
+  setActiveWorkspacesText();
+  refreshMenuHints();
 }
 
 
@@ -2873,14 +2885,17 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->writeParaverConfigFile();
 
     // WORKSPACES - not paraverConfig!
-    vector< string > tmpActiveWorkspaces;
-    for (vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+    for ( map< Trace*, vector< string > >::iterator it = traceWorkspaces.begin(); it != traceWorkspaces.end(); ++it )
     {
-      if ( workspacesManager->existWorkspace( *it ) )
-        tmpActiveWorkspaces.push_back( *it );
+      vector< string > tmpActiveWorkspaces;
+      for ( vector< string >::iterator itWorkspace = (*it).second.begin(); itWorkspace != (*it).second.end(); ++itWorkspace )
+      {
+        if ( workspacesManager->existWorkspace( *itWorkspace ) )
+          tmpActiveWorkspaces.push_back( *itWorkspace );
+      }
+      
+      (*it).second = tmpActiveWorkspaces;
     }
-    
-    activeWorkspaces = tmpActiveWorkspaces;
     
     workspacesManager->saveXML();
     setActiveWorkspacesText();
@@ -3041,6 +3056,7 @@ void paraverMain::UnloadTrace( int whichTrace )
   }
   
   loadedTraces[ whichTrace ]->setUnload( true );
+  traceWorkspaces.erase( loadedTraces[ whichTrace ] );
 }
 
 void paraverMain::clearProperties()
@@ -3880,7 +3896,7 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
       break;
   }
 
-  for ( vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+  for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(); it != traceWorkspaces[ loadedTraces[ currentTrace ]  ].end(); ++it )
   {
     if ( workspaceName == wxString::FromAscii( it->c_str() ) )
     {
@@ -3908,7 +3924,7 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 {
-  if( loadedTraces.empty() || activeWorkspaces.empty() )
+  if( loadedTraces.empty() || traceWorkspaces[ loadedTraces[ currentTrace ] ].empty() )
     GetMenuBar()->EnableTop( 1, false );
   else
     GetMenuBar()->EnableTop( 1, true );
@@ -3943,7 +3959,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
   for ( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
   {
     tmpNames.Add( wxString::FromAscii( it->c_str() ) );
-    if ( std::find( activeWorkspaces.begin(), activeWorkspaces.end(),*it ) != activeWorkspaces.end() )
+    if ( std::find( traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(), traceWorkspaces[ loadedTraces[ currentTrace ] ].end(),*it ) != traceWorkspaces[ loadedTraces[ currentTrace ] ].end() )
       tmpActive.Add( position );
     ++position;
   }
@@ -3954,10 +3970,10 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
   if ( tmpChoiceDialog.ShowModal() == wxID_OK )
   {
     tmpActive = tmpChoiceDialog.GetSelections();
-    activeWorkspaces.clear();
+    traceWorkspaces[ loadedTraces[ currentTrace ] ].clear();
     for( size_t i = 0; i < tmpActive.GetCount(); ++i )
     {
-      activeWorkspaces.push_back( tmpWorkspaces[ tmpActive[ i ] ] );
+      traceWorkspaces[ loadedTraces[ currentTrace ] ].push_back( tmpWorkspaces[ tmpActive[ i ] ] );
     }
     
     setActiveWorkspacesText();
@@ -3972,14 +3988,14 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
 
 void paraverMain::setActiveWorkspacesText()
 {
-  if ( activeWorkspaces.empty() )
+  if ( currentTrace == -1 || traceWorkspaces[ loadedTraces[ currentTrace ] ].empty() )
   {
     txtActiveWorkspaces->SetValue( _("None") );
   }
   else
   {
     wxString tmpActive;
-    for ( vector< string >::iterator it = activeWorkspaces.begin(); it != activeWorkspaces.end(); ++it )
+    for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(); it != traceWorkspaces[ loadedTraces[ currentTrace ] ].end(); ++it )
     {
       if ( !tmpActive.IsEmpty() )
         tmpActive += _( "+" );

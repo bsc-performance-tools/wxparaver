@@ -321,9 +321,6 @@ public:
   std::set<wxWindow *> GetActiveWindows() const { return activeWindows ; }
   void SetActiveWindows(std::set<wxWindow *> value) { activeWindows = value ; }
 
-  std::vector< std::string > GetActiveWorkspaces() const { return activeWorkspaces ; }
-  void SetActiveWorkspaces(std::vector< std::string > value) { activeWorkspaces = value ; }
-
   bool GetCanServeSignal() const { return canServeSignal ; }
   void SetCanServeSignal(bool value) { canServeSignal = value ; }
 
@@ -395,6 +392,9 @@ public:
 
   wxString GetTracePath() const { return tracePath ; }
   void SetTracePath(wxString value) { tracePath = value ; }
+
+  std::map< Trace*, std::vector< std::string > > GetTraceWorkspaces() const { return traceWorkspaces ; }
+  void SetTraceWorkspaces(std::map< Trace*, std::vector< std::string > > value) { traceWorkspaces = value ; }
 
   HelpContents * GetTutorialsWindow() const { return tutorialsWindow ; }
   void SetTutorialsWindow(HelpContents * value) { tutorialsWindow = value ; }
@@ -497,7 +497,6 @@ private:
   bool XMLLoadedBefore;
   std::string XMLPath;
   std::set<wxWindow *> activeWindows;
-  std::vector< std::string > activeWorkspaces;
   bool canServeSignal;
   Window * clusteringWindow;
   Histogram * currentHisto;
@@ -522,6 +521,7 @@ private:
   wxTimer * sessionTimer;
   bool traceLoadedBefore;
   wxString tracePath;
+  std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
 ////@end paraverMain member variables
@@ -551,6 +551,9 @@ private:
   
 private:
   void refreshMenuHints();
+  std::vector< std::string > detectTraceWorkspaces( Trace *whichTrace );
+  void setTraceWorkspaces( Trace *whichTrace );
+
   void updateActiveWorkspaces( Trace *whichTrace );
   void OnHintClick( wxCommandEvent& event );
   void OnMenuHintUpdate( wxUpdateUIEvent& event );
