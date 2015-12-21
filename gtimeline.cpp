@@ -332,6 +332,7 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
@@ -339,7 +340,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -793,34 +793,46 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   // +1!
   wxSize objectExt, tmpExt;
   int endLevel = THREAD;
+  string tmpLongestLabel;
+  wxString tmpCurrentLabel;
+  size_t tmpMaxLength = 0;
+  size_t tmpCurrentMaxLength = 0;
 
   switch( myWindow->getObjectAxisSize() )
   {
     case Window::CURRENT_LEVEL:
-      objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::objectLabel( myWindow->getWindowLevelObjects() - 1,
-                                                                                        myWindow->getLevel(),
-                                                                                        myWindow->getTrace() ).c_str() ) );
+      tmpCurrentMaxLength = LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1,
+                                                           (TWindowLevel) myWindow->getLevel(),
+                                                           myWindow->getTrace() ).length();
+
+      tmpMaxLength = myWindow->getTrace()->getMaxLengthRow( myWindow->getLevel() );
+
+      if ( tmpCurrentMaxLength > tmpMaxLength ) // because row label can be empty or shorter
+        tmpMaxLength = tmpCurrentMaxLength;
+        
+      tmpLongestLabel = string( tmpMaxLength, 'Z' );
+      objectExt = dc.GetTextExtent( wxString::FromAscii( tmpLongestLabel.c_str() ) );
       break;
 
     case Window::ALL_LEVELS:
       if( myWindow->getTrace()->existResourceInfo() )
         endLevel = CPU;
-        
+    
       for( int iLevel = WORKLOAD; iLevel <= endLevel; ++iLevel )
       {
-        if( iLevel == WORKLOAD )
-          objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( (TWindowLevel) iLevel ) - 1,
+        tmpCurrentMaxLength = myWindow->getTrace()->getMaxLengthRow( (TWindowLevel)iLevel );
+        tmpCurrentLabel = wxString::FromAscii( LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( (TWindowLevel) iLevel ) - 1,
                                                                                             (TWindowLevel) iLevel,
-                                                                                            myWindow->getTrace() ).c_str() ) );
-        else
-        {
-          tmpExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( (TWindowLevel) iLevel ) - 1,
-                                                                                         (TWindowLevel) iLevel,
-                                                                                         myWindow->getTrace() ).c_str() ) );
-          if( tmpExt.GetWidth() > objectExt.GetWidth() )
-            objectExt = tmpExt;
-        }
+                                                                                            myWindow->getTrace() ).c_str() );
+        if ( tmpCurrentMaxLength < tmpCurrentLabel.Len() )
+          tmpCurrentMaxLength = tmpCurrentLabel.Len();
+          
+        if ( tmpMaxLength < tmpCurrentMaxLength )
+          tmpMaxLength = tmpCurrentMaxLength;
       }
+
+      tmpLongestLabel = string( tmpMaxLength, 'Z' );
+      objectExt = dc.GetTextExtent( wxString::FromAscii( tmpLongestLabel.c_str() ) );
       break;
 
     case Window::ZERO_PERC:
