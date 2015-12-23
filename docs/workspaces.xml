@@ -18,19 +18,19 @@
 					<count>4</count>
 					<item_version>0</item_version>
 					<item class_id="6" tracking_level="0" version="0">
-						<first>cfgs/burst_mode/2dh_BurstEfficiency.cfg</first>
+						<first>burst_mode/2dh_BurstEfficiency.cfg</first>
 						<second>Efficiency</second>
 					</item>
 					<item>
-						<first>cfgs/burst_mode/2dh_granularity.cfg</first>
+						<first>burst_mode/2dh_granularity.cfg</first>
 						<second>Histogram of computation granularities</second>
 					</item>
 					<item>
-						<first>cfgs/burst_mode/avg_MPI_call_duration.cfg</first>
+						<first>burst_mode/avg_MPI_call_duration.cfg</first>
 						<second>Average MPI call duration</second>
 					</item>
 					<item>
-						<first>cfgs/burst_mode/MPI_p2p_BW.cfg</first>
+						<first>burst_mode/MPI_p2p_BW.cfg</first>
 						<second>Bandwidth and bytes in MPI point to pint calls</second>
 					</item>
 				</hintCFGs>
@@ -49,15 +49,15 @@
 					<count>3</count>
 					<item_version>0</item_version>
 					<item>
-						<first>cfgs/clustering/2dp_clusters.cfg</first>
+						<first>clustering/2dp_clusters.cfg</first>
 						<second>Profile of clusters</second>
 					</item>
 					<item>
-						<first>cfgs/clustering/3dh_duration_cid.cfg</first>
+						<first>clustering/3dh_duration_cid.cfg</first>
 						<second>Histogram of duration per cluster</second>
 					</item>
 					<item>
-						<first>cfgs/clustering/3dh_instr_clusterID.cfg</first>
+						<first>clustering/3dh_instr_clusterID.cfg</first>
 						<second>Histogram of instructions per cluster</second>
 					</item>
 				</hintCFGs>
@@ -76,19 +76,19 @@
 					<count>4</count>
 					<item_version>0</item_version>
 					<item>
-						<first>cfgs/counters_PAPI/performance/2dh_useful_instructions.cfg</first>
+						<first>counters_PAPI/performance/2dh_useful_instructions.cfg</first>
 						<second>Histogram of useful instructions</second>
 					</item>
 					<item>
-						<first>cfgs/counters_PAPI/performance/IPC.cfg</first>
+						<first>counters_PAPI/performance/IPC.cfg</first>
 						<second>IPC (instructions per cycle)</second>
 					</item>
 					<item>
-						<first>cfgs/counters_PAPI/performance/2dh_cycles_per_us.cfg</first>
+						<first>counters_PAPI/performance/2dh_cycles_per_us.cfg</first>
 						<second>Histogram of cycles per us</second>
 					</item>
 					<item>
-						<first>cfgs/counters_PAPI/performance/2dh_usefulduration.cfg</first>
+						<first>counters_PAPI/performance/2dh_usefulduration.cfg</first>
 						<second>Histogram of duration correlated with IPC</second>
 					</item>
 				</hintCFGs>
@@ -109,19 +109,19 @@
 					<count>4</count>
 					<item_version>0</item_version>
 					<item>
-						<first>cfgs/mpi/analysis/mpi_stats.cfg</first>
+						<first>mpi/analysis/mpi_stats.cfg</first>
 						<second>MPI profile</second>
 					</item>
 					<item>
-						<first>cfgs/mpi/analysis/connectivity.cfg</first>
+						<first>mpi/analysis/connectivity.cfg</first>
 						<second>Point 2 point connectivity pattern</second>
 					</item>
 					<item>
-						<first>cfgs/mpi/analysis/3dh_duration_MPIcall.cfg</first>
+						<first>mpi/analysis/3dh_duration_MPIcall.cfg</first>
 						<second>Histogram of durations per MPI call</second>
 					</item>
 					<item>
-						<first>cfgs/mpi/analysis/3dh_size_call.cfg</first>
+						<first>mpi/analysis/3dh_size_call.cfg</first>
 						<second>Histogram of message sizes per call</second>
 					</item>
 				</hintCFGs>
@@ -140,19 +140,19 @@
 					<count>4</count>
 					<item_version>0</item_version>
 					<item>
-						<first>cfgs/OmpSs/task_and_deps.cfg</first>
+						<first>OmpSs/task_and_deps.cfg</first>
 						<second>Tasks and dependences (data and control)</second>
 					</item>
 					<item>
-						<first>cfgs/OmpSs/3dh_duration_task.cfg</first>
+						<first>OmpSs/3dh_duration_task.cfg</first>
 						<second>Histogram of duration of tasks</second>
 					</item>
 					<item>
-						<first>cfgs/OmpSs/task_number.cfg</first>
+						<first>OmpSs/task_number.cfg</first>
 						<second>Task number</second>
 					</item>
 					<item>
-						<first>cfgs/OmpSs/task_priority.cfg</first>
+						<first>OmpSs/task_priority.cfg</first>
 						<second>Task priority</second>
 					</item>
 				</hintCFGs>
@@ -171,15 +171,15 @@
 					<count>3</count>
 					<item_version>0</item_version>
 					<item>
-						<first>cfgs/OpenMP/analysis/omp_profile.cfg</first>
+						<first>OpenMP/analysis/omp_profile.cfg</first>
 						<second>Outlined functions profile</second>
 					</item>
 					<item>
-						<first>cfgs/OpenMP/analysis/3dh_duration_pf.cfg</first>
+						<first>OpenMP/analysis/3dh_duration_pf.cfg</first>
 						<second>Histogram of outlined functions duration</second>
 					</item>
 					<item>
-						<first>cfgs/OpenMP/views/parallel_functions_useful.cfg</first>
+						<first>OpenMP/views/parallel_functions_useful.cfg</first>
 						<second>Parallel functions in user code</second>
 					</item>
 				</hintCFGs>
@@ -198,11 +198,11 @@
 					<count>2</count>
 					<item_version>0</item_version>
 					<item>
-						<first>cfgs/sampling+folding/2dp_sampled_function.cfg</first>
+						<first>sampling+folding/2dp_sampled_function.cfg</first>
 						<second>Sampled function profile</second>
 					</item>
 					<item>
-						<first>cfgs/sampling+folding/2dp_sampled_line.cfg</first>
+						<first>sampling+folding/2dp_sampled_line.cfg</first>
 						<second>Sampled line profile</second>
 					</item>
 				</hintCFGs>
@@ -221,11 +221,11 @@
 					<count>2</count>
 					<item_version>0</item_version>
 					<item>
-						<first>cfgs/General/link_to_source/by_call_stack/MPI_caller.cfg</first>
+						<first>General/link_to_source/by_call_stack/MPI_caller.cfg</first>
 						<second>Caller function</second>
 					</item>
 					<item>
-						<first>cfgs/General/link_to_source/by_call_stack/2dp_MPItime_line.cfg</first>
+						<first>General/link_to_source/by_call_stack/2dp_MPItime_line.cfg</first>
 						<second>Profile caller line</second>
 					</item>
 				</hintCFGs>
@@ -244,7 +244,7 @@
 					<count>1</count>
 					<item_version>0</item_version>
 					<item>
-						<first>cfgs/General/sanity_checks/flushing.cfg</first>
+						<first>General/sanity_checks/flushing.cfg</first>
 						<second>Flushing trace buffer</second>
 					</item>
 				</hintCFGs>
