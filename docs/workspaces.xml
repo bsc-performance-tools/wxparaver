@@ -1,1 +1,269 @@
-#  This is only a test
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="9">
+<workspace_manager class_id="0" tracking_level="0" version="0">
+	<workspaces class_id="1" tracking_level="0" version="0">
+		<count>9</count>
+		<item_version>0</item_version>
+		<item class_id="2" tracking_level="0" version="0">
+			<first>Burst mode</first>
+			<second class_id="3" tracking_level="0" version="1">
+				<name>Burst mode</name>
+				<autoTypes>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>54000006</item>
+				</autoTypes>
+				<hintCFGs class_id="5" tracking_level="0" version="0">
+					<count>4</count>
+					<item_version>0</item_version>
+					<item class_id="6" tracking_level="0" version="0">
+						<first>cfgs/burst_mode/2dh_BurstEfficiency.cfg</first>
+						<second>Efficiency</second>
+					</item>
+					<item>
+						<first>cfgs/burst_mode/2dh_granularity.cfg</first>
+						<second>Histogram of computation granularities</second>
+					</item>
+					<item>
+						<first>cfgs/burst_mode/avg_MPI_call_duration.cfg</first>
+						<second>Average MPI call duration</second>
+					</item>
+					<item>
+						<first>cfgs/burst_mode/MPI_p2p_BW.cfg</first>
+						<second>Bandwidth and bytes in MPI point to pint calls</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>Clustering</first>
+			<second>
+				<name>Clustering</name>
+				<autoTypes>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>90000001</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>3</count>
+					<item_version>0</item_version>
+					<item>
+						<first>cfgs/clustering/2dp_clusters.cfg</first>
+						<second>Profile of clusters</second>
+					</item>
+					<item>
+						<first>cfgs/clustering/3dh_duration_cid.cfg</first>
+						<second>Histogram of duration per cluster</second>
+					</item>
+					<item>
+						<first>cfgs/clustering/3dh_instr_clusterID.cfg</first>
+						<second>Histogram of instructions per cluster</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>HWC</first>
+			<second>
+				<name>HWC</name>
+				<autoTypes>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>42000050</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>4</count>
+					<item_version>0</item_version>
+					<item>
+						<first>cfgs/counters_PAPI/performance/2dh_useful_instructions.cfg</first>
+						<second>Histogram of useful instructions</second>
+					</item>
+					<item>
+						<first>cfgs/counters_PAPI/performance/IPC.cfg</first>
+						<second>IPC (instructions per cycle)</second>
+					</item>
+					<item>
+						<first>cfgs/counters_PAPI/performance/2dh_cycles_per_us.cfg</first>
+						<second>Histogram of cycles per us</second>
+					</item>
+					<item>
+						<first>cfgs/counters_PAPI/performance/2dh_usefulduration.cfg</first>
+						<second>Histogram of duration correlated with IPC</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>MPI</first>
+			<second>
+				<name>MPI</name>
+				<autoTypes>
+					<count>3</count>
+					<item_version>0</item_version>
+					<item>50000001</item>
+					<item>50000002</item>
+					<item>50000003</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>4</count>
+					<item_version>0</item_version>
+					<item>
+						<first>cfgs/mpi/analysis/mpi_stats.cfg</first>
+						<second>MPI profile</second>
+					</item>
+					<item>
+						<first>cfgs/mpi/analysis/connectivity.cfg</first>
+						<second>Point 2 point connectivity pattern</second>
+					</item>
+					<item>
+						<first>cfgs/mpi/analysis/3dh_duration_MPIcall.cfg</first>
+						<second>Histogram of durations per MPI call</second>
+					</item>
+					<item>
+						<first>cfgs/mpi/analysis/3dh_size_call.cfg</first>
+						<second>Histogram of message sizes per call</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>OmpSs</first>
+			<second>
+				<name>OmpSs</name>
+				<autoTypes>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>9200001</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>4</count>
+					<item_version>0</item_version>
+					<item>
+						<first>cfgs/OmpSs/task_and_deps.cfg</first>
+						<second>Tasks and dependences (data and control)</second>
+					</item>
+					<item>
+						<first>cfgs/OmpSs/3dh_duration_task.cfg</first>
+						<second>Histogram of duration of tasks</second>
+					</item>
+					<item>
+						<first>cfgs/OmpSs/task_number.cfg</first>
+						<second>Task number</second>
+					</item>
+					<item>
+						<first>cfgs/OmpSs/task_priority.cfg</first>
+						<second>Task priority</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>OpenMP</first>
+			<second>
+				<name>OpenMP</name>
+				<autoTypes>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>60000018</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>3</count>
+					<item_version>0</item_version>
+					<item>
+						<first>cfgs/OpenMP/analysis/omp_profile.cfg</first>
+						<second>Outlined functions profile</second>
+					</item>
+					<item>
+						<first>cfgs/OpenMP/analysis/3dh_duration_pf.cfg</first>
+						<second>Histogram of outlined functions duration</second>
+					</item>
+					<item>
+						<first>cfgs/OpenMP/views/parallel_functions_useful.cfg</first>
+						<second>Parallel functions in user code</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>Sampling</first>
+			<second>
+				<name>Sampling</name>
+				<autoTypes>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>30000000</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>2</count>
+					<item_version>0</item_version>
+					<item>
+						<first>cfgs/sampling+folding/2dp_sampled_function.cfg</first>
+						<second>Sampled function profile</second>
+					</item>
+					<item>
+						<first>cfgs/sampling+folding/2dp_sampled_line.cfg</first>
+						<second>Sampled line profile</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>callers</first>
+			<second>
+				<name>callers</name>
+				<autoTypes>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>70000001</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>2</count>
+					<item_version>0</item_version>
+					<item>
+						<first>cfgs/General/link_to_source/by_call_stack/MPI_caller.cfg</first>
+						<second>Caller function</second>
+					</item>
+					<item>
+						<first>cfgs/General/link_to_source/by_call_stack/2dp_MPItime_line.cfg</first>
+						<second>Profile caller line</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>flush</first>
+			<second>
+				<name>flush</name>
+				<autoTypes>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>40000003</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>
+						<first>cfgs/General/sanity_checks/flushing.cfg</first>
+						<second>Flushing trace buffer</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+	</workspaces>
+	<workspacesOrder class_id="7" tracking_level="0" version="0">
+		<count>9</count>
+		<item_version>0</item_version>
+		<item>MPI</item>
+		<item>OmpSs</item>
+		<item>OpenMP</item>
+		<item>Clustering</item>
+		<item>Sampling</item>
+		<item>callers</item>
+		<item>HWC</item>
+		<item>flush</item>
+		<item>Burst mode</item>
+	</workspacesOrder>
+</workspace_manager>
+</boost_serialization>
+
