@@ -578,7 +578,7 @@ void paraverMain::refreshMenuHints()
     //wxMenu *currentWorkspace = new wxMenu( currentWorkspaceName );
     wxMenu *currentWorkspace = new wxMenu();
     
-    std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it ).getHintCFGs();
+    std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
     for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
     {
       wxString tmpName = getHintComposed( *it2 );
@@ -591,7 +591,7 @@ void paraverMain::refreshMenuHints()
     
     menuHints->AppendSubMenu( currentWorkspace, currentWorkspaceName );
     
-    vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it ).getAutoTypes();
+    vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
     bool tmpEnable = find_first_of( tmpLoadedTypes.begin(), tmpLoadedTypes.end(), 
                                      tmpAutoTypes.begin(), tmpAutoTypes.end() ) !=  tmpLoadedTypes.end();
     menuHints->Enable( menuHints->FindItem( currentWorkspaceName ), tmpEnable );
@@ -603,7 +603,7 @@ vector< string > paraverMain::detectTraceWorkspaces( Trace *whichTrace )
 {
   vector< string > tmpActiveWorkspaces;
   set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
-  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces();
+  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces( WorkspaceManager::DISTRIBUTED );
   for ( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
   {
 /*    if ( find( activeWorkspaces.begin(), activeWorkspaces.end(), *it ) !=  activeWorkspaces.end() )
@@ -611,7 +611,7 @@ vector< string > paraverMain::detectTraceWorkspaces( Trace *whichTrace )
     else
     {
     */
-      vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it ).getAutoTypes();
+      vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
       if ( find_first_of( tmpLoadedTypes.begin(), tmpLoadedTypes.end(), 
                           tmpAutoTypes.begin(), tmpAutoTypes.end() ) !=  tmpLoadedTypes.end() )
         tmpActiveWorkspaces.push_back( *it );
@@ -2890,7 +2890,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
       vector< string > tmpActiveWorkspaces;
       for ( vector< string >::iterator itWorkspace = (*it).second.begin(); itWorkspace != (*it).second.end(); ++itWorkspace )
       {
-        if ( workspacesManager->existWorkspace( *itWorkspace ) )
+        if ( workspacesManager->existWorkspace( *itWorkspace, WorkspaceManager::DISTRIBUTED ) )
           tmpActiveWorkspaces.push_back( *itWorkspace );
       }
       
@@ -3900,7 +3900,7 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
   {
     if ( workspaceName == wxString::FromAscii( it->c_str() ) )
     {
-      std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it ).getHintCFGs();
+      std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
 
       for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
       {
@@ -3937,7 +3937,7 @@ void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
 {
-  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces();
+  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces( WorkspaceManager::ALL );
   
   if( tmpWorkspaces.empty() )
   {

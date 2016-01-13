@@ -1434,12 +1434,12 @@ bool PreferencesDialog::TransferDataToWindow()
 
 
   // WORKSPACES
-  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces();
+  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( WorkspaceManager::USER_DEFINED );
   for( std::vector<std::string>::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
   {
     listWorkspaces->Append( wxString::FromAscii( it->c_str() ) );
     workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromAscii( it->c_str() ),
-                                                              WorkspaceManager::getInstance()->getWorkspace( *it ) ) );
+                                                              WorkspaceManager::getInstance()->getWorkspace( *it, WorkspaceManager::USER_DEFINED ) ) );
   }
 
   return true;
