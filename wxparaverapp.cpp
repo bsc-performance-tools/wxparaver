@@ -298,51 +298,6 @@ void wxparaverApp::presetUserSignals()
 }
 #endif
 
-// THINK: pass to the api?
-// Must be called before build mainWindow object
-bool wxparaverApp::checkWorkspaces( wxString &whichParaverWorkspacesFile )
-{
-  // TODO: Test in windows & mac
-  bool merge = false;
-  
-  wxString SEP = wxFileName::GetPathSeparator();
-
-  // User; i.e : /home/user/.paraver/workspaces.xml  ?
-  bool existUserWorkspacesFile = false;
-  wxString userWorkspacesFile;
-  wxString userHome;
-  if ( wxGetEnv( wxString( wxT( "HOME" ) ), &userHome ) )
-  {
-    userWorkspacesFile = userHome + SEP + wxString( wxT( ".paraver" ) ) + SEP + wxString( wxT( "workspaces.xml" ) );
-    existUserWorkspacesFile = wxFileName( userWorkspacesFile ).FileExists();        
-  }  
-
-  // Installation; i.e : /apps/CEPBATOOLS/wxparaver/latest/share/workspaces.xml  ?
-  bool existParaverWorkspacesFile = false;
-  wxString paraverWorkspacesFile;
-  wxString paraverHome;
-  if ( wxGetEnv( wxString( wxT( "PARAVER_HOME" ) ), &paraverHome ) )
-  {
-    paraverWorkspacesFile = paraverHome + SEP + wxString( wxT( "share" ) ) + SEP + wxString( wxT( "workspaces.xml" ) );
-    existParaverWorkspacesFile = wxFileName( paraverWorkspacesFile ).FileExists();
-    if ( existParaverWorkspacesFile )
-      whichParaverWorkspacesFile = paraverWorkspacesFile;
-  }
-  
-  
-  if ( existParaverWorkspacesFile )
-  {
-    if ( !existUserWorkspacesFile )
-    {
-      wxCopyFile( paraverWorkspacesFile, userWorkspacesFile );
-    }
-    else
-      merge = true; // I can't resolve until load it
-  }
-  
-  return merge;
-}
-
 
 bool wxparaverApp::OnInit()
 {
@@ -501,13 +456,7 @@ bool wxparaverApp::OnInit()
   wxSize mainWindowSize( ParaverConfig::getInstance()->getMainWindowWidth(),
                          ParaverConfig::getInstance()->getMainWindowHeight() );
                          
-  wxString paraverWorkspacesFile;
-  bool merge = checkWorkspaces( paraverWorkspacesFile );
-
   mainWindow = new paraverMain( NULL, SYMBOL_PARAVERMAIN_IDNAME, SYMBOL_PARAVERMAIN_TITLE, SYMBOL_PARAVERMAIN_POSITION, mainWindowSize );
-  
-  if ( merge )
-    mainWindow->GetWorkspacesManager()->merge( std::string( paraverWorkspacesFile.mb_str() ) );
 
   mainWindow->Show(true);
 

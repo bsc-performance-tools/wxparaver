@@ -147,8 +147,6 @@ private:
     
     stServer *m_server;
     
-    bool checkWorkspaces( wxString &whichParaverWorkspacesFile );
-
     void PrintVersion();
 };
 
