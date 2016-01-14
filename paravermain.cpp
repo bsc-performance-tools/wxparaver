@@ -84,6 +84,10 @@
 #ifdef WIN32
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <shlobj.h>
+#include <Shlwapi.h>
+
+#define MAX_LEN_PATH 2048
 #endif
 
 ////@begin XPM images
@@ -3818,7 +3822,27 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
   else
   {
     wxString paraverHome;
+#ifdef WIN32
+    std::string baseDir;
+
+    char myPath[ MAX_LEN_PATH ];
+    HMODULE hModule = GetModuleHandle( NULL );
+    if ( hModule != NULL )
+    {
+      GetModuleFileName( NULL, myPath, ( sizeof( myPath ) ));
+      PathRemoveFileSpec( myPath );
+      /*char tmpMyPath[ MAX_LEN_PATH ];
+      size_t tmpSize;
+      wcstombs_s( &tmpSize, tmpMyPath, MAX_LEN_PATH, myPath, MAX_LEN_PATH );
+      baseDir = tmpMyPath;*/
+      baseDir = myPath;
+    }
+    paraverHome = wxT( baseDir.c_str() );
+    
+    if( paraverHome != wxT( "" ) )
+#else
     if ( wxGetEnv( wxString( wxT( "PARAVER_HOME" ) ), &paraverHome ) )
+#endif
     {
       wxString helpContentsDir =
               wxFileName::GetPathSeparator() +

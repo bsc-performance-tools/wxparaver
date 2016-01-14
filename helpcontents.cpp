@@ -68,17 +68,12 @@ BEGIN_EVENT_TABLE( HelpContents, wxDialog )
 
 ////@begin HelpContents event table entries
   EVT_HTML_LINK_CLICKED( ID_HTMLWINDOW, HelpContents::OnHtmlwindowLinkClicked )
-
   EVT_BUTTON( ID_BUTTON_INDEX, HelpContents::OnButtonIndexClick )
-
   EVT_BUTTON( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackUpdate )
-
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardUpdate )
-
   EVT_BUTTON( ID_BUTTON_CLOSE, HelpContents::OnButtonCloseClick )
-
 ////@end HelpContents event table entries
 
 END_EVENT_TABLE()
@@ -365,17 +360,17 @@ wxBitmap HelpContents::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin HelpContents bitmap retrieval
   wxUnusedVar(name);
-  if (name == _T("index.xpm"))
+  if (name == wxT("index.xpm"))
   {
     wxBitmap bitmap(text_list_bullets_xpm);
     return bitmap;
   }
-  else if (name == _T("arrow_left.xpm"))
+  else if (name == wxT("arrow_left.xpm"))
   {
     wxBitmap bitmap(arrow_left_xpm);
     return bitmap;
   }
-  else if (name == _T("arrow_right.xpm"))
+  else if (name == wxT("arrow_right.xpm"))
   {
     wxBitmap bitmap(arrow_right_xpm);
     return bitmap;
