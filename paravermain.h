@@ -402,6 +402,9 @@ public:
   WorkspaceManager * GetWorkspacesManager() const { return workspacesManager ; }
   void SetWorkspacesManager(WorkspaceManager * value) { workspacesManager = value ; }
 
+  size_t GetFirstUserWorkspace() const { return firstUserWorkspace ; }
+  void SetFirstUserWorkspace(size_t value) { firstUserWorkspace = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -524,6 +527,7 @@ private:
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
+  size_t firstUserWorkspace;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;
@@ -551,7 +555,6 @@ private:
   
 private:
   void refreshMenuHints();
-  std::vector< std::string > detectTraceWorkspaces( Trace *whichTrace );
   void setTraceWorkspaces( Trace *whichTrace );
 
   void updateActiveWorkspaces( Trace *whichTrace );

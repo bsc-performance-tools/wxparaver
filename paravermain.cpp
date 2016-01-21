@@ -395,6 +395,7 @@ void paraverMain::Init()
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
+  firstUserWorkspace = 0;
   menuFile = NULL;
   menuHints = NULL;
   menuHelp = NULL;
@@ -574,61 +575,69 @@ void paraverMain::refreshMenuHints()
   if( currentTrace == -1 )
     return;
 
+/* TO REMOVE
   set< TEventType > tmpLoadedTypes = loadedTraces[ currentTrace ]->getLoadedEvents();
+*/
   // Create updated one
-  for ( vector< string >::iterator it = traceWorkspaces[  loadedTraces[ currentTrace ]  ].begin(); it != traceWorkspaces[  loadedTraces[ currentTrace ]  ].end(); ++it )
+  size_t currentWorkspace = 0;
+  for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ]  ].begin(); it != traceWorkspaces[  loadedTraces[ currentTrace ]  ].end(); ++it )
   {
     wxString currentWorkspaceName = wxString::FromAscii( it->c_str() );
-    //wxMenu *currentWorkspace = new wxMenu( currentWorkspaceName );
-    wxMenu *currentWorkspace = new wxMenu();
-    
-    std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
+    wxMenu *currentWorkspaceMenu = new wxMenu();
+
+    std::vector< std::pair< std::string, std::string > > currentHints;
+    if( currentWorkspace < firstUserWorkspace ) // Distributed workspaces
+    {
+      currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
+      if( workspacesManager->existWorkspace( *it, WorkspaceManager::USER_DEFINED ) )
+      {
+        vector< TEventType > tmpDistAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
+        sort( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end() );
+        vector< TEventType > tmpUserAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getAutoTypes();
+        sort( tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() );
+        if( includes( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end(),
+                      tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() ) )
+        {
+          std::vector< std::pair< std::string, std::string > > tmpHints = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getHintCFGs();
+          currentHints.insert( currentHints.end(), tmpHints.begin(), tmpHints.end() );
+        }
+      }
+    }
+    else // User defined workspaces
+    {
+      if( workspacesManager->existWorkspace( *it, WorkspaceManager::DISTRIBUTED ) )
+        currentWorkspaceName += wxT( "#2" );
+      currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getHintCFGs();
+    }
+
     for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
     {
       wxString tmpName = getHintComposed( *it2 );
-      wxMenuItem *currentHint = new wxMenuItem( currentWorkspace, wxID_ANY, tmpName );
-      currentWorkspace->Append( currentHint );
+      wxMenuItem *currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
+      currentWorkspaceMenu->Append( currentHint );
       Connect( currentHint->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
                (wxObjectEventFunction)&paraverMain::OnHintClick );
     }
-    
-    menuHints->AppendSubMenu( currentWorkspace, currentWorkspaceName );
-    
+      
+    menuHints->AppendSubMenu( currentWorkspaceMenu, currentWorkspaceName );
+
+/* TO REMOVE
     vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
     bool tmpEnable = find_first_of( tmpLoadedTypes.begin(), tmpLoadedTypes.end(), 
                                      tmpAutoTypes.begin(), tmpAutoTypes.end() ) !=  tmpLoadedTypes.end();
     menuHints->Enable( menuHints->FindItem( currentWorkspaceName ), tmpEnable );
+*/
+    ++currentWorkspace;
   }
 }
 
 
-vector< string > paraverMain::detectTraceWorkspaces( Trace *whichTrace )
-{
-  vector< string > tmpActiveWorkspaces;
-  set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
-  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces( WorkspaceManager::DISTRIBUTED );
-  for ( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
-  {
-/*    if ( find( activeWorkspaces.begin(), activeWorkspaces.end(), *it ) !=  activeWorkspaces.end() )
-      tmpActiveWorkspaces.push_back( *it );
-    else
-    {
-    */
-      vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
-      if ( find_first_of( tmpLoadedTypes.begin(), tmpLoadedTypes.end(), 
-                          tmpAutoTypes.begin(), tmpAutoTypes.end() ) !=  tmpLoadedTypes.end() )
-        tmpActiveWorkspaces.push_back( *it );
-//    }
-  } 
-
-  return tmpActiveWorkspaces;
-}
-
 // Initial set, to be called after inserting new trace
 void paraverMain::setTraceWorkspaces( Trace *whichTrace )
 {
-  traceWorkspaces[ whichTrace ] = detectTraceWorkspaces( whichTrace );
+  set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
+  workspacesManager->getMergedWorkspaces( tmpLoadedTypes, traceWorkspaces[ whichTrace ], firstUserWorkspace );
 }
 
 
