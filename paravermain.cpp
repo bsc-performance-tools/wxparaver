@@ -380,7 +380,6 @@ void paraverMain::Init()
   currentTimeline = NULL;
   currentTrace = -1;
   currentWindow = NULL;
-  firstUserWorkspace = 0;
   helpContents = NULL;
   lastHisto = NULL;
   lastTimeline = NULL;
@@ -531,6 +530,7 @@ void paraverMain::CreateControls()
   itemBoxSizer37->Add(txtActiveWorkspaces, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
   btnActiveWorkspaces = new wxButton( itemPanel36, ID_BUTTON_ACTIVE_WORKSPACES, _(" ... "), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  btnActiveWorkspaces->Show(false);
   itemBoxSizer37->Add(btnActiveWorkspaces, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
   // Fit to content
@@ -562,6 +562,8 @@ void paraverMain::CreateControls()
 
 void paraverMain::refreshMenuHints()
 {
+  bool separator = false;
+
   // Destroy previous if any
   size_t maxItems = menuHints->GetMenuItemCount();
   for ( size_t i = 0; i < maxItems; ++i )
@@ -575,18 +577,15 @@ void paraverMain::refreshMenuHints()
   if( currentTrace == -1 )
     return;
 
-/* TO REMOVE
-  set< TEventType > tmpLoadedTypes = loadedTraces[ currentTrace ]->getLoadedEvents();
-*/
   // Create updated one
   size_t currentWorkspace = 0;
-  for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ]  ].begin(); it != traceWorkspaces[  loadedTraces[ currentTrace ]  ].end(); ++it )
+  for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(); it != traceWorkspaces[  loadedTraces[ currentTrace ]  ].end(); ++it )
   {
     wxString currentWorkspaceName = wxString::FromAscii( it->c_str() );
     wxMenu *currentWorkspaceMenu = new wxMenu();
 
     std::vector< std::pair< std::string, std::string > > currentHints;
-    if( currentWorkspace < firstUserWorkspace ) // Distributed workspaces
+    if( currentWorkspace < firstUserWorkspace[ loadedTraces[ currentTrace ] ] ) // Distributed workspaces
     {
       currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
       if( workspacesManager->existWorkspace( *it, WorkspaceManager::USER_DEFINED ) )
@@ -598,6 +597,7 @@ void paraverMain::refreshMenuHints()
         if( includes( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end(),
                       tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() ) )
         {
+          currentHints.push_back( std::pair< std::string, std::string >( "WXSEPARATOR", "WXSEPARATOR" ) );
           std::vector< std::pair< std::string, std::string > > tmpHints = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getHintCFGs();
           currentHints.insert( currentHints.end(), tmpHints.begin(), tmpHints.end() );
         }
@@ -605,6 +605,11 @@ void paraverMain::refreshMenuHints()
     }
     else // User defined workspaces
     {
+      if( !separator )
+      {
+        menuHints->AppendSeparator();
+        separator = true;
+      }
       if( workspacesManager->existWorkspace( *it, WorkspaceManager::DISTRIBUTED ) )
         currentWorkspaceName += wxT( "#2" );
       currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getHintCFGs();
@@ -612,6 +617,11 @@ void paraverMain::refreshMenuHints()
 
     for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
     {
+      if( (*it2).first == "WXSEPARATOR" && (*it2).second == "WXSEPARATOR" )
+      {
+        currentWorkspaceMenu->AppendSeparator();
+        continue;
+      }
       wxString tmpName = getHintComposed( *it2 );
       wxMenuItem *currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
       currentWorkspaceMenu->Append( currentHint );
@@ -622,12 +632,6 @@ void paraverMain::refreshMenuHints()
       
     menuHints->AppendSubMenu( currentWorkspaceMenu, currentWorkspaceName );
 
-/* TO REMOVE
-    vector< TEventType > tmpAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
-    bool tmpEnable = find_first_of( tmpLoadedTypes.begin(), tmpLoadedTypes.end(), 
-                                     tmpAutoTypes.begin(), tmpAutoTypes.end() ) !=  tmpLoadedTypes.end();
-    menuHints->Enable( menuHints->FindItem( currentWorkspaceName ), tmpEnable );
-*/
     ++currentWorkspace;
   }
 }
@@ -637,7 +641,8 @@ void paraverMain::refreshMenuHints()
 void paraverMain::setTraceWorkspaces( Trace *whichTrace )
 {
   set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
-  workspacesManager->getMergedWorkspaces( tmpLoadedTypes, traceWorkspaces[ whichTrace ], firstUserWorkspace );
+  firstUserWorkspace[ whichTrace ] = 0;
+  workspacesManager->getMergedWorkspaces( tmpLoadedTypes, traceWorkspaces[ whichTrace ], firstUserWorkspace[ whichTrace ] );
 }
 
 
@@ -3068,8 +3073,9 @@ void paraverMain::UnloadTrace( int whichTrace )
     (*it)->setDestroy( true );
   }
   
-  loadedTraces[ whichTrace ]->setUnload( true );
   traceWorkspaces.erase( loadedTraces[ whichTrace ] );
+  firstUserWorkspace.erase( loadedTraces[ whichTrace ] );
+  loadedTraces[ whichTrace ]->setUnload( true );
 }
 
 void paraverMain::clearProperties()
@@ -3913,6 +3919,9 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
   wxMenuItemList& menuItems1 = menuHints->GetMenuItems();
   for (wxMenuItemList::iterator menuIt = menuItems1.begin(); menuIt != menuItems1.end() ; ++menuIt )
   {
+    if( (*menuIt)->GetKind() == wxITEM_SEPARATOR )
+      continue;
+
     workspaceName = (*menuIt)->GetItemLabelText();
 
     wxMenuItemList& menuItems2 = (*menuIt)->GetSubMenu()->GetMenuItems();
@@ -4051,12 +4060,22 @@ void paraverMain::setActiveWorkspacesText()
   else
   {
     wxString tmpActive;
+    size_t tmpCurrentWorkspace = 0;
     for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(); it != traceWorkspaces[ loadedTraces[ currentTrace ] ].end(); ++it )
     {
       if ( !tmpActive.IsEmpty() )
         tmpActive += _( "+" );
         
-      tmpActive += wxString::FromAscii( it->c_str() );
+      if( tmpCurrentWorkspace < firstUserWorkspace[ loadedTraces[ currentTrace ] ] )
+        tmpActive += wxString::FromAscii( it->c_str() );
+      else
+      {
+        if( workspacesManager->existWorkspace( it->c_str(), WorkspaceManager::DISTRIBUTED ) )
+          tmpActive += wxString::FromAscii( it->c_str() ) + wxT( "#2" );
+        else
+          tmpActive += wxString::FromAscii( it->c_str() );
+      }
+      ++tmpCurrentWorkspace;
     }
     
     txtActiveWorkspaces->SetValue( tmpActive );

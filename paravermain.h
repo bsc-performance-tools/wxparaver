@@ -339,8 +339,8 @@ public:
   wxWindow * GetCurrentWindow() const { return currentWindow ; }
   void SetCurrentWindow(wxWindow * value) { currentWindow = value ; }
 
-  size_t GetFirstUserWorkspace() const { return firstUserWorkspace ; }
-  void SetFirstUserWorkspace(size_t value) { firstUserWorkspace = value ; }
+  std::map<Trace *, size_t> GetFirstUserWorkspace() const { return firstUserWorkspace ; }
+  void SetFirstUserWorkspace(std::map<Trace *, size_t> value) { firstUserWorkspace = value ; }
 
   HelpContents * GetHelpContents() const { return helpContents ; }
   void SetHelpContents(HelpContents * value) { helpContents = value ; }
@@ -506,7 +506,7 @@ private:
   Window * currentTimeline;
   PRV_INT16 currentTrace;
   wxWindow * currentWindow;
-  size_t firstUserWorkspace;
+  std::map<Trace *, size_t> firstUserWorkspace;
   HelpContents * helpContents;
   wxImageList* imageList;
   Histogram * lastHisto;
