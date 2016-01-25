@@ -380,6 +380,7 @@ void paraverMain::Init()
   currentTimeline = NULL;
   currentTrace = -1;
   currentWindow = NULL;
+  firstUserWorkspace = 0;
   helpContents = NULL;
   lastHisto = NULL;
   lastTimeline = NULL;
@@ -395,7 +396,6 @@ void paraverMain::Init()
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
-  firstUserWorkspace = 0;
   menuFile = NULL;
   menuHints = NULL;
   menuHelp = NULL;
@@ -3929,12 +3929,15 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
       break;
   }
 
+  wxString newWorkspaceName;
+  if( workspaceName.EndsWith( wxT( "#2" ), &newWorkspaceName ) )
+    workspaceName = newWorkspaceName;
+
   for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(); it != traceWorkspaces[ loadedTraces[ currentTrace ]  ].end(); ++it )
   {
     if ( workspaceName == wxString::FromAscii( it->c_str() ) )
     {
       std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
-
       for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
       {
         wxString hintName = getHintComposed( *it2 );
@@ -3948,8 +3951,28 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
           }
 
           DoLoadCFG( std::string( tmpCFG.GetFullPath().mb_str() ) );
+          return;
         }
       }
+      
+      currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getHintCFGs();
+      for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
+      {
+        wxString hintName = getHintComposed( *it2 );
+        if ( selectedHint == hintName )
+        {     
+          wxFileName tmpCFG( wxString::FromAscii( it2->first.c_str() ) );
+          if ( tmpCFG.IsRelative() )
+          {
+            wxString tmpGlobalCFGs( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 );
+            tmpCFG.MakeAbsolute( tmpGlobalCFGs );
+          }
+
+          DoLoadCFG( std::string( tmpCFG.GetFullPath().mb_str() ) );
+          return;
+        }
+      }
+      
     }
   }
 }

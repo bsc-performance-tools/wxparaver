@@ -339,6 +339,9 @@ public:
   wxWindow * GetCurrentWindow() const { return currentWindow ; }
   void SetCurrentWindow(wxWindow * value) { currentWindow = value ; }
 
+  size_t GetFirstUserWorkspace() const { return firstUserWorkspace ; }
+  void SetFirstUserWorkspace(size_t value) { firstUserWorkspace = value ; }
+
   HelpContents * GetHelpContents() const { return helpContents ; }
   void SetHelpContents(HelpContents * value) { helpContents = value ; }
 
@@ -401,9 +404,6 @@ public:
 
   WorkspaceManager * GetWorkspacesManager() const { return workspacesManager ; }
   void SetWorkspacesManager(WorkspaceManager * value) { workspacesManager = value ; }
-
-  size_t GetFirstUserWorkspace() const { return firstUserWorkspace ; }
-  void SetFirstUserWorkspace(size_t value) { firstUserWorkspace = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -506,6 +506,7 @@ private:
   Window * currentTimeline;
   PRV_INT16 currentTrace;
   wxWindow * currentWindow;
+  size_t firstUserWorkspace;
   HelpContents * helpContents;
   wxImageList* imageList;
   Histogram * lastHisto;
@@ -527,7 +528,6 @@ private:
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
-  size_t firstUserWorkspace;
 ////@end paraverMain member variables
 
   std::map< std::string, PRV_UINT32 > traceInstance;
