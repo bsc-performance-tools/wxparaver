@@ -1151,27 +1151,12 @@ void PreferencesDialog::CreateControls()
 
   GetBookCtrl()->AddPage(itemPanel206, _("Filters"));
 
+  // Connect events and objects
+  txtWorkspaceName->Connect(ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), NULL, this);
 ////@end PreferencesDialog content construction
-
-  // Filter forbidden chars
-  wxArrayString forbidden;
-  forbidden.Add( _( "-" ) );
-  forbidden.Add( _( "." ) );
-  forbidden.Add( _( "," ) );
   
-  // DUMMY CODE: the purpose is only to avoid warning at compile
+  // DUMMY CODE: to avoid warning at compile
   itemPropertySheetDialog1 = NULL;
-
-/*
-// wxTextCtrl validators
-
-  wxTextValidator validator( wxFILTER_NUMERIC | wxFILTER_EXCLUDE_CHAR_LIST );
-  validator.SetExcludes( forbidden );
-
-  txtHistogramNumColumns->SetValidator( validator );
-  txtHistogramPrecision->SetValidator( validator );
-  txtTimelineWWPrecision->SetValidator( validator );
-*/
   
   dirBrowserButtonTrace->SetTextBox( textCtrlTrace );
   dirBrowserButtonTrace->SetDialogMessage( _( "Select Traces Default Directory" ) );
@@ -1205,6 +1190,12 @@ void PreferencesDialog::CreateControls()
   wxArrayString charIncludes( (size_t)11, allowedChars );
   myValidator.SetIncludes( charIncludes );
   txtAutoTypes->SetValidator( myValidator );
+
+  wxArrayString forbidden;
+  forbidden.Add( _( "#" ) );
+  wxTextValidator validator( wxFILTER_EXCLUDE_CHAR_LIST );
+  validator.SetExcludes( forbidden );
+  txtWorkspaceName->SetValidator( validator );
   
   panelID[ ID_PREFERENCES_GLOBAL ] = 0;
   panelID[ ID_PREFERENCES_TIMELINE ] = 1;
@@ -1301,10 +1292,10 @@ wxString PreferencesDialog::formatNumber( long value )
 
 
 void PreferencesDialog::setLabelsChoiceBox( const vector< string > &list,
-                                               const PRV_UINT32 &selected,
-                                               wxChoice *choiceBox )
+                                             const PRV_UINT32 &selected,
+                                             wxChoice *choiceBox )
 {
-  choiceBox->Clear(); // entra dos veces!!!
+  choiceBox->Clear(); // enters twice
 
   for( vector< string >::const_iterator it = list.begin(); it != list.end(); ++it )
   {
@@ -1637,7 +1628,7 @@ void PreferencesDialog::OnButtonWorkspacesUpUpdate( wxUpdateUIEvent& event )
 void PreferencesDialog::OnButtonWorkspacesDownUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
-                listWorkspaces->GetSelection() < listWorkspaces->GetCount() - 1 );
+                listWorkspaces->GetSelection() < int(listWorkspaces->GetCount()) - 1 );
 }
 
 
@@ -1702,7 +1693,7 @@ void PreferencesDialog::OnButtonHintDownUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND &&
                 listHintsWorkspace->GetSelection() != wxNOT_FOUND &&
-                listHintsWorkspace->GetSelection() < listHintsWorkspace->GetCount() - 1 );
+                listHintsWorkspace->GetSelection() < int( listHintsWorkspace->GetCount() ) - 1 );
 }
 
 
@@ -1782,6 +1773,8 @@ void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
   {
     return;
   }
+
+  originalWorkspaceName = listWorkspaces->GetStringSelection();
   
   txtWorkspaceName->ChangeValue( listWorkspaces->GetStringSelection() );
   Workspace& currentWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
@@ -1807,11 +1800,6 @@ void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
 
 void PreferencesDialog::OnTextWorkspaceNameTextUpdated( wxCommandEvent& event )
 {
-  Workspace tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
-  workspaceContainer.erase( listWorkspaces->GetStringSelection() );
-  std::string tmpName = std::string( event.GetString().mb_str() );
-  tmpWrk.setName( tmpName );
-  workspaceContainer.insert( std::pair<wxString,Workspace>( event.GetString(), tmpWrk ) );
   listWorkspaces->SetString( listWorkspaces->GetSelection(), event.GetString() );
 }
 
@@ -2028,4 +2016,41 @@ void PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& eve
   }
   tmpWrk.setAutoTypes( tmpAutoTypes );
 }
+
+ 
+/*!
+ * wxEVT_KILL_FOCUS event handler for ID_TEXT_WORKSPACE_NAME
+ */
+
+void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
+{
+  if ( originalWorkspaceName == txtWorkspaceName->GetValue() )
+    return;
+
+  bool nameEdited = false;
+  wxString tmpName = txtWorkspaceName->GetValue();
+  while( workspaceContainer.find( tmpName ) != workspaceContainer.end())
+  {
+    nameEdited = true;
+    tmpName += wxT( "_" );
+  }
+
+  Workspace tmpWrk = workspaceContainer[ originalWorkspaceName ];
+  workspaceContainer.erase( originalWorkspaceName );
+  string tmpStrName = std::string( tmpName.c_str() );
+  tmpWrk.setName( tmpStrName );
+  workspaceContainer.insert( std::pair<wxString,Workspace>( tmpName, tmpWrk ) );
+  
+  listWorkspaces->SetString( listWorkspaces->GetSelection(), tmpName );
+  
+  originalWorkspaceName = tmpName;
+  txtWorkspaceName->ChangeValue( tmpName );
+  
+  if( nameEdited )
+    ::wxMessageBox( wxT( "Found duplicated workspace name.\nChanged to:\n\n" ) + tmpName,
+                    wxT( "Duplicated name" ),
+                    wxICON_EXCLAMATION );
+}
+
+
 

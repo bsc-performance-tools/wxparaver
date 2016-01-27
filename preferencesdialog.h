@@ -236,6 +236,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_NAME
   void OnTextWorkspaceNameUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_KILL_FOCUS event handler for ID_TEXT_WORKSPACE_NAME
+  void OnTextWorkspaceNameKillFocus( wxFocusEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_STATIC_WORKSPACE_AUTOTYPES
   void OnStaticWorkspaceAutotypesUpdate( wxUpdateUIEvent& event );
 
@@ -653,6 +656,9 @@ private:
   std::map<wxString,Workspace> workspaceContainer;
 ////@end PreferencesDialog member variables
 
+  // To keep the original name of the selected workspace
+  wxString originalWorkspaceName;
+  
   std::map< wxWindowID, size_t > panelID;
   
   wxString formatNumber( long value );
@@ -661,7 +667,6 @@ private:
                            wxChoice *choiceBox );
   rgb wxColourToRGB( wxColour colour ) ;
   wxColour RGBTowxColour( rgb colour );
-
 };
 
 #endif
