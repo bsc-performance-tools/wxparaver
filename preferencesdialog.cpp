@@ -2037,7 +2037,7 @@ void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
 
   Workspace tmpWrk = workspaceContainer[ originalWorkspaceName ];
   workspaceContainer.erase( originalWorkspaceName );
-  string tmpStrName = std::string( tmpName.c_str() );
+  string tmpStrName = std::string( tmpName.mb_str() );
   tmpWrk.setName( tmpStrName );
   workspaceContainer.insert( std::pair<wxString,Workspace>( tmpName, tmpWrk ) );
   
