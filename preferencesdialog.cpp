@@ -1431,6 +1431,8 @@ bool PreferencesDialog::TransferDataToWindow()
     workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromAscii( it->c_str() ),
                                                               WorkspaceManager::getInstance()->getWorkspace( *it, WorkspaceManager::USER_DEFINED ) ) );
   }
+  
+  fileBrowserHintPath->SetPath( wxString::FromAscii( cfgsPath.c_str() ) );
 
   return true;
 }
@@ -1843,7 +1845,8 @@ void PreferencesDialog::OnButtonWorkspacesDownClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonHintAddClick( wxCommandEvent& event )
 {
-  wxString tmpPath( _( "/some/path/new_hint.cfg" ) );
+
+  wxString tmpPath( dirBrowserButtonCFG->GetPath() + wxFileName::GetPathSeparator() + _( "new_hint.cfg" ) );
   wxString tmpDesc( _( "New hint description..." ) );
   std::pair< std::string, std::string > tmpHint = std::pair< std::string, std::string >( std::string( tmpPath.mb_str() ), std::string( tmpDesc.mb_str() ) );
   workspaceContainer[ listWorkspaces->GetStringSelection() ].addHintCFG( tmpHint );
