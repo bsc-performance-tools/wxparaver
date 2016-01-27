@@ -332,6 +332,7 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
@@ -339,7 +340,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -441,9 +441,6 @@ void gTimeline::redraw()
     return;
   }
 #endif
-#ifdef TRACING_ENABLED
-  Extrae_user_function( 2 );
-#endif
   redoColors = true;
 
   rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
@@ -493,9 +490,6 @@ void gTimeline::redraw()
 #endif // PARALLEL_ENABLED
 #endif // WIN32
 
-#ifdef TRACING_ENABLED
-    Extrae_event( 100, 10 );
-#endif
   // Get selected rows
   vector<bool>         selected;
   vector<TObjectOrder> selectedSet;
@@ -503,9 +497,6 @@ void gTimeline::redraw()
   TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, true );
   myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
-#ifdef TRACING_ENABLED
-    Extrae_event( 100, 0 );
-#endif
 
 //  vector<bool>         tmpSel;
 //  myWindow->getSelectedRows( THREAD, tmpSel );
@@ -518,9 +509,6 @@ void gTimeline::redraw()
   else
     maxObj = selectedSet[ selectedSet.size() - 1 ];
 
-#ifdef TRACING_ENABLED
-    Extrae_event( 100, 11 );
-#endif
   ready = false;
   bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
@@ -560,9 +548,6 @@ void gTimeline::redraw()
   eventmaskdc.SetBackground( *wxBLACK_BRUSH );
   eventmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   eventmaskdc.Clear();
-#ifdef TRACING_ENABLED
-    Extrae_event( 100, 0 );
-#endif
 
   bufferDraw.SetBackground( wxBrush( backgroundColour ) );
   bufferDraw.Clear();
@@ -578,18 +563,9 @@ void gTimeline::redraw()
   {
     SetTitle( winTitle );
     ready = true;
-#ifdef TRACING_ENABLED
-  Extrae_user_function( 0 );
-#endif
     return;
   }
-#ifdef TRACING_ENABLED
-    Extrae_event( 100, 12 );
-#endif
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
-#ifdef TRACING_ENABLED
-    Extrae_event( 100, 0 );
-#endif
 
   drawCaution = false;
 
@@ -743,9 +719,6 @@ void gTimeline::redraw()
 //  redrawStopWatch->Pause();
 
   SetTitle( winTitle );
-#ifdef TRACING_ENABLED
-  Extrae_user_function( 0 );
-#endif
 
   ready = true;
 #ifndef __WXMAC__
@@ -759,10 +732,6 @@ void gTimeline::redraw()
 
 bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 {
-#ifdef TRACING_ENABLED
-  Extrae_user_function( 3 );
-#endif
-
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   PRV_UINT32 precision = 0;
 
@@ -782,9 +751,6 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   timeAxisPos = dc.GetSize().GetHeight() - ( drawBorder + timeExt.GetHeight() + drawBorder );
   if( timeAxisPos + drawBorder + 1 > dc.GetSize().GetHeight() )
   {
-#ifdef TRACING_ENABLED
-    Extrae_user_function( 0 );
-#endif
     return false;
   }
 
@@ -858,9 +824,6 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   objectAxisPos = drawBorder + objectExt.GetWidth() + drawBorder;
   if( objectAxisPos + drawBorder + 1 > dc.GetSize().GetWidth() )
   {
-#ifdef TRACING_ENABLED
-    Extrae_user_function( 0 );
-#endif
     return false;
   }
 
@@ -957,9 +920,6 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     if( ( printall || drawLabel ) &&
         !( myWindow->getObjectAxisSize() == Window::ZERO_PERC ) )
     {
-#ifdef TRACING_ENABLED
-      Extrae_event( 100, 14 );
-#endif
       if( myWindow->getLevel() == CPU || myWindow->getLevel() == NODE || myWindow->getLevel() == SYSTEM )
         dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
                      drawBorder, y );
@@ -967,9 +927,6 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
         dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
                      drawBorder, y );
       accumHeight += stepHeight;
-#ifdef TRACING_ENABLED
-      Extrae_event( 100, 0 );
-#endif
     }
 
     // next selected row
@@ -1004,9 +961,6 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   dc.SetBrush( wxBrush( backgroundColour ) );
   dc.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetSize().GetWidth(), timeAxisPos );
                
-#ifdef TRACING_ENABLED
-  Extrae_user_function( 0 );
-#endif
   return true;
 }
 
@@ -1030,10 +984,6 @@ void gTimeline::drawRow( wxDC& dc,
                          wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
 #endif
 {
-#ifdef TRACING_ENABLED
-  Extrae_user_function( 3 );
-#endif
-
   float magnify = float( myWindow->getPixelSize() );
   TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
@@ -1123,9 +1073,6 @@ void gTimeline::drawRow( wxDC& dc,
   }
 
   wxCoord rowPos = objectPosList[ firstRow ];
-#ifdef TRACING_ENABLED
-  Extrae_event( 100, 20 );
-#endif
   for( hash_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
   {
     eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
@@ -1141,13 +1088,7 @@ void gTimeline::drawRow( wxDC& dc,
     eventmaskdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
 #endif
   }
-#ifdef TRACING_ENABLED
-  Extrae_event( 100, 0 );
-#endif
 
-#ifdef TRACING_ENABLED
-  Extrae_event( 100, 21 );
-#endif
 #ifdef WIN32
   for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
@@ -1166,13 +1107,7 @@ void gTimeline::drawRow( wxDC& dc,
                          it->fromTime, rowPos );
 #endif
   }
-#ifdef TRACING_ENABLED
-  Extrae_event( 100, 0 );
-#endif
 
-#ifdef TRACING_ENABLED
-  Extrae_user_function( 0 );
-#endif
 }
 
 
