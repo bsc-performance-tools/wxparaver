@@ -1154,8 +1154,7 @@ void PreferencesDialog::CreateControls()
   // Connect events and objects
   txtWorkspaceName->Connect(ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), NULL, this);
 ////@end PreferencesDialog content construction
-  
-  // DUMMY CODE: to avoid warning at compile
+    
   itemPropertySheetDialog1 = NULL;
   
   dirBrowserButtonTrace->SetTextBox( textCtrlTrace );

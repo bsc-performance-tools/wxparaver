@@ -642,6 +642,7 @@ void paraverMain::setTraceWorkspaces( Trace *whichTrace )
 {
   set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
   firstUserWorkspace[ whichTrace ] = 0;
+  traceWorkspaces[ whichTrace ].clear();
   workspacesManager->getMergedWorkspaces( tmpLoadedTypes, traceWorkspaces[ whichTrace ], firstUserWorkspace[ whichTrace ] );
 }
 
@@ -2902,20 +2903,14 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     // Save Preferences to File
     paraverConfig->writeParaverConfigFile();
 
-    // WORKSPACES - not paraverConfig!
-    for ( map< Trace*, vector< string > >::iterator it = traceWorkspaces.begin(); it != traceWorkspaces.end(); ++it )
+    // WORKSPACES
+    workspacesManager->saveXML();
+
+    for ( vector< Trace * >::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     {
-      vector< string > tmpActiveWorkspaces;
-      for ( vector< string >::iterator itWorkspace = (*it).second.begin(); itWorkspace != (*it).second.end(); ++itWorkspace )
-      {
-        if ( workspacesManager->existWorkspace( *itWorkspace, WorkspaceManager::DISTRIBUTED ) )
-          tmpActiveWorkspaces.push_back( *itWorkspace );
-      }
-      
-      (*it).second = tmpActiveWorkspaces;
+      setTraceWorkspaces( *it );
     }
     
-    workspacesManager->saveXML();
     setActiveWorkspacesText();
     refreshMenuHints();
   }
