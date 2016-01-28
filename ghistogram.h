@@ -67,7 +67,8 @@ class HistoTableBase;
 
 ////@begin control identifiers
 #define ID_GHISTOGRAM 10004
-#define ID_AUITOOLBAR1 10059
+#define ID_PANEL1 10001
+#define ID_TOOLBAR_HISTOGRAM 10059
 #define ID_TOOL_OPEN_CONTROL_WINDOW 10050
 #define ID_TOOL_OPEN_DATA_WINDOW 10051
 #define ID_TOOL_OPEN_EXTRA_WINDOW 10052
@@ -78,6 +79,7 @@ class HistoTableBase;
 #define ID_TOOL_HIDE_COLUMNS 10058
 #define ID_TOOL_LABEL_COLORS 10101
 #define ID_TOOL_INCLUSIVE 10105
+#define ID_PANEL 10000
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
 #define wxID_CONTROLWARNING 10024
@@ -362,6 +364,7 @@ public:
   static wxProgressDialog *dialogProgress;
 
 ////@begin gHistogram member variables
+  wxToolBar* tbarHisto;
   wxBoxSizer* mainSizer;
   wxScrolledWindow* zoomHisto;
   wxGrid* gridHisto;

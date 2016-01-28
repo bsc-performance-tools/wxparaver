@@ -219,7 +219,7 @@ void wxparaverApp::Init()
 ////@end wxparaverApp member initialisation
   m_locale.Init();
 #ifdef __WXMAC__
-  //wxSystemOptions::SetOption( "mac.toolbar.no-native", 1 );
+  wxSystemOptions::SetOption( "mac.toolbar.no-native", 1 );
 #endif
 }
 
