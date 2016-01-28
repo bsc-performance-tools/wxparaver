@@ -2141,23 +2141,23 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
     currentTrace = selPage - 1;
     
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
-  if( !tree->GetSelection().IsOk() )
-    return;
-
-  TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
-  if( item->getTimeline() != NULL )
+  if( tree->GetSelection().IsOk() )
   {
-    currentWindow = item->getTimeline();
-    currentTimeline = item->getTimeline()->GetMyWindow();
-    currentHisto = NULL;
+    TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
+    if( item->getTimeline() != NULL )
+    {
+      currentWindow = item->getTimeline();
+      currentTimeline = item->getTimeline()->GetMyWindow();
+      currentHisto = NULL;
+    }
+    else if( item->getHistogram() != NULL )
+    {
+      currentWindow = item->getHistogram();
+      currentHisto = item->getHistogram()->GetHistogram();
+      currentTimeline = NULL;
+    }
   }
-  else if( item->getHistogram() != NULL )
-  {
-    currentWindow = item->getHistogram();
-    currentHisto = item->getHistogram()->GetHistogram();
-    currentTimeline = NULL;
-  }
-
+  
   setActiveWorkspacesText();
   refreshMenuHints();
 }
