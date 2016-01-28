@@ -90,6 +90,10 @@
 #define MAX_LEN_PATH 2048
 #endif
 
+#ifdef __WXMAC__
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 ////@begin XPM images
 #include "new_window.xpm"
 #include "new_derived_window.xpm"
@@ -3831,6 +3835,14 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
   }
   else
   {
+/*#ifdef __WXMAC__
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef fileURL = CFBundleCopyResourceURL( mainBundle, CFSTR("aaa"), CFSTR("txt"), NULL );
+    CFStringRef filePath = CFURLCopyFileSystemPath( fileURL, kCFURLPOSIXPathStyle );
+    CFStringEncoding encodingMethod = CFStringGetSystemEncoding();
+    const char *path = CFStringGetCStringPtr( filePath, encodingMethod );
+    cout<<"File location: "<<path<<endl;
+#endif*/
     wxString paraverHome;
 #ifdef WIN32
     std::string baseDir;
@@ -3849,6 +3861,19 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
     }
     paraverHome = wxT( baseDir.c_str() );
     
+    if( paraverHome != wxT( "" ) )
+#elif defined( __APPLE__ )
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+    char tmpPath[PATH_MAX];
+    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)tmpPath, PATH_MAX))
+    {
+        throw ParaverKernelException();
+    }
+    CFRelease(resourcesURL);
+
+    paraverHome = tmpPath;
+
     if( paraverHome != wxT( "" ) )
 #else
     if ( wxGetEnv( wxString( wxT( "PARAVER_HOME" ) ), &paraverHome ) )
