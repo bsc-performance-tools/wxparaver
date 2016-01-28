@@ -1779,7 +1779,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
   }
 }
 
-
+/*
 // **********************************************************************************
 // **********************************************************************************
 //  ____         __ _                           ____                  _                
@@ -1790,7 +1790,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 //                                                                                    
 // **********************************************************************************
 // **********************************************************************************
-
+*/
 
 /*!
  * wxEVT_UPDATE_UI event handler for ID_PANEL_SOFTWARE_COUNTERS
@@ -2103,7 +2103,7 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
   // traceOptions->set_sc_frequency( (int) scFrequency );
 }
 
-
+/*
 // **********************************************************************************
 // **********************************************************************************
 //   ____                                      
@@ -2114,6 +2114,7 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
 //                                             
 // **********************************************************************************
 // **********************************************************************************
+*/
 // order only contains the identifiers of the selected tools
 void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
 {

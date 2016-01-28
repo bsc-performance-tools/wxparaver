@@ -332,14 +332,14 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -850,7 +850,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   int numpixels = timeAxisPos - 2*drawBorder; /* Usable num pixels */
   int everyobj = 1; /* Draw every Xth object */
   bool printlast = numpixels > objectFont.GetPointSize(); /* Do we have space for more than 1? */
-  bool printall = numpixels > 0 && numpixels > numObjects * objectFont.GetPointSize(); /* Do we have space for all? */
+  bool printall = numpixels > 0 && numpixels > int( numObjects * objectFont.GetPointSize()); /* Do we have space for all? */
 
   /* If we have space for some, but not all, check which to print ... */
   if (!printall && printlast)
@@ -862,7 +862,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 
     every = every << 1;
     /* Now print 2^n equidistant elements */
-    if (numObjects > every)
+    if (int(numObjects) > every)
       everyobj = numObjects / (numObjects/every);
     else
       everyobj = numObjects;
