@@ -892,8 +892,8 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
    CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
 
   wxFileDialog dialog( this, _( "Load Configuration" ), CFGPath, _( "" ),
-    _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
-    wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
+                        _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
+                        wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
   raiseCurrentWindow = false;
   if( dialog.ShowModal() == wxID_OK )
   {
@@ -3950,7 +3950,7 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
           wxFileName tmpCFG( wxString::FromAscii( it2->first.c_str() ) );
           if ( tmpCFG.IsRelative() )
           {
-            wxString tmpGlobalCFGs( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 );
+            wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
             tmpCFG.MakeAbsolute( tmpGlobalCFGs );
           }
 
