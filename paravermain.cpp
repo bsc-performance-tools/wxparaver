@@ -2053,7 +2053,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   if( wxTheApp->IsActive() )
   {
     int iTrace = 0;
-    int prevSize = loadedTraces.size();
+    size_t prevSize = loadedTraces.size();
     vector<Trace *>::iterator it = loadedTraces.begin();
     while( it != loadedTraces.end() )
     {
