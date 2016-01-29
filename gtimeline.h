@@ -88,21 +88,21 @@ class ProgressController;
 
 ////@begin control identifiers
 #define ID_GTIMELINE 10001
-#define ID_SPLITTERWINDOW 10048
-#define ID_SCROLLEDWINDOW 10007
-#define ID_NOTEBOOK 10042
-#define ID_SCROLLEDWINDOW2 10076
+#define ID_SPLITTER_TIMELINE 10048
+#define ID_SCROLLED_DRAW 10007
+#define ID_NOTEBOOK_INFO 10042
+#define ID_SCROLLED_WHATWHERE 10076
 #define ID_CHECKBOX 10077
 #define ID_CHECKBOX1 10079
 #define ID_CHECKBOX2 10080
 #define ID_CHECKBOX3 10083
 #define ID_CHECKBOX4 10084
 #define ID_RICHTEXTCTRL 10043
-#define ID_PANEL 10044
+#define ID_SCROLLED_TIMING 10044
 #define ID_TEXTCTRL 10045
 #define ID_TEXTCTRL1 10046
 #define ID_TEXTCTRL2 10047
-#define ID_PANEL1 10049
+#define ID_SCROLLED_COLORS 10049
 #define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
 #define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
@@ -149,47 +149,47 @@ public:
   /// wxEVT_RIGHT_DOWN event handler for ID_GTIMELINE
   void OnRightDown( wxMouseEvent& event );
 
-  /// wxEVT_COMMAND_SPLITTER_DOUBLECLICKED event handler for ID_SPLITTERWINDOW
-  void OnSplitterwindowSashDClick( wxSplitterEvent& event );
+  /// wxEVT_COMMAND_SPLITTER_DOUBLECLICKED event handler for ID_SPLITTER_TIMELINE
+  void OnSplitterTimelineSashDClick( wxSplitterEvent& event );
 
-  /// wxEVT_COMMAND_SPLITTER_UNSPLIT event handler for ID_SPLITTERWINDOW
-  void OnSplitterwindowSashUnsplit( wxSplitterEvent& event );
+  /// wxEVT_COMMAND_SPLITTER_UNSPLIT event handler for ID_SPLITTER_TIMELINE
+  void OnSplitterTimelineSashUnsplit( wxSplitterEvent& event );
 
-  /// wxEVT_SIZE event handler for ID_SCROLLEDWINDOW
+  /// wxEVT_SIZE event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowSize( wxSizeEvent& event );
 
-  /// wxEVT_PAINT event handler for ID_SCROLLEDWINDOW
+  /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
-  /// wxEVT_MIDDLE_UP event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowMiddleUp( wxMouseEvent& event );
-
-  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowRightDown( wxMouseEvent& event );
-
-  /// wxEVT_MOTION event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowMotion( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLEDWINDOW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
-
-  /// wxEVT_LEFT_UP event handler for ID_SCROLLEDWINDOW
+  /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
-  /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLEDWINDOW
+  /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftDClick( wxMouseEvent& event );
 
-  /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK
-  void OnNotebookPageChanging( wxNotebookEvent& event );
+  /// wxEVT_MIDDLE_UP event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMiddleUp( wxMouseEvent& event );
+
+  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowRightDown( wxMouseEvent& event );
+
+  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMotion( wxMouseEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
+  /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
+  void OnNotebookInfoPageChanging( wxNotebookEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
   void OnCheckWhatWhere( wxCommandEvent& event );
@@ -197,7 +197,7 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX4
   void OnCheckWhatWhereText( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_PANEL1
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_COLORS
   void OnColorsPanelUpdate( wxUpdateUIEvent& event );
 
 ////@end gTimeline event handler declarations

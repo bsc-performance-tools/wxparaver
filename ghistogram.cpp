@@ -227,7 +227,9 @@ void gHistogram::Init()
   tableBase = NULL;
   timerZoom = new wxTimer( this );
   zoomDragging = false;
+  panelToolbar = NULL;
   tbarHisto = NULL;
+  panelData = NULL;
   mainSizer = NULL;
   zoomHisto = NULL;
   gridHisto = NULL;
@@ -252,11 +254,11 @@ void gHistogram::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  wxPanel* itemPanel3 = new wxPanel( itemFrame1, ID_PANEL1, wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(200, -1)), wxTAB_TRAVERSAL );
-  itemPanel3->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-  itemBoxSizer2->Add(itemPanel3, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  panelToolbar = new wxPanel( itemFrame1, HISTO_PANEL_TOOLBAR, wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(200, -1)), wxTAB_TRAVERSAL );
+  panelToolbar->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+  itemBoxSizer2->Add(panelToolbar, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  tbarHisto = new wxToolBar( itemPanel3, ID_TOOLBAR_HISTOGRAM, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL );
+  tbarHisto = new wxToolBar( panelToolbar, ID_TOOLBAR_HISTOGRAM, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL );
   wxBitmap itemtool5Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
   wxBitmap itemtool5BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
@@ -291,21 +293,21 @@ void gHistogram::CreateControls()
   tbarHisto->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
   tbarHisto->Realize();
 
-  wxPanel* itemPanel17 = new wxPanel( itemFrame1, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-  itemPanel17->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-  itemBoxSizer2->Add(itemPanel17, 1, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+  panelData->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+  itemBoxSizer2->Add(panelData, 1, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
-  itemPanel17->SetSizer(itemBoxSizer18);
+  panelData->SetSizer(itemBoxSizer18);
 
   mainSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer18->Add(mainSizer, 1, wxGROW|wxALL, 0);
 
-  zoomHisto = new wxScrolledWindow( itemPanel17, ID_ZOOMHISTO, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE );
+  zoomHisto = new wxScrolledWindow( panelData, ID_ZOOMHISTO, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE );
   mainSizer->Add(zoomHisto, 1, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(1, -1)).x);
   zoomHisto->SetScrollbars(1, 1, 0, 0);
 
-  gridHisto = new wxGrid( itemPanel17, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
+  gridHisto = new wxGrid( panelData, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
   gridHisto->SetDefaultColSize(wxDLG_UNIT(itemFrame1, wxSize(50, -1)).x);
   gridHisto->SetDefaultRowSize(wxDLG_UNIT(itemFrame1, wxSize(-1, 25)).y);
   gridHisto->SetColLabelSize(wxDLG_UNIT(itemFrame1, wxSize(-1, 25)).y);
@@ -315,17 +317,17 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer18->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( itemPanel17, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemPanel17, wxSize(8, 7)), 0 );
+  controlWarning = new wxStaticBitmap( panelData, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  xtraWarning = new wxStaticBitmap( itemPanel17, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemPanel17, wxSize(8, 7)), 0 );
+  xtraWarning = new wxStaticBitmap( panelData, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxStaticBitmap* itemStaticBitmap25 = new wxStaticBitmap( itemPanel17, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(itemPanel17, wxSize(9, 9)), 0 );
+  wxStaticBitmap* itemStaticBitmap25 = new wxStaticBitmap( panelData, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(9, 9)), 0 );
   itemStaticBitmap25->Show(false);
   warningSizer->Add(itemStaticBitmap25, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
@@ -347,7 +349,7 @@ void gHistogram::CreateControls()
 
 #ifdef __WXGTK__
   SetToolBar( tbarHisto );
-  itemPanel3->Hide();
+  panelToolbar->Hide();
 #endif
 
   gridHisto->CreateGrid( 0, 0 );

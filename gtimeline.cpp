@@ -101,16 +101,16 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CLOSE( gTimeline::OnCloseWindow )
   EVT_IDLE( gTimeline::OnIdle )
   EVT_RIGHT_DOWN( gTimeline::OnRightDown )
-  EVT_SPLITTER_DCLICK( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashDClick )
-  EVT_SPLITTER_UNSPLIT( ID_SPLITTERWINDOW, gTimeline::OnSplitterwindowSashUnsplit )
-  EVT_UPDATE_UI( ID_SCROLLEDWINDOW, gTimeline::OnScrolledWindowUpdate )
-  EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK, gTimeline::OnNotebookPageChanging )
+  EVT_SPLITTER_DCLICK( ID_SPLITTER_TIMELINE, gTimeline::OnSplitterTimelineSashDClick )
+  EVT_SPLITTER_UNSPLIT( ID_SPLITTER_TIMELINE, gTimeline::OnSplitterTimelineSashUnsplit )
+  EVT_UPDATE_UI( ID_SCROLLED_DRAW, gTimeline::OnScrolledWindowUpdate )
+  EVT_NOTEBOOK_PAGE_CHANGING( ID_NOTEBOOK_INFO, gTimeline::OnNotebookInfoPageChanging )
   EVT_CHECKBOX( ID_CHECKBOX, gTimeline::OnCheckWhatWhere )
   EVT_CHECKBOX( ID_CHECKBOX1, gTimeline::OnCheckWhatWhere )
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
-  EVT_UPDATE_UI( ID_PANEL1, gTimeline::OnColorsPanelUpdate )
+  EVT_UPDATE_UI( ID_SCROLLED_COLORS, gTimeline::OnColorsPanelUpdate )
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -249,14 +249,14 @@ void gTimeline::CreateControls()
 ////@begin gTimeline content construction
   gTimeline* itemFrame1 = this;
 
-  splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTERWINDOW, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
+  splitter = new wxSplitterWindow( itemFrame1, ID_SPLITTER_TIMELINE, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_3DSASH|wxSP_PERMIT_UNSPLIT );
   splitter->SetMinimumPaneSize(wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
 
-  drawZone = new wxScrolledWindow( splitter, ID_SCROLLEDWINDOW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE );
+  drawZone = new wxScrolledWindow( splitter, ID_SCROLLED_DRAW, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE );
   drawZone->SetScrollbars(1, 1, 0, 0);
-  infoZone = new wxNotebook( splitter, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+  infoZone = new wxNotebook( splitter, ID_NOTEBOOK_INFO, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
 
-  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLEDWINDOW2, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+  whatWherePanel = new wxScrolledWindow( infoZone, ID_SCROLLED_WHATWHERE, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
   whatWherePanel->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxVERTICAL);
   whatWherePanel->SetSizer(itemBoxSizer6);
@@ -289,7 +289,7 @@ void gTimeline::CreateControls()
   whatWherePanel->FitInside();
   infoZone->AddPage(whatWherePanel, _("What / Where"));
 
-  timingZone = new wxScrolledWindow( infoZone, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  timingZone = new wxScrolledWindow( infoZone, ID_SCROLLED_TIMING, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   timingZone->SetScrollbars(1, 5, 0, 0);
   wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
   timingZone->SetSizer(itemBoxSizer15);
@@ -319,7 +319,7 @@ void gTimeline::CreateControls()
   timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
 
-  colorsPanel = new wxScrolledWindow( infoZone, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL|wxTAB_TRAVERSAL );
+  colorsPanel = new wxScrolledWindow( infoZone, ID_SCROLLED_COLORS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxVSCROLL|wxTAB_TRAVERSAL );
   colorsPanel->SetScrollbars(1, 5, 0, 0);
   colorsSizer = new wxBoxSizer(wxVERTICAL);
   colorsPanel->SetSizer(colorsSizer);
@@ -330,16 +330,16 @@ void gTimeline::CreateControls()
   splitter->SplitHorizontally(drawZone, infoZone, wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
 
   // Connect events and objects
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLEDWINDOW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
 ////@end gTimeline content construction
 
   ParaverConfig *paraverConfig = ParaverConfig::getInstance();
@@ -2103,7 +2103,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
  * wxEVT_COMMAND_SPLITTER_UNSPLIT event handler for ID_SPLITTERWINDOW
  */
 
-void gTimeline::OnSplitterwindowSashUnsplit( wxSplitterEvent& event )
+void gTimeline::OnSplitterTimelineSashUnsplit( wxSplitterEvent& event )
 {
   Unsplit();
 }
@@ -2113,7 +2113,7 @@ void gTimeline::OnSplitterwindowSashUnsplit( wxSplitterEvent& event )
  * wxEVT_COMMAND_SPLITTER_DOUBLECLICKED event handler for ID_SPLITTERWINDOW
  */
 
-void gTimeline::OnSplitterwindowSashDClick( wxSplitterEvent& event )
+void gTimeline::OnSplitterTimelineSashDClick( wxSplitterEvent& event )
 {
   infoZoneLastSize = infoZone->GetSize().GetHeight();
   canRedraw = false;
@@ -2134,7 +2134,7 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
  * wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK
  */
 
-void gTimeline::OnNotebookPageChanging( wxNotebookEvent& event )
+void gTimeline::OnNotebookInfoPageChanging( wxNotebookEvent& event )
 {
   if( myWindow == NULL )
     return;
