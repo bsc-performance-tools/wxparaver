@@ -252,7 +252,7 @@ void gHistogram::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  wxPanel* itemPanel3 = new wxPanel( itemFrame1, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+  wxPanel* itemPanel3 = new wxPanel( itemFrame1, ID_PANEL1, wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(200, -1)), wxTAB_TRAVERSAL );
   itemPanel3->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
   itemBoxSizer2->Add(itemPanel3, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
@@ -345,8 +345,8 @@ void gHistogram::CreateControls()
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_KEY_DOWN, wxKeyEventHandler(gHistogram::OnZoomHistoKeyDown), NULL, this);
 ////@end gHistogram content construction
 
-#ifndef __WXMAC__
-  itemFrame1->SetToolBar( tbarHisto );
+#ifdef __WXGTK__
+  SetToolBar( tbarHisto );
   itemPanel3->Hide();
 #endif
 
