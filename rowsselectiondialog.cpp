@@ -163,7 +163,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   Trace *myTrace = myTimeline->getTrace();
   for ( size_t row = (size_t)0; row < myTrace->getLevelObjects( whichLevel ); ++row )
   {
-    if( whichLevel == CPU )
+    if( whichLevel == CPU || whichLevel == NODE )
       choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row + 1,
                                                                        whichLevel,
                                                                        myTrace ).c_str() ) );
