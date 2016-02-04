@@ -22,5 +22,5 @@ elif ! [ -e "${PARAVER_HOME}/bin/wxparaver.bin" ] ; then
   
 fi
 
-LD_LIBRARY_PATH=$PARAVER_HOME/lib/ptools_common_files/:/apps/BOOST/1.52.0/lib:$PARAVER_HOME/lib/paraver-kernel:/apps/CEPBATOOLS/deps/wxpropgrid/lib/:$PARAVER_HOME/lib/wxparaver:$LD_LIBRARY_PATH $PARAVER_HOME/bin/wxparaver.bin "$@"
+LD_LIBRARY_PATH=$PARAVER_HOME/lib/ptools_common_files/:/apps/BOOST/1.52.0/lib:$PARAVER_HOME/lib/paraver-kernel:/apps/CEPBATOOLS/deps/wxWidgets/release/lib:/apps/CEPBATOOLS/deps/wxpropgrid/lib/:$PARAVER_HOME/lib/wxparaver:$LD_LIBRARY_PATH $PARAVER_HOME/bin/wxparaver.bin "$@"
 	
