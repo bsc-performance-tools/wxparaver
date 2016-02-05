@@ -130,6 +130,9 @@ class gHistogram;
 #define ID_MENU_SAVE_TIMELINE_AS_CFG              30082
 #define ID_MENU_SAVE_HISTOGRAM_AS_CFG             30083
 #define ID_MENU_SAVE_IMAGE_LEGEND                 30084
+#define ID_MENU_DRAWMODE_TIME_MODE                30085
+#define ID_MENU_DRAWMODE_OBJECTS_MODE             30086
+#define ID_MENU_DRAWMODE_BOTH_MODE                30087
 
 class gPopUpMenu : public wxMenu
 {
@@ -195,6 +198,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeTimeMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeTimeAverage( wxCommandEvent& event);
     void OnMenuDrawModeTimeAverageNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeTimeMode( wxCommandEvent& event);
 
     void OnMenuDrawModeObjectsLast( wxCommandEvent& event);
     void OnMenuDrawModeObjectsRandom( wxCommandEvent& event);
@@ -203,6 +207,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeObjectsAverage( wxCommandEvent& event);
     void OnMenuDrawModeObjectsAverageNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeObjectsMode( wxCommandEvent& event);
 
     void OnMenuDrawModeBothLast( wxCommandEvent& event);
     void OnMenuDrawModeBothRandom( wxCommandEvent& event);
@@ -211,6 +216,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeBothAverage( wxCommandEvent& event);
     void OnMenuDrawModeBothAverageNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeBothMode( wxCommandEvent& event);
 
     void OnMenuPixelSize( wxCommandEvent& event );
 

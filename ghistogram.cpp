@@ -1290,6 +1290,12 @@ void gHistogram::OnPopUpDrawModeSemanticAverageNotZero()
   myHistogram->setRedraw( true );
 }
 
+void gHistogram::OnPopUpDrawModeSemanticMode()
+{
+  myHistogram->setDrawModeColumns( DRAW_MODE );
+  myHistogram->setRedraw( true );
+}
+
 void gHistogram::OnPopUpDrawModeObjectsLast()
 {
   myHistogram->setDrawModeObjects( DRAW_LAST );
@@ -1329,6 +1335,12 @@ void gHistogram::OnPopUpDrawModeObjectsAverage()
 void gHistogram::OnPopUpDrawModeObjectsAverageNotZero()
 {
   myHistogram->setDrawModeObjects( DRAW_AVERAGENOTZERO );
+  myHistogram->setRedraw( true );
+}
+
+void gHistogram::OnPopUpDrawModeObjectsMode()
+{
+  myHistogram->setDrawModeObjects( DRAW_MODE );
   myHistogram->setRedraw( true );
 }
 
@@ -1378,6 +1390,13 @@ void gHistogram::OnPopUpDrawModeBothAverageNotZero()
 {
   myHistogram->setDrawModeObjects( DRAW_AVERAGENOTZERO );
   myHistogram->setDrawModeColumns( DRAW_AVERAGENOTZERO );
+  myHistogram->setRedraw( true );
+}
+
+void gHistogram::OnPopUpDrawModeBothMode()
+{
+  myHistogram->setDrawModeObjects( DRAW_MODE );
+  myHistogram->setDrawModeColumns( DRAW_MODE );
   myHistogram->setRedraw( true );
 }
 

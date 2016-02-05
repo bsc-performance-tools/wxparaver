@@ -161,6 +161,9 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
   /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
@@ -184,9 +187,6 @@ public:
 
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -416,6 +416,7 @@ public:
   void OnPopUpDrawModeTimeMinimumNotZero();
   void OnPopUpDrawModeTimeAverage();
   void OnPopUpDrawModeTimeAverageNotZero();
+  void OnPopUpDrawModeTimeMode();
 
   void OnPopUpDrawModeObjectsLast();
   void OnPopUpDrawModeObjectsRandom();
@@ -424,6 +425,7 @@ public:
   void OnPopUpDrawModeObjectsMinimumNotZero();
   void OnPopUpDrawModeObjectsAverage();
   void OnPopUpDrawModeObjectsAverageNotZero();
+  void OnPopUpDrawModeObjectsMode();
 
   void OnPopUpDrawModeBothLast();
   void OnPopUpDrawModeBothRandom();
@@ -432,6 +434,7 @@ public:
   void OnPopUpDrawModeBothMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
   void OnPopUpDrawModeBothAverageNotZero();
+  void OnPopUpDrawModeBothMode();
 
   void OnPopUpPixelSize( PRV_UINT16 whichPixelSize );
 
