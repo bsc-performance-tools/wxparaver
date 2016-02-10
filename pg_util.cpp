@@ -799,7 +799,7 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
     semanticFunctionParameterValue = AppendCFG4DParamPrvNumbersListPropertyWindow(
             windowProperties, whichWindow, category,
             functionLevel, (PRV_UINT32)paramIdx,
-            propLabel, wxT("Param."), propName,
+            propLabel, wxT(""), propName,
             valuesStr );
   }
 }
