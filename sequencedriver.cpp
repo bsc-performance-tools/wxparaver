@@ -264,6 +264,7 @@ void SequenceDriver::sequenceCutter( gTimeline *whichTimeline )
   tmpOptions->set_original_time( false );
   tmpOptions->set_break_states( false );
   tmpOptions->set_remLastStates( true );
+  tmpOptions->set_keep_events( true );
 
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
