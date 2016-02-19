@@ -3430,11 +3430,13 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   vector< TEventType > typesWithValueZero;
   EventLabels labels;
   map< TEventValue, string > currentEventValues;
+
 #ifdef OLD_PCFPARSER
   ParaverTraceConfig *myConfig;
 #else
   UIParaverTraceConfig *myConfig;
 #endif
+
   string pcf_name;
 
   ProgressController *progress = ProgressController::create( localKernel );

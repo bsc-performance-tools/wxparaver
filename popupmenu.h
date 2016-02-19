@@ -133,6 +133,8 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_TIME_MODE                30085
 #define ID_MENU_DRAWMODE_OBJECTS_MODE             30086
 #define ID_MENU_DRAWMODE_BOTH_MODE                30087
+#define ID_MENU_SPECTRAL                          30088
+
 
 class gPopUpMenu : public wxMenu
 {
@@ -262,6 +264,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuCutter( wxCommandEvent& event );
     void OnMenuDimemas( wxCommandEvent& event );
     void OnMenuFolding( wxCommandEvent& event );
+    void OnMenuSpectral( wxCommandEvent& event );
     
   private:
     gTimeline *timeline;

@@ -663,6 +663,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuRun, _( "Dimemas" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDimemas, ID_MENU_DIMEMAS );
   buildItem( popUpMenuRun, _( "Clustering" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuClustering, ID_MENU_CLUSTERING );
   buildItem( popUpMenuRun, _( "Folding" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFolding, ID_MENU_FOLDING );
+  buildItem( popUpMenuRun, _( "Spectral" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSpectral, ID_MENU_SPECTRAL );
   AppendSubMenu( popUpMenuRun, _( "Run" ) );
   
   AppendSeparator();
@@ -1649,6 +1650,11 @@ void gPopUpMenu::OnMenuClustering( wxCommandEvent& event )
 void gPopUpMenu::OnMenuFolding( wxCommandEvent& event )
 {
   SequenceDriver::sequenceFolding( timeline );
+}
+
+void gPopUpMenu::OnMenuSpectral( wxCommandEvent& event )
+{
+  SequenceDriver::sequenceSpectral( timeline );
 }
 
 void gPopUpMenu::OnMenuDimemas( wxCommandEvent& event )
