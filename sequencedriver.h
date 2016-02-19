@@ -100,7 +100,6 @@ class RunAppDimemasAction: public TraceToTraceAction
 };
 
 
-
 /****************************************************************************
  ********              RunAppFoldingAction                           ********
  ****************************************************************************/
@@ -110,6 +109,28 @@ class RunAppFoldingAction: public TraceToTraceAction
     RunAppFoldingAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
     {}
     ~RunAppFoldingAction()
+    {}
+
+    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+
+    virtual bool execute( std::string whichTrace );
+
+  protected:
+
+  private:
+
+};
+
+
+/****************************************************************************
+ ********              RunCommandAction                              ********
+ ****************************************************************************/
+class RunCommandAction: public TraceToTraceAction
+{
+  public:
+    RunCommandAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    {}
+    ~RunCommandAction()
     {}
 
     virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
@@ -155,6 +176,8 @@ class SequenceDriver
     static void sequenceCutter( gTimeline *whichTimeline );
     static void sequenceDimemas( gTimeline *whichTimeline );
     static void sequenceFolding( gTimeline *whichTimeline );
+    static void sequenceSpectral( gTimeline *whichTimeline );
+
     //static void sequenceTraceShifter( std::string trace,
     //                                    std::string timesFile );
 };
