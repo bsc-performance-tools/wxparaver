@@ -189,12 +189,14 @@ bool RunCommandAction::execute( std::string whichTrace )
   // Throw command "csv-analysis trace.prv saved.csv X" with X = 0
   wxString traceFileName( _("\"") + wxString::FromAscii( whichTrace.c_str() ) + _("\"") );
   wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") );
-  wxString numericParameter("0");
+  wxString numericParameter( _("0") );
   wxString command = _( "/bin/sh -c 'csv-analysis " ) +
                      traceFileName + _(" ") +
                      csvFileName + _(" ") +
                      numericParameter + _(" ");
                      _(" 1>&- 2>&-'");
+std::cout << "Executing: " << command << std::endl;
+
   wxExecute( command, wxEXEC_SYNC );
   
   // Load resulting trace
@@ -204,11 +206,14 @@ bool RunCommandAction::execute( std::string whichTrace )
   size_t lastDot = tmpIterTrace.find_last_of(".");
   tmpIterTrace = tmpIterTrace.substr( 0, lastDot ) + std::string( ".iterations.prv" );
  
+std::cout << "Loading trace: " << tmpIterTrace << std::endl;
+
   wxparaverApp::mainWindow->DoLoadTrace( tmpIterTrace );
-  wxparaverApp::mainWindow->DoLoadCFG(
-          wxparaverApp::mainWindow->GetParaverConfig()->getGlobalCFGsPath() + PATH_SEP + 
-          std::string("spectral") + PATH_SEP +
-          std::string("iterations.cfg") );
+  std::string tmpCFG = wxparaverApp::mainWindow->GetParaverConfig()->getGlobalCFGsPath() + PATH_SEP +
+              std::string("spectral") + PATH_SEP +
+              std::string("iterations.cfg");
+std::cout << "Loading CFG: " << tmpCFG << std::endl;
+  wxparaverApp::mainWindow->DoLoadCFG( tmpCFG );
   
   return errorFound;
 }
