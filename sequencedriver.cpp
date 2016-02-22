@@ -179,6 +179,7 @@ vector<TraceEditSequence::TSequenceStates> RunCommandAction::getStateDependencie
   return tmpStates;
 }
 
+
 bool RunCommandAction::execute( std::string whichTrace )
 {
   bool errorFound = false;
@@ -195,24 +196,20 @@ bool RunCommandAction::execute( std::string whichTrace )
                      csvFileName + _(" ") +
                      numericParameter + _(" ");
                      _(" 1>&- 2>&-'");
-std::cout << "Executing: " << command << std::endl;
 
   wxExecute( command, wxEXEC_SYNC );
   
-  // Load resulting trace
-  wxFileName tmpTraceName( wxString::FromAscii( whichTrace.c_str() ) );
-
-  std::string tmpIterTrace = std::string( tmpTraceName.GetFullName().mb_str() );
+  // Load resulting trace + cfg
+  std::string tmpIterTrace = whichTrace;
   size_t lastDot = tmpIterTrace.find_last_of(".");
   tmpIterTrace = tmpIterTrace.substr( 0, lastDot ) + std::string( ".iterations.prv" );
- 
-std::cout << "Loading trace: " << tmpIterTrace << std::endl;
 
   wxparaverApp::mainWindow->DoLoadTrace( tmpIterTrace );
+
   std::string tmpCFG = wxparaverApp::mainWindow->GetParaverConfig()->getGlobalCFGsPath() + PATH_SEP +
               std::string("spectral") + PATH_SEP +
               std::string("iterations.cfg");
-std::cout << "Loading CFG: " << tmpCFG << std::endl;
+
   wxparaverApp::mainWindow->DoLoadCFG( tmpCFG );
   
   return errorFound;
