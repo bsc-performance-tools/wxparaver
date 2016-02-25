@@ -189,7 +189,7 @@ bool RunCommandAction::execute( std::string whichTrace )
 
   // Throw command "csv-analysis trace.prv saved.csv X" with X = 0
   wxString traceFileName( _("\"") + wxString::FromAscii( whichTrace.c_str() ) + _("\"") );
-  wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") );
+  wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") + );
   wxString numericParameter( _("0") );
   wxString command = _( "/bin/sh -c 'csv-analysis " ) +
                      traceFileName + _(" ") +
@@ -408,7 +408,9 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
   std::string auxName = whichTimeline->GetMyWindow()->getName() + "_";
-  tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) + std::string( ".csv" );
+  tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) +
+                auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) +
+                std::string( ".csv" );
 
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TraceEditSequence::csvFileNameState, tmpCSVFilenameState );
@@ -475,7 +477,8 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
     tmpTraceName.Mkdir();
   std::string auxName = tmpWindow->getName() + "_";
   tmpFileName = std::string( tmpTraceName.GetPath( wxPATH_GET_SEPARATOR ).mb_str() ) + 
-                auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() );
+                auxName.c_str() + std::string( tmpTraceName.GetFullName().mb_str() ) +
+                std::string( ".csv" );
 
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TraceEditSequence::csvFileNameState, tmpCSVFilenameState );
