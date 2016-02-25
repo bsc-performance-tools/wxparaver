@@ -189,7 +189,7 @@ bool RunCommandAction::execute( std::string whichTrace )
 
   // Throw command "csv-analysis trace.prv saved.csv X" with X = 0
   wxString traceFileName( _("\"") + wxString::FromAscii( whichTrace.c_str() ) + _("\"") );
-  wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") + );
+  wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") );
   wxString numericParameter( _("0") );
   wxString command = _( "/bin/sh -c 'csv-analysis " ) +
                      traceFileName + _(" ") +
