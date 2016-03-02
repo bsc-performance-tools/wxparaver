@@ -604,24 +604,27 @@ void gTimeline::redraw()
 
   // Drawmode: Group objects with same wxCoord in objectPosList
   PRV_UINT32 rowToDraw = 0;
-  for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != selectedSet.end(); ++obj )
+  if( myWindow->getWindowBeginTime() != myWindow->getWindowEndTime() )
   {
-    TObjectOrder firstObj = *obj;
-    TObjectOrder lastObj = firstObj;
-    while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
+    for( vector< TObjectOrder >::iterator obj = selectedSet.begin(); obj != selectedSet.end(); ++obj )
     {
-      ++obj;
-      lastObj = *obj;
+      TObjectOrder firstObj = *obj;
+      TObjectOrder lastObj = firstObj;
+      while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
+      {
+        ++obj;
+        lastObj = *obj;
+      }
+
+      drawRow( bufferDraw, firstObj, lastObj, selectedSet, selected,
+               valuesToDraw[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
+               eventdc, eventmaskdc, commdc, commmaskdc );
+      ++rowToDraw;
+      if( rowToDraw >= valuesToDraw.size() )
+        break;
     }
-
-    drawRow( bufferDraw, firstObj, lastObj, selectedSet, selected,
-             valuesToDraw[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
-             eventdc, eventmaskdc, commdc, commmaskdc );
-    ++rowToDraw;
-    if( rowToDraw >= valuesToDraw.size() )
-      break;
   }
-
+  
 #ifdef __WXMAC__
   dc.DrawBitmap( bufferImage, 0, 0, false );
 #else
