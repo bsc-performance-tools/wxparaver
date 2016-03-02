@@ -705,9 +705,9 @@ bool paraverMain::DoLoadTrace( const string &path )
     }
   }
   
-  map< string, PRV_UINT32 >::iterator it = traceInstance.find( tmpPath );
+  map< string, PRV_UINT32 >::iterator it = traceInstance.find( std::string( tmpFileName.GetFullName().mb_str() ) );
   if ( it == traceInstance.end() )
-    traceInstance[ tmpPath ] = 0;
+    traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ] = 0;
 
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction, this );
@@ -748,7 +748,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     paraverMain::dialogProgress->Show();
 
     tr = Trace::create( localKernel, tmpPath, false, progress );
-    tr->setInstanceNumber( traceInstance[ tmpPath ]++ );
+    tr->setInstanceNumber( traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ]++ );
 
     loadedTraces.push_back( tr );
     currentTrace = loadedTraces.size() - 1;
