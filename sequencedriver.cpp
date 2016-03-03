@@ -40,7 +40,9 @@
 
 #include <string>
 #include <algorithm>
+
 #include <wx/filename.h>
+
 #include "sequencedriver.h"
 #include "kernelconnection.h"
 #include "gtimeline.h"
@@ -171,46 +173,80 @@ bool RunAppCutterAction::execute( std::string whichTrace )
 
 
 /****************************************************************************
- ********              RunCommandAction                              ********
+ ********              RunSpectralAction                             ********
  ****************************************************************************/
-vector<TraceEditSequence::TSequenceStates> RunCommandAction::getStateDependencies() const
+vector<TraceEditSequence::TSequenceStates> RunSpectralAction::getStateDependencies() const
 {
   vector<TraceEditSequence::TSequenceStates> tmpStates;
   return tmpStates;
 }
 
 
-bool RunCommandAction::execute( std::string whichTrace )
+bool RunSpectralAction::execute( std::string whichTrace )
 {
-  bool errorFound = false;
-
+  bool errorFound = true;
+  wxString errorMsg;
+  
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
 
-  // Throw command "csv-analysis trace.prv saved.csv X" with X = 0
-  wxString traceFileName( _("\"") + wxString::FromAscii( whichTrace.c_str() ) + _("\"") );
-  wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") );
-  wxString numericParameter( _("0") );
-  wxString command = _( "/bin/sh -c 'csv-analysis " ) +
-                     traceFileName + _(" ") +
-                     csvFileName + _(" ") +
-                     numericParameter + _(" ");
-                     _(" 1>&- 2>&-'");
+  // Exist csv-analysis (Spectral installation)?
+  wxString spectralEnvVar = wxString( wxT("SPECTRAL_HOME") );
+  wxString spectralPath;
+  if ( wxGetEnv( spectralEnvVar, &spectralPath ) )
+  {
+    wxString tmpSep = wxFileName::GetPathSeparator();
+    wxString spectralBin = spectralPath + tmpSep + _("bin") + tmpSep + _("csv-analysis");
+    if ( wxFileName::IsFileExecutable( spectralBin ) )
+    {
+      // Throw command 'csv-analysis "trace.prv" "saved.csv" X' with X = 0
+      wxString traceFileName( _("\"") + wxString::FromAscii( whichTrace.c_str() ) + _("\"") );
+      wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") );
+      wxString numericParameter( _("0") );
+      wxString command = _( "/bin/sh -c 'csv-analysis " ) +
+                         traceFileName + _(" ") +
+                         csvFileName + _(" ") +
+                         numericParameter + _(" ");
+                         _(" 1>&- 2>&-'");
 
-  wxExecute( command, wxEXEC_SYNC );
+      wxExecute( command, wxEXEC_SYNC );
+      
+      // Load resulting trace + cfg
+      std::string tmpIterTrace = whichTrace;
+      size_t lastDot = tmpIterTrace.find_last_of(".");
+      tmpIterTrace = tmpIterTrace.substr( 0, lastDot ) + std::string( ".iterations.prv" );
+      wxString tmpIterTrace_wx = wxString::FromAscii( tmpIterTrace.c_str() );
+
+      std::string tmpCFG = wxparaverApp::mainWindow->GetParaverConfig()->getGlobalCFGsPath() + PATH_SEP +
+                  std::string("spectral") + PATH_SEP +
+                  std::string("iterations.cfg");
+      wxString tmpCFG_wx = wxString::FromAscii( tmpCFG.c_str() );
+      
+      if ( wxFileName::FileExists( tmpIterTrace_wx ) )
+      {
+        if ( wxFileName::FileExists( tmpCFG_wx ) )
+        {
+          wxparaverApp::mainWindow->DoLoadTrace( tmpIterTrace );
+          wxparaverApp::mainWindow->DoLoadCFG( tmpCFG );
+          errorFound = false;
+        }
+        else
+          errorMsg = wxString( _("Missing file:\n\n") ) + tmpCFG_wx;
+      }
+      else
+        errorMsg = wxString( _("Missing file:\n\n") ) + tmpIterTrace_wx;
+    }
+    else
+      errorMsg = wxString( _("Unable to find/execute file:\n\n") ) + spectralBin;
+  }
+  else
+    errorMsg =  wxString( _("Undeclared environment variable:\n\n$") ) + spectralEnvVar;
   
-  // Load resulting trace + cfg
-  std::string tmpIterTrace = whichTrace;
-  size_t lastDot = tmpIterTrace.find_last_of(".");
-  tmpIterTrace = tmpIterTrace.substr( 0, lastDot ) + std::string( ".iterations.prv" );
-
-  wxparaverApp::mainWindow->DoLoadTrace( tmpIterTrace );
-
-  std::string tmpCFG = wxparaverApp::mainWindow->GetParaverConfig()->getGlobalCFGsPath() + PATH_SEP +
-              std::string("spectral") + PATH_SEP +
-              std::string("iterations.cfg");
-
-  wxparaverApp::mainWindow->DoLoadCFG( tmpCFG );
+  if ( errorFound )
+  {
+    errorMsg += wxString( _("\n\nSpectral sequence aborted.") );
+    wxMessageBox( errorMsg, _( "Warning" ), wxOK | wxICON_WARNING );
+  }
   
   return errorFound;
 }
@@ -427,35 +463,39 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
 }
 
 
-// ok Change timeline to APPLICATION in NS
-// ok Save CSV
-// ok Throw command "csv-analysis trace.prv saved.csv X" with X = 0
-//    Load resulting trace.iterations.prv + useful.cfg
+// Change timeline to level APPLICATION in NS
+// Save CSV
+// Throw command "csv-analysis trace.prv saved.csv X" with X = 0
+// Load resulting trace.iterations.prv + useful.cfg
 void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
 {
+  // Create sequence
   KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
 
+  // Define sequence
   mySequence->pushbackAction( TraceEditSequence::csvOutputAction );
-  mySequence->pushbackAction( new RunCommandAction( mySequence ) );
-  //mySequence->pushbackAction( new LoadTraceAction( mySequence ) );
-  //mySequence->pushbackAction( new LoadCFGAction( mySequence ) );
+  mySequence->pushbackAction( new RunSpectralAction( mySequence ) );
   
+  // Clone timeline
   Window *tmpWindow = whichTimeline->GetMyWindow()->clone();
   tmpWindow->setLevel( APPLICATION );
   tmpWindow->setTimeUnit( NS );
-
+  
+  // Trace options state
   TraceOptions *tmpOptions = TraceOptions::create( myKernel );
   tmpOptions->set_by_time( true );
   tmpOptions->set_min_cutting_time( tmpWindow->getWindowBeginTime() );
   tmpOptions->set_max_cutting_time( tmpWindow->getWindowEndTime() );
   tmpOptions->set_original_time( false );
   tmpOptions->set_break_states( false );
+  
 
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
   mySequence->addState( TraceEditSequence::traceOptionsState, tmpOptionsState );
-
+  
+  // CSV state
   TextOutput output;
   output.setObjectHierarchy( true );
   output.setWindowTimeUnits( false );
@@ -464,10 +504,12 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
   tmpOutputState->setData( output );
   mySequence->addState( TraceEditSequence::csvOutputState, tmpOutputState );
 
+  // CSV window state
   CSVWindowState *tmpWindowState = new CSVWindowState( mySequence );
   tmpWindowState->setData( tmpWindow );
   mySequence->addState( TraceEditSequence::csvWindowState, tmpWindowState );
 
+  // CSV file name state
   CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
   std::string tmpFileName;
   wxFileName tmpTraceName( wxString::FromAscii( tmpWindow->getTrace()->getFileName().c_str() ) );
@@ -483,11 +525,12 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
   tmpCSVFilenameState->setData( tmpFileName );
   mySequence->addState( TraceEditSequence::csvFileNameState, tmpCSVFilenameState );
   
+  // Spectral suffix
   OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
   tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameSpectral );
   mySequence->addState( TraceEditSequence::outputDirSuffixState, tmpOutputDirSuffixState );
 
-  
+  // Engage sequence  
   vector<std::string> traces;
   traces.push_back( tmpWindow->getTrace()->getFileName() );
   mySequence->execute( traces );

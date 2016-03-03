@@ -125,12 +125,12 @@ class RunAppFoldingAction: public TraceToTraceAction
 /****************************************************************************
  ********              RunCommandAction                              ********
  ****************************************************************************/
-class RunCommandAction: public TraceToTraceAction
+class RunSpectralAction: public TraceToTraceAction
 {
   public:
-    RunCommandAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
+    RunSpectralAction( TraceEditSequence *whichSequence ) : TraceToTraceAction( whichSequence )
     {}
-    ~RunCommandAction()
+    ~RunSpectralAction()
     {}
 
     virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
