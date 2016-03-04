@@ -182,6 +182,10 @@ vector<TraceEditSequence::TSequenceStates> RunSpectralAction::getStateDependenci
 }
 
 
+// Change timeline to level APPLICATION in NS
+// Save CSV
+// Throw command "$SPECTRAL_HOME/bin/csv-analysis trace.prv saved.csv X" with X = 0
+// Load resulting trace.iterations.prv + iterations.cfg
 bool RunSpectralAction::execute( std::string whichTrace )
 {
   bool errorFound = true;
@@ -463,10 +467,6 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
 }
 
 
-// Change timeline to level APPLICATION in NS
-// Save CSV
-// Throw command "csv-analysis trace.prv saved.csv X" with X = 0
-// Load resulting trace.iterations.prv + useful.cfg
 void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
 {
   // Create sequence
