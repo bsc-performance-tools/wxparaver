@@ -89,17 +89,8 @@ bool RunningProcess::HasInput()
       wxTextInputStream tis( *GetInputStream() );
 
       wxString msg;
-      // msg << command << _T(" (stdout): ") << tis.ReadLine();
       msg << tis.ReadLine();
 
-/*
-      // Try to eliminate multiple lines when '\r' is used
-      unsigned int numLines = parent->listboxRunLog->GetCount();
-      if ( msg[0] == wxT( '\r' ) && numLines > 0 )
-      {
-        parent->listboxRunLog->Delete( numLines - 1 );
-      }
-*/
       parent->AppendToLog( msg );
 
       hasInput = true;
@@ -110,7 +101,6 @@ bool RunningProcess::HasInput()
       wxTextInputStream tis( *GetErrorStream() );
 
       wxString msg;
-      // msg << command << _T(" (stderr): ") << tis.ReadLine();
       msg << tis.ReadLine();
 
       parent->AppendToLog( msg );
@@ -1546,10 +1536,12 @@ void RunScript::AppendToLog( wxString msg )
 
 void RunScript::OnIdle( wxIdleEvent& event )
 {
-  if ( myProcess != NULL && myProcess->HasInput() )
+  if( myProcess != NULL )
+    myProcess->HasInput();
+/*  if ( myProcess != NULL && myProcess->HasInput() )
   {
     event.RequestMore();
-  }
+  }*/
 }
 
 
@@ -2270,8 +2262,10 @@ void RunScript::OnButtonKillClick( wxCommandEvent& event )
 {
   if( myProcessPid != 0 )
   {
-    wxProcess::Kill( myProcessPid, wxSIGKILL );
-    AppendToLog( wxT( "Process killed!" ) );
+    if( wxProcess::Kill( myProcessPid, wxSIGKILL ) != wxKILL_OK )
+      AppendToLog( wxT( "Error: Process not killed" ) );
+    else
+      AppendToLog( wxT( "Process killed!" ) );
   }
 }
 
