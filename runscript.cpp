@@ -67,6 +67,9 @@
 #include "app_edit.xpm"
 ////@end XPM images
 
+BEGIN_EVENT_TABLE( RunningProcess, wxProcess )
+  EVT_TIMER( ID_TIMER_MESSAGE, RunningProcess::OnTimerMessage )
+END_EVENT_TABLE()
 
 wxString RunScript::clusteringXML = wxString( wxT("") );
 
@@ -88,10 +91,21 @@ bool RunningProcess::HasInput()
   {
       wxTextInputStream tis( *GetInputStream() );
 
-      wxString msg;
-      msg << tis.ReadLine();
-
-      parent->AppendToLog( msg );
+//      wxString msg;
+//      msg << tis.ReadLine();
+//      parent->AppendToLog( msg );
+      wxChar tmpC;
+      tmpC = tis.GetChar();
+      if( tmpC == '\n' )
+      {
+        parent->AppendToLog( outMsg );
+        outMsg.Clear();
+      }
+      else
+      {
+        outMsg << tmpC;
+        msgTimer.Start( 500 );
+      }
 
       hasInput = true;
   }
@@ -100,10 +114,17 @@ bool RunningProcess::HasInput()
   {
       wxTextInputStream tis( *GetErrorStream() );
 
-      wxString msg;
-      msg << tis.ReadLine();
-
-      parent->AppendToLog( msg );
+//      wxString msg;
+//      msg << tis.ReadLine();
+//      parent->AppendToLog( msg );
+      wxChar tmpC;
+      tmpC = tis.GetChar();
+      errMsg << tmpC;
+      if( errMsg[ errMsg.Len() - 1 ] == '\n' )
+      {
+        parent->AppendToLog( errMsg );
+        errMsg.Clear();
+      }
 
       hasInput = true;
   }
@@ -111,6 +132,16 @@ bool RunningProcess::HasInput()
   return hasInput;
 }
 
+void RunningProcess::OnTimerMessage( wxTimerEvent& event )
+{
+  if( outMsg.Len() > 0 )
+  {
+    parent->AppendToLog( outMsg, false );
+    parent->Update();
+    outMsg.Clear();
+  }
+  wxWakeUpIdle();
+}
 
 /*!
  * RunScript type definition
@@ -1501,9 +1532,9 @@ void RunScript::OnProcessTerminated( int pid )
 }
 
 
-void RunScript::AppendToLog( wxString msg )
+void RunScript::AppendToLog( wxString msg, bool formatOutput )
 {
-  if ( !helpOption )
+  if ( !helpOption || formatOutput )
   {
     TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
    
@@ -1519,7 +1550,10 @@ void RunScript::AppendToLog( wxString msg )
     }
   }
   
-  listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
+  if( formatOutput )
+    listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
+  else
+    listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT>") );
   
   //std::cout << msg << std::endl;
   
@@ -1536,12 +1570,10 @@ void RunScript::AppendToLog( wxString msg )
 
 void RunScript::OnIdle( wxIdleEvent& event )
 {
-  if( myProcess != NULL )
-    myProcess->HasInput();
-/*  if ( myProcess != NULL && myProcess->HasInput() )
+  if ( myProcess != NULL && myProcess->HasInput() )
   {
     event.RequestMore();
-  }*/
+  }
 }
 
 

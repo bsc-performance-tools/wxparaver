@@ -50,23 +50,36 @@
 
 class RunScript;
 
+#define ID_TIMER_MESSAGE 40001
+
 class RunningProcess : public wxProcess
 {
+  DECLARE_EVENT_TABLE()
+  
   public:
     RunningProcess( RunScript *whichParent, const wxString& whichCommand )
       : wxProcess( (wxDialog *)whichParent ), command( whichCommand )
     {    
       parent = whichParent;
-      
       Redirect();
+      msgTimer.SetOwner( this, ID_TIMER_MESSAGE );
+      msgTimer.Start( 500 );
     }    
 
     virtual void OnTerminate( int pid, int status );
     virtual bool HasInput();
+    
+    virtual void OnTimerMessage( wxTimerEvent& event );
 
   protected:
     RunScript *parent;
     wxString command;
+    
+    wxString outMsg;
+    wxString errMsg;
+
+    wxTimer msgTimer;
+
     static int pidDimemasGUI;
 };
 
@@ -279,7 +292,7 @@ public:
 
   void OnProcessTerminated( int pid );
 
-  void AppendToLog( wxString msg );
+  void AppendToLog( wxString msg, bool formatOutput = true );
   
   void setDimemas();
   void setStats();
