@@ -2405,8 +2405,34 @@ void gHistogram::saveText( bool onlySelectedPlane )
     Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
     string tmpStr = string( fileName.mb_str() );
-    output->dumpHistogram( myHistogram, tmpStr, onlySelectedPlane, myHistogram->getHideColumns() );
+    
+    // Set up progress controller
+    ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
+    progress->setHandler( progressFunction, this );
+
+    if( paraverMain::dialogProgress == NULL )
+      paraverMain::dialogProgress = new wxProgressDialog( wxT("Save Histogram Text"),
+                                                          wxT(""),
+                                                          numeric_limits<int>::max(),
+                                                          this,
+                                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
+                                                          wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                          wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
+    paraverMain::dialogProgress->Pulse( fileName );
+    paraverMain::dialogProgress->Fit();
+    paraverMain::dialogProgress->Show();
+
+    output->dumpHistogram( myHistogram, tmpStr, onlySelectedPlane, myHistogram->getHideColumns(),
+                            true, true, progress );
+                            
     delete output;
+    
+    // Delete progress controller
+    paraverMain::dialogProgress->Show( false );
+    delete paraverMain::dialogProgress;
+    paraverMain::dialogProgress = NULL;
+    delete progress;
   }
 }
 

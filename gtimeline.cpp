@@ -62,7 +62,9 @@
 #include "caution.xpm"
 #include "output.h"
 #include "filedialogext.h"
-#include "progresscontroller.h"
+//#include "progresscontroller.h"
+#include "paravermain.h"
+
 #ifdef __WXMAC__
   #include <wx/rawbmp.h>
 #endif
@@ -3783,6 +3785,48 @@ void gTimeline::saveText()
   
   if ( saveDialog.ShowModal() == wxID_OK )
   {
+    // Set up progress controller
+    ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
+    progress->setHandler( progressFunction, this );
+
+    if( paraverMain::dialogProgress == NULL )
+      paraverMain::dialogProgress = new wxProgressDialog( wxT("Save Timeline Text"),
+                                                          wxT(""),
+                                                          numeric_limits<int>::max(),
+                                                          this,
+                                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
+                                                          wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                          wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+
+    string fileName = string( saveDialog.GetPath().mb_str() );
+    string reducePath;
+
+    if( fileName.length() > 36 && fileName.find_last_of( PATH_SEP ) != string::npos )
+    {
+      string file = fileName.substr( fileName.find_last_of( PATH_SEP ) );
+      string tmp = fileName.substr( 0, fileName.find_last_of( PATH_SEP ) );
+      if ( tmp.find_last_of( PATH_SEP ) != string::npos )
+      {
+        reducePath = "/..." + fileName.substr( tmp.find_last_of( PATH_SEP ),
+                                                tmp.length() - tmp.find_last_of( PATH_SEP ) )
+                     + file;
+      }
+      else
+      {
+        reducePath = "/..." + file;
+      }
+    }
+    else
+      reducePath = fileName;
+    reducePath += "\t";
+    
+    std::cout << "nombre: " << reducePath << std::endl;
+    
+    paraverMain::dialogProgress->Pulse( reducePath );
+    paraverMain::dialogProgress->Fit();
+    paraverMain::dialogProgress->Show();
+  
+    // Save timeline text
     Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
     
@@ -3790,9 +3834,15 @@ void gTimeline::saveText()
     output->setObjectHierarchy( true );
     output->setWindowTimeUnits( false );
     
-    string tmpStr = string( saveDialog.GetPath().mb_str() );
-    output->dumpWindow( myWindow, tmpStr );
+    
+    output->dumpWindow( myWindow, fileName, progress );
     delete output;
+    
+    // Delete progress controller
+    paraverMain::dialogProgress->Show( false );
+    delete paraverMain::dialogProgress;
+    paraverMain::dialogProgress = NULL;
+    delete progress;
   }
 }
 
