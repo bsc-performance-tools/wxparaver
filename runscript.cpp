@@ -1465,7 +1465,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     
     //executionStatus = -2;
     myProcess = new RunningProcess( this, readyCommand );
-    myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC, myProcess );
+    myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, myProcess );
 
     if( !myProcessPid )
     {
@@ -2294,7 +2294,7 @@ void RunScript::OnButtonKillClick( wxCommandEvent& event )
 {
   if( myProcessPid != 0 )
   {
-    if( wxProcess::Kill( myProcessPid, wxSIGKILL ) != wxKILL_OK )
+    if( wxProcess::Kill( myProcessPid, wxSIGKILL, wxKILL_CHILDREN ) != wxKILL_OK )
       AppendToLog( wxT( "Error: Process not killed" ) );
     else
       AppendToLog( wxT( "Process killed!" ) );
