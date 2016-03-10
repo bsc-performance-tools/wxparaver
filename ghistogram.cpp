@@ -63,7 +63,7 @@
 #include "paraverkernelexception.h"
 #include "histotablebase.h"
 #include "filedialogext.h"
-#include "progresscontroller.h"
+//#include "progresscontroller.h"
 
 #define wxTEST_GRAPHICS 1
 
@@ -2401,10 +2401,8 @@ void gHistogram::saveText( bool onlySelectedPlane )
 
   if ( saveDialog.ShowModal() == wxID_OK )
   {
-    fileName = saveDialog.GetPath();
     Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
-    string tmpStr = string( fileName.mb_str() );
     
     // Set up progress controller
     ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
@@ -2419,11 +2417,33 @@ void gHistogram::saveText( bool onlySelectedPlane )
                                                           wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                           wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
-    paraverMain::dialogProgress->Pulse( fileName );
+    string fileName = string( saveDialog.GetPath().mb_str() );
+    string reducePath;
+
+    if( fileName.length() > 36 && fileName.find_last_of( PATH_SEP ) != string::npos )
+    {
+      string file = fileName.substr( fileName.find_last_of( PATH_SEP ) );
+      string tmp = fileName.substr( 0, fileName.find_last_of( PATH_SEP ) );
+      if ( tmp.find_last_of( PATH_SEP ) != string::npos )
+      {
+        reducePath = "/..." + fileName.substr( tmp.find_last_of( PATH_SEP ),
+                                                tmp.length() - tmp.find_last_of( PATH_SEP ) )
+                     + file;
+      }
+      else
+      {
+        reducePath = "/..." + file;
+      }
+    }
+    else
+      reducePath = fileName;
+    reducePath += "\t";
+
+    paraverMain::dialogProgress->Pulse( reducePath );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
-    output->dumpHistogram( myHistogram, tmpStr, onlySelectedPlane, myHistogram->getHideColumns(),
+    output->dumpHistogram( myHistogram, fileName, onlySelectedPlane, myHistogram->getHideColumns(),
                             true, true, progress );
                             
     delete output;

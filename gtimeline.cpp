@@ -3820,8 +3820,6 @@ void gTimeline::saveText()
       reducePath = fileName;
     reducePath += "\t";
     
-    std::cout << "nombre: " << reducePath << std::endl;
-    
     paraverMain::dialogProgress->Pulse( reducePath );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
