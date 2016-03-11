@@ -2439,7 +2439,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
       reducePath = fileName;
     reducePath += "\t";
 
-    paraverMain::dialogProgress->Pulse( reducePath );
+    paraverMain::dialogProgress->Pulse( wxString::FromAscii( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 

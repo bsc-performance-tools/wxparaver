@@ -3820,7 +3820,7 @@ void gTimeline::saveText()
       reducePath = fileName;
     reducePath += "\t";
     
-    paraverMain::dialogProgress->Pulse( reducePath );
+    paraverMain::dialogProgress->Pulse( wxString::FromAscii( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
   
