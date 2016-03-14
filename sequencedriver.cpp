@@ -222,7 +222,7 @@ bool RunSpectralAction::execute( std::string whichTrace )
       tmpIterTrace = tmpIterTrace.substr( 0, lastDot ) + std::string( ".iterations.prv" );
       wxString tmpIterTrace_wx = wxString::FromAscii( tmpIterTrace.c_str() );
 
-      std::string tmpCFG = wxparaverApp::mainWindow->GetParaverConfig()->getGlobalCFGsPath() + PATH_SEP +
+      std::string tmpCFG = wxparaverApp::mainWindow->GetLocalKernel()->getDistributedCFGsPath() + PATH_SEP +
                   std::string("spectral") + PATH_SEP +
                   std::string("iterations.cfg");
       wxString tmpCFG_wx = wxString::FromAscii( tmpCFG.c_str() );
