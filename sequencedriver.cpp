@@ -224,7 +224,7 @@ bool RunSpectralAction::execute( std::string whichTrace )
 
       std::string tmpCFG = wxparaverApp::mainWindow->GetLocalKernel()->getDistributedCFGsPath() + PATH_SEP +
                   std::string("spectral") + PATH_SEP +
-                  std::string("iterations.cfg");
+                  std::string("periodicity.cfg");
       wxString tmpCFG_wx = wxString::FromAscii( tmpCFG.c_str() );
       
       if ( wxFileName::FileExists( tmpIterTrace_wx ) )
