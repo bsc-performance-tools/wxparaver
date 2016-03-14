@@ -200,7 +200,7 @@ bool RunSpectralAction::execute( std::string whichTrace )
   if ( wxGetEnv( spectralEnvVar, &spectralPath ) )
   {
     wxString tmpSep = wxFileName::GetPathSeparator();
-    wxString spectralBin = spectralPath + tmpSep + _("bin") + tmpSep + _("csv-analysis");
+    wxString spectralBin = spectralPath + tmpSep + _("bin") + tmpSep + _("spectral-csv-analysis");
     if ( wxFileName::IsFileExecutable( spectralBin ) )
     {
       // Throw command '$SPECTRAL_HOME/bin/csv-analysis "trace.prv" "saved.csv" X' with X = 0
