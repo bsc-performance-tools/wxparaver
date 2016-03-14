@@ -203,11 +203,12 @@ bool RunSpectralAction::execute( std::string whichTrace )
     wxString spectralBin = spectralPath + tmpSep + _("bin") + tmpSep + _("csv-analysis");
     if ( wxFileName::IsFileExecutable( spectralBin ) )
     {
-      // Throw command 'csv-analysis "trace.prv" "saved.csv" X' with X = 0
+      // Throw command '$SPECTRAL_HOME/bin/csv-analysis "trace.prv" "saved.csv" X' with X = 0
       wxString traceFileName( _("\"") + wxString::FromAscii( whichTrace.c_str() ) + _("\"") );
       wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") );
       wxString numericParameter( _("0") );
-      wxString command = _( "/bin/sh -c 'csv-analysis " ) +
+      wxString command = _( "/bin/sh -c '") + 
+                         spectralBin + _(" ") +
                          traceFileName + _(" ") +
                          csvFileName + _(" ") +
                          numericParameter + _(" ");
