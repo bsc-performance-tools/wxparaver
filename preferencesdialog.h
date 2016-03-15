@@ -509,6 +509,7 @@ public:
   bool SetPanel( wxWindowID whichPanelID );
 
 ////@begin PreferencesDialog member variables
+  wxPanel* panelGlobal;
   wxCheckBox* checkGlobalFillStateGaps;
   wxCheckBox* checkGlobalFullTracePath;
   wxSpinCtrl* txtMaximumTraceSize;
@@ -524,6 +525,7 @@ public:
   DirBrowserButton* dirBrowserButtonTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
+  wxPanel* panelTimeline;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
   wxCheckBox* checkTimelineCommunicationLines;
@@ -544,6 +546,7 @@ public:
   wxSpinCtrl* txtTimelineWWEventPixels;
   wxChoice* choiceTimelineSaveImageFormat;
   wxChoice* choiceTimelineSaveTextFormat;
+  wxPanel* panelHistogram;
   wxTextCtrl* txtHistogramNameFormatPrefix;
   wxTextCtrl* txtHistogramNameFormatFull;
   wxCheckBox* checkHistogramZoom;
@@ -564,6 +567,7 @@ public:
   wxSpinCtrl* txtHistogramNumColumns;
   wxChoice* choiceHistogramSaveImageFormat;
   wxChoice* choiceHistogramSaveTextFormat;
+  wxPanel* panelColor;
   wxColourPickerCtrl* colourPickerBackground;
   wxColourPickerCtrl* colourPickerAxis;
   wxCheckBox* checkZero;
@@ -574,6 +578,7 @@ public:
   wxColourPickerCtrl* colourPickerGradientEnd;
   wxColourPickerCtrl* colourPickerGradientLow;
   wxColourPickerCtrl* colourPickerGradientTop;
+  wxPanel* panelWorkspaces;
   wxListBox* listWorkspaces;
   wxBitmapButton* buttonAddWorkspace;
   wxBitmapButton* buttonDeleteWorkspace;
@@ -589,6 +594,7 @@ public:
   wxTextCtrl* txtHintPath;
   FileBrowserButton* fileBrowserHintPath;
   wxTextCtrl* txtHintDescription;
+  wxPanel* panelFilters;
 private:
   std::string cfgsPath;
   bool colorUseZero;
