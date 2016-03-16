@@ -60,12 +60,12 @@ int FileDialogExtension::ShowModal()
   bool cancelDialog = false;
   bool validName = false;
   
-  if ( wxFileName( path ).FileExists() )
+  // /aaa/bbb/ != /aaa/bbb/kk.txt o Is path a file?
+  if ( wxFileName( path ).GetPath() != path )
   {
-    path = wxFileName( path ).GetPath();
-    SetDirectory( path );
-  }
-  
+    //path = wxFileName( path ).GetPath();
+    SetDirectory( wxFileName( path ).GetPath() );
+  }  
   
   while ( !cancelDialog && !validName )
   {
