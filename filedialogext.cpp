@@ -59,11 +59,20 @@ int FileDialogExtension::ShowModal()
   
   bool cancelDialog = false;
   bool validName = false;
+  
+  if ( wxFileName( path ).FileExists() )
+  {
+    path = wxFileName( path ).GetPath();
+    SetDirectory( path );
+  }
+  
+  
   while ( !cancelDialog && !validName )
   {
     if( wxFileDialog::ShowModal() == wxID_OK )
     {
       auxPath = wxFileDialog::GetPath();
+
       // Know which kind of type are we working with --> extension?
       if ( wxFileDialog::GetFilterIndex() > (int)extensions.size() )
       {
