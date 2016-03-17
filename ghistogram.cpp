@@ -1123,6 +1123,14 @@ void gHistogram::OnPopUpPaste3DScale()
   myHistogram->setRecalc( true );
 }
 
+void gHistogram::OnPopUpPasteControlDimensions()
+{
+  myHistogram->setCompute2DScale( false );
+  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, STR_CONTROL_DIMENSIONS );
+  updateHistogram();
+  myHistogram->setRecalc( true );
+}
+
 void gHistogram::OnPopUpClone()
 {
   Histogram *clonedHistogram = myHistogram->clone();

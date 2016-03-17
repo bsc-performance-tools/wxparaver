@@ -317,6 +317,7 @@ public:
   void OnPopUpPasteSemanticScale();
   void OnPopUpPasteControlScale();
   void OnPopUpPaste3DScale();
+  void OnPopUpPasteControlDimensions();
 
   void OnPopUpClone();
   void OnPopUpFitTimeScale();

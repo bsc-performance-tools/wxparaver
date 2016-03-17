@@ -134,6 +134,7 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_OBJECTS_MODE             30086
 #define ID_MENU_DRAWMODE_BOTH_MODE                30087
 #define ID_MENU_SPECTRAL                          30088
+#define ID_MENU_PASTE_CONTROL_DIMENSIONS          30089
 
 
 class gPopUpMenu : public wxMenu
@@ -174,6 +175,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuFilterEvents( wxCommandEvent& event);
     void OnMenuPasteControlScale( wxCommandEvent& event );
     void OnMenuPaste3DScale( wxCommandEvent& event );
+    void OnMenuPasteControlDimensions( wxCommandEvent& event );
     void OnMenuPasteDefaultSpecial( wxCommandEvent& event);
     void OnMenuPasteSpecial( wxCommandEvent& event);
     void OnMenuClone( wxCommandEvent& event);

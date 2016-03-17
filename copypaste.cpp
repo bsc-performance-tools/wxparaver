@@ -209,6 +209,7 @@ gPasteWindowProperties::gPasteWindowProperties()
   option[DIFF_TRACE][HISTOGRAM][HISTOGRAM] = true;
   
   allowed[STR_CONTROL_SCALE] = option;
+  allowed[STR_CONTROL_DIMENSIONS] = option;
   allowed[STR_3D_SCALE] = option;
 }
 
@@ -483,6 +484,16 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
         dstHisto->setExtraControlDelta( srcHisto->getExtraControlDelta() );
       dstHisto->setExtraControlMin( srcHisto->getExtraControlMin() );
       dstHisto->setExtraControlMax( srcHisto->getExtraControlMax() );
+    }
+    else if( property == STR_CONTROL_DIMENSIONS )
+    {
+      Histogram *srcHisto = histogram->GetHistogram();
+      Histogram *dstHisto = whichHistogram->GetHistogram();
+      //dstHisto->setControlMin( srcHisto->getControlMin() );
+      dstHisto->setControlDelta( srcHisto->getControlDelta() );
+      THistogramLimit newMax =
+              dstHisto->getControlMin() + srcHisto->getNumColumns() * srcHisto->getControlDelta();
+      dstHisto->setControlMax( newMax );
     }
     else
     {
