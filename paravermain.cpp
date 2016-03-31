@@ -2539,11 +2539,14 @@ void paraverMain::ShowHistogramDialog()
   histogramDialog.TransferDataToWindow( currentTimeline );
 
   raiseCurrentWindow = false;
-  if( histogramDialog.ShowModal() == wxID_OK )
+  if( ParaverConfig::getInstance()->getHistogramSkipCreateDialog() || histogramDialog.ShowModal() == wxID_OK )
   {
     vector< TWindowID > controlTimeline = histogramDialog.GetControlTimelines();
     vector< TWindowID > dataTimeline = histogramDialog.GetDataTimelines();
-    vector< TWindowID > extraControlTimeline = histogramDialog.GetExtraControlTimelines();
+    vector< TWindowID > extraControlTimeline;
+    if ( !ParaverConfig::getInstance()->getHistogramSkipCreateDialog() )
+      extraControlTimeline = histogramDialog.GetExtraControlTimelines();
+
     ranges.clear();
     ranges = histogramDialog.GetTimeRange();
 
@@ -2802,6 +2805,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 //  preferences.SetHistogramMaxPrecision( 20 ); // TO IMPLEMENT
   preferences.SetHistogramSaveImageFormat( ( PRV_UINT32 )paraverConfig->getHistogramSaveImageFormat() );
   preferences.SetHistogramSaveTextFormat( ( PRV_UINT32 )paraverConfig->getHistogramSaveTextFormat() );
+  preferences.SetHistogramSkipCreateDialog( paraverConfig->getHistogramSkipCreateDialog() );
 
   // COLORS
   preferences.SetTimelineColourBackground( paraverConfig->getColorsTimelineBackground() );
@@ -2887,6 +2891,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );
     paraverConfig->setHistogramSaveImageFormat( ( ParaverConfig::TImageFormat ) preferences.GetHistogramSaveImageFormat() );
     paraverConfig->setHistogramSaveTextFormat( ( ParaverConfig::TTextFormat ) preferences.GetHistogramSaveTextFormat() );
+    paraverConfig->setHistogramSkipCreateDialog( preferences.GetHistogramSkipCreateDialog() );
 
     // COLORS 
     paraverConfig->setColorsTimelineBackground( preferences.GetTimelineColourBackground() );

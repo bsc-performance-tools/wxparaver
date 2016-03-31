@@ -106,6 +106,7 @@ class FileBrowserButton;
 #define ID_PREFERENCES_TIMELINE_SAVE_AS_IMAGE 10014
 #define ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT 10017
 #define ID_PREFERENCES_HISTOGRAM 10071
+#define ID_PREFERENCES_HISTOGRAM_SKIP_CREATE_DIALOG 10033
 #define ID_PREFERENCES_HISTOGRAM_NAME_PREFIX 10018
 #define ID_PREFERENCES_HISTOGRAM_NAME_FULL 10019
 #define ID_PREFERENCES_HISTOGRAM_MATRIX_ZOOM 10092
@@ -384,6 +385,9 @@ public:
   bool GetHistogramShowUnits() const { return histogramShowUnits ; }
   void SetHistogramShowUnits(bool value) { histogramShowUnits = value ; }
 
+  bool GetHistogramSkipCreateDialog() const { return histogramSkipCreateDialog ; }
+  void SetHistogramSkipCreateDialog(bool value) { histogramSkipCreateDialog = value ; }
+
   bool GetHistogramThousandSeparator() const { return histogramThousandSeparator ; }
   void SetHistogramThousandSeparator(bool value) { histogramThousandSeparator = value ; }
 
@@ -547,6 +551,7 @@ public:
   wxChoice* choiceTimelineSaveImageFormat;
   wxChoice* choiceTimelineSaveTextFormat;
   wxPanel* panelHistogram;
+  wxCheckBox* checkHistogramSkipCreateDialog;
   wxTextCtrl* txtHistogramNameFormatPrefix;
   wxTextCtrl* txtHistogramNameFormatFull;
   wxCheckBox* checkHistogramZoom;
@@ -625,6 +630,7 @@ private:
   bool histogramScientificNotation;
   bool histogramShowGradient;
   bool histogramShowUnits;
+  bool histogramSkipCreateDialog;
   bool histogramThousandSeparator;
   bool histogramZoom;
   float maximumTraceSize;
