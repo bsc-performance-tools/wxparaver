@@ -623,6 +623,7 @@ int wxparaverApp::OnExit()
 
 int wxparaverApp::FilterEvent(wxEvent& event)
 {
+/*
 #ifdef WIN32
   if ( event.GetEventType()==wxEVT_KEY_DOWN && 
        ((wxKeyEvent&)event).ControlDown() &&
@@ -674,8 +675,63 @@ int wxparaverApp::FilterEvent(wxEvent& event)
     mainWindow->OnFindDialog();
     return true;
   }
+  if (( event.GetEventType() == wxEVT_KEY_DOWN ) && 
+       ((wxKeyEvent&)event).GetKeyCode() == WXK_DELETE )
+  {
+    wxCommandEvent dummyEvent;
+    mainWindow->OnTooldeleteClick( dummyEvent );
+    return true;
+  }
+
   return -1;
+*/
+  int ret = true;
+
+  if ( event.GetEventType() == wxEVT_KEY_DOWN )
+  {
+    if ( ((wxKeyEvent&)event).ControlDown() )
+    {
+      if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'S' )
+      {
+        wxFileDialog dialog( mainWindow, wxT( "Save session" ), _(""), _(""), _("*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
+        if( dialog.ShowModal() == wxID_OK )
+        {
+          SessionSaver::SaveSession( dialog.GetPath(), wxparaverApp::mainWindow->GetLoadedTraces() );
+        }
+      }
+      else if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'L' )
+      {
+        wxFileDialog dialog( mainWindow, wxT( "Load session" ), _(""), _(""), _("*"), wxFD_OPEN|wxFD_FILE_MUST_EXIST );
+        if( dialog.ShowModal() == wxID_OK )
+        {
+          SessionSaver::LoadSession( dialog.GetPath() );
+        }
+      }
+      else if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'F' )
+        mainWindow->OnFindDialog();
+#ifdef WIN32
+      else if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'C' )
+        mainWindow->OnKeyCopy();
+      else if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'V' )
+        mainWindow->OnKeyPaste();
+#endif
+      else
+        ret = -1;
+    }
+    else if (((wxKeyEvent&)event).GetKeyCode() == WXK_DELETE )
+    {
+      wxCommandEvent dummyEvent;
+      mainWindow->OnTooldeleteClick( dummyEvent );
+    }
+    else
+      ret = -1;
+  }
+  else
+    ret = -1;
+
+  return ret;
 }
+
 
 void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
 {

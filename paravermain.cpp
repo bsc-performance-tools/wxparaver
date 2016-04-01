@@ -4120,3 +4120,5 @@ void paraverMain::setActiveWorkspacesText()
 
 
 
+
+
