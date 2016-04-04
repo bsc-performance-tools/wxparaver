@@ -2677,6 +2677,17 @@ void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
       OnPopUpPasteSpecial();
     return;
   }
+  if( event.ControlDown() && event.GetKeyCode() == (long) 'U' )
+  {
+    OnPopUpUndoZoom();
+    return;
+  }
+  if( event.ControlDown() && event.GetKeyCode() == (long) 'R' )
+  {
+    OnPopUpRedoZoom();
+    return;
+  }
+
 
   if( zoomDragging && event.GetKeyCode() == WXK_ESCAPE )
   {

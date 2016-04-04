@@ -691,7 +691,8 @@ int wxparaverApp::FilterEvent(wxEvent& event)
   {
     if ( ((wxKeyEvent&)event).ControlDown() )
     {
-      if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'S' )
+      long keyCode = ((wxKeyEvent&)event).GetKeyCode();
+      if ( keyCode == (long) 'S' )
       {
         wxFileDialog dialog( mainWindow, wxT( "Save session" ), _(""), _(""), _("*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
         if( dialog.ShowModal() == wxID_OK )
@@ -699,7 +700,7 @@ int wxparaverApp::FilterEvent(wxEvent& event)
           SessionSaver::SaveSession( dialog.GetPath(), wxparaverApp::mainWindow->GetLoadedTraces() );
         }
       }
-      else if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'L' )
+      else if ( keyCode == (long) 'L' )
       {
         wxFileDialog dialog( mainWindow, wxT( "Load session" ), _(""), _(""), _("*"), wxFD_OPEN|wxFD_FILE_MUST_EXIST );
         if( dialog.ShowModal() == wxID_OK )
@@ -707,12 +708,12 @@ int wxparaverApp::FilterEvent(wxEvent& event)
           SessionSaver::LoadSession( dialog.GetPath() );
         }
       }
-      else if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'F' )
+      else if ( keyCode == (long) 'F' )
         mainWindow->OnFindDialog();
 #ifdef WIN32
-      else if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'C' )
+      else if ( keyCode == (long) 'C' )
         mainWindow->OnKeyCopy();
-      else if ( ((wxKeyEvent&)event).GetKeyCode() == (long) 'V' )
+      else if ( keyCode == (long) 'V' )
         mainWindow->OnKeyPaste();
 #endif
       else
