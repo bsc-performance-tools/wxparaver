@@ -416,8 +416,8 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
 
-  buildItem( this, _( "Undo Zoom" ), ITEMNORMAL, NULL, wxID_UNDO );
-  buildItem( this, _( "Redo Zoom" ), ITEMNORMAL, NULL, wxID_REDO );
+  buildItem( this, _( STR_UNDO_ZOOM ), ITEMNORMAL, NULL, wxID_UNDO );
+  buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, NULL, wxID_REDO );
 
   buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, wxID_ZOOM_100 );
   buildItem( popUpMenuFitSemantic, _( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
@@ -738,8 +738,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
-  buildItem( this, _( "Undo Zoom" ), ITEMNORMAL, NULL, wxID_UNDO );
-  buildItem( this, _( "Redo Zoom" ), ITEMNORMAL, NULL, wxID_REDO );
+  buildItem( this, _( STR_UNDO_ZOOM), ITEMNORMAL, NULL, wxID_UNDO );
+  buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, NULL, wxID_REDO );
 
   buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, wxID_ZOOM_100 );
   buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );

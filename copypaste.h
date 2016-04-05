@@ -63,6 +63,8 @@ using namespace std;
 #define STR_SYNCHRONIZE         "Synchronize"
 #define STR_SYNC_REMOVEALL      "Remove all sync"
 #define STR_SAVE_IMAGE          "Save Image..."
+#define STR_UNDO_ZOOM           "Undo Zoom\tCTRL+U"
+#define STR_REDO_ZOOM           "Redo Zoom\tCTRL+R"
 
 class gTimeline;
 class gHistogram;

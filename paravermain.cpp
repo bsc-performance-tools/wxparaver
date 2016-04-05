@@ -485,7 +485,7 @@ void paraverMain::CreateControls()
   tbarMain->AddSeparator();
   wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
   wxBitmap itemtool28BitmapDisabled;
-  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("Delete selected window"), wxEmptyString);
+  tbarMain->AddTool(ID_TOOLDELETE, _("Delete window (DEL)"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("Delete selected window (DEL)"), wxEmptyString);
   tbarMain->AddSeparator();
   wxBitmap itemtool30Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
   wxBitmap itemtool30BitmapDisabled;
