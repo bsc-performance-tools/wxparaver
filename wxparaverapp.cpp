@@ -623,68 +623,6 @@ int wxparaverApp::OnExit()
 
 int wxparaverApp::FilterEvent(wxEvent& event)
 {
-/*
-#ifdef WIN32
-  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
-       ((wxKeyEvent&)event).ControlDown() &&
-       ((wxKeyEvent&)event).GetKeyCode() == (long) 'C'
-     )
-  {
-    mainWindow->OnKeyCopy();
-    return true;
-  }
-  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
-       ((wxKeyEvent&)event).ControlDown() &&
-       ((wxKeyEvent&)event).GetKeyCode() == (long) 'V'
-     )
-  {
-    mainWindow->OnKeyPaste();
-    return true;
-  }
-#endif
-  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
-       ((wxKeyEvent&)event).ControlDown() &&
-       ((wxKeyEvent&)event).GetKeyCode() == (long) 'S'
-     )
-  {
-    wxFileDialog dialog( mainWindow, wxT( "Save session" ), _(""), _(""), _("*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
-    if( dialog.ShowModal() == wxID_OK )
-    {
-      SessionSaver::SaveSession( dialog.GetPath(), wxparaverApp::mainWindow->GetLoadedTraces() );
-    }
-    return true;
-  }
-
-  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
-       ((wxKeyEvent&)event).ControlDown() &&
-       ((wxKeyEvent&)event).GetKeyCode() == (long) 'L'
-     )
-  {
-    wxFileDialog dialog( mainWindow, wxT( "Load session" ), _(""), _(""), _("*"), wxFD_OPEN|wxFD_FILE_MUST_EXIST );
-    if( dialog.ShowModal() == wxID_OK )
-    {
-      SessionSaver::LoadSession( dialog.GetPath() );
-    }
-    return true;
-  }
-  if ( event.GetEventType()==wxEVT_KEY_DOWN && 
-       ((wxKeyEvent&)event).ControlDown() &&
-       ((wxKeyEvent&)event).GetKeyCode() == (long) 'F'
-     )
-  {
-    mainWindow->OnFindDialog();
-    return true;
-  }
-  if (( event.GetEventType() == wxEVT_KEY_DOWN ) && 
-       ((wxKeyEvent&)event).GetKeyCode() == WXK_DELETE )
-  {
-    wxCommandEvent dummyEvent;
-    mainWindow->OnTooldeleteClick( dummyEvent );
-    return true;
-  }
-
-  return -1;
-*/
   int ret = true;
 
   if ( event.GetEventType() == wxEVT_KEY_DOWN )
@@ -692,6 +630,7 @@ int wxparaverApp::FilterEvent(wxEvent& event)
     if ( ((wxKeyEvent&)event).ControlDown() )
     {
       long keyCode = ((wxKeyEvent&)event).GetKeyCode();
+ 
       if ( keyCode == (long) 'S' )
       {
         wxFileDialog dialog( mainWindow, wxT( "Save session" ), _(""), _(""), _("*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
