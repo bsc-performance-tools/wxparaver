@@ -4635,6 +4635,13 @@ void gTimeline::drawRowPunctual( wxDC& dc,
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
   wxCoord timePos = objectAxisPos + 1;
 
+  rgb rgbPunctualColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelinePunctual();
+  wxColour punctualColor( rgbPunctualColour.red,
+                          rgbPunctualColour.green,
+                          rgbPunctualColour.blue );
+  dc.SetPen( punctualColor );
+  dc.SetBrush( punctualColor );
+
   vector<TObjectOrder>::iterator first = find( selectedSet.begin(), selectedSet.end(), firstRow );
   vector<TObjectOrder>::iterator last  = find( selectedSet.begin(), selectedSet.end(), lastRow );
 
@@ -4656,11 +4663,6 @@ void gTimeline::drawRowPunctual( wxDC& dc,
                       / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
       int currentPos = floor( ( (double)objectHeight / (double)magnify ) * tmpPos ) * magnify;
       
-      /*dc.SetPen( foregroundColour );
-      dc.SetBrush( foregroundColour );*/
-      wxColour punctualColor( 255, 128, 128 );
-      dc.SetPen( punctualColor );
-      dc.SetBrush( punctualColor );
       if( magnify == 1.0 )
         dc.DrawPoint( timePos, objectPos + objectHeight - currentPos - 1 );
       else

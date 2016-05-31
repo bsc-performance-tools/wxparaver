@@ -2812,6 +2812,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetTimelineColourAxis( paraverConfig->getColorsTimelineAxis() );
   preferences.SetColorUseZero( paraverConfig->getColorsTimelineUseZero() );
   preferences.SetTimelineColourZero( paraverConfig->getColorsTimelineColorZero() );
+  preferences.SetTimelineColourPunctual( paraverConfig->getColorsTimelinePunctual() );
   preferences.SetTimelineColourLogical( paraverConfig->getColorsTimelineLogicalCommunications() );
   preferences.SetTimelineColourPhysical( paraverConfig->getColorsTimelinePhysicalCommunications() );
 
@@ -2898,6 +2899,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setColorsTimelineAxis( preferences.GetTimelineColourAxis() );
     paraverConfig->setColorsTimelineUseZero( preferences.GetColorUseZero() );
     paraverConfig->setColorsTimelineColorZero( preferences.GetTimelineColourZero() );
+    paraverConfig->setColorsTimelinePunctual( preferences.GetTimelineColourPunctual() );
     paraverConfig->setColorsTimelineLogicalCommunications( preferences.GetTimelineColourLogical() );
     paraverConfig->setColorsTimelinePhysicalCommunications( preferences.GetTimelineColourPhysical() );
 

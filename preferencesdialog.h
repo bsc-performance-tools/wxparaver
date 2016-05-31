@@ -131,6 +131,7 @@ class FileBrowserButton;
 #define ID_COLOURPICKER_BACKGROUND 10002
 #define ID_COLOURPICKER_AXIS 10001
 #define ID_COLOURPICKER_ZERO 10104
+#define ID_COLOURPICKER_PUNCTUAL 10034
 #define ID_COLOURPICKER_LOGICAL 10007
 #define ID_COLOURPICKER_PHYSICAL 10008
 #define ID_BUTTON_DEFAULT_TIMELINE 10087
@@ -493,6 +494,9 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
+  rgb GetTimelineColourPunctual() const { return timelineColourPunctual ; }
+  void SetTimelineColourPunctual(rgb value) { timelineColourPunctual = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -577,6 +581,7 @@ public:
   wxColourPickerCtrl* colourPickerAxis;
   wxCheckBox* checkZero;
   wxColourPickerCtrl* colourPickerZero;
+  wxColourPickerCtrl* colourPickerPunctual;
   wxColourPickerCtrl* colourPickerLogical;
   wxColourPickerCtrl* colourPickerPhysical;
   wxColourPickerCtrl* colourPickerGradientBegin;
@@ -666,6 +671,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
+  rgb timelineColourPunctual;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

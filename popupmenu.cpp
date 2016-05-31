@@ -449,7 +449,8 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
   wxMenuItem *tmpGradFunc = popUpMenuColor->AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
   popUpMenuColor->Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->isCodeColorSet() == false &&
-                                                timeline->GetMyWindow()->isFunctionLineColorSet() == false );
+                                                timeline->GetMyWindow()->isFunctionLineColorSet() == false &&
+                                                timeline->GetMyWindow()->isPunctualColorSet() == false );
 
   AppendSubMenu( popUpMenuColor, _( "Paint As" ));
 
