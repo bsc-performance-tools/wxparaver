@@ -135,6 +135,7 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_BOTH_MODE                30087
 #define ID_MENU_SPECTRAL                          30088
 #define ID_MENU_PASTE_CONTROL_DIMENSIONS          30089
+#define ID_MENU_PUNCTUAL                          30090
 
 
 class gPopUpMenu : public wxMenu
@@ -194,6 +195,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuCodeColor( wxCommandEvent& event);
     void OnMenuGradientColor( wxCommandEvent& event);
     void OnMenuNotNullGradientColor( wxCommandEvent& event);
+    void OnMenuPunctual( wxCommandEvent& event);
 
     void OnMenuDrawModeTimeLast( wxCommandEvent& event);
     void OnMenuDrawModeTimeRandom( wxCommandEvent& event);
