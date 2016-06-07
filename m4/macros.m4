@@ -35,6 +35,29 @@ AC_DEFUN([AX_PROG_WITH_PARAVER],
    AC_SUBST(PARAVER_DIR)
 ])
 
+
+# AX_PROG_WITH_PARAVER_LIBDIR
+# ---------------------------
+AC_DEFUN([AX_PROG_WITH_PARAVER_LIBDIR],
+[
+   AC_ARG_WITH(paraver-libdir,
+      AC_HELP_STRING(
+         [--with-paraver-libdir@<:@=DIR@:>@],
+         [specify paraver-kernel and paraver-api libraries install directory. Default: /usr/local/lib]
+      ),
+      [PARAVER_LIBDIR=${withval}],
+      [PARAVER_LIBDIR=${PARAVER_DIR}/lib]
+   )
+   if test "${PARAVER_LIBDIR##*/}" = "lib64" ; then
+     PARAVER_RPATH_LIB="lib64"
+   else
+     PARAVER_RPATH_LIB="lib"
+   fi
+
+   AC_SUBST(PARAVER_LIBDIR)
+])
+
+
 # AX_PROG_ENABLE_TRACING
 # -----------
 AC_DEFUN([AX_PROG_ENABLE_TRACING],
