@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT(wxparaver, 4.6.1, tools@bsc.es)
+AC_INIT(wxparaver, 4.6.2-rc2, tools@bsc.es)
 AC_CONFIG_SRCDIR([wxparaverapp.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
@@ -18,8 +18,8 @@ AM_INIT_AUTOMAKE
 # Checks for libraries.
 AM_OPTIONS_WXCONFIG
 ifdef([WX_CONFIG_CHECK],
-      [WX_CONFIG_CHECK([3.0.0],[wxWin=1],,[std,aui,propgrid,richtext])],
-      [AM_PATH_WXCONFIG([2.8.0],[wxWin=1])]
+      [AM_PATH_WXCONFIG([2.8.0],[wxWin=1])],
+      [WX_CONFIG_CHECK([3.0.0],[wxWin=1],,[std,aui,propgrid,richtext])]
 )
 if test "$wxWin" != 1; then
   	AC_MSG_ERROR([
