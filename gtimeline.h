@@ -161,6 +161,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
   /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
@@ -181,12 +187,6 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
