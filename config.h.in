@@ -108,6 +108,9 @@
 /* Parallel version enabled by user. */
 #undef PARALLEL_ENABLED
 
+/* Old pcfparser enabled by user. */
+#undef SET_OLD_PCFPARSER
+
 /* The size of `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
