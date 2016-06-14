@@ -1332,15 +1332,14 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       }
       
       // --folding-args
-      parameters += wxString( wxT( " --folding-args \"" ) );
+      parameters += wxString( wxT( " --folding-args " ) );
 
       if ( comboboxFoldingModel->GetValue() != wxString( wxT("none") ) )
       {
-        parameters += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
+        //parameters += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
+        parameters += doubleQuote( wxString( wxT( " -model " ) ) + comboboxFoldingModel->GetValue() );
       }
 
-      parameters += wxString( wxT( "\"" ) );
-      
       // --folding-sep
       parameters += wxString( wxT( " --folding-sep " ) );
 
