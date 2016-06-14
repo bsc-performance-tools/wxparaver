@@ -46,7 +46,7 @@ AC_DEFUN([AX_PROG_WITH_PARAVER_LIBDIR],
          [specify paraver-kernel and paraver-api libraries install directory. Default: /usr/local/lib]
       ),
       [PARAVER_LIBDIR=${withval}],
-      [PARAVER_LIBDIR=${PARAVER_DIR}/lib64]
+      [PARAVER_LIBDIR=${PARAVER_DIR}/lib]
    )
    if test "${PARAVER_LIBDIR##*/}" = "lib64" ; then
      PARAVER_RPATH_LIB="lib64"

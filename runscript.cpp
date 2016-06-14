@@ -1662,7 +1662,7 @@ wxString RunScript::doubleQuote( const wxString& path )
 
 void RunScript::adaptWindowToApplicationSelection()
 {
-  wxString toolTip("");
+  wxString toolTip( wxT( "" ) );
   int currentChoice = choiceApplication->GetSelection();
   
   textCtrlDefaultParameters->Clear();
