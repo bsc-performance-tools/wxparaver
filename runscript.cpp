@@ -171,6 +171,8 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
+  EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_ONLY, RunScript::OnCheckboxFoldingOnlyUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_REUSE_FILES, RunScript::OnCheckboxFoldingReuseFilesUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
@@ -334,6 +336,8 @@ void RunScript::Init()
   clusteringLabelRefinementMinPoints = NULL;
   clusteringTextBoxRefinementMinPoints = NULL;
   foldingSection = NULL;
+  checkboxFoldingOnly = NULL;
+  checkboxFoldingReuseFiles = NULL;
   checkboxFoldingUseSemanticValues = NULL;
   comboboxFoldingModel = NULL;
   labelCommandPreview = NULL;
@@ -375,7 +379,7 @@ void RunScript::Init()
   application[ DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );                             
   application[ STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );                             
   application[ CLUSTERING ]          = wxString( wxT("BurstClustering") );                             
-  application[ FOLDING ]             = wxString( wxT("folding") );                             
+  application[ FOLDING ]             = wxString( wxT("rri-auto") );                             
   application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED                           
   application[ DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
   application[ STATS ]               = wxString( wxT("stats") );
@@ -483,7 +487,7 @@ void RunScript::CreateControls()
     textCtrlTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(textCtrlTrace, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   if (RunScript::ShowToolTips())
     fileBrowserButtonTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(fileBrowserButtonTrace, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -515,7 +519,7 @@ void RunScript::CreateControls()
     textCtrlDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
   itemBoxSizer16->Add(textCtrlDimemasCFG, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonDimemasCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_DIMEMAS_CFG_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  fileBrowserButtonDimemasCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_DIMEMAS_CFG_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   if (RunScript::ShowToolTips())
     fileBrowserButtonDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
   itemBoxSizer16->Add(fileBrowserButtonDimemasCFG, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -700,7 +704,7 @@ void RunScript::CreateControls()
   textCtrlClusteringXML = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_XML, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer60->Add(textCtrlClusteringXML, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonClusteringXML = new FileBrowserButton( itemDialog1, ID_BUTTON_CLUSTERING_XML, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  fileBrowserButtonClusteringXML = new FileBrowserButton( itemDialog1, ID_BUTTON_CLUSTERING_XML, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   itemBoxSizer60->Add(fileBrowserButtonClusteringXML, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   buttonClusteringXML = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_CLUSTERING_XML, itemDialog1->GetBitmapResource(wxT("app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
@@ -856,19 +860,41 @@ void RunScript::CreateControls()
 
   itemBoxSizer108->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  checkboxFoldingUseSemanticValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, _("Use semantic values as region delimiter"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkboxFoldingUseSemanticValues->SetValue(false);
+  checkboxFoldingOnly = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_ONLY, _("Folding only"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkboxFoldingOnly->SetValue(false);
   if (RunScript::ShowToolTips())
-    checkboxFoldingUseSemanticValues->SetToolTip(_("If checked, a precomputed CSV containing timeline semantic values will be used as region delimiter.\nIf unchecked the above event  type/name will be used."));
-  itemBoxSizer108->Add(checkboxFoldingUseSemanticValues, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
+    checkboxFoldingOnly->SetToolTip(_("If checked, RRI phase won't be executed after folding phase"));
+  itemBoxSizer108->Add(checkboxFoldingOnly, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
   wxBoxSizer* itemBoxSizer111 = new wxBoxSizer(wxHORIZONTAL);
   foldingSection->Add(itemBoxSizer111, 0, wxGROW|wxBOTTOM, 2);
 
-  wxStaticText* itemStaticText112 = new wxStaticText( itemDialog1, wxID_STATIC, _("Model"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+  itemBoxSizer111->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  checkboxFoldingReuseFiles = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_REUSE_FILES, _("Reuse existing files"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkboxFoldingReuseFiles->SetValue(false);
   if (RunScript::ShowToolTips())
-    itemStaticText112->SetToolTip(_("Combine the trace-file hardware counters for the selected architecture"));
-  itemBoxSizer111->Add(itemStaticText112, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+    checkboxFoldingReuseFiles->SetToolTip(_("If checked and folding files exist they won't be recomputed"));
+  itemBoxSizer111->Add(checkboxFoldingReuseFiles, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
+
+  wxBoxSizer* itemBoxSizer114 = new wxBoxSizer(wxHORIZONTAL);
+  foldingSection->Add(itemBoxSizer114, 0, wxGROW|wxBOTTOM, 2);
+
+  itemBoxSizer114->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  checkboxFoldingUseSemanticValues = new wxCheckBox( itemDialog1, ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, _("Use semantic values as region delimiter"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkboxFoldingUseSemanticValues->SetValue(false);
+  if (RunScript::ShowToolTips())
+    checkboxFoldingUseSemanticValues->SetToolTip(_("If checked, a precomputed CSV containing timeline semantic values will be used as region delimiter.\nIf unchecked the above event  type/name will be used."));
+  itemBoxSizer114->Add(checkboxFoldingUseSemanticValues, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
+
+  wxBoxSizer* itemBoxSizer117 = new wxBoxSizer(wxHORIZONTAL);
+  foldingSection->Add(itemBoxSizer117, 0, wxGROW|wxBOTTOM, 2);
+
+  wxStaticText* itemStaticText118 = new wxStaticText( itemDialog1, wxID_STATIC, _("Model"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+  if (RunScript::ShowToolTips())
+    itemStaticText118->SetToolTip(_("Combine the trace-file hardware counters for the selected architecture"));
+  itemBoxSizer117->Add(itemStaticText118, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxArrayString comboboxFoldingModelStrings;
   comboboxFoldingModelStrings.Add(_("none"));
@@ -884,61 +910,61 @@ void RunScript::CreateControls()
   comboboxFoldingModel->SetStringSelection(_("None"));
   if (RunScript::ShowToolTips())
     comboboxFoldingModel->SetToolTip(_("Combine the trace-file hardware counters for the selected architecture"));
-  itemBoxSizer111->Add(comboboxFoldingModel, 12, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
+  itemBoxSizer117->Add(comboboxFoldingModel, 12, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 2);
 
-  wxStaticLine* itemStaticLine114 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine114, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine120 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine120, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer115 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer115, 1, wxGROW, 5);
+  wxBoxSizer* itemBoxSizer121 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer121, 1, wxGROW, 5);
 
-  wxStaticText* itemStaticText116 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticText* itemStaticText122 = new wxStaticText( itemDialog1, wxID_STATIC, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
-    itemStaticText116->SetToolTip(_("Command to execute"));
-  itemBoxSizer115->Add(itemStaticText116, 1, wxALIGN_TOP|wxALL, 5);
+    itemStaticText122->SetToolTip(_("Command to execute"));
+  itemBoxSizer121->Add(itemStaticText122, 1, wxALIGN_TOP|wxALL, 5);
 
   labelCommandPreview = new wxTextCtrl( itemDialog1, wxID_LABELCOMMANDPREVIEW, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY );
   if (RunScript::ShowToolTips())
     labelCommandPreview->SetToolTip(_("Command to execute"));
-  itemBoxSizer115->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
+  itemBoxSizer121->Add(labelCommandPreview, 4, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer118 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer118, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer124 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer124, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5);
 
   buttonHelpScript = new wxButton( itemDialog1, ID_BUTTON_HELP_SCRIPT, _("Help"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonHelpScript->SetToolTip(_("Shows the application '--help' message if available"));
   buttonHelpScript->Show(false);
-  itemBoxSizer118->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
+  itemBoxSizer124->Add(buttonHelpScript, 0, wxGROW|wxALL, 5);
 
   buttonRun = new wxButton( itemDialog1, ID_BUTTON_RUN, _("Run"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonRun->SetToolTip(_("Runs the application"));
-  itemBoxSizer118->Add(buttonRun, 0, wxGROW|wxALL, 5);
+  itemBoxSizer124->Add(buttonRun, 0, wxGROW|wxALL, 5);
 
   buttonKill = new wxButton( itemDialog1, ID_BUTTON_KILL, _("Kill"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer118->Add(buttonKill, 0, wxGROW|wxALL, 5);
+  itemBoxSizer124->Add(buttonKill, 0, wxGROW|wxALL, 5);
 
   buttonClearLog = new wxButton( itemDialog1, ID_BUTTON_CLEAR_LOG, _("Clear Log"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonClearLog->SetToolTip(_("Clears accumulated messages"));
-  itemBoxSizer118->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
+  itemBoxSizer124->Add(buttonClearLog, 0, wxGROW|wxALL, 5);
 
   listboxRunLog = new wxHtmlWindow( itemDialog1, ID_LISTBOX_RUN_LOG, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
   if (RunScript::ShowToolTips())
     listboxRunLog->SetToolTip(_("Execution messages"));
   itemBoxSizer2->Add(listboxRunLog, 3, wxGROW|wxALL, 7);
 
-  wxBoxSizer* itemBoxSizer124 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer124, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxBoxSizer* itemBoxSizer130 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer130, 0, wxALIGN_RIGHT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer125 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer124->Add(itemBoxSizer125, 0, wxALIGN_CENTER_VERTICAL|wxALL, 1);
+  wxBoxSizer* itemBoxSizer131 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer130->Add(itemBoxSizer131, 0, wxALIGN_CENTER_VERTICAL|wxALL, 1);
 
   buttonExit = new wxButton( itemDialog1, ID_BUTTON_EXIT, _("Exit"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     buttonExit->SetToolTip(_("Close window but don't run the selected application."));
-  itemBoxSizer125->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer131->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
 
@@ -1264,6 +1290,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case FOLDING:
       command = application[ FOLDING ];
 
+      /* // Only FOLDING
+      
       if ( comboboxFoldingModel->GetValue() != wxString( wxT("none") ) )
       {
         parameters += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
@@ -1285,12 +1313,51 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         parameters += doubleQuote( expandVariables( textCtrlDefaultParameters->GetValue() ) ); // Event type
       }
       
-      
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
       {
         helpOption = true;
       }
       
+      */
+      
+      // Flags
+      if ( checkboxFoldingOnly->IsChecked() )
+      {
+        parameters += wxString( wxT( " --folding-only" ) );
+      }
+      
+      if ( checkboxFoldingReuseFiles->IsChecked() )
+      {
+        parameters += wxString( wxT( " --no-recompute" ) );
+      }
+      
+      // --folding-args
+      parameters += wxString( wxT( " --folding-args \"" ) );
+
+      if ( comboboxFoldingModel->GetValue() != wxString( wxT("none") ) )
+      {
+        parameters += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
+      }
+
+      parameters += wxString( wxT( "\"" ) );
+      
+      // --folding-sep
+      parameters += wxString( wxT( " --folding-sep " ) );
+
+      if ( checkboxFoldingUseSemanticValues->IsChecked() )
+      {
+        if ( !foldingCSV.IsEmpty() )
+        {
+          parameters += doubleQuote( foldingCSV );
+        }
+      }
+      else
+      {
+        parameters += doubleQuote( expandVariables( textCtrlDefaultParameters->GetValue() ) ); // Event type
+      }
+
+      parameters += wxString( wxT(" ") ) + doubleQuote( fileBrowserButtonTrace->GetPath() );
+
       break;
       
     case USER_DEFINED:
@@ -1595,8 +1662,11 @@ wxString RunScript::doubleQuote( const wxString& path )
 
 void RunScript::adaptWindowToApplicationSelection()
 {
-  wxString toolTip;
+  wxString toolTip("");
   int currentChoice = choiceApplication->GetSelection();
+  
+  textCtrlDefaultParameters->Clear();
+  labelTextCtrlDefaultParameters->SetToolTip( toolTip );
   
   switch ( currentChoice )
   {
@@ -2436,5 +2506,31 @@ void RunScript::OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event 
 {
   labelTextCtrlDefaultParameters->Enable( !checkboxFoldingUseSemanticValues->IsChecked() );
   textCtrlDefaultParameters->Enable( !checkboxFoldingUseSemanticValues->IsChecked() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_RUN_RRI
+ */
+
+void RunScript::OnCheckboxFoldingOnlyUpdate( wxUpdateUIEvent& event )
+{
+////@begin wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_RUN_RRI in RunScript.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_RUN_RRI in RunScript. 
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_REUSE_FILES
+ */
+
+void RunScript::OnCheckboxFoldingReuseFilesUpdate( wxUpdateUIEvent& event )
+{
+////@begin wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_REUSE_FILES in RunScript.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_REUSE_FILES in RunScript. 
 }
 

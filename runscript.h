@@ -36,7 +36,6 @@
  */
 
 ////@begin includes
-#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -150,6 +149,8 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_CLUSTERING_REFINEMENT_EPSILON_MAX 10229
 #define ID_TEXTCTRL_CLUSTERING_REFINEMENT_STEPS 10230
 #define ID_TEXTCTRL_CLUSTERING_REFINEMENT_MIN_POINTS 10231
+#define ID_CHECKBOX_FOLDING_ONLY 10005
+#define ID_CHECKBOX_FOLDING_REUSE_FILES 10006
 #define ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE 10153
 #define ID_COMBOBOX_FOLDING_MODEL 10284
 #define wxID_LABELCOMMANDPREVIEW 10091
@@ -242,6 +243,12 @@ public:
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE
   void OnCheckboxClusteringRefinementTuneClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_ONLY
+  void OnCheckboxFoldingOnlyUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_REUSE_FILES
+  void OnCheckboxFoldingReuseFilesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE
   void OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event );
@@ -363,6 +370,8 @@ public:
   wxStaticText* clusteringLabelRefinementMinPoints;
   wxSpinCtrl* clusteringTextBoxRefinementMinPoints;
   wxBoxSizer* foldingSection;
+  wxCheckBox* checkboxFoldingOnly;
+  wxCheckBox* checkboxFoldingReuseFiles;
   wxCheckBox* checkboxFoldingUseSemanticValues;
   wxComboBox* comboboxFoldingModel;
   wxTextCtrl* labelCommandPreview;
