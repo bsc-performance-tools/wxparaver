@@ -875,7 +875,7 @@ void RunScript::CreateControls()
   checkboxFoldingReuseFiles->SetValue(false);
   if (RunScript::ShowToolTips())
     checkboxFoldingReuseFiles->SetToolTip(_("If checked and folding files exist they won't be recomputed"));
-  itemBoxSizer111->Add(checkboxFoldingReuseFiles, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
+  itemBoxSizer111->Add(checkboxFoldingReuseFiles, 4, wxGROW|wxRIGHT|wxBOTTOM, 2);
 
   wxBoxSizer* itemBoxSizer114 = new wxBoxSizer(wxHORIZONTAL);
   foldingSection->Add(itemBoxSizer114, 0, wxGROW|wxBOTTOM, 2);
@@ -886,7 +886,7 @@ void RunScript::CreateControls()
   checkboxFoldingUseSemanticValues->SetValue(false);
   if (RunScript::ShowToolTips())
     checkboxFoldingUseSemanticValues->SetToolTip(_("If checked, a precomputed CSV containing timeline semantic values will be used as region delimiter.\nIf unchecked the above event  type/name will be used."));
-  itemBoxSizer114->Add(checkboxFoldingUseSemanticValues, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
+  itemBoxSizer114->Add(checkboxFoldingUseSemanticValues, 4, wxGROW|wxRIGHT|wxBOTTOM, 2);
 
   wxBoxSizer* itemBoxSizer117 = new wxBoxSizer(wxHORIZONTAL);
   foldingSection->Add(itemBoxSizer117, 0, wxGROW|wxBOTTOM, 2);
