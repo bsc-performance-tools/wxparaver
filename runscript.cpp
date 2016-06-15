@@ -1082,6 +1082,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
   wxString tmpParams;
   wxString fullCommand;
   wxString tmpValue;
+  wxString tmpFoldingArgs;
+
   
   command.Clear();
   parameters.Clear();
@@ -1332,13 +1334,13 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       }
       
       // --folding-args
-      parameters += wxString( wxT( " --folding-args " ) );
-
       if ( comboboxFoldingModel->GetValue() != wxString( wxT("none") ) )
       {
-        //parameters += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
-        parameters += doubleQuote( wxString( wxT( " -model " ) ) + comboboxFoldingModel->GetValue() );
+        //tmpFoldingArgs += wxString( wxT( " -model " ) ) + doubleQuote( comboboxFoldingModel->GetValue() );
+        tmpFoldingArgs += doubleQuote( wxString( wxT( " -model " ) ) + comboboxFoldingModel->GetValue() );
       }
+      if( !tmpFoldingArgs.IsEmpty() )
+        parameters += wxString( wxT( " --folding-args " ) ) + tmpFoldingArgs;
 
       // --folding-sep
       parameters += wxString( wxT( " --folding-sep " ) );
