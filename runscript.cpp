@@ -49,6 +49,7 @@
 #include <wx/utils.h> // wxGetEnv
 #include <wx/txtstrm.h>
 #include <wx/filefn.h> // wxPathList
+#include <wx/mimetype.h>
 
 // Validators
 #include <wx/arrstr.h>
@@ -355,8 +356,9 @@ void RunScript::Init()
                                    _(".cfg"),
                                    _(".xml"),
                                    _(".csv"), _(".dat"),
-                                   _(".gnuplot") };
-  extensions = wxArrayString( (size_t)7, extensionsAllowed );
+                                   _(".gnuplot"),
+                                   _(".pdf") };
+  extensions = wxArrayString( (size_t)8, extensionsAllowed );
   extensionsDimemas = extensions;
   extensionsDimemas.Remove(_(".cfg"));
 
@@ -2138,6 +2140,18 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     std::string strXmlFile = getHrefFullPath( event );
 
     paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
+  }
+  else if ( matchHrefExtension( event, _(".pdf")))
+  {
+    wxMimeTypesManager manager;
+    wxFileType *filetype = manager.GetFileTypeFromExtension( wxT( "pdf" ) );
+    if( filetype != NULL )
+    {
+      wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+      wxString command = filetype->GetOpenCommand( tmpFile );
+      
+      runDetachedProcess( command );
+    }
   }
   else
   {
