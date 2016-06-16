@@ -2143,8 +2143,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".pdf")))
   {
-    wxMimeTypesManager manager;
-    wxFileType *filetype = manager.GetFileTypeFromExtension( wxT( "pdf" ) );
+    wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
     if( filetype != NULL )
     {
       wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
