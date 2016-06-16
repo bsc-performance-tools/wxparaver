@@ -2143,13 +2143,23 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".pdf")))
   {
-    wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
-    if( filetype != NULL )
+    wxString command;
+    wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+    command << _( "evince " ) << tmpFile;
+    if( wxExecute( command ) == 0 )
     {
-      wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
-      wxString command = filetype->GetOpenCommand( tmpFile );
-      
-      runDetachedProcess( command );
+      command.Clear();
+      command << _( "okular " ) << tmpFile;
+      if( wxExecute( command ) == 0 )
+      {
+        wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
+        if( filetype != NULL )
+        {
+          command.Clear();
+          command = filetype->GetOpenCommand( tmpFile );
+          wxExecute( command );
+        }
+      }
     }
   }
   else
