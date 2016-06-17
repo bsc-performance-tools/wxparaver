@@ -47,17 +47,20 @@ int HistoTableBase::GetNumberRows()
 {
   int extra = 0;
   if( myHisto->getFirstRowColored() ) ++extra;
+
+  if( myHisto->getOnlyTotals() )
+    return myHisto->getHorizontal() ? NUMTOTALS + extra : NUMTOTALS;
   
   if( myHisto->getHorizontal() )
     return myHisto->getNumRows() + NUMTOTALS + 1 + extra;
-    
+  
   return myHisto->getNumColumns( myHisto->getCurrentStat() ) + NUMTOTALS + 1;
 }
 
 int HistoTableBase::GetNumberCols()
 {
   int extra = 0;
-  if( myHisto->getFirstRowColored() ) ++extra;
+  if( myHisto->getFirstRowColored() && !myHisto->getOnlyTotals() ) ++extra;
 
   if( myHisto->getHorizontal() )
     return myHisto->getNumColumns( myHisto->getCurrentStat() );
@@ -75,7 +78,11 @@ wxString HistoTableBase::GetRowLabelValue( int row )
     --row;
   }
 
-  if( myHisto->getHorizontal() && row >= myHisto->getNumRows() )
+  if( myHisto->getOnlyTotals() )
+  {
+    label = wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals)( row ) ).c_str() );
+  }
+  else if( myHisto->getHorizontal() && row >= myHisto->getNumRows() )
   {
     int iTotal = row - myHisto->getNumRows();
     if( iTotal == 0 )
@@ -101,7 +108,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
   int w, h;
   wxFont tmpFont( GetView()->GetLabelFont() );
   GetView()->GetTextExtent( label, &w, &h, NULL, NULL, &tmpFont );
-  if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
+  if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() && !myHisto->getOnlyTotals() )
     GetView()->SetRowLabelSize( 0 );
   else if( GetView()->GetRowLabelSize() == 0 || GetView()->GetRowLabelSize() - 5 < w )
     GetView()->SetRowLabelSize( w + 5 );
@@ -111,7 +118,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
 
 wxString HistoTableBase::GetColLabelValue( int col )
 {
-  if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
+  if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() && !myHisto->getOnlyTotals() )
   {
     if( col == 0 ) return wxT( "" );
     --col;
@@ -135,7 +142,7 @@ wxString HistoTableBase::GetValue( int row, int col )
     if( row == 0 ) return GetColLabelValue( col );
     --row;
   }
-  else if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
+  else if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() && !myHisto->getOnlyTotals() )
   {
     if( col == 0 ) return GetRowLabelValue( row );
     --col;
@@ -156,10 +163,13 @@ wxString HistoTableBase::GetValue( int row, int col )
 
   TSemanticValue semValue;
   if( ( myHisto->getHorizontal() && row >= myHisto->getNumRows() ) ||
-      ( !myHisto->getHorizontal() && col >= (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) ) )
+      ( !myHisto->getHorizontal() && col >= (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) ) ||
+      myHisto->getOnlyTotals() )
   {
     int iTotal;
-    if( myHisto->getHorizontal() && row >= myHisto->getNumRows() )
+    if( myHisto->getOnlyTotals() )
+      iTotal = myHisto->getHorizontal() ? row : col;
+    else if( myHisto->getHorizontal() && row >= myHisto->getNumRows() )
       iTotal = row - myHisto->getNumRows() - 1;
     else
       iTotal = col - (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) - 1;
@@ -257,7 +267,14 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         
       return tmpAttr;
     }
+    else if( myHisto->getOnlyTotals() )
+      return tmpAttr;
+    
     --row;
+  }
+  else if( myHisto->getOnlyTotals() )
+  {
+    return tmpAttr;
   }
   else if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
   {
