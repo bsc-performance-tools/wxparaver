@@ -89,6 +89,7 @@
 #include "hide_cols.xpm"
 #include "semantic_color.xpm"
 #include "inclusive.xpm"
+#include "histo_sum.xpm"
 #include "caution.xpm"
 ////@end XPM images
 
@@ -136,6 +137,8 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_UPDATE_UI( ID_TOOL_LABEL_COLORS, gHistogram::OnToolLabelColorsUpdate )
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
+  EVT_MENU( ID_TOOL_ONLY_TOTALS, gHistogram::OnToolOnlyTotalsClick )
+  EVT_UPDATE_UI( ID_TOOL_ONLY_TOTALS, gHistogram::OnToolOnlyTotalsUpdate )
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
   EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
@@ -291,17 +294,20 @@ void gHistogram::CreateControls()
   wxBitmap itemtool16Bitmap(itemFrame1->GetBitmapResource(wxT("inclusive.xpm")));
   wxBitmap itemtool16BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
+  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("histo_sum.xpm")));
+  wxBitmap itemtool17BitmapDisabled;
+  tbarHisto->AddTool(ID_TOOL_ONLY_TOTALS, _("Show totals only"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_CHECK, _("Show totals only"), wxEmptyString);
   tbarHisto->Realize();
 
   panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
   panelData->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
   itemBoxSizer2->Add(panelData, 1, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
-  panelData->SetSizer(itemBoxSizer18);
+  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
+  panelData->SetSizer(itemBoxSizer19);
 
   mainSizer = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer18->Add(mainSizer, 1, wxGROW|wxALL, 0);
+  itemBoxSizer19->Add(mainSizer, 1, wxGROW|wxALL, 0);
 
   zoomHisto = new wxScrolledWindow( panelData, ID_ZOOMHISTO, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxFULL_REPAINT_ON_RESIZE );
   mainSizer->Add(zoomHisto, 1, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(1, -1)).x);
@@ -315,7 +321,7 @@ void gHistogram::CreateControls()
   mainSizer->Add(gridHisto, 1, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(1, -1)).x);
 
   warningSizer = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer18->Add(warningSizer, 0, wxGROW|wxALL, 0);
+  itemBoxSizer19->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
   controlWarning = new wxStaticBitmap( panelData, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
@@ -327,9 +333,9 @@ void gHistogram::CreateControls()
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxStaticBitmap* itemStaticBitmap25 = new wxStaticBitmap( panelData, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(9, 9)), 0 );
-  itemStaticBitmap25->Show(false);
-  warningSizer->Add(itemStaticBitmap25, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  wxStaticBitmap* itemStaticBitmap26 = new wxStaticBitmap( panelData, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(9, 9)), 0 );
+  itemStaticBitmap26->Show(false);
+  warningSizer->Add(itemStaticBitmap26, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   warningSizer->Add(wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x, wxDLG_UNIT(itemFrame1, wxSize(-1, 10)).y, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
@@ -875,6 +881,11 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   else if (name == wxT("inclusive.xpm"))
   {
     wxBitmap bitmap(inclusive_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("histo_sum.xpm"))
+  {
+    wxBitmap bitmap(histo_sum_xpm);
     return bitmap;
   }
   else if (name == wxT("caution.xpm"))
@@ -2772,3 +2783,27 @@ void progressFunctionHistogram( ProgressController *progress, void *callerWindow
   if( gHistogram::dialogProgress != NULL && !gHistogram::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_ONLY_TOTALS
+ */
+
+void gHistogram::OnToolOnlyTotalsUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( !myHistogram->getZoom() );
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_ONLY_TOTALS
+ */
+
+void gHistogram::OnToolOnlyTotalsClick( wxCommandEvent& event )
+{
+  myHistogram->setOnlyTotals( event.IsChecked() );
+  myHistogram->setRedraw( true );
+  if( !myHistogram->getZoom() )
+    gridHisto->Refresh();
+}
+

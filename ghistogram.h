@@ -79,6 +79,7 @@ class HistoTableBase;
 #define ID_TOOL_HIDE_COLUMNS 10058
 #define ID_TOOL_LABEL_COLORS 10101
 #define ID_TOOL_INCLUSIVE 10105
+#define ID_TOOL_ONLY_TOTALS 10286
 #define HISTO_PANEL_DATA 10000
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
@@ -182,6 +183,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_INCLUSIVE
   void OnToolInclusiveUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_ONLY_TOTALS
+  void OnToolOnlyTotalsClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_ONLY_TOTALS
+  void OnToolOnlyTotalsUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_PAINT event handler for ID_ZOOMHISTO
   void OnPaint( wxPaintEvent& event );
