@@ -18,9 +18,13 @@ AM_INIT_AUTOMAKE
 # Checks for libraries.
 AM_OPTIONS_WXCONFIG
 ifdef([WX_CONFIG_CHECK],
-      [AM_PATH_WXCONFIG([2.8.0],[wxWin=1])],
-      [WX_CONFIG_CHECK([3.0.0],[wxWin=1],,[std,aui,propgrid,richtext])]
-)
+      [WX_CONFIG_CHECK([3.0.0],[wxWin=1],[wxWin=0],[std,aui,propgrid,richtext])])
+
+if test "$wxWin" != 1; then
+ifdef([AM_PATH_WXCONFIG],
+      [AM_PATH_WXCONFIG([2.8.0],[wxWin=1])])
+fi
+
 if test "$wxWin" != 1; then
   	AC_MSG_ERROR([
 		wxWidgets must be installed on your system.
