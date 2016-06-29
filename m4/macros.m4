@@ -30,7 +30,7 @@ AC_DEFUN([AX_PROG_WITH_PARAVER],
          [specify paraver-kernel and paraver-api libraries base install directory. Default: /usr/local]
       ),
       [PARAVER_DIR=${withval}],
-      [PARAVER_DIR=/usr/local]
+      [PARAVER_DIR=${prefix}]
    )
    AC_SUBST(PARAVER_DIR)
 ])
