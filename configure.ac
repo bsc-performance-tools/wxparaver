@@ -37,6 +37,7 @@ if test "$wxWin" != 1; then
 		])
 fi
 
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
 
 AX_BOOST_BASE(1.36)
 AX_BOOST_SERIALIZATION
