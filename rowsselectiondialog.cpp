@@ -195,7 +195,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   if ( firstFound != -1 )
     auxCheckList->SetFirstItem( (int)firstFound );
 
-  panelSizer->Add( auxCheckList, 3, wxALL | wxALIGN_CENTER | wxGROW, 5 );
+  panelSizer->Add( auxCheckList, 3, wxALL | wxGROW, 5 );
   
   //
   // BUTTONS
@@ -206,7 +206,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
                       wxCommandEventHandler( RowsSelectionDialog:: OnSelectAllButtonClicked ),
                       NULL,
                       this ); 
-  buttonsSizer->Add( auxButton, 1, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+  buttonsSizer->Add( auxButton, 1, wxGROW | wxALL, 5 );
 
   auxButton = new wxButton( myPanel, wxID_ANY, _("Unselect All") );
   selectionButtons.push_back( auxButton );
@@ -214,7 +214,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
                       wxCommandEventHandler( RowsSelectionDialog::OnUnselectAllButtonClicked ),
                       NULL,
                       this ); 
-  buttonsSizer->Add( auxButton, 1, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+  buttonsSizer->Add( auxButton, 1, wxGROW | wxALL, 5 );
 
   auxButton = new wxButton( myPanel, wxID_ANY, _("Invert") );
   selectionButtons.push_back( auxButton );
@@ -222,10 +222,10 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
                       wxCommandEventHandler( RowsSelectionDialog::OnInvertButtonClicked ),
                       NULL,
                       this ); 
-  buttonsSizer->Add( auxButton, 1, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+  buttonsSizer->Add( auxButton, 1, wxGROW | wxALL, 5 );
 
   // Build Panel
-  panelSizer->Add( buttonsSizer, 0, wxGROW | wxALL | wxALIGN_BOTTOM, 5 );
+  panelSizer->Add( buttonsSizer, 0, wxGROW | wxALL , 5 );
 
 
   //
@@ -250,13 +250,13 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
           this );
   auxTextCtrl->SetToolTip( getMyToolTip( initialCheckState ) );
   textCtrlRegularExpr.push_back( auxTextCtrl );
-  regularExpressionSizerUp->Add( auxTextCtrl, 1, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+  regularExpressionSizerUp->Add( auxTextCtrl, 1, wxGROW | wxALL, 5 );
 
   // userRegularExpr->SetValidator( getValidator(  ) );
 
-  //wxRegEx *aux = new wxRegEx( wxString("[:alpha]* ?1[.][12][.][0-9]") );// ejemplo para thread 1.1.1
-  //wxRegEx *aux = new wxRegEx( wxString( wxT( "([:alnum:]|[_-. ])+" ) ) );// ejemplo para bastante cosa
-  wxRegEx *aux = new wxRegEx( wxString( wxT( ".*" ) ) );// ejemplo para bastante cosa
+  //wxRegEx *aux = new wxRegEx( wxString("[:alpha]* ?1[.][12][.][0-9]") );// example for thread 1.1.1
+  //wxRegEx *aux = new wxRegEx( wxString( wxT( "([:alnum:]|[_-. ])+" ) ) );// example for many things
+  wxRegEx *aux = new wxRegEx( wxString( wxT( ".*" ) ) );// example for many things
   validRE.push_back( aux );
 
   // RE: APPLY button
@@ -268,7 +268,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   auxButton->Enable( true );
   applyButtons.push_back( auxButton );
 
-  regularExpressionSizerUp->Add( auxButton, 0, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+  regularExpressionSizerUp->Add( auxButton, 0, wxGROW | wxALL, 5 );
 
   // RE: Check
   wxCheckBox *auxCheckBox = new wxCheckBox( myPanel, wxID_ANY, _("Match as Posix Basic Regular Expression"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -279,18 +279,18 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   auxCheckBox->SetValue( initialCheckState );
   auxCheckBox->SetToolTip( getMyToolTip( initialCheckState ) );
   checkBoxPosixBasicRegExp.push_back( auxCheckBox );
-  regularExpressionSizerDown->Add( auxCheckBox, 0, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+  regularExpressionSizerDown->Add( auxCheckBox, 0, wxGROW | wxALL, 5 );
 
   // RE: Message
   wxStaticText *auxStaticText = new wxStaticText( myPanel, wxID_ANY, _("" ) );
   messageMatchesFound.push_back( auxStaticText );
-  regularExpressionSizerDown->Add( auxStaticText, 0, wxGROW | wxALIGN_BOTTOM | wxALL, 5 );
+  regularExpressionSizerDown->Add( auxStaticText, 0, wxGROW | wxALL, 5 );
 
   // RE: Final Build
-  regularExpressionBoxSizer->Add( regularExpressionSizerUp, 0, wxGROW | wxALL | wxALIGN_BOTTOM, 0 );
-  regularExpressionBoxSizer->Add( regularExpressionSizerDown, 0, wxGROW | wxALL | wxALIGN_BOTTOM, 0 );
+  regularExpressionBoxSizer->Add( regularExpressionSizerUp, 0, wxGROW | wxALL , 0 );
+  regularExpressionBoxSizer->Add( regularExpressionSizerDown, 0, wxGROW | wxALL , 0 );
 
-  panelSizer->Add( regularExpressionBoxSizer, 0, wxGROW | wxALL | wxALIGN_BOTTOM, 5 );
+  panelSizer->Add( regularExpressionBoxSizer, 0, wxGROW | wxALL , 5 );
 }
 
 
@@ -299,6 +299,12 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
  */
 RowsSelectionDialog::~RowsSelectionDialog()
 {
+  for ( vector< wxCheckListBox* >::iterator it = levelCheckList.begin(); it != levelCheckList.end(); ++it )
+  {
+    (*it)->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED,
+                       wxCommandEventHandler( RowsSelectionDialog::OnCheckListBoxSelected ) );
+  }
+
   for ( vector< wxButton * >::iterator it = selectionButtons.begin(); it != selectionButtons.end(); ++it )
   {
     (*it)->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, 
