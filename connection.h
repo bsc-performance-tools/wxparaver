@@ -41,7 +41,11 @@ class stConnection: public wxConnection
     stConnection() {}
     ~stConnection() {}
     
-    bool OnExecute( const wxString& topic, wxChar *data, int size, wxIPCFormat format );
+#if wxMAJOR_VERSION >= 3
+    bool OnExecute( const wxString& topic, const void *data, size_t size, wxIPCFormat format );
+#else
+    bool OnExecute( const wxString& topic,     wxChar *data,    int size, wxIPCFormat format );
+#endif
 };
 
 class stClient: public wxClient
