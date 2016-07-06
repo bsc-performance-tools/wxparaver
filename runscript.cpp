@@ -1168,6 +1168,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     
     case DIMEMAS_GUI:
       command = application[ DIMEMAS_GUI ];
+      if ( !fileBrowserButtonDimemasCFG->GetPath().IsEmpty() )
+        parameters = doubleQuote( fileBrowserButtonDimemasCFG->GetPath() );
     
       break;
       
@@ -1443,7 +1445,7 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
         pathToProgram = getEnvironmentPath( DIMEMAS_HOME );
         if ( !pathToProgram.IsEmpty() )
         {
-          readyCommand = doubleQuote( pathToProgram + candidateCommand );
+          readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
@@ -1456,14 +1458,14 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
         pathToProgram = getEnvironmentPath( PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
-          readyCommand =  pathToProgram + candidateCommand;
+          readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
           pathToProgram = getEnvironmentPath( PARAVER_HOME );
           if ( !pathToProgram.IsEmpty() )
           {
-            readyCommand =  pathToProgram + candidateCommand;
+            readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
           }
           else
           {
@@ -1477,14 +1479,14 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
         pathToProgram = getEnvironmentPath( PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
-          readyCommand =  pathToProgram + candidateCommand;
+          readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
           pathToProgram = getEnvironmentPath( PARAVER_HOME );
           if ( !pathToProgram.IsEmpty() )
           {
-            readyCommand =  pathToProgram + candidateCommand;
+            readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
           }
           else
           {
@@ -1501,7 +1503,7 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
         pathToProgram = getEnvironmentPath( PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
-          readyCommand =  pathToProgram + candidateCommand;
+          readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
