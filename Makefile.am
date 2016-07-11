@@ -140,18 +140,18 @@ install-data-hook:
 
 
 uninstall-hook:
-	test -f "$(bindir)/dimemas-wrapper.sh"       && rm -fv $(bindir)/dimemas-wrapper.sh
-	test -f "$(bindir)/old.dimemas-wrapper.sh"   && rm -fv $(bindir)/old.dimemas-wrapper.sh
-	test -f "$(bindir)/stats-wrapper.sh"         && rm -fv $(bindir)/stats-wrapper.sh
-	test -f "$(bindir)/old.stats-wrapper.sh"     && rm -fv $(bindir)/old.stats-wrapper.sh
-	test -f "$(bindir)/wxparaver.sh"             && rm -fv $(bindir)/wxparaver.sh
-	test -f "$(bindir)/old.wxparaver.sh"         && rm -fv $(bindir)/old.wxparaver.sh
-	test -f "$(bindir)/wxparaver.mn3"            && rm -fv $(bindir)/wxparaver.mn3
-	test -f "$(bindir)/wxparaver.mt"             && rm -fv $(bindir)/wxparaver.mt
+	test -f "$(bindir)/dimemas-wrapper.sh"       && rm  -fv $(bindir)/dimemas-wrapper.sh
+	test -f "$(bindir)/old.dimemas-wrapper.sh"   && rm  -fv $(bindir)/old.dimemas-wrapper.sh
+	test -f "$(bindir)/stats-wrapper.sh"         && rm  -fv $(bindir)/stats-wrapper.sh
+	test -f "$(bindir)/old.stats-wrapper.sh"     && rm  -fv $(bindir)/old.stats-wrapper.sh
+	test -f "$(bindir)/wxparaver.sh"             && rm  -fv $(bindir)/wxparaver.sh
+	test -f "$(bindir)/old.wxparaver.sh"         && rm  -fv $(bindir)/old.wxparaver.sh
+	test -f "$(bindir)/wxparaver.mn3"            && rm  -fv $(bindir)/wxparaver.mn3
+	test -f "$(bindir)/wxparaver.mt"             && rm  -fv $(bindir)/wxparaver.mt
 
-	test -f "$(prefix)/share/wxparaver-signals"  && rm -fv $(prefix)/share/wxparaver-signals
+	test -f "$(prefix)/share/workspaces.xml"     && rm  -fv $(prefix)/share/workspaces.xml
+	test -d "$(prefix)/share/wxparaver-signals"  && rm -rfv $(prefix)/share/wxparaver-signals
 	test -d "$(prefix)/share/doc/wxparaver_help" && rm -rfv $(prefix)/share/doc/wxparaver_help
-	test -f "$(prefix)/share/workspaces.xml"     && rm -fv $(prefix)/share/workspaces.xml
 
 
 dist-hook:
