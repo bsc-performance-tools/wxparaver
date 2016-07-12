@@ -161,6 +161,9 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMotion( wxMouseEvent& event );
+
   /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowKeyDown( wxKeyEvent& event );
 
@@ -184,9 +187,6 @@ public:
 
   /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowRightDown( wxMouseEvent& event );
-
-  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowMotion( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -341,6 +341,9 @@ public:
 
   bool GetZooming() const { return zooming ; }
   void SetZooming(bool value) { zooming = value ; }
+
+  std::map< TSemanticValue, rgb > GetSemanticValues() const { return semanticValues ; }
+  void SetSemanticValues(std::map< TSemanticValue, rgb > value) { semanticValues = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -572,6 +575,7 @@ private:
   long zoomEndY;
   bool zoomXY;
   bool zooming;
+  std::map< TSemanticValue, rgb > semanticValues; // Stored for SaveImage legend
 ////@end gTimeline member variables
 
   SemanticInfoType lastType;
@@ -584,7 +588,6 @@ private:
 #endif
 
   wxWindow *parent;
-  std::map< TSemanticValue, rgb > semanticValues; // Stored for SaveImage scale
   
   static const wxCoord drawBorder = 5;
 
