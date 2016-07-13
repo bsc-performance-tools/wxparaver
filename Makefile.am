@@ -144,8 +144,8 @@ uninstall-hook:
 	test -f "$(bindir)/old.dimemas-wrapper.sh"   && rm  -fv $(bindir)/old.dimemas-wrapper.sh
 	test -f "$(bindir)/stats-wrapper.sh"         && rm  -fv $(bindir)/stats-wrapper.sh
 	test -f "$(bindir)/old.stats-wrapper.sh"     && rm  -fv $(bindir)/old.stats-wrapper.sh
-	test -f "$(bindir)/wxparaver.sh"             && rm  -fv $(bindir)/wxparaver.sh
-	test -f "$(bindir)/old.wxparaver.sh"         && rm  -fv $(bindir)/old.wxparaver.sh
+	test -f "$(bindir)/wxparaver"                && rm  -fv $(bindir)/wxparaver
+	test -f "$(bindir)/old.wxparaver"            && rm  -fv $(bindir)/old.wxparaver
 	test -f "$(bindir)/wxparaver.mn3"            && rm  -fv $(bindir)/wxparaver.mn3
 	test -f "$(bindir)/wxparaver.mt"             && rm  -fv $(bindir)/wxparaver.mt
 
