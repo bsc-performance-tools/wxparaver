@@ -77,6 +77,7 @@ noinst_HEADERS = \
               hide_cols.xpm\
               histo_color.xpm\
               histo_horvert.xpm\
+              histo_sum.xpm\
               histo_zoom.xpm\
               inclusive.xpm\
               index.xpm\
