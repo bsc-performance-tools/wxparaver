@@ -41,6 +41,7 @@
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
+#include "filebrowserbutton.h"
 #include "wx/clrpicker.h"
 #include "wx/statline.h"
 ////@end includes
