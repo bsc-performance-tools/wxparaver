@@ -359,7 +359,7 @@ void PreferencesDialog::CreateControls()
     textCtrlTrace->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
   itemBoxSizer11->Add(textCtrlTrace, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  dirBrowserButtonTrace = new DirBrowserButton( panelGlobal, ID_BUTTON_DIR_BROWSER_TRACE, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  dirBrowserButtonTrace = new DirBrowserButton( panelGlobal, ID_BUTTON_DIR_BROWSER_TRACE, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonTrace->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
   itemBoxSizer11->Add(dirBrowserButtonTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -376,7 +376,7 @@ void PreferencesDialog::CreateControls()
     textCtrlCFG->SetToolTip(_("Base path to configuration files (.cfg)."));
   itemBoxSizer15->Add(textCtrlCFG, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  dirBrowserButtonCFG = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_CFGS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  dirBrowserButtonCFG = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_CFGS, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonCFG->SetToolTip(_("Base path to configuration files (.cfg)."));
   itemBoxSizer15->Add(dirBrowserButtonCFG, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -393,7 +393,7 @@ void PreferencesDialog::CreateControls()
     textCtrlXML->SetToolTip(_("Base path to Cut/Filters XML."));
   itemBoxSizer19->Add(textCtrlXML, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  dirBrowserButtonXML = new DirBrowserButton( panelGlobal, ID_BUTTON_DEFAULT_XMLS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  dirBrowserButtonXML = new DirBrowserButton( panelGlobal, ID_BUTTON_DEFAULT_XMLS, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonXML->SetToolTip(_("Base path to Cut/Filters XML."));
   itemBoxSizer19->Add(dirBrowserButtonXML, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -410,7 +410,7 @@ void PreferencesDialog::CreateControls()
     textCtrlTutorials->SetToolTip(_("Base path to wxparaver tutorials."));
   itemBoxSizer23->Add(textCtrlTutorials, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  dirBrowserButtonTutorials = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_TUTORIALS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  dirBrowserButtonTutorials = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_TUTORIALS, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonTutorials->SetToolTip(_("Base path to wxparaver tutorials."));
   itemBoxSizer23->Add(dirBrowserButtonTutorials, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -427,7 +427,7 @@ void PreferencesDialog::CreateControls()
     textCtrlTmp->SetToolTip(_("Working directory for results and logs."));
   itemBoxSizer27->Add(textCtrlTmp, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  dirBrowserButtonTmp = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_TMP, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  dirBrowserButtonTmp = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_TMP, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonTmp->SetToolTip(_("Working directory for results and logs."));
   itemBoxSizer27->Add(dirBrowserButtonTmp, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -982,7 +982,7 @@ void PreferencesDialog::CreateControls()
     itemStaticText153->SetToolTip(_("Color used to draw punctual information on timelines."));
   itemBoxSizer152->Add(itemStaticText153, 1, wxALIGN_CENTER_VERTICAL, 5);
 
-  colourPickerPunctual = new wxColourPickerCtrl( panelColor, ID_COLOURPICKER_PUNCTUAL, wxColour(), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  colourPickerPunctual = new wxColourPickerCtrl( panelColor, ID_COLOURPICKER_PUNCTUAL, wxColour(0, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerPunctual->SetToolTip(_("Color used to draw punctual information on timelines."));
   itemBoxSizer152->Add(colourPickerPunctual, 2, wxALIGN_CENTER_VERTICAL, 5);
@@ -1164,7 +1164,7 @@ void PreferencesDialog::CreateControls()
   txtHintPath = new wxTextCtrl( panelWorkspaces, ID_TEXTCTRL_WORKSPACE_HINT_PATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer206->Add(txtHintPath, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
-  fileBrowserHintPath = new FileBrowserButton( panelWorkspaces, ID_FILE_BUTTON_WORKSPACE_HINT_PATH, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+  fileBrowserHintPath = new FileBrowserButton( panelWorkspaces, ID_FILE_BUTTON_WORKSPACE_HINT_PATH, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   itemBoxSizer206->Add(fileBrowserHintPath, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer209 = new wxBoxSizer(wxHORIZONTAL);

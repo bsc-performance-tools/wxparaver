@@ -41,7 +41,6 @@
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
-#include "filebrowserbutton.h"
 #include "wx/clrpicker.h"
 #include "wx/statline.h"
 ////@end includes
@@ -419,6 +418,9 @@ public:
   rgb GetTimelineColourPhysical() const { return timelineColourPhysical ; }
   void SetTimelineColourPhysical(rgb value) { timelineColourPhysical = value ; }
 
+  rgb GetTimelineColourPunctual() const { return timelineColourPunctual ; }
+  void SetTimelineColourPunctual(rgb value) { timelineColourPunctual = value ; }
+
   rgb GetTimelineColourZero() const { return timelineColourZero ; }
   void SetTimelineColourZero(rgb value) { timelineColourZero = value ; }
 
@@ -493,9 +495,6 @@ public:
 
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
-
-  rgb GetTimelineColourPunctual() const { return timelineColourPunctual ; }
-  void SetTimelineColourPunctual(rgb value) { timelineColourPunctual = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -646,6 +645,7 @@ private:
   rgb timelineColourBackground;
   rgb timelineColourLogical;
   rgb timelineColourPhysical;
+  rgb timelineColourPunctual;
   rgb timelineColourZero;
   bool timelineCommunicationLines;
   PRV_UINT32 timelineDrawmodeObjects;
@@ -671,7 +671,6 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  rgb timelineColourPunctual;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace
