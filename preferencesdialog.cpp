@@ -359,7 +359,7 @@ void PreferencesDialog::CreateControls()
     textCtrlTrace->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
   itemBoxSizer11->Add(textCtrlTrace, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  dirBrowserButtonTrace = new DirBrowserButton( panelGlobal, ID_BUTTON_DIR_BROWSER_TRACE, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  dirBrowserButtonTrace = new DirBrowserButton( panelGlobal, ID_BUTTON_DIR_BROWSER_TRACE, %Label%, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonTrace->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
   itemBoxSizer11->Add(dirBrowserButtonTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
