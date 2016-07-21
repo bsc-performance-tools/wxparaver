@@ -23,5 +23,7 @@ src/Makefile.in
 src/wxparaver.bin
 src/*.o
 stamp-h1
+icons/*.prv.jpg
+wxparaver.pjd.bak
 
 
