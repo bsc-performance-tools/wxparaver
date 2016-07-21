@@ -1,0 +1,42 @@
+
+noinst_HEADERS = \
+              app_edit.xpm\
+              arrow_down.xpm\
+              arrow_left.xpm\
+              arrow_right.xpm\
+              arrow_up.xpm\
+              caution.xpm\
+              cut_trace.xpm\
+              delete.xpm\
+              derived_add.xpm\
+              derived_controlled_add.xpm\
+              derived_controlled_clear_by.xpm\
+              derived_controlled_maximum.xpm\
+              derived_different.xpm\
+              derived_divide.xpm\
+              derived_maximum.xpm\
+              derived_minimum.xpm\
+              derived_product.xpm\
+              derived_substract.xpm\
+              file_browser.xpm\
+              hide_cols.xpm\
+              histo_color.xpm\
+              histo_horvert.xpm\
+              histo_sum.xpm\
+              histo_zoom.xpm\
+              inclusive.xpm\
+              index.xpm\
+              logoBSC.xpm\
+              new_derived_window.xpm\
+              new_histogram.xpm\
+              new_window.xpm\
+              open3d.xpm\
+              opencontrol.xpm\
+              opendata.xpm\
+              openfiltered.xpm\
+              run_script.xpm\
+              semantic_color.xpm\
+              table.xpm\
+              timeline.xpm\
+              window_properties.xpm
+

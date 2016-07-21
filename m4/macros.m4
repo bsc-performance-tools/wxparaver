@@ -94,10 +94,10 @@ AC_DEFUN([AX_PROG_ENABLE_OLD_PCFPARSER],
   )
   if test "${enable_old_pcfparser}" = "yes" ; then
     AC_DEFINE([SET_OLD_PCFPARSER], 1, [Old pcfparser enabled by user.])
-    PCFPARSER_CFLAGS="-DOLD_PCFPARSER -I../../common-files/pcfparser"
+    PCFPARSER_CFLAGS="-DOLD_PCFPARSER -I${PARAVER_DIR}/include/pcfparser/old"
   else
     AC_DEFINE([SET_OLD_PCFPARSER], 0, [Old pcfparser enabled by user.])
-    PCFPARSER_CFLAGS="-I../../common-files/pcfparser/libtools"
+    PCFPARSER_CFLAGS="-I${PARAVER_DIR}/include/pcfparser"
   fi
 ])
 
