@@ -45,8 +45,8 @@
 
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
  | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
+ | @last_commit: $Date: 2016/07/18 11:11:37 $
+ | @version:     $Revision: 1.438 $
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
 "</string>
@@ -76,8 +76,8 @@
 
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
  | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
+ | @last_commit: $Date: 2016/07/18 11:11:37 $
+ | @version:     $Revision: 1.438 $
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
 "</string>
@@ -118,8 +118,8 @@
 
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
  | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
+ | @last_commit: $Date: 2016/07/18 11:11:37 $
+ | @version:     $Revision: 1.438 $
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
 "</string>
@@ -1172,9 +1172,9 @@
           <string name="proxy-Base class">"wxApp"</string>
           <string name="proxy-Class">"wxparaverApp"</string>
           <string name="proxy-Event sources">""</string>
-          <string name="proxy-Header filename">"wxparaverapp.h"</string>
+          <string name="proxy-Header filename">"include/wxparaverapp.h"</string>
           <string name="proxy-Help filename">""</string>
-          <string name="proxy-Implementation filename">"wxparaverapp.cpp"</string>
+          <string name="proxy-Implementation filename">"src/wxparaverapp.cpp"</string>
           <string name="proxy-Main window">"ID_PARAVERMAIN"</string>
           <string name="title">"wxparaverApp"</string>
           <long name="title-mode">0</long>
@@ -1223,14 +1223,14 @@
           <bool name="proxy-Fit to content">0</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"paravermain.h"</string>
+          <string name="proxy-Header filename">"include/paravermain.h"</string>
           <long name="proxy-Height">600</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_PARAVERMAIN"</string>
           <long name="proxy-Id value">10000</long>
-          <string name="proxy-Implementation filename">"paravermain.cpp"</string>
+          <string name="proxy-Implementation filename">"src/paravermain.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Title">"Paraver"</string>
           <string name="proxy-Tooltip text">""</string>
@@ -1275,37 +1275,37 @@
           <long name="use-xrc">0</long>
           <string name="variable-0">"CFGLoadedBefore|bool|CFGLoadedBefore|false|2|0|"</string>
           <string name="variable-1">"CFGPath|wxString|CFGPath||2|0|"</string>
-          <string name="variable-10">"firstUserWorkspace|std::map&lt;Trace *, size_t&gt;|FirstUserWorkspace||2|0|"</string>
-          <string name="variable-11">"currentHisto|Histogram *|CurrentHisto|NULL|2|0|"</string>
-          <string name="variable-12">"previousCFGs|PreviousFiles *|PreviousCFGs|PreviousFiles::createPreviousCFGs()|2|0|"</string>
-          <string name="variable-13">"previousTraces|PreviousFiles *|PreviousTraces|PreviousFiles::createPreviousTraces()|2|0|"</string>
-          <string name="variable-14">"helpContents|HelpContents *|HelpContents|NULL|2|0|"</string>
-          <string name="variable-15">"imageList|wxImageList*|ImageList||2|0|"</string>
-          <string name="variable-16">"loadedTraces|std::vector&lt;Trace *&gt;|LoadedTraces||2|0|"</string>
-          <string name="variable-17">"lastHisto|Histogram *|LastHisto|NULL|2|0|"</string>
-          <string name="variable-18">"numNewDerived|int|NumNewDerived|0|2|0|"</string>
-          <string name="variable-19">"lastTimeline|Window *|LastTimeline|NULL|2|0|"</string>
-          <string name="variable-2">"XMLPath|std::string|XMLPath||2|0|"</string>
-          <string name="variable-20">"tutorialsWindow|HelpContents *|TutorialsWindow|NULL|2|0|"</string>
-          <string name="variable-21">"XMLLoadedBefore|bool|XMLLoadedBefore|false|2|0|"</string>
-          <string name="variable-22">"numNewHistograms|int|NumNewHistograms|0|2|0|"</string>
-          <string name="variable-23">"previousCutFilteredTraces|PreviousFiles *|PreviousCutFilteredTraces|PreviousFiles::createPreviousTreatedTraces()|2|0|"</string>
-          <string name="variable-24">"numNewWindows|int|NumNewWindows|0|2|0|"</string>
-          <string name="variable-25">"raiseCurrentWindow|bool|RaiseCurrentWindow|true|2|0|"</string>
-          <string name="variable-26">"paraverConfig|ParaverConfig*|ParaverConfig|ParaverConfig::getInstance()|2|0|"</string>
-          <string name="variable-27">"currentTimeline|Window *|CurrentTimeline|NULL|2|0|"</string>
-          <string name="variable-28">"currentWindow|wxWindow *|CurrentWindow|NULL|2|0|"</string>
-          <string name="variable-29">"sessionTimer|wxTimer *|SessionTimer|new wxTimer( this )|2|0|"</string>
-          <string name="variable-3">"traceWorkspaces|std::map&lt; Trace*, std::vector&lt; std::string &gt; &gt;|TraceWorkspaces||2|0|"</string>
-          <string name="variable-30">"traceLoadedBefore|bool|TraceLoadedBefore|false|2|0|"</string>
-          <string name="variable-31">"workspacesManager|WorkspaceManager *|WorkspacesManager|WorkspaceManager::getInstance()|2|0|"</string>
-          <string name="variable-32">"tracePath|wxString|TracePath||2|0|"</string>
-          <string name="variable-4">"loadFilesQueue|std::queue&lt;std::string&gt;|LoadFilesQueue||2|0|"</string>
-          <string name="variable-5">"localKernel|KernelConnection*|LocalKernel||2|0|"</string>
-          <string name="variable-6">"activeWindows|std::set&lt;wxWindow *&gt;|ActiveWindows||2|0|"</string>
-          <string name="variable-7">"canServeSignal|bool|CanServeSignal|true|2|0|"</string>
-          <string name="variable-8">"currentTrace|PRV_INT16|CurrentTrace|-1|2|0|"</string>
-          <string name="variable-9">"clusteringWindow|Window *|ClusteringWindow|NULL|2|0|"</string>
+          <string name="variable-10">"currentWindow|wxWindow *|CurrentWindow|NULL|2|0|"</string>
+          <string name="variable-11">"firstUserWorkspace|std::map&lt;Trace *, size_t&gt;|FirstUserWorkspace||2|0|"</string>
+          <string name="variable-12">"helpContents|HelpContents *|HelpContents|NULL|2|0|"</string>
+          <string name="variable-13">"imageList|wxImageList*|ImageList||2|0|"</string>
+          <string name="variable-14">"lastHisto|Histogram *|LastHisto|NULL|2|0|"</string>
+          <string name="variable-15">"lastTimeline|Window *|LastTimeline|NULL|2|0|"</string>
+          <string name="variable-16">"loadFilesQueue|std::queue&lt;std::string&gt;|LoadFilesQueue||2|0|"</string>
+          <string name="variable-17">"loadedTraces|std::vector&lt;Trace *&gt;|LoadedTraces||2|0|"</string>
+          <string name="variable-18">"localKernel|KernelConnection*|LocalKernel||2|0|"</string>
+          <string name="variable-19">"numNewDerived|int|NumNewDerived|0|2|0|"</string>
+          <string name="variable-2">"XMLLoadedBefore|bool|XMLLoadedBefore|false|2|0|"</string>
+          <string name="variable-20">"numNewHistograms|int|NumNewHistograms|0|2|0|"</string>
+          <string name="variable-21">"numNewWindows|int|NumNewWindows|0|2|0|"</string>
+          <string name="variable-22">"paraverConfig|ParaverConfig*|ParaverConfig|ParaverConfig::getInstance()|2|0|"</string>
+          <string name="variable-23">"previousCFGs|PreviousFiles *|PreviousCFGs|PreviousFiles::createPreviousCFGs()|2|0|"</string>
+          <string name="variable-24">"previousCutFilteredTraces|PreviousFiles *|PreviousCutFilteredTraces|PreviousFiles::createPreviousTreatedTraces()|2|0|"</string>
+          <string name="variable-25">"previousTraces|PreviousFiles *|PreviousTraces|PreviousFiles::createPreviousTraces()|2|0|"</string>
+          <string name="variable-26">"raiseCurrentWindow|bool|RaiseCurrentWindow|true|2|0|"</string>
+          <string name="variable-27">"sessionTimer|wxTimer *|SessionTimer|new wxTimer( this )|2|0|"</string>
+          <string name="variable-28">"traceLoadedBefore|bool|TraceLoadedBefore|false|2|0|"</string>
+          <string name="variable-29">"tracePath|wxString|TracePath||2|0|"</string>
+          <string name="variable-3">"XMLPath|std::string|XMLPath||2|0|"</string>
+          <string name="variable-30">"traceWorkspaces|std::map&lt; Trace*, std::vector&lt; std::string &gt; &gt;|TraceWorkspaces||2|0|"</string>
+          <string name="variable-31">"tutorialsWindow|HelpContents *|TutorialsWindow|NULL|2|0|"</string>
+          <string name="variable-32">"workspacesManager|WorkspaceManager *|WorkspacesManager|WorkspaceManager::getInstance()|2|0|"</string>
+          <string name="variable-4">"activeWindows|std::set&lt;wxWindow *&gt;|ActiveWindows||2|0|"</string>
+          <string name="variable-5">"canServeSignal|bool|CanServeSignal|true|2|0|"</string>
+          <string name="variable-6">"clusteringWindow|Window *|ClusteringWindow|NULL|2|0|"</string>
+          <string name="variable-7">"currentHisto|Histogram *|CurrentHisto|NULL|2|0|"</string>
+          <string name="variable-8">"currentTimeline|Window *|CurrentTimeline|NULL|2|0|"</string>
+          <string name="variable-9">"currentTrace|PRV_INT16|CurrentTrace|-1|2|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbMenuBarProxy"</string>
@@ -2699,14 +2699,14 @@
           <bool name="proxy-Fit to content">0</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"ghistogram.h"</string>
+          <string name="proxy-Header filename">"include/ghistogram.h"</string>
           <long name="proxy-Height">300</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_GHISTOGRAM"</string>
           <long name="proxy-Id value">10004</long>
-          <string name="proxy-Implementation filename">"ghistogram.cpp"</string>
+          <string name="proxy-Implementation filename">"src/ghistogram.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Title">"gHistogram"</string>
           <string name="proxy-Tooltip text">""</string>
@@ -2751,22 +2751,22 @@
           <long name="use-xrc">0</long>
           <string name="variable-0">"columnSelection|SelectionManagement&lt;THistogramColumn,int&gt;|ColumnSelection||2|0|"</string>
           <string name="variable-1">"drawImage|wxBitmap|DrawImage||2|0|"</string>
-          <string name="variable-10">"escapePressed|bool|EscapePressed|false|2|0|"</string>
-          <string name="variable-11">"lastPosZoomX|double|LastPosZoomX|0|2|0|"</string>
-          <string name="variable-12">"lastPosZoomY|double|LastPosZoomY|0|2|0|"</string>
-          <string name="variable-13">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
-          <string name="variable-14">"openControlActivated|bool|OpenControlActivated|false|2|0|"</string>
-          <string name="variable-15">"ready|bool|Ready|false|2|0|"</string>
-          <string name="variable-16">"redrawStopWatch|wxStopWatch *|RedrawStopWatch|new wxStopWatch()|2|0|"</string>
-          <string name="variable-17">"selectedRows|vector&lt;TObjectOrder&gt;|SelectedRows||2|0|"</string>
-          <string name="variable-2">"tableBase|HistoTableBase*|TableBase|NULL|2|0|"</string>
-          <string name="variable-3">"timerZoom|wxTimer *|TimerZoom|new wxTimer( this )|2|0|"</string>
-          <string name="variable-4">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
-          <string name="variable-5">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
-          <string name="variable-6">"zoomDragging|bool|ZoomDragging|false|2|0|"</string>
-          <string name="variable-7">"zoomImage|wxBitmap|ZoomImage||2|0|"</string>
-          <string name="variable-8">"zoomPointBegin|wxPoint|ZoomPointBegin||2|0|"</string>
-          <string name="variable-9">"zoomPointEnd|wxPoint|ZoomPointEnd||2|0|"</string>
+          <string name="variable-10">"tableBase|HistoTableBase*|TableBase|NULL|2|0|"</string>
+          <string name="variable-11">"timerZoom|wxTimer *|TimerZoom|new wxTimer( this )|2|0|"</string>
+          <string name="variable-12">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
+          <string name="variable-13">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
+          <string name="variable-14">"zoomDragging|bool|ZoomDragging|false|2|0|"</string>
+          <string name="variable-15">"zoomImage|wxBitmap|ZoomImage||2|0|"</string>
+          <string name="variable-16">"zoomPointBegin|wxPoint|ZoomPointBegin||2|0|"</string>
+          <string name="variable-17">"zoomPointEnd|wxPoint|ZoomPointEnd||2|0|"</string>
+          <string name="variable-2">"escapePressed|bool|EscapePressed|false|2|0|"</string>
+          <string name="variable-3">"lastPosZoomX|double|LastPosZoomX|0|2|0|"</string>
+          <string name="variable-4">"lastPosZoomY|double|LastPosZoomY|0|2|0|"</string>
+          <string name="variable-5">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
+          <string name="variable-6">"openControlActivated|bool|OpenControlActivated|false|2|0|"</string>
+          <string name="variable-7">"ready|bool|Ready|false|2|0|"</string>
+          <string name="variable-8">"redrawStopWatch|wxStopWatch *|RedrawStopWatch|new wxStopWatch()|2|0|"</string>
+          <string name="variable-9">"selectedRows|vector&lt;TObjectOrder&gt;|SelectedRows||2|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
@@ -2775,21 +2775,13 @@
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -3870,14 +3862,14 @@
           <bool name="proxy-Fit to content">0</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"gtimeline.h"</string>
+          <string name="proxy-Header filename">"include/gtimeline.h"</string>
           <long name="proxy-Height">300</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_GTIMELINE"</string>
           <long name="proxy-Id value">10001</long>
-          <string name="proxy-Implementation filename">"gtimeline.cpp"</string>
+          <string name="proxy-Implementation filename">"src/gtimeline.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Title">"gTimeline"</string>
           <string name="proxy-Tooltip text">""</string>
@@ -3922,51 +3914,51 @@
           <long name="use-xrc">0</long>
           <string name="variable-0">"backgroundColour|wxColour|BackgroundColour||2|0|"</string>
           <string name="variable-1">"beginRow|long|BeginRow||2|0|"</string>
-          <string name="variable-10">"objectAxisPos|PRV_INT32|ObjectAxisPos||2|0|"</string>
-          <string name="variable-11">"objectFont|wxFont|ObjectFont||2|0|"</string>
-          <string name="variable-12">"findBeginTime|TRecordTime|FindBeginTime|0|2|0|"</string>
-          <string name="variable-13">"objectHeight|int|ObjectHeight|1|2|0|"</string>
-          <string name="variable-14">"objectPosList|vector&lt;PRV_INT32&gt;|ObjectPosList||2|0|"</string>
-          <string name="variable-15">"physicalColour|wxColour|PhysicalColour||0|0|"</string>
-          <string name="variable-16">"canRedraw|bool|CanRedraw|false|2|0|"</string>
-          <string name="variable-17">"physicalPen|wxPen|PhysicalPen||2|0|"</string>
-          <string name="variable-18">"ready|bool|Ready|false|2|0|"</string>
-          <string name="variable-19">"redoColors|bool|RedoColors|false|2|0|"</string>
-          <string name="variable-2">"lastEventFoundTime|TRecordTime|LastEventFoundTime|0|2|0|"</string>
-          <string name="variable-20">"redrawStopWatch|wxStopWatch *|RedrawStopWatch|new wxStopWatch()|2|0|"</string>
-          <string name="variable-21">"semanticFont|wxFont|SemanticFont||2|0|"</string>
-          <string name="variable-22">"splitChanged|bool|SplitChanged|false|2|0|"</string>
-          <string name="variable-23">"findEndTime|TRecordTime|FindEndTime|0|2|0|"</string>
-          <string name="variable-24">"timeAxisPos|PRV_INT32|TimeAxisPos||2|0|"</string>
-          <string name="variable-25">"timeFont|wxFont|TimeFont||2|0|"</string>
-          <string name="variable-26">"timerMotion|wxTimer *|TimerMotion|new wxTimer( this, ID_TIMER_MOTION )|2|0|"</string>
-          <string name="variable-27">"timerSize|wxTimer *|TimerSize|new wxTimer( this, ID_TIMER_SIZE )|2|0|"</string>
-          <string name="variable-28">"commImage|wxBitmap|CommImage||0|0|"</string>
-          <string name="variable-29">"zoomBeginX|long|ZoomBegin||2|0|"</string>
-          <string name="variable-3">"lastFoundObject|TObjectOrder|LastFoundObject|0|2|0|"</string>
-          <string name="variable-30">"zoomBeginY|long|ZoomBeginY||2|0|"</string>
-          <string name="variable-31">"zoomEndX|long|ZoomEnd||2|0|"</string>
-          <string name="variable-32">"zoomEndY|long|ZoomEndY||2|0|"</string>
-          <string name="variable-33">"zoomXY|bool|ZoomXY||2|0|"</string>
-          <string name="variable-34">"findFirstObject|TObjectOrder|FindFirstObject|0|2|0|"</string>
-          <string name="variable-35">"zooming|bool|Zooming|false|2|0|"</string>
-          <string name="variable-36">"semanticValues|std::map&lt; TSemanticValue, rgb &gt;|SemanticValues||2|0|Stored for SaveImage legend"</string>
-          <string name="variable-37">"drawCaution|bool|DrawCaution|false|0|0|"</string>
-          <string name="variable-38">"drawImage|wxBitmap|DrawImage||0|0|"</string>
-          <string name="variable-39">"endRow|long|EndRow||2|0|"</string>
-          <string name="variable-4">"bufferImage|wxBitmap|BufferImage||0|0|"</string>
-          <string name="variable-40">"escapePressed|bool|EscapePressed|false|2|0|"</string>
-          <string name="variable-41">"eventImage|wxBitmap|EventImage||0|0|"</string>
-          <string name="variable-42">"findLastObject|TObjectOrder|FindLastObject|0|2|0|"</string>
-          <string name="variable-43">"firstMotionEvent|wxMouseEvent|FirstMotionEvent||2|0|"</string>
-          <string name="variable-44">"firstUnsplit|bool|FirstUnsplit|false|2|0|"</string>
-          <string name="variable-45">"foregroundColour|wxColour|ForegroundColour||2|0|"</string>
-          <string name="variable-46">"infoZoneLastSize|int|InfoZoneLastSize|200|2|0|"</string>
-          <string name="variable-5">"lastSemanticFoundTime|TRecordTime|LastSemanticFoundTime|0|2|0|"</string>
-          <string name="variable-6">"logicalColour|wxColour|LogicalColour||2|0|"</string>
-          <string name="variable-7">"logicalPen|wxPen|LogicalPen||2|0|"</string>
-          <string name="variable-8">"motionEvent|wxMouseEvent|MotionEvent||2|0|"</string>
-          <string name="variable-9">"myWindow|Window*|MyWindow|NULL|2|0|"</string>
+          <string name="variable-10">"findBeginTime|TRecordTime|FindBeginTime|0|2|0|"</string>
+          <string name="variable-11">"findEndTime|TRecordTime|FindEndTime|0|2|0|"</string>
+          <string name="variable-12">"findFirstObject|TObjectOrder|FindFirstObject|0|2|0|"</string>
+          <string name="variable-13">"findLastObject|TObjectOrder|FindLastObject|0|2|0|"</string>
+          <string name="variable-14">"firstMotionEvent|wxMouseEvent|FirstMotionEvent||2|0|"</string>
+          <string name="variable-15">"firstUnsplit|bool|FirstUnsplit|false|2|0|"</string>
+          <string name="variable-16">"foregroundColour|wxColour|ForegroundColour||2|0|"</string>
+          <string name="variable-17">"infoZoneLastSize|int|InfoZoneLastSize|200|2|0|"</string>
+          <string name="variable-18">"lastEventFoundTime|TRecordTime|LastEventFoundTime|0|2|0|"</string>
+          <string name="variable-19">"lastFoundObject|TObjectOrder|LastFoundObject|0|2|0|"</string>
+          <string name="variable-2">"bufferImage|wxBitmap|BufferImage||0|0|"</string>
+          <string name="variable-20">"lastSemanticFoundTime|TRecordTime|LastSemanticFoundTime|0|2|0|"</string>
+          <string name="variable-21">"logicalColour|wxColour|LogicalColour||2|0|"</string>
+          <string name="variable-22">"logicalPen|wxPen|LogicalPen||2|0|"</string>
+          <string name="variable-23">"motionEvent|wxMouseEvent|MotionEvent||2|0|"</string>
+          <string name="variable-24">"myWindow|Window*|MyWindow|NULL|2|0|"</string>
+          <string name="variable-25">"objectAxisPos|PRV_INT32|ObjectAxisPos||2|0|"</string>
+          <string name="variable-26">"objectFont|wxFont|ObjectFont||2|0|"</string>
+          <string name="variable-27">"objectHeight|int|ObjectHeight|1|2|0|"</string>
+          <string name="variable-28">"objectPosList|vector&lt;PRV_INT32&gt;|ObjectPosList||2|0|"</string>
+          <string name="variable-29">"physicalColour|wxColour|PhysicalColour||0|0|"</string>
+          <string name="variable-3">"canRedraw|bool|CanRedraw|false|2|0|"</string>
+          <string name="variable-30">"physicalPen|wxPen|PhysicalPen||2|0|"</string>
+          <string name="variable-31">"ready|bool|Ready|false|2|0|"</string>
+          <string name="variable-32">"redoColors|bool|RedoColors|false|2|0|"</string>
+          <string name="variable-33">"redrawStopWatch|wxStopWatch *|RedrawStopWatch|new wxStopWatch()|2|0|"</string>
+          <string name="variable-34">"semanticFont|wxFont|SemanticFont||2|0|"</string>
+          <string name="variable-35">"semanticValues|std::map&lt; TSemanticValue, rgb &gt;|SemanticValues||2|0|Stored for SaveImage legend"</string>
+          <string name="variable-36">"splitChanged|bool|SplitChanged|false|2|0|"</string>
+          <string name="variable-37">"timeAxisPos|PRV_INT32|TimeAxisPos||2|0|"</string>
+          <string name="variable-38">"timeFont|wxFont|TimeFont||2|0|"</string>
+          <string name="variable-39">"timerMotion|wxTimer *|TimerMotion|new wxTimer( this, ID_TIMER_MOTION )|2|0|"</string>
+          <string name="variable-4">"commImage|wxBitmap|CommImage||0|0|"</string>
+          <string name="variable-40">"timerSize|wxTimer *|TimerSize|new wxTimer( this, ID_TIMER_SIZE )|2|0|"</string>
+          <string name="variable-41">"zoomBeginX|long|ZoomBegin||2|0|"</string>
+          <string name="variable-42">"zoomBeginY|long|ZoomBeginY||2|0|"</string>
+          <string name="variable-43">"zoomEndX|long|ZoomEnd||2|0|"</string>
+          <string name="variable-44">"zoomEndY|long|ZoomEndY||2|0|"</string>
+          <string name="variable-45">"zoomXY|bool|ZoomXY||2|0|"</string>
+          <string name="variable-46">"zooming|bool|Zooming|false|2|0|"</string>
+          <string name="variable-5">"drawCaution|bool|DrawCaution|false|0|0|"</string>
+          <string name="variable-6">"drawImage|wxBitmap|DrawImage||0|0|"</string>
+          <string name="variable-7">"endRow|long|EndRow||2|0|"</string>
+          <string name="variable-8">"escapePressed|bool|EscapePressed|false|2|0|"</string>
+          <string name="variable-9">"eventImage|wxBitmap|EventImage||0|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbSplitterWindowProxy"</string>
@@ -4052,15 +4044,15 @@
               <string name="created">"28/7/2009"</string>
               <string name="event-handler-0">"wxEVT_SIZE|OnScrolledWindowSize|NONE||gTimeline"</string>
               <string name="event-handler-1">"wxEVT_PAINT|OnScrolledWindowPaint|NONE||gTimeline"</string>
-              <string name="event-handler-10">"wxEVT_LEFT_DCLICK|OnScrolledWindowLeftDClick|NONE||gTimeline"</string>
-              <string name="event-handler-2">"wxEVT_MIDDLE_UP|OnScrolledWindowMiddleUp|NONE||gTimeline"</string>
-              <string name="event-handler-3">"wxEVT_RIGHT_DOWN|OnScrolledWindowRightDown|NONE||gTimeline"</string>
-              <string name="event-handler-4">"wxEVT_MOTION|OnScrolledWindowMotion|NONE||gTimeline"</string>
-              <string name="event-handler-5">"wxEVT_KEY_DOWN|OnScrolledWindowKeyDown|NONE||gTimeline"</string>
-              <string name="event-handler-6">"wxEVT_UPDATE_UI|OnScrolledWindowUpdate|NONE||gTimeline"</string>
-              <string name="event-handler-7">"wxEVT_ERASE_BACKGROUND|OnScrolledWindowEraseBackground|NONE||gTimeline"</string>
-              <string name="event-handler-8">"wxEVT_LEFT_DOWN|OnScrolledWindowLeftDown|NONE||gTimeline"</string>
-              <string name="event-handler-9">"wxEVT_LEFT_UP|OnScrolledWindowLeftUp|NONE||gTimeline"</string>
+              <string name="event-handler-10">"wxEVT_LEFT_UP|OnScrolledWindowLeftUp|NONE||gTimeline"</string>
+              <string name="event-handler-2">"wxEVT_LEFT_DCLICK|OnScrolledWindowLeftDClick|NONE||gTimeline"</string>
+              <string name="event-handler-3">"wxEVT_MIDDLE_UP|OnScrolledWindowMiddleUp|NONE||gTimeline"</string>
+              <string name="event-handler-4">"wxEVT_RIGHT_DOWN|OnScrolledWindowRightDown|NONE||gTimeline"</string>
+              <string name="event-handler-5">"wxEVT_MOTION|OnScrolledWindowMotion|NONE||gTimeline"</string>
+              <string name="event-handler-6">"wxEVT_KEY_DOWN|OnScrolledWindowKeyDown|NONE||gTimeline"</string>
+              <string name="event-handler-7">"wxEVT_UPDATE_UI|OnScrolledWindowUpdate|NONE||gTimeline"</string>
+              <string name="event-handler-8">"wxEVT_ERASE_BACKGROUND|OnScrolledWindowEraseBackground|NONE||gTimeline"</string>
+              <string name="event-handler-9">"wxEVT_LEFT_DOWN|OnScrolledWindowLeftDown|NONE||gTimeline"</string>
               <string name="filename">""</string>
               <string name="icon-name">"scrolledwindow"</string>
               <long name="is-transient">0</long>
@@ -5503,14 +5495,14 @@
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"saveconfigurationdialog.h"</string>
+          <string name="proxy-Header filename">"include/saveconfigurationdialog.h"</string>
           <long name="proxy-Height">-1</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_SAVECONFIGURATIONDIALOG"</string>
           <long name="proxy-Id value">10012</long>
-          <string name="proxy-Implementation filename">"saveconfigurationdialog.cpp"</string>
+          <string name="proxy-Implementation filename">"src/saveconfigurationdialog.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -5567,21 +5559,13 @@
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -7412,14 +7396,14 @@ In normal mode all properties are showed in main window."</string>
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"derivedtimelinedialog.h"</string>
+          <string name="proxy-Header filename">"include/derivedtimelinedialog.h"</string>
           <long name="proxy-Height">-1</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_DERIVEDTIMELINEDIALOG"</string>
           <long name="proxy-Id value">10032</long>
-          <string name="proxy-Implementation filename">"derivedtimelinedialog.cpp"</string>
+          <string name="proxy-Implementation filename">"src/derivedtimelinedialog.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -7464,18 +7448,18 @@ In normal mode all properties are showed in main window."</string>
           <long name="use-xrc">0</long>
           <string name="variable-0">"currentWindow1|Window *|CurrentWindow1|NULL|2|0|"</string>
           <string name="variable-1">"currentWindow2|Window *|CurrentWindow2|NULL|2|0|"</string>
-          <string name="variable-10">"factorTimeline1|double|FactorTimeline1|1.0|2|0|"</string>
-          <string name="variable-11">"factorTimeline2|double|FactorTimeline2|1.0|2|0|"</string>
-          <string name="variable-12">"maxCompose1|TParamValue|MaxCompose1||2|0|"</string>
-          <string name="variable-13">"maxCompose2|TParamValue|MaxCompose2||2|0|"</string>
-          <string name="variable-2">"minCompose1|TParamValue|MinCompose1||2|0|"</string>
-          <string name="variable-3">"minCompose2|TParamValue|MinCompose2||2|0|"</string>
-          <string name="variable-4">"operations|std::vector&lt; std::string &gt;|Operations||2|0|"</string>
-          <string name="variable-5">"timelineName|std::string|TimelineName||2|0|"</string>
-          <string name="variable-6">"timelines1|std::vector&lt; Window * &gt;|Timelines1||2|0|"</string>
-          <string name="variable-7">"timelines2|std::vector&lt; Window * &gt;|Timelines2||2|0|"</string>
-          <string name="variable-8">"topCompose1|std::vector&lt; std::string &gt;|TopCompose1||2|0|"</string>
-          <string name="variable-9">"topCompose2|std::vector&lt; std::string &gt;|TopCompose2||2|0|"</string>
+          <string name="variable-10">"timelines1|std::vector&lt; Window * &gt;|Timelines1||2|0|"</string>
+          <string name="variable-11">"timelines2|std::vector&lt; Window * &gt;|Timelines2||2|0|"</string>
+          <string name="variable-12">"topCompose1|std::vector&lt; std::string &gt;|TopCompose1||2|0|"</string>
+          <string name="variable-13">"topCompose2|std::vector&lt; std::string &gt;|TopCompose2||2|0|"</string>
+          <string name="variable-2">"factorTimeline1|double|FactorTimeline1|1.0|2|0|"</string>
+          <string name="variable-3">"factorTimeline2|double|FactorTimeline2|1.0|2|0|"</string>
+          <string name="variable-4">"maxCompose1|TParamValue|MaxCompose1||2|0|"</string>
+          <string name="variable-5">"maxCompose2|TParamValue|MaxCompose2||2|0|"</string>
+          <string name="variable-6">"minCompose1|TParamValue|MinCompose1||2|0|"</string>
+          <string name="variable-7">"minCompose2|TParamValue|MinCompose2||2|0|"</string>
+          <string name="variable-8">"operations|std::vector&lt; std::string &gt;|Operations||2|0|"</string>
+          <string name="variable-9">"timelineName|std::string|TimelineName||2|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
@@ -7484,21 +7468,13 @@ In normal mode all properties are showed in main window."</string>
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -10222,14 +10198,14 @@ In normal mode all properties are showed in main window."</string>
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"histogramdialog.h"</string>
+          <string name="proxy-Header filename">"include/histogramdialog.h"</string>
           <long name="proxy-Height">300</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_HISTOGRAMDIALOG"</string>
           <long name="proxy-Id value">10061</long>
-          <string name="proxy-Implementation filename">"histogramdialog.cpp"</string>
+          <string name="proxy-Implementation filename">"src/histogramdialog.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -10274,17 +10250,17 @@ In normal mode all properties are showed in main window."</string>
           <long name="use-xrc">0</long>
           <string name="variable-0">"controlTimelineAutofit|bool|ControlTimelineAutofit|true|2|0|"</string>
           <string name="variable-1">"controlTimelineDelta|double|ControlTimelineDelta||2|0|"</string>
-          <string name="variable-10">"extraControlTimelineDelta|double|ExtraControlTimelineDelta||2|0|"</string>
-          <string name="variable-11">"extraControlTimelineMax|double|ExtraControlTimelineMax||2|0|"</string>
-          <string name="variable-12">"extraControlTimelineMin|double|ExtraControlTimelineMin||2|0|"</string>
-          <string name="variable-2">"extraControlTimelines|vector&lt; TWindowID &gt;|ExtraControlTimelines||2|0|"</string>
-          <string name="variable-3">"timeRange|vector&lt; pair&lt; TRecordTime, TRecordTime &gt; &gt;|TimeRange||2|0|"</string>
-          <string name="variable-4">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
-          <string name="variable-5">"controlTimelineMax|double|ControlTimelineMax||2|0|"</string>
-          <string name="variable-6">"controlTimelineMin|double|ControlTimelineMin||2|0|"</string>
-          <string name="variable-7">"controlTimelines|vector&lt; TWindowID &gt;|ControlTimelines||2|0|"</string>
-          <string name="variable-8">"dataTimelines|vector&lt; TWindowID &gt;|DataTimelines||2|0|"</string>
-          <string name="variable-9">"extraControlTimelineAutofit|bool|ExtraControlTimelineAutofit|true|2|0|"</string>
+          <string name="variable-10">"extraControlTimelines|vector&lt; TWindowID &gt;|ExtraControlTimelines||2|0|"</string>
+          <string name="variable-11">"timeRange|vector&lt; pair&lt; TRecordTime, TRecordTime &gt; &gt;|TimeRange||2|0|"</string>
+          <string name="variable-12">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
+          <string name="variable-2">"controlTimelineMax|double|ControlTimelineMax||2|0|"</string>
+          <string name="variable-3">"controlTimelineMin|double|ControlTimelineMin||2|0|"</string>
+          <string name="variable-4">"controlTimelines|vector&lt; TWindowID &gt;|ControlTimelines||2|0|"</string>
+          <string name="variable-5">"dataTimelines|vector&lt; TWindowID &gt;|DataTimelines||2|0|"</string>
+          <string name="variable-6">"extraControlTimelineAutofit|bool|ExtraControlTimelineAutofit|true|2|0|"</string>
+          <string name="variable-7">"extraControlTimelineDelta|double|ExtraControlTimelineDelta||2|0|"</string>
+          <string name="variable-8">"extraControlTimelineMax|double|ExtraControlTimelineMax||2|0|"</string>
+          <string name="variable-9">"extraControlTimelineMin|double|ExtraControlTimelineMin||2|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
@@ -10293,21 +10269,13 @@ In normal mode all properties are showed in main window."</string>
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -12949,14 +12917,14 @@ In normal mode all properties are showed in main window."</string>
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"preferencesdialog.h"</string>
+          <string name="proxy-Header filename">"include/preferencesdialog.h"</string>
           <long name="proxy-Height">300</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_PREFERENCESDIALOG"</string>
           <long name="proxy-Id value">10069</long>
-          <string name="proxy-Implementation filename">"preferencesdialog.cpp"</string>
+          <string name="proxy-Implementation filename">"src/preferencesdialog.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Title">"Preferences"</string>
           <string name="proxy-Tooltip text">""</string>
@@ -24774,14 +24742,14 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"rowsselectiondialog.h"</string>
+          <string name="proxy-Header filename">"include/rowsselectiondialog.h"</string>
           <long name="proxy-Height">300</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_ROWSSELECTIONDIALOG"</string>
           <long name="proxy-Id value">10078</long>
-          <string name="proxy-Implementation filename">"rowsselectiondialog.cpp"</string>
+          <string name="proxy-Implementation filename">"src/rowsselectiondialog.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Title">"Objects Selection"</string>
           <string name="proxy-Tooltip text">""</string>
@@ -24862,14 +24830,14 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"cutfilterdialog.h"</string>
+          <string name="proxy-Header filename">"include/cutfilterdialog.h"</string>
           <long name="proxy-Height">300</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_CUTFILTERDIALOG"</string>
           <long name="proxy-Id value">10103</long>
-          <string name="proxy-Implementation filename">"cutfilterdialog.cpp"</string>
+          <string name="proxy-Implementation filename">"src/cutfilterdialog.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -24914,15 +24882,15 @@ Example: 50000001;50000002[;type] "</string>
           <long name="use-xrc">0</long>
           <string name="variable-0">"changedXMLParameters|bool|ChangedXMLParameters|false|2|0|"</string>
           <string name="variable-1">"filterToolOrder|std::vector&lt; std::string &gt;|FilterToolOrder||2|0|"</string>
-          <string name="variable-10">"nameDestinyTrace|std::string|NameDestinyTrace||2|0|"</string>
-          <string name="variable-2">"nameSourceTrace|std::string|NameSourceTrace|&quot;&quot;|2|0|"</string>
-          <string name="variable-3">"newXMLsPath|bool|NewXMLsPath|false|2|0|"</string>
-          <string name="variable-4">"runAppWithResultingTrace|bool|RunAppWithResultingTrace|false|2|0|"</string>
-          <string name="variable-5">"traceOptions|TraceOptions *|TraceOptions||2|0|"</string>
-          <string name="variable-6">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
-          <string name="variable-7">"globalXMLsPath|std::string|GlobalXMLsPath|&quot;&quot;|2|0|"</string>
-          <string name="variable-8">"loadResultingTrace|bool|LoadResultingTrace|true|2|0|"</string>
-          <string name="variable-9">"localKernel|KernelConnection *|LocalKernel|NULL|2|0|"</string>
+          <string name="variable-10">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
+          <string name="variable-2">"globalXMLsPath|std::string|GlobalXMLsPath|&quot;&quot;|2|0|"</string>
+          <string name="variable-3">"loadResultingTrace|bool|LoadResultingTrace|true|2|0|"</string>
+          <string name="variable-4">"localKernel|KernelConnection *|LocalKernel|NULL|2|0|"</string>
+          <string name="variable-5">"nameDestinyTrace|std::string|NameDestinyTrace||2|0|"</string>
+          <string name="variable-6">"nameSourceTrace|std::string|NameSourceTrace|&quot;&quot;|2|0|"</string>
+          <string name="variable-7">"newXMLsPath|bool|NewXMLsPath|false|2|0|"</string>
+          <string name="variable-8">"runAppWithResultingTrace|bool|RunAppWithResultingTrace|false|2|0|"</string>
+          <string name="variable-9">"traceOptions|TraceOptions *|TraceOptions||2|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
@@ -24931,21 +24899,13 @@ Example: 50000001;50000002[;type] "</string>
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -32061,14 +32021,14 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"eventsselectiondialog.h"</string>
+          <string name="proxy-Header filename">"include/eventsselectiondialog.h"</string>
           <long name="proxy-Height">300</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_EVENTSSELECTIONDIALOG"</string>
           <long name="proxy-Id value">10053</long>
-          <string name="proxy-Implementation filename">"eventsselectiondialog.cpp"</string>
+          <string name="proxy-Implementation filename">"src/eventsselectiondialog.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -32119,21 +32079,13 @@ Example: 50000001;50000002[;type] "</string>
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -33729,14 +33681,14 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"finddialog.h"</string>
+          <string name="proxy-Header filename">"include/finddialog.h"</string>
           <long name="proxy-Height">300</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_FINDDIALOG"</string>
           <long name="proxy-Id value">10171</long>
-          <string name="proxy-Implementation filename">"finddialog.cpp"</string>
+          <string name="proxy-Implementation filename">"src/finddialog.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -33788,21 +33740,13 @@ Example: 50000001;50000002[;type] "</string>
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -35262,14 +35206,14 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="proxy-Fit to content">1</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"advancedsaveconfiguration.h"</string>
+          <string name="proxy-Header filename">"include/advancedsaveconfiguration.h"</string>
           <long name="proxy-Height">-1</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_ADVANCEDSAVECONFIGURATION"</string>
           <long name="proxy-Id value">10186</long>
-          <string name="proxy-Implementation filename">"advancedsaveconfiguration.cpp"</string>
+          <string name="proxy-Implementation filename">"src/advancedsaveconfiguration.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -35320,21 +35264,13 @@ Example: 50000001;50000002[;type] "</string>
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">1</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -35817,14 +35753,14 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="proxy-Fit to content">0</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"helpcontents.h"</string>
+          <string name="proxy-Header filename">"include/helpcontents.h"</string>
           <long name="proxy-Height">600</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_HELPCONTENTS"</string>
           <long name="proxy-Id value">10192</long>
-          <string name="proxy-Implementation filename">"helpcontents.cpp"</string>
+          <string name="proxy-Implementation filename">"src/helpcontents.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -35875,21 +35811,13 @@ Example: 50000001;50000002[;type] "</string>
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -36335,14 +36263,14 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="proxy-Fit to content">0</bool>
           <string name="proxy-Font">""</string>
           <string name="proxy-Foreground colour">""</string>
-          <string name="proxy-Header filename">"runscript.h"</string>
+          <string name="proxy-Header filename">"include/runscript.h"</string>
           <long name="proxy-Height">1400</long>
           <string name="proxy-Help text">""</string>
           <bool name="proxy-Hidden">0</bool>
           <string name="proxy-Icon">""</string>
           <string name="proxy-Id name">"ID_RUN_APPLICATION"</string>
           <long name="proxy-Id value">10110</long>
-          <string name="proxy-Implementation filename">"runscript.cpp"</string>
+          <string name="proxy-Implementation filename">"src/runscript.cpp"</string>
           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
           <string name="proxy-Texture">""</string>
           <string name="proxy-Texture style">"Tiled"</string>
@@ -36395,21 +36323,13 @@ Example: 50000001;50000002[;type] "</string>
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
-            <string name="proxy-AlignH">"Centre"</string>
-            <string name="proxy-AlignV">"Centre"</string>
-            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
-            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -43435,9 +43355,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"copypaste.cpp"</string>
+          <string name="title">"src/copypaste.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"copypaste.cpp"</string>
+          <string name="filename">"src/copypaste.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43447,9 +43367,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"copypaste.h"</string>
+          <string name="title">"include/copypaste.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"copypaste.h"</string>
+          <string name="filename">"include/copypaste.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43459,9 +43379,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"filebrowserbutton.h"</string>
+          <string name="title">"include/filebrowserbutton.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"filebrowserbutton.h"</string>
+          <string name="filename">"include/filebrowserbutton.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43470,9 +43390,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"filebrowserbutton.cpp"</string>
+          <string name="title">"src/filebrowserbutton.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"filebrowserbutton.cpp"</string>
+          <string name="filename">"src/filebrowserbutton.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43482,9 +43402,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"filedialogext.cpp"</string>
+          <string name="title">"src/filedialogext.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"filedialogext.cpp"</string>
+          <string name="filename">"src/filedialogext.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43494,9 +43414,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"filedialogext.h"</string>
+          <string name="title">"include/filedialogext.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"filedialogext.h"</string>
+          <string name="filename">"include/filedialogext.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43518,9 +43438,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"popupmenu.cpp"</string>
+          <string name="title">"src/popupmenu.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"popupmenu.cpp"</string>
+          <string name="filename">"src/popupmenu.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43530,9 +43450,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"popupmenu.h"</string>
+          <string name="title">"include/popupmenu.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"popupmenu.h"</string>
+          <string name="filename">"include/popupmenu.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43542,9 +43462,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"windows_tree.cpp"</string>
+          <string name="title">"src/windows_tree.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"windows_tree.cpp"</string>
+          <string name="filename">"src/windows_tree.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43554,9 +43474,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"windows_tree.h"</string>
+          <string name="title">"include/windows_tree.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"windows_tree.h"</string>
+          <string name="filename">"include/windows_tree.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43578,9 +43498,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"pg_extraprop.h"</string>
+          <string name="title">"include/pg_extraprop.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"pg_extraprop.h"</string>
+          <string name="filename">"include/pg_extraprop.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43590,9 +43510,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"pg_extraprop.cpp"</string>
+          <string name="title">"src/pg_extraprop.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"pg_extraprop.cpp"</string>
+          <string name="filename">"src/pg_extraprop.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43602,9 +43522,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"pg_util.h"</string>
+          <string name="title">"include/pg_util.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"pg_util.h"</string>
+          <string name="filename">"include/pg_util.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43613,9 +43533,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"pg_util.cpp"</string>
+          <string name="title">"src/pg_util.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"pg_util.cpp"</string>
+          <string name="filename">"src/pg_util.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43625,9 +43545,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"connection.cpp"</string>
+          <string name="title">"src/connection.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"connection.cpp"</string>
+          <string name="filename">"src/connection.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43637,9 +43557,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"connection.h"</string>
+          <string name="title">"include/connection.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"connection.h"</string>
+          <string name="filename">"include/connection.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43649,9 +43569,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"histotablebase.h"</string>
+          <string name="title">"include/histotablebase.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"histotablebase.h"</string>
+          <string name="filename">"include/histotablebase.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43661,9 +43581,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"histotablebase.cpp"</string>
+          <string name="title">"src/histotablebase.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"histotablebase.cpp"</string>
+          <string name="filename">"src/histotablebase.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43673,9 +43593,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"sessionsaver.h"</string>
+          <string name="title">"include/sessionsaver.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"sessionsaver.h"</string>
+          <string name="filename">"include/sessionsaver.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43685,9 +43605,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"sessionsaver.cpp"</string>
+          <string name="title">"src/sessionsaver.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"sessionsaver.cpp"</string>
+          <string name="filename">"src/sessionsaver.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43697,9 +43617,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"sequencedriver.h"</string>
+          <string name="title">"include/sequencedriver.h"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"sequencedriver.h"</string>
+          <string name="filename">"include/sequencedriver.h"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43709,9 +43629,9 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"sequencedriver.cpp"</string>
+          <string name="title">"src/sequencedriver.cpp"</string>
           <string name="type">"source-editor-document"</string>
-          <string name="filename">"sequencedriver.cpp"</string>
+          <string name="filename">"src/sequencedriver.cpp"</string>
           <string name="icon-name">"source-editor"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43733,7 +43653,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"table.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"table.xpm"</string>
+          <string name="filename">"icons/table.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">1</long>
@@ -43745,7 +43665,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"histo_zoom.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"histo_zoom.xpm"</string>
+          <string name="filename">"icons/histo_zoom.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43757,7 +43677,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"histo_horvert.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"histo_horvert.xpm"</string>
+          <string name="filename">"icons/histo_horvert.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43769,7 +43689,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"histo_color.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"histo_color.xpm"</string>
+          <string name="filename">"icons/histo_color.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43781,7 +43701,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"timeline.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"timeline.xpm"</string>
+          <string name="filename">"icons/timeline.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43793,7 +43713,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"new_window.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"new_window.xpm"</string>
+          <string name="filename">"icons/new_window.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43817,7 +43737,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"new_derived_window.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"new_derived_window.xpm"</string>
+          <string name="filename">"icons/new_derived_window.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43829,7 +43749,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"caution.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"caution.xpm"</string>
+          <string name="filename">"icons/caution.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43841,7 +43761,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"opencontrol.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"opencontrol.xpm"</string>
+          <string name="filename">"icons/opencontrol.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43852,7 +43772,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"openfiltered.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"openfiltered.xpm"</string>
+          <string name="filename">"icons/openfiltered.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43863,7 +43783,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"opendata.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"opendata.xpm"</string>
+          <string name="filename">"icons/opendata.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43874,7 +43794,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"open3d.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"open3d.xpm"</string>
+          <string name="filename">"icons/open3d.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43885,7 +43805,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"hide_cols.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"hide_cols.xpm"</string>
+          <string name="filename">"icons/hide_cols.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43896,7 +43816,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"new_histogram.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"new_histogram.xpm"</string>
+          <string name="filename">"icons/new_histogram.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43907,7 +43827,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"delete.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"delete.xpm"</string>
+          <string name="filename">"icons/delete.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43918,7 +43838,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"cut_trace.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"cut_trace.xpm"</string>
+          <string name="filename">"icons/cut_trace.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43929,7 +43849,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_add.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_add.xpm"</string>
+          <string name="filename">"icons/derived_add.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43940,7 +43860,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_controlled_add.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_controlled_add.xpm"</string>
+          <string name="filename">"icons/derived_controlled_add.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43951,7 +43871,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_controlled_clear_by.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_controlled_clear_by.xpm"</string>
+          <string name="filename">"icons/derived_controlled_clear_by.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43962,7 +43882,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_controlled_maximum.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_controlled_maximum.xpm"</string>
+          <string name="filename">"icons/derived_controlled_maximum.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43973,7 +43893,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_different.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_different.xpm"</string>
+          <string name="filename">"icons/derived_different.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43984,7 +43904,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_divide.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_divide.xpm"</string>
+          <string name="filename">"icons/derived_divide.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -43995,7 +43915,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_maximum.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_maximum.xpm"</string>
+          <string name="filename">"icons/derived_maximum.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44006,7 +43926,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_minimum.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_minimum.xpm"</string>
+          <string name="filename">"icons/derived_minimum.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44017,7 +43937,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_product.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_product.xpm"</string>
+          <string name="filename">"icons/derived_product.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44028,7 +43948,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"derived_substract.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"derived_substract.xpm"</string>
+          <string name="filename">"icons/derived_substract.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44039,7 +43959,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"semantic_color.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"semantic_color.xpm"</string>
+          <string name="filename">"icons/semantic_color.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44050,7 +43970,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"inclusive.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"inclusive.xpm"</string>
+          <string name="filename">"icons/inclusive.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44061,7 +43981,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"arrow_down.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"arrow_down.xpm"</string>
+          <string name="filename">"icons/arrow_down.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44072,7 +43992,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"arrow_up.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"arrow_up.xpm"</string>
+          <string name="filename">"icons/arrow_up.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44083,7 +44003,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"window_properties.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"window_properties.xpm"</string>
+          <string name="filename">"icons/window_properties.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44094,7 +44014,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"file_browser.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"file_browser.xpm"</string>
+          <string name="filename">"icons/file_browser.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44105,7 +44025,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"run_script.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"run_script.xpm"</string>
+          <string name="filename">"icons/run_script.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44116,7 +44036,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"app_edit.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"app_edit.xpm"</string>
+          <string name="filename">"icons/app_edit.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44127,7 +44047,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"arrow_left.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"arrow_left.xpm"</string>
+          <string name="filename">"icons/arrow_left.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44138,7 +44058,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"arrow_right.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"arrow_right.xpm"</string>
+          <string name="filename">"icons/arrow_right.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44149,7 +44069,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"index.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"index.xpm"</string>
+          <string name="filename">"icons/index.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
@@ -44160,7 +44080,7 @@ If unchecked the above event  type/name will be used."</string>
         <document>
           <string name="title">"histo_sum.xpm"</string>
           <string name="type">"image-document"</string>
-          <string name="filename">"histo_sum.xpm"</string>
+          <string name="filename">"icons/histo_sum.xpm"</string>
           <string name="icon-name">"image"</string>
           <long name="is-transient">0</long>
           <long name="owns-file">0</long>
