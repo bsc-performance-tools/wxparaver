@@ -57,10 +57,10 @@
 #include <wx/filename.h>
 
 ////@begin XPM images
-#include "derived_add.xpm"
-#include "delete.xpm"
-#include "arrow_up.xpm"
-#include "arrow_down.xpm"
+#include "../icons/derived_add.xpm"
+#include "../icons/delete.xpm"
+#include "../icons/arrow_up.xpm"
+#include "../icons/arrow_down.xpm"
 ////@end XPM images
 
 using namespace std;
@@ -1086,16 +1086,16 @@ void PreferencesDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer180 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer178->Add(itemBoxSizer180, 0, wxALIGN_TOP|wxALL, 0);
-  buttonAddWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonAddWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer180->Add(buttonAddWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonDeleteWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonDeleteWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer180->Add(buttonDeleteWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonUpWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonUpWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer180->Add(buttonUpWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonDownWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonDownWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer180->Add(buttonDownWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine185 = new wxStaticLine( panelWorkspaces, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
@@ -1133,16 +1133,16 @@ void PreferencesDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer195 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer193->Add(itemBoxSizer195, 0, wxALIGN_TOP|wxALL, 0);
-  buttonAddHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonAddHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer195->Add(buttonAddHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonDeleteHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonDeleteHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer195->Add(buttonDeleteHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonUpHint = new wxBitmapButton( panelWorkspaces, ID_BITMAP_HINT_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonUpHint = new wxBitmapButton( panelWorkspaces, ID_BITMAP_HINT_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer195->Add(buttonUpHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  buttonDownHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonDownHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer195->Add(buttonDownHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer200 = new wxBoxSizer(wxHORIZONTAL);
@@ -1265,22 +1265,22 @@ wxBitmap PreferencesDialog::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin PreferencesDialog bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("derived_add.xpm"))
+  if (name == wxT("icons/derived_add.xpm"))
   {
     wxBitmap bitmap(derived_add_xpm);
     return bitmap;
   }
-  else if (name == wxT("delete.xpm"))
+  else if (name == wxT("icons/delete.xpm"))
   {
     wxBitmap bitmap(delete_xpm);
     return bitmap;
   }
-  else if (name == wxT("arrow_up.xpm"))
+  else if (name == wxT("icons/arrow_up.xpm"))
   {
     wxBitmap bitmap(arrow_up_xpm);
     return bitmap;
   }
-  else if (name == wxT("arrow_down.xpm"))
+  else if (name == wxT("icons/arrow_down.xpm"))
   {
     wxBitmap bitmap(arrow_down_xpm);
     return bitmap;

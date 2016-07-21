@@ -95,14 +95,14 @@
 #endif
 
 ////@begin XPM images
-#include "new_window.xpm"
-#include "new_derived_window.xpm"
-#include "new_histogram.xpm"
-#include "delete.xpm"
-#include "cut_trace.xpm"
-#include "run_script.xpm"
-#include "file_browser.xpm"
-#include "window_properties.xpm"
+#include "../icons/new_window.xpm"
+#include "../icons/new_derived_window.xpm"
+#include "../icons/new_histogram.xpm"
+#include "../icons/delete.xpm"
+#include "../icons/cut_trace.xpm"
+#include "../icons/run_script.xpm"
+#include "../icons/file_browser.xpm"
+#include "../icons/window_properties.xpm"
 ////@end XPM images
 
 #include "table.xpm"
@@ -470,27 +470,27 @@ void paraverMain::CreateControls()
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxWANTS_CHARS );
-  wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("new_window.xpm")));
+  wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_window.xpm")));
   wxBitmap itemtool24BitmapDisabled;
   tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_WINDOW, false);
-  wxBitmap itemtool25Bitmap(itemFrame1->GetBitmapResource(wxT("new_derived_window.xpm")));
+  wxBitmap itemtool25Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_derived_window.xpm")));
   wxBitmap itemtool25BitmapDisabled;
   tbarMain->AddTool(ID_NEW_DERIVED_WINDOW, _("Create new derived window"), itemtool25Bitmap, itemtool25BitmapDisabled, wxITEM_NORMAL, _("New derived timeline window"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_DERIVED_WINDOW, false);
-  wxBitmap itemtool26Bitmap(itemFrame1->GetBitmapResource(wxT("new_histogram.xpm")));
+  wxBitmap itemtool26Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_histogram.xpm")));
   wxBitmap itemtool26BitmapDisabled;
   tbarMain->AddTool(ID_NEW_HISTOGRAM, _("Create new histogram"), itemtool26Bitmap, itemtool26BitmapDisabled, wxITEM_NORMAL, _("New histogram"), wxEmptyString);
   tbarMain->EnableTool(ID_NEW_HISTOGRAM, false);
   tbarMain->AddSeparator();
-  wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("delete.xpm")));
+  wxBitmap itemtool28Bitmap(itemFrame1->GetBitmapResource(wxT("icons/delete.xpm")));
   wxBitmap itemtool28BitmapDisabled;
   tbarMain->AddTool(ID_TOOLDELETE, _("Delete window (DEL)"), itemtool28Bitmap, itemtool28BitmapDisabled, wxITEM_NORMAL, _("Delete selected window (DEL)"), wxEmptyString);
   tbarMain->AddSeparator();
-  wxBitmap itemtool30Bitmap(itemFrame1->GetBitmapResource(wxT("cut_trace.xpm")));
+  wxBitmap itemtool30Bitmap(itemFrame1->GetBitmapResource(wxT("icons/cut_trace.xpm")));
   wxBitmap itemtool30BitmapDisabled;
   tbarMain->AddTool(ID_TOOL_CUT_TRACE, _("Filter Trace"), itemtool30Bitmap, itemtool30BitmapDisabled, wxITEM_NORMAL, _("Filter Trace"), wxEmptyString);
-  wxBitmap itemtool31Bitmap(itemFrame1->GetBitmapResource(wxT("run_script.xpm")));
+  wxBitmap itemtool31Bitmap(itemFrame1->GetBitmapResource(wxT("icons/run_script.xpm")));
   wxBitmap itemtool31BitmapDisabled;
   tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool31Bitmap, itemtool31BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
   tbarMain->Realize();
@@ -505,9 +505,9 @@ void paraverMain::CreateControls()
   toolBookFilesProperties = new wxToolbook( itemFrame1, ID_TOOLBOOKFILESANDPROPERTIES, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
   wxImageList* toolBookFilesPropertiesImageList = new wxImageList(16, 16, true, 2);
   {
-    wxIcon toolBookFilesPropertiesIcon0(itemFrame1->GetIconResource(wxT("file_browser.xpm")));
+    wxIcon toolBookFilesPropertiesIcon0(itemFrame1->GetIconResource(wxT("icons/file_browser.xpm")));
     toolBookFilesPropertiesImageList->Add(toolBookFilesPropertiesIcon0);
-    wxIcon toolBookFilesPropertiesIcon1(itemFrame1->GetIconResource(wxT("window_properties.xpm")));
+    wxIcon toolBookFilesPropertiesIcon1(itemFrame1->GetIconResource(wxT("icons/window_properties.xpm")));
     toolBookFilesPropertiesImageList->Add(toolBookFilesPropertiesIcon1);
   }
   toolBookFilesProperties->AssignImageList(toolBookFilesPropertiesImageList);
@@ -963,32 +963,32 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin paraverMain bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("new_window.xpm"))
+  if (name == wxT("icons/new_window.xpm"))
   {
     wxBitmap bitmap(application_star_xpm);
     return bitmap;
   }
-  else if (name == wxT("new_derived_window.xpm"))
+  else if (name == wxT("icons/new_derived_window.xpm"))
   {
     wxBitmap bitmap(application_add_xpm);
     return bitmap;
   }
-  else if (name == wxT("new_histogram.xpm"))
+  else if (name == wxT("icons/new_histogram.xpm"))
   {
     wxBitmap bitmap(new_histogram_xpm);
     return bitmap;
   }
-  else if (name == wxT("delete.xpm"))
+  else if (name == wxT("icons/delete.xpm"))
   {
     wxBitmap bitmap(delete_xpm);
     return bitmap;
   }
-  else if (name == wxT("cut_trace.xpm"))
+  else if (name == wxT("icons/cut_trace.xpm"))
   {
     wxBitmap bitmap(cut_trace_xpm);
     return bitmap;
   }
-  else if (name == wxT("run_script.xpm"))
+  else if (name == wxT("icons/run_script.xpm"))
   {
     wxBitmap bitmap(run_script_xpm);
     return bitmap;
@@ -1006,12 +1006,12 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
   // Icon retrieval
 ////@begin paraverMain icon retrieval
   wxUnusedVar(name);
-  if (name == wxT("file_browser.xpm"))
+  if (name == wxT("icons/file_browser.xpm"))
   {
     wxIcon icon(file_browser_xpm);
     return icon;
   }
-  else if (name == wxT("window_properties.xpm"))
+  else if (name == wxT("icons/window_properties.xpm"))
   {
     wxIcon icon(window_properties_xpm);
     return icon;

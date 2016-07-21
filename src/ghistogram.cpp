@@ -79,18 +79,18 @@
 #endif
 
 ////@begin XPM images
-#include "opencontrol.xpm"
-#include "opendata.xpm"
-#include "open3d.xpm"
-#include "histo_zoom.xpm"
-#include "openfiltered.xpm"
-#include "histo_color.xpm"
-#include "histo_horvert.xpm"
-#include "hide_cols.xpm"
-#include "semantic_color.xpm"
-#include "inclusive.xpm"
-#include "histo_sum.xpm"
-#include "caution.xpm"
+#include "../icons/opencontrol.xpm"
+#include "../icons/opendata.xpm"
+#include "../icons/open3d.xpm"
+#include "../icons/histo_zoom.xpm"
+#include "../icons/openfiltered.xpm"
+#include "../icons/histo_color.xpm"
+#include "../icons/histo_horvert.xpm"
+#include "../icons/hide_cols.xpm"
+#include "../icons/semantic_color.xpm"
+#include "../icons/inclusive.xpm"
+#include "../icons/histo_sum.xpm"
+#include "../icons/caution.xpm"
 ////@end XPM images
 
 #ifdef WIN32
@@ -262,39 +262,39 @@ void gHistogram::CreateControls()
   itemBoxSizer2->Add(panelToolbar, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   tbarHisto = new wxToolBar( panelToolbar, ID_TOOLBAR_HISTOGRAM, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL );
-  wxBitmap itemtool5Bitmap(itemFrame1->GetBitmapResource(wxT("opencontrol.xpm")));
+  wxBitmap itemtool5Bitmap(itemFrame1->GetBitmapResource(wxT("icons/opencontrol.xpm")));
   wxBitmap itemtool5BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
-  wxBitmap itemtool6Bitmap(itemFrame1->GetBitmapResource(wxT("opendata.xpm")));
+  wxBitmap itemtool6Bitmap(itemFrame1->GetBitmapResource(wxT("icons/opendata.xpm")));
   wxBitmap itemtool6BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_OPEN_DATA_WINDOW, _("Open Data Window"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_NORMAL, _("Open Data Window"), wxEmptyString);
-  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("open3d.xpm")));
+  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("icons/open3d.xpm")));
   wxBitmap itemtool7BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open 3rd Window"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _("Open 3rd Window"), wxEmptyString);
   tbarHisto->AddSeparator();
-  wxBitmap itemtool9Bitmap(itemFrame1->GetBitmapResource(wxT("histo_zoom.xpm")));
+  wxBitmap itemtool9Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_zoom.xpm")));
   wxBitmap itemtool9BitmapDisabled;
   tbarHisto->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
-  wxBitmap itemtool10Bitmap(itemFrame1->GetBitmapResource(wxT("openfiltered.xpm")));
+  wxBitmap itemtool10Bitmap(itemFrame1->GetBitmapResource(wxT("icons/openfiltered.xpm")));
   wxBitmap itemtool10BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, _("Open Filtered Control Window"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _("Open Filtered Control Window"), wxEmptyString);
   tbarHisto->AddSeparator();
-  wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("histo_color.xpm")));
+  wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_color.xpm")));
   wxBitmap itemtool12BitmapDisabled;
   tbarHisto->AddTool(ID_TOOLGRADIENT, _("Gradient"), itemtool12Bitmap, itemtool12BitmapDisabled, wxITEM_CHECK, _("View gradient colors"), wxEmptyString);
-  wxBitmap itemtool13Bitmap(itemFrame1->GetBitmapResource(wxT("histo_horvert.xpm")));
+  wxBitmap itemtool13Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_horvert.xpm")));
   wxBitmap itemtool13BitmapDisabled;
   tbarHisto->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
-  wxBitmap itemtool14Bitmap(itemFrame1->GetBitmapResource(wxT("hide_cols.xpm")));
+  wxBitmap itemtool14Bitmap(itemFrame1->GetBitmapResource(wxT("icons/hide_cols.xpm")));
   wxBitmap itemtool14BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_HIDE_COLUMNS, _("Hide empty columns"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_CHECK, _("Hide empty columns"), wxEmptyString);
-  wxBitmap itemtool15Bitmap(itemFrame1->GetBitmapResource(wxT("semantic_color.xpm")));
+  wxBitmap itemtool15Bitmap(itemFrame1->GetBitmapResource(wxT("icons/semantic_color.xpm")));
   wxBitmap itemtool15BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_LABEL_COLORS, _("Label colors"), itemtool15Bitmap, itemtool15BitmapDisabled, wxITEM_CHECK, _("Label colors"), wxEmptyString);
-  wxBitmap itemtool16Bitmap(itemFrame1->GetBitmapResource(wxT("inclusive.xpm")));
+  wxBitmap itemtool16Bitmap(itemFrame1->GetBitmapResource(wxT("icons/inclusive.xpm")));
   wxBitmap itemtool16BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
-  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("histo_sum.xpm")));
+  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_sum.xpm")));
   wxBitmap itemtool17BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_ONLY_TOTALS, _("Show totals only"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_CHECK, _("Show totals only"), wxEmptyString);
   tbarHisto->Realize();
@@ -323,12 +323,12 @@ void gHistogram::CreateControls()
   warningSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer19->Add(warningSizer, 0, wxGROW|wxALL, 0);
 
-  controlWarning = new wxStaticBitmap( panelData, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(8, 7)), 0 );
+  controlWarning = new wxStaticBitmap( panelData, wxID_CONTROLWARNING, itemFrame1->GetBitmapResource(wxT("icons/caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     controlWarning->SetToolTip(_("Control limits not fitted"));
   warningSizer->Add(controlWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  xtraWarning = new wxStaticBitmap( panelData, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(8, 7)), 0 );
+  xtraWarning = new wxStaticBitmap( panelData, wxID_3DWARNING, itemFrame1->GetBitmapResource(wxT("icons/caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(8, 7)), 0 );
   if (gHistogram::ShowToolTips())
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
@@ -833,59 +833,64 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin gHistogram bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("opencontrol.xpm"))
+  if (name == wxT("icons/opencontrol.xpm"))
   {
     wxBitmap bitmap(opencontrol_xpm);
     return bitmap;
   }
-  else if (name == wxT("opendata.xpm"))
+  else if (name == wxT("icons/opendata.xpm"))
   {
     wxBitmap bitmap(opendata_xpm);
     return bitmap;
   }
-  else if (name == wxT("open3d.xpm"))
+  else if (name == wxT("icons/open3d.xpm"))
   {
     wxBitmap bitmap(open3d_xpm);
     return bitmap;
   }
-  else if (name == wxT("histo_zoom.xpm"))
+  else if (name == wxT("icons/histo_zoom.xpm"))
   {
     wxBitmap bitmap(histo_zoom_xpm);
     return bitmap;
   }
-  else if (name == wxT("openfiltered.xpm"))
+  else if (name == wxT("icons/openfiltered.xpm"))
   {
     wxBitmap bitmap(openfiltered_xpm);
     return bitmap;
   }
-  else if (name == wxT("histo_color.xpm"))
+  else if (name == wxT("icons/histo_color.xpm"))
   {
     wxBitmap bitmap(color_xpm);
     return bitmap;
   }
-  else if (name == wxT("histo_horvert.xpm"))
+  else if (name == wxT("icons/histo_horvert.xpm"))
   {
     wxBitmap bitmap(horvert_xpm);
     return bitmap;
   }
-  else if (name == wxT("hide_cols.xpm"))
+  else if (name == wxT("icons/hide_cols.xpm"))
   {
     wxBitmap bitmap(hide_xpm);
     return bitmap;
   }
-  else if (name == wxT("semantic_color.xpm"))
+  else if (name == wxT("icons/semantic_color.xpm"))
   {
     wxBitmap bitmap(semantic_color_xpm);
     return bitmap;
   }
-  else if (name == wxT("inclusive.xpm"))
+  else if (name == wxT("icons/inclusive.xpm"))
   {
     wxBitmap bitmap(inclusive_xpm);
     return bitmap;
   }
-  else if (name == wxT("histo_sum.xpm"))
+  else if (name == wxT("icons/histo_sum.xpm"))
   {
     wxBitmap bitmap(histo_sum_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/caution.xpm"))
+  {
+    wxBitmap bitmap(caution_xpm);
     return bitmap;
   }
   else if (name == wxT("caution.xpm"))

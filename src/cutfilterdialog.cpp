@@ -58,8 +58,8 @@
 #include "runscript.h"
 
 ////@begin XPM images
-#include "arrow_up.xpm"
-#include "arrow_down.xpm"
+#include "../icons/arrow_up.xpm"
+#include "../icons/arrow_down.xpm"
 ////@end XPM images
 
 using namespace std;
@@ -382,12 +382,12 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer30 = new wxBoxSizer(wxVERTICAL);
   boxSizerExecutionChain->Add(itemBoxSizer30, 0, wxALIGN_BOTTOM|wxALL, 2);
 
-  buttonUp = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_PUSH_UP_FILTER, itemDialog1->GetBitmapResource(wxT("arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonUp = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_PUSH_UP_FILTER, itemDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (CutFilterDialog::ShowToolTips())
     buttonUp->SetToolTip(_("Select the order of the Cut/Filter tools."));
   itemBoxSizer30->Add(buttonUp, 1, wxGROW|wxTOP, 2);
 
-  buttonDown = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_PUSH_DOWN_FILTER, itemDialog1->GetBitmapResource(wxT("arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonDown = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_PUSH_DOWN_FILTER, itemDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (CutFilterDialog::ShowToolTips())
     buttonDown->SetToolTip(_("Select the order of the Cut/Filter tools."));
   itemBoxSizer30->Add(buttonDown, 1, wxGROW|wxTOP, 2);
@@ -880,12 +880,12 @@ wxBitmap CutFilterDialog::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin CutFilterDialog bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("arrow_up.xpm"))
+  if (name == wxT("icons/arrow_up.xpm"))
   {
     wxBitmap bitmap(arrow_up_xpm);
     return bitmap;
   }
-  else if (name == wxT("arrow_down.xpm"))
+  else if (name == wxT("icons/arrow_down.xpm"))
   {
     wxBitmap bitmap(arrow_down_xpm);
     return bitmap;

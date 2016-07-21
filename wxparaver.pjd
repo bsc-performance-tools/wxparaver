@@ -258,7 +258,7 @@
           <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler name">"GCC"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Extra compile flags">"%AUTO%"</string>
@@ -337,7 +337,7 @@
           <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler name">"GCC"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Extra compile flags">"%AUTO%"</string>
@@ -416,7 +416,7 @@
           <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler name">"GCC"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Extra compile flags">"%AUTO%"</string>
@@ -495,7 +495,7 @@
           <string name="Compiler location">"%AUTO%"</string>
           <string name="Compiler name">"GCC"</string>
           <string name="Debug flags">"%AUTO%"</string>
-          <bool name="dirty">1</bool>
+          <bool name="dirty">0</bool>
           <bool name="Enable makefile generation">1</bool>
           <string name="Executable name">"%EXECUTABLE%"</string>
           <string name="Extra compile flags">"%AUTO%"</string>
@@ -1831,7 +1831,7 @@
               <long name="is-transient">0</long>
               <long name="locked">0</long>
               <long name="owns-file">1</long>
-              <string name="proxy-Bitmap">"new_window.xpm"</string>
+              <string name="proxy-Bitmap">"icons/new_window.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
               <bool name="proxy-Enabled">0</bool>
               <string name="proxy-Help text">""</string>
@@ -1855,7 +1855,7 @@
               <long name="is-transient">0</long>
               <long name="locked">0</long>
               <long name="owns-file">1</long>
-              <string name="proxy-Bitmap">"new_derived_window.xpm"</string>
+              <string name="proxy-Bitmap">"icons/new_derived_window.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
               <bool name="proxy-Enabled">0</bool>
               <string name="proxy-Help text">""</string>
@@ -1878,7 +1878,7 @@
               <long name="is-transient">0</long>
               <long name="locked">0</long>
               <long name="owns-file">1</long>
-              <string name="proxy-Bitmap">"new_histogram.xpm"</string>
+              <string name="proxy-Bitmap">"icons/new_histogram.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
               <bool name="proxy-Enabled">0</bool>
               <string name="proxy-Help text">""</string>
@@ -1913,7 +1913,7 @@
               <long name="is-transient">0</long>
               <long name="locked">0</long>
               <long name="owns-file">1</long>
-              <string name="proxy-Bitmap">"delete.xpm"</string>
+              <string name="proxy-Bitmap">"icons/delete.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
               <bool name="proxy-Enabled">1</bool>
               <string name="proxy-Help text">""</string>
@@ -1948,7 +1948,7 @@
               <long name="is-transient">0</long>
               <long name="locked">0</long>
               <long name="owns-file">1</long>
-              <string name="proxy-Bitmap">"cut_trace.xpm"</string>
+              <string name="proxy-Bitmap">"icons/cut_trace.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
               <bool name="proxy-Enabled">1</bool>
               <string name="proxy-Help text">""</string>
@@ -1970,7 +1970,7 @@
               <long name="is-transient">0</long>
               <long name="locked">0</long>
               <long name="owns-file">1</long>
-              <string name="proxy-Bitmap">"run_script.xpm"</string>
+              <string name="proxy-Bitmap">"icons/run_script.xpm"</string>
               <string name="proxy-Bitmap (disabled)">""</string>
               <bool name="proxy-Enabled">1</bool>
               <string name="proxy-Help text">""</string>
@@ -2238,7 +2238,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               <bool name="proxy-Separate files">0</bool>
               <long name="proxy-Stretch factor">1</long>
-              <string name="proxy-Tab icon">"file_browser.xpm"</string>
+              <string name="proxy-Tab icon">"icons/file_browser.xpm"</string>
               <string name="proxy-Tab label">""</string>
               <string name="proxy-Tooltip text">""</string>
               <long name="proxy-Width">-1</long>
@@ -2348,7 +2348,7 @@
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               <bool name="proxy-Separate files">0</bool>
               <long name="proxy-Stretch factor">1</long>
-              <string name="proxy-Tab icon">"window_properties.xpm"</string>
+              <string name="proxy-Tab icon">"icons/window_properties.xpm"</string>
               <string name="proxy-Tab label">""</string>
               <string name="proxy-Tooltip text">""</string>
               <long name="proxy-Width">-1</long>
@@ -2948,7 +2948,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"opencontrol.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/opencontrol.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -2970,7 +2970,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"opendata.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/opendata.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -2993,7 +2993,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"open3d.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/open3d.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3028,7 +3028,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"histo_zoom.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/histo_zoom.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3051,7 +3051,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"openfiltered.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/openfiltered.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3086,7 +3086,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"histo_color.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/histo_color.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3109,7 +3109,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"histo_horvert.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/histo_horvert.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3132,7 +3132,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"hide_cols.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/hide_cols.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3155,7 +3155,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"semantic_color.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/semantic_color.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3178,7 +3178,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"inclusive.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/inclusive.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3201,7 +3201,7 @@
                   <long name="is-transient">0</long>
                   <long name="locked">0</long>
                   <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"histo_sum.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/histo_sum.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <bool name="proxy-Enabled">1</bool>
                   <string name="proxy-Help text">""</string>
@@ -3547,7 +3547,7 @@
                     <string name="proxy-AlignV">"Centre"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Base class">"wxStaticBitmap"</string>
-                    <string name="proxy-Bitmap">"caution.xpm"</string>
+                    <string name="proxy-Bitmap">"icons/caution.xpm"</string>
                     <long name="proxy-Border">5</long>
                     <string name="proxy-Class">"wxStaticBitmap"</string>
                     <string name="proxy-Custom arguments">""</string>
@@ -3614,7 +3614,7 @@
                     <string name="proxy-AlignV">"Centre"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Base class">"wxStaticBitmap"</string>
-                    <string name="proxy-Bitmap">"caution.xpm"</string>
+                    <string name="proxy-Bitmap">"icons/caution.xpm"</string>
                     <long name="proxy-Border">5</long>
                     <string name="proxy-Class">"wxStaticBitmap"</string>
                     <string name="proxy-Custom arguments">""</string>
@@ -4044,15 +4044,15 @@
               <string name="created">"28/7/2009"</string>
               <string name="event-handler-0">"wxEVT_SIZE|OnScrolledWindowSize|NONE||gTimeline"</string>
               <string name="event-handler-1">"wxEVT_PAINT|OnScrolledWindowPaint|NONE||gTimeline"</string>
-              <string name="event-handler-10">"wxEVT_LEFT_UP|OnScrolledWindowLeftUp|NONE||gTimeline"</string>
-              <string name="event-handler-2">"wxEVT_LEFT_DCLICK|OnScrolledWindowLeftDClick|NONE||gTimeline"</string>
-              <string name="event-handler-3">"wxEVT_MIDDLE_UP|OnScrolledWindowMiddleUp|NONE||gTimeline"</string>
-              <string name="event-handler-4">"wxEVT_RIGHT_DOWN|OnScrolledWindowRightDown|NONE||gTimeline"</string>
-              <string name="event-handler-5">"wxEVT_MOTION|OnScrolledWindowMotion|NONE||gTimeline"</string>
-              <string name="event-handler-6">"wxEVT_KEY_DOWN|OnScrolledWindowKeyDown|NONE||gTimeline"</string>
-              <string name="event-handler-7">"wxEVT_UPDATE_UI|OnScrolledWindowUpdate|NONE||gTimeline"</string>
-              <string name="event-handler-8">"wxEVT_ERASE_BACKGROUND|OnScrolledWindowEraseBackground|NONE||gTimeline"</string>
-              <string name="event-handler-9">"wxEVT_LEFT_DOWN|OnScrolledWindowLeftDown|NONE||gTimeline"</string>
+              <string name="event-handler-10">"wxEVT_LEFT_DOWN|OnScrolledWindowLeftDown|NONE||gTimeline"</string>
+              <string name="event-handler-2">"wxEVT_LEFT_UP|OnScrolledWindowLeftUp|NONE||gTimeline"</string>
+              <string name="event-handler-3">"wxEVT_LEFT_DCLICK|OnScrolledWindowLeftDClick|NONE||gTimeline"</string>
+              <string name="event-handler-4">"wxEVT_MIDDLE_UP|OnScrolledWindowMiddleUp|NONE||gTimeline"</string>
+              <string name="event-handler-5">"wxEVT_RIGHT_DOWN|OnScrolledWindowRightDown|NONE||gTimeline"</string>
+              <string name="event-handler-6">"wxEVT_MOTION|OnScrolledWindowMotion|NONE||gTimeline"</string>
+              <string name="event-handler-7">"wxEVT_KEY_DOWN|OnScrolledWindowKeyDown|NONE||gTimeline"</string>
+              <string name="event-handler-8">"wxEVT_UPDATE_UI|OnScrolledWindowUpdate|NONE||gTimeline"</string>
+              <string name="event-handler-9">"wxEVT_ERASE_BACKGROUND|OnScrolledWindowEraseBackground|NONE||gTimeline"</string>
               <string name="filename">""</string>
               <string name="icon-name">"scrolledwindow"</string>
               <long name="is-transient">0</long>
@@ -22945,7 +22945,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Base class">"wxBitmapButton"</string>
-                    <string name="proxy-Bitmap">"derived_add.xpm"</string>
+                    <string name="proxy-Bitmap">"icons/derived_add.xpm"</string>
                     <string name="proxy-Bitmap (disabled)">""</string>
                     <string name="proxy-Bitmap (focused)">""</string>
                     <string name="proxy-Bitmap (hover)">""</string>
@@ -23017,7 +23017,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Base class">"wxBitmapButton"</string>
-                    <string name="proxy-Bitmap">"delete.xpm"</string>
+                    <string name="proxy-Bitmap">"icons/delete.xpm"</string>
                     <string name="proxy-Bitmap (disabled)">""</string>
                     <string name="proxy-Bitmap (focused)">""</string>
                     <string name="proxy-Bitmap (hover)">""</string>
@@ -23089,7 +23089,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Base class">"wxBitmapButton"</string>
-                    <string name="proxy-Bitmap">"arrow_up.xpm"</string>
+                    <string name="proxy-Bitmap">"icons/arrow_up.xpm"</string>
                     <string name="proxy-Bitmap (disabled)">""</string>
                     <string name="proxy-Bitmap (focused)">""</string>
                     <string name="proxy-Bitmap (hover)">""</string>
@@ -23161,7 +23161,7 @@ In normal mode all properties are showed in main window."</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Base class">"wxBitmapButton"</string>
-                    <string name="proxy-Bitmap">"arrow_down.xpm"</string>
+                    <string name="proxy-Bitmap">"icons/arrow_down.xpm"</string>
                     <string name="proxy-Bitmap (disabled)">""</string>
                     <string name="proxy-Bitmap (focused)">""</string>
                     <string name="proxy-Bitmap (hover)">""</string>
@@ -23776,7 +23776,7 @@ Example: 50000001;50000002[;type] "</string>
                         <string name="proxy-AlignV">"Centre"</string>
                         <string name="proxy-Background colour">""</string>
                         <string name="proxy-Base class">"wxBitmapButton"</string>
-                        <string name="proxy-Bitmap">"derived_add.xpm"</string>
+                        <string name="proxy-Bitmap">"icons/derived_add.xpm"</string>
                         <string name="proxy-Bitmap (disabled)">""</string>
                         <string name="proxy-Bitmap (focused)">""</string>
                         <string name="proxy-Bitmap (hover)">""</string>
@@ -23848,7 +23848,7 @@ Example: 50000001;50000002[;type] "</string>
                         <string name="proxy-AlignV">"Centre"</string>
                         <string name="proxy-Background colour">""</string>
                         <string name="proxy-Base class">"wxBitmapButton"</string>
-                        <string name="proxy-Bitmap">"delete.xpm"</string>
+                        <string name="proxy-Bitmap">"icons/delete.xpm"</string>
                         <string name="proxy-Bitmap (disabled)">""</string>
                         <string name="proxy-Bitmap (focused)">""</string>
                         <string name="proxy-Bitmap (hover)">""</string>
@@ -23920,7 +23920,7 @@ Example: 50000001;50000002[;type] "</string>
                         <string name="proxy-AlignV">"Centre"</string>
                         <string name="proxy-Background colour">""</string>
                         <string name="proxy-Base class">"wxBitmapButton"</string>
-                        <string name="proxy-Bitmap">"arrow_up.xpm"</string>
+                        <string name="proxy-Bitmap">"icons/arrow_up.xpm"</string>
                         <string name="proxy-Bitmap (disabled)">""</string>
                         <string name="proxy-Bitmap (focused)">""</string>
                         <string name="proxy-Bitmap (hover)">""</string>
@@ -23992,7 +23992,7 @@ Example: 50000001;50000002[;type] "</string>
                         <string name="proxy-AlignV">"Centre"</string>
                         <string name="proxy-Background colour">""</string>
                         <string name="proxy-Base class">"wxBitmapButton"</string>
-                        <string name="proxy-Bitmap">"arrow_down.xpm"</string>
+                        <string name="proxy-Bitmap">"icons/arrow_down.xpm"</string>
                         <string name="proxy-Bitmap (disabled)">""</string>
                         <string name="proxy-Bitmap (focused)">""</string>
                         <string name="proxy-Bitmap (hover)">""</string>
@@ -25176,7 +25176,7 @@ Example: 50000001;50000002[;type] "</string>
                     <bool name="proxy-AUI hidden">0</bool>
                     <long name="proxy-AUI layer">0</long>
                     <bool name="proxy-AUI left dockable">1</bool>
-                    <bool name="proxy-AUI managed">1</bool>
+                    <bool name="proxy-AUI managed">0</bool>
                     <long name="proxy-AUI max height">-1</long>
                     <long name="proxy-AUI max width">-1</long>
                     <bool name="proxy-AUI maximize button">0</bool>
@@ -25208,7 +25208,6 @@ Example: 50000001;50000002[;type] "</string>
                     <string name="proxy-Data variable">""</string>
                     <bool name="proxy-Default">0</bool>
                     <bool name="proxy-Enabled">1</bool>
-                    <string name="proxy-Event sources">""</string>
                     <bool name="proxy-External implementation">1</bool>
                     <string name="proxy-Font">""</string>
                     <string name="proxy-Foreground colour">""</string>
@@ -25228,32 +25227,22 @@ Example: 50000001;50000002[;type] "</string>
                     <string name="proxy-Tooltip text">"Trace that will be used by the Cut/Filter toolkit."</string>
                     <long name="proxy-Width">-1</long>
                     <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                    <bool name="proxy-wxBORDER_THEME">0</bool>
                     <bool name="proxy-wxBOTTOM">1</bool>
                     <bool name="proxy-wxBU_BOTTOM">0</bool>
                     <bool name="proxy-wxBU_EXACTFIT">0</bool>
                     <bool name="proxy-wxBU_LEFT">0</bool>
                     <bool name="proxy-wxBU_RIGHT">0</bool>
                     <bool name="proxy-wxBU_TOP">0</bool>
-                    <bool name="proxy-wxCLIP_CHILDREN">0</bool>
-                    <bool name="proxy-wxDOUBLE_BORDER">0</bool>
                     <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                     <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
-                    <bool name="proxy-wxHSCROLL">0</bool>
                     <bool name="proxy-wxLEFT">1</bool>
                     <bool name="proxy-wxNO_BORDER">0</bool>
                     <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
-                    <bool name="proxy-wxRAISED_BORDER">0</bool>
                     <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                     <bool name="proxy-wxRIGHT">1</bool>
                     <bool name="proxy-wxSHAPED">0</bool>
-                    <bool name="proxy-wxSIMPLE_BORDER">1</bool>
-                    <bool name="proxy-wxSTATIC_BORDER">0</bool>
-                    <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                     <bool name="proxy-wxTOP">1</bool>
-                    <bool name="proxy-wxVSCROLL">0</bool>
                     <bool name="proxy-wxWANTS_CHARS">0</bool>
-                    <bool name="proxy-wxWS_EX_VALIDATE_RECURSIVELY">0</bool>
                     <long name="proxy-X">-1</long>
                     <long name="proxy-Y">-1</long>
                     <string name="title">"FileBrowserButton: ID_BUTTON"</string>
@@ -25492,7 +25481,7 @@ Example: 50000001;50000002[;type] "</string>
                       <bool name="proxy-AUI hidden">0</bool>
                       <long name="proxy-AUI layer">0</long>
                       <bool name="proxy-AUI left dockable">1</bool>
-                      <bool name="proxy-AUI managed">1</bool>
+                      <bool name="proxy-AUI managed">0</bool>
                       <long name="proxy-AUI max height">-1</long>
                       <long name="proxy-AUI max width">-1</long>
                       <bool name="proxy-AUI maximize button">0</bool>
@@ -25524,7 +25513,6 @@ Example: 50000001;50000002[;type] "</string>
                       <string name="proxy-Data variable">""</string>
                       <bool name="proxy-Default">0</bool>
                       <bool name="proxy-Enabled">1</bool>
-                      <string name="proxy-Event sources">""</string>
                       <bool name="proxy-External implementation">1</bool>
                       <string name="proxy-Font">""</string>
                       <string name="proxy-Foreground colour">""</string>
@@ -25544,32 +25532,22 @@ Example: 50000001;50000002[;type] "</string>
                       <string name="proxy-Tooltip text">"Trace generated by the Cut/Filter toolkit."</string>
                       <long name="proxy-Width">-1</long>
                       <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                      <bool name="proxy-wxBORDER_THEME">0</bool>
                       <bool name="proxy-wxBOTTOM">1</bool>
                       <bool name="proxy-wxBU_BOTTOM">0</bool>
                       <bool name="proxy-wxBU_EXACTFIT">0</bool>
                       <bool name="proxy-wxBU_LEFT">0</bool>
                       <bool name="proxy-wxBU_RIGHT">0</bool>
                       <bool name="proxy-wxBU_TOP">0</bool>
-                      <bool name="proxy-wxCLIP_CHILDREN">0</bool>
-                      <bool name="proxy-wxDOUBLE_BORDER">0</bool>
                       <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                       <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
-                      <bool name="proxy-wxHSCROLL">0</bool>
                       <bool name="proxy-wxLEFT">1</bool>
                       <bool name="proxy-wxNO_BORDER">0</bool>
                       <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
-                      <bool name="proxy-wxRAISED_BORDER">0</bool>
                       <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                       <bool name="proxy-wxRIGHT">1</bool>
                       <bool name="proxy-wxSHAPED">0</bool>
-                      <bool name="proxy-wxSIMPLE_BORDER">1</bool>
-                      <bool name="proxy-wxSTATIC_BORDER">0</bool>
-                      <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                       <bool name="proxy-wxTOP">1</bool>
-                      <bool name="proxy-wxVSCROLL">0</bool>
                       <bool name="proxy-wxWANTS_CHARS">0</bool>
-                      <bool name="proxy-wxWS_EX_VALIDATE_RECURSIVELY">0</bool>
                       <long name="proxy-X">-1</long>
                       <long name="proxy-Y">-1</long>
                       <string name="title">"FileBrowserButton: ID_BUTTON"</string>
@@ -26054,7 +26032,7 @@ Example: 50000001;50000002[;type] "</string>
                   <bool name="proxy-AUI hidden">0</bool>
                   <long name="proxy-AUI layer">0</long>
                   <bool name="proxy-AUI left dockable">1</bool>
-                  <bool name="proxy-AUI managed">1</bool>
+                  <bool name="proxy-AUI managed">0</bool>
                   <long name="proxy-AUI max height">-1</long>
                   <long name="proxy-AUI max width">-1</long>
                   <bool name="proxy-AUI maximize button">0</bool>
@@ -26086,7 +26064,6 @@ Example: 50000001;50000002[;type] "</string>
                   <string name="proxy-Data variable">""</string>
                   <bool name="proxy-Default">0</bool>
                   <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Event sources">""</string>
                   <bool name="proxy-External implementation">1</bool>
                   <string name="proxy-Font">""</string>
                   <string name="proxy-Foreground colour">""</string>
@@ -26106,32 +26083,22 @@ Example: 50000001;50000002[;type] "</string>
                   <string name="proxy-Tooltip text">"Load new settings from an xml file. Not used tools won't be changed. "</string>
                   <long name="proxy-Width">-1</long>
                   <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-                  <bool name="proxy-wxBORDER_THEME">0</bool>
                   <bool name="proxy-wxBOTTOM">1</bool>
                   <bool name="proxy-wxBU_BOTTOM">0</bool>
                   <bool name="proxy-wxBU_EXACTFIT">0</bool>
                   <bool name="proxy-wxBU_LEFT">0</bool>
                   <bool name="proxy-wxBU_RIGHT">0</bool>
                   <bool name="proxy-wxBU_TOP">0</bool>
-                  <bool name="proxy-wxCLIP_CHILDREN">0</bool>
-                  <bool name="proxy-wxDOUBLE_BORDER">0</bool>
                   <bool name="proxy-wxFIXED_MINSIZE">0</bool>
                   <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
-                  <bool name="proxy-wxHSCROLL">0</bool>
                   <bool name="proxy-wxLEFT">1</bool>
                   <bool name="proxy-wxNO_BORDER">0</bool>
                   <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
-                  <bool name="proxy-wxRAISED_BORDER">0</bool>
                   <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
                   <bool name="proxy-wxRIGHT">1</bool>
                   <bool name="proxy-wxSHAPED">0</bool>
-                  <bool name="proxy-wxSIMPLE_BORDER">1</bool>
-                  <bool name="proxy-wxSTATIC_BORDER">0</bool>
-                  <bool name="proxy-wxSUNKEN_BORDER">0</bool>
                   <bool name="proxy-wxTOP">1</bool>
-                  <bool name="proxy-wxVSCROLL">0</bool>
                   <bool name="proxy-wxWANTS_CHARS">0</bool>
-                  <bool name="proxy-wxWS_EX_VALIDATE_RECURSIVELY">0</bool>
                   <long name="proxy-X">-1</long>
                   <long name="proxy-Y">-1</long>
                   <string name="title">"FileBrowserButton: ID_FILEBROWSERBUTTON"</string>
@@ -26400,7 +26367,7 @@ Example: 50000001;50000002[;type] "</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Base class">"wxBitmapButton"</string>
-                    <string name="proxy-Bitmap">"arrow_up.xpm"</string>
+                    <string name="proxy-Bitmap">"icons/arrow_up.xpm"</string>
                     <string name="proxy-Bitmap (disabled)">""</string>
                     <string name="proxy-Bitmap (focused)">""</string>
                     <string name="proxy-Bitmap (hover)">""</string>
@@ -26471,7 +26438,7 @@ Example: 50000001;50000002[;type] "</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <string name="proxy-Background colour">""</string>
                     <string name="proxy-Base class">"wxBitmapButton"</string>
-                    <string name="proxy-Bitmap">"arrow_down.xpm"</string>
+                    <string name="proxy-Bitmap">"icons/arrow_down.xpm"</string>
                     <string name="proxy-Bitmap (disabled)">""</string>
                     <string name="proxy-Bitmap (focused)">""</string>
                     <string name="proxy-Bitmap (hover)">""</string>
@@ -35935,7 +35902,7 @@ Example: 50000001;50000002[;type] "</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <string name="proxy-Background colour">""</string>
                 <string name="proxy-Base class">"wxBitmapButton"</string>
-                <string name="proxy-Bitmap">"index.xpm"</string>
+                <string name="proxy-Bitmap">"icons/index.xpm"</string>
                 <string name="proxy-Bitmap (disabled)">""</string>
                 <string name="proxy-Bitmap (focused)">""</string>
                 <string name="proxy-Bitmap (hover)">""</string>
@@ -36007,7 +35974,7 @@ Example: 50000001;50000002[;type] "</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <string name="proxy-Background colour">""</string>
                 <string name="proxy-Base class">"wxBitmapButton"</string>
-                <string name="proxy-Bitmap">"arrow_left.xpm"</string>
+                <string name="proxy-Bitmap">"icons/arrow_left.xpm"</string>
                 <string name="proxy-Bitmap (disabled)">""</string>
                 <string name="proxy-Bitmap (focused)">""</string>
                 <string name="proxy-Bitmap (hover)">""</string>
@@ -36079,7 +36046,7 @@ Example: 50000001;50000002[;type] "</string>
                 <string name="proxy-AlignV">"Centre"</string>
                 <string name="proxy-Background colour">""</string>
                 <string name="proxy-Base class">"wxBitmapButton"</string>
-                <string name="proxy-Bitmap">"arrow_right.xpm"</string>
+                <string name="proxy-Bitmap">"icons/arrow_right.xpm"</string>
                 <string name="proxy-Bitmap (disabled)">""</string>
                 <string name="proxy-Bitmap (focused)">""</string>
                 <string name="proxy-Bitmap (hover)">""</string>
@@ -37383,7 +37350,7 @@ Example: 50000001;50000002[;type] "</string>
                   <string name="proxy-AlignV">"Centre"</string>
                   <string name="proxy-Background colour">""</string>
                   <string name="proxy-Base class">"wxBitmapButton"</string>
-                  <string name="proxy-Bitmap">"app_edit.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/app_edit.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <string name="proxy-Bitmap (focused)">""</string>
                   <string name="proxy-Bitmap (hover)">""</string>
@@ -39836,7 +39803,7 @@ Example: 50000001;50000002[;type] "</string>
                   <string name="proxy-AlignV">"Centre"</string>
                   <string name="proxy-Background colour">""</string>
                   <string name="proxy-Base class">"wxBitmapButton"</string>
-                  <string name="proxy-Bitmap">"app_edit.xpm"</string>
+                  <string name="proxy-Bitmap">"icons/app_edit.xpm"</string>
                   <string name="proxy-Bitmap (disabled)">""</string>
                   <string name="proxy-Bitmap (focused)">""</string>
                   <string name="proxy-Bitmap (hover)">""</string>
@@ -43355,7 +43322,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/copypaste.cpp"</string>
+          <string name="title">"copypaste.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/copypaste.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43367,7 +43334,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/copypaste.h"</string>
+          <string name="title">"copypaste.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/copypaste.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43379,7 +43346,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/filebrowserbutton.h"</string>
+          <string name="title">"filebrowserbutton.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/filebrowserbutton.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43390,7 +43357,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/filebrowserbutton.cpp"</string>
+          <string name="title">"filebrowserbutton.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/filebrowserbutton.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43402,7 +43369,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/filedialogext.cpp"</string>
+          <string name="title">"filedialogext.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/filedialogext.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43414,7 +43381,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/filedialogext.h"</string>
+          <string name="title">"filedialogext.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/filedialogext.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43438,7 +43405,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/popupmenu.cpp"</string>
+          <string name="title">"popupmenu.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/popupmenu.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43450,7 +43417,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/popupmenu.h"</string>
+          <string name="title">"popupmenu.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/popupmenu.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43462,7 +43429,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/windows_tree.cpp"</string>
+          <string name="title">"windows_tree.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/windows_tree.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43474,7 +43441,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/windows_tree.h"</string>
+          <string name="title">"windows_tree.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/windows_tree.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43498,7 +43465,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/pg_extraprop.h"</string>
+          <string name="title">"pg_extraprop.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/pg_extraprop.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43510,7 +43477,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/pg_extraprop.cpp"</string>
+          <string name="title">"pg_extraprop.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/pg_extraprop.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43522,7 +43489,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/pg_util.h"</string>
+          <string name="title">"pg_util.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/pg_util.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43533,7 +43500,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/pg_util.cpp"</string>
+          <string name="title">"pg_util.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/pg_util.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43545,7 +43512,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/connection.cpp"</string>
+          <string name="title">"connection.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/connection.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43557,7 +43524,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/connection.h"</string>
+          <string name="title">"connection.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/connection.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43569,7 +43536,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/histotablebase.h"</string>
+          <string name="title">"histotablebase.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/histotablebase.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43581,7 +43548,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/histotablebase.cpp"</string>
+          <string name="title">"histotablebase.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/histotablebase.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43593,7 +43560,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/sessionsaver.h"</string>
+          <string name="title">"sessionsaver.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/sessionsaver.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43605,7 +43572,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/sessionsaver.cpp"</string>
+          <string name="title">"sessionsaver.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/sessionsaver.cpp"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43617,7 +43584,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"include/sequencedriver.h"</string>
+          <string name="title">"sequencedriver.h"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"include/sequencedriver.h"</string>
           <string name="icon-name">"source-editor"</string>
@@ -43629,7 +43596,7 @@ If unchecked the above event  type/name will be used."</string>
           <string name="language">""</string>
         </document>
         <document>
-          <string name="title">"src/sequencedriver.cpp"</string>
+          <string name="title">"sequencedriver.cpp"</string>
           <string name="type">"source-editor-document"</string>
           <string name="filename">"src/sequencedriver.cpp"</string>
           <string name="icon-name">"source-editor"</string>

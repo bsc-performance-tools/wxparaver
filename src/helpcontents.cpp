@@ -47,9 +47,9 @@
 #include "paravermain.h"
 
 ////@begin XPM images
-#include "index.xpm"
-#include "arrow_left.xpm"
-#include "arrow_right.xpm"
+#include "../icons/index.xpm"
+#include "../icons/arrow_left.xpm"
+#include "../icons/arrow_right.xpm"
 ////@end XPM images
 
 /*!
@@ -317,17 +317,17 @@ void HelpContents::CreateControls()
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(itemBoxSizer4, 0, wxGROW|wxALL, 5);
 
-  wxBitmapButton* itemBitmapButton5 = new wxBitmapButton( itemDialog1, ID_BUTTON_INDEX, itemDialog1->GetBitmapResource(wxT("index.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  wxBitmapButton* itemBitmapButton5 = new wxBitmapButton( itemDialog1, ID_BUTTON_INDEX, itemDialog1->GetBitmapResource(wxT("icons/index.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (HelpContents::ShowToolTips())
     itemBitmapButton5->SetToolTip(_("Tutorials index page"));
   itemBoxSizer4->Add(itemBitmapButton5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  buttonHistoryBack = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_BACK, itemDialog1->GetBitmapResource(wxT("arrow_left.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonHistoryBack = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_BACK, itemDialog1->GetBitmapResource(wxT("icons/arrow_left.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (HelpContents::ShowToolTips())
     buttonHistoryBack->SetToolTip(_("Previous page"));
   itemBoxSizer4->Add(buttonHistoryBack, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  buttonHistoryForward = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_FORWARD, itemDialog1->GetBitmapResource(wxT("arrow_right.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonHistoryForward = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_FORWARD, itemDialog1->GetBitmapResource(wxT("icons/arrow_right.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (HelpContents::ShowToolTips())
     buttonHistoryForward->SetToolTip(_("Next page"));
   itemBoxSizer4->Add(buttonHistoryForward, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -360,17 +360,17 @@ wxBitmap HelpContents::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin HelpContents bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("index.xpm"))
+  if (name == wxT("icons/index.xpm"))
   {
     wxBitmap bitmap(text_list_bullets_xpm);
     return bitmap;
   }
-  else if (name == wxT("arrow_left.xpm"))
+  else if (name == wxT("icons/arrow_left.xpm"))
   {
     wxBitmap bitmap(arrow_left_xpm);
     return bitmap;
   }
-  else if (name == wxT("arrow_right.xpm"))
+  else if (name == wxT("icons/arrow_right.xpm"))
   {
     wxBitmap bitmap(arrow_right_xpm);
     return bitmap;

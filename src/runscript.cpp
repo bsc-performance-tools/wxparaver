@@ -65,7 +65,7 @@
 
 
 ////@begin XPM images
-#include "app_edit.xpm"
+#include "../icons/app_edit.xpm"
 ////@end XPM images
 
 BEGIN_EVENT_TABLE( RunningProcess, wxProcess )
@@ -489,7 +489,7 @@ void RunScript::CreateControls()
     textCtrlTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(textCtrlTrace, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     fileBrowserButtonTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(fileBrowserButtonTrace, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -521,12 +521,12 @@ void RunScript::CreateControls()
     textCtrlDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
   itemBoxSizer16->Add(textCtrlDimemasCFG, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonDimemasCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_DIMEMAS_CFG_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  fileBrowserButtonDimemasCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_DIMEMAS_CFG_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     fileBrowserButtonDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
   itemBoxSizer16->Add(fileBrowserButtonDimemasCFG, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  buttonDimemasGUI = new wxBitmapButton( itemDialog1, ID_BUTTON_DIMEMAS_GUI, itemDialog1->GetBitmapResource(wxT("app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonDimemasGUI = new wxBitmapButton( itemDialog1, ID_BUTTON_DIMEMAS_GUI, itemDialog1->GetBitmapResource(wxT("icons/app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (RunScript::ShowToolTips())
     buttonDimemasGUI->SetToolTip(_("Edit Dimemas Configuration File using DimemasGUI."));
   itemBoxSizer16->Add(buttonDimemasGUI, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
@@ -706,10 +706,10 @@ void RunScript::CreateControls()
   textCtrlClusteringXML = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_XML, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer60->Add(textCtrlClusteringXML, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonClusteringXML = new FileBrowserButton( itemDialog1, ID_BUTTON_CLUSTERING_XML, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  fileBrowserButtonClusteringXML = new FileBrowserButton( itemDialog1, ID_BUTTON_CLUSTERING_XML, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer60->Add(fileBrowserButtonClusteringXML, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  buttonClusteringXML = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_CLUSTERING_XML, itemDialog1->GetBitmapResource(wxT("app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  buttonClusteringXML = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_CLUSTERING_XML, itemDialog1->GetBitmapResource(wxT("icons/app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer60->Add(buttonClusteringXML, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer65 = new wxBoxSizer(wxHORIZONTAL);
@@ -1044,7 +1044,7 @@ wxBitmap RunScript::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin RunScript bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("app_edit.xpm"))
+  if (name == wxT("icons/app_edit.xpm"))
   {
     wxBitmap bitmap(app_edit_xpm);
     return bitmap;
