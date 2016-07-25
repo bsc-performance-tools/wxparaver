@@ -101,7 +101,7 @@ AC_DEFUN([AX_BOOST_SERIALIZATION],
 
             fi
 			if test "x$link_serialization" != "xyes"; then
-				AC_MSG_ERROR(Could not link against $ax_lib !)
+				AC_MSG_WARN([Could not link against $ax_lib !])
 			fi
 		fi
 
