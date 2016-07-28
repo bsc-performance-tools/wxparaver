@@ -26,7 +26,7 @@ ifdef([AM_PATH_WXCONFIG],
 fi
 
 if test "$wxWin" != 1; then
-  	AC_MSG_ERROR([
+  	AC_MSG_WARN([
 		wxWidgets must be installed on your system.
  
 		Please check that wx-config is in path, the directory
