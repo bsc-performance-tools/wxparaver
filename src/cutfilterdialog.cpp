@@ -56,6 +56,7 @@
 //#include "wxparaverapp.h"
 #include "loadedwindows.h"
 #include "runscript.h"
+#include "histogram.h"
 
 ////@begin XPM images
 #include "../icons/arrow_up.xpm"
@@ -92,6 +93,8 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
   EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionClick )
   EVT_UPDATE_UI( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionUpdate )
+  EVT_BUTTON( ID_BUTTON_CUTTER_ALL_WINDOW, CutFilterDialog::OnButtonCutterAllWindowClick )
+  EVT_UPDATE_UI( ID_BUTTON_CUTTER_ALL_WINDOW, CutFilterDialog::OnButtonCutterAllWindowUpdate )
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_TRACE, CutFilterDialog::OnButtonCutterAllTraceClick )
   EVT_UPDATE_UI( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckboxCheckCutterOriginalTimeUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_FILTER_DISCARD_STATE, CutFilterDialog::OnCheckboxFilterDiscardStateUpdate )
@@ -2916,5 +2919,50 @@ void CutFilterDialog::OnTextctrlCutFilterInputTraceTextUpdated( wxCommandEvent& 
   bool localEnable = globalEnable( auxSourceTrace );
   enableOutputTraceWidgets( localEnable );
   setOutputName( localEnable, false, auxSourceTrace );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_ALL_WINDOW
+ */
+
+void CutFilterDialog::OnButtonCutterAllWindowClick( wxCommandEvent& event )
+{
+  if( paraverMain::myParaverMain->GetCurrentTimeline() != NULL )
+  {
+    stringstream tmpsstr;
+    tmpsstr << fixed;
+
+    radioCutterCutByTime->SetValue( true );
+    tmpsstr << paraverMain::myParaverMain->GetCurrentTimeline()->getWindowBeginTime();
+    textCutterBeginCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
+    tmpsstr.str( "" );
+    tmpsstr << paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime();
+    textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
+  }
+  else if( paraverMain::myParaverMain->GetCurrentHisto() != NULL )
+  {
+    stringstream tmpsstr;
+    tmpsstr << fixed;
+
+    radioCutterCutByTime->SetValue( true );
+    tmpsstr << paraverMain::myParaverMain->GetCurrentHisto()->getBeginTime();
+    textCutterBeginCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
+    tmpsstr.str( "" );
+    tmpsstr << paraverMain::myParaverMain->GetCurrentHisto()->getEndTime();
+    textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
+  }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_CUTTER_ALL_WINDOW
+ */
+
+void CutFilterDialog::OnButtonCutterAllWindowUpdate( wxUpdateUIEvent& event )
+{
+  buttonCutterAllWindow->Enable( paraverMain::myParaverMain->GetCurrentTimeline() != NULL ||
+                                 paraverMain::myParaverMain->GetCurrentHisto() != NULL );
+
 }
 
