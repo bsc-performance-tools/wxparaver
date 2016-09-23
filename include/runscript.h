@@ -36,7 +36,7 @@
  */
 
 ////@begin includes
-#include "include/filebrowserbutton.h"
+#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -421,6 +421,12 @@ private:
   wxArrayString extensions;
   wxArrayString extensionsDimemas;
   
+  // Tags to detect times
+  wxString iterationTag;
+  wxString punctualTimeTag;
+  wxString rangeTimeTag;
+  wxArrayString timeMarkTags;
+  
   // Hidden app parameters
   wxString clusteringCSV;
   wxString foldingCSV;
@@ -458,6 +464,8 @@ private:
   // Log related
   bool readFoldingTag( wxString rawLine );
   wxString rawFormat( wxString rawLine );
+  bool timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition );
+  wxString insertTimeMarkLink( wxString rawLine,  std::pair< int, wxString > tagPosition );
   wxString insertLinks( wxString rawLine, wxArrayString extensions );
   wxString insertLog( wxString rawLine, wxArrayString extensions );
 

@@ -62,13 +62,9 @@ BEGIN_EVENT_TABLE( AdvancedSaveConfiguration, wxDialog )
 
 ////@begin AdvancedSaveConfiguration event table entries
   EVT_CHOICE( ID_CHOICE_WINDOW, AdvancedSaveConfiguration::OnChoiceWindowSelected )
-
   EVT_TOGGLEBUTTON( ID_TOGGLEBUTTON_LIST_SELECTED, AdvancedSaveConfiguration::OnToggleOnlySelectedClick )
-
   EVT_BUTTON( wxID_CANCEL, AdvancedSaveConfiguration::OnCancelClick )
-
   EVT_BUTTON( wxID_SAVE, AdvancedSaveConfiguration::OnSaveClick )
-
 ////@end AdvancedSaveConfiguration event table entries
 
 END_EVENT_TABLE()
@@ -237,7 +233,7 @@ void AdvancedSaveConfiguration::CreateControls()
 
   toggleOnlySelected = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON_LIST_SELECTED, _("View selected"), wxDefaultPosition, wxDefaultSize, 0 );
   toggleOnlySelected->SetValue(false);
-  toggleOnlySelected->SetName(_T("List Selected"));
+  toggleOnlySelected->SetName(wxT("List Selected"));
   itemBoxSizer6->Add(toggleOnlySelected, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   itemBoxSizer6->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);

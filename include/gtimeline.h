@@ -161,6 +161,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -181,12 +187,6 @@ public:
 
   /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMotion( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -471,6 +471,11 @@ void drawRowPunctual( wxDC& dc,
   
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
   
+  void drawTimeMarks( std::vector< TRecordTime> times,
+                      std::vector<TObjectOrder> &selectedObjects,
+                      bool drawXCross = false,
+                      bool allObjects = true,
+                      TObjectOrder lastFoundObject = TObjectOrder(0) );
   void OnFindDialog();
 
   gTimeline *clone( Window *clonedWindow,
@@ -608,7 +613,7 @@ private:
   void Unsplit();
   void Split();
   void OnTimerSize( wxTimerEvent& event );
-  void OnTimerMotion( wxTimerEvent& event );                    
+  void OnTimerMotion( wxTimerEvent& event );
 
   // Called by saveLabelsImage
   void drawRectangle( wxMemoryDC& labelDC,

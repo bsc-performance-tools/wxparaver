@@ -57,11 +57,14 @@
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 #include "wxparaverapp.h" // paraverMain
 #include "runscript.h"
 #include "filter.h"
 #include "cfg.h"
+#include "windows_tree.h"
+#include "gtimeline.h"
 
 
 ////@begin XPM images
@@ -357,8 +360,9 @@ void RunScript::Init()
                                    _(".xml"),
                                    _(".csv"), _(".dat"),
                                    _(".gnuplot"),
-                                   _(".pdf") };
-  extensions = wxArrayString( (size_t)8, extensionsAllowed );
+                                   _(".pdf"),
+                                   _("_time_mark"), _("_time_range_mark")};
+  extensions = wxArrayString( (size_t)10, extensionsAllowed );
   extensionsDimemas = extensions;
   extensionsDimemas.Remove(_(".cfg"));
 
@@ -368,21 +372,21 @@ void RunScript::Init()
   environmentVariable[ DIMEMAS_HOME ] = wxString( wxT("DIMEMAS_HOME") );
   
   // Labels to construct selector & warning dialogs
-  applicationLabel[ DIMEMAS_WRAPPER ]= wxString( wxT("Dimemas") );                          
-  applicationLabel[ STATS_WRAPPER ]  = wxString( wxT("Stats") );                             
-  applicationLabel[ CLUSTERING ]     = wxString( wxT("Clustering") );                             
-  applicationLabel[ FOLDING ]        = wxString( wxT("Folding") );                             
+  applicationLabel[ DIMEMAS_WRAPPER ]= wxString( wxT("Dimemas") );
+  applicationLabel[ STATS_WRAPPER ]  = wxString( wxT("Stats") );
+  applicationLabel[ CLUSTERING ]     = wxString( wxT("Clustering") );
+  applicationLabel[ FOLDING ]        = wxString( wxT("Folding") );
   applicationLabel[ USER_DEFINED ]   = wxString( wxT("User defined") );
   // Following only for warning dialogs
   applicationLabel[ DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
   applicationLabel[ STATS ]          = wxString( wxT("Stats") );
 
   // application names
-  application[ DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );                             
-  application[ STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );                             
-  application[ CLUSTERING ]          = wxString( wxT("BurstClustering") );                             
-  application[ FOLDING ]             = wxString( wxT("rri-auto") );                             
-  application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED                           
+  application[ DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );
+  application[ STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );
+  application[ CLUSTERING ]          = wxString( wxT("BurstClustering") );
+  application[ FOLDING ]             = wxString( wxT("rri-auto") );
+  application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED
   application[ DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
   application[ STATS ]               = wxString( wxT("stats") );
 
@@ -390,6 +394,12 @@ void RunScript::Init()
   
   tunePrvLinksForClustering = false;
   tunePrvLinksForFolding = false;
+
+  wxString tmpTimeMarkTags[] = { _("start @"), _("found @") };
+  timeMarkTags = wxArrayString( (size_t)2, tmpTimeMarkTags );
+  iterationTag = wxString( wxT("Iteration_") );
+  punctualTimeTag = timeMarkTags[0];
+  rangeTimeTag    = timeMarkTags[1];
   
   pidDimemasGUI = 0;
 
@@ -2012,11 +2022,99 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
 }
 
 
+// Check for presence of "Iteration_" && "found @ [" or "Iteration_" && "start @"
+bool RunScript::timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition )
+{
+  bool tagFound = false;
+
+  if ( rawLine.Find( iterationTag ) != wxNOT_FOUND )
+  {
+    for( size_t i = 0; i < timeMarkTags.Count(); ++i )
+    {
+      tagPosition.first = rawLine.Find( timeMarkTags[ i ] );
+
+      if ( tagPosition.first != wxNOT_FOUND )
+      {
+        tagPosition.second = timeMarkTags[ i ];
+        tagFound = true;
+        break;
+      }
+    }
+  }
+
+  return tagFound;
+}
+
+
+wxString RunScript::insertTimeMarkLink( wxString rawLine,  std::pair< int, wxString > tagPosition )
+{
+  wxString trashHead;
+  wxString trashTail;
+  wxString subStr;
+  wxString currentLink;
+  int endLine = rawLine.Len();
+
+  if ( tagPosition.second == punctualTimeTag )
+  {
+    endLine = rawLine.Len();
+
+    int tmpInit = tagPosition.first + punctualTimeTag.Len();
+    subStr = rawLine.Mid( tmpInit, endLine - tmpInit );
+
+    currentLink = wxT("<A HREF=\"") + subStr + extensions[8] + wxT("\">") + subStr + wxT("</A>");
+
+    trashHead = rawLine.Mid( 0, tmpInit );
+    rawLine = rawFormat( trashHead ) + currentLink;
+  }
+  else if ( tagPosition.second == rangeTimeTag )
+  {
+    endLine = rawLine.Len();
+    
+    int tmpBeginRangePos = rawLine.Find( wxString( wxT("[") ) );
+    if ( tmpBeginRangePos == wxNOT_FOUND )
+    {
+      tmpBeginRangePos = rawLine.Find( wxString( wxT("(") ) );
+    }
+    
+    int tmpEndRangePos = rawLine.Find( wxString( wxT("]") ) );
+    if ( tmpEndRangePos == wxNOT_FOUND )
+    {
+      tmpEndRangePos = rawLine.Find( wxString( wxT(")") ) );
+    }
+
+    if ( tmpBeginRangePos != wxNOT_FOUND && tmpEndRangePos != wxNOT_FOUND )
+    {
+    
+      int tmpInit = tmpBeginRangePos + 1;
+      subStr = rawLine.Mid( tmpInit, endLine - tmpInit - 1  );
+      currentLink = wxT("<A HREF=\"") + subStr + extensions[9] + wxT("\">") + subStr + wxT("</A>");
+
+      trashHead = rawLine.Mid( 0, tmpInit );
+      trashTail = rawLine.Mid( tmpEndRangePos, endLine - tmpEndRangePos );
+      rawLine = rawFormat( trashHead ) + currentLink + rawFormat( trashTail ) ;
+    }
+    else
+      rawLine = rawFormat( rawLine );
+  }
+  else // unknown !!!
+  {
+    rawLine = rawFormat( rawLine );
+  }
+  
+  return rawLine;
+}
+
+
 wxString RunScript::insertLog( wxString rawLine, wxArrayString extensions )
 {
   wxString formattedLine;
+  std::pair< int, wxString >  tagPosition;
 
-  if (( choiceApplication->GetSelection() == FOLDING ) && readFoldingTag( rawLine ) )
+  if ( timeMarkTagFound( rawLine, tagPosition ) )
+  {
+    formattedLine = insertTimeMarkLink( rawLine, tagPosition );
+  }
+  else if (( choiceApplication->GetSelection() == FOLDING ) && readFoldingTag( rawLine ) )
   {
     formattedLine = rawFormat( rawLine );
   }
@@ -2161,6 +2259,61 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
           command = filetype->GetOpenCommand( tmpFile );
           wxExecute( command );
         }
+      }
+    }
+  }
+  else if ( matchHrefExtension( event, extensions[8] )) // "_time_mark"
+  {
+    bool found;
+    gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), paraverMain::myParaverMain->GetCurrentTimeline(), found );
+    if ( found )
+    {
+      // Get time from href
+      wxString tmpTime = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+      string time = std::string( tmpTime.Mid( 0, tmpTime.Len() - extensions[8].Len() ).Trim(true).Trim(false).mb_str() );
+      stringstream aux( time );
+      double auxt1;
+      aux >> auxt1;
+    std::cout << time << std::endl;
+
+        // Draw time marks
+      vector< TRecordTime > tmpTimes;
+      tmpTimes.push_back( TRecordTime(auxt1) );
+      vector< TObjectOrder > dummySelectedObjects;
+      currentWindow->drawTimeMarks( tmpTimes, dummySelectedObjects );
+    }
+  }
+  else if ( matchHrefExtension( event, extensions[9] ))  // "_time_range_mark"
+  {
+    bool found;
+    gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), paraverMain::myParaverMain->GetCurrentTimeline(), found );
+    if ( found )
+    {
+      wxString hrefData = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+      int tmpTimesSeparator = hrefData.Find( wxString( wxT(",") ) );
+      if ( tmpTimesSeparator != wxNOT_FOUND )
+      {
+
+        // Get begin time from href
+        string time = std::string( hrefData.Mid( 0, tmpTimesSeparator ).Trim(true).Trim(false).mb_str() );
+        stringstream aux( time );
+        double beginTime;
+        aux >> beginTime;
+    std::cout << time << std::endl;
+
+        // Get time from href
+        time = std::string( hrefData.Mid( tmpTimesSeparator + 1, hrefData.Len() - tmpTimesSeparator - extensions[9].Len() - 1 ).Trim(true).Trim(false).mb_str() );
+        stringstream aux2( time );
+        double endTime;
+        aux2 >> endTime;
+    std::cout << time << std::endl;
+
+        // Draw time marks
+        vector< TRecordTime> tmpTimes;
+        tmpTimes.push_back( TRecordTime( beginTime ) );
+        tmpTimes.push_back( TRecordTime( endTime ) );
+        vector< TObjectOrder > dummySelectedObjects;
+        currentWindow->drawTimeMarks( tmpTimes, dummySelectedObjects );
       }
     }
   }

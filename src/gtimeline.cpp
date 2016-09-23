@@ -62,7 +62,7 @@
 #include "caution.xpm"
 #include "output.h"
 #include "filedialogext.h"
-//#include "progresscontroller.h"
+#include "progresscontroller.h"
 #include "paravermain.h"
 
 #ifdef __WXMAC__
@@ -334,6 +334,7 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
@@ -341,7 +342,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -4313,6 +4313,70 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   printWhatWhere();
 }
 
+
+void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
+                               vector< TObjectOrder > &selectedObjects,
+                               bool drawXCross,
+                               bool allObjects,
+                               TObjectOrder lastFoundObject )
+{
+  wxMemoryDC bufferDraw;
+
+  if( !ready )
+    return;
+    
+  if ( allObjects )
+  {
+    myWindow->getSelectedRows( myWindow->getLevel(), selectedObjects, true );
+    lastFoundObject = selectedObjects.size() -1;
+  }
+
+  bufferDraw.SelectObject( wxNullBitmap );
+  bufferDraw.SelectObject( drawImage );
+  bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
+
+  if( drawCaution )
+  {
+    wxBitmap cautionImage( caution_xpm );
+    bufferDraw.DrawBitmap( cautionImage,
+                           drawBorder,
+                           drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                           true );
+  }
+
+  if( myWindow->getDrawFlags() )
+    bufferDraw.DrawBitmap( eventImage, 0, 0, true );
+
+  if( myWindow->getDrawCommLines() )
+    bufferDraw.DrawBitmap( commImage, 0, 0, true );
+
+  for( std::vector< TRecordTime >::iterator it = times.begin(); it != times.end(); ++it )
+  {
+    if ( *it >= myWindow->getWindowBeginTime() && *it <= myWindow->getWindowEndTime() )
+    {
+
+      wxCoord xTime = ( ( ( *it - myWindow->getWindowBeginTime() ) * ( drawZone->GetSize().GetWidth() - objectAxisPos - drawBorder ) )
+                        / ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) )
+                      + objectAxisPos;
+
+      if ( drawXCross )
+      {
+        // draw found object cross
+        bufferDraw.SetPen( wxPen( *wxRED, 2 ) );
+        bufferDraw.DrawLine( xTime - 5, objectPosList[ lastFoundObject ] - 5, xTime + 5, objectPosList[ lastFoundObject ] + 5 );
+        bufferDraw.DrawLine( xTime - 5, objectPosList[ lastFoundObject ] + 5, xTime + 5, objectPosList[ lastFoundObject ] - 5 );
+      }
+      
+      // draw found time line
+      bufferDraw.SetPen( wxPen( *wxRED, 2, wxSHORT_DASH ) );
+      bufferDraw.DrawLine( xTime + 1, 0, xTime + 1, drawZone->GetSize().GetHeight() );
+    }
+  }
+  
+  drawZone->Refresh();
+}
+
+
 void gTimeline::OnFindDialog()
 {
   FindDialog dialog( this );
@@ -4535,12 +4599,19 @@ void gTimeline::OnFindDialog()
       }
     }
 
+
     findBeginTime   = beginTime;
     findEndTime     = endTime;
     findFirstObject = first;
     findLastObject  = last;
     lastFoundObject = objectSelection;
 
+    std::vector< TRecordTime > tmpTimes;
+    tmpTimes.push_back( lastSemanticFoundTime );
+    bool drawXCross = true;
+    bool allObjects = false;
+    drawTimeMarks( tmpTimes, selectedObjects, drawXCross, allObjects, objectSelection );
+/*
     wxMemoryDC bufferDraw;
 
     if( !ready )
@@ -4576,6 +4647,7 @@ void gTimeline::OnFindDialog()
     bufferDraw.SetPen( wxPen( *wxRED, 2, wxSHORT_DASH ) );
     bufferDraw.DrawLine( xTime + 1, 0, xTime + 1, drawZone->GetSize().GetHeight() );
     drawZone->Refresh();
+    */
   }
 }
 
@@ -4723,5 +4795,4 @@ void gTimeline::drawRowPunctual( wxDC& dc,
                          it->fromTime, rowPos );
 #endif
   }
-
 }
