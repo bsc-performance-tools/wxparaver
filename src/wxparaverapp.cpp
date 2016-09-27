@@ -655,13 +655,13 @@ int wxparaverApp::FilterEvent(wxEvent& event)
       else if ( keyCode == (long) 'V' )
         mainWindow->OnKeyPaste();
 #endif
+      else if( keyCode == WXK_DELETE )
+      {
+        wxCommandEvent dummyEvent;
+        mainWindow->OnTooldeleteClick( dummyEvent );
+      }
       else
         ret = -1;
-    }
-    else if (((wxKeyEvent&)event).GetKeyCode() == WXK_DELETE )
-    {
-      wxCommandEvent dummyEvent;
-      mainWindow->OnTooldeleteClick( dummyEvent );
     }
     else
       ret = -1;
