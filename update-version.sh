@@ -25,18 +25,18 @@ else
   echo; echo "[UPDATE-VERSION] ERROR: configure.ac not found!"
 fi
 
-if [ -f "paravermain.h" ]; then
-  cp paravermain.h paravermain.h.oldvers
+if [ -f "include/paravermain.h" ]; then
+  cp include/paravermain.h include/paravermain.h.oldvers
   export TAG_CONF=VERSION
   awk -F ' ' \
      '$0  ~ /define '${TAG_CONF}'/ { print $1 " '${TAG_CONF}' \"'${VERSION}'\"" ; } ;  \
-      $0 !~ /define '${TAG_CONF}'/ { print $0; }'  paravermain.h > paravermain.h.newchgvers
-  mv paravermain.h.newchgvers paravermain.h
-  echo; echo "[UPDATE-VERSION] Changes in paravermain.h:"
-  diff -s paravermain.h.oldvers paravermain.h
+      $0 !~ /define '${TAG_CONF}'/ { print $0; }'  include/paravermain.h > include/paravermain.h.newchgvers
+  mv include/paravermain.h.newchgvers include/paravermain.h
+  echo; echo "[UPDATE-VERSION] Changes in include/paravermain.h:"
+  diff -s include/paravermain.h.oldvers include/paravermain.h
   echo
 else
-  echo; echo "[UPDATE-VERSION] ERROR: paravermain.h not found!"
+  echo; echo "[UPDATE-VERSION] ERROR: include/paravermain.h not found!"
   echo
   exit 1
 fi
