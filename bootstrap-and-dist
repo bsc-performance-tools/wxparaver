@@ -13,6 +13,7 @@ automake -a -c
 if test `basename ${0}` = "bootstrap-and-dist" ; then
   ./configure
   make dist
+  make dist-bzip2
 fi
 
 
