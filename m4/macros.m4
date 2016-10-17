@@ -1,10 +1,10 @@
 # AX_PROG_WXPROPGRID_NAME
-# -----------
+# -----------------------
 AC_DEFUN([AX_PROG_WXPROPGRID_NAME],
 [
-   AC_ARG_WITH(wxpropgrid,
+   AC_ARG_WITH(wxpropgrid-name,
       AC_HELP_STRING(
-         [--with-wxpropgrid@<:@=NAME@:>@],
+         [--with-wxpropgrid-name@<:@=NAME@:>@],
          [specify name for wxPropertyGrid library instead of wxcode_gtk2u_propgrid-2.8]
       ),
       [WXPROPGRID_NAME=${withval}],
@@ -20,8 +20,26 @@ AC_DEFUN([AX_PROG_WXPROPGRID_NAME],
 ])
 
 
+
+# AX_PROG_WITH_WXPROPGRID
+# -----------------------
+AC_DEFUN([AX_PROG_WITH_WXPROPGRID],
+[
+   AC_ARG_WITH(wxpropgrid-dir,
+      AC_HELP_STRING(
+         [--with-wxpropgrid-dir@<:@=DIR@:>@],
+         [specify wxpropgrid installation directory. Default: /usr/local]
+      ),
+      [WXPROPGRID_DIR=${withval}],
+      [WXPROPGRID_DIR=/usr/local]
+   )
+   AC_SUBST(WXPROPGRID_DIR)
+])
+
+
+
 # AX_PROG_WITH_PARAVER
-# -----------
+# --------------------
 AC_DEFUN([AX_PROG_WITH_PARAVER],
 [
    AC_ARG_WITH(paraver,
@@ -34,6 +52,7 @@ AC_DEFUN([AX_PROG_WITH_PARAVER],
    )
    AC_SUBST(PARAVER_DIR)
 ])
+
 
 
 # AX_PROG_WITH_PARAVER_LIBDIR
@@ -58,8 +77,9 @@ AC_DEFUN([AX_PROG_WITH_PARAVER_LIBDIR],
 ])
 
 
+
 # AX_PROG_ENABLE_TRACING
-# -----------
+# ----------------------
 AC_DEFUN([AX_PROG_ENABLE_TRACING],
 [
   AC_ARG_ENABLE(tracing,
@@ -104,7 +124,7 @@ AC_DEFUN([AX_PROG_ENABLE_OLD_PCFPARSER],
 
 
 # AX_PROG_WITH_EXTRAE
-# -----------
+# -------------------
 AC_DEFUN([AX_PROG_WITH_EXTRAE],
 [
   AC_ARG_WITH(extrae,
@@ -124,8 +144,9 @@ AC_DEFUN([AX_PROG_WITH_EXTRAE],
   fi
 ])
 
+
 # AX_PROG_ENABLE_PARALLEL
-# -----------
+# -----------------------
 AC_DEFUN([AX_PROG_ENABLE_PARALLEL],
 [
   AC_ARG_ENABLE(parallel,
@@ -141,3 +162,5 @@ AC_DEFUN([AX_PROG_ENABLE_PARALLEL],
     LDFLAGS="$LDFLAGS -fPIC"
   fi
 ])
+
+
