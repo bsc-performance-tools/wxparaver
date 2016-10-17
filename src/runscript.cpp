@@ -2274,7 +2274,6 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
       stringstream aux( time );
       double auxt1;
       aux >> auxt1;
-    std::cout << time << std::endl;
 
         // Draw time marks
       vector< TRecordTime > tmpTimes;
@@ -2299,14 +2298,12 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
         stringstream aux( time );
         double beginTime;
         aux >> beginTime;
-    std::cout << time << std::endl;
 
-        // Get time from href
+        // Get end time from href
         time = std::string( hrefData.Mid( tmpTimesSeparator + 1, hrefData.Len() - tmpTimesSeparator - extensions[9].Len() - 1 ).Trim(true).Trim(false).mb_str() );
         stringstream aux2( time );
         double endTime;
         aux2 >> endTime;
-    std::cout << time << std::endl;
 
         // Draw time marks
         vector< TRecordTime> tmpTimes;
