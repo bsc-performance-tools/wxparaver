@@ -184,7 +184,6 @@ bool gHistogram::Create( wxWindow* parent, wxWindowID id, const wxString& captio
 
   CreateControls();
 ////@end gHistogram creation
-  this->parent = parent;
 
   return true;
 }
@@ -313,7 +312,7 @@ void gHistogram::CreateControls()
   mainSizer->Add(zoomHisto, 1, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(1, -1)).x);
   zoomHisto->SetScrollbars(1, 1, 0, 0);
 
-  gridHisto = new wxGrid( panelData, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxALWAYS_SHOW_SB );
+  gridHisto = new wxGrid( panelData, ID_GRIDHISTO, wxDefaultPosition, wxDefaultSize, 0 );
   gridHisto->SetDefaultColSize(wxDLG_UNIT(itemFrame1, wxSize(50, -1)).x);
   gridHisto->SetDefaultRowSize(wxDLG_UNIT(itemFrame1, wxSize(-1, 25)).y);
   gridHisto->SetColLabelSize(wxDLG_UNIT(itemFrame1, wxSize(-1, 25)).y);
