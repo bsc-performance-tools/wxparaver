@@ -31,9 +31,20 @@ AC_DEFUN([AX_PROG_WITH_WXPROPGRID],
          [specify wxpropgrid installation directory. Default: /usr/local]
       ),
       [WXPROPGRID_DIR=${withval}],
-      [WXPROPGRID_DIR=/usr/local]
+      [WXPROPGRID_DIR=""]
    )
+
+   if test "x$WXPROPGRID_DIR" = "x" ; then
+     WXPROPGRID_INCLUDE_DIR=""
+     WXPROPGRID_LIBDIR=""
+   else
+     WXPROPGRID_INCLUDE_DIR="$WXPROPGRID_DIR/include"
+     WXPROPGRID_LIBDIR="$WXPROPGRID_DIR/lib"
+   fi
+
    AC_SUBST(WXPROPGRID_DIR)
+   AC_SUBST(WXPROPGRID_INCLUDE_DIR)
+   AC_SUBST(WXPROPGRID_LIBDIR)
 ])
 
 
