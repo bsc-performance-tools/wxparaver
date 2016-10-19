@@ -2751,22 +2751,22 @@
           <long name="use-xrc">0</long>
           <string name="variable-0">"columnSelection|SelectionManagement&lt;THistogramColumn,int&gt;|ColumnSelection||2|0|"</string>
           <string name="variable-1">"drawImage|wxBitmap|DrawImage||2|0|"</string>
-          <string name="variable-10">"tableBase|HistoTableBase*|TableBase|NULL|2|0|"</string>
-          <string name="variable-11">"timerZoom|wxTimer *|TimerZoom|new wxTimer( this )|2|0|"</string>
-          <string name="variable-12">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
-          <string name="variable-13">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
-          <string name="variable-14">"zoomDragging|bool|ZoomDragging|false|2|0|"</string>
-          <string name="variable-15">"zoomImage|wxBitmap|ZoomImage||2|0|"</string>
-          <string name="variable-16">"zoomPointBegin|wxPoint|ZoomPointBegin||2|0|"</string>
-          <string name="variable-17">"zoomPointEnd|wxPoint|ZoomPointEnd||2|0|"</string>
-          <string name="variable-2">"escapePressed|bool|EscapePressed|false|2|0|"</string>
-          <string name="variable-3">"lastPosZoomX|double|LastPosZoomX|0|2|0|"</string>
-          <string name="variable-4">"lastPosZoomY|double|LastPosZoomY|0|2|0|"</string>
-          <string name="variable-5">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
-          <string name="variable-6">"openControlActivated|bool|OpenControlActivated|false|2|0|"</string>
-          <string name="variable-7">"ready|bool|Ready|false|2|0|"</string>
-          <string name="variable-8">"redrawStopWatch|wxStopWatch *|RedrawStopWatch|new wxStopWatch()|2|0|"</string>
-          <string name="variable-9">"selectedRows|vector&lt;TObjectOrder&gt;|SelectedRows||2|0|"</string>
+          <string name="variable-10">"escapePressed|bool|EscapePressed|false|2|0|"</string>
+          <string name="variable-11">"lastPosZoomX|double|LastPosZoomX|0|2|0|"</string>
+          <string name="variable-12">"lastPosZoomY|double|LastPosZoomY|0|2|0|"</string>
+          <string name="variable-13">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
+          <string name="variable-14">"openControlActivated|bool|OpenControlActivated|false|2|0|"</string>
+          <string name="variable-15">"ready|bool|Ready|false|2|0|"</string>
+          <string name="variable-16">"redrawStopWatch|wxStopWatch *|RedrawStopWatch|new wxStopWatch()|2|0|"</string>
+          <string name="variable-17">"selectedRows|vector&lt;TObjectOrder&gt;|SelectedRows||2|0|"</string>
+          <string name="variable-2">"tableBase|HistoTableBase*|TableBase|NULL|2|0|"</string>
+          <string name="variable-3">"timerZoom|wxTimer *|TimerZoom|new wxTimer( this )|2|0|"</string>
+          <string name="variable-4">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
+          <string name="variable-5">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
+          <string name="variable-6">"zoomDragging|bool|ZoomDragging|false|2|0|"</string>
+          <string name="variable-7">"zoomImage|wxBitmap|ZoomImage||2|0|"</string>
+          <string name="variable-8">"zoomPointBegin|wxPoint|ZoomPointBegin||2|0|"</string>
+          <string name="variable-9">"zoomPointEnd|wxPoint|ZoomPointEnd||2|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
@@ -2775,13 +2775,21 @@
             <long name="is-transient">0</long>
             <long name="locked">0</long>
             <long name="owns-file">1</long>
+            <string name="proxy-AlignH">"Centre"</string>
+            <string name="proxy-AlignV">"Centre"</string>
+            <long name="proxy-Border">5</long>
             <string name="proxy-Member variable name">""</string>
             <string name="proxy-Orientation">"Vertical"</string>
             <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+            <long name="proxy-Stretch factor">0</long>
             <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+            <bool name="proxy-wxBOTTOM">1</bool>
             <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+            <bool name="proxy-wxLEFT">1</bool>
             <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
+            <bool name="proxy-wxRIGHT">1</bool>
             <bool name="proxy-wxSHAPED">0</bool>
+            <bool name="proxy-wxTOP">1</bool>
             <string name="title">"wxBoxSizer V"</string>
             <long name="title-mode">0</long>
             <string name="type">"dialog-control-document"</string>
@@ -3093,10 +3101,10 @@
                   <string name="proxy-Id name">"ID_TOOLGRADIENT"</string>
                   <long name="proxy-Id value">10026</long>
                   <string name="proxy-Kind">"Check"</string>
-                  <string name="proxy-Label">"Gradient"</string>
+                  <string name="proxy-Label">"View Data Gradient Colors"</string>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  <string name="proxy-Tooltip">"View gradient colors"</string>
-                  <string name="title">"Gradient: ID_TOOLGRADIENT"</string>
+                  <string name="proxy-Tooltip">"View Data Gradient Colors"</string>
+                  <string name="title">"View Data Gradient Colors: ID_TOOLGRADIENT"</string>
                   <long name="title-mode">0</long>
                   <string name="type">"dialog-control-document"</string>
                 </document>
@@ -3139,10 +3147,10 @@
                   <string name="proxy-Id name">"ID_TOOL_HIDE_COLUMNS"</string>
                   <long name="proxy-Id value">10058</long>
                   <string name="proxy-Kind">"Check"</string>
-                  <string name="proxy-Label">"Hide empty columns"</string>
+                  <string name="proxy-Label">"Hide Empty Columns"</string>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  <string name="proxy-Tooltip">"Hide empty columns"</string>
-                  <string name="title">"Hide empty columns: ID_TOOL_HIDE_COLUMNS"</string>
+                  <string name="proxy-Tooltip">"Hide Empty Columns"</string>
+                  <string name="title">"Hide Empty Columns: ID_TOOL_HIDE_COLUMNS"</string>
                   <long name="title-mode">0</long>
                   <string name="type">"dialog-control-document"</string>
                 </document>
@@ -3162,10 +3170,56 @@
                   <string name="proxy-Id name">"ID_TOOL_LABEL_COLORS"</string>
                   <long name="proxy-Id value">10101</long>
                   <string name="proxy-Kind">"Check"</string>
-                  <string name="proxy-Label">"Label colors"</string>
+                  <string name="proxy-Label">"Enable Header Colors"</string>
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  <string name="proxy-Tooltip">"Label colors"</string>
-                  <string name="title">"Label colors: ID_TOOL_LABEL_COLORS"</string>
+                  <string name="proxy-Tooltip">"Enable Header Colors"</string>
+                  <string name="title">"Enable Header Colors: ID_TOOL_LABEL_COLORS"</string>
+                  <long name="title-mode">0</long>
+                  <string name="type">"dialog-control-document"</string>
+                </document>
+                <document>
+                  <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                  <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolShortLabelsClick|NONE||gHistogram"</string>
+                  <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolShortLabelsUpdate|NONE||gHistogram"</string>
+                  <string name="filename">""</string>
+                  <string name="icon-name">"menuitem"</string>
+                  <long name="is-transient">0</long>
+                  <long name="locked">0</long>
+                  <long name="owns-file">1</long>
+                  <string name="proxy-Bitmap">"icons/short_labels.xpm"</string>
+                  <string name="proxy-Bitmap (disabled)">""</string>
+                  <bool name="proxy-Enabled">1</bool>
+                  <string name="proxy-Help text">""</string>
+                  <string name="proxy-Id name">"ID_TOOL_SHORT_LABELS"</string>
+                  <long name="proxy-Id value">10287</long>
+                  <string name="proxy-Kind">"Check"</string>
+                  <string name="proxy-Label">"Shrink Header Labels"</string>
+                  <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Tooltip">"Shrink Header Labels"</string>
+                  <string name="title">"Shrink Header Labels: ID_TOOL_SHORT_LABELS"</string>
+                  <long name="title-mode">0</long>
+                  <string name="type">"dialog-control-document"</string>
+                </document>
+                <document>
+                  <string name="proxy-type">"wbToolBarButtonProxy"</string>
+                  <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOnlyTotalsClick|NONE||gHistogram"</string>
+                  <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolOnlyTotalsUpdate|NONE||gHistogram"</string>
+                  <string name="filename">""</string>
+                  <string name="icon-name">"menuitem"</string>
+                  <long name="is-transient">0</long>
+                  <long name="locked">0</long>
+                  <long name="owns-file">1</long>
+                  <string name="proxy-Bitmap">"icons/histo_sum.xpm"</string>
+                  <string name="proxy-Bitmap (disabled)">""</string>
+                  <bool name="proxy-Enabled">1</bool>
+                  <string name="proxy-Help text">""</string>
+                  <string name="proxy-Id name">"ID_TOOL_ONLY_TOTALS"</string>
+                  <long name="proxy-Id value">10286</long>
+                  <string name="proxy-Kind">"Check"</string>
+                  <string name="proxy-Label">"Show Totals Only"</string>
+                  <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                  <string name="proxy-Tooltip">"Show Totals Only"</string>
+                  <string name="title">"Show Totals Only: ID_TOOL_ONLY_TOTALS"</string>
                   <long name="title-mode">0</long>
                   <string name="type">"dialog-control-document"</string>
                 </document>
@@ -3189,29 +3243,6 @@
                   <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
                   <string name="proxy-Tooltip">"Inclusive/Exclusive"</string>
                   <string name="title">"Inclusive/Exclusive: ID_TOOL_INCLUSIVE"</string>
-                  <long name="title-mode">0</long>
-                  <string name="type">"dialog-control-document"</string>
-                </document>
-                <document>
-                  <string name="proxy-type">"wbToolBarButtonProxy"</string>
-                  <string name="event-handler-0">"wxEVT_COMMAND_MENU_SELECTED|OnToolOnlyTotalsClick|NONE||gHistogram"</string>
-                  <string name="event-handler-1">"wxEVT_UPDATE_UI|OnToolOnlyTotalsUpdate|NONE||gHistogram"</string>
-                  <string name="filename">""</string>
-                  <string name="icon-name">"menuitem"</string>
-                  <long name="is-transient">0</long>
-                  <long name="locked">0</long>
-                  <long name="owns-file">1</long>
-                  <string name="proxy-Bitmap">"icons/histo_sum.xpm"</string>
-                  <string name="proxy-Bitmap (disabled)">""</string>
-                  <bool name="proxy-Enabled">1</bool>
-                  <string name="proxy-Help text">""</string>
-                  <string name="proxy-Id name">"ID_TOOL_ONLY_TOTALS"</string>
-                  <long name="proxy-Id value">10286</long>
-                  <string name="proxy-Kind">"Check"</string>
-                  <string name="proxy-Label">"Show totals only"</string>
-                  <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-                  <string name="proxy-Tooltip">"Show totals only"</string>
-                  <string name="title">"Show totals only: ID_TOOL_ONLY_TOTALS"</string>
                   <long name="title-mode">0</long>
                   <string name="type">"dialog-control-document"</string>
                 </document>
@@ -33255,7 +33286,7 @@ Example: 50000001;50000002[;type] "</string>
                     <long name="is-transient">0</long>
                     <long name="locked">0</long>
                     <long name="owns-file">1</long>
-                    <string name="proxy-AlignH">"Right"</string>
+                    <string name="proxy-AlignH">"Expand"</string>
                     <string name="proxy-AlignV">"Centre"</string>
                     <long name="proxy-Border">5</long>
                     <string name="proxy-Member variable name">""</string>
@@ -33273,6 +33304,99 @@ Example: 50000001;50000002[;type] "</string>
                     <string name="title">"wxBoxSizer H"</string>
                     <long name="title-mode">0</long>
                     <string name="type">"dialog-control-document"</string>
+                    <document>
+                      <string name="proxy-type">"wbToggleButtonProxy"</string>
+                      <string name="event-handler-0">"wxEVT_COMMAND_CHECKBOX_CLICKED|OnTogglebuttonShortLabelsClick|NONE||EventsSelectionDialog"</string>
+                      <string name="filename">""</string>
+                      <string name="icon-name">"togglebutton"</string>
+                      <long name="is-transient">0</long>
+                      <long name="locked">0</long>
+                      <long name="owns-file">1</long>
+                      <string name="proxy-AlignH">"Centre"</string>
+                      <string name="proxy-AlignV">"Centre"</string>
+                      <string name="proxy-Background colour">""</string>
+                      <string name="proxy-Base class">"wxToggleButton"</string>
+                      <long name="proxy-Border">5</long>
+                      <string name="proxy-Class">"wxToggleButton"</string>
+                      <string name="proxy-Custom arguments">""</string>
+                      <string name="proxy-Custom ctor arguments">""</string>
+                      <string name="proxy-Custom styles">""</string>
+                      <string name="proxy-Data class header filename">""</string>
+                      <string name="proxy-Data class implementation filename">""</string>
+                      <string name="proxy-Data class manager window">""</string>
+                      <string name="proxy-Data class name">""</string>
+                      <string name="proxy-Data source">""</string>
+                      <string name="proxy-Data validator">""</string>
+                      <string name="proxy-Data variable">""</string>
+                      <bool name="proxy-Enabled">1</bool>
+                      <bool name="proxy-External implementation">1</bool>
+                      <string name="proxy-Font">""</string>
+                      <string name="proxy-Foreground colour">""</string>
+                      <string name="proxy-Header filename">""</string>
+                      <long name="proxy-Height">-1</long>
+                      <string name="proxy-Help text">"Show short labels instead of complete"</string>
+                      <bool name="proxy-Hidden">0</bool>
+                      <string name="proxy-Id name">"ID_TOGGLEBUTTON_SHORT_LABELS"</string>
+                      <long name="proxy-Id value">10000</long>
+                      <string name="proxy-Implementation filename">""</string>
+                      <bool name="proxy-Initial value">1</bool>
+                      <string name="proxy-Label">"Short Labels"</string>
+                      <string name="proxy-Member variable name">"buttonShortLabels"</string>
+                      <string name="proxy-Name">""</string>
+                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <bool name="proxy-Separate files">0</bool>
+                      <long name="proxy-Stretch factor">0</long>
+                      <string name="proxy-Tooltip text">"Show short labels instead of complete"</string>
+                      <long name="proxy-Width">-1</long>
+                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+                      <bool name="proxy-wxBOTTOM">1</bool>
+                      <bool name="proxy-wxBU_BOTTOM">0</bool>
+                      <bool name="proxy-wxBU_EXACTFIT">0</bool>
+                      <bool name="proxy-wxBU_LEFT">0</bool>
+                      <bool name="proxy-wxBU_RIGHT">0</bool>
+                      <bool name="proxy-wxBU_TOP">0</bool>
+                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+                      <bool name="proxy-wxFULL_REPAINT_ON_RESIZE">0</bool>
+                      <bool name="proxy-wxLEFT">1</bool>
+                      <bool name="proxy-wxNO_BORDER">0</bool>
+                      <bool name="proxy-wxNO_FULL_REPAINT_ON_RESIZE">0</bool>
+                      <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
+                      <bool name="proxy-wxRIGHT">1</bool>
+                      <bool name="proxy-wxSHAPED">0</bool>
+                      <bool name="proxy-wxTOP">1</bool>
+                      <bool name="proxy-wxWANTS_CHARS">0</bool>
+                      <long name="proxy-X">-1</long>
+                      <long name="proxy-Y">-1</long>
+                      <string name="title">"wxToggleButton: ID_TOGGLEBUTTON_SHORT_LABELS"</string>
+                      <long name="title-mode">0</long>
+                      <string name="type">"dialog-control-document"</string>
+                    </document>
+                    <document>
+                      <string name="proxy-type">"wbSpacerProxy"</string>
+                      <string name="filename">""</string>
+                      <string name="icon-name">"spacer"</string>
+                      <long name="is-transient">0</long>
+                      <long name="locked">0</long>
+                      <long name="owns-file">1</long>
+                      <string name="proxy-AlignH">"Centre"</string>
+                      <string name="proxy-AlignV">"Centre"</string>
+                      <long name="proxy-Border">5</long>
+                      <long name="proxy-Height">5</long>
+                      <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
+                      <long name="proxy-Stretch factor">1</long>
+                      <long name="proxy-Width">5</long>
+                      <bool name="proxy-wxADJUST_MINSIZE">0</bool>
+                      <bool name="proxy-wxBOTTOM">1</bool>
+                      <bool name="proxy-wxFIXED_MINSIZE">0</bool>
+                      <bool name="proxy-wxLEFT">1</bool>
+                      <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
+                      <bool name="proxy-wxRIGHT">1</bool>
+                      <bool name="proxy-wxSHAPED">0</bool>
+                      <bool name="proxy-wxTOP">1</bool>
+                      <string name="title">"Spacer"</string>
+                      <long name="title-mode">0</long>
+                      <string name="type">"dialog-control-document"</string>
+                    </document>
                     <document>
                       <string name="proxy-type">"wbButtonProxy"</string>
                       <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnButtonSetAllValuesClick|NONE||EventsSelectionDialog"</string>
@@ -33481,7 +33605,7 @@ Example: 50000001;50000002[;type] "</string>
               <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
               <long name="proxy-Stretch factor">0</long>
               <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-              <bool name="proxy-wxBOTTOM">0</bool>
+              <bool name="proxy-wxBOTTOM">1</bool>
               <bool name="proxy-wxFIXED_MINSIZE">0</bool>
               <bool name="proxy-wxID_APPLY">1</bool>
               <bool name="proxy-wxID_CANCEL">1</bool>
@@ -33633,32 +33757,6 @@ Example: 50000001;50000002[;type] "</string>
                 <long name="title-mode">0</long>
                 <string name="type">"dialog-control-document"</string>
               </document>
-            </document>
-            <document>
-              <string name="proxy-type">"wbBoxSizerProxy"</string>
-              <string name="filename">""</string>
-              <string name="icon-name">"sizer"</string>
-              <long name="is-transient">0</long>
-              <long name="locked">0</long>
-              <long name="owns-file">1</long>
-              <string name="proxy-AlignH">"Expand"</string>
-              <string name="proxy-AlignV">"Centre"</string>
-              <long name="proxy-Border">5</long>
-              <string name="proxy-Member variable name">"boxSizerOperatorsChoice"</string>
-              <string name="proxy-Orientation">"Horizontal"</string>
-              <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
-              <long name="proxy-Stretch factor">0</long>
-              <bool name="proxy-wxADJUST_MINSIZE">0</bool>
-              <bool name="proxy-wxBOTTOM">1</bool>
-              <bool name="proxy-wxFIXED_MINSIZE">0</bool>
-              <bool name="proxy-wxLEFT">1</bool>
-              <bool name="proxy-wxRESERVE_SPACE_EVEN_IF_HIDDEN">0</bool>
-              <bool name="proxy-wxRIGHT">1</bool>
-              <bool name="proxy-wxSHAPED">0</bool>
-              <bool name="proxy-wxTOP">1</bool>
-              <string name="title">"wxBoxSizer H"</string>
-              <long name="title-mode">0</long>
-              <string name="type">"dialog-control-document"</string>
             </document>
           </document>
         </document>
@@ -44128,6 +44226,17 @@ If unchecked the above event  type/name will be used."</string>
           <long name="title-mode">0</long>
           <long name="locked">0</long>
           <long name="zoom-level">100</long>
+        </document>
+        <document>
+          <string name="title">"short_labels.xpm"</string>
+          <string name="type">"image-document"</string>
+          <string name="filename">"icons/short_labels.xpm"</string>
+          <string name="icon-name">"image"</string>
+          <long name="is-transient">0</long>
+          <long name="owns-file">0</long>
+          <long name="title-mode">0</long>
+          <long name="locked">0</long>
+          <long name="zoom-level">-1</long>
         </document>
       </document>
     </document>

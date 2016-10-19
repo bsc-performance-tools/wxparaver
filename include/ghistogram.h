@@ -78,8 +78,9 @@ class HistoTableBase;
 #define ID_TOOLHORIZVERT 10027
 #define ID_TOOL_HIDE_COLUMNS 10058
 #define ID_TOOL_LABEL_COLORS 10101
-#define ID_TOOL_INCLUSIVE 10105
+#define ID_TOOL_SHORT_LABELS 10287
 #define ID_TOOL_ONLY_TOTALS 10286
+#define ID_TOOL_INCLUSIVE 10105
 #define HISTO_PANEL_DATA 10000
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
@@ -178,17 +179,23 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_LABEL_COLORS
   void OnToolLabelColorsUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_INCLUSIVE
-  void OnToolInclusiveClick( wxCommandEvent& event );
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_SHORT_LABELS
+  void OnToolShortLabelsClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_TOOL_INCLUSIVE
-  void OnToolInclusiveUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_SHORT_LABELS
+  void OnToolShortLabelsUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_ONLY_TOTALS
   void OnToolOnlyTotalsClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_ONLY_TOTALS
   void OnToolOnlyTotalsUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_INCLUSIVE
+  void OnToolInclusiveClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_INCLUSIVE
+  void OnToolInclusiveUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_PAINT event handler for ID_ZOOMHISTO
   void OnPaint( wxPaintEvent& event );

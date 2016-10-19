@@ -79,6 +79,7 @@ BEGIN_EVENT_TABLE( EventsSelectionDialog, wxDialog )
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_VALUES, EventsSelectionDialog::OnChecklistboxValuesDoubleClicked )
   EVT_CHECKLISTBOX( ID_CHECKLISTBOX_VALUES, EventsSelectionDialog::OnChecklistboxValuesToggled )
   EVT_BUTTON( ID_BUTTON_ADD_VALUES, EventsSelectionDialog::OnButtonAddValuesClick )
+  EVT_TOGGLEBUTTON( ID_TOGGLEBUTTON_SHORT_LABELS, EventsSelectionDialog::OnTogglebuttonShortLabelsClick )
   EVT_BUTTON( ID_BUTTON_SET_ALL_VALUES, EventsSelectionDialog::OnButtonSetAllValuesClick )
   EVT_BUTTON( ID_BUTTON_UNSET_ALL_VALUES, EventsSelectionDialog::OnButtonUnsetAllValuesClick )
   EVT_BUTTON( wxID_APPLY, EventsSelectionDialog::OnApplyClick )
@@ -309,10 +310,6 @@ bool EventsSelectionDialog::Create( wxWindow* parent,
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if (GetSizer())
-  {
-    GetSizer()->SetSizeHints(this);
-  }
   Centre();
 ////@end EventsSelectionDialog creation
   return true;
@@ -346,10 +343,10 @@ void EventsSelectionDialog::Init()
   checkListSelectValues = NULL;
   textCtrlAddValues = NULL;
   buttonAddValues = NULL;
+  buttonShortLabels = NULL;
   buttonSetAllValues = NULL;
   buttonUnsetAllValues = NULL;
   applyButton = NULL;
-  boxSizerOperatorsChoice = NULL;
 ////@end EventsSelectionDialog member initialisation
 
   hideOperatorsList = false;
@@ -468,7 +465,16 @@ void EventsSelectionDialog::CreateControls()
   itemBoxSizer23->Add(buttonAddValues, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
 
   wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer18->Add(itemBoxSizer26, 0, wxALIGN_RIGHT|wxRIGHT, 5);
+  itemStaticBoxSizer18->Add(itemBoxSizer26, 0, wxGROW|wxRIGHT, 5);
+
+  buttonShortLabels = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON_SHORT_LABELS, _("Short Labels"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonShortLabels->SetValue(true);
+  buttonShortLabels->SetHelpText(_("Show short labels instead of complete"));
+  if (EventsSelectionDialog::ShowToolTips())
+    buttonShortLabels->SetToolTip(_("Show short labels instead of complete"));
+  itemBoxSizer26->Add(buttonShortLabels, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  itemBoxSizer26->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   buttonSetAllValues = new wxButton( itemDialog1, ID_BUTTON_SET_ALL_VALUES, _("Set all"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer26->Add(buttonSetAllValues, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -476,22 +482,19 @@ void EventsSelectionDialog::CreateControls()
   buttonUnsetAllValues = new wxButton( itemDialog1, ID_BUTTON_UNSET_ALL_VALUES, _("Unset all"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer26->Add(buttonUnsetAllValues, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
 
-  wxStaticLine* itemStaticLine29 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-  itemBoxSizer2->Add(itemStaticLine29, 0, wxGROW|wxALL, 5);
+  wxStaticLine* itemStaticLine31 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+  itemBoxSizer2->Add(itemStaticLine31, 0, wxGROW|wxALL, 5);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer30 = new wxStdDialogButtonSizer;
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer32 = new wxStdDialogButtonSizer;
 
-  itemBoxSizer2->Add(itemStdDialogButtonSizer30, 0, wxALIGN_RIGHT|wxLEFT|wxRIGHT|wxTOP, 5);
-  wxButton* itemButton31 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer30->AddButton(itemButton31);
+  itemBoxSizer2->Add(itemStdDialogButtonSizer32, 0, wxALIGN_RIGHT|wxALL, 5);
+  wxButton* itemButton33 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer32->AddButton(itemButton33);
 
   applyButton = new wxButton( itemDialog1, wxID_APPLY, _("&Apply"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer30->AddButton(applyButton);
+  itemStdDialogButtonSizer32->AddButton(applyButton);
 
-  itemStdDialogButtonSizer30->Realize();
-
-  boxSizerOperatorsChoice = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(boxSizerOperatorsChoice, 0, wxGROW|wxALL, 5);
+  itemStdDialogButtonSizer32->Realize();
 
   // Connect events and objects
   textCtrlAddValues->Connect(ID_TEXTCTRL_ADD_VALUES, wxEVT_KEY_DOWN, wxKeyEventHandler(EventsSelectionDialog::OnTextCtrlKeyDown), NULL, this);
@@ -951,6 +954,12 @@ void EventsSelectionDialog::UpdateCheckListboxValues( TEventType type )
       tmpStrLabel << eventValues[ i ];
       tmpLabel = tmpStrLabel.str();
     }
+    else
+    {
+      if( buttonShortLabels->GetValue() )
+        LabelConstructor::transformToShort( tmpLabel );
+    }
+
     tmpEventValues.Add( wxString::FromAscii( tmpLabel.c_str() ) );
   }
 
@@ -1157,5 +1166,15 @@ void EventsSelectionDialog::EnableApplyButton()
 void EventsSelectionDialog::OnApplyUpdate( wxUpdateUIEvent& event )
 {
   EnableApplyButton();
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_TOGGLEBUTTON_SHORT_LABELS
+ */
+
+void EventsSelectionDialog::OnTogglebuttonShortLabelsClick( wxCommandEvent& event )
+{
+  UpdateCheckListboxValues( currentType );
 }
 

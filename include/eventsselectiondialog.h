@@ -43,6 +43,7 @@ using namespace std;
 
 ////@begin includes
 #include "wx/statline.h"
+#include "wx/tglbtn.h"
 ////@end includes
 
 
@@ -53,6 +54,7 @@ using namespace std;
 
 ////@begin forward declarations
 class wxBoxSizer;
+class wxToggleButton;
 ////@end forward declarations
 
 class gTimeline;
@@ -74,12 +76,13 @@ class Filter;
 #define ID_CHECKLISTBOX_VALUES 10162
 #define ID_TEXTCTRL_ADD_VALUES 10168
 #define ID_BUTTON_ADD_VALUES 10169
+#define ID_TOGGLEBUTTON_SHORT_LABELS 10000
 #define ID_BUTTON_SET_ALL_VALUES 10165
 #define ID_BUTTON_UNSET_ALL_VALUES 10166
 #define SYMBOL_EVENTSSELECTIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_EVENTSSELECTIONDIALOG_TITLE _("Events Selection")
 #define SYMBOL_EVENTSSELECTIONDIALOG_IDNAME ID_EVENTSSELECTIONDIALOG
-#define SYMBOL_EVENTSSELECTIONDIALOG_SIZE wxSize(400, 300)
+#define SYMBOL_EVENTSSELECTIONDIALOG_SIZE wxSize(800, 400)
 #define SYMBOL_EVENTSSELECTIONDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -184,6 +187,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ADD_VALUES
   void OnButtonAddValuesClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_TOGGLEBUTTON_SHORT_LABELS
+  void OnTogglebuttonShortLabelsClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SET_ALL_VALUES
   void OnButtonSetAllValuesClick( wxCommandEvent& event );
 
@@ -243,10 +249,10 @@ public:
   wxCheckListBox* checkListSelectValues;
   wxTextCtrl* textCtrlAddValues;
   wxButton* buttonAddValues;
+  wxToggleButton* buttonShortLabels;
   wxButton* buttonSetAllValues;
   wxButton* buttonUnsetAllValues;
   wxButton* applyButton;
-  wxBoxSizer* boxSizerOperatorsChoice;
 ////@end EventsSelectionDialog member variables
 
   bool hideOperatorsList; // let the dialog show or not the type/values/and-or selectors
