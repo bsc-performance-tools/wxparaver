@@ -25,5 +25,6 @@ src/*.o
 stamp-h1
 icons/*.prv.jpg
 wxparaver.pjd.bak
+wxparaver.pjd.orig
 
 
