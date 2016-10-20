@@ -36,6 +36,7 @@ noinst_HEADERS = \
               openfiltered.xpm\
               run_script.xpm\
               semantic_color.xpm\
+							short_labels.xpm\
               table.xpm\
               timeline.xpm\
               window_properties.xpm
