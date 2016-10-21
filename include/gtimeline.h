@@ -161,6 +161,18 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowRightDown( wxMouseEvent& event );
+
+  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMotion( wxMouseEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -175,18 +187,6 @@ public:
 
   /// wxEVT_MIDDLE_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMiddleUp( wxMouseEvent& event );
-
-  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowRightDown( wxMouseEvent& event );
-
-  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowMotion( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -389,7 +389,7 @@ public:
 void drawRowPunctual( wxDC& dc,
                       TObjectOrder firstRow, TObjectOrder lastRow,
                       vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                      vector< vector< TSemanticValue > >& valuesToDraw,
+                      vector< vector< pair<TSemanticValue,TSemanticValue> > >& valuesToDraw,
                       hash_set< PRV_INT32 >& eventsToDraw,
                       hash_set< commCoord >& commsToDraw,
                       wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
@@ -398,7 +398,7 @@ void drawRowPunctual( wxDC& dc,
 void drawRowPunctual( wxDC& dc,
                       TObjectOrder firstRow, TObjectOrder lastRow,
                       vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                      vector< vector< TSemanticValue > >& valuesToDraw,
+                      vector< vector< pair<TSemanticValue,TSemanticValue> > >& valuesToDraw,
                       hash_set< PRV_INT32 >& eventsToDraw,
                       hash_set< commCoord, hashCommCoord >& commsToDraw,
                       wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,

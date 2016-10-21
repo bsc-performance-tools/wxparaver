@@ -334,14 +334,14 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -598,7 +598,7 @@ void gTimeline::redraw()
   vector< hash_set< commCoord, hashCommCoord > > commsToDraw;
 #endif
 
-  vector< vector< vector< TSemanticValue > > > valuesToDrawPunctual;
+  vector< vector< vector< pair<TSemanticValue,TSemanticValue> > > > valuesToDrawPunctual;
   if( myWindow->isPunctualColorSet() )
   {
     myWindow->computeSemanticPunctualParallel( selectedSet, selected,
@@ -4696,7 +4696,7 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
 void gTimeline::drawRowPunctual( wxDC& dc,
                                  TObjectOrder firstRow, TObjectOrder lastRow,
                                  vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                                 vector< vector< TSemanticValue > >& valuesToDraw,
+                                 vector< vector< pair<TSemanticValue,TSemanticValue> > >& valuesToDraw,
                                  hash_set< PRV_INT32 >& eventsToDraw,
                                  hash_set< commCoord >& commsToDraw,
                                  wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
@@ -4705,7 +4705,7 @@ void gTimeline::drawRowPunctual( wxDC& dc,
 void gTimeline::drawRowPunctual( wxDC& dc,
                                  TObjectOrder firstRow, TObjectOrder lastRow,
                                  vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                                 vector< vector< TSemanticValue > >& valuesToDraw,
+                                 vector< vector< pair<TSemanticValue,TSemanticValue> > >& valuesToDraw,
                                  hash_set< PRV_INT32 >& eventsToDraw,
                                  hash_set< commCoord, hashCommCoord >& commsToDraw,
                                  wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
@@ -4730,11 +4730,11 @@ void gTimeline::drawRowPunctual( wxDC& dc,
   wxCoord objectPos = objectPosList[ firstRow ];
   TSemanticValue valueToDraw;
   TTime currentTime = myWindow->getWindowBeginTime() + timeStep;
-  for( vector< vector< TSemanticValue > >::iterator itMatrix = valuesToDraw.begin(); itMatrix != valuesToDraw.end(); ++itMatrix )
+  for( vector< vector< pair<TSemanticValue,TSemanticValue> > >::iterator itMatrix = valuesToDraw.begin(); itMatrix != valuesToDraw.end(); ++itMatrix )
   {
-    for( vector< TSemanticValue >::iterator itValues = (*itMatrix).begin(); itValues != (*itMatrix).end(); ++itValues )
+    for( vector< pair<TSemanticValue,TSemanticValue> >::iterator itValues = (*itMatrix).begin(); itValues != (*itMatrix).end(); ++itValues )
     {
-      valueToDraw = *itValues;
+      valueToDraw = (*itValues).first;
 
       /*if( valueToDraw < myWindow->getMinimumY() )
         valueToDraw = myWindow->getMinimumY();
