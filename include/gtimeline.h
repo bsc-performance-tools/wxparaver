@@ -430,6 +430,7 @@ void drawRowPunctual( wxDC& dc,
   void OnPopUpFitSemanticScale();
   void OnPopUpFitObjects();
   void OnPopUpPunctualColor();
+  void OnPopUpPunctualColorWindow();
   void OnPopUpCodeColor();
   void OnPopUpGradientColor();
   void OnPopUpNotNullGradientColor();

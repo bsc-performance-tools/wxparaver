@@ -136,6 +136,7 @@ class gHistogram;
 #define ID_MENU_SPECTRAL                          30088
 #define ID_MENU_PASTE_CONTROL_DIMENSIONS          30089
 #define ID_MENU_PUNCTUAL                          30090
+#define ID_MENU_PUNCTUAL_WINDOW                   30091
 
 
 class gPopUpMenu : public wxMenu
@@ -196,6 +197,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuGradientColor( wxCommandEvent& event);
     void OnMenuNotNullGradientColor( wxCommandEvent& event);
     void OnMenuPunctual( wxCommandEvent& event);
+    void OnMenuPunctualWindow( wxCommandEvent& event );
 
     void OnMenuDrawModeTimeLast( wxCommandEvent& event);
     void OnMenuDrawModeTimeRandom( wxCommandEvent& event);
@@ -292,12 +294,12 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuSave;
     wxMenu *popUpMenuRun;
 
-    void buildItem( wxMenu *popUp,
-                    const wxString &title,
-                    ItemType itemType,
-                    wxObjectEventFunction handler,
-                    wxWindowID id,
-                    bool checked = false );
+    wxMenuItem *buildItem( wxMenu *popUp,
+                           const wxString &title,
+                           ItemType itemType,
+                           wxObjectEventFunction handler,
+                           wxWindowID id,
+                           bool checked = false );
 };
 
 #endif // _POPUPMENU_H_

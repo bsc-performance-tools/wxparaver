@@ -72,6 +72,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
   EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
   EVT_MENU( ID_MENU_PUNCTUAL, gPopUpMenu::OnMenuPunctual )
+  EVT_MENU( ID_MENU_PUNCTUAL_WINDOW, gPopUpMenu::OnMenuPunctualWindow )
   EVT_MENU( ID_MENU_DRAWMODE_TIME_LAST, gPopUpMenu::OnMenuDrawModeTimeLast )
   EVT_MENU( ID_MENU_DRAWMODE_TIME_MAXIMUM, gPopUpMenu::OnMenuDrawModeTimeMaximum )
   EVT_MENU( ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero )
@@ -137,12 +138,12 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
 END_EVENT_TABLE()
 
 
-void gPopUpMenu::buildItem( wxMenu *popUp,
-                            const wxString &title,
-                            ItemType itemType,
-                            wxObjectEventFunction handler,
-                            wxWindowID id,
-                            bool checked )
+wxMenuItem *gPopUpMenu::buildItem( wxMenu *popUp,
+                                   const wxString &title,
+                                   ItemType itemType,
+                                   wxObjectEventFunction handler,
+                                   wxWindowID id,
+                                   bool checked )
 {
   wxMenuItem *tmp;
 
@@ -180,6 +181,8 @@ void gPopUpMenu::buildItem( wxMenu *popUp,
                     handler,
                     NULL,
                     this );
+                    
+  return tmp;
 }
 
 
@@ -442,6 +445,9 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->isNotNullGradientColorSet() );
 
   popUpMenuColor->AppendSeparator();
+
+  wxMenuItem *tmpPuncWin = buildItem( popUpMenuColor, _( "Punctual Window..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctualWindow, ID_MENU_PUNCTUAL_WINDOW );
+  popUpMenuColor->Enable( tmpPuncWin->GetId(), timeline->GetMyWindow()->isPunctualColorSet() );
 
   buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
   buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
@@ -1234,6 +1240,12 @@ void gPopUpMenu::OnMenuPunctual( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPunctualColor();
+}
+
+void gPopUpMenu::OnMenuPunctualWindow( wxCommandEvent& event )
+{
+  if( timeline != NULL )
+    timeline->OnPopUpPunctualColorWindow();
 }
 
 void gPopUpMenu::OnMenuCodeColor( wxCommandEvent& event)

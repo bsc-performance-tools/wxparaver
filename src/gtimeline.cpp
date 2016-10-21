@@ -601,6 +601,9 @@ void gTimeline::redraw()
   vector< vector< vector< pair<TSemanticValue,TSemanticValue> > > > valuesToDrawPunctual;
   if( myWindow->isPunctualColorSet() )
   {
+    if( myWindow->getPunctualColorWindow() != NULL )
+      myWindow->getPunctualColorWindow()->init( myWindow->getWindowBeginTime(), NOCREATE );
+
     myWindow->computeSemanticPunctualParallel( selectedSet, selected,
                                                timeStep, timePos, objectAxisPos,
                                                objectPosList,
@@ -1643,6 +1646,26 @@ void gTimeline::OnPopUpPunctualColor()
 {
   myWindow->setPunctualColorMode();
   myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpPunctualColorWindow()
+{
+  vector<Window *> compatWindows;
+  LoadedWindows::getInstance()->getDerivedCompatible( myWindow->getTrace(), compatWindows );
+  
+  wxArrayString choices;
+  for( vector<Window *>::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
+    choices.Add( wxString::FromAscii( (*it)->getName().c_str() ) );
+
+  wxSingleChoiceDialog *dialog = new wxSingleChoiceDialog( this, _("Select window to use for coloring points:"), _("Punctual Window"), choices );
+  
+  if ( dialog->ShowModal() == wxID_OK )
+  {
+    myWindow->setPunctualColorWindow( compatWindows[ dialog->GetSelection() ] );
+    myWindow->setRedraw( true );
+  }
+  
+  delete dialog;
 }
 
 void gTimeline::OnPopUpCodeColor()
@@ -4745,13 +4768,15 @@ void gTimeline::drawRowPunctual( wxDC& dc,
       
       if( myWindow->getPunctualColorWindow() != NULL )
       {
-        rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToDraw, *( myWindow->getPunctualColorWindow() ) );
+        TSemanticValue valueToColor = (*itValues).second;
+        rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToColor, *( myWindow->getPunctualColorWindow() ) );
         
         // SaveImage needed info
         if ( myWindow->getPunctualColorWindow()->isCodeColorSet() )
-          semanticValues[ valueToDraw ] = colorToDraw;
+          semanticValues[ valueToColor ] = colorToDraw;
       
         dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+        dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
       }
       if( magnify == 1.0 )
         dc.DrawPoint( timePos, objectPos + objectHeight - currentPos - 1 );
