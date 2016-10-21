@@ -4736,10 +4736,6 @@ void gTimeline::drawRowPunctual( wxDC& dc,
     {
       valueToDraw = (*itValues).first;
 
-      /*if( valueToDraw < myWindow->getMinimumY() )
-        valueToDraw = myWindow->getMinimumY();
-      else if( valueToDraw > myWindow->getMaximumY() )
-        valueToDraw = myWindow->getMaximumY();*/
       if( valueToDraw < myWindow->getMinimumY() || valueToDraw > myWindow->getMaximumY() )
         continue;
 
@@ -4747,6 +4743,16 @@ void gTimeline::drawRowPunctual( wxDC& dc,
                       / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
       int currentPos = floor( ( (double)objectHeight / (double)magnify ) * tmpPos ) * magnify;
       
+      if( myWindow->getPunctualColorWindow() != NULL )
+      {
+        rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToDraw, *( myWindow->getPunctualColorWindow() ) );
+        
+        // SaveImage needed info
+        if ( myWindow->getPunctualColorWindow()->isCodeColorSet() )
+          semanticValues[ valueToDraw ] = colorToDraw;
+      
+        dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+      }
       if( magnify == 1.0 )
         dc.DrawPoint( timePos, objectPos + objectHeight - currentPos - 1 );
       else
