@@ -527,10 +527,14 @@ void gTimeline::redraw()
   wxGCDC bufferDraw( tmpDC );
 #else
   wxMemoryDC bufferDraw( bufferImage );
+  #if wxMAJOR_VERSION>=3
+  wxGraphicsContext *gc = wxGraphicsContext::Create( bufferDraw );
+  gc->SetAntialiasMode( wxANTIALIAS_NONE );
+  #endif
 #endif
   wxMemoryDC commdc( commImage );
   wxMemoryDC eventdc( eventImage );
-#ifdef __WXMAC__
+#if wxMAJOR_VERSION>=3
   wxGraphicsContext *gcComm = wxGraphicsContext::Create( commdc );
   gcComm->SetAntialiasMode( wxANTIALIAS_NONE );
   wxGraphicsContext *gcEvent = wxGraphicsContext::Create( eventdc );
@@ -545,12 +549,20 @@ void gTimeline::redraw()
   wxBitmap commMask;
   commMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC commmaskdc( commMask );
+#if wxMAJOR_VERSION>=3
+  wxGraphicsContext *gcCommMask = wxGraphicsContext::Create( commmaskdc );
+  gcCommMask->SetAntialiasMode( wxANTIALIAS_NONE );
+#endif
   commmaskdc.SetBackground( *wxBLACK_BRUSH );
   commmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   commmaskdc.Clear();
   wxBitmap eventMask;
   eventMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC eventmaskdc( eventMask );
+#if wxMAJOR_VERSION>=3
+  wxGraphicsContext *gcEventMask = wxGraphicsContext::Create( eventmaskdc );
+  gcEventMask->SetAntialiasMode( wxANTIALIAS_NONE );
+#endif
   eventmaskdc.SetBackground( *wxBLACK_BRUSH );
   eventmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   eventmaskdc.Clear();
@@ -749,10 +761,14 @@ void gTimeline::redraw()
   }
   delete progress;
 
-#ifdef __WXMAC__
+#if wxMAJOR_VERSION>=3
   delete gc;
   delete gcEvent;
   delete gcComm;
+  #ifndef __WXMAC__
+  delete gcCommMask;
+  delete gcEventMask;
+  #endif
 #endif
 // Disabled because some window managers can't show the progress dialog later
 //  redrawStopWatch->Pause();
