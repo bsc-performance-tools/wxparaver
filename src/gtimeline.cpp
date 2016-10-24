@@ -1652,6 +1652,8 @@ void gTimeline::OnPopUpPunctualColorWindow()
 {
   vector<Window *> compatWindows;
   LoadedWindows::getInstance()->getDerivedCompatible( myWindow->getTrace(), compatWindows );
+  compatWindows.erase( std::find( compatWindows.begin(), compatWindows.end(), myWindow ) );
+  
   
   wxArrayString choices;
   for( vector<Window *>::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
