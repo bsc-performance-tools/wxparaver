@@ -2478,7 +2478,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
     paraverMain::dialogProgress->Show();
 
     output->dumpHistogram( myHistogram, fileName, onlySelectedPlane, myHistogram->getHideColumns(),
-                            true, true, progress );
+                            true, true, false, progress );
                             
     delete output;
     
