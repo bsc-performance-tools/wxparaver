@@ -1667,19 +1667,30 @@ void gTimeline::OnPopUpPunctualColor()
 void gTimeline::OnPopUpPunctualColorWindow()
 {
   vector<Window *> compatWindows;
+  int selIndex = 0;
+  
   LoadedWindows::getInstance()->getDerivedCompatible( myWindow->getTrace(), compatWindows );
   compatWindows.erase( std::find( compatWindows.begin(), compatWindows.end(), myWindow ) );
   
-  
   wxArrayString choices;
+  choices.Add( _( "None" ) );
+  int tmpIndex = 1;
   for( vector<Window *>::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
+  {
     choices.Add( wxString::FromAscii( (*it)->getName().c_str() ) );
+    if( (*it) == myWindow->getPunctualColorWindow() )
+      selIndex = tmpIndex;
+    ++tmpIndex;
+  }
 
   wxSingleChoiceDialog *dialog = new wxSingleChoiceDialog( this, _("Select window to use for coloring points:"), _("Punctual Window"), choices );
-  
+  dialog->SetSelection( selIndex );
   if ( dialog->ShowModal() == wxID_OK )
   {
-    myWindow->setPunctualColorWindow( compatWindows[ dialog->GetSelection() ] );
+    if( dialog->GetSelection() == 0 )
+      myWindow->setPunctualColorWindow( NULL );
+    else
+      myWindow->setPunctualColorWindow( compatWindows[ dialog->GetSelection() - 1 ] );
     myWindow->setRedraw( true );
   }
   
