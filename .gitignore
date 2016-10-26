@@ -26,5 +26,12 @@ stamp-h1
 icons/*.prv.jpg
 wxparaver.pjd.bak
 wxparaver.pjd.orig
+VCRelease/
+libboost_serialization-vc90-mt-s-1_50.lib
+libboost_serialization-vc90-mt-sgd-1_50.lib
+makefile.vc
+vc90.idb
+vc90.pdb
+wxparaver-autosave.pjd
 
 
