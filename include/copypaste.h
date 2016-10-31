@@ -57,7 +57,7 @@ using namespace std;
 #define STR_FIT_TIME            "Fit Time Scale"
 #define STR_FIT_SEMANTIC        "Fit Semantic Scale"
 #define STR_FIT_OBJECTS         "Fit Objects"
-#define STR_CONTROL_SCALE       "Control scale"
+#define STR_CONTROL_SCALE       "Control Scale"
 #define STR_CONTROL_DIMENSIONS  "Control Dimensions"
 #define STR_3D_SCALE            "3D scale"
 #define STR_SYNCHRONIZE         "Synchronize"

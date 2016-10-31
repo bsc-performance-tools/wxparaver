@@ -238,12 +238,12 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
   Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
   
   Enable( FindItem( _( STR_CONTROL_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE) );
+  Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS) );
   if( whichHistogram->GetHistogram()->getThreeDimensions() &&
       histogram != NULL && histogram->GetHistogram()->getThreeDimensions() )
     Enable( FindItem( _( STR_3D_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_3D_SCALE) );
   else
     Enable( FindItem( _( STR_3D_SCALE ) ), false );
-  Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS) );
 
   Enable( FindItem( _( "Image..." ) ), whichHistogram->GetHistogram()->getZoom() );
 }
@@ -288,14 +288,14 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
   if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_SCALE ) )
     choices.Add( wxT( STR_CONTROL_SCALE ) );
 
+  if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS ) )
+    choices.Add( wxT( STR_CONTROL_DIMENSIONS ) );
+
   if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_SCALE ) )
   {
     if( whichHistogram->GetHistogram()->getThreeDimensions() )
       choices.Add( wxT( STR_3D_SCALE ) );
   }
-
-  if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS ) )
-    choices.Add( wxT( STR_CONTROL_DIMENSIONS ) );
   
   wxMultiChoiceDialog *tmpDialog = new wxMultiChoiceDialog( whichHistogram,
                                                             wxT( "Select properties to paste:" ),
@@ -737,8 +737,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( popUpMenuPaste, _( STR_DURATION ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDuration, ID_MENU_DURATION );
   buildItem( popUpMenuPaste, _( STR_SEMANTIC_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScale, ID_MENU_SEMANTIC_SCALE );
   buildItem( popUpMenuPaste, _( STR_CONTROL_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlScale, ID_MENU_PASTE_CONTROL_SCALE );
-  buildItem( popUpMenuPaste, _( STR_3D_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPaste3DScale, ID_MENU_PASTE_3D_SCALE );
   buildItem( popUpMenuPaste, _( STR_CONTROL_DIMENSIONS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlDimensions, ID_MENU_PASTE_CONTROL_DIMENSIONS );
+  buildItem( popUpMenuPaste, _( STR_3D_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPaste3DScale, ID_MENU_PASTE_3D_SCALE );
   buildItem( popUpMenuPaste, _( STR_PASTE_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteSpecial, ID_MENU_PASTE_SPECIAL );
 
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
