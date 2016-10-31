@@ -3394,9 +3394,9 @@ void paraverMain::OnKeyPaste()
     return;
   TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
   if( item->getTimeline() != NULL )
-    item->getTimeline()->OnPopUpPasteSpecial();
+    item->getTimeline()->OnPopUpPasteDefaultSpecial();
   else if( item->getHistogram() != NULL )
-    item->getHistogram()->OnPopUpPasteSpecial();
+    item->getHistogram()->OnPopUpPasteDefaultSpecial();
 }
 #endif
 

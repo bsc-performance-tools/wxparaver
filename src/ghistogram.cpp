@@ -2700,7 +2700,7 @@ void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
   if( event.ControlDown() && event.GetKeyCode() == (long) 'V' )
   {
     if( gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
-      OnPopUpPasteSpecial();
+      OnPopUpPasteDefaultSpecial();
     return;
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'U' )

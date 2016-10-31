@@ -40,8 +40,8 @@ using namespace std;
 
 #define STR_COPY                "Copy\tCTRL+C"
 #define STR_PASTE               "Paste"
-#define STR_PASTE_DEFAULT_SPECIAL    "Default"
-#define STR_PASTE_SPECIAL       "Paste Special...\tCTRL+V"
+#define STR_PASTE_DEFAULT_SPECIAL    "Default\tCTRL+V"
+#define STR_PASTE_SPECIAL       "Paste Special..."
 #define STR_TIME                "Time"
 #define STR_SIZE                "Size"
 #define STR_OBJECTS             "Objects"
