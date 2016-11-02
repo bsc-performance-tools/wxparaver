@@ -55,11 +55,14 @@ EXTENSION=$(echo "$PARAVER_TRACE" | sed "s/^.*\.//")
 #Is gzipped?
 if [[ ${EXTENSION} = "gz" ]]; then
   echo
-  echo -n "[MSG] Decompressing $PARAVER_TRACE trace..."
-  gunzip ${PARAVER_TRACE}
-  TRACENAME=$(echo "${TRACENAME}" | sed "s/\.[^\.]*$//")
-  PARAVER_TRACE=${TRACENAME}.prv
-  echo "...Done!"
+  echo "[ERR] Gzipped traces not supported!"   
+  exit
+
+#  echo -n "[MSG] Decompressing $PARAVER_TRACE trace..."
+#  gunzip ${PARAVER_TRACE}
+#  TRACENAME=$(echo "${TRACENAME}" | sed "s/\.[^\.]*$//")
+#  PARAVER_TRACE=${TRACENAME}.prv
+#  echo "...Done!"
 fi
 
 DIMEMAS_TRACE=${TRACENAME}.dim
