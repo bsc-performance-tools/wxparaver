@@ -3394,9 +3394,9 @@ void paraverMain::OnKeyPaste()
     return;
   TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
   if( item->getTimeline() != NULL )
-    item->getTimeline()->OnPopUpPasteSpecial();
+    item->getTimeline()->OnPopUpPasteDefaultSpecial();
   else if( item->getHistogram() != NULL )
-    item->getHistogram()->OnPopUpPasteSpecial();
+    item->getHistogram()->OnPopUpPasteDefaultSpecial();
 }
 #endif
 
@@ -3776,6 +3776,8 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   info.SetVersion( wxString() << _( VERSION ) << _( " (Build " ) + \
                    wxString() << _( __DATE__ ) << _( ")" ) );
 
+  description << _( "Licensed under LGPL-2.1\n\n" );
+
   description << _( "wxParaver is a trace-based visualization and analysis tool " );
   description << _( "designed to study quantitative detailed metrics and obtain " );
   description << _( "qualitative knowledge of the performance of applications, " );
@@ -3785,12 +3787,15 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   description << _( "Tools Suite developed at BSC-CNS :\n" );
   description << _( "Barcelona Supercomputing Center - Centro Nacional de Supercomputacion\n\n" );
 
-  description << _( "\n(paraver@bsc.es)\n" );
+  description << _( "\nwebsite: https://tools.bsc.es/paraver" );
+  description << _( "\ndownloads: https://tools.bsc.es/downloads" );
+  description << _( "\nmail: paraver@bsc.es" );
+  description << _( "\ntools@bsc.es\n" );
   info.SetDescription( description );
   developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
   developers.Add( _("Pedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
   info.SetDevelopers( developers );
-  info.SetWebSite( _("http://www.bsc.es/paraver") );
+  info.SetWebSite( _("https://tools.bsc.es/paraver") );
   //info.SetCopyright(_T(""));
 
   wxAboutBox(info);

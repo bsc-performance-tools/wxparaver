@@ -489,10 +489,9 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     {
       Histogram *srcHisto = histogram->GetHistogram();
       Histogram *dstHisto = whichHistogram->GetHistogram();
-      //dstHisto->setControlMin( srcHisto->getControlMin() );
       dstHisto->setControlDelta( srcHisto->getControlDelta() );
       THistogramLimit newMax =
-              dstHisto->getControlMin() + srcHisto->getNumColumns() * srcHisto->getControlDelta();
+              dstHisto->getControlMin() + ( srcHisto->getControlMax() - srcHisto->getControlMin() );
       dstHisto->setControlMax( newMax );
     }
     else
