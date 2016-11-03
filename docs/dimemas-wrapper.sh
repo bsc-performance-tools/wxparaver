@@ -9,7 +9,7 @@ set -e
 function usage
 {
   echo "Usage: $0  source_trace  dimemas_cfg  output_trace  reuse_dimemas_trace [extra_parameters] [-n]"
-  echo "  source_trace:        Paraver trace"
+  echo "  source_trace:        Paraver trace; Gzipped traces not supported"
   echo "  dimemas_cfg:         Simulation parameters"
   echo "  output_trace:        Output trace of Dimemas; must end with '.prv'"
   echo "  reuse_dimemas_trace: 0 -> don't reuse, rerun prv2dim"
