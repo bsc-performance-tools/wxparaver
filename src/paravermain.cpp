@@ -3950,6 +3950,25 @@ wxString paraverMain::getHintComposed( const std::pair< std::string, std::string
 }
 
 
+bool isForbidden( const char& c )
+{
+  static std::string forbiddenChars =
+          std::string( wxFileName::GetForbiddenChars().mb_str() ) + ' ' + PATH_SEP;
+
+  return ( std::find( forbiddenChars.begin(), forbiddenChars.end(), c ) != forbiddenChars.end() );
+}
+
+
+wxString paraverMain::buildFormattedFileName( std::string windowName, const std::string& traceName )
+{
+  std::replace_if( windowName.begin(), windowName.end(), isForbidden, '_' );
+  wxString auxTraceName = wxString::FromAscii( traceName.c_str() );
+  auxTraceName.Remove( auxTraceName.Find( wxT( ".prv" ) ) );
+
+  return ( wxString::FromAscii( windowName.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
+}
+
+
 void paraverMain::OnHintClick( wxCommandEvent& event )
 {
   int hintId = event.GetId();

@@ -2377,12 +2377,7 @@ wxString gHistogram::buildFormattedFileName( bool onlySelectedPlane ) const
       histoNameNoSpaces += myHistogram->getPlaneLabel( myHistogram->getCommSelectedPlane() );
   }
 
-  std::replace( histoNameNoSpaces.begin(), histoNameNoSpaces.end(), ' ', '_' );
-
-  wxString auxTraceName = wxString::FromAscii( myHistogram->getTrace()->getTraceNameNumbered().c_str() );
-  auxTraceName.Remove( auxTraceName.Find( wxT( ".prv" ) ) );
-
-  return ( wxString::FromAscii( histoNameNoSpaces.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
+  return ( paraverMain::buildFormattedFileName( histoNameNoSpaces, myHistogram->getTrace()->getTraceNameNumbered() ));
 }
 
 

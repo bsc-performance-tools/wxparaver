@@ -2916,13 +2916,7 @@ void gTimeline::drawFunctionLineColor()
 // Returns: fileName_with_spaces_underscored@traceName (without extension PRV)
 wxString gTimeline::buildFormattedFileName() const
 {
-  std::string nameNoSpaces = myWindow->getName();
-  std::replace( nameNoSpaces.begin(), nameNoSpaces.end(), ' ', '_' );
-  
-  wxString auxTraceName = wxString::FromAscii( myWindow->getTrace()->getTraceNameNumbered().c_str() );
-  auxTraceName.Remove( auxTraceName.Find( wxT( ".prv" ) ) );
-
-  return ( wxString::FromAscii( nameNoSpaces.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
+  return ( paraverMain::buildFormattedFileName( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() ) );
 }
 
 
