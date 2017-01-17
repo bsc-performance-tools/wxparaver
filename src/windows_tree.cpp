@@ -236,10 +236,17 @@ void BuildTree( paraverMain *parent,
                         window->getTrace()->getTraceName();
 
   wxPoint tmpPos( window->getPosX(), window->getPosY() );
+#if wxMAJOR_VERSION<3 || !__WXGTK__
   gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), tmpPos );
+#else
+  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ) );
+#endif
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
   tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
+#if !( wxMAJOR_VERSION<3 || !__WXGTK__ )
+          tmpTimeline->Move( tmpPos );
+#endif
 
   currentData =  new TreeBrowserItemData( wxString::FromAscii( window->getName().c_str() ), tmpTimeline );
 

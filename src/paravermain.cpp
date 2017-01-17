@@ -843,7 +843,12 @@ bool paraverMain::DoLoadCFG( const string &path )
       for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
       {
         wxPoint tmpPos( (*it)->getPosX(), (*it)->getPosY() );
+#if wxMAJOR_VERSION<3 || !__WXGTK__
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ), tmpPos );
+#else
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
+#endif
+
         tmpHisto->SetHistogram( *it );
 
         appendHistogram2Tree( tmpHisto );
@@ -852,6 +857,9 @@ bool paraverMain::DoLoadCFG( const string &path )
         tmpHisto->SetClientSize( wxSize( (*it)->getWidth(), (*it)->getHeight() ) );
         if( (*it)->getShowWindow() )
         {
+#if !( wxMAJOR_VERSION<3 || !__WXGTK__ )
+          tmpHisto->Move( tmpPos );
+#endif
           tmpHisto->Show();
         }
         tmpHisto->execute();
