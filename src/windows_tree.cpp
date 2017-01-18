@@ -32,6 +32,7 @@
 #include "gtimeline.h"
 #include "ghistogram.h"
 #include "paravermain.h"
+#include <wx/display.h>
 
 wxTreeCtrl * createTree( wxImageList *imageList )
 {
@@ -236,6 +237,15 @@ void BuildTree( paraverMain *parent,
                         window->getTrace()->getTraceName();
 
   wxPoint tmpPos( window->getPosX(), window->getPosY() );
+  if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
+  {
+    wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
+    tmpPos.x += tmpDisplay.GetClientArea().x;
+    tmpPos.y += tmpDisplay.GetClientArea().y;
+    if( tmpPos.x != window->getPosX() ) window->setPosX( tmpPos.x );
+    if( tmpPos.x != window->getPosY() ) window->setPosX( tmpPos.y );
+  }
+  
 #if wxMAJOR_VERSION<3 || !__WXGTK__
   gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), tmpPos );
 #else

@@ -76,6 +76,7 @@
 #include "helpcontents.h"
 #include "filedialogext.h"
 #include "runscript.h"
+#include <wx/display.h>
 
 #include <signal.h>
 #include <iostream>
@@ -843,6 +844,15 @@ bool paraverMain::DoLoadCFG( const string &path )
       for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
       {
         wxPoint tmpPos( (*it)->getPosX(), (*it)->getPosY() );
+        if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
+        {
+          wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
+          tmpPos.x += tmpDisplay.GetClientArea().x;
+          tmpPos.y += tmpDisplay.GetClientArea().y;
+          if( tmpPos.x != (*it)->getPosX() ) (*it)->setPosX( tmpPos.x );
+          if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
+        }
+
 #if wxMAJOR_VERSION<3 || !__WXGTK__
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ), tmpPos );
 #else
@@ -928,7 +938,8 @@ void paraverMain::OnExitClick( wxCommandEvent& event )
   {
     if ( wxMessageBox( wxT( "Some windows already opened... continue closing?" ),
                        wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO) != wxYES )
+                       wxICON_QUESTION | wxYES_NO,
+                       this ) != wxYES )
     {
       event.Skip();
       return;
@@ -2528,8 +2539,8 @@ void paraverMain::ShowDerivedDialog()
 
 void paraverMain::ShowHistogramDialog()
 {
-//  HistogramDialog histogramDialog( this );
-  HistogramDialog histogramDialog( NULL );
+  HistogramDialog histogramDialog( this );
+  //HistogramDialog histogramDialog( NULL );
 
   vector<TWindowID> timelines;
   LoadedWindows::getInstance()->getAll( timelines );
@@ -2616,8 +2627,19 @@ void paraverMain::ShowHistogramDialog()
     appendHistogram2Tree( tmpHisto );
     LoadedWindows::getInstance()->add( newHistogram );
 
+    newHistogram->setPosX( GetNextPosX() );
+    newHistogram->setPosY( initialPosY );
+    initialPosY += defaultTitleBarSize.GetHeight();
+    if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
+    {
+      wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
+      newHistogram->setPosX( newHistogram->getPosX() + tmpDisplay.GetClientArea().x );
+      newHistogram->setPosY( newHistogram->getPosY() + tmpDisplay.GetClientArea().y );
+    }
+
     tmpHisto->SetClientSize( wxRect( newHistogram->getPosX(), newHistogram->getPosY(),
                                      newHistogram->getWidth(), newHistogram->getHeight() ) );
+    tmpHisto->Move( newHistogram->getPosX(), newHistogram->getPosY() );
     if( newHistogram->getShowWindow() )
     {
       tmpHisto->Show();
