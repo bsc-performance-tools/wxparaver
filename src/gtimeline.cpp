@@ -294,30 +294,32 @@ void gTimeline::CreateControls()
 
   timingZone = new wxScrolledWindow( infoZone, ID_SCROLLED_TIMING, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   timingZone->SetScrollbars(1, 5, 0, 0);
-  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxVERTICAL);
   timingZone->SetSizer(itemBoxSizer15);
 
-  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer15->Add(itemBoxSizer16, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer15->Add(itemBoxSizer16, 0, wxGROW, 0);
   wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText17, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
+  itemBoxSizer16->Add(itemStaticText17, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxStaticText* itemStaticText18 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
-
-  wxStaticText* itemStaticText19 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText19, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(itemFrame1, wxSize(10, -1)).x);
-
-  wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer15->Add(itemBoxSizer20, 1, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(initialTimeText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer16->Add(initialTimeText, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
+  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer15->Add(itemBoxSizer19, 0, wxGROW, 0);
+  wxStaticText* itemStaticText20 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer19->Add(itemStaticText20, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(finalTimeText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer19->Add(finalTimeText, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
+  wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer15->Add(itemBoxSizer22, 0, wxGROW, 0);
+  wxStaticText* itemStaticText23 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer22->Add(itemStaticText23, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer20->Add(durationText, 0, wxGROW|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer22->Add(durationText, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
