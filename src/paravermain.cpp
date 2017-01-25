@@ -847,8 +847,8 @@ bool paraverMain::DoLoadCFG( const string &path )
         if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
         {
           wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
-          tmpPos.x += tmpDisplay.GetClientArea().x;
-          tmpPos.y += tmpDisplay.GetClientArea().y;
+          tmpPos.x += tmpDisplay.GetGeometry().x;
+          tmpPos.y += tmpDisplay.GetGeometry().y;
           if( tmpPos.x != (*it)->getPosX() ) (*it)->setPosX( tmpPos.x );
           if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
         }

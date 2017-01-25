@@ -48,6 +48,7 @@
 
 #include <wx/progdlg.h>
 #include <wx/clipbrd.h>
+#include <wx/display.h>
 #include <sstream>
 #include <iostream>
 #include "config_traits.h"
@@ -959,8 +960,20 @@ void gHistogram::OnIdle( wxIdleEvent& event )
 //    paraverMain::myParaverMain->removeActiveWindow( this );
   }
     
-  myHistogram->setPosX( this->GetPosition().x );
-  myHistogram->setPosY( this->GetPosition().y );
+
+/*  if( ParaverConfig::??? )
+  {
+    myHistogram->setPosX( this->GetPosition().x );
+    myHistogram->setPosY( this->GetPosition().y );
+  }
+  else
+*/
+  {
+    wxDisplay tmpDisplay( wxDisplay::GetFromWindow(this) );
+    myHistogram->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
+    myHistogram->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
+  }
+
   myHistogram->setWidth( this->GetClientSize().GetWidth() );
   myHistogram->setHeight( this->GetClientSize().GetHeight() );
   

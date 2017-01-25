@@ -49,6 +49,7 @@
 #include <wx/statline.h>
 #include <algorithm>
 #include <wx/filename.h>
+#include <wx/display.h>
 
 #include "config_traits.h"
 #include "wxparaverapp.h"
@@ -1279,8 +1280,18 @@ void gTimeline::OnIdle( wxIdleEvent& event )
     myWindow->setRaiseWindow( false );
   }
   
-  myWindow->setPosX( this->GetPosition().x );
-  myWindow->setPosY( this->GetPosition().y );
+/*  if( ParaverConfig::??? )
+  {
+    myWindow->setPosX( this->GetPosition().x );
+    myWindow->setPosY( this->GetPosition().y );
+  }
+  else
+*/
+  {
+    wxDisplay tmpDisplay( wxDisplay::GetFromWindow(this) );
+    myWindow->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
+    myWindow->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
+  }
 //  cout << "[GUI::gTimeline::OnIdle ] Exit." << endl;
 }
 

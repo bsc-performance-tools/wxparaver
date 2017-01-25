@@ -240,8 +240,8 @@ void BuildTree( paraverMain *parent,
   if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
   {
     wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
-    tmpPos.x += tmpDisplay.GetClientArea().x;
-    tmpPos.y += tmpDisplay.GetClientArea().y;
+    tmpPos.x += tmpDisplay.GetGeometry().x;
+    tmpPos.y += tmpDisplay.GetGeometry().y;
     if( tmpPos.x != window->getPosX() ) window->setPosX( tmpPos.x );
     if( tmpPos.x != window->getPosY() ) window->setPosX( tmpPos.y );
   }
@@ -255,7 +255,7 @@ void BuildTree( paraverMain *parent,
   tmpTimeline->SetMyWindow( window );
   tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
 #if !( wxMAJOR_VERSION<3 || !__WXGTK__ )
-          tmpTimeline->Move( tmpPos );
+  tmpTimeline->Move( tmpPos );
 #endif
 
   currentData =  new TreeBrowserItemData( wxString::FromAscii( window->getName().c_str() ), tmpTimeline );
