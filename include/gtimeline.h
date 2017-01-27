@@ -99,9 +99,12 @@ class ProgressController;
 #define ID_CHECKBOX4 10084
 #define ID_RICHTEXTCTRL 10043
 #define ID_SCROLLED_TIMING 10044
-#define ID_TEXTCTRL 10045
-#define ID_TEXTCTRL1 10046
-#define ID_TEXTCTRL2 10047
+#define ID_TEXTCTRL_INITIALTIME 10045
+#define ID_TEXTCTRL_INITIALSEMANTIC 10000
+#define ID_TEXTCTRL_FINALTIME 10046
+#define ID_TEXTCTRL_FINALSEMANTIC 10002
+#define ID_TEXTCTRL_DURATION 10047
+#define ID_TEXTCTRL_SLOPE 10003
 #define ID_SCROLLED_COLORS 10049
 #define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
@@ -161,6 +164,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftUp( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDClick( wxMouseEvent& event );
+
   /// wxEVT_MIDDLE_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMiddleUp( wxMouseEvent& event );
 
@@ -181,12 +190,6 @@ public:
 
   /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftDown( wxMouseEvent& event );
-
-  /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftUp( wxMouseEvent& event );
-
-  /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDClick( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -530,8 +533,11 @@ void drawRowPunctual( wxDC& dc,
   wxRichTextCtrl* whatWhereText;
   wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
+  wxTextCtrl* initialSemanticText;
   wxTextCtrl* finalTimeText;
+  wxTextCtrl* finalSemanticText;
   wxTextCtrl* durationText;
+  wxTextCtrl* slopeText;
   wxScrolledWindow* colorsPanel;
   wxBoxSizer* colorsSizer;
   wxBitmap bufferImage;

@@ -215,8 +215,11 @@ void gTimeline::Init()
   whatWhereText = NULL;
   timingZone = NULL;
   initialTimeText = NULL;
+  initialSemanticText = NULL;
   finalTimeText = NULL;
+  finalSemanticText = NULL;
   durationText = NULL;
+  slopeText = NULL;
   colorsPanel = NULL;
   colorsSizer = NULL;
 ////@end gTimeline member initialisation
@@ -294,32 +297,47 @@ void gTimeline::CreateControls()
 
   timingZone = new wxScrolledWindow( infoZone, ID_SCROLLED_TIMING, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   timingZone->SetScrollbars(1, 5, 0, 0);
-  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxVERTICAL);
-  timingZone->SetSizer(itemBoxSizer15);
+  wxFlexGridSizer* itemFlexGridSizer15 = new wxFlexGridSizer(3, 4, 0, 0);
+  timingZone->SetSizer(itemFlexGridSizer15);
 
-  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer15->Add(itemBoxSizer16, 0, wxGROW, 0);
-  wxStaticText* itemStaticText17 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(itemStaticText17, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  wxStaticText* itemStaticText16 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(itemStaticText16, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(initialTimeText, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_INITIALTIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(initialTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer15->Add(itemBoxSizer19, 0, wxGROW, 0);
+  wxStaticText* itemStaticText18 = new wxStaticText( timingZone, wxID_STATIC, _("Inital semantic"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
+  initialSemanticText = new wxTextCtrl( timingZone, ID_TEXTCTRL_INITIALSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(initialSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
   wxStaticText* itemStaticText20 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer19->Add(itemStaticText20, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(itemStaticText20, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer19->Add(finalTimeText, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_FINALTIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(finalTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer15->Add(itemBoxSizer22, 0, wxGROW, 0);
-  wxStaticText* itemStaticText23 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer22->Add(itemStaticText23, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  wxStaticText* itemStaticText22 = new wxStaticText( timingZone, wxID_STATIC, _("Final semantic"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(itemStaticText22, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer22->Add(durationText, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  finalSemanticText = new wxTextCtrl( timingZone, ID_TEXTCTRL_FINALSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(finalSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
+  wxStaticText* itemStaticText24 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(itemStaticText24, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
+  durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL_DURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(durationText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
+  wxStaticText* itemStaticText26 = new wxStaticText( timingZone, wxID_STATIC, _("Slope"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(itemStaticText26, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
+  slopeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_SLOPE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(slopeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+
+  itemFlexGridSizer15->AddGrowableCol(1);
+  itemFlexGridSizer15->AddGrowableCol(3);
 
   timingZone->FitInside();
   infoZone->AddPage(timingZone, _("Timing"));
@@ -337,14 +355,14 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -2133,6 +2151,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     long beginX = zoomBeginX > event.GetX() ? event.GetX() : zoomBeginX;
     long beginY = drawBorder;
     long endX = zoomBeginX < event.GetX() ? event.GetX() : zoomBeginX;
+    long endY = timeAxisPos;
     if( beginX < objectAxisPos )
       beginX = objectAxisPos;
     if( endX > drawImage.GetWidth() - drawBorder )
@@ -2143,7 +2162,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     if ( zoomXY )
     {
       beginY = zoomBeginY > event.GetY() ? event.GetY() : zoomBeginY;
-      long endY = zoomBeginY < event.GetY() ? event.GetY() : zoomBeginY;
+      endY = zoomBeginY < event.GetY() ? event.GetY() : zoomBeginY;
       if( beginY > timeAxisPos )
         beginY = timeAxisPos;
       if( endY > timeAxisPos )
@@ -2208,6 +2227,34 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
                                                                                myWindow->getTimeUnit(), precision ).c_str() ) );
     durationText->SetValue( wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( endTime - beginTime ),
                                                                               myWindow->getTimeUnit(), precision ).c_str() ) );
+    vector<TObjectOrder> selectedSet;
+    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+    TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
+    myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
+    if( selectedSet.size() == 1 && myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
+    {
+      if( beginY < objectPosList[ 0 ] )
+        beginY = timeAxisPos - objectPosList[ 0 ];
+      else
+        beginY = timeAxisPos - beginY;
+      
+      if( endY < objectPosList[ 0 ] )
+        endY = timeAxisPos - objectPosList[ 0 ];
+      else
+        endY = timeAxisPos - endY;
+      
+      TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
+                                    ( timeAxisPos - objectPosList[ 0 ] );
+      TSemanticValue beginSemantic = ( semanticStep * endY ) + myWindow->getMinimumY();
+      TSemanticValue endSemantic = ( semanticStep * beginY ) + myWindow->getMinimumY();
+      
+      initialSemanticText->SetValue( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, beginSemantic, false, precision ).c_str() ) );
+      finalSemanticText->SetValue( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, endSemantic, false, precision ).c_str() ) );
+      slopeText->SetValue( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, 
+                                                                                 ( endSemantic - beginSemantic ) / ( endTime - beginTime ),
+                                                                                 false,
+                                                                                 6 ).c_str() ) );
+    }
   }
   else if( event.ShiftDown() || wxGetApp().GetGlobalTiming() )
   {
