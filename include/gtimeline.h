@@ -100,10 +100,13 @@ class ProgressController;
 #define ID_RICHTEXTCTRL 10043
 #define ID_SCROLLED_TIMING 10044
 #define ID_TEXTCTRL_INITIALTIME 10045
+#define wxID_STATIC_INITIALSEMANTIC 10288
 #define ID_TEXTCTRL_INITIALSEMANTIC 10000
 #define ID_TEXTCTRL_FINALTIME 10046
+#define wxID_STATIC_FINALSEMANTIC 10289
 #define ID_TEXTCTRL_FINALSEMANTIC 10002
 #define ID_TEXTCTRL_DURATION 10047
+#define wxID_STATIC_SLOPE 10290
 #define ID_TEXTCTRL_SLOPE 10003
 #define ID_SCROLLED_COLORS 10049
 #define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE
@@ -533,10 +536,13 @@ void drawRowPunctual( wxDC& dc,
   wxRichTextCtrl* whatWhereText;
   wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
+  wxStaticText* initialSemanticLabel;
   wxTextCtrl* initialSemanticText;
   wxTextCtrl* finalTimeText;
+  wxStaticText* finalSemanticLabel;
   wxTextCtrl* finalSemanticText;
   wxTextCtrl* durationText;
+  wxStaticText* slopeLabel;
   wxTextCtrl* slopeText;
   wxScrolledWindow* colorsPanel;
   wxBoxSizer* colorsSizer;

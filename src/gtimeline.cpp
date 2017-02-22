@@ -215,10 +215,13 @@ void gTimeline::Init()
   whatWhereText = NULL;
   timingZone = NULL;
   initialTimeText = NULL;
+  initialSemanticLabel = NULL;
   initialSemanticText = NULL;
   finalTimeText = NULL;
+  finalSemanticLabel = NULL;
   finalSemanticText = NULL;
   durationText = NULL;
+  slopeLabel = NULL;
   slopeText = NULL;
   colorsPanel = NULL;
   colorsSizer = NULL;
@@ -306,8 +309,8 @@ void gTimeline::CreateControls()
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_INITIALTIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemFlexGridSizer15->Add(initialTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxStaticText* itemStaticText18 = new wxStaticText( timingZone, wxID_STATIC, _("Inital semantic"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText18, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  initialSemanticLabel = new wxStaticText( timingZone, wxID_STATIC_INITIALSEMANTIC, _("Inital semantic"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(initialSemanticLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   initialSemanticText = new wxTextCtrl( timingZone, ID_TEXTCTRL_INITIALSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemFlexGridSizer15->Add(initialSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
@@ -318,8 +321,8 @@ void gTimeline::CreateControls()
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_FINALTIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemFlexGridSizer15->Add(finalTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxStaticText* itemStaticText22 = new wxStaticText( timingZone, wxID_STATIC, _("Final semantic"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText22, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  finalSemanticLabel = new wxStaticText( timingZone, wxID_STATIC_FINALSEMANTIC, _("Final semantic"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(finalSemanticLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   finalSemanticText = new wxTextCtrl( timingZone, ID_TEXTCTRL_FINALSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemFlexGridSizer15->Add(finalSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
@@ -330,8 +333,8 @@ void gTimeline::CreateControls()
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL_DURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemFlexGridSizer15->Add(durationText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
-  wxStaticText* itemStaticText26 = new wxStaticText( timingZone, wxID_STATIC, _("Slope"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText26, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  slopeLabel = new wxStaticText( timingZone, wxID_STATIC_SLOPE, _("Slope"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemFlexGridSizer15->Add(slopeLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
   slopeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_SLOPE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemFlexGridSizer15->Add(slopeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
@@ -1312,6 +1315,18 @@ void gTimeline::OnIdle( wxIdleEvent& event )
     myWindow->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
     myWindow->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
   }
+  
+  bool state = false;
+  if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
+    state = true;
+  initialSemanticLabel->Show( state );
+  initialSemanticText->Show( state );
+  finalSemanticLabel->Show( state );
+  finalSemanticText->Show( state );
+  slopeLabel->Show( state );
+  slopeText->Show( state );
+  timingZone->Layout();
+
 //  cout << "[GUI::gTimeline::OnIdle ] Exit." << endl;
 }
 
@@ -4941,3 +4956,16 @@ void gTimeline::drawRowPunctual( wxDC& dc,
 #endif
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
