@@ -3938,7 +3938,9 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
               wxFileName::GetPathSeparator() +
               wxString( wxT( "doc" ) ) +
               wxFileName::GetPathSeparator() +
-              wxString( wxT( "wxparaver_help" ) ) +
+              wxString( wxT( "wxparaver_help_contents" ) ) +
+              wxFileName::GetPathSeparator() +
+              wxString( wxT( "html" ) ) +
               wxFileName::GetPathSeparator();
 
       wxString helpContentsRoot = paraverHome + helpContentsDir;

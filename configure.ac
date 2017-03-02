@@ -13,7 +13,7 @@ AC_PROG_CC
 AC_PROG_SED
 
 # Initialize automake
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([tar-ustar])
 
 # Checks for libraries.
 AM_OPTIONS_WXCONFIG

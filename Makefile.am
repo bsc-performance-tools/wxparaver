@@ -35,12 +35,10 @@ install-data-hook:
 	$(install_sh_PROGRAM) -m 775 ./docs/paraload-v1.0.sig $(prefix)/share/wxparaver-signals
 
 	$(mkdir_p) $(prefix)/share/doc
-	$(mkdir_p) $(prefix)/share/doc/wxparaver_help
-	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/1.quick_reference
-	$(mkdir_p) $(prefix)/share/doc/wxparaver_help/1.quick_reference/img
-	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(prefix)/share/doc/wxparaver_help/1.quick_reference/index.html
-	cp -f ./docs/quick_reference/img/*.png                     $(prefix)/share/doc/wxparaver_help/1.quick_reference/img
+	$(mkdir_p) $(prefix)/share/doc/wxparaver_help_contents/
+	cp -fpR ./docs/wxparaver_help_contents/install/* $(prefix)/share/doc/wxparaver_help_contents
 	
+		
 	if test -f ./docs/workspaces.xml ; then \
 		cp -f ./docs/workspaces.xml $(prefix)/share/ ; \
 	fi
@@ -76,10 +74,8 @@ dist-hook:
 		cp -f ./docs/workspaces.xml  $(distdir)/docs ; \
 	fi
 
-	$(mkdir_p) $(distdir)/docs/quick_reference
-	$(mkdir_p) $(distdir)/docs/quick_reference/img
-	cp -f ./docs/quick_reference/wxparaver.quickreference.html $(distdir)/docs/quick_reference
-	cp -f ./docs/quick_reference/img/*.png                     $(distdir)/docs/quick_reference/img
+	$(mkdir_p) $(distdir)/docs/wxparaver_help_contents
+	cp -fpR ./docs/wxparaver_help_contents/install  $(distdir)/docs/wxparaver_help_contents
 
 installcheck-local:
 	test -f $(bindir)/wxparaver && \

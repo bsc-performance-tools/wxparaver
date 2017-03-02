@@ -1,0 +1,19 @@
+DIRECTORIES
+===========
+
+./install/
+  contains final installable documents (can be directly copied)
+
+./sphinx_utils/
+  contains files to be copied in <SPHINX_WORKING_DIR>/source
+
+TODO
+====
+
+  * man versions
+
+    - none available yet
+
+  * html versions
+
+    -  no sphinx version for 1.quick_reference (currently only 2.paraver_toolset is generated from sphinx)
