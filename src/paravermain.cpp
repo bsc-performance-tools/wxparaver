@@ -825,6 +825,20 @@ bool paraverMain::DoLoadCFG( const string &path )
       raiseCurrentWindow = false;
       message.ShowModal();
       raiseCurrentWindow = true;
+      for ( PRV_UINT32 i = 0; i < newHistograms.size(); ++i )
+      {
+        if ( newHistograms[ i ] != NULL )
+          delete newHistograms[ i ];
+      }
+      newHistograms.clear();
+
+      for ( PRV_UINT32 i = 0; i < newWindows.size(); ++i )
+      {
+        if ( newWindows[ i ] != NULL )
+          delete newWindows[ i ];
+      }
+      newWindows.clear();
+
     }
     else
     {
