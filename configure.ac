@@ -18,7 +18,12 @@ AM_INIT_AUTOMAKE([tar-ustar])
 # Checks for libraries.
 AM_OPTIONS_WXCONFIG
 ifdef([WX_CONFIG_CHECK],
-      [WX_CONFIG_CHECK([2.8.0],[wxWin=1],[wxWin=0],[all])])
+      [WX_CONFIG_CHECK([3.0.0],[wxWin=1],[wxWin=0],[all])])
+if test "$wxWin" != 1; then
+  ifdef([WX_CONFIG_CHECK],
+        [WX_CONFIG_CHECK([2.8.0],[wxWin=1],[wxWin=0],[])])
+fi
+
 
 if test "$wxWin" != 1; then
   	AC_MSG_WARN([
