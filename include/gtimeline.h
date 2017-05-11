@@ -203,6 +203,9 @@ public:
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX4
   void OnCheckWhatWhereText( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for wxID_STATIC_SLOPE
+  void OnStaticSlopeUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_COLORS
   void OnColorsPanelUpdate( wxUpdateUIEvent& event );
 
