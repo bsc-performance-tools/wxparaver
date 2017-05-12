@@ -1400,19 +1400,6 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     return;
   }
 
-  if( zoomXY && myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
-  {
-    vector<TObjectOrder> selectedSet;
-    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-    TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
-    myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
-    if( selectedSet.size() == 1 )
-    {
-      zooming = false;
-      return;
-    }
-  }
-
   zoomEndX = event.GetX();
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
@@ -2295,7 +2282,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
     TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
-    if( selectedSet.size() == 1 && zoomXY && myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
+    if( zoomXY && selectedSet.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() ) )
     {
       if( beginY < objectPosList[ 0 ] )
         beginY = timeAxisPos - objectPosList[ 0 ];
