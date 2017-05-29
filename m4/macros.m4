@@ -89,28 +89,6 @@ AC_DEFUN([AX_PROG_WITH_PARAVER_LIBDIR],
 
 
 
-# AX_PROG_ENABLE_TRACING
-# ----------------------
-AC_DEFUN([AX_PROG_ENABLE_TRACING],
-[
-  AC_ARG_ENABLE(tracing,
-    AC_HELP_STRING(
-      [--enable-tracing],
-      [Enable tracing generation. (Disabled by default)]
-    ),
-    [enable_tracing="${enableval}"],
-    [enable_tracing="no"]
-  )
-  if test "${enable_tracing}" = "yes" ; then
-    AC_DEFINE([TRACING_ENABLED], 1, [Tracing enabled by user.])
-    CPPFLAGS="$CPPFLAGS -g"
-    CXXFLAGS="$CXXFLAGS -g"
-    CFLAGS="$CFLAGS -g"
-  fi
-])
-
-
-
 # AX_PROG_ENABLE_OLD_PCFPARSER
 # ----------------------------
 AC_DEFUN([AX_PROG_ENABLE_OLD_PCFPARSER],
@@ -134,10 +112,33 @@ AC_DEFUN([AX_PROG_ENABLE_OLD_PCFPARSER],
 
 
 
+# AX_PROG_ENABLE_OPENMP
+# -----------------------
+AC_DEFUN([AX_PROG_ENABLE_OPENMP_PARALLEL],
+[
+  AC_ARG_ENABLE(openmp,
+    AC_HELP_STRING(
+      [--enable-openmp],
+      [Enable OpenMP parallel version. (Disabled by default)]
+    ),
+    [enable_openmp_parallel="${enableval}"],
+    [enable_openmp_parallel="no"]
+  )
+  if test "${enable_openmp_parallel}" = "yes" ; then
+    AC_DEFINE([PARALLEL_ENABLED], 1, [Parallel version enabled by user.])
+    CXXFLAGS="$CXXFLAGS -fopenmp"
+    LDFLAGS="$LDFLAGS -fopenmp"
+  fi
+])
+
+
+
 # AX_PROG_WITH_EXTRAE
 # -------------------
 AC_DEFUN([AX_PROG_WITH_EXTRAE],
 [
+  AC_REQUIRE([AX_PROG_ENABLE_OPENMP_PARALLEL])
+
   AC_ARG_WITH(extrae,
     AC_HELP_STRING(
       [--with-extrae@<:@=DIR@:>@],
@@ -146,14 +147,17 @@ AC_DEFUN([AX_PROG_WITH_EXTRAE],
     [EXTRAE_DIR=${withval}],
     [EXTRAE_DIR=/usr/local]
   )
-  if test "${enable_tracing}" = "yes" ; then
-    CPPFLAGS="$CPPFLAGS -I$EXTRAE_DIR/include"
-    CXXFLAGS="$CXXFLAGS -I$EXTRAE_DIR/include"
-    CFLAGS="$CFLAGS -L$EXTRAE_DIR/include"
-    LIBS="$LIBS -L$EXTRAE_DIR/lib"
-    LDFLAGS="$LDFLAGS -L$EXTRAE_DIR/lib -lseqtrace"
+  CPPFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
+  CXXFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
+  CFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
+  LIBS_EXTRAE="-L$EXTRAE_DIR/lib"
+  if test "${enable_openmp_parallel}" = "yes" ; then
+    LDFLAGS_EXTRAE="-L$EXTRAE_DIR/lib -lomptrace"
+  else
+    LDFLAGS_EXTRAE="-L$EXTRAE_DIR/lib -lseqtrace"
   fi
 ])
+
 
 
 # AX_PROG_ENABLE_PARALLEL
