@@ -39,7 +39,6 @@
 
 #include "pg_util.h"
 #include "paravermain.h"
-//#include "wx/propgrid/propgrid.h"
 #include "pg_extraprop.h"
 #include "trace.h"
 #include "window.h"
@@ -49,6 +48,7 @@
 #include "labelconstructor.h"
 #include "paraverlabels.h"
 #include "rowsselectiondialog.h"
+#include <wx/propgrid/advprops.h>
 
 // CFG4D
 #include "cfg.h"
@@ -186,7 +186,6 @@ void AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
   }
 }
 
-
 void AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
                                     Window* whichWindow,
                                     wxPGId fatherWidget,
@@ -295,6 +294,9 @@ void AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
   {
     // CFG4D mode but no tag found => don't show property
   }
+
+  wxPropertyGridInterface::RegisterAdditionalEditors();
+  windowProperties->SetPropertyEditor( auxProperty, wxPGEditor_SpinCtrl );
 }
 
 

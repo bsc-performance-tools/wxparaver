@@ -213,16 +213,9 @@ extern volatile bool sig1;
 extern volatile bool sig2;
 extern struct sigaction act;
 
-static const std::string wxparaverMessages[ UserMessageSize ] =
-{
-  "None of the events specified in the filter appear in the trace. Continue loading CFG file?",
-  "Some of the events specified in the filter doesn't appear in the trace. Continue loading CFG file?",
-  "Some timeline has 0 objects selected at some level. Continue loading CFG file?"
-};
-
 static bool userMessage( UserMessageID message )
 {
-  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( wxparaverMessages[ message ].c_str() ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
+  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( userMessages[ message ].c_str() )  + _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();
   paraverMain::myParaverMain->SetRaiseCurrentWindow( true );
