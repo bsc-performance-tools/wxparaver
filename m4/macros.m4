@@ -114,17 +114,17 @@ AC_DEFUN([AX_PROG_ENABLE_OLD_PCFPARSER],
 
 # AX_PROG_ENABLE_OPENMP
 # -----------------------
-AC_DEFUN([AX_PROG_ENABLE_OPENMP_PARALLEL],
+AC_DEFUN([AX_PROG_ENABLE_OPENMP],
 [
   AC_ARG_ENABLE(openmp,
     AC_HELP_STRING(
       [--enable-openmp],
       [Enable OpenMP parallel version. (Disabled by default)]
     ),
-    [enable_openmp_parallel="${enableval}"],
-    [enable_openmp_parallel="no"]
+    [enable_openmp="${enableval}"],
+    [enable_openmp="no"]
   )
-  if test "${enable_openmp_parallel}" = "yes" ; then
+  if test "${enable_openmp}" = "yes" ; then
     AC_DEFINE([PARALLEL_ENABLED], 1, [Parallel version enabled by user.])
     CXXFLAGS="$CXXFLAGS -fopenmp"
     LDFLAGS="$LDFLAGS -fopenmp"
@@ -137,24 +137,36 @@ AC_DEFUN([AX_PROG_ENABLE_OPENMP_PARALLEL],
 # -------------------
 AC_DEFUN([AX_PROG_WITH_EXTRAE],
 [
-  AC_REQUIRE([AX_PROG_ENABLE_OPENMP_PARALLEL])
+  AC_REQUIRE([AX_PROG_ENABLE_OPENMP])
 
   AC_ARG_WITH(extrae,
     AC_HELP_STRING(
       [--with-extrae@<:@=DIR@:>@],
       [Specify extrae library base install directory. Default: /usr/local]
     ),
-    [EXTRAE_DIR=${withval}],
-    [EXTRAE_DIR=/usr/local]
+    [if test "x${withval}" = "xyes" ; then 
+       EXTRAE_DIR="/usr/local"
+     else
+       EXTRAE_DIR=${withval}
+     fi],
+    [EXTRAE_DIR=""]
   )
-  CPPFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
-  CXXFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
-  CFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
-  LIBS_EXTRAE="-L$EXTRAE_DIR/lib"
-  if test "${enable_openmp_parallel}" = "yes" ; then
-    LDFLAGS_EXTRAE="-L$EXTRAE_DIR/lib -lomptrace"
-  else
-    LDFLAGS_EXTRAE="-L$EXTRAE_DIR/lib -lseqtrace"
+  if test "x${EXTRAE_DIR}" != "x" ; then
+    AC_MSG_NOTICE([Trying to detect Extrae installation in ${EXTRAE_DIR}])
+    if test -d "${EXTRAE_DIR}/lib" && test -f "${EXTRAE_DIR}/lib/libseqtrace.so" ; then
+      AC_MSG_NOTICE([Extrae installation found])
+      CPPFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
+      CXXFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
+      CFLAGS_EXTRAE="-g -I$EXTRAE_DIR/include"
+      LIBS_EXTRAE="-L$EXTRAE_DIR/lib"
+      if test "${enable_openmp_parallel}" = "yes" ; then
+        LDFLAGS_EXTRAE="-L$EXTRAE_DIR/lib -lomptrace"
+      else
+        LDFLAGS_EXTRAE="-L$EXTRAE_DIR/lib -lseqtrace"
+      fi
+    else
+      AC_MSG_WARN([No Extrae installation found in ${EXTRAE_DIR}])
+    fi
   fi
 ])
 
