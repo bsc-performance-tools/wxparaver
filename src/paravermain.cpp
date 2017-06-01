@@ -209,12 +209,16 @@ wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
 Window *paraverMain::beginDragWindow = NULL;
 Window *paraverMain::endDragWindow = NULL;
 
+bool paraverMain::disableUserMessages = false;
+
 extern volatile bool sig1;
 extern volatile bool sig2;
 extern struct sigaction act;
 
 static bool userMessage( UserMessageID message )
 {
+  if( paraverMain::disableUserMessages )
+    return true;
   wxMessageDialog tmpDialog( NULL, wxString::FromAscii( userMessages[ message ].c_str() )  + _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();

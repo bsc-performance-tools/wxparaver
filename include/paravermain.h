@@ -482,6 +482,7 @@ public:
   static int initialPosY;
   static Window *beginDragWindow;
   static Window *endDragWindow;
+  static bool disableUserMessages;
 
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;

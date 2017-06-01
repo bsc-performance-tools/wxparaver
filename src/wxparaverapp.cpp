@@ -476,6 +476,8 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
   {
     string fileName;
     Trace *currentTrace = NULL;
+    paraverMain::disableUserMessages = true;
+
     for ( unsigned int i = 0; i < paraverCommandLineParser.GetParamCount(); ++i )
     {
       fileName = paraverCommandLineParser.GetParam( i ).mb_str();
