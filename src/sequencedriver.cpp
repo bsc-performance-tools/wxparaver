@@ -71,9 +71,10 @@ bool RunAppClusteringAction::execute( std::string whichTrace )
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
   if( runAppDialog == NULL )
   {
-    runAppDialog = new RunScript( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
+    runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
+  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
   runAppDialog->setClustering( wxString::FromAscii( tmpFileName.c_str() ) );
 
   runAppDialog->Show();
@@ -101,9 +102,10 @@ bool RunAppFoldingAction::execute( std::string whichTrace )
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
   if( runAppDialog == NULL )
   {
-    runAppDialog = new RunScript( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
+    runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
+  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
   runAppDialog->setFolding( wxString::FromAscii( tmpFileName.c_str() ) );
 
   runAppDialog->Show();
@@ -130,9 +132,10 @@ bool RunAppDimemasAction::execute( std::string whichTrace )
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
   if( runAppDialog == NULL )
   {
-    runAppDialog = new RunScript( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
+    runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
+  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
   runAppDialog->setDimemas();
 
   runAppDialog->Show();

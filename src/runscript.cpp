@@ -1730,6 +1730,8 @@ void RunScript::adaptWindowToApplicationSelection()
         checkBoxClusteringCSVValueAsDimension->Enable( false );
         checkBoxClusteringNormalize->Enable( false );
       }
+      else
+        checkBoxClusteringUseSemanticWindow->Enable( true );
       break;
       
     case FOLDING:
@@ -2414,6 +2416,15 @@ void RunScript::OnCheckboxClusteringNormalizeUpdate( wxUpdateUIEvent& event )
   checkBoxClusteringNormalize->Enable(
           checkBoxClusteringCSVValueAsDimension->IsEnabled() &&
           checkBoxClusteringCSVValueAsDimension->IsChecked() );
+}
+
+
+void RunScript::setTrace( wxString whichTrace )
+{
+  if ( !whichTrace.IsEmpty() )
+  {
+     fileBrowserButtonTrace->SetPath( whichTrace );
+  }
 }
 
 

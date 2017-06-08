@@ -305,6 +305,8 @@ public:
 
   void AppendToLog( wxString msg, bool formatOutput = true );
   
+  void setTrace( wxString whichTrace );
+
   void setDimemas();
   void setStats();
   void setClustering( wxString whichClusteringCSV );
