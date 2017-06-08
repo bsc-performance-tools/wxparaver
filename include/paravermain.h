@@ -77,6 +77,7 @@ class ProgressController;
 class wxPropertyGridEvent;
 class CutFilterDialog;
 class TraceOptions;
+class RunScript;
 
 /*!
  * Control identifiers
@@ -387,6 +388,9 @@ public:
   bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
   void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
 
+  RunScript * GetRunApplication() const { return runApplication ; }
+  void SetRunApplication(RunScript * value) { runApplication = value ; }
+
   wxTimer * GetSessionTimer() const { return sessionTimer ; }
   void SetSessionTimer(wxTimer * value) { sessionTimer = value ; }
 
@@ -524,6 +528,7 @@ private:
   PreviousFiles * previousCutFilteredTraces;
   PreviousFiles * previousTraces;
   bool raiseCurrentWindow;
+  RunScript * runApplication;
   wxTimer * sessionTimer;
   bool traceLoadedBefore;
   wxString tracePath;

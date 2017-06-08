@@ -393,6 +393,7 @@ void paraverMain::Init()
   previousCutFilteredTraces = PreviousFiles::createPreviousTreatedTraces();
   previousTraces = PreviousFiles::createPreviousTraces();
   raiseCurrentWindow = true;
+  runApplication = NULL;
   sessionTimer = new wxTimer( this );
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
@@ -3863,11 +3864,15 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
 
 void paraverMain::ShowRunCommand( wxString traceFile )
 {
-  RunScript runApplication( (wxWindow *)this, traceFile );
-  
-  if ( runApplication.ShowModal() == wxID_OK )
+  if( runApplication != NULL )
   {
+    runApplication->Raise();
+    return;
   }
+
+  runApplication = new RunScript( (wxWindow *)this, traceFile );
+  
+  runApplication->Show();
 }
 
 

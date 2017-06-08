@@ -186,6 +186,7 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_BUTTON( ID_BUTTON_CLEAR_LOG, RunScript::OnButtonClearLogClick )
   EVT_HTML_LINK_CLICKED( ID_LISTBOX_RUN_LOG, RunScript::OnListboxRunLogLinkClicked )
   EVT_BUTTON( ID_BUTTON_EXIT, RunScript::OnButtonExitClick )
+  EVT_UPDATE_UI( ID_BUTTON_EXIT, RunScript::OnButtonExitUpdate )
 ////@end RunScript event table entries
 
 END_EVENT_TABLE()
@@ -1082,7 +1083,8 @@ wxIcon RunScript::GetIconResource( const wxString& name )
  */
 void RunScript::OnButtonExitClick( wxCommandEvent& event )
 {
-  EndModal( wxID_OK );
+  paraverMain::myParaverMain->SetRunApplication( NULL );
+  Destroy();
 }
 
 
@@ -2708,5 +2710,15 @@ void RunScript::OnCheckboxFoldingReuseFilesUpdate( wxUpdateUIEvent& event )
   // Before editing this code, remove the block markers.
   event.Skip();
 ////@end wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_REUSE_FILES in RunScript. 
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_EXIT
+ */
+
+void RunScript::OnButtonExitUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( myProcess == NULL );
 }
 
