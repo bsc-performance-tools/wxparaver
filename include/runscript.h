@@ -36,7 +36,7 @@
  */
 
 ////@begin includes
-#include "filebrowserbutton.h"
+#include "include/filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -278,6 +278,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_EXIT
   void OnButtonExitClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_EXIT
+  void OnButtonExitUpdate( wxUpdateUIEvent& event );
+
 ////@end RunScript event handler declarations
 
 ////@begin RunScript member function declarations
@@ -302,6 +305,8 @@ public:
 
   void AppendToLog( wxString msg, bool formatOutput = true );
   
+  void setTrace( wxString whichTrace );
+
   void setDimemas();
   void setStats();
   void setClustering( wxString whichClusteringCSV );

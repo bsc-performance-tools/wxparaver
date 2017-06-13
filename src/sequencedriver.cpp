@@ -68,13 +68,19 @@ bool RunAppClusteringAction::execute( std::string whichTrace )
 
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
-  RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
-  runAppDialog.setClustering( wxString::FromAscii( tmpFileName.c_str() ) );
+  RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
+  if( runAppDialog == NULL )
+  {
+    runAppDialog = new RunScript( wxparaverApp::mainWindow );
+    wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
+  }
+  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
+  runAppDialog->setClustering( wxString::FromAscii( tmpFileName.c_str() ) );
 
-  if( runAppDialog.ShowModal() == wxID_OK )
-  {}
+  runAppDialog->Show();
+  runAppDialog->Raise();
   
- return errorFound;
+  return errorFound;
 }
 
 
@@ -93,11 +99,17 @@ bool RunAppFoldingAction::execute( std::string whichTrace )
 
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
-  RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
-  runAppDialog.setFolding( wxString::FromAscii( tmpFileName.c_str() ) );
+  RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
+  if( runAppDialog == NULL )
+  {
+    runAppDialog = new RunScript( wxparaverApp::mainWindow );
+    wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
+  }
+  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
+  runAppDialog->setFolding( wxString::FromAscii( tmpFileName.c_str() ) );
 
-  if( runAppDialog.ShowModal() == wxID_OK )
-  {}
+  runAppDialog->Show();
+  runAppDialog->Raise();
 
   return errorFound;
 }
@@ -117,11 +129,17 @@ bool RunAppDimemasAction::execute( std::string whichTrace )
   bool errorFound = false;
 
   //TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
-  RunScript runAppDialog( wxparaverApp::mainWindow, wxString::FromAscii( whichTrace.c_str() ) );
-  runAppDialog.setDimemas();
+  RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
+  if( runAppDialog == NULL )
+  {
+    runAppDialog = new RunScript( wxparaverApp::mainWindow );
+    wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
+  }
+  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
+  runAppDialog->setDimemas();
 
-  if( runAppDialog.ShowModal() == wxID_OK )
-  {}
+  runAppDialog->Show();
+  runAppDialog->Raise();
   
   return errorFound;
 }

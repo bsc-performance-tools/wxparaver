@@ -209,12 +209,16 @@ wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
 Window *paraverMain::beginDragWindow = NULL;
 Window *paraverMain::endDragWindow = NULL;
 
+bool paraverMain::disableUserMessages = false;
+
 extern volatile bool sig1;
 extern volatile bool sig2;
 extern struct sigaction act;
 
 static bool userMessage( UserMessageID message )
 {
+  if( paraverMain::disableUserMessages )
+    return true;
   wxMessageDialog tmpDialog( NULL, wxString::FromAscii( userMessages[ message ].c_str() )  + _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();
@@ -389,6 +393,7 @@ void paraverMain::Init()
   previousCutFilteredTraces = PreviousFiles::createPreviousTreatedTraces();
   previousTraces = PreviousFiles::createPreviousTraces();
   raiseCurrentWindow = true;
+  runApplication = NULL;
   sessionTimer = new wxTimer( this );
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
@@ -3859,11 +3864,15 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
 
 void paraverMain::ShowRunCommand( wxString traceFile )
 {
-  RunScript runApplication( (wxWindow *)this, traceFile );
-  
-  if ( runApplication.ShowModal() == wxID_OK )
+  if( runApplication != NULL )
   {
+    runApplication->Raise();
+    return;
   }
+
+  runApplication = new RunScript( (wxWindow *)this, traceFile );
+  
+  runApplication->Show();
 }
 
 
