@@ -261,7 +261,7 @@ paraverMain::paraverMain()
   LocalKernel::init();
   localKernel = new LocalKernel( userMessage );
   myParaverMain = this;
-
+  
   Init();
   ShowToolTips();
 }
@@ -427,6 +427,8 @@ void paraverMain::Init()
                               wxBITMAP_TYPE_XPM );
                               
   workspacesManager->loadXML();
+  
+  initPG();
 }
 
 /*!
