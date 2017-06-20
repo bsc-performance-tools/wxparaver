@@ -295,8 +295,8 @@ void AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
     // CFG4D mode but no tag found => don't show property
   }
 
-  wxPropertyGridInterface::RegisterAdditionalEditors();
-  windowProperties->SetPropertyEditor( auxProperty, wxPGEditor_SpinCtrl );
+//  wxPropertyGridInterface::RegisterAdditionalEditors();
+//  windowProperties->SetPropertyEditor( auxProperty, wxPGEditor_SpinCtrl );
 }
 
 
