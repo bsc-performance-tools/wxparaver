@@ -79,24 +79,35 @@ static bool thirdWinCatCollapsed      = true;
 
 class wxSpinButtonsEditor : public wxPGTextCtrlEditor
 {
-//  WX_PG_DECLARE_EDITOR_CLASS( wxSpinButtonsEditor );
+#if wxMAJOR_VERSION>=3
   wxDECLARE_DYNAMIC_CLASS( wxSpinButtonsEditor );
+#else
+  WX_PG_DECLARE_EDITOR_CLASS( wxSpinButtonsEditor );
+#endif
     
   public:
     wxSpinButtonsEditor() {}
     virtual ~wxSpinButtonsEditor() {}
+#if wxMAJOR_VERSION>=3
     virtual wxString GetName() const { return wxT( "SpinButtonsEditor" ); }
     virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
                                            wxPGProperty* property,
                                            const wxPoint& pos,
                                            const wxSize& sz ) const;
+#else
+    wxPG_DECLARE_CREATECONTROLS
+#endif
     virtual bool OnEvent( wxPropertyGrid* propGrid,
                           wxPGProperty* property,
                           wxWindow* ctrl,
                           wxEvent& event ) const;
 };
 
+#if wxMAJOR_VERSION>=3
 wxIMPLEMENT_DYNAMIC_CLASS( wxSpinButtonsEditor, wxPGTextCtrlEditor );
+#else
+WX_PG_IMPLEMENT_EDITOR_CLASS( SpinButtonsEditor,wxSpinButtonsEditor, wxPGTextCtrlEditor )
+#endif
 
 wxPGWindowList wxSpinButtonsEditor::CreateControls( wxPropertyGrid* propGrid,
                                                     wxPGProperty* property,
@@ -110,7 +121,11 @@ wxPGWindowList wxSpinButtonsEditor::CreateControls( wxPropertyGrid* propGrid,
 
   wxPGWindowList wndList = wxPGTextCtrlEditor::CreateControls( propGrid, property, pos,
                                                                buttons->GetPrimarySize() );
+#if wxMAJOR_VERSION>=3
   buttons->Finalize( propGrid, pos );
+#else
+  buttons->FinalizePosition( pos );
+#endif
   wndList.SetSecondary( buttons );
 
   return wndList;
@@ -121,14 +136,18 @@ bool wxSpinButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
                                    wxWindow* ctrl,
                                    wxEvent& event ) const
 {
+#if wxMAJOR_VERSION>=3
   if ( event.GetEventType() == wxEVT_BUTTON )
+#else
+  if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
+#endif
   {
     wxPGMultiButton* buttons = ( wxPGMultiButton* ) propGrid->GetEditorControlSecondary();
-    if ( event.GetId() == buttons->GetButtonId(0) )
+    if ( event.GetId() == buttons->GetButtonId( 0 ) )
     {
       return true;
     }
-    if ( event.GetId() == buttons->GetButtonId(1) )
+    if ( event.GetId() == buttons->GetButtonId( 1 ) )
     {
       return true;
     }
@@ -137,16 +156,18 @@ bool wxSpinButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
   return wxPGTextCtrlEditor::OnEvent(propGrid, property, ctrl, event);
 }
 
-
+#if wxMAJOR_VERSION>=3
 static wxSpinButtonsEditor *spinButtonsEditor = NULL;
+#endif
 
 void initPG()
 {
+#if wxMAJOR_VERSION>=3
   spinButtonsEditor = new wxSpinButtonsEditor();
-std::cout<<std::hex;
-std::cout<<spinButtonsEditor<<std::endl;
-
   wxPropertyGrid::RegisterEditorClass( spinButtonsEditor );
+#else
+  wxPGRegisterEditorClass( SpinButtonsEditor );
+#endif
 }
 
 
@@ -371,8 +392,11 @@ void AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
     // CFG4D mode but no tag found => don't show property
   }
 
-//  wxPropertyGridInterface::RegisterAdditionalEditors();
+#if wxMAJOR_VERSION>=3
   windowProperties->SetPropertyEditor( auxProperty, spinButtonsEditor );
+#else
+  windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( SpinButtonsEditor ) );
+#endif
 }
 
 
