@@ -142,13 +142,31 @@ bool wxSpinButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
   if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
 #endif
   {
-    wxPGMultiButton* buttons = ( wxPGMultiButton* ) propGrid->GetEditorControlSecondary();
+    wxPGMultiButton *buttons = ( wxPGMultiButton* ) propGrid->GetEditorControlSecondary();
+
+    double tmpValue = property->GetValue().GetDouble();
+    if( property->GetName() == wxT( "Semantic Minimum" ) || property->GetName() == wxT( "Semantic Maximum" ) )
+    {
+      Window *currentWin = paraverMain::myParaverMain->GetCurrentTimeline();
+      tmpValue = currentWin->getMaximumY() - currentWin->getMinimumY();
+    }
+
     if ( event.GetId() == buttons->GetButtonId( 0 ) )
     {
+      // + button
+      if( property->GetName() == wxT( "Semantic Minimum" ) || property->GetName() == wxT( "Semantic Maximum" ) )
+        property->SetValueInEvent( wxVariant( property->GetValue().GetDouble() + tmpValue * 0.1 ) );
+      else
+        property->SetValueInEvent( wxVariant( tmpValue * 1.1 ) );
       return true;
     }
     if ( event.GetId() == buttons->GetButtonId( 1 ) )
     {
+      // - button
+      if( property->GetName() == wxT( "Semantic Minimum" ) || property->GetName() == wxT( "Semantic Maximum" ) )
+        property->SetValueInEvent( wxVariant( property->GetValue().GetDouble() - tmpValue * 0.1 ) );
+      else
+        property->SetValueInEvent( wxVariant( tmpValue * 0.9 ) );
       return true;
     }
   }
