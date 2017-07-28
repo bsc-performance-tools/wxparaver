@@ -51,7 +51,14 @@ AC_DEFUN([AX_PROG_WITH_WXPROPGRID_DIR],
    if test $wx_config_major_version -lt 3 ; then
       if test "$WXPROPGRID_DIR" != "yes" ; then
          WXPROPGRID_INCLUDE_DIR="-I$WXPROPGRID_DIR/include"
-         WXPROPGRID_LIBDIR="-L$WXPROPGRID_DIR/lib"
+        
+         if test -d "${WXPROPGRID_DIR}/lib" ; then
+            WXPROPGRID_LIBDIR="-L${WXPROPGRID_DIR}/lib"
+         elif test -d "${WXPROPGRID_DIR}/lib64" ; then
+            WXPROPGRID_LIBDIR="-L${WXPROPGRID_DIR}/lib64"
+         else
+            AC_MSG_ERROR([--with-wxpropgrid-dir unable to find ${WXPROPGRID_DIR}/lib or ${WXPROPGRID_DIR}/lib64])
+         fi
       fi
    else
       AC_MSG_NOTICE([wxWidgets 3.x detected. --with-wxpropgrid-dir overriden.])
