@@ -124,6 +124,24 @@ AC_DEFUN([AX_PROG_WITH_PARAVER],
 
 
 
+# AX_PROG_ENABLE_DEPENDENCIES_AWARE_INSTALL
+# -----------------------------------------
+AC_DEFUN([AX_PROG_ENABLE_DEPENDENCIES_AWARE_INSTALL],
+[
+   AC_ARG_ENABLE(dependencies_aware_install,
+      AC_HELP_STRING(
+         [--enable-dependencies-aware-install],
+         [In the install phase, some execution scripts extend LD_LIBRARY_PATH to include path to dependent libs before calling binaries (default: disabled)]
+      ),
+      [enable_dependencies_aware_install="${enableval}"],
+      [enable_dependencies_aware_install="no"]
+   )
+
+   AM_CONDITIONAL([ENABLE_DEPENDENCIES_AWARE_INSTALL], [test "${enable_dependencies_aware_install}" = "yes"] )
+])
+
+
+
 # AX_PROG_ENABLE_OLD_PCFPARSER
 # ----------------------------
 AC_DEFUN([AX_PROG_ENABLE_OLD_PCFPARSER],
