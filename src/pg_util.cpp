@@ -409,12 +409,14 @@ void AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
   {
     // CFG4D mode but no tag found => don't show property
   }
-
+  
+/* NOT WORKING PROPERLY
 #if wxMAJOR_VERSION>=3
   windowProperties->SetPropertyEditor( auxProperty, spinButtonsEditor );
 #else
   windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( SpinButtonsEditor ) );
 #endif
+*/
 }
 
 
