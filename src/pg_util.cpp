@@ -51,6 +51,7 @@
 #include <wx/object.h> 
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/editors.h>
+#include <wx/timer.h>
 
 // CFG4D
 #include "cfg.h"
@@ -76,6 +77,8 @@ static bool ctrlCatCollapsed          = true;
 static bool dataCatCollapsed          = true;
 static bool thirdWinCatCollapsed      = true;
 
+static wxPGProperty* spinButtonEditorProperty = NULL;
+
 
 class wxSpinButtonsEditor : public wxPGTextCtrlEditor
 {
@@ -86,8 +89,8 @@ class wxSpinButtonsEditor : public wxPGTextCtrlEditor
 #endif
     
   public:
-    wxSpinButtonsEditor() {}
-    virtual ~wxSpinButtonsEditor() {}
+    wxSpinButtonsEditor();
+    virtual ~wxSpinButtonsEditor();
 #if wxMAJOR_VERSION>=3
     virtual wxString GetName() const { return wxT( "SpinButtonsEditor" ); }
     virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
@@ -101,6 +104,19 @@ class wxSpinButtonsEditor : public wxPGTextCtrlEditor
                           wxPGProperty* property,
                           wxWindow* ctrl,
                           wxEvent& event ) const;
+  
+  private:
+    class SpinButtonTimer : public wxTimer
+    {
+      public:
+        void Notify()
+        {
+          wxVariant tmp = spinButtonEditorProperty->GetValue();
+          spinButtonEditorProperty->SetValue( tmp );
+        }
+    };
+    
+    SpinButtonTimer *myTimer;
 };
 
 #if wxMAJOR_VERSION>=3
@@ -108,6 +124,16 @@ wxIMPLEMENT_DYNAMIC_CLASS( wxSpinButtonsEditor, wxPGTextCtrlEditor );
 #else
 WX_PG_IMPLEMENT_EDITOR_CLASS( SpinButtonsEditor,wxSpinButtonsEditor, wxPGTextCtrlEditor )
 #endif
+
+wxSpinButtonsEditor::wxSpinButtonsEditor()
+{
+  myTimer = new SpinButtonTimer();
+}
+
+wxSpinButtonsEditor::~wxSpinButtonsEditor()
+{
+  delete myTimer;
+}
 
 wxPGWindowList wxSpinButtonsEditor::CreateControls( wxPropertyGrid* propGrid,
                                                     wxPGProperty* property,
@@ -131,6 +157,7 @@ wxPGWindowList wxSpinButtonsEditor::CreateControls( wxPropertyGrid* propGrid,
   return wndList;
 }
 
+
 bool wxSpinButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
                                    wxPGProperty* property,
                                    wxWindow* ctrl,
@@ -147,27 +174,35 @@ bool wxSpinButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
     double tmpValue = property->GetValue().GetDouble();
     if( property->GetName() == wxT( "Semantic Minimum" ) || property->GetName() == wxT( "Semantic Maximum" ) )
     {
-      Window *currentWin = paraverMain::myParaverMain->GetCurrentTimeline();
-      tmpValue = currentWin->getMaximumY() - currentWin->getMinimumY();
+      tmpValue = propGrid->GetProperty( wxT( "Semantic Maximum" ) )->GetValue().GetDouble() -
+                 propGrid->GetProperty( wxT( "Semantic Minimum" ) )->GetValue().GetDouble();
     }
 
     if ( event.GetId() == buttons->GetButtonId( 0 ) )
     {
       // + button
       if( property->GetName() == wxT( "Semantic Minimum" ) || property->GetName() == wxT( "Semantic Maximum" ) )
-        property->SetValueInEvent( wxVariant( property->GetValue().GetDouble() + tmpValue * 0.1 ) );
+        property->SetValue( wxVariant( property->GetValue().GetDouble() + tmpValue * 0.1 ) );
       else
-        property->SetValueInEvent( wxVariant( tmpValue * 1.1 ) );
-      return true;
+        property->SetValue( wxVariant( tmpValue * 1.1 ) );
+        
+      spinButtonEditorProperty = property;
+      myTimer->Start( 250, wxTIMER_ONE_SHOT );
+
+      return false;
     }
     if ( event.GetId() == buttons->GetButtonId( 1 ) )
     {
       // - button
       if( property->GetName() == wxT( "Semantic Minimum" ) || property->GetName() == wxT( "Semantic Maximum" ) )
-        property->SetValueInEvent( wxVariant( property->GetValue().GetDouble() - tmpValue * 0.1 ) );
+        property->SetValue( wxVariant( property->GetValue().GetDouble() - tmpValue * 0.1 ) );
       else
-        property->SetValueInEvent( wxVariant( tmpValue * 0.9 ) );
-      return true;
+        property->SetValue( wxVariant( tmpValue * 0.9 ) );
+
+      spinButtonEditorProperty = property;
+      myTimer->Start( 250, wxTIMER_ONE_SHOT );
+
+      return false;
     }
   }
   
