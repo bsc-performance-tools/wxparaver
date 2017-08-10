@@ -1104,15 +1104,6 @@ void gTimeline::drawRow( wxDC& dc,
     timePos += (int) magnify ;
   }
   
-  // Erase events and comms remaining in RecordLists
-  vector<TObjectOrder>::iterator first = find( selectedSet.begin(), selectedSet.end(), firstRow );
-  vector<TObjectOrder>::iterator last  = find( selectedSet.begin(), selectedSet.end(), lastRow );
-  for( vector<TObjectOrder>::iterator row = first; row <= last; ++row )
-  {
-    RecordList *rl = myWindow->getRecordList( *row );
-    rl->erase( rl->begin(), rl->end() );
-  }
-
   drawRowEvents( eventdc, eventmaskdc, objectPosList[ firstRow ], eventsToDraw );
   drawRowComms( commdc, commmaskdc, objectPosList[ firstRow ], commsToDraw );
 }
