@@ -359,6 +359,7 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
@@ -366,7 +367,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -650,6 +650,7 @@ void gTimeline::redraw()
                                                progress );
   }
   else
+  {
     myWindow->computeSemanticParallel( selectedSet, selected,
                                        timeStep, timePos, objectAxisPos,
                                        objectPosList,
@@ -657,6 +658,7 @@ void gTimeline::redraw()
                                        drawCaution,
                                        valuesToDraw, eventsToDraw, commsToDraw,
                                        progress );
+  }
 
 // cout << "[GUI::gTimeline::redraw ] after call computeSemanticParallel" << endl;
 
@@ -676,14 +678,16 @@ void gTimeline::redraw()
 
       if( myWindow->isPunctualColorSet() )
       {
-        drawRowPunctual( bufferDraw, firstObj, lastObj, selectedSet, selected,
-                         valuesToDrawPunctual[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
-                         eventdc, eventmaskdc, commdc, commmaskdc );
+        drawRow( bufferDraw, firstObj, lastObj, selectedSet, selected,
+                 valuesToDrawPunctual[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
+                 eventdc, eventmaskdc, commdc, commmaskdc );
       }
       else
+      {
         drawRow( bufferDraw, firstObj, lastObj, selectedSet, selected,
                  valuesToDraw[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
                  eventdc, eventmaskdc, commdc, commmaskdc );
+      }
       ++rowToDraw;
 
       if( myWindow->isPunctualColorSet() )
@@ -692,9 +696,10 @@ void gTimeline::redraw()
           break;
       }
       else
-
-      if( rowToDraw >= valuesToDraw.size() )
-        break;
+      {
+        if( rowToDraw >= valuesToDraw.size() )
+          break;
+      }
     }
   }
   
@@ -1045,114 +1050,195 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 }
 
 #ifdef WIN32
+template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow, TObjectOrder lastRow,
                          vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                         vector< TSemanticValue >& valuesToDraw,
+                         vector< ValuesType >& valuesToDraw,
                          hash_set< PRV_INT32 >& eventsToDraw,
                          hash_set< commCoord >& commsToDraw,
                          wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
 #else
+template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow, TObjectOrder lastRow,
                          vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                         vector< TSemanticValue >& valuesToDraw,
+                         vector< ValuesType >& valuesToDraw,
                          hash_set< PRV_INT32 >& eventsToDraw,
                          hash_set< commCoord, hashCommCoord >& commsToDraw,
                          wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
 #endif
 {
-  float magnify = float( myWindow->getPixelSize() );
-  TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
-                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
-  wxCoord timePos = objectAxisPos + 1;
-
-  vector<TObjectOrder>::iterator first = find( selectedSet.begin(), selectedSet.end(), firstRow );
-  vector<TObjectOrder>::iterator last  = find( selectedSet.begin(), selectedSet.end(), lastRow );
+  float magnify  = float( myWindow->getPixelSize() );
+  if( myWindow->isPunctualColorSet() )
+  {
+    rgb rgbPunctualColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelinePunctual();
+    wxColour punctualColor( rgbPunctualColour.red,
+                            rgbPunctualColour.green,
+                            rgbPunctualColour.blue );
+    dc.SetPen( punctualColor );
+    dc.SetBrush( punctualColor );
+  }
 
   wxCoord objectPos = objectPosList[ firstRow ];
-  int lineLastPos = 0;
-  TSemanticValue valueToDraw;
-  TTime currentTime = myWindow->getWindowBeginTime() + timeStep;
-  for( vector< TSemanticValue >::iterator it = valuesToDraw.begin(); it != valuesToDraw.end(); ++it )
+  wxCoord timePos   = objectAxisPos + 1;
+  int lineLastPos   = 0;
+
+  for( typename vector< ValuesType >::iterator it = valuesToDraw.begin(); it != valuesToDraw.end(); ++it )
   {
-    valueToDraw = *it;
-    
-    if( !myWindow->isFunctionLineColorSet() )
+    if( myWindow->isPunctualColorSet() )
     {
-      rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
-      
-      // SaveImage needed info
-      if ( myWindow->isCodeColorSet() )
-        semanticValues[ valueToDraw ] = colorToDraw;
-    
-      dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-
-      if ( magnify == 1.0 ) // same than before
-      {
-        if( objectPos + objectHeight < timeAxisPos )
-          dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
-        else
-          dc.DrawLine( timePos, objectPos, timePos, timeAxisPos - 1 );
-      }
-      else
-      {
-        // Draw a rectangle and fill with same color
-        dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-        //if( objectPos + objectHeight < timeAxisPos )
-          dc.DrawRectangle( timePos , objectPos, magnify , objectHeight );
-        /*else
-          dc.DrawRectangle( timePos , objectPos, magnify, objectPos + objectHeight - timeAxisPos + 1 );*/
-      }
+      drawRowPunctual( dc, *it, objectPos, timePos, magnify );
     }
-    else // Function line
+    else if( myWindow->isCodeColorSet() || myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
     {
-      if( valueToDraw < myWindow->getMinimumY() )
-        valueToDraw = myWindow->getMinimumY();
-      else if( valueToDraw > myWindow->getMaximumY() )
-        valueToDraw = myWindow->getMaximumY();
-
-      double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
-                      / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
-      int currentPos = objectHeight * tmpPos;
-      
-      dc.SetPen( foregroundColour );
-      if( currentPos != lineLastPos )
-      {
-        int from = ( currentPos > lineLastPos ) ? currentPos : lineLastPos;
-        int to   = ( currentPos < lineLastPos ) ? currentPos : lineLastPos;
-        dc.DrawLine( timePos, objectPos + objectHeight - from,
-                     timePos, objectPos + objectHeight - to + 1 );
-
-        if( magnify > 1.0 )
-          dc.DrawLine( timePos,            objectPos + objectHeight - currentPos,
-                       timePos + magnify, objectPos + objectHeight - currentPos ); 
-      }
-      else
-      {
-        if ( magnify == 1.0 ) // same than before
-          dc.DrawPoint( timePos, objectPos + objectHeight - currentPos );
-        else
-          dc.DrawLine( timePos,            objectPos + objectHeight - currentPos,
-                       timePos + magnify, objectPos + objectHeight - currentPos ); 
-      }
-
-      lineLastPos = currentPos;
+      drawRowColor( dc, *it, objectPos, timePos, magnify );
     }
+    else if( myWindow->isFunctionLineColorSet() )
+    {
+      drawRowFunction( dc, *it, lineLastPos, objectPos, timePos, magnify );
+    }
+
     timePos += (int) magnify ;
-    currentTime += timeStep; // NEW FOR
   }
   
   // Erase events and comms remaining in RecordLists
+  vector<TObjectOrder>::iterator first = find( selectedSet.begin(), selectedSet.end(), firstRow );
+  vector<TObjectOrder>::iterator last  = find( selectedSet.begin(), selectedSet.end(), lastRow );
   for( vector<TObjectOrder>::iterator row = first; row <= last; ++row )
   {
     RecordList *rl = myWindow->getRecordList( *row );
     rl->erase( rl->begin(), rl->end() );
   }
 
-  wxCoord rowPos = objectPosList[ firstRow ];
+  drawRowEvents( eventdc, eventmaskdc, objectPosList[ firstRow ], eventsToDraw );
+  drawRowComms( commdc, commmaskdc, objectPosList[ firstRow ], commsToDraw );
+}
+
+
+template<typename ValuesType>
+void gTimeline::drawRowColor( wxDC& dc, ValuesType valueToDraw, wxCoord objectPos, wxCoord timePos, float magnify )
+{
+  // Default implementation should not be called; only intended for compiling
+  abort();
+}
+
+template<>
+void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord objectPos, wxCoord timePos, float magnify )
+{
+  rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
+  
+  // SaveImage needed info
+  if ( myWindow->isCodeColorSet() )
+    semanticValues[ valueToDraw ] = colorToDraw;
+
+  dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+
+  if ( magnify == 1.0 )
+  {
+    if( objectPos + objectHeight < timeAxisPos )
+      dc.DrawLine( timePos, objectPos, timePos, objectPos + objectHeight );
+    else
+      dc.DrawLine( timePos, objectPos, timePos, timeAxisPos - 1 );
+  }
+  else
+  {
+    // Draw a rectangle and fill with same color
+    dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+    dc.DrawRectangle( timePos , objectPos, magnify , objectHeight );
+  }
+}
+
+
+template<typename ValuesType>
+void gTimeline::drawRowFunction( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, wxCoord objectPos, wxCoord timePos, float magnify )
+{
+  // Default implementation should not be called; only intended for compiling
+  abort();
+}
+
+template<>
+void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& lineLastPos, wxCoord objectPos, wxCoord timePos, float magnify )
+{
+  if( valueToDraw < myWindow->getMinimumY() )
+    valueToDraw = myWindow->getMinimumY();
+  else if( valueToDraw > myWindow->getMaximumY() )
+    valueToDraw = myWindow->getMaximumY();
+
+  double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
+                  / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+  int currentPos = objectHeight * tmpPos;
+  
+  dc.SetPen( foregroundColour );
+  if( currentPos != lineLastPos )
+  {
+    int from = ( currentPos > lineLastPos ) ? currentPos : lineLastPos;
+    int to   = ( currentPos < lineLastPos ) ? currentPos : lineLastPos;
+    dc.DrawLine( timePos, objectPos + objectHeight - from,
+                 timePos, objectPos + objectHeight - to + 1 );
+    if( magnify > 1.0 )
+      dc.DrawLine( timePos,           objectPos + objectHeight - currentPos,
+                   timePos + magnify, objectPos + objectHeight - currentPos ); 
+  }
+  else
+  {
+    if ( magnify == 1.0 )
+      dc.DrawPoint( timePos, objectPos + objectHeight - currentPos );
+    else
+      dc.DrawLine( timePos,           objectPos + objectHeight - currentPos,
+                   timePos + magnify, objectPos + objectHeight - currentPos ); 
+  }
+
+  lineLastPos = currentPos;
+}
+
+
+template<typename ValuesType>
+void gTimeline::drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify )
+{
+  // Default implementation should not be called; only intended for compiling
+  abort();
+}
+
+template<>
+void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemanticValue> >& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify )
+{
+  TSemanticValue valueToDraw;
+  for( vector< pair<TSemanticValue,TSemanticValue> >::iterator itValues = valuesToDrawList.begin(); itValues != valuesToDrawList.end(); ++itValues )
+  {
+    valueToDraw = (*itValues).first;
+
+    if( valueToDraw < myWindow->getMinimumY() || valueToDraw > myWindow->getMaximumY() )
+      continue;
+
+    double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
+                    / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+    int currentPos = floor( ( (double)objectHeight / (double)magnify ) * tmpPos ) * magnify;
+    
+    if( myWindow->getPunctualColorWindow() != NULL )
+    {
+      TSemanticValue valueToColor = (*itValues).second;
+      rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToColor, *( myWindow->getPunctualColorWindow() ) );
+      
+      // SaveImage needed info
+      if ( myWindow->getPunctualColorWindow()->isCodeColorSet() )
+        semanticValues[ valueToColor ] = colorToDraw;
+    
+      dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+      dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+    }
+    if( magnify == 1.0 )
+      dc.DrawPoint( timePos, objectPos + objectHeight - currentPos - 1 );
+    else
+      dc.DrawRectangle( timePos, objectPos + objectHeight - currentPos - magnify, magnify, magnify );
+  }
+}
+
+
+void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw )
+{
   for( hash_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
   {
     eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
@@ -1169,6 +1255,15 @@ void gTimeline::drawRow( wxDC& dc,
 #endif
   }
 
+}
+
+
+#ifdef WIN32
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw )
+#else
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord, hashCommCoord >& commsToDraw )
+#endif
+{
 #ifdef WIN32
   for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
@@ -1199,9 +1294,7 @@ void gTimeline::drawRow( wxDC& dc,
 #endif
     }
   }
-
 }
-
 
 /*!
  * wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLEDWINDOW
@@ -4847,128 +4940,6 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
 */
   if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
-}
-
-
-/*******************************************************************************
- EXPERIMENTAL FEATURE FOR PUNCTUAL INFORMATION
-*******************************************************************************/
-
-#ifdef WIN32
-void gTimeline::drawRowPunctual( wxDC& dc,
-                                 TObjectOrder firstRow, TObjectOrder lastRow,
-                                 vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                                 vector< vector< pair<TSemanticValue,TSemanticValue> > >& valuesToDraw,
-                                 hash_set< PRV_INT32 >& eventsToDraw,
-                                 hash_set< commCoord >& commsToDraw,
-                                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
-                                 wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
-#else
-void gTimeline::drawRowPunctual( wxDC& dc,
-                                 TObjectOrder firstRow, TObjectOrder lastRow,
-                                 vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                                 vector< vector< pair<TSemanticValue,TSemanticValue> > >& valuesToDraw,
-                                 hash_set< PRV_INT32 >& eventsToDraw,
-                                 hash_set< commCoord, hashCommCoord >& commsToDraw,
-                                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
-                                 wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
-#endif
-{
-  float magnify = float( myWindow->getPixelSize() );
-  TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
-                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
-  wxCoord timePos = objectAxisPos + 1;
-
-  rgb rgbPunctualColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelinePunctual();
-  wxColour punctualColor( rgbPunctualColour.red,
-                          rgbPunctualColour.green,
-                          rgbPunctualColour.blue );
-  dc.SetPen( punctualColor );
-  dc.SetBrush( punctualColor );
-
-  vector<TObjectOrder>::iterator first = find( selectedSet.begin(), selectedSet.end(), firstRow );
-  vector<TObjectOrder>::iterator last  = find( selectedSet.begin(), selectedSet.end(), lastRow );
-
-  wxCoord objectPos = objectPosList[ firstRow ];
-  TSemanticValue valueToDraw;
-  TTime currentTime = myWindow->getWindowBeginTime() + timeStep;
-  for( vector< vector< pair<TSemanticValue,TSemanticValue> > >::iterator itMatrix = valuesToDraw.begin(); itMatrix != valuesToDraw.end(); ++itMatrix )
-  {
-    for( vector< pair<TSemanticValue,TSemanticValue> >::iterator itValues = (*itMatrix).begin(); itValues != (*itMatrix).end(); ++itValues )
-    {
-      valueToDraw = (*itValues).first;
-
-      if( valueToDraw < myWindow->getMinimumY() || valueToDraw > myWindow->getMaximumY() )
-        continue;
-
-      double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
-                      / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
-      int currentPos = floor( ( (double)objectHeight / (double)magnify ) * tmpPos ) * magnify;
-      
-      if( myWindow->getPunctualColorWindow() != NULL )
-      {
-        TSemanticValue valueToColor = (*itValues).second;
-        rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToColor, *( myWindow->getPunctualColorWindow() ) );
-        
-        // SaveImage needed info
-        if ( myWindow->getPunctualColorWindow()->isCodeColorSet() )
-          semanticValues[ valueToColor ] = colorToDraw;
-      
-        dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-        dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
-      }
-      if( magnify == 1.0 )
-        dc.DrawPoint( timePos, objectPos + objectHeight - currentPos - 1 );
-      else
-        dc.DrawRectangle( timePos, objectPos + objectHeight - currentPos - magnify, magnify, magnify );
-    }
-    
-    timePos += (int) magnify ;
-    currentTime += timeStep; // NEW FOR
-  }
-  
-  // Erase events and comms remaining in RecordLists
-  for( vector<TObjectOrder>::iterator row = first; row <= last; ++row )
-  {
-    RecordList *rl = myWindow->getRecordList( *row );
-    rl->erase( rl->begin(), rl->end() );
-  }
-
-  wxCoord rowPos = objectPosList[ firstRow ];
-  for( hash_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
-  {
-    eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
-    eventdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
-    eventdc.DrawLine( *it+2, rowPos - 6, *it+2, rowPos-3 );
-    eventdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
-    eventdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
-#ifndef __WXMAC__
-    eventmaskdc.DrawLine( *it, rowPos - 6, *it, rowPos );
-    eventmaskdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
-    eventmaskdc.DrawLine( *it+2, rowPos - 6, *it+2, rowPos-3 );
-    eventmaskdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
-    eventmaskdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
-#endif
-  }
-
-#ifdef WIN32
-  for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
-#else
-  for( hash_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
-#endif
-  {
-    if( it->recType & LOG )
-      commdc.SetPen( logicalPen );
-    else if( it->recType & PHY )
-      commdc.SetPen(  physicalPen );
-
-    commdc.DrawLine( it->toTime, it->toRow,
-                     it->fromTime, rowPos );
-#ifndef __WXMAC__
-    commmaskdc.DrawLine( it->toTime, it->toRow,
-                         it->fromTime, rowPos );
-#endif
-  }
 }
 
 
