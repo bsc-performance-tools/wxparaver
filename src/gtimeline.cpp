@@ -678,13 +678,13 @@ void gTimeline::redraw()
 
       if( myWindow->isPunctualColorSet() )
       {
-        drawRow( bufferDraw, firstObj, lastObj, selectedSet, selected,
+        drawRow( bufferDraw, firstObj,
                  valuesToDrawPunctual[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
                  eventdc, eventmaskdc, commdc, commmaskdc );
       }
       else
       {
-        drawRow( bufferDraw, firstObj, lastObj, selectedSet, selected,
+        drawRow( bufferDraw, firstObj,
                  valuesToDraw[ rowToDraw ], eventsToDraw[ rowToDraw ], commsToDraw[ rowToDraw ],
                  eventdc, eventmaskdc, commdc, commmaskdc );
       }
@@ -1052,8 +1052,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 #ifdef WIN32
 template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
-                         TObjectOrder firstRow, TObjectOrder lastRow,
-                         vector<TObjectOrder>& selectedSet, vector<bool>& selected,
+                         TObjectOrder firstRow,
                          vector< ValuesType >& valuesToDraw,
                          hash_set< PRV_INT32 >& eventsToDraw,
                          hash_set< commCoord >& commsToDraw,
@@ -1062,8 +1061,7 @@ void gTimeline::drawRow( wxDC& dc,
 #else
 template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
-                         TObjectOrder firstRow, TObjectOrder lastRow,
-                         vector<TObjectOrder>& selectedSet, vector<bool>& selected,
+                         TObjectOrder firstRow,
                          vector< ValuesType >& valuesToDraw,
                          hash_set< PRV_INT32 >& eventsToDraw,
                          hash_set< commCoord, hashCommCoord >& commsToDraw,

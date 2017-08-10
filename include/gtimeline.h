@@ -374,21 +374,19 @@ public:
 #ifdef WIN32
   template<typename ValuesType>
   void drawRow( wxDC& dc,
-                TObjectOrder firstRow, TObjectOrder lastRow,
-                vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                vector< TSemanticValue >& valuesToDraw,              // I
-                hash_set< PRV_INT32 >& eventsToDraw,                 // I
-                hash_set< commCoord >& commsToDraw,                   // I
+                TObjectOrder firstRow,
+                vector< TSemanticValue >& valuesToDraw,
+                hash_set< PRV_INT32 >& eventsToDraw,
+                hash_set< commCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                 wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
 #else
   template<typename ValuesType>
   void drawRow( wxDC& dc,
-                TObjectOrder firstRow, TObjectOrder lastRow,
-                vector<TObjectOrder>& selectedSet, vector<bool>& selected,
-                vector< ValuesType >& valuesToDraw,              // I
-                hash_set< PRV_INT32 >& eventsToDraw,                 // I
-                hash_set< commCoord, hashCommCoord >& commsToDraw,    // I
+                TObjectOrder firstRow,
+                vector< ValuesType >& valuesToDraw,
+                hash_set< PRV_INT32 >& eventsToDraw,
+                hash_set< commCoord, hashCommCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                 wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
 #endif
