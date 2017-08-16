@@ -413,6 +413,7 @@ public:
   void drawCommunicationLines( bool draw );
   void drawEventFlags( bool draw );
   void drawFunctionLineColor();
+  void drawMultiFunctionLineColor();
 
   void OnPopUpRightDown( void );
 

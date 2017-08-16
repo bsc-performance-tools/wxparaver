@@ -1098,11 +1098,11 @@ void gTimeline::drawRow( wxDC& dc,
     {
       drawRowFunction( dc, *it, lineLastPos, objectPos, timePos, magnify );
     }
-/*    else if( myWindow->isMultiFunction??? )
+    else if( myWindow->isMultiFunctionLineColorSet() )
     {
       drawRowMultiFunction( dc, *it, lineLastPos, firstRow, timePos, magnify );
     }
-*/
+
     timePos += (int) magnify ;
   }
   
@@ -3152,6 +3152,12 @@ void gTimeline::drawEventFlags( bool draw )
 void gTimeline::drawFunctionLineColor()
 {
   myWindow->setFunctionLineColorMode();
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::drawMultiFunctionLineColor()
+{
+  myWindow->setMultiFunctionLineColorMode();
   myWindow->setRedraw( true );
 }
 

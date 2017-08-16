@@ -68,6 +68,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_VIEW_COMMUNICATION_LINES, gPopUpMenu::OnMenuViewCommunicationLines )
   EVT_MENU( ID_MENU_VIEW_EVENT_FLAGS, gPopUpMenu::OnMenuViewEventFlags )
   EVT_MENU( ID_MENU_VIEW_FUNCTION_LINE, gPopUpMenu::OnMenuViewFunctionLine )
+  EVT_MENU( ID_MENU_VIEW_MULTIFUNCTION_LINE, gPopUpMenu::OnMenuViewMultiFunctionLine )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
   EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
@@ -439,6 +440,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSubMenu( popUpMenuView, _( "View" ));
 
   buildItem( popUpMenuColor, _( "Function Line" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFunctionLine, ID_MENU_VIEW_FUNCTION_LINE, timeline->GetMyWindow()->isFunctionLineColorSet() );
+  buildItem( popUpMenuColor, _( "MultiFunction Line" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewMultiFunctionLine, ID_MENU_VIEW_MULTIFUNCTION_LINE, timeline->GetMyWindow()->isMultiFunctionLineColorSet() );
   buildItem( popUpMenuColor, _( "Punctual" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctual, ID_MENU_PUNCTUAL, timeline->GetMyWindow()->isPunctualColorSet() );
   buildItem( popUpMenuColor, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->isCodeColorSet() );
   buildItem( popUpMenuColor, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->isGradientColorSet() );
@@ -1234,6 +1236,12 @@ void gPopUpMenu::OnMenuViewFunctionLine( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->drawFunctionLineColor();
+}
+
+void gPopUpMenu::OnMenuViewMultiFunctionLine( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->drawMultiFunctionLineColor();
 }
 
 void gPopUpMenu::OnMenuPunctual( wxCommandEvent& event )
