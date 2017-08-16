@@ -399,7 +399,10 @@ public:
 
   template<typename ValuesType>
   void drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify );
- 
+
+  template<typename ValuesType>
+  void drawRowMultiFunction( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify );
+
   void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw );
 #ifdef WIN32
   void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw );

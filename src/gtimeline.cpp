@@ -1098,7 +1098,11 @@ void gTimeline::drawRow( wxDC& dc,
     {
       drawRowFunction( dc, *it, lineLastPos, objectPos, timePos, magnify );
     }
-
+/*    else if( myWindow->isMultiFunction??? )
+    {
+      drawRowMultiFunction( dc, *it, lineLastPos, firstRow, timePos, magnify );
+    }
+*/
     timePos += (int) magnify ;
   }
   
@@ -1178,6 +1182,50 @@ void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& line
     else
       dc.DrawLine( timePos,           objectPos + objectHeight - currentPos,
                    timePos + magnify, objectPos + objectHeight - currentPos ); 
+  }
+
+  lineLastPos = currentPos;
+}
+
+
+template<typename ValuesType>
+void gTimeline::drawRowMultiFunction( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify )
+{
+  // Default implementation should not be called; only intended for compiling
+  abort();
+}
+
+template<>
+void gTimeline::drawRowMultiFunction( wxDC& dc, TSemanticValue valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify )
+{
+  if( valueToDraw < myWindow->getMinimumY() )
+    valueToDraw = myWindow->getMinimumY();
+  else if( valueToDraw > myWindow->getMaximumY() )
+    valueToDraw = myWindow->getMaximumY();
+
+  double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
+                  / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+  int currentPos = ( timeAxisPos - drawBorder ) * tmpPos;
+
+  rgb colorToDraw = myWindow->getCodeColor().calcColor( whichObject + 1, 0, whichObject + 1 );
+  dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
+  if( currentPos != lineLastPos )
+  {
+    int from = ( currentPos > lineLastPos ) ? currentPos : lineLastPos;
+    int to   = ( currentPos < lineLastPos ) ? currentPos : lineLastPos;
+    dc.DrawLine( timePos, timeAxisPos - from,
+                 timePos, timeAxisPos - to + 1 );
+    if( magnify > 1.0 )
+      dc.DrawLine( timePos,           timeAxisPos - currentPos,
+                   timePos + magnify, timeAxisPos - currentPos ); 
+  }
+  else
+  {
+    if ( magnify == 1.0 )
+      dc.DrawPoint( timePos, timeAxisPos - currentPos );
+    else
+      dc.DrawLine( timePos,           timeAxisPos - currentPos,
+                   timePos + magnify, timeAxisPos - currentPos ); 
   }
 
   lineLastPos = currentPos;
