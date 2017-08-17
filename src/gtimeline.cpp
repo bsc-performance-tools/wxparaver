@@ -359,7 +359,6 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
@@ -367,6 +366,7 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -1460,7 +1460,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   }
   
   bool state = false;
-  if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
+  if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() || myWindow->isMultiFunctionLineColorSet() )
     state = true;
   initialSemanticLabel->Show( state );
   initialSemanticText->Show( state );
@@ -1647,7 +1647,10 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
       endTime = beginTime + 10;
 
     // Update window properties
-    if( selected.size() == 1 && zoomXY && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() ) )
+    if( zoomXY && 
+        ( selected.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() ) 
+          || myWindow->isMultiFunctionLineColorSet() )
+      )
     {
       if( zoomBeginY < objectPosList[ 0 ] )
         zoomBeginY = timeAxisPos - objectPosList[ 0 ];
@@ -2412,7 +2415,9 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
     TObjectOrder endRow =  myWindow->getZoomSecondDimension().second;
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
-    if( zoomXY && selectedSet.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() ) )
+    if( zoomXY &&
+        ( selectedSet.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
+          || myWindow->isMultiFunctionLineColorSet() ) )
     {
       if( beginY < objectPosList[ 0 ] )
         beginY = timeAxisPos - objectPosList[ 0 ];
