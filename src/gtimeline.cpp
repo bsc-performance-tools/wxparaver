@@ -359,7 +359,6 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
@@ -367,6 +366,8 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -4939,5 +4940,35 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
 void gTimeline::OnStaticSlopeUpdate( wxUpdateUIEvent& event )
 {
   event.SetText( wxString( _( "Slope (by ")  ) + wxString( LABEL_TIMEUNIT[ myWindow->getTimeUnit() ].c_str(), wxConvUTF8 ) + wxString( _( ")" ) ) );
+}
+
+
+/*!
+ * wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
+ */
+
+void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
+{
+std::cout<<event.GetWheelRotation()<<std::endl;
+  wxMemoryDC bufferDraw( drawImage );
+  #if wxMAJOR_VERSION>=3
+  wxGraphicsContext *gc = wxGraphicsContext::Create( bufferDraw );
+  gc->SetAntialiasMode( wxANTIALIAS_NONE );
+  #endif
+
+  wxClientDC dc( drawZone );
+  
+  double factor = 2;
+  dc.SetUserScale( factor, factor );
+  dc.Blit( objectAxisPos/factor, drawBorder/factor,
+           drawZone->GetClientSize().GetWidth() / factor, drawZone->GetClientSize().GetHeight() / factor,
+           &bufferDraw,
+           50, 50 );
+// wxwidgets 3
+/*  dc.StretchBlit( 0, 0, 
+                  drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(),
+                  &bufferDraw,
+                  50, 50, 50, 50 );*/
+
 }
 
