@@ -167,6 +167,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -190,12 +196,6 @@ public:
 
   /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMouseWheel( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -356,6 +356,9 @@ public:
 
   bool GetZooming() const { return zooming ; }
   void SetZooming(bool value) { zooming = value ; }
+
+  double GetWheelZoomFactor() const { return wheelZoomFactor ; }
+  void SetWheelZoomFactor(double value) { wheelZoomFactor = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -593,6 +596,7 @@ private:
   long zoomEndY;
   bool zoomXY;
   bool zooming;
+  double wheelZoomFactor;
 ////@end gTimeline member variables
 
   SemanticInfoType lastType;
