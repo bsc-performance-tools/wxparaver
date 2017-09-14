@@ -203,8 +203,8 @@ void gTimeline::Init()
   splitChanged = false;
   timerMotion = new wxTimer( this, ID_TIMER_MOTION );
   timerSize = new wxTimer( this, ID_TIMER_SIZE );
-  zooming = false;
   wheelZoomFactor = 1;
+  zooming = false;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -360,6 +360,8 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
@@ -367,8 +369,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -4950,14 +4950,6 @@ void gTimeline::OnStaticSlopeUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
 {
-  wxMemoryDC bufferDraw( drawImage );
-  #if wxMAJOR_VERSION>=3
-  wxGraphicsContext *gc = wxGraphicsContext::Create( bufferDraw );
-  gc->SetAntialiasMode( wxANTIALIAS_NONE );
-  #endif
-
-  wxClientDC dc( drawZone );
-  
   double newWheelFactor = wheelZoomFactor;
   if( event.GetWheelRotation() < 0 )
   {
@@ -4970,28 +4962,42 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     newWheelFactor += 0.1;
   }
 
-  double horizontalBlit = ( drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder ) / newWheelFactor;
-  double verticalBlit = ( timeAxisPos - drawBorder + 1 ) / newWheelFactor;
+  double wheelZoomFactorX = newWheelFactor;
+  double wheelZoomFactorY = 1;
+  if( event.ControlDown() )
+    wheelZoomFactorY = newWheelFactor;
+  double horizontalBlit = ( drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder ) / wheelZoomFactorX;
+  double verticalBlit = ( timeAxisPos - drawBorder + 1 ) / wheelZoomFactorY;
   if( horizontalBlit < 0.0 || verticalBlit < 0.0 )
     return;
-
   wheelZoomFactor = newWheelFactor;
-  dc.SetPen( *wxBLACK_PEN );
-  dc.SetBrush( *wxBLACK_BRUSH );
-  dc.DrawRectangle( objectAxisPos + 1, drawBorder, drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder, timeAxisPos - drawBorder + 1 );
-  dc.SetUserScale( wheelZoomFactor, wheelZoomFactor );
-  dc.Blit( ( objectAxisPos + 1 ) / wheelZoomFactor,
-           drawBorder / wheelZoomFactor,
-           horizontalBlit, 
-           verticalBlit,
-           &bufferDraw,
-           objectAxisPos + 1, drawBorder );
-    
-// wxwidgets 3
-/*  dc.StretchBlit( 0, 0, 
-                  drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(),
-                  &bufferDraw,
-                  50, 50, 50, 50 );*/
+
+  wxBitmap tmpBMP;
+  tmpBMP.Create( drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder, timeAxisPos - drawBorder );
+  wxMemoryDC tmpDC( tmpBMP );
+  tmpDC.Clear();
+  tmpDC.SetUserScale( wheelZoomFactorX, wheelZoomFactorY );
+
+  wxMemoryDC srcDC( drawImage );
+  tmpDC.Blit( 0,
+              0,
+              horizontalBlit, 
+              verticalBlit,
+              &srcDC,
+              objectAxisPos + 1, drawBorder );
+  if( event.ControlDown() )
+  {
+    tmpDC.SetPen( wxPen( backgroundColour ) );
+    tmpDC.SetBrush( wxBrush( backgroundColour ) );
+    tmpDC.DrawRectangle( 0, timeAxisPos - drawBorder - 1, drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder, timeAxisPos - drawBorder + 1 );
+  }
+  tmpDC.SelectObject( wxNullBitmap );
+
+  wxClientDC dstDC( drawZone );
+  dstDC.SetPen( wxPen( backgroundColour ) );
+  dstDC.SetBrush( wxBrush( backgroundColour ) );
+  dstDC.DrawRectangle( objectAxisPos + 1, drawBorder, drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder, timeAxisPos - drawBorder );
+  dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1, drawBorder );
 
 }
 
