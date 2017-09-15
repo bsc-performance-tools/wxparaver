@@ -119,6 +119,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
   EVT_TIMER( ID_TIMER_MOTION, gTimeline::OnTimerMotion )
+  EVT_TIMER( ID_TIMER_WHEEL, gTimeline::OnTimerWheel )
   
 END_EVENT_TABLE()
 
@@ -203,6 +204,11 @@ void gTimeline::Init()
   splitChanged = false;
   timerMotion = new wxTimer( this, ID_TIMER_MOTION );
   timerSize = new wxTimer( this, ID_TIMER_SIZE );
+  timerWheel = new wxTimer( this, ID_TIMER_WHEEL );
+  wheelZoomBeginObject = 0;
+  wheelZoomBeginTime = 0;
+  wheelZoomEndObject = 0;
+  wheelZoomEndTime = 0;
   wheelZoomFactor = 1;
   zooming = false;
   splitter = NULL;
@@ -360,15 +366,15 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -4283,6 +4289,14 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     paintDC.DrawText( label, ( bufferImage.GetWidth() - objectAxisPos ) / 2 + 12, timeAxisPos + 3 );
 }
 
+void gTimeline::OnTimerWheel( wxTimerEvent& event )
+{
+  myWindow->addZoom( wheelZoomBeginTime, wheelZoomEndTime, wheelZoomBeginObject, wheelZoomEndObject );
+  myWindow->setWindowBeginTime( wheelZoomBeginTime, true );
+  myWindow->setWindowEndTime( wheelZoomEndTime, true );
+  myWindow->setRedraw( true );
+}
+
 /*!
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX
  */
@@ -4514,33 +4528,24 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 }
 
 
-/*!
- * wxEVT_LEFT_DCLICK event handler for ID_SCROLLEDWINDOW
- */
-
-void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
+bool gTimeline::pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject )
 {
-  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
-  TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
-  long x = event.GetX();
-  long y = event.GetY();
-  wxMemoryDC dc( bufferImage );
-  
   if( x < objectAxisPos ||
-      x > dc.GetSize().GetWidth() - drawBorder )
-    return;
+      x > bufferImage.GetWidth() - drawBorder )
+    return false;
   else
     x -= objectAxisPos;
 
   if( y > timeAxisPos ||
       y < drawBorder )
-    return;
+    return false;
 
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
-  TTime time = ( timeStep * x ) + myWindow->getWindowBeginTime();
+                   ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
+  onTime = ( timeStep * x ) + myWindow->getWindowBeginTime();
 
-
+  TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+  TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
   vector<TObjectOrder> selected;
   myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
   TObjectOrder numObjects = selected.size();
@@ -4549,8 +4554,22 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
 
   if( endRow >= numObjects )
     endRow = numObjects - 1;
-  endRow   = selected[ endRow ];
+  onObject = selected[ endRow ];
 
+  return true;
+}
+
+/*!
+ * wxEVT_LEFT_DCLICK event handler for ID_SCROLLEDWINDOW
+ */
+
+void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
+{
+  TObjectOrder object;
+  TTime time;
+
+  if( !pixelToTimeObject( event.GetX(), event.GetY(), time, object ) )
+    return;
 
   if( !splitter->IsSplit() )
   {
@@ -4559,7 +4578,7 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   whatWhereText->Clear();
   whatWhereText->AppendText( _( "Working..." ) );
   Update();
-  computeWhatWhere( time, endRow, checkWWText->IsChecked() );
+  computeWhatWhere( time, object, checkWWText->IsChecked() );
   printWhatWhere();
 }
 
@@ -4972,6 +4991,26 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     return;
   wheelZoomFactor = newWheelFactor;
 
+  TTime posTime;
+  TObjectOrder posObject;
+  if( !pixelToTimeObject( event.GetX(), event.GetY(), posTime, posObject ) )
+    return;
+  
+  TRecordTime timeWidth = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() );
+  TRecordTime delta = timeWidth - timeWidth * ( wheelZoomFactorX - 1 );
+  wheelZoomBeginTime = posTime - delta / 2;
+  wheelZoomEndTime = posTime + delta / 2;
+
+  if( event.ControlDown() )
+  {
+    //Objects
+  }
+  else
+  {
+    wheelZoomBeginObject = myWindow->getZoomSecondDimension().first;
+    wheelZoomEndObject = myWindow->getZoomSecondDimension().second;
+  }
+  
   wxBitmap tmpBMP;
   tmpBMP.Create( drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder, timeAxisPos - drawBorder );
   wxMemoryDC tmpDC( tmpBMP );
@@ -4979,12 +5018,14 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   tmpDC.SetUserScale( wheelZoomFactorX, wheelZoomFactorY );
 
   wxMemoryDC srcDC( drawImage );
+  wxCoord posPixel = ( wheelZoomBeginTime * ( srcDC.GetSize().GetWidth() - objectAxisPos - 1 - drawBorder ) ) / timeWidth;
   tmpDC.Blit( 0,
               0,
               horizontalBlit, 
               verticalBlit,
               &srcDC,
-              objectAxisPos + 1, drawBorder );
+              objectAxisPos + 1 + posPixel,
+              drawBorder );
   if( event.ControlDown() )
   {
     tmpDC.SetPen( wxPen( backgroundColour ) );
@@ -4999,5 +5040,6 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   dstDC.DrawRectangle( objectAxisPos + 1, drawBorder, drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder, timeAxisPos - drawBorder );
   dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1, drawBorder );
 
+  timerWheel->Start( 2000, true );
 }
 
