@@ -4986,11 +4986,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     newWheelFactor += 0.1;
   }
 
-  double wheelZoomFactorX = newWheelFactor;
-  double wheelZoomFactorY = 1;
-  if( event.ControlDown() )
-    wheelZoomFactorY = newWheelFactor;
-
+#if 0
   TTime posTime;
   TObjectOrder posObject;
   if( !pixelToTimeObject( event.GetX(), event.GetY(), posTime, posObject ) )
@@ -5003,9 +4999,14 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   if( zoomOut && myWindow->getWindowBeginTime() == 0 && myWindow->getWindowEndTime() == myWindow->getTrace()->getEndTime() )
     return;
 
-  TRecordTime delta = timeWidth - timeWidth * ( wheelZoomFactorX - 1 );
-  newWheelZoomBeginTime = posTime - delta / 2;
-  newWheelZoomEndTime = posTime + delta / 2;
+  double wheelZoomFactorX = newWheelFactor;
+  double wheelZoomFactorY = 1;
+  if( event.ControlDown() )
+    wheelZoomFactorY = newWheelFactor;
+
+  TRecordTime delta = timeWidth * ( 1 - ( 1 / wheelZoomFactorX ) );
+  newWheelZoomBeginTime = myWindow->getWindowBeginTime() + delta * ( posTime / timeWidth );
+  newWheelZoomEndTime = myWindow->getWindowEndTime() - delta * ( 1 - ( posTime / timeWidth ) );
 
   // Current zoom time boundary check
   if( newWheelZoomEndTime - newWheelZoomBeginTime < 10 || 
@@ -5049,6 +5050,17 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     wheelZoomEndObject = myWindow->getZoomSecondDimension().second;
   }
   
+/*  wxImage tmpImage = drawImage.ConvertToImage();
+  tmpImage.Rescale( drawImage.GetWidth() * wheelZoomFactorX, drawImage.GetHeight() * wheelZoomFactorY );
+tmpImage.SaveFile( wxT( "/tmp/aa_rescale.png" ), wxBITMAP_TYPE_PNG );
+  wxCoord beginPixel = ( ( wheelZoomBeginTime - myWindow->getWindowBeginTime() ) * ( drawImage.GetWidth() - objectAxisPos - 1 - drawBorder ) ) / timeWidth;
+  wxCoord endPixel = ( ( wheelZoomEndTime - myWindow->getWindowBeginTime() ) * ( drawImage.GetWidth() - objectAxisPos - 1 - drawBorder ) ) / timeWidth;
+  wxRect tmpRect( wxPoint( ( objectAxisPos + 1 + beginPixel ) * wheelZoomFactorX, drawBorder * wheelZoomFactorY ),
+                  wxPoint( ( objectAxisPos + 1 + endPixel ) * wheelZoomFactorX, ( timeAxisPos - 1 )  * wheelZoomFactorY ) );
+tmpImage.GetSubImage( tmpRect ).SaveFile( wxT( "/tmp/aa_subimage.png" ), wxBITMAP_TYPE_PNG );
+  wxBitmap tmpBMP( tmpImage.GetSubImage( tmpRect ) );
+*/
+  
   // Temp draw buffer re-scaled
   wxBitmap tmpBMP;
   tmpBMP.Create( drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder, timeAxisPos - drawBorder );
@@ -5058,14 +5070,69 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
 
   // Source image to temp buffer
   wxMemoryDC srcDC( drawImage );
-  wxCoord beginPixel = ( ( wheelZoomBeginTime - myWindow->getWindowBeginTime() ) * ( srcDC.GetSize().GetWidth() - objectAxisPos - 1 - drawBorder ) ) / timeWidth;
+  wxCoord beginPixel = ( ( wheelZoomBeginTime - myWindow->getWindowBeginTime() ) * ( drawImage.GetWidth() - objectAxisPos - 1 - drawBorder ) ) / timeWidth;
   tmpDC.Blit( wheelZoomFactor > 1 ? 0 : -( beginPixel * wheelZoomFactorX ),
               0,
-              horizontalBlit, 
+              horizontalBlit,
               verticalBlit,
               &srcDC,
               objectAxisPos + 1 + beginPixel,
               drawBorder );
+
+#else
+
+
+  // Setting global parameters
+  wheelZoomFactor = newWheelFactor;
+  //wheelZoomBeginTime = newWheelZoomBeginTime;
+  //wheelZoomEndTime = newWheelZoomEndTime;
+  
+  if( event.ControlDown() )
+  {
+    //TODO: zoom objects
+  }
+  else
+  {
+    wheelZoomBeginObject = myWindow->getZoomSecondDimension().first;
+    wheelZoomEndObject = myWindow->getZoomSecondDimension().second;
+  }
+
+  double wheelZoomFactorX = newWheelFactor;
+  double wheelZoomFactorY = 1;
+  if( event.ControlDown() )
+    wheelZoomFactorY = newWheelFactor;
+
+  wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder;
+  double ratioLeft = ( (double)( event.GetX() - objectAxisPos - 1 ) / (double)pixelsWidth );
+  double ratioRight = 1.0 - ratioLeft;
+
+  ratioLeft = ratioLeft * ( 1 - 1 / wheelZoomFactorX );
+  ratioRight = ratioRight * ( 1 - 1 / wheelZoomFactorX );
+  
+/*std::cout<<std::fixed;
+std::cout<<"GetX norm: "<<event.GetX() - objectAxisPos - 1<<" global ratioLeft: "<<( (double)( event.GetX() - objectAxisPos - 1 ) / (double)pixelsWidth )<<" wheelZoomFactorX - 1: "<<wheelZoomFactorX - 1<<" ratioLeft: "<<ratioLeft<<std::endl;
+std::cout<<"pixelsWidth "<<pixelsWidth<<" pixelsWidth * ratioLeft: "<<pixelsWidth * ratioLeft<<std::endl;
+*/
+  // Temp draw buffer re-scaled
+  wxBitmap tmpBMP;
+  tmpBMP.Create( pixelsWidth, timeAxisPos - drawBorder );
+  wxMemoryDC tmpDC( tmpBMP );
+  tmpDC.Clear();
+  tmpDC.SetUserScale( wheelZoomFactorX, wheelZoomFactorY );
+
+  // Source image to temp buffer
+  wxMemoryDC srcDC( drawImage );
+  wxCoord pixelBegin = (double)pixelsWidth * ratioLeft;
+  wxCoord pixelEnd = pixelsWidth - (double)pixelsWidth * ratioRight;
+
+  tmpDC.Blit( wheelZoomFactor > 1.0 ? 0 : tmpDC.DeviceToLogicalX( -pixelBegin ),
+              0,
+              tmpDC.DeviceToLogicalX( pixelsWidth ),
+              tmpDC.DeviceToLogicalY( timeAxisPos - drawBorder + 1 ),
+              &srcDC,
+              objectAxisPos + 1 + pixelBegin,
+              drawBorder );
+#endif
 
   // Remove axis legend TODO: objects legend
   if( event.ControlDown() )
