@@ -5079,7 +5079,6 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   // Source image to temp buffer
   wxMemoryDC srcDC( drawImage );
   wxCoord pixelBeginX = (double)pixelsWidth * ratioLeft;
-  //wxCoord pixelEndX = pixelsWidth - (double)pixelsWidth * ratioRight;
   wxCoord pixelBeginY = (double)pixelsHeight * ratioUp;
 
   tmpDC.Blit( 0,
@@ -5110,6 +5109,6 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   dstDC.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetClientSize().GetWidth() - objectAxisPos - 1, timeAxisPos );
   dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1, 0 );
 
-  timerWheel->Start( 2000, true );
+  timerWheel->Start( 750, true );
 }
 
