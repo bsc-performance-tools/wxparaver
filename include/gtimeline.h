@@ -397,7 +397,7 @@ public:
   template<typename ValuesType>
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
-                vector< TSemanticValue >& valuesToDraw,
+                vector< ValuesType >& valuesToDraw,
                 hash_set< PRV_INT32 >& eventsToDraw,
                 hash_set< commCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
