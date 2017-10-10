@@ -478,6 +478,7 @@ void gTimeline::redraw()
     return;
   }
 #endif
+  ready = false;
   redoColors = true;
 
   semanticValues.clear();
@@ -548,7 +549,6 @@ void gTimeline::redraw()
   else
     maxObj = selectedSet[ selectedSet.size() - 1 ];
 
-  ready = false;
   bufferImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
@@ -4981,6 +4981,9 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   bool zoomOut = event.GetWheelRotation() < 0;
   bool zoomIn = !zoomOut;
 
+  if( !ready )
+    return;
+
   if( zoomOut )
   {
   //Uncomment if want more zoom out (image get really tiny)
@@ -5030,8 +5033,8 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
                                true );
 
     TObjectOrder objectHeight = selectedObjects.size();
-    newWheelZoomBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, objectHeight * ratioUp, myWindow->getLevel() );
-    newWheelZoomEndObject = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, - objectHeight * ratioDown, myWindow->getLevel() );
+    newWheelZoomBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, (double)objectHeight * ratioUp, myWindow->getLevel() );
+    newWheelZoomEndObject = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, - (double)objectHeight * ratioDown, myWindow->getLevel() );
   }
   else
   {
@@ -5081,6 +5084,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   wxCoord pixelBeginX = (double)pixelsWidth * ratioLeft;
   wxCoord pixelBeginY = (double)pixelsHeight * ratioUp;
 
+#if wxMAJOR_VERSION>=3 || !__WXGTK__
   tmpDC.Blit( 0,
               0,
               tmpDC.DeviceToLogicalX( pixelsWidth ),
@@ -5100,6 +5104,24 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
       tmpDC.DrawRectangle( 0, -pixelBeginY + timeAxisPos, tmpDC.DeviceToLogicalX( tmpBMP.GetWidth() ), tmpBMP.GetHeight() );
     }
   }
+#else
+  tmpDC.SelectObject( wxNullBitmap );
+  srcDC.SelectObject( wxNullBitmap );
+  wxImage tmpImage = drawImage.ConvertToImage().GetSubImage( wxRect( wxPoint( objectAxisPos + 1, 0 ), wxSize( pixelsWidth, pixelsHeight ) ) );
+
+  if( newWheelFactor >= 1.0 )
+  {
+    wxCoord pixelEndX = (double)pixelsWidth * ratioRight;
+    wxCoord pixelEndY = (double)pixelsHeight * ratioDown;
+    wxRect tmpRect( wxPoint( pixelBeginX, pixelBeginY ),
+                    wxPoint( pixelsWidth - pixelEndX, pixelsHeight - pixelEndY ) );
+    tmpImage = tmpImage.GetSubImage( tmpRect );
+  }
+
+  tmpImage.Rescale( tmpImage.GetWidth() * wheelZoomFactorX, tmpImage.GetHeight() * wheelZoomFactorY );
+  tmpBMP = wxBitmap( tmpImage );
+#endif
+
   tmpDC.SelectObject( wxNullBitmap );
 
   // Draw zoomed image to timeline window
@@ -5107,7 +5129,19 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   dstDC.SetPen( wxPen( backgroundColour ) );
   dstDC.SetBrush( wxBrush( backgroundColour ) );
   dstDC.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetClientSize().GetWidth() - objectAxisPos - 1, timeAxisPos );
+#if !( wxMAJOR_VERSION>=3 || !__WXGTK__ )
+  if( newWheelFactor >= 1.0 )
+  {
+#endif  
   dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1, 0 );
+#if !( wxMAJOR_VERSION>=3 || !__WXGTK__ )
+  }
+  else
+  {
+    dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1 - (double)pixelBeginX * wheelZoomFactorX,
+                              -(double)pixelBeginY * wheelZoomFactorY );
+  }
+#endif
 
   timerWheel->Start( 750, true );
 }
