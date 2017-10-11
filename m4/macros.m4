@@ -47,6 +47,7 @@ AC_DEFUN([AX_PROG_WITH_WXPROPGRID_DIR],
    
    WXPROPGRID_INCLUDE_DIR=""
    WXPROPGRID_LIBDIR=""
+   WXPROPGRID_LIB_PATH=""
    
    if test $wx_config_major_version -lt 3 ; then
       if test "$WXPROPGRID_DIR" != "yes" ; then
@@ -54,8 +55,10 @@ AC_DEFUN([AX_PROG_WITH_WXPROPGRID_DIR],
         
          if test -d "${WXPROPGRID_DIR}/lib" ; then
             WXPROPGRID_LIBDIR="-L${WXPROPGRID_DIR}/lib"
+            WXPROPGRID_LIB_PATH="${WXPROPGRID_DIR}/lib"
          elif test -d "${WXPROPGRID_DIR}/lib64" ; then
             WXPROPGRID_LIBDIR="-L${WXPROPGRID_DIR}/lib64"
+            WXPROPGRID_LIB_PATH="${WXPROPGRID_DIR}/lib64"
          else
             AC_MSG_ERROR([--with-wxpropgrid-dir unable to find ${WXPROPGRID_DIR}/lib or ${WXPROPGRID_DIR}/lib64])
          fi
@@ -67,6 +70,7 @@ AC_DEFUN([AX_PROG_WITH_WXPROPGRID_DIR],
    AC_SUBST(WXPROPGRID_DIR)
    AC_SUBST(WXPROPGRID_INCLUDE_DIR)
    AC_SUBST(WXPROPGRID_LIBDIR)
+   AC_SUBST(WXPROPGRID_LIB_PATH)
 ])
 
 

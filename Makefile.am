@@ -38,11 +38,11 @@ if ENABLE_DEPENDENCIES_AWARE_INSTALL
 		( cp  $(bindir)/wxparaver $(bindir)/wxparaver.tmp && \
 			$(SED) "s|@inst_WXWIDGETS_LIBDIR@||g" < $(bindir)/wxparaver.tmp > $(bindir)/wxparaver )
   
-	test "x${WXPROPGRID_LIBDIR}" != "x" && \
+	test "x${WXPROPGRID_LIB_PATH}" != "x" && \
 		( cp  $(bindir)/wxparaver $(bindir)/wxparaver.tmp && \
-			$(SED) "s|@inst_WXPROPGRID_LIBDIR@|${WXPROPGRID_LIBDIR}:|g"  < $(bindir)/wxparaver.tmp > $(bindir)/wxparaver ) || \
+			$(SED) "s|@inst_WXPROPGRID_LIB_PATH@|${WXPROPGRID_LIB_PATH}:|g"  < $(bindir)/wxparaver.tmp > $(bindir)/wxparaver ) || \
 		( cp  $(bindir)/wxparaver $(bindir)/wxparaver.tmp && \
-			$(SED) "s|@inst_WXPROPGRID_LIBDIR@||g" < $(bindir)/wxparaver.tmp > $(bindir)/wxparaver )
+			$(SED) "s|@inst_WXPROPGRID_LIB_PATH@||g" < $(bindir)/wxparaver.tmp > $(bindir)/wxparaver )
 
 	cp  $(bindir)/wxparaver $(bindir)/wxparaver.tmp && \
 	$(AWK) \
@@ -79,7 +79,7 @@ if ENABLE_DEPENDENCIES_AWARE_INSTALL
 else
 	$(SED) "s|@inst_BOOST_LIBDIR@||g ; \
           s|@inst_WXWIDGETS_LIBDIR@||g ; \
-          s|@inst_WXPROPGRID_LIBDIR@||g " < ./docs/wxparaver > $(bindir)/wxparaver
+          s|@inst_WXPROPGRID_LIB_PATH@||g " < ./docs/wxparaver > $(bindir)/wxparaver
 endif
 	
 	
