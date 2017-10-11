@@ -5114,7 +5114,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     wxCoord pixelEndX = (double)pixelsWidth * ratioRight;
     wxCoord pixelEndY = (double)pixelsHeight * ratioDown;
     wxRect tmpRect( wxPoint( pixelBeginX, pixelBeginY ),
-                    wxPoint( pixelsWidth - pixelEndX, pixelsHeight - pixelEndY ) );
+                    wxPoint( pixelsWidth - pixelEndX - 1, pixelsHeight - pixelEndY - 1 ) );
     tmpImage = tmpImage.GetSubImage( tmpRect );
   }
 
