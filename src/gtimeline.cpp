@@ -5080,7 +5080,13 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   tmpDC.SetUserScale( wheelZoomFactorX, wheelZoomFactorY );
 
   // Source image to temp buffer
+#ifdef __WXMAC__
+  wxBitmap tmpDrawImage( drawImage.GetWidth(), drawImage.GetHeight() );
+  wxMemoryDC srcDC( tmpDrawImage );
+  drawStackedImages( srcDC );
+#else
   wxMemoryDC srcDC( drawImage );
+#endif
   wxCoord pixelBeginX = (double)pixelsWidth * ratioLeft;
   wxCoord pixelBeginY = (double)pixelsHeight * ratioUp;
 
