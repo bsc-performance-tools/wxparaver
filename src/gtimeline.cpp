@@ -5076,13 +5076,19 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   wxBitmap tmpBMP;
   tmpBMP.Create( pixelsWidth, pixelsHeight );
   wxMemoryDC tmpDC( tmpBMP );
+  tmpDC.SetBrush( wxBrush( backgroundColour ) );
   tmpDC.Clear();
+#ifdef __WXMAC__
+  tmpDC.DrawRectangle( 0, 0, pixelsWidth, pixelsHeight );
+#endif
   tmpDC.SetUserScale( wheelZoomFactorX, wheelZoomFactorY );
 
   // Source image to temp buffer
 #ifdef __WXMAC__
   wxBitmap tmpDrawImage( drawImage.GetWidth(), drawImage.GetHeight() );
   wxMemoryDC srcDC( tmpDrawImage );
+  srcDC.SetBrush( wxBrush( backgroundColour ) );
+  srcDC.Clear();
   drawStackedImages( srcDC );
 #else
   wxMemoryDC srcDC( drawImage );
