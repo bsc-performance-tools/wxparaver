@@ -5122,11 +5122,12 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     wxRect tmpRect( wxPoint( pixelBeginX, pixelBeginY ),
                     wxPoint( pixelsWidth - pixelEndX - 1, pixelsHeight - pixelEndY - 1 ) );
     tmpImage = tmpImage.GetSubImage( tmpRect );
+    
+    tmpImage.Rescale( pixelsWidth, pixelsHeight );
   }
+  else
+    tmpImage.Rescale( (double)tmpImage.GetWidth() * wheelZoomFactorX, (double)tmpImage.GetHeight() * wheelZoomFactorY );
 
-  tmpImage.Rescale( (double)tmpImage.GetWidth() * wheelZoomFactorX, (double)tmpImage.GetHeight() * wheelZoomFactorY );
-  if( tmpImage.GetHeight() > pixelsHeight )
-    tmpImage = tmpImage.Resize( wxSize( pixelsWidth, pixelsHeight ), wxPoint( 0, 0 ) );
   tmpBMP = wxBitmap( tmpImage );
 #endif
 
