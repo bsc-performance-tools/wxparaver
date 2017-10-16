@@ -5027,8 +5027,13 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
 #endif
     wheelZoomFactorY = newWheelFactor;
 
+  wxCoord posX = event.GetX();
+  if( posX <= objectAxisPos )
+    posX = objectAxisPos + 1;
+  else if( posX >= drawZone->GetClientSize().GetWidth() - drawBorder )
+    posX = drawZone->GetClientSize().GetWidth() - drawBorder - 1;
   wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder;
-  double ratioLeft = ( (double)( event.GetX() - objectAxisPos - 1 ) / (double)pixelsWidth );
+  double ratioLeft = ( (double)( posX - objectAxisPos - 1 ) / (double)pixelsWidth );
   double ratioRight = 1.0 - ratioLeft;
   ratioLeft = ratioLeft * ( 1 - 1 / wheelZoomFactorX );
   ratioRight = ratioRight * ( 1 - 1 / wheelZoomFactorX );
