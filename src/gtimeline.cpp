@@ -254,6 +254,10 @@ void gTimeline::Init()
   lastMax = 15;
   codeColorSet = true;
   gradientFunc = GradientColor::LINEAR;
+  
+#ifdef WIN32
+  wheelZoomObjects = false;
+#endif
 }
 
 
@@ -4294,6 +4298,9 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
 
 void gTimeline::OnTimerWheel( wxTimerEvent& event )
 {
+#ifdef WIN32
+  wheelZoomObjects = false;
+#endif
   wheelZoomFactor = 1.0;
   myWindow->addZoom( wheelZoomBeginTime, wheelZoomEndTime, wheelZoomBeginObject, wheelZoomEndObject );
   myWindow->setWindowBeginTime( wheelZoomBeginTime, true );
@@ -5006,9 +5013,18 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   if( zoomOut && myWindow->getWindowBeginTime() == 0 && myWindow->getWindowEndTime() == myWindow->getTrace()->getEndTime() )
     return;
 
+#ifdef WIN32
+  if( event.ControlDown() )
+    wheelZoomObjects = true;
+#endif
+
   double wheelZoomFactorX = newWheelFactor;
   double wheelZoomFactorY = 1;
+#ifdef WIN32
+  if( wheelZoomObjects )
+#else
   if( event.ControlDown() )
+#endif
     wheelZoomFactorY = newWheelFactor;
 
   wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder;
@@ -5023,7 +5039,11 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   ratioUp = ratioUp * ( 1 - 1 / wheelZoomFactorY );
   ratioDown = ratioDown * ( 1 - 1 / wheelZoomFactorY );
   
+#ifdef WIN32
+  if( wheelZoomObjects )
+#else
   if( event.ControlDown() )
+#endif
   {
     vector<TObjectOrder> selectedObjects;
     myWindow->getSelectedRows( myWindow->getLevel(),
@@ -5078,7 +5098,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   wxMemoryDC tmpDC( tmpBMP );
   tmpDC.SetBrush( wxBrush( backgroundColour ) );
   tmpDC.Clear();
-#ifdef __WXMAC__
+#if __WXMAC__ || WIN32
   tmpDC.DrawRectangle( 0, 0, pixelsWidth, pixelsHeight );
 #endif
   tmpDC.SetUserScale( wheelZoomFactorX, wheelZoomFactorY );
@@ -5111,7 +5131,11 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     tmpDC.SetPen( wxPen( backgroundColour ) );
     tmpDC.SetBrush( wxBrush( backgroundColour ) );
     tmpDC.DrawRectangle( 0, 0, -pixelBeginX, tmpDC.DeviceToLogicalY( timeAxisPos - drawBorder + 1 ) );
+#ifdef WIN32
+    if( wheelZoomObjects )
+#else
     if( event.ControlDown() )
+#endif
     {
       tmpDC.DrawRectangle( 0, -pixelBeginY + timeAxisPos, tmpDC.DeviceToLogicalX( tmpBMP.GetWidth() ), tmpBMP.GetHeight() );
     }
