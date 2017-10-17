@@ -5200,7 +5200,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
 
 void gTimeline::MousePan()
 {
-  wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder;
+  wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
   wxCoord pixelsHeight = timeAxisPos;
 
   // Temp draw buffer re-scaled
@@ -5228,7 +5228,7 @@ void gTimeline::MousePan()
   wxCoord srcY = zoomBeginY < motionEvent.GetY() ? 0 : zoomBeginY - motionEvent.GetY();
   tmpDC.Blit( dstX,
               dstY,
-              pixelsWidth,
+              pixelsWidth - ( zoomBeginX < motionEvent.GetX() ? motionEvent.GetX() - zoomBeginX : zoomBeginX - motionEvent.GetX() ),
               pixelsHeight - ( zoomBeginY < motionEvent.GetY() ? motionEvent.GetY() - zoomBeginY : zoomBeginY - motionEvent.GetY() ),
               &srcDC,
               srcX + objectAxisPos + 1,
