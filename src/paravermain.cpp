@@ -2647,8 +2647,8 @@ void paraverMain::ShowHistogramDialog()
     if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
     {
       wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
-      newHistogram->setPosX( newHistogram->getPosX() + tmpDisplay.GetClientArea().x );
-      newHistogram->setPosY( newHistogram->getPosY() + tmpDisplay.GetClientArea().y );
+      newHistogram->setPosX( newHistogram->getPosX() + tmpDisplay.GetGeometry().x );
+      newHistogram->setPosY( newHistogram->getPosY() + tmpDisplay.GetGeometry().y );
     }
 
     tmpHisto->SetClientSize( wxRect( newHistogram->getPosX(), newHistogram->getPosY(),
