@@ -1498,6 +1498,14 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
 
+  if( event.AltDown() )
+  {
+    zooming = false;
+    zoomXY = false;
+    MousePanLeftUp();
+    return;
+  }
+  
   // TIME zoom limits
   if( zooming )
   {
@@ -2270,7 +2278,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     return;
 
   motionEvent = event;
-  if( !( event.ControlDown() && event.ShiftDown() ) )
+  if( !event.AltDown() )
     timerMotion->Start( 20, true );
 
   wxMemoryDC dc( bufferImage );
@@ -2292,9 +2300,9 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
   if( zooming )
   {
-    if( event.ControlDown() && event.ShiftDown() )
+    if( event.AltDown() )
     {
-      MousePan();
+      MousePanMotion();
       return;
     }
     
@@ -4313,6 +4321,7 @@ void gTimeline::OnTimerWheel( wxTimerEvent& event )
   myWindow->setWindowBeginTime( wheelZoomBeginTime, true );
   myWindow->setWindowEndTime( wheelZoomEndTime, true );
   myWindow->setRedraw( true );
+  myWindow->setChanged( true );
 }
 
 /*!
@@ -5065,8 +5074,9 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
                                true );
 
     TObjectOrder objectHeight = selectedObjects.size();
-    newWheelZoomBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, (double)objectHeight * ratioUp, myWindow->getLevel() );
-    newWheelZoomEndObject = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, - (double)objectHeight * ratioDown, myWindow->getLevel() );
+    PRV_INT64 dummyAppliedAmount;
+    newWheelZoomBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, (double)objectHeight * ratioUp, dummyAppliedAmount, myWindow->getLevel() );
+    newWheelZoomEndObject = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, - (double)objectHeight * ratioDown, dummyAppliedAmount, myWindow->getLevel() );
   }
   else
   {
@@ -5198,7 +5208,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
 }
 
 
-void gTimeline::MousePan()
+void gTimeline::MousePanMotion()
 {
   wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
   wxCoord pixelsHeight = timeAxisPos;
@@ -5242,3 +5252,62 @@ void gTimeline::MousePan()
   dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1, 0 );
 }
 
+
+void gTimeline::MousePanLeftUp()
+{
+  TRecordTime  panBeginTime;
+  TRecordTime  panEndTime;
+  TObjectOrder panBeginObject;
+  TObjectOrder panEndObject;
+  wxCoord      pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
+  wxCoord      pixelsHeight = timeAxisPos;
+  
+  TRecordTime timeWidth = myWindow->getWindowEndTime() - myWindow->getWindowBeginTime();
+  panBeginTime = ( zoomBeginX * timeWidth ) / pixelsWidth;
+  panEndTime = ( zoomEndX * timeWidth ) / pixelsWidth;
+  TRecordTime deltaTime = panEndTime - panBeginTime;
+  
+  panBeginTime = myWindow->getWindowBeginTime() - deltaTime;
+  panEndTime   = myWindow->getWindowEndTime()   - deltaTime;
+  
+  if( panBeginTime < 0 )
+  {
+    panBeginTime = 0;
+    panEndTime   = timeWidth;
+  }
+  if( panEndTime > myWindow->getTrace()->getEndTime() )
+  {
+    panEndTime   = myWindow->getTrace()->getEndTime();
+    panBeginTime = panEndTime - timeWidth;
+  }
+
+  vector<TObjectOrder> selectedObjects;
+  myWindow->getSelectedRows( myWindow->getLevel(),
+                             selectedObjects,
+                             myWindow->getZoomSecondDimension().first,
+                             myWindow->getZoomSecondDimension().second,
+                             true );
+
+  TObjectOrder objectHeight = selectedObjects.size();
+  panBeginObject = ( zoomBeginY * objectHeight ) / pixelsHeight;
+  panEndObject   = ( zoomEndY * objectHeight ) / pixelsHeight;
+  PRV_INT64 deltaObject = panEndObject - panBeginObject;
+  
+  PRV_INT64 appliedDeltaObject;
+  if( deltaObject < 0 )
+  {
+    panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
+    panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
+  }
+  else
+  {
+    panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
+    panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
+  }
+  
+  myWindow->addZoom( panBeginTime, panEndTime, panBeginObject, panEndObject );
+  myWindow->setWindowBeginTime( panBeginTime, true );
+  myWindow->setWindowEndTime( panEndTime, true );
+  myWindow->setRedraw( true );
+  myWindow->setChanged( true );
+}

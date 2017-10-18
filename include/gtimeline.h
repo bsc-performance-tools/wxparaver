@@ -215,7 +215,8 @@ public:
 
 ////@end gTimeline event handler declarations
 
-  void MousePan();
+  void MousePanMotion();
+  void MousePanLeftUp();
   
 ////@begin gTimeline member function declarations
 
