@@ -5263,8 +5263,8 @@ void gTimeline::MousePanLeftUp()
   wxCoord      pixelsHeight = timeAxisPos;
   
   TRecordTime timeWidth = myWindow->getWindowEndTime() - myWindow->getWindowBeginTime();
-  panBeginTime = ( zoomBeginX * timeWidth ) / pixelsWidth;
-  panEndTime = ( zoomEndX * timeWidth ) / pixelsWidth;
+  panBeginTime = myWindow->getWindowBeginTime() + ( zoomBeginX * timeWidth ) / pixelsWidth;
+  panEndTime   = myWindow->getWindowBeginTime() + ( zoomEndX * timeWidth ) / pixelsWidth;
   TRecordTime deltaTime = panEndTime - panBeginTime;
   
   panBeginTime = myWindow->getWindowBeginTime() - deltaTime;
@@ -5289,10 +5289,10 @@ void gTimeline::MousePanLeftUp()
                              true );
 
   TObjectOrder objectHeight = selectedObjects.size();
-  panBeginObject = ( zoomBeginY * objectHeight ) / pixelsHeight;
-  panEndObject   = ( zoomEndY * objectHeight ) / pixelsHeight;
-  PRV_INT64 deltaObject = panEndObject - panBeginObject;
-  
+  PRV_INT64 tmpPanBeginObject = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomBeginY * objectHeight ) / pixelsHeight;
+  PRV_INT64 tmpPanEndObject   = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomEndY * objectHeight ) / pixelsHeight;
+  PRV_INT64 deltaObject = tmpPanEndObject - tmpPanBeginObject;
+
   PRV_INT64 appliedDeltaObject;
   if( deltaObject < 0 )
   {
@@ -5304,10 +5304,23 @@ void gTimeline::MousePanLeftUp()
     panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
     panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
   }
-  
-  myWindow->addZoom( panBeginTime, panEndTime, panBeginObject, panEndObject );
-  myWindow->setWindowBeginTime( panBeginTime, true );
-  myWindow->setWindowEndTime( panEndTime, true );
-  myWindow->setRedraw( true );
-  myWindow->setChanged( true );
+
+  if( panBeginTime   != myWindow->getWindowBeginTime() ||
+      panBeginObject != myWindow->getZoomSecondDimension().first )
+  {
+    myWindow->addZoom( panBeginTime, panEndTime, panBeginObject, panEndObject );
+    myWindow->setWindowBeginTime( panBeginTime, true );
+    myWindow->setWindowEndTime( panEndTime, true );
+    myWindow->setRedraw( true );
+    myWindow->setChanged( true );
+  }
+  else
+  {
+    wxClientDC tmpDC( drawZone );
+#ifdef __WXMAC__
+    drawStackedImages( tmpDC );
+#else
+    tmpDC.DrawBitmap( drawImage, 0, 0 );
+#endif
+  }
 }
