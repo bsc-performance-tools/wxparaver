@@ -211,6 +211,7 @@ void gTimeline::Init()
   wheelZoomEndTime = 0;
   wheelZoomFactor = 1;
   zooming = false;
+  timing = false;
   splitter = NULL;
   drawZone = NULL;
   infoZone = NULL;
@@ -370,15 +371,15 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -1488,7 +1489,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     return;
   }
   
-  if( event.ShiftDown() )
+  if( timing )
   {
     zooming = false;
     return;
@@ -1498,11 +1499,11 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   zoomEndY = event.GetY();
   zoomXY = event.ControlDown();
 
-  if( event.AltDown() )
+  if( event.ShiftDown() )
   {
     zooming = false;
     zoomXY = false;
-    MousePanLeftUp();
+    MousePanLeftUp( event );
     return;
   }
   
@@ -2278,7 +2279,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     return;
 
   motionEvent = event;
-  if( !event.AltDown() )
+  if( !event.ShiftDown() )
     timerMotion->Start( 20, true );
 
   wxMemoryDC dc( bufferImage );
@@ -2300,13 +2301,13 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
   if( zooming )
   {
-    if( event.AltDown() )
+    if( event.ShiftDown() )
     {
       MousePanMotion();
       return;
     }
     
-    if( !event.ShiftDown() )
+    if( !timing )
       zoomXY = event.ControlDown();
     else
       zoomXY = false;
@@ -2421,7 +2422,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
                                                                                  6 ).c_str() ) );
     }
   }
-  else if( event.ShiftDown() || wxGetApp().GetGlobalTiming() )
+  else if( timing || wxGetApp().GetGlobalTiming() )
   {
     long beginX = event.GetX();
     if( beginX < objectAxisPos )
@@ -4192,7 +4193,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   wxColour tmpColor;
 
   wxString label;
-  if( zooming || motionEvent.ShiftDown() || wxGetApp().GetGlobalTiming() )
+  if( zooming || timing || wxGetApp().GetGlobalTiming() )
   {
     long beginX;
     PRV_UINT32 precision = 0;
@@ -4299,7 +4300,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   paintDC.SetPen( backgroundColour );
   paintDC.SetBrush( backgroundColour );
 //  paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 1, objectExt.GetWidth() + 30, bufferImage.GetHeight() - timeAxisPos );
-  if( !( zooming || motionEvent.ShiftDown() || wxGetApp().GetGlobalTiming() ) )
+  if( !( zooming || timing || wxGetApp().GetGlobalTiming() ) )
   {
     paintDC.SetBrush( tmpColor );
     paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 2, 10, bufferImage.GetHeight() - timeAxisPos - 3 );
@@ -4524,6 +4525,15 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
   if( event.ControlDown() && event.GetKeyCode() == (long) 'R' )
   {
     OnPopUpRedoZoom();
+    return;
+  }
+  if( event.ControlDown() && event.GetKeyCode() == (long) 'T' )
+  {
+    timing = !timing;
+    if( timing )
+      drawZone->SetCursor( *wxCROSS_CURSOR );
+    else
+      drawZone->SetCursor( wxNullCursor  );
     return;
   }
 
@@ -5233,13 +5243,30 @@ void gTimeline::MousePanMotion()
 #endif
 
   wxCoord dstX = zoomBeginX < motionEvent.GetX() ? motionEvent.GetX() - zoomBeginX : 0;
-  wxCoord dstY = zoomBeginY < motionEvent.GetY() ? motionEvent.GetY() - zoomBeginY : 0;
   wxCoord srcX = zoomBeginX < motionEvent.GetX() ? 0 : zoomBeginX - motionEvent.GetX();
-  wxCoord srcY = zoomBeginY < motionEvent.GetY() ? 0 : zoomBeginY - motionEvent.GetY();
+  wxCoord dstY;
+  wxCoord srcY;
+  if( motionEvent.ControlDown() )
+  {
+    dstY = zoomBeginY < motionEvent.GetY() ? motionEvent.GetY() - zoomBeginY : 0;
+    srcY = zoomBeginY < motionEvent.GetY() ? 0 : zoomBeginY - motionEvent.GetY();
+  }
+  else
+  {
+    dstY = 0;
+    srcY = 0;
+  }
+  
+  wxCoord tmpBlitHeight;
+  if( motionEvent.ControlDown() )
+    tmpBlitHeight = pixelsHeight - ( zoomBeginY < motionEvent.GetY() ? motionEvent.GetY() - zoomBeginY : zoomBeginY - motionEvent.GetY() );
+  else
+    tmpBlitHeight = pixelsHeight;
+
   tmpDC.Blit( dstX,
               dstY,
               pixelsWidth - ( zoomBeginX < motionEvent.GetX() ? motionEvent.GetX() - zoomBeginX : zoomBeginX - motionEvent.GetX() ),
-              pixelsHeight - ( zoomBeginY < motionEvent.GetY() ? motionEvent.GetY() - zoomBeginY : zoomBeginY - motionEvent.GetY() ),
+              tmpBlitHeight,
               &srcDC,
               srcX + objectAxisPos + 1,
               srcY );
@@ -5253,7 +5280,7 @@ void gTimeline::MousePanMotion()
 }
 
 
-void gTimeline::MousePanLeftUp()
+void gTimeline::MousePanLeftUp( wxMouseEvent& event )
 {
   TRecordTime  panBeginTime;
   TRecordTime  panEndTime;
@@ -5281,30 +5308,38 @@ void gTimeline::MousePanLeftUp()
     panBeginTime = panEndTime - timeWidth;
   }
 
-  vector<TObjectOrder> selectedObjects;
-  myWindow->getSelectedRows( myWindow->getLevel(),
-                             selectedObjects,
-                             myWindow->getZoomSecondDimension().first,
-                             myWindow->getZoomSecondDimension().second,
-                             true );
-
-  TObjectOrder objectHeight = selectedObjects.size();
-  PRV_INT64 tmpPanBeginObject = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomBeginY * objectHeight ) / pixelsHeight;
-  PRV_INT64 tmpPanEndObject   = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomEndY * objectHeight ) / pixelsHeight;
-  PRV_INT64 deltaObject = tmpPanEndObject - tmpPanBeginObject;
-
-  PRV_INT64 appliedDeltaObject;
-  if( deltaObject < 0 )
+  if( event.ControlDown() )
   {
-    panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
-    panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
+    vector<TObjectOrder> selectedObjects;
+    myWindow->getSelectedRows( myWindow->getLevel(),
+                               selectedObjects,
+                               myWindow->getZoomSecondDimension().first,
+                               myWindow->getZoomSecondDimension().second,
+                               true );
+
+    TObjectOrder objectHeight = selectedObjects.size();
+    PRV_INT64 tmpPanBeginObject = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomBeginY * objectHeight ) / pixelsHeight;
+    PRV_INT64 tmpPanEndObject   = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomEndY * objectHeight ) / pixelsHeight;
+    PRV_INT64 deltaObject = tmpPanEndObject - tmpPanBeginObject;
+
+    PRV_INT64 appliedDeltaObject;
+    if( deltaObject < 0 )
+    {
+      panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
+      panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
+    }
+    else
+    {
+      panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
+      panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
+    }
   }
   else
   {
-    panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
-    panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
+    panBeginObject = myWindow->getZoomSecondDimension().first;
+    panEndObject = myWindow->getZoomSecondDimension().second;
   }
-
+  
   if( panBeginTime   != myWindow->getWindowBeginTime() ||
       panBeginObject != myWindow->getZoomSecondDimension().first )
   {
