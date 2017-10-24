@@ -694,7 +694,13 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
 
-  buildItem( this, 
+  buildItem( this,
+             _( "Timing\tCTRL+T" ),
+             ITEMCHECK,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuTiming,
+             ID_MENU_TIMING,
+             timeline->GetTiming() );
+  buildItem( this,
              _( "Info Panel" ),
              ITEMCHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuInfoPanel,
@@ -1544,6 +1550,13 @@ void gPopUpMenu::OnMenuSaveAllPlanesAsText( wxCommandEvent& event )
 {
   bool onlySelectedPlane = false;
   histogram->saveText( onlySelectedPlane );
+}
+
+
+void gPopUpMenu::OnMenuTiming( wxCommandEvent& event )
+{
+  if( timeline != NULL )
+    timeline->OnPopUpTiming( event.IsChecked() );
 }
 
 
