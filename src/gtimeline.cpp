@@ -359,14 +359,14 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -1098,9 +1098,9 @@ void gTimeline::drawRow( wxDC& dc,
     {
       drawRowFunction( dc, *it, lineLastPos, objectPos, timePos, magnify );
     }
-    else if( myWindow->isMultiFunctionLineColorSet() )
+    else if( myWindow->isFusedLinesColorSet() )
     {
-      drawRowMultiFunction( dc, *it, lineLastPos, firstRow, timePos, magnify );
+      drawRowFusedLines( dc, *it, lineLastPos, firstRow, timePos, magnify );
     }
 
     timePos += (int) magnify ;
@@ -1189,14 +1189,14 @@ void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& line
 
 
 template<typename ValuesType>
-void gTimeline::drawRowMultiFunction( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify )
+void gTimeline::drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify )
 {
   // Default implementation should not be called; only intended for compiling
   abort();
 }
 
 template<>
-void gTimeline::drawRowMultiFunction( wxDC& dc, TSemanticValue valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify )
+void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify )
 {
   if( valueToDraw < myWindow->getMinimumY() )
     valueToDraw = myWindow->getMinimumY();
@@ -1460,7 +1460,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   }
   
   bool state = false;
-  if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() || myWindow->isMultiFunctionLineColorSet() )
+  if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() || myWindow->isFusedLinesColorSet() )
     state = true;
   initialSemanticLabel->Show( state );
   initialSemanticText->Show( state );
@@ -1649,7 +1649,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     // Update window properties
     if( zoomXY && 
         ( selected.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() ) 
-          || myWindow->isMultiFunctionLineColorSet() )
+          || myWindow->isFusedLinesColorSet() )
       )
     {
       if( zoomBeginY < objectPosList[ 0 ] )
@@ -2417,7 +2417,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
     if( zoomXY &&
         ( selectedSet.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
-          || myWindow->isMultiFunctionLineColorSet() ) )
+          || myWindow->isFusedLinesColorSet() ) )
     {
       if( beginY < objectPosList[ 0 ] )
         beginY = timeAxisPos - objectPosList[ 0 ];
@@ -3160,9 +3160,9 @@ void gTimeline::drawFunctionLineColor()
   myWindow->setRedraw( true );
 }
 
-void gTimeline::drawMultiFunctionLineColor()
+void gTimeline::drawFusedLinesColor()
 {
-  myWindow->setMultiFunctionLineColorMode();
+  myWindow->setFusedLinesColorMode();
   myWindow->setRedraw( true );
 }
 

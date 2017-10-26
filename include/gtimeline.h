@@ -167,6 +167,15 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMotion( wxMouseEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -184,15 +193,6 @@ public:
 
   /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowRightDown( wxMouseEvent& event );
-
-  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowMotion( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -401,7 +401,7 @@ public:
   void drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify );
 
   template<typename ValuesType>
-  void drawRowMultiFunction( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify );
+  void drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify );
 
   void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw );
 #ifdef WIN32
@@ -413,7 +413,7 @@ public:
   void drawCommunicationLines( bool draw );
   void drawEventFlags( bool draw );
   void drawFunctionLineColor();
-  void drawMultiFunctionLineColor();
+  void drawFusedLinesColor();
 
   void OnPopUpRightDown( void );
 
