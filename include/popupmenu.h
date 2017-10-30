@@ -137,6 +137,7 @@ class gHistogram;
 #define ID_MENU_PASTE_CONTROL_DIMENSIONS          30089
 #define ID_MENU_PUNCTUAL                          30090
 #define ID_MENU_PUNCTUAL_WINDOW                   30091
+#define ID_MENU_TIMING                            30092
 
 
 class gPopUpMenu : public wxMenu
@@ -242,6 +243,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuSaveCurrentPlaneAsText( wxCommandEvent& event );
 
     void OnMenuInfoPanel( wxCommandEvent& event );
+    void OnMenuTiming( wxCommandEvent& event );
     
     void OnMenuAutoControlScale( wxCommandEvent& event );
     void OnMenuAuto3DScale( wxCommandEvent& event );

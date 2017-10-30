@@ -118,6 +118,7 @@ class ProgressController;
 
 #define ID_TIMER_SIZE 40000
 #define ID_TIMER_MOTION 40001
+#define ID_TIMER_WHEEL 40002
 
 /*!
  * gTimeline class declaration
@@ -167,12 +168,6 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -194,6 +189,15 @@ public:
   /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMotion( wxMouseEvent& event );
 
+  /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMouseWheel( wxMouseEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
 
@@ -211,6 +215,9 @@ public:
 
 ////@end gTimeline event handler declarations
 
+  void MousePanMotion();
+  void MousePanLeftUp( wxMouseEvent& event );
+  
 ////@begin gTimeline member function declarations
 
   wxColour GetBackgroundColour() const { return backgroundColour ; }
@@ -336,6 +343,27 @@ public:
   wxTimer * GetTimerSize() const { return timerSize ; }
   void SetTimerSize(wxTimer * value) { timerSize = value ; }
 
+  wxTimer * GetTimerWheel() const { return timerWheel ; }
+  void SetTimerWheel(wxTimer * value) { timerWheel = value ; }
+
+  bool GetTiming() const { return timing ; }
+  void SetTiming(bool value) { timing = value ; }
+
+  TObjectOrder GetWheelZoomBeginObject() const { return wheelZoomBeginObject ; }
+  void SetWheelZoomBeginObject(TObjectOrder value) { wheelZoomBeginObject = value ; }
+
+  TRecordTime GetWheelZoomBeginTime() const { return wheelZoomBeginTime ; }
+  void SetWheelZoomBeginTime(TRecordTime value) { wheelZoomBeginTime = value ; }
+
+  TObjectOrder GetWheelZoomEndObject() const { return wheelZoomEndObject ; }
+  void SetWheelZoomEndObject(TObjectOrder value) { wheelZoomEndObject = value ; }
+
+  TRecordTime GetWheelZoomEndTime() const { return wheelZoomEndTime ; }
+  void SetWheelZoomEndTime(TRecordTime value) { wheelZoomEndTime = value ; }
+
+  double GetWheelZoomFactor() const { return wheelZoomFactor ; }
+  void SetWheelZoomFactor(double value) { wheelZoomFactor = value ; }
+
   long GetZoomBegin() const { return zoomBeginX ; }
   void SetZoomBegin(long value) { zoomBeginX = value ; }
 
@@ -375,7 +403,7 @@ public:
   template<typename ValuesType>
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
-                vector< TSemanticValue >& valuesToDraw,
+                vector< ValuesType >& valuesToDraw,
                 hash_set< PRV_INT32 >& eventsToDraw,
                 hash_set< commCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
@@ -492,6 +520,7 @@ public:
   void resizeDrawZone( int width, int height );
   
   bool IsSplit() const;
+  void OnPopUpTiming( bool whichTiming );
 
   void saveImage( bool showSaveDialog = true );
   void saveImageLegend( bool showSaveDialog = true );
@@ -584,6 +613,13 @@ private:
   wxFont timeFont;
   wxTimer * timerMotion;
   wxTimer * timerSize;
+  wxTimer * timerWheel;
+  bool timing;
+  TObjectOrder wheelZoomBeginObject;
+  TRecordTime wheelZoomBeginTime;
+  TObjectOrder wheelZoomEndObject;
+  TRecordTime wheelZoomEndTime;
+  double wheelZoomFactor;
   long zoomBeginX;
   long zoomBeginY;
   long zoomEndX;
@@ -599,6 +635,9 @@ private:
   GradientColor::TGradientFunction gradientFunc;
 #ifdef __WXMAC__
   wxBitmap zoomBMP;
+#endif
+#ifdef WIN32
+  bool wheelZoomObjects;
 #endif
 
   wxWindow *parent;
@@ -623,7 +662,10 @@ private:
   void Split();
   void OnTimerSize( wxTimerEvent& event );
   void OnTimerMotion( wxTimerEvent& event );
+  void OnTimerWheel( wxTimerEvent& event );
 
+  bool pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject );
+  
   // Called by saveLabelsImage
   void drawRectangle( wxMemoryDC& labelDC,
                        wxMemoryDC& scaleDC,
