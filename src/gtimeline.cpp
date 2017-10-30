@@ -2957,7 +2957,36 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
     wxStaticText *itemText;
     wxPanel *itemColor;
     
-    if( myWindow->isCodeColorSet() )
+    if( myWindow->isFusedLinesColorSet() )
+    {
+      int endLimit = myWindow->getTrace()->getLevelObjects( myWindow->getLevel() );
+      for( int i = 0; i < endLimit; ++i )
+      {
+        string tmpstr = LabelConstructor::objectLabel( i, myWindow->getLevel(), myWindow->getTrace() );
+
+        itemSizer = new wxBoxSizer(wxHORIZONTAL);
+
+        itemText = new wxStaticText( colorsPanel, wxID_ANY, _T("") );
+        wxString tmpStr = wxString::FromAscii( tmpstr.c_str() );
+        itemText->SetLabel( tmpStr );
+
+        wxSize tmpSize( 20, itemText->GetSize().GetHeight() );
+        itemColor = new wxPanel( colorsPanel, wxID_ANY, wxDefaultPosition, tmpSize );
+        rgb tmprgb = myWindow->getCodeColor().calcColor( i + 1, 0, endLimit );
+        wxColour tmpColor( tmprgb.red, tmprgb.green, tmprgb.blue );
+        itemColor->SetBackgroundColour( tmpColor );
+
+        itemSizer->Add( itemColor );
+        itemSizer->AddSpacer( 5 );
+        itemSizer->Add( itemText );
+        colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
+      
+        if( i < endLimit - 1 )
+          colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
+        
+      }
+    }
+    else if( myWindow->isCodeColorSet() )
     {
       int endLimit = ceil( lastMax );
     
