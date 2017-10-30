@@ -788,6 +788,35 @@ private:
     private:    
   };
 
+  class ScaleImageVerticalFusedLines : public ScaleImageVertical
+  {
+    public:
+      ScaleImageVerticalFusedLines(
+              Window* whichMyWindow,
+              const std::map< TSemanticValue, rgb >& whichSemanticValues,
+              wxColour whichBackground,
+              wxColour whichForeground,
+              int whichBackgroundMode,
+              wxFont whichTextFont,
+              wxString& whichImagePath,
+              const wxString& whichImageInfix,
+#if wxMAJOR_VERSION<3
+              long whichImageType );
+#else
+              wxBitmapType& whichImageType );
+#endif
+
+      ~ScaleImageVerticalFusedLines()
+      {}
+
+    protected:
+      virtual void init();
+      virtual void computeMaxLabelSize();
+
+    private:    
+  };
+
+
   class ScaleImageHorizontalGradientColor : public ScaleImageVerticalGradientColor
   {
     public:

@@ -2959,10 +2959,15 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
     
     if( myWindow->isFusedLinesColorSet() )
     {
-      int endLimit = myWindow->getTrace()->getLevelObjects( myWindow->getLevel() );
-      for( int i = 0; i < endLimit; ++i )
+      TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+      TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
+      vector<TObjectOrder> selected;
+      myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+
+      size_t i = 0;
+      for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
       {
-        string tmpstr = LabelConstructor::objectLabel( i, myWindow->getLevel(), myWindow->getTrace() );
+        string tmpstr = LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() );
 
         itemSizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -2972,7 +2977,7 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
 
         wxSize tmpSize( 20, itemText->GetSize().GetHeight() );
         itemColor = new wxPanel( colorsPanel, wxID_ANY, wxDefaultPosition, tmpSize );
-        rgb tmprgb = myWindow->getCodeColor().calcColor( i + 1, 0, endLimit );
+        rgb tmprgb = myWindow->getCodeColor().calcColor( (*it) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) );
         wxColour tmpColor( tmprgb.red, tmprgb.green, tmprgb.blue );
         itemColor->SetBackgroundColour( tmpColor );
 
@@ -2981,9 +2986,9 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
         itemSizer->Add( itemText );
         colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
       
-        if( i < endLimit - 1 )
+        if( i < selected.size() - 1 )
           colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
-        
+        ++i;
       }
     }
     else if( myWindow->isCodeColorSet() )
@@ -3494,6 +3499,30 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     tmpImage->save();
     delete tmpImage;
   }
+  else if ( myWindow->isFusedLinesColorSet() )
+  {
+    std::map< TSemanticValue, rgb > tmpObjects;
+
+    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+    TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
+    vector<TObjectOrder> selected;
+    myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+
+    for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+    {
+      rgb tmprgb = myWindow->getCodeColor().calcColor( (*it) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1 );
+      tmpObjects[ (TSemanticValue)(*it) ] = tmprgb;
+    }
+    tmpImage = new ScaleImageVerticalFusedLines( myWindow, tmpObjects,
+                                                 //backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE, *wxBLACK, backgroundMode,
+                                                 titleFont,
+                                                 // imagePath, wxString( _( "vert.labels.transp" ) ),
+                                                 imagePath, wxString( _( "" ) ),
+                                                 imageType );
+    tmpImage->save();
+    delete tmpImage;
+  }
 }
 
 
@@ -3905,6 +3934,75 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
   ydst += imageStepY;
 }
 
+
+//---------------------------------------------------------------------------------------------------
+//
+// ScaleImageVerticalFusedLines
+//
+gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines(
+        Window* whichMyWindow, 
+        const std::map< TSemanticValue, rgb >& whichSemanticValues,
+        wxColour whichBackground,
+        wxColour whichForeground,
+        int whichBackgroundMode,
+        wxFont whichTextFont,
+        wxString& whichImagePath,
+        const wxString& whichImageInfix,
+#if wxMAJOR_VERSION<3
+        long whichImageType
+#else
+        wxBitmapType& whichImageType 
+#endif
+        ) : ScaleImageVertical( whichMyWindow,
+                                whichSemanticValues,
+                                whichBackground,
+                                whichForeground,
+                                whichBackgroundMode,
+                                whichTextFont,
+                                whichImagePath,
+                                whichImageInfix,
+                                whichImageType )
+{
+}
+
+
+void gTimeline::ScaleImageVerticalFusedLines::init()
+{
+  gTimeline::ScaleImageVertical::init();
+
+  currentMin = 0;
+  currentMax = myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1;
+}
+
+void gTimeline::ScaleImageVerticalFusedLines::computeMaxLabelSize()
+{
+  // Dimensions: loop for every value to build labels and measure the maximum
+  wxString curLabel;
+  wxString maxLabel;
+  size_t maxLengthLabel = 0;
+  size_t curLengthLabel;
+  for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+  {
+    // Get Labels
+    curLabel = wxString::FromAscii( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+    semanticValueLabel[ *it ] = curLabel;
+
+    // Get Longest label
+    curLengthLabel = curLabel.Len();
+    if ( maxLengthLabel < curLengthLabel )
+    {
+      maxLengthLabel = curLengthLabel;
+      semanticValueWithLongestLabel = *it;
+    }
+  }
+
+  // Guess height and width of longest label
+  wxBitmap maxLabelBitmap( 1920, 64 );
+  wxMemoryDC maxLabelDC( maxLabelBitmap );
+  maxLabelDC.SetFont( textFont );
+  maxLabelSize = maxLabelDC.GetTextExtent( extraPrefixOutlier +
+                                           semanticValueLabel[ semanticValueWithLongestLabel ] );
+}
 
 //---------------------------------------------------------------------------------------------------
 //
