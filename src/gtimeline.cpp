@@ -1128,7 +1128,7 @@ void gTimeline::drawRow( wxDC& dc,
   if( myWindow->isFusedLinesColorSet() )
     objectPos = 0;
   else
-    objectPosList[ firstRow ];
+    objectPos = objectPosList[ firstRow ];
   wxCoord timePos   = objectAxisPos + 1;
   int lineLastPos   = 0;
 
@@ -1703,18 +1703,18 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
           || myWindow->isFusedLinesColorSet() )
       )
     {
-      if( zoomBeginY < objectPosList[ 0 ] )
-        zoomBeginY = timeAxisPos - objectPosList[ 0 ];
+      if( zoomBeginY < drawBorder )
+        zoomBeginY = timeAxisPos - drawBorder;
       else
         zoomBeginY = timeAxisPos - zoomBeginY;
       
-      if( zoomEndY < objectPosList[ 0 ] )
-        zoomEndY = timeAxisPos - objectPosList[ 0 ];
+      if( zoomEndY < drawBorder )
+        zoomEndY = timeAxisPos - drawBorder;
       else
         zoomEndY = timeAxisPos - zoomEndY;
       
       TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
-                                    ( timeAxisPos - objectPosList[ 0 ] );
+                                    ( timeAxisPos - drawBorder );
       TSemanticValue beginSemantic = ( semanticStep * zoomEndY ) + myWindow->getMinimumY();
       TSemanticValue endSemantic = ( semanticStep * zoomBeginY ) + myWindow->getMinimumY();
       
@@ -2470,18 +2470,18 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
         ( selectedSet.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
           || myWindow->isFusedLinesColorSet() ) )
     {
-      if( beginY < objectPosList[ 0 ] )
-        beginY = timeAxisPos - objectPosList[ 0 ];
+      if( beginY < drawBorder )
+        beginY = timeAxisPos - drawBorder;
       else
         beginY = timeAxisPos - beginY;
       
-      if( endY < objectPosList[ 0 ] )
-        endY = timeAxisPos - objectPosList[ 0 ];
+      if( endY < drawBorder )
+        endY = timeAxisPos - drawBorder;
       else
         endY = timeAxisPos - endY;
       
       TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
-                                    ( timeAxisPos - objectPosList[ 0 ] );
+                                    ( timeAxisPos - drawBorder );
       TSemanticValue beginSemantic = ( semanticStep * endY ) + myWindow->getMinimumY();
       TSemanticValue endSemantic = ( semanticStep * beginY ) + myWindow->getMinimumY();
       
