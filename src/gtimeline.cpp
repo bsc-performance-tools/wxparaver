@@ -670,10 +670,13 @@ void gTimeline::redraw()
     {
       TObjectOrder firstObj = *obj;
       TObjectOrder lastObj = firstObj;
-      while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
+      if( !myWindow->isFusedLinesColorSet() )
       {
-        ++obj;
-        lastObj = *obj;
+        while( ( lastObj + 1 ) <= maxObj && objectPosList[ lastObj + 1 ] == objectPosList[ firstObj ] )
+        {
+          ++obj;
+          lastObj = *obj;
+        }
       }
 
       if( myWindow->isPunctualColorSet() )
@@ -1121,7 +1124,11 @@ void gTimeline::drawRow( wxDC& dc,
     dc.SetBrush( punctualColor );
   }
 
-  wxCoord objectPos = objectPosList[ firstRow ];
+  wxCoord objectPos;
+  if( myWindow->isFusedLinesColorSet() )
+    objectPos = 0;
+  else
+    objectPosList[ firstRow ];
   wxCoord timePos   = objectAxisPos + 1;
   int lineLastPos   = 0;
 
@@ -1147,8 +1154,11 @@ void gTimeline::drawRow( wxDC& dc,
     timePos += (int) magnify ;
   }
   
-  drawRowEvents( eventdc, eventmaskdc, objectPosList[ firstRow ], eventsToDraw );
-  drawRowComms( commdc, commmaskdc, objectPosList[ firstRow ], commsToDraw );
+  if( !myWindow->isFusedLinesColorSet() )
+  {
+    drawRowEvents( eventdc, eventmaskdc, objectPosList[ firstRow ], eventsToDraw );
+    drawRowComms( commdc, commmaskdc, objectPosList[ firstRow ], commsToDraw );
+  }
 }
 
 
