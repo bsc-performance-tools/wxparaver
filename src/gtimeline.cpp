@@ -852,6 +852,15 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   switch( myWindow->getObjectAxisSize() )
   {
     case Window::CURRENT_LEVEL:
+      if( myWindow->isFusedLinesColorSet() )
+      {
+        objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
+                                                                                            myWindow->getMaximumY(),
+                                                                                            false,
+                                                                                            ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ) );
+        break;
+      }
+
       tmpCurrentMaxLength = LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1,
                                                            (TWindowLevel) myWindow->getLevel(),
                                                            myWindow->getTrace() ).length();
@@ -866,6 +875,15 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       break;
 
     case Window::ALL_LEVELS:
+      if( myWindow->isFusedLinesColorSet() )
+      {
+        objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
+                                                                                            myWindow->getMaximumY(),
+                                                                                            false,
+                                                                                            ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ) );
+        break;
+      }
+
       if( myWindow->getTrace()->existResourceInfo() )
         endLevel = CPU;
     
@@ -919,117 +937,140 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                dc.GetSize().GetWidth() - drawBorder, timeAxisPos );
 
   // Draw axis labels
-  wxCoord y;
-  double inc = (double)( timeAxisPos - drawBorder ) / (double)( numObjects );
-  bool drawLabel = true;
-  TObjectOrder power2 = 1;
-
-  objectPosList.clear();
-  objectPosList.insert( objectPosList.begin(), myWindow->getWindowLevelObjects(), 0 );
-  objectHeight = 1;
-  vector< TObjectOrder >::iterator it = selected.begin();
-
-  wxCoord accumHeight = 0;
-  wxCoord stepHeight = objectExt.GetHeight();
-  
-  int numpixels = timeAxisPos - 2*drawBorder; /* Usable num pixels */
-  int everyobj = 1; /* Draw every Xth object */
-  bool printlast = numpixels > objectFont.GetPointSize(); /* Do we have space for more than 1? */
-  bool printall = numpixels > 0 && numpixels > int( numObjects * objectFont.GetPointSize()); /* Do we have space for all? */
-
-  /* If we have space for some, but not all, check which to print ... */
-  if (!printall && printlast)
+  if( myWindow->isFusedLinesColorSet() )
   {
-    /* Locate the maximum 2^n that fit on the pixels */
-    int every = 1;
-    while ((numObjects*objectFont.GetPointSize())/every > numpixels-objectFont.GetPointSize())
-      every = every << 1;
+    dc.DrawText( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
+                                                                       myWindow->getMaximumY(),
+                                                                       false,
+                                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
+                 drawBorder, drawBorder );
 
-    every = every << 1;
-    /* Now print 2^n equidistant elements */
-    if (int(numObjects) > every)
-      everyobj = numObjects / (numObjects/every);
-    else
-      everyobj = numObjects;
+    dc.DrawText( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
+                                                                       myWindow->getMinimumY(),
+                                                                       false,
+                                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
+                 drawBorder, timeAxisPos - objectExt.GetHeight() );
+
+    dc.DrawText( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
+                                                                       ( myWindow->getMaximumY() - myWindow->getMinimumY() ) / 2,
+                                                                       false,
+                                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
+                 drawBorder, ( timeAxisPos - objectExt.GetHeight() ) / 2 );
   }
-
-  // for every object
-  for( TObjectOrder obj = (TObjectOrder)0; obj < numObjects; obj++ )
-  {
-    y = ( (wxCoord) ( inc * ( obj ) ) ) + drawBorder;
-    if( ( inc * 0.25 ) >= 1.0 )
-    {
-      if( obj > (TObjectOrder)0 )
-        objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 ?
-                       objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 :
-                       objectHeight = objectHeight;
-      y += (wxCoord)( inc * 0.25 );
-    }
-    else
-    {
-      if( obj > (TObjectOrder)0 )
-        objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) ?
-                       objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) :
-                       objectHeight = objectHeight;
-    }
-    objectPosList[ selected[ obj ] ] = y;
-
-    switch( myWindow->getObjectLabels() )
-    {
-      case Window::ALL_LABELS:
-        drawLabel = true;
-        break;
-        
-      case Window::SPACED_LABELS:
-        if( ( printlast && ( obj % everyobj == 0 || obj == numObjects - 1 ) ) ||
-            ( !printlast && obj == 0 ) )
-          drawLabel = true;
-        else
-          drawLabel = false;
-        //drawLabel = y > accumHeight;
-        break;
-        
-      case Window::POWER2_LABELS:
-        if( obj == power2 - 1 )
-        {
-          drawLabel = true;
-          power2 = power2 << 1;
-        }
-        else
-          drawLabel = false;
-        break;
-      default:
-        break;
-    }
-
-    if( ( printall || drawLabel ) &&
-        !( myWindow->getObjectAxisSize() == Window::ZERO_PERC ) )
-    {
-      if( myWindow->getLevel() == CPU || myWindow->getLevel() == NODE || myWindow->getLevel() == SYSTEM )
-        dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
-                     drawBorder, y );
-      else
-        dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
-                     drawBorder, y );
-      accumHeight += stepHeight;
-    }
-
-    // next selected row
-    ++it;
-  }
-
-  if( numObjects == 1 )
-    objectHeight = ( timeAxisPos - objectPosList[ selected[ 0 ] ] );
   else
   {
-    if( ( inc * 0.25 ) < 1.0 && magnify > objectHeight )
+    wxCoord y;
+    double inc = (double)( timeAxisPos - drawBorder ) / (double)( numObjects );
+    bool drawLabel = true;
+    TObjectOrder power2 = 1;
+
+    objectPosList.clear();
+    objectPosList.insert( objectPosList.begin(), myWindow->getWindowLevelObjects(), 0 );
+    objectHeight = 1;
+    vector< TObjectOrder >::iterator it = selected.begin();
+
+    wxCoord accumHeight = 0;
+    wxCoord stepHeight = objectExt.GetHeight();
+    
+    int numpixels = timeAxisPos - 2*drawBorder; /* Usable num pixels */
+    int everyobj = 1; /* Draw every Xth object */
+    bool printlast = numpixels > objectFont.GetPointSize(); /* Do we have space for more than 1? */
+    bool printall = numpixels > 0 && numpixels > int( numObjects * objectFont.GetPointSize()); /* Do we have space for all? */
+
+    /* If we have space for some, but not all, check which to print ... */
+    if (!printall && printlast)
     {
-      for( vector<wxCoord>::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
-        *it = ( floor( ( *it - drawBorder ) / magnify ) * magnify ) + drawBorder;
-      objectHeight = magnify;
+      /* Locate the maximum 2^n that fit on the pixels */
+      int every = 1;
+      while ((numObjects*objectFont.GetPointSize())/every > numpixels-objectFont.GetPointSize())
+        every = every << 1;
+
+      every = every << 1;
+      /* Now print 2^n equidistant elements */
+      if (int(numObjects) > every)
+        everyobj = numObjects / (numObjects/every);
+      else
+        everyobj = numObjects;
+    }
+
+    // for every object
+    for( TObjectOrder obj = (TObjectOrder)0; obj < numObjects; obj++ )
+    {
+      y = ( (wxCoord) ( inc * ( obj ) ) ) + drawBorder;
+      if( ( inc * 0.25 ) >= 1.0 )
+      {
+        if( obj > (TObjectOrder)0 )
+          objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 ?
+                         objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 :
+                         objectHeight = objectHeight;
+        y += (wxCoord)( inc * 0.25 );
+      }
+      else
+      {
+        if( obj > (TObjectOrder)0 )
+          objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) ?
+                         objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) :
+                         objectHeight = objectHeight;
+      }
+      objectPosList[ selected[ obj ] ] = y;
+
+      switch( myWindow->getObjectLabels() )
+      {
+        case Window::ALL_LABELS:
+          drawLabel = true;
+          break;
+          
+        case Window::SPACED_LABELS:
+          if( ( printlast && ( obj % everyobj == 0 || obj == numObjects - 1 ) ) ||
+              ( !printlast && obj == 0 ) )
+            drawLabel = true;
+          else
+            drawLabel = false;
+          //drawLabel = y > accumHeight;
+          break;
+          
+        case Window::POWER2_LABELS:
+          if( obj == power2 - 1 )
+          {
+            drawLabel = true;
+            power2 = power2 << 1;
+          }
+          else
+            drawLabel = false;
+          break;
+        default:
+          break;
+      }
+
+      if( ( printall || drawLabel ) &&
+          !( myWindow->getObjectAxisSize() == Window::ZERO_PERC ) )
+      {
+        if( myWindow->getLevel() == CPU || myWindow->getLevel() == NODE || myWindow->getLevel() == SYSTEM )
+          dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
+                       drawBorder, y );
+        else
+          dc.DrawText( wxString::FromAscii( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
+                       drawBorder, y );
+        accumHeight += stepHeight;
+      }
+
+      // next selected row
+      ++it;
+    }
+
+    if( numObjects == 1 )
+      objectHeight = ( timeAxisPos - objectPosList[ selected[ 0 ] ] );
+    else
+    {
+      if( ( inc * 0.25 ) < 1.0 && magnify > objectHeight )
+      {
+        for( vector<wxCoord>::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
+          *it = ( floor( ( *it - drawBorder ) / magnify ) * magnify ) + drawBorder;
+        objectHeight = magnify;
+      }
     }
   }
-
+  
   dc.SetFont( timeFont );
   dc.DrawText( wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( myWindow->getWindowBeginTime() ),
                                                                  myWindow->getTimeUnit(), precision ).c_str() ),
