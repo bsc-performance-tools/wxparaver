@@ -168,6 +168,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -427,7 +433,10 @@ public:
 
   template<typename ValuesType>
   void drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify );
- 
+
+  template<typename ValuesType>
+  void drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify );
+
   void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw );
 #ifdef WIN32
   void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw );
@@ -438,6 +447,7 @@ public:
   void drawCommunicationLines( bool draw );
   void drawEventFlags( bool draw );
   void drawFunctionLineColor();
+  void drawFusedLinesColor();
 
   void OnPopUpRightDown( void );
 
@@ -647,10 +657,11 @@ private:
   vector< pair< TWWLine, wxString > > whatWhereLines;
   int whatWhereSelectedTimeEventLines;
   int whatWhereSelectedTimeCommunicationLines;
-  TRecordTime whatWhereTime;
-  TObjectOrder whatWhereRow;
+  TRecordTime    whatWhereTime;
+  TObjectOrder   whatWhereRow;
+  TSemanticValue whatWhereSemantic;
 
-  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, bool textMode );
+  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, TSemanticValue whichSemantic, bool textMode );
   void printWhatWhere( );
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode );
   void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode );
@@ -825,6 +836,35 @@ private:
     
     private:    
   };
+
+  class ScaleImageVerticalFusedLines : public ScaleImageVertical
+  {
+    public:
+      ScaleImageVerticalFusedLines(
+              Window* whichMyWindow,
+              const std::map< TSemanticValue, rgb >& whichSemanticValues,
+              wxColour whichBackground,
+              wxColour whichForeground,
+              int whichBackgroundMode,
+              wxFont whichTextFont,
+              wxString& whichImagePath,
+              const wxString& whichImageInfix,
+#if wxMAJOR_VERSION<3
+              long whichImageType );
+#else
+              wxBitmapType& whichImageType );
+#endif
+
+      ~ScaleImageVerticalFusedLines()
+      {}
+
+    protected:
+      virtual void init();
+      virtual void computeMaxLabelSize();
+
+    private:    
+  };
+
 
   class ScaleImageHorizontalGradientColor : public ScaleImageVerticalGradientColor
   {
