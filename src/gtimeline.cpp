@@ -4883,7 +4883,7 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   {
     TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
                      ( timeAxisPos - drawBorder );
-    tmpSemantic = myWindow->getMaximumY() - ( semanticStep * ( y - drawBorder - 1 ) );//( semanticStep * y ) + myWindow->getMinimumY();
+    tmpSemantic = myWindow->getMaximumY() - ( semanticStep * ( event.GetY() - drawBorder - 1 ) );//( semanticStep * y ) + myWindow->getMinimumY();
   }
 
   if( !splitter->IsSplit() )
@@ -5277,3 +5277,363 @@ void gTimeline::OnStaticSlopeUpdate( wxUpdateUIEvent& event )
   event.SetText( wxString( _( "Slope (by ")  ) + wxString( LABEL_TIMEUNIT[ myWindow->getTimeUnit() ].c_str(), wxConvUTF8 ) + wxString( _( ")" ) ) );
 }
 
+
+/*!
+ * wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
+ */
+
+void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
+{
+  double newWheelFactor = wheelZoomFactor;
+  TRecordTime newWheelZoomBeginTime;
+  TRecordTime newWheelZoomEndTime;
+  TObjectOrder newWheelZoomBeginObject;
+  TObjectOrder newWheelZoomEndObject;
+  bool zoomOut = event.GetWheelRotation() < 0;
+  bool zoomIn = !zoomOut;
+
+  if( !ready )
+    return;
+
+  if( zoomOut )
+  {
+  //Uncomment if want more zoom out (image get really tiny)
+/*    if( newWheelFactor <= 0.2 )
+      newWheelFactor -= 0.01;
+    else*/
+      newWheelFactor -= 0.1;
+    if( newWheelFactor <= std::numeric_limits<double>::epsilon() )
+      return;
+  }
+  else
+  {
+    newWheelFactor += 0.1;
+  }
+
+  // Trace time boundary check
+  TRecordTime timeWidth = myWindow->getWindowEndTime() - myWindow->getWindowBeginTime();
+  if( zoomIn && timeWidth <= 10 )
+    return;
+  if( zoomOut && myWindow->getWindowBeginTime() == 0 && myWindow->getWindowEndTime() == myWindow->getTrace()->getEndTime() )
+    return;
+
+#ifdef WIN32
+  if( event.ControlDown() )
+    wheelZoomObjects = true;
+#endif
+
+  double wheelZoomFactorX = newWheelFactor;
+  double wheelZoomFactorY = 1;
+#ifdef WIN32
+  if( wheelZoomObjects )
+#else
+  if( event.ControlDown() )
+#endif
+    wheelZoomFactorY = newWheelFactor;
+
+  wxCoord posX = event.GetX();
+  if( posX <= objectAxisPos )
+    posX = objectAxisPos + 1;
+  else if( posX >= drawZone->GetClientSize().GetWidth() - drawBorder )
+    posX = drawZone->GetClientSize().GetWidth() - drawBorder - 1;
+  wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - 1 - drawBorder;
+  double ratioLeft = ( (double)( posX - objectAxisPos - 1 ) / (double)pixelsWidth );
+  double ratioRight = 1.0 - ratioLeft;
+  ratioLeft = ratioLeft * ( 1 - 1 / wheelZoomFactorX );
+  ratioRight = ratioRight * ( 1 - 1 / wheelZoomFactorX );
+  
+  wxCoord pixelsHeight = timeAxisPos;
+  double ratioUp = (double)event.GetY() / (double)pixelsHeight;
+  double ratioDown = 1.0 - ratioUp;
+  ratioUp = ratioUp * ( 1 - 1 / wheelZoomFactorY );
+  ratioDown = ratioDown * ( 1 - 1 / wheelZoomFactorY );
+  
+#ifdef WIN32
+  if( wheelZoomObjects )
+#else
+  if( event.ControlDown() )
+#endif
+  {
+    vector<TObjectOrder> selectedObjects;
+    myWindow->getSelectedRows( myWindow->getLevel(),
+                               selectedObjects,
+                               myWindow->getZoomSecondDimension().first,
+                               myWindow->getZoomSecondDimension().second,
+                               true );
+
+    TObjectOrder objectHeight = selectedObjects.size();
+    PRV_INT64 dummyAppliedAmount;
+    newWheelZoomBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, (double)objectHeight * ratioUp, dummyAppliedAmount, myWindow->getLevel() );
+    newWheelZoomEndObject = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, - (double)objectHeight * ratioDown, dummyAppliedAmount, myWindow->getLevel() );
+  }
+  else
+  {
+    newWheelZoomBeginObject = myWindow->getZoomSecondDimension().first;
+    newWheelZoomEndObject = myWindow->getZoomSecondDimension().second;
+  }
+
+  newWheelZoomBeginTime = myWindow->getWindowBeginTime() + timeWidth * ratioLeft;
+  newWheelZoomEndTime = myWindow->getWindowEndTime() -  timeWidth * ratioRight;
+
+  // Current zoom time boundary check
+  if( newWheelZoomEndTime - newWheelZoomBeginTime < 10 || 
+      newWheelZoomEndTime < newWheelZoomBeginTime )
+    return;
+
+  // Current zoom time correction
+  if( newWheelZoomBeginTime < 0 )
+  {
+    newWheelZoomEndTime -= newWheelZoomBeginTime;
+    newWheelZoomBeginTime = 0;
+  }
+  if( newWheelZoomEndTime > myWindow->getTrace()->getEndTime() )
+  {
+    newWheelZoomBeginTime -= newWheelZoomEndTime - myWindow->getTrace()->getEndTime();
+    newWheelZoomEndTime = myWindow->getTrace()->getEndTime();
+
+    if( newWheelZoomBeginTime < 0 )
+      newWheelZoomBeginTime = 0;
+  }
+
+  // Setting global parameters
+  wheelZoomFactor = newWheelFactor;
+  wheelZoomBeginTime = newWheelZoomBeginTime;
+  wheelZoomEndTime = newWheelZoomEndTime;
+  wheelZoomBeginObject = newWheelZoomBeginObject;
+  wheelZoomEndObject = newWheelZoomEndObject;
+  
+  // Temp draw buffer re-scaled
+  wxBitmap tmpBMP;
+  tmpBMP.Create( pixelsWidth, pixelsHeight );
+  wxMemoryDC tmpDC( tmpBMP );
+  tmpDC.SetBrush( wxBrush( backgroundColour ) );
+  tmpDC.Clear();
+#if __WXMAC__ || WIN32
+  tmpDC.DrawRectangle( 0, 0, pixelsWidth, pixelsHeight );
+#endif
+  tmpDC.SetUserScale( wheelZoomFactorX, wheelZoomFactorY );
+
+  wxCoord pixelBeginX = (double)pixelsWidth * ratioLeft;
+  wxCoord pixelBeginY = (double)pixelsHeight * ratioUp;
+
+#if wxMAJOR_VERSION>=3 || !__WXGTK__
+  // Source image to temp buffer
+  #ifdef __WXMAC__
+  wxBitmap tmpDrawImage( drawImage.GetWidth(), drawImage.GetHeight() );
+  wxMemoryDC srcDC( tmpDrawImage );
+  srcDC.SetBrush( wxBrush( backgroundColour ) );
+  srcDC.Clear();
+  drawStackedImages( srcDC );
+  #else
+  wxMemoryDC srcDC( drawImage );
+  #endif
+
+  tmpDC.Blit( 0,
+              0,
+              tmpDC.DeviceToLogicalX( pixelsWidth ),
+              tmpDC.DeviceToLogicalY( pixelsHeight ),
+              &srcDC,
+              objectAxisPos + 1 + pixelBeginX,
+              pixelBeginY );
+
+  // Remove axis legend
+  if( newWheelFactor < 1.0 )
+  {
+    tmpDC.SetPen( wxPen( backgroundColour ) );
+    tmpDC.SetBrush( wxBrush( backgroundColour ) );
+    tmpDC.DrawRectangle( 0, 0, -pixelBeginX, tmpDC.DeviceToLogicalY( timeAxisPos - drawBorder + 1 ) );
+  #ifdef WIN32
+    if( wheelZoomObjects )
+  #else
+    if( event.ControlDown() )
+  #endif
+    {
+      tmpDC.DrawRectangle( 0, -pixelBeginY + timeAxisPos, tmpDC.DeviceToLogicalX( tmpBMP.GetWidth() ), tmpBMP.GetHeight() );
+    }
+  }
+#else
+  tmpDC.SelectObject( wxNullBitmap );
+  wxImage tmpImage = drawImage.ConvertToImage().GetSubImage( wxRect( wxPoint( objectAxisPos + 1, 0 ), wxSize( pixelsWidth, pixelsHeight ) ) );
+
+  if( newWheelFactor >= 1.0 )
+  {
+    wxCoord pixelEndX = (double)pixelsWidth * ratioRight;
+    wxCoord pixelEndY = (double)pixelsHeight * ratioDown;
+    wxRect tmpRect( wxPoint( pixelBeginX, pixelBeginY ),
+                    wxPoint( pixelsWidth - pixelEndX - 1, pixelsHeight - pixelEndY - 1 ) );
+    tmpImage = tmpImage.GetSubImage( tmpRect );
+    
+    tmpImage.Rescale( pixelsWidth, pixelsHeight );
+  }
+  else
+    tmpImage.Rescale( (double)tmpImage.GetWidth() * wheelZoomFactorX, (double)tmpImage.GetHeight() * wheelZoomFactorY );
+
+  tmpBMP = wxBitmap( tmpImage );
+#endif
+
+  tmpDC.SelectObject( wxNullBitmap );
+
+  // Draw zoomed image to timeline window
+  wxClientDC dstDC( drawZone );
+  dstDC.SetPen( wxPen( backgroundColour ) );
+  dstDC.SetBrush( wxBrush( backgroundColour ) );
+  dstDC.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetClientSize().GetWidth() - objectAxisPos - 1, timeAxisPos );
+#if !( wxMAJOR_VERSION>=3 || !__WXGTK__ )
+  if( newWheelFactor >= 1.0 )
+  {
+#endif  
+  dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1, 0 );
+#if !( wxMAJOR_VERSION>=3 || !__WXGTK__ )
+  }
+  else
+  {
+    dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1 - (double)pixelBeginX * wheelZoomFactorX,
+                              -(double)pixelBeginY * wheelZoomFactorY );
+  }
+#endif
+
+  timerWheel->Start( 750, true );
+}
+
+
+void gTimeline::MousePanMotion()
+{
+  wxCoord pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
+  wxCoord pixelsHeight = timeAxisPos;
+
+  // Temp draw buffer re-scaled
+  wxBitmap tmpBMP;
+  tmpBMP.Create( pixelsWidth, pixelsHeight );
+  wxMemoryDC tmpDC( tmpBMP );
+  tmpDC.SetBrush( wxBrush( backgroundColour ) );
+  tmpDC.Clear();
+  tmpDC.DrawRectangle( 0, 0, pixelsWidth, pixelsHeight );
+
+  // Source image to temp buffer
+#ifdef __WXMAC__
+  wxBitmap tmpDrawImage( drawImage.GetWidth(), drawImage.GetHeight() );
+  wxMemoryDC srcDC( tmpDrawImage );
+  srcDC.SetBrush( wxBrush( backgroundColour ) );
+  srcDC.Clear();
+  drawStackedImages( srcDC );
+#else
+  wxMemoryDC srcDC( drawImage );
+#endif
+
+  wxCoord dstX = zoomBeginX < motionEvent.GetX() ? motionEvent.GetX() - zoomBeginX : 0;
+  wxCoord srcX = zoomBeginX < motionEvent.GetX() ? 0 : zoomBeginX - motionEvent.GetX();
+  wxCoord dstY;
+  wxCoord srcY;
+  if( motionEvent.ControlDown() )
+  {
+    dstY = zoomBeginY < motionEvent.GetY() ? motionEvent.GetY() - zoomBeginY : 0;
+    srcY = zoomBeginY < motionEvent.GetY() ? 0 : zoomBeginY - motionEvent.GetY();
+  }
+  else
+  {
+    dstY = 0;
+    srcY = 0;
+  }
+  
+  wxCoord tmpBlitHeight;
+  if( motionEvent.ControlDown() )
+    tmpBlitHeight = pixelsHeight - ( zoomBeginY < motionEvent.GetY() ? motionEvent.GetY() - zoomBeginY : zoomBeginY - motionEvent.GetY() );
+  else
+    tmpBlitHeight = pixelsHeight;
+
+  tmpDC.Blit( dstX,
+              dstY,
+              pixelsWidth - ( zoomBeginX < motionEvent.GetX() ? motionEvent.GetX() - zoomBeginX : zoomBeginX - motionEvent.GetX() ),
+              tmpBlitHeight,
+              &srcDC,
+              srcX + objectAxisPos + 1,
+              srcY );
+
+  tmpDC.SelectObject( wxNullBitmap );
+  srcDC.SelectObject( wxNullBitmap );
+
+  // Draw zoomed image to timeline window
+  wxClientDC dstDC( drawZone );
+  dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1, 0 );
+}
+
+
+void gTimeline::MousePanLeftUp( wxMouseEvent& event )
+{
+  TRecordTime  panBeginTime;
+  TRecordTime  panEndTime;
+  TObjectOrder panBeginObject;
+  TObjectOrder panEndObject;
+  wxCoord      pixelsWidth = drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder;
+  wxCoord      pixelsHeight = timeAxisPos;
+  
+  TRecordTime timeWidth = myWindow->getWindowEndTime() - myWindow->getWindowBeginTime();
+  panBeginTime = myWindow->getWindowBeginTime() + ( zoomBeginX * timeWidth ) / pixelsWidth;
+  panEndTime   = myWindow->getWindowBeginTime() + ( zoomEndX * timeWidth ) / pixelsWidth;
+  TRecordTime deltaTime = panEndTime - panBeginTime;
+  
+  panBeginTime = myWindow->getWindowBeginTime() - deltaTime;
+  panEndTime   = myWindow->getWindowEndTime()   - deltaTime;
+  
+  if( panBeginTime < 0 )
+  {
+    panBeginTime = 0;
+    panEndTime   = timeWidth;
+  }
+  if( panEndTime > myWindow->getTrace()->getEndTime() )
+  {
+    panEndTime   = myWindow->getTrace()->getEndTime();
+    panBeginTime = panEndTime - timeWidth;
+  }
+
+  if( event.ControlDown() )
+  {
+    vector<TObjectOrder> selectedObjects;
+    myWindow->getSelectedRows( myWindow->getLevel(),
+                               selectedObjects,
+                               myWindow->getZoomSecondDimension().first,
+                               myWindow->getZoomSecondDimension().second,
+                               true );
+
+    TObjectOrder objectHeight = selectedObjects.size();
+    PRV_INT64 tmpPanBeginObject = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomBeginY * objectHeight ) / pixelsHeight;
+    PRV_INT64 tmpPanEndObject   = (PRV_INT64)myWindow->getZoomSecondDimension().first + (double)( zoomEndY * objectHeight ) / pixelsHeight;
+    PRV_INT64 deltaObject = tmpPanEndObject - tmpPanBeginObject;
+
+    PRV_INT64 appliedDeltaObject;
+    if( deltaObject < 0 )
+    {
+      panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
+      panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
+    }
+    else
+    {
+      panBeginObject = myWindow->shiftFirst( myWindow->getZoomSecondDimension().first, -deltaObject, appliedDeltaObject, myWindow->getLevel() );
+      panEndObject   = myWindow->shiftLast( myWindow->getZoomSecondDimension().second, appliedDeltaObject, appliedDeltaObject, myWindow->getLevel() );
+    }
+  }
+  else
+  {
+    panBeginObject = myWindow->getZoomSecondDimension().first;
+    panEndObject = myWindow->getZoomSecondDimension().second;
+  }
+  
+  if( panBeginTime   != myWindow->getWindowBeginTime() ||
+      panBeginObject != myWindow->getZoomSecondDimension().first )
+  {
+    myWindow->addZoom( panBeginTime, panEndTime, panBeginObject, panEndObject );
+    myWindow->setWindowBeginTime( panBeginTime, true );
+    myWindow->setWindowEndTime( panEndTime, true );
+    myWindow->setRedraw( true );
+    myWindow->setChanged( true );
+  }
+  else
+  {
+    wxClientDC tmpDC( drawZone );
+#ifdef __WXMAC__
+    drawStackedImages( tmpDC );
+#else
+    tmpDC.DrawBitmap( drawImage, 0, 0 );
+#endif
+  }
+}
