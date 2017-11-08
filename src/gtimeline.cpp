@@ -241,6 +241,7 @@ void gTimeline::Init()
 #endif
   whatWhereTime = 0.0;
   whatWhereRow = 0;
+  whatWhereSemantic = 0.0;
 
   lastType = NO_TYPE;
   lastMin = 0;
@@ -2565,11 +2566,12 @@ void gTimeline::OnNotebookInfoPageChanging( wxNotebookEvent& event )
 
 
 // Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
-void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, bool textMode )
+void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, TSemanticValue whichSemantic, bool textMode )
 {
   whatWhereTime = whichTime;
   whatWhereRow = whichRow;
-
+  whatWhereSemantic = whichSemantic;
+  
   whatWhereLines.clear();
   whatWhereSelectedTimeEventLines = 0;
   whatWhereSelectedTimeCommunicationLines = 0;
@@ -2578,16 +2580,29 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
 
   wxString txt;
 
-  if( myWindow->getLevel() == CPU )
-    txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+  if( myWindow->isFusedLinesColorSet() )
+  {
+    txt << _( "Semantic: " ) << wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
+                                                                                      whichSemantic,
+                                                                                      false,
+                                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+  }
   else
-    txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+  {
+    if( myWindow->getLevel() == CPU )
+      txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+    else
+      txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+  }
   txt << _( "\t  Click time: " ) << wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
                                                                                       myWindow->getTimeUnit(), 0 ).c_str() );
   txt << _( "\n" );
   whatWhereLines.push_back( make_pair( RAW_LINE, txt ) );
 
   whatWhereLines.push_back( make_pair( END_OBJECT_SECTION, _( "" )));
+
+  if( myWindow->isFusedLinesColorSet() )
+    return;
 
   myWindow->init( whichTime, CREATEEVENTS + CREATECOMMS, false );
   myWindow->initRow( whichRow, whichTime, CREATEEVENTS + CREATECOMMS, false );
@@ -4541,7 +4556,7 @@ void gTimeline::OnCheckWhatWhereText( wxCommandEvent& event )
   checkWWPreviousNext->Enable( false );
   checkWWText->Enable( false );
 
-  computeWhatWhere( whatWhereTime, whatWhereRow, event.IsChecked() );
+  computeWhatWhere( whatWhereTime, whatWhereRow, whatWhereSemantic, event.IsChecked() );
   printWhatWhere();
 
   checkWWSemantic->Enable( true );
@@ -4786,17 +4801,26 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
                    ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
   TTime time = ( timeStep * x ) + myWindow->getWindowBeginTime();
 
+  TSemanticValue tmpSemantic = 0.0;
+  
+  if( myWindow->isFusedLinesColorSet() )
+  {
+    TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
+                     ( timeAxisPos - drawBorder );
+    tmpSemantic = myWindow->getMaximumY() - ( semanticStep * ( y - drawBorder - 1 ) );//( semanticStep * y ) + myWindow->getMinimumY();
+  }
+  else
+  {
+    vector<TObjectOrder> selected;
+    myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+    TObjectOrder numObjects = selected.size();
+    double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
+    endRow = TObjectOrder( floor( ( y - drawBorder - 1 ) / heightPerRow ) );
 
-  vector<TObjectOrder> selected;
-  myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
-  TObjectOrder numObjects = selected.size();
-  double heightPerRow = (double)( timeAxisPos - drawBorder - 1 ) / (double)numObjects;
-  endRow = TObjectOrder( floor( ( y - drawBorder - 1 ) / heightPerRow ) );
-
-  if( endRow >= numObjects )
-    endRow = numObjects - 1;
-  endRow   = selected[ endRow ];
-
+    if( endRow >= numObjects )
+      endRow = numObjects - 1;
+    endRow   = selected[ endRow ];
+  }
 
   if( !splitter->IsSplit() )
   {
@@ -4805,7 +4829,7 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   whatWhereText->Clear();
   whatWhereText->AppendText( _( "Working..." ) );
   Update();
-  computeWhatWhere( time, endRow, checkWWText->IsChecked() );
+  computeWhatWhere( time, endRow, tmpSemantic, checkWWText->IsChecked() );
   printWhatWhere();
 }
 

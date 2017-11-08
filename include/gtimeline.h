@@ -612,10 +612,11 @@ private:
   vector< pair< TWWLine, wxString > > whatWhereLines;
   int whatWhereSelectedTimeEventLines;
   int whatWhereSelectedTimeCommunicationLines;
-  TRecordTime whatWhereTime;
-  TObjectOrder whatWhereRow;
+  TRecordTime    whatWhereTime;
+  TObjectOrder   whatWhereRow;
+  TSemanticValue whatWhereSemantic;
 
-  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, bool textMode );
+  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, TSemanticValue whichSemantic, bool textMode );
   void printWhatWhere( );
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode );
   void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode );
