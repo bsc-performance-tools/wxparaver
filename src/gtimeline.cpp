@@ -519,7 +519,7 @@ void gTimeline::redraw()
 // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
 // Waiting for wxwidgets 3 code adaptation to prove that its solved.
 #ifndef WIN32
-#ifndef PARALLEL_ENABLED
+//#ifndef PARALLEL_ENABLED
   if( gTimeline::dialogProgress == NULL )
     gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                       wxT(""),
@@ -533,7 +533,7 @@ void gTimeline::redraw()
   //gTimeline::dialogProgress->Show( false );
   gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gTimeline::dialogProgress->Fit();
-#endif // PARALLEL_ENABLED
+//#endif // PARALLEL_ENABLED
 #endif // WIN32
 
   // Get selected rows
@@ -5238,6 +5238,12 @@ void gTimeline::OnFindDialog()
 
 void progressFunctionTimeline( ProgressController *progress, void *callerWindow )
 {
+  if( gTimeline::dialogProgress != NULL )
+  {
+    gTimeline::dialogProgress->Refresh();
+    gTimeline::dialogProgress->Update();
+  }
+
   int p;
   if ( progress->getCurrentProgress() > progress->getEndLimit() )
     p = numeric_limits<int>::max();
@@ -5263,6 +5269,7 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
     ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
 */
+  
   if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }
