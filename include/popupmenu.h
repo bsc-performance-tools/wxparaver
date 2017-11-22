@@ -137,7 +137,8 @@ class gHistogram;
 #define ID_MENU_PASTE_CONTROL_DIMENSIONS          30089
 #define ID_MENU_PUNCTUAL                          30090
 #define ID_MENU_PUNCTUAL_WINDOW                   30091
-
+#define ID_MENU_TIMING                            30092
+#define ID_MENU_VIEW_FUSED_LINES                  30093
 
 class gPopUpMenu : public wxMenu
 {
@@ -192,7 +193,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuViewCommunicationLines( wxCommandEvent& event);
     void OnMenuViewEventFlags( wxCommandEvent& event);
     void OnMenuViewFunctionLine( wxCommandEvent& event );
-
+    void OnMenuViewFusedLines( wxCommandEvent& event );
     void OnMenuCodeColor( wxCommandEvent& event);
     void OnMenuGradientColor( wxCommandEvent& event);
     void OnMenuNotNullGradientColor( wxCommandEvent& event);
@@ -242,6 +243,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuSaveCurrentPlaneAsText( wxCommandEvent& event );
 
     void OnMenuInfoPanel( wxCommandEvent& event );
+    void OnMenuTiming( wxCommandEvent& event );
     
     void OnMenuAutoControlScale( wxCommandEvent& event );
     void OnMenuAuto3DScale( wxCommandEvent& event );

@@ -391,7 +391,6 @@ void gHistogram::execute()
   progress->setHandler( progressFunctionHistogram, this );
 
 #ifndef WIN32
-#ifndef PARALLEL_ENABLED
   if( gHistogram::dialogProgress == NULL )
     gHistogram::dialogProgress = new wxProgressDialog( wxT("Computing window..."),
                                                        wxT(""),
@@ -406,7 +405,6 @@ void gHistogram::execute()
   gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
   gHistogram::dialogProgress->Fit();
   progress->setMessage( std::string( winTitle.mb_str() ) );
-#endif // PARALLEL_ENABLED
 #endif // WIN32
 
   TObjectOrder beginRow, endRow;
@@ -2778,6 +2776,12 @@ void gHistogram::OnToolInclusiveUpdate( wxUpdateUIEvent& event )
 
 void progressFunctionHistogram( ProgressController *progress, void *callerWindow )
 {
+  if( gHistogram::dialogProgress != NULL )
+  {
+    gHistogram::dialogProgress->Refresh();
+    gHistogram::dialogProgress->Update();
+  }
+
   int p;
   if ( progress->getCurrentProgress() > progress->getEndLimit() )
     p = numeric_limits<int>::max();

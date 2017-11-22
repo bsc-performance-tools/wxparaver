@@ -68,6 +68,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_VIEW_COMMUNICATION_LINES, gPopUpMenu::OnMenuViewCommunicationLines )
   EVT_MENU( ID_MENU_VIEW_EVENT_FLAGS, gPopUpMenu::OnMenuViewEventFlags )
   EVT_MENU( ID_MENU_VIEW_FUNCTION_LINE, gPopUpMenu::OnMenuViewFunctionLine )
+  EVT_MENU( ID_MENU_VIEW_FUSED_LINES, gPopUpMenu::OnMenuViewFusedLines )
   EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
   EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
   EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
@@ -439,6 +440,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSubMenu( popUpMenuView, _( "View" ));
 
   buildItem( popUpMenuColor, _( "Function Line" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFunctionLine, ID_MENU_VIEW_FUNCTION_LINE, timeline->GetMyWindow()->isFunctionLineColorSet() );
+  buildItem( popUpMenuColor, _( "Fused Lines" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFusedLines, ID_MENU_VIEW_FUSED_LINES, timeline->GetMyWindow()->isFusedLinesColorSet() );
   buildItem( popUpMenuColor, _( "Punctual" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctual, ID_MENU_PUNCTUAL, timeline->GetMyWindow()->isPunctualColorSet() );
   buildItem( popUpMenuColor, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->isCodeColorSet() );
   buildItem( popUpMenuColor, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->isGradientColorSet() );
@@ -694,7 +696,13 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
 
-  buildItem( this, 
+  buildItem( this,
+             _( "Timing\tCTRL+T" ),
+             ITEMCHECK,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuTiming,
+             ID_MENU_TIMING,
+             timeline->GetTiming() );
+  buildItem( this,
              _( "Info Panel" ),
              ITEMCHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuInfoPanel,
@@ -1236,6 +1244,12 @@ void gPopUpMenu::OnMenuViewFunctionLine( wxCommandEvent& event )
     timeline->drawFunctionLineColor();
 }
 
+void gPopUpMenu::OnMenuViewFusedLines( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->drawFusedLinesColor();
+}
+
 void gPopUpMenu::OnMenuPunctual( wxCommandEvent& event )
 {
   if ( timeline != NULL )
@@ -1544,6 +1558,13 @@ void gPopUpMenu::OnMenuSaveAllPlanesAsText( wxCommandEvent& event )
 {
   bool onlySelectedPlane = false;
   histogram->saveText( onlySelectedPlane );
+}
+
+
+void gPopUpMenu::OnMenuTiming( wxCommandEvent& event )
+{
+  if( timeline != NULL )
+    timeline->OnPopUpTiming( event.IsChecked() );
 }
 
 
