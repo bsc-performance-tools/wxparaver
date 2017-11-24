@@ -689,6 +689,7 @@ void TutorialsBrowser::htmlMessage( wxString& htmlDoc )
   htmlDoc += _("</UL>");
 */
   htmlDoc += _("<P>Please check that <B>root directory</B> to tutorials is properly defined:</P>");
+
   htmlDoc += _("<OL type=\"1\">");
   htmlDoc += _("<LI>Open <A HREF=\"init_preferences\"><I>Preferences Window</I></A>.</LI>");
   htmlDoc += _("<LI>Select <I>Global</I> tab.</LI>");
@@ -697,7 +698,9 @@ void TutorialsBrowser::htmlMessage( wxString& htmlDoc )
   htmlDoc += _("<LI>After that, we automatically refresh the tutorials list.</LI>");
   htmlDoc += _("<LI>If nothing happens, come back here and press the button <I>Index</I> to rebuild the tutorials list.");
   htmlDoc += _("</OL>");
+
   htmlDoc += _("<P>If the button <I>Index</I> doesn't seem to work (you're still reading this help!), please verify that:</P>");
+
   htmlDoc += _("<UL>");
   htmlDoc += _("<LI>Every tutorial is <B>uncompressed</B>.</LI>");
   htmlDoc += _("<LI>Every tutorial is inside its own <B>subdirectory</B>.</LI>");
@@ -705,7 +708,17 @@ void TutorialsBrowser::htmlMessage( wxString& htmlDoc )
   htmlDoc += _("you selected before (i.e: /home/myuser/mytutorials/tut1/, /home/myuser/mytutorials/tut2/, etc).</LI>");
   htmlDoc += _("<LI>Every tutorial has a main <B>index.html</B> (i.e: /home/myuser/mytutorials/tut1/index.html ).</LI>");
   htmlDoc += _("</UL>");
+
   htmlDoc += _("<P>If you still get this help after checking these steps again, please contact us at paraver@bsc.es.</P>");
+
+
+  htmlDoc += _("<P><H3>Latest tutorials</H3></P>");
+
+  htmlDoc += _("<P>Find them available at <A HREF=\"download_tutorials\">https://tools.bsc.es/tutorial_guidelines</A></P>");
+  htmlDoc += _("<UL>");
+  htmlDoc += _("<LI>As single <A HREF=\"download_tutorials_targz\">.tar.gz</A> package (127MB).</LI>");
+  htmlDoc += _("<LI>As single <A HREF=\"download_tutorials_zip\">.zip</A> package (127 MB).</LI>");
+  htmlDoc += _("</UL>");  
 }
 
 /*!
@@ -741,6 +754,30 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
     {
       // We rebuild the index
       buildIndex();
+    }
+  }
+  else if ( event.GetLinkInfo().GetHref().Cmp( _("download_tutorials") ) == 0 )
+  {
+    if ( !wxLaunchDefaultBrowser( _("https://tools.bsc.es/tutorial_guidelines") ) )
+    {
+      wxMessageDialog message( this, _("Unable to find/open default browser."), _( "Warning" ), wxOK );
+      message.ShowModal();
+    }
+  }
+  else if ( event.GetLinkInfo().GetHref().Cmp( _("download_tutorials_targz") ) == 0 )
+  {
+    if ( !wxLaunchDefaultBrowser( _("https://tools.bsc.es/sites/default/files/documentation/paraver-tutorials-20150526.tar.gz") ) )
+    {
+      wxMessageDialog message( this, _("Unable to find/open default browser."), _( "Warning" ), wxOK );
+      message.ShowModal();
+    }
+  }
+  else if ( event.GetLinkInfo().GetHref().Cmp( _("download_tutorials_zip") ) == 0 )
+  {
+    if ( !wxLaunchDefaultBrowser( _("https://tools.bsc.es/sites/default/files/documentation/paraver-tutorials-20150526.zip") ) )
+    {
+      wxMessageDialog message( this, _("Unable to find/open default browser."), _( "Warning" ), wxOK );
+      message.ShowModal();
     }
   }
   else if ( matchHrefExtension( event, _(".prv") ) ||
