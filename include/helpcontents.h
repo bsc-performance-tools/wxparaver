@@ -174,7 +174,8 @@ protected:
   virtual const wxString getTitle( int numTutorial, const wxString& path );
   virtual void buildIndexTemplate( wxString title, wxString filePrefix );
   virtual void buildIndex();
-  virtual void htmlMessage( wxString& htmlDoc );
+  virtual void linkToWebPage( wxString& htmlDoc );
+  virtual void helpMessage( wxString& htmlDoc );
 };
 
 
@@ -199,8 +200,9 @@ class TutorialsBrowser: public HelpContents
     
   protected:
     const wxString getTitle( int numTutorial, const wxString& path );
+    void linkToWebPage( wxString& htmlDoc );
     void buildIndex();
-    void htmlMessage( wxString& htmlDoc );
+    void helpMessage( wxString& htmlDoc );
 };
 
 #endif
