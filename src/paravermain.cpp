@@ -3023,6 +3023,19 @@ PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 }
 
 
+bool getUsedByHistogram( Window *whichWindow )
+{
+  if( whichWindow->getUsedByHistogram() )
+    return true;
+  else if( whichWindow->isDerivedWindow() )
+  {
+    if( getUsedByHistogram( whichWindow->getParent( 0 ) ) )
+      return true;
+    return getUsedByHistogram( whichWindow->getParent( 1 ) );
+  }
+  return false;
+}
+
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOLDELETE
  */
@@ -3033,19 +3046,22 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
     currentHisto->setDestroy( true );
   if( currentTimeline != NULL )
   {
-    if( currentTimeline->getChild() == NULL )
+    if( !getUsedByHistogram( currentTimeline ) )
     {
-      if( !currentTimeline->getUsedByHistogram() )
-        currentTimeline->setDestroy( true );
-      else
-        wxMessageBox( _( "Cannot delete windows used by histograms." ),
+      if( currentTimeline->getChild() != NULL )
+        wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
                       _( "Paraver information" ),
                       wxOK | wxICON_INFORMATION );
+      else
+        currentTimeline->setDestroy( true );
     }
     else
-      wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
+    {
+      wxMessageBox( _( "Cannot delete windows used by histograms." ),
                     _( "Paraver information" ),
                     wxOK | wxICON_INFORMATION );
+    }
+
   }
 }
 
