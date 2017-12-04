@@ -638,7 +638,7 @@ void gTimeline::redraw()
 
   float magnify = float( myWindow->getPixelSize() );
   TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
-                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder - magnify );
   PRV_INT32 timePos = objectAxisPos + 1;
 
   vector< vector< TSemanticValue > > valuesToDraw;
@@ -989,23 +989,23 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
     wxCoord accumHeight = 0;
     wxCoord stepHeight = objectExt.GetHeight();
     
-    int numpixels = timeAxisPos - 2*drawBorder; /* Usable num pixels */
+    int numpixels = timeAxisPos - 2 * drawBorder; /* Usable num pixels */
     int everyobj = 1; /* Draw every Xth object */
     bool printlast = numpixels > objectFont.GetPointSize(); /* Do we have space for more than 1? */
-    bool printall = numpixels > 0 && numpixels > int( numObjects * objectFont.GetPointSize()); /* Do we have space for all? */
+    bool printall = numpixels > 0 && numpixels > int( numObjects * objectFont.GetPointSize() ); /* Do we have space for all? */
 
     /* If we have space for some, but not all, check which to print ... */
     if (!printall && printlast)
     {
       /* Locate the maximum 2^n that fit on the pixels */
       int every = 1;
-      while ((numObjects*objectFont.GetPointSize())/every > numpixels-objectFont.GetPointSize())
+      while( ( numObjects * objectFont.GetPointSize() ) / every > numpixels-objectFont.GetPointSize() )
         every = every << 1;
 
       every = every << 1;
       /* Now print 2^n equidistant elements */
-      if (int(numObjects) > every)
-        everyobj = numObjects / (numObjects/every);
+      if( int( numObjects ) > every )
+        everyobj = numObjects / ( numObjects / every );
       else
         everyobj = numObjects;
     }
