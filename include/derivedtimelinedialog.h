@@ -108,8 +108,14 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOPCOMPOSE2
   void OnTopcompose2Selected( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_TIMELINES_LIST_1
+  void OnTimelinesList1Selected( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_OPERATIONS
   void OnOperationsSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_TIMELINES_LIST_2
+  void OnTimelinesList2Selected( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SWAP_WINDOWS
   void OnSwapWindowsClick( wxCommandEvent& event );
@@ -132,6 +138,12 @@ public:
 
   double GetFactorTimeline2() const { return factorTimeline2 ; }
   void SetFactorTimeline2(double value) { factorTimeline2 = value ; }
+
+  int GetLastTimeline1() const { return lastTimeline1 ; }
+  void SetLastTimeline1(int value) { lastTimeline1 = value ; }
+
+  int GetLastTimeline2() const { return lastTimeline2 ; }
+  void SetLastTimeline2(int value) { lastTimeline2 = value ; }
 
   TParamValue GetMaxCompose1() const { return maxCompose1 ; }
   void SetMaxCompose1(TParamValue value) { maxCompose1 = value ; }
@@ -201,6 +213,8 @@ private:
   Window * currentWindow2;
   double factorTimeline1;
   double factorTimeline2;
+  int lastTimeline1;
+  int lastTimeline2;
   TParamValue maxCompose1;
   TParamValue maxCompose2;
   TParamValue minCompose1;
@@ -215,7 +229,8 @@ private:
 
   void presetTimelineComboBox( std::vector< Window * > timelines,
                                Window *currentWindow,
-                               wxComboBox *comboBox );
+                               wxComboBox *comboBox,
+                               int& currentSelection );
   void presetStringChoiceBox( std::vector< std::string > list, wxChoice *choiceBox );
   void presetFactorField( double value, wxTextCtrl *field );
   void presetNameField( std::string whichName, wxTextCtrl *field );
