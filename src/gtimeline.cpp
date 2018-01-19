@@ -5548,6 +5548,19 @@ void gTimeline::MousePanMotion()
   else
     tmpBlitHeight = pixelsHeight;
 
+  // Control time limits
+  TRecordTime timeWidth = myWindow->getWindowEndTime() - myWindow->getWindowBeginTime();
+  TRecordTime panBeginTime = myWindow->getWindowBeginTime() + ( zoomBeginX * timeWidth ) / pixelsWidth;
+  TRecordTime panEndTime   = myWindow->getWindowBeginTime() + ( motionEvent.GetX() * timeWidth ) / pixelsWidth;
+  TRecordTime deltaTime = panEndTime - panBeginTime;
+  panBeginTime = myWindow->getWindowBeginTime() - deltaTime;
+  panEndTime   = myWindow->getWindowEndTime()   - deltaTime;
+  if( panBeginTime < 0 || panEndTime > myWindow->getTrace()->getEndTime() )
+    return;
+
+  // Control object limits
+  
+  
   tmpDC.Blit( dstX,
               dstY,
               pixelsWidth - ( zoomBeginX < motionEvent.GetX() ? motionEvent.GetX() - zoomBeginX : zoomBeginX - motionEvent.GetX() ),
