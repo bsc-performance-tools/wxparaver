@@ -74,12 +74,16 @@ if ENABLE_DEPENDENCIES_AWARE_INSTALL
 					} \
 				} '	$(DESTDIR)$(bindir)/wxparaver.tmp > $(DESTDIR)$(bindir)/wxparaver
 		
+	( cp  $(DESTDIR)$(bindir)/wxparaver $(DESTDIR)$(bindir)/wxparaver.tmp && \
+			$(SED) "s|@inst_JOBID_QUEUE_DETECTION@|if [ -z \"$$\{SLURM_JOBID+x\}\" ] \&\& [ -z \"$$\{LSB_JOBID+x\}\" ]; then\n  # login ==> limit to 4\n  OMP_NUM_THREADS=4\nfi|g" < $(DESTDIR)$(bindir)/wxparaver.tmp > $(DESTDIR)$(bindir)/wxparaver )
+	
 	test -f $(DESTDIR)$(bindir)/wxparaver.tmp && rm -fv $(DESTDIR)$(bindir)/wxparaver.tmp
   
 else
 	$(SED) "s|@inst_BOOST_LIBDIR@||g ; \
           s|@inst_WXWIDGETS_LIBDIR@||g ; \
-          s|@inst_WXPROPGRID_LIB_PATH@||g " < ./docs/wxparaver > $(DESTDIR)$(bindir)/wxparaver
+          s|@inst_WXPROPGRID_LIB_PATH@||g ; \
+					s|@inst_JOBID_QUEUE_DETECTION@||g" < ./docs/wxparaver > $(DESTDIR)$(bindir)/wxparaver
 endif
 	
 	
