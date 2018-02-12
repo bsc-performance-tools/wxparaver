@@ -322,11 +322,14 @@ public:
   wxStopWatch * GetRedrawStopWatch() const { return redrawStopWatch ; }
   void SetRedrawStopWatch(wxStopWatch * value) { redrawStopWatch = value ; }
 
+  std::map< rgb, TSemanticValue > GetSemanticColorsToValue() const { return semanticColorsToValue ; }
+  void SetSemanticColorsToValue(std::map< rgb, TSemanticValue > value) { semanticColorsToValue = value ; }
+
   wxFont GetSemanticFont() const { return semanticFont ; }
   void SetSemanticFont(wxFont value) { semanticFont = value ; }
 
-  std::map< TSemanticValue, rgb > GetSemanticValues() const { return semanticValues ; }
-  void SetSemanticValues(std::map< TSemanticValue, rgb > value) { semanticValues = value ; }
+  std::map< TSemanticValue, rgb > GetSemanticValuesToColor() const { return semanticValuesToColor ; }
+  void SetSemanticValuesToColor(std::map< TSemanticValue, rgb > value) { semanticValuesToColor = value ; }
 
   bool GetSplitChanged() const { return splitChanged ; }
   void SetSplitChanged(bool value) { splitChanged = value ; }
@@ -610,8 +613,9 @@ private:
   bool ready;
   bool redoColors;
   wxStopWatch * redrawStopWatch;
+  std::map< rgb, TSemanticValue > semanticColorsToValue;
   wxFont semanticFont;
-  std::map< TSemanticValue, rgb > semanticValues; // Stored for SaveImage legend
+  std::map< TSemanticValue, rgb > semanticValuesToColor; // Stored for SaveImage legend
   bool splitChanged;
   PRV_INT32 timeAxisPos;
   wxFont timeFont;

@@ -285,29 +285,29 @@ void gTimeline::CreateControls()
   whatWherePanel->SetSizer(itemBoxSizer6);
 
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
   checkWWSemantic = new wxCheckBox( whatWherePanel, ID_CHECKBOX, _("Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWSemantic->SetValue(true);
-  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
 
   checkWWEvents = new wxCheckBox( whatWherePanel, ID_CHECKBOX1, _("Events"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWEvents->SetValue(true);
-  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
 
   checkWWCommunications = new wxCheckBox( whatWherePanel, ID_CHECKBOX2, _("Communications"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWCommunications->SetValue(true);
-  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
 
   checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _("Previous / Next"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWPreviousNext->SetValue(true);
-  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
 
   checkWWText = new wxCheckBox( whatWherePanel, ID_CHECKBOX4, _("Text"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWText->SetValue(true);
-  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
 
   whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
 
   whatWherePanel->FitInside();
   infoZone->AddPage(whatWherePanel, _("What / Where"));
@@ -318,40 +318,40 @@ void gTimeline::CreateControls()
   timingZone->SetSizer(itemFlexGridSizer15);
 
   wxStaticText* itemStaticText16 = new wxStaticText( timingZone, wxID_STATIC, _("Initial time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText16, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(itemStaticText16, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   initialTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_INITIALTIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(initialTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(initialTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   initialSemanticLabel = new wxStaticText( timingZone, wxID_STATIC_INITIALSEMANTIC, _("Inital semantic"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(initialSemanticLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(initialSemanticLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   initialSemanticText = new wxTextCtrl( timingZone, ID_TEXTCTRL_INITIALSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(initialSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(initialSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   wxStaticText* itemStaticText20 = new wxStaticText( timingZone, wxID_STATIC, _("Final time"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText20, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(itemStaticText20, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   finalTimeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_FINALTIME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(finalTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(finalTimeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   finalSemanticLabel = new wxStaticText( timingZone, wxID_STATIC_FINALSEMANTIC, _("Final semantic"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(finalSemanticLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(finalSemanticLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   finalSemanticText = new wxTextCtrl( timingZone, ID_TEXTCTRL_FINALSEMANTIC, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(finalSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(finalSemanticText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   wxStaticText* itemStaticText24 = new wxStaticText( timingZone, wxID_STATIC, _("Duration"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(itemStaticText24, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(itemStaticText24, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   durationText = new wxTextCtrl( timingZone, ID_TEXTCTRL_DURATION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(durationText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(durationText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   slopeLabel = new wxStaticText( timingZone, wxID_STATIC_SLOPE, _("Slope"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(slopeLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(slopeLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   slopeText = new wxTextCtrl( timingZone, ID_TEXTCTRL_SLOPE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemFlexGridSizer15->Add(slopeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
+  itemFlexGridSizer15->Add(slopeText, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, wxDLG_UNIT(timingZone, wxSize(5, -1)).x);
 
   itemFlexGridSizer15->AddGrowableCol(1);
   itemFlexGridSizer15->AddGrowableCol(3);
@@ -487,7 +487,8 @@ void gTimeline::redraw()
   ready = false;
   redoColors = true;
 
-  semanticValues.clear();
+  semanticValuesToColor.clear();
+  semanticColorsToValue.clear();
 
   rgb rgbForegroundColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
   foregroundColour = wxColour( rgbForegroundColour.red,
@@ -1190,7 +1191,10 @@ void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord obje
   
   // SaveImage needed info
   if ( myWindow->isCodeColorSet() )
-    semanticValues[ valueToDraw ] = colorToDraw;
+  {
+    semanticValuesToColor[ valueToDraw ] = colorToDraw;
+    semanticColorsToValue[ colorToDraw ] = valueToDraw;
+  }
 
   dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
 
@@ -1326,7 +1330,10 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
       
       // SaveImage needed info
       if ( myWindow->getPunctualColorWindow()->isCodeColorSet() )
-        semanticValues[ valueToColor ] = colorToDraw;
+      {
+        semanticValuesToColor[ valueToColor ] = colorToDraw;
+        semanticColorsToValue[ colorToDraw ] = valueToColor;
+      }
     
       dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
       dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
@@ -1879,7 +1886,8 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   clonedTimeline->SetObjectPosList( objectPosList );
   clonedTimeline->SetForegroundColour( foregroundColour );
   clonedTimeline->SetBackgroundColour( backgroundColour );
-  clonedTimeline->SetSemanticValues( semanticValues );
+  clonedTimeline->SetSemanticValuesToColor( semanticValuesToColor );
+  clonedTimeline->SetSemanticColorsToValue( semanticColorsToValue );
   clonedTimeline->SetReady( true );
   if( mustRedraw )
   {
@@ -3584,7 +3592,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   ScaleImageVertical *tmpImage;
   if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
   {
-    tmpImage = new ScaleImageHorizontalGradientColor( myWindow, semanticValues,
+    tmpImage = new ScaleImageHorizontalGradientColor( myWindow, semanticValuesToColor,
                                                        //backgroundColour, foregroundColour, backgroundMode,
                                                        *wxWHITE, *wxBLACK, backgroundMode,
                                                        titleFont,
@@ -3596,7 +3604,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
    }
   else if ( myWindow->isCodeColorSet() )
   {
-    tmpImage = new ScaleImageVerticalCodeColor( myWindow, semanticValues,
+    tmpImage = new ScaleImageVerticalCodeColor( myWindow, semanticValuesToColor,
                                                  //backgroundColour, foregroundColour, backgroundMode,
                                                  *wxWHITE, *wxBLACK, backgroundMode,
                                                  titleFont,
@@ -4507,7 +4515,24 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     Window *winToUse = myWindow;
     if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != NULL )
       winToUse = myWindow->getPunctualColorWindow();
-    if( !winToUse->calcValueFromColor( color, firstValue, secondValue ) )
+
+    if( winToUse->isCodeColorSet() || winToUse->isFusedLinesColorSet() )
+    {
+      string tmpString;
+      firstValue = semanticColorsToValue[ color ];
+      if( winToUse->isFusedLinesColorSet() )
+      {
+        tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue - 1, winToUse->getLevel(), winToUse->getTrace() );
+      }
+      else
+      {
+        tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision() );
+        if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
+          LabelConstructor::transformToShort( tmpString );
+      }
+      label = wxString::FromAscii( tmpString.c_str() );
+    }
+    else if( !winToUse->calcValueFromColor( color, firstValue, secondValue ) )
     {
       if( !winToUse->isCodeColorSet() )
       {
@@ -4526,28 +4551,10 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     }
     else
     {
-      if( winToUse->isCodeColorSet() || winToUse->isFusedLinesColorSet() )
-      {
-        string tmpString;
-        if( winToUse->isFusedLinesColorSet() )
-        {
-          tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue - 1, winToUse->getLevel(), winToUse->getTrace() );
-        }
-        else
-        {
-          tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision() );
-          if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
-            LabelConstructor::transformToShort( tmpString );
-        }
-        label = wxString::FromAscii( tmpString.c_str() );
-      }
-      else
-      {
-        label = wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, firstValue, false, 
-                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
-        label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, secondValue, false, 
-                                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
-      }
+      label = wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, firstValue, false,
+                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+      label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, secondValue, false,
+                                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
     }
   }
 
