@@ -372,6 +372,7 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
@@ -380,7 +381,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -4516,20 +4516,13 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != NULL )
       winToUse = myWindow->getPunctualColorWindow();
 
-    if( winToUse->isCodeColorSet() || winToUse->isFusedLinesColorSet() )
+    if( winToUse->isCodeColorSet() )
     {
       string tmpString;
       firstValue = semanticColorsToValue[ color ];
-      if( winToUse->isFusedLinesColorSet() )
-      {
-        tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue - 1, winToUse->getLevel(), winToUse->getTrace() );
-      }
-      else
-      {
-        tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision() );
-        if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
-          LabelConstructor::transformToShort( tmpString );
-      }
+      tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision() );
+      if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
+        LabelConstructor::transformToShort( tmpString );
       label = wxString::FromAscii( tmpString.c_str() );
     }
     else if( !winToUse->calcValueFromColor( color, firstValue, secondValue ) )
@@ -4538,10 +4531,10 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
       {
         //GradientColor& grad = myWindow->getGradientColor();
         if( color == winToUse->getGradientColor().getAboveOutlierColor() )
-          label = wxT( "> " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, winToUse->getMaximumY(), false, 
+          label = wxT( "> " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, winToUse->getMaximumY(), false,
                                                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
         else if( color == winToUse->getGradientColor().getBelowOutlierColor() )
-          label = wxT( "< " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, winToUse->getMinimumY(), false, 
+          label = wxT( "< " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, winToUse->getMinimumY(), false,
                                                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
         else
           return;
@@ -4551,10 +4544,19 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     }
     else
     {
-      label = wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, firstValue, false,
-                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
-      label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, secondValue, false,
-                                                                                    ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+      if( winToUse->isFusedLinesColorSet() )
+      {
+        string tmpString;
+        tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue - 1, winToUse->getLevel(), winToUse->getTrace() );
+        label = wxString::FromAscii( tmpString.c_str() );
+      }
+      else
+      {
+        label = wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, firstValue, false,
+                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+        label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, secondValue, false,
+                                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+      }
     }
   }
 
