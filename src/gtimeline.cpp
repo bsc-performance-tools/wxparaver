@@ -254,6 +254,7 @@ void gTimeline::Init()
   lastType = NO_TYPE;
   lastMin = 0;
   lastMax = 15;
+  lastValuesSize = semanticValuesToColor.size();
   codeColorSet = true;
   gradientFunc = GradientColor::LINEAR;
   
@@ -720,7 +721,7 @@ void gTimeline::redraw()
       }
     }
   }
-  
+
 #ifdef __WXMAC__
   dc.DrawBitmap( bufferImage, 0, 0, false );
 #else
@@ -824,6 +825,7 @@ void gTimeline::redraw()
   SetTitle( winTitle );
 
   ready = true;
+  
 #ifndef __WXMAC__
   drawZone->Refresh();
 #endif
@@ -3051,12 +3053,16 @@ void gTimeline::OnPopUpTiming( bool whichTiming )
 
 void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
 {
+  if( !ready )
+    return;
+
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   
   if( redoColors &&
       ( myWindow->getSemanticInfoType() != lastType ||
         myWindow->getMinimumY() != lastMin ||
         myWindow->getMaximumY() != lastMax ||
+        semanticValuesToColor.size() != lastValuesSize ||
         myWindow->isCodeColorSet() != codeColorSet ||
         myWindow->getGradientColor().getGradientFunction() != gradientFunc )
     )
@@ -3064,6 +3070,7 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
     lastType = myWindow->getSemanticInfoType();
     lastMin = myWindow->getMinimumY();
     lastMax = myWindow->getMaximumY();
+    lastValuesSize = semanticValuesToColor.size();
     codeColorSet = myWindow->isCodeColorSet();
     gradientFunc = myWindow->getGradientColor().getGradientFunction();
 
@@ -3126,12 +3133,15 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
           endLimit = 200 + floor( lastMin );
       }
       int typeEndLimit = 0;
-      
+
       for( int i = floor( lastMin ); i <= endLimit; ++i )
       {
+        if( semanticValuesToColor.find( i ) == semanticValuesToColor.end() )
+          continue;
+
         if( lastType == EVENTTYPE_TYPE && !myWindow->getTrace()->eventLoaded( i ) )
           continue;
-          
+
         string tmpstr;
         if( lastType == STATE_TYPE &&
             !myWindow->getTrace()->getStateLabels().getStateLabel( i, tmpstr ) )

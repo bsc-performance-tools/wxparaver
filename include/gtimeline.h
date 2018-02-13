@@ -636,11 +636,14 @@ private:
   bool zooming;
 ////@end gTimeline member variables
 
+  // colorsPanel update info
   SemanticInfoType lastType;
   TSemanticValue lastMin;
   TSemanticValue lastMax;
+  size_t lastValuesSize;
   bool codeColorSet;
   GradientColor::TGradientFunction gradientFunc;
+
 #ifdef __WXMAC__
   wxBitmap zoomBMP;
 #endif
