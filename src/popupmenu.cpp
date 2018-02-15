@@ -118,7 +118,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, gPopUpMenu::OnMenuGradientFunction )
   EVT_MENU( ID_MENU_PASTE_CONTROL_SCALE, gPopUpMenu::OnMenuPasteControlScale )
   EVT_MENU( ID_MENU_PASTE_3D_SCALE, gPopUpMenu::OnMenuPaste3DScale )
-  EVT_MENU( ID_MENU_SYNCHRONIZE, gPopUpMenu::OnMenuSynchronize )
+  EVT_MENU( ID_MENU_NEWGROUP, gPopUpMenu::OnMenuSynchronize )
   EVT_MENU( ID_MENU_REMOVE_ALL_SYNC, gPopUpMenu::OnMenuRemoveAllSync )
   EVT_MENU( ID_MENU_CODE_COLOR_2D, gPopUpMenu::OnMenuCodeColor2D )
   EVT_MENU( ID_MENU_GRADIENT_COLOR_2D, gPopUpMenu::OnMenuGradientColor2D )
@@ -393,6 +393,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuObjectAxis = new wxMenu;
   popUpMenuSave = new wxMenu;
   popUpMenuRun = new wxMenu;
+  popUpMenuSync = new wxMenu;
 
 #ifdef __WXMAC__
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
@@ -683,7 +684,20 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   
   AppendSeparator();
 
-  buildItem( this, _( STR_SYNCHRONIZE ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize, ID_MENU_SYNCHRONIZE, timeline->GetMyWindow()->isSync() );
+  vector<unsigned int> tmpGroups;
+  SyncWindows::getInstance()->getGroups( tmpGroups );
+  unsigned int i = 0;
+  for( vector<unsigned int>::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
+  {
+    buildItem( popUpMenuSync, wxString::Format( "%u", *itGroup + 1 ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
+               ID_MENU_SYNC_GROUP_BASE + i, timeline->GetMyWindow()->isSync() && timeline->GetMyWindow()->getSyncGroup() == *itGroup );
+    ++i;
+  }
+  popUpMenuSync->AppendSeparator();
+  buildItem( popUpMenuSync, _( "New group" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
+             ID_MENU_NEWGROUP, FALSE );
+
+  AppendSubMenu( popUpMenuSync, _( STR_SYNCHRONIZE ) );
   buildItem( this, _( STR_SYNC_REMOVEALL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllSync, ID_MENU_REMOVE_ALL_SYNC );
 
   AppendSeparator();
@@ -1613,10 +1627,21 @@ void gPopUpMenu::OnMenuGradientFunction( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuSynchronize( wxCommandEvent& event )
 {
-  if( timeline->GetMyWindow()->isSync() )
-    timeline->GetMyWindow()->removeFromSync();
+  if( event.GetId() == ID_MENU_NEWGROUP )
+  {
+    timeline->GetMyWindow()->addToSyncGroup( SyncWindows::getInstance()->newGroup() );
+  }
   else
-    timeline->GetMyWindow()->addToSyncGroup( 0 );
+  {
+    vector<unsigned int> tmpGroups;
+    SyncWindows::getInstance()->getGroups( tmpGroups );
+    
+    unsigned int group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
+    if( timeline->GetMyWindow()->isSync() && group == timeline->GetMyWindow()->getSyncGroup() )
+      timeline->GetMyWindow()->removeFromSync();
+    else
+      timeline->GetMyWindow()->addToSyncGroup( group );
+  }
 }
 
 void gPopUpMenu::OnMenuRemoveAllSync( wxCommandEvent& event )

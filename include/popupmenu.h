@@ -105,7 +105,7 @@ class gHistogram;
 #define ID_MENU_SAVE_TIMELINE_AS_TEXT             30057
 #define ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT        30058
 #define ID_MENU_SAVE_ALL_PLANES_AS_TEXT           30059
-#define ID_MENU_SYNCHRONIZE                       30060
+#define ID_MENU_NEWGROUP                          30060
 #define ID_MENU_REMOVE_ALL_SYNC                   30061
 #define ID_MENU_VIEW_FUNCTION_LINE                30062
 #define ID_MENU_PASTE_DEFAULT_SPECIAL             30063
@@ -139,6 +139,8 @@ class gHistogram;
 #define ID_MENU_PUNCTUAL_WINDOW                   30091
 #define ID_MENU_TIMING                            30092
 #define ID_MENU_VIEW_FUSED_LINES                  30093
+
+#define ID_MENU_SYNC_GROUP_BASE                   31000
 
 class gPopUpMenu : public wxMenu
 {
@@ -295,6 +297,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuObjectAxis;
     wxMenu *popUpMenuSave;
     wxMenu *popUpMenuRun;
+    wxMenu *popUpMenuSync;
 
     wxMenuItem *buildItem( wxMenu *popUp,
                            const wxString &title,
