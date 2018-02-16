@@ -672,9 +672,9 @@ bool paraverMain::DoLoadTrace( const string &path )
 
   string tmpPath = std::string( tmpFileName.GetFullPath().mb_str() );
 
+  TTraceSize traceSize = localKernel->getTraceSize( tmpPath );
   if( !localKernel->checkTraceSize( tmpPath, ParaverConfig::getInstance()->getFiltersFilterTraceUpToMB() * 1E6 ) )
   {
-    TTraceSize traceSize = localKernel->getTraceSize( tmpPath );
     wxString tmpSize;
     tmpSize << rint( traceSize / 1E6 );
     wxMessageDialog maxSizeDialog( this, 
@@ -749,6 +749,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     paraverMain::dialogProgress->Show();
 
     tr = Trace::create( localKernel, tmpPath, false, progress );
+    tr->setShowProgressBar( traceSize / 1E6 > 10.0 );
     tr->setInstanceNumber( traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ]++ );
 
     loadedTraces.push_back( tr );

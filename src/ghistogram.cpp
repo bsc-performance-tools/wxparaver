@@ -385,27 +385,32 @@ void gHistogram::execute()
   gridHisto->Show( false );
   Update();
 
-// Disabled because some window managers can't show the dialog later
-  //redrawStopWatch->Start();
-  ProgressController *progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
-  progress->setHandler( progressFunctionHistogram, this );
+  ProgressController *progress = NULL;
+  if ( myHistogram->getShowProgressBar() )
+  {
+    // Disabled because some window managers can't show the dialog later
+    //redrawStopWatch->Start();
+    ProgressController *progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
+    progress->setHandler( progressFunctionHistogram, this );
 
 #ifndef WIN32
-  if( gHistogram::dialogProgress == NULL )
-    gHistogram::dialogProgress = new wxProgressDialog( wxT("Computing window..."),
-                                                       wxT(""),
-                                                       numeric_limits<int>::max(),
-                                                       this,
-                                                       wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
-                                                       wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
-                                                       wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+    if( gHistogram::dialogProgress == NULL )
+      gHistogram::dialogProgress = new wxProgressDialog( wxT("Computing window..."),
+                                                         wxT(""),
+                                                         numeric_limits<int>::max(),
+                                                         this,
+                                                         wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
+                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
+                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
 
-// Disabled because some window managers can't show the dialog later
-  //gHistogram::dialogProgress->Show( false );
-  gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
-  gHistogram::dialogProgress->Fit();
-  progress->setMessage( std::string( winTitle.mb_str() ) );
+  // Disabled because some window managers can't show the dialog later
+    //gHistogram::dialogProgress->Show( false );
+    gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
+    gHistogram::dialogProgress->Fit();
+    progress->setMessage( std::string( winTitle.mb_str() ) );
 #endif // WIN32
+  }
+
 
   TObjectOrder beginRow, endRow;
   selectedRows.clear();
@@ -437,7 +442,9 @@ void gHistogram::execute()
     delete gHistogram::dialogProgress;
     gHistogram::dialogProgress = NULL;
   }
-  delete progress;
+  
+  if ( progress != NULL )
+    delete progress;
 
   redrawStopWatch->Pause();
 
