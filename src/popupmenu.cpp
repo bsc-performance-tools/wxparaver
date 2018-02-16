@@ -689,7 +689,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   unsigned int i = 0;
   for( vector<unsigned int>::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
-    buildItem( popUpMenuSync, wxString::Format( "%u", *itGroup + 1 ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
+    buildItem( popUpMenuSync, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
                ID_MENU_SYNC_GROUP_BASE + i, timeline->GetMyWindow()->isSync() && timeline->GetMyWindow()->getSyncGroup() == *itGroup );
     ++i;
   }
