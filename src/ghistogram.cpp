@@ -461,7 +461,7 @@ void gHistogram::execute()
     currentZoom2.begin = myHistogram->getControlDelta();
     myHistogram->addZoom( currentZoom1, currentZoom2 , beginRow, endRow );
   }
-  
+
   SetFocus();
 }
 
@@ -991,6 +991,10 @@ void gHistogram::updateHistogram()
 {
   if( myHistogram->getRecalc() )
   {
+    if( ( myHistogram->getControlWindow()      != NULL && !myHistogram->getControlWindow()->getReady() ) ||
+        ( myHistogram->getDataWindow()         != NULL && !myHistogram->getDataWindow()->getReady() ) ||
+        ( myHistogram->getExtraControlWindow() != NULL && !myHistogram->getExtraControlWindow()->getReady() ) )
+      return;
     if( gHistogram::dialogProgress != NULL )
       return;
     myHistogram->setRecalc( false );

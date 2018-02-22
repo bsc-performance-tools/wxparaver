@@ -198,7 +198,6 @@ void gTimeline::Init()
   lastSemanticFoundTime = 0;
   myWindow = NULL;
   objectHeight = 1;
-  ready = false;
   redoColors = false;
   redrawStopWatch = new wxStopWatch();
   splitChanged = false;
@@ -485,7 +484,7 @@ void gTimeline::redraw()
     return;
   }
 #endif
-  ready = false;
+  myWindow->setReady( false );
   redoColors = true;
 
   semanticValuesToColor.clear();
@@ -623,7 +622,7 @@ void gTimeline::redraw()
   if( !drawAxis( bufferDraw, selectedSet ) )
   {
     SetTitle( winTitle );
-    ready = true;
+    myWindow->setReady( true );
     return;
   }
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
@@ -828,12 +827,12 @@ void gTimeline::redraw()
 
   SetTitle( winTitle );
 
-  ready = true;
+  myWindow->setReady( true );
   
 #ifndef __WXMAC__
   drawZone->Refresh();
 #endif
-  
+
   SetFocus();
 // cout << "[GUI::gTimeline::redraw ] exiting" << endl;
 }
@@ -1429,7 +1428,7 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
 {
   wxPaintDC dc( drawZone );
   
-  if( !ready )
+  if( !myWindow->getReady() )
     return;
 
 #ifdef __WXMAC__
@@ -1500,11 +1499,11 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   if( !wxparaverApp::mainWindow->IsIconized() && myWindow->getShowWindow() )
   {
     this->Show();
-    if( !ready )
+    if( !myWindow->getReady() )
     {
       if( gTimeline::dialogProgress == NULL )
       {
-        ready = true;
+        myWindow->setReady( true );
         redraw();
       }
     }
@@ -1720,7 +1719,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
   beginRow = selected[ beginRow ];
   endRow   = selected[ endRow ];
 
-  if( zooming && ready &&
+  if( zooming && myWindow->getReady() &&
       zoomEndX - zoomBeginX > 5.0 &&
       ( ( zoomXY && zoomEndY - zoomBeginY > 5.0 ) || !zoomXY ) )
   {
@@ -1894,7 +1893,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   clonedTimeline->SetBackgroundColour( backgroundColour );
   clonedTimeline->SetSemanticValuesToColor( semanticValuesToColor );
   clonedTimeline->SetSemanticColorsToValue( semanticColorsToValue );
-  clonedTimeline->SetReady( true );
+  clonedTimeline->myWindow->setReady( true );
   if( mustRedraw )
   {
     if( myWindow->getShowWindow() )
@@ -1906,7 +1905,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   {
     clonedWindow->setShowWindow( false );
     clonedTimeline->Show( false );
-    clonedTimeline->SetReady( false );
+    clonedTimeline->myWindow->setReady( false );
   }
 
   return clonedTimeline;
@@ -3057,7 +3056,7 @@ void gTimeline::OnPopUpTiming( bool whichTiming )
 
 void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
 {
-  if( !ready )
+  if( !myWindow->getReady() )
     return;
 
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
@@ -3259,7 +3258,7 @@ void gTimeline::drawCommunicationLines( bool draw )
 
   myWindow->setDrawCommLines( draw );
   
-  if( !ready )
+  if( !myWindow->getReady() )
     return;
   
   bufferDraw.SelectObject(wxNullBitmap);
@@ -3291,7 +3290,7 @@ void gTimeline::drawEventFlags( bool draw )
 
   myWindow->setDrawFlags( draw );
   
-  if( !ready )
+  if( !myWindow->getReady() )
     return;
   
   bufferDraw.SelectObject(wxNullBitmap);
@@ -4452,7 +4451,7 @@ void gTimeline::saveCFG()
 
 void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
-  if( ready )
+  if( myWindow->getReady() )
   {
 #ifdef WIN32
     redraw();
@@ -4929,7 +4928,7 @@ void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
 {
   wxMemoryDC bufferDraw;
 
-  if( !ready )
+  if( !myWindow->getReady() )
     return;
     
   if ( allObjects )
@@ -5322,7 +5321,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   bool zoomOut = event.GetWheelRotation() < 0;
   bool zoomIn = !zoomOut;
 
-  if( !ready )
+  if( !myWindow->getReady() )
     return;
 
   if( zoomOut )

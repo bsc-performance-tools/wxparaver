@@ -363,6 +363,11 @@ bool updateTreeItem( wxTreeCtrl *tree,
   else if( gHistogram *tmpHistogram = itemData->getHistogram() )
   {
     Histogram *tmpHisto = tmpHistogram->GetHistogram();
+    if( tmpHisto->isSync() )
+      tree->SetItemBold( id, true );
+    else
+      tree->SetItemBold( id, false );
+
     if( tmpHistogram->IsActive() && !tmpHisto->getDestroy() )
     {
       *currentWindow = tmpHistogram;

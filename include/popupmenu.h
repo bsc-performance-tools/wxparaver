@@ -106,7 +106,7 @@ class gHistogram;
 #define ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT        30058
 #define ID_MENU_SAVE_ALL_PLANES_AS_TEXT           30059
 #define ID_MENU_NEWGROUP                          30060
-#define ID_MENU_REMOVE_ALL_SYNC                   30061
+#define ID_MENU_REMOVE_GROUP                      30061
 #define ID_MENU_VIEW_FUNCTION_LINE                30062
 #define ID_MENU_PASTE_DEFAULT_SPECIAL             30063
 #define ID_MENU_CODE_COLOR_2D                     30064
@@ -254,7 +254,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuGradientFunction( wxCommandEvent& event );
 
     void OnMenuSynchronize( wxCommandEvent& event );
-    void OnMenuRemoveAllSync( wxCommandEvent& event );
+    void OnMenuRemoveGroup( wxCommandEvent& event );
     
     void OnMenuCodeColor2D( wxCommandEvent& event );
     void OnMenuGradientColor2D( wxCommandEvent& event );

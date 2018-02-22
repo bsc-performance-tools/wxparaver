@@ -313,9 +313,6 @@ public:
   wxPen GetPhysicalPen() const { return physicalPen ; }
   void SetPhysicalPen(wxPen value) { physicalPen = value ; }
 
-  bool GetReady() const { return ready ; }
-  void SetReady(bool value) { ready = value ; }
-
   bool GetRedoColors() const { return redoColors ; }
   void SetRedoColors(bool value) { redoColors = value ; }
 
@@ -610,7 +607,6 @@ private:
   int objectHeight;
   vector<PRV_INT32> objectPosList;
   wxPen physicalPen;
-  bool ready;
   bool redoColors;
   wxStopWatch * redrawStopWatch;
   std::map< rgb, TSemanticValue > semanticColorsToValue;
