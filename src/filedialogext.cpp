@@ -33,6 +33,7 @@
 #include <wx/msgdlg.h>
 #include <wx/datetime.h>
 
+
 FileDialogExtension::FileDialogExtension( wxWindow* parent,
                                           const wxString& message,
                                           const wxString& defaultDir,
@@ -44,97 +45,80 @@ FileDialogExtension::FileDialogExtension( wxWindow* parent,
                                           const wxString& name,
                                           const std::vector< wxString >& whichExtensions ) :
         wxFileDialog( parent, message, defaultDir, defaultFile, wildcard, style, pos, sz, name )
-                         
 {
   extensions = whichExtensions;
   path = defaultDir;
 }
 
 
+bool FileDialogExtension::canWriteDir( wxString whichFile )
+{
+  wxFileName auxDir( whichFile );
+  bool canWrite = wxFileName::IsDirWritable( auxDir.GetPathWithSep() );
+  if ( !canWrite )
+  {
+    wxString msg;
+    msg.Printf( _("Unable to write '%s'.\n\nPlease check directory permissions."), whichFile.c_str());
+    wxMessageDialog message( this, msg, _("Warning"), wxOK | wxICON_WARNING );
+    message.ShowModal();
+  }
+
+  return canWrite;
+}
+
+
+bool FileDialogExtension::canWriteFile( wxString whichFile )
+{
+  bool rewrite = false;
+  bool exists = wxFileName::FileExists( whichFile );
+
+  if ( exists )
+  { 
+    wxString msg;
+    msg.Printf( _("File '%s' already exists.\n\nProceed to rewrite it?"), whichFile.c_str());
+    wxMessageDialog dlg( this, msg, _("Confirm"), wxYES_NO | wxICON_QUESTION );
+
+    rewrite = dlg.ShowModal() == wxID_YES;
+  }
+
+  return ( !exists || rewrite );
+}
+
+
 int FileDialogExtension::ShowModal()
 {
-  wxString auxPath( wxFileDialog::GetPath() );
-  wxFileName auxName;
+  bool isValidName = false;
   wxString suffix;
-  
-  bool cancelDialog = false;
-  bool validName = false;
-  
-  // /aaa/bbb/ != /aaa/bbb/kk.txt o Is path a file?
+  wxString auxPath;
+
+  // /aa/bb/ != /aa/bb/kk.txt ; Is a path or a file?
   if ( wxFileName( path ).GetPath() != path )
   {
     //path = wxFileName( path ).GetPath();
     SetDirectory( wxFileName( path ).GetPath() );
-  }  
-  
-  while ( !cancelDialog && !validName )
-  {
-    if( wxFileDialog::ShowModal() == wxID_OK )
-    {
-      auxPath = wxFileDialog::GetPath();
-
-      // Know which kind of type are we working with --> extension?
-      if ( wxFileDialog::GetFilterIndex() > (int)extensions.size() )
-      {
-        // Error!? Put first one
-        suffix = extensions[ 0 ]; 
-      }
-      else
-      {
-        suffix = extensions[ wxFileDialog::GetFilterIndex() ];      
-      }
-      
-      // Guarantee that finishes with proper extension
-      if( !auxPath.EndsWith( _(".") + suffix ) )
-      {
-      
-        auxPath += _(".") + suffix;
-      
-        // Does file exists?
-        auxName = wxFileName( auxPath );
-
-        if ( !auxName.FileExists() )
-        {
-          // After adding extension, we see that it doesn't exist; got it!
-          validName = true;
-          path = auxPath;
-        }
-        else
-        {
-          wxString msg;
-
-          msg.Printf( _("File '%s' already exists, do you really want to overwrite it?"),
-                      auxPath.c_str());
-
-          wxMessageDialog dlg( this, msg, _("Confirm"), wxYES_NO | wxICON_QUESTION );
-          if ( dlg.ShowModal() != wxID_YES )
-          {
-            // Don't exit and show the dialog again
-            SetPath( auxPath );
-          }
-          else
-          {
-            // Save the path and exit
-            validName = true;
-            path = auxPath;
-          }
-        }
-      }
-      else
-      {
-        // It ends with proper suffix and 
-        // it was accepted by previous overwrite dialog opened by wxFileDialog 
-        validName = true;
-        path = auxPath;
-      }
-      
-    }
-    else
-    {
-      cancelDialog = true;
-    }
   }
-  
-  return ( validName? wxID_OK : wxID_CANCEL );
-}
 
+  while ( !isValidName && wxFileDialog::ShowModal() == wxID_OK )
+  {
+    // Get suffix
+    suffix = extensions[ 0 ]; // by default
+    if ( wxFileDialog::GetFilterIndex() < (int)extensions.size() )
+    {
+      suffix = extensions[ wxFileDialog::GetFilterIndex() ];
+    }
+
+    // Suffix not written by the user? Append it.
+    auxPath = wxFileDialog::GetPath();
+    if( !auxPath.EndsWith( _(".") + suffix ) )
+    {
+      auxPath += _(".") + suffix;
+    }
+
+    isValidName = canWriteDir( auxPath ) && canWriteFile( auxPath );
+  }
+
+  if ( isValidName )
+    path = auxPath;
+
+  return ( isValidName? wxID_OK : wxID_CANCEL );
+}

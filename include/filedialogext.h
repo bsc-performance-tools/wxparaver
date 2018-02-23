@@ -27,7 +27,7 @@
  | @version:     $Revision$
 \* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 
-#ifndef _FILEDIALOGEXT_H_ 
+#ifndef _FILEDIALOGEXT_H_
 #define _FILEDIALOGEXT_H_
 
 #include <wx/window.h>
@@ -35,15 +35,17 @@
 
 #include <vector>
 
-// The purpose of this class is to let the user write the file to be saved with or without
-// its defined extension, automatically generating suffixed name and taking care if it exists.
-// The extensions passed to the vector DON'T have to include the final dot (i.e. DON'T pass ".png")
+// Addings to FileDialog:
+// - If missing, file extension is automatically added
+// - Checks if directory is writable and file exists
+
+// DON'T include dots in the extensions vector
+// ( i.e. good:["png","jpg"], bad [".png",".jpg"])
 
 class FileDialogExtension : public wxFileDialog
 {
   public:
-    FileDialogExtension( // same than wxFileDialog
-                         wxWindow* parent,
+    FileDialogExtension( wxWindow* parent,
                          const wxString& message = wxT("Choose a file"),
                          const wxString& defaultDir = wxT(""),
                          const wxString& defaultFile = wxT(""),
@@ -52,18 +54,20 @@ class FileDialogExtension : public wxFileDialog
                          const wxPoint& pos = wxDefaultPosition,
                          const wxSize& sz = wxDefaultSize,
                          const wxString& name = wxT("filedlg"),
-                         // added extensions
+                         // parameters added to wxFileDialog
                          const std::vector< wxString >& whichExtensions = std::vector< wxString >() );
-                         
+
     ~FileDialogExtension() {};
-    
+
     int ShowModal();
     wxString GetPath() const { return path; }
-    
+
   private:
     wxString path;
     std::vector< wxString > extensions;
+
+    bool canWriteDir( wxString whichFile );
+    bool canWriteFile( wxString whichFile );
 };
 
 #endif // _FILEDIALOGEXT_H_
-

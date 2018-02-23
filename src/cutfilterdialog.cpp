@@ -57,6 +57,7 @@
 #include "loadedwindows.h"
 #include "runscript.h"
 #include "histogram.h"
+#include "filedialogext.h"
 
 ////@begin XPM images
 #include "../icons/arrow_up.xpm"
@@ -2223,45 +2224,30 @@ void CutFilterDialog::OnButtonSaveXmlClick( wxCommandEvent& event )
       auxDirectory = auxDirectory.GetPathWithSep();
 
     wxString directory( auxDirectory.GetFullPath() );
-
-    wxFileDialog xmlSelectionDialog( this,
+    wxString wildcard( _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ) );
+    std::vector< wxString > extensions;
+    extensions.push_back( wxT( "xml" ) );
+    FileDialogExtension xmlSelectionDialog( this,
                           _( "Save XML Cut/Filter configuration file" ),
                           directory,
-                          _( "" ), 
-                          _( "XML configuration file (*.xml)|*.xml|All files (*.*)|*.*" ),
-                          wxFD_SAVE|wxFD_CHANGE_DIR|wxFD_OVERWRITE_PROMPT );
+                          _( "" ),
+                          wildcard,
+                          wxFD_SAVE|wxFD_CHANGE_DIR,
+                          wxDefaultPosition,
+                          wxDefaultSize,
+                          _( "filedlg" ),
+                          extensions );
 
     if( xmlSelectionDialog.ShowModal() == wxID_OK )
     {
-      wxString path = xmlSelectionDialog.GetPath();
-      wxString xmlSuffix = _(".xml");
-      wxString pathWithExtension;
-      
-      if ( path.EndsWith( xmlSuffix )) 
-        pathWithExtension = path;
-      else
-        pathWithExtension = path + xmlSuffix;
+      wxString path( xmlSelectionDialog.GetPath() );
+      traceOptions->saveXML( filterToolOrder, string( path.mb_str()) );
 
-      wxString selectedDir = wxFileName( pathWithExtension ).GetPathWithSep();
-      if ( wxFileName::IsDirWritable( selectedDir ) )
-      {
-        traceOptions->saveXML( filterToolOrder, string( pathWithExtension.mb_str()) );
+      // we must add the proper slash to enter the directory next time
+      globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
+      newXMLsPath = true;
 
-        // we must add the proper slash to enter the directory next time
-        globalXMLsPath = string( xmlSelectionDialog.GetDirectory().mb_str() ) + PATH_SEP;
-        newXMLsPath = true;
-
-        fileBrowserButtonXML->SetPath( pathWithExtension );
-      }
-      else
-      {
-         wxMessageDialog message(
-                this,
-                _("Unable to write xml file in directory ") + selectedDir + _(".\nPlease check permissions."),
-                _("Warning"),
-                wxOK );
-         message.ShowModal();
-      }
+      fileBrowserButtonXML->SetPath( path );
     }
   }
 }
