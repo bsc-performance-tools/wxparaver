@@ -987,13 +987,19 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   Layout();
 }
 
+bool isSyncedWithGroup( Window *whichWindow, unsigned int whichGroup )
+{
+  return whichWindow != NULL && whichWindow->isSync() && whichWindow->getSyncGroup() == whichGroup && whichWindow->getShowWindow();
+}
+
 void gHistogram::updateHistogram()
 {
   if( myHistogram->getRecalc() )
   {
-    if( ( myHistogram->getControlWindow()      != NULL && !myHistogram->getControlWindow()->getReady() ) ||
-        ( myHistogram->getDataWindow()         != NULL && !myHistogram->getDataWindow()->getReady() ) ||
-        ( myHistogram->getExtraControlWindow() != NULL && !myHistogram->getExtraControlWindow()->getReady() ) )
+    unsigned int tmpGroup = myHistogram->getSyncGroup();
+    if( ( isSyncedWithGroup( myHistogram->getControlWindow(), tmpGroup )      && !myHistogram->getControlWindow()->getReady() ) ||
+        ( isSyncedWithGroup( myHistogram->getDataWindow(), tmpGroup )         && !myHistogram->getDataWindow()->getReady() ) ||
+        ( isSyncedWithGroup( myHistogram->getExtraControlWindow(), tmpGroup ) && !myHistogram->getExtraControlWindow()->getReady() ) )
       return;
     if( gHistogram::dialogProgress != NULL )
       return;
