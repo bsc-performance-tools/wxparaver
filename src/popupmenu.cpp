@@ -177,7 +177,11 @@ wxMenuItem *gPopUpMenu::buildItem( wxMenu *popUp,
     tmp->Check( checked );
     
   if( handler != NULL )
+#ifdef WIN32
+    Connect( id,
+#else
     popUp->Connect( id,
+#endif
                     wxEVT_COMMAND_MENU_SELECTED, 
                     handler,
                     NULL,
