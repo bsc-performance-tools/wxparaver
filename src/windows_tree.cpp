@@ -224,6 +224,7 @@ void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
   parents.push_back(((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( getAllTracesTree()->GetNextChild( item, cookie ) )))->getTimeline());
 }
 
+
 void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
@@ -239,11 +240,15 @@ void BuildTree( paraverMain *parent,
   wxPoint tmpPos( window->getPosX(), window->getPosY() );
   if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
   {
-    wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
-    tmpPos.x += tmpDisplay.GetGeometry().x;
-    tmpPos.y += tmpDisplay.GetGeometry().y;
-    if( tmpPos.x != window->getPosX() ) window->setPosX( tmpPos.x );
-    if( tmpPos.x != window->getPosY() ) window->setPosX( tmpPos.y );
+    int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
+    if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+    {
+      wxDisplay tmpDisplay( currentDisplay );
+      tmpPos.x += tmpDisplay.GetGeometry().x;
+      tmpPos.y += tmpDisplay.GetGeometry().y;
+      if( tmpPos.x != window->getPosX() ) window->setPosX( tmpPos.x );
+      if( tmpPos.x != window->getPosY() ) window->setPosX( tmpPos.y );
+    }
   }
   
 #if wxMAJOR_VERSION<3 || !__WXGTK__

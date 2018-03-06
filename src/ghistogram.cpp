@@ -974,9 +974,13 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   else
 */
   {
-    wxDisplay tmpDisplay( wxDisplay::GetFromWindow(this) );
-    myHistogram->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
-    myHistogram->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
+    int currentDisplay = wxDisplay::GetFromWindow( this );
+    if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+    {
+      wxDisplay tmpDisplay( currentDisplay );
+      myHistogram->setPosX( this->GetPosition().x - tmpDisplay.GetGeometry().x );
+      myHistogram->setPosY( this->GetPosition().y - tmpDisplay.GetGeometry().y );
+    }
   }
 
   myHistogram->setWidth( this->GetClientSize().GetWidth() );

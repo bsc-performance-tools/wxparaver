@@ -856,18 +856,21 @@ bool paraverMain::DoLoadCFG( const string &path )
           currentTimeline = *it;
       }
 
+      int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
       for( vector<Histogram *>::iterator it = newHistograms.begin(); it != newHistograms.end(); ++it )
       {
         wxPoint tmpPos( (*it)->getPosX(), (*it)->getPosY() );
         if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
         {
-          wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
-          tmpPos.x += tmpDisplay.GetGeometry().x;
-          tmpPos.y += tmpDisplay.GetGeometry().y;
-          if( tmpPos.x != (*it)->getPosX() ) (*it)->setPosX( tmpPos.x );
-          if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
+          if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+          {
+            wxDisplay tmpDisplay( currentDisplay );
+            tmpPos.x += tmpDisplay.GetGeometry().x;
+            tmpPos.y += tmpDisplay.GetGeometry().y;
+            if( tmpPos.x != (*it)->getPosX() ) (*it)->setPosX( tmpPos.x );
+            if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
+          }
         }
-
 #if wxMAJOR_VERSION<3 || !__WXGTK__
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ), tmpPos );
 #else
@@ -2653,9 +2656,13 @@ void paraverMain::ShowHistogramDialog()
     initialPosY += defaultTitleBarSize.GetHeight();
     if( wxDisplay::GetCount() > 1 /*&& ParaverConfig::???*/ )
     {
-      wxDisplay tmpDisplay( wxDisplay::GetFromWindow( paraverMain::myParaverMain ) );
-      newHistogram->setPosX( newHistogram->getPosX() + tmpDisplay.GetGeometry().x );
-      newHistogram->setPosY( newHistogram->getPosY() + tmpDisplay.GetGeometry().y );
+      int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
+      if ( currentDisplay != wxNOT_FOUND && currentDisplay >= 0 )
+      {
+        wxDisplay tmpDisplay( currentDisplay );
+        newHistogram->setPosX( newHistogram->getPosX() + tmpDisplay.GetGeometry().x );
+        newHistogram->setPosY( newHistogram->getPosY() + tmpDisplay.GetGeometry().y );
+      }
     }
 
     tmpHisto->SetClientSize( wxRect( newHistogram->getPosX(), newHistogram->getPosY(),
