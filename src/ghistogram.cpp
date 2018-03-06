@@ -390,7 +390,7 @@ void gHistogram::execute()
   {
     // Disabled because some window managers can't show the dialog later
     //redrawStopWatch->Start();
-    ProgressController *progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
+    progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
     progress->setHandler( progressFunctionHistogram, this );
 
 #ifndef WIN32
