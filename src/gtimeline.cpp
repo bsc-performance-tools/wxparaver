@@ -475,7 +475,6 @@ void gTimeline::drawStackedImages( wxDC& dc )
 
 void gTimeline::redraw()
 {
-//  cout << "[GUI::gTimeline::redraw ] Entry!" << endl;
 #ifdef __WXGTK__
   if( splitChanged )
   {
@@ -677,8 +676,6 @@ void gTimeline::redraw()
                                        progress );
   }
 
-// cout << "[GUI::gTimeline::redraw ] after call computeSemanticParallel" << endl;
-
   // Drawmode: Group objects with same wxCoord in objectPosList
   PRV_UINT32 rowToDraw = 0;
   if( myWindow->getWindowBeginTime() != myWindow->getWindowEndTime() )
@@ -723,6 +720,8 @@ void gTimeline::redraw()
     }
   }
 
+  drawZeroAxis( bufferDraw );
+
 #ifdef __WXMAC__
   dc.DrawBitmap( bufferImage, 0, 0, false );
 #else
@@ -730,15 +729,12 @@ void gTimeline::redraw()
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 #endif
-// cout << "[GUI::gTimeline::redraw ] after drawRow for{}" << endl;
 
   if( drawCaution )
   {
     wxBitmap cautionImage( caution_xpm );
 #ifdef __WXMAC__
-    //bufferDraw.SetPen( *wxBLACK_PEN );
     dc.SetPen( wxPen( backgroundColour ) );
-    //bufferDraw.SetBrush( *wxBLACK_BRUSH );
     dc.SetBrush( wxBrush( backgroundColour ) );
     dc.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
                       drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
@@ -747,9 +743,7 @@ void gTimeline::redraw()
                    drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
                    true );
 #else
-    //bufferDraw.SetPen( *wxBLACK_PEN );
     bufferDraw.SetPen( wxPen( backgroundColour ) );
-    //bufferDraw.SetBrush( *wxBLACK_BRUSH );
     bufferDraw.SetBrush( wxBrush( backgroundColour ) );
     bufferDraw.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
                               drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
@@ -834,7 +828,6 @@ void gTimeline::redraw()
 #endif
 
   SetFocus();
-// cout << "[GUI::gTimeline::redraw ] exiting" << endl;
 }
 
 
@@ -880,7 +873,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
         objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
                                                                                             myWindow->getMaximumY(),
                                                                                             false,
-                                                                                            ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ) );
+                                                                                            ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ) ) + wxSize( 5, 0 );
         break;
       }
 
@@ -903,7 +896,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
         objectExt = dc.GetTextExtent( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
                                                                                             myWindow->getMaximumY(),
                                                                                             false,
-                                                                                            ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ) );
+                                                                                            ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ) ) + wxSize( 5, 0 );
         break;
       }
 
@@ -975,7 +968,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                  drawBorder, timeAxisPos - objectExt.GetHeight() );
 
     dc.DrawText( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
-                                                                       ( myWindow->getMaximumY() - myWindow->getMinimumY() ) / 2,
+                                                                       ( myWindow->getMaximumY() + myWindow->getMinimumY() ) / 2.0,
                                                                        false,
                                                                        ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
                  drawBorder, ( timeAxisPos - objectExt.GetHeight() ) / 2 );
@@ -1111,6 +1104,39 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   dc.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetSize().GetWidth(), timeAxisPos );
                
   return true;
+}
+
+void gTimeline::drawZeroAxis( wxDC& dc )
+{
+  if( myWindow->getMaximumY() > 0.0 && myWindow->getMinimumY() < 0.0 )
+  {
+    rgb rgbAxisColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
+    wxColour axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
+    dc.SetPen( wxPen( axisColour, 1, wxLONG_DASH ) );
+    
+    TSemanticValue relativeZero = myWindow->getMaximumY() / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+
+    if( myWindow->isFusedLinesColorSet() )
+    {
+      dc.DrawLine( objectAxisPos, ( relativeZero * ( timeAxisPos - drawBorder ) ) + drawBorder + 1,
+                   dc.GetSize().GetWidth() - drawBorder, ( relativeZero * ( timeAxisPos - drawBorder ) ) + drawBorder + 1 );
+    }
+    else if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
+    {
+      wxCoord lastPos = 0;
+      wxCoord relativePos = relativeZero * objectHeight;
+      for( vector<wxCoord>::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
+      {
+        if( *it != lastPos )
+        {
+          lastPos = *it;
+          dc.DrawLine( objectAxisPos, relativePos + lastPos + 1,
+                       dc.GetSize().GetWidth() - drawBorder, relativePos + lastPos + 1 );
+          
+        }
+      }
+    }
+  }
 }
 
 #ifdef WIN32
@@ -1494,7 +1520,6 @@ void gTimeline::OnIdle( wxIdleEvent& event )
 #else
   canRedraw = true;
 #endif
-// cout << "[GUI::gTimeline::OnIdle ]" << endl;
 
   if( !wxparaverApp::mainWindow->IsIconized() && myWindow->getShowWindow() )
   {
@@ -1549,8 +1574,6 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   slopeLabel->Show( state );
   slopeText->Show( state );
   timingZone->Layout();
-
-//  cout << "[GUI::gTimeline::OnIdle ] Exit." << endl;
 }
 
 

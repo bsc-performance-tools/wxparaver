@@ -399,6 +399,8 @@ public:
 #endif
   void redraw();
   bool drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
+  void drawZeroAxis( wxDC& dc );
+  
 #ifdef WIN32
   template<typename ValuesType>
   void drawRow( wxDC& dc,
