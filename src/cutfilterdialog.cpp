@@ -263,18 +263,18 @@ void CutFilterDialog::Init()
   traceOptions = TraceOptions::create( GetLocalKernel() );
 
   // Constants for regular expressions
-  reAnySpaces =  wxString("[[:space:]]*");
-  reSomeNumbers =  wxString("[[:digit:]]+");
+  reAnySpaces =  wxString( wxT( "[[:space:]]*" ) );
+  reSomeNumbers =  wxString( wxT( "[[:digit:]]+" ) );
   reType = reAnySpaces + reSomeNumbers + reAnySpaces;
-  reNegativeSign = wxString("[-]?");
+  reNegativeSign = wxString( wxT( "[-]?" ) );
 
   reIntegerValue = reAnySpaces + reNegativeSign + reSomeNumbers + reAnySpaces;
-  reSomeIntegersSepByComma = wxString("(") + reAnySpaces + wxString("[,]") + reIntegerValue + wxString(")*"); //may be empty
+  reSomeIntegersSepByComma = wxString( wxT( "(" ) ) + reAnySpaces + wxString( wxT( "[,]" ) ) + reIntegerValue + wxString( wxT( ")*" ) ); //may be empty
   reValuesSepByComma = reIntegerValue + reSomeIntegersSepByComma;
 
-  reSingleType = wxString("^(") + reType + wxString(")$");
-  reRangeOfTypes = wxString("^(") + reType + wxString("[-]") + reType + wxString(")$");
-  reValuesSepByCommaForType = wxString("^(") + reType + wxString("[:]") + reValuesSepByComma + wxString(")$");
+  reSingleType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( ")$" ) );
+  reRangeOfTypes = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[-]" ) ) + reType + wxString( wxT( ")$" ) );
+  reValuesSepByCommaForType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[:]" ) ) + reValuesSepByComma + wxString( wxT( ")$" ) );
 }
 
 
@@ -1425,7 +1425,7 @@ void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
     if( !currentEntry.IsEmpty() )
     {
       wxString allowedFormatsRE =
-          reSingleType + wxString("|") + reRangeOfTypes + wxString("|") + reValuesSepByCommaForType ;
+          reSingleType + wxString( wxT( "|" ) ) + reRangeOfTypes + wxString( wxT( "|" ) ) + reValuesSepByCommaForType ;
       if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
         wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
@@ -1842,7 +1842,7 @@ void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
     wxString currentEntry( textEntry.GetValue() );
     if( !currentEntry.IsEmpty() )
     {
-      wxString allowedFormatsRE = reSingleType + wxString("|") + reValuesSepByCommaForType;
+      wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reValuesSepByCommaForType;
       if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
         wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
@@ -1889,7 +1889,7 @@ void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
     wxString currentEntry( textEntry.GetValue() );
     if( !currentEntry.IsEmpty() )
     {
-      wxString allowedFormatsRE = reSingleType + wxString("|") + reRangeOfTypes;
+      wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reRangeOfTypes;
       if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
         wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
