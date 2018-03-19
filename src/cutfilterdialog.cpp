@@ -1371,6 +1371,7 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
       {
         checkListFilterStates->Check( i );
         found = true;
+        break;
       }
     }
 
@@ -1394,8 +1395,11 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
   }
 
   // Have we found new states? Add them to the botton and check them.
-  checkListFilterStates->InsertItems( newStates, checkListFilterStates->GetCount() );
-  CheckStatesList( oldMaxStates, !( checkListFilterStates->GetCount() == 0 ) );
+  if ( newStates.GetCount() > 0 )
+  {
+    checkListFilterStates->InsertItems( newStates, checkListFilterStates->GetCount() );
+    CheckStatesList( oldMaxStates, !( checkListFilterStates->GetCount() == 0 ) );
+  }
 }
 
 
@@ -1668,6 +1672,7 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
     TraceOptions::TStateNames auxNames;
     for( int i = 0; i < 20; ++i )
       auxNames[ i ] = NULL;
+
     traceOptions->get_state_names( auxNames );
     CheckStatesList( auxNames );
   }
