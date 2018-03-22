@@ -1781,10 +1781,11 @@ void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
 {
   if( this->IsShown() )
   {
-    if( myWindow->getRedraw() )
+    if( myWindow->getForceRedraw() || ( wxparaverApp::mainWindow->getAutoRedraw() && myWindow->getRedraw() ) )
     {
       if( gTimeline::dialogProgress != NULL )
         return;
+      myWindow->setForceRedraw( false );
       myWindow->setRedraw( false );
       splitChanged = false;
       redraw();

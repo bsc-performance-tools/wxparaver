@@ -104,7 +104,11 @@ class RunScript;
 #define ID_CHOICEWINBROWSER 10002
 #define ID_TOOLBOOKFILESANDPROPERTIES 10159
 #define ID_DIRCTRLFILES 10160
+#define ID_PANEL_PROPERTIES 10001
 #define ID_FOREIGN 10010
+#define wxID_STATIC_AUTO_REDRAW 10291
+#define ID_CHECKBOX_AUTO_REDRAW 10007
+#define ID_BUTTON_FORCE_REDRAW 10012
 #define ID_PANEL_WORKSPACES 10266
 #define ID_TEXT_ACTIVE_WORKSPACE 10267
 #define ID_BUTTON_ACTIVE_WORKSPACES 10268
@@ -279,6 +283,18 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_FOREIGN
   void OnForeignUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_STATIC_AUTO_REDRAW
+  void OnStaticAutoRedrawUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_AUTO_REDRAW
+  void OnCheckboxAutoRedrawUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FORCE_REDRAW
+  void OnButtonForceRedrawClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_FORCE_REDRAW
+  void OnButtonForceRedrawUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ACTIVE_WORKSPACES
   void OnButtonActiveWorkspacesClick( wxCommandEvent& event );
@@ -468,7 +484,9 @@ public:
   void ShowCutTraceWindow( const std::string& filename = "",
                             bool loadTrace = true,
                             const std::string& xmlFile = "" );
-                            
+  
+  bool getAutoRedraw() const;
+  
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
 
@@ -497,7 +515,10 @@ public:
   wxChoicebook* choiceWindowBrowser;
   wxToolbook* toolBookFilesProperties;
   wxGenericDirCtrl* dirctrlFiles;
+  wxPanel* panelProperties;
   wxPropertyGrid* windowProperties;
+  wxCheckBox* checkAutoRedraw;
+  wxButton* buttonForceRedraw;
   wxTextCtrl* txtActiveWorkspaces;
   wxButton* btnActiveWorkspaces;
 private:

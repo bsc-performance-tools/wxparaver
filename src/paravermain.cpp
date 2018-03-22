@@ -181,6 +181,10 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
+  EVT_UPDATE_UI( wxID_STATIC_AUTO_REDRAW, paraverMain::OnStaticAutoRedrawUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_AUTO_REDRAW, paraverMain::OnCheckboxAutoRedrawUpdate )
+  EVT_BUTTON( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawClick )
+  EVT_UPDATE_UI( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawUpdate )
   EVT_BUTTON( ID_BUTTON_ACTIVE_WORKSPACES, paraverMain::OnButtonActiveWorkspacesClick )
 ////@end paraverMain event table entries
 
@@ -405,7 +409,10 @@ void paraverMain::Init()
   choiceWindowBrowser = NULL;
   toolBookFilesProperties = NULL;
   dirctrlFiles = NULL;
+  panelProperties = NULL;
   windowProperties = NULL;
+  checkAutoRedraw = NULL;
+  buttonForceRedraw = NULL;
   txtActiveWorkspaces = NULL;
   btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
@@ -517,9 +524,27 @@ void paraverMain::CreateControls()
 
   toolBookFilesProperties->AddPage(dirctrlFiles, wxEmptyString, false, 0);
 
-  windowProperties = new wxPropertyGrid( toolBookFilesProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
+  panelProperties = new wxPanel( toolBookFilesProperties, ID_PANEL_PROPERTIES, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  panelProperties->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+  panelProperties->SetSizer(itemBoxSizer2);
 
-  toolBookFilesProperties->AddPage(windowProperties, wxEmptyString, false, 1);
+  windowProperties = new wxPropertyGrid( panelProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
+  itemBoxSizer2->Add(windowProperties, 1, wxGROW|wxALL, 0);
+
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer1, 0, wxGROW|wxALL, 0);
+  wxStaticBitmap* itemStaticBitmap2 = new wxStaticBitmap( panelProperties, wxID_STATIC_AUTO_REDRAW, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer1->Add(itemStaticBitmap2, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelProperties, wxSize(2, -1)).x);
+
+  checkAutoRedraw = new wxCheckBox( panelProperties, ID_CHECKBOX_AUTO_REDRAW, _("Automatic Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkAutoRedraw->SetValue(true);
+  itemBoxSizer1->Add(checkAutoRedraw, 1, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelProperties, wxSize(2, -1)).x);
+
+  buttonForceRedraw = new wxButton( panelProperties, ID_BUTTON_FORCE_REDRAW, _("Force Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer1->Add(buttonForceRedraw, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelProperties, wxSize(1, -1)).x);
+
+  toolBookFilesProperties->AddPage(panelProperties, wxEmptyString, false, 1);
 
   itemFrame1->GetAuiManager().AddPane(toolBookFilesProperties, wxAuiPaneInfo()
     .Name(wxT("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(2).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
@@ -4229,6 +4254,50 @@ void paraverMain::setActiveWorkspacesText()
 }
 
 
+/*!
+ * wxEVT_UPDATE_UI event handler for wxID_STATIC_AUTO_REDRAW
+ */
+
+void paraverMain::OnStaticAutoRedrawUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( currentTimeline != NULL || currentHisto != NULL );
+}
 
 
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_AUTO_REDRAW
+ */
 
+void paraverMain::OnCheckboxAutoRedrawUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( currentTimeline != NULL || currentHisto != NULL );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_FORCE_REDRAW
+ */
+
+void paraverMain::OnButtonForceRedrawUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( currentTimeline != NULL || currentHisto != NULL );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_FORCE_REDRAW
+ */
+
+void paraverMain::OnButtonForceRedrawClick( wxCommandEvent& event )
+{
+  if( currentTimeline != NULL )
+    currentTimeline->setForceRedraw( true );
+  else if( currentHisto != NULL )
+    currentHisto->setForceRecalc( true );
+}
+
+
+bool paraverMain::getAutoRedraw() const
+{
+  return checkAutoRedraw->GetValue();
+}

@@ -998,7 +998,7 @@ bool isSyncedWithGroup( Window *whichWindow, unsigned int whichGroup )
 
 void gHistogram::updateHistogram()
 {
-  if( myHistogram->getRecalc() )
+  if( myHistogram->getForceRecalc() || ( wxparaverApp::mainWindow->getAutoRedraw() && myHistogram->getRecalc() ) )
   {
     unsigned int tmpGroup = myHistogram->getSyncGroup();
     if( ( isSyncedWithGroup( myHistogram->getControlWindow(), tmpGroup )      && !myHistogram->getControlWindow()->getReady() ) ||
@@ -1008,6 +1008,7 @@ void gHistogram::updateHistogram()
     if( gHistogram::dialogProgress != NULL )
       return;
     myHistogram->setRecalc( false );
+    myHistogram->setForceRecalc( false );
     execute();
     myHistogram->setChanged( true );
   }
