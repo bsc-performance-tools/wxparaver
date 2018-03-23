@@ -524,7 +524,7 @@ void paraverMain::CreateControls()
 
   toolBookFilesProperties->AddPage(dirctrlFiles, wxEmptyString, false, 0);
 
-  panelProperties = new wxPanel( toolBookFilesProperties, ID_PANEL_PROPERTIES, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  panelProperties = new wxPanel( toolBookFilesProperties, ID_PANEL_PROPERTIES, wxDefaultPosition, wxDefaultSize, 0 );
   panelProperties->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   panelProperties->SetSizer(itemBoxSizer2);
