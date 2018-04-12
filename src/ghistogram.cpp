@@ -787,8 +787,8 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
 
       if( myHistogram->getControlWindow()->isCodeColorSet() )
         tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
-                                                          controlWindow->getMinimumY(),
-                                                          controlWindow->getMaximumY() );
+                                                          myHistogram->getControlMin(),
+                                                          myHistogram->getControlMax() );
       else
         tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
                                                               controlWindow->getMinimumY(),
