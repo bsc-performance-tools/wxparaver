@@ -2995,6 +2995,16 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setColorsLowGradient( preferences.GetGradientColourLow() );
     paraverConfig->setColorsTopGradient( preferences.GetGradientColourTop() );
 
+    vector<Window *> tmpWins;
+    LoadedWindows::getInstance()->getAll( tmpWins );
+    for( vector<Window *>::iterator it = tmpWins.begin(); it != tmpWins.end(); ++it )
+    {
+      (*it)->getGradientColor().setBeginGradientColor( preferences.GetGradientColourBegin() );
+      (*it)->getGradientColor().setEndGradientColor( preferences.GetGradientColourEnd() );
+      (*it)->getGradientColor().setBelowOutlierColor( preferences.GetGradientColourLow() );
+      (*it)->getGradientColor().setAboveOutlierColor( preferences.GetGradientColourTop() );
+    }
+    
     // FILTER
     paraverConfig->setFiltersXMLPath( preferences.GetFiltersXMLPath() );
 
