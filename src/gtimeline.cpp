@@ -372,15 +372,15 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -1220,12 +1220,9 @@ void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord obje
 {
   rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
   
-  // SaveImage needed info
-  if ( myWindow->isCodeColorSet() )
-  {
-    semanticValuesToColor[ valueToDraw ] = colorToDraw;
-    semanticColorsToValue[ colorToDraw ] = valueToDraw;
-  }
+  // SaveImage & mouse over needed info
+  semanticValuesToColor[ valueToDraw ] = colorToDraw;
+  semanticColorsToValue[ colorToDraw ].insert( valueToDraw );
 
   dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
 
@@ -1359,12 +1356,9 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
       TSemanticValue valueToColor = (*itValues).second;
       rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToColor, *( myWindow->getPunctualColorWindow() ) );
       
-      // SaveImage needed info
-      if ( myWindow->getPunctualColorWindow()->isCodeColorSet() )
-      {
-        semanticValuesToColor[ valueToColor ] = colorToDraw;
-        semanticColorsToValue[ colorToDraw ] = valueToColor;
-      }
+      // SaveImage & mouse over needed info
+      semanticValuesToColor[ valueToColor ] = colorToDraw;
+      semanticColorsToValue[ colorToDraw ].insert( valueToColor );
     
       dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
       dc.SetBrush( wxBrush( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
@@ -4558,7 +4552,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     if( winToUse->isCodeColorSet() )
     {
       string tmpString;
-      firstValue = semanticColorsToValue[ color ];
+      firstValue = *( semanticColorsToValue[ color ].begin() );
       tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision() );
       if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
         LabelConstructor::transformToShort( tmpString );
@@ -4591,10 +4585,16 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
       }
       else
       {
+        // Gradient
+        firstValue = *( semanticColorsToValue[ color ].begin() );
         label = wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, firstValue, false,
                                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
-        label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, secondValue, false,
-                                                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+        if( semanticColorsToValue[ color ].size() > 1 )
+        {
+          secondValue = *( --( semanticColorsToValue[ color ].end() ) );
+          label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, secondValue, false,
+                                                                                        ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
+        }
       }
     }
   }

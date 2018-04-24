@@ -168,6 +168,18 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
   /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
@@ -185,18 +197,6 @@ public:
 
   /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMouseWheel( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -319,8 +319,8 @@ public:
   wxStopWatch * GetRedrawStopWatch() const { return redrawStopWatch ; }
   void SetRedrawStopWatch(wxStopWatch * value) { redrawStopWatch = value ; }
 
-  std::map< rgb, TSemanticValue > GetSemanticColorsToValue() const { return semanticColorsToValue ; }
-  void SetSemanticColorsToValue(std::map< rgb, TSemanticValue > value) { semanticColorsToValue = value ; }
+  std::map< rgb, std::set<TSemanticValue> > GetSemanticColorsToValue() const { return semanticColorsToValue ; }
+  void SetSemanticColorsToValue(std::map< rgb, std::set<TSemanticValue> > value) { semanticColorsToValue = value ; }
 
   wxFont GetSemanticFont() const { return semanticFont ; }
   void SetSemanticFont(wxFont value) { semanticFont = value ; }
@@ -611,7 +611,7 @@ private:
   wxPen physicalPen;
   bool redoColors;
   wxStopWatch * redrawStopWatch;
-  std::map< rgb, TSemanticValue > semanticColorsToValue;
+  std::map< rgb, std::set<TSemanticValue> > semanticColorsToValue;
   wxFont semanticFont;
   std::map< TSemanticValue, rgb > semanticValuesToColor; // Stored for SaveImage legend
   bool splitChanged;
