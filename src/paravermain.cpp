@@ -2905,6 +2905,8 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 
   preferences.SetGradientColourBegin( paraverConfig->getColorsBeginGradient() );
   preferences.SetGradientColourEnd( paraverConfig->getColorsEndGradient() );
+  preferences.SetGradientColourNegativeBegin( paraverConfig->getColorsBeginNegativeGradient() );
+  preferences.SetGradientColourNegativeEnd( paraverConfig->getColorsEndNegativeGradient() );
   preferences.SetGradientColourLow( paraverConfig->getColorsLowGradient() );
   preferences.SetGradientColourTop( paraverConfig->getColorsTopGradient() );
 
@@ -2992,6 +2994,8 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 
     paraverConfig->setColorsBeginGradient( preferences.GetGradientColourBegin() );
     paraverConfig->setColorsEndGradient( preferences.GetGradientColourEnd() );
+    paraverConfig->setColorsBeginNegativeGradient( preferences.GetGradientColourNegativeBegin() );
+    paraverConfig->setColorsEndNegativeGradient( preferences.GetGradientColourNegativeEnd() );
     paraverConfig->setColorsLowGradient( preferences.GetGradientColourLow() );
     paraverConfig->setColorsTopGradient( preferences.GetGradientColourTop() );
 

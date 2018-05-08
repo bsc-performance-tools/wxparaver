@@ -450,6 +450,22 @@ private:
   std::map< std::string, int > TABINDEX;   // CONSTANT map ( tool names -> widget tabs index )
   std::string outputPath;
 
+  // Constants for regular expressions
+  wxString reAnySpaces;
+  wxString reSomeNumbers;
+  wxString reType;
+  wxString reNegativeSign;
+
+  wxString reSingleType;
+  wxString reRangeOfTypes;
+
+  wxString reIntegerValue;
+  wxString reSomeIntegersSepByComma;
+  wxString reValuesSepByComma;
+
+  wxString reValuesSepByCommaForType;
+
+
   bool isFileSelected( FileBrowserButton *fpc );
   bool isFileSelected( const std::string& fpc );
 

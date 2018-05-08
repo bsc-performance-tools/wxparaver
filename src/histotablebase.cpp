@@ -189,7 +189,7 @@ wxString HistoTableBase::GetValue( int row, int col )
 
       if( iTotal >= vTotals.size() )
         label = wxString::FromAscii( "" );
-      else if( vTotals[ 0 ] > 0.0 )
+      else if( vTotals[ 0 ] != 0.0 )
       {
         if( iTotal == AVGDIVMAX )
           label = wxString::FromAscii( LabelConstructor::histoCellLabel( myHisto, vTotals[ iTotal ], false ).c_str());

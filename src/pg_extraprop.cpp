@@ -889,26 +889,14 @@ prvNumbersListProperty::prvNumbersListProperty( const wxString& label,
 {
   // Get local chars for decimal and thousand separators
   // Actually having problems to read numbers with thousands sep like 60.000.001, so not allowed
-  
   locale mylocale( "" );
   char decimalChar =  use_facet< numpunct< char > >( mylocale ).decimal_point();
-// use_facet< numpunct< char > >( mylocale ).thousands_sep() can return the same char !?!
-
-/*  
-  char thousandsSepChar;
-
-  // Some locales are both the same!!
-  if ( decimalChar == ',' )
-    thousandsSepChar = '.';
-  else
-    thousandsSepChar = ',';
-*/
 
   wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
                               _("5"), _("6"), _("7"), _("8"), _("9"),
-//                             wxT( decimalChar ), wxT( thousandsSepChar ),
                               _(","),
-                              _(";") };
+                              _(";"),
+                              _("-") };
   if ( decimalChar == '.' )
   {
     allowedChars[ 10 ] = _(".");
@@ -916,8 +904,7 @@ prvNumbersListProperty::prvNumbersListProperty( const wxString& label,
 
   // Set numeric validator
   wxTextValidator myValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
-//  wxArrayString charIncludes( (size_t)13, allowedChars );
-  wxArrayString charIncludes( (size_t)12, allowedChars );
+  wxArrayString charIncludes( (size_t)13, allowedChars );
   myValidator.SetIncludes( charIncludes );
   SetValidator( myValidator );
 

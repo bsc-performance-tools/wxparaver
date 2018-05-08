@@ -289,6 +289,8 @@ void PreferencesDialog::Init()
   colourPickerPhysical = NULL;
   colourPickerGradientBegin = NULL;
   colourPickerGradientEnd = NULL;
+  colourPickerNegativeGradientBegin = NULL;
+  colourPickerNegativeGradientEnd = NULL;
   colourPickerGradientLow = NULL;
   colourPickerGradientTop = NULL;
   panelWorkspaces = NULL;
@@ -1009,7 +1011,7 @@ void PreferencesDialog::CreateControls()
   colourPickerPhysical = new wxColourPickerCtrl( panelColor, ID_COLOURPICKER_PHYSICAL, wxColour(255, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
     colourPickerPhysical->SetToolTip(_("Color used to draw physical communications in timelines."));
-  itemBoxSizer158->Add(colourPickerPhysical, 2, wxALIGN_CENTER_VERTICAL|wxTOP, 5);
+  itemBoxSizer158->Add(colourPickerPhysical, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxButton* itemButton161 = new wxButton( panelColor, ID_BUTTON_DEFAULT_TIMELINE, _("Default"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
@@ -1021,27 +1023,51 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer141->Add(itemStaticBoxSizer162, 1, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer163 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer162->Add(itemBoxSizer163, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText164 = new wxStaticText( panelColor, wxID_STATIC, _("Begin"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticText* itemStaticText164 = new wxStaticText( panelColor, wxID_STATIC, _("Positive Begin"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText164->SetToolTip(_("Base color used to represent semantic values when gradient is selected."));
+    itemStaticText164->SetToolTip(_("Base color used to represent positive semantic values when gradient is selected."));
   itemBoxSizer163->Add(itemStaticText164, 1, wxALIGN_CENTER_VERTICAL, 5);
 
   colourPickerGradientBegin = new wxColourPickerCtrl( panelColor, ID_COLOURPICKER_GRADBEGIN, wxColour(0, 255, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
-    colourPickerGradientBegin->SetToolTip(_("Base color used to represent semantic values when gradient is selected."));
+    colourPickerGradientBegin->SetToolTip(_("Base color used to represent positive semantic values when gradient is selected."));
   itemBoxSizer163->Add(colourPickerGradientBegin, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxBoxSizer* itemBoxSizer166 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer162->Add(itemBoxSizer166, 1, wxGROW|wxLEFT|wxRIGHT, 5);
-  wxStaticText* itemStaticText167 = new wxStaticText( panelColor, wxID_STATIC, _("End"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticText* itemStaticText167 = new wxStaticText( panelColor, wxID_STATIC, _("Positive End"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText167->SetToolTip(_("Top color used to represent semantic values when gradient is selected."));
+    itemStaticText167->SetToolTip(_("Top color used to represent positive semantic values when gradient is selected."));
   itemBoxSizer166->Add(itemStaticText167, 1, wxALIGN_CENTER_VERTICAL, 5);
 
   colourPickerGradientEnd = new wxColourPickerCtrl( panelColor, ID_COLOURPICKER_GRADEND, wxColour(0, 0, 255), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
   if (PreferencesDialog::ShowToolTips())
-    colourPickerGradientEnd->SetToolTip(_("Top color used to represent semantic values when gradient is selected."));
+    colourPickerGradientEnd->SetToolTip(_("Top color used to represent positive semantic values when gradient is selected."));
   itemBoxSizer166->Add(colourPickerGradientEnd, 2, wxALIGN_CENTER_VERTICAL, 5);
+
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer162->Add(itemBoxSizer1, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText2 = new wxStaticText( panelColor, wxID_STATIC, _("Negative Begin"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    itemStaticText2->SetToolTip(_("Base color used to represent negative semantic values when gradient is selected."));
+  itemBoxSizer1->Add(itemStaticText2, 1, wxALIGN_CENTER_VERTICAL, 5);
+
+  colourPickerNegativeGradientBegin = new wxColourPickerCtrl( panelColor, ID_COLOURPICKER_NEGATIVE_GRADBEGIN, wxColour(255, 255, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  if (PreferencesDialog::ShowToolTips())
+    colourPickerNegativeGradientBegin->SetToolTip(_("Base color used to represent negative semantic values when gradient is selected."));
+  itemBoxSizer1->Add(colourPickerNegativeGradientBegin, 2, wxALIGN_CENTER_VERTICAL, 5);
+
+  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer162->Add(itemBoxSizer4, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  wxStaticText* itemStaticText5 = new wxStaticText( panelColor, wxID_STATIC, _("Negative End"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    itemStaticText5->SetToolTip(_("Top color used to represent negative semantic values when gradient is selected."));
+  itemBoxSizer4->Add(itemStaticText5, 1, wxALIGN_CENTER_VERTICAL, 5);
+
+  colourPickerNegativeGradientEnd = new wxColourPickerCtrl( panelColor, ID_COLOURPICKER_NEGATIVE_GRADEND, wxColour(255, 0, 0), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_USE_TEXTCTRL|wxCLRP_SHOW_LABEL );
+  if (PreferencesDialog::ShowToolTips())
+    colourPickerNegativeGradientEnd->SetToolTip(_("Top color used to represent negative semantic values when gradient is selected."));
+  itemBoxSizer4->Add(colourPickerNegativeGradientEnd, 2, wxALIGN_CENTER_VERTICAL, 5);
 
   wxBoxSizer* itemBoxSizer169 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer162->Add(itemBoxSizer169, 1, wxGROW|wxLEFT|wxRIGHT, 5);
@@ -1449,6 +1475,8 @@ bool PreferencesDialog::TransferDataToWindow()
 
   colourPickerGradientBegin->SetColour( RGBTowxColour( gradientColourBegin ) );
   colourPickerGradientEnd->SetColour( RGBTowxColour( gradientColourEnd ) );
+  colourPickerNegativeGradientBegin->SetColour( RGBTowxColour( gradientColourNegativeBegin ) );
+  colourPickerNegativeGradientEnd->SetColour( RGBTowxColour( gradientColourNegativeEnd ) );
   colourPickerGradientLow->SetColour( RGBTowxColour( gradientColourLow ) );
   colourPickerGradientTop->SetColour( RGBTowxColour( gradientColourTop ) );
 
@@ -1550,10 +1578,12 @@ bool PreferencesDialog::TransferDataFromWindow()
   timelineColourLogical    = wxColourToRGB( colourPickerLogical->GetColour() );
   timelineColourPhysical   = wxColourToRGB( colourPickerPhysical->GetColour() );
 
-  gradientColourBegin      = wxColourToRGB( colourPickerGradientBegin->GetColour() );
-  gradientColourEnd        = wxColourToRGB( colourPickerGradientEnd->GetColour() );
-  gradientColourLow        = wxColourToRGB( colourPickerGradientLow->GetColour() );
-  gradientColourTop        = wxColourToRGB( colourPickerGradientTop->GetColour() );
+  gradientColourBegin         = wxColourToRGB( colourPickerGradientBegin->GetColour() );
+  gradientColourEnd           = wxColourToRGB( colourPickerGradientEnd->GetColour() );
+  gradientColourNegativeBegin = wxColourToRGB( colourPickerNegativeGradientBegin->GetColour() );
+  gradientColourNegativeEnd   = wxColourToRGB( colourPickerNegativeGradientEnd->GetColour() );
+  gradientColourLow           = wxColourToRGB( colourPickerGradientLow->GetColour() );
+  gradientColourTop           = wxColourToRGB( colourPickerGradientTop->GetColour() );
 
   // WORKSPACES
   if( wxWindow::FindFocus() == txtWorkspaceName )

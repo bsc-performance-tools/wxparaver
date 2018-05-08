@@ -319,8 +319,8 @@ public:
   wxStopWatch * GetRedrawStopWatch() const { return redrawStopWatch ; }
   void SetRedrawStopWatch(wxStopWatch * value) { redrawStopWatch = value ; }
 
-  std::map< rgb, TSemanticValue > GetSemanticColorsToValue() const { return semanticColorsToValue ; }
-  void SetSemanticColorsToValue(std::map< rgb, TSemanticValue > value) { semanticColorsToValue = value ; }
+  std::map< rgb, std::set<TSemanticValue> > GetSemanticColorsToValue() const { return semanticColorsToValue ; }
+  void SetSemanticColorsToValue(std::map< rgb, std::set<TSemanticValue> > value) { semanticColorsToValue = value ; }
 
   wxFont GetSemanticFont() const { return semanticFont ; }
   void SetSemanticFont(wxFont value) { semanticFont = value ; }
@@ -399,6 +399,8 @@ public:
 #endif
   void redraw();
   bool drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
+  void drawZeroAxis( wxDC& dc );
+  
 #ifdef WIN32
   template<typename ValuesType>
   void drawRow( wxDC& dc,
@@ -609,7 +611,7 @@ private:
   wxPen physicalPen;
   bool redoColors;
   wxStopWatch * redrawStopWatch;
-  std::map< rgb, TSemanticValue > semanticColorsToValue;
+  std::map< rgb, std::set<TSemanticValue> > semanticColorsToValue;
   wxFont semanticFont;
   std::map< TSemanticValue, rgb > semanticValuesToColor; // Stored for SaveImage legend
   bool splitChanged;

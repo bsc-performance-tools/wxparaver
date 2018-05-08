@@ -137,6 +137,8 @@ class FileBrowserButton;
 #define ID_BUTTON_DEFAULT_TIMELINE 10087
 #define ID_COLOURPICKER_GRADBEGIN 10003
 #define ID_COLOURPICKER_GRADEND 10004
+#define ID_COLOURPICKER_NEGATIVE_GRADBEGIN 10036
+#define ID_COLOURPICKER_NEGATIVE_GRADEND 10035
 #define ID_COLOURPICKER_GRADLOW 10005
 #define ID_COLOURPICKER_GRADTOP 10006
 #define ID_BUTTON_DEFAULT_GRADIENT 10009
@@ -322,6 +324,12 @@ public:
 
   rgb GetGradientColourLow() const { return gradientColourLow ; }
   void SetGradientColourLow(rgb value) { gradientColourLow = value ; }
+
+  rgb GetGradientColourNegativeBegin() const { return gradientColourNegativeBegin ; }
+  void SetGradientColourNegativeBegin(rgb value) { gradientColourNegativeBegin = value ; }
+
+  rgb GetGradientColourNegativeEnd() const { return gradientColourNegativeEnd ; }
+  void SetGradientColourNegativeEnd(rgb value) { gradientColourNegativeEnd = value ; }
 
   rgb GetGradientColourTop() const { return gradientColourTop ; }
   void SetGradientColourTop(rgb value) { gradientColourTop = value ; }
@@ -586,6 +594,8 @@ public:
   wxColourPickerCtrl* colourPickerPhysical;
   wxColourPickerCtrl* colourPickerGradientBegin;
   wxColourPickerCtrl* colourPickerGradientEnd;
+  wxColourPickerCtrl* colourPickerNegativeGradientBegin;
+  wxColourPickerCtrl* colourPickerNegativeGradientEnd;
   wxColourPickerCtrl* colourPickerGradientLow;
   wxColourPickerCtrl* colourPickerGradientTop;
   wxPanel* panelWorkspaces;
@@ -614,6 +624,8 @@ private:
   rgb gradientColourBegin;
   rgb gradientColourEnd;
   rgb gradientColourLow;
+  rgb gradientColourNegativeBegin;
+  rgb gradientColourNegativeEnd;
   rgb gradientColourTop;
   bool histogramAutofit3DScale;
   bool histogramAutofitControlScale;

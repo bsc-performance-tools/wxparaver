@@ -47,7 +47,7 @@
 #include <iostream>
 #include <algorithm>
 #include <wx/filedlg.h>
-#include <wx/tokenzr.h>
+#include <wx/regex.h>
 #include <wx/filename.h>
 
 #include "cutfilterdialog.h"
@@ -258,9 +258,23 @@ void CutFilterDialog::Init()
 ////@end CutFilterDialog member initialisation
   outputPath = "";
   xmlConfigurationFile.Clear(); // paranoic
-  
+
   localKernel = paraverMain::myParaverMain->GetLocalKernel();
   traceOptions = TraceOptions::create( GetLocalKernel() );
+
+  // Constants for regular expressions
+  reAnySpaces =  wxString( wxT( "[[:space:]]*" ) );
+  reSomeNumbers =  wxString( wxT( "[[:digit:]]+" ) );
+  reType = reAnySpaces + reSomeNumbers + reAnySpaces;
+  reNegativeSign = wxString( wxT( "[-]?" ) );
+
+  reIntegerValue = reAnySpaces + reNegativeSign + reSomeNumbers + reAnySpaces;
+  reSomeIntegersSepByComma = wxString( wxT( "(" ) ) + reAnySpaces + wxString( wxT( "[,]" ) ) + reIntegerValue + wxString( wxT( ")*" ) ); //may be empty
+  reValuesSepByComma = reIntegerValue + reSomeIntegersSepByComma;
+
+  reSingleType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( ")$" ) );
+  reRangeOfTypes = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[-]" ) ) + reType + wxString( wxT( ")$" ) );
+  reValuesSepByCommaForType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[:]" ) ) + reValuesSepByComma + wxString( wxT( ")$" ) );
 }
 
 
@@ -1357,6 +1371,7 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
       {
         checkListFilterStates->Check( i );
         found = true;
+        break;
       }
     }
 
@@ -1380,8 +1395,11 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
   }
 
   // Have we found new states? Add them to the botton and check them.
-  checkListFilterStates->InsertItems( newStates, checkListFilterStates->GetCount() );
-  CheckStatesList( oldMaxStates, !( checkListFilterStates->GetCount() == 0 ) );
+  if ( newStates.GetCount() > 0 )
+  {
+    checkListFilterStates->InsertItems( newStates, checkListFilterStates->GetCount() );
+    CheckStatesList( oldMaxStates, !( checkListFilterStates->GetCount() == 0 ) );
+  }
 }
 
 
@@ -1407,32 +1425,21 @@ void CutFilterDialog::OnButtonFilterAddClick( wxCommandEvent& event )
                                
   if( textEntry.ShowModal() == wxID_OK )
   {
-    unsigned long tmp;
-    wxStringTokenizer tok;
-    bool errorString = false;
-    wxString tmpStr;
-    
-    if( textEntry.GetValue() == _("") )
-      return;
-      
-    tok.SetString( textEntry.GetValue(), _("-:,") );
-
-    while( ( tmpStr = tok.GetNextToken() ) != _("") )
+    wxString currentEntry( textEntry.GetValue() );
+    if( !currentEntry.IsEmpty() )
     {
-      if( !tmpStr.ToULong( &tmp ) )
+      wxString allowedFormatsRE =
+          reSingleType + wxString( wxT( "|" ) ) + reRangeOfTypes + wxString( wxT( "|" ) ) + reValuesSepByCommaForType ;
+      if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
-        errorString = true;
-        break;
+        wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
+      }
+      else
+      {
+        currentEntry.Replace( _(" "), _("") );
+        listboxFilterEvents->Append( currentEntry );
       }
     }
-    
-    if( errorString )
-    {
-      wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
-      return;
-    }
-    
-    listboxFilterEvents->Append( textEntry.GetValue() );
   }
 }
 
@@ -1665,6 +1672,7 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
     TraceOptions::TStateNames auxNames;
     for( int i = 0; i < 20; ++i )
       auxNames[ i ] = NULL;
+
     traceOptions->get_state_names( auxNames );
     CheckStatesList( auxNames );
   }
@@ -1836,32 +1844,20 @@ void CutFilterDialog::OnButtonScSelectedEventsAddClick( wxCommandEvent& event )
                                
   if( textEntry.ShowModal() == wxID_OK )
   {
-    unsigned long tmp;
-    wxStringTokenizer tok;
-    bool errorString = false;
-    wxString tmpStr;
-    
-    if( textEntry.GetValue() == _("") )
-      return;
-      
-    tok.SetString( textEntry.GetValue(), _(":,") );
-
-    while( ( tmpStr = tok.GetNextToken() ) != _("") )
+    wxString currentEntry( textEntry.GetValue() );
+    if( !currentEntry.IsEmpty() )
     {
-      if( !tmpStr.ToULong( &tmp ) )
+      wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reValuesSepByCommaForType;
+      if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
-        errorString = true;
-        break;
+        wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
+      }
+      else
+      {
+        currentEntry.Replace( _(" "), _("") );
+        listSCSelectedEvents->Append( currentEntry );
       }
     }
-    
-    if( errorString )
-    {
-      wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
-      return;
-    }
-    
-    listSCSelectedEvents->Append( textEntry.GetValue() );
   }
 }
 
@@ -1895,32 +1891,20 @@ void CutFilterDialog::OnButtonScKeepEventsAddClick( wxCommandEvent& event )
                                
   if( textEntry.ShowModal() == wxID_OK )
   {
-    unsigned long tmp;
-    wxStringTokenizer tok;
-    bool errorString = false;
-    wxString tmpStr;
-    
-    if( textEntry.GetValue() == _("") )
-      return;
-      
-    tok.SetString( textEntry.GetValue(), _("-") );
-
-    while( ( tmpStr = tok.GetNextToken() ) != _("") )
+    wxString currentEntry( textEntry.GetValue() );
+    if( !currentEntry.IsEmpty() )
     {
-      if( !tmpStr.ToULong( &tmp ) )
+      wxString allowedFormatsRE = reSingleType + wxString( wxT( "|" ) ) + reRangeOfTypes;
+      if( !wxRegEx( allowedFormatsRE ).Matches( currentEntry ) )
       {
-        errorString = true;
-        break;
+        wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
+      }
+      else
+      {
+        currentEntry.Replace( _(" "), _("") );
+        listSCKeepEvents->Append( currentEntry );
       }
     }
-    
-    if( errorString )
-    {
-      wxMessageBox( _("Text inserted doesn't fit the allowed formats"), _("Not allowed format") );
-      return;
-    }
-    
-    listSCKeepEvents->Append( textEntry.GetValue() );
   }
 }
 
