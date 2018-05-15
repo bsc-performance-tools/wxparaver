@@ -372,6 +372,8 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
@@ -379,8 +381,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -967,11 +967,23 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                                                                        ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
                  drawBorder, timeAxisPos - objectExt.GetHeight() );
 
-    dc.DrawText( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
-                                                                       ( myWindow->getMaximumY() + myWindow->getMinimumY() ) / 2.0,
-                                                                       false,
-                                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
-                 drawBorder, ( timeAxisPos - objectExt.GetHeight() ) / 2 );
+    if( myWindow->getMinimumY() < 0.0 )
+    {
+      TSemanticValue relativeZero = myWindow->getMaximumY() / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+      dc.DrawText( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
+                                                                         0.0,
+                                                                         false,
+                                                                         ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
+                   drawBorder, ( relativeZero * ( timeAxisPos - objectExt.GetHeight() ) ) + drawBorder + 1 );
+    }
+    else
+    {
+      dc.DrawText( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
+                                                                         ( myWindow->getMaximumY() + myWindow->getMinimumY() ) / 2.0,
+                                                                         false,
+                                                                         ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
+                   drawBorder, ( timeAxisPos - objectExt.GetHeight() ) / 2 );
+    }
   }
   else
   {
