@@ -967,7 +967,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
                                                                        ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() ),
                  drawBorder, timeAxisPos - objectExt.GetHeight() );
 
-    if( myWindow->getMinimumY() < 0.0 )
+    if( myWindow->getMinimumY() < 0.0 && myWindow->getMaximumY() > 0.0 )
     {
       TSemanticValue relativeZero = myWindow->getMaximumY() / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
       dc.DrawText( wxString::FromAscii( LabelConstructor::semanticLabel( myWindow,
