@@ -1106,7 +1106,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     wxPGId filterCat = (wxPGId)NULL;
     if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
     {
-      filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter") ) );
+      filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter"), wxT("Filter") ) );
       if( filterCatCollapsed )
         filterCat->SetFlagsFromString( _( "COLLAPSED" ) );
     }
@@ -1115,7 +1115,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     wxPGId commFilterCat = (wxPGId)NULL;
     if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
     {
-      commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications") ) );
+      commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications"), wxT("Communications") ) );
       if( commFilterCatCollapsed )
         commFilterCat->SetFlagsFromString( _( "COLLAPSED" ) );
     }
@@ -1132,7 +1132,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       commFilterFrom = windowProperties->AppendIn( commFilterCat, 
                                                    new wxStringProperty( wxT("Comm from"),
-                                                                         wxPG_LABEL,
+                                                                         wxT("Comm from"),
                                                                          wxT("<composed>") ) );
 #if wxMAJOR_VERSION<3
       if( commFilterFromCollapsed )
@@ -1204,7 +1204,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       commFilterTo = windowProperties->AppendIn( commFilterCat, 
                                                  new wxStringProperty( wxT("Comm to"),
-                                                                       wxPG_LABEL,
+                                                                       wxT("Comm to"),
                                                                        wxT("<composed>") ) );
 #if wxMAJOR_VERSION<3
       if( commFilterToCollapsed )
@@ -1260,7 +1260,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       commFilterTag = windowProperties->AppendIn( commFilterCat, 
                                                   new wxStringProperty( wxT("Comm tag"),
-                                                                        wxPG_LABEL,
+                                                                        wxT("Comm tag"),
                                                                         wxT("<composed>") ) );
 #if wxMAJOR_VERSION<3
       if( commFilterTagCollapsed )
@@ -1329,10 +1329,8 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     wxPGId commFilterSize = (wxPGId)NULL; 
     if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
     {
-      commFilterSize = windowProperties->AppendIn( commFilterCat, 
-                                                   new wxStringProperty( wxT("Comm size"), 
-                                                                         wxPG_LABEL,
-                                                                         wxT("<composed>") ) );
+      commFilterSize = windowProperties->AppendIn( commFilterCat,
+                                                   new wxStringProperty( wxT("Comm size"), wxT("Comm size"),wxT("<composed>")));
 #if wxMAJOR_VERSION<3
       if( commFilterSizeCollapsed )
         commFilterSize->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
@@ -1389,7 +1387,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       commFilterBW = windowProperties->AppendIn(  commFilterCat, 
                                                   new wxStringProperty( wxT("Comm bandwidth"), 
-                                                                        wxPG_LABEL,
+                                                                        wxT("Comm bandwidth"),
                                                                         wxT("<composed>") ) );
 #if wxMAJOR_VERSION<3
       if( commFilterBWCollapsed )
@@ -1445,7 +1443,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     wxPGId eventFilterCat = (wxPGId)NULL;
     if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
     {
-      eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events") ) );
+      eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events"), wxT("Events") ) );
       if( eventFilterCatCollapsed )
         eventFilterCat->SetFlagsFromString( _( "COLLAPSED" ) );
     }
@@ -1456,7 +1454,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       eventFilterType = windowProperties->AppendIn( eventFilterCat, 
                                                     new wxStringProperty( wxT("Event type"), 
-                                                                          wxPG_LABEL,
+                                                                          wxT("Event type"),
                                                                           wxT("<composed>") ) );
 #if wxMAJOR_VERSION<3
       if( eventFilterTypeCollapsed )
@@ -1545,7 +1543,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     {
       eventFilterValue = windowProperties->AppendIn( eventFilterCat, 
                                                      new wxStringProperty( wxT("Event value"), 
-                                                                           wxPG_LABEL,
+                                                                           wxT("Event value"),
                                                                            wxT("<composed>") ) );
 #if wxMAJOR_VERSION<3
       if( eventFilterValueCollapsed )
@@ -1609,7 +1607,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
   wxPGId semanticCat = (wxPGId)NULL;
   if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   {
-    semanticCat = windowProperties->Append( new wxPropertyCategory( wxT("Semantic") ) );
+    semanticCat = windowProperties->Append( new wxPropertyCategory( wxT("Semantic"), wxT("Semantic") ) );
     if( semanticCatCollapsed )
       semanticCat->SetFlagsFromString( _( "COLLAPSED" ) );
   }
@@ -2051,7 +2049,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   wxPGId ctrlCat = (wxPGId)NULL;
   if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
   {
-    ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control") ) );
+    ctrlCat = windowProperties->Append( new wxPropertyCategory( wxT("Control"), wxT("Control") ) );
     if( ctrlCatCollapsed )
       ctrlCat->SetFlagsFromString( _( "COLLAPSED" ) );
   }
@@ -2087,7 +2085,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   wxPGId statCat = (wxPGId)NULL;
   if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
   {
-    statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics") ) );
+    statCat = windowProperties->Append( new wxPropertyCategory( wxT("Statistics"), wxT("Statistics") ) );
     if( statCatCollapsed )
       statCat->SetFlagsFromString( _( "COLLAPSED" ) );
   }
@@ -2154,7 +2152,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   wxPGId dataCat = (wxPGId)NULL;
   if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
   {
-    dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data") ) );
+    dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data"), wxT("Data") ) );
     if( dataCatCollapsed )
       dataCat->SetFlagsFromString( _( "COLLAPSED" ) );
   }
@@ -2181,7 +2179,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   wxPGId thirdWinCat = (wxPGId)NULL;
   if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
   {
-    thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D") ) );
+    thirdWinCat = windowProperties->Append( new wxPropertyCategory( wxT("3D"), wxT("3D") ) );
     if( thirdWinCatCollapsed )
       thirdWinCat->SetFlagsFromString( _( "COLLAPSED" ) );
   }
