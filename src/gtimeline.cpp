@@ -3238,18 +3238,28 @@ void gTimeline::OnColorsPanelUpdate( wxUpdateUIEvent& event )
       colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
 
       TSemanticValue step = ( lastMax - lastMin ) / 20.0;
+      TSemanticValue lastValueToUse = 0.0;
       for( int i = 0; i <= 20; ++i )
       {
+        TSemanticValue valueToUse;
+        if( i > 0 && lastValueToUse != 0.0 && ( ( i - 1 ) * step ) + lastMin < 0.0 && ( i * step ) + lastMin > 0.0 )
+        {
+          lastValueToUse = valueToUse = 0.0;
+          --i;
+        }
+        else
+          lastValueToUse = valueToUse = ( i * step ) + lastMin;
+        
         itemSizer = new wxBoxSizer(wxHORIZONTAL);
 
         itemText = new wxStaticText( colorsPanel, wxID_ANY, _T("") );
         tmpStr.Clear();
-        tmpStr << wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, ( i * step ) + lastMin, false, precision ).c_str() );
+        tmpStr << wxString::FromAscii( LabelConstructor::semanticLabel( myWindow, valueToUse, false, precision ).c_str() );
         itemText->SetLabel( tmpStr );
 
         tmpSize = wxSize( 20, itemText->GetSize().GetHeight() );
         itemColor = new wxPanel( colorsPanel, wxID_ANY, wxDefaultPosition, tmpSize );
-        tmprgb = myWindow->getGradientColor().calcColor( ( i * step ) + lastMin, lastMin, lastMax );
+        tmprgb = myWindow->getGradientColor().calcColor( valueToUse, lastMin, lastMax );
         tmpColor = wxColour( tmprgb.red, tmprgb.green, tmprgb.blue );
         itemColor->SetBackgroundColour( tmpColor );
 
