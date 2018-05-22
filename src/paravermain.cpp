@@ -409,8 +409,8 @@ void paraverMain::Init()
   choiceWindowBrowser = NULL;
   toolBookFilesProperties = NULL;
   dirctrlFiles = NULL;
-  panelProperties = NULL;
   windowProperties = NULL;
+  panelAutoRedraw = NULL;
   checkAutoRedraw = NULL;
   buttonForceRedraw = NULL;
   txtActiveWorkspaces = NULL;
@@ -524,30 +524,33 @@ void paraverMain::CreateControls()
 
   toolBookFilesProperties->AddPage(dirctrlFiles, wxEmptyString, false, 0);
 
-  panelProperties = new wxPanel( toolBookFilesProperties, ID_PANEL_PROPERTIES, wxDefaultPosition, wxDefaultSize, 0 );
-  panelProperties->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-  panelProperties->SetSizer(itemBoxSizer2);
+  windowProperties = new wxPropertyGrid( toolBookFilesProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS|wxPG_EX_DISABLE_TLP_TRACKING );
 
-  windowProperties = new wxPropertyGrid( panelProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
-  itemBoxSizer2->Add(windowProperties, 1, wxGROW|wxALL, 0);
-
-  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer1, 0, wxGROW|wxALL, 0);
-  wxStaticBitmap* itemStaticBitmap2 = new wxStaticBitmap( panelProperties, wxID_STATIC_AUTO_REDRAW, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer1->Add(itemStaticBitmap2, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelProperties, wxSize(2, -1)).x);
-
-  checkAutoRedraw = new wxCheckBox( panelProperties, ID_CHECKBOX_AUTO_REDRAW, _("Automatic Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkAutoRedraw->SetValue(true);
-  itemBoxSizer1->Add(checkAutoRedraw, 1, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelProperties, wxSize(2, -1)).x);
-
-  buttonForceRedraw = new wxButton( panelProperties, ID_BUTTON_FORCE_REDRAW, _("Force Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer1->Add(buttonForceRedraw, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelProperties, wxSize(1, -1)).x);
-
-  toolBookFilesProperties->AddPage(panelProperties, wxEmptyString, false, 1);
+  toolBookFilesProperties->AddPage(windowProperties, wxEmptyString, false, 1);
 
   itemFrame1->GetAuiManager().AddPane(toolBookFilesProperties, wxAuiPaneInfo()
     .Name(wxT("auiCfgAndProperties")).Caption(_("Files & Window Properties")).Centre().Position(2).CloseButton(false).DestroyOnClose(false).Resizable(true).PaneBorder(false));
+
+  panelAutoRedraw = new wxPanel( itemFrame1, ID_PANEL_AUTOREDRAW, wxDefaultPosition, wxDefaultSize, 0 );
+  panelAutoRedraw->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+  itemFrame1->GetAuiManager().AddPane(panelAutoRedraw, wxAuiPaneInfo()
+    .Name(wxT("auiAutoRedraw")).Caption(_("Auto Redraw")).Bottom().Dockable(false).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Movable(false).PaneBorder(false));
+
+  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+  panelAutoRedraw->SetSizer(itemBoxSizer4);
+
+  wxStaticBitmap* itemStaticBitmap5 = new wxStaticBitmap( panelAutoRedraw, wxID_STATIC_AUTO_REDRAW, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer4->Add(itemStaticBitmap5, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelAutoRedraw, wxSize(2, -1)).x);
+
+  checkAutoRedraw = new wxCheckBox( panelAutoRedraw, ID_CHECKBOX_AUTO_REDRAW, _("Automatic Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkAutoRedraw->SetValue(true);
+  itemBoxSizer4->Add(checkAutoRedraw, 1, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelAutoRedraw, wxSize(2, -1)).x);
+
+  buttonForceRedraw = new wxButton( panelAutoRedraw, ID_BUTTON_FORCE_REDRAW, _("Force Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer4->Add(buttonForceRedraw, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelAutoRedraw, wxSize(1, -1)).x);
+
+  // Fit to content
+  itemFrame1->GetAuiManager().GetPane(wxT("auiAutoRedraw")).BestSize(panelAutoRedraw->GetSizer()->Fit(panelAutoRedraw)).MinSize(panelAutoRedraw->GetSizer()->GetMinSize());
 
   wxPanel* itemPanel36 = new wxPanel( itemFrame1, ID_PANEL_WORKSPACES, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   itemFrame1->GetAuiManager().AddPane(itemPanel36, wxAuiPaneInfo()

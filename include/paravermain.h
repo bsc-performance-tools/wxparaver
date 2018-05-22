@@ -104,8 +104,8 @@ class RunScript;
 #define ID_CHOICEWINBROWSER 10002
 #define ID_TOOLBOOKFILESANDPROPERTIES 10159
 #define ID_DIRCTRLFILES 10160
-#define ID_PANEL_PROPERTIES 10001
 #define ID_FOREIGN 10010
+#define ID_PANEL_AUTOREDRAW 10001
 #define wxID_STATIC_AUTO_REDRAW 10291
 #define ID_CHECKBOX_AUTO_REDRAW 10007
 #define ID_BUTTON_FORCE_REDRAW 10012
@@ -515,8 +515,8 @@ public:
   wxChoicebook* choiceWindowBrowser;
   wxToolbook* toolBookFilesProperties;
   wxGenericDirCtrl* dirctrlFiles;
-  wxPanel* panelProperties;
   wxPropertyGrid* windowProperties;
+  wxPanel* panelAutoRedraw;
   wxCheckBox* checkAutoRedraw;
   wxButton* buttonForceRedraw;
   wxTextCtrl* txtActiveWorkspaces;
