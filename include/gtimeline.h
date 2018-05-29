@@ -238,6 +238,9 @@ public:
   bool GetDrawCaution() const { return drawCaution ; }
   void SetDrawCaution(bool value) { drawCaution = value ; }
 
+  bool GetDrawCautionNegatives() const { return drawCautionNegatives ; }
+  void SetDrawCautionNegatives(bool value) { drawCautionNegatives = value ; }
+
   wxBitmap GetDrawImage() const { return drawImage ; }
   void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
@@ -587,6 +590,7 @@ private:
   wxColour backgroundColour;
   long beginRow;
   bool canRedraw;
+  bool drawCautionNegatives;
   long endRow;
   bool escapePressed;
   TRecordTime findBeginTime;
@@ -676,6 +680,8 @@ private:
 
   bool pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject );
   
+  void doDrawCaution( wxDC& whichDC );
+
   // Called by saveLabelsImage
   void drawRectangle( wxMemoryDC& labelDC,
                        wxMemoryDC& scaleDC,

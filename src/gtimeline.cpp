@@ -61,6 +61,7 @@
 #include "loadedwindows.h"
 #include "windows_tree.h"
 #include "caution.xpm"
+#include "caution_yellow.xpm"
 #include "output.h"
 #include "filedialogext.h"
 #include "progresscontroller.h"
@@ -186,6 +187,7 @@ void gTimeline::Init()
 ////@begin gTimeline member initialisation
   canRedraw = false;
   drawCaution = false;
+  drawCautionNegatives = false;
   escapePressed = false;
   findBeginTime = 0;
   findEndTime = 0;
@@ -447,18 +449,8 @@ void gTimeline::drawStackedImages( wxDC& dc )
 {
   if( bufferImage.IsOk() )
     dc.DrawBitmap( bufferImage, 0, 0, false );
-  if( drawCaution )
-  {
-    wxBitmap cautionImage( caution_xpm );
-    dc.SetPen( wxPen( backgroundColour ) );
-    dc.SetBrush( wxBrush( backgroundColour ) );
-    dc.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
-                      drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
-    dc.DrawBitmap( cautionImage,
-                   drawBorder,
-                   drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                   true );
-  }
+    
+  doDrawCaution( dc );
   
   if( myWindow->getDrawFlags() && eventImage.IsOk() )
     dc.DrawBitmap( eventImage, 0, 0, true );
@@ -626,7 +618,8 @@ void gTimeline::redraw()
   }
   myWindow->init( myWindow->getWindowBeginTime(), CREATECOMMS + CREATEEVENTS );
 
-  drawCaution = false;
+  drawCaution          = false;
+  drawCautionNegatives = false;
 
   eventdc.SetTextForeground( *wxGREEN );
   eventdc.SetTextBackground( backgroundColour );
@@ -730,30 +723,12 @@ void gTimeline::redraw()
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 #endif
 
-  if( drawCaution )
-  {
-    wxBitmap cautionImage( caution_xpm );
 #ifdef __WXMAC__
-    dc.SetPen( wxPen( backgroundColour ) );
-    dc.SetBrush( wxBrush( backgroundColour ) );
-    dc.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
-                      drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
-    dc.DrawBitmap( cautionImage,
-                   drawBorder,
-                   drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                   true );
+  doDrawCaution( dc );
 #else
-    bufferDraw.SetPen( wxPen( backgroundColour ) );
-    bufferDraw.SetBrush( wxBrush( backgroundColour ) );
-    bufferDraw.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
-                              drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
-    bufferDraw.DrawBitmap( cautionImage,
-                           drawBorder,
-                           drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                           true );
+  doDrawCaution( bufferDraw );
 #endif
-  }
-  
+
 #ifndef __WXMAC__
   eventmaskdc.SetPen( *wxBLACK_PEN );
   eventmaskdc.SetBrush( *wxBLACK_BRUSH );
@@ -1232,6 +1207,9 @@ void gTimeline::drawRowColor( wxDC& dc, TSemanticValue valueToDraw, wxCoord obje
 {
   rgb colorToDraw = myWindow->calcColor( valueToDraw, *myWindow );
   
+  if( myWindow->isCodeColorSet() && valueToDraw < 0.0 && myWindow->getMinimumY() <= valueToDraw )
+    drawCautionNegatives = true;
+
   // SaveImage & mouse over needed info
   semanticValuesToColor[ valueToDraw ] = colorToDraw;
   semanticColorsToValue[ colorToDraw ].insert( valueToDraw );
@@ -1601,12 +1579,17 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
   if( event.GetX() < tmpImage.GetWidth() + drawBorder
       && event.GetY() > drawZone->GetSize().GetHeight() - tmpImage.GetHeight() - drawBorder )
   {
-/*    wxMessageDialog dialog( this,
-                            wxT( "Some semantic values are outside the maximum or minimum boundaries." ),
-                            wxT( "Semantic Scale Warning" ),
+    if( !drawCaution && drawCautionNegatives )
+    {
+      wxMessageDialog dialog( this,
+                            wxT( "Negative values are drawn as zero in code color view." ),
+                            wxT( "Code color negatives" ),
                             wxOK|wxICON_EXCLAMATION );
-    dialog.ShowModal();*/
-    OnPopUpFitSemanticScale();
+      dialog.ShowModal();
+    }
+    else // hidden feature: clicking on botton left corner always fit the semantic scale, even if no caution is shown
+      OnPopUpFitSemanticScale();
+
     return;
   }
   drawZone->SetFocus();
@@ -1919,6 +1902,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
   clonedTimeline->SetEventImage( eventImage );
   clonedTimeline->SetDrawImage( drawImage );
   clonedTimeline->SetDrawCaution( drawCaution );
+  clonedTimeline->SetDrawCautionNegatives( drawCautionNegatives );
   clonedTimeline->SetObjectAxisPos( objectAxisPos );
   clonedTimeline->SetTimeAxisPos( timeAxisPos );
   clonedTimeline->SetObjectPosList( objectPosList );
@@ -3308,14 +3292,7 @@ void gTimeline::drawCommunicationLines( bool draw )
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 
-  if( drawCaution )
-  {
-    wxBitmap cautionImage( caution_xpm );
-    bufferDraw.DrawBitmap( cautionImage,
-                           drawBorder,
-                           drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                           true );
-  }
+  doDrawCaution( bufferDraw );
 
   if( myWindow->getDrawFlags() )
     bufferDraw.DrawBitmap( eventImage, 0, 0, true );
@@ -3340,14 +3317,7 @@ void gTimeline::drawEventFlags( bool draw )
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 
-  if( drawCaution )
-  {
-    wxBitmap cautionImage( caution_xpm );
-    bufferDraw.DrawBitmap( cautionImage,
-                           drawBorder,
-                           drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                           true );
-  }
+  doDrawCaution( bufferDraw );
 
   if( myWindow->getDrawFlags() )
     bufferDraw.DrawBitmap( eventImage, 0, 0, true );
@@ -4990,14 +4960,7 @@ void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 
-  if( drawCaution )
-  {
-    wxBitmap cautionImage( caution_xpm );
-    bufferDraw.DrawBitmap( cautionImage,
-                           drawBorder,
-                           drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                           true );
-  }
+  doDrawCaution( bufferDraw );
 
   if( myWindow->getDrawFlags() )
     bufferDraw.DrawBitmap( eventImage, 0, 0, true );
@@ -5266,43 +5229,6 @@ void gTimeline::OnFindDialog()
     bool drawXCross = true;
     bool allObjects = false;
     drawTimeMarks( tmpTimes, selectedObjects, drawXCross, allObjects, objectSelection );
-/*
-    wxMemoryDC bufferDraw;
-
-    if( !ready )
-      return;
-
-    bufferDraw.SelectObject( wxNullBitmap );
-    bufferDraw.SelectObject( drawImage );
-    bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
-
-    if( drawCaution )
-    {
-      wxBitmap cautionImage( caution_xpm );
-      bufferDraw.DrawBitmap( cautionImage,
-                             drawBorder,
-                             drawZone->GetSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
-                             true );
-    }
-
-    if( myWindow->getDrawFlags() )
-      bufferDraw.DrawBitmap( eventImage, 0, 0, true );
-
-    if( myWindow->getDrawCommLines() )
-      bufferDraw.DrawBitmap( commImage, 0, 0, true );
-
-    wxCoord xTime = ( ( ( lastSemanticFoundTime - myWindow->getWindowBeginTime() ) * ( drawZone->GetSize().GetWidth() - objectAxisPos - drawBorder ) )
-                      / ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) )
-                    + objectAxisPos;
-    // draw found object cross
-    bufferDraw.SetPen( wxPen( *wxRED, 2 ) );
-    bufferDraw.DrawLine( xTime - 5, objectPosList[ lastFoundObject ] - 5, xTime + 5, objectPosList[ lastFoundObject ] + 5 );
-    bufferDraw.DrawLine( xTime - 5, objectPosList[ lastFoundObject ] + 5, xTime + 5, objectPosList[ lastFoundObject ] - 5 );
-    // draw found time line
-    bufferDraw.SetPen( wxPen( *wxRED, 2, wxSHORT_DASH ) );
-    bufferDraw.DrawLine( xTime + 1, 0, xTime + 1, drawZone->GetSize().GetHeight() );
-    drawZone->Refresh();
-    */
   }
 }
 
@@ -5726,5 +5652,33 @@ void gTimeline::MousePanLeftUp( wxMouseEvent& event )
 #else
     tmpDC.DrawBitmap( drawImage, 0, 0 );
 #endif
+  }
+}
+
+void gTimeline::doDrawCaution( wxDC& whichDC )
+{
+  if( drawCaution )
+  {
+    wxBitmap cautionImage( caution_xpm );
+    whichDC.SetPen( wxPen( backgroundColour ) );
+    whichDC.SetBrush( wxBrush( backgroundColour ) );
+    whichDC.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
+                            drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
+    whichDC.DrawBitmap( cautionImage,
+                         drawBorder,
+                         drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                         true );
+  }
+  else if( drawCautionNegatives )
+  {
+    wxBitmap cautionImage( caution_yellow_xpm );
+    whichDC.SetPen( wxPen( backgroundColour ) );
+    whichDC.SetBrush( wxBrush( backgroundColour ) );
+    whichDC.DrawRectangle( 0, drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder - 2,
+                      drawBorder + cautionImage.GetWidth() + 2, drawZone->GetClientSize().GetHeight() );
+    whichDC.DrawBitmap( cautionImage,
+                   drawBorder,
+                   drawZone->GetClientSize().GetHeight() - cautionImage.GetHeight() - drawBorder,
+                   true );
   }
 }
