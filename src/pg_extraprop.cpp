@@ -39,6 +39,7 @@
 #endif
 
 #include <wx/choicdlg.h>
+#include "wxparaverapp.h"
 #include "pg_extraprop.h"
 #include "window.h"
 #include "selectionrowsutils.h"
@@ -423,7 +424,7 @@ wxArrayInt prvEventInfoProperty::GetValueAsIndices() const
   return selections;
 }
 
-
+#include <wx/minifram.h>
 bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
                                     wxWindow* WXUNUSED( primary ),
                                     wxEvent& event )
@@ -948,31 +949,35 @@ bool prvNumbersListProperty::StringToValue( wxVariant& variant,
                                             int ) const
 {
   wxArrayString arr;
+  bool error = false;
 
   WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
     arr.Add(token);
   WX_PG_TOKENIZER1_END()
 
-  if ( !( wxString( GetLabel() ).Trim( false ).IsSameAs( wxT( "Translation List" ) )) )
+  if( !( wxString( GetLabel() ).Trim( false ).IsSameAs( wxT( "Translation List" ) ) ) )
   {
     // Order values
     double tmpValue;
 
     map< double, wxString > sortedValues;
-    for ( unsigned int i = 0; i < arr.GetCount(); ++i )
+    for( unsigned int i = 0; i < arr.GetCount(); ++i )
     {
-      if ( arr[i].ToDouble( &tmpValue ))  // invalid values not used
+      if ( arr[i].ToDouble( &tmpValue ) )
+        sortedValues[ tmpValue ] = arr[ i ];
+      else
       {
-        sortedValues[ tmpValue ] = arr[i];
+        sortedValues[ 0 ] = arr[ i ];
+        error = true;
       }
     }
-    
+
     wxArrayString tmpArr;
-    for ( map< double, wxString >::iterator it = sortedValues.begin(); it != sortedValues.end(); ++it )
+    for( map< double, wxString >::iterator it = sortedValues.begin(); it != sortedValues.end(); ++it )
     {
       tmpArr.Add( (*it).second );
     }
-    
+
     arr = tmpArr;
   }
   else
@@ -982,29 +987,40 @@ bool prvNumbersListProperty::StringToValue( wxVariant& variant,
 
     vector< double > values;
     vector< wxString > labels;
-    for ( unsigned int i = 0; i < arr.GetCount(); ++i )
+    for( unsigned int i = 0; i < arr.GetCount(); ++i )
     {
-      if ( arr[i].ToDouble( &tmpValue ))  // invalid values not used
+      if( arr[i].ToDouble( &tmpValue ) )
       {
         values.push_back( tmpValue );
         labels.push_back( arr[i] );
       }
+      else
+      {
+        values.push_back( 0 );
+        labels.push_back( arr[i] );
+        error = true;
+      }
     }
-    
+
     wxArrayString tmpArr;
-    for ( vector< wxString >::iterator it = labels.begin(); it != labels.end(); ++it )
+    for( vector< wxString >::iterator it = labels.begin(); it != labels.end(); ++it )
     {
       tmpArr.Add( (*it) );
     }
-    
-    arr = tmpArr;  
+
+    arr = tmpArr;
   }
-  
-  
+
   wxVariant v( WXVARIANT(arr) );
   variant = v;
 
-  return true;
+  if( error )
+  {
+    wxMessageDialog tmpDialog( wxparaverApp::mainWindow, wxT( "Invalid parameters." ), wxT( " Warning " ), wxOK|wxICON_EXCLAMATION );
+    tmpDialog.ShowModal();
+  }
+  
+  return !error;
 }
 
 
