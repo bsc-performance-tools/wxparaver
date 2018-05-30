@@ -6,6 +6,7 @@ noinst_HEADERS = \
               arrow_right.xpm\
               arrow_up.xpm\
               caution.xpm\
+              caution_yellow.xpm\
               cut_trace.xpm\
               delete.xpm\
               derived_add.xpm\
