@@ -1,14 +1,11 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
     <title>Paraver toolset</title>
-    
-    
     
     
     <script type="text/javascript">
@@ -17,19 +14,23 @@
         VERSION:     '1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     
     
     
-    <link rel="top" title="None" href="paraver_toolset.quick_reference.html#document-paraver_toolset.quick_reference" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
    
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body>
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -41,37 +42,37 @@
 <div class="contents topic" id="contents">
 <p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#paraver-toolset" id="id15">Paraver Toolset</a><ul>
-<li><a class="reference internal" href="#overview" id="id16">Overview</a></li>
-<li><a class="reference internal" href="#paramedir" id="id17">paramedir</a><ul>
-<li><a class="reference internal" href="#usage" id="id18">Usage</a></li>
-<li><a class="reference internal" href="#options-general" id="id19">Options (General)</a></li>
-<li><a class="reference internal" href="#options-compute-histogram" id="id20">Options (compute histogram)</a></li>
-<li><a class="reference internal" href="#options-other-tools" id="id21">Options (other tools)</a></li>
-<li><a class="reference internal" href="#parameters" id="id22">Parameters</a></li>
-<li><a class="reference internal" href="#examples" id="id23">Examples</a></li>
-<li><a class="reference internal" href="#drawbacks" id="id24">Drawbacks</a></li>
+<li><a class="reference internal" href="#paraver-toolset" id="id16">Paraver Toolset</a><ul>
+<li><a class="reference internal" href="#overview" id="id17">Overview</a></li>
+<li><a class="reference internal" href="#paramedir" id="id18">paramedir</a><ul>
+<li><a class="reference internal" href="#usage" id="id19">Usage</a></li>
+<li><a class="reference internal" href="#options-general" id="id20">Options (General)</a></li>
+<li><a class="reference internal" href="#options-compute-histogram" id="id21">Options (compute histogram)</a></li>
+<li><a class="reference internal" href="#options-other-tools" id="id22">Options (other tools)</a></li>
+<li><a class="reference internal" href="#parameters" id="id23">Parameters</a></li>
+<li><a class="reference internal" href="#examples" id="id24">Examples</a></li>
+<li><a class="reference internal" href="#drawbacks" id="id25">Drawbacks</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#prvmerger" id="id25">prvmerger</a><ul>
-<li><a class="reference internal" href="#id3" id="id26">Usage</a></li>
-<li><a class="reference internal" href="#options" id="id27">Options</a></li>
-<li><a class="reference internal" href="#id4" id="id28">Parameters</a></li>
-<li><a class="reference internal" href="#id5" id="id29">Drawbacks</a></li>
+<li><a class="reference internal" href="#prvmerger" id="id26">prvmerger</a><ul>
+<li><a class="reference internal" href="#id3" id="id27">Usage</a></li>
+<li><a class="reference internal" href="#options" id="id28">Options</a></li>
+<li><a class="reference internal" href="#id4" id="id29">Parameters</a></li>
+<li><a class="reference internal" href="#id5" id="id30">Drawbacks</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sort-trace-sh-is-trace-sorted-sh" id="id30">sort-trace.sh / is-trace-sorted.sh</a><ul>
-<li><a class="reference internal" href="#id6" id="id31">Usage</a></li>
-<li><a class="reference internal" href="#id7" id="id32">Parameters</a></li>
-<li><a class="reference internal" href="#id8" id="id33">Drawbacks</a></li>
+<li><a class="reference internal" href="#sort-trace-sh-is-trace-sorted-sh" id="id31">sort-trace.sh / is-trace-sorted.sh</a><ul>
+<li><a class="reference internal" href="#id6" id="id32">Usage</a></li>
+<li><a class="reference internal" href="#id7" id="id33">Parameters</a></li>
+<li><a class="reference internal" href="#id8" id="id34">Drawbacks</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#stats" id="id34">stats</a><ul>
-<li><a class="reference internal" href="#id10" id="id35">Usage</a></li>
-<li><a class="reference internal" href="#id11" id="id36">Parameters</a></li>
-<li><a class="reference internal" href="#id12" id="id37">Options</a></li>
-<li><a class="reference internal" href="#id13" id="id38">Examples</a></li>
-<li><a class="reference internal" href="#id14" id="id39">Drawbacks</a></li>
+<li><a class="reference internal" href="#stats" id="id35">stats</a><ul>
+<li><a class="reference internal" href="#id10" id="id36">Usage</a></li>
+<li><a class="reference internal" href="#id11" id="id37">Parameters</a></li>
+<li><a class="reference internal" href="#id12" id="id38">Options</a></li>
+<li><a class="reference internal" href="#id14" id="id39">Examples</a></li>
+<li><a class="reference internal" href="#id15" id="id40">Drawbacks</a></li>
 </ul>
 </li>
 </ul>
@@ -94,7 +95,7 @@
 <span id="id1"></span><h2><a class="toc-backref" href="#my-contents">paramedir</a></h2>
 <p><em>paramedir</em> packs two sets of features, some that process the trace to <strong>compute some data</strong> and some that <strong>transform</strong> the trace, usually to reduce its size.</p>
 <p>The features used to <strong>compute</strong> are:</p>
-<table border="1" class="docutils">
+<table border="1" class="colwidths-given docutils">
 <colgroup>
 <col width="43%" />
 <col width="14%" />
@@ -125,15 +126,15 @@
 </tr>
 </tbody>
 </table>
-<p>After loading the trace and parsing the .cfg file, <em>paramedir</em> writes exactly the same CSV file that can be got from a <em>wxparaver</em> timeline or histogram after choosing <em>Save... &#8211;&gt; Text</em> from their popup menus.</p>
+<p>After loading the trace and parsing the .cfg file, <em>paramedir</em> writes exactly the same CSV file that can be got from a <em>wxparaver</em> timeline or histogram after choosing <em>Save… –&gt; Text</em> from their popup menus.</p>
 <p>I.e.:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir linpack.prv useful.cfg -o my_result.csv
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir linpack.prv useful.cfg -o my_result.csv
 /home/user/my_result.csv file written.
 </pre></div>
 </div>
 <p>If no output name is explicitly given (<cite>-o</cite> parameter), the resulting CSV files are saved in the same directory where the .cfg is placed.</p>
 <p>Also, it is possible to compute many .cfg in the same run:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir linpack.prv useful.cfg mpi_stats.cfg user_calls.cfg
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir linpack.prv useful.cfg mpi_stats.cfg user_calls.cfg
 </pre></div>
 </div>
 <p>The features used to transform the trace are:</p>
@@ -157,36 +158,36 @@ trace?</td>
 </tr>
 <tr class="row-odd"><td>Cut</td>
 <td>.xml</td>
-<td>&#8212;</td>
+<td>—</td>
 <td>.prv</td>
 <td>no</td>
 </tr>
 <tr class="row-even"><td>Event-driven Cut</td>
 <td>.xml</td>
-<td>&#8212;</td>
+<td>—</td>
 <td>.prv</td>
 <td>no</td>
 </tr>
 <tr class="row-odd"><td>Event translator</td>
-<td>&#8212;</td>
+<td>—</td>
 <td>.prv</td>
 <td>.prv</td>
 <td>no</td>
 </tr>
 <tr class="row-even"><td>Filter</td>
 <td>.xml</td>
-<td>&#8212;</td>
+<td>—</td>
 <td>.prv</td>
 <td>no</td>
 </tr>
 <tr class="row-odd"><td>Software Counters</td>
 <td>.xml</td>
-<td>&#8212;</td>
+<td>—</td>
 <td>.prv</td>
 <td>no</td>
 </tr>
 <tr class="row-even"><td>Time shift</td>
-<td>&#8212;</td>
+<td>—</td>
 <td>shifts</td>
 <td>.prv</td>
 <td>no</td>
@@ -195,50 +196,50 @@ trace?</td>
 </table>
 <p>Most of the features that transform the trace need to read their parameters from the XML configuration file that can be saved from <em>wxparaver</em> (through Configuration File in <em>Cut &amp; Filter</em> Window). There are some example files in <code class="docutils literal"><span class="pre">$PARAVER_HOME/share/filters-config</span></code> directory.</p>
 <p>I.e.:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir -f linpack.prv filter-options.xml
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir -f linpack.prv filter-options.xml
 </pre></div>
 </div>
 <p>The resulting trace is written in the same directory where the original trace was.</p>
-<p>An interesting issue is that most of these operations can be combined in an unique command. So it&#8217;s possible to pipeline some trace transformations in a sequential run. In this case, the flag order will express the sequence order in which they&#8217;re executed.</p>
+<p>An interesting issue is that most of these operations can be combined in an unique command. So it’s possible to pipeline some trace transformations in a sequential run. In this case, the flag order will express the sequence order in which they’re executed.</p>
 <p>I.e.:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir -f -c linpack.prv filter-options.xml
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir -f -c linpack.prv filter-options.xml
 </pre></div>
 </div>
 <p>In the above example, the trace is filtered and then cut.</p>
 <p>As expected, a .cfg (or many) can be added to a transformation command. Then, the trace fed to the compute phase will be allways the resulting trace of the transformation phase.</p>
 <p>I.e.:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir -f -c linpack.prv filter-options.xml useful.cfg mpi_stats.cfg
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir -f -c linpack.prv filter-options.xml useful.cfg mpi_stats.cfg
 </pre></div>
 </div>
 <p>In the above example, the trace <em>linpack.filter01.chop01.prv</em> will be used to compute the <em>Useful</em> timeline and the <em>MPI Stats</em> histogram.</p>
 <p>As <em>wxparaver</em>, <em>paramedir</em> can also handle <strong>gzipped</strong> traces (.prv.gz).</p>
-<p>Finally, note that <em>paramedir</em> have <strong>no GUI</strong>, so it&#8217;s feasible to use it into jobs to be sent to non-graphical queues.</p>
+<p>Finally, note that <em>paramedir</em> have <strong>no GUI</strong>, so it’s feasible to use it into jobs to be sent to non-graphical queues.</p>
 <div class="section"> <a name="usage"></a>
 <h3><a class="toc-backref" href="#my-contents">Usage</a></h3>
 <p>The command syntax is as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre>paramedir [-e] [-m] [-p] [-npr] &lt;trace.prv&gt; [ &lt;config.cfg&gt; | &lt;config.cfg&gt; &lt;ouput-data-file&gt; ]+
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">paramedir</span> <span class="p">[</span><span class="o">-</span><span class="n">e</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">m</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">npr</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">trace</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span> <span class="p">[</span> <span class="o">&lt;</span><span class="n">config</span><span class="o">.</span><span class="n">cfg</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">config</span><span class="o">.</span><span class="n">cfg</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">ouput</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span> <span class="p">]</span><span class="o">+</span>
 </pre></div>
 </div>
 <p>Process paraver trace (pipelined as flags are declared, using XML configuration parameters and without trace load):</p>
-<div class="highlight-python"><div class="highlight"><pre>paramedir [-c] [-f] [-s] [-o &lt;output-file.prv&gt;] &lt;trace.prv&gt; &lt;options.xml&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">paramedir</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">trace</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">options</span><span class="o">.</span><span class="n">xml</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>Process paraver trace (direct parametrization, doesn&#8217;t load trace):</p>
-<div class="highlight-python"><div class="highlight"><pre>paramedir [-g &lt;event-type&gt;] [-o &lt;output-file&gt;] &lt;prv&gt;
-paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&gt;
+<p>Process paraver trace (direct parametrization, doesn’t load trace):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">paramedir</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span> <span class="o">&lt;</span><span class="n">event</span><span class="o">-</span><span class="nb">type</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">prv</span><span class="o">&gt;</span>
+<span class="n">paramedir</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">shift</span><span class="o">-</span><span class="n">times</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">trace</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>Process paraver trace (pipelined as flags are declared, using XML configuration parameters and without trace load):</p>
-<div class="highlight-python"><div class="highlight"><pre>paramedir [-c] [-f] [-s] [-o &lt;output-file&gt;] &lt;trace.prv&gt; &lt;options.xml&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">paramedir</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">trace</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">options</span><span class="o">.</span><span class="n">xml</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>Process paraver trace (event_translator):</p>
-<div class="highlight-python"><div class="highlight"><pre>paramedir [-et &lt;reference_trace.prv&gt; &lt;source_trace.prv&gt; &lt;output_trace.prv&gt; ]
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">paramedir</span> <span class="o">-</span><span class="n">et</span> <span class="o">&lt;</span><span class="n">reference_trace</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">source_trace</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span> <span class="p">[</span> <span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">translated</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span> <span class="p">]</span>
 </pre></div>
 </div>
-<p>Compute numeric data from processed trace using histogram or timeline CFG&#8217;s (all combined, trace is loaded):</p>
-<div class="highlight-python"><div class="highlight"><pre>paramedir [-e] [-m] [-p] [-c] [-f] [-s] [-o &lt;output-file&gt;] [-g &lt;event-type&gt;] \
-          [-t &lt;shift-times-file&gt;] &lt;trace.prv&gt; [ &lt;options.xml&gt; ] [ &lt;config.cfg&gt; | &lt;config.cfg&gt; &lt;ouput-data-file&gt; ]+
+<p>Compute numeric data from processed trace using histogram or timeline CFG’s (all combined, trace is loaded):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">paramedir</span> <span class="p">[</span><span class="o">-</span><span class="n">e</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">m</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">p</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">f</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">output</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span> <span class="o">&lt;</span><span class="n">event</span><span class="o">-</span><span class="nb">type</span><span class="o">&gt;</span><span class="p">]</span> \
+          <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="o">&lt;</span><span class="n">shift</span><span class="o">-</span><span class="n">times</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span><span class="p">]</span> <span class="o">&lt;</span><span class="n">trace</span><span class="o">.</span><span class="n">prv</span><span class="o">&gt;</span> <span class="p">[</span> <span class="o">&lt;</span><span class="n">options</span><span class="o">.</span><span class="n">xml</span><span class="o">&gt;</span> <span class="p">]</span> <span class="p">[</span> <span class="o">&lt;</span><span class="n">config</span><span class="o">.</span><span class="n">cfg</span><span class="o">&gt;</span> <span class="o">|</span> <span class="o">&lt;</span><span class="n">config</span><span class="o">.</span><span class="n">cfg</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">ouput</span><span class="o">-</span><span class="n">data</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span> <span class="p">]</span><span class="o">+</span>
 </pre></div>
 </div>
 </div>
@@ -247,14 +248,14 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 <ul>
 <li><dl class="option">
 <dt id="cmdoption-h">
-<span id="cmdoption--help"></span><code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code></dt>
+<code class="descname">-h</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--help</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
-<p>Prints the Usage information (also printed when it&#8217;s executed without parameters)</p>
+<p>Prints the Usage information (also printed when it’s executed without parameters)</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-v">
-<span id="cmdoption--version"></span><code class="descname">-v</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--version</code><code class="descclassname"></code></dt>
+<code class="descname">-v</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--version</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Prints the program version</p>
@@ -266,28 +267,28 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 <ul>
 <li><dl class="option">
 <dt id="cmdoption-npr">
-<span id="cmdoption--no-preferences-precision"></span><code class="descname">-npr</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--no-preferences-precision</code><code class="descclassname"></code></dt>
+<code class="descname">-npr</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--no-preferences-precision</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Do not use the global precision (stated in the <strong>wxparaver</strong> <em>Preferences</em> window).</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-m">
-<span id="cmdoption--many-files"></span><code class="descname">-m</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--many-files</code><code class="descclassname"></code></dt>
+<code class="descname">-m</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--many-files</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Allows to separate an histogram cfg output (default: in a unique file).</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-e">
-<span id="cmdoption--empty-columns"></span><code class="descname">-e</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--empty-columns</code><code class="descclassname"></code></dt>
+<code class="descname">-e</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--empty-columns</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Hide empty columns of a histogram.</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-p">
-<span id="cmdoption--print-plane"></span><code class="descname">-p</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--print-plane</code><code class="descclassname"></code></dt>
+<code class="descname">-p</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--print-plane</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Only the selected Plane of a 3D histogram is saved (by default saves all planes).</p>
@@ -299,70 +300,70 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 <ul>
 <li><dl class="option">
 <dt id="cmdoption-o">
-<span id="cmdoption--output-name"></span><code class="descname">-o</code><code class="descclassname"> &lt;trace_output.prv&gt;</code><code class="descclassname">, </code><code class="descname">--output-name</code><code class="descclassname"> &lt;trace_output.prv&gt;</code></dt>
+<code class="descname">-o</code><code class="descclassname"> &lt;trace_output.prv&gt;</code><code class="descclassname">, </code><code class="descname">--output-name</code><code class="descclassname"> &lt;trace_output.prv&gt;</code></dt>
 <dd></dd></dl>
 
 <p>Output trace name.</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-c">
-<span id="cmdoption--cutter"></span><code class="descname">-c</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--cutter</code><code class="descclassname"></code></dt>
+<code class="descname">-c</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--cutter</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Apply Cutter tool.</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-et">
-<span id="cmdoption--event-translator"></span><code class="descname">-et</code><code class="descclassname"> &lt;reference_trace&gt;</code><code class="descclassname">, </code><code class="descname">--event-translator</code><code class="descclassname"> &lt;reference_trace&gt;</code></dt>
+<code class="descname">-et</code><code class="descclassname"> &lt;reference_trace&gt;</code><code class="descclassname">, </code><code class="descname">--event-translator</code><code class="descclassname"> &lt;reference_trace&gt;</code></dt>
 <dd></dd></dl>
 
 <p>Merge events using this reference trace for translations when conflicts found.</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-f">
-<span id="cmdoption--filter"></span><code class="descname">-f</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--filter</code><code class="descclassname"></code></dt>
+<code class="descname">-f</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--filter</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Apply Filter tool.</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-g">
-<span id="cmdoption--event-cutter"></span><code class="descname">-g</code><code class="descclassname"> &lt;event-type&gt;</code><code class="descclassname">, </code><code class="descname">--event-cutter</code><code class="descclassname"> &lt;event-type&gt;</code></dt>
+<code class="descname">-g</code><code class="descclassname"> &lt;event-type&gt;</code><code class="descclassname">, </code><code class="descname">--event-cutter</code><code class="descclassname"> &lt;event-type&gt;</code></dt>
 <dd></dd></dl>
 
-<p>Apply Event Driven Cutter using &#8216;event-type&#8217; as mark.</p>
+<p>Apply Event Driven Cutter using ‘event-type’ as mark.</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-s">
-<span id="cmdoption--software-counters"></span><code class="descname">-s</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--software-counters</code><code class="descclassname"></code></dt>
+<code class="descname">-s</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--software-counters</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Apply Software counters tool.</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-t">
-<span id="cmdoption--thread-shifter"></span><code class="descname">-t</code><code class="descclassname"> &lt;shift-times-file&gt;</code><code class="descclassname">, </code><code class="descname">--thread-shifter</code><code class="descclassname"> &lt;shift-times-file&gt;</code></dt>
+<code class="descname">-t</code><code class="descclassname"> &lt;shift-times-file&gt;</code><code class="descclassname">, </code><code class="descname">--thread-shifter</code><code class="descclassname"> &lt;shift-times-file&gt;</code></dt>
 <dd></dd></dl>
 
 <p>Apply Trace Shifter per thread (file contains at least as shift times as threads).</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-tt">
-<span id="cmdoption--task-shifter"></span><code class="descname">-tt</code><code class="descclassname"> &lt;shift-times-file&gt;</code><code class="descclassname">, </code><code class="descname">--task-shifter</code><code class="descclassname"> &lt;shift-times-file&gt;</code></dt>
+<code class="descname">-tt</code><code class="descclassname"> &lt;shift-times-file&gt;</code><code class="descclassname">, </code><code class="descname">--task-shifter</code><code class="descclassname"> &lt;shift-times-file&gt;</code></dt>
 <dd></dd></dl>
 
 <p>Apply Trace Shifter per task (file contains at least as shift times as tasks).</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-ta">
-<span id="cmdoption--app-shifter"></span><code class="descname">-ta</code><code class="descclassname"> &lt;shift-times-file&gt;</code><code class="descclassname">, </code><code class="descname">--app-shifter</code><code class="descclassname"> &lt;shift-times-file&gt;</code></dt>
+<code class="descname">-ta</code><code class="descclassname"> &lt;shift-times-file&gt;</code><code class="descclassname">, </code><code class="descname">--app-shifter</code><code class="descclassname"> &lt;shift-times-file&gt;</code></dt>
 <dd></dd></dl>
 
 <p>Apply Trace Shifter per applications (file contains at least as shift times as applications).</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-tw">
-<span id="cmdoption--workload-shifter"></span><code class="descname">-tw</code><code class="descclassname"> &lt;shift-times-file&gt;</code><code class="descclassname">, </code><code class="descname">--workload-shifter</code><code class="descclassname"> &lt;shift-times-file&gt;</code></dt>
+<code class="descname">-tw</code><code class="descclassname"> &lt;shift-times-file&gt;</code><code class="descclassname">, </code><code class="descname">--workload-shifter</code><code class="descclassname"> &lt;shift-times-file&gt;</code></dt>
 <dd></dd></dl>
 
 <p>Whole trace shift (file contains a unique shift time)</p>
@@ -373,59 +374,59 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 <h3><a class="toc-backref" href="#my-contents">Parameters</a></h3>
 <ul>
 <li><dl class="option">
-<dt id="cmdoption-arg-trace">
-<code class="descname">trace</code><code class="descclassname">.prv</code></dt>
+<dt id="cmdoption-arg-trace-prv">
+<code class="descname">trace.prv</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
-<p>Paraver trace filename; can be gzipped (extensions allowed: only &#8216;.prv&#8217; or &#8216;.prv.gz&#8217; ).</p>
+<p>Paraver trace filename; can be gzipped (extensions allowed: only ‘.prv’ or ‘.prv.gz’ ).</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-arg-options">
-<code class="descname">options</code><code class="descclassname">.xml</code></dt>
+<dt id="cmdoption-arg-options-xml">
+<code class="descname">options.xml</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Options for cutter/filter/software counters.</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-arg-config">
-<code class="descname">config</code><code class="descclassname">.cfg</code></dt>
+<dt id="cmdoption-arg-config-cfg">
+<code class="descname">config.cfg</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
-<p>Paraver configuration filename. If present, trace&#8217;s loaded.</p>
+<p>Paraver configuration filename. If present, trace’s loaded.</p>
 </li>
 <li><dl class="option">
 <dt id="cmdoption-arg-output-data-file">
 <code class="descname">output-data-file</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
-<p>Name given file with the computed data (used when some <em>config.cfg</em> is present). If this parameter is missing, <em>config.cfg</em> name is used, changing &#8216;.cfg&#8217; extension for &#8216;.mcr&#8217; ).</p>
+<p>Name given file with the computed data (used when some <em>config.cfg</em> is present). If this parameter is missing, <em>config.cfg</em> name is used, changing ‘.cfg’ extension for ‘.mcr’ ).</p>
 </li>
 </ul>
 </div>
 <div class="section"> <a name="examples"></a>
 <h3><a class="toc-backref" href="#my-contents">Examples</a></h3>
 <p>Computes the <em>mpi_stats.cfg</em> analysis of compressed trace <em>linpack.prv</em>:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir linpack.prv.gz mpi_stats.cfg
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir linpack.prv.gz mpi_stats.cfg
 </pre></div>
 </div>
 <p>Computes the <em>mpi_stats.cfg</em> and <em>total_MPI_activity.cfg</em> analysis of <em>linpack.prv</em>, saving first one in <em>my_data.txt</em> file:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir linpack.prv mpi_stats.cfg my_data.txt total_MPI_activity.cfg
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir linpack.prv mpi_stats.cfg my_data.txt total_MPI_activity.cfg
 </pre></div>
 </div>
 <p>Reads parameters of the cutter from the xml and applies them to <em>linpack.prv</em> trace:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir -c linpack.prv cutter.xml
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir -c linpack.prv cutter.xml
 </pre></div>
 </div>
-<p>Filters mpi calls of <em>linpack.prv</em>. Doesn&#8217;t load it, just writes the file:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir --filter linpack.prv just_MPI_calls.xml
+<p>Filters mpi calls of <em>linpack.prv</em>. Doesn’t load it, just writes the file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir --filter linpack.prv just_MPI_calls.xml
 </pre></div>
 </div>
 <p>Reads parameters of the software counters, cutter and filter from the <em>cut_filter_options.xml</em> file and applies them pipelined in the given order ( 1.- software counters 2.- cutter, 3.- filter) to <em>linpack.prv</em> trace, and the filtered trace is loaded and used to compute <em>mpi_stats.cfg</em>. The computed mpi results are saved in <em>my_mpi_values.txt</em>:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir -s --cutter -f linpack.prv cut_filter_options.xml mpi_stats.cfg my_mpi_values.txt
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir -s --cutter -f linpack.prv cut_filter_options.xml mpi_stats.cfg my_mpi_values.txt
 </pre></div>
 </div>
 <p>Executes embeddend shifter utility:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ paramedir --thread-shifter shifttimes_per_thread.txt linpack.prv -o mylinpack.shifted.prv
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ paramedir --thread-shifter shifttimes_per_thread.txt linpack.prv -o mylinpack.shifted.prv
 </pre></div>
 </div>
 </div>
@@ -444,7 +445,7 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 <div class="section"> <a name="id3"></a>
 <h3><a class="toc-backref" href="#my-contents">Usage</a></h3>
 <p>The command syntax is as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre>prvmerger &lt; -[merge|concat] &gt; &lt; trace_in_1.prv &gt; &lt; trace_in_2.prv &gt; &lt; trace_out.prv &gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">prvmerger</span> <span class="o">&lt;</span> <span class="o">-</span><span class="p">[</span><span class="n">merge</span><span class="o">|</span><span class="n">concat</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">trace_in_1</span><span class="o">.</span><span class="n">prv</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">trace_in_2</span><span class="o">.</span><span class="n">prv</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">trace_out</span><span class="o">.</span><span class="n">prv</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -471,15 +472,15 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 <h3><a class="toc-backref" href="#my-contents">Parameters</a></h3>
 <ul>
 <li><dl class="option">
-<dt id="cmdoption-arg-trace_in_1">
-<span id="cmdoption-arg-trace_in_2"></span><code class="descname">trace_in_1</code><code class="descclassname">.prv</code><code class="descclassname">, </code><code class="descname">trace_in_2</code><code class="descclassname">.prv</code></dt>
+<dt id="cmdoption-arg-trace-in-1-prv">
+<code class="descname">trace_in_1.prv</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">trace_in_2.prv</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Traces to be merged.</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-arg-trace_out">
-<code class="descname">trace_out</code><code class="descclassname">.prv</code></dt>
+<dt id="cmdoption-arg-trace-out-prv">
+<code class="descname">trace_out.prv</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Output trace.</p>
@@ -499,24 +500,24 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 <p>A key aspect for most of the tools is to have the trace properly sorted by time. Since you can manipulate or generate your own traces, these scripts will help you sort them.</p>
 <p>There are two simple scripts: <strong>is-trace-sorted.sh</strong> and <strong>sort-trace.sh</strong>. First one just complains if your trace is disordered, and the second one sorts it (without deleting the original one, and adding a <em>.sorted.prv</em> suffix to the resulting trace).</p>
 <p><strong>is-trace-sorted.sh</strong> stops immediately after the discovery of the first unsorted record.</p>
-<p>In the case of <strong>sort-trace.sh</strong>, <em>stable sort</em> is applied: if two records have the same timestamp then they&#8217;ll appear in the sorted trace with the same order they had in the original trace.</p>
+<p>In the case of <strong>sort-trace.sh</strong>, <em>stable sort</em> is applied: if two records have the same timestamp then they’ll appear in the sorted trace with the same order they had in the original trace.</p>
 <div class="section"> <a name="id6"></a>
 <h3><a class="toc-backref" href="#my-contents">Usage</a></h3>
 <p>To just check trace order:</p>
-<div class="highlight-python"><div class="highlight"><pre>is-trace-sorted.sh &lt;trace_in&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ow">is</span><span class="o">-</span><span class="n">trace</span><span class="o">-</span><span class="nb">sorted</span><span class="o">.</span><span class="n">sh</span> <span class="o">&lt;</span><span class="n">trace_in</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p>To sort the trace:</p>
-<div class="highlight-python"><div class="highlight"><pre>sort-trace.sh &lt;trace_in&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sort</span><span class="o">-</span><span class="n">trace</span><span class="o">.</span><span class="n">sh</span> <span class="o">&lt;</span><span class="n">trace_in</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>If you execute them without parameters, you&#8217;ll get a short usage message.</p>
+<p>If you execute them without parameters, you’ll get a short usage message.</p>
 </div>
 <div class="section"> <a name="id7"></a>
 <h3><a class="toc-backref" href="#my-contents">Parameters</a></h3>
 <ul>
 <li><dl class="option">
-<dt id="cmdoption-arg-trace_in">
+<dt id="cmdoption-arg-trace-in">
 <code class="descname">trace_in</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
@@ -528,7 +529,7 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 <h3><a class="toc-backref" href="#my-contents">Drawbacks</a></h3>
 <ol class="arabic simple">
 <li>Disk space: both scripts decompress the trace if needed, and <strong>sort-trace.sh</strong> also rewrites the whole trace (no deletion of the original trace is done).</li>
-<li>As expected, <strong>is-trace-sorted.sh</strong> will potentially read the whole trace if it&#8217;s sorted.</li>
+<li>As expected, <strong>is-trace-sorted.sh</strong> will potentially read the whole trace if it’s sorted.</li>
 <li>Only gzip compression format is allowed.</li>
 </ol>
 </div>
@@ -544,13 +545,13 @@ paramedir [-t &lt;shift-times-file&gt;] [-o &lt;output-file&gt;] &lt;trace.prv&g
 </ul>
 <p>The results are written to a <em>.dat</em> data file, and drawn into a <em>gnuplot</em> image.</p>
 <img alt="Example of gnuplot generated with &quot;Burst histogram&quot; option" src="_images/gnuplot.png" />
-<p>They&#8217;re written in the same directory where the input trace is.  It&#8217;s possible to skip this gnuplot image generation.</p>
+<p>They’re written in the same directory where the input trace is.  It’s possible to skip this gnuplot image generation.</p>
 <div class="section"> <a name="id10"></a>
 <h3><a class="toc-backref" href="#my-contents">Usage</a></h3>
 <p>The command syntax is as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre>stats --help
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">stats</span> <span class="o">--</span><span class="n">help</span>
 
-stats &lt; trace_input.prv &gt; &lt; options &gt;
+<span class="n">stats</span> <span class="o">&lt;</span> <span class="n">trace_input</span><span class="o">.</span><span class="n">prv</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">options</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -558,8 +559,8 @@ stats &lt; trace_input.prv &gt; &lt; options &gt;
 <h3><a class="toc-backref" href="#my-contents">Parameters</a></h3>
 <ul>
 <li><dl class="option">
-<dt id="cmdoption-arg-trace_input">
-<code class="descname">trace_input</code><code class="descclassname">.prv</code></dt>
+<dt id="cmdoption-arg-trace-input-prv">
+<code class="descname">trace_input.prv</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Should be an uncompressed Paraver tracefile and it has to appear before options.</p>
@@ -570,73 +571,73 @@ stats &lt; trace_input.prv &gt; &lt; options &gt;
 <h3><a class="toc-backref" href="#my-contents">Options</a></h3>
 <ul>
 <li><dl class="option">
-<dt id="cmdoption--help">
+<dt id="cmdoption-help">
 <code class="descname">--help</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Display help information.</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-bursts_histo">
+<dt id="cmdoption-bursts-histo">
 <code class="descname">-bursts_histo</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Show bursts histogram.</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-events_histo">
-<code class="descname">-events_histo</code><code class="descclassname">[:[type1|type1-type2],...]</code></dt>
+<dt id="cmdoption-events-histo-type1-type1-type2">
+<code class="descname">-events_histo[:[type1|type1-type2],...]</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Show events histogram, filtering types or ranges of types if needed. If no events are specified, all of them are counted.</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-comms_histo">
+<dt id="cmdoption-comms-histo">
 <code class="descname">-comms_histo</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Show comms histogram.</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-thread_calls">
-<code class="descname">-thread_calls</code><code class="descclassname">[:type1[-type2],...]</code></dt>
+<dt id="cmdoption-thread-calls-type1-type2">
+<code class="descname">-thread_calls[:type1[-type2],...]</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Shows stats of the calls made by thread, filtering by type or ranges of types. This info is generated in file &lt;trace_in&gt;.calls.info.</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-exclusive_times">
+<dt id="cmdoption-exclusive-times">
 <code class="descname">-exclusive_times</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
 <p>Calculate exclusive times of routine calls instead inclusive times (to be used <strong>only</strong> with <em>-thread_calls</em>).</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-o">
+<dt id="id13">
 <code class="descname">-o</code><code class="descclassname"> &lt; file_name &gt;</code></dt>
 <dd></dd></dl>
 
 <p>Generate stats in file &lt;file_name&gt;.dat and  &lt;file_name&gt;.gnuplot (default are &lt;trace_in&gt;.dat and &lt;trace_in&gt;.gnuplot).</p>
 </li>
 <li><dl class="option">
-<dt id="cmdoption-only_dat_file">
+<dt id="cmdoption-only-dat-file">
 <code class="descname">-only_dat_file</code><code class="descclassname"></code></dt>
 <dd></dd></dl>
 
-<p>Only generates the <em>dat</em> file (to be used <strong>only</strong> with <em>-o</em> flag, so it&#8217;s named <em>file_name.dat</em>).</p>
+<p>Only generates the <em>dat</em> file (to be used <strong>only</strong> with <em>-o</em> flag, so it’s named <em>file_name.dat</em>).</p>
 </li>
 </ul>
 </div>
-<div class="section"> <a name="id13"></a>
+<div class="section"> <a name="id14"></a>
 <h3><a class="toc-backref" href="#my-contents">Examples</a></h3>
 <p>For bursts histogram:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ stats trace_input.prv -bursts_histo
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ stats trace_input.prv -bursts_histo
 
 $ stats trace_input.prv -bursts_histo -o my_data -only_dat_file
 </pre></div>
 </div>
 <p>For events histogram:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ stats trace_input.prv -events_histo
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ stats trace_input.prv -events_histo
 
 $ stats trace_input.prv -events_histo:50000001,50000002
 
@@ -644,14 +645,14 @@ $ stats trace_input.prv -events_histo:50000001-50000003,42000001-42000100
 </pre></div>
 </div>
 <p>For communications histogram:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ stats trace_input.prv -comms_histo
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ stats trace_input.prv -comms_histo
 </pre></div>
 </div>
 </div>
-<div class="section"> <a name="id14"></a>
+<div class="section"> <a name="id15"></a>
 <h3><a class="toc-backref" href="#my-contents">Drawbacks</a></h3>
 <ol class="arabic simple">
-<li>Too much events will difficult the understanding of the gnuplot image. It&#8217;s a good idea to shorten the list of events.</li>
+<li>Too much events will difficult the understanding of the gnuplot image. It’s a good idea to shorten the list of events.</li>
 <li>No compressed tracefiles are allowed.</li>
 </ol>
 </div>
@@ -678,8 +679,8 @@ $ stats trace_input.prv -events_histo:50000001-50000003,42000001-42000100
       
       
       
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.7</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
     </div>
 
