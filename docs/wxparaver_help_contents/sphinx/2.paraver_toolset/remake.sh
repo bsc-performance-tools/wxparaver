@@ -1,7 +1,7 @@
 #! /bin/bash
 #cd .. ; make html ; cd source ; firefox ../build/html/index.html & 
 pushd .
-cd .. 
+#cd .. 
 make html ; make singlehtml ; make man 
 
 
@@ -44,9 +44,9 @@ mv index.clean.html index.html
 #diff index.old.html index.html
 
 
-firefox index.html &
+#firefox index.html &
 # browse: wxparaver
 #/opt/bsctools/wxparaver/devel/bin/wxparaver &
-wxparaver &
+#wxparaver &
 popd
 

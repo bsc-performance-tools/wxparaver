@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "PARAVER-TOOLSET" "1" "February 28, 2017" "0.99" "paraver toolset"
+.TH "PARAVER-TOOLSET" "1" "Jun 11, 2018" "0.99" "paraver toolset"
 .SH NAME
 paraver-toolset \- Paraver Toolset
 .
@@ -157,7 +157,7 @@ T}
 _
 .TE
 .sp
-After loading the trace and parsing the .cfg file, \fIparamedir\fP writes exactly the same CSV file that can be got from a \fIwxparaver\fP timeline or histogram after choosing \fISave... \-\-> Text\fP from their popup menus.
+After loading the trace and parsing the .cfg file, \fIparamedir\fP writes exactly the same CSV file that can be got from a \fIwxparaver\fP timeline or histogram after choosing \fISave… –> Text\fP from their popup menus.
 .sp
 I.e.:
 .INDENT 0.0
@@ -213,7 +213,7 @@ Cut
 T}	T{
 \&.xml
 T}	T{
-\-\-\-
+—
 T}	T{
 \&.prv
 T}	T{
@@ -225,7 +225,7 @@ Event\-driven Cut
 T}	T{
 \&.xml
 T}	T{
-\-\-\-
+—
 T}	T{
 \&.prv
 T}	T{
@@ -235,7 +235,7 @@ _
 T{
 Event translator
 T}	T{
-\-\-\-
+—
 T}	T{
 \&.prv
 T}	T{
@@ -249,7 +249,7 @@ Filter
 T}	T{
 \&.xml
 T}	T{
-\-\-\-
+—
 T}	T{
 \&.prv
 T}	T{
@@ -261,7 +261,7 @@ Software Counters
 T}	T{
 \&.xml
 T}	T{
-\-\-\-
+—
 T}	T{
 \&.prv
 T}	T{
@@ -271,7 +271,7 @@ _
 T{
 Time shift
 T}	T{
-\-\-\-
+—
 T}	T{
 shifts
 T}	T{
@@ -298,7 +298,7 @@ $ paramedir \-f linpack.prv filter\-options.xml
 .sp
 The resulting trace is written in the same directory where the original trace was.
 .sp
-An interesting issue is that most of these operations can be combined in an unique command. So it\(aqs possible to pipeline some trace transformations in a sequential run. In this case, the flag order will express the sequence order in which they\(aqre executed.
+An interesting issue is that most of these operations can be combined in an unique command. So it’s possible to pipeline some trace transformations in a sequential run. In this case, the flag order will express the sequence order in which they’re executed.
 .sp
 I.e.:
 .INDENT 0.0
@@ -332,7 +332,7 @@ In the above example, the trace \fIlinpack.filter01.chop01.prv\fP will be used t
 .sp
 As \fIwxparaver\fP, \fIparamedir\fP can also handle \fBgzipped\fP traces (.prv.gz).
 .sp
-Finally, note that \fIparamedir\fP have \fBno GUI\fP, so it\(aqs feasible to use it into jobs to be sent to non\-graphical queues.
+Finally, note that \fIparamedir\fP have \fBno GUI\fP, so it’s feasible to use it into jobs to be sent to non\-graphical queues.
 .SS Usage
 .sp
 The command syntax is as follows:
@@ -359,7 +359,7 @@ paramedir [\-c] [\-f] [\-s] [\-o <output\-file.prv>] <trace.prv> <options.xml>
 .UNINDENT
 .UNINDENT
 .sp
-Process paraver trace (direct parametrization, doesn\(aqt load trace):
+Process paraver trace (direct parametrization, doesn’t load trace):
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -390,13 +390,13 @@ Process paraver trace (event_translator):
 .sp
 .nf
 .ft C
-paramedir [\-et <reference_trace.prv> <source_trace.prv> <output_trace.prv> ]
+paramedir \-et <reference_trace.prv> <source_trace.prv> [ \-o <translated.prv> ]
 .ft P
 .fi
 .UNINDENT
 .UNINDENT
 .sp
-Compute numeric data from processed trace using histogram or timeline CFG\(aqs (all combined, trace is loaded):
+Compute numeric data from processed trace using histogram or timeline CFG’s (all combined, trace is loaded):
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -416,7 +416,7 @@ paramedir [\-e] [\-m] [\-p] [\-c] [\-f] [\-s] [\-o <output\-file>] [\-g <event\-
 .B \-h, \-\-help
 .UNINDENT
 .sp
-Prints the Usage information (also printed when it\(aqs executed without parameters)
+Prints the Usage information (also printed when it’s executed without parameters)
 .IP \(bu 2
 .INDENT 2.0
 .TP
@@ -492,7 +492,7 @@ Apply Filter tool.
 .B \-g <event\-type>, \-\-event\-cutter <event\-type>
 .UNINDENT
 .sp
-Apply Event Driven Cutter using \(aqevent\-type\(aq as mark.
+Apply Event Driven Cutter using ‘event\-type’ as mark.
 .IP \(bu 2
 .INDENT 2.0
 .TP
@@ -534,31 +534,31 @@ Whole trace shift (file contains a unique shift time)
 .IP \(bu 2
 .INDENT 2.0
 .TP
-.B trace\&.prv
+.B trace.prv
 .UNINDENT
 .sp
-Paraver trace filename; can be gzipped (extensions allowed: only \(aq.prv\(aq or \(aq.prv.gz\(aq ).
+Paraver trace filename; can be gzipped (extensions allowed: only ‘.prv’ or ‘.prv.gz’ ).
 .IP \(bu 2
 .INDENT 2.0
 .TP
-.B options\&.xml
+.B options.xml
 .UNINDENT
 .sp
 Options for cutter/filter/software counters.
 .IP \(bu 2
 .INDENT 2.0
 .TP
-.B config\&.cfg
+.B config.cfg
 .UNINDENT
 .sp
-Paraver configuration filename. If present, trace\(aqs loaded.
+Paraver configuration filename. If present, trace’s loaded.
 .IP \(bu 2
 .INDENT 2.0
 .TP
 .B output\-data\-file
 .UNINDENT
 .sp
-Name given file with the computed data (used when some \fIconfig.cfg\fP is present). If this parameter is missing, \fIconfig.cfg\fP name is used, changing \(aq.cfg\(aq extension for \(aq.mcr\(aq ).
+Name given file with the computed data (used when some \fIconfig.cfg\fP is present). If this parameter is missing, \fIconfig.cfg\fP name is used, changing ‘.cfg’ extension for ‘.mcr’ ).
 .UNINDENT
 .SS Examples
 .sp
@@ -598,7 +598,7 @@ $ paramedir \-c linpack.prv cutter.xml
 .UNINDENT
 .UNINDENT
 .sp
-Filters mpi calls of \fIlinpack.prv\fP\&. Doesn\(aqt load it, just writes the file:
+Filters mpi calls of \fIlinpack.prv\fP\&. Doesn’t load it, just writes the file:
 .INDENT 0.0
 .INDENT 3.5
 .sp
@@ -680,14 +680,14 @@ Merges the traces, copying the header from the first one and sorting the records
 .IP \(bu 2
 .INDENT 2.0
 .TP
-.B trace_in_1\&.prv, trace_in_2\&.prv
+.B trace_in_1.prv, trace_in_2.prv
 .UNINDENT
 .sp
 Traces to be merged.
 .IP \(bu 2
 .INDENT 2.0
 .TP
-.B trace_out\&.prv
+.B trace_out.prv
 .UNINDENT
 .sp
 Output trace.
@@ -707,7 +707,7 @@ There are two simple scripts: \fBis\-trace\-sorted.sh\fP and \fBsort\-trace.sh\f
 .sp
 \fBis\-trace\-sorted.sh\fP stops immediately after the discovery of the first unsorted record.
 .sp
-In the case of \fBsort\-trace.sh\fP, \fIstable sort\fP is applied: if two records have the same timestamp then they\(aqll appear in the sorted trace with the same order they had in the original trace.
+In the case of \fBsort\-trace.sh\fP, \fIstable sort\fP is applied: if two records have the same timestamp then they’ll appear in the sorted trace with the same order they had in the original trace.
 .SS Usage
 .sp
 To just check trace order:
@@ -734,7 +734,7 @@ sort\-trace.sh <trace_in>
 .UNINDENT
 .UNINDENT
 .sp
-If you execute them without parameters, you\(aqll get a short usage message.
+If you execute them without parameters, you’ll get a short usage message.
 .SS Parameters
 .INDENT 0.0
 .IP \(bu 2
@@ -750,7 +750,7 @@ Paraver tracefile. It can be an uncompressed (\fI\&.prv\fP) or a gzipped trace (
 .IP 1. 3
 Disk space: both scripts decompress the trace if needed, and \fBsort\-trace.sh\fP also rewrites the whole trace (no deletion of the original trace is done).
 .IP 2. 3
-As expected, \fBis\-trace\-sorted.sh\fP will potentially read the whole trace if it\(aqs sorted.
+As expected, \fBis\-trace\-sorted.sh\fP will potentially read the whole trace if it’s sorted.
 .IP 3. 3
 Only gzip compression format is allowed.
 .UNINDENT
@@ -772,7 +772,7 @@ The results are written to a \fI\&.dat\fP data file, and drawn into a \fIgnuplot
 [image: Example of gnuplot generated with "Burst histogram" option]
 [image]
 .sp
-They\(aqre written in the same directory where the input trace is.  It\(aqs possible to skip this gnuplot image generation.
+They’re written in the same directory where the input trace is.  It’s possible to skip this gnuplot image generation.
 .SS Usage
 .sp
 The command syntax is as follows:
@@ -793,7 +793,7 @@ stats < trace_input.prv > < options >
 .IP \(bu 2
 .INDENT 2.0
 .TP
-.B trace_input\&.prv
+.B trace_input.prv
 .UNINDENT
 .sp
 Should be an uncompressed Paraver tracefile and it has to appear before options.
@@ -855,7 +855,7 @@ Generate stats in file <file_name>.dat and  <file_name>.gnuplot (default are <tr
 .B \-only_dat_file
 .UNINDENT
 .sp
-Only generates the \fIdat\fP file (to be used \fBonly\fP with \fI\-o\fP flag, so it\(aqs named \fIfile_name.dat\fP).
+Only generates the \fIdat\fP file (to be used \fBonly\fP with \fI\-o\fP flag, so it’s named \fIfile_name.dat\fP).
 .UNINDENT
 .SS Examples
 .sp
@@ -903,7 +903,7 @@ $ stats trace_input.prv \-comms_histo
 .SS Drawbacks
 .INDENT 0.0
 .IP 1. 3
-Too much events will difficult the understanding of the gnuplot image. It\(aqs a good idea to shorten the list of events.
+Too much events will difficult the understanding of the gnuplot image. It’s a good idea to shorten the list of events.
 .IP 2. 3
 No compressed tracefiles are allowed.
 .UNINDENT

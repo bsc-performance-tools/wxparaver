@@ -29,7 +29,8 @@ import os
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.pngmath',
+        #    'sphinx.ext.pngmath',
+    'sphinx.ext.imgmath',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
 ]
@@ -128,7 +129,7 @@ html_theme = 'alabaster'
 html_title = 'Paraver toolset'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-html_short_title = None
+html_short_title = 'Paraver toolset' 
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.

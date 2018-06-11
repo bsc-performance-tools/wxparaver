@@ -153,7 +153,7 @@ Process paraver trace (pipelined as flags are declared, using XML configuration 
 
 Process paraver trace (event_translator)::
 
-  paramedir -et <reference_trace.prv> <source_trace.prv> 
+  paramedir -et <reference_trace.prv> <source_trace.prv> [ -o <translated.prv> ] 
 
 Compute numeric data from processed trace using histogram or timeline CFG's (all combined, trace is loaded)::
 
