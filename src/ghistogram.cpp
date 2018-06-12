@@ -1357,6 +1357,18 @@ void gHistogram::OnPopUpDrawModeSemanticMinimumNotZero()
   myHistogram->setRedraw( true );
 }
 
+void gHistogram::OnPopUpDrawModeSemanticAbsoluteMaximum()
+{
+  myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MAXIMUM );
+  myHistogram->setRedraw( true );
+}
+
+void gHistogram::OnPopUpDrawModeSemanticAbsoluteMinimumNotZero()
+{
+  myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MINNOTZERO );
+  myHistogram->setRedraw( true );
+}
+
 void gHistogram::OnPopUpDrawModeSemanticAverage()
 {
   myHistogram->setDrawModeColumns( DRAW_AVERAGE );
@@ -1402,6 +1414,18 @@ void gHistogram::OnPopUpDrawModeObjectsMaximum()
 void gHistogram::OnPopUpDrawModeObjectsMinimumNotZero()
 {
   myHistogram->setDrawModeObjects( DRAW_MINNOTZERO );
+  myHistogram->setRedraw( true );
+}
+
+void gHistogram::OnPopUpDrawModeObjectsAbsoluteMaximum()
+{
+  myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MAXIMUM );
+  myHistogram->setRedraw( true );
+}
+
+void gHistogram::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero()
+{
+  myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
@@ -1455,6 +1479,20 @@ void gHistogram::OnPopUpDrawModeBothMinimumNotZero()
 {
   myHistogram->setDrawModeObjects( DRAW_MINNOTZERO );
   myHistogram->setDrawModeColumns( DRAW_MINNOTZERO );
+  myHistogram->setRedraw( true );
+}
+
+void gHistogram::OnPopUpDrawModeBothAbsoluteMaximum()
+{
+  myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MAXIMUM );
+  myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MAXIMUM );
+  myHistogram->setRedraw( true );
+}
+
+void gHistogram::OnPopUpDrawModeBothAbsoluteMinimumNotZero()
+{
+  myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MINNOTZERO );
+  myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 

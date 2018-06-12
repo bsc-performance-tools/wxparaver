@@ -139,6 +139,14 @@ class gHistogram;
 #define ID_MENU_PUNCTUAL_WINDOW                   30091
 #define ID_MENU_TIMING                            30092
 #define ID_MENU_VIEW_FUSED_LINES                  30093
+#define ID_MENU_DRAWMODE_TIME_ABSOLUTE_MAXIMUM             30094
+#define ID_MENU_DRAWMODE_TIME_ABSOLUTE_MINIMUM_NOT_ZERO    30095
+#define ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MAXIMUM          30096
+#define ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MINIMUM_NOT_ZERO 30097
+#define ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MAXIMUM             30098
+#define ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO    30099
+
+
 
 #define ID_MENU_SYNC_GROUP_BASE                   31000
 
@@ -207,6 +215,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeTimeRandomNotZero( wxCommandEvent& event);
     void OnMenuDrawModeTimeMaximum( wxCommandEvent& event);
     void OnMenuDrawModeTimeMinimumNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeTimeAbsoluteMaximum( wxCommandEvent& event);
+    void OnMenuDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeTimeAverage( wxCommandEvent& event);
     void OnMenuDrawModeTimeAverageNotZero( wxCommandEvent& event);
     void OnMenuDrawModeTimeMode( wxCommandEvent& event);
@@ -216,6 +226,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeObjectsRandomNotZero( wxCommandEvent& event);
     void OnMenuDrawModeObjectsMaximum( wxCommandEvent& event);
     void OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event);
+    void OnMenuDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeObjectsAverage( wxCommandEvent& event);
     void OnMenuDrawModeObjectsAverageNotZero( wxCommandEvent& event);
     void OnMenuDrawModeObjectsMode( wxCommandEvent& event);
@@ -225,6 +237,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuDrawModeBothRandomNotZero( wxCommandEvent& event);
     void OnMenuDrawModeBothMaximum( wxCommandEvent& event);
     void OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event);
+    void OnMenuDrawModeBothAbsoluteMaximum( wxCommandEvent& event);
+    void OnMenuDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event);
     void OnMenuDrawModeBothAverage( wxCommandEvent& event);
     void OnMenuDrawModeBothAverageNotZero( wxCommandEvent& event);
     void OnMenuDrawModeBothMode( wxCommandEvent& event);

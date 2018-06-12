@@ -2187,6 +2187,18 @@ void gTimeline::OnPopUpDrawModeTimeMinimumNotZero()
   myWindow->setRedraw( true );
 }
 
+void gTimeline::OnPopUpDrawModeTimeAbsoluteMaximum()
+{
+  myWindow->setDrawModeTime( DRAW_ABSOLUTE_MAXIMUM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeTimeAbsoluteMinimumNotZero()
+{
+  myWindow->setDrawModeTime( DRAW_ABSOLUTE_MINNOTZERO );
+  myWindow->setRedraw( true );
+}
+
 void gTimeline::OnPopUpDrawModeTimeAverage()
 {
   myWindow->setDrawModeTime( DRAW_AVERAGE );
@@ -2232,6 +2244,18 @@ void gTimeline::OnPopUpDrawModeObjectsMaximum()
 void gTimeline::OnPopUpDrawModeObjectsMinimumNotZero()
 {
   myWindow->setDrawModeObject( DRAW_MINNOTZERO );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeObjectsAbsoluteMaximum()
+{
+  myWindow->setDrawModeObject( DRAW_ABSOLUTE_MAXIMUM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero()
+{
+  myWindow->setDrawModeObject( DRAW_ABSOLUTE_MINNOTZERO );
   myWindow->setRedraw( true );
 }
 
@@ -2285,6 +2309,20 @@ void gTimeline::OnPopUpDrawModeBothMinimumNotZero()
 {
   myWindow->setDrawModeObject( DRAW_MINNOTZERO );
   myWindow->setDrawModeTime( DRAW_MINNOTZERO );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeBothAbsoluteMaximum()
+{
+  myWindow->setDrawModeObject( DRAW_ABSOLUTE_MAXIMUM );
+  myWindow->setDrawModeTime( DRAW_ABSOLUTE_MAXIMUM );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeBothAbsoluteMinimumNotZero()
+{
+  myWindow->setDrawModeObject( DRAW_ABSOLUTE_MINNOTZERO );
+  myWindow->setDrawModeTime( DRAW_ABSOLUTE_MINNOTZERO );
   myWindow->setRedraw( true );
 }
 

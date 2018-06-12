@@ -347,6 +347,8 @@ public:
   void OnPopUpDrawModeSemanticRandomNotZero();
   void OnPopUpDrawModeSemanticMaximum();
   void OnPopUpDrawModeSemanticMinimumNotZero();
+  void OnPopUpDrawModeSemanticAbsoluteMaximum();
+  void OnPopUpDrawModeSemanticAbsoluteMinimumNotZero();
   void OnPopUpDrawModeSemanticAverage();
   void OnPopUpDrawModeSemanticAverageNotZero();
   void OnPopUpDrawModeSemanticMode();
@@ -356,6 +358,8 @@ public:
   void OnPopUpDrawModeObjectsRandomNotZero();
   void OnPopUpDrawModeObjectsMaximum();
   void OnPopUpDrawModeObjectsMinimumNotZero();
+  void OnPopUpDrawModeObjectsAbsoluteMaximum();
+  void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero();
   void OnPopUpDrawModeObjectsAverage();
   void OnPopUpDrawModeObjectsAverageNotZero();
   void OnPopUpDrawModeObjectsMode();
@@ -365,6 +369,8 @@ public:
   void OnPopUpDrawModeBothRandomNotZero();
   void OnPopUpDrawModeBothMaximum();
   void OnPopUpDrawModeBothMinimumNotZero();
+  void OnPopUpDrawModeBothAbsoluteMaximum();
+  void OnPopUpDrawModeBothAbsoluteMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
   void OnPopUpDrawModeBothAverageNotZero();
   void OnPopUpDrawModeBothMode();

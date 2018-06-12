@@ -481,6 +481,8 @@ public:
   void OnPopUpDrawModeTimeRandomNotZero();
   void OnPopUpDrawModeTimeMaximum();
   void OnPopUpDrawModeTimeMinimumNotZero();
+  void OnPopUpDrawModeTimeAbsoluteMaximum();
+  void OnPopUpDrawModeTimeAbsoluteMinimumNotZero();
   void OnPopUpDrawModeTimeAverage();
   void OnPopUpDrawModeTimeAverageNotZero();
   void OnPopUpDrawModeTimeMode();
@@ -490,6 +492,8 @@ public:
   void OnPopUpDrawModeObjectsRandomNotZero();
   void OnPopUpDrawModeObjectsMaximum();
   void OnPopUpDrawModeObjectsMinimumNotZero();
+  void OnPopUpDrawModeObjectsAbsoluteMaximum();
+  void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero();
   void OnPopUpDrawModeObjectsAverage();
   void OnPopUpDrawModeObjectsAverageNotZero();
   void OnPopUpDrawModeObjectsMode();
@@ -499,6 +503,8 @@ public:
   void OnPopUpDrawModeBothRandomNotZero();
   void OnPopUpDrawModeBothMaximum();
   void OnPopUpDrawModeBothMinimumNotZero();
+  void OnPopUpDrawModeBothAbsoluteMaximum();
+  void OnPopUpDrawModeBothAbsoluteMinimumNotZero();
   void OnPopUpDrawModeBothAverage();
   void OnPopUpDrawModeBothAverageNotZero();
   void OnPopUpDrawModeBothMode();
