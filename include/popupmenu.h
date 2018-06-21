@@ -145,7 +145,7 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MINIMUM_NOT_ZERO 30097
 #define ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MAXIMUM             30098
 #define ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO    30099
-
+#define ID_MENU_NOT_NULL_GRADIENT_COLOR_2D                 30100
 
 
 #define ID_MENU_SYNC_GROUP_BASE                   31000
@@ -272,6 +272,7 @@ class gPopUpMenu : public wxMenu
     
     void OnMenuCodeColor2D( wxCommandEvent& event );
     void OnMenuGradientColor2D( wxCommandEvent& event );
+    void OnMenuNotNullGradientColor2D( wxCommandEvent& event );
     
     void OnMenuLabelsAll( wxCommandEvent& event );
     void OnMenuLabelsSpaced( wxCommandEvent& event );

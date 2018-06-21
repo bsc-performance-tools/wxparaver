@@ -337,19 +337,24 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         if( myHisto->getShowColor() )
         {
           rgb tmpCol;
-          if( myHisto->getCodeColor() )
+          if( myHisto->getColorMode() == SemanticColor::COLOR )
           {
             tmpCol = myHisto->getDataWindow()->getCodeColor().calcColor( semValue,
                                                                          myHisto->getMinGradient(),
                                                                          myHisto->getMaxGradient() );
             tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+            tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
           }
           else
           {
-            tmpCol = myHisto->calcGradientColor( semValue );
-            tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+            if( myHisto->getColorMode() == SemanticColor::GRADIENT || 
+                ( myHisto->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && semValue != 0.0 ) )
+            {
+              tmpCol = myHisto->calcGradientColor( semValue );
+              tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+              tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+            }
           }
-          tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
         }
       }
     }

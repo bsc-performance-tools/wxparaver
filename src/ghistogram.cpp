@@ -807,19 +807,32 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
         )
       )
     {
-      rgb tmpCol;
-      if( myHistogram->getCodeColor() )
-        tmpCol = myHistogram->getDataWindow()->getCodeColor().calcColor(
-                   DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() ),
-                   myHistogram->getMinGradient(), myHistogram->getMaxGradient() );
+      bool tmpDrawColor = false;
+      rgb tmpColorToDraw;
+      TSemanticValue tmpValueToDraw = DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() );
+      if( myHistogram->getColorMode() == SemanticColor::COLOR )
+      {
+        tmpColorToDraw = myHistogram->getDataWindow()->getCodeColor().calcColor( tmpValueToDraw,
+                                                                                 myHistogram->getMinGradient(), myHistogram->getMaxGradient() );
+        tmpDrawColor = true;
+      }
       else
-        tmpCol = myHistogram->calcGradientColor( 
-                   DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() ) );
-      bufferDraw.SetBrush( wxBrush( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-      bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth * pixelSize ), rint( ( iDrawRow + 1 ) * cellHeight * pixelSize ),
-                                cellWidth < 1.0 ? pixelSize * 2 : ceil( cellWidth * pixelSize ),
-                                cellHeight < 1.0 ? pixelSize * 2 : ceil( cellHeight * pixelSize ) );
-
+      {
+        if( myHistogram->getColorMode() == SemanticColor::GRADIENT ||
+            ( myHistogram->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && tmpValueToDraw != 0.0 ) )
+        {
+          tmpColorToDraw = myHistogram->calcGradientColor( tmpValueToDraw );
+          tmpDrawColor = true;
+        }
+      }
+      if( tmpDrawColor )
+      {
+        bufferDraw.SetBrush( wxBrush( wxColour( tmpColorToDraw.red, tmpColorToDraw.green, tmpColorToDraw.blue ) ) );
+        bufferDraw.DrawRectangle( rint( ( iDrawCol + 1 ) * cellWidth * pixelSize ), rint( ( iDrawRow + 1 ) * cellHeight * pixelSize ),
+                                  cellWidth < 1.0 ? pixelSize * 2 : ceil( cellWidth * pixelSize ),
+                                  cellHeight < 1.0 ? pixelSize * 2 : ceil( cellHeight * pixelSize ) );
+      }
+      
       valuesObjects.clear();
     }
   }

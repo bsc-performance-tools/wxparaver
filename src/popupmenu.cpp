@@ -128,6 +128,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_REMOVE_GROUP, gPopUpMenu::OnMenuRemoveGroup )
   EVT_MENU( ID_MENU_CODE_COLOR_2D, gPopUpMenu::OnMenuCodeColor2D )
   EVT_MENU( ID_MENU_GRADIENT_COLOR_2D, gPopUpMenu::OnMenuGradientColor2D )
+  EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, gPopUpMenu::OnMenuNotNullGradientColor2D )
   EVT_MENU( ID_MENU_LABELS_ALL, gPopUpMenu::OnMenuLabelsAll )
   EVT_MENU( ID_MENU_LABELS_SPACED, gPopUpMenu::OnMenuLabelsSpaced )
   EVT_MENU( ID_MENU_LABELS_POWER2, gPopUpMenu::OnMenuLabelsPower2 )
@@ -847,8 +848,9 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
-  buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getCodeColor() );
-  buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, !histogram->GetHistogram()->getCodeColor() );
+  buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::COLOR );
+  buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::GRADIENT );
+  buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::NOT_NULL_GRADIENT );
   AppendSubMenu( popUpMenuColor2D, _( "Color Mode" ) );
   
   buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
@@ -1792,13 +1794,19 @@ void gPopUpMenu::OnMenuRemoveGroup( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuCodeColor2D( wxCommandEvent& event )
 {
-  histogram->GetHistogram()->setCodeColor( true );
+  histogram->GetHistogram()->setColorMode( SemanticColor::COLOR );
   histogram->GetHistogram()->setRedraw( true );
 }
 
 void gPopUpMenu::OnMenuGradientColor2D( wxCommandEvent& event )
 {
-  histogram->GetHistogram()->setCodeColor( false );
+  histogram->GetHistogram()->setColorMode( SemanticColor::GRADIENT );
+  histogram->GetHistogram()->setRedraw( true );
+}
+
+void gPopUpMenu::OnMenuNotNullGradientColor2D( wxCommandEvent& event )
+{
+  histogram->GetHistogram()->setColorMode( SemanticColor::NOT_NULL_GRADIENT );
   histogram->GetHistogram()->setRedraw( true );
 }
 
