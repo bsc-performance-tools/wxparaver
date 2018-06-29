@@ -53,6 +53,7 @@ void appendHistogram2Tree( gHistogram *ghistogram );
 wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found );
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found );
 gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found );
+gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted );
 void getParentGTimeline( gTimeline *current, vector< gTimeline * > & children );
 
 void BuildTree( paraverMain *parent,

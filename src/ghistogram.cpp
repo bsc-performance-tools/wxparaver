@@ -2582,65 +2582,76 @@ void gHistogram::saveText( bool onlySelectedPlane )
 }
 
 
-void gHistogram::saveImage( bool showSaveDialog )
+void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
 {
-  wxString imageName;
-  wxString tmpSuffix;
-  wxString defaultDir;
-
-  imageName = buildFormattedFileName();
-
-#ifdef WIN32
-  defaultDir = _(".\\");
-#else
-  defaultDir = _("./");
-#endif
-
-  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
-
-  tmpSuffix = _(".") +
-          wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-  wxString imagePath = imageName + tmpSuffix;
-
-  if( showSaveDialog )
+  wxString imagePath;
+  ParaverConfig::TImageFormat filterIndex;
+  
+  if( !whichFileName.IsEmpty() )
   {
-    // Builds following wildcard, but the 'E' in JPEG  
-    // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
-    // Also build extensions vector -> FileDialogExtension
-    wxString tmpWildcard;
-    std::vector< wxString > extensions;
-    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
-    {
-      wxString currentFormat =
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( i ) ).c_str() );
-                    
-      extensions.push_back( currentFormat );
-                    
-      tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
-    }
-    tmpWildcard = tmpWildcard.BeforeLast( '|' );
-
-    FileDialogExtension saveDialog( this,
-                             _("Save Image"),
-                             defaultDir,
-                             imageName + tmpSuffix,
-                             tmpWildcard,
-                             wxFD_SAVE | wxFD_CHANGE_DIR,
-                             wxDefaultPosition,
-                             wxDefaultSize,
-                             _( "filedlg" ),
-                             extensions );                          
-
-    saveDialog.SetFilterIndex( filterIndex );
-
-    if ( saveDialog.ShowModal() != wxID_OK )
-      return;
-      
-    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
-    imagePath = saveDialog.GetPath();
+    imagePath = whichFileName;
+    filterIndex = ParaverConfig::PNG;
   }
+  else
+  {
+    wxString imageName;
+    wxString tmpSuffix;
+    wxString defaultDir;
 
+    imageName = buildFormattedFileName();
+
+  #ifdef WIN32
+    defaultDir = _(".\\");
+  #else
+    defaultDir = _("./");
+  #endif
+
+    filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
+
+    tmpSuffix = _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    imagePath = imageName + tmpSuffix;
+
+    if( showSaveDialog )
+    {
+      // Builds following wildcard, but the 'E' in JPEG  
+      // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+      // Also build extensions vector -> FileDialogExtension
+      wxString tmpWildcard;
+      std::vector< wxString > extensions;
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      {
+        wxString currentFormat =
+              wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      
+        extensions.push_back( currentFormat );
+                      
+        tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
+      }
+      tmpWildcard = tmpWildcard.BeforeLast( '|' );
+
+      FileDialogExtension saveDialog( this,
+                               _("Save Image"),
+                               defaultDir,
+                               imageName + tmpSuffix,
+                               tmpWildcard,
+                               wxFD_SAVE | wxFD_CHANGE_DIR,
+                               wxDefaultPosition,
+                               wxDefaultSize,
+                               _( "filedlg" ),
+                               extensions );                          
+
+      saveDialog.SetFilterIndex( filterIndex );
+
+      if ( saveDialog.ShowModal() != wxID_OK )
+        return;
+        
+      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      imagePath = saveDialog.GetPath();
+    }
+  }
+  
   // Build image to be saved as: title image + timeline image
 
   // Get title

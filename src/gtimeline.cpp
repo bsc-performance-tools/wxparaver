@@ -374,6 +374,8 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
@@ -381,8 +383,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -3387,62 +3387,73 @@ wxString gTimeline::buildFormattedFileName() const
 }
 
 
-void gTimeline::saveImage( bool showSaveDialog )
+void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 {
-  wxString imageName;
-  wxString tmpSuffix;
-  wxString defaultDir;
-
-  imageName = buildFormattedFileName();
+  wxString imagePath;
+  ParaverConfig::TImageFormat filterIndex;
   
-#ifdef WIN32
-  defaultDir = _(".\\");
-#else
-  defaultDir = _("./");
-#endif
-
-  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-  tmpSuffix = _(".") +
-          wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-  wxString imagePath = imageName + tmpSuffix;
-  
-  if( showSaveDialog )
+  if( !whichFileName.IsEmpty() )
   {
-    // Builds following wildcard, but the 'E' in JPEG  
-    // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
-    // Also build extensions vector -> FileDialogExtension
-    wxString tmpWildcard;
-    std::vector< wxString > extensions;
-    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
-    {
-      wxString currentFormat =
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( i ) ).c_str() );
-                    
-      extensions.push_back( currentFormat );
-
-      tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
-    }
-    tmpWildcard = tmpWildcard.BeforeLast( '|' );
-
-    FileDialogExtension saveDialog( this,
-                             _("Save Image"),
-                             defaultDir,
-                             imageName + tmpSuffix,
-                             tmpWildcard,
-                             wxFD_SAVE | wxFD_CHANGE_DIR,
-                             wxDefaultPosition,
-                             wxDefaultSize,
-                             _( "filedlg" ),
-                             extensions );
-    saveDialog.SetFilterIndex( filterIndex );
-    if ( saveDialog.ShowModal() != wxID_OK )
-      return;
-      
-    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
-    imagePath = saveDialog.GetPath();
+    imagePath = whichFileName;
+    filterIndex = ParaverConfig::PNG;
   }
+  else
+  {
+    wxString imageName;
+    wxString tmpSuffix;
+    wxString defaultDir;
 
+    imageName = buildFormattedFileName();
+    
+  #ifdef WIN32
+    defaultDir = _(".\\");
+  #else
+    defaultDir = _("./");
+  #endif
+
+    filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+    tmpSuffix = _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    imagePath = imageName + tmpSuffix;
+    
+    if( showSaveDialog )
+    {
+      // Builds following wildcard, but the 'E' in JPEG  
+      // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+      // Also build extensions vector -> FileDialogExtension
+      wxString tmpWildcard;
+      std::vector< wxString > extensions;
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      {
+        wxString currentFormat =
+              wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      
+        extensions.push_back( currentFormat );
+
+        tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
+      }
+      tmpWildcard = tmpWildcard.BeforeLast( '|' );
+
+      FileDialogExtension saveDialog( this,
+                               _("Save Image"),
+                               defaultDir,
+                               imageName + tmpSuffix,
+                               tmpWildcard,
+                               wxFD_SAVE | wxFD_CHANGE_DIR,
+                               wxDefaultPosition,
+                               wxDefaultSize,
+                               _( "filedlg" ),
+                               extensions );
+      saveDialog.SetFilterIndex( filterIndex );
+      if ( saveDialog.ShowModal() != wxID_OK )
+        return;
+        
+      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      imagePath = saveDialog.GetPath();
+    }
+  }
+  
   // Get title
   wxString longTitle = wxString::FromAscii(
           ( myWindow->getName() + " @ " +

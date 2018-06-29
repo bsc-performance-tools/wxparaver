@@ -1655,10 +1655,10 @@ void gPopUpMenu::OnMenuSaveHistogramAsCFG( wxCommandEvent& event )
 void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 {
   if ( timeline != NULL )
-    timeline->saveImage();
+    timeline->saveImage( true, wxT( "" ) );
   else if ( histogram != NULL )
   {
-    histogram->saveImage();
+    histogram->saveImage( true, wxT( "" ) );
   }
 }
 

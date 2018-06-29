@@ -239,9 +239,6 @@ void wxparaverApp::handler( int signalNumber )
   sigdelset( &act.sa_mask, SIGUSR1 );
   sigdelset( &act.sa_mask, SIGUSR2 );
 
-//  wxMutexGuiEnter();
-//  wxparaverApp::mainWindow->OnSignal( signalNumber );
-//  wxMutexGuiLeave();
   if ( signalNumber == SIGUSR1 )
   {
     sig1 = true;
@@ -253,9 +250,9 @@ void wxparaverApp::handler( int signalNumber )
 
   sig2 = !sig1;
 
-//  wxIdleEvent event;
-//  event.RequestMore();
-//  wxTheApp->SendIdleEvents( mainWindow, event );
+  mainWindow->insertSignalItem( sig1 );
+  sig1 = false;
+  sig2 = false;
   mainWindow->Raise();
 
   sigaddset( &act.sa_mask, SIGUSR1 );
@@ -525,7 +522,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             histo->setRecalc( false );
             tmpGHisto->execute();
 
-            tmpGHisto->saveImage( false );
+            tmpGHisto->saveImage( false, wxT( "" ) );
             
             delete tmpGHisto;
             newHistograms.pop_back();
@@ -544,7 +541,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
             
             tmpTimeline->redraw();
-            tmpTimeline->saveImage( false );
+            tmpTimeline->saveImage( false, wxT( "" ) );
             tmpTimeline->saveImageLegend( false );
             
             delete tmpTimeline;

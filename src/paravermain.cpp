@@ -817,12 +817,7 @@ bool paraverMain::DoLoadTrace( const string &path )
   refreshMenuHints();
 
   canServeSignal = true;
-  
-#ifndef WIN32
-  if ( sig1 || sig2 )
-    OnSignal();
-#endif
-    
+
   // These are here because no UpdateUI for MenuBar
   wxUpdateUIEvent tmpEvent;
   OnMenuHintUpdate( tmpEvent );
@@ -2180,7 +2175,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   }
 
 #ifndef WIN32
-  if ( sig1 || sig2 )
+  if( signalQueue.size() > 0 )
     OnSignal();
 #endif
 
@@ -3278,34 +3273,21 @@ bool paraverMain::matchTraceNames( const string &fileName1,  // path1/name1 or n
 }
 
 
-void paraverMain::OnSignal( )
+void paraverMain::OnSignal()
 {
-  // PRECOND: sig1 XOR sig2 == true;
   if( !canServeSignal )
     return;
 
-  bool mySig1 = sig1;
-
-  // Clear global variables
-  sig1 = false;
-  sig2 = false;
-
   // Is some trace loading now?
-  if ( paraverMain::dialogProgress != NULL )
-  {
-    // Restore global variables
-    sig1 = mySig1;
-    sig2 = !mySig1;
+  if( paraverMain::dialogProgress != NULL )
     return;
-  }
 
-  // Does paraload.sig exists?
-  string path = getenv("HOME");
-  string filename = "paraload.sig";
-  string fullName = path + "/" + filename;
-  ifstream paraloadFile;
-  paraloadFile.open( fullName.c_str() );
-  if ( !paraloadFile  )
+  canServeSignal = false;
+
+  SignalItem currentSignal = signalQueue.front();
+  signalQueue.pop();
+
+  if( !currentSignal.goodFile )
   {
     wxMessageDialog message( this,
                              _( "File ./paraload.sig not found" ),
@@ -3314,81 +3296,25 @@ void paraverMain::OnSignal( )
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
+    canServeSignal = true;
+    return;
+  }
+  
+  if( currentSignal.badTimes )
+  {
+    wxMessageDialog message( this, _( "Missing times separator ':' in file paraload.sig" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
+    raiseCurrentWindow = false;
+    message.ShowModal();
+    raiseCurrentWindow = true;
+    canServeSignal = true;
     return;
   }
 
-  string::size_type position;
-
-  // Read all lines in paraload.sig
-  vector<string> lines;
-  string auxLine;
-  while ( !paraloadFile.eof() )
-  {
-    // get line and trim its leading or trailing spaces or tabs
-    std::getline( paraloadFile, auxLine );
-    position = auxLine.find_last_not_of(" \t");
-    if ( position != string::npos   )
-    {
-      auxLine.erase( position + 1 );
-      position = auxLine.find_first_not_of(" \t");
-      if ( position != string::npos )
-      {
-        auxLine.erase( 0, position );
-      }
-    }
-    else
-    {
-      auxLine.clear();
-    }
-    
-    // Is it useful? Save it!
-    if ( auxLine.length() > 0 && auxLine[0] != '#' )
-    {
-      lines.push_back( auxLine );
-      auxLine.clear();
-    }
-  }
-  
-  // POSTCOND:
-  // lines[0] must contain paraver cfg
-  // lines[1] must contain time range to set the window
-  // if exists, lines[2] must contain a trace to load
-
-  if ( lines.size() > 2 ) // any trace?
-  {
-    bool found = false;
-    PRV_INT16 current = currentTrace;
-  
-    // Is that trace loaded? First, try with current!
-    if ( loadedTraces.size() > 0 )
-    {
-      found = matchTraceNames( loadedTraces[ current ]->getFileName(),
-                               loadedTraces[ current ]->getTraceName(),
-                               lines[ 2 ] );
-    }
-    
-    if ( !found )
-    {
-      // then continue with all the list
-      for ( current = 0; current < (PRV_INT16)loadedTraces.size(); ++current )
-      {
-        found = matchTraceNames( loadedTraces[ current ]->getFileName(),
-                                 loadedTraces[ current ]->getTraceName(),
-                                 lines[ 2 ] );
-        if ( found )
-        {
-          currentTrace = current; // select it !!
-          break;
-        }
-      }
-    }
-
-    if ( current <= 0 || !found ) // No trace loaded or not found!!
-      DoLoadTrace( lines[ 2 ] );
-  }
+  if( !currentSignal.traceFileName.empty() )
+    DoLoadTrace( currentSignal.traceFileName );
 
   // Anyway, Am I able to load any cfg?
-  if ( loadedTraces.size() == 0 )
+  if( loadedTraces.size() == 0 )
   {
     wxMessageDialog message( this,
                              _( "No trace loaded" ),
@@ -3397,82 +3323,66 @@ void paraverMain::OnSignal( )
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
+    canServeSignal = true;
     return;
   }
   
-  // Read cfg location
-  string cfgFullName = lines[ 0 ];
-
   // Code only for sigusr1: load cfg
-  if( mySig1 )
-    DoLoadCFG( cfgFullName );
+  if( currentSignal.isSignal1() && !currentSignal.cfgFileName.empty() )
+    DoLoadCFG( currentSignal.cfgFileName );
 
-  // Code for both sigusr1 and sigusr2: zoom
-  Window* myCurrentTimeline;
-  vector<Window *> timelines;
-  
-  LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
-  if ( currentTimeline == NULL )
+  // Code for both sigusr1 and sigusr2: zoom & save image
+  if( currentTimeline == NULL && currentHisto == NULL )
   {
-    if ( timelines.size() > 0 )
-    {
-      myCurrentTimeline = timelines[ timelines.size() - 1  ];
-    }
-    else
-    {
-      wxMessageDialog message( this, _( "No timeline created" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
-      raiseCurrentWindow = false;
-      message.ShowModal();
-      raiseCurrentWindow = true;
-      return;
-    }
-  }
-  else
-    myCurrentTimeline = currentTimeline;
-
-  // Read paraload.sig second line: times
-  string times = lines[1];
-
-  size_t pos = times.find(":");
-  if ( pos == string::npos )
-  {
-    wxMessageDialog message( this, _( "Missing times separator ':' in file paraload.sig" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
+    wxMessageDialog message( this, _( "No timeline nor histogram created" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
+    canServeSignal = true;
     return;
   }
   else
   {
-    // Get begin time
-    string time = times.substr( 0, pos );
-    stringstream aux( time );
-    double auxt1;
-    aux >> auxt1;
+    if( currentTimeline != NULL )
+    {
+      bool dummyFound;
 
-    if ( auxt1 == -1.0 )
-      auxt1 = 0.0;
+      // Zoom
+      currentTimeline->setWindowBeginTime( currentSignal.beginTime );
+      currentTimeline->setWindowEndTime( currentSignal.endTime );
+      currentTimeline->addZoom(  currentSignal.beginTime, currentSignal.endTime );
 
-    // Get end time
-    string time2 = times.substr( ++pos,times.size() - 1  );
-    stringstream aux2( time2 );
-    double auxt2;
-    aux2 >> auxt2;
-
-    if ( auxt2 == -1.0 )
-      auxt2 = myCurrentTimeline->getTrace()->getEndTime();
-
-    // Zoom
-    myCurrentTimeline->setWindowBeginTime( auxt1 );
-    myCurrentTimeline->setWindowEndTime( auxt2 );
-    myCurrentTimeline->addZoom( auxt1, auxt2 );
-
-    myCurrentTimeline->setRedraw( true );
-    myCurrentTimeline->setChanged( true );
+      // Redraw
+      currentTimeline->setChanged( true );
+      //currentTimeline->setRedraw( true );
+      gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), currentTimeline, dummyFound );
+      tmpTimeline->redraw();
+      
+      // Save image if needed
+      if( !currentSignal.imageFileName.empty() )
+        tmpTimeline->saveImage( false, wxString::FromAscii( currentSignal.imageFileName.c_str() ) );
+    }
+    else // Histogram
+    {
+      // Zoom
+      currentHisto->setWindowBeginTime( currentSignal.beginTime );
+      currentHisto->setWindowEndTime( currentSignal.endTime );
+      
+      // Redraw
+      currentHisto->setChanged( true );
+      gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), currentHisto );
+      tmpHistogram->execute();
+      
+      // Save image if needed
+      if( !currentSignal.imageFileName.empty() )
+        tmpHistogram->saveImage( false, wxString::FromAscii( currentSignal.imageFileName.c_str() ) );
+    }
   }
 
   // Refresh
   choiceWindowBrowser->UpdateWindowUI();
+  
+  canServeSignal = true;
 }
 #endif
 
@@ -4317,4 +4227,140 @@ void paraverMain::OnButtonForceRedrawClick( wxCommandEvent& event )
 bool paraverMain::getAutoRedraw() const
 {
   return checkAutoRedraw->GetValue();
+}
+
+
+void paraverMain::insertSignalItem( bool isSig1 )
+{
+  SignalItem tmpSignalItem;
+
+  // Does paraload.sig exists?
+  string path = getenv("HOME");
+  string filename = "paraload.sig";
+  string fullName = path + "/" + filename;
+  ifstream paraloadFile;
+  paraloadFile.open( fullName.c_str() );
+  if( !paraloadFile  )
+  {
+    tmpSignalItem.goodFile = false;
+    signalQueue.push( tmpSignalItem );
+    return;
+  }
+  tmpSignalItem.goodFile = true;
+
+  string::size_type position;
+
+  tmpSignalItem.signal1 = isSig1;
+
+  // Read all lines in paraload.sig
+  vector<string> lines;
+  string auxLine;
+  while ( !paraloadFile.eof() )
+  {
+    // get line and trim its leading or trailing spaces or tabs
+    std::getline( paraloadFile, auxLine );
+    position = auxLine.find_last_not_of(" \t");
+    if ( position != string::npos   )
+    {
+      auxLine.erase( position + 1 );
+      position = auxLine.find_first_not_of(" \t");
+      if ( position != string::npos )
+      {
+        auxLine.erase( 0, position );
+      }
+    }
+    else
+    {
+      auxLine.clear();
+    }
+    
+    // Is it useful? Save it!
+    if( auxLine[0] != '#' )
+    {
+      lines.push_back( auxLine );
+      auxLine.clear();
+    }
+  }
+  
+  // POSTCOND:
+  // lines[0] must contain paraver cfg
+  // lines[1] must contain time range to set the window
+  // if exists, lines[2] must contain a trace to load
+
+  if ( lines.size() > 2 && lines[ 2 ] != "" ) // any trace?
+  {
+    bool found = false;
+    PRV_INT16 current = currentTrace;
+  
+    // Is that trace loaded? First, try with current!
+    if ( loadedTraces.size() > 0 )
+    {
+      found = matchTraceNames( loadedTraces[ current ]->getFileName(),
+                               loadedTraces[ current ]->getTraceName(),
+                               lines[ 2 ] );
+    }
+    
+    if ( !found )
+    {
+      // then continue with all the list
+      for ( current = 0; current < (PRV_INT16)loadedTraces.size(); ++current )
+      {
+        found = matchTraceNames( loadedTraces[ current ]->getFileName(),
+                                 loadedTraces[ current ]->getTraceName(),
+                                 lines[ 2 ] );
+        if ( found )
+        {
+          currentTrace = current; // select it !!
+          break;
+        }
+      }
+    }
+
+    if ( current <= 0 || !found ) // No trace loaded or not found!!
+      tmpSignalItem.traceFileName = lines[ 2 ];
+  }
+
+  // Read cfg location
+  tmpSignalItem.cfgFileName = lines[ 0 ];
+
+  // Image file if exists
+  if( lines.size() > 3 )
+    tmpSignalItem.imageFileName = lines[ 3 ];
+
+  // Read paraload.sig second line: times
+  string times = lines[ 1 ];
+
+  size_t pos = times.find( ":" );
+  if( pos == string::npos )
+  {
+    tmpSignalItem.badTimes = true;
+    signalQueue.push( tmpSignalItem );
+    return;
+  }
+  else
+  {
+    tmpSignalItem.badTimes = false;
+    // Get begin time
+    string time = times.substr( 0, pos );
+    stringstream aux( time );
+    double auxt1;
+    aux >> auxt1;
+
+    if ( auxt1 == -1.0 )
+      auxt1 = 0.0;
+
+    // Get end time
+    string time2 = times.substr( ++pos,times.size() - 1  );
+    stringstream aux2( time2 );
+    double auxt2;
+    aux2 >> auxt2;
+
+    tmpSignalItem.beginTime = auxt1;
+    tmpSignalItem.endTime = auxt2;
+  }
+
+  signalQueue.push( tmpSignalItem );
+  
+  wxIdleEvent tmpEvent;
+  AddPendingEvent( tmpEvent );
 }

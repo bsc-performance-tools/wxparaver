@@ -155,6 +155,30 @@ class TreeBrowserItemData: public wxTreeItemData
     gHistogram* myHisto;
 };
 
+
+struct SignalItem
+{
+  bool goodFile;
+  bool badTimes;
+  bool signal1;
+  std::string cfgFileName;
+  TRecordTime beginTime;
+  TRecordTime endTime;
+  std::string traceFileName;
+  std::string imageFileName;
+  
+  bool isSignal1() const
+  {
+    return signal1;
+  }
+  
+  bool isSignal2() const
+  {
+    return !signal1;
+  }
+};
+
+
 /*!
  * paraverMain class declaration
  */
@@ -410,6 +434,9 @@ public:
   wxTimer * GetSessionTimer() const { return sessionTimer ; }
   void SetSessionTimer(wxTimer * value) { sessionTimer = value ; }
 
+  std::queue<SignalItem> GetSignalQueue() const { return signalQueue ; }
+  void SetSignalQueue(std::queue<SignalItem> value) { signalQueue = value ; }
+
   bool GetTraceLoadedBefore() const { return traceLoadedBefore ; }
   void SetTraceLoadedBefore(bool value) { traceLoadedBefore = value ; }
 
@@ -454,6 +481,7 @@ public:
                         const std::string &traceName1,
                         const std::string &fileName2 );
 #endif
+  void insertSignalItem( bool isSig1 );
 
 #ifdef WIN32
   void OnKeyCopy();
@@ -551,6 +579,7 @@ private:
   bool raiseCurrentWindow;
   RunScript * runApplication;
   wxTimer * sessionTimer;
+  std::queue<SignalItem> signalQueue;
   bool traceLoadedBefore;
   wxString tracePath;
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;

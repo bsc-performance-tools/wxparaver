@@ -167,6 +167,41 @@ gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &foun
 }
 
 
+gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted )
+{
+  gHistogram *retgh = NULL;
+  wxTreeItemIdValue cookie;
+
+  bool found = false;
+
+  wxTreeItemId itemCurrent = getAllTracesTree()->GetFirstChild( root, cookie );
+  wxTreeItemId itemLast = getAllTracesTree()->GetLastChild( root );
+  
+  while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
+  {
+    gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemCurrent ) ) )->getHistogram();
+    if( tmpHistogram != NULL && tmpHistogram->GetHistogram() == wanted )
+    {
+      retgh = tmpHistogram;
+      found = true;
+    }
+    if( !found )
+      itemCurrent = getAllTracesTree()->GetNextChild( root, cookie );
+  }
+  
+  if( !found && itemLast.IsOk() )
+  {
+    if( ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemLast ) ) )->getHistogram()->GetHistogram() == wanted )
+    {
+      retgh = ( (TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemLast )))->getHistogram();
+      found = true;
+    }
+  }
+  
+  return retgh;
+}
+
+
 wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found )
 {
   wxTreeItemId retItemId;

@@ -380,7 +380,7 @@ public:
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
   
   void saveCFG();
-  void saveImage( bool showSaveDialog = true );
+  void saveImage( bool showSaveDialog, wxString whichFileName );
   void saveText( bool onlySelectedPlane = false );
 
   void rightDownManager();
