@@ -48,6 +48,7 @@
 #include "filter.h"
 #include "eventsselectiondialog.h"
 #include <wx/event.h>
+#include <wx/utils.h>
 
 /**********************************************************
  **       prvEventTypeProperty
@@ -461,34 +462,8 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
     if ( eventsDialog.ShowModal() == wxID_OK && numLabels )
     {
-//      int userStringMode = GetAttributeAsLong( wxT( "UserStringMode" ), 0 );
-
-//      wxArrayInt arrInt = eventsDialog.GetEventTypesSelections();
-
-//      wxVariant variant;
-
-      // Strings that were not in list of choices
-//      wxArrayString value;
-
-      // Translate string indices to strings
-//      if ( userStringMode == 1 )
-//      {
-//        for ( unsigned int n = 0; n < unknownEventTypes.size(); ++n )
-//          value.push_back( unknownEventTypes[ n ] );
-//      }
-
-//      for ( unsigned int i = 0; i < arrInt.GetCount(); ++i )
-//        value.Add( wxString() << m_choices.GetValue( arrInt.Item( i ) ) );
-
-//      if ( userStringMode == 2 )
-//      {
-//        for ( unsigned int n = 0; n < unknownEventTypes.size(); ++n )
-//          value.push_back( unknownEventTypes[ n ] );
-//      }
-
-//      value.Sort();
-
-//      variant = WXVARIANT( value );
+      if( wxparaverApp::mainWindow->GetCurrentTimeline() != currentWindow )
+        return false;
 
       if ( eventsDialog.ChangedEventTypesFunction() )
       {
@@ -502,9 +477,6 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         wxVariant tmpVal =  WXVARIANT( eventsDialog.GetIndexEventValuesFunction() ); 
         propgrid->GetProperty( _("Event value.ValueFunction") )->SetValue( tmpVal );
         currentWindow->getFilter()->setEventValueFunction( eventsDialog.GetNameEventValuesFunction() );
-
-/*        bool disable = ( auxname.compare( "All" ) == 0 || auxname.compare( "None" ) == 0 );
-        propgrid->GetProperty( _("Event value.Values") )->ChangeFlag( wxPG_PROP_DISABLED, disable );*/
       }
 
       if ( eventsDialog.ChangedOperatorTypeValue() )
@@ -539,14 +511,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         wxVariant tmpVar( WXVARIANT( tmpStrEventValues ));
 
         if ( GetName().Cmp( _("Event value.Values") ) != 0 )
-        {
           propgrid->GetProperty( _("Event value.Values") )->SetValue( tmpVar );
-          // Try leave the control enabled
-          //string auxname;
-          //int func = eventsDialog.GetEventValuesFunction( auxname );
-/*          bool disable = ( auxname.compare( "All" ) == 0 || auxname.compare( "None" ) == 0 );
-          propgrid->GetProperty( _("Event value.Values") )->ChangeFlag( wxPG_PROP_DISABLED, disable );*/
-        }
         else
           SetValueInEvent( tmpVar );
       }
@@ -574,9 +539,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         else
           SetValueInEvent( tmpVar );
       }
-/*
-      SetValueInEvent( variant );
-*/
+
       currentWindow->setRedraw( true );
       currentWindow->setChanged( true );
       return true;
