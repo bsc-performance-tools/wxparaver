@@ -524,7 +524,7 @@ void paraverMain::CreateControls()
 
   toolBookFilesProperties->AddPage(dirctrlFiles, wxEmptyString, false, 0);
 
-  windowProperties = new wxPropertyGrid( toolBookFilesProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS|wxPG_EX_DISABLE_TLP_TRACKING );
+  windowProperties = new wxPropertyGrid( toolBookFilesProperties, ID_FOREIGN, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER|wxWANTS_CHARS );
 
   toolBookFilesProperties->AddPage(windowProperties, wxEmptyString, false, 1);
 
