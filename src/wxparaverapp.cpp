@@ -457,11 +457,11 @@ bool wxparaverApp::OnInit()
 
   mainWindow->Show(true);
 
-  ParseCommandLine( paraverCommandLineParser );
-
 #ifndef WIN32
   presetUserSignals();
 #endif
+
+  ParseCommandLine( paraverCommandLineParser );
 
   return true;
 }
