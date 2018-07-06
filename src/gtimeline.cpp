@@ -633,7 +633,7 @@ void gTimeline::redraw()
 
   float magnify = float( myWindow->getPixelSize() );
   TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
-                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder - magnify );
+                   ( drawZone->GetClientSize().GetWidth() - objectAxisPos - drawBorder - magnify );
   PRV_INT32 timePos = objectAxisPos + 1;
 
   vector< vector< TSemanticValue > > valuesToDraw;
