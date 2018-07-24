@@ -876,7 +876,10 @@ bool paraverMain::DoLoadCFG( const string &path )
           BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
 
         if ( it + 1 == newWindows.end() )
+        {
           currentTimeline = *it;
+          currentHisto = NULL;
+        }
       }
 
       int currentDisplay = wxDisplay::GetFromWindow( paraverMain::myParaverMain );
@@ -914,6 +917,12 @@ bool paraverMain::DoLoadCFG( const string &path )
           tmpHisto->Show();
         }
         tmpHisto->execute();
+
+        if ( it + 1 == newHistograms.end() )
+        {
+          currentTimeline = NULL;
+          currentHisto = *it;
+        }
       }
 
       previousCFGs->add( path );
