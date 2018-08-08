@@ -23,6 +23,7 @@ noinst_HEADERS = advancedsaveconfiguration.h \
                     saveconfigurationdialog.h \
                     sequencedriver.h \
                     sessionsaver.h \
+										timelinetreeselector.h \
                     windows_tree.h \
                     wxparaverapp.h
 
