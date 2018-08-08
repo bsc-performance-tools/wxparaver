@@ -425,7 +425,6 @@ wxArrayInt prvEventInfoProperty::GetValueAsIndices() const
   return selections;
 }
 
-#include <wx/minifram.h>
 bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
                                     wxWindow* WXUNUSED( primary ),
                                     wxEvent& event )
