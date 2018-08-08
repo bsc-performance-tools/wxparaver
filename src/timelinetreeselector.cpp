@@ -21,15 +21,34 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
 #include "timelinetreeselector.h"
+#include <wx/treectrl.h>
+#include <wx/sizer.h>
+
+#define ID_TIMELINETREE 10001
+
+BEGIN_EVENT_TABLE( TimelineTreeSelector, wxMiniFrame )
+END_EVENT_TABLE()
+
+IMPLEMENT_DYNAMIC_CLASS( TimelineTreeSelector, wxMiniFrame )
+
+TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
+                                            wxWindowID id,
+                                            const wxString& title,
+                                            const wxPoint& pos,
+                                            const wxSize& size,
+                                            long style,
+                                            const wxString& name ) :
+  wxMiniFrame( parent, id, title, pos, size, style, name )
+{
+
+}
+
+void TimelineTreeSelector::CreateControls()
+{
+  wxBoxSizer* itemBoxSizer = new wxBoxSizer( wxVERTICAL );
+  this->SetSizer( itemBoxSizer );
+
+  timelineTree = new wxTreeCtrl( this, ID_TIMELINETREE );
+  itemBoxSizer->Add( timelineTree, 1, wxGROW );
+}

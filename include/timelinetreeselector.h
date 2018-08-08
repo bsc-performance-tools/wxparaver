@@ -25,5 +25,34 @@
 #ifndef _TIMELINETREESELECTOR_H_ 
 #define _TIMELINETREESELECTOR_H_
 
+#include <wx/minifram.h>
+
+class wxTreeCtrl;
+
+class TimelineTreeSelector : public wxMiniFrame
+{
+  DECLARE_DYNAMIC_CLASS( BrowserButton )
+  DECLARE_EVENT_TABLE()
+
+  public:
+    TimelineTreeSelector()
+    {}
+
+    TimelineTreeSelector( wxWindow* parent,
+                          wxWindowID id,
+                          const wxString& title,
+                          const wxPoint& pos = wxDefaultPosition,
+                          const wxSize& size = wxDefaultSize,
+                          long style = wxCAPTION | wxRESIZE_BORDER,
+                          const wxString& name = "frame" );
+
+    ~TimelineTreeSelector()
+    {}
+    
+  private:
+    void CreateControls();
+    
+    wxTreeCtrl *timelineTree;
+};
 
 #endif //_TIMELINETREESELECTOR_H_
