@@ -42,6 +42,7 @@
 #include <algorithm>
 
 #include <wx/filename.h>
+#include <wx/numdlg.h>
 
 #include "sequencedriver.h"
 #include "kernelconnection.h"
@@ -218,13 +219,21 @@ bool RunSpectralAction::execute( std::string whichTrace )
   if ( wxGetEnv( spectralEnvVar, &spectralPath ) )
   {
     wxString tmpSep = wxFileName::GetPathSeparator();
-    wxString spectralBin = spectralPath + tmpSep + _("bin") + tmpSep + _("spectral-csv-analysis");
+    wxString spectralBin = spectralPath + tmpSep + _("bin") + tmpSep + _("csv-analysis");
     if ( wxFileName::IsFileExecutable( spectralBin ) )
     {
       // Throw command '$SPECTRAL_HOME/bin/csv-analysis "trace.prv" "saved.csv" X' with X = 0
       wxString traceFileName( _("\"") + wxString::FromAscii( whichTrace.c_str() ) + _("\"") );
       wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") );
-      wxString numericParameter( _("0") );
+      
+      long tmpValue = wxGetNumberFromUser( _( "Please enter the number of iterations" ), _( "Iterations" ),
+                                           _( "Iterations" ), 3, 0, 100 );
+      wxString numericParameter;
+      if( tmpValue == -1 )
+        numericParameter = _("0");
+      else
+        numericParameter = wxString( "%d", tmpValue );
+
       wxString command = _( "/bin/sh -c '") + 
                          spectralBin + _(" ") +
                          traceFileName + _(" ") +

@@ -374,6 +374,8 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
@@ -381,8 +383,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -713,7 +713,7 @@ void gTimeline::redraw()
     }
   }
 
-  drawZeroAxis( bufferDraw );
+  drawZeroAxis( bufferDraw, selectedSet );
 
 #ifdef __WXMAC__
   dc.DrawBitmap( bufferImage, 0, 0, false );
@@ -1093,7 +1093,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   return true;
 }
 
-void gTimeline::drawZeroAxis( wxDC& dc )
+void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
 {
   if( myWindow->getMaximumY() > 0.0 && myWindow->getMinimumY() < 0.0 )
   {
@@ -1112,11 +1112,12 @@ void gTimeline::drawZeroAxis( wxDC& dc )
     {
       wxCoord lastPos = 0;
       wxCoord relativePos = relativeZero * objectHeight;
-      for( vector<wxCoord>::iterator it = objectPosList.begin(); it != objectPosList.end(); ++it )
+      for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
       {
-        if( *it != lastPos )
+        wxCoord tmpObjPos = objectPosList[ *it ];
+        if( tmpObjPos != lastPos )
         {
-          lastPos = *it;
+          lastPos = tmpObjPos;
           dc.DrawLine( objectAxisPos, relativePos + lastPos + 1,
                        dc.GetSize().GetWidth() - drawBorder, relativePos + lastPos + 1 );
           

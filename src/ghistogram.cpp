@@ -2179,7 +2179,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";
     else if( extraDelta == 1 )
-        tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << "]";
+        tmpStr << ( plane * extraDelta ) + extraMin/* + extraDelta*/ << "]";
     else
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     extraControlCloned->setName( tmpStr.str() );
@@ -2199,14 +2199,14 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     if ( ( ( columnEnd * delta ) + min + delta ) >= max )
       tmpStr << max << "]";
     else if( delta == 1 )
-      tmpStr << ( columnEnd * delta ) + min + delta << "]";
+      tmpStr << ( columnEnd * delta ) + min/* + delta*/ << "]";
     else
       tmpStr << ( columnEnd * delta ) + min + delta << ")";
     tmpStr << "/[" << ( plane * extraDelta ) + extraMin << ",";
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";
     else if( extraDelta == 1 )
-        tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << "]";
+        tmpStr << ( plane * extraDelta ) + extraMin/* + extraDelta*/ << "]";
     else
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     productWin->setName( tmpStr.str() );
