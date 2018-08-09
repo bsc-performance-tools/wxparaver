@@ -27,10 +27,18 @@
 
 #define ID_TIMELINETREE 10001
 
+#ifdef USE_WXDIALOG
+BEGIN_EVENT_TABLE( TimelineTreeSelector, wxDialog )
+#else // wxMiniFrame
 BEGIN_EVENT_TABLE( TimelineTreeSelector, wxMiniFrame )
+#endif
 END_EVENT_TABLE()
 
+#ifdef USE_WXDIALOG
+IMPLEMENT_DYNAMIC_CLASS( TimelineTreeSelector, wxDialog )
+#else // wxMiniFrame
 IMPLEMENT_DYNAMIC_CLASS( TimelineTreeSelector, wxMiniFrame )
+#endif
 
 TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
                                             wxWindowID id,
@@ -39,9 +47,13 @@ TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
                                             const wxSize& size,
                                             long style,
                                             const wxString& name ) :
+#ifdef USE_WXDIALOG
+  wxDialog( parent, id, title, pos, size, style, name )
+#else // wxMiniFrame
   wxMiniFrame( parent, id, title, pos, size, style, name )
+#endif
 {
-
+  CreateControls();
 }
 
 void TimelineTreeSelector::CreateControls()

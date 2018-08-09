@@ -44,6 +44,7 @@
 using namespace std;
 
 class Window;
+class TimelineTreeSelector;
 
 /**********************************************************
  **       prvEventTypeProperty
@@ -313,4 +314,39 @@ class prvNumbersListProperty: public wxPGProperty
     wxArrayString       m_valueAsStrings;  // Value as array of strings
 
     wxString            m_display; // Cache displayed text since generating it is relatively complicated.
+};
+
+
+/**********************************************************
+ **        prvTimelineTreeProperty
+ **********************************************************/
+class prvTimelineTreeProperty: public wxPGProperty
+{
+  WX_PG_DECLARE_PROPERTY_CLASS( prvTimelineTreeProperty )
+  public:
+    prvTimelineTreeProperty()
+    {}
+    
+    prvTimelineTreeProperty( const wxString& label,
+                             const wxString& name,
+                             const wxString& value );
+    virtual ~prvTimelineTreeProperty();
+
+#if wxMAJOR_VERSION<3
+    virtual wxString GetValueAsString( int ) const;
+#else
+    virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
+#endif
+
+#if wxMAJOR_VERSION<3
+    WX_PG_DECLARE_EVENT_METHODS()
+#else
+    bool OnEvent( wxPropertyGrid* propgrid,
+                  wxWindow* WXUNUSED(primary),
+                  wxEvent& event );
+#endif
+  private:
+    void OnTimelineSelectorClose( wxEvent& event );
+    
+    TimelineTreeSelector *timelineSelector;
 };

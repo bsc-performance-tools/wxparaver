@@ -49,6 +49,7 @@
 #include "eventsselectiondialog.h"
 #include <wx/event.h>
 #include <wx/utils.h>
+#include "timelinetreeselector.h"
 
 /**********************************************************
  **       prvEventTypeProperty
@@ -991,4 +992,67 @@ bool prvNumbersListProperty::OnEvent( wxPropertyGrid* propgrid,
                                       wxEvent& event )
 {
   return true;
+}
+
+
+/**********************************************************
+ **        prvTimelineTreeProperty
+ **********************************************************/
+WX_PG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty,
+                                wxString, wxString&, TextCtrlAndButton )
+
+#define ID_TIMELINETREE 10001
+
+prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
+                                                  const wxString& name,
+                                                  const wxString& value )
+                                                    : wxPGProperty(label,name)
+{
+  SetValue( value );
+  
+  timelineSelector = new TimelineTreeSelector( wxparaverApp::mainWindow, ID_TIMELINETREE, wxT( "Test selector" ) );
+  timelineSelector->Connect( ID_TIMELINETREE, wxID_CLOSE, wxObjectEventFunction( prvTimelineTreeProperty::OnTimelineSelectorClose ), NULL, this );
+}
+
+prvTimelineTreeProperty::~prvTimelineTreeProperty()
+{
+  if( timelineSelector == NULL )
+    delete timelineSelector;
+}
+
+bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
+                                       wxWindow* WXUNUSED(primary),
+                                       wxEvent& event )
+{
+  if( propgrid->IsMainButtonEvent(event) )
+  {
+    timelineSelector->Move( wxGetMousePosition() );
+#ifdef USE_WXDIALOG
+    timelineSelector->ShowModal();
+#else
+    timelineSelector->Show();
+#endif
+  }
+  return true;
+}
+
+#if wxMAJOR_VERSION<3
+wxString prvTimelineTreeProperty::GetValueAsString( int ) const
+{
+  return GetValue().GetString();
+}
+#else
+wxString prvTimelineTreeProperty::ValueToString( wxVariant & value, int argFlags ) const
+{
+  return value.GetString();
+}
+#endif
+
+void prvTimelineTreeProperty::OnTimelineSelectorClose( wxEvent& event )
+{
+  if( timelineSelector == NULL )
+  {
+    delete timelineSelector;
+    timelineSelector = NULL;
+  }
 }

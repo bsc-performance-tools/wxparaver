@@ -2269,6 +2269,13 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 #endif
   }
 
+  // Test timelineTreeSelector
+  wxPGId retId = (wxPGId)NULL;
+  prvTimelineTreeProperty *auxProperty = NULL;
+  auxProperty = new prvTimelineTreeProperty( wxT("test timeline tree"), wxT("testTimelineTree"), wxT("test value") );
+  retId = windowProperties->Append( auxProperty );
+  // Test timelineTreeSelector end
+
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );
   windowProperties->Refresh();
   windowProperties->Thaw();
