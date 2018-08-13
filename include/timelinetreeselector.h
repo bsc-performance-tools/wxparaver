@@ -25,21 +25,11 @@
 #ifndef _TIMELINETREESELECTOR_H_ 
 #define _TIMELINETREESELECTOR_H_
 
-//#define USE_WXDIALOG 1
-
-#ifdef USE_WXDIALOG
 #include <wx/dialog.h>
-#else // wxMiniFrame
-#include <wx/minifram.h>
-#endif
+#include <wx/treectrl.h>
+#include "loadedwindows.h"
 
-class wxTreeCtrl;
-
-#ifdef USE_WXDIALOG
 class TimelineTreeSelector : public wxDialog
-#else // wxMiniFrame
-class TimelineTreeSelector : public wxMiniFrame
-#endif
 {
   DECLARE_DYNAMIC_CLASS( TimelineTreeSelector )
   DECLARE_EVENT_TABLE()
@@ -51,21 +41,21 @@ class TimelineTreeSelector : public wxMiniFrame
     TimelineTreeSelector( wxWindow* parent,
                           wxWindowID id,
                           const wxString& title,
+                          const std::vector<TWindowID>& windows,
+                          const Trace *currentTrace,
                           const wxPoint& pos = wxDefaultPosition,
                           const wxSize& size = wxDefaultSize,
-#ifdef USE_WXDIALOG
                           long style = wxDEFAULT_DIALOG_STYLE,
                           const wxString& name = "dialogBox" );
-#else // wxMiniFrame
-                          long style = wxCAPTION | wxRESIZE_BORDER | wxCLOSE_BOX,
-                          const wxString& name = "frame" );
-#endif
 
     ~TimelineTreeSelector()
     {}
     
   private:
     void CreateControls();
+    void fillTree( const std::vector<TWindowID>& windows, const Trace *currentTrace );
+    
+    void OnTreeItemActivated( wxTreeEvent& event );
     
     wxTreeCtrl *timelineTree;
 };

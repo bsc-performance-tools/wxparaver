@@ -73,6 +73,7 @@ class wxToolbook;
 class wxGenericDirCtrl;
 class wxPropertyGrid;
 ////@end forward declarations
+class wxCheckBox;
 class ProgressController;
 class wxPropertyGridEvent;
 class CutFilterDialog;

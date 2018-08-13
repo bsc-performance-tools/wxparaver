@@ -37,14 +37,11 @@
 #else
 #include <wx/propgrid/propdev.h>
 #endif
-
-#include "rowsselectiondialog.h"
-//#include "window.h"
+#include "loadedwindows.h"
 
 using namespace std;
 
 class Window;
-class TimelineTreeSelector;
 
 /**********************************************************
  **       prvEventTypeProperty
@@ -329,7 +326,9 @@ class prvTimelineTreeProperty: public wxPGProperty
     
     prvTimelineTreeProperty( const wxString& label,
                              const wxString& name,
-                             const wxString& value );
+                             const wxString& value,
+                             std::vector<TWindowID> windows,
+                             const Trace *currentTrace );
     virtual ~prvTimelineTreeProperty();
 
 #if wxMAJOR_VERSION<3
@@ -346,7 +345,6 @@ class prvTimelineTreeProperty: public wxPGProperty
                   wxEvent& event );
 #endif
   private:
-    void OnTimelineSelectorClose( wxEvent& event );
-    
-    TimelineTreeSelector *timelineSelector;
+    std::vector<TWindowID> myWindows;
+    const Trace *myCurrentTrace;
 };

@@ -39,17 +39,18 @@
 #endif
 
 #include <wx/choicdlg.h>
+#include <wx/event.h>
+#include <wx/utils.h>
 #include "wxparaverapp.h"
 #include "pg_extraprop.h"
 #include "window.h"
 #include "selectionrowsutils.h"
 #include "labelconstructor.h"
-
 #include "filter.h"
 #include "eventsselectiondialog.h"
-#include <wx/event.h>
-#include <wx/utils.h>
+#include "rowsselectiondialog.h"
 #include "timelinetreeselector.h"
+
 
 /**********************************************************
  **       prvEventTypeProperty
@@ -1005,19 +1006,18 @@ WX_PG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty,
 
 prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
                                                   const wxString& name,
-                                                  const wxString& value )
-                                                    : wxPGProperty(label,name)
+                                                  const wxString& value,
+                                                  std::vector<TWindowID> windows,
+                                                  const Trace *currentTrace )
+                                                    : wxPGProperty(label,name), 
+                                                      myWindows( windows ),
+                                                      myCurrentTrace( currentTrace )
 {
   SetValue( value );
-  
-  timelineSelector = new TimelineTreeSelector( wxparaverApp::mainWindow, ID_TIMELINETREE, wxT( "Test selector" ) );
-  timelineSelector->Connect( ID_TIMELINETREE, wxID_CLOSE, wxObjectEventFunction( prvTimelineTreeProperty::OnTimelineSelectorClose ), NULL, this );
 }
 
 prvTimelineTreeProperty::~prvTimelineTreeProperty()
 {
-  if( timelineSelector == NULL )
-    delete timelineSelector;
 }
 
 bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
@@ -1026,12 +1026,18 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
 {
   if( propgrid->IsMainButtonEvent(event) )
   {
-    timelineSelector->Move( wxGetMousePosition() );
-#ifdef USE_WXDIALOG
-    timelineSelector->ShowModal();
-#else
-    timelineSelector->Show();
-#endif
+    vector<TWindowID> tmpVector;
+    TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow, ID_TIMELINETREE, wxT( "Test selector" ), myWindows, myCurrentTrace );
+    timelineSelector.Move( wxGetMousePosition() );
+    
+    int retCode = timelineSelector.ShowModal();
+    if( retCode == wxID_OK )
+    {}
+    else
+    {
+      return false;
+    }
+    
   }
   return true;
 }
@@ -1047,12 +1053,3 @@ wxString prvTimelineTreeProperty::ValueToString( wxVariant & value, int argFlags
   return value.GetString();
 }
 #endif
-
-void prvTimelineTreeProperty::OnTimelineSelectorClose( wxEvent& event )
-{
-  if( timelineSelector == NULL )
-  {
-    delete timelineSelector;
-    timelineSelector = NULL;
-  }
-}

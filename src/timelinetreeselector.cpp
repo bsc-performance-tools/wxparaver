@@ -22,38 +22,36 @@
 \*****************************************************************************/
 
 #include "timelinetreeselector.h"
-#include <wx/treectrl.h>
 #include <wx/sizer.h>
+#include <map>
+#include "trace.h"
+#include "window.h"
+#include "paravermain.h"
+
+using std::vector;
+using std::map;
 
 #define ID_TIMELINETREE 10001
 
-#ifdef USE_WXDIALOG
 BEGIN_EVENT_TABLE( TimelineTreeSelector, wxDialog )
-#else // wxMiniFrame
-BEGIN_EVENT_TABLE( TimelineTreeSelector, wxMiniFrame )
-#endif
+  EVT_TREE_ITEM_ACTIVATED( ID_TIMELINETREE, TimelineTreeSelector::OnTreeItemActivated )
 END_EVENT_TABLE()
 
-#ifdef USE_WXDIALOG
 IMPLEMENT_DYNAMIC_CLASS( TimelineTreeSelector, wxDialog )
-#else // wxMiniFrame
-IMPLEMENT_DYNAMIC_CLASS( TimelineTreeSelector, wxMiniFrame )
-#endif
 
 TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
                                             wxWindowID id,
                                             const wxString& title,
+                                            const std::vector<TWindowID>& windows,
+                                            const Trace *currentTrace,
                                             const wxPoint& pos,
                                             const wxSize& size,
                                             long style,
                                             const wxString& name ) :
-#ifdef USE_WXDIALOG
   wxDialog( parent, id, title, pos, size, style, name )
-#else // wxMiniFrame
-  wxMiniFrame( parent, id, title, pos, size, style, name )
-#endif
 {
   CreateControls();
+  fillTree( windows, currentTrace );
 }
 
 void TimelineTreeSelector::CreateControls()
@@ -61,6 +59,45 @@ void TimelineTreeSelector::CreateControls()
   wxBoxSizer* itemBoxSizer = new wxBoxSizer( wxVERTICAL );
   this->SetSizer( itemBoxSizer );
 
-  timelineTree = new wxTreeCtrl( this, ID_TIMELINETREE );
+  timelineTree = new wxTreeCtrl( this, ID_TIMELINETREE, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_FULL_ROW_HIGHLIGHT );
   itemBoxSizer->Add( timelineTree, 1, wxGROW );
+}
+
+void TimelineTreeSelector::OnTreeItemActivated( wxTreeEvent& event )
+{
+  if( timelineTree->GetItemParent( event.GetItem() ) != timelineTree->GetRootItem() )
+    EndModal( wxID_OK );
+}
+
+void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, const Trace *currentTrace )
+{
+  timelineTree->SetImageList( paraverMain::myParaverMain->GetImageList() );
+  
+  wxTreeItemId root = timelineTree->AddRoot( wxT( "root" ) );
+  wxTreeItemId currentTraceId = timelineTree->AppendItem( root,  wxString( currentTrace->getFileNameNumbered().c_str(), wxConvUTF8 ) );
+
+  map< Trace *, wxTreeItemId > traceRoot;
+  for( vector<TWindowID>::const_iterator it = windows.begin(); it != windows.end(); ++it )
+  {
+    if( LoadedWindows::getInstance()->getWindow( *it )->getTrace() == currentTrace )
+      timelineTree->AppendItem( currentTraceId, LoadedWindows::getInstance()->getWindow( *it )->getName() );
+    else
+    {
+      map< Trace *, wxTreeItemId >::iterator itMap = traceRoot.find( LoadedWindows::getInstance()->getWindow( *it )->getTrace() );
+      wxTreeItemId insertId;
+      if( itMap != traceRoot.end() )
+        insertId = itMap->second;
+      else
+      {
+        insertId = timelineTree->AppendItem( root, 
+                                             wxString( LoadedWindows::getInstance()->getWindow( *it )->getTrace()->getFileNameNumbered().c_str(),
+                                                       wxConvUTF8 ) );
+        traceRoot[ LoadedWindows::getInstance()->getWindow( *it )->getTrace() ] = insertId;
+      }
+      if( !LoadedWindows::getInstance()->getWindow( *it )->isDerivedWindow() )
+        timelineTree->AppendItem( insertId, LoadedWindows::getInstance()->getWindow( *it )->getName() );
+    }
+  }
+  
+  timelineTree->Expand( currentTraceId );
 }
