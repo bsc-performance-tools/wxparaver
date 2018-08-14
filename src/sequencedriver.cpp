@@ -232,7 +232,7 @@ bool RunSpectralAction::execute( std::string whichTrace )
       if( tmpValue == -1 )
         numericParameter = _("0");
       else
-        numericParameter = wxString( "%d", tmpValue );
+        numericParameter = wxString( wxT( "%d" ), tmpValue );
 
       wxString command = _( "/bin/sh -c '") + 
                          spectralBin + _(" ") +
