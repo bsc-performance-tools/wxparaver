@@ -27,6 +27,7 @@
 #include "trace.h"
 #include "window.h"
 #include "paravermain.h"
+#include "windows_tree.h"
 
 using std::vector;
 using std::map;
@@ -38,6 +39,29 @@ BEGIN_EVENT_TABLE( TimelineTreeSelector, wxDialog )
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS( TimelineTreeSelector, wxDialog )
+
+class TimelineSelectorItemData: public wxTreeItemData
+{
+  public:
+    TimelineSelectorItemData( const wxString& whichDesc, Window* whichWin ) :
+      desc( whichDesc ), myTimeline( whichWin )
+    {}
+    
+    const wxString& GetDesc() const
+    {
+      return desc;
+    }
+    
+    Window *getTimeline() const
+    {
+      return myTimeline;
+    }
+    
+  private:
+    wxString desc;
+    Window* myTimeline;
+};
+
 
 TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
                                             wxWindowID id,
@@ -59,7 +83,7 @@ void TimelineTreeSelector::CreateControls()
   wxBoxSizer* itemBoxSizer = new wxBoxSizer( wxVERTICAL );
   this->SetSizer( itemBoxSizer );
 
-  timelineTree = new wxTreeCtrl( this, ID_TIMELINETREE, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_FULL_ROW_HIGHLIGHT );
+  timelineTree = new wxTreeCtrl( this, ID_TIMELINETREE, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_HAS_BUTTONS|wxTR_FULL_ROW_HIGHLIGHT|wxTR_DEFAULT_STYLE );
   itemBoxSizer->Add( timelineTree, 1, wxGROW );
 }
 
@@ -74,30 +98,43 @@ void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, cons
   timelineTree->SetImageList( paraverMain::myParaverMain->GetImageList() );
   
   wxTreeItemId root = timelineTree->AddRoot( wxT( "root" ) );
-  wxTreeItemId currentTraceId = timelineTree->AppendItem( root,  wxString( currentTrace->getFileNameNumbered().c_str(), wxConvUTF8 ) );
+  wxTreeItemId currentTraceId = timelineTree->AppendItem( root, wxString( currentTrace->getFileNameNumbered().c_str(), wxConvUTF8 ) );
 
   map< Trace *, wxTreeItemId > traceRoot;
   for( vector<TWindowID>::const_iterator it = windows.begin(); it != windows.end(); ++it )
   {
-    if( LoadedWindows::getInstance()->getWindow( *it )->getTrace() == currentTrace )
-      timelineTree->AppendItem( currentTraceId, LoadedWindows::getInstance()->getWindow( *it )->getName() );
+    Window *currentWin = LoadedWindows::getInstance()->getWindow( *it );
+    if( currentWin->getChild() != NULL )
+      continue;
+
+    if( currentWin->getTrace() == currentTrace )
+      addTreeItem( currentWin, currentTraceId );
     else
     {
-      map< Trace *, wxTreeItemId >::iterator itMap = traceRoot.find( LoadedWindows::getInstance()->getWindow( *it )->getTrace() );
+      map< Trace *, wxTreeItemId >::iterator itMap = traceRoot.find( currentWin->getTrace() );
       wxTreeItemId insertId;
       if( itMap != traceRoot.end() )
         insertId = itMap->second;
       else
       {
-        insertId = timelineTree->AppendItem( root, 
-                                             wxString( LoadedWindows::getInstance()->getWindow( *it )->getTrace()->getFileNameNumbered().c_str(),
-                                                       wxConvUTF8 ) );
-        traceRoot[ LoadedWindows::getInstance()->getWindow( *it )->getTrace() ] = insertId;
+        insertId = timelineTree->AppendItem( root, wxString( currentWin->getTrace()->getFileNameNumbered().c_str(),
+                                                             wxConvUTF8 ) );
+        traceRoot[ currentWin->getTrace() ] = insertId;
       }
-      if( !LoadedWindows::getInstance()->getWindow( *it )->isDerivedWindow() )
-        timelineTree->AppendItem( insertId, LoadedWindows::getInstance()->getWindow( *it )->getName() );
+      addTreeItem( currentWin, insertId );
     }
   }
   
   timelineTree->Expand( currentTraceId );
+}
+
+void TimelineTreeSelector::addTreeItem( Window *whichWindow, wxTreeItemId whichParent )
+{
+  wxTreeItemId tmpId = timelineTree->AppendItem( whichParent, wxString( whichWindow->getName().c_str(), wxConvUTF8 ), getIconNumber( whichWindow ), -1,
+                                                 new TimelineSelectorItemData( wxString( whichWindow->getName().c_str(), wxConvUTF8 ), whichWindow ) );
+  if( whichWindow->isDerivedWindow() )
+  {
+    addTreeItem( whichWindow->getParent( 0 ), tmpId );
+    addTreeItem( whichWindow->getParent( 1 ), tmpId );
+  }
 }

@@ -72,5 +72,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
 void iconizeWindows( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      bool iconize );
-                     
+
+int getIconNumber( Window *whichWindow );
+
 #endif // _GWINDOWTREE_H_

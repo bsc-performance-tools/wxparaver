@@ -62,6 +62,8 @@ class DirBrowserButton;
 class wxColourPickerCtrl;
 class FileBrowserButton;
 ////@end forward declarations
+class wxCheckBox;
+class wxListBox;
 
 /*!
  * Control identifiers
