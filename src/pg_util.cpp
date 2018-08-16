@@ -2274,7 +2274,12 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   prvTimelineTreeProperty *auxProperty = NULL;
   vector<TWindowID> testVector;
   LoadedWindows::getInstance()->getValidControlWindow( whichHisto->getDataWindow(), whichHisto->getControlWindow(), testVector );
-  auxProperty = new prvTimelineTreeProperty( wxT("test timeline tree"), wxT("testTimelineTree"), wxT("test value"), testVector, whichHisto->getTrace() );
+  auxProperty = new prvTimelineTreeProperty( wxT("test timeline tree"),
+                                             wxT("testTimelineTree"),
+                                             wxString( whichHisto->getControlWindow()->getName().c_str() ),
+                                             testVector,
+                                             whichHisto->getControlWindow(),
+                                             whichHisto->getTrace() );
   retId = windowProperties->Append( auxProperty );
   // Test timelineTreeSelector end
 

@@ -67,7 +67,9 @@ TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
                                             wxWindowID id,
                                             const wxString& title,
                                             const std::vector<TWindowID>& windows,
+                                            const Window *currentWindow,
                                             const Trace *currentTrace,
+                                            bool needNoneElement,
                                             const wxPoint& pos,
                                             const wxSize& size,
                                             long style,
@@ -75,8 +77,16 @@ TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
   wxDialog( parent, id, title, pos, size, style, name )
 {
   CreateControls();
-  fillTree( windows, currentTrace );
+  fillTree( windows, currentWindow, currentTrace, needNoneElement );
 }
+
+
+Window *TimelineTreeSelector::getSelection() const
+{
+  TimelineSelectorItemData *currentItem = ( TimelineSelectorItemData* ) timelineTree->GetItemData( timelineTree->GetSelection() );
+  return currentItem->getTimeline();
+}
+
 
 void TimelineTreeSelector::CreateControls()
 {
@@ -87,17 +97,26 @@ void TimelineTreeSelector::CreateControls()
   itemBoxSizer->Add( timelineTree, 1, wxGROW );
 }
 
+
 void TimelineTreeSelector::OnTreeItemActivated( wxTreeEvent& event )
 {
-  if( timelineTree->GetItemParent( event.GetItem() ) != timelineTree->GetRootItem() )
+  if( timelineTree->GetItemParent( event.GetItem() ) != timelineTree->GetRootItem() || 
+      timelineTree->GetItemText( event.GetItem() ) == wxT( "None" ) )
     EndModal( wxID_OK );
 }
 
-void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, const Trace *currentTrace )
+
+void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, const Window *currentWindow, const Trace *currentTrace, bool needNoneElement )
 {
   timelineTree->SetImageList( paraverMain::myParaverMain->GetImageList() );
   
   wxTreeItemId root = timelineTree->AddRoot( wxT( "root" ) );
+  if( needNoneElement )
+  {
+    wxTreeItemId noneId = timelineTree->AppendItem( root, wxT( "None" ), -1, -1, new TimelineSelectorItemData( wxT( "None" ), NULL ) );
+    if( currentWindow == NULL )
+      timelineTree->SelectItem( noneId );
+  }
   wxTreeItemId currentTraceId = timelineTree->AppendItem( root, wxString( currentTrace->getFileNameNumbered().c_str(), wxConvUTF8 ) );
 
   map< Trace *, wxTreeItemId > traceRoot;
@@ -108,7 +127,7 @@ void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, cons
       continue;
 
     if( currentWin->getTrace() == currentTrace )
-      addTreeItem( currentWin, currentTraceId );
+      addTreeItem( currentWin, currentWindow, currentTraceId );
     else
     {
       map< Trace *, wxTreeItemId >::iterator itMap = traceRoot.find( currentWin->getTrace() );
@@ -121,20 +140,24 @@ void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, cons
                                                              wxConvUTF8 ) );
         traceRoot[ currentWin->getTrace() ] = insertId;
       }
-      addTreeItem( currentWin, insertId );
+      addTreeItem( currentWin, currentWindow, insertId );
     }
   }
   
   timelineTree->Expand( currentTraceId );
 }
 
-void TimelineTreeSelector::addTreeItem( Window *whichWindow, wxTreeItemId whichParent )
+
+void TimelineTreeSelector::addTreeItem( Window *whichWindow, const Window *currentWindow, wxTreeItemId whichParent )
 {
   wxTreeItemId tmpId = timelineTree->AppendItem( whichParent, wxString( whichWindow->getName().c_str(), wxConvUTF8 ), getIconNumber( whichWindow ), -1,
                                                  new TimelineSelectorItemData( wxString( whichWindow->getName().c_str(), wxConvUTF8 ), whichWindow ) );
+  if( whichWindow == currentWindow )
+    timelineTree->SelectItem( tmpId );
+
   if( whichWindow->isDerivedWindow() )
   {
-    addTreeItem( whichWindow->getParent( 0 ), tmpId );
-    addTreeItem( whichWindow->getParent( 1 ), tmpId );
+    addTreeItem( whichWindow->getParent( 0 ), currentWindow, tmpId );
+    addTreeItem( whichWindow->getParent( 1 ), currentWindow, tmpId );
   }
 }

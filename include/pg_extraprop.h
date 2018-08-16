@@ -328,6 +328,7 @@ class prvTimelineTreeProperty: public wxPGProperty
                              const wxString& name,
                              const wxString& value,
                              std::vector<TWindowID> windows,
+                             Window *currentWindow,
                              const Trace *currentTrace );
     virtual ~prvTimelineTreeProperty();
 
@@ -343,8 +344,13 @@ class prvTimelineTreeProperty: public wxPGProperty
     bool OnEvent( wxPropertyGrid* propgrid,
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
+                  
+    Window *getSelectedWindow() const;
+
 #endif
   private:
     std::vector<TWindowID> myWindows;
     const Trace *myCurrentTrace;
+    
+    Window *selectedWindow;
 };

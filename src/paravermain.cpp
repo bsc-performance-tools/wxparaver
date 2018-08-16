@@ -1727,6 +1727,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     currentTimeline->setFunctionParam( functionLevel, paramIdx, values );
     currentTimeline->setRedraw( true );
   }
+  else if( propName == _( "testTimelineTree" ) )
+  {
+    currentHisto->setControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
+    currentHisto->setRecalc( true );
+    currentHisto->setChanged( true );
+  }
 }
 
 

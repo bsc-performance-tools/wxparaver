@@ -1008,12 +1008,14 @@ prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
                                                   const wxString& name,
                                                   const wxString& value,
                                                   std::vector<TWindowID> windows,
+                                                  Window *currentWindow,
                                                   const Trace *currentTrace )
                                                     : wxPGProperty(label,name), 
                                                       myWindows( windows ),
                                                       myCurrentTrace( currentTrace )
 {
   SetValue( value );
+  selectedWindow = currentWindow;
 }
 
 prvTimelineTreeProperty::~prvTimelineTreeProperty()
@@ -1027,12 +1029,25 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
   if( propgrid->IsMainButtonEvent(event) )
   {
     vector<TWindowID> tmpVector;
-    TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow, ID_TIMELINETREE, wxT( "Test selector" ), myWindows, myCurrentTrace );
+    TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
+                                           ID_TIMELINETREE,
+                                           GetLabel(),
+                                           myWindows,
+                                           selectedWindow,
+                                           myCurrentTrace );
     timelineSelector.Move( wxGetMousePosition() );
     
     int retCode = timelineSelector.ShowModal();
     if( retCode == wxID_OK )
-    {}
+    {
+      if( selectedWindow == timelineSelector.getSelection() )
+        return false;
+      selectedWindow = timelineSelector.getSelection();
+      if( selectedWindow != NULL )
+        SetValueInEvent( wxString( selectedWindow->getName().c_str(), wxConvUTF8 ) );
+      else
+        SetValueInEvent( wxT( "None" ) );
+    }
     else
     {
       return false;
@@ -1053,3 +1068,8 @@ wxString prvTimelineTreeProperty::ValueToString( wxVariant & value, int argFlags
   return value.GetString();
 }
 #endif
+
+Window *prvTimelineTreeProperty::getSelectedWindow() const
+{
+  return selectedWindow;
+}

@@ -42,7 +42,9 @@ class TimelineTreeSelector : public wxDialog
                           wxWindowID id,
                           const wxString& title,
                           const std::vector<TWindowID>& windows,
+                          const Window *currentWindow,
                           const Trace *currentTrace,
+                          bool needNoneElement = false,
                           const wxPoint& pos = wxDefaultPosition,
                           const wxSize& size = wxDefaultSize,
                           long style = wxDEFAULT_DIALOG_STYLE,
@@ -51,10 +53,15 @@ class TimelineTreeSelector : public wxDialog
     ~TimelineTreeSelector()
     {}
     
+    Window *getSelection() const;
+
   private:
     void CreateControls();
-    void fillTree( const std::vector<TWindowID>& windows, const Trace *currentTrace );
-    void addTreeItem( Window *whichWindow, wxTreeItemId whichParent );
+    void fillTree( const std::vector<TWindowID>& windows,
+                   const Window *currentWindow,
+                   const Trace *currentTrace,
+                   bool needNoneElement );
+    void addTreeItem( Window *whichWindow, const Window *currentWindow, wxTreeItemId whichParent );
     void OnTreeItemActivated( wxTreeEvent& event );
     
     wxTreeCtrl *timelineTree;
