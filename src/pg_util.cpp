@@ -756,6 +756,73 @@ void AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
 }
 
 
+void AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
+                                               Histogram* whichHisto,
+                                               wxPGId fatherWidget,
+                                               const wxString &widgetLabel,
+                                               const wxString &widgetName,
+                                               THistogramProperties propertyIndex,
+                                               vector<TWindowID> windowsList,
+                                               Window *currentWindow,
+                                               bool needNoneElement = false )
+{
+  prvTimelineTreeProperty *auxProperty = NULL;
+
+  wxString valueStr;
+  if( currentWindow == NULL )
+    valueStr = wxT( "None" );
+  else
+    valueStr = wxString( currentWindow->getName().c_str() );
+
+  Trace *currentTrace;
+  if( currentWindow == NULL )
+    currentTrace = whichHisto->getControlWindow()->getTrace();
+  else
+    currentTrace = currentWindow->getTrace();
+
+  if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+  {
+    // NORMAL mode
+    auxProperty = new prvTimelineTreeProperty( widgetLabel,
+                                               widgetName,
+                                               valueStr,
+                                               windowsList,
+                                               currentWindow,
+                                               currentTrace,
+                                               needNoneElement );
+
+    if ( fatherWidget )
+    {
+      windowProperties->AppendIn( fatherWidget, auxProperty );
+    }
+    else
+    {
+      windowProperties->Append( auxProperty );
+    }
+  }
+  else if ( whichHisto->existsCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ) )
+  {
+    // CFG4D mode
+    wxString auxTag = wxString::FromAscii( 
+            whichHisto->getCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ).c_str() );
+    auxProperty = new prvTimelineTreeProperty( auxTag,
+                                               widgetName,
+                                               valueStr,
+                                               windowsList,
+                                               currentWindow,
+                                               currentTrace,
+                                               needNoneElement );
+
+    windowProperties->Append( auxProperty );
+  }
+  else
+  {
+    // CFG4D mode but no tag found => don't show property
+  }
+
+}
+
+
 void AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
                                          Histogram* whichHisto,
                                          wxPGId fatherWidget,
@@ -2059,20 +2126,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
                                                                  whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getExtraControlWindow(), validWin );
 
-  arrayStr.Clear();
-  arrayInt.Clear();
-  selected = -1;
-  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
-  {
-    arrayStr.Add( wxString::FromAscii( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
-    arrayInt.Add( (*it) );
-    // Do we need this -if- here?
-    if( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getControlWindow() )
-      selected = (*it);
-  }
-
-  AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, ctrlCat,
-          wxT("Window"), wxT("ControlWindow"), HISTOGRAM_CONTROLWINDOW, arrayStr, arrayInt, selected );
+  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, ctrlCat,
+          wxT("Window"), wxT("ControlWindow"), HISTOGRAM_CONTROLWINDOW, validWin, whichHisto->getControlWindow() );
 
   AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, ctrlCat,
           wxT("Minimum"), wxT("ControlMinimum"), HISTOGRAM_CONTROLMINIMUM, whichHisto->getControlMin() );
@@ -2161,19 +2216,9 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
                                                     whichHisto->getExtraControlWindow(),
                                                     validWin );
-  arrayStr.Clear();
-  arrayInt.Clear();
-  selected = -1;
-  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
-  {
-    arrayStr.Add( wxString::FromAscii( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
-    arrayInt.Add( (*it) );
-    if( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getDataWindow() )
-      selected = (*it);
-  }
 
-  AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, dataCat,
-           wxT("Window"), wxT("DataWindow"), HISTOGRAM_DATAWINDOW, arrayStr, arrayInt, selected );
+  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, dataCat,
+           wxT("Window"), wxT("DataWindow"), HISTOGRAM_DATAWINDOW, validWin, whichHisto->getDataWindow() );
 
   // 3rd window related properties
   wxPGId thirdWinCat = (wxPGId)NULL;
@@ -2188,21 +2233,9 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   dataWindow = ( whichHisto->getDataWindow() == NULL ) ? whichHisto->getControlWindow() :
                                                          whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getControlWindow(), validWin );
-  arrayStr.Clear();
-  arrayInt.Clear();
-  selected = -1;
-  arrayStr.Add( wxT( "none" ) );
-  arrayInt.Add( -1 );
-  for( vector<TWindowID>::iterator it = validWin.begin(); it != validWin.end(); ++it )
-  {
-    arrayStr.Add( wxString::FromAscii( LoadedWindows::getInstance()->getWindow( (*it) )->getName().c_str() ) );
-    arrayInt.Add( (*it) );
-    if( ( LoadedWindows::getInstance()->getWindow( (*it) ) == whichHisto->getExtraControlWindow() ) )
-      selected = (*it);
-  }
 
-  AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, thirdWinCat,
-          wxT("3rd Window"), wxT("3D3rdWindow"), HISTOGRAM_3D3RDWINDOW, arrayStr, arrayInt, selected );
+  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, thirdWinCat,
+           wxT("3rd Window"), wxT("3D3rdWindow"), HISTOGRAM_3D3RDWINDOW, validWin, whichHisto->getExtraControlWindow(), true );
 
   AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, thirdWinCat,
           wxT("Minimum"), wxT("3DMinimum"), HISTOGRAM_3DMINIMUM, whichHisto->getExtraControlMin() );
@@ -2268,20 +2301,6 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
       auxEnumProperty->Enable( false );
 #endif
   }
-
-  // Test timelineTreeSelector
-  wxPGId retId = (wxPGId)NULL;
-  prvTimelineTreeProperty *auxProperty = NULL;
-  vector<TWindowID> testVector;
-  LoadedWindows::getInstance()->getValidControlWindow( whichHisto->getDataWindow(), whichHisto->getControlWindow(), testVector );
-  auxProperty = new prvTimelineTreeProperty( wxT("test timeline tree"),
-                                             wxT("testTimelineTree"),
-                                             wxString( whichHisto->getControlWindow()->getName().c_str() ),
-                                             testVector,
-                                             whichHisto->getControlWindow(),
-                                             whichHisto->getTrace() );
-  retId = windowProperties->Append( auxProperty );
-  // Test timelineTreeSelector end
 
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );
   windowProperties->Refresh();

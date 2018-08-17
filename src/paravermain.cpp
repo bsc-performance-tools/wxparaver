@@ -1219,7 +1219,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   // Control Window related properties
   else if( propName == _( "ControlWindow" ) )
   {
-    currentHisto->setControlWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
+    currentHisto->setControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
     currentHisto->setRecalc( true );
   }
   else if( propName == _( "ControlMinimum" ) )
@@ -1266,7 +1266,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   // Data Window related properties
   else if( propName == _( "DataWindow" ) )
   {
-    currentHisto->setDataWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
+    currentHisto->setDataWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
     currentHisto->setRecalc( true );
   }
   else if( propName == _( "DataMinimum" ) )
@@ -1316,10 +1316,10 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   }
   else if( propName == _( "3D3rdWindow" ) )
   {
-    if( property->GetValue().GetLong() == -1 )
+    if( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() == NULL )
       currentHisto->clearExtraControlWindow();
     else
-      currentHisto->setExtraControlWindow( LoadedWindows::getInstance()->getWindow( property->GetValue().GetLong() ) );
+      currentHisto->setExtraControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
     currentHisto->setRecalc( true );
   }
   else if( propName == _( "3DMinimum" ) )
@@ -1726,12 +1726,6 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     }
     currentTimeline->setFunctionParam( functionLevel, paramIdx, values );
     currentTimeline->setRedraw( true );
-  }
-  else if( propName == _( "testTimelineTree" ) )
-  {
-    currentHisto->setControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
-    currentHisto->setRecalc( true );
-    currentHisto->setChanged( true );
   }
 }
 

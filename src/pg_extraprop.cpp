@@ -1009,13 +1009,15 @@ prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
                                                   const wxString& value,
                                                   std::vector<TWindowID> windows,
                                                   Window *currentWindow,
-                                                  const Trace *currentTrace )
+                                                  const Trace *currentTrace,
+                                                  bool needNoneElement )
                                                     : wxPGProperty(label,name), 
                                                       myWindows( windows ),
                                                       myCurrentTrace( currentTrace )
 {
   SetValue( value );
   selectedWindow = currentWindow;
+  myNeedNoneElement = needNoneElement;
 }
 
 prvTimelineTreeProperty::~prvTimelineTreeProperty()
@@ -1034,7 +1036,8 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
                                            GetLabel(),
                                            myWindows,
                                            selectedWindow,
-                                           myCurrentTrace );
+                                           myCurrentTrace,
+                                           myNeedNoneElement );
     timelineSelector.Move( wxGetMousePosition() );
     
     int retCode = timelineSelector.ShowModal();

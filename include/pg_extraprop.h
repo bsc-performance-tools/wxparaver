@@ -329,7 +329,8 @@ class prvTimelineTreeProperty: public wxPGProperty
                              const wxString& value,
                              std::vector<TWindowID> windows,
                              Window *currentWindow,
-                             const Trace *currentTrace );
+                             const Trace *currentTrace,
+                             bool needNoneElement = false );
     virtual ~prvTimelineTreeProperty();
 
 #if wxMAJOR_VERSION<3
@@ -351,6 +352,6 @@ class prvTimelineTreeProperty: public wxPGProperty
   private:
     std::vector<TWindowID> myWindows;
     const Trace *myCurrentTrace;
-    
     Window *selectedWindow;
+    bool myNeedNoneElement;
 };
