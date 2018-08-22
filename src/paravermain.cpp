@@ -2614,7 +2614,7 @@ void paraverMain::ShowHistogramDialog()
     if( ParaverConfig::getInstance()->getHistogramSkipCreateDialog() )
       newHistogram->setControlWindow( currentTimeline );
     else
-      newHistogram->setControlWindow( LoadedWindows::getInstance()->getWindow( controlTimeline[ 0 ] ) );
+      newHistogram->setControlWindow( histogramDialog.GetControlTimelineSelected() );
 
     if ( histogramDialog.GetControlTimelineAutofit() )
       newHistogram->setCompute2DScale( true );
@@ -2630,11 +2630,11 @@ void paraverMain::ShowHistogramDialog()
     if( ParaverConfig::getInstance()->getHistogramSkipCreateDialog() )
       newHistogram->setDataWindow( currentTimeline );
     else
-      newHistogram->setDataWindow( LoadedWindows::getInstance()->getWindow( dataTimeline[ 0 ] ) );
+      newHistogram->setDataWindow( histogramDialog.GetDataTimelineSelected() );
 
     if ( !extraControlTimeline.empty() )
     {
-      newHistogram->setExtraControlWindow( LoadedWindows::getInstance()->getWindow( extraControlTimeline[ 0 ] ) );
+      newHistogram->setExtraControlWindow( histogramDialog.GetExtraControlTimelineSelected() );
 
       if ( histogramDialog.GetExtraControlTimelineAutofit() )
         newHistogram->setCompute3DScale( true );

@@ -1030,7 +1030,6 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
 {
   if( propgrid->IsMainButtonEvent(event) )
   {
-    vector<TWindowID> tmpVector;
     TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
                                            ID_TIMELINETREE,
                                            GetLabel(),

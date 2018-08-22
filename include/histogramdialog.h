@@ -64,13 +64,16 @@ class wxToggleButton;
 
 ////@begin control identifiers
 #define ID_HISTOGRAMDIALOG 10061
-#define ID_HISTOGRAM_CONTROLTIMELINELIST 10065
+#define ID_HISTOGRAM_CONTROLTIMELINETEXT 10065
+#define ID_HISTOGRAM_CONTROLTIMELINEBUTTON 10001
 #define ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT 10067
 #define ID_HISTOGRAM_CONTROLTIMELINEMIN 10068
 #define ID_HISTOGRAM_CONTROLTIMELINEMAX 10005
 #define ID_HISTOGRAM_CONTROLTIMELINEDELTA 10006
-#define ID_HISTOGRAM_DATATIMELINELIST 10003
-#define ID_HISTOGRAM_3DTIMELINELIST 10004
+#define ID_HISTOGRAM_DATATIMELINETEXT 10003
+#define ID_HISTOGRAM_DATATIMELINEBUTTON 10002
+#define ID_HISTOGRAM_3DTIMELINETEXT 10004
+#define ID_HISTOGRAM_3DTIMELINEBUTTON 10007
 #define ID_HISTOGRAM_3DTIMELINEAUTOFIT 10066
 #define ID_HISTOGRAM_3DTIMELINEMIN 10008
 #define ID_HISTOGRAM_3DTIMELINEMAX 10009
@@ -128,8 +131,8 @@ public:
   /// wxEVT_IDLE event handler for ID_HISTOGRAMDIALOG
   void OnIdle( wxIdleEvent& event );
 
-  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_HISTOGRAM_CONTROLTIMELINELIST
-  void OnHistogramControltimelinelistSelected( wxCommandEvent& event );
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_HISTOGRAM_CONTROLTIMELINEBUTTON
+  void OnHistogramControltimelinebuttonClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT
   void OnHistogramControltimelineautofitClick( wxCommandEvent& event );
@@ -137,11 +140,11 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT
   void OnHistogramControltimelineautofitUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_HISTOGRAM_DATATIMELINELIST
-  void OnHistogramDatatimelinelistSelected( wxCommandEvent& event );
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_HISTOGRAM_DATATIMELINEBUTTON
+  void OnHistogramDatatimelinebuttonClick( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_HISTOGRAM_3DTIMELINELIST
-  void OnHistogram3dtimelinelistSelected( wxCommandEvent& event );
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_HISTOGRAM_3DTIMELINEBUTTON
+  void OnHistogram3dtimelinebuttonClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_HISTOGRAM_3DTIMELINEAUTOFIT
   void OnHistogram3dtimelineautofitClick( wxCommandEvent& event );
@@ -195,11 +198,20 @@ public:
   double GetControlTimelineMin() const { return controlTimelineMin ; }
   void SetControlTimelineMin(double value) { controlTimelineMin = value ; }
 
-  std::vector< TWindowID > GetControlTimelines() const { return controlTimelines ; }
-  void SetControlTimelines(std::vector< TWindowID > value) { controlTimelines = value ; }
+  Window * GetControlTimelineSelected() const { return controlTimelineSelected ; }
+  void SetControlTimelineSelected(Window * value) { controlTimelineSelected = value ; }
 
-  std::vector< TWindowID > GetDataTimelines() const { return dataTimelines ; }
-  void SetDataTimelines(std::vector< TWindowID > value) { dataTimelines = value ; }
+  vector< TWindowID > GetControlTimelines() const { return controlTimelines ; }
+  void SetControlTimelines(vector< TWindowID > value) { controlTimelines = value ; }
+
+  Window * GetCurrentWindow() const { return currentWindow ; }
+  void SetCurrentWindow(Window * value) { currentWindow = value ; }
+
+  Window * GetDataTimelineSelected() const { return dataTimelineSelected ; }
+  void SetDataTimelineSelected(Window * value) { dataTimelineSelected = value ; }
+
+  vector< TWindowID > GetDataTimelines() const { return dataTimelines ; }
+  void SetDataTimelines(vector< TWindowID > value) { dataTimelines = value ; }
 
   bool GetExtraControlTimelineAutofit() const { return extraControlTimelineAutofit ; }
   void SetExtraControlTimelineAutofit(bool value) { extraControlTimelineAutofit = value ; }
@@ -213,11 +225,14 @@ public:
   double GetExtraControlTimelineMin() const { return extraControlTimelineMin ; }
   void SetExtraControlTimelineMin(double value) { extraControlTimelineMin = value ; }
 
-  std::vector< TWindowID > GetExtraControlTimelines() const { return extraControlTimelines ; }
-  void SetExtraControlTimelines(std::vector< TWindowID > value) { extraControlTimelines = value ; }
+  Window * GetExtraControlTimelineSelected() const { return extraControlTimelineSelected ; }
+  void SetExtraControlTimelineSelected(Window * value) { extraControlTimelineSelected = value ; }
 
-  std::vector< std::pair< TRecordTime, TRecordTime > > GetTimeRange() const { return timeRange ; }
-  void SetTimeRange(std::vector< std::pair< TRecordTime, TRecordTime > > value) { timeRange = value ; }
+  vector< TWindowID > GetExtraControlTimelines() const { return extraControlTimelines ; }
+  void SetExtraControlTimelines(vector< TWindowID > value) { extraControlTimelines = value ; }
+
+  vector< pair< TRecordTime, TRecordTime > > GetTimeRange() const { return timeRange ; }
+  void SetTimeRange(vector< pair< TRecordTime, TRecordTime > > value) { timeRange = value ; }
 
   bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
   void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
@@ -236,7 +251,8 @@ public:
   static bool ShowToolTips();
 
 ////@begin HistogramDialog member variables
-  wxChoice* listControlTimelines;
+  wxTextCtrl* txtControlTimelines;
+  wxButton* buttonControlTimelines;
   wxToggleButton* buttonControlTimelineAutoFit;
   wxStaticText* labelControlTimelineMin;
   wxTextCtrl* txtControlTimelineMin;
@@ -244,8 +260,10 @@ public:
   wxTextCtrl* txtControlTimelineMax;
   wxStaticText* labelControlTimelineDelta;
   wxTextCtrl* txtControlTimelineDelta;
-  wxChoice* listDataTimelines;
-  wxChoice* list3DTimelines;
+  wxTextCtrl* txtDataTimelines;
+  wxButton* buttonDataTimelines;
+  wxTextCtrl* txt3DTimelines;
+  wxButton* button3DTimelines;
   wxToggleButton* button3DTimelineAutoFit;
   wxStaticText* label3DTimelineMin;
   wxTextCtrl* txt3DTimelineMin;
@@ -264,23 +282,23 @@ private:
   double controlTimelineDelta;
   double controlTimelineMax;
   double controlTimelineMin;
-  std::vector< TWindowID > controlTimelines;
-  std::vector< TWindowID > dataTimelines;
+  Window * controlTimelineSelected;
+  vector< TWindowID > controlTimelines;
+  Window * currentWindow;
+  Window * dataTimelineSelected;
+  vector< TWindowID > dataTimelines;
   bool extraControlTimelineAutofit;
   double extraControlTimelineDelta;
   double extraControlTimelineMax;
   double extraControlTimelineMin;
-  std::vector< TWindowID > extraControlTimelines;
-  std::vector< std::pair< TRecordTime, TRecordTime > > timeRange;
+  Window * extraControlTimelineSelected;
+  vector< TWindowID > extraControlTimelines;
+  vector< pair< TRecordTime, TRecordTime > > timeRange;
   bool waitingGlobalTiming;
 ////@end HistogramDialog member variables
 
   wxString formatNumber( double value );
 
-  // getSelectedWindow deletes previous information in std::std::vector selection
-  void getSelectedWindowID( wxChoice * listWidget,
-                            std::vector< TWindowID > &selection,
-                            bool listWithFirstVoidOption );
   TSemanticValue computeDelta( TSemanticValue min, TSemanticValue max );
   void computeColumns( Window *timeline, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta );
   void updateControlTimelineAutofit();
@@ -289,24 +307,4 @@ private:
   void enable3DFields( bool autofit );
 };
 
-/*
-class PreferencesDialog : public wxPropertySheetDialog
-{
-  public:
-    PreferencesDialog( wxWindow* parent,
-                 wxWindowID id,
-                 const wxString& title);
-    ~PreferencesDialog();
-
-    bool Create( wxWindow* parent,
-                 wxWindowID id,
-                 const wxString& title,
-                 const wxPoint& pos = wxDefaultPosition,
-                 const wxSize& size = wxDefaultSize,
-                 long style = wxDEFAULT_DIALOG_STYLE,
-                 const wxString& name = "Preferences" );
-};
-*/
-
-#endif
-  // _HISTOGRAMDIALOG_H_
+#endif // _HISTOGRAMDIALOG_H_

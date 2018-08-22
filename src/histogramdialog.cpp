@@ -46,9 +46,10 @@
 #include "paraverconfig.h"
 #include "labelconstructor.h"
 #include "wxparaverapp.h"
+#include "timelinetreeselector.h"
 // #include "histogram.h"
 
-// pREFERENCES
+// PREFERENCES
 //#include <wx/notebook.h>
 #include "preferencesdialog.h"
 ////@begin XPM images
@@ -71,11 +72,11 @@ BEGIN_EVENT_TABLE( HistogramDialog, wxDialog )
 
 ////@begin HistogramDialog event table entries
   EVT_IDLE( HistogramDialog::OnIdle )
-  EVT_CHOICE( ID_HISTOGRAM_CONTROLTIMELINELIST, HistogramDialog::OnHistogramControltimelinelistSelected )
+  EVT_BUTTON( ID_HISTOGRAM_CONTROLTIMELINEBUTTON, HistogramDialog::OnHistogramControltimelinebuttonClick )
   EVT_TOGGLEBUTTON( ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT, HistogramDialog::OnHistogramControltimelineautofitClick )
   EVT_UPDATE_UI( ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT, HistogramDialog::OnHistogramControltimelineautofitUpdate )
-  EVT_CHOICE( ID_HISTOGRAM_DATATIMELINELIST, HistogramDialog::OnHistogramDatatimelinelistSelected )
-  EVT_CHOICE( ID_HISTOGRAM_3DTIMELINELIST, HistogramDialog::OnHistogram3dtimelinelistSelected )
+  EVT_BUTTON( ID_HISTOGRAM_DATATIMELINEBUTTON, HistogramDialog::OnHistogramDatatimelinebuttonClick )
+  EVT_BUTTON( ID_HISTOGRAM_3DTIMELINEBUTTON, HistogramDialog::OnHistogram3dtimelinebuttonClick )
   EVT_TOGGLEBUTTON( ID_HISTOGRAM_3DTIMELINEAUTOFIT, HistogramDialog::OnHistogram3dtimelineautofitClick )
   EVT_UPDATE_UI( ID_HISTOGRAM_3DTIMELINEAUTOFIT, HistogramDialog::OnHistogram3dtimelineautofitUpdate )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_ALLWINDOW, HistogramDialog::OnRadiobuttonAllwindowSelected )
@@ -149,9 +150,14 @@ void HistogramDialog::Init()
 {
 ////@begin HistogramDialog member initialisation
   controlTimelineAutofit = true;
+  controlTimelineSelected = NULL;
+  currentWindow = NULL;
+  dataTimelineSelected = NULL;
   extraControlTimelineAutofit = true;
+  extraControlTimelineSelected = NULL;
   waitingGlobalTiming = false;
-  listControlTimelines = NULL;
+  txtControlTimelines = NULL;
+  buttonControlTimelines = NULL;
   buttonControlTimelineAutoFit = NULL;
   labelControlTimelineMin = NULL;
   txtControlTimelineMin = NULL;
@@ -159,8 +165,10 @@ void HistogramDialog::Init()
   txtControlTimelineMax = NULL;
   labelControlTimelineDelta = NULL;
   txtControlTimelineDelta = NULL;
-  listDataTimelines = NULL;
-  list3DTimelines = NULL;
+  txtDataTimelines = NULL;
+  buttonDataTimelines = NULL;
+  txt3DTimelines = NULL;
+  button3DTimelines = NULL;
   button3DTimelineAutoFit = NULL;
   label3DTimelineMin = NULL;
   txt3DTimelineMin = NULL;
@@ -200,9 +208,11 @@ void HistogramDialog::CreateControls()
   wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _("Control Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer4->Add(itemStaticText5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxArrayString listControlTimelinesStrings;
-  listControlTimelines = new wxChoice( itemDialog1, ID_HISTOGRAM_CONTROLTIMELINELIST, wxDefaultPosition, wxDefaultSize, listControlTimelinesStrings, 0 );
-  itemBoxSizer4->Add(listControlTimelines, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  txtControlTimelines = new wxTextCtrl( itemDialog1, ID_HISTOGRAM_CONTROLTIMELINETEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+  itemBoxSizer4->Add(txtControlTimelines, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+  buttonControlTimelines = new wxButton( itemDialog1, ID_HISTOGRAM_CONTROLTIMELINEBUTTON, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  itemBoxSizer4->Add(buttonControlTimelines, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
   buttonControlTimelineAutoFit = new wxToggleButton( itemDialog1, ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT, _("Auto Fit"), wxDefaultPosition, wxDefaultSize, 0 );
   buttonControlTimelineAutoFit->SetValue(true);
@@ -244,9 +254,11 @@ void HistogramDialog::CreateControls()
   wxStaticText* itemStaticText17 = new wxStaticText( itemDialog1, wxID_STATIC, _("Data Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer16->Add(itemStaticText17, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxArrayString listDataTimelinesStrings;
-  listDataTimelines = new wxChoice( itemDialog1, ID_HISTOGRAM_DATATIMELINELIST, wxDefaultPosition, wxDefaultSize, listDataTimelinesStrings, 0 );
-  itemBoxSizer16->Add(listDataTimelines, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  txtDataTimelines = new wxTextCtrl( itemDialog1, ID_HISTOGRAM_DATATIMELINETEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+  itemBoxSizer16->Add(txtDataTimelines, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+  buttonDataTimelines = new wxButton( itemDialog1, ID_HISTOGRAM_DATATIMELINEBUTTON, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  itemBoxSizer16->Add(buttonDataTimelines, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
   itemBoxSizer16->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -259,9 +271,11 @@ void HistogramDialog::CreateControls()
   wxStaticText* itemStaticText22 = new wxStaticText( itemDialog1, wxID_STATIC, _("3D Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer21->Add(itemStaticText22, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxArrayString list3DTimelinesStrings;
-  list3DTimelines = new wxChoice( itemDialog1, ID_HISTOGRAM_3DTIMELINELIST, wxDefaultPosition, wxDefaultSize, list3DTimelinesStrings, 0 );
-  itemBoxSizer21->Add(list3DTimelines, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  txt3DTimelines = new wxTextCtrl( itemDialog1, ID_HISTOGRAM_3DTIMELINETEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+  itemBoxSizer21->Add(txt3DTimelines, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+  button3DTimelines = new wxButton( itemDialog1, ID_HISTOGRAM_3DTIMELINEBUTTON, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  itemBoxSizer21->Add(button3DTimelines, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
   button3DTimelineAutoFit = new wxToggleButton( itemDialog1, ID_HISTOGRAM_3DTIMELINEAUTOFIT, _("Auto Fit"), wxDefaultPosition, wxDefaultSize, 0 );
   button3DTimelineAutoFit->SetValue(true);
@@ -402,42 +416,11 @@ wxIcon HistogramDialog::GetIconResource( const wxString& name )
 }
 
 
-void HistogramDialog::getSelectedWindowID( wxChoice * listWidget,
-                                           vector< TWindowID > &selection,
-                                           bool listWithFirstVoidOption )
-{
-  if ( listWidget->GetCurrentSelection() != wxNOT_FOUND )
-  {
-    if ( listWithFirstVoidOption ) // NONE of the Xtra
-    {
-      if ( listWidget->GetCurrentSelection() != 0)  // NONE selected?
-      {
-        TWindowID tmp = selection[ listWidget->GetCurrentSelection() - 1 ];
-        selection.clear();
-        selection.push_back( tmp );
-      }
-      else
-      {
-        selection.clear(); // NONE selected
-      }
-    }
-    else
-    {
-      TWindowID tmp = selection[ listWidget->GetCurrentSelection() ];
-      selection.clear();
-      selection.push_back( tmp );
-    }
-  }
-  else
-    selection.clear();
-}
-
 bool HistogramDialog::TransferDataFromWindow()
 {
   // Copy Selected window
   wxString errorMessage = _( "" );
   double tmp;
-  TWindowID auxID;
 
   if ( !GetControlTimelineAutofit() )
   {
@@ -445,8 +428,7 @@ bool HistogramDialog::TransferDataFromWindow()
       controlTimelineMin = tmp;
     else
     {
-      auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
-      controlTimelineMin = LoadedWindows::getInstance()->getWindow( auxID )->getMinimumY();
+      controlTimelineMin = controlTimelineSelected->getMinimumY();
       errorMessage = _( "\tControl Timeline Minimum : " ) + formatNumber( controlTimelineMin ) + _( "\n" );
     }
 
@@ -454,8 +436,7 @@ bool HistogramDialog::TransferDataFromWindow()
       controlTimelineMax = tmp;
     else
     {
-      auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
-      controlTimelineMax = LoadedWindows::getInstance()->getWindow( auxID )->getMaximumY();
+      controlTimelineMax = controlTimelineSelected->getMaximumY();
       errorMessage += _( "\tControl Timeline Maximum : " ) + formatNumber( controlTimelineMax ) + _( "\n" );
     }
 
@@ -469,7 +450,7 @@ bool HistogramDialog::TransferDataFromWindow()
   }
 
 
-  if ( list3DTimelines->GetCurrentSelection() != 0 )
+  if ( extraControlTimelineSelected != NULL )
   {
     if ( !GetExtraControlTimelineAutofit() )
     {
@@ -477,8 +458,7 @@ bool HistogramDialog::TransferDataFromWindow()
         extraControlTimelineMin = tmp;
       else
       {
-        auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() - 1 ];
-        extraControlTimelineMin = LoadedWindows::getInstance()->getWindow( auxID )->getMinimumY();
+        extraControlTimelineMin = extraControlTimelineSelected->getMinimumY();
         errorMessage += _( "\t3D Timeline Min : " ) + formatNumber( extraControlTimelineMin ) + _( "\n" );
       }
 
@@ -486,8 +466,7 @@ bool HistogramDialog::TransferDataFromWindow()
         extraControlTimelineMax = tmp;
       else
       {
-        auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() - 1 ];
-        extraControlTimelineMax = LoadedWindows::getInstance()->getWindow( auxID )->getMaximumY();
+        extraControlTimelineMax = extraControlTimelineSelected->getMaximumY();
         errorMessage += _( "\t3D Timeline Max : " ) + formatNumber( extraControlTimelineMax ) + _( "\n" );
       }
 
@@ -507,9 +486,8 @@ bool HistogramDialog::TransferDataFromWindow()
 
   TRecordTime auxBegin, auxEnd;
 
-  auxID = controlTimelines[ listControlTimelines->GetCurrentSelection() ];
   bool done = LabelConstructor::getTimeValue( std::string( txtBeginTime->GetValue().mb_str() ),
-                                              LoadedWindows::getInstance()->getWindow( auxID )->getTimeUnit(),
+                                              controlTimelineSelected->getTimeUnit(),
                                               ParaverConfig::getInstance()->getTimelinePrecision(),
                                               auxBegin );
   if ( !done )
@@ -517,26 +495,26 @@ bool HistogramDialog::TransferDataFromWindow()
     if( radioAllTrace->GetValue() )
       auxBegin = 0.0;
     else
-      auxBegin = LoadedWindows::getInstance()->getWindow( auxID )->getWindowBeginTime();
+      auxBegin = controlTimelineSelected->getWindowBeginTime();
     errorMessage += _( "\tBegin Time : " ) + formatNumber( auxBegin ) + _( "\n" );
   }
   else
-    auxBegin = LoadedWindows::getInstance()->getWindow( auxID )->windowUnitsToTraceUnits( auxBegin );
+    auxBegin = controlTimelineSelected->windowUnitsToTraceUnits( auxBegin );
 
   done = LabelConstructor::getTimeValue( std::string( txtEndTime->GetValue().mb_str() ),
-                                         LoadedWindows::getInstance()->getWindow( auxID )->getTimeUnit(),
+                                         controlTimelineSelected->getTimeUnit(),
                                          ParaverConfig::getInstance()->getTimelinePrecision(),
                                          auxEnd );
   if ( !done )
   {
     if( radioAllTrace->GetValue() )
-      auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->getTrace()->getEndTime();
+      auxEnd = controlTimelineSelected->getTrace()->getEndTime();
     else
-      auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->getWindowEndTime();
+      auxEnd = controlTimelineSelected->getWindowEndTime();
     errorMessage += _( "\tEnd Time : " ) + formatNumber( auxEnd ) + _( "\n" );
   }
   else
-    auxEnd = LoadedWindows::getInstance()->getWindow( auxID )->windowUnitsToTraceUnits( auxEnd );
+    auxEnd = controlTimelineSelected->windowUnitsToTraceUnits( auxEnd );
 
   timeRange.push_back( make_pair( auxBegin, auxEnd ) );
 
@@ -549,13 +527,6 @@ bool HistogramDialog::TransferDataFromWindow()
                              wxOK | wxICON_EXCLAMATION );
     message.ShowModal();
   }
-
-  getSelectedWindowID( listControlTimelines, controlTimelines, false );
-
-  getSelectedWindowID( listDataTimelines, dataTimelines, false );
-
-  getSelectedWindowID( list3DTimelines, extraControlTimelines, true );
-
 
   return true;
 }
@@ -591,8 +562,7 @@ void HistogramDialog::updateControlTimelineAutofit()
 {
   TSemanticValue min, max, delta;
 
-  Window *aux = LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] );
-  computeColumns( aux, min, max, delta );
+  computeColumns( controlTimelineSelected, min, max, delta );
 
   txtControlTimelineMin->SetValue( formatNumber( min ) );
   txtControlTimelineMax->SetValue( formatNumber( max ) );
@@ -603,22 +573,19 @@ void HistogramDialog::updateExtraControlTimelineAutofit()
 {
   TSemanticValue min, max, delta;
 
-  if ( list3DTimelines->GetCurrentSelection() == 0 )
+  if ( extraControlTimelineSelected == NULL )
   {
     txt3DTimelineMin->Clear();
     txt3DTimelineMax->Clear();
     txt3DTimelineDelta->Clear();
 
     button3DTimelineAutoFit->Enable( false );
-    //button3DTimelineAutoFit->SetValue( true );
     button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit );
     enable3DFields( false );
   }
   else
   {
-    TWindowID auxID = extraControlTimelines[ list3DTimelines->GetCurrentSelection() - 1 ];
-    Window *auxWindow = LoadedWindows::getInstance()->getWindow( auxID );
-    computeColumns( auxWindow, min, max, delta );
+    computeColumns( extraControlTimelineSelected, min, max, delta );
 
     txt3DTimelineMin->SetValue( formatNumber( min ) );
     txt3DTimelineMax->SetValue( formatNumber( max ) );
@@ -679,54 +646,6 @@ void HistogramDialog::OnHistogram3dtimelineautofitUpdate( wxUpdateUIEvent& event
 {
   enable3DFields( !button3DTimelineAutoFit->GetValue() );
 }
-
-/*
-PreferencesDialog::PreferencesDialog( wxWindow* parent,
-                 wxWindowID id,
-                 const wxString& title)
-{
-  SetSheetStyle(wxPROPSHEET_NOTEBOOK);
-  Create(parent, id, title);
-}
-
-PreferencesDialog::~PreferencesDialog()
-{}
-
-bool PreferencesDialog::Create( wxWindow* parent,
-                 wxWindowID id,
-                 const wxString& title,
-                 const wxPoint& pos,
-                 const wxSize& size,
-                 long style,
-                 const wxString& name )
-{
-
-
-  if (!wxPropertySheetDialog::Create( parent, id, title ))
-    return false;
-
-  cout << "PREFERENCES DIALOG CREATED!" << endl;
-  CreateButtons( wxOK | wxCANCEL | wxHELP );
-
-
-//  wxNotebookPage* mypage = new wxNotebookPage();
-//  wxNotebook* mypanel = new wxNotebook();
-//  mypanel->AddPage( mypage, wxT("General"), true);
-//  GetBookCtrl()->AddPage( mypanel, wxT("General"));
-
-
-  wxBookCtrlBase* notebook = GetBookCtrl();
-  wxPanel *panel1 = new wxPanel( notebook );
-
-  notebook->AddPage( panel1, _("General"), true);
-
-  LayoutDialog();
-  ShowModal();
-
-  return true;
-}
-
-*/
 
 
 /*!
@@ -820,11 +739,11 @@ PRV_UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listT
 bool HistogramDialog::TransferDataToWindow( Window *current )
 {
   PRV_UINT32 pos;
+  currentWindow = current;
+  controlTimelineSelected = current;
+  dataTimelineSelected = current;
 
-  // Fill Control Timelines choice list
-  pos = fillList( current, controlTimelines, listControlTimelines );
-  listControlTimelines->Select( pos );
-
+  txtControlTimelines->SetValue( wxString( current->getName().c_str() ) );
   // Set Control Timeline Min, Max and Delta
   TSemanticValue min, max, delta;
 
@@ -836,16 +755,11 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
 
   buttonControlTimelineAutoFit->SetValue( controlTimelineAutofit );
 
-  // Fill Data Timelines choice list
   LoadedWindows::getInstance()->getValidDataWindow( current, NULL, dataTimelines );
-  pos = fillList( current, dataTimelines, listDataTimelines ); // here selected is also the current one
-  listDataTimelines->Select( pos );
-
-  // Fill 3D Control Timelines choice list
-  Window *auxDataWindow = LoadedWindows::getInstance()->getWindow( dataTimelines[ pos ] );
-  LoadedWindows::getInstance()->getValidControlWindow( auxDataWindow, current, extraControlTimelines );
-  pos = fillList( NULL, extraControlTimelines, list3DTimelines );
-  list3DTimelines->Select( pos );
+  txtDataTimelines->SetValue( wxString( current->getName().c_str(), wxConvUTF8 ) );
+  
+  LoadedWindows::getInstance()->getValidControlWindow( current, current, extraControlTimelines );
+  txt3DTimelines->SetValue( wxT( "None" ) );
 
   button3DTimelineAutoFit->SetValue( extraControlTimelineAutofit );
   button3DTimelineAutoFit->Enable( false );
@@ -872,7 +786,7 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
 
 void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
 {
-  Window *current = LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] );
+  Window *current = controlTimelineSelected;
 
   txtBeginTime->SetValue(
     wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].first ),
@@ -894,7 +808,7 @@ void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
 
 void HistogramDialog::OnRadiobuttonAlltraceSelected( wxCommandEvent& event )
 {
-  Window *current = LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] );
+  Window *current = controlTimelineSelected;
 
   txtBeginTime->SetValue(
     wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ TRACE_RANGE ].first ),
@@ -953,36 +867,6 @@ void HistogramDialog::OnRadiobuttonManualUpdate( wxUpdateUIEvent& event )
 
 
 /*!
- * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_HISTOGRAM_CONTROLTIMELINELIST
- */
-
-void HistogramDialog::OnHistogramControltimelinelistSelected( wxCommandEvent& event )
-{
-  updateControlTimelineAutofit();
-}
-
-/*!
- * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_HISTOGRAM_DATATIMELINELIST
- */
-
-void HistogramDialog::OnHistogramDatatimelinelistSelected( wxCommandEvent& event )
-{
-}
-
-
-/*!
- * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_HISTOGRAM_3DTIMELINELIST
- */
-
-void HistogramDialog::OnHistogram3dtimelinelistSelected( wxCommandEvent& event )
-{
-  updateExtraControlTimelineAutofit();
-}
-
-
-
-
-/*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
  */
 
@@ -1003,7 +887,7 @@ void HistogramDialog::OnIdle( wxIdleEvent& event )
 {
   if( waitingGlobalTiming )
   {
-    Window *current = LoadedWindows::getInstance()->getWindow( controlTimelines[ listControlTimelines->GetCurrentSelection() ] );
+    Window *current = controlTimelineSelected;
     txtBeginTime->SetValue(
       wxString::FromAscii( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( wxGetApp().GetGlobalTimingBegin() ),
                                                         current->getTimeUnit(),
@@ -1018,6 +902,91 @@ void HistogramDialog::OnIdle( wxIdleEvent& event )
     
     if( !wxGetApp().GetGlobalTiming() )
       waitingGlobalTiming = false;
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_HISTOGRAM_CONTROLTIMELINEBUTTON
+ */
+
+void HistogramDialog::OnHistogramControltimelinebuttonClick( wxCommandEvent& event )
+{
+  TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
+                                         wxID_ANY,
+                                         wxT( "Control Timeline" ),
+                                         controlTimelines,
+                                         controlTimelineSelected,
+                                         controlTimelineSelected->getTrace(),
+                                         false );
+  timelineSelector.Move( wxGetMousePosition() );
+  
+  int retCode = timelineSelector.ShowModal();
+  if( retCode == wxID_OK )
+  {
+    if( controlTimelineSelected == timelineSelector.getSelection() )
+      return;
+    controlTimelineSelected = timelineSelector.getSelection();
+    txtControlTimelines->SetValue( wxString( controlTimelineSelected->getName().c_str(), wxConvUTF8 ) );
+    updateControlTimelineAutofit();
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_HISTOGRAM_DATATIMELINEBUTTON
+ */
+
+void HistogramDialog::OnHistogramDatatimelinebuttonClick( wxCommandEvent& event )
+{
+  TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
+                                         wxID_ANY,
+                                         wxT( "Data Timeline" ),
+                                         dataTimelines,
+                                         dataTimelineSelected,
+                                         dataTimelineSelected->getTrace(),
+                                         false );
+  timelineSelector.Move( wxGetMousePosition() );
+  
+  int retCode = timelineSelector.ShowModal();
+  if( retCode == wxID_OK )
+  {
+    if( dataTimelineSelected == timelineSelector.getSelection() )
+      return;
+    dataTimelineSelected = timelineSelector.getSelection();
+    txtDataTimelines->SetValue( wxString( dataTimelineSelected->getName().c_str(), wxConvUTF8 ) );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_HISTOGRAM_3DTIMELINEBUTTON
+ */
+
+void HistogramDialog::OnHistogram3dtimelinebuttonClick( wxCommandEvent& event )
+{
+  TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
+                                         wxID_ANY,
+                                         wxT( "3D Timeline" ),
+                                         extraControlTimelines,
+                                         extraControlTimelineSelected,
+                                         extraControlTimelineSelected == NULL ? controlTimelineSelected->getTrace() : extraControlTimelineSelected->getTrace(),
+                                         true );
+  timelineSelector.Move( wxGetMousePosition() );
+  
+  int retCode = timelineSelector.ShowModal();
+  if( retCode == wxID_OK )
+  {
+    if( extraControlTimelineSelected == timelineSelector.getSelection() )
+      return;
+    extraControlTimelineSelected = timelineSelector.getSelection();
+    if( extraControlTimelineSelected == NULL )
+      txt3DTimelines->SetValue( wxT( "None" ) );
+    else
+    {
+      txt3DTimelines->SetValue( wxString( extraControlTimelineSelected->getName().c_str(), wxConvUTF8 ) );
+      updateExtraControlTimelineAutofit();
+    }
   }
 }
 
