@@ -34,6 +34,7 @@
 #include "paravermain.h"
 #include <wx/display.h>
 
+
 wxTreeCtrl * createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
@@ -48,12 +49,14 @@ wxTreeCtrl * createTree( wxImageList *imageList )
   return newTree;
 }
 
+
 wxTreeCtrl *getAllTracesTree()
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
   
   return (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
 }
+
 
 wxTreeCtrl *getSelectedTraceTree( Trace *trace )
 {
@@ -63,6 +66,7 @@ wxTreeCtrl *getSelectedTraceTree( Trace *trace )
 
   return (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
 }
+
 
 void appendHistogram2Tree( gHistogram *ghistogram )
 {
@@ -456,7 +460,29 @@ bool updateTreeItem( wxTreeCtrl *tree,
   }
 
   if( destroy )
+  {
+    // Properly select previous window if no further timeline or histogram in the tree exists
+    // The next sibling is properly selected by recursion if it exists
+    wxTreeItemId candidate = tree->GetNextSibling( id );
+    if ( !candidate.IsOk() )
+    {
+      candidate = tree->GetPrevSibling( id );
+      if ( candidate.IsOk() )
+      {
+        if ( gTimeline *tmpTimeline = itemData->getTimeline() )
+        {
+          *currentWindow = tmpTimeline;
+        }
+        else if( gHistogram *tmpHistogram = itemData->getHistogram() )
+        {
+          *currentWindow = tmpHistogram;
+        }
+        tree->SelectItem( candidate );
+      }
+    }
+
     tree->Delete( id );
+  }
     
   return destroy;
 }
