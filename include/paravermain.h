@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 #ifndef _PARAVERMAIN_H_
 #define _PARAVERMAIN_H_
 
@@ -481,13 +475,13 @@ public:
   bool matchTraceNames( const std::string &fileName1, 
                         const std::string &traceName1,
                         const std::string &fileName2 );
-#endif
   void insertSignalItem( bool isSig1 );
+#endif // WIN32
 
 #ifdef WIN32
   void OnKeyCopy();
   void OnKeyPaste();
-#endif
+#endif // WIN32
   void OnFindDialog();
   
   bool DoLoadTrace( const std::string &path );

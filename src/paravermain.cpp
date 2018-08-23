@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -4206,7 +4200,7 @@ bool paraverMain::getAutoRedraw() const
   return checkAutoRedraw->GetValue();
 }
 
-
+#ifndef WIN32
 void paraverMain::insertSignalItem( bool isSig1 )
 {
   SignalItem tmpSignalItem;
@@ -4341,3 +4335,4 @@ void paraverMain::insertSignalItem( bool isSig1 )
   wxIdleEvent tmpEvent;
   AddPendingEvent( tmpEvent );
 }
+#endif // WIN32

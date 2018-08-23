@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 #ifndef _HISTOGRAMDIALOG_H_
 #define _HISTOGRAMDIALOG_H_
 
@@ -201,8 +195,8 @@ public:
   Window * GetControlTimelineSelected() const { return controlTimelineSelected ; }
   void SetControlTimelineSelected(Window * value) { controlTimelineSelected = value ; }
 
-  vector< TWindowID > GetControlTimelines() const { return controlTimelines ; }
-  void SetControlTimelines(vector< TWindowID > value) { controlTimelines = value ; }
+  std::vector<TWindowID> GetControlTimelines() const { return controlTimelines ; }
+  void SetControlTimelines(std::vector<TWindowID> value) { controlTimelines = value ; }
 
   Window * GetCurrentWindow() const { return currentWindow ; }
   void SetCurrentWindow(Window * value) { currentWindow = value ; }
@@ -210,8 +204,8 @@ public:
   Window * GetDataTimelineSelected() const { return dataTimelineSelected ; }
   void SetDataTimelineSelected(Window * value) { dataTimelineSelected = value ; }
 
-  vector< TWindowID > GetDataTimelines() const { return dataTimelines ; }
-  void SetDataTimelines(vector< TWindowID > value) { dataTimelines = value ; }
+  std::vector<TWindowID> GetDataTimelines() const { return dataTimelines ; }
+  void SetDataTimelines(std::vector<TWindowID> value) { dataTimelines = value ; }
 
   bool GetExtraControlTimelineAutofit() const { return extraControlTimelineAutofit ; }
   void SetExtraControlTimelineAutofit(bool value) { extraControlTimelineAutofit = value ; }
@@ -228,11 +222,11 @@ public:
   Window * GetExtraControlTimelineSelected() const { return extraControlTimelineSelected ; }
   void SetExtraControlTimelineSelected(Window * value) { extraControlTimelineSelected = value ; }
 
-  vector< TWindowID > GetExtraControlTimelines() const { return extraControlTimelines ; }
-  void SetExtraControlTimelines(vector< TWindowID > value) { extraControlTimelines = value ; }
+  std::vector<TWindowID> GetExtraControlTimelines() const { return extraControlTimelines ; }
+  void SetExtraControlTimelines(std::vector<TWindowID> value) { extraControlTimelines = value ; }
 
-  vector< pair< TRecordTime, TRecordTime > > GetTimeRange() const { return timeRange ; }
-  void SetTimeRange(vector< pair< TRecordTime, TRecordTime > > value) { timeRange = value ; }
+  std::vector<std::pair<TRecordTime,TRecordTime> > GetTimeRange() const { return timeRange ; }
+  void SetTimeRange(std::vector<std::pair<TRecordTime,TRecordTime> > value) { timeRange = value ; }
 
   bool GetWaitingGlobalTiming() const { return waitingGlobalTiming ; }
   void SetWaitingGlobalTiming(bool value) { waitingGlobalTiming = value ; }
@@ -283,17 +277,17 @@ private:
   double controlTimelineMax;
   double controlTimelineMin;
   Window * controlTimelineSelected;
-  vector< TWindowID > controlTimelines;
+  std::vector<TWindowID> controlTimelines;
   Window * currentWindow;
   Window * dataTimelineSelected;
-  vector< TWindowID > dataTimelines;
+  std::vector<TWindowID> dataTimelines;
   bool extraControlTimelineAutofit;
   double extraControlTimelineDelta;
   double extraControlTimelineMax;
   double extraControlTimelineMin;
   Window * extraControlTimelineSelected;
-  vector< TWindowID > extraControlTimelines;
-  vector< pair< TRecordTime, TRecordTime > > timeRange;
+  std::vector<TWindowID> extraControlTimelines;
+  std::vector<std::pair<TRecordTime,TRecordTime> > timeRange;
   bool waitingGlobalTiming;
 ////@end HistogramDialog member variables
 
