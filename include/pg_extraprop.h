@@ -345,10 +345,9 @@ class prvTimelineTreeProperty: public wxPGProperty
     bool OnEvent( wxPropertyGrid* propgrid,
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
-                  
+#endif
     Window *getSelectedWindow() const;
 
-#endif
   private:
     std::vector<TWindowID> myWindows;
     const Trace *myCurrentTrace;

@@ -772,7 +772,7 @@ void AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
   if( currentWindow == NULL )
     valueStr = wxT( "None" );
   else
-    valueStr = wxString( currentWindow->getName().c_str() );
+    valueStr = wxString( currentWindow->getName().c_str(), wxConvUTF8 );
 
   Trace *currentTrace;
   if( currentWindow == NULL )

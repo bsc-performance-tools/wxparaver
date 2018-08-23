@@ -743,7 +743,7 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
   controlTimelineSelected = current;
   dataTimelineSelected = current;
 
-  txtControlTimelines->SetValue( wxString( current->getName().c_str() ) );
+  txtControlTimelines->SetValue( wxString( current->getName().c_str(), wxConvUTF8 ) );
   // Set Control Timeline Min, Max and Delta
   TSemanticValue min, max, delta;
 
