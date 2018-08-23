@@ -43,6 +43,8 @@
 
 #include "derivedtimelinedialog.h"
 #include <wx/tokenzr.h>
+#include "timelinetreeselector.h"
+
 ////@begin XPM images
 ////@end XPM images
 
@@ -64,9 +66,9 @@ BEGIN_EVENT_TABLE( DerivedTimelineDialog, wxDialog )
 ////@begin DerivedTimelineDialog event table entries
   EVT_CHOICE( ID_TOPCOMPOSE1, DerivedTimelineDialog::OnTopcompose1Selected )
   EVT_CHOICE( ID_TOPCOMPOSE2, DerivedTimelineDialog::OnTopcompose2Selected )
-  EVT_COMBOBOX( ID_TIMELINES_LIST_1, DerivedTimelineDialog::OnTimelinesList1Selected )
+  EVT_BUTTON( ID_TIMELINES_BUTTON1, DerivedTimelineDialog::OnTimelinesButton1Click )
   EVT_CHOICE( ID_OPERATIONS, DerivedTimelineDialog::OnOperationsSelected )
-  EVT_COMBOBOX( ID_TIMELINES_LIST_2, DerivedTimelineDialog::OnTimelinesList2Selected )
+  EVT_BUTTON( ID_TIMELINES_BUTTON2, DerivedTimelineDialog::OnTimelinesButton2Click )
   EVT_BUTTON( ID_SWAP_WINDOWS, DerivedTimelineDialog::OnSwapWindowsClick )
   EVT_BUTTON( wxID_OK, DerivedTimelineDialog::OnOkClick )
 ////@end DerivedTimelineDialog event table entries
@@ -150,12 +152,14 @@ void DerivedTimelineDialog::Init()
   widgetMinCompose2 = NULL;
   widgetLabelMaxCompose2 = NULL;
   widgetMaxCompose2 = NULL;
-  widgetFactorTimeline1 = NULL;
   widgetLabelTimelines1 = NULL;
-  widgetTimelines1 = NULL;
-  widgetOperations = NULL;
   widgetLabelTimelines2 = NULL;
-  widgetTimelines2 = NULL;
+  widgetFactorTimeline1 = NULL;
+  txtTimelines1 = NULL;
+  buttonTimelines1 = NULL;
+  widgetOperations = NULL;
+  txtTimelines2 = NULL;
+  buttonTimelines2 = NULL;
   widgetFactorTimeline2 = NULL;
   swapWindowsButton = NULL;
 ////@end DerivedTimelineDialog member initialisation
@@ -273,56 +277,81 @@ void DerivedTimelineDialog::CreateControls()
   widgetMaxCompose2->Enable(false);
   itemBoxSizer28->Add(widgetMaxCompose2, 2, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
-  wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer2->Add(itemBoxSizer31, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer4, 1, wxGROW, 5);
 
-  wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer31->Add(itemBoxSizer32, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer4->Add(itemBoxSizer1, 0, wxGROW|wxALL, 5);
 
-  wxStaticText* itemStaticText33 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer32->Add(itemStaticText33, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer1->Add(itemBoxSizer5, 1, wxALIGN_LEFT|wxALL, 5);
 
-  widgetFactorTimeline1 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_1, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer32->Add(widgetFactorTimeline1, 5, wxALIGN_CENTER_VERTICAL, 5);
+  wxStaticText* itemStaticText6 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer5->Add(itemStaticText6, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer35 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer31->Add(itemBoxSizer35, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer1->Add(itemBoxSizer7, 1, wxALIGN_LEFT|wxALL, 5);
 
   widgetLabelTimelines1 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline "), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer35->Add(widgetLabelTimelines1, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  itemBoxSizer7->Add(widgetLabelTimelines1, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  wxArrayString widgetTimelines1Strings;
-  widgetTimelines1 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_1, wxEmptyString, wxDefaultPosition, wxDefaultSize, widgetTimelines1Strings, wxCB_READONLY );
-  itemBoxSizer35->Add(widgetTimelines1, 5, wxALIGN_CENTER_VERTICAL, 5);
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer1->Add(itemBoxSizer15, 1, wxALIGN_LEFT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer38 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer31->Add(itemBoxSizer38, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  wxStaticText* itemStaticText16 = new wxStaticText( itemDialog1, wxID_STATIC, _("Operation"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer15->Add(itemStaticText16, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  wxStaticText* itemStaticText39 = new wxStaticText( itemDialog1, wxID_STATIC, _("Operation"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer38->Add(itemStaticText39, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer1->Add(itemBoxSizer17, 1, wxALIGN_LEFT|wxALL, 5);
+
+  widgetLabelTimelines2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer17->Add(widgetLabelTimelines2, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+  wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer1->Add(itemBoxSizer19, 1, wxALIGN_LEFT|wxALL, 5);
+
+  wxStaticText* itemStaticText20 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer19->Add(itemStaticText20, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer4->Add(itemBoxSizer10, 1, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer10->Add(itemBoxSizer11, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+
+  widgetFactorTimeline1 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_1, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer11->Add(widgetFactorTimeline1, 5, wxALIGN_CENTER_VERTICAL, 5);
+
+  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer10->Add(itemBoxSizer14, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+
+  txtTimelines1 = new wxTextCtrl( itemDialog1, ID_TIMELINES_TEXT1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+  itemBoxSizer14->Add(txtTimelines1, 5, wxALIGN_CENTER_VERTICAL, 5);
+
+  buttonTimelines1 = new wxButton( itemDialog1, ID_TIMELINES_BUTTON1, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  itemBoxSizer14->Add(buttonTimelines1, 0, wxALIGN_CENTER_VERTICAL, 5);
+
+  wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer10->Add(itemBoxSizer18, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   wxArrayString widgetOperationsStrings;
   widgetOperations = new wxChoice( itemDialog1, ID_OPERATIONS, wxDefaultPosition, wxDefaultSize, widgetOperationsStrings, wxFULL_REPAINT_ON_RESIZE );
-  itemBoxSizer38->Add(widgetOperations, 5, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer18->Add(widgetOperations, 5, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer41 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer31->Add(itemBoxSizer41, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer22 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer10->Add(itemBoxSizer22, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  widgetLabelTimelines2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer41->Add(widgetLabelTimelines2, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  txtTimelines2 = new wxTextCtrl( itemDialog1, ID_TIMELINES_TEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
+  itemBoxSizer22->Add(txtTimelines2, 5, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxArrayString widgetTimelines2Strings;
-  widgetTimelines2 = new wxComboBox( itemDialog1, ID_TIMELINES_LIST_2, wxEmptyString, wxDefaultPosition, wxDefaultSize, widgetTimelines2Strings, wxCB_READONLY );
-  itemBoxSizer41->Add(widgetTimelines2, 5, wxALIGN_CENTER_VERTICAL, 5);
+  buttonTimelines2 = new wxButton( itemDialog1, ID_TIMELINES_BUTTON2, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  itemBoxSizer22->Add(buttonTimelines2, 0, wxALIGN_CENTER_VERTICAL, 5);
 
-  wxBoxSizer* itemBoxSizer44 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer31->Add(itemBoxSizer44, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-
-  wxStaticText* itemStaticText45 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer44->Add(itemStaticText45, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer10->Add(itemBoxSizer26, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   widgetFactorTimeline2 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_2, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer44->Add(widgetFactorTimeline2, 5, wxALIGN_CENTER_VERTICAL, 5);
+  itemBoxSizer26->Add(widgetFactorTimeline2, 5, wxALIGN_CENTER_VERTICAL, 5);
 
   wxStaticLine* itemStaticLine47 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine47, 0, wxGROW|wxALL, 5);
@@ -372,14 +401,14 @@ bool DerivedTimelineDialog::ShowToolTips()
 bool DerivedTimelineDialog::TransferDataToWindow()
 {
   if ( currentWindow1 == NULL )
-    currentWindow1 = timelines1[ 0 ];
+    currentWindow1 = LoadedWindows::getInstance()->getWindow( timelines1[ 0 ] );
   if ( currentWindow2 == NULL )
   {
-    for( vector<Window *>::const_iterator it = timelines2.begin(); it != timelines2.end(); ++it )
+    for( vector<TWindowID>::const_iterator it = timelines2.begin(); it != timelines2.end(); ++it )
     {
-      if( Window::compatibleLevels( currentWindow1, *it ) )
+      if( Window::compatibleLevels( currentWindow1, LoadedWindows::getInstance()->getWindow( *it ) ) )
       {
-        currentWindow2 = *it;
+        currentWindow2 = LoadedWindows::getInstance()->getWindow( *it );
         break;
       }
     }
@@ -394,8 +423,10 @@ bool DerivedTimelineDialog::TransferDataToWindow()
   presetStringChoiceBox( topCompose2, widgetTopCompose2 );
 
   // Build lists of timelines and set the selected ones
-  presetTimelineComboBox( timelines1, currentWindow1, widgetTimelines1, lastTimeline1 );
-  presetTimelineComboBox( timelines2, currentWindow2, widgetTimelines2, lastTimeline2 );
+  //presetTimelineComboBox( timelines1, currentWindow1, widgetTimelines1, lastTimeline1 );
+  //presetTimelineComboBox( timelines2, currentWindow2, widgetTimelines2, lastTimeline2 );
+  txtTimelines1->SetValue( wxString( currentWindow1->getName().c_str(), wxConvUTF8 ) );
+  txtTimelines2->SetValue( wxString( currentWindow2->getName().c_str(), wxConvUTF8 ) );
 
   // Retrieve list of operations, build and select first operation
   currentWindow1->getGroupLabels( 1, operations );
@@ -458,8 +489,8 @@ bool DerivedTimelineDialog::TransferDataFromWindow()
     getSelectedString( widgetTopCompose2, topCompose2 );
     getSelectedString( widgetOperations, operations );
 
-    getSelectedWindow( widgetTimelines1, timelines1 );
-    getSelectedWindow( widgetTimelines2, timelines2 );
+    //getSelectedWindow( widgetTimelines1, timelines1 );
+    //getSelectedWindow( widgetTimelines2, timelines2 );
 
     // and then assign previous gathered parameters of composes
     if ( widgetMinCompose1->IsShown() )
@@ -527,27 +558,16 @@ void DerivedTimelineDialog::OnSwapWindowsClick( wxCommandEvent& event )
     presetFactorField( factorTimeline2, widgetFactorTimeline2 );
 
     // Swap window vectors
-    vector< Window * > aux = timelines1;
+    vector<TWindowID> auxIDs = timelines1;
     timelines1 = timelines2;
-    timelines2 = aux;
+    timelines2 = auxIDs;
 
-    // Get current selected timelines
-    int pos1 = widgetTimelines1->GetCurrentSelection();
-    int pos2 = widgetTimelines2->GetCurrentSelection();
-
-    // Clean them
-    widgetTimelines1->Clear();
-    widgetTimelines2->Clear();
-
-    // Rebuild and select timeline properly
-    for( vector<Window *>::iterator it = timelines1.begin(); it != timelines1.end(); ++it )
-      widgetTimelines1->Append( wxString::FromAscii( (*it)->getName().c_str() ) );
-
-    for( vector<Window *>::iterator it = timelines2.begin(); it != timelines2.end(); ++it )
-      widgetTimelines2->Append( wxString::FromAscii( (*it)->getName().c_str() ) );
-
-    widgetTimelines1->Select( pos2 );
-    widgetTimelines2->Select( pos1 );
+    txtTimelines2->SetValue( wxString( currentWindow1->getName().c_str(), wxConvUTF8 ) );
+    txtTimelines1->SetValue( wxString( currentWindow2->getName().c_str(), wxConvUTF8 ) );
+    
+    Window *auxWin = currentWindow1;
+    currentWindow1 = currentWindow2;
+    currentWindow2 = auxWin;
   }
 }
 
@@ -898,7 +918,7 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
  * wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_TIMELINES_LIST_1
  */
 
-void DerivedTimelineDialog::OnTimelinesList1Selected( wxCommandEvent& event )
+/*void DerivedTimelineDialog::OnTimelinesList1Selected( wxCommandEvent& event )
 {
   Window *tmpTimeline1 = timelines1[ event.GetSelection() ];
   Window *tmpTimeline2 = timelines2[ widgetTimelines2->GetSelection() ];
@@ -914,13 +934,13 @@ void DerivedTimelineDialog::OnTimelinesList1Selected( wxCommandEvent& event )
     widgetTimelines1->SetSelection( lastTimeline1 );
   }
 }
-
+*/
 
 /*!
  * wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_TIMELINES_LIST_2
  */
 
-void DerivedTimelineDialog::OnTimelinesList2Selected( wxCommandEvent& event )
+/*void DerivedTimelineDialog::OnTimelinesList2Selected( wxCommandEvent& event )
 {
   Window *tmpTimeline1 = timelines1[ widgetTimelines1->GetSelection() ];
   Window *tmpTimeline2 = timelines2[ event.GetSelection() ];
@@ -934,6 +954,59 @@ void DerivedTimelineDialog::OnTimelinesList2Selected( wxCommandEvent& event )
   {
     wxMessageBox( wxT( "Incompatible levels between windows." ), wxT( "Warning" ), wxOK|wxICON_EXCLAMATION, this );
     widgetTimelines2->SetSelection( lastTimeline2 );
+  }
+}
+*/
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_TIMELINES_BUTTON1
+ */
+
+void DerivedTimelineDialog::OnTimelinesButton1Click( wxCommandEvent& event )
+{
+  TimelineTreeSelector timelineSelector( this,
+                                         wxID_ANY,
+                                         wxT( "Timeline" ),
+                                         timelines1,
+                                         currentWindow1,
+                                         currentWindow1->getTrace(),
+                                         false );
+  timelineSelector.Move( wxGetMousePosition() );
+  
+  int retCode = timelineSelector.ShowModal();
+  if( retCode == wxID_OK )
+  {
+    if( currentWindow1 == timelineSelector.getSelection() )
+      return;
+    currentWindow1 = timelineSelector.getSelection();
+    txtTimelines1->SetValue( wxString( currentWindow1->getName().c_str(), wxConvUTF8 ) );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_TIMELINES_BUTTON2
+ */
+
+void DerivedTimelineDialog::OnTimelinesButton2Click( wxCommandEvent& event )
+{
+  TimelineTreeSelector timelineSelector( this,
+                                         wxID_ANY,
+                                         wxT( "Timeline" ),
+                                         timelines2,
+                                         currentWindow2,
+                                         currentWindow2->getTrace(),
+                                         false );
+  timelineSelector.Move( wxGetMousePosition() );
+  
+  int retCode = timelineSelector.ShowModal();
+  if( retCode == wxID_OK )
+  {
+    if( currentWindow2 == timelineSelector.getSelection() )
+      return;
+    currentWindow2 = timelineSelector.getSelection();
+    txtTimelines2->SetValue( wxString( currentWindow2->getName().c_str(), wxConvUTF8 ) );
   }
 }
 

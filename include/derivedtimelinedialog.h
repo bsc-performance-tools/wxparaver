@@ -40,6 +40,7 @@
 ////@end includes
 
 #include "window.h"
+#include "loadedwindows.h"
 
 /*!
  * Forward declarations
@@ -62,9 +63,11 @@
 #define ID_MINCOMPOSE2 10041
 #define ID_MAXCOMPOSE2 10040
 #define ID_FACTOR_TIMELINE_1 10035
-#define ID_TIMELINES_LIST_1 10036
+#define ID_TIMELINES_TEXT1 10036
+#define ID_TIMELINES_BUTTON1 10004
 #define ID_OPERATIONS 10037
-#define ID_TIMELINES_LIST_2 10038
+#define ID_TIMELINES_TEXT2 10038
+#define ID_TIMELINES_BUTTON2 10005
 #define ID_FACTOR_TIMELINE_2 10039
 #define ID_SWAP_WINDOWS 10033
 #define SYMBOL_DERIVEDTIMELINEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
@@ -108,14 +111,14 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOPCOMPOSE2
   void OnTopcompose2Selected( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_TIMELINES_LIST_1
-  void OnTimelinesList1Selected( wxCommandEvent& event );
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_TIMELINES_BUTTON1
+  void OnTimelinesButton1Click( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_OPERATIONS
   void OnOperationsSelected( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_COMBOBOX_SELECTED event handler for ID_TIMELINES_LIST_2
-  void OnTimelinesList2Selected( wxCommandEvent& event );
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_TIMELINES_BUTTON2
+  void OnTimelinesButton2Click( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_SWAP_WINDOWS
   void OnSwapWindowsClick( wxCommandEvent& event );
@@ -163,11 +166,11 @@ public:
   std::string GetTimelineName() const { return timelineName ; }
   void SetTimelineName(std::string value) { timelineName = value ; }
 
-  std::vector< Window * > GetTimelines1() const { return timelines1 ; }
-  void SetTimelines1(std::vector< Window * > value) { timelines1 = value ; }
+  std::vector<TWindowID> GetTimelines1() const { return timelines1 ; }
+  void SetTimelines1(std::vector<TWindowID> value) { timelines1 = value ; }
 
-  std::vector< Window * > GetTimelines2() const { return timelines2 ; }
-  void SetTimelines2(std::vector< Window * > value) { timelines2 = value ; }
+  std::vector<TWindowID> GetTimelines2() const { return timelines2 ; }
+  void SetTimelines2(std::vector<TWindowID> value) { timelines2 = value ; }
 
   std::vector< std::string > GetTopCompose1() const { return topCompose1 ; }
   void SetTopCompose1(std::vector< std::string > value) { topCompose1 = value ; }
@@ -200,12 +203,14 @@ public:
   wxTextCtrl* widgetMinCompose2;
   wxStaticText* widgetLabelMaxCompose2;
   wxTextCtrl* widgetMaxCompose2;
-  wxTextCtrl* widgetFactorTimeline1;
   wxStaticText* widgetLabelTimelines1;
-  wxComboBox* widgetTimelines1;
-  wxChoice* widgetOperations;
   wxStaticText* widgetLabelTimelines2;
-  wxComboBox* widgetTimelines2;
+  wxTextCtrl* widgetFactorTimeline1;
+  wxTextCtrl* txtTimelines1;
+  wxButton* buttonTimelines1;
+  wxChoice* widgetOperations;
+  wxTextCtrl* txtTimelines2;
+  wxButton* buttonTimelines2;
   wxTextCtrl* widgetFactorTimeline2;
   wxButton* swapWindowsButton;
 private:
@@ -221,8 +226,8 @@ private:
   TParamValue minCompose2;
   std::vector< std::string > operations;
   std::string timelineName;
-  std::vector< Window * > timelines1;
-  std::vector< Window * > timelines2;
+  std::vector<TWindowID> timelines1;
+  std::vector<TWindowID> timelines2;
   std::vector< std::string > topCompose1;
   std::vector< std::string > topCompose2;
 ////@end DerivedTimelineDialog member variables

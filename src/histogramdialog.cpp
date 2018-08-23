@@ -912,7 +912,7 @@ void HistogramDialog::OnIdle( wxIdleEvent& event )
 
 void HistogramDialog::OnHistogramControltimelinebuttonClick( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
+  TimelineTreeSelector timelineSelector( this,
                                          wxID_ANY,
                                          wxT( "Control Timeline" ),
                                          controlTimelines,
@@ -939,7 +939,7 @@ void HistogramDialog::OnHistogramControltimelinebuttonClick( wxCommandEvent& eve
 
 void HistogramDialog::OnHistogramDatatimelinebuttonClick( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
+  TimelineTreeSelector timelineSelector( this,
                                          wxID_ANY,
                                          wxT( "Data Timeline" ),
                                          dataTimelines,
@@ -965,7 +965,7 @@ void HistogramDialog::OnHistogramDatatimelinebuttonClick( wxCommandEvent& event 
 
 void HistogramDialog::OnHistogram3dtimelinebuttonClick( wxCommandEvent& event )
 {
-  TimelineTreeSelector timelineSelector( wxparaverApp::mainWindow,
+  TimelineTreeSelector timelineSelector( this,
                                          wxID_ANY,
                                          wxT( "3D Timeline" ),
                                          extraControlTimelines,

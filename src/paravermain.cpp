@@ -2413,7 +2413,7 @@ void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent& event )
 void paraverMain::ShowDerivedDialog()
 {
   DerivedTimelineDialog derivedDialog( this );
-  vector<Window *> timelines;
+  vector<TWindowID> timelines;
   LoadedWindows::getInstance()->getDerivedCompatible( loadedTraces[ currentTrace ], timelines );
 
   ++numNewDerived;
@@ -2441,16 +2441,11 @@ void paraverMain::ShowDerivedDialog()
   raiseCurrentWindow = false;
   if( derivedDialog.ShowModal() == wxID_OK )
   {
-    vector< Window * > selectedTimeline = derivedDialog.GetTimelines1();
-    beginDragWindow = selectedTimeline[0]->clone();
+    beginDragWindow = derivedDialog.GetCurrentWindow1()->clone();
     beginDragWindow->setPosX( GetNextPosX() );
     beginDragWindow->setPosY( GetNextPosY() );
 
-    selectedTimeline.clear();
-    selectedTimeline = derivedDialog.GetTimelines2();
-
-//  if ( endDragWindow == beginDragWindow )
-    endDragWindow = selectedTimeline[0]->clone();
+    endDragWindow = derivedDialog.GetCurrentWindow2()->clone();
 
     endDragWindow->setPosX( GetNextPosX() );
     endDragWindow->setPosY( GetNextPosY() );
