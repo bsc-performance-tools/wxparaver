@@ -871,12 +871,28 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMaximum,
              ID_MENU_DRAWMODE_TIME_MAXIMUM,
              histogram->GetHistogram()->getDrawModeColumns() == DRAW_MAXIMUM );
+//-----------------
+  buildItem( popUpMenuDrawModeTime,
+             _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAbsoluteMaximum,
+             ID_MENU_DRAWMODE_TIME_ABSOLUTE_MAXIMUM,
+             histogram->GetHistogram()->getDrawModeColumns() == DRAW_ABSOLUTE_MAXIMUM );
+//----------------------------
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
              ITEMRADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero,
              ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeColumns() == DRAW_MINNOTZERO );
+//----------------------------
+  buildItem( popUpMenuDrawModeTime,
+             _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAbsoluteMinimumNotZero,
+             ID_MENU_DRAWMODE_TIME_ABSOLUTE_MINIMUM_NOT_ZERO,
+             histogram->GetHistogram()->getDrawModeColumns() == DRAW_ABSOLUTE_MINNOTZERO );
+//----------------------------
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_RANDOM ),
              ITEMRADIO,
@@ -920,12 +936,28 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMaximum,
              ID_MENU_DRAWMODE_OBJECTS_MAXIMUM,
              histogram->GetHistogram()->getDrawModeObjects() == DRAW_MAXIMUM );
+//-----------------
+  buildItem( popUpMenuDrawModeObjects,
+             _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMaximum,
+             ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MAXIMUM,
+             histogram->GetHistogram()->getDrawModeObjects() == DRAW_ABSOLUTE_MAXIMUM );
+//----------------------------
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
              ITEMRADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero,
              ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DRAW_MINNOTZERO );
+//----------------------------
+  buildItem( popUpMenuDrawModeObjects,
+             _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMinimumNotZero,
+             ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MINIMUM_NOT_ZERO,
+             histogram->GetHistogram()->getDrawModeObjects() == DRAW_ABSOLUTE_MINNOTZERO );
+//----------------------------
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_RANDOM ),
              ITEMRADIO,
@@ -971,6 +1003,15 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              ID_MENU_DRAWMODE_BOTH_MAXIMUM,
              histogram->GetHistogram()->getDrawModeObjects() == DRAW_MAXIMUM && 
              histogram->GetHistogram()->getDrawModeColumns() == DRAW_MAXIMUM );
+//-----------------
+  buildItem( popUpMenuDrawModeBoth,
+             _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAbsoluteMaximum,
+             ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MAXIMUM,
+             histogram->GetHistogram()->getDrawModeObjects() == DRAW_ABSOLUTE_MAXIMUM &&
+             histogram->GetHistogram()->getDrawModeColumns() == DRAW_ABSOLUTE_MAXIMUM );
+//----------------------------
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
              ITEMRADIO,
@@ -978,6 +1019,15 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DRAW_MINNOTZERO &&
              histogram->GetHistogram()->getDrawModeColumns() == DRAW_MINNOTZERO );
+//----------------------------
+  buildItem( popUpMenuDrawModeBoth,
+             _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
+             ITEMRADIO,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAbsoluteMinimumNotZero,
+             ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO,
+             histogram->GetHistogram()->getDrawModeObjects() == DRAW_ABSOLUTE_MINNOTZERO &&
+             histogram->GetHistogram()->getDrawModeColumns() == DRAW_ABSOLUTE_MINNOTZERO );
+//----------------------------
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_RANDOM ),
              ITEMRADIO,
@@ -1155,7 +1205,7 @@ string gPopUpMenu::getOption( wxArrayString& choices, int position )
     return string( choices[ position ].mb_str() );
 }
 
-void gPopUpMenu::OnMenuCopy( wxCommandEvent& event)
+void gPopUpMenu::OnMenuCopy( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpCopy();
@@ -1163,7 +1213,7 @@ void gPopUpMenu::OnMenuCopy( wxCommandEvent& event)
     histogram->OnPopUpCopy();
 }
 
-void gPopUpMenu::OnMenuTime( wxCommandEvent& event)
+void gPopUpMenu::OnMenuTime( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteTime();
@@ -1171,7 +1221,7 @@ void gPopUpMenu::OnMenuTime( wxCommandEvent& event)
     histogram->OnPopUpPasteTime();
 }
 
-void gPopUpMenu::OnMenuObjects( wxCommandEvent& event)
+void gPopUpMenu::OnMenuObjects( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteObjects();
@@ -1179,7 +1229,7 @@ void gPopUpMenu::OnMenuObjects( wxCommandEvent& event)
     histogram->OnPopUpPasteObjects();
 }
 
-void gPopUpMenu::OnMenuSize( wxCommandEvent& event)
+void gPopUpMenu::OnMenuSize( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteSize();
@@ -1187,7 +1237,7 @@ void gPopUpMenu::OnMenuSize( wxCommandEvent& event)
     histogram->OnPopUpPasteSize();
 }
 
-void gPopUpMenu::OnMenuDuration( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDuration( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteDuration();
@@ -1196,7 +1246,7 @@ void gPopUpMenu::OnMenuDuration( wxCommandEvent& event)
 }
 
 
-void gPopUpMenu::OnMenuSemanticScale( wxCommandEvent& event)
+void gPopUpMenu::OnMenuSemanticScale( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteSemanticScale();
@@ -1204,19 +1254,19 @@ void gPopUpMenu::OnMenuSemanticScale( wxCommandEvent& event)
     histogram->OnPopUpPasteSemanticScale();
 }
 
-void gPopUpMenu::OnMenuFilterAll( wxCommandEvent& event)
+void gPopUpMenu::OnMenuFilterAll( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteFilterAll();
 }
 
-void gPopUpMenu::OnMenuFilterComms( wxCommandEvent& event)
+void gPopUpMenu::OnMenuFilterComms( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteFilterCommunications();
 }
 
-void gPopUpMenu::OnMenuFilterEvents( wxCommandEvent& event)
+void gPopUpMenu::OnMenuFilterEvents( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteFilterEvents();
@@ -1237,7 +1287,7 @@ void gPopUpMenu::OnMenuPasteControlDimensions( wxCommandEvent& event )
   histogram->OnPopUpPasteControlDimensions();
 }
 
-void gPopUpMenu::OnMenuPasteDefaultSpecial( wxCommandEvent& event)
+void gPopUpMenu::OnMenuPasteDefaultSpecial( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteDefaultSpecial();
@@ -1245,7 +1295,7 @@ void gPopUpMenu::OnMenuPasteDefaultSpecial( wxCommandEvent& event)
     histogram->OnPopUpPasteDefaultSpecial();
 }
 
-void gPopUpMenu::OnMenuPasteSpecial( wxCommandEvent& event)
+void gPopUpMenu::OnMenuPasteSpecial( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpPasteSpecial();
@@ -1253,7 +1303,7 @@ void gPopUpMenu::OnMenuPasteSpecial( wxCommandEvent& event)
     histogram->OnPopUpPasteSpecial();
 }
 
-void gPopUpMenu::OnMenuClone( wxCommandEvent& event)
+void gPopUpMenu::OnMenuClone( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpClone();
@@ -1261,7 +1311,7 @@ void gPopUpMenu::OnMenuClone( wxCommandEvent& event)
     histogram->OnPopUpClone();
 }
 
-void gPopUpMenu::OnMenuUndoZoom( wxCommandEvent& event)
+void gPopUpMenu::OnMenuUndoZoom( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpUndoZoom();
@@ -1269,7 +1319,7 @@ void gPopUpMenu::OnMenuUndoZoom( wxCommandEvent& event)
     histogram->OnPopUpUndoZoom();
 }
 
-void gPopUpMenu::OnMenuRedoZoom( wxCommandEvent& event)
+void gPopUpMenu::OnMenuRedoZoom( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpRedoZoom();
@@ -1277,7 +1327,7 @@ void gPopUpMenu::OnMenuRedoZoom( wxCommandEvent& event)
     histogram->OnPopUpRedoZoom();
 }
 
-void gPopUpMenu::OnMenuFitTime( wxCommandEvent& event)
+void gPopUpMenu::OnMenuFitTime( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpFitTimeScale();
@@ -1347,25 +1397,25 @@ void gPopUpMenu::OnMenuPunctualWindow( wxCommandEvent& event )
     timeline->OnPopUpPunctualColorWindow();
 }
 
-void gPopUpMenu::OnMenuCodeColor( wxCommandEvent& event)
+void gPopUpMenu::OnMenuCodeColor( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpCodeColor();
 }
 
-void gPopUpMenu::OnMenuGradientColor( wxCommandEvent& event)
+void gPopUpMenu::OnMenuGradientColor( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpGradientColor();
 }
 
-void gPopUpMenu::OnMenuNotNullGradientColor( wxCommandEvent& event)
+void gPopUpMenu::OnMenuNotNullGradientColor( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpNotNullGradientColor();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeLast( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeLast( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeLast();
@@ -1373,7 +1423,7 @@ void gPopUpMenu::OnMenuDrawModeTimeLast( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticLast();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeRandom( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeRandom( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeRandom();
@@ -1381,7 +1431,7 @@ void gPopUpMenu::OnMenuDrawModeTimeRandom( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticRandom();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeRandomNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeRandomNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeRandomNotZero();
@@ -1389,7 +1439,7 @@ void gPopUpMenu::OnMenuDrawModeTimeRandomNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticRandomNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeMaximum( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeMaximum( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeMaximum();
@@ -1397,7 +1447,7 @@ void gPopUpMenu::OnMenuDrawModeTimeMaximum( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticMaximum();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeMinimumNotZero();
@@ -1405,7 +1455,7 @@ void gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticMinimumNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeAbsoluteMaximum( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeAbsoluteMaximum( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeAbsoluteMaximum();
@@ -1413,7 +1463,7 @@ void gPopUpMenu::OnMenuDrawModeTimeAbsoluteMaximum( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticAbsoluteMaximum();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeAbsoluteMinimumNotZero();
@@ -1421,7 +1471,7 @@ void gPopUpMenu::OnMenuDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event
     histogram->OnPopUpDrawModeSemanticAbsoluteMinimumNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeAverage( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeAverage( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeAverage();
@@ -1429,7 +1479,7 @@ void gPopUpMenu::OnMenuDrawModeTimeAverage( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticAverage();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeAverageNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeAverageNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeAverageNotZero();
@@ -1437,7 +1487,7 @@ void gPopUpMenu::OnMenuDrawModeTimeAverageNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticAverageNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeTimeMode( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeTimeMode( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeTimeMode();
@@ -1445,7 +1495,7 @@ void gPopUpMenu::OnMenuDrawModeTimeMode( wxCommandEvent& event)
     histogram->OnPopUpDrawModeSemanticMode();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsLast( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsLast( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsLast();
@@ -1453,7 +1503,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsLast( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsLast();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsRandom( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsRandom( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsRandom();
@@ -1461,7 +1511,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsRandom( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsRandom();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsRandomNotZero();
@@ -1469,7 +1519,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsRandomNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsMaximum( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsMaximum( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsMaximum();
@@ -1477,7 +1527,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsMaximum( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsMaximum();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsMinimumNotZero();
@@ -1485,7 +1535,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsMinimumNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsAbsoluteMaximum();
@@ -1493,7 +1543,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsAbsoluteMaximum();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsAbsoluteMinimumNotZero();
@@ -1501,7 +1551,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& ev
     histogram->OnPopUpDrawModeObjectsAbsoluteMinimumNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsAverage( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsAverage( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsAverage();
@@ -1509,7 +1559,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsAverage( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsAverage();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsAverageNotZero();
@@ -1517,7 +1567,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsAverageNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeObjectsMode( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeObjectsMode( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeObjectsMode();
@@ -1525,7 +1575,7 @@ void gPopUpMenu::OnMenuDrawModeObjectsMode( wxCommandEvent& event)
     histogram->OnPopUpDrawModeObjectsMode();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothLast( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothLast( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothLast();
@@ -1533,7 +1583,7 @@ void gPopUpMenu::OnMenuDrawModeBothLast( wxCommandEvent& event)
     histogram->OnPopUpDrawModeBothLast();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothRandom( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothRandom( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothRandom();
@@ -1541,7 +1591,7 @@ void gPopUpMenu::OnMenuDrawModeBothRandom( wxCommandEvent& event)
     histogram->OnPopUpDrawModeBothRandom();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothRandomNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothRandomNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothRandomNotZero();
@@ -1549,7 +1599,7 @@ void gPopUpMenu::OnMenuDrawModeBothRandomNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeBothRandomNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothMaximum( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothMaximum( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothMaximum();
@@ -1557,7 +1607,7 @@ void gPopUpMenu::OnMenuDrawModeBothMaximum( wxCommandEvent& event)
     histogram->OnPopUpDrawModeBothMaximum();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothMinimumNotZero();
@@ -1565,7 +1615,7 @@ void gPopUpMenu::OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeBothMinimumNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothAbsoluteMaximum( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothAbsoluteMaximum( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothAbsoluteMaximum();
@@ -1573,7 +1623,7 @@ void gPopUpMenu::OnMenuDrawModeBothAbsoluteMaximum( wxCommandEvent& event)
     histogram->OnPopUpDrawModeBothAbsoluteMaximum();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothAbsoluteMinimumNotZero();
@@ -1581,7 +1631,7 @@ void gPopUpMenu::OnMenuDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event
     histogram->OnPopUpDrawModeBothAbsoluteMinimumNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothAverage( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothAverage( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothAverage();
@@ -1589,7 +1639,7 @@ void gPopUpMenu::OnMenuDrawModeBothAverage( wxCommandEvent& event)
     histogram->OnPopUpDrawModeBothAverage();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothAverageNotZero( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothAverageNotZero( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothAverageNotZero();
@@ -1597,7 +1647,7 @@ void gPopUpMenu::OnMenuDrawModeBothAverageNotZero( wxCommandEvent& event)
     histogram->OnPopUpDrawModeBothAverageNotZero();
 }
 
-void gPopUpMenu::OnMenuDrawModeBothMode( wxCommandEvent& event)
+void gPopUpMenu::OnMenuDrawModeBothMode( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothMode();
@@ -1639,7 +1689,7 @@ void gPopUpMenu::OnMenuPixelSize( wxCommandEvent& event )
   }
 }
 
-void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event)
+void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpRowSelection();
@@ -1852,17 +1902,20 @@ void gPopUpMenu::OnMenuObjectAxisFive( wxCommandEvent& event )
   timeline->GetMyWindow()->setRedraw( true );
 }
 
+
 void gPopUpMenu::OnMenuObjectAxisTen( wxCommandEvent& event )
 {
   timeline->GetMyWindow()->setObjectAxisSize( Window::TEN_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
+
 void gPopUpMenu::OnMenuObjectAxisTwentyFive( wxCommandEvent& event )
 {
   timeline->GetMyWindow()->setObjectAxisSize( Window::TWENTYFIVE_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
+
 
 void gPopUpMenu::OnMenuClustering( wxCommandEvent& event )
 {
@@ -1871,20 +1924,24 @@ void gPopUpMenu::OnMenuClustering( wxCommandEvent& event )
   SequenceDriver::sequenceClustering( timeline );
 }
 
+
 void gPopUpMenu::OnMenuFolding( wxCommandEvent& event )
 {
   SequenceDriver::sequenceFolding( timeline );
 }
+
 
 void gPopUpMenu::OnMenuSpectral( wxCommandEvent& event )
 {
   SequenceDriver::sequenceSpectral( timeline );
 }
 
+
 void gPopUpMenu::OnMenuDimemas( wxCommandEvent& event )
 {
   SequenceDriver::sequenceDimemas( timeline );
 }
+
 
 void gPopUpMenu::OnMenuCutter( wxCommandEvent& event )
 {
