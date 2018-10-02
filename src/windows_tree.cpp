@@ -438,20 +438,19 @@ bool updateTreeItem( wxTreeCtrl *tree,
     // The next sibling is properly selected by recursion if it exists
     wxTreeItemId candidate = tree->GetNextSibling( id );
     if ( !candidate.IsOk() )
-    {
       candidate = tree->GetPrevSibling( id );
-      if ( candidate.IsOk() )
+
+    if ( candidate.IsOk() )
+    {
+      if ( gTimeline *tmpTimeline = itemData->getTimeline() )
       {
-        if ( gTimeline *tmpTimeline = itemData->getTimeline() )
-        {
-          *currentWindow = tmpTimeline;
-        }
-        else if( gHistogram *tmpHistogram = itemData->getHistogram() )
-        {
-          *currentWindow = tmpHistogram;
-        }
-        tree->SelectItem( candidate );
+        *currentWindow = tmpTimeline;
       }
+      else if( gHistogram *tmpHistogram = itemData->getHistogram() )
+      {
+        *currentWindow = tmpHistogram;
+      }
+      tree->SelectItem( candidate );
     }
 
     tree->Delete( id );
