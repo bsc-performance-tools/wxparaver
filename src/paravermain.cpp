@@ -2228,7 +2228,16 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
   {
     CFGPath = dialog.GetPath();
     CFGLoadedBefore = true;
-    CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms );
+
+    // Delete timelines belonging to derived windows
+    vector< Window * > tmpVTimelines;
+    for( vector<Window *>::iterator itWin = timelines.begin(); itWin != timelines.end(); ++itWin )
+    {
+      if( !(*itWin)->getUsedByHistogram() && (*itWin)->getChild() == NULL )
+        tmpVTimelines.push_back( *itWin );
+    }
+
+    CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, tmpVTimelines, histograms );
     previousCFGs->add( std::string( CFGPath.mb_str() ) );
   }
 }   
