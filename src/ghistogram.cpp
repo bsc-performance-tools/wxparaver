@@ -1824,9 +1824,20 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   if( row > 0 && column > 0 )
   {
     TSemanticValue value = getZoomSemanticValue( column - 1, row - 1 );
-    text << _( "= " ) << wxString::FromAscii( LabelConstructor::histoCellLabel( myHistogram, 
-                                                                                value, 
-                                                                                myHistogram->getShowUnits() ).c_str() );
+    string tmpLabel;
+    if ( !myHistogram->getCodeColor() )
+    {
+      tmpLabel =  LabelConstructor::histoCellLabel( myHistogram, value,  myHistogram->getShowUnits() );
+    }
+    else
+    {
+      tmpLabel =  LabelConstructor::semanticLabel( myHistogram->getDataWindow(),
+                                                   value,
+                                                   true,
+                                                   ParaverConfig::getInstance()->getHistogramPrecision() );
+    }
+
+    text << _( "= " ) << wxString::FromAscii( tmpLabel.c_str() );
   }
   
   histoStatus->SetStatusText( text );
