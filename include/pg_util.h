@@ -21,17 +21,17 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
+#include <vector>
 
 class Window;
 class Histogram;
 class wxPropertyGrid;
+struct PropertyOwner;
+
 
 void initPG();
 
-void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWindow );
+void updateTimelineProperties( wxPropertyGrid* windowProperties,
+                               Window *whichWindow,
+                               std::vector< PropertyOwner >& whichPropertiesOwner );
 void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whichHisto );

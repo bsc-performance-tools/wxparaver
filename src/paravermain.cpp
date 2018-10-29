@@ -1094,6 +1094,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     return;
 
   const wxString& propName = property->GetName();
+  PropertyOwner *tmpOwner = (PropertyOwner *)property->GetClientData();
 
   if( propName == _( "Mode" ) )
   {
@@ -1111,15 +1112,15 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == wxString( "Name", wxConvUTF8 ) )
   {
     wxString tmpName = property->GetValue().GetString();
-    if( currentTimeline != NULL )
+    if( tmpOwner->ownerTimeline != NULL )
     {
-      currentTimeline->setName( std::string( tmpName.mb_str() ) );
-      currentTimeline->setChanged( true );
+      tmpOwner->ownerTimeline->setName( std::string( tmpName.mb_str() ) );
+      tmpOwner->ownerTimeline->setChanged( true );
     }
-    else if( currentHisto != NULL )
+    else if( tmpOwner->ownerHistogram != NULL )
     {
-      currentHisto->setName( std::string( tmpName.mb_str() ) );
-      currentHisto->setChanged( true );
+      tmpOwner->ownerHistogram->setName( std::string( tmpName.mb_str() ) );
+      tmpOwner->ownerHistogram->setChanged( true );
     }
   }
   else if( propName == _( "Begin time" ) )
@@ -1928,7 +1929,7 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
       return;
     lastTimeline = currentTimeline;
 
-    updateTimelineProperties( windowProperties, currentTimeline );
+    updateTimelineProperties( windowProperties, currentTimeline, propertiesOwner );
   }
 }
 

@@ -174,6 +174,14 @@ struct SignalItem
 };
 
 
+// 
+struct PropertyOwner
+{
+  Window *ownerTimeline;
+  Histogram *ownerHistogram;
+};
+
+
 /*!
  * paraverMain class declaration
  */
@@ -420,6 +428,9 @@ public:
   PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
   void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
 
+  std::vector< PropertyOwner > GetPropertiesOwner() const { return propertiesOwner ; }
+  void SetPropertiesOwner(std::vector< PropertyOwner > value) { propertiesOwner = value ; }
+
   bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
   void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
 
@@ -571,6 +582,7 @@ private:
   PreviousFiles * previousCFGs;
   PreviousFiles * previousCutFilteredTraces;
   PreviousFiles * previousTraces;
+  std::vector< PropertyOwner > propertiesOwner;
   bool raiseCurrentWindow;
   RunScript * runApplication;
   wxTimer * sessionTimer;
