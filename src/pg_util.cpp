@@ -75,7 +75,7 @@ static bool statCatCollapsed          = true;
 static bool ctrlCatCollapsed          = true;
 static bool dataCatCollapsed          = true;
 static bool thirdWinCatCollapsed      = true;
-
+static unsigned int propNameCounter   = 0;
 
 class wxSpinButtonsEditor : public wxPGTextCtrlEditor
 {
@@ -246,7 +246,7 @@ void AppendCFG4DBoolPropertyWindow( wxPropertyGrid* windowProperties,
 
 void AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
                                       Window* whichWindow,
-                                      std::vector< PropertyOwner >& whichPropertiesOwner,
+                                      std::vector< PropertyClientData >& whichPropertiesClientData,
                                       wxPGId fatherWidget,
                                       const wxString &widgetLabel,
                                       const wxString &widgetName,
@@ -255,11 +255,14 @@ void AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
 {
   wxStringProperty *auxProperty = NULL;
 
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+  
   if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   {
     // NORMAL mode
     auxProperty = new wxStringProperty(
-            widgetLabel, widgetName, wxString::FromAscii( propertyValue.c_str() ) );
+            widgetLabel, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
 
     if ( fatherWidget )
     {
@@ -278,7 +281,7 @@ void AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
             whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
 
     auxProperty = new wxStringProperty( 
-            auxTag, widgetName, wxString::FromAscii( propertyValue.c_str() ) );
+            auxTag, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
 
     windowProperties->Append( auxProperty );
   }
@@ -292,7 +295,7 @@ void AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
                     DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
 
     auxProperty = new wxStringProperty( 
-            auxTag, widgetName, wxString::FromAscii( propertyValue.c_str() ) );
+            auxTag, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
 
     windowProperties->Append( auxProperty );
   }
@@ -303,11 +306,12 @@ void AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
 
   if ( auxProperty != NULL )
   {
-    PropertyOwner tmpOwner;
-    tmpOwner.ownerTimeline = whichWindow;
-    tmpOwner.ownerHistogram = NULL;
-    whichPropertiesOwner.push_back( tmpOwner );
-    auxProperty->SetClientData( &whichPropertiesOwner[ whichPropertiesOwner.size() - 1 ] );
+    PropertyClientData tmpClientData;
+    tmpClientData.ownerTimeline = whichWindow;
+    tmpClientData.ownerHistogram = NULL;
+    tmpClientData.propName = widgetName;
+    whichPropertiesClientData.push_back( tmpClientData );
+    auxProperty->SetClientData( &whichPropertiesClientData[ whichPropertiesClientData.size() - 1 ] );
   }
 }
 
@@ -1006,7 +1010,7 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
 
 
 void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window *whichWindow,
-                                        std::vector< PropertyOwner >& whichPropertiesOwner )
+                                        std::vector< PropertyClientData >& whichPropertiesClientData )
 {
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
 
@@ -1029,17 +1033,17 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
   wxPGId dummyPGId = (wxPGId)NULL; // used to append always to windowProperties
 
-  AppendCFG4DStringPropertyWindow( windowProperties, whichWindow, whichPropertiesOwner, dummyPGId,
+  AppendCFG4DStringPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
           wxT("Name"), wxT("Name"), SINGLE_NAME, whichWindow->getName() );
 
-  AppendCFG4DStringPropertyWindow( windowProperties, whichWindow, whichPropertiesOwner, dummyPGId,
+  AppendCFG4DStringPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
           wxT("Begin time"), wxT("Begin time"), SINGLE_BEGINTIME,
           LabelConstructor::timeLabel(
                   whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowBeginTime() ),
                   whichWindow->getTimeUnit(),
                   precision ));
 
-  AppendCFG4DStringPropertyWindow( windowProperties, whichWindow, whichPropertiesOwner, dummyPGId,
+  AppendCFG4DStringPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
           wxT("End time"), wxT("End time"), SINGLE_ENDTIME,
           LabelConstructor::timeLabel(
                   whichWindow->traceUnitsToWindowUnits( whichWindow->getWindowEndTime() ),
@@ -2053,24 +2057,26 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
   
   if ( whichWindow->getCFG4DEnabled() && whichWindow->getCFG4DMode() && whichWindow->isDerivedWindow() )
   {
-    updateTimelinePropertiesRecursive( windowProperties, whichWindow->getParent( 0 ), whichPropertiesOwner );
-    updateTimelinePropertiesRecursive( windowProperties, whichWindow->getParent( 1 ), whichPropertiesOwner );
+    updateTimelinePropertiesRecursive( windowProperties, whichWindow->getParent( 0 ), whichPropertiesClientData );
+    updateTimelinePropertiesRecursive( windowProperties, whichWindow->getParent( 1 ), whichPropertiesClientData );
   }
 }
 
 
 void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWindow,
-                               std::vector< PropertyOwner >& whichPropertiesOwner  )
+                               std::vector< PropertyClientData >& whichPropertiesClientData  )
 {
   updateCategoriesState( windowProperties );
   windowProperties->Freeze();
   windowProperties->Clear();
-  whichPropertiesOwner.clear();
+  whichPropertiesClientData.clear();
   
   wxArrayString arrayStr;
   wxArrayInt arrayInt;
   int selected;
-  
+
+  propNameCounter = 0;
+
   if ( whichWindow->getCFG4DEnabled() )
   {
     arrayStr.Clear();
@@ -2085,7 +2091,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
     windowProperties->Append( tmpSelector );
   }
 
-  updateTimelinePropertiesRecursive( windowProperties, whichWindow, whichPropertiesOwner );
+  updateTimelinePropertiesRecursive( windowProperties, whichWindow, whichPropertiesClientData );
 
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );
   windowProperties->Refresh();

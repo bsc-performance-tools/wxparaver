@@ -175,10 +175,11 @@ struct SignalItem
 
 
 // 
-struct PropertyOwner
+struct PropertyClientData
 {
   Window *ownerTimeline;
   Histogram *ownerHistogram;
+  wxString propName;
 };
 
 
@@ -428,8 +429,8 @@ public:
   PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
   void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
 
-  std::vector< PropertyOwner > GetPropertiesOwner() const { return propertiesOwner ; }
-  void SetPropertiesOwner(std::vector< PropertyOwner > value) { propertiesOwner = value ; }
+  std::vector< PropertyClientData > GetPropertiesClientData() const { return propertiesClientData ; }
+  void SetPropertiesClientData(std::vector< PropertyClientData > value) { propertiesClientData = value ; }
 
   bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
   void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
@@ -582,7 +583,7 @@ private:
   PreviousFiles * previousCFGs;
   PreviousFiles * previousCutFilteredTraces;
   PreviousFiles * previousTraces;
-  std::vector< PropertyOwner > propertiesOwner;
+  std::vector< PropertyClientData > propertiesClientData;
   bool raiseCurrentWindow;
   RunScript * runApplication;
   wxTimer * sessionTimer;

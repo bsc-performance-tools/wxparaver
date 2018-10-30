@@ -26,12 +26,12 @@
 class Window;
 class Histogram;
 class wxPropertyGrid;
-struct PropertyOwner;
+struct PropertyClientData;
 
 
 void initPG();
 
 void updateTimelineProperties( wxPropertyGrid* windowProperties,
                                Window *whichWindow,
-                               std::vector< PropertyOwner >& whichPropertiesOwner );
+                               std::vector< PropertyClientData >& whichPropertiesClientData );
 void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whichHisto );
