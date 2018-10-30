@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -189,71 +183,35 @@ void initPG()
 }
 
 
-void AppendCFG4DBoolPropertyWindow( wxPropertyGrid* windowProperties,
-                                    Window* whichWindow,
-                                    wxPGId fatherWidget,
-                                    const wxString &widgetLabel,
-                                    const wxString &widgetName,
-                                    TSingleTimelineProperties propertyIndex,
-                                    const bool &propertyValue )
+void fillPropertyClientData( Window* whichWindow,
+                             Histogram* whichHistogram,
+                             wxPGProperty* whichProperty,
+                             wxString widgetName,
+                             std::vector< PropertyClientData >& whichPropertiesClientData )
 {
-  wxBoolProperty *auxProperty = NULL;
-
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( whichProperty != NULL )
   {
-    // NORMAL mode
-    auxProperty = new wxBoolProperty( widgetLabel, widgetName, propertyValue );
-
-    if ( fatherWidget )
-    {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
-    }
-    else
-    {
-      windowProperties->Append( auxProperty );
-    }
-  }
-  else if ( !whichWindow->isDerivedWindow() &&
-            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
-  {
-    // CFG4D mode (single timeline)
-    wxString auxTag = wxString::FromAscii( 
-            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-
-    auxProperty = new wxBoolProperty( auxTag, widgetName, propertyValue );
-
-    windowProperties->Append( auxProperty );
-  }
-  else if ( whichWindow->isDerivedWindow() &&
-            whichWindow->existsCFG4DAlias(
-                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
-  {
-    // CFG4D mode (derived timeline)
-    wxString auxTag = wxString::FromAscii( 
-            whichWindow->getCFG4DAlias( 
-                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-
-    auxProperty = new wxBoolProperty( auxTag, widgetName, propertyValue );
-
-    windowProperties->Append( auxProperty );
-  }
-  else
-  {
-    // CFG4D mode but no tag found => don't show property
+    PropertyClientData tmpClientData;
+    tmpClientData.ownerTimeline = whichWindow;
+    tmpClientData.ownerHistogram = whichHistogram;
+    tmpClientData.propName = widgetName;
+    whichPropertiesClientData.push_back( tmpClientData );
+    whichProperty->SetClientData( &whichPropertiesClientData[ whichPropertiesClientData.size() - 1 ] );
   }
 }
 
 
-void AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
+wxPGId AppendCFG4DBoolPropertyWindow( wxPropertyGrid* windowProperties,
                                       Window* whichWindow,
                                       std::vector< PropertyClientData >& whichPropertiesClientData,
                                       wxPGId fatherWidget,
                                       const wxString &widgetLabel,
                                       const wxString &widgetName,
                                       TSingleTimelineProperties propertyIndex,
-                                      const string &propertyValue )
+                                      const bool &propertyValue )
 {
-  wxStringProperty *auxProperty = NULL;
+  wxPGId retId = (wxPGId)NULL;
+  wxBoolProperty *auxProperty = NULL;
 
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
@@ -261,198 +219,7 @@ void AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
   if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   {
     // NORMAL mode
-    auxProperty = new wxStringProperty(
-            widgetLabel, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
-
-    if ( fatherWidget )
-    {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
-    }
-    else
-    {
-      windowProperties->Append( auxProperty );
-    }
-  }
-  else if ( !whichWindow->isDerivedWindow() && 
-            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
-  {
-    // CFG4D mode (single timeline)
-    wxString auxTag = wxString::FromAscii( 
-            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-
-    auxProperty = new wxStringProperty( 
-            auxTag, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
-
-    windowProperties->Append( auxProperty );
-  }
-  else if ( whichWindow->isDerivedWindow() && 
-            whichWindow->existsCFG4DAlias(
-                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
-  {
-    // CFG4D mode (derived timeline)
-    wxString auxTag = wxString::FromAscii( 
-            whichWindow->getCFG4DAlias( 
-                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-
-    auxProperty = new wxStringProperty( 
-            auxTag, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
-
-    windowProperties->Append( auxProperty );
-  }
-  else
-  {
-    // CFG4D mode but no tag found => don't show property
-  }
-
-  if ( auxProperty != NULL )
-  {
-    PropertyClientData tmpClientData;
-    tmpClientData.ownerTimeline = whichWindow;
-    tmpClientData.ownerHistogram = NULL;
-    tmpClientData.propName = widgetName;
-    whichPropertiesClientData.push_back( tmpClientData );
-    auxProperty->SetClientData( &whichPropertiesClientData[ whichPropertiesClientData.size() - 1 ] );
-  }
-}
-
-
-void AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
-                                    Window* whichWindow,
-                                    wxPGId fatherWidget,
-                                    const wxString &widgetLabel,
-                                    const wxString &widgetPrefix,
-                                    const wxString &widgetName,
-                                    TSingleTimelineProperties propertyIndex,
-                                    const wxArrayString &arrayStr,
-                                    const wxArrayInt &arrayInt,
-                                    const int selected )
-{
-  wxEnumProperty *auxProperty = NULL;
-
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
-  {
-    // NORMAL mode
-    auxProperty = new wxEnumProperty( widgetLabel, widgetName, arrayStr, arrayInt, selected );
-
-    if ( fatherWidget )
-    {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
-    }
-    else
-    {
-      windowProperties->Append( auxProperty );
-    }
-  }
-  else if ( !whichWindow->isDerivedWindow() &&
-            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
-  {
-    // CFG4D mode (single timeline)
-    wxString auxTag = wxString::FromAscii( 
-            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
-    auxProperty = new wxEnumProperty( auxTag, fullName, arrayStr, arrayInt, selected );
-
-    windowProperties->Append( auxProperty );
-  }
-  else if ( whichWindow->isDerivedWindow() &&
-            whichWindow->existsCFG4DAlias( 
-                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
-  {
-    // CFG4D mode (derived timeline)
-    wxString auxTag = wxString::FromAscii( 
-            whichWindow->getCFG4DAlias( 
-                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
-    auxProperty = new wxEnumProperty( auxTag, fullName, arrayStr, arrayInt, selected );
-
-    windowProperties->Append( auxProperty );
-  }
-  else
-  {
-    // CFG4D mode but no tag found => don't show property
-  }
-}
-
-
-void AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
-                                     Window* whichWindow,
-                                     wxPGId fatherWidget,
-                                     const wxString &widgetLabel,
-                                     const wxString &widgetName,
-                                     TSingleTimelineProperties propertyIndex,
-                                     const double propertyValue )
-{
-  wxFloatProperty *auxProperty = NULL;
-
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
-  {
-    // NORMAL mode
-    auxProperty = new wxFloatProperty( widgetLabel, widgetName, propertyValue );
-
-    if ( fatherWidget )
-    {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
-    }
-    else
-    {
-      windowProperties->Append( auxProperty );
-    }
-  }
-  else if ( !whichWindow->isDerivedWindow() &&
-            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
-  {
-    // CFG4D mode (single timeline)
-    wxString auxTag = wxString::FromAscii( 
-            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-    auxProperty = new wxFloatProperty( auxTag, widgetName, propertyValue );
-
-    windowProperties->Append( auxProperty );
-  }
-  else if ( whichWindow->isDerivedWindow() &&
-            whichWindow->existsCFG4DAlias( 
-                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
-  {
-    // CFG4D mode (derived timeline)
-    wxString auxTag = wxString::FromAscii( 
-            whichWindow->getCFG4DAlias( 
-                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-    auxProperty = new wxFloatProperty( auxTag, widgetName, propertyValue );
-
-    windowProperties->Append( auxProperty );
-  }
-  else
-  {
-    // CFG4D mode but no tag found => don't show property
-  }
-  
-/* NOT WORKING PROPERLY
-#if wxMAJOR_VERSION>=3
-  windowProperties->SetPropertyEditor( auxProperty, spinButtonsEditor );
-#else
-  windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( SpinButtonsEditor ) );
-#endif
-*/
-}
-
-
-wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperties,
-                                                  Window* whichWindow,
-                                                  wxPGId fatherWidget,
-                                                  const wxString &widgetLabel,
-                                                  const wxString &widgetPrefix,
-                                                  const wxString &widgetName,
-                                                  TSingleTimelineProperties propertyIndex,
-                                                  const wxString &widgetTitle,
-                                                  vector< TObjectOrder > &objects )
-{
-  wxPGId retId = (wxPGId)NULL;
-  prvRowsSelectionProperty *auxProperty = NULL;
-
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
-  {
-    // NORMAL mode
-    auxProperty = new prvRowsSelectionProperty( windowProperties, whichWindow,
-                                                widgetTitle, objects, widgetLabel, widgetName );
+    auxProperty = new wxBoolProperty( widgetLabel, tmpWidgetName, propertyValue );
 
     if ( fatherWidget )
     {
@@ -469,9 +236,276 @@ wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperti
     // CFG4D mode (single timeline)
     wxString auxTag = wxString::FromAscii( 
             whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
+
+    auxProperty = new wxBoolProperty( auxTag, tmpWidgetName, propertyValue );
+
+    retId = windowProperties->Append( auxProperty );
+  }
+  else if ( whichWindow->isDerivedWindow() &&
+            whichWindow->existsCFG4DAlias(
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
+  {
+    // CFG4D mode (derived timeline)
+    wxString auxTag = wxString::FromAscii( 
+            whichWindow->getCFG4DAlias( 
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
+
+    auxProperty = new wxBoolProperty( auxTag, tmpWidgetName, propertyValue );
+
+    retId = windowProperties->Append( auxProperty );
+  }
+  else
+  {
+    // CFG4D mode but no tag found => don't show property
+  }
+
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetName, whichPropertiesClientData );
+
+  return retId;
+}
+
+
+wxPGId AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
+                                        Window* whichWindow,
+                                        std::vector< PropertyClientData >& whichPropertiesClientData,
+                                        wxPGId fatherWidget,
+                                        const wxString &widgetLabel,
+                                        const wxString &widgetName,
+                                        TSingleTimelineProperties propertyIndex,
+                                        const string &propertyValue )
+{
+  wxPGId retId = (wxPGId)NULL;
+  wxStringProperty *auxProperty = NULL;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+  
+  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  {
+    // NORMAL mode
+    auxProperty = new wxStringProperty(
+            widgetLabel, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
+
+    if ( fatherWidget )
+    {
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
+    }
+    else
+    {
+      retId = windowProperties->Append( auxProperty );
+    }
+  }
+  else if ( !whichWindow->isDerivedWindow() && 
+            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
+  {
+    // CFG4D mode (single timeline)
+    wxString auxTag = wxString::FromAscii( 
+            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
+
+    auxProperty = new wxStringProperty( 
+            auxTag, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
+
+    retId = windowProperties->Append( auxProperty );
+  }
+  else if ( whichWindow->isDerivedWindow() && 
+            whichWindow->existsCFG4DAlias(
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
+  {
+    // CFG4D mode (derived timeline)
+    wxString auxTag = wxString::FromAscii( 
+            whichWindow->getCFG4DAlias( 
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
+
+    auxProperty = new wxStringProperty( 
+            auxTag, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
+
+    retId = windowProperties->Append( auxProperty );
+  }
+  else
+  {
+    // CFG4D mode but no tag found => don't show property
+  }
+
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetName, whichPropertiesClientData );
+
+  return retId;
+}
+
+
+wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
+                                      Window* whichWindow,
+                                      std::vector< PropertyClientData >& whichPropertiesClientData,
+                                      wxPGId fatherWidget,
+                                      const wxString &widgetLabel,
+                                      const wxString &widgetPrefix,
+                                      const wxString &widgetName,
+                                      TSingleTimelineProperties propertyIndex,
+                                      const wxArrayString &arrayStr,
+                                      const wxArrayInt &arrayInt,
+                                      const int selected )
+{
+  wxPGId retId = (wxPGId)NULL;
+  wxEnumProperty *auxProperty = NULL;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+
+  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  {
+    // NORMAL mode
+    auxProperty = new wxEnumProperty( widgetLabel, tmpWidgetName, arrayStr, arrayInt, selected );
+
+    if ( fatherWidget )
+    {
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
+    }
+    else
+    {
+      retId = windowProperties->Append( auxProperty );
+    }
+  }
+  else if ( !whichWindow->isDerivedWindow() &&
+            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
+  {
+    // CFG4D mode (single timeline)
+    wxString auxTag = wxString::FromAscii( 
+            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
+    auxProperty = new wxEnumProperty( auxTag, tmpWidgetName, arrayStr, arrayInt, selected );
+    retId = windowProperties->Append( auxProperty );
+  }
+  else if ( whichWindow->isDerivedWindow() &&
+            whichWindow->existsCFG4DAlias( 
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
+  {
+    // CFG4D mode (derived timeline)
+    wxString auxTag = wxString::FromAscii( 
+            whichWindow->getCFG4DAlias( 
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
+    auxProperty = new wxEnumProperty( auxTag, tmpWidgetName, arrayStr, arrayInt, selected );
+
+    retId = windowProperties->Append( auxProperty );
+  }
+  else
+  {
+    // CFG4D mode but no tag found => don't show property
+  }
+
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetPrefix + widgetName, whichPropertiesClientData );
+
+  return retId;
+}
+
+
+wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
+                                       Window* whichWindow,
+                                       std::vector< PropertyClientData >& whichPropertiesClientData,
+                                       wxPGId fatherWidget,
+                                       const wxString &widgetLabel,
+                                       const wxString &widgetName,
+                                       TSingleTimelineProperties propertyIndex,
+                                       const double propertyValue )
+{
+  wxPGId retId = (wxPGId)NULL;
+  wxFloatProperty *auxProperty = NULL;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+
+  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  {
+    // NORMAL mode
+    auxProperty = new wxFloatProperty( widgetLabel, tmpWidgetName, propertyValue );
+
+    if ( fatherWidget )
+    {
+      windowProperties->AppendIn( fatherWidget, auxProperty );
+    }
+    else
+    {
+      windowProperties->Append( auxProperty );
+    }
+  }
+  else if ( !whichWindow->isDerivedWindow() &&
+            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
+  {
+    // CFG4D mode (single timeline)
+    wxString auxTag = wxString::FromAscii( 
+            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
+    auxProperty = new wxFloatProperty( auxTag, tmpWidgetName, propertyValue );
+
+    windowProperties->Append( auxProperty );
+  }
+  else if ( whichWindow->isDerivedWindow() &&
+            whichWindow->existsCFG4DAlias( 
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) )
+  {
+    // CFG4D mode (derived timeline)
+    wxString auxTag = wxString::FromAscii( 
+            whichWindow->getCFG4DAlias( 
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
+    auxProperty = new wxFloatProperty( auxTag, tmpWidgetName, propertyValue );
+
+    windowProperties->Append( auxProperty );
+  }
+  else
+  {
+    // CFG4D mode but no tag found => don't show property
+  }
+  
+/* NOT WORKING PROPERLY
+#if wxMAJOR_VERSION>=3
+  windowProperties->SetPropertyEditor( auxProperty, spinButtonsEditor );
+#else
+  windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( SpinButtonsEditor ) );
+#endif
+*/
+
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetName, whichPropertiesClientData );
+
+  return retId;
+}
+
+
+wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperties,
+                                                  Window* whichWindow,
+                                                  std::vector< PropertyClientData >& whichPropertiesClientData,
+                                                  wxPGId fatherWidget,
+                                                  const wxString &widgetLabel,
+                                                  const wxString &widgetPrefix,
+                                                  const wxString &widgetName,
+                                                  TSingleTimelineProperties propertyIndex,
+                                                  const wxString &widgetTitle,
+                                                  vector< TObjectOrder > &objects )
+{
+  wxPGId retId = (wxPGId)NULL;
+  prvRowsSelectionProperty *auxProperty = NULL;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+
+  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  {
+    // NORMAL mode
     auxProperty = new prvRowsSelectionProperty( windowProperties, whichWindow,
-                                                widgetTitle, objects, auxTag, fullName );
+                                                widgetTitle, objects, widgetLabel, tmpWidgetName );
+
+    if ( fatherWidget )
+    {
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
+    }
+    else
+    {
+      retId = windowProperties->Append( auxProperty );
+    }
+  }
+  else if ( !whichWindow->isDerivedWindow() &&
+            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) )
+  {
+    // CFG4D mode (single timeline)
+    wxString auxTag = wxString::FromAscii( 
+            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
+    auxProperty = new prvRowsSelectionProperty( windowProperties, whichWindow,
+                                                widgetTitle, objects, auxTag, tmpWidgetName );
 
     retId = windowProperties->Append( auxProperty );
   }
@@ -483,9 +517,8 @@ wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperti
     wxString auxTag = wxString::FromAscii( 
             whichWindow->getCFG4DAlias( 
                     DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
     auxProperty = new prvRowsSelectionProperty( windowProperties, whichWindow,
-                                                widgetTitle, objects, auxTag, fullName );
+                                                widgetTitle, objects, auxTag, tmpWidgetName );
 
     retId = windowProperties->Append( auxProperty );
   }
@@ -494,12 +527,15 @@ wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperti
     // CFG4D mode but no tag found => don't show property and NULL returned.
   }
 
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetPrefix + widgetName, whichPropertiesClientData );
+
   return retId;
 }
 
 
 wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties,
                                                 Window* whichWindow,
+                                                std::vector< PropertyClientData >& whichPropertiesClientData,
                                                 wxPGId fatherWidget,
                                                 const wxString &widgetLabel,
                                                 const wxString &widgetPrefix,
@@ -511,10 +547,13 @@ wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties
   prvNumbersListProperty *auxProperty = NULL;
   wxString auxTag;
 
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+
   if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   {
     // NORMAL mode
-    auxProperty = new prvNumbersListProperty( widgetLabel, widgetName, arrayStr );
+    auxProperty = new prvNumbersListProperty( widgetLabel, tmpWidgetName, arrayStr );
 
     if ( fatherWidget )
     {
@@ -531,9 +570,7 @@ wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties
     // CFG4D mode (single timeline)
     auxTag = wxString::FromAscii( whichWindow->getCFG4DAlias(
                     SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
-
-    auxProperty = new prvNumbersListProperty( auxTag, fullName, arrayStr );
+    auxProperty = new prvNumbersListProperty( auxTag, tmpWidgetName, arrayStr );
 
     retId = windowProperties->Append( auxProperty );
   }
@@ -544,8 +581,7 @@ wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties
     // CFG4D mode (derived timeline)
     auxTag = wxString::FromAscii( whichWindow->getCFG4DAlias( 
                     DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
-    auxProperty = new prvNumbersListProperty( auxTag, fullName, arrayStr );
+    auxProperty = new prvNumbersListProperty( auxTag, tmpWidgetName, arrayStr );
 
     retId = windowProperties->Append( auxProperty );
   }
@@ -553,6 +589,8 @@ wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties
   {
     // CFG4D mode but no tag found => don't show property and NULL returned.
   }
+
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetPrefix + widgetName, whichPropertiesClientData );
 
   return retId;
 }
@@ -560,21 +598,24 @@ wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties
 
 wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
                                               Window* whichWindow,
+                                              std::vector< PropertyClientData >& whichPropertiesClientData,
                                               wxPGId fatherWidget,
                                               const wxString &widgetLabel,
                                               const wxString &widgetPrefix,
                                               const wxString &widgetName,
                                               TSingleTimelineProperties propertyIndex,
-                                              const wxPGChoices &choices//,
-                                              /*prvEventInfoProperty *&valueProperty*/ )
+                                              const wxPGChoices &choices )
 {
   wxPGId retId = (wxPGId)NULL;
   prvEventInfoProperty *auxProperty = NULL;
 
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+
   if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   {
     // NORMAL mode
-    auxProperty = new prvEventInfoProperty( widgetLabel, widgetName, choices, whichWindow );
+    auxProperty = new prvEventInfoProperty( widgetLabel, tmpWidgetName, choices, whichWindow );
 
     if ( fatherWidget )
     {
@@ -591,8 +632,7 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
     // CFG4D mode (single timeline)
     wxString auxTag = wxString::FromAscii( 
             whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
-    auxProperty = new prvEventInfoProperty( auxTag, fullName, choices, whichWindow );
+    auxProperty = new prvEventInfoProperty( auxTag, tmpWidgetName, choices, whichWindow );
 
     retId = windowProperties->Append( auxProperty );
   }
@@ -604,8 +644,7 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
     wxString auxTag = wxString::FromAscii( 
             whichWindow->getCFG4DAlias( 
                     DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
-    auxProperty = new prvEventInfoProperty( auxTag, fullName, choices, whichWindow );
+    auxProperty = new prvEventInfoProperty( auxTag, tmpWidgetName, choices, whichWindow );
 
     retId = windowProperties->Append( auxProperty );
   }
@@ -614,30 +653,34 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
     // CFG4D mode but no tag found => don't show property and NULL returned.
   }
 
- // valueProperty = auxProperty;
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetPrefix + widgetName, whichPropertiesClientData );
 
   return retId;
 }
 
 
 wxPGId AppendCFG4DprvSemanticThreadPropertyWindow( wxPropertyGrid* windowProperties,
-                                              Window* whichWindow,
-                                              wxPGId fatherWidget,
-                                              const wxString &widgetLabel,
-                                              const wxString &widgetPrefix,
-                                              const wxString &widgetName,
-                                              TSingleTimelineProperties propertyIndex,
-                                              vector<string> levels,
-                                              vector<vector<string> > threadFunctions,
-                                              const wxString &defaultValue )
+                                                   Window* whichWindow,
+                                                   std::vector< PropertyClientData >& whichPropertiesClientData,
+                                                   wxPGId fatherWidget,
+                                                   const wxString &widgetLabel,
+                                                   const wxString &widgetPrefix,
+                                                   const wxString &widgetName,
+                                                   TSingleTimelineProperties propertyIndex,
+                                                   vector<string> levels,
+                                                   vector<vector<string> > threadFunctions,
+                                                   const wxString &defaultValue )
 {
   wxPGId retId = (wxPGId)NULL;
   prvSemanticThreadProperty *auxProperty = NULL;
 
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+
   if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   {
     // NORMAL mode
-    auxProperty = new prvSemanticThreadProperty( widgetLabel, widgetName, 
+    auxProperty = new prvSemanticThreadProperty( widgetLabel, tmpWidgetName, 
                                                  levels, threadFunctions, defaultValue );
 
     if ( fatherWidget )
@@ -655,8 +698,7 @@ wxPGId AppendCFG4DprvSemanticThreadPropertyWindow( wxPropertyGrid* windowPropert
     // CFG4D mode (single timeline)
     wxString auxTag = wxString::FromAscii( 
             whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
-    auxProperty = new prvSemanticThreadProperty( auxTag, fullName, 
+    auxProperty = new prvSemanticThreadProperty( auxTag, tmpWidgetName, 
                                                  levels, threadFunctions, defaultValue );
 
     retId = windowProperties->Append( auxProperty );
@@ -670,8 +712,7 @@ wxPGId AppendCFG4DprvSemanticThreadPropertyWindow( wxPropertyGrid* windowPropert
     wxString auxTag = wxString::FromAscii( 
             whichWindow->getCFG4DAlias( 
                     DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-    wxString fullName = widgetPrefix + widgetName;
-    auxProperty = new prvSemanticThreadProperty( auxTag, fullName,
+    auxProperty = new prvSemanticThreadProperty( auxTag, tmpWidgetName,
                                                  levels, threadFunctions, defaultValue );
 
     retId = windowProperties->Append( auxProperty );
@@ -682,25 +723,32 @@ wxPGId AppendCFG4DprvSemanticThreadPropertyWindow( wxPropertyGrid* windowPropert
     // CFG4D mode but no tag found => don't show property and NULL returned.
   }
 
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetPrefix + widgetName, whichPropertiesClientData );
+
   return retId;
 }
 
 
-void AppendCFG4DStringPropertyHistogram(  wxPropertyGrid* windowProperties,
-                                          Histogram* whichHisto,
-                                          wxPGId fatherWidget,
-                                          const wxString &widgetLabel,
-                                          const wxString &widgetName,
-                                          THistogramProperties propertyIndex,
-                                          const string &propertyValue )
+wxPGId AppendCFG4DStringPropertyHistogram(  wxPropertyGrid* windowProperties,
+                                            Histogram* whichHisto,
+                                            std::vector< PropertyClientData >& whichPropertiesClientData,
+                                            wxPGId fatherWidget,
+                                            const wxString &widgetLabel,
+                                            const wxString &widgetName,
+                                            THistogramProperties propertyIndex,
+                                            const string &propertyValue )
 {
+  wxPGId retId = (wxPGId)NULL;
   wxStringProperty *auxProperty = NULL;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
 
   if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
   {
     // NORMAL mode
     auxProperty = new wxStringProperty(
-            widgetLabel, widgetName, wxString::FromAscii( propertyValue.c_str() ) );
+            widgetLabel, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
 
     if ( fatherWidget )
     {
@@ -718,7 +766,7 @@ void AppendCFG4DStringPropertyHistogram(  wxPropertyGrid* windowProperties,
             whichHisto->getCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ).c_str() );
 
     auxProperty = new wxStringProperty( 
-            auxTag, widgetName, wxString::FromAscii( propertyValue.c_str() ) );
+            auxTag, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
 
     windowProperties->Append( auxProperty );
   }
@@ -726,25 +774,34 @@ void AppendCFG4DStringPropertyHistogram(  wxPropertyGrid* windowProperties,
   {
     // CFG4D mode but no tag found => don't show property
   }
+
+  fillPropertyClientData( NULL, whichHisto, auxProperty, widgetName, whichPropertiesClientData );
+
+  return retId;
 }
 
 
-void AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
-                                        Histogram* whichHisto,
-                                        wxPGId fatherWidget,
-                                        const wxString &widgetLabel,
-                                        const wxString &widgetName,
-                                        THistogramProperties propertyIndex,
-                                        const wxArrayString &arrayStr,
-                                        const wxArrayInt &arrayInt,
-                                        const int selected )
+wxPGId AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
+                                          Histogram* whichHisto,
+                                          std::vector< PropertyClientData >& whichPropertiesClientData,
+                                          wxPGId fatherWidget,
+                                          const wxString &widgetLabel,
+                                          const wxString &widgetName,
+                                          THistogramProperties propertyIndex,
+                                          const wxArrayString &arrayStr,
+                                          const wxArrayInt &arrayInt,
+                                          const int selected )
 {
+  wxPGId retId = (wxPGId)NULL;
   wxEnumProperty *auxProperty = NULL;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
 
   if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
   {
     // NORMAL mode
-    auxProperty = new wxEnumProperty( widgetLabel, widgetName, arrayStr, arrayInt, selected );
+    auxProperty = new wxEnumProperty( widgetLabel, tmpWidgetName, arrayStr, arrayInt, selected );
 
     if ( fatherWidget )
     {
@@ -760,7 +817,7 @@ void AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
     // CFG4D mode
     wxString auxTag = wxString::FromAscii( 
             whichHisto->getCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ).c_str() );
-    auxProperty = new wxEnumProperty( auxTag, widgetName, arrayStr, arrayInt, selected );
+    auxProperty = new wxEnumProperty( auxTag, tmpWidgetName, arrayStr, arrayInt, selected );
 
     windowProperties->Append( auxProperty );
   }
@@ -768,20 +825,29 @@ void AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
   {
     // CFG4D mode but no tag found => don't show property
   }
+
+  fillPropertyClientData( NULL, whichHisto, auxProperty, widgetName, whichPropertiesClientData );
+
+  return retId;
 }
 
 
-void AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
-                                               Histogram* whichHisto,
-                                               wxPGId fatherWidget,
-                                               const wxString &widgetLabel,
-                                               const wxString &widgetName,
-                                               THistogramProperties propertyIndex,
-                                               vector<TWindowID> windowsList,
-                                               Window *currentWindow,
-                                               bool needNoneElement = false )
+wxPGId AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
+                                                 Histogram* whichHisto,
+                                                 std::vector< PropertyClientData >& whichPropertiesClientData,
+                                                 wxPGId fatherWidget,
+                                                 const wxString &widgetLabel,
+                                                 const wxString &widgetName,
+                                                 THistogramProperties propertyIndex,
+                                                 vector<TWindowID> windowsList,
+                                                 Window *currentWindow,
+                                                 bool needNoneElement = false )
 {
+  wxPGId retId = (wxPGId)NULL;
   prvTimelineTreeProperty *auxProperty = NULL;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
 
   wxString valueStr;
   if( currentWindow == NULL )
@@ -799,7 +865,7 @@ void AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
   {
     // NORMAL mode
     auxProperty = new prvTimelineTreeProperty( widgetLabel,
-                                               widgetName,
+                                               tmpWidgetName,
                                                valueStr,
                                                windowsList,
                                                currentWindow,
@@ -821,7 +887,7 @@ void AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
     wxString auxTag = wxString::FromAscii( 
             whichHisto->getCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ).c_str() );
     auxProperty = new prvTimelineTreeProperty( auxTag,
-                                               widgetName,
+                                               tmpWidgetName,
                                                valueStr,
                                                windowsList,
                                                currentWindow,
@@ -835,23 +901,31 @@ void AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
     // CFG4D mode but no tag found => don't show property
   }
 
+  fillPropertyClientData( NULL, whichHisto, auxProperty, widgetName, whichPropertiesClientData );
+
+  return retId;
 }
 
 
-void AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
-                                         Histogram* whichHisto,
-                                         wxPGId fatherWidget,
-                                         const wxString &widgetLabel,
-                                         const wxString &widgetName,
-                                         THistogramProperties propertyIndex,
-                                         const double propertyValue )
+wxPGId AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
+                                           Histogram* whichHisto,
+                                           std::vector< PropertyClientData >& whichPropertiesClientData,
+                                           wxPGId fatherWidget,
+                                           const wxString &widgetLabel,
+                                           const wxString &widgetName,
+                                           THistogramProperties propertyIndex,
+                                           const double propertyValue )
 {
+  wxPGId retId = (wxPGId)NULL;
   wxFloatProperty *auxProperty = NULL;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
 
   if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
   {
     // NORMAL mode
-    auxProperty = new wxFloatProperty( widgetLabel, widgetName, propertyValue );
+    auxProperty = new wxFloatProperty( widgetLabel, tmpWidgetName, propertyValue );
 
     if ( fatherWidget )
     {
@@ -867,7 +941,7 @@ void AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
     // CFG4D mode
     wxString auxTag = wxString::FromAscii( 
             whichHisto->getCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ).c_str() );
-    auxProperty = new wxFloatProperty( auxTag, widgetName, propertyValue );
+    auxProperty = new wxFloatProperty( auxTag, tmpWidgetName, propertyValue );
 
     windowProperties->Append( auxProperty );
   }
@@ -875,11 +949,16 @@ void AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
   {
     // CFG4D mode but no tag found => don't show property
   }
+
+  fillPropertyClientData( NULL, whichHisto, auxProperty, widgetName, whichPropertiesClientData );
+
+  return retId;
 }
 
 
 wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowProperties,
                                                      Window* whichWindow,
+                                                     std::vector< PropertyClientData >& whichPropertiesClientData,
                                                      wxPGId fatherWidget,
                                                      TWindowLevel currentSemanticLevel,
                                                      PRV_UINT32 currentNumParameter,
@@ -892,6 +971,9 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
   prvNumbersListProperty *auxProperty = NULL;
   wxString auxTag;
   
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+
   // Splitted Parameter alias key
   string kSemanticLevel;
   string kFunction;
@@ -901,7 +983,7 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
   if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   {
     // NORMAL mode
-    auxProperty = new prvNumbersListProperty( widgetLabel, widgetName, arrayStr );
+    auxProperty = new prvNumbersListProperty( widgetLabel, tmpWidgetName, arrayStr );
 
     if ( fatherWidget )
     {
@@ -927,8 +1009,7 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
            kNumParameter  == currentNumParameter )
       {
         auxTag = wxString::FromAscii( whichWindow->getCFG4DParamAlias( *it ).c_str() );
-        wxString fullName = widgetPrefix + widgetName;
-        auxProperty = new prvNumbersListProperty( auxTag, fullName, arrayStr );
+        auxProperty = new prvNumbersListProperty( auxTag, tmpWidgetName, arrayStr );
 
         retId = windowProperties->Append( auxProperty );
       }
@@ -938,6 +1019,8 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
       }
     }
   }
+
+  fillPropertyClientData( whichWindow, NULL, auxProperty, widgetPrefix + widgetName, whichPropertiesClientData );
 
   return retId;
 }
@@ -957,8 +1040,6 @@ inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat,
 #else
     categoryStat = !windowProperties->IsPropertyExpanded( tmpProp );
 #endif
-
- 
 }
 
 
@@ -985,6 +1066,7 @@ inline void updateCategoriesState( wxPropertyGrid *windowProperties )
 
 void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 Window *whichWindow,
+                                std::vector< PropertyClientData >& whichPropertiesClientData,
                                 wxPGId category,
                                 TWindowLevel functionLevel )
 {
@@ -1001,7 +1083,7 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
             wxString::FromAscii( whichWindow->getFunctionParamName( functionLevel, paramIdx ).c_str() );
     wxPGId semanticFunctionParameterValue = (wxPGId)NULL;
     semanticFunctionParameterValue = AppendCFG4DParamPrvNumbersListPropertyWindow(
-            windowProperties, whichWindow, category,
+            windowProperties, whichWindow, whichPropertiesClientData, category,
             functionLevel, (PRV_UINT32)paramIdx,
             propLabel, wxT(""), propName,
             valuesStr );
@@ -1050,10 +1132,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
                   whichWindow->getTimeUnit(),
                   precision ));
 
-  AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, dummyPGId,
+  AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
           wxT("Semantic Minimum"), wxT("Semantic Minimum"), SINGLE_SEMANTICMINIMUM, whichWindow->getMinimumY() );
 
-  AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, dummyPGId,
+  AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
           wxT("Semantic Maximum"), wxT("Semantic Maximum"), SINGLE_SEMANTICMAXIMUM,
           whichWindow->getMaximumY() );
 
@@ -1080,7 +1162,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     arrayLevels.Add( _( "Thread" ) );
     arrayLevelsPos.Add( THREAD );
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, dummyPGId,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
             wxT("Level"), wxT(""), wxT("Level"), SINGLE_LEVEL,
             arrayLevels, arrayLevelsPos, whichWindow->getLevel() );
 
@@ -1133,7 +1215,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       }
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, dummyPGId,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
             wxT("Level"), wxT(""), wxT("Level"), (TSingleTimelineProperties)DERIVED_LEVEL,
             arrayLevels, arrayLevelsPos, whichWindow->getLevel() );
   }
@@ -1146,7 +1228,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     arrayInt.Add( iUnit );
   }
 
-  AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, dummyPGId,
+  AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
           wxT("Time unit"), wxT(""), wxT("Time Unit"), SINGLE_TIMEUNIT,
           arrayStr, arrayInt, whichWindow->getTimeUnit() );
 
@@ -1185,10 +1267,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         commFilterCat->SetFlagsFromString( _( "COLLAPSED" ) );
     }
 
-    AppendCFG4DBoolPropertyWindow( windowProperties, whichWindow, commFilterCat,
+    AppendCFG4DBoolPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterCat,
             wxT("Logical"), wxT("Logical"), SINGLE_COMMLOGICAL, filter->getLogical() );
 
-    AppendCFG4DBoolPropertyWindow( windowProperties, whichWindow, commFilterCat,
+    AppendCFG4DBoolPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterCat,
             wxT("Physical"), wxT("Physical"), SINGLE_COMMPHYSICAL, filter->getPhysical() );
 
     // Comm From
@@ -1221,7 +1303,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       pos++;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, commFilterFrom,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterFrom,
             wxT( "Function" ), wxT("Comm from."), wxT("FromFunction"), SINGLE_COMMFROMFUNCTION,
             arrayFilterFunctions, arrayFilterFunctionsPos, selected );
 
@@ -1232,7 +1314,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     wxPGId commFilterFromValues = (wxPGId)NULL;
 
     commFilterFromValues = AppendCFG4DprvRowsSelectionPropertyWindow(
-            windowProperties, whichWindow, commFilterFrom,
+            windowProperties, whichWindow, whichPropertiesClientData, commFilterFrom,
             wxT( "From" ), wxT("Comm from."), wxT("From"), SINGLE_COMMFROMVALUES,
             _("From - Rows Selection"), fromSel );
 
@@ -1259,9 +1341,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     else
       selected = 1;
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, commFilterCat,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterCat,
              wxT("From/To Op"), wxT(""), wxT("FromToOp"), SINGLE_COMMFROMTOOP,
-            arrayStr, arrayInt, selected );
+             arrayStr, arrayInt, selected );
 
     // Comm To
     wxPGId commFilterTo = (wxPGId) NULL; 
@@ -1292,7 +1374,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       pos++;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, commFilterTo,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterTo,
             wxT( "Function" ), wxT("Comm to."), wxT("ToFunction"), SINGLE_COMMTOFUNCTION,
             arrayFilterFunctions, arrayFilterFunctionsPos, selected );
 
@@ -1303,7 +1385,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     wxPGId commFilterToValues = (wxPGId)NULL;
     commFilterToValues = AppendCFG4DprvRowsSelectionPropertyWindow(
-            windowProperties, whichWindow, commFilterTo,
+            windowProperties, whichWindow, whichPropertiesClientData, commFilterTo,
             wxT( "To" ), wxT("Comm to."), wxT( "To" ), SINGLE_COMMTOVALUES,
             _("To - Rows Selection"), toSel );
 
@@ -1349,7 +1431,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       pos++;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, commFilterTag,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterTag,
             wxT( "Function" ), wxT("Comm tag."), wxT("TagFunction"), SINGLE_COMMTAGFUNCTION,
             arrayFilterFunctions, arrayFilterFunctionsPos, selected );
 
@@ -1361,7 +1443,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     wxPGId commFilterTagValues = (wxPGId)NULL;
     commFilterTagValues = AppendCFG4DprvNumbersListPropertyWindow(
-            windowProperties, whichWindow, commFilterTag,
+            windowProperties, whichWindow, whichPropertiesClientData, commFilterTag,
             wxT( "Tag" ), wxT("Comm tag."), wxT( "Tag" ), SINGLE_COMMTAGVALUES,
             arrayStr );
 
@@ -1386,7 +1468,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     else
       selected = 1;
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, commFilterCat,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterCat,
             wxT("Tag/Size Op"), wxT(""), wxT("TagSizeOp"), SINGLE_COMMTAGSIZEOP,
             arrayStr, arrayInt, selected );
 
@@ -1418,7 +1500,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       pos++;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, commFilterSize,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterSize,
             wxT("Function"), wxT("Comm size."), wxT("SizeFunction"), SINGLE_COMMSIZEFUNCTION,
             arrayFilterFunctions, arrayFilterFunctionsPos, selected );
 
@@ -1430,7 +1512,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     wxPGId commFilterSizeValues = (wxPGId)NULL;
     commFilterSizeValues = AppendCFG4DprvNumbersListPropertyWindow(
-            windowProperties, whichWindow, commFilterSize,
+            windowProperties, whichWindow, whichPropertiesClientData, commFilterSize,
             wxT("Size"), wxT("Comm size."), wxT("Size"), SINGLE_COMMSIZEVALUES,
             arrayStr );
 
@@ -1476,7 +1558,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       pos++;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, commFilterBW,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, commFilterBW,
             wxT("Function"), wxT("Comm bandwidth."), wxT("BWFunction"), SINGLE_COMMBANDWIDTHFUNCTION,
             arrayFilterFunctions, arrayFilterFunctionsPos, selected );
 
@@ -1488,7 +1570,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     wxPGId commFilterBandWidthValues = (wxPGId)NULL;
     commFilterBandWidthValues = AppendCFG4DprvNumbersListPropertyWindow(
-            windowProperties, whichWindow, commFilterBW,
+            windowProperties, whichWindow, whichPropertiesClientData, commFilterBW,
             wxT("Bandwidth"), wxT("Comm bandwidth."), wxT("Bandwidth"), SINGLE_COMMBANDWIDTHVALUES,
             arrayStr );
 
@@ -1542,7 +1624,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       pos++;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, eventFilterType,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, eventFilterType,
             wxT("Function"), wxT("Event type."), wxT("TypeFunction"), SINGLE_EVENTTYPEFUNCTION,
             arrayFilterFunctions, arrayFilterFunctionsPos, selected );
 
@@ -1565,18 +1647,13 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     wxPGId eventFilterTypeValues = (wxPGId)NULL;
     eventFilterTypeValues = AppendCFG4DprvEventInfoPropertyWindow(
-            windowProperties, whichWindow, eventFilterType,
+            windowProperties, whichWindow, whichPropertiesClientData, eventFilterType,
             wxT("Types"), wxT("Event type."), wxT("Types"), SINGLE_EVENTTYPEVALUES,
             typeChoices );
 
     if ( eventFilterTypeValues != (wxPGId)NULL )
     {
-#if wxMAJOR_VERSION<3
-      wxPGId auxValProp = windowProperties->GetProperty( wxT("Event type.Types") )->GetId();
-#else
-      wxPGId auxValProp = windowProperties->GetProperty( wxT("Event type.Types") );
-#endif
-      windowProperties->SetPropertyAttribute( auxValProp, wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
+      windowProperties->SetPropertyAttribute( eventFilterTypeValues, wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
 
       if( filter->getEventTypeFunction() == "All" ||
           filter->getEventTypeFunction() == "None" )
@@ -1598,7 +1675,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     else
       selected = 1;
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, eventFilterCat,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, eventFilterCat,
             wxT("Type/Value Op"), wxT(""), wxT("TypeValueOp"), SINGLE_EVENTTYPEVALUESOP,
             arrayStr, arrayInt, selected );
 
@@ -1632,24 +1709,19 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       pos++;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, eventFilterValue,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, eventFilterValue,
             wxT("Function"),  wxT("Event value."), wxT("ValueFunction"), SINGLE_EVENTVALUEFUNCTION,
             arrayFilterFunctions, arrayFilterFunctionsPos, selected );
 
     wxPGId eventFilterValueValues = (wxPGId)NULL;
     eventFilterValueValues = AppendCFG4DprvEventInfoPropertyWindow(
-            windowProperties, whichWindow, eventFilterValue,
+            windowProperties, whichWindow, whichPropertiesClientData, eventFilterValue,
             wxT("Values"), wxT("Event value."), wxT("Values"), SINGLE_EVENTVALUEVALUES,
             typeChoices );
 
     if ( eventFilterValueValues != (wxPGId) NULL )
     {
-#if wxMAJOR_VERSION<3
-      wxPGId auxValProp = windowProperties->GetProperty( wxT("Event value.Values") )->GetId();
-#else
-      wxPGId auxValProp = windowProperties->GetProperty( wxT("Event value.Values") );
-#endif
-      windowProperties->SetPropertyAttribute( auxValProp, wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
+      windowProperties->SetPropertyAttribute( eventFilterValueValues, wxPG_ATTR_MULTICHOICE_USERSTRINGMODE, 1 );
 
       if( filter->getEventValueFunction() == "All" || filter->getEventValueFunction() == "None" )
       {
@@ -1699,11 +1771,11 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     pos++;
   }
 
-  AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+  AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
             wxT("Top Compose 1"), wxT(""), wxT("Top Compose 1"), SINGLE_TOPCOMPOSE1,
             arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
-  semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TOPCOMPOSE1 );
+  semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE1 );
 
   pos = 0;
   selected = -1;
@@ -1715,11 +1787,11 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     ++pos;
   }
 
-  AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+  AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
             wxT("Top Compose 2"), wxT(""), wxT("Top Compose 2"), SINGLE_TOPCOMPOSE2,
             arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
-  semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TOPCOMPOSE2 );
+  semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE2 );
 
   vector<string> notThreadFunctions;
   whichWindow->getAllSemanticFunctions( NOTTHREAD_GROUP, notThreadFunctions );
@@ -1750,10 +1822,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         ++pos;
       }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                 wxT("Compose Workload"), wxT(""), wxT("Compose Workload"), SINGLE_COMPOSEWORKLOAD,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEWORKLOAD );
+      semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSEWORKLOAD );
 
       if ( !whichWindow->isDerivedWindow() || minAcceptLevel > WORKLOAD )
       {
@@ -1767,10 +1839,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
           ++pos;
         }
 
-        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                   wxT("Workload"), wxT(""), wxT("Workload"), SINGLE_WORKLOAD,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, WORKLOAD );
+        semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, WORKLOAD );
       }
     }
       
@@ -1786,10 +1858,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         ++pos;
       }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                 wxT("Compose Appl"), wxT(""), wxT("Compose Appl"), SINGLE_COMPOSEAPPL,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSEAPPLICATION );
+      semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSEAPPLICATION );
 
       if ( !whichWindow->isDerivedWindow() || minAcceptLevel > APPLICATION )
       {
@@ -1803,10 +1875,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
           ++pos;
         }
 
-        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                   wxT("Application"), wxT(""), wxT("Application"), SINGLE_APPLICATION,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, APPLICATION );
+        semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, APPLICATION );
       }
     }
 
@@ -1822,10 +1894,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         ++pos;
       }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                 wxT("Compose Task"), wxT(""), wxT("Compose Task"), SINGLE_COMPOSETASK,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETASK );
+      semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSETASK );
 
       if ( !whichWindow->isDerivedWindow() || minAcceptLevel > TASK )
       {
@@ -1839,10 +1911,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
           ++pos;
         }
 
-        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                   wxT("Task"), wxT(""), wxT("Task"), SINGLE_TASK,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, TASK );
+        semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TASK );
       }
     }
     
@@ -1858,10 +1930,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         ++pos;
       }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                 wxT("Compose Thread"), wxT(""), wxT("Compose Thread"), SINGLE_COMPOSETHREAD,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETHREAD );
+      semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSETHREAD );
     }
   }
   else if( level >= SYSTEM && level <= CPU )
@@ -1878,10 +1950,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         ++pos;
       }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                 wxT("Compose System"), wxT(""), wxT("Compose System"), SINGLE_COMPOSESYSTEM,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSESYSTEM );
+      semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSESYSTEM );
 
       if ( !whichWindow->isDerivedWindow() || minAcceptLevel > SYSTEM )
       {
@@ -1895,10 +1967,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
           ++pos;
         }
 
-        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                   wxT("System"), wxT(""), wxT("System"), SINGLE_SYSTEM,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, SYSTEM );
+        semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, SYSTEM );
       }
     }
       
@@ -1914,10 +1986,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         ++pos;
       }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                 wxT("Compose Node"), wxT(""), wxT("Compose Node"), SINGLE_COMPOSENODE,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSENODE );
+      semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSENODE );
 
       if ( !whichWindow->isDerivedWindow() || minAcceptLevel > NODE )
       {
@@ -1931,10 +2003,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
           ++pos;
         }
 
-        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                   wxT("Node"), wxT(""), wxT("Node"), SINGLE_NODE,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, NODE );
+        semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, NODE );
       }
     }
       
@@ -1950,11 +2022,11 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         ++pos;
       }
 
-      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+      AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                 wxT("Compose CPU"), wxT(""), wxT("Compose CPU"), SINGLE_COMPOSECPU,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
-      semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSECPU );
+      semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSECPU );
       
       if( !whichWindow->isDerivedWindow() )
       {
@@ -1974,11 +2046,11 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
           ++pos;
         }
 
-        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+        AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
                   wxT("CPU"), wxT(""), wxT("CPU"), SINGLE_CPU,
                   arrayStr, arrayInt, selected );
 
-        semanticFunctionParameter( windowProperties, whichWindow, semanticCat, CPU );
+        semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, CPU );
       }
     }
   }
@@ -1995,10 +2067,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       ++pos;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
               wxT("Compose Thread"), wxT(""), wxT("Compose Thread"), SINGLE_COMPOSETHREAD,
               arrayComposeFunctions, arrayComposeFunctionsPos, selected );
-    semanticFunctionParameter( windowProperties, whichWindow, semanticCat, COMPOSETHREAD );
+    semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSETHREAD );
 
     vector<vector<string> > threadFunctions;
     vector<string> levels;
@@ -2016,15 +2088,15 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     whichWindow->getAllSemanticFunctions( OBJECT_GROUP, threadFunctions[ 3 ] );
 
     wxString auxDefaultValue = wxString::FromAscii( whichWindow->getLevelFunction( THREAD ).c_str() );
-    AppendCFG4DprvSemanticThreadPropertyWindow( windowProperties, whichWindow, semanticCat,
+    AppendCFG4DprvSemanticThreadPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
               wxT("Thread"), wxT(""), wxT("Thread"), SINGLE_THREAD,
               levels, threadFunctions, auxDefaultValue );
-    semanticFunctionParameter( windowProperties, whichWindow, semanticCat, THREAD );
+    semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, THREAD );
   }
   
   if( whichWindow->isDerivedWindow() )
   {
-    AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, dummyPGId,
+    AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
             wxT("Factor #1"), wxT("Factor #1"), (TSingleTimelineProperties)DERIVED_FACTOR1,
             whichWindow->getFactor( 0 ) );
 
@@ -2044,12 +2116,12 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       ++pos;
     }
 
-    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, semanticCat,
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
               wxT("Derived"), wxT(""), wxT("Derived"), (TSingleTimelineProperties)DERIVED_DERIVED,
               arrayStr, arrayInt, selected );
-    semanticFunctionParameter( windowProperties, whichWindow, semanticCat, DERIVED );
+    semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, DERIVED );
 
-    AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, dummyPGId,
+    AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, dummyPGId,
             wxT("Factor #2"), wxT("Factor #2"), (TSingleTimelineProperties)DERIVED_FACTOR2,
             whichWindow->getFactor( 1 ) );
   }
@@ -2063,18 +2135,19 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 }
 
 
-void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWindow,
-                               std::vector< PropertyClientData >& whichPropertiesClientData  )
+void updateTimelineProperties( wxPropertyGrid* windowProperties,
+                               Window *whichWindow,
+                               std::vector< PropertyClientData >& whichPropertiesClientData )
 {
   updateCategoriesState( windowProperties );
   windowProperties->Freeze();
   windowProperties->Clear();
-  whichPropertiesClientData.clear();
   
   wxArrayString arrayStr;
   wxArrayInt arrayInt;
   int selected;
 
+  whichPropertiesClientData.clear();
   propNameCounter = 0;
 
   if ( whichWindow->getCFG4DEnabled() )
@@ -2089,6 +2162,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 
     wxEnumProperty *tmpSelector = new wxEnumProperty( wxT("Properties Mode"), wxT("Mode"), arrayStr, arrayInt, selected );
     windowProperties->Append( tmpSelector );
+    fillPropertyClientData( whichWindow, NULL, tmpSelector, wxT("Mode"), whichPropertiesClientData );
   }
 
   updateTimelinePropertiesRecursive( windowProperties, whichWindow, whichPropertiesClientData );
@@ -2099,7 +2173,9 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties, Window *whichWi
 }
 
 
-void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whichHisto )
+void updateHistogramProperties( wxPropertyGrid* windowProperties,
+                                Histogram *whichHisto,
+                                std::vector< PropertyClientData >& whichPropertiesClientData )
 {
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
 
@@ -2113,6 +2189,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   windowProperties->Freeze();
   windowProperties->Clear();
 
+  whichPropertiesClientData.clear();
+  propNameCounter = 0;
 
   if ( whichHisto->getCFG4DEnabled() )
   {
@@ -2126,21 +2204,22 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
     wxEnumProperty *tmpSelector = new wxEnumProperty( wxT("Properties Mode"), wxT("Mode"), arrayStr, arrayInt, selected );
     windowProperties->Append( tmpSelector );
+    fillPropertyClientData( NULL, whichHisto, tmpSelector, wxT("Mode"), whichPropertiesClientData );
   }
 
   wxPGId dummyPGId = (wxPGId)NULL; // used to append always to windowProperties
 
-  AppendCFG4DStringPropertyHistogram( windowProperties, whichHisto, dummyPGId,
+  AppendCFG4DStringPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, dummyPGId,
           wxT("Name"), wxT("Name"), HISTOGRAM_NAME, whichHisto->getName() );
 
-  AppendCFG4DStringPropertyHistogram( windowProperties, whichHisto, dummyPGId,
+  AppendCFG4DStringPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, dummyPGId,
           wxT("Begin time"), wxT("Begin time"), HISTOGRAM_BEGINTIME,
           LabelConstructor::timeLabel(
                   whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getBeginTime() ),
                   whichHisto->getControlWindow()->getTimeUnit(),
                   precision ));
 
-  AppendCFG4DStringPropertyHistogram( windowProperties, whichHisto, dummyPGId,
+  AppendCFG4DStringPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, dummyPGId,
           wxT("End time"), wxT("End time"), HISTOGRAM_ENDTIME,
           LabelConstructor::timeLabel(
                   whichHisto->getControlWindow()->traceUnitsToWindowUnits( whichHisto->getEndTime() ),
@@ -2161,14 +2240,14 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
                                                                  whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getExtraControlWindow(), validWin );
 
-  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, ctrlCat,
+  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, ctrlCat,
           wxT("Window"), wxT("ControlWindow"), HISTOGRAM_CONTROLWINDOW, validWin, whichHisto->getControlWindow() );
 
-  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, ctrlCat,
+  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, ctrlCat,
           wxT("Minimum"), wxT("ControlMinimum"), HISTOGRAM_CONTROLMINIMUM, whichHisto->getControlMin() );
-  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, ctrlCat,
+  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, ctrlCat,
           wxT("Maximum"), wxT("ControlMaximum"), HISTOGRAM_CONTROLMAXIMUM, whichHisto->getControlMax() );
-  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, ctrlCat,
+  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, ctrlCat,
           wxT("Delta"), wxT("ControlDelta"), HISTOGRAM_CONTROLDELTA, whichHisto->getControlDelta() );
 
   // Statistic related properties
@@ -2195,7 +2274,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
   else
     selected = 1;
 
-  AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, statCat,
+  AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, statCat,
           wxT("Type"), wxT("Type"), HISTOGRAM_TYPE, arrayStr, arrayInt, selected );
 
   tmpV.clear();
@@ -2229,13 +2308,13 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
 
   if( selected == -1 ) selected = 0;
 
-  AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, statCat,
+  AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, statCat,
           wxT("Statistic"), wxT("Statistic"), HISTOGRAM_STATISTIC, arrayStr, arrayInt, selected );
 
-  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, statCat,
+  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, statCat,
           wxT("Minimum Gradient"), wxT("DataMinimum"), HISTOGRAM_MINIMUMGRADIENT, whichHisto->getMinGradient() );
 
-  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, statCat,
+  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, statCat,
           wxT("Maximum Gradient"), wxT("DataMaximum"), HISTOGRAM_MAXIMUMGRADIENT, whichHisto->getMaxGradient() );
 
   // Data Window related properties
@@ -2252,7 +2331,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
                                                     whichHisto->getExtraControlWindow(),
                                                     validWin );
 
-  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, dataCat,
+  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, dataCat,
            wxT("Window"), wxT("DataWindow"), HISTOGRAM_DATAWINDOW, validWin, whichHisto->getDataWindow() );
 
   // 3rd window related properties
@@ -2269,16 +2348,16 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
                                                          whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getControlWindow(), validWin );
 
-  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, thirdWinCat,
+  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, thirdWinCat,
            wxT("3rd Window"), wxT("3D3rdWindow"), HISTOGRAM_3D3RDWINDOW, validWin, whichHisto->getExtraControlWindow(), true );
 
-  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, thirdWinCat,
+  wxPGId thirdWinMinimum = AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, thirdWinCat,
           wxT("Minimum"), wxT("3DMinimum"), HISTOGRAM_3DMINIMUM, whichHisto->getExtraControlMin() );
 
-  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, thirdWinCat,
+  wxPGId thirdWinMaximum = AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, thirdWinCat,
           wxT("Maximum"), wxT("3DMaximum"), HISTOGRAM_3DMAXIMUM, whichHisto->getExtraControlMax() );
 
-  AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, thirdWinCat,
+  wxPGId thirdWinDelta = AppendCFG4DFloatPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, thirdWinCat,
           wxT("Delta"), wxT("3DDelta"), HISTOGRAM_3DDELTA, whichHisto->getExtraControlDelta() );
 
   arrayStr.Clear();
@@ -2297,44 +2376,55 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties, Histogram *whi
     pos++;
   }
 
-  AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, thirdWinCat,
+  wxPGId thirdWinPlane = AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, thirdWinCat,
           wxT("Plane"), wxT("3DPlane"), HISTOGRAM_3DPLANE, arrayStr, arrayInt, selected );
 
   if( !whichHisto->getThreeDimensions() )
   {
-    wxFloatProperty *auxFloatProperty;
-    auxFloatProperty = (wxFloatProperty *)windowProperties->GetProperty( wxT("3DMinimum") );
-    if ( auxFloatProperty != NULL )
+    if ( thirdWinMinimum != NULL )
 #if wxMAJOR_VERSION<3
-      auxFloatProperty->SetFlagsFromString( _( "DISABLED" ) );
+      thirdWinMinimum->SetFlagsFromString( _( "DISABLED" ) );
 #else
-      auxFloatProperty->Enable( false );
+      thirdWinMinimum->Enable( false );
 #endif
 
-    auxFloatProperty = (wxFloatProperty *) windowProperties->GetProperty( wxT("3DMaximum") );
-    if ( auxFloatProperty != NULL )
+    if ( thirdWinMaximum != NULL )
 #if wxMAJOR_VERSION<3
-      auxFloatProperty->SetFlagsFromString( _( "DISABLED" ) );
+      thirdWinMaximum->SetFlagsFromString( _( "DISABLED" ) );
 #else
-      auxFloatProperty->Enable( false );
+      thirdWinMaximum->Enable( false );
 #endif
 
-    auxFloatProperty = (wxFloatProperty *)windowProperties->GetProperty( wxT("3DDelta") );
-    if ( auxFloatProperty != NULL )
+    if ( thirdWinDelta != NULL )
 #if wxMAJOR_VERSION<3
-      auxFloatProperty->SetFlagsFromString( _( "DISABLED" ) );
+      thirdWinDelta->SetFlagsFromString( _( "DISABLED" ) );
 #else
-      auxFloatProperty->Enable( false );
+      thirdWinDelta->Enable( false );
 #endif
 
-    wxEnumProperty *auxEnumProperty;
-    auxEnumProperty = (wxEnumProperty *)windowProperties->GetProperty( wxT("3DPlane") );
-    if ( auxEnumProperty != NULL )
+    if ( thirdWinPlane != NULL )
 #if wxMAJOR_VERSION<3
-      auxEnumProperty->SetFlagsFromString( _( "DISABLED" ) );
+      thirdWinPlane->SetFlagsFromString( _( "DISABLED" ) );
 #else
-      auxEnumProperty->Enable( false );
+      thirdWinPlane->Enable( false );
 #endif
+  }
+
+  if ( whichHisto->getCFG4DEnabled() && whichHisto->getCFG4DMode() )
+  {
+    updateTimelinePropertiesRecursive( windowProperties, whichHisto->getControlWindow(), whichPropertiesClientData );
+    if( whichHisto->getDataWindow() != NULL &&
+        whichHisto->getDataWindow() != whichHisto->getControlWindow() )
+    {
+      updateTimelinePropertiesRecursive( windowProperties, whichHisto->getDataWindow(), whichPropertiesClientData );
+    }
+    
+    if( whichHisto->getThreeDimensions() &&
+        whichHisto->getExtraControlWindow() != whichHisto->getControlWindow() &&
+        whichHisto->getExtraControlWindow() != whichHisto->getDataWindow() )
+    {
+      updateTimelinePropertiesRecursive( windowProperties, whichHisto->getExtraControlWindow(), whichPropertiesClientData );
+    }
   }
 
   windowProperties->SetPropertyAttributeAll( wxPG_BOOL_USE_CHECKBOX, true );

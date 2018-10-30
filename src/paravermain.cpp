@@ -1098,15 +1098,15 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
 
   if( propName == _( "Mode" ) )
   {
-    if( currentTimeline != NULL )
+    if( tmpClientData->ownerTimeline != NULL )
     {
-      currentTimeline->setCFG4DMode( property->GetValue().GetLong() == 1 );
-      currentTimeline->setChanged( true );
+      tmpClientData->ownerTimeline->setCFG4DMode( property->GetValue().GetLong() == 1 );
+      tmpClientData->ownerTimeline->setChanged( true );
     }
-    else if ( currentHisto != NULL )
+    else if ( tmpClientData->ownerHistogram != NULL )
     {
-      currentHisto->setCFG4DMode( property->GetValue().GetLong() == 1 );
-      currentHisto->setChanged( true );
+      tmpClientData->ownerHistogram->setCFG4DMode( property->GetValue().GetLong() == 1 );
+      tmpClientData->ownerHistogram->setChanged( true );
     }
   }
   else if( propName == wxString( "Name", wxConvUTF8 ) )
@@ -1126,176 +1126,176 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == _( "Begin time" ) )
   {
     TTime tmpValue;
-    if( currentTimeline != NULL )
+    if( tmpClientData->ownerTimeline != NULL )
     {
       bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                  currentTimeline->getTimeUnit(),
+                                                  tmpClientData->ownerTimeline->getTimeUnit(),
                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
                                                   tmpValue );
 
       if (!done)
         tmpValue = property->GetValue().GetDouble();
 
-      currentTimeline->setWindowBeginTime( currentTimeline->windowUnitsToTraceUnits( tmpValue ) );
+      tmpClientData->ownerTimeline->setWindowBeginTime( tmpClientData->ownerTimeline->windowUnitsToTraceUnits( tmpValue ) );
 
       // modify current zoom directly
-      pair< TTime, TTime > zoomInfo = currentTimeline->getZoomFirstDimension();
+      pair< TTime, TTime > zoomInfo = tmpClientData->ownerTimeline->getZoomFirstDimension();
       zoomInfo.first = property->GetValue().GetDouble(); // begin
-      currentTimeline->setZoomFirstDimension( zoomInfo );
+      tmpClientData->ownerTimeline->setZoomFirstDimension( zoomInfo );
 
-      currentTimeline->setChanged( true );
-      currentTimeline->setRedraw( true );
+      tmpClientData->ownerTimeline->setChanged( true );
+      tmpClientData->ownerTimeline->setRedraw( true );
     }
-    else if( currentHisto != NULL )
+    else if( tmpClientData->ownerHistogram != NULL )
     {
       bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                  currentHisto->getControlWindow()->getTimeUnit(),
+                                                  tmpClientData->ownerHistogram->getControlWindow()->getTimeUnit(),
                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
                                                   tmpValue );
 
       if (!done)
         tmpValue = property->GetValue().GetDouble();
 
-      currentHisto->setWindowBeginTime( currentHisto->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
-      currentHisto->setChanged( true );
-      currentHisto->setRecalc( true );
+      tmpClientData->ownerHistogram->setWindowBeginTime( tmpClientData->ownerHistogram->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
+      tmpClientData->ownerHistogram->setChanged( true );
+      tmpClientData->ownerHistogram->setRecalc( true );
     }
   }
   else if( propName == _( "End time" ) )
   {
     TTime tmpValue;
-    if( currentTimeline != NULL )
+    if( tmpClientData->ownerTimeline != NULL )
     {
       bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                  currentTimeline->getTimeUnit(),
+                                                  tmpClientData->ownerTimeline->getTimeUnit(),
                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
                                                   tmpValue );
 
       if (!done)
         tmpValue = property->GetValue().GetDouble();
 
-      currentTimeline->setWindowEndTime( currentTimeline->windowUnitsToTraceUnits( tmpValue ) );
+      tmpClientData->ownerTimeline->setWindowEndTime( tmpClientData->ownerTimeline->windowUnitsToTraceUnits( tmpValue ) );
 
       // modify current zoom directly
-      pair< TTime, TTime > zoomInfo = currentTimeline->getZoomFirstDimension();
+      pair< TTime, TTime > zoomInfo = tmpClientData->ownerTimeline->getZoomFirstDimension();
       zoomInfo.second = property->GetValue().GetDouble(); // end
-      currentTimeline->setZoomFirstDimension( zoomInfo );
+      tmpClientData->ownerTimeline->setZoomFirstDimension( zoomInfo );
 
-      currentTimeline->setChanged( true );
-      currentTimeline->setRedraw( true );
+      tmpClientData->ownerTimeline->setChanged( true );
+      tmpClientData->ownerTimeline->setRedraw( true );
     }
-    else if( currentHisto != NULL )
+    else if( tmpClientData->ownerHistogram != NULL )
     {
       bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                  currentHisto->getControlWindow()->getTimeUnit(),
+                                                  tmpClientData->ownerHistogram->getControlWindow()->getTimeUnit(),
                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
                                                   tmpValue );
 
       if (!done)
         tmpValue = property->GetValue().GetDouble();
 
-      currentHisto->setWindowEndTime( currentHisto->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
-      currentHisto->setChanged( true );
-      currentHisto->setRecalc( true );
+      tmpClientData->ownerHistogram->setWindowEndTime( tmpClientData->ownerHistogram->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
+      tmpClientData->ownerHistogram->setChanged( true );
+      tmpClientData->ownerHistogram->setRecalc( true );
     }
   }
   else if( propName == _( "Semantic Minimum" ) )
   {
     double tmpValue = property->GetValue().GetDouble();
-    currentTimeline->setMinimumY( tmpValue );
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setMinimumY( tmpValue );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Semantic Maximum" ) )
   {
     double tmpValue = property->GetValue().GetDouble();
-    currentTimeline->setMaximumY( tmpValue );
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setMaximumY( tmpValue );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   // Control Window related properties
   else if( propName == _( "ControlWindow" ) )
   {
-    currentHisto->setControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
-    currentHisto->setRecalc( true );
+    tmpClientData->ownerHistogram->setControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   else if( propName == _( "ControlMinimum" ) )
   {
-    currentHisto->setControlMin( property->GetValue().GetDouble() );
+    tmpClientData->ownerHistogram->setControlMin( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = currentHisto->getZoomFirstDimension();
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = tmpClientData->ownerHistogram->getZoomFirstDimension();
     zoomInfo.first.begin = property->GetValue().GetDouble(); // minimum
-    currentHisto->setZoomFirstDimension( zoomInfo );
+    tmpClientData->ownerHistogram->setZoomFirstDimension( zoomInfo );
 
-    currentHisto->setCompute2DScale( false );
-    currentHisto->setRecalc( true );
+    tmpClientData->ownerHistogram->setCompute2DScale( false );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   else if( propName == _( "ControlMaximum" ) )
   {
-    currentHisto->setControlMax( property->GetValue().GetDouble() );
+    tmpClientData->ownerHistogram->setControlMax( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = currentHisto->getZoomFirstDimension();
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = tmpClientData->ownerHistogram->getZoomFirstDimension();
     zoomInfo.first.end = property->GetValue().GetDouble(); // maximum
-    currentHisto->setZoomFirstDimension( zoomInfo );
+    tmpClientData->ownerHistogram->setZoomFirstDimension( zoomInfo );
 
-    currentHisto->setCompute2DScale( false );
-    currentHisto->setRecalc( true );
+    tmpClientData->ownerHistogram->setCompute2DScale( false );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   else if( propName == _( "ControlDelta" ) )
   {
     if( property->GetValue().GetDouble() == 0 )
     {
-      property->SetValue( currentHisto->getControlDelta() );
+      property->SetValue( tmpClientData->ownerHistogram->getControlDelta() );
       return;
     }
-    currentHisto->setControlDelta( property->GetValue().GetDouble() );
+    tmpClientData->ownerHistogram->setControlDelta( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = currentHisto->getZoomFirstDimension();
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = tmpClientData->ownerHistogram->getZoomFirstDimension();
     zoomInfo.second.begin = property->GetValue().GetDouble(); // delta
-    currentHisto->setZoomFirstDimension( zoomInfo );
+    tmpClientData->ownerHistogram->setZoomFirstDimension( zoomInfo );
 
-    currentHisto->setCompute2DScale( false );
-    currentHisto->setRecalc( true );
+    tmpClientData->ownerHistogram->setCompute2DScale( false );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   // Data Window related properties
   else if( propName == _( "DataWindow" ) )
   {
-    currentHisto->setDataWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
-    currentHisto->setRecalc( true );
+    tmpClientData->ownerHistogram->setDataWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   else if( propName == _( "DataMinimum" ) )
   {
-    currentHisto->setMinGradient( property->GetValue().GetDouble() );
-    currentHisto->setComputeGradient( false );
-    currentHisto->setRedraw( true );
+    tmpClientData->ownerHistogram->setMinGradient( property->GetValue().GetDouble() );
+    tmpClientData->ownerHistogram->setComputeGradient( false );
+    tmpClientData->ownerHistogram->setRedraw( true );
   }
   else if( propName == _( "DataMaximum" ) )
   {
-    currentHisto->setMaxGradient( property->GetValue().GetDouble() );
-    currentHisto->setComputeGradient( false );
-    currentHisto->setRedraw( true );
+    tmpClientData->ownerHistogram->setMaxGradient( property->GetValue().GetDouble() );
+    tmpClientData->ownerHistogram->setComputeGradient( false );
+    tmpClientData->ownerHistogram->setRedraw( true );
   }
   // Histogram related properties
   else if( propName == wxString( "Type", wxConvUTF8 ) )
   {
     if( property->GetValue().GetLong() == 0 )
-      currentHisto->setCurrentStat( currentHisto->getFirstCommStatistic() );
+      tmpClientData->ownerHistogram->setCurrentStat( tmpClientData->ownerHistogram->getFirstCommStatistic() );
     else
-      currentHisto->setCurrentStat( currentHisto->getFirstStatistic() );
-    currentHisto->setRedraw( true );
-    currentHisto->setChanged( true );
+      tmpClientData->ownerHistogram->setCurrentStat( tmpClientData->ownerHistogram->getFirstStatistic() );
+    tmpClientData->ownerHistogram->setRedraw( true );
+    tmpClientData->ownerHistogram->setChanged( true );
   }
   else if( propName == _( "Statistic" ) )
   {
-    bool getOriginalList = ( !currentHisto->getCFG4DEnabled() || !currentHisto->getCFG4DMode() );
+    bool getOriginalList = ( !tmpClientData->ownerHistogram->getCFG4DEnabled() || !tmpClientData->ownerHistogram->getCFG4DMode() );
     if ( getOriginalList )
     {
-      currentHisto->setCurrentStat( std::string( property->GetDisplayedString().mb_str() ) );
+      tmpClientData->ownerHistogram->setCurrentStat( std::string( property->GetDisplayedString().mb_str() ) );
     }
     else
     {
-      map< string, string > statList( currentHisto->getCFG4DStatisticsAliasList() );
+      map< string, string > statList( tmpClientData->ownerHistogram->getCFG4DStatisticsAliasList() );
       string selected( std::string( property->GetDisplayedString().mb_str() ) );
       for ( map< string, string >::iterator it = statList.begin(); it != statList.end(); ++it )
       {
@@ -1304,134 +1304,134 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
           selected = it->first;
         }
       }
-      currentHisto->setCurrentStat( selected );
+      tmpClientData->ownerHistogram->setCurrentStat( selected );
     }
 
-    currentHisto->setRedraw( true );
+    tmpClientData->ownerHistogram->setRedraw( true );
   }
   else if( propName == _( "3D3rdWindow" ) )
   {
     if( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() == NULL )
-      currentHisto->clearExtraControlWindow();
+      tmpClientData->ownerHistogram->clearExtraControlWindow();
     else
-      currentHisto->setExtraControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
-    currentHisto->setRecalc( true );
+      tmpClientData->ownerHistogram->setExtraControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   else if( propName == _( "3DMinimum" ) )
   {
-    currentHisto->setExtraControlMin( property->GetValue().GetDouble() );
-    currentHisto->setCompute3DScale( false );
-    currentHisto->setRecalc( true );
+    tmpClientData->ownerHistogram->setExtraControlMin( property->GetValue().GetDouble() );
+    tmpClientData->ownerHistogram->setCompute3DScale( false );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   else if( propName == _( "3DMaximum" ) )
   {
-    currentHisto->setExtraControlMax( property->GetValue().GetDouble() );
-    currentHisto->setCompute3DScale( false );
-    currentHisto->setRecalc( true );
+    tmpClientData->ownerHistogram->setExtraControlMax( property->GetValue().GetDouble() );
+    tmpClientData->ownerHistogram->setCompute3DScale( false );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   else if( propName == _( "3DDelta" ) )
   {
     if( property->GetValue().GetDouble() == 0 )
     {
-      property->SetValue( currentHisto->getExtraControlDelta() );
+      property->SetValue( tmpClientData->ownerHistogram->getExtraControlDelta() );
       return;
     }
     
-    currentHisto->setExtraControlDelta( property->GetValue().GetDouble() );
-    currentHisto->setCompute3DScale( false );
-    currentHisto->setRecalc( true );
+    tmpClientData->ownerHistogram->setExtraControlDelta( property->GetValue().GetDouble() );
+    tmpClientData->ownerHistogram->setCompute3DScale( false );
+    tmpClientData->ownerHistogram->setRecalc( true );
   }
   else if( propName == _( "3DPlane" ) )
   {
-    currentHisto->setSelectedPlane( property->GetValue().GetLong() );
-    currentHisto->setRedraw( true );
+    tmpClientData->ownerHistogram->setSelectedPlane( property->GetValue().GetLong() );
+    tmpClientData->ownerHistogram->setRedraw( true );
   }
   
   // Timeline related properties
   else if( propName == _( "Level" ) )
   {
-    currentTimeline->setLevel( (TWindowLevel)property->GetValue().GetLong() );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevel( (TWindowLevel)property->GetValue().GetLong() );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Time Unit" ) )
   {
-    currentTimeline->setTimeUnit( (TWindowLevel)property->GetValue().GetLong() );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setTimeUnit( (TWindowLevel)property->GetValue().GetLong() );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Logical" ) )
   {
-    currentTimeline->getFilter()->setLogical( property->GetValue().GetBool() );
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->getFilter()->setLogical( property->GetValue().GetBool() );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Physical" ) )
   {
-    currentTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Comm from.FromFunction" ) )
   {
-    currentTimeline->getFilter()->setCommFromFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->getFilter()->setCommFromFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Comm from.From" ) )
   {
     prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
   
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearCommFrom();
     vector< TObjectOrder > selection;
-    myProperty->GetSelectionAsVector( currentTimeline->getLevel(), selection );
+    myProperty->GetSelectionAsVector( tmpClientData->ownerTimeline->getLevel(), selection );
     for( vector< TObjectOrder >::iterator it = selection.begin(); it != selection.end(); ++it )
     {
       filter->insertCommFrom( long(*it) );
     }
     
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "FromToOp" ) )
   {
     long op = property->GetValue().GetLong();
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     if( op == 0 )
       filter->setOpFromToAnd();
     else if( op == 1 )
       filter->setOpFromToOr();
       
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Comm to.ToFunction" ) )
   {
-    currentTimeline->getFilter()->setCommToFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->getFilter()->setCommToFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Comm to.To" ) )
   {
     prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
   
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearCommTo();
     vector< TObjectOrder > selection;
-    myProperty->GetSelectionAsVector( currentTimeline->getLevel(), selection );
+    myProperty->GetSelectionAsVector( tmpClientData->ownerTimeline->getLevel(), selection );
     for( vector< TObjectOrder >::iterator it = selection.begin(); it != selection.end(); ++it )
     {
       filter->insertCommTo( long(*it) );
     }
     
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Comm tag.TagFunction" ) )
   {
-    currentTimeline->getFilter()->setCommTagFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->getFilter()->setCommTagFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Comm tag.Tag" ) )
   {
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearCommTags();
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
@@ -1441,28 +1441,28 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       filter->insertCommTag( tmpLong );
     }
     
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "TagSizeOp" ) )
   {
     long op = property->GetValue().GetLong();
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     if( op == 0 )
       filter->setOpTagSizeAnd();
     else if( op == 1 )
       filter->setOpTagSizeOr();
       
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Comm size.SizeFunction" ) )
   {
-    currentTimeline->getFilter()->setCommSizeFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->getFilter()->setCommSizeFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Comm size.Size" ) )
   {
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearCommSizes();
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
@@ -1473,17 +1473,17 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       filter->insertCommSize( tmpLong );
     }
     
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Comm bandwidth.BWFunction" ) )
   {
-    currentTimeline->getFilter()->setBandWidthFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->getFilter()->setBandWidthFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Comm bandwidth.Bandwidth" ) )
   {
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearBandWidth();
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
@@ -1493,45 +1493,45 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       filter->insertBandWidth( tmpDouble );
     }
     
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Event type.TypeFunction" ) )
   {
-    currentTimeline->getFilter()->setEventTypeFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->getFilter()->setEventTypeFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Event type.Types" ) )
   {
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearEventTypes();
     wxArrayInt value = ( (prvEventTypeProperty *) property )->GetValueAsArrayInt();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
       filter->insertEventType( value[ idx ] );
     
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "TypeValueOp" ) )
   {
     long op = property->GetValue().GetLong();
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     if( op == 0 )
       filter->setOpTypeValueAnd();
     else if( op == 1 )
       filter->setOpTypeValueOr();
       
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
   else if( propName == _( "Event value.ValueFunction" ) )
   {
-    currentTimeline->getFilter()->setEventValueFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->getFilter()->setEventValueFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Event value.Values" ) )
   {
-    Filter *filter = currentTimeline->getFilter();
+    Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearEventValues();
 
     wxArrayString value = property->GetValue().GetArrayString();
@@ -1542,135 +1542,135 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       filter->insertEventValue( tmpLong );
     }
 
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Top Compose 1" ) )
   {
-    currentTimeline->setLevelFunction( TOPCOMPOSE1, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( TOPCOMPOSE1, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Top Compose 2" ) )
   {
-    currentTimeline->setLevelFunction( TOPCOMPOSE2, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( TOPCOMPOSE2, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Factor #1" ) )
   {
-    currentTimeline->setFactor( 0, property->GetValue().GetDouble() );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setFactor( 0, property->GetValue().GetDouble() );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Derived" ) )
   {
-    currentTimeline->setLevelFunction( DERIVED, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setLevelFunction( DERIVED, std::string( property->GetDisplayedString().mb_str() ) );
 
     // Change Derived operation Icon: find icon in list
-    int iconNumber = getIconNumber( currentTimeline );
+    int iconNumber = getIconNumber( tmpClientData->ownerTimeline );
 
     // Change Derived operation Icon: set both trees, global and trace tree
     wxTreeCtrl *globalTreePage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
     wxTreeCtrl *currentTraceTreePage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
     bool found;
-    wxTreeItemId idInGlobalTree = getItemIdFromWindow( globalTreePage->GetRootItem(), currentTimeline, found );
+    wxTreeItemId idInGlobalTree = getItemIdFromWindow( globalTreePage->GetRootItem(), tmpClientData->ownerTimeline, found );
     globalTreePage->SetItemImage( idInGlobalTree, iconNumber );
-    wxTreeItemId idInCurrentTraceTree = getItemIdFromWindow( currentTraceTreePage->GetRootItem(), currentTimeline, found );
+    wxTreeItemId idInCurrentTraceTree = getItemIdFromWindow( currentTraceTreePage->GetRootItem(), tmpClientData->ownerTimeline, found );
     currentTraceTreePage->SetItemImage( idInCurrentTraceTree, iconNumber );
 
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Factor #2" ) )
   {
-    currentTimeline->setFactor( 1, property->GetValue().GetDouble() );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setFactor( 1, property->GetValue().GetDouble() );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Compose Workload" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSEWORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( COMPOSEWORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Workload" ) )
   {
-    currentTimeline->setLevelFunction( WORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( WORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Compose Appl" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSEAPPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( COMPOSEAPPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Application" ) )
   {
-    currentTimeline->setLevelFunction( APPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( APPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Compose Task" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSETASK, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( COMPOSETASK, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Task" ) )
   {
-    currentTimeline->setLevelFunction( TASK, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( TASK, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Compose System" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSESYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( COMPOSESYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "System" ) )
   {
-    currentTimeline->setLevelFunction( SYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( SYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Compose Node" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSENODE, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( COMPOSENODE, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Node" ) )
   {
-    currentTimeline->setLevelFunction( NODE, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( NODE, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Compose CPU" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSECPU, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( COMPOSECPU, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "CPU" ) )
   {
-    currentTimeline->setLevelFunction( CPU, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( CPU, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Compose Thread" ) )
   {
-    currentTimeline->setLevelFunction( COMPOSETHREAD, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( COMPOSETHREAD, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName == _( "Thread" ) )
   {
-    currentTimeline->setLevelFunction( THREAD, std::string( property->GetDisplayedString().mb_str() ) );
-    currentTimeline->setRedraw( true );
-    currentTimeline->setChanged( true );
+    tmpClientData->ownerTimeline->setLevelFunction( THREAD, std::string( property->GetDisplayedString().mb_str() ) );
+    tmpClientData->ownerTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setChanged( true );
   }
   else if( propName.BeforeFirst( ' ' ) == _( "Param" ) )
   {
@@ -1692,8 +1692,8 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       valuesStr[ idx ].ToDouble( &tmpDouble );
       values.push_back( tmpDouble );
     }
-    currentTimeline->setFunctionParam( functionLevel, paramIdx, values );
-    currentTimeline->setRedraw( true );
+    tmpClientData->ownerTimeline->setFunctionParam( functionLevel, paramIdx, values );
+    tmpClientData->ownerTimeline->setRedraw( true );
   }
 }
 
@@ -1920,7 +1920,7 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
       return;
     lastHisto = currentHisto;
 
-    updateHistogramProperties( windowProperties, currentHisto );
+    updateHistogramProperties( windowProperties, currentHisto, propertiesClientData );
   }
   else if( currentTimeline != NULL )
   {
