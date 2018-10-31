@@ -429,8 +429,8 @@ public:
   PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
   void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
 
-  std::vector< PropertyClientData > GetPropertiesClientData() const { return propertiesClientData ; }
-  void SetPropertiesClientData(std::vector< PropertyClientData > value) { propertiesClientData = value ; }
+  std::vector< PropertyClientData * > GetPropertiesClientData() const { return propertiesClientData ; }
+  void SetPropertiesClientData(std::vector< PropertyClientData * > value) { propertiesClientData = value ; }
 
   bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
   void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
@@ -583,7 +583,7 @@ private:
   PreviousFiles * previousCFGs;
   PreviousFiles * previousCutFilteredTraces;
   PreviousFiles * previousTraces;
-  std::vector< PropertyClientData > propertiesClientData;
+  std::vector< PropertyClientData * > propertiesClientData;
   bool raiseCurrentWindow;
   RunScript * runApplication;
   wxTimer * sessionTimer;

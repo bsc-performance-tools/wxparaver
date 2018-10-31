@@ -33,7 +33,7 @@ void initPG();
 
 void updateTimelineProperties( wxPropertyGrid* windowProperties,
                                Window *whichWindow,
-                               std::vector< PropertyClientData >& whichPropertiesClientData );
+                               std::vector< PropertyClientData * >& whichPropertiesClientData );
 void updateHistogramProperties( wxPropertyGrid* windowProperties,
                                 Histogram *whichHisto,
-                                std::vector< PropertyClientData >& whichPropertiesClientData );
+                                std::vector< PropertyClientData * >& whichPropertiesClientData );

@@ -187,23 +187,23 @@ void fillPropertyClientData( Window* whichWindow,
                              Histogram* whichHistogram,
                              wxPGProperty* whichProperty,
                              wxString widgetName,
-                             std::vector< PropertyClientData >& whichPropertiesClientData )
+                             std::vector< PropertyClientData * >& whichPropertiesClientData )
 {
   if ( whichProperty != NULL )
   {
-    PropertyClientData tmpClientData;
-    tmpClientData.ownerTimeline = whichWindow;
-    tmpClientData.ownerHistogram = whichHistogram;
-    tmpClientData.propName = widgetName;
+    PropertyClientData *tmpClientData = new PropertyClientData();
+    tmpClientData->ownerTimeline = whichWindow;
+    tmpClientData->ownerHistogram = whichHistogram;
+    tmpClientData->propName = widgetName;
     whichPropertiesClientData.push_back( tmpClientData );
-    whichProperty->SetClientData( &whichPropertiesClientData[ whichPropertiesClientData.size() - 1 ] );
+    whichProperty->SetClientData( tmpClientData );
   }
 }
 
 
 wxPGId AppendCFG4DBoolPropertyWindow( wxPropertyGrid* windowProperties,
                                       Window* whichWindow,
-                                      std::vector< PropertyClientData >& whichPropertiesClientData,
+                                      std::vector< PropertyClientData * >& whichPropertiesClientData,
                                       wxPGId fatherWidget,
                                       const wxString &widgetLabel,
                                       const wxString &widgetName,
@@ -267,7 +267,7 @@ wxPGId AppendCFG4DBoolPropertyWindow( wxPropertyGrid* windowProperties,
 
 wxPGId AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
                                         Window* whichWindow,
-                                        std::vector< PropertyClientData >& whichPropertiesClientData,
+                                        std::vector< PropertyClientData * >& whichPropertiesClientData,
                                         wxPGId fatherWidget,
                                         const wxString &widgetLabel,
                                         const wxString &widgetName,
@@ -334,7 +334,7 @@ wxPGId AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
 
 wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
                                       Window* whichWindow,
-                                      std::vector< PropertyClientData >& whichPropertiesClientData,
+                                      std::vector< PropertyClientData * >& whichPropertiesClientData,
                                       wxPGId fatherWidget,
                                       const wxString &widgetLabel,
                                       const wxString &widgetPrefix,
@@ -398,7 +398,7 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
 
 wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
                                        Window* whichWindow,
-                                       std::vector< PropertyClientData >& whichPropertiesClientData,
+                                       std::vector< PropertyClientData * >& whichPropertiesClientData,
                                        wxPGId fatherWidget,
                                        const wxString &widgetLabel,
                                        const wxString &widgetName,
@@ -468,7 +468,7 @@ wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
 
 wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperties,
                                                   Window* whichWindow,
-                                                  std::vector< PropertyClientData >& whichPropertiesClientData,
+                                                  std::vector< PropertyClientData * >& whichPropertiesClientData,
                                                   wxPGId fatherWidget,
                                                   const wxString &widgetLabel,
                                                   const wxString &widgetPrefix,
@@ -535,7 +535,7 @@ wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperti
 
 wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties,
                                                 Window* whichWindow,
-                                                std::vector< PropertyClientData >& whichPropertiesClientData,
+                                                std::vector< PropertyClientData * >& whichPropertiesClientData,
                                                 wxPGId fatherWidget,
                                                 const wxString &widgetLabel,
                                                 const wxString &widgetPrefix,
@@ -598,7 +598,7 @@ wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties
 
 wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
                                               Window* whichWindow,
-                                              std::vector< PropertyClientData >& whichPropertiesClientData,
+                                              std::vector< PropertyClientData * >& whichPropertiesClientData,
                                               wxPGId fatherWidget,
                                               const wxString &widgetLabel,
                                               const wxString &widgetPrefix,
@@ -667,7 +667,7 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
 
 wxPGId AppendCFG4DprvSemanticThreadPropertyWindow( wxPropertyGrid* windowProperties,
                                                    Window* whichWindow,
-                                                   std::vector< PropertyClientData >& whichPropertiesClientData,
+                                                   std::vector< PropertyClientData * >& whichPropertiesClientData,
                                                    wxPGId fatherWidget,
                                                    const wxString &widgetLabel,
                                                    const wxString &widgetPrefix,
@@ -737,7 +737,7 @@ wxPGId AppendCFG4DprvSemanticThreadPropertyWindow( wxPropertyGrid* windowPropert
 
 wxPGId AppendCFG4DStringPropertyHistogram(  wxPropertyGrid* windowProperties,
                                             Histogram* whichHisto,
-                                            std::vector< PropertyClientData >& whichPropertiesClientData,
+                                            std::vector< PropertyClientData * >& whichPropertiesClientData,
                                             wxPGId fatherWidget,
                                             const wxString &widgetLabel,
                                             const wxString &widgetName,
@@ -789,7 +789,7 @@ wxPGId AppendCFG4DStringPropertyHistogram(  wxPropertyGrid* windowProperties,
 
 wxPGId AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
                                           Histogram* whichHisto,
-                                          std::vector< PropertyClientData >& whichPropertiesClientData,
+                                          std::vector< PropertyClientData * >& whichPropertiesClientData,
                                           wxPGId fatherWidget,
                                           const wxString &widgetLabel,
                                           const wxString &widgetName,
@@ -840,7 +840,7 @@ wxPGId AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
 
 wxPGId AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
                                                  Histogram* whichHisto,
-                                                 std::vector< PropertyClientData >& whichPropertiesClientData,
+                                                 std::vector< PropertyClientData * >& whichPropertiesClientData,
                                                  wxPGId fatherWidget,
                                                  const wxString &widgetLabel,
                                                  const wxString &widgetName,
@@ -915,7 +915,7 @@ wxPGId AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowPropertie
 
 wxPGId AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
                                            Histogram* whichHisto,
-                                           std::vector< PropertyClientData >& whichPropertiesClientData,
+                                           std::vector< PropertyClientData * >& whichPropertiesClientData,
                                            wxPGId fatherWidget,
                                            const wxString &widgetLabel,
                                            const wxString &widgetName,
@@ -964,7 +964,7 @@ wxPGId AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
 
 wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowProperties,
                                                      Window* whichWindow,
-                                                     std::vector< PropertyClientData >& whichPropertiesClientData,
+                                                     std::vector< PropertyClientData * >& whichPropertiesClientData,
                                                      wxPGId fatherWidget,
                                                      TWindowLevel currentSemanticLevel,
                                                      PRV_UINT32 currentNumParameter,
@@ -1072,7 +1072,7 @@ inline void updateCategoriesState( wxPropertyGrid *windowProperties )
 
 void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 Window *whichWindow,
-                                std::vector< PropertyClientData >& whichPropertiesClientData,
+                                std::vector< PropertyClientData * >& whichPropertiesClientData,
                                 wxPGId category,
                                 TWindowLevel functionLevel )
 {
@@ -1098,7 +1098,7 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
 
 
 void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window *whichWindow,
-                                        std::vector< PropertyClientData >& whichPropertiesClientData )
+                                        std::vector< PropertyClientData * >& whichPropertiesClientData )
 {
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
 
@@ -2143,7 +2143,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
 void updateTimelineProperties( wxPropertyGrid* windowProperties,
                                Window *whichWindow,
-                               std::vector< PropertyClientData >& whichPropertiesClientData )
+                               std::vector< PropertyClientData * >& whichPropertiesClientData )
 {
   updateCategoriesState( windowProperties );
   windowProperties->Freeze();
@@ -2153,7 +2153,11 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties,
   wxArrayInt arrayInt;
   int selected;
 
+  for( std::vector< PropertyClientData * >::iterator it = whichPropertiesClientData.begin();
+       it != whichPropertiesClientData.end(); ++it )
+    delete *it;
   whichPropertiesClientData.clear();
+
   propNameCounter = 0;
 
   if ( whichWindow->getCFG4DEnabled() )
@@ -2181,7 +2185,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties,
 
 void updateHistogramProperties( wxPropertyGrid* windowProperties,
                                 Histogram *whichHisto,
-                                std::vector< PropertyClientData >& whichPropertiesClientData )
+                                std::vector< PropertyClientData * >& whichPropertiesClientData )
 {
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
 
@@ -2195,7 +2199,11 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   windowProperties->Freeze();
   windowProperties->Clear();
 
+  for( std::vector< PropertyClientData * >::iterator it = whichPropertiesClientData.begin();
+       it != whichPropertiesClientData.end(); ++it )
+    delete *it;
   whichPropertiesClientData.clear();
+
   propNameCounter = 0;
 
   if ( whichHisto->getCFG4DEnabled() )
