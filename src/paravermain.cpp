@@ -1089,9 +1089,11 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
 void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
 {
   wxPGProperty *property = event.GetProperty();
+  if( property == NULL )
+    return;
 
   PropertyClientData *tmpClientData = (PropertyClientData *)property->GetClientData();
-  if( !property || tmpClientData == NULL )
+  if( tmpClientData == NULL )
     return;
 
   const wxString& propName = tmpClientData->propName;

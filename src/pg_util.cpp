@@ -418,11 +418,11 @@ wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
 
     if ( fatherWidget )
     {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
     }
     else
     {
-      windowProperties->Append( auxProperty );
+      retId = windowProperties->Append( auxProperty );
     }
   }
   else if ( !whichWindow->isDerivedWindow() &&
@@ -433,7 +433,7 @@ wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
             whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
     auxProperty = new wxFloatProperty( auxTag, tmpWidgetName, propertyValue );
 
-    windowProperties->Append( auxProperty );
+    retId = windowProperties->Append( auxProperty );
   }
   else if ( whichWindow->isDerivedWindow() &&
             whichWindow->existsCFG4DAlias( 
@@ -445,7 +445,7 @@ wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
                     DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
     auxProperty = new wxFloatProperty( auxTag, tmpWidgetName, propertyValue );
 
-    windowProperties->Append( auxProperty );
+    retId = windowProperties->Append( auxProperty );
   }
   else
   {
@@ -758,11 +758,11 @@ wxPGId AppendCFG4DStringPropertyHistogram(  wxPropertyGrid* windowProperties,
 
     if ( fatherWidget )
     {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
     }
     else
     {
-      windowProperties->Append( auxProperty );
+      retId = windowProperties->Append( auxProperty );
     }
   }
   else if ( whichHisto->existsCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ) )
@@ -774,7 +774,7 @@ wxPGId AppendCFG4DStringPropertyHistogram(  wxPropertyGrid* windowProperties,
     auxProperty = new wxStringProperty( 
             auxTag, tmpWidgetName, wxString::FromAscii( propertyValue.c_str() ) );
 
-    windowProperties->Append( auxProperty );
+    retId = windowProperties->Append( auxProperty );
   }
   else
   {
@@ -811,11 +811,11 @@ wxPGId AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
 
     if ( fatherWidget )
     {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
     }
     else
     {
-      windowProperties->Append( auxProperty );
+      retId = windowProperties->Append( auxProperty );
     }
   }
   else if ( whichHisto->existsCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ) )
@@ -825,7 +825,7 @@ wxPGId AppendCFG4DEnumPropertyHistogram(  wxPropertyGrid* windowProperties,
             whichHisto->getCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ).c_str() );
     auxProperty = new wxEnumProperty( auxTag, tmpWidgetName, arrayStr, arrayInt, selected );
 
-    windowProperties->Append( auxProperty );
+    retId = windowProperties->Append( auxProperty );
   }
   else
   {
@@ -880,11 +880,11 @@ wxPGId AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowPropertie
 
     if ( fatherWidget )
     {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
     }
     else
     {
-      windowProperties->Append( auxProperty );
+      retId = windowProperties->Append( auxProperty );
     }
   }
   else if ( whichHisto->existsCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ) )
@@ -900,7 +900,7 @@ wxPGId AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowPropertie
                                                currentTrace,
                                                needNoneElement );
 
-    windowProperties->Append( auxProperty );
+    retId = windowProperties->Append( auxProperty );
   }
   else
   {
@@ -935,11 +935,11 @@ wxPGId AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
 
     if ( fatherWidget )
     {
-      windowProperties->AppendIn( fatherWidget, auxProperty );
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
     }
     else
     {
-      windowProperties->Append( auxProperty );
+      retId = windowProperties->Append( auxProperty );
     }
   }
   else if ( whichHisto->existsCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ) )
@@ -949,7 +949,7 @@ wxPGId AppendCFG4DFloatPropertyHistogram(  wxPropertyGrid* windowProperties,
             whichHisto->getCFG4DAlias( HistogramPropertyLabels[ propertyIndex ] ).c_str() );
     auxProperty = new wxFloatProperty( auxTag, tmpWidgetName, propertyValue );
 
-    windowProperties->Append( auxProperty );
+    retId = windowProperties->Append( auxProperty );
   }
   else
   {
@@ -2264,9 +2264,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
     if( statCatCollapsed )
       statCat->SetFlagsFromString( _( "COLLAPSED" ) );
   }
-  
-//  windowProperties->AppendIn( statCat, new wxBoolProperty( wxT("Calculate all"), wxPG_LABEL, whichHisto->getCalculateAll() ) );
-  
+
   vector<string> tmpV;
   whichHisto->getGroupsLabels( tmpV );
   arrayStr.Clear();
@@ -2424,7 +2422,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
     {
       updateTimelinePropertiesRecursive( windowProperties, whichHisto->getDataWindow(), whichPropertiesClientData );
     }
-    
+
     if( whichHisto->getThreeDimensions() &&
         whichHisto->getExtraControlWindow() != whichHisto->getControlWindow() &&
         whichHisto->getExtraControlWindow() != whichHisto->getDataWindow() )
