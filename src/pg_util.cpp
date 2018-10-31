@@ -611,11 +611,17 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
 
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
+  
+  prvEventInfoProperty::InfoType infoType;
+  if ( widgetName.Cmp( _("Types") ) == 0 )
+    infoType = prvEventInfoProperty::TYPES;
+  else if ( widgetName.Cmp( _("Values") ) == 0 )
+    infoType = prvEventInfoProperty::VALUES;
 
   if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   {
     // NORMAL mode
-    auxProperty = new prvEventInfoProperty( widgetLabel, tmpWidgetName, choices, whichWindow );
+    auxProperty = new prvEventInfoProperty( widgetLabel, tmpWidgetName, choices, whichWindow, infoType );
 
     if ( fatherWidget )
     {
@@ -632,7 +638,7 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
     // CFG4D mode (single timeline)
     wxString auxTag = wxString::FromAscii( 
             whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
-    auxProperty = new prvEventInfoProperty( auxTag, tmpWidgetName, choices, whichWindow );
+    auxProperty = new prvEventInfoProperty( auxTag, tmpWidgetName, choices, whichWindow, infoType );
 
     retId = windowProperties->Append( auxProperty );
   }
@@ -644,7 +650,7 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
     wxString auxTag = wxString::FromAscii( 
             whichWindow->getCFG4DAlias( 
                     DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
-    auxProperty = new prvEventInfoProperty( auxTag, tmpWidgetName, choices, whichWindow );
+    auxProperty = new prvEventInfoProperty( auxTag, tmpWidgetName, choices, whichWindow, infoType );
 
     retId = windowProperties->Append( auxProperty );
   }

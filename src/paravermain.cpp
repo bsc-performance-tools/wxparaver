@@ -1090,10 +1090,10 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
 {
   wxPGProperty *property = event.GetProperty();
 
-  if( !property )
+  PropertyClientData *tmpClientData = (PropertyClientData *)property->GetClientData();
+  if( !property || tmpClientData == NULL )
     return;
 
-  PropertyClientData *tmpClientData = (PropertyClientData *)property->GetClientData();
   const wxString& propName = tmpClientData->propName;
 
   if( propName == _( "Mode" ) )

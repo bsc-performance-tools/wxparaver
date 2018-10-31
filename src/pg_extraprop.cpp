@@ -316,7 +316,8 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
                                             const wxString& name,
                                             const wxPGChoices& choices,
-                                            Window *whichWindow )
+                                            Window *whichWindow,
+                                            prvEventInfoProperty::InfoType whichInfoType )
                                               : wxPGProperty( label, name )
 {
   m_choices.Assign( choices );
@@ -325,23 +326,31 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
   wxArrayString tmpArray;
 
-  if( GetName().Cmp( _("Event type.Types") ) == 0 || GetName().Cmp( _("Types") ) == 0 )
+  vector<TEventType> typesSel;
+  vector<TEventValue> valuesSel;
+
+  switch( whichInfoType )
   {
-    vector<TEventType> typesSel;
-    currentWindow->getFilter()->getEventType( typesSel );
-    for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
-    {
-      tmpArray.Add( wxString().Format( _( "%d" ), (*it) ) );
-    }
-  }
-  else if( GetName().Cmp( _("Event value.Values") ) == 0 || GetName().Cmp( _("Values") ) == 0 )
-  {
-    vector<TEventValue> valuesSel;
-    currentWindow->getFilter()->getEventValue( valuesSel );
-    for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
-    {
-      tmpArray.Add( wxString().Format( _( "%lld" ), (*it) ) );
-    }
+    case TYPES:
+      currentWindow->getFilter()->getEventType( typesSel );
+      for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
+      {
+        tmpArray.Add( wxString().Format( _( "%d" ), (*it) ) );
+      }
+      
+      break;
+
+    case VALUES:
+      currentWindow->getFilter()->getEventValue( valuesSel );
+      for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
+      {
+        tmpArray.Add( wxString().Format( _( "%lld" ), (*it) ) );
+      }
+      
+      break;
+      
+    default:
+      break;
   }
 
   SetValue( tmpArray );
@@ -350,14 +359,14 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
 prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
                                             const wxString& name,
-                                            const wxArrayInt& value)
+                                            const wxArrayInt& value )
                                               : wxPGProperty(label,name)
 {
   wxArrayString strings;
   m_choices.Set( strings );
 
   wxArrayString tmpArray;
-  for ( unsigned int i = 0; i < value.GetCount(); ++i )
+  for( unsigned int i = 0; i < value.GetCount(); ++i )
     tmpArray.Add( wxString().Format( _( "%d" ), value[ i ] ) );
 
   SetValue( tmpArray );
@@ -468,23 +477,17 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
       if ( eventsDialog.ChangedEventTypesFunction() )
       {
-        wxVariant tmpVal =  WXVARIANT( eventsDialog.GetIndexEventTypesFunction() ); 
-        propgrid->GetProperty( _("Event type.TypeFunction") )->SetValue( tmpVal );
         currentWindow->getFilter()->setEventTypeFunction( eventsDialog.GetNameEventTypesFunction() );
       }
 
       if ( eventsDialog.ChangedEventValuesFunction() )
       {
-        wxVariant tmpVal =  WXVARIANT( eventsDialog.GetIndexEventValuesFunction() ); 
-        propgrid->GetProperty( _("Event value.ValueFunction") )->SetValue( tmpVal );
         currentWindow->getFilter()->setEventValueFunction( eventsDialog.GetNameEventValuesFunction() );
       }
 
       if ( eventsDialog.ChangedOperatorTypeValue() )
       {
         int func = eventsDialog.GetIndexOperatorTypeValue();
-        wxVariant tmpVal =  WXVARIANT( func ); 
-        propgrid->GetProperty( _("TypeValueOp") )->SetValue( tmpVal );
 
         if ( func == 0 )
           currentWindow->getFilter()->setOpTypeValueAnd();
@@ -494,7 +497,6 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
       if ( eventsDialog.ChangedEventValues() )
       {
-        wxArrayString tmpStrEventValues;
         wxArrayInt tmpEventValues = eventsDialog.GetEventValues();
 
         Filter *filter = currentWindow->getFilter();
@@ -502,24 +504,12 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
         for( unsigned int i = 0; i < tmpEventValues.GetCount(); ++i )
         {
-          wxString tmpVal;
-          tmpVal << tmpEventValues[ i ];
-          tmpStrEventValues.Add( tmpVal );
-
           filter->insertEventValue( (TEventValue)tmpEventValues[ i ] );
         }
-
-        wxVariant tmpVar( WXVARIANT( tmpStrEventValues ));
-
-        if ( GetName().Cmp( _("Event value.Values") ) != 0 )
-          propgrid->GetProperty( _("Event value.Values") )->SetValue( tmpVar );
-        else
-          SetValueInEvent( tmpVar );
       }
 
       if ( eventsDialog.ChangedEventTypesSelection() )
       {
-        wxArrayString tmpStrEventTypes;
         wxArrayInt tmpEventTypes = eventsDialog.GetEventTypesSelection();
 
         Filter *filter = currentWindow->getFilter();
@@ -527,18 +517,8 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
         for( unsigned int i = 0; i < tmpEventTypes.GetCount(); ++i )
         {
-          wxString tmpVal;
-          tmpVal << tmpEventTypes[ i ];
-          tmpStrEventTypes.Add( tmpVal );
           filter->insertEventType( (TEventType)tmpEventTypes[ i ] );
         }
-
-        wxVariant tmpVar( WXVARIANT( tmpStrEventTypes ));
-
-        if ( GetName().Cmp( _("Event type.Types") ) != 0 )
-          propgrid->GetProperty( _("Event type.Types") )->SetValue( tmpVar );
-        else
-          SetValueInEvent( tmpVar );
       }
 
       currentWindow->setRedraw( true );
@@ -563,7 +543,7 @@ bool prvEventInfoProperty::StringToValue( wxVariant& variant, const wxString& te
 {
     wxArrayString arr;
 
-    int userStringMode = GetAttributeAsLong(wxT("UserStringMode"), 0);
+    int userStringMode = GetAttributeAsLong( wxT("UserStringMode"), 0 );
 
     WX_PG_TOKENIZER1_BEGIN(text,wxT(';'))
         if ( userStringMode > 0 || (m_choices.IsOk() && m_choices.Index( token ) != wxNOT_FOUND) )

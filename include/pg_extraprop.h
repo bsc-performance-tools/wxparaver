@@ -109,11 +109,13 @@ class prvEventInfoProperty: public wxPGProperty
 {
   WX_PG_DECLARE_PROPERTY_CLASS( prvEventInfoProperty )
   public:
+    enum InfoType{ TYPES = 0, VALUES };
 
     prvEventInfoProperty( const wxString& label,
                           const wxString& name,
                           const wxPGChoices& choices,
-                          Window *whichWindow );
+                          Window *whichWindow,
+                          prvEventInfoProperty::InfoType whichInfoType  );
 
     prvEventInfoProperty( const wxString& label,
                           const wxString& name,
