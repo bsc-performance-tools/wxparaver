@@ -71,6 +71,7 @@ static bool dataCatCollapsed          = true;
 static bool thirdWinCatCollapsed      = true;
 static unsigned int propNameCounter   = 0;
 
+/*
 class wxSpinButtonsEditor : public wxPGTextCtrlEditor
 {
 #if wxMAJOR_VERSION>=3
@@ -167,18 +168,256 @@ bool wxSpinButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
   
   return wxPGTextCtrlEditor::OnEvent(propGrid, property, ctrl, event);
 }
+*/
+
+enum ButtonType { NO_BUTTON = 0, PLUS_BUTTON, MINUS_BUTTON, BOTH_BUTTONS };
+
+class ChoiceAndMinusButtonEditor : public wxPGChoiceEditor
+{
+#if wxMAJOR_VERSION>=3
+  wxDECLARE_DYNAMIC_CLASS( ChoiceAndMinusButtonEditor );
+#else
+  WX_PG_DECLARE_EDITOR_CLASS( ChoiceAndMinusButtonEditor );
+#endif
+    
+  public:
+    ChoiceAndMinusButtonEditor() {}
+    virtual ~ChoiceAndMinusButtonEditor() {}
+#if wxMAJOR_VERSION>=3
+    virtual wxString GetName() const { return wxT( "ChoiceAndMinusButtonEditor" ); }
+    virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
+                                           wxPGProperty* property,
+                                           const wxPoint& pos,
+                                           const wxSize& sz ) const;
+#else
+    wxPG_DECLARE_CREATECONTROLS
+#endif
+    virtual bool OnEvent( wxPropertyGrid* propGrid,
+                          wxPGProperty* property,
+                          wxWindow* ctrl,
+                          wxEvent& event ) const;
+};
 
 #if wxMAJOR_VERSION>=3
-static wxSpinButtonsEditor *spinButtonsEditor = NULL;
+wxIMPLEMENT_DYNAMIC_CLASS( ChoiceAndMinusButtonEditor, wxPGChoiceEditor );
+#else
+WX_PG_IMPLEMENT_EDITOR_CLASS( choiceAndMinusButtonEditor, ChoiceAndMinusButtonEditor, wxPGChoiceEditor )
 #endif
+
+wxPGWindowList ChoiceAndMinusButtonEditor::CreateControls( wxPropertyGrid* propGrid,
+                                                           wxPGProperty* property,
+                                                           const wxPoint& pos,
+                                                           const wxSize& sz ) const
+{
+  wxPGMultiButton* buttons = new wxPGMultiButton( propGrid, sz );
+
+  buttons->Add( wxT( "-" ) );
+
+  wxPGWindowList wndList = wxPGChoiceEditor::CreateControls( propGrid, property, pos,
+                                                               buttons->GetPrimarySize() );
+#if wxMAJOR_VERSION>=3
+  buttons->Finalize( propGrid, pos );
+#else
+  buttons->FinalizePosition( pos );
+#endif
+  wndList.SetSecondary( buttons );
+
+  return wndList;
+}
+
+bool ChoiceAndMinusButtonEditor::OnEvent( wxPropertyGrid* propGrid,
+                                          wxPGProperty* property,
+                                          wxWindow* ctrl,
+                                          wxEvent& event ) const
+{
+#if wxMAJOR_VERSION>=3
+  if ( event.GetEventType() == wxEVT_BUTTON )
+#else
+  if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
+#endif
+  {
+  }
+  
+  return wxPGChoiceEditor::OnEvent( propGrid, property, ctrl, event );
+}
+
+
+class ChoiceAndPlusButtonEditor : public wxPGChoiceEditor
+{
+#if wxMAJOR_VERSION>=3
+  wxDECLARE_DYNAMIC_CLASS( ChoiceAndPlusButtonEditor );
+#else
+  WX_PG_DECLARE_EDITOR_CLASS( ChoiceAndPlusButtonEditor );
+#endif
+    
+  public:
+    ChoiceAndPlusButtonEditor() {}
+    virtual ~ChoiceAndPlusButtonEditor() {}
+#if wxMAJOR_VERSION>=3
+    virtual wxString GetName() const { return wxT( "ChoiceAndPlusButtonEditor" ); }
+    virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
+                                           wxPGProperty* property,
+                                           const wxPoint& pos,
+                                           const wxSize& sz ) const;
+#else
+    wxPG_DECLARE_CREATECONTROLS
+#endif
+    virtual bool OnEvent( wxPropertyGrid* propGrid,
+                          wxPGProperty* property,
+                          wxWindow* ctrl,
+                          wxEvent& event ) const;
+};
+
+#if wxMAJOR_VERSION>=3
+wxIMPLEMENT_DYNAMIC_CLASS( ChoiceAndPlusButtonEditor, wxPGChoiceEditor );
+#else
+WX_PG_IMPLEMENT_EDITOR_CLASS( choiceAndPlusButtonEditor, ChoiceAndPlusButtonEditor, wxPGChoiceEditor )
+#endif
+
+wxPGWindowList ChoiceAndPlusButtonEditor::CreateControls( wxPropertyGrid* propGrid,
+                                                          wxPGProperty* property,
+                                                          const wxPoint& pos,
+                                                          const wxSize& sz ) const
+{
+  wxPGMultiButton* buttons = new wxPGMultiButton( propGrid, sz );
+
+  buttons->Add( wxT( "+" ) );
+
+  wxPGWindowList wndList = wxPGChoiceEditor::CreateControls( propGrid, property, pos,
+                                                             buttons->GetPrimarySize() );
+#if wxMAJOR_VERSION>=3
+  buttons->Finalize( propGrid, pos );
+#else
+  buttons->FinalizePosition( pos );
+#endif
+  wndList.SetSecondary( buttons );
+
+  return wndList;
+}
+
+bool ChoiceAndPlusButtonEditor::OnEvent( wxPropertyGrid* propGrid,
+                                         wxPGProperty* property,
+                                         wxWindow* ctrl,
+                                         wxEvent& event ) const
+{
+#if wxMAJOR_VERSION>=3
+  if ( event.GetEventType() == wxEVT_BUTTON )
+#else
+  if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
+#endif
+  {
+  }
+  
+  return wxPGChoiceEditor::OnEvent(propGrid, property, ctrl, event);
+}
+
+
+class ChoiceAndBothButtonsEditor : public wxPGChoiceEditor
+{
+#if wxMAJOR_VERSION>=3
+  wxDECLARE_DYNAMIC_CLASS( ChoiceAndBothButtonsEditor );
+#else
+  WX_PG_DECLARE_EDITOR_CLASS( ChoiceAndBothButtonsEditor );
+#endif
+    
+  public:
+    ChoiceAndBothButtonsEditor() {}
+    virtual ~ChoiceAndBothButtonsEditor() {}
+#if wxMAJOR_VERSION>=3
+    virtual wxString GetName() const { return wxT( "ChoiceAndBothButtonsEditor" ); }
+    virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
+                                           wxPGProperty* property,
+                                           const wxPoint& pos,
+                                           const wxSize& sz ) const;
+#else
+    wxPG_DECLARE_CREATECONTROLS
+#endif
+    virtual bool OnEvent( wxPropertyGrid* propGrid,
+                          wxPGProperty* property,
+                          wxWindow* ctrl,
+                          wxEvent& event ) const;
+};
+
+#if wxMAJOR_VERSION>=3
+wxIMPLEMENT_DYNAMIC_CLASS( ChoiceAndBothButtonsEditor, wxPGChoiceEditor );
+#else
+WX_PG_IMPLEMENT_EDITOR_CLASS( choiceAndBothButtonsEditor, ChoiceAndBothButtonsEditor, wxPGChoiceEditor )
+#endif
+
+wxPGWindowList ChoiceAndBothButtonsEditor::CreateControls( wxPropertyGrid* propGrid,
+                                                           wxPGProperty* property,
+                                                           const wxPoint& pos,
+                                                           const wxSize& sz ) const
+{
+  wxPGMultiButton* buttons = new wxPGMultiButton( propGrid, sz );
+
+  buttons->Add( wxT( "+" ) );
+  buttons->Add( wxT( "-" ) );
+
+  wxPGWindowList wndList = wxPGChoiceEditor::CreateControls( propGrid, property, pos,
+                                                                      buttons->GetPrimarySize() );
+#if wxMAJOR_VERSION>=3
+  buttons->Finalize( propGrid, pos );
+#else
+  buttons->FinalizePosition( pos );
+#endif
+  wndList.SetSecondary( buttons );
+
+  return wndList;
+}
+
+bool ChoiceAndBothButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
+                                          wxPGProperty* property,
+                                          wxWindow* ctrl,
+                                          wxEvent& event ) const
+{
+#if wxMAJOR_VERSION>=3
+  if ( event.GetEventType() == wxEVT_BUTTON )
+#else
+  if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
+#endif
+  {
+    wxPGMultiButton *buttons = ( wxPGMultiButton* ) propGrid->GetEditorControlSecondary();
+    if ( event.GetId() == buttons->GetButtonId( 0 ) )
+    {
+      // + button
+    }
+    if ( event.GetId() == buttons->GetButtonId( 1 ) )
+    {
+      // - button
+    }
+  }
+  
+  return wxPGChoiceEditor::OnEvent(propGrid, property, ctrl, event);
+}
+
+
+#if wxMAJOR_VERSION>=3
+//static wxSpinButtonsEditor *spinButtonsEditor = NULL;
+static ChoiceAndMinusButtonEditor *choiceAndMinusButtonEditor = NULL;
+static ChoiceAndPlusButtonEditor  *choiceAndPlusButtonEditor  = NULL;
+static ChoiceAndBothButtonsEditor *choiceAndBothButtonsEditor  = NULL;
+#endif
+
 
 void initPG()
 {
 #if wxMAJOR_VERSION>=3
+/*
   spinButtonsEditor = new wxSpinButtonsEditor();
   wxPropertyGrid::RegisterEditorClass( spinButtonsEditor );
+*/
+  choiceAndMinusButtonEditor = new ChoiceAndMinusButtonEditor();
+  choiceAndPlusButtonEditor = new ChoiceAndPlusButtonEditor();
+  choiceAndBothButtonsEditor = new ChoiceAndBothButtonsEditor();
+  wxPropertyGrid::RegisterEditorClass( choiceAndMinusButtonEditor );
+  wxPropertyGrid::RegisterEditorClass( choiceAndPlusButtonEditor );
+  wxPropertyGrid::RegisterEditorClass( choiceAndBothButtonsEditor );
 #else
-  wxPGRegisterEditorClass( SpinButtonsEditor );
+//  wxPGRegisterEditorClass( SpinButtonsEditor );
+  wxPGRegisterEditorClass( ChoiceAndMinusButtonEditor );
+  wxPGRegisterEditorClass( ChoiceAndPlusButtonEditor );
+  wxPGRegisterEditorClass( ChoiceAndBothButtonsEditor );
 #endif
 }
 
@@ -342,7 +581,8 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
                                       TSingleTimelineProperties propertyIndex,
                                       const wxArrayString &arrayStr,
                                       const wxArrayInt &arrayInt,
-                                      const int selected )
+                                      const int selected,
+                                      const ButtonType addButton = ButtonType::NO_BUTTON )
 {
   wxPGId retId = (wxPGId)NULL;
   wxEnumProperty *auxProperty = NULL;
@@ -355,6 +595,8 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
     // NORMAL mode
     auxProperty = new wxEnumProperty( widgetLabel, tmpWidgetName, arrayStr, arrayInt, selected );
 
+// ---->
+
     if ( fatherWidget )
     {
       retId = windowProperties->AppendIn( fatherWidget, auxProperty );
@@ -362,6 +604,38 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
     else
     {
       retId = windowProperties->Append( auxProperty );
+    }
+
+    // TODO Test
+    switch( addButton )
+    {
+      case ButtonType::PLUS_BUTTON:
+        #if wxMAJOR_VERSION>=3
+          windowProperties->SetPropertyEditor( auxProperty, choiceAndPlusButtonEditor );
+        #else
+          windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( ChoiceAndPlusButtonEditor ) );
+        #endif
+        break;
+
+      case ButtonType::MINUS_BUTTON:
+        #if wxMAJOR_VERSION>=3
+          windowProperties->SetPropertyEditor( auxProperty, choiceAndMinusButtonEditor );
+        #else
+          windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( ChoiceAndMinusButtonEditor ) );
+        #endif
+
+        break;
+      
+      case ButtonType::BOTH_BUTTONS:
+        #if wxMAJOR_VERSION>=3
+          windowProperties->SetPropertyEditor( auxProperty, choiceAndBothButtonsEditor );
+        #else
+          windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( ChoiceAndBothButtonsEditor ) );
+        #endif
+        break;
+
+      default:
+        break;
     }
   }
   else if ( !whichWindow->isDerivedWindow() &&
@@ -452,7 +726,8 @@ wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
     // CFG4D mode but no tag found => don't show property
   }
   
-/* NOT WORKING PROPERLY
+// NOT WORKING PROPERLY
+/*
 #if wxMAJOR_VERSION>=3
   windowProperties->SetPropertyEditor( auxProperty, spinButtonsEditor );
 #else
@@ -1779,7 +2054,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
   AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
             wxT("Top Compose 1"), wxT(""), wxT("Top Compose 1"), SINGLE_TOPCOMPOSE1,
-            arrayComposeFunctions, arrayComposeFunctionsPos, selected );
+            arrayComposeFunctions, arrayComposeFunctionsPos, selected, ButtonType::BOTH_BUTTONS );
 
   semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE1 );
 
@@ -1795,7 +2070,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
   AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
             wxT("Top Compose 2"), wxT(""), wxT("Top Compose 2"), SINGLE_TOPCOMPOSE2,
-            arrayComposeFunctions, arrayComposeFunctionsPos, selected );
+            arrayComposeFunctions, arrayComposeFunctionsPos, selected, ButtonType::BOTH_BUTTONS );
 
   semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE2 );
 
