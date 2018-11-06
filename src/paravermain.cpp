@@ -4212,6 +4212,16 @@ bool paraverMain::getAutoRedraw() const
   return checkAutoRedraw->GetValue();
 }
 
+
+bool paraverMain::isCFG4DModeDisabled() const
+{
+  return ( ( currentTimeline != NULL &&
+              ( !currentTimeline->getCFG4DEnabled() || !currentTimeline->getCFG4DMode() ) )
+           ||
+           ( currentHisto != NULL &&
+              ( !currentHisto->getCFG4DEnabled() || !currentHisto->getCFG4DMode() ) ) );
+}
+
 #ifndef WIN32
 void paraverMain::insertSignalItem( bool isSig1 )
 {

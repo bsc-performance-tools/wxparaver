@@ -521,6 +521,7 @@ public:
                             const std::string& xmlFile = "" );
   
   bool getAutoRedraw() const;
+  bool isCFG4DModeDisabled() const;
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
