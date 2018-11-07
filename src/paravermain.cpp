@@ -1087,8 +1087,13 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
 void paraverMain::spreadSetChangedRecursive( Window *whichWindow )
 {
   whichWindow->setChanged( true );
+
   if ( whichWindow->getChild() != NULL )
     spreadSetChangedRecursive( whichWindow->getChild() );
+
+  set<Histogram *> tmpHistograms = whichWindow->getHistograms();
+  for( set<Histogram *>::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
+    (*it)->setChanged( true );
 }
 
 
@@ -1097,20 +1102,20 @@ void paraverMain::spreadSetChanged( Window *whichWindow )
   if ( isCFG4DModeDisabled() )
     whichWindow->setChanged( true );
   else
-  {
-    set<Histogram *> tmpHistograms = whichWindow->getHistograms();
-    for( set<Histogram *>::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
-      (*it)->setChanged( true );
     spreadSetChangedRecursive( whichWindow );
-  }
 }
 
 
 void paraverMain::spreadSetRedrawRecursive( Window *whichWindow )
 {
   whichWindow->setRedraw( true );
+
   if ( whichWindow->getChild() != NULL )
     spreadSetRedrawRecursive( whichWindow->getChild() );
+
+  set<Histogram *> tmpHistograms = whichWindow->getHistograms();
+  for( set<Histogram *>::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
+    (*it)->setRecalc( true );
 }
 
 
@@ -1119,12 +1124,7 @@ void paraverMain::spreadSetRedraw( Window *whichWindow )
   if ( isCFG4DModeDisabled() )
     whichWindow->setRedraw( true );
   else
-  {
-    set<Histogram *> tmpHistograms = whichWindow->getHistograms();
-    for( set<Histogram *>::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
-      (*it)->setRecalc( true );
     spreadSetRedrawRecursive( whichWindow );
-  }
 }
 
 
