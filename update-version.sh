@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env sh
 
 if [ $# -ne 1 ]; then
   echo; echo "  Usage: $0 <new-version-tag>"

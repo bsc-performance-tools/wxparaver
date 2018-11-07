@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env sh
 
 ################################################################################
 # This script:
@@ -10,7 +10,7 @@
 #
 ################################################################################
 
-pushd . &> /dev/null
+PWD=`pwd`
 
 ################################################################################
 # 1. sphinx
@@ -25,7 +25,7 @@ SPHINX_OUTPUT=paraver_toolset.quick_reference.html
 cd build/$HTML_TYPE
 if ! [ -e "${SPHINX_OUTPUT}" ]; then
   echo "[ERROR!!!]: no .html documentation found in ./build/$HTML_TYPE"
-  popd &> /dev/null
+  cd ${PWD}
   exit 1
 fi
 
@@ -69,5 +69,5 @@ cp -ap ./_images    ../../../../install/html/2.paraver_toolset/
 
 ################################################################################
 
-popd &> /dev/null
+cd ${PWD}
 
