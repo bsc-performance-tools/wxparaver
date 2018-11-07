@@ -1098,6 +1098,9 @@ void paraverMain::spreadSetChanged( Window *whichWindow )
     whichWindow->setChanged( true );
   else
   {
+    set<Histogram *> tmpHistograms = whichWindow->getHistograms();
+    for( set<Histogram *>::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
+      (*it)->setChanged( true );
     spreadSetChangedRecursive( whichWindow );
   }
 }
@@ -1117,6 +1120,9 @@ void paraverMain::spreadSetRedraw( Window *whichWindow )
     whichWindow->setRedraw( true );
   else
   {
+    set<Histogram *> tmpHistograms = whichWindow->getHistograms();
+    for( set<Histogram *>::iterator it = tmpHistograms.begin(); it != tmpHistograms.end(); ++it )
+      (*it)->setRecalc( true );
     spreadSetRedrawRecursive( whichWindow );
   }
 }
