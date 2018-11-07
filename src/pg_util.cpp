@@ -462,7 +462,7 @@ wxPGId AppendCFG4DBoolPropertyWindow( wxPropertyGrid* windowProperties,
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
   
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new wxBoolProperty( widgetLabel, tmpWidgetName, propertyValue );
@@ -526,7 +526,7 @@ wxPGId AppendCFG4DStringPropertyWindow( wxPropertyGrid* windowProperties,
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
   
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new wxStringProperty(
@@ -597,7 +597,8 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
 
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  //if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new wxEnumProperty( widgetLabel, tmpWidgetName, arrayStr, arrayInt, selected );
@@ -692,7 +693,7 @@ wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
 
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new wxFloatProperty( widgetLabel, tmpWidgetName, propertyValue );
@@ -765,7 +766,7 @@ wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperti
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
 
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new prvRowsSelectionProperty( windowProperties, whichWindow,
@@ -832,7 +833,7 @@ wxPGId AppendCFG4DprvNumbersListPropertyWindow( wxPropertyGrid* windowProperties
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
 
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new prvNumbersListProperty( widgetLabel, tmpWidgetName, arrayStr );
@@ -900,7 +901,7 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
   else if ( widgetName.Cmp( _("Values") ) == 0 )
     infoType = prvEventInfoProperty::VALUES;
 
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new prvEventInfoProperty( widgetLabel, tmpWidgetName, choices, whichWindow, infoType );
@@ -965,7 +966,7 @@ wxPGId AppendCFG4DprvSemanticThreadPropertyWindow( wxPropertyGrid* windowPropert
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
 
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new prvSemanticThreadProperty( widgetLabel, tmpWidgetName, 
@@ -1268,7 +1269,7 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
   string currentFunction;
   PRV_UINT32 kNumParameter;
 
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new prvNumbersListProperty( widgetLabel, tmpWidgetName, arrayStr );
@@ -1539,7 +1540,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     }
 
     wxPGId filterCat = (wxPGId)NULL;
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       filterCat = windowProperties->Append( new wxPropertyCategory( wxT("Filter"), wxT("Filter") ) );
       if( filterCatCollapsed )
@@ -1548,7 +1549,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     
     // ---------------------------- COMMUNICATION FILTER ---------------------------
     wxPGId commFilterCat = (wxPGId)NULL;
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       commFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Communications"), wxT("Communications") ) );
       if( commFilterCatCollapsed )
@@ -1563,7 +1564,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     // Comm From
     wxPGId commFilterFrom = ( wxPGId )NULL;
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       commFilterFrom = windowProperties->AppendIn( commFilterCat, 
                                                    new wxStringProperty( wxT("Comm from"),
@@ -1635,7 +1636,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     // Comm To
     wxPGId commFilterTo = (wxPGId) NULL; 
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       commFilterTo = windowProperties->AppendIn( commFilterCat, 
                                                  new wxStringProperty( wxT("Comm to"),
@@ -1691,7 +1692,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     // Comm Tag
     wxPGId commFilterTag = (wxPGId)NULL;
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       commFilterTag = windowProperties->AppendIn( commFilterCat, 
                                                   new wxStringProperty( wxT("Comm tag"),
@@ -1762,7 +1763,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     // Comm Size
     wxPGId commFilterSize = (wxPGId)NULL; 
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       commFilterSize = windowProperties->AppendIn( commFilterCat,
                                                    new wxStringProperty( wxT("Comm size"), wxT("Comm size"),wxT("<composed>")));
@@ -1818,7 +1819,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     // Comm BandWidth
     wxPGId commFilterBW = (wxPGId)NULL;
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       commFilterBW = windowProperties->AppendIn(  commFilterCat, 
                                                   new wxStringProperty( wxT("Comm bandwidth"), 
@@ -1876,7 +1877,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     // -------------------------------- EVENT FILTER -------------------------------
     wxPGId eventFilterCat = (wxPGId)NULL;
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       eventFilterCat = windowProperties->AppendIn( filterCat, new wxPropertyCategory( wxT("Events"), wxT("Events") ) );
       if( eventFilterCatCollapsed )
@@ -1885,7 +1886,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     // Event Type
     wxPGId eventFilterType = (wxPGId)NULL;
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       eventFilterType = windowProperties->AppendIn( eventFilterCat, 
                                                     new wxStringProperty( wxT("Event type"), 
@@ -1969,7 +1970,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
     // Event Value
     wxPGId eventFilterValue = (wxPGId)NULL;
-    if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+    if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
     {
       eventFilterValue = windowProperties->AppendIn( eventFilterCat, 
                                                      new wxStringProperty( wxT("Event value"), 
@@ -2030,7 +2031,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
   TParamValue pValues;
 
   wxPGId semanticCat = (wxPGId)NULL;
-  if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     semanticCat = windowProperties->Append( new wxPropertyCategory( wxT("Semantic"), wxT("Semantic") ) );
     if( semanticCatCollapsed )
@@ -2670,8 +2671,16 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
     pos++;
   }
 
-  wxPGId thirdWinPlane = AppendCFG4DEnumPropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, thirdWinCat,
-          wxT("Plane"), wxT("3DPlane"), HISTOGRAM_3DPLANE, arrayStr, arrayInt, selected );
+  wxPGId thirdWinPlane = AppendCFG4DEnumPropertyHistogram( windowProperties,
+                                                           whichHisto,
+                                                           whichPropertiesClientData,
+                                                           thirdWinCat,
+                                                           wxT("Plane"),
+                                                           wxT("3DPlane"),
+                                                           HISTOGRAM_3DPLANE,
+                                                           arrayStr,
+                                                           arrayInt,
+                                                           selected );
 
   if( !whichHisto->getThreeDimensions() )
   {
@@ -2706,18 +2715,24 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
 
   if ( whichHisto->getCFG4DEnabled() && whichHisto->getCFG4DMode() )
   {
-    updateTimelinePropertiesRecursive( windowProperties, whichHisto->getControlWindow(), whichPropertiesClientData );
+    updateTimelinePropertiesRecursive( windowProperties,
+                                       whichHisto->getControlWindow(),
+                                       whichPropertiesClientData );
     if( whichHisto->getDataWindow() != NULL &&
         whichHisto->getDataWindow() != whichHisto->getControlWindow() )
     {
-      updateTimelinePropertiesRecursive( windowProperties, whichHisto->getDataWindow(), whichPropertiesClientData );
+      updateTimelinePropertiesRecursive( windowProperties,
+                                         whichHisto->getDataWindow(),
+                                         whichPropertiesClientData );
     }
 
     if( whichHisto->getThreeDimensions() &&
         whichHisto->getExtraControlWindow() != whichHisto->getControlWindow() &&
         whichHisto->getExtraControlWindow() != whichHisto->getDataWindow() )
     {
-      updateTimelinePropertiesRecursive( windowProperties, whichHisto->getExtraControlWindow(), whichPropertiesClientData );
+      updateTimelinePropertiesRecursive( windowProperties,
+                                         whichHisto->getExtraControlWindow(),
+                                         whichPropertiesClientData );
     }
   }
 

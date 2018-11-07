@@ -339,6 +339,10 @@ public:
   void OnTreeBeginDrag( wxTreeEvent& event );
   void OnTreeEndDrag( wxTreeEvent& event );
   
+  void spreadSetChangedRecursive( Window *whichWindow );
+  void spreadSetRedrawRecursive( Window *whichWindow );
+  void spreadSetChanged( Window *whichWindow );
+  void spreadSetRedraw( Window *whichWindow );
   /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
   void OnPropertyGridChange( wxPropertyGridEvent& event );
 
@@ -521,6 +525,7 @@ public:
                             const std::string& xmlFile = "" );
   
   bool getAutoRedraw() const;
+  bool isCFG4DModeDisabled() const;
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );

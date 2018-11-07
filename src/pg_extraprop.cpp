@@ -472,9 +472,6 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
     if ( eventsDialog.ShowModal() == wxID_OK && numLabels )
     {
-      if( wxparaverApp::mainWindow->GetCurrentTimeline() != currentWindow )
-        return false;
-
       if ( eventsDialog.ChangedEventTypesFunction() )
       {
         currentWindow->getFilter()->setEventTypeFunction( eventsDialog.GetNameEventTypesFunction() );
@@ -521,8 +518,9 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         }
       }
 
-      currentWindow->setRedraw( true );
-      currentWindow->setChanged( true );
+      paraverMain::myParaverMain->spreadSetChanged( currentWindow );
+      paraverMain::myParaverMain->spreadSetRedraw( currentWindow );
+
       return true;
     }
   }

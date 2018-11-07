@@ -2106,7 +2106,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     
   gTimeline *openWindow = NULL;
   Window *controlCloned = myHistogram->getControlWindow()->clone();
-  controlCloned->setUsedByHistogram( false );
+  controlCloned->unsetUsedByHistogram( myHistogram );
   controlCloned->removeFromSync();
   THistogramLimit min = myHistogram->getControlMin();
   THistogramLimit max = myHistogram->getControlMax();
@@ -2152,7 +2152,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   if( myHistogram->getThreeDimensions() )
   {
     Window *extraControlCloned = myHistogram->getExtraControlWindow()->clone();
-    extraControlCloned->setUsedByHistogram( false );
+    extraControlCloned->unsetUsedByHistogram( myHistogram );
     extraControlCloned->removeFromSync();
 
     THistogramLimit extraMin = myHistogram->getExtraControlMin();
@@ -2347,7 +2347,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
 
     openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), tmpSelectedRows );
 
-    openWindow->GetMyWindow()->setUsedByHistogram( false );
+    openWindow->GetMyWindow()->unsetUsedByHistogram( myHistogram );
     openWindow->GetMyWindow()->setShowWindow( true );
   }
   else
