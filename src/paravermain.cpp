@@ -1137,8 +1137,6 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   if( property == NULL )
     return;
 
-  std::cout << event.GetColumn() << std::endl;
-
   PropertyClientData *tmpClientData = (PropertyClientData *)property->GetClientData();
   if( tmpClientData == NULL )
     return;

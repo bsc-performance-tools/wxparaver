@@ -2105,9 +2105,14 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         selected = pos;
       pos++;
     }
-
+    
+    // Name "Extra Top Compose n"
+    wxString tmpNum;
+    tmpNum << (unsigned int)nExtraCompose + 1;
+    wxString tmpName = wxT("Extra Top Compose ") + tmpNum;
+    
     AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-              wxT("Extra Top Compose 1"), wxT(""), wxT("Extra Top Compose 1"), SINGLE_TOPCOMPOSE1,
+              tmpName, wxT(""), tmpName, SINGLE_TOPCOMPOSE1,
               arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
     semanticExtraComposeFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE1, nExtraCompose );
