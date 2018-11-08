@@ -384,15 +384,21 @@ bool wxChoiceAndBothButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
   if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
 #endif
   {
+    Window *tmpTimeline = ( ( PropertyClientData * )property->GetClientData() )->ownerTimeline;
     wxPGMultiButton *buttons = ( wxPGMultiButton* ) propGrid->GetEditorControlSecondary();
     if ( event.GetId() == buttons->GetButtonId( 0 ) )
     {
       // + button
+      tmpTimeline->addExtraCompose( TOPCOMPOSE1 );
     }
     if ( event.GetId() == buttons->GetButtonId( 1 ) )
     {
       // - button
+      tmpTimeline->removeExtraCompose( TOPCOMPOSE1 );
     }
+    
+    paraverMain::myParaverMain->spreadSetChanged( tmpTimeline );
+    paraverMain::myParaverMain->spreadSetRedraw( tmpTimeline );
   }
   
   return wxPGChoiceEditor::OnEvent( propGrid, property, ctrl, event );
@@ -1254,7 +1260,9 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
                                                      const wxString &widgetLabel,
                                                      const wxString &widgetPrefix,
                                                      const wxString &widgetName,
-                                                     const wxArrayString &arrayStr )
+                                                     const wxArrayString &arrayStr,
+                                                     bool isExtraCompose = false,
+                                                     size_t extraComposePos = 0 )
 {
   wxPGId retId = (wxPGId)NULL;
   prvNumbersListProperty *auxProperty = NULL;
@@ -1285,6 +1293,9 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
   }
   else
   {
+    // TODO: CFG4D extra compose parameters
+    if( isExtraCompose ) return retId;
+    
     string currentSemanticLevelStr = TimelineLevelLabels[ currentSemanticLevel ];
     vector< Window::TParamAliasKey > paramAliasKey =
             whichWindow->getCFG4DParamKeysBySemanticLevel( currentSemanticLevelStr );
@@ -1293,7 +1304,12 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
     {
       // CFG4D mode
       whichWindow->splitCFG4DParamAliasKey( *it, kSemanticLevel, kFunction, kNumParameter );
-      string currentFunction = whichWindow->getLevelFunction( currentSemanticLevel );
+      string currentFunction;
+      if( isExtraCompose )
+        currentFunction = whichWindow->getExtraLevelFunction( currentSemanticLevel, extraComposePos );
+      else
+        currentFunction = whichWindow->getLevelFunction( currentSemanticLevel );
+
       if ( kFunction      == currentFunction &&
            kNumParameter  == currentNumParameter )
       {
@@ -1352,6 +1368,33 @@ inline void updateCategoriesState( wxPropertyGrid *windowProperties )
   updateStateOf( windowProperties, thirdWinCatCollapsed,  wxT( "3D" ) );
 }
 
+
+void semanticExtraComposeFunctionParameter( wxPropertyGrid* windowProperties,
+                                            Window *whichWindow,
+                                            std::vector< PropertyClientData * >& whichPropertiesClientData,
+                                            wxPGId category,
+                                            TWindowLevel functionLevel,
+                                            size_t whichPos )
+{
+  for( TParamIndex paramIdx = 0; paramIdx < whichWindow->getExtraFunctionNumParam( functionLevel, whichPos ); ++paramIdx )
+  {
+    wxArrayString valuesStr;
+    wxString propName( _( "Extra Param" ) );
+    propName << _( " " ) << paramIdx << _( " " ) << functionLevel << _( " " ) << whichPos;
+    TParamValue values = whichWindow->getExtraFunctionParam( functionLevel, whichPos, paramIdx );
+    for( TParamValue::iterator it = values.begin(); it != values.end(); ++it )
+      valuesStr.Add( wxString() << (*it) );
+
+    wxString propLabel = wxString( _("   ") ) +
+            wxString::FromAscii( whichWindow->getExtraFunctionParamName( functionLevel, whichPos, paramIdx ).c_str() );
+    wxPGId semanticFunctionParameterValue = (wxPGId)NULL;
+    semanticFunctionParameterValue = AppendCFG4DParamPrvNumbersListPropertyWindow(
+            windowProperties, whichWindow, whichPropertiesClientData, category,
+            functionLevel, (PRV_UINT32)paramIdx,
+            propLabel, wxT(""), propName,
+            valuesStr, true, whichPos );
+  }
+}
 
 void semanticFunctionParameter( wxPropertyGrid* windowProperties,
                                 Window *whichWindow,
@@ -2049,7 +2092,27 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     arrayComposeFunctionsPos.Add( pos );
     ++pos;
   }
-  
+
+  // Extra composes
+  for( size_t nExtraCompose = 0; nExtraCompose < whichWindow->getExtraNumPositions( TOPCOMPOSE1 ); ++nExtraCompose )
+  {
+    pos = 0;
+    selected = -1;
+    for( vector<string>::iterator it = composeFunctions.begin();
+         it != composeFunctions.end(); ++it )
+    {
+      if( (*it) == whichWindow->getExtraLevelFunction( TOPCOMPOSE1, nExtraCompose ) )
+        selected = pos;
+      pos++;
+    }
+
+    AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
+              wxT("Extra Top Compose 1"), wxT(""), wxT("Extra Top Compose 1"), SINGLE_TOPCOMPOSE1,
+              arrayComposeFunctions, arrayComposeFunctionsPos, selected );
+
+    semanticExtraComposeFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE1, nExtraCompose );
+  }
+
   pos = 0;
   selected = -1;
   for( vector<string>::iterator it = composeFunctions.begin();
@@ -2078,7 +2141,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
   AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
             wxT("Top Compose 2"), wxT(""), wxT("Top Compose 2"), SINGLE_TOPCOMPOSE2,
-            arrayComposeFunctions, arrayComposeFunctionsPos, selected, ButtonType::BOTH_BUTTONS );
+            arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
   semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE2 );
 
