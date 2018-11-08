@@ -1750,22 +1750,23 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     //                         | | L pos
     //                         | L function level
     //                         L param index
-    wxString paramData = tmpRest->AfterFirst( ' ' );
+    wxString paramData = *tmpRest;
     TParamIndex paramIdx;
     TWindowLevel functionLevel;
     size_t position;
     unsigned long tmpLong;
-    
+
     paramData.BeforeFirst( ' ' ).ToULong( &tmpLong );
     paramIdx = tmpLong;
+
     paramData.AfterFirst( ' ' ).BeforeFirst( ' ' ).ToULong( &tmpLong );
     functionLevel = (TWindowLevel)tmpLong;
+
     paramData.AfterLast( ' ' ).ToULong( &tmpLong );
-/*
     int reversedIndex = (int)tmpLong;
-    int maxPos = (int)tmpClientData->ownerTimeline->getExtraFunctionNumParam( functionLevel, paramIdx );
-    position = (size_t)abs(reversedIndex - 1 - maxPos);
-*/
+    int maxPos = (int)tmpClientData->ownerTimeline->getExtraNumPositions( TOPCOMPOSE1 );
+    position = (size_t)(maxPos - reversedIndex);
+
     wxArrayString valuesStr = property->GetValue().GetArrayString();
     TParamValue values;
     for( unsigned int idx = 0; idx < valuesStr.GetCount(); idx++ )
@@ -1774,6 +1775,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       valuesStr[ idx ].ToDouble( &tmpDouble );
       values.push_back( tmpDouble );
     }
+    
     tmpClientData->ownerTimeline->setExtraFunctionParam( functionLevel, position, paramIdx, values );
     spreadSetRedraw( tmpClientData->ownerTimeline );
   }
