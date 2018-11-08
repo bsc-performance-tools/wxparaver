@@ -1376,17 +1376,18 @@ void semanticExtraComposeFunctionParameter( wxPropertyGrid* windowProperties,
                                             TWindowLevel functionLevel,
                                             size_t whichPos )
 {
-  for( TParamIndex paramIdx = 0; paramIdx < whichWindow->getExtraFunctionNumParam( functionLevel, whichPos ); ++paramIdx )
+  for( TParamIndex paramIdx = 0; paramIdx < whichWindow->getExtraFunctionNumParam( functionLevel, whichPos - 1 ); ++paramIdx )
   {
     wxArrayString valuesStr;
     wxString propName( _( "Extra Param" ) );
-    propName << _( " " ) << paramIdx << _( " " ) << functionLevel << _( " " ) << whichPos;
-    TParamValue values = whichWindow->getExtraFunctionParam( functionLevel, whichPos, paramIdx );
+    propName << _( " " ) << paramIdx << _( " " ) << functionLevel << _( " " )
+             << whichWindow->getExtraNumPositions( functionLevel ) - whichPos + 1;
+    TParamValue values = whichWindow->getExtraFunctionParam( functionLevel, whichPos - 1, paramIdx );
     for( TParamValue::iterator it = values.begin(); it != values.end(); ++it )
       valuesStr.Add( wxString() << (*it) );
 
     wxString propLabel = wxString( _("   ") ) +
-            wxString::FromAscii( whichWindow->getExtraFunctionParamName( functionLevel, whichPos, paramIdx ).c_str() );
+            wxString::FromAscii( whichWindow->getExtraFunctionParamName( functionLevel, whichPos - 1, paramIdx ).c_str() );
     wxPGId semanticFunctionParameterValue = (wxPGId)NULL;
     semanticFunctionParameterValue = AppendCFG4DParamPrvNumbersListPropertyWindow(
             windowProperties, whichWindow, whichPropertiesClientData, category,
@@ -2094,28 +2095,29 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
   }
 
   // Extra composes
-  for( size_t nExtraCompose = 0; nExtraCompose < whichWindow->getExtraNumPositions( TOPCOMPOSE1 ); ++nExtraCompose )
+  for( size_t nExtraCompose = whichWindow->getExtraNumPositions( TOPCOMPOSE1 ); nExtraCompose > 0 ; --nExtraCompose )
   {
     pos = 0;
     selected = -1;
     for( vector<string>::iterator it = composeFunctions.begin();
          it != composeFunctions.end(); ++it )
     {
-      if( (*it) == whichWindow->getExtraLevelFunction( TOPCOMPOSE1, nExtraCompose ) )
+      if( (*it) == whichWindow->getExtraLevelFunction( TOPCOMPOSE1, nExtraCompose - 1 ) )
         selected = pos;
       pos++;
     }
     
     // Name "Extra Top Compose n"
     wxString tmpNum;
-    tmpNum << (unsigned int)nExtraCompose + 1;
+    tmpNum << whichWindow->getExtraNumPositions( TOPCOMPOSE1 ) - nExtraCompose + 1;
     wxString tmpName = wxT("Extra Top Compose ") + tmpNum;
     
     AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
               tmpName, wxT(""), tmpName, SINGLE_TOPCOMPOSE1,
               arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
-    semanticExtraComposeFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE1, nExtraCompose );
+    semanticExtraComposeFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData,
+                                           semanticCat, TOPCOMPOSE1, nExtraCompose );
   }
 
   pos = 0;

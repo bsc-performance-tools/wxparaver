@@ -1142,6 +1142,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     return;
 
   const wxString& propName = tmpClientData->propName;
+  wxString *tmpRest = new wxString(_(""));
 
   if( propName == _( "Mode" ) )
   {
@@ -1293,6 +1294,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     if( property->GetValue().GetDouble() == 0 )
     {
       property->SetValue( tmpClientData->ownerHistogram->getControlDelta() );
+      delete tmpRest;
       return;
     }
     tmpClientData->ownerHistogram->setControlDelta( property->GetValue().GetDouble() );
@@ -1381,6 +1383,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     if( property->GetValue().GetDouble() == 0 )
     {
       property->SetValue( tmpClientData->ownerHistogram->getExtraControlDelta() );
+      delete tmpRest;
       return;
     }
     
@@ -1593,6 +1596,24 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     spreadSetRedraw( tmpClientData->ownerTimeline );
     spreadSetChanged( tmpClientData->ownerTimeline );
   }
+  else if( propName.StartsWith( _( "Extra Top Compose " ), tmpRest ) )
+  {
+    // propName = "Extra Top Compose 1"
+    // startwith  "Extra Top Compose "
+    // tmpRest  =                   "1"
+    //                               |
+    //                               L pos
+    size_t position;
+    tmpRest->ToULong( &position );
+
+    int reversedIndex = (int)position;
+    int maxPos = (int)tmpClientData->ownerTimeline->getExtraNumPositions( TOPCOMPOSE1 );
+    position = (size_t)(maxPos - reversedIndex);
+
+    tmpClientData->ownerTimeline->setExtraLevelFunction( TOPCOMPOSE1, position, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetChanged( tmpClientData->ownerTimeline );
+  }
   else if( propName == _( "Top Compose 1" ) )
   {
     tmpClientData->ownerTimeline->setLevelFunction( TOPCOMPOSE1, std::string( property->GetDisplayedString().mb_str() ) );
@@ -1720,6 +1741,42 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     spreadSetRedraw( tmpClientData->ownerTimeline );
     spreadSetChanged( tmpClientData->ownerTimeline );
   }
+  else if( propName.StartsWith( _( "Extra Param " ), tmpRest ) )
+  {
+    // propName = "Extra Param 1 2 3"
+    // startwith  "Extra Param "
+    // *tmpRest =             "1 2 3"
+    //                         | | |
+    //                         | | L pos
+    //                         | L function level
+    //                         L param index
+    wxString paramData = tmpRest->AfterFirst( ' ' );
+    TParamIndex paramIdx;
+    TWindowLevel functionLevel;
+    size_t position;
+    unsigned long tmpLong;
+    
+    paramData.BeforeFirst( ' ' ).ToULong( &tmpLong );
+    paramIdx = tmpLong;
+    paramData.AfterFirst( ' ' ).BeforeFirst( ' ' ).ToULong( &tmpLong );
+    functionLevel = (TWindowLevel)tmpLong;
+    paramData.AfterLast( ' ' ).ToULong( &tmpLong );
+/*
+    int reversedIndex = (int)tmpLong;
+    int maxPos = (int)tmpClientData->ownerTimeline->getExtraFunctionNumParam( functionLevel, paramIdx );
+    position = (size_t)abs(reversedIndex - 1 - maxPos);
+*/
+    wxArrayString valuesStr = property->GetValue().GetArrayString();
+    TParamValue values;
+    for( unsigned int idx = 0; idx < valuesStr.GetCount(); idx++ )
+    {
+      double tmpDouble;
+      valuesStr[ idx ].ToDouble( &tmpDouble );
+      values.push_back( tmpDouble );
+    }
+    tmpClientData->ownerTimeline->setExtraFunctionParam( functionLevel, position, paramIdx, values );
+    spreadSetRedraw( tmpClientData->ownerTimeline );
+  }
   else if( propName.BeforeFirst( ' ' ) == _( "Param" ) )
   {
     wxString paramData = propName.AfterFirst( ' ' );
@@ -1743,6 +1800,8 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     tmpClientData->ownerTimeline->setFunctionParam( functionLevel, paramIdx, values );
     spreadSetRedraw( tmpClientData->ownerTimeline );
   }
+  
+  delete tmpRest;
 }
 
 
