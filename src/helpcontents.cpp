@@ -540,7 +540,7 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 {
   if ( event.GetLinkInfo().GetHref().Cmp( _("download_tutorials") ) == 0 )
   {
-    if ( !wxLaunchDefaultBrowser( _("https://tools.bsc.es/tutorial_guidelines") ) )
+    if ( !wxLaunchDefaultBrowser( _("https://tools.bsc.es/paraver-tutorials") ) )
     {
       wxMessageDialog message( this, _("Unable to find/open default browser."), _( "Warning" ), wxOK );
       message.ShowModal();
@@ -698,7 +698,7 @@ void TutorialsBrowser::linkToWebPage( wxString& htmlDoc )
 {
   htmlDoc += _("<P><H3>Latest tutorials</H3></P>");
 
-  htmlDoc += _("<P>Find them available at <A HREF=\"download_tutorials\">https://tools.bsc.es/tutorial_guidelines</A></P>");
+  htmlDoc += _("<P>Find them available at <A HREF=\"download_tutorials\">https://tools.bsc.es/paraver-tutorials</A></P>");
   htmlDoc += _("<UL>");
   htmlDoc += _("<LI>As single <A HREF=\"download_tutorials_targz\">.tar.gz</A> package (127MB).</LI>");
   htmlDoc += _("<LI>As single <A HREF=\"download_tutorials_zip\">.zip</A> package (127 MB).</LI>");
@@ -787,7 +787,7 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( event.GetLinkInfo().GetHref().Cmp( _("download_tutorials") ) == 0 )
   {
-    if ( !wxLaunchDefaultBrowser( _("https://tools.bsc.es/tutorial_guidelines") ) )
+    if ( !wxLaunchDefaultBrowser( _("https://tools.bsc.es/paraver-tutorials") ) )
     {
       wxMessageDialog message( this, _("Unable to find/open default browser."), _( "Warning" ), wxOK );
       message.ShowModal();
