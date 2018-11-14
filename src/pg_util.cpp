@@ -595,7 +595,7 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
                                       const wxArrayString &arrayStr,
                                       const wxArrayInt &arrayInt,
                                       const int selected,
-                                      const ButtonType addButton = ButtonType::NO_BUTTON )
+                                      const ButtonType addButton = NO_BUTTON )
 {
   wxPGId retId = (wxPGId)NULL;
   wxEnumProperty *auxProperty = NULL;
@@ -623,7 +623,7 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
     // TODO Test
     switch( addButton )
     {
-      case ButtonType::PLUS_BUTTON:
+      case PLUS_BUTTON:
         #if wxMAJOR_VERSION>=3
           windowProperties->SetPropertyEditor( auxProperty, choiceAndPlusButtonEditor );
         #else
@@ -631,7 +631,7 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
         #endif
         break;
 
-      case ButtonType::MINUS_BUTTON:
+      case MINUS_BUTTON:
         #if wxMAJOR_VERSION>=3
           windowProperties->SetPropertyEditor( auxProperty, choiceAndMinusButtonEditor );
         #else
@@ -640,7 +640,7 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
 
         break;
       
-      case ButtonType::BOTH_BUTTONS:
+      case BOTH_BUTTONS:
         #if wxMAJOR_VERSION>=3
           windowProperties->SetPropertyEditor( auxProperty, choiceAndBothButtonsEditor );
         #else
@@ -2132,7 +2132,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
 
   AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
             wxT("Top Compose 1"), wxT(""), wxT("Top Compose 1"), SINGLE_TOPCOMPOSE1,
-            arrayComposeFunctions, arrayComposeFunctionsPos, selected, ButtonType::BOTH_BUTTONS );
+            arrayComposeFunctions, arrayComposeFunctionsPos, selected, BOTH_BUTTONS );
 
   semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE1 );
 
