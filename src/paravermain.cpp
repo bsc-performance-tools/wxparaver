@@ -1604,13 +1604,9 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     //                               |
     //                               L pos
     size_t position;
-#ifdef WIN32
     unsigned long tmpPos;
     tmpRest->ToULong( &tmpPos );
     position = (size_t)tmpPos;
-#else
-    tmpRest->ToULong( &position );
-#endif
 
     int reversedIndex = (int)position;
     int maxPos = (int)tmpClientData->ownerTimeline->getExtraNumPositions( TOPCOMPOSE1 );
