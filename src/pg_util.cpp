@@ -603,13 +603,10 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
   wxString tmpWidgetName;
   tmpWidgetName << propNameCounter++;
 
-  //if ( !whichWindow->getCFG4DEnabled() || !whichWindow->getCFG4DMode() )
   if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
     auxProperty = new wxEnumProperty( widgetLabel, tmpWidgetName, arrayStr, arrayInt, selected );
-
-// ---->
 
     if ( fatherWidget )
     {
@@ -620,7 +617,6 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
       retId = windowProperties->Append( auxProperty );
     }
 
-    // TODO Test
     switch( addButton )
     {
       case PLUS_BUTTON:
@@ -2113,7 +2109,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     wxString tmpName = wxT("Extra Top Compose ") + tmpNum;
     
     AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-              tmpName, wxT(""), tmpName, SINGLE_EXTRATOPCOMPOSE1,
+              tmpName, wxT(""), tmpName, whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_EXTRATOPCOMPOSE1 : SINGLE_EXTRATOPCOMPOSE1,
               arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
     semanticExtraComposeFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData,
@@ -2131,7 +2127,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
   }
 
   AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-            wxT("Top Compose 1"), wxT(""), wxT("Top Compose 1"), SINGLE_TOPCOMPOSE1,
+            wxT("Top Compose 1"), wxT(""), wxT("Top Compose 1"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_TOPCOMPOSE1 : SINGLE_TOPCOMPOSE1,
             arrayComposeFunctions, arrayComposeFunctionsPos, selected, BOTH_BUTTONS );
 
   semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE1 );
@@ -2147,7 +2143,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
   }
 
   AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-            wxT("Top Compose 2"), wxT(""), wxT("Top Compose 2"), SINGLE_TOPCOMPOSE2,
+            wxT("Top Compose 2"), wxT(""), wxT("Top Compose 2"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_TOPCOMPOSE2 : SINGLE_TOPCOMPOSE2,
             arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
   semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE2 );
@@ -2182,7 +2178,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       }
 
       AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                wxT("Compose Workload"), wxT(""), wxT("Compose Workload"), SINGLE_COMPOSEWORKLOAD,
+                wxT("Compose Workload"), wxT(""), wxT("Compose Workload"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_COMPOSEWORKLOAD : SINGLE_COMPOSEWORKLOAD,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSEWORKLOAD );
 
@@ -2199,7 +2195,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         }
 
         AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                  wxT("Workload"), wxT(""), wxT("Workload"), SINGLE_WORKLOAD,
+                  wxT("Workload"), wxT(""), wxT("Workload"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_WORKLOAD : SINGLE_WORKLOAD,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
         semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, WORKLOAD );
       }
@@ -2218,7 +2214,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       }
 
       AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                wxT("Compose Appl"), wxT(""), wxT("Compose Appl"), SINGLE_COMPOSEAPPL,
+                wxT("Compose Appl"), wxT(""), wxT("Compose Appl"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_COMPOSEAPPL : SINGLE_COMPOSEAPPL,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSEAPPLICATION );
 
@@ -2235,7 +2231,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         }
 
         AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                  wxT("Application"), wxT(""), wxT("Application"), SINGLE_APPLICATION,
+                  wxT("Application"), wxT(""), wxT("Application"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_APPLICATION : SINGLE_APPLICATION,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
         semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, APPLICATION );
       }
@@ -2254,7 +2250,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       }
 
       AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                wxT("Compose Task"), wxT(""), wxT("Compose Task"), SINGLE_COMPOSETASK,
+                wxT("Compose Task"), wxT(""), wxT("Compose Task"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_COMPOSETASK : SINGLE_COMPOSETASK,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSETASK );
 
@@ -2271,7 +2267,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         }
 
         AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                  wxT("Task"), wxT(""), wxT("Task"), SINGLE_TASK,
+                  wxT("Task"), wxT(""), wxT("Task"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_TASK : SINGLE_TASK,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
         semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TASK );
       }
@@ -2290,7 +2286,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       }
 
       AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                wxT("Compose Thread"), wxT(""), wxT("Compose Thread"), SINGLE_COMPOSETHREAD,
+                wxT("Compose Thread"), wxT(""), wxT("Compose Thread"), (TSingleTimelineProperties)DERIVED_COMPOSETHREAD,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSETHREAD );
     }
@@ -2310,7 +2306,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       }
 
       AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                wxT("Compose System"), wxT(""), wxT("Compose System"), SINGLE_COMPOSESYSTEM,
+                wxT("Compose System"), wxT(""), wxT("Compose System"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_COMPOSESYSTEM : SINGLE_COMPOSESYSTEM,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSESYSTEM );
 
@@ -2327,7 +2323,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         }
 
         AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                  wxT("System"), wxT(""), wxT("System"), SINGLE_SYSTEM,
+                  wxT("System"), wxT(""), wxT("System"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_SYSTEM : SINGLE_SYSTEM,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
         semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, SYSTEM );
       }
@@ -2346,7 +2342,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       }
 
       AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                wxT("Compose Node"), wxT(""), wxT("Compose Node"), SINGLE_COMPOSENODE,
+                wxT("Compose Node"), wxT(""), wxT("Compose Node"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_COMPOSENODE : SINGLE_COMPOSENODE,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSENODE );
 
@@ -2363,7 +2359,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
         }
 
         AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                  wxT("Node"), wxT(""), wxT("Node"), SINGLE_NODE,
+                  wxT("Node"), wxT(""), wxT("Node"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_NODE : SINGLE_NODE,
                   arrayNotThreadFunctions, arrayNotThreadFunctionsPos, selected );
         semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, NODE );
       }
@@ -2382,7 +2378,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
       }
 
       AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
-                wxT("Compose CPU"), wxT(""), wxT("Compose CPU"), SINGLE_COMPOSECPU,
+                wxT("Compose CPU"), wxT(""), wxT("Compose CPU"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_COMPOSECPU : SINGLE_COMPOSECPU,
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
 
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, COMPOSECPU );
