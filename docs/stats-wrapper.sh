@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env sh
 
 #
 # Simple wrapper for stats 
@@ -33,7 +33,7 @@ TRACENAME=$(echo "$PARAVER_TRACE" | sed 's/\.[^\.]*$//')
 EXTENSION=$(echo "$PARAVER_TRACE" | sed 's/^.*\.//')
 
 # Is gzipped?
-if [[ ${EXTENSION} = "gz" ]]; then
+if [ ${EXTENSION} = "gz" ]; then
   echo
   echo -n "Decompressing $PARAVER_TRACE trace..."
   gunzip ${PARAVER_TRACE}

@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env sh
 
 #
 # Simple wrapper for Dimemas
@@ -32,7 +32,7 @@ OUTPUT_PARAVER_TRACE=${3}
 DIMEMAS_REUSE_TRACE=${4}
 
 
-if [[ ${DIMEMAS_REUSE_TRACE} != "0"  && ${DIMEMAS_REUSE_TRACE} != "1" ]]; then
+if [ ${DIMEMAS_REUSE_TRACE} != "0"  && ${DIMEMAS_REUSE_TRACE} != "1" ]; then
   usage
   exit 1
 fi
@@ -53,7 +53,7 @@ TRACENAME=$(echo "$PARAVER_TRACE" | sed "s/\.[^\.]*$//")
 EXTENSION=$(echo "$PARAVER_TRACE" | sed "s/^.*\.//")
 
 #Is gzipped?
-if [[ ${EXTENSION} = "gz" ]]; then
+if [ ${EXTENSION} = "gz" ]; then
   echo
   echo "[ERR] Gzipped traces not supported!"   
   exit
@@ -88,7 +88,7 @@ else
 
   # Am I executing old Dimemas with new CFG?
   SHEBANG_OLD_CFG=`grep "SDDFA" ${DIMEMAS_CFG}`
-  if [[ ${SHEBANG_OLD_CFG} != "SDDFA" ]]; then
+  if [ ${SHEBANG_OLD_CFG} != "SDDFA" ]; then
     echo "[ERR] Trying to simulate using old version of Dimemas with new incompatible Dimemas cfg"
     echo "[ERR] Please update Dimemas package."
     exit 1 
@@ -106,7 +106,7 @@ shift
 EXTRA_PARAMETERS=""
 PRV2DIM_N=""
 while [ -n "$1" ]; do
-  if [[ ${1} == "-n" ]]; then # caution! this works because no -n parameters exists in Dimemas
+  if [ ${1} == "-n" ]; then # caution! this works because no -n parameters exists in Dimemas
     PRV2DIM_N="-n"
   else
     EXTRA_PARAMETERS="$EXTRA_PARAMETERS $1"
@@ -116,15 +116,15 @@ done
 
 # Change directory to see .dim
 DIMEMAS_TRACE_DIR=`dirname ${DIMEMAS_TRACE}`/
-pushd . > /dev/null
+PWD=`pwd`
 cd ${DIMEMAS_TRACE_DIR}
 
 
 # Translate from .prv to .dim
-if [[ ${DIMEMAS_REUSE_TRACE} = "0" || \
-      ${DIMEMAS_REUSE_TRACE} = "1" && ! -f ${DIMEMAS_TRACE} ]]; then
+if [ ${DIMEMAS_REUSE_TRACE} = "0" || \
+      ${DIMEMAS_REUSE_TRACE} = "1" && ! -f ${DIMEMAS_TRACE} ]; then
 
-  if [[ ${DIMEMAS_REUSE_TRACE} = "1" ]]; then
+  if [ ${DIMEMAS_REUSE_TRACE} = "1" ]; then
     echo
     echo "[WARN] Unable to find ${DIMEMAS_TRACE}"
     echo "[WARN] Generating it."
@@ -140,7 +140,7 @@ fi
 
 # Simulate
 # parameter -S 32K fixed by default
-if [[ ${DIMEMAS_DIM_PARAMETER} = "0" ]]; then
+if [ ${DIMEMAS_DIM_PARAMETER} = "0" ]; then
   echo
   echo "[COM] ${DIMEMAS_ENV}Dimemas ${EXTRA_PARAMETERS} -S 32K -p ${OUTPUT_PARAVER_TRACE} ${DIMEMAS_CFG}"
   echo
@@ -154,5 +154,5 @@ fi
 
 echo "===============================================================================" 
 
-popd > /dev/null
+cd ${PWD}
 

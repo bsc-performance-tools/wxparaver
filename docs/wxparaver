@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env sh
 
 REAL_PATH=`readlink -f "${0}"`
 PARAVER_HOME="$( cd "$( dirname "$REAL_PATH" )" && pwd )"
