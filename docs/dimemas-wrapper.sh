@@ -6,7 +6,7 @@
 
 set -e
 
-function usage
+usage()
 {
   echo "Usage: $0  source_trace  dimemas_cfg  output_trace  reuse_dimemas_trace [extra_parameters] [-n]"
   echo "  source_trace:        Paraver trace; Gzipped traces not supported"
@@ -106,7 +106,7 @@ shift
 EXTRA_PARAMETERS=""
 PRV2DIM_N=""
 while [ -n "$1" ]; do
-  if [ ${1} == "-n" ]; then # caution! this works because no -n parameters exists in Dimemas
+  if [ ${1} = "-n" ]; then # caution! this works because no -n parameters exists in Dimemas
     PRV2DIM_N="-n"
   else
     EXTRA_PARAMETERS="$EXTRA_PARAMETERS $1"
