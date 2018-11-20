@@ -32,7 +32,7 @@ OUTPUT_PARAVER_TRACE=${3}
 DIMEMAS_REUSE_TRACE=${4}
 
 
-if [ ${DIMEMAS_REUSE_TRACE} != "0"  && ${DIMEMAS_REUSE_TRACE} != "1" ]; then
+if [ ${DIMEMAS_REUSE_TRACE} != "0" ]  && [ ${DIMEMAS_REUSE_TRACE} != "1" ]; then
   usage
   exit 1
 fi
@@ -121,8 +121,8 @@ cd ${DIMEMAS_TRACE_DIR}
 
 
 # Translate from .prv to .dim
-if [ ${DIMEMAS_REUSE_TRACE} = "0" || \
-      ${DIMEMAS_REUSE_TRACE} = "1" && ! -f ${DIMEMAS_TRACE} ]; then
+if [ ${DIMEMAS_REUSE_TRACE} = "0" ] || \
+      [ ${DIMEMAS_REUSE_TRACE} = "1" ] && [ ! -f ${DIMEMAS_TRACE} ]; then
 
   if [ ${DIMEMAS_REUSE_TRACE} = "1" ]; then
     echo
