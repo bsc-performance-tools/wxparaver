@@ -28,6 +28,8 @@
 /*!
  * Includes
  */
+ #include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <wx/progdlg.h>
 #include "prvtypes.h"
 
@@ -42,6 +44,8 @@ using namespace stdext;
 #else
 using namespace __gnu_cxx;
 #endif
+
+using boost::posix_time::ptime;
 
 ////@begin includes
 #include "wx/frame.h"
@@ -91,6 +95,7 @@ class ProgressController;
 #define ID_CHECKBOX2 10080
 #define ID_CHECKBOX3 10083
 #define ID_CHECKBOX4 10084
+#define ID_CHECKBOX5 10004
 #define ID_RICHTEXTCTRL 10043
 #define ID_SCROLLED_TIMING 10044
 #define ID_TEXTCTRL_INITIALTIME 10045
@@ -162,12 +167,6 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -191,6 +190,12 @@ public:
 
   /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMouseWheel( wxMouseEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -567,6 +572,7 @@ public:
   wxCheckBox* checkWWCommunications;
   wxCheckBox* checkWWPreviousNext;
   wxCheckBox* checkWWText;
+  wxCheckBox* checkWWShowDate;
   wxRichTextCtrl* whatWhereText;
   wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
@@ -664,7 +670,11 @@ private:
   TObjectOrder   whatWhereRow;
   TSemanticValue whatWhereSemantic;
 
-  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, TSemanticValue whichSemantic, bool textMode );
+  void computeWhatWhere( TRecordTime whichTime,
+                         TObjectOrder whichRow,
+                         TSemanticValue whichSemantic,
+                         bool textMode,
+                         bool showDate );
   void printWhatWhere( );
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode );
   void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode );
