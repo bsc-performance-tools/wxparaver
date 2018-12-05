@@ -2652,8 +2652,7 @@ wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
   else
   {
     ptime headerTime = myWindow->getTrace()->getTraceTime();
-    // TODO: microseconds to nanoseconds
-    ptime clickTime = headerTime + boost::posix_time::nanoseconds( (long)myWindow->traceUnitsToWindowUnits( whichTime ) );
+    ptime clickTime = headerTime + boost::posix_time::nanoseconds( (long)whichTime );
     formattedTime = wxString::FromAscii( LabelConstructor::timeLabel( clickTime, 0 ).c_str() );
   }
   
