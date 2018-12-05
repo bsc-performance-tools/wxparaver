@@ -167,6 +167,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -190,12 +196,6 @@ public:
 
   /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMouseWheel( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -670,6 +670,7 @@ private:
   TObjectOrder   whatWhereRow;
   TSemanticValue whatWhereSemantic;
 
+  wxString formatTime( TRecordTime whichTime, bool showDate );
   void computeWhatWhere( TRecordTime whichTime,
                          TObjectOrder whichRow,
                          TSemanticValue whichSemantic,
@@ -677,7 +678,7 @@ private:
                          bool showDate );
   void printWhatWhere( );
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode );
-  void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode );
+  void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate );
 
   // Returns: window_name_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName() const;

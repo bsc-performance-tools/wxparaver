@@ -374,6 +374,7 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
@@ -382,7 +383,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -2640,6 +2640,27 @@ void gTimeline::OnNotebookInfoPageChanging( wxNotebookEvent& event )
 }
 
 
+wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
+{
+  wxString formattedTime;
+  
+  if ( !showDate )
+  {
+    formattedTime = wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
+                                                                      myWindow->getTimeUnit(), 0 ).c_str() );
+  }
+  else
+  {
+    ptime headerTime = myWindow->getTrace()->getTraceTime();
+    // TODO: microseconds to nanoseconds
+    ptime clickTime = headerTime + boost::posix_time::nanoseconds( (long)myWindow->traceUnitsToWindowUnits( whichTime ) );
+    formattedTime = wxString::FromAscii( LabelConstructor::timeLabel( clickTime, 0 ).c_str() );
+  }
+  
+  return formattedTime;
+}
+
+
 // Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
 void gTimeline::computeWhatWhere( TRecordTime whichTime,
                                   TObjectOrder whichRow,
@@ -2673,22 +2694,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime,
     else
       txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
   }
-  
-  if ( !showDate )
-  {
-    txt << _( "\t  Click time: " )
-        << wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
-                                                             myWindow->getTimeUnit(), 0 ).c_str() );
-  }
-  else
-  {
-    ptime headerTime = myWindow->getTrace()->getTraceTime();
-    // TODO: microseconds to nanoseconds
-    ptime clickTime = headerTime + boost::posix_time::nanoseconds( (long)myWindow->traceUnitsToWindowUnits( whichTime ) );
-    txt << _( "\t  Click time: " )
-        << wxString::FromAscii( LabelConstructor::timeLabel( clickTime, 0 ).c_str() );
-  }
-
+  txt << _( "\t  Click time: " ) << formatTime( whichTime, showDate );
   txt << _( "\n" );
   whatWhereLines.push_back( make_pair( RAW_LINE, txt ) );
 
@@ -2714,20 +2720,20 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime,
     if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
     {
       printWWSemantic( whichRow, false, textMode );
-      printWWRecords( whichRow, false, textMode );
+      printWWRecords( whichRow, false, textMode, showDate );
       myWindow->calcNext( whichRow, false );
       while( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() &&
              myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
       {
         printWWSemantic( whichRow, false, textMode );
-        printWWRecords( whichRow, false, textMode );
+        printWWRecords( whichRow, false, textMode, showDate );
         myWindow->calcNext( whichRow, false );
       }
     }
   }
 
   printWWSemantic( whichRow, true, textMode );
-  printWWRecords( whichRow, true, textMode );
+  printWWRecords( whichRow, true, textMode, showDate );
 
   if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
   {
@@ -2736,11 +2742,11 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime,
            myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
     {
       printWWSemantic( whichRow, false, textMode );
-      printWWRecords( whichRow, false, textMode );
+      printWWRecords( whichRow, false, textMode, showDate );
       myWindow->calcNext( whichRow, false );
     }
     printWWSemantic( whichRow, false, textMode );
-    printWWRecords( whichRow, false, textMode );
+    printWWRecords( whichRow, false, textMode, showDate );
   }
 }
 
@@ -2893,7 +2899,7 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool 
 
 
 // If some tags changes here, please read printWhatWhere function.
-void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode )
+void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate )
 {
   wxString onString;
 
@@ -2931,12 +2937,12 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   {
     if( (*it).getType() & EVENT )
     {
-      onString << wxT( "User Event at " ) << wxString::FromAscii( LabelConstructor::timeLabel(
-                                                                    myWindow->traceUnitsToWindowUnits( (*it).getTime() ),
-                                                                    myWindow->getTimeUnit(), 
-                                                                    0 ).c_str() );
+      onString << wxT( "User Event at " ) << formatTime( (*it).getTime(), showDate );
       onString << wxT( "    " );
-      onString << wxString::FromAscii( LabelConstructor::eventLabel( myWindow, (*it).getEventType(), (*it).getEventValue(), textMode ).c_str() );
+      onString << wxString::FromAscii( LabelConstructor::eventLabel( myWindow,
+                                                                     (*it).getEventType(),
+                                                                     (*it).getEventValue(),
+                                                                     textMode ).c_str() );
       onString << wxT( "\n" );
 
       whatWhereLines.push_back( make_pair( EVENT_LINE, onString ));
@@ -2957,10 +2963,8 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
       else if( (*it).getType() & RECV )
         onString << wxT( "RECEIVE " );
         
-      onString << wxT( "at " ) << wxString::FromAscii( LabelConstructor::timeLabel(
-                                                         myWindow->traceUnitsToWindowUnits( (*it).getTime() ),
-                                                         myWindow->getTimeUnit(),
-                                                         0 ).c_str() );
+      onString << wxT( "at " ) << formatTime( (*it).getTime(), showDate );
+      
       if( (*it).getType() & SEND )
         onString << wxT( " to " );
       else if( (*it).getType() & RECV )
@@ -2974,10 +2978,8 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
                                                                         myWindow->getLevel(),
                                                                         myWindow->getTrace() ).c_str() );
 
-      onString << wxT( " at " ) << wxString::FromAscii( LabelConstructor::timeLabel(
-                                                          myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() ),
-                                                          myWindow->getTimeUnit(),
-                                                          0 ).c_str() );
+      onString << wxT( " at " ) << formatTime( (*it).getCommPartnerTime(), showDate );
+      
       if( (*it).getType() & SEND )
         onString << wxT( ", Duration: " ) << wxString::FromAscii( LabelConstructor::timeLabel(
                                                                     myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() 
