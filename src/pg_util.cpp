@@ -2090,6 +2090,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     ++pos;
   }
 
+  ButtonType tmpButtonType = NO_BUTTON;
   // Extra composes
   for( size_t nExtraCompose = whichWindow->getExtraNumPositions( TOPCOMPOSE1 ); nExtraCompose > 0 ; --nExtraCompose )
   {
@@ -2108,9 +2109,13 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     tmpNum << whichWindow->getExtraNumPositions( TOPCOMPOSE1 ) - nExtraCompose + 1;
     wxString tmpName = wxT("Extra Top Compose ") + tmpNum;
     
+    if( nExtraCompose == whichWindow->getExtraNumPositions( TOPCOMPOSE1 ) )
+      tmpButtonType = BOTH_BUTTONS;
+    else
+      tmpButtonType = NO_BUTTON;
     AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
               tmpName, wxT(""), tmpName, whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_EXTRATOPCOMPOSE1 : SINGLE_EXTRATOPCOMPOSE1,
-              arrayComposeFunctions, arrayComposeFunctionsPos, selected );
+              arrayComposeFunctions, arrayComposeFunctionsPos, selected, tmpButtonType );
 
     semanticExtraComposeFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData,
                                            semanticCat, TOPCOMPOSE1, nExtraCompose );
@@ -2126,9 +2131,13 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     pos++;
   }
 
+  if( whichWindow->getExtraNumPositions( TOPCOMPOSE1 ) == 0 )
+    tmpButtonType = BOTH_BUTTONS;
+  else
+    tmpButtonType = NO_BUTTON;
   AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, semanticCat,
             wxT("Top Compose 1"), wxT(""), wxT("Top Compose 1"), whichWindow->isDerivedWindow() ? (TSingleTimelineProperties)DERIVED_TOPCOMPOSE1 : SINGLE_TOPCOMPOSE1,
-            arrayComposeFunctions, arrayComposeFunctionsPos, selected, BOTH_BUTTONS );
+            arrayComposeFunctions, arrayComposeFunctionsPos, selected, tmpButtonType );
 
   semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, semanticCat, TOPCOMPOSE1 );
 
