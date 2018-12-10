@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -2111,31 +2105,56 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   THistogramLimit min = myHistogram->getControlMin();
   THistogramLimit max = myHistogram->getControlMax();
   THistogramLimit delta = myHistogram->getControlDelta();
-  //TWindowLevel onLevel = controlCloned->getFirstFreeCompose();
   TWindowLevel onLevel = TOPCOMPOSE1;
+  bool useExtraCompose = false;
+  if( controlCloned->getExtraNumPositions( TOPCOMPOSE1 ) > 0 ||
+      ( controlCloned->getFirstFreeCompose() == TOPCOMPOSE1 && controlCloned->getLevelFunction( TOPCOMPOSE1 ) != "As Is" ) )
+    useExtraCompose = true;
+  else
+    onLevel = controlCloned->getFirstFreeCompose();
   
-  controlCloned->addExtraCompose( TOPCOMPOSE1 );
-  size_t extraLastPos = controlCloned->getExtraNumPositions( TOPCOMPOSE1 ) - 1;
+  size_t extraLastPos;
+  if( useExtraCompose )
+  {
+    controlCloned->addExtraCompose( TOPCOMPOSE1 );
+    extraLastPos = controlCloned->getExtraNumPositions( TOPCOMPOSE1 ) - 1;
+  }
 
   if( columnBegin == columnEnd && delta != 1.0 )
     ++columnEnd;
 
-  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max || delta == 1.0)
-    controlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Select Range" );
+  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max || delta == 1.0 )
+  {
+    if( useExtraCompose )
+      controlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Select Range" );
+    else
+      controlCloned->setLevelFunction( onLevel, "Select Range" );
+  }
   else
-    controlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Select Range [)" );
+  {
+    if( useExtraCompose )
+      controlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Select Range [)" );
+    else
+      controlCloned->setLevelFunction( onLevel, "Select Range [)" );
+  }
       
   TParamValue param;
   if( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
     param.push_back( max );
   else
     param.push_back( ( columnEnd * delta ) + min/* + delta*/ );
-  controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 0, param );
-
+  if( useExtraCompose )
+    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 0, param );
+  else
+    controlCloned->setFunctionParam( onLevel, 0, param );
+    
   param.clear();
   param.push_back( ( columnBegin * delta ) + min );
-  controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 1, param );
-
+  if( useExtraCompose )
+    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 1, param );
+  else
+    controlCloned->setFunctionParam( onLevel, 1, param );
+  
   string name = controlCloned->getName();
   name = name.substr( 0, name.find_last_of( '.' ) );
   stringstream tmpStr;
@@ -2162,9 +2181,21 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     THistogramLimit extraMin = myHistogram->getExtraControlMin();
     THistogramLimit extraMax = myHistogram->getExtraControlMax();
     THistogramLimit extraDelta = myHistogram->getExtraControlDelta();
-    //onLevel = extraControlCloned->getFirstFreeCompose();
-    extraControlCloned->addExtraCompose( TOPCOMPOSE1 );
-    extraLastPos = extraControlCloned->getExtraNumPositions( TOPCOMPOSE1 ) - 1;
+
+    onLevel = TOPCOMPOSE1;
+    useExtraCompose = false;
+    if( extraControlCloned->getExtraNumPositions( TOPCOMPOSE1 ) > 0 ||
+        ( extraControlCloned->getFirstFreeCompose() == TOPCOMPOSE1 && extraControlCloned->getLevelFunction( TOPCOMPOSE1 ) != "As Is" ) )
+      useExtraCompose = true;
+    else
+      onLevel = extraControlCloned->getFirstFreeCompose();
+    
+    extraLastPos;
+    if( useExtraCompose )
+    {
+      extraControlCloned->addExtraCompose( TOPCOMPOSE1 );
+      extraLastPos = extraControlCloned->getExtraNumPositions( TOPCOMPOSE1 ) - 1;
+    }
 
     PRV_UINT32 plane;
     if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
@@ -2173,9 +2204,19 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       plane = myHistogram->getSelectedPlane();
 
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax || extraDelta == 1 )
-      extraControlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Is In Range" );
+    {
+      if( useExtraCompose )
+        extraControlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Is In Range" );
+      else
+        extraControlCloned->setLevelFunction( onLevel, "Is In Range" );
+    }
     else
-      extraControlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Is In Range [)" );
+    {
+      if( useExtraCompose )
+        extraControlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Is In Range [)" );
+      else
+        extraControlCloned->setLevelFunction( onLevel, "Is In Range [)" );
+    }
       
     TParamValue param;
     if( extraDelta == 1 )
@@ -2184,11 +2225,17 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       param.push_back( extraMax );
     else
       param.push_back( ( plane * extraDelta ) + extraMin + extraDelta );
-    extraControlCloned->setExtraFunctionParam( onLevel, extraLastPos, 0, param );
+    if( useExtraCompose )
+      extraControlCloned->setExtraFunctionParam( onLevel, extraLastPos, 0, param );
+    else
+      extraControlCloned->setFunctionParam( onLevel, 0, param );
 
     param.clear();
     param.push_back( ( plane * extraDelta ) + extraMin );
-    extraControlCloned->setExtraFunctionParam( onLevel, extraLastPos, 1, param );
+    if( useExtraCompose )
+      extraControlCloned->setExtraFunctionParam( onLevel, extraLastPos, 1, param );
+    else
+      extraControlCloned->setFunctionParam( onLevel, 1, param );
 
     string name = extraControlCloned->getName();
     name = name.substr( 0, name.find_last_of( '.' ) );
