@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -175,9 +169,9 @@ void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Window *which
     eventValues.Add( (*it).first );
   }
 
-  vector< TEventValue > tmpValues;
+  vector< TSemanticValue > tmpValues;
   currentFilter->getEventValue( tmpValues );
-  for( vector<TEventValue>::iterator it = tmpValues.begin(); it != tmpValues.end(); ++it )
+  for( vector<TSemanticValue>::iterator it = tmpValues.begin(); it != tmpValues.end(); ++it )
   {
     selectedEventValues.Add( (*it) );
   }
@@ -310,6 +304,10 @@ bool EventsSelectionDialog::Create( wxWindow* parent,
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
+  if (GetSizer())
+  {
+    GetSizer()->SetSizeHints(this);
+  }
   Centre();
 ////@end EventsSelectionDialog creation
   return true;
@@ -564,6 +562,17 @@ static int wxCMPFUNC_CONV compare_int(int *a, int *b)
 }
 
 
+static int wxCMPFUNC_CONV compare_double(double *a, double *b)
+{
+  if ( *a > *b )
+    return 1;
+  else if ( *a < *b )
+    return -1;
+  else
+    return 0;
+}
+
+
 wxArrayInt EventsSelectionDialog::GetEventTypesSelection() const
 {
   wxArrayInt selections;
@@ -603,7 +612,7 @@ std::string EventsSelectionDialog::GetNameEventValuesFunction() const
 }
 
 
-wxArrayInt EventsSelectionDialog::GetEventValues() const
+wxArrayDouble EventsSelectionDialog::GetEventValues() const
 {
   return selectedEventValues;
 }
@@ -739,7 +748,31 @@ unsigned int EventsSelectionDialog::GetSelections( wxCheckListBox *checkList, wx
 bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayInt &index ) const
 {
   bool changed = false;
+  
+  wxArrayInt tmpIndex;
+  unsigned int numSelections = GetSelections( checkList, tmpIndex ); 
 
+  if ( index.Count() == numSelections )
+  {
+    for( unsigned int i = 0; i < numSelections; ++i )
+    {
+      if ( tmpIndex[ i ] != index[ i ] )
+      {
+        changed = true;
+        break;
+      }
+    }
+  }
+  else
+    changed = true;
+
+  return changed;
+}
+
+
+bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayDouble &index ) const
+{
+  bool changed = false;
   
   wxArrayInt tmpIndex;
   unsigned int numSelections = GetSelections( checkList, tmpIndex ); 
@@ -763,6 +796,28 @@ bool EventsSelectionDialog::HasChanged( wxCheckListBox *checkList, wxArrayInt &i
 
 
 bool EventsSelectionDialog::HasChanged( wxArrayInt &arr1, wxArrayInt &arr2 ) const
+{
+  bool changed = false;
+
+  if ( arr1.Count() == arr2.Count() )
+  {
+    for( unsigned int i = 0; i < arr1.Count(); ++i )
+    {
+      if ( arr2.Index( arr1[ i ] ) == wxNOT_FOUND )
+      {
+        changed = true;
+        break;
+      }
+    }
+  }
+  else
+    changed = true;
+
+  return changed;
+}
+
+
+bool EventsSelectionDialog::HasChanged( wxArrayDouble &arr1, wxArrayDouble &arr2 ) const
 {
   bool changed = false;
 
@@ -921,7 +976,7 @@ void EventsSelectionDialog::BackupCheckListboxValues()
     }
   }
 
-  selectedEventValues.Sort( compare_int );
+  selectedEventValues.Sort( compare_double );
 }
 
 
@@ -942,7 +997,7 @@ void EventsSelectionDialog::UpdateCheckListboxValues( TEventType type )
       eventValues.Add( selectedEventValues[ i ] );
   }
 
-  eventValues.Sort( compare_int );
+  eventValues.Sort( compare_double );
 
   wxArrayString tmpEventValues;
   for( unsigned int i = 0; i < eventValues.GetCount(); ++i )
@@ -1082,20 +1137,20 @@ void EventsSelectionDialog::OnChecklistboxValuesDoubleClicked( wxCommandEvent& e
 void EventsSelectionDialog::InsertValueFromTextCtrl()
 {
   // read from the ctrl
-  long tmpLong;
-  textCtrlAddValues->GetValue().ToLong( &tmpLong );
+  double tmpDouble;
+  textCtrlAddValues->GetValue().ToDouble( &tmpDouble );
 
   // add it to the types
-  if( eventValues.Index( tmpLong ) == wxNOT_FOUND )
+  if( eventValues.Index( tmpDouble ) == wxNOT_FOUND )
   {
-    eventValues.Add( tmpLong );
-    eventValues.Sort( compare_int );
+    eventValues.Add( tmpDouble );
+    eventValues.Sort( compare_double );
   }
 
-  if( selectedEventValues.Index( tmpLong ) == wxNOT_FOUND )
+  if( selectedEventValues.Index( tmpDouble ) == wxNOT_FOUND )
   {
-    selectedEventValues.Add( tmpLong );
-    selectedEventValues.Sort( compare_int );
+    selectedEventValues.Add( tmpDouble );
+    selectedEventValues.Sort( compare_double );
   }
 
   // update changed?

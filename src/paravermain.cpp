@@ -1588,9 +1588,9 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
     {
-      unsigned long long tmpLong;
-      value[ idx ].ToULongLong( &tmpLong );
-      filter->insertEventValue( tmpLong );
+      double tmpDouble;
+      value[ idx ].ToDouble( &tmpDouble );
+      filter->insertEventValue( tmpDouble );
     }
 
     spreadSetRedraw( tmpClientData->ownerTimeline );

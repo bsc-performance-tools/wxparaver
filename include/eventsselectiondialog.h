@@ -82,7 +82,7 @@ class Filter;
 #define SYMBOL_EVENTSSELECTIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_EVENTSSELECTIONDIALOG_TITLE _("Events Selection")
 #define SYMBOL_EVENTSSELECTIONDIALOG_IDNAME ID_EVENTSSELECTIONDIALOG
-#define SYMBOL_EVENTSSELECTIONDIALOG_SIZE wxSize(800, 400)
+#define SYMBOL_EVENTSSELECTIONDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_EVENTSSELECTIONDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -225,7 +225,7 @@ public:
 
   int GetIndexEventValuesFunction() const;
   std::string  GetNameEventValuesFunction() const;
-  wxArrayInt GetEventValues() const;
+  wxArrayDouble GetEventValues() const;
 
   bool ChangedEventTypesFunction() const;
   bool ChangedEventTypesSelection() const;
@@ -283,10 +283,10 @@ public:
   bool                 changedEventValuesFunction;
 
   // *** Related to event values check list ***
-  unsigned int        firstEventTypePos;
-  wxArrayInt           eventValues;         // related to the current selected type
-  wxArrayInt           selectedEventValues; // global selected event type
-  wxArrayInt           originalSelectedEventValues; // global selected event type
+  unsigned int         firstEventTypePos;
+  wxArrayDouble        eventValues;                 // related to the current selected value
+  wxArrayDouble        selectedEventValues;         // global selected event value
+  wxArrayDouble        originalSelectedEventValues; // global selected event value
   bool                 changedEventValues;
 
   void checkAll( wxCheckListBox *boxlist, bool value );
@@ -296,7 +296,9 @@ public:
 
   bool HasChanged( wxChoice *choice, int selectedFunction ) const;
   bool HasChanged( wxCheckListBox *checkList, wxArrayInt &index ) const;
+  bool HasChanged( wxCheckListBox *checkList, wxArrayDouble &index ) const;
   bool HasChanged( wxArrayInt &arr1, wxArrayInt &arr2 ) const;
+  bool HasChanged( wxArrayDouble &arr1, wxArrayDouble &arr2 ) const;
 
   bool CopyChanges( wxChoice *choice, int &selectedFunction );
   bool CopyChanges( wxCheckListBox *checkList,

@@ -327,7 +327,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
   wxArrayString tmpArray;
 
   vector<TEventType> typesSel;
-  vector<TEventValue> valuesSel;
+  vector<TSemanticValue> valuesSel;
 
   switch( whichInfoType )
   {
@@ -342,9 +342,10 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
     case VALUES:
       currentWindow->getFilter()->getEventValue( valuesSel );
-      for( vector<TEventValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
+      for( vector<TSemanticValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
       {
-        tmpArray.Add( wxString().Format( _( "%lld" ), (*it) ) );
+        //tmpArray.Add( wxString().Format( _( "%lld" ), (*it) ) );
+        tmpArray.Add( wxString().Format( _( "%f" ), (*it) ) );
       }
       
       break;
@@ -494,14 +495,14 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
       if ( eventsDialog.ChangedEventValues() )
       {
-        wxArrayInt tmpEventValues = eventsDialog.GetEventValues();
+        wxArrayDouble tmpEventValues = eventsDialog.GetEventValues();
 
         Filter *filter = currentWindow->getFilter();
         filter->clearEventValues();
 
         for( unsigned int i = 0; i < tmpEventValues.GetCount(); ++i )
         {
-          filter->insertEventValue( (TEventValue)tmpEventValues[ i ] );
+          filter->insertEventValue( (TSemanticValue)tmpEventValues[ i ] );
         }
       }
 
