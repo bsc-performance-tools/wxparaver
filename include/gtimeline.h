@@ -28,6 +28,8 @@
 /*!
  * Includes
  */
+ #include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <wx/progdlg.h>
 #include "prvtypes.h"
 
@@ -42,6 +44,8 @@ using namespace stdext;
 #else
 using namespace __gnu_cxx;
 #endif
+
+using boost::posix_time::ptime;
 
 ////@begin includes
 #include "wx/frame.h"
@@ -91,6 +95,7 @@ class ProgressController;
 #define ID_CHECKBOX2 10080
 #define ID_CHECKBOX3 10083
 #define ID_CHECKBOX4 10084
+#define ID_CHECKBOX5 10004
 #define ID_RICHTEXTCTRL 10043
 #define ID_SCROLLED_TIMING 10044
 #define ID_TEXTCTRL_INITIALTIME 10045
@@ -567,6 +572,7 @@ public:
   wxCheckBox* checkWWCommunications;
   wxCheckBox* checkWWPreviousNext;
   wxCheckBox* checkWWText;
+  wxCheckBox* checkWWShowDate;
   wxRichTextCtrl* whatWhereText;
   wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
@@ -664,10 +670,15 @@ private:
   TObjectOrder   whatWhereRow;
   TSemanticValue whatWhereSemantic;
 
-  void computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, TSemanticValue whichSemantic, bool textMode );
+  wxString formatTime( TRecordTime whichTime, bool showDate );
+  void computeWhatWhere( TRecordTime whichTime,
+                         TObjectOrder whichRow,
+                         TSemanticValue whichSemantic,
+                         bool textMode,
+                         bool showDate );
   void printWhatWhere( );
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode );
-  void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode );
+  void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate );
 
   // Returns: window_name_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName() const;

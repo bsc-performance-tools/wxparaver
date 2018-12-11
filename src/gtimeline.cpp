@@ -108,6 +108,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CHECKBOX( ID_CHECKBOX2, gTimeline::OnCheckWhatWhere )
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
+  EVT_CHECKBOX( ID_CHECKBOX5, gTimeline::OnCheckWhatWhereText )
   EVT_UPDATE_UI( wxID_STATIC_SLOPE, gTimeline::OnStaticSlopeUpdate )
   EVT_UPDATE_UI( ID_SCROLLED_COLORS, gTimeline::OnColorsPanelUpdate )
 ////@end gTimeline event table entries
@@ -216,6 +217,7 @@ void gTimeline::Init()
   checkWWCommunications = NULL;
   checkWWPreviousNext = NULL;
   checkWWText = NULL;
+  checkWWShowDate = NULL;
   whatWhereText = NULL;
   timingZone = NULL;
   initialTimeText = NULL;
@@ -284,23 +286,27 @@ void gTimeline::CreateControls()
   itemBoxSizer6->Add(itemBoxSizer7, 0, wxALIGN_LEFT|wxALL, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
   checkWWSemantic = new wxCheckBox( whatWherePanel, ID_CHECKBOX, _("Semantic"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWSemantic->SetValue(true);
-  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWSemantic, 0, wxALIGN_CENTER_VERTICAL, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
 
   checkWWEvents = new wxCheckBox( whatWherePanel, ID_CHECKBOX1, _("Events"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWEvents->SetValue(true);
-  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWEvents, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
 
   checkWWCommunications = new wxCheckBox( whatWherePanel, ID_CHECKBOX2, _("Communications"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWCommunications->SetValue(true);
-  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWCommunications, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
 
-  checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _("Previous / Next"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWPreviousNext = new wxCheckBox( whatWherePanel, ID_CHECKBOX3, _("Prev./Next"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWPreviousNext->SetValue(true);
-  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWPreviousNext, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
 
   checkWWText = new wxCheckBox( whatWherePanel, ID_CHECKBOX4, _("Text"), wxDefaultPosition, wxDefaultSize, 0 );
   checkWWText->SetValue(true);
-  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
+  itemBoxSizer7->Add(checkWWText, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
+
+  checkWWShowDate = new wxCheckBox( whatWherePanel, ID_CHECKBOX5, _("Show Date"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkWWShowDate->SetValue(false);
+  itemBoxSizer7->Add(checkWWShowDate, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
 
   whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
   itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
@@ -388,6 +394,7 @@ void gTimeline::CreateControls()
   checkWWEvents->SetValue( paraverConfig->getTimelineWhatWhereEvents() );
   checkWWPreviousNext->SetValue( paraverConfig->getTimelineWhatWherePreviousNext() );
   checkWWText->SetValue( paraverConfig->getTimelineWhatWhereText() );
+  //checkWWShowDate->SetValue( paraverConfig->getTimelineWhatWhereShowDate() );
 }
 
 
@@ -2633,8 +2640,32 @@ void gTimeline::OnNotebookInfoPageChanging( wxNotebookEvent& event )
 }
 
 
+wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
+{
+  wxString formattedTime;
+  
+  if ( !showDate )
+  {
+    formattedTime = wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
+                                                                      myWindow->getTimeUnit(), 0 ).c_str() );
+  }
+  else
+  {
+    ptime headerTime = myWindow->getTrace()->getTraceTime();
+    ptime clickTime = headerTime + boost::posix_time::nanoseconds( (long)whichTime );
+    formattedTime = wxString::FromAscii( LabelConstructor::timeLabel( clickTime, 0 ).c_str() );
+  }
+  
+  return formattedTime;
+}
+
+
 // Computes What/Where, filling whatWhereLines vector. Doesn't show it --> printWhatWhere.
-void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, TSemanticValue whichSemantic, bool textMode )
+void gTimeline::computeWhatWhere( TRecordTime whichTime,
+                                  TObjectOrder whichRow,
+                                  TSemanticValue whichSemantic,
+                                  bool textMode,
+                                  bool showDate )
 {
   whatWhereTime = whichTime;
   whatWhereRow = whichRow;
@@ -2662,8 +2693,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
     else
       txt << _( "Object: " ) << wxString::FromAscii( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
   }
-  txt << _( "\t  Click time: " ) << wxString::FromAscii( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
-                                                                                      myWindow->getTimeUnit(), 0 ).c_str() );
+  txt << _( "\t  Click time: " ) << formatTime( whichTime, showDate );
   txt << _( "\n" );
   whatWhereLines.push_back( make_pair( RAW_LINE, txt ) );
 
@@ -2689,20 +2719,20 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
     if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
     {
       printWWSemantic( whichRow, false, textMode );
-      printWWRecords( whichRow, false, textMode );
+      printWWRecords( whichRow, false, textMode, showDate );
       myWindow->calcNext( whichRow, false );
       while( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() &&
              myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
       {
         printWWSemantic( whichRow, false, textMode );
-        printWWRecords( whichRow, false, textMode );
+        printWWRecords( whichRow, false, textMode, showDate );
         myWindow->calcNext( whichRow, false );
       }
     }
   }
 
   printWWSemantic( whichRow, true, textMode );
-  printWWRecords( whichRow, true, textMode );
+  printWWRecords( whichRow, true, textMode, showDate );
 
   if( myWindow->getEndTime( whichRow ) < myWindow->getTrace()->getEndTime() )
   {
@@ -2711,11 +2741,11 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime, TObjectOrder whichRow, 
            myWindow->getBeginTime( whichRow ) == myWindow->getEndTime( whichRow ) )
     {
       printWWSemantic( whichRow, false, textMode );
-      printWWRecords( whichRow, false, textMode );
+      printWWRecords( whichRow, false, textMode, showDate );
       myWindow->calcNext( whichRow, false );
     }
     printWWSemantic( whichRow, false, textMode );
-    printWWRecords( whichRow, false, textMode );
+    printWWRecords( whichRow, false, textMode, showDate );
   }
 }
 
@@ -2868,7 +2898,7 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool 
 
 
 // If some tags changes here, please read printWhatWhere function.
-void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode )
+void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate )
 {
   wxString onString;
 
@@ -2906,12 +2936,12 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   {
     if( (*it).getType() & EVENT )
     {
-      onString << wxT( "User Event at " ) << wxString::FromAscii( LabelConstructor::timeLabel(
-                                                                    myWindow->traceUnitsToWindowUnits( (*it).getTime() ),
-                                                                    myWindow->getTimeUnit(), 
-                                                                    0 ).c_str() );
+      onString << wxT( "User Event at " ) << formatTime( (*it).getTime(), showDate );
       onString << wxT( "    " );
-      onString << wxString::FromAscii( LabelConstructor::eventLabel( myWindow, (*it).getEventType(), (*it).getEventValue(), textMode ).c_str() );
+      onString << wxString::FromAscii( LabelConstructor::eventLabel( myWindow,
+                                                                     (*it).getEventType(),
+                                                                     (*it).getEventValue(),
+                                                                     textMode ).c_str() );
       onString << wxT( "\n" );
 
       whatWhereLines.push_back( make_pair( EVENT_LINE, onString ));
@@ -2932,10 +2962,8 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
       else if( (*it).getType() & RECV )
         onString << wxT( "RECEIVE " );
         
-      onString << wxT( "at " ) << wxString::FromAscii( LabelConstructor::timeLabel(
-                                                         myWindow->traceUnitsToWindowUnits( (*it).getTime() ),
-                                                         myWindow->getTimeUnit(),
-                                                         0 ).c_str() );
+      onString << wxT( "at " ) << formatTime( (*it).getTime(), showDate );
+      
       if( (*it).getType() & SEND )
         onString << wxT( " to " );
       else if( (*it).getType() & RECV )
@@ -2949,10 +2977,8 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
                                                                         myWindow->getLevel(),
                                                                         myWindow->getTrace() ).c_str() );
 
-      onString << wxT( " at " ) << wxString::FromAscii( LabelConstructor::timeLabel(
-                                                          myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() ),
-                                                          myWindow->getTimeUnit(),
-                                                          0 ).c_str() );
+      onString << wxT( " at " ) << formatTime( (*it).getCommPartnerTime(), showDate );
+      
       if( (*it).getType() & SEND )
         onString << wxT( ", Duration: " ) << wxString::FromAscii( LabelConstructor::timeLabel(
                                                                     myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() 
@@ -4668,8 +4694,11 @@ void gTimeline::OnCheckWhatWhereText( wxCommandEvent& event )
   checkWWCommunications->Enable( false );
   checkWWPreviousNext->Enable( false );
   checkWWText->Enable( false );
+  checkWWShowDate->Enable( false );
 
-  computeWhatWhere( whatWhereTime, whatWhereRow, whatWhereSemantic, event.IsChecked() );
+  computeWhatWhere( whatWhereTime, whatWhereRow, whatWhereSemantic,
+                    checkWWText->IsChecked(),
+                    checkWWShowDate->IsChecked() );
   printWhatWhere();
 
   checkWWSemantic->Enable( true );
@@ -4677,6 +4706,7 @@ void gTimeline::OnCheckWhatWhereText( wxCommandEvent& event )
   checkWWCommunications->Enable( true );
   checkWWPreviousNext->Enable( true );
   checkWWText->Enable( true );
+  checkWWShowDate->Enable( true );
 }
 
 void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
@@ -4686,6 +4716,7 @@ void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
   checkWWCommunications->Enable( false );
   checkWWPreviousNext->Enable( false );
   checkWWText->Enable( false );
+  checkWWShowDate->Enable( false );
 
   printWhatWhere();
 
@@ -4694,6 +4725,7 @@ void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
   checkWWCommunications->Enable( true );
   checkWWPreviousNext->Enable( true );
   checkWWText->Enable( true );
+  checkWWShowDate->Enable( true );
 }
 
 void gTimeline::OnMenuGradientFunction( GradientColor::TGradientFunction function )
@@ -4952,7 +4984,7 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   whatWhereText->Clear();
   whatWhereText->AppendText( _( "Working..." ) );
   Update();
-  computeWhatWhere( time, object, tmpSemantic, checkWWText->IsChecked() );
+  computeWhatWhere( time, object, tmpSemantic, checkWWText->IsChecked(), checkWWShowDate->IsChecked() );
   printWhatWhere();
 }
 
@@ -5700,3 +5732,5 @@ void gTimeline::doDrawCaution( wxDC& whichDC )
                          true );
   }
 }
+
+
