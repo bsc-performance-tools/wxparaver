@@ -344,8 +344,14 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
       currentWindow->getFilter()->getEventValue( valuesSel );
       for( vector<TSemanticValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
       {
-        //tmpArray.Add( wxString().Format( _( "%lld" ), (*it) ) );
-        tmpArray.Add( wxString().Format( _( "%f" ), (*it) ) );
+        double tmpIntpart;
+        if( std::modf( *it, &tmpIntpart ) == 0.0 )
+        {
+          TEventValue tmpEventValue = tmpIntpart;
+          tmpArray.Add( wxString().Format( _( "%lld" ), tmpEventValue ) );
+        }
+        else
+          tmpArray.Add( wxString().Format( _( "%f" ), (*it) ) );
       }
       
       break;
