@@ -45,6 +45,9 @@
 #include <wx/object.h> 
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/editors.h>
+#if wxMAJOR_VERSION>=3
+#include <wx/artprov.h>
+#endif
 
 // CFG4D
 #include "cfg.h"
@@ -357,8 +360,14 @@ wxPGWindowList wxChoiceAndBothButtonsEditor::CreateControls( wxPropertyGrid* pro
 {
   wxPGMultiButton* buttons = new wxPGMultiButton( propGrid, sz );
 
+
+#if wxMAJOR_VERSION>=3
+  buttons->Add( wxArtProvider::GetBitmap( wxART_PLUS ) );
+  buttons->Add( wxArtProvider::GetBitmap( wxART_MINUS ) );
+#else
   buttons->Add( wxT( "+" ) );
   buttons->Add( wxT( "-" ) );
+#endif
 
   wxPGWindowList wndList = wxPGChoiceEditor::CreateControls( propGrid, property, pos,
                                                              buttons->GetPrimarySize() );
