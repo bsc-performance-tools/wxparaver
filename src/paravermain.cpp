@@ -839,7 +839,7 @@ bool paraverMain::DoLoadCFG( const string &path )
                              newWindows, newHistograms, options ) )
     {
       wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
-      wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK );
+      wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK|wxICON_ERROR );
       raiseCurrentWindow = false;
       message.ShowModal();
       raiseCurrentWindow = true;
@@ -860,6 +860,15 @@ bool paraverMain::DoLoadCFG( const string &path )
     }
     else
     {
+      if( !CFGLoader::errorLine.empty() )
+      {
+        wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " loaded with error in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
+        wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK|wxICON_EXCLAMATION );
+        raiseCurrentWindow = false;
+        message.ShowModal();
+        raiseCurrentWindow = true;
+      }
+      
       wxTreeItemId child;
       for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
       {
