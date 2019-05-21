@@ -742,7 +742,6 @@ private:
       virtual void computeMaxLabelSize();
       virtual void computeImageSize();
       virtual void createDC();
-      virtual void invertMask( wxDC *dcMask );      
       virtual void draw();
       virtual void drawLabeledRectangle( rgb semanticColour,
                                            wxString semanticValueLabel,

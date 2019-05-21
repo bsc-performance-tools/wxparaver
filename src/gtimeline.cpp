@@ -3749,17 +3749,6 @@ gTimeline::ScaleImageVertical::~ScaleImageVertical()
 }
 
 
-void gTimeline::ScaleImageVertical::invertMask( wxDC *dcMask )
-{
-  wxCoord xcoord;
-  wxCoord ycoord;
-  dcMask->SetLogicalFunction( wxINVERT );
-  dcMask->GetSize( &xcoord, &ycoord );
-  dcMask->DrawRectangle( 0, 0, xcoord, ycoord );
-  dcMask->SetLogicalFunction( wxCOPY );
-}
-
-
 void gTimeline::ScaleImageVertical::save()
 {
   init();
@@ -3774,10 +3763,8 @@ void gTimeline::ScaleImageVertical::save()
   // TODO: avoid to create/handle scaleMaskDC in all the other methods if wxTRANSPARENT
   if ( backgroundMode == wxTRANSPARENT )
   {
-    invertMask( scaleMaskDC );
     scaleMaskDC->SelectObject( wxNullBitmap );
-    
-    wxMask *mask  = new wxMask( *scaleMaskBitmap );
+    wxMask *mask  = new wxMask( *scaleMaskBitmap, *wxWHITE );
     scaleBitmap->SetMask( mask );
   }
 #endif
@@ -3793,42 +3780,45 @@ void gTimeline::ScaleImageVertical::save()
             wxFileName( imagePath ).GetName() +
             _(".") + imageInfix + _(".") + tmpSuffix;
   scaleImage.SaveFile( scaleImagePath, imageType );
-  //scaleBitmap->SaveFile( scaleImagePath, wxBITMAP_TYPE_PNG );
   
 // Test code for transparency
 #if 0
   ::wxInitAllImageHandlers();
   wxBitmap bmp( 64, 64, 32 );
   //bmp.UseAlpha();
-  wxBitmap maskbmp( 64, 64, 1 );
+  wxBitmap maskbmp( 64, 64, 32 );
 
-//  wxMemoryDC memDC( bmp );
-//  wxGCDC dc( memDC );
   wxMemoryDC dc( bmp );
+  //dc.SetBackgroundMode( wxTRANSPARENT );
+  dc.SetBackground( *wxWHITE_BRUSH/**wxTRANSPARENT_BRUSH*/ );
+  dc.SetBrush( *wxWHITE_BRUSH/**wxTRANSPARENT_BRUSH*/ );
+  dc.Clear();
+  
+  //wxGCDC dc( memDC );
+//  wxMemoryDC dc( bmp );
   wxMemoryDC maskDC( maskbmp );
 
-  dc.SetBackground( *wxTRANSPARENT_BRUSH );
-  dc.Clear();
+  /*dc.SetBackground( *wxTRANSPARENT_BRUSH );
+  dc.Clear();*/
   dc.SetFont( textFont );
-  maskDC.SetBackground( *wxWHITE_BRUSH );
+  maskDC.SetBackground( *wxBLACK_BRUSH );
   maskDC.Clear();
-  maskDC.SetBrush( *wxBLACK_BRUSH );
-  maskDC.SetPen( *wxBLACK_PEN );
-  maskDC.SetTextForeground( *wxBLACK );
+  maskDC.SetBrush( *wxWHITE_BRUSH );
+  maskDC.SetPen( *wxWHITE_PEN );
+  maskDC.SetTextForeground( *wxWHITE );
   maskDC.SetFont( textFont );
 
-/*  dc.SetBrush( *wxRED_BRUSH );
-  dc.SetPen( *wxTRANSPARENT_PEN );
-  dc.DrawRectangle( 10, 10, 44, 44 );
-  maskDC.DrawRectangle( 10, 10, 44, 44 );*/
+  dc.SetBrush( *wxRED_BRUSH );
+  dc.SetPen( *wxBLACK_PEN );
+  dc.DrawRectangle( 10, 30, 10, 10 );
+  maskDC.DrawRectangle( 10, 30, 10, 10 );
   dc.SetTextForeground( *wxBLACK );
-  dc.DrawText( wxT( "HOLA" ), 10, 10 );
-  maskDC.DrawText( wxT( "HOLA" ), 10, 10 );
-  invertMask( &maskDC );
-//  memDC.SelectObject( wxNullBitmap );
+  dc.DrawText( wxT( "HELLO" ), 10, 10 );
+  maskDC.DrawText( wxT( "HELLO" ), 10, 10 );
   dc.SelectObject( wxNullBitmap );
   maskDC.SelectObject( wxNullBitmap );
-  wxMask *tmpMask = new wxMask( maskbmp );
+  maskbmp.SaveFile( wxT( "./mask.png" ), wxBITMAP_TYPE_PNG );
+  wxMask *tmpMask = new wxMask( maskbmp, *wxBLACK );
   bmp.SetMask( tmpMask );
   bmp.SaveFile( wxT( "./test.png" ), wxBITMAP_TYPE_PNG );
 #endif
@@ -3936,21 +3926,21 @@ void gTimeline::ScaleImageVertical::createDC()
   }
   else
   {
-    scaleDC->SetBackground( *wxTRANSPARENT_BRUSH );
+    scaleDC->SetBackground( *wxWHITE_BRUSH );
     scaleDC->SetTextForeground( *wxBLACK );
   }
 
   scaleDC->Clear();
   
   // Mask for legend
-  scaleMaskBitmap = new wxBitmap( imageWidth, imageHeight, 1 );
+  scaleMaskBitmap = new wxBitmap( imageWidth, imageHeight );
   scaleMaskDC = new wxMemoryDC( *scaleMaskBitmap );
   scaleMaskDC->SetBackground( *wxWHITE_BRUSH );
   scaleMaskDC->SetBrush( *wxBLACK_BRUSH );
   scaleMaskDC->SetPen( *wxBLACK_PEN );
   scaleMaskDC->SetTextForeground( *wxBLACK );
   scaleMaskDC->SetFont( textFont );
-  scaleMaskDC->Clear();  
+  scaleMaskDC->Clear();
 }
 
 
