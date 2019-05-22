@@ -2106,7 +2106,6 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
 // order only contains the identifiers of the selected tools
 void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
 {
-
   if( order.size() > 0 )
   {
     vector< string > auxListToolOrder; // To build the new list, in new order
@@ -2119,19 +2118,9 @@ void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
     }
 
     // Add the non-selected to the end of the vector and remember if they were checked
-    //vector<bool> checkedNotUsedTools;
     for( size_t i = 0; i < listToolOrder.size(); ++i )
     {
       auxListToolOrder.push_back( listToolOrder[i] );
-    /*
-      for( size_t j = 0; j < checkListExecutionChain->GetCount(); ++j )
-      {
-        wxString currentCheckName = checkListExecutionChain->GetString( j );
-        wxString currentCheckNameClean = currentCheckName.Mid( currentCheckName.Find( wxChar(' '))).Trim(false);
-        if( currentCheckNameClean == wxString( listToolOrder[i].c_str(),  wxConvUTF8 ) )
-          checkedNotUsedTools.push_back( checkListExecutionChain->IsChecked( j ) );
-      }
-    */
     }
 
     // Set the new vector
@@ -2145,11 +2134,8 @@ void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
     }
     
     // But keep the remembered check state of the unused tools.
-    //int j = 0;
-    //for( size_t i = order.size(); i < order.size() + checkedNotUsedTools.size(); ++i )
-    for( size_t i = order.size(); i < order.size() + checkListExecutionChain->GetCount(); ++i )
+    for( size_t i = order.size(); i < checkListExecutionChain->GetCount(); ++i )
     {
-    //  checkListExecutionChain->Check( i, checkedNotUsedTools[ j++ ] );
       checkListExecutionChain->Check( i, false );
     }
 
