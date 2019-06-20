@@ -899,7 +899,8 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
   // Changes label
   if ( nameOperations == "controlled: clear by" ||
        nameOperations == "controlled: maximum"  ||
-       nameOperations == "controlled: add" )
+       nameOperations == "controlled: add" ||
+       nameOperations == "controlled: enumerate" )
   {
     widgetLabelTimelines1->SetLabel( _( "Data" ) );
     widgetLabelTimelines2->SetLabel( _( "Control" ) );

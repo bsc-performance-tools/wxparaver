@@ -522,6 +522,8 @@ int getIconNumber( Window *whichWindow )
       iconNumber = 10;
     else if ( derivedFunctionName == "controlled: add" )
       iconNumber = 11;
+    else if ( derivedFunctionName == "controlled: enumerate" )
+      iconNumber = 12;
   }
   
   return iconNumber;

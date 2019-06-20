@@ -113,6 +113,7 @@
 #include "derived_controlled_clear_by.xpm"
 #include "derived_controlled_maximum.xpm"
 #include "derived_controlled_add.xpm"
+#include "derived_controlled_enumerate.xpm"
 
 #include <algorithm>
 
@@ -243,6 +244,7 @@ wxImageList *paraverMain::getImageList()
   images->Add( wxIcon( derived_controlled_clear_by_xpm ) );
   images->Add( wxIcon( derived_controlled_maximum_xpm ) );
   images->Add( wxIcon( derived_controlled_add_xpm ) );
+  images->Add( wxIcon( derived_controlled_enumerate_xpm ) );
 
   return images;
 }
