@@ -1627,6 +1627,7 @@ void PreferencesDialog::OnButtonDefaultTimelineClick( wxCommandEvent& event )
   colourPickerBackground->SetColour( RGBTowxColour( SemanticColor::BACKGROUND ) );
   colourPickerAxis->SetColour( RGBTowxColour( SemanticColor::FOREGROUND ) );
   colourPickerZero->SetColour( RGBTowxColour( SemanticColor::BACKGROUND ) );
+  checkZero->SetValue( true );
   colourPickerPunctual->SetColour( RGBTowxColour( SemanticColor::DEFAULT_PUNCTUAL ) );
   colourPickerLogical->SetColour( RGBTowxColour( SemanticColor::DEFAULT_LOGICAL_COMMUNICATIONS ) );
   colourPickerPhysical->SetColour( RGBTowxColour( SemanticColor::DEFAULT_PHYSICAL_COMMUNICATIONS ) );
