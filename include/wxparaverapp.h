@@ -86,6 +86,8 @@ public:
     /// Initialises the application
     virtual bool OnInit();
 
+    virtual int OnRun();
+
     /// Called on exit
     virtual int OnExit();
 

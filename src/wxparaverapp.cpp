@@ -344,13 +344,13 @@ bool wxparaverApp::OnInit()
     std::cout << "          > wxparaver trace.prv &" << std::endl;
     std::cout << std::endl;
     */
-    return false; 
+    return true; 
   }
 
   if( paraverCommandLineParser.Found( wxT("v") ))
   {
     PrintVersion();
-    return false;
+    return true;
   }
 
   try
@@ -363,7 +363,7 @@ bool wxparaverApp::OnInit()
                   wxT( "Preferences error" ),
                   wxOK|wxICON_ERROR );
   }
-  
+
   if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
     const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
@@ -425,15 +425,18 @@ bool wxparaverApp::OnInit()
         connection->Execute( wxT( "END" ) );
         connection->Disconnect();
         delete connection;
+        delete client;
+
+        return true;
       }
       else
       {
         wxMessageBox( wxT( "Sorry, the existing instance may be too busy to respond." ),
                       wxT( "wxparaver" ), wxICON_INFORMATION|wxOK );
+        delete client;
+        return false;
       }
-    
-      delete client;
-      return false;
+
     }
   }
 
@@ -464,6 +467,15 @@ bool wxparaverApp::OnInit()
   ParseCommandLine( paraverCommandLineParser );
 
   return true;
+}
+
+
+int wxparaverApp::OnRun()
+{
+  if( mainWindow != NULL )
+    return wxApp::OnRun();
+  
+  return 0;
 }
 
 
@@ -603,7 +615,8 @@ int wxparaverApp::OnExit()
 //  cout<<w<<" "<<h<<endl;
 //  cout << wxparaverApp::mainWindow->GetAuiManager().SavePaneInfo(
 //            wxparaverApp::mainWindow->GetAuiManager().GetPane( wxparaverApp::mainWindow->choiceWindowBrowser ) ).mb_str()<<endl;
-  ParaverConfig::getInstance()->writeParaverConfigFile();
+  if( mainWindow != NULL )
+    ParaverConfig::getInstance()->writeParaverConfigFile();
   
   if( m_checker != NULL )
     delete m_checker;
