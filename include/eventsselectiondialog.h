@@ -46,6 +46,10 @@ using namespace std;
 #include "wx/tglbtn.h"
 ////@end includes
 
+#include <wx/regex.h>
+#include <wx/checkbox.h>
+#include <wx/valtext.h> // DELETE ME?
+#include <wx/stattext.h>
 
 
 /*!
@@ -68,11 +72,15 @@ class Filter;
 #define ID_EVENTSSELECTIONDIALOG 10053
 #define ID_STATIC_TEXT_FUNCTION_TYPES 10170
 #define ID_CHOICE_OPERATOR_FUNCTION_TYPES 10054
+#define ID_CHECKBOX_SET_ALL_TYPES 10007
+#define ID_TEXTCTRL_TYPES_REGEX_SEARCH 10006
 #define ID_CHECKLISTBOX_TYPES 10161
 #define ID_BUTTON_SET_ALL_TYPES 10163
 #define ID_BUTTON_UNSET_ALL_TYPES 10164
 #define ID_CHOICE_OPERATOR_TYPE_VALUE 10055
 #define ID_CHOICE_OPERATOR_FUNCTION_VALUES 10056
+#define ID_CHECKBOX_SET_ALL_VALUES 10008
+#define ID_TEXTCTRL_VALUES_REGEX_SEARCH 10009
 #define ID_CHECKLISTBOX_VALUES 10162
 #define ID_TEXTCTRL_ADD_VALUES 10168
 #define ID_BUTTON_ADD_VALUES 10169
@@ -85,6 +93,140 @@ class Filter;
 #define SYMBOL_EVENTSSELECTIONDIALOG_SIZE wxSize(400, 300)
 #define SYMBOL_EVENTSSELECTIONDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
+
+
+class EventInfoManager
+{
+  public:
+    EventInfoManager( Window *whichWindow, Filter *whichFilter );
+    virtual ~EventInfoManager();
+
+    virtual void transferFrom( wxCheckListBox *whichList ) = 0;
+
+    // Visible
+    virtual void setAllVisible() = 0;
+    int getFirstPosSelectedVisible() { return firstPosSelectedVisible; };
+
+    // Selected
+    virtual void getSelectedFromVisible( wxArrayString& whichVisible,
+                                         wxArrayInt &whichPosVisible,
+                                         wxArrayInt &whichGlobalSelection,
+                                         wxArrayInt &whichGUISelection,
+                                         int &whichFirstPosSelectedVisible,
+                                         bool updateFirstPosSelectedVisible = true ) = 0;
+
+//    bool changedVisible();
+    bool getChangedSelected() { return changedSelection ; };
+
+    // regex
+    bool add( wxString whichRegEx );
+    void clearAllRegEx();
+
+  protected:
+    Window *currentWindow;
+    Filter *currentFilter;
+
+    int firstPosSelectedVisible;
+    bool changedSelection;
+
+    vector< wxRegEx * > filterRegEx;
+
+    virtual void setChangedSelection() = 0;
+    bool matchesAllRegex( string whichName, string whichValue );
+    //bool matchesAllRegex( string whichName );
+};
+
+
+class EventTypesInfoManager : public EventInfoManager
+{
+  public:
+    EventTypesInfoManager( Window *whichWindow, Filter *whichFilter );
+    virtual ~EventTypesInfoManager() {};
+
+    void init();
+    virtual void transferFrom( wxCheckListBox *whichList ) {};
+
+    TEventType getCurrent() { return currentType ; }
+    void setCurrent( TEventType whichType ) { currentType = whichType ; }
+
+    // Visible
+    virtual void setAllVisible();
+    void setVisible( wxArrayInt whichVisible ) { visible = whichVisible ; }
+
+    //wxArrayString getVisible();
+    TEventType getVisible( int pos ) { return fullList[ visible[ pos ] ] ; }
+    unsigned int countVisible() { return visible.GetCount() ; }
+    TEventType getFirstTypeVisible() { return fullList[ visible[ 0 ] ] ; }
+    void updateVisible();
+
+    // Selected
+    void setSelected( int pos, bool isChecked );
+    void setSelected( TEventType whichSelected, bool isChecked );
+    void setAllSelected();
+    void setAllUnselected();
+
+    wxArrayInt getSelected();
+    virtual void getSelectedFromVisible( wxArrayString& whichVisible,
+                                         wxArrayInt &whichPosVisible,
+                                         wxArrayInt &whichGlobalSelection,
+                                         wxArrayInt &whichGUISelection,
+                                         int &whichFirstPosSelectedVisible,
+                                         bool updateFirstPosSelectedVisible = true );
+  protected:
+    virtual void setChangedSelection();
+
+  private:
+    vector< TEventType > fullList; // eventTypes;         // FULL LIST of event types
+    wxArrayString        labels;   // labeledEventTypes;  // Labeled names of eventTypes
+    wxArrayInt           selected; // selectedEventTypes; // INDEX to eventTypes (Selected/checked events)
+    wxArrayInt           visible;  // visibleEventTypes;  // INDEX to all visible event types (matching reg. exps)
+    
+    TEventType currentType;
+    wxArrayInt initialSelected;
+};
+
+
+class EventValuesInfoManager : public EventInfoManager
+{
+  public:
+    EventValuesInfoManager( Window *whichWindow, Filter *whichFilter, TEventType whichType );
+    virtual ~EventValuesInfoManager() {};
+    
+    void init( TEventType whichType, bool shortVersion, bool keepSelected = false );
+    virtual void transferFrom( wxCheckListBox *whichList );
+    bool insert( double whichValue, wxString whichLabel ); // Only values can be added
+
+    // Visible
+    virtual void setAllVisible();
+    unsigned int countVisible() { return visible.GetCount() ; }
+    void updateVisible();
+    void setVisible( wxArrayInt whichVisible );
+
+    // Selected
+    void setAllSelected();
+    void setAllUnselected();
+
+    wxArrayDouble getSelected();
+    virtual void getSelectedFromVisible( wxArrayString& whichVisible,
+                                         wxArrayInt &whichPosVisible,
+                                         wxArrayInt &whichGlobalSelection,
+                                         wxArrayInt &whichGUISelection,
+                                         int &whichFirstPosSelectedVisible,
+                                         bool updateFirstPosSelectedVisible = true );
+  protected:
+    virtual void setChangedSelection();
+
+  private:
+    TEventType currentType;
+
+    wxArrayDouble fullList;    // eventValues // related to the current selected value
+    wxArrayString labels; // labeledEventValues;          // Labeled names of event values
+    wxArrayDouble selected; //selectedEventValues;         // FULL LIST of selected event value
+    wxArrayDouble visible; //visibleEventValues;          // FULL LIST to visible event values (matching reg. exps)
+
+    wxArrayDouble addedFullList;
+    wxArrayDouble initialSelected;
+};
 
 
 /*!
@@ -154,6 +296,15 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_OPERATOR_FUNCTION_TYPES
   void OnChoiceOperatorFunctionTypesSelected( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SET_ALL_TYPES
+  void OnCheckboxSetAllTypesClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_SET_ALL_TYPES
+  void OnCheckboxSetAllTypesUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_TYPES_REGEX_SEARCH
+  void OnTextctrlTypesRegexSearchTextUpdated( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_CHECKLISTBOX_TYPES
   void OnChecklistboxTypesDoubleClicked( wxCommandEvent& event );
 
@@ -174,6 +325,15 @@ public:
 
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE_OPERATOR_FUNCTION_VALUES
   void OnChoiceOperatorFunctionValuesSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_SET_ALL_VALUES
+  void OnCheckboxSetAllValuesClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_SET_ALL_VALUES
+  void OnCheckboxSetAllValuesUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_VALUES_REGEX_SEARCH
+  void OnTextctrlValuesRegexSearchTextUpdated( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_CHECKLISTBOX_VALUES
   void OnChecklistboxValuesDoubleClicked( wxCommandEvent& event );
@@ -239,6 +399,8 @@ public:
   wxBoxSizer* boxSizerFunctionTypes;
   wxStaticText* staticTextFunctionTypes;
   wxChoice* choiceOperatorFunctionTypes;
+  wxCheckBox* checkboxSetAllTypes;
+  wxTextCtrl* typesRegexSearch;
   wxCheckListBox* checkListSelectTypes;
   wxButton* buttonSetAllTypes;
   wxButton* buttonUnsetAllTypes;
@@ -246,6 +408,8 @@ public:
   wxBoxSizer* boxSizerFunctionValues;
   wxStaticText* staticTextFunctionValues;
   wxChoice* choiceOperatorFunctionValues;
+  wxCheckBox* checkboxSetAllValues;
+  wxTextCtrl* valuesRegexSearch;
   wxCheckListBox* checkListSelectValues;
   wxTextCtrl* textCtrlAddValues;
   wxButton* buttonAddValues;
@@ -263,15 +427,15 @@ public:
   Window               *currentWindow;
   Filter               *currentFilter;     // To set/get events info, and operator or/and
 
+  EventValuesInfoManager *valuesHandler;
+  EventTypesInfoManager  *typesHandler;
+
   // *** Related to selector of event types function ***
   int                  previousEventTypesFunction;
   bool                 changedEventTypesFunction;
 
   // *** Related to event types check list ***
   TEventType           currentType;
-  vector< TEventType > eventTypes;         // FULL LIST of event types
-  wxArrayString        labeledEventTypes;  // Labeled names of eventTypes
-  wxArrayInt           selectedEventTypes; // INDEX to eventTypes (Selected/checked events)
   bool                 changedEventTypesSelection;
 
   // *** Related to selector of and/or operator ***
@@ -283,19 +447,21 @@ public:
   bool                 changedEventValuesFunction;
 
   // *** Related to event values check list ***
-  unsigned int         firstEventTypePos;
-  wxArrayDouble        eventValues;                 // related to the current selected value
-  wxArrayDouble        selectedEventValues;         // global selected event value
-  wxArrayDouble        originalSelectedEventValues; // global selected event value
   bool                 changedEventValues;
+
+  void UpdateWidgetChecklistboxTypes();
 
   void checkAll( wxCheckListBox *boxlist, bool value );
   void GetEventValueLabels( wxArrayString & whichEventValues );
-  void BackupCheckListboxValues();
-  void UpdateCheckListboxValues( TEventType type );
+  void UpdateWidgetChecklistboxValues();
+  void UpdateChecklistboxValues( TEventType type, bool keepSelected = true );
 
   bool HasChanged( wxChoice *choice, int selectedFunction ) const;
   bool HasChanged( wxCheckListBox *checkList, wxArrayInt &index ) const;
+
+  bool HasChanged( wxCheckListBox *checkList, EventTypesInfoManager *manager ) const;
+  bool HasChanged( wxCheckListBox *checkList, EventValuesInfoManager *manager ) const;
+
   bool HasChanged( wxCheckListBox *checkList, wxArrayDouble &index ) const;
   bool HasChanged( wxArrayInt &arr1, wxArrayInt &arr2 ) const;
   bool HasChanged( wxArrayDouble &arr1, wxArrayDouble &arr2 ) const;
@@ -307,8 +473,6 @@ public:
                     bool copyStrings = false );
   void InsertValueFromTextCtrl();
 
-  //int compare_int(int *a, int *b);
-
   void TransferDataToWindowPreCreateControls( Window *whichWindow,
                                               bool whichHideOperatorsList);
   void EnableApplyButton();
@@ -316,7 +480,6 @@ public:
 
   void TransferWindowToData();
   unsigned int GetSelections( wxCheckListBox *checkList, wxArrayInt &index ) const;
-
 };
 
 #endif
