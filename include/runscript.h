@@ -36,7 +36,7 @@
  */
 
 ////@begin includes
-#include "include/filebrowserbutton.h"
+#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -136,6 +136,8 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_CLUSTERING_USE_SEMANTIC_WINDOW 10003
 #define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
 #define ID_CHECKBOX_CLUSTERING_NORMALIZE 10002
+#define ID_CHECKBOX_CLUSTERING_NUMBER_OF_SAMPLES 10007
+#define ID_TEXTCTRL_CLUSTERING_NUMBER_OF_SAMPLES 10008
 #define ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES 10000
 #define ID_RADIOBUTTON_CLUSTERING_GEN_SEQ_NUMBERED 10261
 #define ID_RADIOBUTTON_CLUSTERING_GEN_SEQ_FASTA 10265
@@ -229,6 +231,9 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_NORMALIZE
   void OnCheckboxClusteringNormalizeUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_CLUSTERING_NUMBER_OF_SAMPLES
+  void OnTextctrlClusteringNumberOfSamplesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES
   void OnCheckboxClusteringGenerateSequencesUpdate( wxUpdateUIEvent& event );
@@ -352,6 +357,8 @@ public:
   wxCheckBox* checkBoxClusteringUseSemanticWindow;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;
+  wxCheckBox* checkBoxClusteringNumberOfSamples;
+  wxTextCtrl* textBoxClusteringNumberOfSamples;
   wxCheckBox* checkBoxClusteringGenerateSeq;
   wxRadioButton* clusteringRadioGenerateSeqNumbered;
   wxRadioButton* clusteringRadioGenerateSeqFASTA;

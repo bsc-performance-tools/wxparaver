@@ -170,6 +170,7 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_CLUSTERING_XML, RunScript::OnBitmapbuttonClusteringXmlUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION, RunScript::OnCheckboxClusteringSemvalAsClustdimensionUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_NORMALIZE, RunScript::OnCheckboxClusteringNormalizeUpdate )
+  EVT_UPDATE_UI( ID_TEXTCTRL_CLUSTERING_NUMBER_OF_SAMPLES, RunScript::OnTextctrlClusteringNumberOfSamplesUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_CLUSTERING_GENERATE_SEQUENCES, RunScript::OnCheckboxClusteringGenerateSequencesUpdate )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_XMLDEFINED, RunScript::OnRadiobuttonClusteringXmldefinedSelected )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_DBSCAN, RunScript::OnRadiobuttonClusteringDbscanSelected )
@@ -317,6 +318,8 @@ void RunScript::Init()
   checkBoxClusteringUseSemanticWindow = NULL;
   checkBoxClusteringCSVValueAsDimension = NULL;
   checkBoxClusteringNormalize = NULL;
+  checkBoxClusteringNumberOfSamples = NULL;
+  textBoxClusteringNumberOfSamples = NULL;
   checkBoxClusteringGenerateSeq = NULL;
   clusteringRadioGenerateSeqNumbered = NULL;
   clusteringRadioGenerateSeqFASTA = NULL;
@@ -750,6 +753,22 @@ void RunScript::CreateControls()
   checkBoxClusteringNormalize->SetValue(false);
   itemBoxSizer71->Add(checkBoxClusteringNormalize, 4, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+  clusteringSection->Add(itemBoxSizer1, 0, wxGROW|wxALL, 2);
+
+  itemBoxSizer1->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  checkBoxClusteringNumberOfSamples = new wxCheckBox( itemDialog1, ID_CHECKBOX_CLUSTERING_NUMBER_OF_SAMPLES, _("Number of samples"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkBoxClusteringNumberOfSamples->SetValue(false);
+  if (RunScript::ShowToolTips())
+    checkBoxClusteringNumberOfSamples->SetToolTip(_("Number of samples used to perform clustering."));
+  itemBoxSizer1->Add(checkBoxClusteringNumberOfSamples, 2, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
+
+  textBoxClusteringNumberOfSamples = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_NUMBER_OF_SAMPLES, _("20000"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    textBoxClusteringNumberOfSamples->SetToolTip(_("Number of samples used to perform clustering."));
+  itemBoxSizer1->Add(textBoxClusteringNumberOfSamples, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
   wxBoxSizer* itemBoxSizer74 = new wxBoxSizer(wxHORIZONTAL);
   clusteringSection->Add(itemBoxSizer74, 0, wxGROW|wxALL, 2);
 
@@ -760,7 +779,7 @@ void RunScript::CreateControls()
   checkBoxClusteringGenerateSeq->SetHelpText(_("Generate a file containing the cluster sequences"));
   if (RunScript::ShowToolTips())
     checkBoxClusteringGenerateSeq->SetToolTip(_("Generate a file containing the cluster sequences"));
-  itemBoxSizer74->Add(checkBoxClusteringGenerateSeq, 2, wxGROW|wxLEFT|wxTOP|wxBOTTOM, 2);
+  itemBoxSizer74->Add(checkBoxClusteringGenerateSeq, 2, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
   clusteringRadioGenerateSeqNumbered = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_CLUSTERING_GEN_SEQ_NUMBERED, _("Numbered"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   clusteringRadioGenerateSeqNumbered->SetValue(true);
@@ -1246,7 +1265,16 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         else
           parameters += wxString( wxT( " -af" ) );
       }
-      
+
+      // -n <number_of_samples>
+      if ( checkBoxClusteringNumberOfSamples->IsChecked() )
+      {
+        parameters += wxString( wxT( " -m " ) );
+        tmpValue.Clear();
+        tmpValue << textBoxClusteringNumberOfSamples->GetValue();
+        parameters += tmpValue;
+      }
+
       parameters += wxString( wxT( " -d " ) ) + doubleQuote( fileBrowserButtonClusteringXML->GetPath() );
       
       if ( clusteringRadioDBScan->GetValue() )
@@ -2732,4 +2760,17 @@ void RunScript::OnButtonExitUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( myProcess == NULL );
 }
+
+
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_CLUSTERING_NUMBER_OF_SAMPLES
+ */
+
+void RunScript::OnTextctrlClusteringNumberOfSamplesUpdate( wxUpdateUIEvent& event )
+{
+  textBoxClusteringNumberOfSamples->Enable( checkBoxClusteringNumberOfSamples->IsChecked() );
+}
+
 
