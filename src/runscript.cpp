@@ -319,7 +319,7 @@ void RunScript::Init()
   checkBoxClusteringCSVValueAsDimension = NULL;
   checkBoxClusteringNormalize = NULL;
   checkBoxClusteringNumberOfSamples = NULL;
-  textBoxClusteringNumberOfSamples = NULL;
+  clusteringTextBoxNumberOfSamples = NULL;
   checkBoxClusteringGenerateSeq = NULL;
   clusteringRadioGenerateSeqNumbered = NULL;
   clusteringRadioGenerateSeqFASTA = NULL;
@@ -764,10 +764,10 @@ void RunScript::CreateControls()
     checkBoxClusteringNumberOfSamples->SetToolTip(_("Number of samples used to perform clustering."));
   itemBoxSizer1->Add(checkBoxClusteringNumberOfSamples, 2, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 2);
 
-  textBoxClusteringNumberOfSamples = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_NUMBER_OF_SAMPLES, _("20000"), wxDefaultPosition, wxDefaultSize, 0 );
+  clusteringTextBoxNumberOfSamples = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_NUMBER_OF_SAMPLES, _("20000"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
-    textBoxClusteringNumberOfSamples->SetToolTip(_("Number of samples used to perform clustering."));
-  itemBoxSizer1->Add(textBoxClusteringNumberOfSamples, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+    clusteringTextBoxNumberOfSamples->SetToolTip(_("Number of samples used to perform clustering."));
+  itemBoxSizer1->Add(clusteringTextBoxNumberOfSamples, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer74 = new wxBoxSizer(wxHORIZONTAL);
   clusteringSection->Add(itemBoxSizer74, 0, wxGROW|wxALL, 2);
@@ -1040,6 +1040,7 @@ void RunScript::CreateControls()
   clusteringTextBoxDBScanEpsilon->SetValidator( validator );
   clusteringTextBoxRefinementEpsilonMin->SetValidator( validator );
   clusteringTextBoxRefinementEpsilonMax->SetValidator( validator );
+  clusteringTextBoxNumberOfSamples->SetValidator( validator );
   
   int appNumber = DIMEMAS_WRAPPER; // Default is 0
   choiceApplication->Select( appNumber );
@@ -1271,7 +1272,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       {
         parameters += wxString( wxT( " -m " ) );
         tmpValue.Clear();
-        tmpValue << textBoxClusteringNumberOfSamples->GetValue();
+        tmpValue << clusteringTextBoxNumberOfSamples->GetValue();
         parameters += tmpValue;
       }
 
@@ -2190,8 +2191,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     // Create cluster id window
     Window *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
     Window *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
-    TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterOffset();
 
+    TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterOffset();
     TTime endZoomTime = sourceWindow->getWindowEndTime() - clusteredTrace->getCutterOffset();
     newWindow->setWindowBeginTime( beginZoomTime );
     newWindow->setWindowEndTime( endZoomTime );
@@ -2770,7 +2771,7 @@ void RunScript::OnButtonExitUpdate( wxUpdateUIEvent& event )
 
 void RunScript::OnTextctrlClusteringNumberOfSamplesUpdate( wxUpdateUIEvent& event )
 {
-  textBoxClusteringNumberOfSamples->Enable( checkBoxClusteringNumberOfSamples->IsChecked() );
+  clusteringTextBoxNumberOfSamples->Enable( checkBoxClusteringNumberOfSamples->IsChecked() );
 }
 
 

@@ -358,7 +358,7 @@ public:
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;
   wxCheckBox* checkBoxClusteringNumberOfSamples;
-  wxTextCtrl* textBoxClusteringNumberOfSamples;
+  wxTextCtrl* clusteringTextBoxNumberOfSamples;
   wxCheckBox* checkBoxClusteringGenerateSeq;
   wxRadioButton* clusteringRadioGenerateSeqNumbered;
   wxRadioButton* clusteringRadioGenerateSeqFASTA;
