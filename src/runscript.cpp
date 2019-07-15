@@ -2192,8 +2192,9 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     Window *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
     Window *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
 
-    TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterOffset();
-    TTime endZoomTime = sourceWindow->getWindowEndTime() - clusteredTrace->getCutterOffset();
+    TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterLastOffset();
+    TTime endZoomTime   = beginZoomTime + ( sourceWindow->getWindowEndTime() - sourceWindow->getWindowBeginTime() );
+
     newWindow->setWindowBeginTime( beginZoomTime );
     newWindow->setWindowEndTime( endZoomTime );
     newWindow->addZoom( beginZoomTime, endZoomTime, 0, newWindow->getWindowLevelObjects() - 1 );
