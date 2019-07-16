@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -2192,8 +2186,19 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     Window *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
     Window *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
 
-    TTime beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterLastOffset();
-    TTime endZoomTime   = beginZoomTime + ( sourceWindow->getWindowEndTime() - sourceWindow->getWindowBeginTime() );
+    TTime beginZoomTime;
+    TTime endZoomTime;
+    if ( ( sourceWindow->getWindowBeginTime() == (TTime)0 ) &&
+         ( sourceWindow->getWindowEndTime() == sourceWindow->getTrace()->getEndTime() ))
+    {
+      beginZoomTime = (TTime)0 ;
+      endZoomTime   = sourceWindow->getTrace()->getEndTime();
+    }
+    else
+    {
+      beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterLastOffset();
+      endZoomTime   = beginZoomTime + ( sourceWindow->getWindowEndTime() - sourceWindow->getWindowBeginTime() );
+    }
 
     newWindow->setWindowBeginTime( beginZoomTime );
     newWindow->setWindowEndTime( endZoomTime );
