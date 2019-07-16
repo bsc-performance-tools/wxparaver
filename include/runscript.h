@@ -133,6 +133,7 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_CLUSTERING_XML 10236
 #define ID_BUTTON_CLUSTERING_XML 10237
 #define ID_BITMAPBUTTON_CLUSTERING_XML 10106
+#define ID_TEXTCTRL 10009
 #define ID_CHECKBOX_CLUSTERING_USE_SEMANTIC_WINDOW 10003
 #define ID_CHECKBOX_CLUSTERING_SEMVAL_AS_CLUSTDIMENSION 10219
 #define ID_CHECKBOX_CLUSTERING_NORMALIZE 10002
@@ -354,6 +355,7 @@ public:
   wxTextCtrl* textCtrlClusteringXML;
   FileBrowserButton* fileBrowserButtonClusteringXML;
   wxBitmapButton* buttonClusteringXML;
+  wxTextCtrl* textCtrlClusteringOutputTrace;
   wxCheckBox* checkBoxClusteringUseSemanticWindow;
   wxCheckBox* checkBoxClusteringCSVValueAsDimension;
   wxCheckBox* checkBoxClusteringNormalize;

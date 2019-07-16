@@ -309,6 +309,7 @@ void RunScript::Init()
   textCtrlClusteringXML = NULL;
   fileBrowserButtonClusteringXML = NULL;
   buttonClusteringXML = NULL;
+  textCtrlClusteringOutputTrace = NULL;
   checkBoxClusteringUseSemanticWindow = NULL;
   checkBoxClusteringCSVValueAsDimension = NULL;
   checkBoxClusteringNormalize = NULL;
@@ -719,6 +720,19 @@ void RunScript::CreateControls()
 
   buttonClusteringXML = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_CLUSTERING_XML, itemDialog1->GetBitmapResource(wxT("icons/app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer60->Add(buttonClusteringXML, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+  clusteringSection->Add(itemBoxSizer5, 0, wxGROW|wxTOP|wxBOTTOM, 4);
+
+  wxStaticText* itemStaticText6 = new wxStaticText( itemDialog1, wxID_STATIC, _("Output Trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    itemStaticText6->SetToolTip(_("Name given to the clustered output trace. No path allowed."));
+  itemBoxSizer5->Add(itemStaticText6, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+
+  textCtrlClusteringOutputTrace = new wxTextCtrl( itemDialog1, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (RunScript::ShowToolTips())
+    textCtrlClusteringOutputTrace->SetToolTip(_("Name given to the output trace."));
+  itemBoxSizer5->Add(textCtrlClusteringOutputTrace, 12, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 2);
 
   wxBoxSizer* itemBoxSizer65 = new wxBoxSizer(wxHORIZONTAL);
   clusteringSection->Add(itemBoxSizer65, 0, wxGROW|wxALL, 2);
@@ -1321,11 +1335,20 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       }
       
       parameters += wxString( wxT(" -o ") );
+
+      if ( !textCtrlClusteringOutputTrace->IsEmpty() )
+      {
+        tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
+        tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
+        parameters += doubleQuote( tmpPath + textCtrlClusteringOutputTrace->GetValue());
+      }
+      /*
       tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
       tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
       tmpNameWOExtension = tmpFilename.GetName();
       parameters += doubleQuote( tmpPath + tmpNameWOExtension + wxString( wxT( ".clustered.prv" )));
-
+      */
+      
       break;
       
     case FOLDING:
@@ -1559,24 +1582,37 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
 void RunScript::OnButtonRunClick( wxCommandEvent& event )
 {
   buttonRun->Enable( false );
-  helpOption = false;  
+  helpOption = false;
+  bool ready = true;
 
   wxString readyCommand = GetReachableCommand();
   if ( !readyCommand.IsEmpty() )
   {
     if ( choiceApplication->GetSelection() == CLUSTERING )
     {
-      // PRECOND: not empty
-      clusteringXML = fileBrowserButtonClusteringXML->GetPath();
+      // Check OutputTrace doesn't contain any path
+      if ( textCtrlClusteringOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
+      {
+        wxMessageBox( _( "Output Trace field: No paths allowed.\nPlease rewrite clustered tracename without any path." ), _( "Clustering parameters" ) );
+        ready = false;
+      }
+      else
+      {
+        // PRECOND: not empty
+        clusteringXML = fileBrowserButtonClusteringXML->GetPath();
+      }
     }
-    
-    //executionStatus = -2;
-    myProcess = new RunningProcess( this, readyCommand );
-    myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, myProcess );
 
-    if( !myProcessPid )
+    if ( ready )
     {
-      OnProcessTerminated( myProcessPid );
+      //executionStatus = -2;
+      myProcess = new RunningProcess( this, readyCommand );
+      myProcessPid = wxExecute( readyCommand, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER, myProcess );
+
+      if( !myProcessPid )
+      {
+        OnProcessTerminated( myProcessPid );
+      }
     }
   }
 
@@ -1608,7 +1644,8 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       
     case CLUSTERING:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
-      active &= !fileBrowserButtonClusteringXML->GetPath().IsEmpty();      
+      active &= !fileBrowserButtonClusteringXML->GetPath().IsEmpty();
+      active &= !textCtrlClusteringOutputTrace->IsEmpty();
       break;
 
     case FOLDING:
@@ -1744,6 +1781,15 @@ void RunScript::adaptWindowToApplicationSelection()
     case CLUSTERING:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
+      
+      if ( textCtrlClusteringOutputTrace->IsEmpty() )
+      {
+        wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
+        wxString tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
+        wxString tmpNameWOExtension = tmpFilename.GetName();
+        textCtrlClusteringOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".clustered.prv" )));
+      }
+
       if ( clusteringCSV.IsEmpty() )
       {
         checkBoxClusteringUseSemanticWindow->Enable( false );
@@ -1928,6 +1974,16 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
     // If available, get trace path from wxFilePickerCtrl
     wxString selectedTracePath =
         wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    if ( tunePrvLinksForClustering )
+    {
+      if ( !textCtrlClusteringOutputTrace->IsEmpty() )
+      {
+        wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
+        wxString tmpPath = tmpFilename.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
+        selectedTracePath = tmpPath + textCtrlClusteringOutputTrace->GetValue();
+      }
+    }
 
     // Now, traverse rawLine using extensionPositions.
     wxString auxLine;  // where output line is being built, starting from the tail.
@@ -2611,6 +2667,19 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
     textCtrlOutputTrace->SetValue( wxString( (
             LocalKernel::composeName( std::string( event.GetString().mb_str() ),
                                       std::string( "sim" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
+  }
+  else if ( choiceApplication->GetSelection() == CLUSTERING )
+  {
+    /*tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
+    tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
+    tmpNameWOExtension = tmpFilename.GetName();
+    */
+    if ( textCtrlClusteringOutputTrace->IsEmpty() )
+    {
+      textCtrlClusteringOutputTrace->SetValue( wxString( (
+          LocalKernel::composeName( std::string( event.GetString().mb_str() ),
+                                    std::string( "clustered" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
+    }
   }
 }
 
