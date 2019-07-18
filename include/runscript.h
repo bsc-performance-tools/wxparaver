@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 #ifndef _RUNSCRIPT_H_
 #define _RUNSCRIPT_H_
 
@@ -250,12 +244,6 @@ public:
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE
   void OnCheckboxClusteringRefinementTuneClick( wxCommandEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_ONLY
-  void OnCheckboxFoldingOnlyUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_REUSE_FILES
-  void OnCheckboxFoldingReuseFilesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE
   void OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event );
@@ -484,7 +472,7 @@ private:
   wxString insertLog( wxString rawLine, wxArrayString extensions );
 
   // TODO: This method's been copied from HelpContents; consider write new class
-  std::string getHrefFullPath( wxHtmlLinkEvent &event );
+  std::string getHrefFullPath( wxHtmlLinkEvent &event,  wxString whichSuffixToErase = wxT("") );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
   
   // Execution
