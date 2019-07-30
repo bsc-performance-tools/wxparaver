@@ -790,9 +790,6 @@ bool paraverMain::DoLoadTrace( const string &path )
 
     previousTraces->add( tmpPath );
 
-    currentTimeline = NULL;
-    currentHisto = NULL;
-
     traceLoadedBefore = true;
     tracePath = tmpFileName.GetPath();
   }
@@ -837,7 +834,20 @@ bool paraverMain::DoLoadCFG( const string &path )
     vector<Histogram *> newHistograms;
     SaveOptions options;
 
-    if( !CFGLoader::loadCFG( localKernel, path, loadedTraces[ currentTrace ],
+    Trace *tmpTraceToUse = NULL;
+    if( choiceWindowBrowser->GetSelection() == 0 )
+    {
+      if( currentTimeline != NULL )
+        tmpTraceToUse = currentTimeline->getTrace();
+      else if( currentHisto != NULL )
+        tmpTraceToUse = currentHisto->getTrace();
+    }
+    else
+    {
+      tmpTraceToUse = loadedTraces[ currentTrace ];
+    }
+    
+    if( !CFGLoader::loadCFG( localKernel, path, tmpTraceToUse,
                              newWindows, newHistograms, options ) )
     {
       wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
@@ -875,7 +885,7 @@ bool paraverMain::DoLoadCFG( const string &path )
       for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
       {
         wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
-        wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+        wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( getTracePosition( tmpTraceToUse ) + 1 );
 
         if ( (*it)->getChild() == NULL )
           BuildTree( this, allTracesPage, allTracesPage->GetRootItem(), currentPage, currentPage->GetRootItem(), *it );
@@ -2019,12 +2029,6 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
       LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], allWindows );
       LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], allHistograms );
     }
-
-    if ( allWindows.size() == 0 && allHistograms.size() == 0 )
-    {
-      currentTimeline = NULL;
-      currentHisto = NULL;
-    }
   }
 }
 
@@ -2302,7 +2306,7 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
     currentTrace = loadedTraces.size() - 1;
   else
     currentTrace = selPage - 1;
-    
+
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
   if( tree->GetSelection().IsOk() )
   {
@@ -3557,19 +3561,11 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   string strOutputFile;
   vector< string > tmpFiles;
 
-  // Only for cutter
-  vector< TEventType > allTypes;
-  vector< TEventType > typesWithValueZero;
-  EventLabels labels;
-  map< TEventValue, string > currentEventValues;
-
 #ifdef OLD_PCFPARSER
   ParaverTraceConfig *myConfig;
 #else
   UIParaverTraceConfig *myConfig;
 #endif
-
-  string pcf_name;
 
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction, this );
@@ -3601,48 +3597,8 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 
     if ( filterToolIDs[ i ] == TraceCutter::getID() )
     {
-#ifdef WIN32
-      struct _stat tmpStatBuffer;
-#else
-      struct stat tmpStatBuffer;
-#endif
-
-      pcf_name = LocalKernel::composeName( tmpNameIn, string( "pcf" ) );
-      int statReturn;
-#ifdef WIN32
-      statReturn = _stat( pcf_name.c_str(), &tmpStatBuffer );
-#else
-      statReturn = stat( pcf_name.c_str(), &tmpStatBuffer );
-#endif
-
-      if( statReturn == 0 && tmpStatBuffer.st_size > 0 )
-      {
-#ifdef OLD_PCFPARSER
-        myConfig = new ParaverTraceConfig( pcf_name );
-        myConfig->parse();
-#else
-        myConfig = new UIParaverTraceConfig();
-        myConfig->parse( pcf_name );
-#endif
-        labels = EventLabels( *myConfig, set<TEventType>() );
-        labels.getTypes( allTypes );
-        for( vector< TEventType >::iterator it = allTypes.begin(); it != allTypes.end(); ++it )
-        {
-          if ( labels.getValues( *it, currentEventValues ) )
-          {
-            if ( currentEventValues.find( TEventValue( 0 )) != currentEventValues.end() )
-            {
-              typesWithValueZero.push_back( *it );
-            }
-            currentEventValues.clear();
-          }
-        }
-
-        delete myConfig;
-      }
-
-      TraceCutter *traceCutter = localKernel->newTraceCutter( traceOptions, typesWithValueZero );
-      traceCutter->execute( (char *)tmpNameIn.c_str(), (char *)tmpNameOut.c_str(), progress );
+      TraceCutter *traceCutter = TraceCutter::create( localKernel, tmpNameIn, tmpNameOut, traceOptions, progress );
+      traceCutter->execute( tmpNameIn, tmpNameOut, progress );
       localKernel->copyPCF( tmpNameIn, tmpNameOut );
       delete traceCutter;
     }
