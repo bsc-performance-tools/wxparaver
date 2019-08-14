@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -93,7 +87,10 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownUpdate )
   EVT_TEXT( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameTextUpdated )
   EVT_UPDATE_UI( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameUpdate )
-  EVT_UPDATE_UI( ID_STATIC_WORKSPACE_AUTOTYPES, PreferencesDialog::OnStaticWorkspaceAutotypesUpdate )
+  EVT_RADIOBUTTON( ID_RADIOSTATES, PreferencesDialog::OnRadiostatesSelected )
+  EVT_UPDATE_UI( ID_RADIOSTATES, PreferencesDialog::OnRadiostatesUpdate )
+  EVT_RADIOBUTTON( ID_RADIOEVENTYPES, PreferencesDialog::OnRadioeventypesSelected )
+  EVT_UPDATE_UI( ID_RADIOEVENTYPES, PreferencesDialog::OnRadioeventypesUpdate )
   EVT_TEXT( ID_TEXT_WORKSPACE_AUTOTYPES, PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated )
   EVT_UPDATE_UI( ID_TEXT_WORKSPACE_AUTOTYPES, PreferencesDialog::OnTextWorkspaceAutotypesUpdate )
   EVT_LISTBOX( ID_LISTBOX_HINTS_WORKSPACE, PreferencesDialog::OnListboxHintsWorkspaceSelected )
@@ -300,6 +297,8 @@ void PreferencesDialog::Init()
   buttonUpWorkspace = NULL;
   buttonDownWorkspace = NULL;
   txtWorkspaceName = NULL;
+  radioStates = NULL;
+  radioEventTypes = NULL;
   txtAutoTypes = NULL;
   listHintsWorkspace = NULL;
   buttonAddHint = NULL;
@@ -1136,17 +1135,22 @@ void PreferencesDialog::CreateControls()
     txtWorkspaceName->SetToolTip(_("Workspace name"));
   itemBoxSizer187->Add(txtWorkspaceName, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
+  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer186->Add(itemBoxSizer2, 0, wxGROW|wxLEFT, 5);
+  radioStates = new wxRadioButton( panelWorkspaces, ID_RADIOSTATES, _("States"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioStates->SetValue(false);
+  itemBoxSizer2->Add(radioStates, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  radioEventTypes = new wxRadioButton( panelWorkspaces, ID_RADIOEVENTYPES, _("Event Types"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioEventTypes->SetValue(true);
+  itemBoxSizer2->Add(radioEventTypes, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
   wxBoxSizer* itemBoxSizer189 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer186->Add(itemBoxSizer189, 0, wxGROW|wxLEFT, 5);
-  wxStaticText* itemStaticText190 = new wxStaticText( panelWorkspaces, ID_STATIC_WORKSPACE_AUTOTYPES, _("Event Types"), wxDefaultPosition, wxDefaultSize, 0 );
-  if (PreferencesDialog::ShowToolTips())
-    itemStaticText190->SetToolTip(_("Event types list for automatic workspace selection\n\nExample: 50000001;50000002[;type] "));
-  itemBoxSizer189->Add(itemStaticText190, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
   txtAutoTypes = new wxTextCtrl( panelWorkspaces, ID_TEXT_WORKSPACE_AUTOTYPES, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    txtAutoTypes->SetToolTip(_("Event types list for automatic workspace selection\n\nExample: 50000001;50000002[;type] "));
-  itemBoxSizer189->Add(txtAutoTypes, 1, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
+    txtAutoTypes->SetToolTip(_("States or event types list for automatic workspace selection\n\nExample: 50000001;50000002[;type] "));
+  itemBoxSizer189->Add(txtAutoTypes, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   wxStaticBox* itemStaticBoxSizer192Static = new wxStaticBox(panelWorkspaces, wxID_ANY, _(" Hints "));
   wxStaticBoxSizer* itemStaticBoxSizer192 = new wxStaticBoxSizer(itemStaticBoxSizer192Static, wxVERTICAL);
@@ -1819,7 +1823,12 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
   while( listWorkspaces->FindString( workspaceName ) != wxNOT_FOUND )
     workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), ++n );
   listWorkspaces->Append( workspaceName );
-  workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace( std::string( workspaceName.mb_str() ) ) ) );
+  WorkspaceValue::WorkspaceType tmpWorkspaceType;
+  if( radioStates->GetValue() )
+    tmpWorkspaceType = WorkspaceValue::STATE;
+  else
+    tmpWorkspaceType = WorkspaceValue::EVENT;
+  workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace( std::string( workspaceName.mb_str() ), tmpWorkspaceType ) ) );
     
   // Focus in name text control  
   listWorkspaces->Select( listWorkspaces->GetCount() - 1 );
@@ -1857,10 +1866,15 @@ void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
   txtWorkspaceName->ChangeValue( listWorkspaces->GetStringSelection() );
   Workspace& currentWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
   
-  std::vector<TEventType> tmpAutoTypes = currentWrk.getAutoTypes();
+  if( currentWrk.getType() == WorkspaceValue::STATE )
+    radioStates->SetValue( true );
+  else
+    radioEventTypes->SetValue( true );
+
+  std::vector<WorkspaceValue> tmpAutoTypes = currentWrk.getAutoTypes();
   wxString formatAutoTypes;
-  for( std::vector<TEventType>::iterator it = tmpAutoTypes.begin(); it != tmpAutoTypes.end(); ++it )
-    formatAutoTypes<<*it<<wxT( ";" );
+  for( std::vector<WorkspaceValue>::iterator it = tmpAutoTypes.begin(); it != tmpAutoTypes.end(); ++it )
+    formatAutoTypes<<it->UInfo.eventType<<wxT( ";" );
   formatAutoTypes.RemoveLast();
   txtAutoTypes->ChangeValue( formatAutoTypes );
   
@@ -2057,16 +2071,6 @@ void PreferencesDialog::OnTextctrlWorkspaceHintDescriptionTextUpdated( wxCommand
 
 
 /*!
- * wxEVT_UPDATE_UI event handler for ID_STATIC_WORKSPACE_AUTOTYPES
- */
-
-void PreferencesDialog::OnStaticWorkspaceAutotypesUpdate( wxUpdateUIEvent& event )
-{
-  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
-}
-
-
-/*!
  * wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_AUTOTYPES
  */
 
@@ -2084,14 +2088,22 @@ void PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& eve
 {
   Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
   //std::string tmpTxt = std::string( event.GetString().mb_str() );
-  vector<TEventType> tmpAutoTypes;
+  vector<WorkspaceValue> tmpAutoTypes;
   wxStringTokenizer tmpTokenTypes( event.GetString(), wxT( ";" ) );
   unsigned long tmpEventType;
   while( tmpTokenTypes.HasMoreTokens() )
   {
     wxString token = tmpTokenTypes.GetNextToken();
     if ( token.ToULong( &tmpEventType ) )
-      tmpAutoTypes.push_back( TEventType( tmpEventType ) );
+    {
+      WorkspaceValue tmpWorkSpaceValue;
+      if( radioStates->GetValue() )
+        tmpWorkSpaceValue.myType = WorkspaceValue::STATE;
+      else
+        tmpWorkSpaceValue.myType = WorkspaceValue::EVENT;
+      tmpWorkSpaceValue.UInfo.eventType = tmpEventType;
+      tmpAutoTypes.push_back( tmpWorkSpaceValue );
+    }
   }
   tmpWrk.setAutoTypes( tmpAutoTypes );
 }
@@ -2132,6 +2144,46 @@ void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
 }
 
 
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_RADIOSTATES
+ */
+
+void PreferencesDialog::OnRadiostatesUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
 
 
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_RADIOEVENTYPES
+ */
+
+void PreferencesDialog::OnRadioeventypesUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOSTATES
+ */
+
+void PreferencesDialog::OnRadiostatesSelected( wxCommandEvent& event )
+{
+  Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+
+  tmpWrk.setType( WorkspaceValue::STATE );
+}
+
+
+/*!
+ * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOEVENTYPES
+ */
+
+void PreferencesDialog::OnRadioeventypesSelected( wxCommandEvent& event )
+{
+  Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
+
+  tmpWrk.setType( WorkspaceValue::EVENT );
+}
 

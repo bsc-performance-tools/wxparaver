@@ -619,9 +619,9 @@ void paraverMain::refreshMenuHints()
       currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
       if( workspacesManager->existWorkspace( *it, WorkspaceManager::USER_DEFINED ) )
       {
-        vector< TEventType > tmpDistAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
+        vector< WorkspaceValue > tmpDistAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
         sort( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end() );
-        vector< TEventType > tmpUserAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getAutoTypes();
+        vector< WorkspaceValue > tmpUserAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getAutoTypes();
         sort( tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() );
         if( includes( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end(),
                       tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() ) )
@@ -669,10 +669,11 @@ void paraverMain::refreshMenuHints()
 // Initial set, to be called after inserting new trace
 void paraverMain::setTraceWorkspaces( Trace *whichTrace )
 {
+  set< TState > tmpLoadedStates = whichTrace->getLoadedStates();
   set< TEventType > tmpLoadedTypes = whichTrace->getLoadedEvents();
   firstUserWorkspace[ whichTrace ] = 0;
   traceWorkspaces[ whichTrace ].clear();
-  workspacesManager->getMergedWorkspaces( tmpLoadedTypes, traceWorkspaces[ whichTrace ], firstUserWorkspace[ whichTrace ] );
+  workspacesManager->getMergedWorkspaces( tmpLoadedStates, tmpLoadedTypes, traceWorkspaces[ whichTrace ], firstUserWorkspace[ whichTrace ] );
 }
 
 

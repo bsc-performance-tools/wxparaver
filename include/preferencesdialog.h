@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 #ifndef _PREFERENCESDIALOG_H_
 #define _PREFERENCESDIALOG_H_
 
@@ -48,6 +42,7 @@
 
 #include "wx/bmpbuttn.h"
 #include "wx/filedlg.h"
+#include "wx/radiobut.h"
 
 #include "paraverconfig.h"
 #include "workspace.h"
@@ -151,7 +146,8 @@ class wxListBox;
 #define ID_BUTTON_WORKSPACES_UP 10273
 #define ID_BUTTON_WORKSPACES_DOWN 10274
 #define ID_TEXT_WORKSPACE_NAME 10275
-#define ID_STATIC_WORKSPACE_AUTOTYPES 10285
+#define ID_RADIOSTATES 10037
+#define ID_RADIOEVENTYPES 10038
 #define ID_TEXT_WORKSPACE_AUTOTYPES 10011
 #define ID_LISTBOX_HINTS_WORKSPACE 10276
 #define ID_BUTTON_HINT_ADD 10277
@@ -245,8 +241,17 @@ public:
   /// wxEVT_KILL_FOCUS event handler for ID_TEXT_WORKSPACE_NAME
   void OnTextWorkspaceNameKillFocus( wxFocusEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_STATIC_WORKSPACE_AUTOTYPES
-  void OnStaticWorkspaceAutotypesUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOSTATES
+  void OnRadiostatesSelected( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_RADIOSTATES
+  void OnRadiostatesUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOEVENTYPES
+  void OnRadioeventypesSelected( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_RADIOEVENTYPES
+  void OnRadioeventypesUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXT_WORKSPACE_AUTOTYPES
   void OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& event );
@@ -607,6 +612,8 @@ public:
   wxBitmapButton* buttonUpWorkspace;
   wxBitmapButton* buttonDownWorkspace;
   wxTextCtrl* txtWorkspaceName;
+  wxRadioButton* radioStates;
+  wxRadioButton* radioEventTypes;
   wxTextCtrl* txtAutoTypes;
   wxListBox* listHintsWorkspace;
   wxBitmapButton* buttonAddHint;
@@ -699,6 +706,7 @@ private:
                            wxChoice *choiceBox );
   rgb wxColourToRGB( wxColour colour ) ;
   wxColour RGBTowxColour( rgb colour );
+  
 };
 
 #endif
