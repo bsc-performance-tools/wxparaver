@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 #include "wx/grid.h"
 #include <vector>
 #include <string>
@@ -37,32 +31,34 @@ class Histogram;
 using std::vector;
 using std::string;
 
+
 class HistoTableBase : public wxGridTableBase
 {
   public:
     HistoTableBase();
     HistoTableBase( Histogram* whichHisto );
     virtual ~HistoTableBase();
-  
+
     virtual int GetNumberRows();
     virtual int GetNumberCols();
 
     virtual wxString GetRowLabelValue( int row );
     virtual wxString GetColLabelValue( int col );
-    
+
     virtual wxString GetValue( int row, int col );
     virtual void SetValue( int row, int col, const wxString &value );
     virtual bool IsEmptyCell( int row, int col );
 
     virtual wxGridCellAttr *GetAttr( int row, int col, wxGridCellAttr::wxAttrKind kind );
-    
-    void setSelectedRows( vector<TObjectOrder> *whichRows );
+
+    void setSelectedRows( vector< TObjectOrder > *whichRows );
     void setDefaultFontBold( wxFont& whichFont );
+
   private:
     Histogram *myHisto;
-    vector<TObjectOrder> *selectedRows;
+    vector< TObjectOrder > *selectedRows;
     wxFont cellFontBold;
-    
+
     string tmpStr;
     wxString label;
 

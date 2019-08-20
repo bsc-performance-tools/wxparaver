@@ -21,28 +21,26 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 #include "histotablebase.h"
 #include "histogram.h"
 #include "labelconstructor.h"
 #include "histogramtotals.h"
 #include "window.h"
 
+
 HistoTableBase::HistoTableBase()
 {}
+
 
 HistoTableBase::HistoTableBase( Histogram* whichHisto ):
     myHisto( whichHisto )
 {}
 
+
 HistoTableBase::~HistoTableBase()
 {}
-  
+
+
 int HistoTableBase::GetNumberRows()
 {
   int extra = 0;
@@ -53,9 +51,10 @@ int HistoTableBase::GetNumberRows()
   
   if( myHisto->getHorizontal() )
     return myHisto->getNumRows() + NUMTOTALS + 1 + extra;
-  
+
   return myHisto->getNumColumns( myHisto->getCurrentStat() ) + NUMTOTALS + 1;
 }
+
 
 int HistoTableBase::GetNumberCols()
 {
@@ -68,10 +67,11 @@ int HistoTableBase::GetNumberCols()
   return myHisto->getNumRows() + extra;
 }
 
+
 wxString HistoTableBase::GetRowLabelValue( int row )
 {
   label.Clear();
-  
+
   if( myHisto->getHorizontal() && myHisto->getFirstRowColored() )
   {
     if( row == 0 ) return wxT( "" );
@@ -104,7 +104,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
     label = wxString::FromAscii( myHisto->getRowLabel( (*selectedRows)[ row ] ).c_str() );
   else
     label = wxString::FromAscii( myHisto->getColumnLabel( row ).c_str() );
-  
+
   int w, h;
   wxFont tmpFont( GetView()->GetLabelFont() );
   GetView()->GetTextExtent( label, &w, &h, NULL, NULL, &tmpFont );
@@ -115,6 +115,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
 
   return label;
 }
+
 
 wxString HistoTableBase::GetColLabelValue( int col )
 {
@@ -133,10 +134,11 @@ wxString HistoTableBase::GetColLabelValue( int col )
     return wxString::FromAscii( myHisto->getRowLabel( (*selectedRows)[ col ] ).c_str() );
 }
 
+
 wxString HistoTableBase::GetValue( int row, int col )
 {
   int drawCol = col;
-  
+
   if( myHisto->getHorizontal() && myHisto->getFirstRowColored() )
   {
     if( row == 0 ) return GetColLabelValue( col );
@@ -173,7 +175,7 @@ wxString HistoTableBase::GetValue( int row, int col )
       iTotal = row - myHisto->getNumRows() - 1;
     else
       iTotal = col - (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) - 1;
-    
+
     if( iTotal == -1 )
       label = wxString::FromAscii( "" );
     else
@@ -231,13 +233,16 @@ wxString HistoTableBase::GetValue( int row, int col )
   return label;
 }
 
+
 void HistoTableBase::SetValue( int row, int col, const wxString &value )
 {}
+
 
 bool HistoTableBase::IsEmptyCell( int row, int col )
 {
   return false;
 }
+
 
 wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAttrKind kind )
 {
@@ -269,7 +274,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
     }
     else if( myHisto->getOnlyTotals() )
       return tmpAttr;
-    
+
     --row;
   }
   else if( myHisto->getOnlyTotals() )
@@ -359,26 +364,29 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       }
     }
   }
-  
+
   return tmpAttr;
 }
+
 
 void HistoTableBase::setSelectedRows( vector<TObjectOrder> *whichRows )
 {
   selectedRows = whichRows;
 }
 
+
 void HistoTableBase::setDefaultFontBold( wxFont& whichFont )
 {
   cellFontBold = whichFont;
 }
 
+
 const wxColour *HistoTableBase::getLuminance( wxColour fromColour ) const
 {
-  unsigned int BackColour_luminance = (fromColour.Red() * 30)/100 +
-                                      (fromColour.Green() * 59)/100 +
-                                      (fromColour.Blue() * 11) / 100;
-  if (BackColour_luminance >= 128)
+  unsigned int BackColour_luminance = ( fromColour.Red()   * 30 ) / 100 +
+                                      ( fromColour.Green() * 59 ) / 100 +
+                                      ( fromColour.Blue()  * 11 ) / 100;
+  if ( BackColour_luminance >= 128 )
     return wxBLACK;
   return wxWHITE;
 }
