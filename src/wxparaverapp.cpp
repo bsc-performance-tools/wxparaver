@@ -490,7 +490,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
     for ( unsigned int i = 0; i < paraverCommandLineParser.GetParamCount(); ++i )
     {
       fileName = paraverCommandLineParser.GetParam( i ).mb_str();
-      
+
       if ( Trace::isTraceFile( fileName ) )
       {
         if( currentTrace != NULL )

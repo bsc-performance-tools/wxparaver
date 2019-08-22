@@ -282,6 +282,17 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
 }
 
 
+bool paraverMain::isSessionFile( const string& filename )
+{
+  string suffix( "" );
+
+  if ( filename.length() > string( SESSION_FILE_SUFFIX ).length() )
+    suffix = filename.substr( filename.length() - string( SESSION_FILE_SUFFIX ).length() );
+
+  return ( suffix.compare( string( SESSION_FILE_SUFFIX ) ) == 0 );
+}
+
+
 void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
 {
   string fileName;
@@ -289,7 +300,20 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
   {
     fileName = parser.GetParam( i ).mb_str();
     
-    if ( Trace::isTraceFile( fileName ) )
+    if ( isSessionFile( fileName ) )
+    {
+      wxFileName tmpFileName( wxString( fileName.c_str(), wxConvUTF8 ) );
+
+#ifdef WIN32
+      tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                             wxPATH_NORM_LONG );
+#else
+      tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                             wxPATH_NORM_LONG | wxPATH_NORM_TILDE );
+#endif
+      SessionSaver::LoadSession( tmpFileName.GetFullPath() );
+    }
+    else if ( Trace::isTraceFile( fileName ) )
     {
       DoLoadTrace( fileName );
     }

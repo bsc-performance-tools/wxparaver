@@ -632,6 +632,7 @@ private:
   void OnMenuHintUpdate( wxUpdateUIEvent& event );
   void setActiveWorkspacesText();
 
+  bool isSessionFile( const std::string& filename );
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );
