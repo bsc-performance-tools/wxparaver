@@ -36,6 +36,9 @@
 
 using namespace std;
 
+#define SESSION_FILE_SUFFIX ".session"
+#define SESSION_DIR_SUFFIX  "_session"
+
 class SessionSaver
 {
   public:
