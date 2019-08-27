@@ -2909,6 +2909,52 @@ void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
     zoomDragging = false;
     zoomHisto->SetCursor( wxNullCursor );
   }
+
+  if( !myHistogram->getZoom() )
+  {
+    int dummyUnitsVirtWidth, unitsVirtHeigth;
+    gridHisto->GetVirtualSize( &dummyUnitsVirtWidth, &unitsVirtHeigth );
+
+    int dummyPixelsPerWidthUnit, pixelsPerHeigthUnit;
+    gridHisto->GetScrollPixelsPerUnit( &dummyPixelsPerWidthUnit, &pixelsPerHeigthUnit );
+
+    int dummyUnitsWidthStart, unitsHeigthStart;
+    gridHisto->GetViewStart( &dummyUnitsWidthStart, &unitsHeigthStart );
+
+    int unitsFirstColoredRow = 0;
+    if ( !myHistogram->getFirstRowColored() ) // Count first row
+    {
+      unitsFirstColoredRow = rint( gridHisto->GetDefaultColLabelSize() * ( 1 / (double)pixelsPerHeigthUnit ) );
+    }
+    int unitsToScroll = rint( (double)unitsVirtHeigth / (double)pixelsPerHeigthUnit ) - unitsFirstColoredRow;
+
+    int maxScrollUnits = rint( ( gridHisto->GetNumberRows() + 1 ) * gridHisto->GetRowSize(0) * ( 1 / (double)pixelsPerHeigthUnit ) );
+
+    switch( event.GetKeyCode() )
+    {
+      case WXK_HOME:
+        gridHisto->Scroll( 0, -maxScrollUnits );
+        gridHisto->Refresh();
+        break;
+
+      case WXK_END:
+        gridHisto->Scroll( 0, maxScrollUnits );
+        gridHisto->Refresh();
+        break;
+
+      case WXK_PAGEUP:
+        gridHisto->Scroll( 0, unitsHeigthStart - unitsToScroll );
+        //gridHisto->MovePageUp();
+        gridHisto->Refresh();
+        break;
+
+      case WXK_PAGEDOWN:
+        gridHisto->Scroll( 0, unitsHeigthStart + unitsToScroll );
+        //gridHisto->MovePageDown();
+        gridHisto->Refresh();
+        break;
+    }
+  }
 }
 
 
