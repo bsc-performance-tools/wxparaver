@@ -500,6 +500,7 @@ public:
 #endif // WIN32
   void OnFindDialog();
   
+  void DoLoadSession( const std::string &whichFileName );
   bool DoLoadTrace( const std::string &path );
   void UnloadTrace( int whichTrace );
   bool DoLoadCFG( const std::string &path );

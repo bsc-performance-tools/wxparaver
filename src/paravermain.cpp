@@ -302,16 +302,7 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
     
     if ( isSessionFile( fileName ) )
     {
-      wxFileName tmpFileName( wxString( fileName.c_str(), wxConvUTF8 ) );
-
-#ifdef WIN32
-      tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
-                             wxPATH_NORM_LONG );
-#else
-      tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
-                             wxPATH_NORM_LONG | wxPATH_NORM_TILDE );
-#endif
-      SessionSaver::LoadSession( tmpFileName.GetFullPath() );
+      DoLoadSession( fileName );
     }
     else if ( Trace::isTraceFile( fileName ) )
     {
@@ -698,6 +689,32 @@ void paraverMain::setTraceWorkspaces( Trace *whichTrace )
   firstUserWorkspace[ whichTrace ] = 0;
   traceWorkspaces[ whichTrace ].clear();
   workspacesManager->getMergedWorkspaces( tmpLoadedStates, tmpLoadedTypes, traceWorkspaces[ whichTrace ], firstUserWorkspace[ whichTrace ] );
+}
+
+
+void paraverMain::DoLoadSession( const string &whichFileName )
+{
+  wxFileName tmpFileName( wxString( whichFileName.c_str(), wxConvUTF8 ) );
+
+#ifdef WIN32
+  tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                         wxPATH_NORM_LONG );
+#else
+  tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
+                         wxPATH_NORM_LONG | wxPATH_NORM_TILDE );
+#endif
+  if ( tmpFileName.IsFileReadable() )
+  {
+    SessionSaver::LoadSession( tmpFileName.GetFullPath() );
+  }
+  else
+  {
+    wxString errMessage = wxString::FromAscii( whichFileName.c_str() ) + _( " isn't a valid session file." );
+    wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
+    raiseCurrentWindow = false;
+    message.ShowModal();
+    raiseCurrentWindow = true;
+  }
 }
 
 
