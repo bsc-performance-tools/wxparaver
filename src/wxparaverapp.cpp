@@ -137,7 +137,7 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
    { wxCMD_LINE_PARAM, 
     NULL,
     NULL,
-    wxT( "(trace.prv | trace.prv.gz) (configuration.cfg)" ),
+    wxT( "(trace.prv | trace.prv.gz) (configuration.cfg) | saved_session.session" ),
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
 
@@ -184,7 +184,7 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
    { wxCMD_LINE_PARAM, 
     NULL,
     NULL,
-    "(trace.prv | trace.prv.gz) (configuration.cfg)",
+    "(trace.prv | trace.prv.gz) (configuration.cfg) | saved_session.session",
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
 
