@@ -167,12 +167,6 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
-  /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftUp( wxMouseEvent& event );
-
-  /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDClick( wxMouseEvent& event );
-
   /// wxEVT_MIDDLE_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMiddleUp( wxMouseEvent& event );
 
@@ -196,6 +190,12 @@ public:
 
   /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftUp( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDClick( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -718,24 +718,27 @@ private:
   {
     public:
       ScaleImageVertical(
-                  Window* whichMyWindow, 
-                  const std::map< TSemanticValue, rgb >& whichSemanticValues,
-                  wxColour whichBackground,
-                  wxColour whichForeground,
-                  int whichBackgroundMode, // wxSOLID or wxTRANSPARENT; wxTRANSPARENT overrides fore and back
-                  wxFont whichTextFont,
-                  wxString& whichImagePath,
-                  const wxString& whichImageInfix,
+              Window* whichMyWindow,
+              const std::map< TSemanticValue, rgb >& whichSemanticValues,
+              wxColour whichBackground,
+              wxColour whichForeground,
+              int whichBackgroundMode, // wxSOLID or wxTRANSPARENT; wxTRANSPARENT overrides fore and back
+              wxFont whichTextFont,
+              wxString& whichImagePath,
+              const wxString& whichImageInfix,
 #if wxMAJOR_VERSION<3
-                  long whichImageType );
+              long whichImageType );
 #else
-                  wxBitmapType& whichImageType ); 
+              wxBitmapType& whichImageType );
 #endif
-                  
+
       ~ScaleImageVertical();
-      
+
+      void process();
       void save();
-      
+      wxImage *getImage() { return scaleImage; }
+      wxBitmap *getBitmap() { return scaleBitmap; }
+
     protected:
       virtual void init();
       virtual void sortSemanticValues();
@@ -743,9 +746,11 @@ private:
       virtual void computeImageSize();
       virtual void createDC();
       virtual void draw();
+      virtual void bitmapToImage();
+      virtual wxString buildScaleImagePath();
       virtual void drawLabeledRectangle( rgb semanticColour,
-                                           wxString semanticValueLabel,
-                                           bool drawIt = true );
+                                         wxString semanticValueLabel,
+                                         bool drawIt = true );
       void destroyDC();
 
       Window *myWindow;
@@ -761,7 +766,6 @@ private:
 #else
       wxBitmapType& imageType;
 #endif
-
       ParaverConfig::TImageFormat filterIndex;
       wxString tmpSuffix;
       TSemanticValue currentMin;
@@ -789,8 +793,7 @@ private:
       wxBitmap *scaleMaskBitmap;
       wxMemoryDC *scaleMaskDC;
       wxSize maxLabelSize;
-      
-    private:
+      wxImage *scaleImage;
   };
 
   class ScaleImageVerticalCodeColor : public ScaleImageVertical
@@ -816,8 +819,6 @@ private:
 
     protected:
       virtual void init();
-    
-    private:    
   };
 
   class ScaleImageVerticalGradientColor : public ScaleImageVertical
@@ -848,8 +849,6 @@ private:
       virtual void init();
       virtual void sortSemanticValues();
       virtual void draw();
-    
-    private:    
   };
 
   class ScaleImageVerticalFusedLines : public ScaleImageVertical
@@ -876,8 +875,6 @@ private:
     protected:
       virtual void init();
       virtual void computeMaxLabelSize();
-
-    private:    
   };
 
 
@@ -894,10 +891,12 @@ private:
               wxString& whichImagePath,
               const wxString& whichImageInfix,
 #if wxMAJOR_VERSION<3
-              long whichImageType );
+              long whichImageType,
 #else
-              wxBitmapType& whichImageType );
+              wxBitmapType& whichImageType,
 #endif
+              int whichWantedWidth = 0 );
+
 
       ~ScaleImageHorizontalGradientColor()
       {}
@@ -906,18 +905,18 @@ private:
       virtual void init();
       virtual void computeImageSize();
       virtual void draw();
-    
+
     private:
       typedef enum { LEFT = 0, CENTER, RIGHT } TAlign;
       typedef enum { FIRST = 0, MIDDLE, LAST, ANY } TPosition;
 
       int SIZE_OF_TINY_MARK;
       int outlierMargin; // Inner margin between outlier and whole scale
+      int wantedWidth;
 
       void drawRectangle( rgb semanticColour, TPosition position = ANY );
-      void drawLabel( wxString semanticValueLabel, bool drawIt = true, TAlign align = LEFT );    
+      void drawLabel( wxString semanticValueLabel, bool drawIt = true, TAlign align = LEFT );
   };
-
 };
 
 void progressFunctionTimeline( ProgressController *progress, void *callerWindow );

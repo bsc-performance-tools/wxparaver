@@ -374,8 +374,6 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
@@ -383,6 +381,8 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -3443,7 +3443,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
       saveDialog.SetFilterIndex( filterIndex );
       if ( saveDialog.ShowModal() != wxID_OK )
         return;
-        
+
       filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
@@ -3549,7 +3549,78 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 
   imageDC.SelectObject( wxNullBitmap );
   wxImage baseLayer = imageBitmap.ConvertToImage();
+
+  // Save timeline with gradient scale
+  if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
+  {
+    ScaleImageVertical *tmpImage;
+
+    // Create DC for timeline image
+    wxMemoryDC tmpTimelineDC( imageBitmap ); // reuse imageDC?
+
+    // Create DC for scale
+    int wantedWidth = baseLayer.GetWidth();
+    int backgroundMode = wxSOLID;
+    tmpImage = new ScaleImageHorizontalGradientColor(
+            myWindow,
+            semanticValuesToColor,
+            backgroundColour, foregroundColour, backgroundMode,
+            titleFont,
+            imagePath, wxString( _( "horiz.labels" ) ),
+            imageType,
+            wantedWidth );
+    tmpImage->process();
+    //tmpImage->save();
+
+    wxBitmap *tmpScale = tmpImage->getBitmap();
+    wxMemoryDC tmpScaleDC( *tmpScale );
+
+    // Create DC for destiny image
+    int totalHeigth = baseLayer.GetHeight() + tmpScale->GetHeight();
+    int totalWidth  = baseLayer.GetWidth() > tmpScale->GetWidth() ? baseLayer.GetWidth(): tmpScale->GetWidth();
+    wxBitmap tmpScaledTimelineBitmap( totalWidth, totalHeigth );
+    wxMemoryDC tmpScaledTimelineDC( tmpScaledTimelineBitmap );
+    tmpScaledTimelineDC.SetBackground( backgroundColour );
+    tmpScaledTimelineDC.Clear();
+
+    // Copy to destiny
+    int xsrc = 0;
+    int ysrc = 0;
+    int xdst = 0;
+    int ydst = 0;
+
+    tmpScaledTimelineDC.Blit( xdst, ydst,
+                             imageBitmap.GetWidth(), imageBitmap.GetHeight(),
+                             &tmpTimelineDC,
+                             xsrc, ysrc );
+
+    xdst = totalWidth - tmpScale->GetWidth();
+    if ( xdst < 0 )
+    {
+      xdst = 0;
+    }
+    ydst = imageBitmap.GetHeight();
+    tmpScaledTimelineDC.Blit( xdst, ydst,
+                              tmpScale->GetWidth(), tmpScale->GetHeight(),
+                              &tmpScaleDC,
+                              xsrc, ysrc );
+
+    //tmpScaledTimelineDC->SelectObject( wxNullBitmap );
+
+    wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
+    wxString currentFormat =
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                    ParaverConfig::TImageFormat( filterIndex ) ).c_str() );
+    wxString tmpScaledTimelinePath = wxFileName( imagePath ).GetPathWithSep() +
+                                     wxFileName( imagePath ).GetName() +
+                                     wxString( _(".w_legend.") ) +
+                                     currentFormat;
+    tmpScaledTimeline.SaveFile( tmpScaledTimelinePath, imageType );
+  }
+
+  // Save timeline image without scale
   baseLayer.SaveFile( imagePath, imageType );  
+
 }
 
 
@@ -3669,6 +3740,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                                                        //imagePath, wxString( _( "horiz.labels.transp" ) ),
                                                        imagePath, wxString( _( "" ) ),
                                                        imageType );
+    tmpImage->process();
     tmpImage->save();
     delete tmpImage;
    }
@@ -3681,6 +3753,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                                                  // imagePath, wxString( _( "vert.labels.transp" ) ),
                                                  imagePath, wxString( _( "" ) ),
                                                  imageType );
+    tmpImage->process();
     tmpImage->save();
     delete tmpImage;
   }
@@ -3705,6 +3778,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                                                  // imagePath, wxString( _( "vert.labels.transp" ) ),
                                                  imagePath, wxString( _( "" ) ),
                                                  imageType );
+    tmpImage->process();
     tmpImage->save();
     delete tmpImage;
   }
@@ -3749,16 +3823,26 @@ gTimeline::ScaleImageVertical::~ScaleImageVertical()
 }
 
 
-void gTimeline::ScaleImageVertical::save()
+wxString gTimeline::ScaleImageVertical::buildScaleImagePath()
 {
-  init();
-  sortSemanticValues();
-  computeMaxLabelSize();
-  computeImageSize();
-  createDC();
-  draw();
-  
+  wxString scaleImagePath;
+
+  if ( imageInfix.IsEmpty() )
+    scaleImagePath = imagePath;
+  else
+    scaleImagePath =
+            wxFileName( imagePath ).GetPathWithSep() +
+            wxFileName( imagePath ).GetName() +
+            _(".") + imageInfix + _(".") + tmpSuffix;
+
+  return scaleImagePath;
+}
+
+
+void gTimeline::ScaleImageVertical::bitmapToImage()
+{
   scaleDC->SelectObject( wxNullBitmap );
+
 #ifndef __WXMAC__
   // TODO: avoid to create/handle scaleMaskDC in all the other methods if wxTRANSPARENT
   if ( backgroundMode == wxTRANSPARENT )
@@ -3769,18 +3853,27 @@ void gTimeline::ScaleImageVertical::save()
   }
 #endif
 
-  wxImage scaleImage = scaleBitmap->ConvertToImage();
+  scaleImage = new wxImage( scaleBitmap->ConvertToImage() );
+}
 
-  wxString scaleImagePath;
-  if ( imageInfix.IsEmpty() )
-    scaleImagePath = imagePath;
-  else
-    scaleImagePath =
-            wxFileName( imagePath ).GetPathWithSep() +
-            wxFileName( imagePath ).GetName() +
-            _(".") + imageInfix + _(".") + tmpSuffix;
-  scaleImage.SaveFile( scaleImagePath, imageType );
-  
+
+void gTimeline::ScaleImageVertical::process()
+{
+  init();
+  sortSemanticValues();
+  computeMaxLabelSize();
+  computeImageSize();
+  createDC();
+  draw();
+  bitmapToImage();
+}
+
+
+void gTimeline::ScaleImageVertical::save()
+{
+  wxString scaleImagePath = buildScaleImagePath();
+  scaleImage->SaveFile( scaleImagePath, imageType );
+
 // Test code for transparency
 #if 0
   ::wxInitAllImageHandlers();
@@ -3893,7 +3986,7 @@ void gTimeline::ScaleImageVertical::sortSemanticValues()
   for ( std::map< TSemanticValue, rgb >::iterator it = semValues.begin(); it != semValues.end(); ++it )
   {
     keys.push_back( it->first );
-  }  
+  }
   std::sort( keys.begin(), keys.end() );
 }
 
@@ -3979,6 +4072,7 @@ void gTimeline::ScaleImageVertical::destroyDC()
   delete scaleMaskDC;
   delete scaleBitmap;
   delete scaleMaskBitmap;
+  delete scaleImage;
 }
 
 
@@ -4072,7 +4166,7 @@ void gTimeline::ScaleImageVerticalGradientColor::init()
 void gTimeline::ScaleImageVerticalGradientColor::sortSemanticValues()
 {
   semValues.clear();
-  TSemanticValue step = ( currentMax - currentMin ) / double( numSquaresWithoutOutliers );
+  TSemanticValue step = ( currentMax - currentMin ) / double( numSquaresWithoutOutliers - 1 ); //?
   for( int i = 0; i < numSquaresWithoutOutliers; ++i )
   {
     TSemanticValue current = ( i * step ) + currentMin;
@@ -4193,20 +4287,22 @@ gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
         wxString& whichImagePath,
         const wxString& whichImageInfix,
 #if wxMAJOR_VERSION<3
-        long whichImageType
+        long whichImageType,
 #else
-        wxBitmapType& whichImageType 
+        wxBitmapType& whichImageType,
 #endif
+        int whichWantedWidth
         ) : ScaleImageVerticalGradientColor( whichMyWindow,
-                                              whichSemanticValues,
-                                              whichBackground,
-                                              whichForeground,
-                                              whichBackgroundMode,
-                                              whichTextFont,
-                                              whichImagePath,
-                                              whichImageInfix,
-                                              whichImageType )
+                                             whichSemanticValues,
+                                             whichBackground,
+                                             whichForeground,
+                                             whichBackgroundMode,
+                                             whichTextFont,
+                                             whichImagePath,
+                                             whichImageInfix,
+                                             whichImageType )
 {
+  wantedWidth = whichWantedWidth;
 }
 
 
@@ -4215,7 +4311,7 @@ void gTimeline::ScaleImageHorizontalGradientColor::init()
   gTimeline::ScaleImageVerticalGradientColor::init();
   //tmpSuffix = _("as_row.");
   //tmpSuffix += wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-  
+
   widthRect = 20;
   imageStepXRectangle = widthRect;
   outlierMargin = 2 * titleMargin;
@@ -4225,8 +4321,45 @@ void gTimeline::ScaleImageHorizontalGradientColor::init()
 
 void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
 {
-  imageWidth = totalSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
+  // Heigth
   imageHeight = heightRect + maxLabelSize.GetHeight() + 3 * titleMargin;
+
+  // Width
+  if ( wantedWidth > 0 )
+  {
+    imageWidth = totalSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
+    if ( imageWidth > wantedWidth )
+    {
+      float MINIMUM_WIDTH_RECT = 10.0;
+      float variableWidthRect = (float)(( wantedWidth - 2 * outlierMargin - 2 * titleMargin ) / totalSquares );
+      while (( totalSquares > 0 ) &&
+             ( variableWidthRect < MINIMUM_WIDTH_RECT ) &&
+             ( variableWidthRect > 0.0 ))
+      {
+        --totalSquares;
+        variableWidthRect = (float)(( wantedWidth - 2 * outlierMargin - 2 * titleMargin ) / totalSquares );
+      }
+
+      widthRect = rint( variableWidthRect );
+      imageStepXRectangle = widthRect;
+    }
+    else if ( imageWidth < wantedWidth )
+    {
+      int extraSquares = rint( floorf( float( ( wantedWidth - imageWidth ) / widthRect )));
+      totalSquares += extraSquares;
+
+      if ( myWindow->isNotNullGradientColorSet() )
+        numSquaresWithoutOutliers = totalSquares - 3;
+      else
+        numSquaresWithoutOutliers = totalSquares - 2;
+    }
+
+    keys.clear();
+    sortSemanticValues();
+    computeMaxLabelSize();
+  }
+
+  imageWidth = totalSquares * widthRect + 2 * outlierMargin + 2 * titleMargin;
 }
 
 
@@ -4245,6 +4378,7 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
   
   // Colors
   int elem = 0;
+  int MIDDLE_POS = rint( numSquaresWithoutOutliers / 2 ) + 1; // 11 
   for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
   {
     ++elem;
@@ -4252,11 +4386,11 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
       drawRectangle( semValues[ *it ], FIRST );
     else if ( it == --keys.end() )
       drawRectangle( semValues[ *it ], LAST  );
-    else if ( elem == 11 )
+    else if ( elem == MIDDLE_POS )
       drawRectangle( semValues[ *it ], MIDDLE );
     else
       drawRectangle( semValues[ *it ], ANY );
-      
+
     xdst += imageStepXRectangle;
   }
 
@@ -4281,13 +4415,15 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
   for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
   {
     ++elem;
-    drawIt = it == keys.begin() || elem == 11 || it == --keys.end();
+    drawIt = it == keys.begin() || elem == MIDDLE_POS || it == --keys.end();
 
     if ( it == keys.begin() )
       drawLabel( semanticValueLabel[ *it ], drawIt, LEFT );
     else if ( it == --keys.end() )
+    {
       drawLabel( semanticValueLabel[ *it ], drawIt, RIGHT );
-    else if ( elem == 11 )
+    }
+    else if ( elem == MIDDLE_POS )
       drawLabel( semanticValueLabel[ *it ], drawIt, CENTER );
     else
       drawLabel( semanticValueLabel[ *it ], drawIt, LEFT );
@@ -5722,5 +5858,4 @@ void gTimeline::doDrawCaution( wxDC& whichDC )
                          true );
   }
 }
-
 
