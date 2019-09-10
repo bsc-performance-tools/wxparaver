@@ -18,6 +18,17 @@ if ! [ -e "${PARAVER_HOME}/bin/wxparaver.bin" ] ; then
   exit 1
 fi
 
+
+# workspaces.xml missing tag check - Added in 4.8.2
+USER_WRKSPACES="${HOME}/.paraver/workspaces.xml"
+if [ -f "${USER_WRKSPACES}" ] ; then
+  NUM_BOOST_FINAL_CLOSE_TAG=$( grep '</boost_serialization>' ${USER_WRKSPACES} | wc -l )
+  if [ $NUM_BOOST_FINAL_CLOSE_TAG -eq 0 ]; then
+    echo "</boost_serialization>" >> ${USER_WRKSPACES}
+  fi
+fi
+
+
 @inst_LOGIN_NODE_DETECTION@
 
 LD_LIBRARY_PATH="@inst_BOOST_LIBDIR@${PARAVER_HOME}/${LIB_DIR}/paraver-kernel:@inst_WXWIDGETS_LIBDIR@@inst_WXPROPGRID_LIB_PATH@${PARAVER_HOME}/${LIB_DIR}/wxparaver:$LD_LIBRARY_PATH" "${PARAVER_HOME}/bin/wxparaver.bin" "$@"
