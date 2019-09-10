@@ -127,6 +127,13 @@ inline double rint( double nr )
 #endif
 
 
+class MenuHintFile : public wxObjectRefData
+{
+  public:
+    string fileName;
+};
+
+
 /*!
  * paraverMain type definition
  */
@@ -668,6 +675,11 @@ void paraverMain::refreshMenuHints()
       }
       wxString tmpName = getHintComposed( *it2 );
       wxMenuItem *currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
+
+      MenuHintFile *tmpHintFile = new MenuHintFile();
+      tmpHintFile->fileName = (*it2).first;
+      currentHint->SetRefData( tmpHintFile );
+
       currentWorkspaceMenu->Append( currentHint );
       Connect( currentHint->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
@@ -4101,80 +4113,16 @@ wxString paraverMain::buildFormattedFileName( std::string windowName, const std:
 void paraverMain::OnHintClick( wxCommandEvent& event )
 {
   int hintId = event.GetId();
-  wxMenu *tmpMenu;
-  wxString selectedHint = menuHints->FindItem( hintId, &tmpMenu )->GetItemLabelText();
-  
-  bool found = false;
-  wxString workspaceName;
+  wxMenuItem *tmpMenuItem = menuHints->FindItem( hintId );
 
-  wxMenuItemList& menuItems1 = menuHints->GetMenuItems();
-  for (wxMenuItemList::iterator menuIt = menuItems1.begin(); menuIt != menuItems1.end() ; ++menuIt )
+  wxFileName tmpCFG( wxString::FromAscii( ( (MenuHintFile *) tmpMenuItem->GetRefData() )->fileName.c_str() ) );
+  if ( tmpCFG.IsRelative() )
   {
-    if( (*menuIt)->GetKind() == wxITEM_SEPARATOR )
-      continue;
-
-    workspaceName = (*menuIt)->GetItemLabelText();
-
-    wxMenuItemList& menuItems2 = (*menuIt)->GetSubMenu()->GetMenuItems();
-    for (wxMenuItemList::iterator menuIt2 = menuItems2.begin(); menuIt2 != menuItems2.end() ; ++menuIt2 )
-    {
-      if ( hintId == (*menuIt2)->GetId() )
-      {
-        found = true;
-        break;
-      }
-    }
-    
-    if (found)
-      break;
+    wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
+    tmpCFG.MakeAbsolute( tmpGlobalCFGs );
   }
 
-  wxString newWorkspaceName;
-  if( workspaceName.EndsWith( wxT( "#2" ), &newWorkspaceName ) )
-    workspaceName = newWorkspaceName;
-
-  for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(); it != traceWorkspaces[ loadedTraces[ currentTrace ]  ].end(); ++it )
-  {
-    if ( workspaceName == wxString::FromAscii( it->c_str() ) )
-    {
-      std::vector< std::pair< std::string, std::string > > currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
-      for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
-      {
-        wxString hintName = getHintComposed( *it2 );
-        if ( selectedHint == hintName )
-        {     
-          wxFileName tmpCFG( wxString::FromAscii( it2->first.c_str() ) );
-          if ( tmpCFG.IsRelative() )
-          {
-            wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
-            tmpCFG.MakeAbsolute( tmpGlobalCFGs );
-          }
-
-          DoLoadCFG( std::string( tmpCFG.GetFullPath().mb_str() ) );
-          return;
-        }
-      }
-      
-      currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getHintCFGs();
-      for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
-      {
-        wxString hintName = getHintComposed( *it2 );
-        if ( selectedHint == hintName )
-        {     
-          wxFileName tmpCFG( wxString::FromAscii( it2->first.c_str() ) );
-          if ( tmpCFG.IsRelative() )
-          {
-            wxString tmpGlobalCFGs( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 );
-            tmpCFG.MakeAbsolute( tmpGlobalCFGs );
-          }
-
-          DoLoadCFG( std::string( tmpCFG.GetFullPath().mb_str() ) );
-          return;
-        }
-      }
-      
-    }
-  }
+  DoLoadCFG( std::string( tmpCFG.GetFullPath().mb_str() ) );
 }
 
 
