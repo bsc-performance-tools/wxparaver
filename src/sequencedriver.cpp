@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -161,7 +155,6 @@ bool RunAppCutterAction::execute( std::string whichTrace )
   bool errorFound = false;
 
   CutFilterDialog *cutFilterDialog = new CutFilterDialog( wxparaverApp::mainWindow );
-  
 
   wxparaverApp::mainWindow->MainSettingsCutFilterDialog( cutFilterDialog, whichTrace, true );
   
@@ -172,9 +165,6 @@ bool RunAppCutterAction::execute( std::string whichTrace )
   toolOrder.push_back( TraceCutter::getID() );
   wxparaverApp::mainWindow->OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, dummyXmlName, toolOrder );
 
-  //cutFilterDialog->TransferDataToWindow( toolOrder, traceOptions );
-  //cutFilterDialog->EnableAllTabsFromToolsList(); // TODO: Probably shouldn't be here, it should be in CutFilterDialog
-  
   if( cutFilterDialog->ShowModal() == wxID_OK )
   {  
     wxparaverApp::mainWindow->OnOKCutFilterDialog( cutFilterDialog, toolOrder );
