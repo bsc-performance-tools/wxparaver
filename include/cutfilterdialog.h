@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 #ifndef _CUTFILTERDIALOG_H_
 #define _CUTFILTERDIALOG_H_
 
@@ -362,6 +356,10 @@ public:
   void SetXMLFile( const wxString& whichXMLFile, bool refresh = true );
   void TransferTraceOptionsToWindow( TraceOptions *traceOptions, std::vector< std::string > &whichToolIDsOrder );
 
+  void setOutputName( bool enable,
+                      bool saveGeneratedName,
+                      const std::string& sourceTrace = std::string("") );
+
 ////@begin CutFilterDialog member variables
   wxTextCtrl* textCtrlInputTrace;
   FileBrowserButton* fileBrowserButtonInputTrace;
@@ -475,9 +473,8 @@ private:
   bool globalEnable();
   bool globalEnable( const std::string& auxInputTrace );
 
-  void setOutputName( bool enable,
-                      bool saveGeneratedName,
-                      const std::string& sourceTrace = std::string("") );
+  void UpdateOutputTraceName();
+
   void enableOutputTraceWidgets( bool enable );
 
   void EnableSingleTab( int selected );
@@ -491,7 +488,6 @@ private:
   void UpdateGuiXMLSectionFromFile( TraceOptions *traceOptions, 
                                      std::vector< std::string > &toolIDsOrder );
   void UpdateGlobalXMLPath( const wxString& whichPath );
-  void UpdateOutputTraceName();
   
   void TransferXMLFileToWindow(  const wxString& whichXMLFile );
 };

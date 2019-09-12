@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -2860,16 +2854,14 @@ void CutFilterDialog::OnTextctrlCutFilterXmlTextUpdated( wxCommandEvent& event )
 
 void CutFilterDialog::OnTextctrlCutFilterInputTraceTextUpdated( wxCommandEvent& event )
 {
-  wxString tmpPath( textCtrlInputTrace->GetValue() );
+  wxString tmpPath( fileBrowserButtonInputTrace->GetPath() );
 
-  //wxFileName auxDirectory( event.GetPath() );
   wxFileName auxDirectory( tmpPath );
   if( !auxDirectory.IsDir() )
     auxDirectory = auxDirectory.GetPathWithSep();
   wxString directory( auxDirectory.GetFullPath() );
   outputPath = string( directory.mb_str() );
 
-  //string auxSourceTrace = string( event.GetPath().mb_str() ); // why? Widget still empty!!
   string auxSourceTrace = string( tmpPath.mb_str() ); // why? Widget still empty!!
 
   bool localEnable = globalEnable( auxSourceTrace );
