@@ -117,16 +117,6 @@
 
 #include <algorithm>
 
-#ifdef WIN32
-inline double rint( double nr )
-{
-  double f = floor( nr );
-  double c = ceil( nr );
-  return ( ( ( c - nr ) >= ( nr - f ) ) ? f : c );
-}
-#endif
-
-
 class MenuHintFile : public wxObjectRefData
 {
   public:

@@ -287,7 +287,7 @@ AgAAALLegAI=
 						<second>Histogram of cycles per us</second>
 					</item>
 					<item>
-						<first>counters_PAPI/performance/2dh_usefulduration.cfg</first>
+						<first>counters_PAPI/performance/2dh_duration_IPC.cfg</first>
 						<second>Histogram of duration correlated with IPC</second>
 					</item>
 				</hintCFGs>
