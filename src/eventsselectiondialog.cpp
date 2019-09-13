@@ -1293,7 +1293,7 @@ bool EventInfoManager::matchesAllRegex( string whichName, string whichValue )
 
   for( vector< wxRegEx * >::iterator it = filterRegEx.begin(); it != filterRegEx.end(); ++it )
   {
-    if ( !(*it)->Matches( wxString::FromAscii( whichName.c_str() ) ) and
+    if ( !(*it)->Matches( wxString::FromAscii( whichName.c_str() ) ) &&
          !(*it)->Matches( wxString::FromAscii( whichValue.c_str() ) ) )
     {
       matchesAll = false;
