@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <!DOCTYPE boost_serialization>
-<boost_serialization signature="serialization::archive" version="17">
+<boost_serialization signature="serialization::archive" version="15">
 <workspace_manager class_id="0" tracking_level="0" version="0">
 	<workspaces class_id="1" tracking_level="0" version="0">
 		<count>12</count>
@@ -299,8 +299,14 @@ AgAAALLegAI=
 				<name>Resources</name>
 				<type>2</type>
 				<autoTypes>
-					<count>0</count>
+					<count>1</count>
 					<item_version>1</item_version>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAACFaYgI=
+						</WorkspaceValue>
+					</item>
 				</autoTypes>
 				<hintCFGs>
 					<count>3</count>
