@@ -86,6 +86,8 @@
 #include "../icons/short_labels.xpm"
 #include "../icons/histo_sum.xpm"
 #include "../icons/inclusive.xpm"
+#include "../icons/histo_sort.xpm"
+#include "../icons/arrow_inverse.xpm"
 #include "../icons/caution.xpm"
 ////@end XPM images
 
@@ -288,6 +290,27 @@ void gHistogram::CreateControls()
   wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("icons/inclusive.xpm")));
   wxBitmap itemtool18BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
+  tbarHisto->AddSeparator();
+  wxStaticBitmap* itemStaticBitmap1 = new wxStaticBitmap( tbarHisto, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("icons/histo_sort.xpm")), wxDefaultPosition, wxDLG_UNIT(tbarHisto, wxSize(6, 4)), 0 );
+  if (gHistogram::ShowToolTips())
+    itemStaticBitmap1->SetToolTip(_("Sort columns by"));
+  tbarHisto->AddControl(itemStaticBitmap1);
+  wxArrayString itemChoice2Strings;
+  itemChoice2Strings.Add(_("None"));
+  itemChoice2Strings.Add(_("Total"));
+  itemChoice2Strings.Add(_("Average"));
+  itemChoice2Strings.Add(_("Maximum"));
+  itemChoice2Strings.Add(_("Minimum"));
+  itemChoice2Strings.Add(_("StDev"));
+  itemChoice2Strings.Add(_("Avg/Max"));
+  wxChoice* itemChoice2 = new wxChoice( tbarHisto, ID_CHOICE, wxDefaultPosition, wxDefaultSize, itemChoice2Strings, 0 );
+  itemChoice2->SetStringSelection(_("None"));
+  if (gHistogram::ShowToolTips())
+    itemChoice2->SetToolTip(_("Sort columns by"));
+  tbarHisto->AddControl(itemChoice2);
+  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_inverse.xpm")));
+  wxBitmap itemtool1BitmapDisabled;
+  tbarHisto->AddTool(ID_TOOL, wxEmptyString, itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
   tbarHisto->Realize();
 
   panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -900,6 +923,16 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   else if (name == wxT("icons/inclusive.xpm"))
   {
     wxBitmap bitmap(inclusive_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/histo_sort.xpm"))
+  {
+    wxBitmap bitmap(sortcols_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/arrow_inverse.xpm"))
+  {
+    wxBitmap bitmap(arrow_inverse_xpm);
     return bitmap;
   }
   else if (name == wxT("icons/caution.xpm"))
