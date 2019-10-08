@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -46,17 +40,7 @@ using namespace std;
 wxConnectionBase *stServer::OnAcceptConnection( const wxString& topic )
 {
   if( topic.Lower() == wxT( "wxparaver" ) )
-  {
-/*    wxWindowList::Node *node = wxTopLevelWindows.GetFirst();
-    while( node )
-    {
-      wxDialog *dialog = wxDynamicCast( node->GetData(), wxDialog );
-      while( dialog && dialog->IsModal() )
-        wxMilliSleep( 100 );
-      node = node->GetNext();
-    }*/
     return new stConnection();
-  }
   else
     return NULL;
 }
@@ -77,7 +61,7 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   wxString dataStr( data );
 #endif
   static wxString tmpCommand;
-  
+
   if( dataStr.IsEmpty() )
   {
     if( wxparaverApp::mainWindow )
@@ -101,25 +85,6 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   {
     tmpCommand += dataStr + wxT( " " );
   }
-/*  else if( filename[ 0 ] == '-' )
-  {
-    if( filename != wxT( "-h" ) && filename != wxT( "--help" ) )
-    {
-      wxString tmpStr = filename.AfterFirst( '=' );
-      if( tmpStr == wxT( "" ) )
-        tmpStr = filename.AfterFirst( ' ' );
-      if( tmpStr != wxT( "" ) )
-      {
-        unsigned long tmpType;
-        tmpStr.ToULong( &tmpType );
-        wxGetApp().SetEventTypeForCode( tmpType );
-      }
-    }
-  }
-  else
-  {
-    wxparaverApp::mainWindow->enqueueFile( string( filename.mb_str() ) );
-  }
-*/  
+
   return true;
 }

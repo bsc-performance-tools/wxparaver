@@ -296,7 +296,7 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
   for ( unsigned int i = 0; i < parser.GetParamCount(); ++i )
   {
     fileName = parser.GetParam( i ).mb_str();
-    
+
     if ( isSessionFile( fileName ) )
     {
       DoLoadSession( fileName );

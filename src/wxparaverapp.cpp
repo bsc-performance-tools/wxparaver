@@ -21,12 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *\
- | @file: $HeadURL$
- | @last_commit: $Date$
- | @version:     $Revision$
-\* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -400,7 +394,11 @@ bool wxparaverApp::OnInit()
 #endif
       if( connection )
       {
+#if wxMAJOR_VERSION >= 3
+        connection->Execute( "BEGIN" );
+#else
         connection->Execute( wxT( "BEGIN" ) );
+#endif
         connection->Execute( argv[ 0 ] );
         for( int i = 1; i < argc; ++i )
         {
@@ -422,7 +420,11 @@ bool wxparaverApp::OnInit()
             }
           }          
         }
+#if wxMAJOR_VERSION >= 3
+        connection->Execute( "END" );
+#else
         connection->Execute( wxT( "END" ) );
+#endif
         connection->Disconnect();
         delete connection;
         delete client;
