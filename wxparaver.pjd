@@ -47486,7 +47486,7 @@ If unchecked the above event  type/name will be used."</string>
                 <long name="proxy-Height">-1</long>
                 <string name="proxy-Help text">""</string>
                 <bool name="proxy-Hidden">0</bool>
-                <string name="proxy-Id name">"ID_TEXTCTRL"</string>
+                <string name="proxy-Id name">"ID_TEXTDESCRCFG"</string>
                 <long name="proxy-Id value">10003</long>
                 <string name="proxy-Implementation filename">""</string>
                 <string name="proxy-Initial value">""</string>
@@ -47534,7 +47534,7 @@ If unchecked the above event  type/name will be used."</string>
                 <bool name="proxy-wxWANTS_CHARS">0</bool>
                 <long name="proxy-X">-1</long>
                 <long name="proxy-Y">-1</long>
-                <string name="title">"wxTextCtrl: ID_TEXTCTRL"</string>
+                <string name="title">"wxTextCtrl: ID_TEXTDESCRCFG"</string>
                 <long name="title-mode">0</long>
                 <string name="type">"dialog-control-document"</string>
               </document>

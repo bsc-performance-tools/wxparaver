@@ -153,7 +153,7 @@ void LoadCFGDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
   itemBoxSizer2->Add(itemStaticBoxSizer1, 1, wxGROW|wxALL, 5);
 
-  textDescription = new wxTextCtrl( itemDialog1, ID_TEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER );
+  textDescription = new wxTextCtrl( itemDialog1, ID_TEXTDESCRCFG, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER );
   if (LoadCFGDialog::ShowToolTips())
     textDescription->SetToolTip(_("Shows the description of a configuration (.cfg) file."));
   itemStaticBoxSizer1->Add(textDescription, 1, wxGROW|wxALL, 5);
