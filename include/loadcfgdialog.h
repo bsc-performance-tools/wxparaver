@@ -75,10 +75,11 @@ class LoadCFGDialog: public wxDialog
 public:
   /// Constructors
   LoadCFGDialog();
-  LoadCFGDialog( wxWindow* parent, wxWindowID id = SYMBOL_LOADCFGDIALOG_IDNAME, const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE, const wxPoint& pos = SYMBOL_LOADCFGDIALOG_POSITION, const wxSize& size = SYMBOL_LOADCFGDIALOG_SIZE, long style = SYMBOL_LOADCFGDIALOG_STYLE );
+  LoadCFGDialog( wxWindow* parent, wxString directoryPath = "", wxWindowID id = SYMBOL_LOADCFGDIALOG_IDNAME, const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE, const wxPoint& pos = SYMBOL_LOADCFGDIALOG_POSITION, const wxSize& size = SYMBOL_LOADCFGDIALOG_SIZE, long style = SYMBOL_LOADCFGDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_LOADCFGDIALOG_IDNAME, const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE, const wxPoint& pos = SYMBOL_LOADCFGDIALOG_POSITION, const wxSize& size = SYMBOL_LOADCFGDIALOG_SIZE, long style = SYMBOL_LOADCFGDIALOG_STYLE );
+
 
   /// Destructor
   ~LoadCFGDialog();
@@ -109,7 +110,12 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for wxID_OK
+  void OnOkUpdate( wxUpdateUIEvent& event );
+
 ////@end LoadCFGDialog event handler declarations
+
+  wxString GetFilePath();
 
 
 ////@begin LoadCFGDialog member funhttps://docs.wxwidgets.org/3.0/classwx_text_file.htmlction declarations
@@ -130,8 +136,10 @@ public:
   wxButton* buttonCancel;
   wxButton* buttonLoad;
 ////@end LoadCFGDialog member variables
+  wxString directoryStartingPath;
   wxString selectedCfgFilePath;
   std::map< wxString, wxString > linksPerFileName;
+  
 };
 
 #endif

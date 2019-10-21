@@ -47289,7 +47289,7 @@ If unchecked the above event  type/name will be used."</string>
                 <string name="proxy-Data validator">""</string>
                 <string name="proxy-Data variable">""</string>
                 <long name="proxy-Default filter">0</long>
-                <string name="proxy-Default folder">"/"</string>
+                <string name="proxy-Default folder">""</string>
                 <bool name="proxy-Enabled">1</bool>
                 <string name="proxy-Event sources">""</string>
                 <bool name="proxy-External implementation">1</bool>
@@ -47643,6 +47643,7 @@ If unchecked the above event  type/name will be used."</string>
               <document>
                 <string name="proxy-type">"wbButtonProxy"</string>
                 <string name="event-handler-0">"wxEVT_COMMAND_BUTTON_CLICKED|OnOkClick|NONE||LoadCFGDialog"</string>
+                <string name="event-handler-1">"wxEVT_UPDATE_UI|OnOkUpdate|NONE||LoadCFGDialog"</string>
                 <string name="filename">""</string>
                 <string name="icon-name">"dialogcontrol"</string>
                 <string name="identifier">"itemButton7"</string>

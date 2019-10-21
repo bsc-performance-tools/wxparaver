@@ -62,6 +62,7 @@ BEGIN_EVENT_TABLE( LoadCFGDialog, wxDialog )
   EVT_LISTBOX_DCLICK( ID_LISTBOX, LoadCFGDialog::OnListboxDoubleClicked )
   EVT_BUTTON( wxID_CANCEL, LoadCFGDialog::OnCancelClick )
   EVT_BUTTON( wxID_OK, LoadCFGDialog::OnOkClick )
+  EVT_UPDATE_UI( wxID_OK, LoadCFGDialog::OnOkUpdate )
 ////@end LoadCFGDialog event table entries
 
 END_EVENT_TABLE()
@@ -76,7 +77,9 @@ LoadCFGDialog::LoadCFGDialog()
   Init();
 }
 
-LoadCFGDialog::LoadCFGDialog( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+
+LoadCFGDialog::LoadCFGDialog( wxWindow* parent, wxString directoryStartingPath, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style ):
+   directoryStartingPath( directoryStartingPath )
 {
   Init();
   Create(parent, id, caption, pos, size, style);
@@ -96,6 +99,10 @@ bool LoadCFGDialog::Create( wxWindow* parent, wxWindowID id, const wxString& cap
   CreateControls();
   Centre();
 ////@end LoadCFGDialog creation
+
+  treeDirs->SetPath( directoryStartingPath );
+  
+  std::cout << "Path set at: " << directoryStartingPath << std::endl;
   return true;
 }
 
@@ -142,7 +149,7 @@ void LoadCFGDialog::CreateControls()
   wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(itemBoxSizer1, 3, wxGROW|wxALL, 5);
 
-  treeDirs = new wxGenericDirCtrl( itemDialog1, ID_DIRCTRL, wxT("/"), wxDefaultPosition, wxDefaultSize, wxDIRCTRL_DIR_ONLY|wxDIRCTRL_SELECT_FIRST, wxT("All files (*.*)|*.*"), 0 );
+  treeDirs = new wxGenericDirCtrl( itemDialog1, ID_DIRCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_DIR_ONLY|wxDIRCTRL_SELECT_FIRST, wxT("All files (*.*)|*.*"), 0 );
   itemBoxSizer1->Add(treeDirs, 1, wxGROW|wxALL, 5);
 
   wxArrayString listDirsStrings;
@@ -196,7 +203,6 @@ void LoadCFGDialog::OnDirctrlSelChanged( wxTreeEvent& event )
     {
       wxString fileName = ( *fullFilePath ).AfterLast( '/' );
       listDirs->Append( fileName );
-      
       linksPerFileName[ fileName ] = ( *fullFilePath );
     }
   }
@@ -274,7 +280,6 @@ void LoadCFGDialog::OnCancelClick( wxCommandEvent& event )
 
 void LoadCFGDialog::OnOkClick( wxCommandEvent& event )
 {
-  paraverMain::myParaverMain->DoLoadCFG( std::string( selectedCfgFilePath.mb_str() )  ); //needs link!
   EndModal( wxID_OK );
 }
 
@@ -330,9 +335,22 @@ void LoadCFGDialog::OnListboxSelected( wxCommandEvent& event )
 
 void LoadCFGDialog::OnListboxDoubleClicked( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_LISTBOX in LoadCFGDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_LISTBOX in LoadCFGDialog. 
+  EndModal( wxID_OK );
 }
 
+
+/*!
+ * wxEVT_UPDATE_UI event handler for wxID_OK
+ */
+
+void LoadCFGDialog::OnOkUpdate( wxUpdateUIEvent& event )
+{
+  buttonLoad->Enable( listDirs->GetSelection() != wxNOT_FOUND );
+}
+
+
+wxString LoadCFGDialog::GetFilePath()
+{
+  return selectedCfgFilePath;
+  //return std::string( selectedCfgFilePath.mb_str() );
+}

@@ -1026,15 +1026,15 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
   //                      _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
   //                      wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
 
-  LoadCFGDialog dialog( this );
+  LoadCFGDialog dialog( this, CFGPath );
 
   raiseCurrentWindow = false;
   if( dialog.ShowModal() == wxID_OK )
   {
-    //wxString path = dialog.GetPath();
-    //CFGLoadedBefore = true;
-    //CFGPath = wxFileName( path ).GetPath();
-    //DoLoadCFG( std::string( path.mb_str() ) );
+    wxString path = dialog.GetFilePath();
+    CFGLoadedBefore = true;
+    CFGPath = wxFileName( path ).GetPath();
+    DoLoadCFG( std::string( path.mb_str() ) );
   }
   raiseCurrentWindow = true;
 }
