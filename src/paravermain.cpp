@@ -1022,16 +1022,19 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
   if ( !CFGLoadedBefore )
    CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
 
-  wxFileDialog dialog( this, _( "Load Configuration" ), CFGPath, _( "" ),
-                        _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
-                        wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
+  //wxFileDialog dialog( this, _( "Load Configuration" ), CFGPath, _( "" ),
+  //                      _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
+  //                      wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
+
+  LoadCFGDialog dialog( this );
+
   raiseCurrentWindow = false;
   if( dialog.ShowModal() == wxID_OK )
   {
-    wxString path = dialog.GetPath();
-    CFGLoadedBefore = true;
-    CFGPath = wxFileName( path ).GetPath();
-    DoLoadCFG( std::string( path.mb_str() ) );
+    //wxString path = dialog.GetPath();
+    //CFGLoadedBefore = true;
+    //CFGPath = wxFileName( path ).GetPath();
+    //DoLoadCFG( std::string( path.mb_str() ) );
   }
   raiseCurrentWindow = true;
 }

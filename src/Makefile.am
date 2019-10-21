@@ -15,6 +15,7 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     helpcontents.cpp \
                     histogramdialog.cpp \
                     histotablebase.cpp \
+                    loadcfgdialog.cpp \
                     paravermain.cpp \
                     pg_extraprop.cpp \
                     pg_util.cpp \
