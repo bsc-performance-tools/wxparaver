@@ -1587,7 +1587,7 @@ void gHistogram::OnPopUpRedoZoom()
 void gHistogram::rightDownManager()
 {
   paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
-
+  
   gPopUpMenu popUpMenu( this );
   popUpMenu.enable( "Undo Zoom", !GetHistogram()->emptyPrevZoom() );
   popUpMenu.enable( "Redo Zoom", !GetHistogram()->emptyNextZoom() );
@@ -2904,6 +2904,12 @@ void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
     OnPopUpRedoZoom();
     return;
   }
+  
+  if( event.ControlDown() && event.GetKeyCode() == (long) 'O' )
+  {
+    OnPopUpDrawModeObjectsMode();
+    return;
+  }
 
 
   if( zoomDragging && event.GetKeyCode() == WXK_ESCAPE )
@@ -3090,3 +3096,23 @@ void gHistogram::OnToolShortLabelsClick( wxCommandEvent& event )
     gridHisto->Refresh();
 }
 
+
+void gHistogram::OnPopUpRowSelection()
+{
+  /*RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
+
+  if ( dialog->ShowModal() == wxID_OK )
+  {
+    /*
+    if ( dialog->ShouldChangeTimelineZoom() )
+    {
+      myWindow->addZoom( dialog->GetNewBeginZoom(), dialog->GetNewEndZoom() );
+    }
+  
+    parent->setRedraw( true );
+    parent->setChanged( true );
+    * /
+  }
+
+  delete dialog;*/
+}

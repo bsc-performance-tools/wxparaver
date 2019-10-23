@@ -199,6 +199,7 @@ void LoadCFGDialog::OnDirctrlSelChanged( wxTreeEvent& event )
     myDir.GetAllFiles( myPath, &filesInDir, wxT("*.cfg"), wxDIR_FILES );
     listDirs->Clear();
     linksPerFileName.clear();
+    filesInDir.Sort();
     for ( wxArrayString::iterator fullFilePath = filesInDir.begin(); fullFilePath != filesInDir.end(); ++fullFilePath ) 
     {
       wxString fileName = ( *fullFilePath ).AfterLast( '/' );

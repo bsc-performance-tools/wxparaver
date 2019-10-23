@@ -850,6 +850,8 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
+  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
+
   buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::COLOR );
   buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::GRADIENT );
   buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::NOT_NULL_GRADIENT );
@@ -1748,6 +1750,8 @@ void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpRowSelection();
+  else if ( histogram != NULL )
+    histogram->OnPopUpRowSelection();
 }
 
 

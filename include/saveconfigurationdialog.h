@@ -36,6 +36,7 @@
 
 ////@begin includes
 #include "wx/statline.h"
+#include "wx/dirctrl.h"
 ////@end includes
 #include "cfg.h"
 #include "window.h"
@@ -46,6 +47,7 @@
  */
 
 ////@begin forward declarations
+class wxGenericDirCtrl;
 ////@end forward declarations
 
 /*!
@@ -69,6 +71,8 @@
 #define ID_CHECKGRADIENT 10022
 #define ID_TEXTDESCRIPTION 10015
 #define ID_CHECKBOX_SAVE_BASIC_MODE 10190
+#define ID_DIRCTRL 10001
+#define ID_LISTBOX 10002
 #define SYMBOL_SAVECONFIGURATIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxSTAY_ON_TOP|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVECONFIGURATIONDIALOG_TITLE _("Save configuration")
 #define SYMBOL_SAVECONFIGURATIONDIALOG_IDNAME ID_SAVECONFIGURATIONDIALOG
@@ -123,6 +127,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_SAVE
   void OnSaveClick( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL
+  void OnDirctrlItemActivated( wxTreeEvent& event );
+
 ////@end SaveConfigurationDialog event handler declarations
 
 ////@begin SaveConfigurationDialog member function declarations
@@ -174,6 +181,8 @@ public:
   wxCheckBox* optComputeGradient;
   wxTextCtrl* textDescription;
   wxCheckBox* checkboxSaveCFGBasicMode;
+  wxGenericDirCtrl* treeDirs;
+  wxListBox* listDirs;
 private:
   std::vector<Histogram *> histograms;
   Trace * initialTrace;

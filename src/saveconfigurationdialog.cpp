@@ -69,6 +69,7 @@ BEGIN_EVENT_TABLE( SaveConfigurationDialog, wxDialog )
   EVT_BUTTON( ID_BUTTON_SET_ALL_HISTOGRAMS, SaveConfigurationDialog::OnButtonSetAllHistogramsClick )
   EVT_BUTTON( ID_BUTTON_UNSET_ALL_HISTOGRAMS, SaveConfigurationDialog::OnButtonUnsetAllHistogramsClick )
   EVT_BUTTON( wxID_SAVE, SaveConfigurationDialog::OnSaveClick )
+  EVT_TREE_ITEM_ACTIVATED( wxID_TREECTRL, SaveConfigurationDialog::OnDirctrlItemActivated )
 ////@end SaveConfigurationDialog event table entries
 
 END_EVENT_TABLE()
@@ -101,10 +102,6 @@ bool SaveConfigurationDialog::Create( wxWindow* parent, wxWindowID id, const wxS
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if (GetSizer())
-  {
-    GetSizer()->SetSizeHints(this);
-  }
   Centre();
 ////@end SaveConfigurationDialog creation
   return true;
@@ -145,6 +142,8 @@ void SaveConfigurationDialog::Init()
   optComputeGradient = NULL;
   textDescription = NULL;
   checkboxSaveCFGBasicMode = NULL;
+  treeDirs = NULL;
+  listDirs = NULL;
 ////@end SaveConfigurationDialog member initialisation
 }
 
@@ -279,6 +278,16 @@ void SaveConfigurationDialog::CreateControls()
   itemStdDialogButtonSizer35->AddButton(itemButton37);
 
   itemStdDialogButtonSizer35->Realize();
+
+  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+  itemDialog1->SetSizer(itemBoxSizer1);
+
+  treeDirs = new wxGenericDirCtrl( itemDialog1, ID_DIRCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_DIR_ONLY|wxDIRCTRL_SELECT_FIRST, wxT("All files (*.*)|*.*"), 0 );
+  itemBoxSizer1->Add(treeDirs, 1, wxGROW|wxALL, 5);
+
+  wxArrayString listDirsStrings;
+  listDirs = new wxListBox( itemDialog1, ID_LISTBOX, wxDefaultPosition, wxDefaultSize, listDirsStrings, wxLB_SINGLE|wxLB_SORT );
+  itemBoxSizer1->Add(listDirs, 1, wxGROW|wxALL, 5);
 
 ////@end SaveConfigurationDialog content construction
 }
@@ -608,5 +617,18 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
     }
   }
   listHistograms->InsertItems( items, 0 );
+}
+
+
+/*!
+ * wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL
+ */
+
+void SaveConfigurationDialog::OnDirctrlItemActivated( wxTreeEvent& event )
+{
+////@begin wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL in SaveConfigurationDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL in SaveConfigurationDialog. 
 }
 
