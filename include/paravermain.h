@@ -51,6 +51,7 @@
 #include "cfg.h" // SaveOptions
 #include "workspacemanager.h"
 #include "preferencesdialog.h"
+#include "loadcfgdialog.h"
 
 #ifdef WIN32
 #undef VERSION

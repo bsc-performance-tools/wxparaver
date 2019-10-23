@@ -30,7 +30,7 @@
  */
 
 ////@begin includes
-#include "filebrowserbutton.h"
+#include "include/filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
