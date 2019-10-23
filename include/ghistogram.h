@@ -370,7 +370,6 @@ public:
   void OnPopUpDrawModeBothAverage();
   void OnPopUpDrawModeBothAverageNotZero();
   void OnPopUpDrawModeBothMode();
-  void OnPopUpRowSelection();
 
   void OnPopUpPixelSize( PRV_UINT16 whichPixelSize );
   
