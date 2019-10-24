@@ -87,7 +87,7 @@
 #include "../icons/histo_sum.xpm"
 #include "../icons/inclusive.xpm"
 #include "../icons/histo_sort.xpm"
-#include "../icons/arrow_inverse.xpm"
+#include "../icons/arrow_reverse.xpm"
 #include "../icons/caution.xpm"
 ////@end XPM images
 
@@ -309,9 +309,9 @@ void gHistogram::CreateControls()
   if (gHistogram::ShowToolTips())
     choiceSortBy->SetToolTip(_("Sort columns by"));
   tbarHisto->AddControl(choiceSortBy);
-  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_inverse.xpm")));
+  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_reverse.xpm")));
   wxBitmap itemtool1BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_INVERSE_SORT, _("Reverse order"), itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
+  tbarHisto->AddTool(ID_TOOL_REVERSE_SORT, _("Reverse order"), itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
   tbarHisto->Realize();
 
   panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -931,7 +931,7 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
     wxBitmap bitmap(sortcols_xpm);
     return bitmap;
   }
-  else if (name == wxT("icons/arrow_inverse.xpm"))
+  else if (name == wxT("icons/arrow_reverse.xpm"))
   {
     wxBitmap bitmap(arrow_inverse_xpm);
     return bitmap;
