@@ -36,6 +36,7 @@
 #include "wx/statusbr.h"
 ////@end includes
 #include <wx/statbmp.h>
+#include <wx/choice.h>
 #include "wx/timer.h"
 #include "paraverkerneltypes.h"
 #include "popupmenu.h"
@@ -75,8 +76,8 @@ class HistoTableBase;
 #define ID_TOOL_SHORT_LABELS 10287
 #define ID_TOOL_ONLY_TOTALS 10286
 #define ID_TOOL_INCLUSIVE 10105
-#define ID_CHOICE 10002
-#define ID_TOOL 10285
+#define ID_TOOL_CHOICE_SORTBY 10002
+#define ID_TOOL_INVERSE_SORT 10285
 #define HISTO_PANEL_DATA 10000
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
@@ -386,6 +387,7 @@ public:
 ////@begin gHistogram member variables
   wxPanel* panelToolbar;
   wxToolBar* tbarHisto;
+  wxChoice* choiceSortBy;
   wxPanel* panelData;
   wxBoxSizer* mainSizer;
   wxScrolledWindow* zoomHisto;

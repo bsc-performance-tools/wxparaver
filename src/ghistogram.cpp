@@ -222,6 +222,7 @@ void gHistogram::Init()
   zoomDragging = false;
   panelToolbar = NULL;
   tbarHisto = NULL;
+  choiceSortBy = NULL;
   panelData = NULL;
   mainSizer = NULL;
   zoomHisto = NULL;
@@ -295,22 +296,22 @@ void gHistogram::CreateControls()
   if (gHistogram::ShowToolTips())
     itemStaticBitmap1->SetToolTip(_("Sort columns by"));
   tbarHisto->AddControl(itemStaticBitmap1);
-  wxArrayString itemChoice2Strings;
-  itemChoice2Strings.Add(_("None"));
-  itemChoice2Strings.Add(_("Total"));
-  itemChoice2Strings.Add(_("Average"));
-  itemChoice2Strings.Add(_("Maximum"));
-  itemChoice2Strings.Add(_("Minimum"));
-  itemChoice2Strings.Add(_("StDev"));
-  itemChoice2Strings.Add(_("Avg/Max"));
-  wxChoice* itemChoice2 = new wxChoice( tbarHisto, ID_CHOICE, wxDefaultPosition, wxDefaultSize, itemChoice2Strings, 0 );
-  itemChoice2->SetStringSelection(_("None"));
+  wxArrayString choiceSortByStrings;
+  choiceSortByStrings.Add(_("Default"));
+  choiceSortByStrings.Add(_("Total"));
+  choiceSortByStrings.Add(_("Average"));
+  choiceSortByStrings.Add(_("Maximum"));
+  choiceSortByStrings.Add(_("Minimum"));
+  choiceSortByStrings.Add(_("StDev"));
+  choiceSortByStrings.Add(_("Avg/Max"));
+  choiceSortBy = new wxChoice( tbarHisto, ID_TOOL_CHOICE_SORTBY, wxDefaultPosition, wxDefaultSize, choiceSortByStrings, 0 );
+  choiceSortBy->SetStringSelection(_("Default"));
   if (gHistogram::ShowToolTips())
-    itemChoice2->SetToolTip(_("Sort columns by"));
-  tbarHisto->AddControl(itemChoice2);
+    choiceSortBy->SetToolTip(_("Sort columns by"));
+  tbarHisto->AddControl(choiceSortBy);
   wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_inverse.xpm")));
   wxBitmap itemtool1BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL, wxEmptyString, itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
+  tbarHisto->AddTool(ID_TOOL_INVERSE_SORT, _("Reverse order"), itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
   tbarHisto->Realize();
 
   panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
