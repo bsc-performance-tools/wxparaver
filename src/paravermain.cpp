@@ -1048,7 +1048,7 @@ void paraverMain::OnExitClick( wxCommandEvent& event )
 {
   if ( !LoadedWindows::getInstance()->emptyWindows() )
   {
-    if ( wxMessageBox( wxT( "Some windows already opened... continue closing?" ),
+    if ( wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
                        wxT( "Please confirm" ),
                        wxICON_QUESTION | wxYES_NO,
                        this ) != wxYES )

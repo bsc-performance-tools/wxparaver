@@ -101,8 +101,6 @@ bool LoadCFGDialog::Create( wxWindow* parent, wxWindowID id, const wxString& cap
 ////@end LoadCFGDialog creation
 
   treeDirs->SetPath( directoryStartingPath );
-  
-  std::cout << "Path set at: " << directoryStartingPath << std::endl;
   return true;
 }
 
