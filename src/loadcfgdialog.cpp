@@ -291,38 +291,13 @@ void LoadCFGDialog::OnListboxSelected( wxCommandEvent& event )
 {
   wxString myPath = linksPerFileName[ listDirs->GetString( listDirs->GetSelection() ) ];
   selectedCfgFilePath = myPath;
-
-  wxTextFile cfgFile;
-  cfgFile.Open( myPath );
   
-  wxString myLine = cfgFile.GetFirstLine();
-  bool startedRecording = false;
-  bool finishedRecording = false;
-  
+  // Description
+  std::string descrSTL = "";
   wxString cfgDescription = "";
-  while ( !cfgFile.Eof() and not finishedRecording )
-  {
-    if ( myLine == "end_description" ) 
-    {
-      startedRecording = false;
-      finishedRecording = true;
-    }
-    
-    if ( startedRecording and not finishedRecording and myLine.Trim() != "" ) 
-    {
-      cfgDescription += myLine + "\r\n";
-    }
-    
-    if ( myLine == "begin_description" ) 
-    {
-      startedRecording = true;
-    }
-    myLine = cfgFile.GetNextLine();
-  }
-  if ( cfgDescription == "" )
-  {
-      cfgDescription = "*No description available*";
-  }
+  CFGLoader *cfgl;
+  if ( cfgl->loadDescription( std::string(myPath.mb_str()), descrSTL ) )
+    cfgDescription = wxString( descrSTL );
   
   textDescription->SetValue( cfgDescription );
 }

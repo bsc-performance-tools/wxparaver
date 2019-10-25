@@ -33,6 +33,7 @@
 #include <wx/textfile.h>
 #include <wx/dir.h>
 #include <map>
+#include "cfg.h"
 
 ////@begin includes
 #include "wx/dirctrl.h"
