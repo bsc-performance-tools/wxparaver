@@ -387,6 +387,9 @@ public:
   static wxProgressDialog *dialogProgress;
 
   SelectionManagement< TObjectOrder, TWindowLevel > *getSelectedRows();
+  virtual void setSelectedRows( TWindowLevel onLevel, std::vector< bool > &selected );
+  virtual void setSelectedRows( TWindowLevel onLevel, std::vector< TObjectOrder > &selected );
+    
   
 
 ////@begin gHistogram member variables

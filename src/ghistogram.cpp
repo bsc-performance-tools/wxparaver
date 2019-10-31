@@ -860,13 +860,21 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
 }
 
 
-/*!
- * Should we show tooltips?
- */
-
 SelectionManagement< TObjectOrder, TWindowLevel > * gHistogram::getSelectedRows()
 {
   return &rowSelection;
+}
+
+void gHistogram::setSelectedRows( TWindowLevel onLevel, vector< bool > &selected )
+{
+  //if( selected.size() == myTrace->getLevelObjects( onLevel ) )
+  //  rowSelection.setSelected( selected, onLevel );
+  rowSelection.setSelected( selected, myHistogram->getControlWindow()->getLevel() );
+}
+
+void gHistogram::setSelectedRows( TWindowLevel onLevel, vector< TObjectOrder > &selected )
+{
+  rowSelection.setSelected( selected, myHistogram->getControlWindow()->getLevel() );
 }
 
 
