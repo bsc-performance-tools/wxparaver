@@ -236,7 +236,7 @@ void gPasteWindowProperties::copy( gHistogram* whichHistogram )
 }
 
 
-void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string property )
+void gPasteWindowProperties::paste( gTimeline* whichTimeline, const string property )
 {
   if ( timeline != NULL )
   {
@@ -338,9 +338,15 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline,const string proper
     else if ( property == STR_OBJECTS )
     {
       vector< bool > auxRows;
+      /*
       Window *controlWin = histogram->GetHistogram()->getControlWindow();
       controlWin->getSelectedRows( controlWin->getLevel(), auxRows, true );
       whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
+      */
+
+      histogram->getSelectedRows()->getSelected( auxRows, histogram->GetHistogram()->getControlWindow()->getLevel() );
+      whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
+
     }
     else if ( property == STR_DURATION )
     {
@@ -387,8 +393,13 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     }
     else if ( property == STR_OBJECTS )
     {
-      whichHistogram->GetHistogram()->addZoom( timeline->GetMyWindow()->getZoomSecondDimension().first,
-                                               timeline->GetMyWindow()->getZoomSecondDimension().second );
+      //whichHistogram->GetHistogram()->addZoom( timeline->GetMyWindow()->getZoomSecondDimension().first,
+      //                                         timeline->GetMyWindow()->getZoomSecondDimension().second );
+      
+      SelectionManagement< TObjectOrder, TWindowLevel >* tSel = timeline->GetMyWindow()->getSelectedRows();
+      vector< bool > auxRows;
+      tSel->getSelected( auxRows, timeline->GetMyWindow()->getLevel() );
+      whichHistogram->setSelectedRows( timeline->GetMyWindow()->getLevel(), auxRows );
     }
     else if ( property == STR_DURATION )
     {
@@ -424,8 +435,11 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     }
     else if ( property == STR_OBJECTS )
     {
-      whichHistogram->GetHistogram()->addZoom( histogram->GetHistogram()->getZoomSecondDimension().first,
-                                               histogram->GetHistogram()->getZoomSecondDimension().second );
+      //whichHistogram->GetHistogram()->addZoom( histogram->GetHistogram()->getZoomSecondDimension().first,
+      //                                         histogram->GetHistogram()->getZoomSecondDimension().second );
+      vector< bool > auxRows;
+      histogram->getSelectedRows()->getSelected( auxRows, histogram->GetHistogram()->getControlWindow()->getLevel() );
+      whichHistogram->setSelectedRows( whichHistogram->GetHistogram()->getControlWindow()->getLevel(), auxRows );
     }
     else if ( property == STR_DURATION )
     {

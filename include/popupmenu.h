@@ -167,9 +167,9 @@ class gPopUpMenu : public wxMenu
     void enableMenu( gHistogram *whichHistogram );
 
     static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gHistogram *whichHistogram );
-    static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gTimeline * whichTimeline );
-    // static wxMultiChoiceDialog *createRowSelectionDialog( wxArrayString& choices, gTimeline *whichTimeline );
+    static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gTimeline *whichTimeline );
     static RowsSelectionDialog *createRowSelectionDialog( gTimeline *whichTimeline );
+    static RowsSelectionDialog *createRowSelectionDialog( gHistogram *histogram );
     static string getOption( wxArrayString& choices, int position );
 
     void OnMenuCopy( wxCommandEvent& event);

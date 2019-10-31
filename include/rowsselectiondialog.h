@@ -44,6 +44,7 @@
 
 #include "paraverkerneltypes.h"
 #include "selectionmanagement.h"
+#include "histogram.h"
 
 /*!
  * Forward declarations
@@ -70,6 +71,7 @@ class RowsSelectionDialog: public wxPropertySheetDialog
   DECLARE_EVENT_TABLE()
 
 public:
+
   /// Constructors
   RowsSelectionDialog();
   RowsSelectionDialog( wxWindow* parent,
@@ -81,6 +83,17 @@ public:
                        const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION,
                        const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE,
                        long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
+  
+  RowsSelectionDialog( wxWindow* parent,
+                       Histogram* histogram,
+                       SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
+                       wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
+                       const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
+                       bool parentIsGtimeline = false,
+                       const wxPoint& pos = SYMBOL_ROWSSELECTIONDIALOG_POSITION,
+                       const wxSize& size = SYMBOL_ROWSSELECTIONDIALOG_SIZE,
+                       long style = SYMBOL_ROWSSELECTIONDIALOG_STYLE );
+
 
   /// Creation
   bool Create( wxWindow* parent,
@@ -121,9 +134,12 @@ public:
 
 private:
   Window *myTimeline;
+  Histogram *myHistogram;
+  
   SelectionManagement< TObjectOrder, TWindowLevel > *mySelectedRows;
-  //SelectionManagement< TObjectOrder, TWindowLevel > originalSelectedRows;
+
   TWindowLevel minLevel; 
+  TWindowLevel myLevel;
   std::vector< wxButton * > selectionButtons;
   std::vector< wxCheckListBox* > levelCheckList;
 
@@ -134,6 +150,8 @@ private:
   bool shouldChangeTimelineZoom;
   TObjectOrder beginZoom;
   TObjectOrder endZoom;
+
+  Trace *myTrace;
   
   std::map< TWindowLevel , std::vector< TObjectOrder > >selectedIndex;
 

@@ -233,6 +233,8 @@ void gHistogram::Init()
   histoStatus = NULL;
 ////@end gHistogram member initialisation
   parent = NULL;
+
+  firstExecute = false;
 }
 
 
@@ -395,6 +397,13 @@ void gHistogram::execute()
   Update();
 
   ProgressController *progress = NULL;
+
+  if ( !firstExecute )
+  { 
+    rowSelection = (* myHistogram->getControlWindow()->getSelectedRows() );
+    firstExecute = true;
+  }
+
   if ( myHistogram->getShowProgressBar() )
   {
     // Disabled because some window managers can't show the dialog later
@@ -433,9 +442,9 @@ void gHistogram::execute()
     beginRow = myHistogram->getZoomSecondDimension().first;
     endRow =  myHistogram->getZoomSecondDimension().second;
   }
-  myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
-                                                    selectedRows, beginRow, endRow, true );
-
+  //myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
+  //                                                  selectedRows, beginRow, endRow, true );
+  rowSelection.getSelected( selectedRows, myHistogram->getControlWindow()->getLevel() );
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
 
   if( myHistogram->getZoom() )
@@ -587,11 +596,11 @@ void gHistogram::fillZoom()
     if( horizontal )
     {
       numDrawCols = noVoidColumns.size();
-      numDrawRows = myHistogram->getNumRows();
+      numDrawRows = myHistogram->getNumRows();;
     }
     else
     {
-      numDrawCols = myHistogram->getNumRows();
+      numDrawCols = myHistogram->getNumRows();;
       numDrawRows = noVoidColumns.size();
     }
     columnSelection.getSelected( selectedColumns );
@@ -601,11 +610,11 @@ void gHistogram::fillZoom()
     if( horizontal )
     {
       numDrawCols = numCols;
-      numDrawRows = myHistogram->getNumRows();
+      numDrawRows = myHistogram->getNumRows();;
     }
     else
     {
-      numDrawCols = myHistogram->getNumRows();
+      numDrawCols = myHistogram->getNumRows();;
       numDrawRows = numCols;
     }
     selectedColumns.insert( selectedColumns.begin(), numCols, true );
@@ -703,7 +712,11 @@ void gHistogram::fillZoom()
 void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn,
                              vector<THistogramColumn>& noVoidColumns, wxMemoryDC& bufferDraw )
 {
-  TObjectOrder numRows = myHistogram->getNumRows();
+  std::vector< TObjectOrder > myRows;
+  rowSelection.getSelected( myRows, myHistogram->getControlWindow()->getLevel() );
+  TObjectOrder numRows = myRows.size();
+  myRows.clear();
+  
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
   bool firstRowColored = myHistogram->getFirstRowColored();
@@ -727,7 +740,6 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
   for( TObjectOrder iRow = 0; iRow < numRows; ++iRow )
   {
     valuesColumns.clear();
-
     for( THistogramColumn drawCol = beginColumn; drawCol <= endColumn; ++drawCol )
     {
       THistogramColumn iCol = drawCol;
@@ -845,6 +857,24 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       valuesObjects.clear();
     }
   }
+}
+
+
+SelectionManagement< TObjectOrder, TWindowLevel > * gHistogram::getSelectedRows()
+{
+  return &rowSelection;
+}
+
+void gHistogram::setSelectedRows( TWindowLevel onLevel, vector< bool > &selected )
+{
+  //if( selected.size() == myTrace->getLevelObjects( onLevel ) )
+  //  rowSelection.setSelected( selected, onLevel );
+  rowSelection.setSelected( selected, myHistogram->getControlWindow()->getLevel() );
+}
+
+void gHistogram::setSelectedRows( TWindowLevel onLevel, vector< TObjectOrder > &selected )
+{
+  rowSelection.setSelected( selected, myHistogram->getControlWindow()->getLevel() );
 }
 
 
@@ -1030,6 +1060,8 @@ bool isSyncedWithGroup( Window *whichWindow, unsigned int whichGroup )
 
 void gHistogram::updateHistogram()
 {
+  //rowSelection.getSelected( selectedRows, myHistogram->getControlWindow()->getLevel() );
+
   if( myHistogram->getForceRecalc() || ( wxparaverApp::mainWindow->getAutoRedraw() && myHistogram->getRecalc() ) )
   {
     unsigned int tmpGroup = myHistogram->getSyncGroup();
@@ -1234,6 +1266,7 @@ void gHistogram::OnPopUpPasteControlDimensions()
   myHistogram->setRecalc( true );
 }
 
+
 void gHistogram::OnPopUpClone()
 {
   Histogram *clonedHistogram = myHistogram->clone();
@@ -1337,6 +1370,26 @@ void gHistogram::OnPopUpFitObjects()
   myHistogram->setRecalc( true );
   updateHistogram();
 }
+
+
+void gHistogram::OnPopUpRowSelection()
+{
+  
+  RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
+
+  if ( dialog->ShowModal() == wxID_OK )
+  {
+    if ( dialog->ShouldChangeTimelineZoom() )
+    {
+      myHistogram->addZoom( dialog->GetNewBeginZoom(), dialog->GetNewEndZoom() );
+    }
+  
+    myHistogram->setRecalc( true );
+    //updateHistogram();
+  }
+  delete dialog;
+}
+
 
 void gHistogram::OnPopUpAutoControlScale( bool state )
 {
@@ -1811,7 +1864,7 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   THistogramColumn column = myHistogram->getHorizontal() ? floor( lastPosZoomX / zoomCellWidth ) :
                                                            floor( lastPosZoomY / zoomCellHeight );
   TObjectOrder row = myHistogram->getHorizontal() ? floor( lastPosZoomY / zoomCellHeight ) :
-                                                    floor( lastPosZoomX / zoomCellWidth );
+                                                    floor( lastPosZoomX / zoomCellWidth  ) ;
 
   if( myHistogram->getHideColumns() )
   {
