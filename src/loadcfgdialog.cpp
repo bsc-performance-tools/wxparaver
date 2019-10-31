@@ -299,9 +299,16 @@ void LoadCFGDialog::OnListboxSelected( wxCommandEvent& event )
   std::string descrSTL = "";
   wxString cfgDescription = "";
   CFGLoader *cfgl;
-  if ( cfgl->loadDescription( std::string(myPath.mb_str()), descrSTL ) )
+  if ( cfgl->loadDescription( std::string( myPath.mb_str() ), descrSTL ) )
     cfgDescription = wxString( descrSTL );
-  
+  /*else if ( wxDirExists( myPath ) )
+    cfgDescription = "*No description available*";*/
+  else if ( wxFileExists( myPath ) && !cfgl->isCFGFile( std::string( myPath.mb_str() ) ) )
+    cfgDescription = "*Not a Paraver CFG file!*";
+  else
+    cfgDescription = "*No description available*";
+    
+    
   textDescription->SetValue( cfgDescription );
 }
 

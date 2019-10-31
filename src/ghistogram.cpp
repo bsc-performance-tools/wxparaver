@@ -1879,7 +1879,7 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   }
     
   if( row > myHistogram->getNumRows() )
-    row = myHistogram->getNumRows();;
+    row = myHistogram->getNumRows();
     
   if( row > 0 )
     text << wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
