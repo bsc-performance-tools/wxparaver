@@ -404,7 +404,6 @@ public:
 private:
   SelectionManagement< THistogramColumn, int > columnSelection;
   SelectionManagement< TObjectOrder, TWindowLevel > rowSelection;
-  TObjectOrder displayNumRows;
   std::map< TObjectOrder, TObjectOrder > rowPlacement;
 
   wxBitmap drawImage;
@@ -424,6 +423,7 @@ private:
   wxBitmap zoomImage;
   wxPoint zoomPointBegin;
   wxPoint zoomPointEnd;
+  bool firstExecute;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
 
