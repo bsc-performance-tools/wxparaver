@@ -375,7 +375,22 @@ RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gTimeline *whichTimel
                                                            whichTimeline->GetMyWindow(),
                                                            whichTimeline->GetMyWindow()->getSelectedRows(),
                                                            ID_ROWSSELECTIONDIALOG,
-                                                           _( "Rows Selection" ), 
+                                                           _( "Timeline Row Selection" ), 
+                                                           parentIsGtimeline );
+
+  return myDialog;
+}
+
+
+RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gHistogram *histogram )
+{
+  bool parentIsGtimeline = true;
+
+  RowsSelectionDialog *myDialog = new RowsSelectionDialog( (wxWindow * )histogram,
+                                                           histogram->GetHistogram(),
+                                                           histogram->getSelectedRows(), /* histogram->GetHistogram()->getSelectedRows() */
+                                                           ID_ROWSSELECTIONDIALOG,
+                                                           _( "Histogram Row Selection" ), 
                                                            parentIsGtimeline );
 
   return myDialog;
@@ -821,6 +836,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( this, _( STR_UNDO_ZOOM), ITEMNORMAL, NULL, wxID_UNDO );
   buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, NULL, wxID_REDO );
 
+  
   buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, wxID_ZOOM_100 );
   buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
   buildItem( this, 
@@ -843,6 +859,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              ID_MENU_AUTO_DATA_GRADIENT,
              histogram->GetHistogram()->getComputeGradient() );
 
+  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
   AppendSeparator();
 
   buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::COLOR );
@@ -1699,7 +1716,7 @@ void gPopUpMenu::OnMenuDrawModeBothMode( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpDrawModeBothMode();
-  else if( histogram != NULL )
+  else if ( histogram != NULL )
     histogram->OnPopUpDrawModeBothMode();
 }
 
@@ -1743,6 +1760,8 @@ void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event )
 {
   if ( timeline != NULL )
     timeline->OnPopUpRowSelection();
+  else if ( histogram != NULL )
+    histogram->OnPopUpRowSelection();
 }
 
 
@@ -1757,9 +1776,7 @@ void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
   if ( timeline != NULL )
     timeline->saveImage( true, wxT( "" ) );
   else if ( histogram != NULL )
-  {
     histogram->saveImage( true, wxT( "" ) );
-  }
 }
 
 

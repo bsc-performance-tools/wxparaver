@@ -279,6 +279,9 @@ void LoadCFGDialog::OnCancelClick( wxCommandEvent& event )
 
 void LoadCFGDialog::OnOkClick( wxCommandEvent& event )
 {
+#if wxMAJOR_VERSION<3
+  MakeModal( false );
+#endif
   EndModal( wxID_OK );
 }
 

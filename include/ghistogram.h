@@ -246,7 +246,7 @@ public:
 
 ////@begin gHistogram member function declarations
 
-  SelectionManagement<THistogramColumn,int> GetColumnSelection() const { return columnSelection ; }
+  SelectionManagement<THistogramColumn,int>* GetColumnSelection()  { return &columnSelection ; }
   void SetColumnSelection(SelectionManagement<THistogramColumn,int> value) { columnSelection = value ; }
 
   wxBitmap GetDrawImage() const { return drawImage ; }
@@ -333,6 +333,7 @@ public:
   void OnPopUpClone();
   void OnPopUpFitTimeScale();
   void OnPopUpFitObjects();
+  void OnPopUpRowSelection();
   void OnPopUpAutoControlScale( bool state );
   void OnPopUpAuto3DScale( bool state );
   void OnPopUpAutoDataGradient( bool state );
@@ -371,6 +372,7 @@ public:
   void OnPopUpDrawModeBothAverage();
   void OnPopUpDrawModeBothAverageNotZero();
   void OnPopUpDrawModeBothMode();
+  
 
   void OnPopUpPixelSize( PRV_UINT16 whichPixelSize );
   
@@ -383,6 +385,9 @@ public:
   void rightDownManager();
 
   static wxProgressDialog *dialogProgress;
+
+  SelectionManagement< TObjectOrder, TWindowLevel > *getSelectedRows();
+  
 
 ////@begin gHistogram member variables
   wxPanel* panelToolbar;
@@ -397,7 +402,11 @@ public:
   wxStaticBitmap* xtraWarning;
   wxStatusBar* histoStatus;
 private:
-  SelectionManagement<THistogramColumn,int> columnSelection;
+  SelectionManagement< THistogramColumn, int > columnSelection;
+  SelectionManagement< TObjectOrder, TWindowLevel > rowSelection;
+  TObjectOrder displayNumRows;
+  std::map< TObjectOrder, TObjectOrder > rowPlacement;
+
   wxBitmap drawImage;
   bool escapePressed;
   double lastPosZoomX;
