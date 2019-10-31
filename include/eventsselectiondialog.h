@@ -98,6 +98,8 @@ class EventInfoManager
 
     virtual void transferFrom( wxCheckListBox *whichList ) = 0;
 
+    virtual bool isEmpty() const = 0;
+    
     // Visible
     virtual void setAllVisible() = 0;
     int getFirstPosSelectedVisible() { return firstPosSelectedVisible; };
@@ -139,8 +141,9 @@ class EventTypesInfoManager : public EventInfoManager
     virtual ~EventTypesInfoManager() {};
 
     void init();
-    virtual void transferFrom( wxCheckListBox *whichList ) {};
+    virtual void transferFrom( wxCheckListBox *whichList ) {}
 
+    bool isEmpty() const { return fullList.empty(); }
     TEventType getCurrent() { return currentType ; }
     void setCurrent( TEventType whichType ) { currentType = whichType ; }
 
@@ -189,6 +192,7 @@ class EventValuesInfoManager : public EventInfoManager
     
     void init( TEventType whichType, bool shortVersion, bool keepSelected = false );
     virtual void transferFrom( wxCheckListBox *whichList );
+    bool isEmpty() const { return fullList.IsEmpty(); }
     bool insert( double whichValue, wxString whichLabel ); // Only values can be added
 
     // Visible

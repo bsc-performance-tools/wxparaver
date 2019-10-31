@@ -179,8 +179,11 @@ void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Window *which
 
   // First time all types are shown, also related values
   typesHandler = new EventTypesInfoManager( currentWindow, currentFilter );
-  currentType = typesHandler->getFirstTypeVisible();
-  typesHandler->setCurrent( currentType );
+  if( !typesHandler->isEmpty() )
+  {
+    currentType = typesHandler->getFirstTypeVisible();
+    typesHandler->setCurrent( currentType );
+  }
   valuesHandler = new EventValuesInfoManager( currentWindow, currentFilter, currentType );
 }
 
@@ -1021,16 +1024,19 @@ void EventsSelectionDialog::UpdateWidgetChecklistboxTypes()
 
   typesHandler->setCurrent( tmpCurrent );
 
-  checkListSelectTypes->InsertItems( tmpVisible, 0 );
-
-  // Check them
-  for ( unsigned int i = 0; i < tmpGUISelected.GetCount(); ++i )
+  if( !tmpVisible.IsEmpty() )
   {
-    checkListSelectTypes->Check( tmpGUISelected[ i ] );
-  }
+    checkListSelectTypes->InsertItems( tmpVisible, 0 );
 
-  // Select first one (previosly found)
-  checkListSelectTypes->SetSelection( firstPos );
+    // Check them
+    for ( unsigned int i = 0; i < tmpGUISelected.GetCount(); ++i )
+    {
+      checkListSelectTypes->Check( tmpGUISelected[ i ] );
+    }
+
+    // Select first one (previosly found)
+    checkListSelectTypes->SetSelection( firstPos );
+  }
 }
 
 

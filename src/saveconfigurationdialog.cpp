@@ -587,7 +587,8 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
                                       wxString::FromAscii( currentTrace.c_str() ) );
     }
   }
-  listTimelines->InsertItems( items, 0 );
+  if( !items.IsEmpty() )
+    listTimelines->InsertItems( items, 0 );
 
   // Histograms
   listHistograms->Clear();
@@ -602,6 +603,7 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
                                       wxString::FromAscii( currentTrace.c_str() ) );
     }
   }
-  listHistograms->InsertItems( items, 0 );
+  if( !items.IsEmpty() )
+    listHistograms->InsertItems( items, 0 );
 }
 
