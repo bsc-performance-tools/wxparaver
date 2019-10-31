@@ -985,16 +985,19 @@ void EventsSelectionDialog::UpdateWidgetChecklistboxValues()
 
   // Insert strings of visible values
   checkListSelectValues->Clear();
-  checkListSelectValues->InsertItems( tmpVisible, 0 );
-
-  // Check them
-  for ( unsigned int i = 0; i < tmpGUISelected.GetCount(); ++i )
+  if( !tmpVisible.IsEmpty() )
   {
-    checkListSelectValues->Check( tmpGUISelected[ i ] );
-  }
+    checkListSelectValues->InsertItems( tmpVisible, 0 );
 
-  // Select first one (previosly found)
-  checkListSelectValues->SetSelection( firstPos );
+    // Check them
+    for ( unsigned int i = 0; i < tmpGUISelected.GetCount(); ++i )
+    {
+      checkListSelectValues->Check( tmpGUISelected[ i ] );
+    }
+
+    // Select first one (previosly found)
+    checkListSelectValues->SetSelection( firstPos );
+  }
 }
 
 
