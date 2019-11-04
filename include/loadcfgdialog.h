@@ -53,6 +53,7 @@ class wxGenericDirCtrl;
 
 ////@begin control identifiers
 #define ID_LOADCFGDIALOG 10000
+#define ID_SEARCHCTRL 10004
 #define ID_DIRCTRL 10001
 #define ID_LISTBOX 10002
 #define ID_TEXTDESCRCFG 10003
@@ -93,6 +94,9 @@ public:
 
 ////@begin LoadCFGDialog event handler declarations
 
+  /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_SEARCHCTRL
+  void OnSearchctrlEnter( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_TREE_SEL_CHANGED event handler for ID_DIRCTRL
   void OnDirctrlSelChanged( wxTreeEvent& event );
 
@@ -131,6 +135,7 @@ public:
   static bool ShowToolTips();
 
 ////@begin LoadCFGDialog member variables
+  wxTextCtrl* searchBar;
   wxGenericDirCtrl* treeDirs;
   wxListBox* listDirs;
   wxTextCtrl* textDescription;

@@ -4624,7 +4624,6 @@ void gTimeline::saveText()
 void gTimeline::saveCFG()
 {
   vector< Window * > timelines;
-  
   timelines.push_back( GetMyWindow() );
 
   paraverMain::myParaverMain->SaveConfigurationFile(

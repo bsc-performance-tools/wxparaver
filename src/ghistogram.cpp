@@ -2897,11 +2897,19 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
 void gHistogram::saveCFG()
 {
   vector< Histogram * > histograms;
+  vector< Window * > windows;
   
   histograms.push_back( GetHistogram() );
 
+  if ( myHistogram->getControlWindow() != NULL  )
+      windows.push_back( myHistogram->getControlWindow() );
+  if ( myHistogram->getDataWindow() != NULL  )
+      windows.push_back( myHistogram->getDataWindow() );
+  
+
+
   paraverMain::myParaverMain->SaveConfigurationFile(
-          (wxWindow *)this, SaveOptions(), vector< Window * >(), histograms );
+          (wxWindow *)this, SaveOptions(), windows, histograms );
 }
 
 
