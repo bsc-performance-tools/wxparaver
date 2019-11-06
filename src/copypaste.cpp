@@ -399,7 +399,7 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
       SelectionManagement< TObjectOrder, TWindowLevel >* tSel = timeline->GetMyWindow()->getSelectedRows();
       vector< bool > auxRows;
       tSel->getSelected( auxRows, timeline->GetMyWindow()->getLevel() );
-      whichHistogram->setSelectedRows( timeline->GetMyWindow()->getLevel(), auxRows );
+      whichHistogram->setSelectedRows( auxRows );
     }
     else if ( property == STR_DURATION )
     {
@@ -439,7 +439,7 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
       //                                         histogram->GetHistogram()->getZoomSecondDimension().second );
       vector< bool > auxRows;
       histogram->getSelectedRows()->getSelected( auxRows, histogram->GetHistogram()->getControlWindow()->getLevel() );
-      whichHistogram->setSelectedRows( whichHistogram->GetHistogram()->getControlWindow()->getLevel(), auxRows );
+      whichHistogram->setSelectedRows( auxRows );
     }
     else if ( property == STR_DURATION )
     {

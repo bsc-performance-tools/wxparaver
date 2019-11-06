@@ -332,6 +332,9 @@ void LoadCFGDialog::OnListboxSelected( wxCommandEvent& event )
 
 void LoadCFGDialog::OnListboxDoubleClicked( wxCommandEvent& event )
 {
+#if wxMAJOR_VERSION<3
+  MakeModal( false );
+#endif
   EndModal( wxID_OK );
 }
 
@@ -359,7 +362,7 @@ wxString LoadCFGDialog::GetFilePath()
 void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
 {
   wxString myPath = searchBar->GetValue();
-  std::cout << myPath << std::endl;
+  CFGLoader *cfgl;
   if ( wxDirExists( myPath ) ) 
   {
     wxFileName fName;
@@ -377,6 +380,15 @@ void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
       listDirs->Append( fileName );
       linksPerFileName[ fileName ] = ( *fullFilePath );
     }
+    treeDirs->SetPath( myPath );
+  }
+  else if ( wxFileExists( myPath ) && cfgl->isCFGFile( std::string( myPath.mb_str() ) ) )
+  {
+    selectedCfgFilePath = myPath;
+    #if wxMAJOR_VERSION<3
+    MakeModal( false );
+    #endif
+    EndModal( wxID_OK );
   }
 }
 

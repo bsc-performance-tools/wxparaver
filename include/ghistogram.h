@@ -387,8 +387,8 @@ public:
   static wxProgressDialog *dialogProgress;
 
   SelectionManagement< TObjectOrder, TWindowLevel > *getSelectedRows();
-  virtual void setSelectedRows( TWindowLevel onLevel, std::vector< bool > &selected );
-  virtual void setSelectedRows( TWindowLevel onLevel, std::vector< TObjectOrder > &selected );
+  virtual void setSelectedRows( std::vector< bool > &selected );
+  virtual void setSelectedRows( std::vector< TObjectOrder > &selected );
     
   
 

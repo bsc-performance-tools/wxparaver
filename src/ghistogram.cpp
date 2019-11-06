@@ -442,10 +442,10 @@ void gHistogram::execute()
     beginRow = myHistogram->getZoomSecondDimension().first;
     endRow =  myHistogram->getZoomSecondDimension().second;
   }
-  //myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
-  //                                                  selectedRows, beginRow, endRow, true );
   rowSelection.getSelected( selectedRows, myHistogram->getControlWindow()->getLevel() );
+  //myHistogram->applyBufferSelection();
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
+  myHistogram->setRowSelection( rowSelection );
 
   if( myHistogram->getZoom() )
     fillZoom();
@@ -865,14 +865,12 @@ SelectionManagement< TObjectOrder, TWindowLevel > * gHistogram::getSelectedRows(
   return &rowSelection;
 }
 
-void gHistogram::setSelectedRows( TWindowLevel onLevel, vector< bool > &selected )
+void gHistogram::setSelectedRows( vector< bool > &selected )
 {
-  //if( selected.size() == myTrace->getLevelObjects( onLevel ) )
-  //  rowSelection.setSelected( selected, onLevel );
   rowSelection.setSelected( selected, myHistogram->getControlWindow()->getLevel() );
 }
 
-void gHistogram::setSelectedRows( TWindowLevel onLevel, vector< TObjectOrder > &selected )
+void gHistogram::setSelectedRows( vector< TObjectOrder > &selected )
 {
   rowSelection.setSelected( selected, myHistogram->getControlWindow()->getLevel() );
 }
