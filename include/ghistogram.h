@@ -386,7 +386,7 @@ public:
 
   static wxProgressDialog *dialogProgress;
 
-  SelectionManagement< TObjectOrder, TWindowLevel > *getSelectedRows();
+  vector< TObjectOrder > getSelectedRows();
   virtual void setSelectedRows( std::vector< bool > &selected );
   virtual void setSelectedRows( std::vector< TObjectOrder > &selected );
     
@@ -406,7 +406,6 @@ public:
   wxStatusBar* histoStatus;
 private:
   SelectionManagement< THistogramColumn, int > columnSelection;
-  SelectionManagement< TObjectOrder, TWindowLevel > rowSelection;
   std::map< TObjectOrder, TObjectOrder > rowPlacement;
 
   wxBitmap drawImage;

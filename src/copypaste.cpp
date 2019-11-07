@@ -337,14 +337,7 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline, const string prope
     }
     else if ( property == STR_OBJECTS )
     {
-      vector< bool > auxRows;
-      /*
-      Window *controlWin = histogram->GetHistogram()->getControlWindow();
-      controlWin->getSelectedRows( controlWin->getLevel(), auxRows, true );
-      whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
-      */
-
-      histogram->getSelectedRows()->getSelected( auxRows, histogram->GetHistogram()->getControlWindow()->getLevel() );
+      vector< bool > auxRows = histogram->GetHistogram()->getSelectedBooleanRows();
       whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
 
     }
@@ -437,8 +430,7 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     {
       //whichHistogram->GetHistogram()->addZoom( histogram->GetHistogram()->getZoomSecondDimension().first,
       //                                         histogram->GetHistogram()->getZoomSecondDimension().second );
-      vector< bool > auxRows;
-      histogram->getSelectedRows()->getSelected( auxRows, histogram->GetHistogram()->getControlWindow()->getLevel() );
+      vector< bool > auxRows = histogram->GetHistogram()->getSelectedBooleanRows();
       whichHistogram->setSelectedRows( auxRows );
     }
     else if ( property == STR_DURATION )

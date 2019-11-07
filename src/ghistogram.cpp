@@ -398,11 +398,11 @@ void gHistogram::execute()
 
   ProgressController *progress = NULL;
 
-  if ( !firstExecute )
+  /*if ( !firstExecute )
   { 
     rowSelection = (* myHistogram->getControlWindow()->getSelectedRows() );
     firstExecute = true;
-  }
+  }*/
 
   if ( myHistogram->getShowProgressBar() )
   {
@@ -442,10 +442,14 @@ void gHistogram::execute()
     beginRow = myHistogram->getZoomSecondDimension().first;
     endRow =  myHistogram->getZoomSecondDimension().second;
   }
-  rowSelection.getSelected( selectedRows, myHistogram->getControlWindow()->getLevel() );
-  //myHistogram->applyBufferSelection();
+
+  selectedRows = myHistogram->getSelectedRows();
+  if ( selectedRows.size() == 0 )
+    myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
+                                                      selectedRows, beginRow, endRow, true );
+
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
-  myHistogram->setRowSelection( rowSelection );
+
 
   if( myHistogram->getZoom() )
     fillZoom();
@@ -712,10 +716,7 @@ void gHistogram::fillZoom()
 void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn,
                              vector<THistogramColumn>& noVoidColumns, wxMemoryDC& bufferDraw )
 {
-  std::vector< TObjectOrder > myRows;
-  rowSelection.getSelected( myRows, myHistogram->getControlWindow()->getLevel() );
-  TObjectOrder numRows = myRows.size();
-  myRows.clear();
+  TObjectOrder numRows = myHistogram->getNumRows();
   
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
@@ -860,19 +861,19 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
 }
 
 
-SelectionManagement< TObjectOrder, TWindowLevel > * gHistogram::getSelectedRows()
+vector< TObjectOrder > gHistogram::getSelectedRows()
 {
-  return &rowSelection;
+  return myHistogram->getSelectedRows();
 }
 
 void gHistogram::setSelectedRows( vector< bool > &selected )
 {
-  rowSelection.setSelected( selected, myHistogram->getControlWindow()->getLevel() );
+  myHistogram->setSelectedRows( selected );
 }
 
 void gHistogram::setSelectedRows( vector< TObjectOrder > &selected )
 {
-  rowSelection.setSelected( selected, myHistogram->getControlWindow()->getLevel() );
+  myHistogram->setSelectedRows( selected );
 }
 
 

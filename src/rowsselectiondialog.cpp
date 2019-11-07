@@ -127,6 +127,9 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   Init();
   Create( parent, id, caption, pos, size, style );
   
+  SelectionManagement< TObjectOrder, TWindowLevel > sm = ( *myHistogram->getRowSelectionManagement() );
+  vector< TObjectOrder > rowsel;
+  sm.getSelected(rowsel, myHistogram->getControlWindow()->getLevel());
 
   myTimeline = NULL;
   myLevel = myHistogram->getControlWindow()->getLevel();

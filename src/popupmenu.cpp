@@ -388,7 +388,7 @@ RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gHistogram *histogram
 
   RowsSelectionDialog *myDialog = new RowsSelectionDialog( (wxWindow * )histogram,
                                                            histogram->GetHistogram(),
-                                                           histogram->getSelectedRows(),
+                                                           histogram->GetHistogram()->getRowSelectionManagement(),
                                                            ID_ROWSSELECTIONDIALOG,
                                                            _( "Histogram Row Selection" ), 
                                                            parentIsGtimeline );
