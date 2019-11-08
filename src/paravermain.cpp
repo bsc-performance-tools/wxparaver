@@ -912,7 +912,6 @@ bool paraverMain::DoLoadCFG( const string &path )
           delete newWindows[ i ];
       }
       newWindows.clear();
-
     }
     else
     {
@@ -961,7 +960,6 @@ bool paraverMain::DoLoadCFG( const string &path )
 #else
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
 #endif
-
         tmpHisto->SetHistogram( *it );
 
         appendHistogram2Tree( tmpHisto );

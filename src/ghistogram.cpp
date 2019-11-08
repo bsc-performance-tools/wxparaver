@@ -398,12 +398,6 @@ void gHistogram::execute()
 
   ProgressController *progress = NULL;
 
-  /*if ( !firstExecute )
-  { 
-    rowSelection = (* myHistogram->getControlWindow()->getSelectedRows() );
-    firstExecute = true;
-  }*/
-
   if ( myHistogram->getShowProgressBar() )
   {
     // Disabled because some window managers can't show the dialog later
@@ -431,7 +425,6 @@ void gHistogram::execute()
 
 
   TObjectOrder beginRow, endRow;
-  selectedRows.clear();
   if( myHistogram->isZoomEmpty() )
   {
     beginRow = myHistogram->getControlWindow()->getZoomSecondDimension().first;
@@ -443,8 +436,9 @@ void gHistogram::execute()
     endRow =  myHistogram->getZoomSecondDimension().second;
   }
 
+  selectedRows.clear();
   selectedRows = myHistogram->getSelectedRows();
-  if ( selectedRows.size() == 0 )
+  if ( selectedRows.size() != 0 )
     myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                       selectedRows, beginRow, endRow, true );
 
