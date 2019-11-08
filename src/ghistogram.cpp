@@ -438,7 +438,7 @@ void gHistogram::execute()
 
   selectedRows.clear();
   selectedRows = myHistogram->getSelectedRows();
-  if ( selectedRows.size() != 0 )
+  if ( selectedRows.size() == 0 )
     myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                       selectedRows, beginRow, endRow, true );
 
@@ -594,11 +594,11 @@ void gHistogram::fillZoom()
     if( horizontal )
     {
       numDrawCols = noVoidColumns.size();
-      numDrawRows = myHistogram->getNumRows();;
+      numDrawRows = myHistogram->getNumRows();
     }
     else
     {
-      numDrawCols = myHistogram->getNumRows();;
+      numDrawCols = myHistogram->getNumRows();
       numDrawRows = noVoidColumns.size();
     }
     columnSelection.getSelected( selectedColumns );
@@ -608,11 +608,11 @@ void gHistogram::fillZoom()
     if( horizontal )
     {
       numDrawCols = numCols;
-      numDrawRows = myHistogram->getNumRows();;
+      numDrawRows = myHistogram->getNumRows();
     }
     else
     {
-      numDrawCols = myHistogram->getNumRows();;
+      numDrawCols = myHistogram->getNumRows();
       numDrawRows = numCols;
     }
     selectedColumns.insert( selectedColumns.begin(), numCols, true );
@@ -1053,7 +1053,7 @@ bool isSyncedWithGroup( Window *whichWindow, unsigned int whichGroup )
 
 void gHistogram::updateHistogram()
 {
-  //rowSelection.getSelected( selectedRows, myHistogram->getControlWindow()->getLevel() );
+  //rowSelection.getSelected( selectedRows );
 
   if( myHistogram->getForceRecalc() || ( wxparaverApp::mainWindow->getAutoRedraw() && myHistogram->getRecalc() ) )
   {
