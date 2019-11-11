@@ -585,7 +585,7 @@ void CutFilterDialog::CreateControls()
   checkListFilterStatesStrings.Add(_("Running"));
   checkListFilterStatesStrings.Add(_("Not created"));
   checkListFilterStatesStrings.Add(_("Waiting a message"));
-  checkListFilterStatesStrings.Add(_("Bloking Send"));
+  checkListFilterStatesStrings.Add(_("Blocking Send"));
   checkListFilterStatesStrings.Add(_("Thd. Synchr."));
   checkListFilterStatesStrings.Add(_("Test/Probe"));
   checkListFilterStatesStrings.Add(_("Sched. and Fork/Join"));

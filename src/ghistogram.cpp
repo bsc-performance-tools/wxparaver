@@ -87,7 +87,7 @@
 #include "../icons/histo_sum.xpm"
 #include "../icons/inclusive.xpm"
 #include "../icons/histo_sort.xpm"
-#include "../icons/arrow_reverse.xpm"
+#include "../icons/arrow_inverse.xpm"
 #include "../icons/caution.xpm"
 ////@end XPM images
 
@@ -222,7 +222,6 @@ void gHistogram::Init()
   zoomDragging = false;
   panelToolbar = NULL;
   tbarHisto = NULL;
-  choiceSortBy = NULL;
   panelData = NULL;
   mainSizer = NULL;
   zoomHisto = NULL;
@@ -234,7 +233,6 @@ void gHistogram::Init()
 ////@end gHistogram member initialisation
   parent = NULL;
 
-  firstExecute = false;
 }
 
 
@@ -298,22 +296,22 @@ void gHistogram::CreateControls()
   if (gHistogram::ShowToolTips())
     itemStaticBitmap1->SetToolTip(_("Sort columns by"));
   tbarHisto->AddControl(itemStaticBitmap1);
-  wxArrayString choiceSortByStrings;
-  choiceSortByStrings.Add(_("Default"));
-  choiceSortByStrings.Add(_("Total"));
-  choiceSortByStrings.Add(_("Average"));
-  choiceSortByStrings.Add(_("Maximum"));
-  choiceSortByStrings.Add(_("Minimum"));
-  choiceSortByStrings.Add(_("StDev"));
-  choiceSortByStrings.Add(_("Avg/Max"));
-  choiceSortBy = new wxChoice( tbarHisto, ID_TOOL_CHOICE_SORTBY, wxDefaultPosition, wxDefaultSize, choiceSortByStrings, 0 );
-  choiceSortBy->SetStringSelection(_("Default"));
+  wxArrayString itemChoice2Strings;
+  itemChoice2Strings.Add(_("None"));
+  itemChoice2Strings.Add(_("Total"));
+  itemChoice2Strings.Add(_("Average"));
+  itemChoice2Strings.Add(_("Maximum"));
+  itemChoice2Strings.Add(_("Minimum"));
+  itemChoice2Strings.Add(_("StDev"));
+  itemChoice2Strings.Add(_("Avg/Max"));
+  wxChoice* itemChoice2 = new wxChoice( tbarHisto, ID_CHOICE, wxDefaultPosition, wxDefaultSize, itemChoice2Strings, 0 );
+  itemChoice2->SetStringSelection(_("None"));
   if (gHistogram::ShowToolTips())
-    choiceSortBy->SetToolTip(_("Sort columns by"));
-  tbarHisto->AddControl(choiceSortBy);
-  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_reverse.xpm")));
+    itemChoice2->SetToolTip(_("Sort columns by"));
+  tbarHisto->AddControl(itemChoice2);
+  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_inverse.xpm")));
   wxBitmap itemtool1BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_REVERSE_SORT, _("Reverse order"), itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
+  tbarHisto->AddTool(ID_TOOL, wxEmptyString, itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
   tbarHisto->Realize();
 
   panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -954,7 +952,7 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
     wxBitmap bitmap(sortcols_xpm);
     return bitmap;
   }
-  else if (name == wxT("icons/arrow_reverse.xpm"))
+  else if (name == wxT("icons/arrow_inverse.xpm"))
   {
     wxBitmap bitmap(arrow_inverse_xpm);
     return bitmap;
@@ -1118,9 +1116,11 @@ void gHistogram::OnCloseWindow( wxCloseEvent& event )
 
 void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
 {
+  // NEW selection: what you see is what you select
   if (wxTheClipboard->Open())
   {
     wxGridCellCoords topLeft = event.GetTopLeftCoords();
+    wxGridCellCoords bottomRight = event.GetBottomRightCoords();
     wxTheClipboard->SetData( new wxTextDataObject( gridHisto->GetCellValue( topLeft ) ) );
     wxTheClipboard->Close();
   }
