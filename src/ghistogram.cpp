@@ -1657,7 +1657,7 @@ void gHistogram::OnCellRightClick( wxGridEvent& event )
  * wxEVT_GRID_LABEL_RIGHT_CLICK event handler for ID_GRIDHISTO
  */
 
-void gHistogram::OnLabelRightClick( wxGridEvent& event ) 
+void gHistogram::OnLabelRightClick( wxGridEvent& event )
 {
   rightDownManager();
 }
