@@ -1121,7 +1121,20 @@ void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
   {
     wxGridCellCoords topLeft = event.GetTopLeftCoords();
     wxGridCellCoords bottomRight = event.GetBottomRightCoords();
-    wxTheClipboard->SetData( new wxTextDataObject( gridHisto->GetCellValue( topLeft ) ) );
+    //wxTheClipboard->SetData( new wxTextDataObject( gridHisto->GetCellValue( topLeft ) ) );
+    
+    wxString clippy = "";
+    for ( int i = topLeft.GetRow() ; i <= bottomRight.GetRow() ; ++i )
+    {
+      for ( int j = topLeft.GetCol() ; j <= bottomRight.GetCol() ; ++j )
+      {
+        if ( gridHisto->GetColSize(j) > 0)  
+          clippy += gridHisto->GetCellValue( i, j ) + "\t";
+      }
+      clippy += "\n";
+    }
+    
+    wxTheClipboard->SetData( new wxTextDataObject( clippy ) );
     wxTheClipboard->Close();
   }
 }
