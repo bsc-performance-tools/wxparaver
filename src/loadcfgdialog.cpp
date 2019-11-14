@@ -217,6 +217,8 @@ void LoadCFGDialog::OnDirctrlSelChanged( wxTreeEvent& event )
       listDirs->Append( fileName );
       linksPerFileName[ fileName ] = ( *fullFilePath );
     }
+    wxString cfgDescription = "";
+    textDescription->SetValue( cfgDescription );
   }
   searchBar->Clear();
   searchBar->WriteText( myPath );
@@ -381,6 +383,8 @@ void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
       linksPerFileName[ fileName ] = ( *fullFilePath );
     }
     treeDirs->SetPath( myPath );
+    wxString cfgDescription = "";
+    textDescription->SetValue( cfgDescription );
   }
   else if ( wxFileExists( myPath ) && cfgl->isCFGFile( std::string( myPath.mb_str() ) ) )
   {
