@@ -312,14 +312,14 @@ void LoadCFGDialog::OnListboxSelected( wxCommandEvent& event )
   
   // Description
   std::string descrSTL = "";
-  wxString cfgDescription = "";
+  wxString cfgDescription = _( "" );
   CFGLoader *cfgl;
   if ( cfgl->loadDescription( std::string( myPath.mb_str() ), descrSTL ) )
-    cfgDescription = wxString( descrSTL );
+    cfgDescription = wxString( descrSTL.c_str(), wxConvUTF8 );
   else if ( wxFileExists( myPath ) && !cfgl->isCFGFile( std::string( myPath.mb_str() ) ) )
-    cfgDescription = "*Not a Paraver CFG file!*";
+    cfgDescription = _( "*Not a Paraver CFG file!*" );
   else
-    cfgDescription = "*No description available*";
+    cfgDescription = _( "*No description available*" );
     
     
   textDescription->SetValue( cfgDescription );

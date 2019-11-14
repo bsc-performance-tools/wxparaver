@@ -77,7 +77,7 @@ class LoadCFGDialog: public wxDialog
 public:
   /// Constructors
   LoadCFGDialog();
-  LoadCFGDialog( wxWindow* parent, wxString directoryPath = "", wxWindowID id = SYMBOL_LOADCFGDIALOG_IDNAME, const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE, const wxPoint& pos = SYMBOL_LOADCFGDIALOG_POSITION, const wxSize& size = SYMBOL_LOADCFGDIALOG_SIZE, long style = SYMBOL_LOADCFGDIALOG_STYLE );
+  LoadCFGDialog( wxWindow* parent, wxString directoryPath = _( "" ), wxWindowID id = SYMBOL_LOADCFGDIALOG_IDNAME, const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE, const wxPoint& pos = SYMBOL_LOADCFGDIALOG_POSITION, const wxSize& size = SYMBOL_LOADCFGDIALOG_SIZE, long style = SYMBOL_LOADCFGDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_LOADCFGDIALOG_IDNAME, const wxString& caption = SYMBOL_LOADCFGDIALOG_TITLE, const wxPoint& pos = SYMBOL_LOADCFGDIALOG_POSITION, const wxSize& size = SYMBOL_LOADCFGDIALOG_SIZE, long style = SYMBOL_LOADCFGDIALOG_STYLE );
