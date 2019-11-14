@@ -329,7 +329,6 @@ bool paraverMain::Create( wxWindow* parent, wxWindowID id, const wxString& capti
   return true;
 }
 
-
 /*!
  * paraverMain destructor
  */
@@ -2984,6 +2983,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetMaximumTraceSize( paraverConfig->getFiltersFilterTraceUpToMB() );
   preferences.SetSingleInstance( paraverConfig->getGlobalSingleInstance() );
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
+  preferences.SetPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
 
   // TIMELINE
 
@@ -3078,6 +3078,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setFiltersFilterTraceUpToMB( (float)preferences.GetMaximumTraceSize() );
     paraverConfig->setGlobalSingleInstance( preferences.GetSingleInstance() );
     paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
+    paraverConfig->setGlobalPrevSessionLoad( preferences.GetPrevSessionLoad() );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );
@@ -4408,3 +4409,20 @@ void paraverMain::insertSignalItem( bool isSig1 )
   AddPendingEvent( tmpEvent );
 }
 #endif // WIN32
+
+
+
+
+void paraverMain::CheckIfPrevSessionLoad()
+{ 
+  if( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() )
+  {
+  #ifdef WIN32
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+  #else
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+  #endif
+    if ( isSessionFile( file ) )
+      DoLoadSession( file );
+  }
+}

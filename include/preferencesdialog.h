@@ -81,6 +81,7 @@ class wxListBox;
 #define ID_DIRBROWSERBUTTON_DEFAULT_TMP 10245
 #define ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE 10158
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
+#define ID_GLOBAL_PREV_SESSION 10039
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
@@ -548,6 +549,7 @@ public:
   DirBrowserButton* dirBrowserButtonTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
+  wxCheckBox* checkGlobalPrevSessionLoad;
   wxPanel* panelTimeline;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;

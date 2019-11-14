@@ -233,6 +233,7 @@ void PreferencesDialog::Init()
   dirBrowserButtonTmp = NULL;
   checkGlobalSingleInstance = NULL;
   spinSessionTime = NULL;
+  checkGlobalPrevSessionLoad = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -450,6 +451,10 @@ void PreferencesDialog::CreateControls()
 
   wxStaticText* itemStaticText36 = new wxStaticText( panelGlobal, wxID_STATIC, _("minutes"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer33->Add(itemStaticText36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  checkGlobalPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_PREV_SESSION, _("Load previous auto-saved session on startup"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkGlobalPrevSessionLoad->SetValue(false);
+  itemStaticBoxSizer31->Add(checkGlobalPrevSessionLoad, 1, wxGROW|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1379,6 +1384,7 @@ bool PreferencesDialog::TransferDataToWindow()
   dirBrowserButtonTmp->SetPath( wxString::FromAscii( tmpPath.c_str() ) );
   txtMaximumTraceSize->SetValue( maximumTraceSize );
   checkGlobalSingleInstance->SetValue( singleInstance );
+  checkGlobalPrevSessionLoad->SetValue( prevSessionLoad );
   spinSessionTime->SetValue( sessionSaveTime );
 
   // TIMELINE
@@ -1517,6 +1523,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   maximumTraceSize = (float)txtMaximumTraceSize->GetValue();
   singleInstance = checkGlobalSingleInstance->GetValue();
   sessionSaveTime = spinSessionTime->GetValue();
+  prevSessionLoad = checkGlobalPrevSessionLoad->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );

@@ -459,7 +459,7 @@ bool wxparaverApp::OnInit()
                          ParaverConfig::getInstance()->getMainWindowHeight() );
                          
   mainWindow = new paraverMain( NULL, SYMBOL_PARAVERMAIN_IDNAME, SYMBOL_PARAVERMAIN_TITLE, SYMBOL_PARAVERMAIN_POSITION, mainWindowSize );
-
+  mainWindow->CheckIfPrevSessionLoad();
   mainWindow->Show(true);
 
 #ifndef WIN32
