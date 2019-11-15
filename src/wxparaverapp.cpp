@@ -459,7 +459,10 @@ bool wxparaverApp::OnInit()
                          ParaverConfig::getInstance()->getMainWindowHeight() );
                          
   mainWindow = new paraverMain( NULL, SYMBOL_PARAVERMAIN_IDNAME, SYMBOL_PARAVERMAIN_TITLE, SYMBOL_PARAVERMAIN_POSITION, mainWindowSize );
-  mainWindow->CheckIfPrevSessionLoad();
+
+  if (ParaverConfig::getInstance()->initCompleteSessionFile() )
+    mainWindow->checkIfPrevSessionLoad();
+
   mainWindow->Show(true);
 
 #ifndef WIN32
@@ -617,6 +620,9 @@ int wxparaverApp::OnExit()
 //  cout<<w<<" "<<h<<endl;
 //  cout << wxparaverApp::mainWindow->GetAuiManager().SavePaneInfo(
 //            wxparaverApp::mainWindow->GetAuiManager().GetPane( wxparaverApp::mainWindow->choiceWindowBrowser ) ).mb_str()<<endl;
+  
+  ParaverConfig::getInstance()->closeCompleteSessionFile();
+  
   if( mainWindow != NULL )
     ParaverConfig::getInstance()->writeParaverConfigFile();
   

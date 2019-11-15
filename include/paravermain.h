@@ -539,7 +539,7 @@ public:
   bool getAutoRedraw() const;
   bool isCFG4DModeDisabled() const;
 
-  void CheckIfPrevSessionLoad();
+  void checkIfPrevSessionLoad();
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );

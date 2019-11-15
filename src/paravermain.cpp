@@ -4413,15 +4413,16 @@ void paraverMain::insertSignalItem( bool isSig1 )
 
 
 
-void paraverMain::CheckIfPrevSessionLoad()
+void paraverMain::checkIfPrevSessionLoad()
 { 
+  //to do : add alert popup
   if( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() )
   {
-  #ifdef WIN32
+    #ifdef WIN32
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
-  #else
+    #else
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
-  #endif
+    #endif
     if ( isSessionFile( file ) )
       DoLoadSession( file );
   }

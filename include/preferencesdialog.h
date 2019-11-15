@@ -420,6 +420,9 @@ public:
   bool GetSingleInstance() const { return singleInstance ; }
   void SetSingleInstance(bool value) { singleInstance = value ; }
 
+  bool GetPrevSessionLoad() const { return prevSessionLoad ; }
+  void SetPrevSessionLoad(bool value) { prevSessionLoad = value ; }
+
   PRV_UINT32 GetTimelineColor() const { return timelineColor ; }
   void SetTimelineColor(PRV_UINT32 value) { timelineColor = value ; }
 
@@ -664,6 +667,7 @@ private:
   float maximumTraceSize;
   PRV_UINT16 sessionSaveTime;
   bool singleInstance;
+  bool prevSessionLoad;
   PRV_UINT32 timelineColor;
   rgb timelineColourAxis;
   rgb timelineColourBackground;
