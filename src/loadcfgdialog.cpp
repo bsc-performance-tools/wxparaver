@@ -217,7 +217,7 @@ void LoadCFGDialog::OnDirctrlSelChanged( wxTreeEvent& event )
       listDirs->Append( fileName );
       linksPerFileName[ fileName ] = ( *fullFilePath );
     }
-    wxString cfgDescription = "";
+    wxString cfgDescription = wxT( "" );
     textDescription->SetValue( cfgDescription );
   }
   searchBar->Clear();
@@ -314,14 +314,14 @@ void LoadCFGDialog::OnListboxSelected( wxCommandEvent& event )
   
   // Description
   std::string descrSTL = "";
-  wxString cfgDescription = _( "" );
+  wxString cfgDescription = wxT( "" );
   CFGLoader *cfgl;
   if ( cfgl->loadDescription( std::string( myPath.mb_str() ), descrSTL ) )
     cfgDescription = wxString( descrSTL.c_str(), wxConvUTF8 );
   else if ( wxFileExists( myPath ) && !cfgl->isCFGFile( std::string( myPath.mb_str() ) ) )
-    cfgDescription = _( "*Not a Paraver CFG file!*" );
+    cfgDescription = wxT( "*Not a Paraver CFG file!*" );
   else
-    cfgDescription = _( "*No description available*" );
+    cfgDescription = wxT( "*No description available*" );
     
     
   textDescription->SetValue( cfgDescription );
@@ -383,7 +383,7 @@ void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
       linksPerFileName[ fileName ] = ( *fullFilePath );
     }
     treeDirs->SetPath( myPath );
-    wxString cfgDescription = "";
+    wxString cfgDescription = wxT( "" );
     textDescription->SetValue( cfgDescription );
   }
   else if ( wxFileExists( myPath ) && cfgl->isCFGFile( std::string( myPath.mb_str() ) ) )
