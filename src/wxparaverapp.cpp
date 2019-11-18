@@ -621,9 +621,9 @@ int wxparaverApp::OnExit()
 //  cout << wxparaverApp::mainWindow->GetAuiManager().SavePaneInfo(
 //            wxparaverApp::mainWindow->GetAuiManager().GetPane( wxparaverApp::mainWindow->choiceWindowBrowser ) ).mb_str()<<endl;
   
-  ParaverConfig::getInstance()->closeCompleteSessionFile();
   
   if( mainWindow != NULL )
+    ParaverConfig::getInstance()->closeCompleteSessionFile();
     ParaverConfig::getInstance()->writeParaverConfigFile();
   
   if( m_checker != NULL )

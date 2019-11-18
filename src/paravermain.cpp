@@ -4416,7 +4416,11 @@ void paraverMain::insertSignalItem( bool isSig1 )
 void paraverMain::checkIfPrevSessionLoad()
 { 
   //to do : add alert popup
-  if( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() )
+  if( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && 
+      wxMessageBox( wxT( "Do you want to load the previous session?" ),
+                     wxT( "Please confirm" ),
+                     wxICON_QUESTION | wxYES_NO,
+                     this ) == wxYES )
   {
     #ifdef WIN32
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
