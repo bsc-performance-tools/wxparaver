@@ -4422,14 +4422,14 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
   string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
   #endif
   if ( ( prevSessionWasComplete && 
-      wxMessageBox( wxT( "Do you want to load your previous auto-saved Paraver session?" ),
-                    wxT( "Please confirm" ),
+      wxMessageBox( wxT( "Do you want to load your last auto-saved Paraver session?" ),
+                    wxT( "Load auto-saved session" ),
                     wxICON_QUESTION | wxYES_NO,
                     this ) == wxYES ) 
   || (  !prevSessionWasComplete && 
       isSessionFile( file ) &&
-      wxMessageBox( wxT( "Your previous Paraver session closed unexpectedly, but we can restore its last auto-saved version. Do you want to?" ),
-                    wxT( "Please confirm" ),
+      wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last auto-saved Paraver session?" ),
+                    wxT( "Load auto-saved session" ),
                     wxICON_QUESTION | wxYES_NO,
                     this ) == wxYES ) )
   {
