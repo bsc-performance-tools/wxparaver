@@ -461,7 +461,7 @@ bool wxparaverApp::OnInit()
   mainWindow = new paraverMain( NULL, SYMBOL_PARAVERMAIN_IDNAME, SYMBOL_PARAVERMAIN_TITLE, SYMBOL_PARAVERMAIN_POSITION, mainWindowSize );
 
   bool prevSessionWasComplete = ParaverConfig::getInstance()->initCompleteSessionFile();
-  if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() )
+  if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
 
   mainWindow->Show(true);

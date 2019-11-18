@@ -73,6 +73,7 @@ IMPLEMENT_DYNAMIC_CLASS( PreferencesDialog, wxPropertySheetDialog )
 BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
 
 ////@begin PreferencesDialog event table entries
+  EVT_SPINCTRL( ID_PREFERENCES_GLOBAL_TIME_SESSION, PreferencesDialog::OnPreferencesGlobalTimeSessionUpdated )
   EVT_COLOURPICKER_CHANGED( ID_COLOURPICKER_BACKGROUND, PreferencesDialog::OnColourpickerBackgroundColourPickerChanged )
   EVT_UPDATE_UI( ID_COLOURPICKER_ZERO, PreferencesDialog::OnColourpickerZeroUpdate )
   EVT_BUTTON( ID_BUTTON_DEFAULT_TIMELINE, PreferencesDialog::OnButtonDefaultTimelineClick )
@@ -1384,8 +1385,9 @@ bool PreferencesDialog::TransferDataToWindow()
   dirBrowserButtonTmp->SetPath( wxString::FromAscii( tmpPath.c_str() ) );
   txtMaximumTraceSize->SetValue( maximumTraceSize );
   checkGlobalSingleInstance->SetValue( singleInstance );
-  checkGlobalPrevSessionLoad->SetValue( prevSessionLoad );
   spinSessionTime->SetValue( sessionSaveTime );
+  checkGlobalPrevSessionLoad->SetValue( prevSessionLoad );
+  checkGlobalPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
@@ -2194,3 +2196,12 @@ void PreferencesDialog::OnRadioeventypesSelected( wxCommandEvent& event )
   tmpWrk.setType( WorkspaceValue::EVENT );
 }
 
+
+/*!
+ * wxEVT_COMMAND_SPINCTRL_UPDATED event handler for ID_PREFERENCES_GLOBAL_TIME_SESSION
+ */
+
+void PreferencesDialog::OnPreferencesGlobalTimeSessionUpdated( wxSpinEvent& event )
+{
+  checkGlobalPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
+}

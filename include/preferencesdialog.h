@@ -197,6 +197,9 @@ public:
 
 ////@begin PreferencesDialog event handler declarations
 
+  /// wxEVT_COMMAND_SPINCTRL_UPDATED event handler for ID_PREFERENCES_GLOBAL_TIME_SESSION
+  void OnPreferencesGlobalTimeSessionUpdated( wxSpinEvent& event );
+
   /// wxEVT_COLOURPICKER_CHANGED event handler for ID_COLOURPICKER_BACKGROUND
   void OnColourpickerBackgroundColourPickerChanged( wxColourPickerEvent& event );
 
@@ -420,9 +423,6 @@ public:
   bool GetSingleInstance() const { return singleInstance ; }
   void SetSingleInstance(bool value) { singleInstance = value ; }
 
-  bool GetPrevSessionLoad() const { return prevSessionLoad ; }
-  void SetPrevSessionLoad(bool value) { prevSessionLoad = value ; }
-
   PRV_UINT32 GetTimelineColor() const { return timelineColor ; }
   void SetTimelineColor(PRV_UINT32 value) { timelineColor = value ; }
 
@@ -515,6 +515,9 @@ public:
 
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
+
+  bool GetPrevSessionLoad() const { return prevSessionLoad ; }
+  void SetPrevSessionLoad(bool value) { prevSessionLoad = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -667,7 +670,6 @@ private:
   float maximumTraceSize;
   PRV_UINT16 sessionSaveTime;
   bool singleInstance;
-  bool prevSessionLoad;
   PRV_UINT32 timelineColor;
   rgb timelineColourAxis;
   rgb timelineColourBackground;
@@ -699,6 +701,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
+  bool prevSessionLoad;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace
