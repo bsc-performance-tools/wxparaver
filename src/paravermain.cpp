@@ -4413,21 +4413,26 @@ void paraverMain::insertSignalItem( bool isSig1 )
 
 
 
-void paraverMain::checkIfPrevSessionLoad()
+void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
 { 
   //to do : add alert popup
-  if( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && 
+  #ifdef WIN32
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+  #else
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+  #endif
+  if ( ( prevSessionWasComplete && 
       wxMessageBox( wxT( "Do you want to load the previous session?" ),
-                     wxT( "Please confirm" ),
-                     wxICON_QUESTION | wxYES_NO,
-                     this ) == wxYES )
+                    wxT( "Please confirm" ),
+                    wxICON_QUESTION | wxYES_NO,
+                    this ) == wxYES ) 
+  || (  !prevSessionWasComplete && 
+      isSessionFile( file ) &&
+      wxMessageBox( wxT( "Previous session closed unexpectedly, but we can restore its last auto-save. Do you want to?" ),
+                    wxT( "Please confirm" ),
+                    wxICON_QUESTION | wxYES_NO,
+                    this ) == wxYES ) )
   {
-    #ifdef WIN32
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
-    #else
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
-    #endif
-    if ( isSessionFile( file ) )
-      DoLoadSession( file );
+    DoLoadSession( file );
   }
 }
