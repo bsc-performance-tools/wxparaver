@@ -152,6 +152,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+  EVT_MENU( ID_MENURESTORESESSION, paraverMain::OnMenurestoresessionClick )
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
   EVT_MENU( wxID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( wxID_PREFERENCES, paraverMain::OnPreferencesUpdate )
@@ -469,6 +470,7 @@ void paraverMain::CreateControls()
   menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(ID_MENULOADSESSION, _("Load Session...\tCTRL+l"), wxEmptyString, wxITEM_NORMAL);
+  menuFile->Append(ID_MENURESTORESESSION, _("Restore Autosaved Session..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->Append(ID_MENUSAVESESSION, _("Save Session...\tCTRL+S"), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
@@ -4436,3 +4438,19 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
     DoLoadSession( file );
   }
 }
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENURESTORESESSION
+ */
+
+void paraverMain::OnMenurestoresessionClick( wxCommandEvent& event )
+{
+  #ifdef WIN32
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+  #else
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+  #endif
+  DoLoadSession( file );
+}
+

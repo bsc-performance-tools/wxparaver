@@ -97,6 +97,7 @@ inline double rint( double nr )
 #define ID_RECENTCFGS 10009
 #define ID_MENUSAVECFG 10011
 #define ID_MENULOADSESSION 10170
+#define ID_MENURESTORESESSION 10013
 #define ID_MENUSAVESESSION 10169
 #define wxID_HELPCONTENTS 10005
 #define wxID_TUTORIALS 10196
@@ -259,6 +260,9 @@ public:
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADSESSION
   void OnMenuloadsessionClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENURESTORESESSION
+  void OnMenurestoresessionClick( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVESESSION
   void OnMenusavesessionClick( wxCommandEvent& event );
