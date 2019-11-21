@@ -194,6 +194,15 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_INCLUSIVE
   void OnToolInclusiveUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOOL_CHOICE_SORTBY
+  void OnToolChoiceSortbySelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_REVERSE
+  void OnToolReverseClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_REVERSE
+  void OnToolReverseUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_PAINT event handler for ID_ZOOMHISTO
   void OnPaint( wxPaintEvent& event );
 

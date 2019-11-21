@@ -130,6 +130,9 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_UPDATE_UI( ID_TOOL_ONLY_TOTALS, gHistogram::OnToolOnlyTotalsUpdate )
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
+  EVT_CHOICE( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbySelected )
+  EVT_MENU( ID_TOOL_REVERSE, gHistogram::OnToolReverseClick )
+  EVT_UPDATE_UI( ID_TOOL_REVERSE, gHistogram::OnToolReverseUpdate )
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
   EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
@@ -632,10 +635,10 @@ void gHistogram::fillZoom()
 
   for( THistogramColumn iCol = 0; iCol < tmpNumCols; ++iCol )
   {
-    THistogramColumn realCol = iCol;
+    THistogramColumn realCol = myHistogram->getSortedColumn( iCol );
     if( myHistogram->getHideColumns() )
       realCol = noVoidColumns[ iCol ];
-      
+
     if( commStat )
       myHistogram->setCommFirstCell( realCol, curPlane );
     else
@@ -650,9 +653,10 @@ void gHistogram::fillZoom()
              && rint( ( endCol + 2 ) * cellWidth ) == rint( ( beginCol + 1 ) * cellWidth ) )
       {
         ++endCol;
-        THistogramColumn tmpEndCol = endCol;
+        THistogramColumn tmpEndCol = myHistogram->getSortedColumn( endCol );
         if( myHistogram->getHideColumns() )
           tmpEndCol = noVoidColumns[ endCol ];
+
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
         else
@@ -665,9 +669,10 @@ void gHistogram::fillZoom()
              && rint( ( endCol + 2 ) * cellHeight ) == rint( ( beginCol + 1 ) * cellHeight ) )
       {
         ++endCol;
-        THistogramColumn tmpEndCol = endCol;
+        THistogramColumn tmpEndCol = myHistogram->getSortedColumn( endCol );
         if( myHistogram->getHideColumns() )
           tmpEndCol = noVoidColumns[ endCol ];
+
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
         else
@@ -735,7 +740,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
     valuesColumns.clear();
     for( THistogramColumn drawCol = beginColumn; drawCol <= endColumn; ++drawCol )
     {
-      THistogramColumn iCol = drawCol;
+      THistogramColumn iCol = myHistogram->getSortedColumn( drawCol );
       if( myHistogram->getHideColumns() )
         iCol = noVoidColumns[ drawCol ];
         
@@ -792,7 +797,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
           
       rgb tmpCol;
       Window *controlWindow = myHistogram->getControlWindow();
-      THistogramColumn tmpBeginCol = beginColumn;
+      THistogramColumn tmpBeginCol = myHistogram->getSortedColumn( beginColumn );
       if( myHistogram->getHideColumns() )
         tmpBeginCol = noVoidColumns[ beginColumn ];
 
@@ -3156,5 +3161,47 @@ void gHistogram::OnToolShortLabelsClick( wxCommandEvent& event )
   myHistogram->setRedraw( true );
   if( !myHistogram->getZoom() )
     gridHisto->Refresh();
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOOL_CHOICE_SORTBY
+ */
+
+void gHistogram::OnToolChoiceSortbySelected( wxCommandEvent& event )
+{
+  if( event.GetSelection() == 0 && myHistogram->getSortColumns() )
+  {
+    myHistogram->setSortColumns( false );
+    myHistogram->setRedraw( true );
+  }
+  else if( event.GetSelection() > 0 && 
+           ( !myHistogram->getSortColumns() || myHistogram->getSortCriteria() != event.GetSelection() - 1 ) )
+  {
+    myHistogram->setSortColumns( true );
+    myHistogram->setSortCriteria( (THistoTotals)( event.GetSelection() - 1 ) );
+    myHistogram->setRedraw( true );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_REVERSE
+ */
+
+void gHistogram::OnToolReverseClick( wxCommandEvent& event )
+{
+  myHistogram->setSortReverse( event.IsChecked() );
+  myHistogram->setRedraw( true );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_REVERSE
+ */
+
+void gHistogram::OnToolReverseUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myHistogram->getSortReverse() );
 }
 
