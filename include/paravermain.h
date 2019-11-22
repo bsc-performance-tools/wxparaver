@@ -98,7 +98,6 @@ inline double rint( double nr )
 #define ID_MENUSAVECFG 10011
 #define ID_MENULOADSESSION 10170
 #define ID_RECENTSESSIONS 10292
-#define ID_MENURESTORESESSION 10013
 #define ID_MENUSAVESESSION 10169
 #define wxID_HELPCONTENTS 10005
 #define wxID_TUTORIALS 10196
@@ -265,9 +264,6 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_RECENTSESSIONS
   void OnRecentsessionsUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENURESTORESESSION
-  void OnMenurestoresessionClick( wxCommandEvent& event );
-
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVESESSION
   void OnMenusavesessionClick( wxCommandEvent& event );
 
@@ -350,6 +346,8 @@ public:
 
   /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
   void OnTreeSelChanged( wxTreeEvent& event );
+  
+  void OnMenuLoadAutoSavedSession( wxCommandEvent& event );
   
   /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
   void OnTreeItemActivated( wxTreeEvent& event );
@@ -449,6 +447,9 @@ public:
 
   PreviousFiles * GetPreviousCutFilteredTraces() const { return previousCutFilteredTraces ; }
   void SetPreviousCutFilteredTraces(PreviousFiles * value) { previousCutFilteredTraces = value ; }
+
+  PreviousFiles * GetPreviousSessions() const { return previousSessions ; }
+  void SetPreviousSessions(PreviousFiles * value) { previousSessions = value ; }
 
   PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
   void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
@@ -609,8 +610,8 @@ private:
   int numNewWindows;
   ParaverConfig* paraverConfig;
   PreviousFiles * previousCFGs;
-  PreviousFiles * previousSessions;
   PreviousFiles * previousCutFilteredTraces;
+  PreviousFiles * previousSessions;
   PreviousFiles * previousTraces;
   std::vector< PropertyClientData * > propertiesClientData;
   bool raiseCurrentWindow;

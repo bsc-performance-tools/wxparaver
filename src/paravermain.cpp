@@ -153,7 +153,6 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
   EVT_UPDATE_UI( ID_RECENTSESSIONS, paraverMain::OnRecentsessionsUpdate )
-  EVT_MENU( ID_MENURESTORESESSION, paraverMain::OnMenurestoresessionClick )
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
   EVT_MENU( wxID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( wxID_PREFERENCES, paraverMain::OnPreferencesUpdate )
@@ -404,8 +403,8 @@ void paraverMain::Init()
   paraverConfig = ParaverConfig::getInstance();
   previousCFGs = PreviousFiles::createPreviousCFGs();
   previousCutFilteredTraces = PreviousFiles::createPreviousTreatedTraces();
-  previousTraces = PreviousFiles::createPreviousTraces();
   previousSessions = PreviousFiles::createPreviousSessions();
+  previousTraces = PreviousFiles::createPreviousTraces();
   raiseCurrentWindow = true;
   runApplication = NULL;
   sessionTimer = new wxTimer( this );
@@ -474,7 +473,6 @@ void paraverMain::CreateControls()
   menuFile->Append(ID_MENULOADSESSION, _("Load Session...\tCTRL+l"), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu1 = new wxMenu;
   menuFile->Append(ID_RECENTSESSIONS, _("Previous Sessions"), itemMenu1);
-  menuFile->Append(ID_MENURESTORESESSION, _("Restore Autosaved Session..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->Append(ID_MENUSAVESESSION, _("Save Session...\tCTRL+S"), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
@@ -1043,17 +1041,12 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
   raiseCurrentWindow = true;
 }
 
-
-/*!
- * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENURESTORESESSION
- */
-
-void paraverMain::OnMenurestoresessionClick( wxCommandEvent& event )
+void paraverMain::OnMenuLoadAutoSavedSession( wxCommandEvent& event )
 {
   #ifdef WIN32
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
   #else
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
   #endif
   DoLoadSession( file );
 }
@@ -2176,21 +2169,15 @@ void paraverMain::OnPreviousSessionsClick( wxCommandEvent& event )
   wxMenuItem *item = menuFile->FindItem( ID_RECENTSESSIONS );
   wxMenu *menu = item->GetSubMenu();
   wxMenuItemList& menuItems = menu->GetMenuItems();
-  wxMenuItemList::iterator menuIt = menuItems.begin(); //++menuIt; ++menuIt; //begin + 2 (load autosave + separator)
-
-  for ( int j = 0 ; j != previousSessions->getFiles().size(); ++j )
-    std::cout << "\t" << j << " -> [" << previousSessions->getFiles()[ j ] << "] \n";
+  wxMenuItemList::iterator menuIt = menuItems.begin(); ++menuIt; ++menuIt; //begin + 2 (load autosave + separator)
 
   for ( menuIt ; menuIt != menuItems.end(); ++menuIt )
   {
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();
      if ( currentId == eventId )
-     {
-      std::cout << "Session SIZE =  [" << i << "," << previousSessions->getFiles().size() << "] \n";
-      std::cout << "Session to load [" << previousSessions->getFiles()[i] << "] \n";
       DoLoadSession( previousSessions->getFiles()[i] );
-     }
+     
     i++;
   }
 }
@@ -2245,20 +2232,26 @@ void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent& event )
   wxMenuItemList::iterator menuIt = menuItems.begin();
 
   for ( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
-    std::cout << *it << std::endl;
-  std::cout << std::endl;
-
-  for ( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
   {
-    /*if ( menuItems.size() == 0 && it == v.begin() )
+    // Handler load auto-session options
+    if ( menuItems.size() == 0 && it == v.begin() )
     {
       wxMenuItem *tmp0 = new wxMenuItem( menuSessions, wxID_ANY, _("Load Auto-Saved Session") );
       menuSessions->Append( tmp0 );
-      menuSessions->AppendSeparator();
       Connect( tmp0->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
-               (wxObjectEventFunction)&paraverMain::OnMenurestoresessionClick );
-    }*/
+               (wxObjectEventFunction)&paraverMain::OnMenuLoadAutoSavedSession );
+      tmp0->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+      menuSessions->AppendSeparator();
+    }
+    else if ( menuItems.size() >= 2 && it == v.begin() )
+    {
+      wxMenuItem *tmp = *menuIt;
+      tmp->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+      ++menuIt; ++menuIt;
+    }
+
+    // Item handler
     if ( menuIt == menuItems.end() )
     {
       wxMenuItem *newItem = new wxMenuItem( menuSessions, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
@@ -3940,12 +3933,13 @@ void paraverMain::OnSize( wxSizeEvent& event )
 
 void paraverMain::OnSessionTimer( wxTimerEvent& event )
 {
-#ifdef WIN32
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
-#else
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
-#endif
+  #ifdef WIN32
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+  #else
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+  #endif
   SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
+  std::cout << "[auto-saved session]\n";
 }
 
 
@@ -4519,9 +4513,9 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
 { 
   //to do : add alert popup
   #ifdef WIN32
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
   #else
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
   #endif
   if ( ( prevSessionWasComplete && 
       wxMessageBox( wxT( "Do you want to load your last auto-saved Paraver session?" ),
