@@ -97,6 +97,7 @@ inline double rint( double nr )
 #define ID_RECENTCFGS 10009
 #define ID_MENUSAVECFG 10011
 #define ID_MENULOADSESSION 10170
+#define ID_RECENTSESSIONS 10292
 #define ID_MENURESTORESESSION 10013
 #define ID_MENUSAVESESSION 10169
 #define wxID_HELPCONTENTS 10005
@@ -261,6 +262,9 @@ public:
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADSESSION
   void OnMenuloadsessionClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_RECENTSESSIONS
+  void OnRecentsessionsUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENURESTORESESSION
   void OnMenurestoresessionClick( wxCommandEvent& event );
 
@@ -363,6 +367,7 @@ public:
 
   void OnPreviousTracesClick( wxCommandEvent& event );
   void OnPreviousCFGsClick( wxCommandEvent& event );
+  void OnPreviousSessionsClick( wxCommandEvent& event );
 
   void OnActivate( wxActivateEvent& event );
 ////@begin paraverMain member function declarations
@@ -604,6 +609,7 @@ private:
   int numNewWindows;
   ParaverConfig* paraverConfig;
   PreviousFiles * previousCFGs;
+  PreviousFiles * previousSessions;
   PreviousFiles * previousCutFilteredTraces;
   PreviousFiles * previousTraces;
   std::vector< PropertyClientData * > propertiesClientData;
