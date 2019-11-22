@@ -2231,40 +2231,53 @@ void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent& event )
   wxMenuItemList& menuItems = menuSessions->GetMenuItems();
   wxMenuItemList::iterator menuIt = menuItems.begin();
 
-  for ( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
+  if ( v.begin() == v.end() && menuItems.size() == 0 )
+    {
+    wxMenuItem *tmp0 = new wxMenuItem( menuSessions, wxID_ANY, _("Load Auto-Saved Session") );
+    menuSessions->Append( tmp0 );
+    Connect( tmp0->GetId(),
+             wxEVT_COMMAND_MENU_SELECTED,
+             (wxObjectEventFunction)&paraverMain::OnMenuLoadAutoSavedSession );
+    tmp0->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+    menuSessions->AppendSeparator();
+  } 
+  else
   {
-    // Handler load auto-session options
-    if ( menuItems.size() == 0 && it == v.begin() )
+    for ( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
     {
-      wxMenuItem *tmp0 = new wxMenuItem( menuSessions, wxID_ANY, _("Load Auto-Saved Session") );
-      menuSessions->Append( tmp0 );
-      Connect( tmp0->GetId(),
-               wxEVT_COMMAND_MENU_SELECTED,
-               (wxObjectEventFunction)&paraverMain::OnMenuLoadAutoSavedSession );
-      tmp0->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
-      menuSessions->AppendSeparator();
-    }
-    else if ( menuItems.size() >= 2 && it == v.begin() )
-    {
-      wxMenuItem *tmp = *menuIt;
-      tmp->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
-      ++menuIt; ++menuIt;
-    }
+      // Handler load auto-session options
+      if ( menuItems.size() == 0 && it == v.begin() )
+      {
+        wxMenuItem *tmp0 = new wxMenuItem( menuSessions, wxID_ANY, _("Load Auto-Saved Session") );
+        menuSessions->Append( tmp0 );
+        Connect( tmp0->GetId(),
+                 wxEVT_COMMAND_MENU_SELECTED,
+                 (wxObjectEventFunction)&paraverMain::OnMenuLoadAutoSavedSession );
+        tmp0->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+        menuSessions->AppendSeparator();
+      }
+      else if ( menuItems.size() >= 2 && it == v.begin() )
+      {
+        wxMenuItem *tmp = *menuIt;
+        tmp->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+        ++menuIt; ++menuIt;
+      }
 
-    // Item handler
-    if ( menuIt == menuItems.end() )
-    {
-      wxMenuItem *newItem = new wxMenuItem( menuSessions, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
-      menuSessions->Append( newItem );
-      Connect( newItem->GetId(),
-               wxEVT_COMMAND_MENU_SELECTED,
-               (wxObjectEventFunction)&paraverMain::OnPreviousSessionsClick );
-    }
-    else
-    {
-      wxMenuItem *tmp = *menuIt;
-      tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
-      ++menuIt;
+      // Item handler
+      if ( menuIt == menuItems.end() )
+      {
+        wxMenuItem *newItem = new wxMenuItem( menuSessions, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
+        menuSessions->Append( newItem );
+        Connect( newItem->GetId(),
+                 wxEVT_COMMAND_MENU_SELECTED,
+                 (wxObjectEventFunction)&paraverMain::OnPreviousSessionsClick );
+      }
+      else
+      {
+        wxMenuItem *tmp = *menuIt;
+        tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
+        ++menuIt;
+      }
     }
   }
 }
