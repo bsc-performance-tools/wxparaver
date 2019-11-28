@@ -540,6 +540,20 @@ void gHistogram::fillGrid()
   gridHisto->ForceRefresh();
 }
 
+THistogramColumn gHistogram::getRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns ) const
+{
+  THistogramColumn realCol = whichCol;
+  
+  if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
+    realCol = myHistogram->getNumColumns() - noVoidColumns.size() + whichCol;
+  else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && !myHistogram->getSortReverse() )
+    realCol = noVoidColumns[ whichCol ];
+  else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && myHistogram->getSortReverse() )
+    realCol = noVoidColumns[ noVoidColumns.size() - whichCol - 1 ];
+    
+  return realCol;
+}
+
 void gHistogram::fillZoom()
 {
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
@@ -635,19 +649,12 @@ void gHistogram::fillZoom()
 
   for( THistogramColumn iCol = 0; iCol < tmpNumCols; ++iCol )
   {
-    THistogramColumn realCol = iCol;
-    if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-      realCol = myHistogram->getNumColumns() - noVoidColumns.size() + realCol;
-    else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && !myHistogram->getSortReverse() )
-      realCol = noVoidColumns[ iCol ];
-    else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-      realCol = noVoidColumns[ noVoidColumns.size() - iCol - 1 ];
-      
+    THistogramColumn realCol = getRealColumn( iCol, noVoidColumns );
+
     if( commStat )
       myHistogram->setCommFirstCell( realCol, curPlane );
     else
       myHistogram->setFirstCell( realCol, curPlane );
-
 
     THistogramColumn beginCol = iCol;
     THistogramColumn endCol = beginCol;
@@ -657,13 +664,7 @@ void gHistogram::fillZoom()
              && rint( ( endCol + 2 ) * cellWidth ) == rint( ( beginCol + 1 ) * cellWidth ) )
       {
         ++endCol;
-        THistogramColumn tmpEndCol = endCol;
-        if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-          tmpEndCol = myHistogram->getNumColumns() - noVoidColumns.size() + tmpEndCol;
-        else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && !myHistogram->getSortReverse() )
-          tmpEndCol = noVoidColumns[ endCol ];
-        else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-          tmpEndCol = noVoidColumns[ noVoidColumns.size() - endCol - 1 ];
+        THistogramColumn tmpEndCol = getRealColumn( endCol, noVoidColumns );
 
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
@@ -677,13 +678,7 @@ void gHistogram::fillZoom()
              && rint( ( endCol + 2 ) * cellHeight ) == rint( ( beginCol + 1 ) * cellHeight ) )
       {
         ++endCol;
-        THistogramColumn tmpEndCol = endCol;
-        if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-          tmpEndCol = myHistogram->getNumColumns() - noVoidColumns.size() + tmpEndCol;
-        else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && !myHistogram->getSortReverse() )
-          tmpEndCol = noVoidColumns[ endCol ];
-        else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-          tmpEndCol = noVoidColumns[ noVoidColumns.size() - endCol - 1 ];
+        THistogramColumn tmpEndCol = getRealColumn( endCol, noVoidColumns );
 
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
@@ -752,14 +747,8 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
     valuesColumns.clear();
     for( THistogramColumn drawCol = beginColumn; drawCol <= endColumn; ++drawCol )
     {
-      THistogramColumn iCol = drawCol;
-      if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-        iCol = myHistogram->getNumColumns() - noVoidColumns.size() + iCol;
-      else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && !myHistogram->getSortReverse() )
-        iCol = noVoidColumns[ drawCol ];
-      else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-        iCol = noVoidColumns[ noVoidColumns.size() - drawCol - 1 ];
-        
+      THistogramColumn iCol = getRealColumn( drawCol, noVoidColumns );
+
       if( !( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
             ( !commStat && myHistogram->endCell( iCol, curPlane ) ) ) )
       {
@@ -813,6 +802,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
           
       rgb tmpCol;
       Window *controlWindow = myHistogram->getControlWindow();
+      
       THistogramColumn tmpBeginCol = myHistogram->getSortedColumn( beginColumn );
       if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
         tmpBeginCol = myHistogram->getSortedColumn( myHistogram->getNumColumns() - noVoidColumns.size() + beginColumn );

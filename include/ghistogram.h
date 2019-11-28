@@ -438,17 +438,23 @@ private:
   wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
 
   void updateHistogram();
+
   void OnTimerZoom( wxTimerEvent& event );
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
+
+  THistogramColumn getRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns  ) const;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
                    vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
+
   void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                  THistogramColumn& columnBegin, THistogramColumn& columnEnd,
                                  TObjectOrder& objectBegin, TObjectOrder& objectEnd, bool zoomxy  );
   void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
                           TObjectOrder objectBegin, TObjectOrder objectEnd );
+
   void zoom( THistogramLimit newColumnBegin, THistogramLimit newColumnEnd,
              TObjectOrder newObjectBegin, TObjectOrder newObjectEnd, THistogramLimit newDelta = -1.0 );
+
 };
 
 void progressFunctionHistogram( ProgressController *progress, void *callerWindow );
