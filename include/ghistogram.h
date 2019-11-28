@@ -442,6 +442,7 @@ private:
   void OnTimerZoom( wxTimerEvent& event );
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
 
+  THistogramColumn getSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns  ) const;
   THistogramColumn getRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns  ) const;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
                    vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );

@@ -540,10 +540,24 @@ void gHistogram::fillGrid()
   gridHisto->ForceRefresh();
 }
 
+THistogramColumn gHistogram::getSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns ) const
+{
+  THistogramColumn realSortCol = myHistogram->getSortedColumn( whichCol );
+
+  if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
+    realSortCol = myHistogram->getSortedColumn( myHistogram->getNumColumns() - noVoidColumns.size() + whichCol );
+  else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && !myHistogram->getSortReverse() )
+    realSortCol = noVoidColumns[ whichCol ];
+  else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && myHistogram->getSortReverse() )
+    realSortCol = noVoidColumns[ noVoidColumns.size() - whichCol - 1 ];
+
+  return realSortCol;
+}
+
 THistogramColumn gHistogram::getRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns ) const
 {
   THistogramColumn realCol = whichCol;
-  
+
   if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
     realCol = myHistogram->getNumColumns() - noVoidColumns.size() + whichCol;
   else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && !myHistogram->getSortReverse() )
@@ -803,13 +817,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       rgb tmpCol;
       Window *controlWindow = myHistogram->getControlWindow();
       
-      THistogramColumn tmpBeginCol = myHistogram->getSortedColumn( beginColumn );
-      if( myHistogram->getHideColumns() && myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-        tmpBeginCol = myHistogram->getSortedColumn( myHistogram->getNumColumns() - noVoidColumns.size() + beginColumn );
-      else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && !myHistogram->getSortReverse() )
-        tmpBeginCol = noVoidColumns[ beginColumn ];
-      else if( myHistogram->getHideColumns() && !myHistogram->getSortColumns() && myHistogram->getSortReverse() )
-        tmpBeginCol = noVoidColumns[ noVoidColumns.size() - beginColumn - 1 ];
+      THistogramColumn tmpBeginCol = getSortedRealColumn( beginColumn, noVoidColumns );
 
       TSemanticValue tmpValue = ( tmpBeginCol * myHistogram->getControlDelta() ) +
                                 myHistogram->getControlMin();
