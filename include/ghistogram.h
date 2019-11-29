@@ -440,7 +440,7 @@ private:
   void updateHistogram();
 
   void OnTimerZoom( wxTimerEvent& event );
-  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
+  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const vector<THistogramColumn>& noVoidColumns ) const;
 
   THistogramColumn getSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns  ) const;
   THistogramColumn getRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns  ) const;

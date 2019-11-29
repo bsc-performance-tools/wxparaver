@@ -1916,15 +1916,13 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
 
   if( column > 0 )
   {
-    if( myHistogram->getHideColumns() )
-      column = noVoidColumns[ column - 1 ] + 1;
-    text << wxString::FromAscii( myHistogram->getColumnLabel( column - 1 ).c_str() )
+    text << wxString::FromAscii( myHistogram->getColumnLabel( getRealColumn( column - 1, noVoidColumns ) ).c_str() )
          << _( "  " );
   }
   
   if( row > 0 && column > 0 )
   {
-    TSemanticValue value = getZoomSemanticValue( column - 1, row - 1 );
+    TSemanticValue value = getZoomSemanticValue( column - 1, row - 1, noVoidColumns );
     string tmpLabel;
     if ( !myHistogram->getCodeColor() )
     {
@@ -1944,13 +1942,14 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   histoStatus->SetStatusText( text );
 }
 
-TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const
+TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const vector<THistogramColumn>& noVoidColumns ) const
 {
   THistogramColumn plane;
   TSemanticValue value = 0.0;
   PRV_UINT16 idStat;
   
   myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
+  column = getRealColumn( column, noVoidColumns );
   
   if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
   {
