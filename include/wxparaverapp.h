@@ -126,6 +126,7 @@ public:
 
     static paraverMain* mainWindow;
     static wxCmdLineEntryDesc argumentsParseSyntax[];
+    void ManageAutoSessions( wxString &pid );
     
 ////@begin wxparaverApp member variables
 private:
@@ -140,6 +141,7 @@ private:
     wxLocale m_locale;
     
     wxSingleInstanceChecker *m_checker;
+    std::map< wxString, int> multiSessionMgmt;
     
     stServer *m_server;
     

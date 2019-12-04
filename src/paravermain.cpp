@@ -66,7 +66,7 @@
 #include "histogramdialog.h"
 #include "cutfilterdialog.h"
 #include "labelconstructor.h"
-#include "sessionsaver.h"
+#include "autosessionmanager.h"
 #include "helpcontents.h"
 #include "filedialogext.h"
 #include "runscript.h"
@@ -428,6 +428,7 @@ void paraverMain::Init()
 
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
+  instChecker = NULL;
 
   wxFileSystem::AddHandler( new wxMemoryFSHandler() );
 #ifdef WIN32
@@ -3472,6 +3473,18 @@ void paraverMain::OnActivate( wxActivateEvent& event )
 
 void paraverMain::PrepareToExit()
 {
+  //Saves session before exit
+  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  {
+    #ifdef WIN32
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver" + std::to_string( getpid() ) + ".session" );
+    #else
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() +  "/paraver" + std::to_string( getpid() ) + ".session" );
+    #endif
+    SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
+  }
+
+
   vector<Histogram *> histograms;
   LoadedWindows::getInstance()->getAll( histograms );
   
@@ -3481,6 +3494,8 @@ void paraverMain::PrepareToExit()
     (*it)->clearDataWindow();
     (*it)->clearExtraControlWindow();
   }
+
+  if( instChecker != NULL ) delete instChecker;
 }
 
 /*!
@@ -3946,13 +3961,20 @@ void paraverMain::OnSize( wxSizeEvent& event )
 
 void paraverMain::OnSessionTimer( wxTimerEvent& event )
 {
-  #ifdef WIN32
+  if ( ParaverConfig::getInstance()->getGlobalSingleInstance() ) 
+  {
+    #ifdef WIN32
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
-  #else
+    #else
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
-  #endif
-  SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
-  std::cout << "[auto-saved session]\n";
+    #endif
+    SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
+  }
+  else
+  {
+    AutoSessionManager::SaveAutoSession( instChecker );
+    std::cout << "[auto-saved session]\n";
+  }
 }
 
 
@@ -3997,6 +4019,15 @@ void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
   }
 }
 
+void paraverMain::SessionSaveWrapper( std::string pid )
+{
+  #ifdef WIN32
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver" + pid + ".session" );
+  #else
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver" + pid + ".session" );
+  #endif
+  SessionSaver::SaveSession( file, paraverMain::myParaverMain->GetLoadedTraces() ); 
+}
 
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_ABOUT

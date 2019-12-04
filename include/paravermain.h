@@ -35,6 +35,7 @@
 #include <wx/treectrl.h>
 #include <wx/cmdline.h>
 #include <wx/imaglist.h>
+#include <wx/snglinst.h>
 
 ////@begin includes
 #include "wx/aui/framemanager.h"
@@ -550,6 +551,7 @@ public:
   bool isCFG4DModeDisabled() const;
 
   void checkIfPrevSessionLoad( bool prevSessionWasComplete );
+  static void SessionSaveWrapper( std::string pid );
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
@@ -625,6 +627,7 @@ private:
   WorkspaceManager * workspacesManager;
 ////@end paraverMain member variables
 
+  wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
@@ -648,7 +651,6 @@ private:
   
   void OnSessionTimer( wxTimerEvent& event );
   
-private:
   void refreshMenuHints();
   void setTraceWorkspaces( Trace *whichTrace );
 

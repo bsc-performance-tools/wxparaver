@@ -358,12 +358,29 @@ bool wxparaverApp::OnInit()
                   wxOK|wxICON_ERROR );
   }
 
+  const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
+  wxLogNull *tmpLogNull = new wxLogNull();
+  m_checker = new wxSingleInstanceChecker(name);
+  delete tmpLogNull;
+
+  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  {
+    if ( !m_checker->IsAnotherRunning() )
+    {
+      m_server = new stServer;
+    
+#ifdef WIN32
+      if( !m_server->Create( wxT( "wxparaver_service" ) ) )
+#else
+      const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
+      if( !m_server->Create( service_name ) )
+#endif
+        wxLogDebug( wxT( "Failed to create an IPC service." ) );
+    }
+  }
+  
   if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
-    const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
-    wxLogNull *tmpLogNull = new wxLogNull();
-    m_checker = new wxSingleInstanceChecker(name);
-    delete tmpLogNull;
     if ( !m_checker->IsAnotherRunning() )
     {
       m_server = new stServer;
@@ -748,3 +765,13 @@ void wxparaverApp::PrintVersion()
   cout << auxDate << endl;
 }
 
+
+void wxparaverApp::ManageAutoSessions( wxString &pid )
+{
+  if ( multiSessionMgmt.find( pid ) != multiSessionMgmt.end()  )
+    ++multiSessionMgmt[ pid ];
+  else
+    multiSessionMgmt[ pid ] = 0;
+
+  std::cout << "# VALUE OF " << pid << " --> " << multiSessionMgmt[ pid ] << std::endl;
+}

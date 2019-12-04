@@ -69,6 +69,7 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   }
   else if( dataStr == wxT( "BEGIN" ) )
   {
+        std::cout << "--> MAIN Begin... \n " << std::endl;
     wxparaverApp::mainWindow->SetCanServeSignal( false );
     tmpCommand.Clear();
   }
@@ -87,4 +88,19 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   }
 
   return true;
+}
+
+
+bool stConnection::OnPoke( const wxString& topic, 
+                           const wxString& item, 
+                           const void *data, 
+                           size_t size, 
+                           wxIPCFormat format )
+{
+  if ( item == wxT( "pid" ) )
+  {
+    wxString dataStr( wxString::FromUTF8( (char *)data ));
+    std::cout << "Got PID = " << dataStr << std::endl;
+    wxGetApp().ManageAutoSessions( dataStr );
+  }
 }
