@@ -1071,6 +1071,18 @@ void paraverMain::OnExitClick( wxCommandEvent& event )
       return;
     }
   }
+  else if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  {
+    int q = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
+                       wxT( "Please confirm" ),
+                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+    if ( q == wxCANCEL || (q == wxYES && !OnMenusavesession() ) )
+    {
+      event.Skip();
+      return;
+    }
+  }
   PrepareToExit();
   Destroy();
 }
@@ -3505,10 +3517,22 @@ void paraverMain::PrepareToExit()
 void paraverMain::OnCloseWindow( wxCloseEvent& event )
 {
   if ( event.CanVeto() && !LoadedWindows::getInstance()->emptyWindows() )
-  {
+  { 
     if ( wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
                        wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO) != wxYES )
+                       wxICON_QUESTION | wxYES_NO ) != wxYES )
+    {
+      event.Veto();
+      return;
+    }
+  }
+  else if ( event.CanVeto() && !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  {
+    int q = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
+                       wxT( "Please confirm" ),
+                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+    if ( q == wxCANCEL || (q == wxYES && !OnMenusavesession() ) )
     {
       event.Veto();
       return;
@@ -3999,6 +4023,11 @@ void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
 
 void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
 {
+  OnMenusavesession();
+}
+
+bool paraverMain::OnMenusavesession( )
+{
   vector< wxString > extensions;
   extensions.push_back( wxT( "session" ) );
   
@@ -4016,7 +4045,9 @@ void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
   {
     wxFileName tmpFile( dialog.GetPath() );
     SessionSaver::SaveSession( tmpFile.GetFullPath(), GetLoadedTraces() );
+    return true;
   }
+  return false;
 }
 
 void paraverMain::SessionSaveWrapper( std::string pid )

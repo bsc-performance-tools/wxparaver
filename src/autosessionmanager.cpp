@@ -27,6 +27,9 @@
 // TO DO AFTER FUNCTIONALITY IS DONE: COMPATIBILITY ifdefs
 
 
+map < unsigned int, AutoSessionManager::SessionItems > AutoSessionManager::sessions;
+
+
 AutoSessionManager::AutoSessionManager( ) { }
 
 AutoSessionManager::AutoSessionManager( std::vector < unsigned int >& pids )
@@ -35,9 +38,20 @@ AutoSessionManager::AutoSessionManager( std::vector < unsigned int >& pids )
 }
 
 
+void AutoSessionManager::SetSession( unsigned int& pid )
+{
+  //if ( sessions.find( pid ) == sessions.end() )
+  //{
+    SessionItems si = SessionItems();
+    sessions.insert( { pid, si } );
+  //}
+}
+
+
 void AutoSessionManager::SetSessions( std::vector < unsigned int >& pids )
 {
-
+  for ( auto pid : pids )
+    SetSession( pid );
 }
 
 

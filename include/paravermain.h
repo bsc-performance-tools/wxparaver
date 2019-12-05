@@ -267,6 +267,7 @@ public:
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVESESSION
   void OnMenusavesessionClick( wxCommandEvent& event );
+  bool OnMenusavesession( );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_PREFERENCES
   void OnPreferencesClick( wxCommandEvent& event );
