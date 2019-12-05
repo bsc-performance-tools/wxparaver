@@ -131,6 +131,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
   EVT_CHOICE( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbySelected )
+  EVT_UPDATE_UI( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbyUpdate )
   EVT_MENU( ID_TOOL_REVERSE, gHistogram::OnToolReverseClick )
   EVT_UPDATE_UI( ID_TOOL_REVERSE, gHistogram::OnToolReverseUpdate )
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
@@ -225,6 +226,7 @@ void gHistogram::Init()
   zoomDragging = false;
   panelToolbar = NULL;
   tbarHisto = NULL;
+  choiceSortBy = NULL;
   panelData = NULL;
   mainSizer = NULL;
   zoomHisto = NULL;
@@ -299,19 +301,19 @@ void gHistogram::CreateControls()
   if (gHistogram::ShowToolTips())
     itemStaticBitmap1->SetToolTip(_("Sort columns by"));
   tbarHisto->AddControl(itemStaticBitmap1);
-  wxArrayString itemChoice2Strings;
-  itemChoice2Strings.Add(_("Default"));
-  itemChoice2Strings.Add(_("Total"));
-  itemChoice2Strings.Add(_("Average"));
-  itemChoice2Strings.Add(_("Maximum"));
-  itemChoice2Strings.Add(_("Minimum"));
-  itemChoice2Strings.Add(_("StDev"));
-  itemChoice2Strings.Add(_("Avg/Max"));
-  wxChoice* itemChoice2 = new wxChoice( tbarHisto, ID_TOOL_CHOICE_SORTBY, wxDefaultPosition, wxDefaultSize, itemChoice2Strings, 0 );
-  itemChoice2->SetStringSelection(_("Default"));
+  wxArrayString choiceSortByStrings;
+  choiceSortByStrings.Add(_("Default"));
+  choiceSortByStrings.Add(_("Total"));
+  choiceSortByStrings.Add(_("Average"));
+  choiceSortByStrings.Add(_("Maximum"));
+  choiceSortByStrings.Add(_("Minimum"));
+  choiceSortByStrings.Add(_("StDev"));
+  choiceSortByStrings.Add(_("Avg/Max"));
+  choiceSortBy = new wxChoice( tbarHisto, ID_TOOL_CHOICE_SORTBY, wxDefaultPosition, wxDefaultSize, choiceSortByStrings, 0 );
+  choiceSortBy->SetStringSelection(_("Default"));
   if (gHistogram::ShowToolTips())
-    itemChoice2->SetToolTip(_("Sort columns by"));
-  tbarHisto->AddControl(itemChoice2);
+    choiceSortBy->SetToolTip(_("Sort columns by"));
+  tbarHisto->AddControl(choiceSortBy);
   wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_reverse.xpm")));
   wxBitmap itemtool1BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_REVERSE, wxEmptyString, itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
@@ -3220,5 +3222,18 @@ void gHistogram::OnToolReverseClick( wxCommandEvent& event )
 void gHistogram::OnToolReverseUpdate( wxUpdateUIEvent& event )
 {
   event.Check( myHistogram->getSortReverse() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_CHOICE_SORTBY
+ */
+
+void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
+{
+  if( !myHistogram->getSortColumns() )
+    choiceSortBy->SetSelection( 0 );
+  else
+    choiceSortBy->SetSelection( (int)myHistogram->getSortCriteria() + 1 );
 }
 

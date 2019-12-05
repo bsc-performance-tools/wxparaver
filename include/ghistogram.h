@@ -197,6 +197,9 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOOL_CHOICE_SORTBY
   void OnToolChoiceSortbySelected( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_CHOICE_SORTBY
+  void OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_REVERSE
   void OnToolReverseClick( wxCommandEvent& event );
 
@@ -404,6 +407,7 @@ public:
 ////@begin gHistogram member variables
   wxPanel* panelToolbar;
   wxToolBar* tbarHisto;
+  wxChoice* choiceSortBy;
   wxPanel* panelData;
   wxBoxSizer* mainSizer;
   wxScrolledWindow* zoomHisto;
