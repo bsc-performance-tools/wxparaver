@@ -97,10 +97,6 @@ bool stConnection::OnPoke( const wxString& topic,
                            size_t size, 
                            wxIPCFormat format )
 {
-  if ( item == wxT( "pid" ) )
-  {
-    wxString dataStr( wxString::FromUTF8( (char *)data ));
-    std::cout << "Got PID = " << dataStr << std::endl;
-    wxGetApp().ManageAutoSessions( dataStr );
-  }
+  
+  
 }

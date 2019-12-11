@@ -1,4 +1,6 @@
 
+
+
 noinst_HEADERS = advancedsaveconfiguration.h \
                     connection.h \
                     copypaste.h \
@@ -13,6 +15,7 @@ noinst_HEADERS = advancedsaveconfiguration.h \
                     helpcontents.h \
                     histogramdialog.h \
                     histotablebase.h \
+                    loadcfgdialog.h \
                     paravermain.h \
                     pg_extraprop.h \
                     pg_util.h \
@@ -23,7 +26,7 @@ noinst_HEADERS = advancedsaveconfiguration.h \
                     saveconfigurationdialog.h \
                     sequencedriver.h \
                     sessionsaver.h \
-										timelinetreeselector.h \
+                    sessionselectiondialog.h \
+				timelinetreeselector.h \
                     windows_tree.h \
                     wxparaverapp.h
-

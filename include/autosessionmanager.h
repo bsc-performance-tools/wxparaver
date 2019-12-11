@@ -29,20 +29,11 @@
 #include <string>
 #include "wx/wx.h"
 #include "wx/string.h"
-#include "connection.h"
 #include "paraverconfig.h"
 #include "sessionsaver.h"
 #include "wx/snglinst.h"
 
-#include "wxparaverapp.h"
-#include "paravermain.h"
 
-// SERIALIZATION INCLUDES
-#include <fstream>
-#include <iostream>
-#include <boost/serialization/string.hpp>
-#include <boost/archive/xml_iarchive.hpp>
-#include <boost/archive/xml_oarchive.hpp>
 
 // DATE TIME INCLUDES
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -55,69 +46,27 @@ using namespace std;
 //todo versions
 class AutoSessionManager
 {
-  public:
-    class SessionItems
-    {
-      friend class boost::serialization::access;
-      public:
-
-        SessionItems()
-        {
-          status = OPEN;
-          //sessionDate = 0;
-        }
-
-        SessionItems( int statId )
-        {
-          status = (StatusID) statId;
-          //sessionDate = 0;
-        }
-
-        template< class Archive >
-        void serialize( Archive & ar, const unsigned int version )
-        {
-          if( version >= 1 )
-          {
-            ar & boost::serialization::make_nvp( "status", status );
-            ar & boost::serialization::make_nvp( "session_date", sessionDate );
-          }
-        }
-        
-        enum StatusID
-        {
-          OPEN   = 0,
-          CLOSED = 1
-        };
-        
-        StatusID status;
-        boost::gregorian::date sessionDate;    
-
-    };
-
-    template< class Archive >
-    void serialize( Archive & ar, const unsigned int version )
-    {
-      ar & boost::serialization::make_nvp( "session_items", sessions);
-    }
+  /*public:
     AutoSessionManager();
     AutoSessionManager(vector < unsigned int >& pids) ;
-    static void SaveAutoSession( wxSingleInstanceChecker* &instChecker );
-    static void LoadAutoSession( wxString whichFile );
+    static void SaveAutoSession();
+    static void LoadAutoSession();
+
+    static void UpdateSession( wxString &pid );
+
+    unsigned int getPid()  
+    {
+      return pid;
+    }
+    wxString getFileName();
 
 
   private:
-    friend class boost::serialization::access;
-    
     static void SetSession( unsigned int& pid );
     static void SetSessions( std::vector < unsigned int >& pids );
     
-    static map < unsigned int, SessionItems > sessions;
-
+    unsigned int pid;*/
 };
 
-
-// Second version: introducing some structure
-BOOST_CLASS_VERSION( AutoSessionManager, 1)
-BOOST_CLASS_VERSION( AutoSessionManager::SessionItems, 1)
 
 #endif // _AUTOSESSIONMANAGER_H_

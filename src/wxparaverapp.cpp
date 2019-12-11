@@ -481,6 +481,8 @@ bool wxparaverApp::OnInit()
   if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
 
+  mainWindow->checkForMultiSessionLoad();
+
   mainWindow->Show(true);
 
 #ifndef WIN32
@@ -768,10 +770,5 @@ void wxparaverApp::PrintVersion()
 
 void wxparaverApp::ManageAutoSessions( wxString &pid )
 {
-  if ( multiSessionMgmt.find( pid ) != multiSessionMgmt.end()  )
-    ++multiSessionMgmt[ pid ];
-  else
-    multiSessionMgmt[ pid ] = 0;
-
-  std::cout << "# VALUE OF " << pid << " --> " << multiSessionMgmt[ pid ] << std::endl;
+  //mainWindow->UpdateSessionByPid( pid );
 }

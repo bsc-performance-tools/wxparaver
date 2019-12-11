@@ -26,10 +26,7 @@
 // WARNING: CODE WILL ONLY WORK ON UNIX + WX 3.0 >=
 // TO DO AFTER FUNCTIONALITY IS DONE: COMPATIBILITY ifdefs
 
-
-map < unsigned int, AutoSessionManager::SessionItems > AutoSessionManager::sessions;
-
-
+/*
 AutoSessionManager::AutoSessionManager( ) { }
 
 AutoSessionManager::AutoSessionManager( std::vector < unsigned int >& pids )
@@ -40,11 +37,12 @@ AutoSessionManager::AutoSessionManager( std::vector < unsigned int >& pids )
 
 void AutoSessionManager::SetSession( unsigned int& pid )
 {
-  //if ( sessions.find( pid ) == sessions.end() )
-  //{
+  if ( sessions.find( pid ) == sessions.end() )
+  {
     SessionItems si = SessionItems();
     sessions.insert( { pid, si } );
-  //}
+    std::cout << pid << " inserted with status " << si.status << std::endl;
+  }
 }
 
 
@@ -55,6 +53,31 @@ void AutoSessionManager::SetSessions( std::vector < unsigned int >& pids )
 }
 
 
+void AutoSessionManager::UpdateSession( wxString& pid )
+{
+  unsigned int pidNum = stoi( std::string( pid.mb_str() ) );
+  SetSession( pidNum );
+
+  //SaveXML();
+}
+
+
+void AutoSessionManager::LoadAutoSession( )
+{
+  
+}
+
+void AutoSessionManager::SaveAutoSession( )
+{
+  
+}
+
+
+
+
+
+
+  /*
 void AutoSessionManager::SaveAutoSession( wxSingleInstanceChecker* &instChecker )//, const vector< unsigned int >& pids )
 {
   const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
@@ -66,24 +89,19 @@ void AutoSessionManager::SaveAutoSession( wxSingleInstanceChecker* &instChecker 
   //Only 1 session
   if ( !instChecker->IsAnotherRunning() ) 
   {
-    std::cout << " [one session found] \n";
     string pid = "";
     paraverMain::SessionSaveWrapper( pid );
   }
   else
   {
-      std::cout << " [multi session found] ";
     wxLogNull logNull;
   
     stClient *client = new stClient;
     wxString hostName = wxT( "localhost" );
     const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
     wxConnectionBase *connection = client->MakeConnection( hostName, service_name, wxT( "wxparaver" ) );
-      std::cout << connection << std::endl;
-      std::cout << hostName << " + " << service_name << "  " << std::endl;
     if( connection )
     {
-      std::cout << "--> Sending PID to main process... \n " << std::endl;
 
       connection->Poke( "pid", _( std::to_string( getpid() ) ) );
 
@@ -95,47 +113,54 @@ void AutoSessionManager::SaveAutoSession( wxSingleInstanceChecker* &instChecker 
     }
     delete client;
   }
+
+  //Actual saving
+  std::ofstream ofs( filename.c_str() );
+  boost::archive::xml_oarchive oa( ofs );
+  oa << boost::serialization::make_nvp( "session_items", *this );
+
 }
 
-void AutoSessionManager::LoadAutoSession( wxString whichFile )
+    void AutoSessionManager::LoadAutoSession( wxString whichFile )
 {
 
-	//SessionSaver::LoadSession( sessionName );
-	/*wxLogNull logNull;
-    
-	stClient *client = new stClient;
-	wxString hostName = wxT( "localhost" );
-#ifdef WIN32
-	  wxConnectionBase *connection = client->MakeConnection( hostName, 
-	                                                         wxT( "wxparaver_service" ),
-	                                                         wxT( "wxparaver" ) );
-#else
-	const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
-	wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                                             service_name,
+    //SessionSaver::LoadSession( sessionName );
+    wxLogNull logNull;
+      
+    stClient *client = new stClient;
+    wxString hostName = wxT( "localhost" );
+  #ifdef WIN32
+      wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                             wxT( "wxparaver_service" ),
                                                              wxT( "wxparaver" ) );
-#endif
+  #else
+    const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
+    wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                               service_name,
+                                                               wxT( "wxparaver" ) );
+  #endif
 
-    if( connection )
+      if( connection )
+      {
+  #if wxMAJOR_VERSION >= 3
+          connection->Execute( "BEGIN" );
+          connection->Execute( "END" );
+  #else
+          connection->Execute( wxT( "BEGIN" ) );
+          connection->Execute( wxT( "END" ) );
+  #endif
+          connection->Disconnect();
+          delete connection;
+          delete client;
+
+          return true;
+    }
+    else
     {
-#if wxMAJOR_VERSION >= 3
-        connection->Execute( "BEGIN" );
-        connection->Execute( "END" );
-#else
-        connection->Execute( wxT( "BEGIN" ) );
-        connection->Execute( wxT( "END" ) );
-#endif
-        connection->Disconnect();
-        delete connection;
-        delete client;
-
-        return true;
-	}
-	else
-	{
-		wxMessageBox( wxT( "Sorry, the existing instance may be too busy to respond." ),
-		              wxT( "wxparaver" ), wxICON_INFORMATION|wxOK );
-		delete client;
-		return false;
-	}*/
+      wxMessageBox( wxT( "Sorry, the existing instance may be too busy to respond." ),
+                    wxT( "wxparaver" ), wxICON_INFORMATION|wxOK );
+      delete client;
+      return false;
+    }
 }
+*/

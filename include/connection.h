@@ -22,6 +22,7 @@
 \*****************************************************************************/
 
 #include "wx/ipc.h"
+//#include "autosessionmanager.h"
 
 class stServer: public wxServer
 {

@@ -53,6 +53,11 @@
 #include "workspacemanager.h"
 #include "preferencesdialog.h"
 #include "loadcfgdialog.h"
+#include "sessionselectiondialog.h"
+
+// DATE TIME INCLUDES
+//#include <boost/date_time/gregorian/gregorian.hpp>
+#include "boost/date_time/posix_time/posix_time_types.hpp"
 
 #ifdef WIN32
 #undef VERSION
@@ -126,6 +131,7 @@ inline double rint( double nr )
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(300, 600)
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, -1)
 ////@end control identifiers
+#define Z_TRAIL( x )  ( x < 10 ? "0" + std::to_string( x ) : std::to_string( x ) )
 
 
 class gTimeline;
@@ -196,6 +202,21 @@ struct PropertyClientData
 };
 
 
+struct SessionInfo
+{    
+    enum StatusID
+    {
+      OPEN   = 0,
+      CLOSED = 1
+    };
+    
+    unsigned int pid;
+    StatusID status;
+    std::string sessionDate;
+    //boost::posix_time::ptime sessionDate;    
+
+};
+
 /*!
  * paraverMain class declaration
  */
@@ -220,6 +241,7 @@ public:
 
   /// Creates the controls and sizers
   void CreateControls();
+  void initSessionInfo();
 
 ////@begin paraverMain event handler declarations
 
@@ -552,7 +574,7 @@ public:
   bool isCFG4DModeDisabled() const;
 
   void checkIfPrevSessionLoad( bool prevSessionWasComplete );
-  static void SessionSaveWrapper( std::string pid );
+  void checkForMultiSessionLoad();
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
@@ -627,6 +649,7 @@ private:
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
 ////@end paraverMain member variables
+  SessionInfo sessionInfo;
 
   wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
@@ -648,6 +671,7 @@ private:
                                    TraceOptions *traceOptions,
                                    std::vector< std::string > &filterToolOrder );
 
+  void HandleMaxSessionFiles();
   void PrepareToExit();
   
   void OnSessionTimer( wxTimerEvent& event );
