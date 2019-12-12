@@ -147,7 +147,7 @@ void SessionSelectionDialog::CreateControls()
   itemBoxSizer2->Add(itemStaticBoxSizer1, 3, wxGROW|wxALL, 5);
 
   wxArrayString listSessionsStrings;
-  listSessions = new wxListBox( itemDialog1, ID_SESSIONBOX, wxDefaultPosition, wxSize(500, 270), listSessionsStrings, wxLB_SINGLE|wxLB_SORT );
+  listSessions = new wxListBox( itemDialog1, ID_SESSIONBOX, wxDefaultPosition, wxSize(500, 270), listSessionsStrings, wxLB_SINGLE );
   itemStaticBoxSizer1->Add(listSessions, 0, wxGROW|wxALL, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer2 = new wxStdDialogButtonSizer;
@@ -237,8 +237,12 @@ wxIcon SessionSelectionDialog::GetIconResource( const wxString& name )
 }
 
 
-void SessionSelectionDialog::OnCreate( wxWindowCreateEvent& event )
+void SessionSelectionDialog::OnCreate( wxWindowCreateEvent& event ) { }
+
+
+bool SessionSelectionDialog::compDT( boost::posix_time::ptime dt1, boost::posix_time::ptime dt2 ) 
 {
+  return dt1 > dt2;
 }
 
 bool SessionSelectionDialog::OnCreate()
@@ -254,12 +258,40 @@ bool SessionSelectionDialog::OnCreate()
     listSessions->Clear();
     linksPerFileName.clear();
     
-    filesInDir.Sort();
+    /*filesInDir.Sort();
     for ( wxArrayString::iterator fullFilePath = filesInDir.begin(); fullFilePath != filesInDir.end(); ++fullFilePath ) 
     {
       wxString fileName = FormatFileName( ( *fullFilePath ).AfterLast( '/' ) );
       listSessions->Append( fileName );
       linksPerFileName[ fileName ] = ( *fullFilePath );
+    }*/
+
+    map< boost::posix_time::ptime, wxString > indexing;
+    vector< boost::posix_time::ptime > dateTimes( filesInDir.size() );
+    for ( int i = 0 ; i < filesInDir.size() ; ++i )
+    {
+      #ifdef WIN32
+      wxString datetime = filesInDir[ i ].AfterLast( '\\' ).AfterFirst( '_' ).Left( 15 );
+      #else
+      wxString datetime = filesInDir[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );
+      #endif
+      datetime[ 8 ] = 'T';
+
+      boost::posix_time::ptime dt;;
+      dt = boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) );
+      
+      indexing.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
+      dateTimes[i] = dt;
+    }
+
+    sort( dateTimes.begin(), dateTimes.end(), SessionSelectionDialog::compDT );
+
+    for ( int i = 0 ; i < dateTimes.size() ; ++i )
+    {
+      wxString filePath = indexing[ dateTimes[ i ] ];
+      wxString fileName = FormatFileName( filePath.AfterLast( '/' ) );
+      listSessions->Append( fileName );
+      linksPerFileName[ fileName ] = ( filePath );
     }
   }
   return true;
@@ -272,13 +304,13 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
   wxString dmy = parts[ 1 ] ;
   wxString hms = parts[ 2 ] ;
 
-  dmy = "\t| " + dmy.SubString( 6, 7 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 0, 3 ) + " " ; // DDMMYYYY
-//dmy = "\t| " + dmy.SubString( 0, 3 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 6, 7 ) + " " ; // YYYYMMDD (iso compliant)
+  dmy = dmy.SubString( 6, 7 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 0, 3 ) + " " ; // DDMMYYYY
+//dmy = dmy.SubString( 0, 3 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 6, 7 ) + " " ; // YYYYMMDD (iso compliant)
 
   hms = hms.SubString( 0, 1 ) + ":" + hms.SubString( 2, 3 ) + ":" + hms.SubString( 4, 5 ) ;
   wxString status = ( parts.Last()[ 0 ] == '0' ? " [WARNING: session was not saved on exit]" : "" );
   
-  return ( parts[ 0 ] + dmy + hms + status );
+  return ( parts[ 0 ] + "\t| " + dmy + hms + status );
 }
 
 /*!

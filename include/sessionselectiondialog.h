@@ -34,7 +34,11 @@
 #include <wx/filename.h>
 #include <wx/textfile.h>
 #include <wx/dir.h>
+#include <vector>
 #include <map>
+#include <algorithm>
+#include "boost/date_time/posix_time/posix_time.hpp"
+using namespace std;
 
 /*!
  * Forward declarations
@@ -83,6 +87,8 @@ public:
 
   /// Creates the controls and sizers
   void CreateControls();
+  
+  static bool compDT( boost::posix_time::ptime dt1, boost::posix_time::ptime dt2 );
 
 ////@begin SessionSelectionDialog event handler declarations
 

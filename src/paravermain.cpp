@@ -3484,10 +3484,7 @@ void paraverMain::OnActivate( wxActivateEvent& event )
   event.Skip();
 }
 
-bool compDT( boost::posix_time::ptime dt1, boost::posix_time::ptime dt2 ) 
-{
-  return dt1 > dt2;
-}
+
 
 void paraverMain::HandleMaxSessionFiles()
 {
@@ -3519,7 +3516,7 @@ void paraverMain::HandleMaxSessionFiles()
         indexing.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInFolder[ i ] ) );
         dateTimes[i] = dt;
       }
-      std::sort( dateTimes.begin(), dateTimes.end(), compDT ); //reverse order --> the latest saved session goes first
+      std::sort( dateTimes.begin(), dateTimes.end(), SessionSelectionDialog::compDT ); //reverse order --> the latest saved session goes first
 
 
         // REMOVE ITERATORS AND TEST!!!
@@ -3531,8 +3528,8 @@ void paraverMain::HandleMaxSessionFiles()
         if ( wxDirExists( folderToRemove ) && wxFileExists( fileToRemove ) )
         {
           wxDir::GetAllFiles( folderToRemove, &buffer, wxT( "" ), wxDIR_FILES );
-          for ( int i = 0 ; i < buffer.size() ; ++i ) 
-            wxRemoveFile( buffer[ i ] );
+          for ( int j = 0 ; j < buffer.size() ; ++j ) 
+            wxRemoveFile( buffer[ j ] );
           
         } 
         wxRemoveFile( fileToRemove );
