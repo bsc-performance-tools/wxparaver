@@ -3494,15 +3494,14 @@ void paraverMain::HandleMaxSessionFiles()
   wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "/AutosavedSessions" ) ) ;
 #endif
   
-  wxArrayString filesInFolder, buffer;
+  wxArrayString filesInFolder, sessionFilesToRemove;
   int CUTOFF = 10;
   if ( wxDirExists( folder ) )
   {
     wxDir::GetAllFiles( folder, &filesInFolder, wxT( "*.session" ), wxDIR_FILES );
     if ( filesInFolder.size() > CUTOFF ) //WRONG, SIGN IS THE OTHER WAY ROUND
     {
-      map< boost::posix_time::ptime, wxString > indexing;
-      std::vector< boost::posix_time::ptime > dateTimes( filesInFolder.size() );
+      map< boost::posix_time::ptime, wxString > dtToFile;
       for ( int i = 0 ; i < filesInFolder.size() ; ++i )
       {
         #ifdef WIN32
@@ -3511,29 +3510,29 @@ void paraverMain::HandleMaxSessionFiles()
         wxString datetime = filesInFolder[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );
         #endif
         datetime[ 8 ] = 'T';
-        boost::posix_time::ptime dt( boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) ) );
         
-        indexing.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInFolder[ i ] ) );
-        dateTimes[i] = dt;
+        boost::posix_time::ptime dt( boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) ) );
+        dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInFolder[ i ] ) );
       }
-      std::sort( dateTimes.begin(), dateTimes.end(), SessionSelectionDialog::compDT ); //reverse order --> the latest saved session goes first
 
-
-        // REMOVE ITERATORS AND TEST!!!
-      for ( int i = CUTOFF ; i < dateTimes.size() ; ++i )
+      map< boost::posix_time::ptime, wxString >::iterator it = dtToFile.begin();
+      for ( int deleteCtr = 0 ; deleteCtr < filesInFolder.size()-CUTOFF ; ++deleteCtr )
       {
-        wxString fileToRemove = indexing[ dateTimes[ i ] ];
-        wxString folderToRemove = fileToRemove; folderToRemove.Replace( ".session", "_session" );
+        wxString folderToRemove = (*it).second; 
+        folderToRemove.Replace( ".session", "_session" );
 
-        if ( wxDirExists( folderToRemove ) && wxFileExists( fileToRemove ) )
+        if ( wxDirExists( folderToRemove ) && wxFileExists( (*it).second ) )
         {
-          wxDir::GetAllFiles( folderToRemove, &buffer, wxT( "" ), wxDIR_FILES );
-          for ( int j = 0 ; j < buffer.size() ; ++j ) 
-            wxRemoveFile( buffer[ j ] );
-          
+          wxDir::GetAllFiles( folderToRemove, &sessionFilesToRemove, wxT( "" ), wxDIR_FILES );
+          for ( int iFile = 0 ; iFile < sessionFilesToRemove.size() ; ++iFile ) 
+          {
+            wxRemoveFile( sessionFilesToRemove[ iFile ] );
+          }
+          sessionFilesToRemove.Clear();
         } 
-        wxRemoveFile( fileToRemove );
+        wxRemoveFile( (*it).second );
         wxRmDir( folderToRemove );
+        ++it;
       }
     }
   }
@@ -4681,12 +4680,15 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
                     wxICON_QUESTION | wxYES_NO,
                     this ) == wxYES ) )
   {
-    DoLoadSession( file );
+    if ( ParaverConfig::getInstance()->getGlobalSingleInstance() )
+      DoLoadSession( file );
+    else
+      CheckForMultiSessionLoad();
   }
 }
 
 
-void paraverMain::checkForMultiSessionLoad( )
+void paraverMain::CheckForMultiSessionLoad( )
 {
   #ifdef WIN32
     wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "\\AutosavedSessions" ) );

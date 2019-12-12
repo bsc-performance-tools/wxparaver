@@ -574,7 +574,7 @@ public:
   bool isCFG4DModeDisabled() const;
 
   void checkIfPrevSessionLoad( bool prevSessionWasComplete );
-  void checkForMultiSessionLoad();
+  void CheckForMultiSessionLoad();
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );

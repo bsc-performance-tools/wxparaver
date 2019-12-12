@@ -88,8 +88,6 @@ public:
   /// Creates the controls and sizers
   void CreateControls();
   
-  static bool compDT( boost::posix_time::ptime dt1, boost::posix_time::ptime dt2 );
-
 ////@begin SessionSelectionDialog event handler declarations
 
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_SESSIONBOX

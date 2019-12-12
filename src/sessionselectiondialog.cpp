@@ -240,11 +240,6 @@ wxIcon SessionSelectionDialog::GetIconResource( const wxString& name )
 void SessionSelectionDialog::OnCreate( wxWindowCreateEvent& event ) { }
 
 
-bool SessionSelectionDialog::compDT( boost::posix_time::ptime dt1, boost::posix_time::ptime dt2 ) 
-{
-  return dt1 > dt2;
-}
-
 bool SessionSelectionDialog::OnCreate()
 {
   if ( wxDirExists( folderPath ) ) 
@@ -266,7 +261,7 @@ bool SessionSelectionDialog::OnCreate()
       linksPerFileName[ fileName ] = ( *fullFilePath );
     }*/
 
-    map< boost::posix_time::ptime, wxString > indexing;
+    map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
     vector< boost::posix_time::ptime > dateTimes( filesInDir.size() );
     for ( int i = 0 ; i < filesInDir.size() ; ++i )
     {
@@ -280,18 +275,15 @@ bool SessionSelectionDialog::OnCreate()
       boost::posix_time::ptime dt;;
       dt = boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) );
       
-      indexing.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
+      dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
       dateTimes[i] = dt;
     }
 
-    sort( dateTimes.begin(), dateTimes.end(), SessionSelectionDialog::compDT );
-
-    for ( int i = 0 ; i < dateTimes.size() ; ++i )
+    for ( map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it = dtToFile.begin(); it != dtToFile.end(); ++it )
     {
-      wxString filePath = indexing[ dateTimes[ i ] ];
-      wxString fileName = FormatFileName( filePath.AfterLast( '/' ) );
+      wxString fileName = FormatFileName( (* it ).second.AfterLast( '/' ) );
       listSessions->Append( fileName );
-      linksPerFileName[ fileName ] = ( filePath );
+      linksPerFileName[ fileName ] = ( (* it ).second );
     }
   }
   return true;

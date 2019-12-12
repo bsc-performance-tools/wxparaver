@@ -476,14 +476,14 @@ bool wxparaverApp::OnInit()
                          ParaverConfig::getInstance()->getMainWindowHeight() );
                          
   mainWindow = new paraverMain( NULL, SYMBOL_PARAVERMAIN_IDNAME, SYMBOL_PARAVERMAIN_TITLE, SYMBOL_PARAVERMAIN_POSITION, mainWindowSize );
+  mainWindow->Show(true);
 
   bool prevSessionWasComplete = ParaverConfig::getInstance()->initCompleteSessionFile();
   if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
+  //else if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  //  mainWindow->checkForMultiSessionLoad();
 
-  mainWindow->checkForMultiSessionLoad();
-
-  mainWindow->Show(true);
 
 #ifndef WIN32
   presetUserSignals();
