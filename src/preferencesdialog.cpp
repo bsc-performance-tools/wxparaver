@@ -234,7 +234,7 @@ void PreferencesDialog::Init()
   dirBrowserButtonTmp = NULL;
   checkGlobalSingleInstance = NULL;
   spinSessionTime = NULL;
-  checkGlobalPrevSessionLoad = NULL;
+  checkGlobalAskForPrevSessionLoad = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -453,9 +453,9 @@ void PreferencesDialog::CreateControls()
   wxStaticText* itemStaticText36 = new wxStaticText( panelGlobal, wxID_STATIC, _("minutes"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer33->Add(itemStaticText36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  checkGlobalPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_PREV_SESSION, _("Load previous auto-saved session on startup"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkGlobalPrevSessionLoad->SetValue(false);
-  itemStaticBoxSizer31->Add(checkGlobalPrevSessionLoad, 1, wxGROW|wxALL, 5);
+  checkGlobalAskForPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_ASK_FOR_PREV_SESSION, _("Ask if you want to load a previously auto-saved session on startup"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkGlobalAskForPrevSessionLoad->SetValue(false);
+  itemStaticBoxSizer31->Add(checkGlobalAskForPrevSessionLoad, 1, wxGROW|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1386,8 +1386,8 @@ bool PreferencesDialog::TransferDataToWindow()
   txtMaximumTraceSize->SetValue( maximumTraceSize );
   checkGlobalSingleInstance->SetValue( singleInstance );
   spinSessionTime->SetValue( sessionSaveTime );
-  checkGlobalPrevSessionLoad->SetValue( prevSessionLoad );
-  checkGlobalPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
+  checkGlobalAskForPrevSessionLoad->SetValue( askForPrevSessionLoad );
+  checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
@@ -1525,7 +1525,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   maximumTraceSize = (float)txtMaximumTraceSize->GetValue();
   singleInstance = checkGlobalSingleInstance->GetValue();
   sessionSaveTime = spinSessionTime->GetValue();
-  prevSessionLoad = checkGlobalPrevSessionLoad->GetValue();
+  askForPrevSessionLoad = checkGlobalAskForPrevSessionLoad->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );
@@ -2203,5 +2203,5 @@ void PreferencesDialog::OnRadioeventypesSelected( wxCommandEvent& event )
 
 void PreferencesDialog::OnPreferencesGlobalTimeSessionUpdated( wxSpinEvent& event )
 {
-  checkGlobalPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
+  checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 }

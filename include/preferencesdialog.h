@@ -25,7 +25,7 @@
 #define _PREFERENCESDIALOG_H_
 
 
-/*!
+/*!P
  * Includes
  */
 
@@ -81,7 +81,7 @@ class wxListBox;
 #define ID_DIRBROWSERBUTTON_DEFAULT_TMP 10245
 #define ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE 10158
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
-#define ID_GLOBAL_PREV_SESSION 10039
+#define ID_GLOBAL_ASK_FOR_PREV_SESSION 10039
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
@@ -516,8 +516,8 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  bool GetPrevSessionLoad() const { return prevSessionLoad ; }
-  void SetPrevSessionLoad(bool value) { prevSessionLoad = value ; }
+  bool GetAskForPrevSessionLoad() const { return askForPrevSessionLoad ; }
+  void SetAskForPrevSessionLoad(bool value) { askForPrevSessionLoad = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -555,7 +555,7 @@ public:
   DirBrowserButton* dirBrowserButtonTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
-  wxCheckBox* checkGlobalPrevSessionLoad;
+  wxCheckBox* checkGlobalAskForPrevSessionLoad;
   wxPanel* panelTimeline;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
@@ -701,7 +701,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  bool prevSessionLoad;
+  bool askForPrevSessionLoad;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

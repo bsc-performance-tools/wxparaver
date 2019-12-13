@@ -1061,32 +1061,34 @@ void paraverMain::OnMenuLoadAutoSavedSession( wxCommandEvent& event )
 
 void paraverMain::OnExitClick( wxCommandEvent& event )
 {
-  /*if ( !LoadedWindows::getInstance()->emptyWindows() )
+  if ( !LoadedWindows::getInstance()->emptyWindows() )
   {
-    if ( wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
+    int question1 = wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
                        wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO,
-                       this ) != wxYES )
+                       wxICON_QUESTION | wxYES_NO );
+    if ( question1 != wxYES )
     {
       event.Skip();
       return;
     }
-  }
-  else*/ 
-  if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
-  {
-    int question = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
-                       wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
-    if ( question == wxCANCEL || (question == wxYES && !OnMenusavesession() ) )
+    else //if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
     {
-      event.Skip();
-      return;
+      int question2 = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
+                         wxT( "Please confirm" ),
+                         wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+      if ( question2 == wxCANCEL || (question2 == wxYES && !OnMenusavesession() ) )
+      {
+        event.Skip();
+        return;
+      }
     }
   }
+
   PrepareToExit();
   Destroy();
 }
+
 
 
 /*!
@@ -3104,7 +3106,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetMaximumTraceSize( paraverConfig->getFiltersFilterTraceUpToMB() );
   preferences.SetSingleInstance( paraverConfig->getGlobalSingleInstance() );
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
-  preferences.SetPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
+  preferences.SetAskForPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
 
   // TIMELINE
 
@@ -3199,7 +3201,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setFiltersFilterTraceUpToMB( (float)preferences.GetMaximumTraceSize() );
     paraverConfig->setGlobalSingleInstance( preferences.GetSingleInstance() );
     paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
-    paraverConfig->setGlobalPrevSessionLoad( preferences.GetPrevSessionLoad() );
+    paraverConfig->setGlobalPrevSessionLoad( preferences.GetAskForPrevSessionLoad() );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );
@@ -3598,24 +3600,25 @@ void paraverMain::OnCloseWindow( wxCloseEvent& event )
 {
   if ( event.CanVeto() && !LoadedWindows::getInstance()->emptyWindows() )
   { 
-    if ( wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
+    int question1 = wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
                        wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO ) != wxYES )
+                       wxICON_QUESTION | wxYES_NO );
+    if ( question1 != wxYES )
     {
       event.Veto();
       return;
     }
-  }
-  else if ( event.CanVeto() && !ParaverConfig::getInstance()->getGlobalSingleInstance() )
-  {
-    int q = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
-                       wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
-
-    if ( q == wxCANCEL || (q == wxYES && !OnMenusavesession() ) )
+    else if ( event.CanVeto() && !ParaverConfig::getInstance()->getGlobalSingleInstance() )
     {
-      event.Veto();
-      return;
+      int question2 = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
+                         wxT( "Please confirm" ),
+                         wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+      if ( question2 == wxCANCEL || (question2 == wxYES && !OnMenusavesession() ) )
+      {
+        event.Veto();
+        return;
+      }
     }
   }
   PrepareToExit();
@@ -4668,22 +4671,40 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
   #else
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
   #endif
-  if ( ( prevSessionWasComplete && 
-      wxMessageBox( wxT( "Do you want to load your last auto-saved Paraver session?" ),
-                    wxT( "Load auto-saved session" ),
-                    wxICON_QUESTION | wxYES_NO,
-                    this ) == wxYES ) 
-  || (  !prevSessionWasComplete && 
-      isSessionFile( file ) &&
-      wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last auto-saved Paraver session?" ),
-                    wxT( "Load auto-saved session" ),
-                    wxICON_QUESTION | wxYES_NO,
-                    this ) == wxYES ) )
+  if ( ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
-    if ( ParaverConfig::getInstance()->getGlobalSingleInstance() )
+    if ( ( prevSessionWasComplete && 
+        wxMessageBox( wxT( "Do you want to load your last auto-saved Paraver session?" ),
+                      wxT( "Load auto-saved session" ),
+                      wxICON_QUESTION | wxYES_NO,
+                      this ) == wxYES ) 
+    || (  !prevSessionWasComplete && 
+        isSessionFile( file ) &&
+        wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last auto-saved Paraver session?" ),
+                      wxT( "Load auto-saved session" ),
+                      wxICON_QUESTION | wxYES_NO,
+                      this ) == wxYES ) )
+    {
       DoLoadSession( file );
-    else
+    }
+  }
+  else
+  {
+
+    if ( ( prevSessionWasComplete && 
+        wxMessageBox( wxT( "Do you want to load any of your last auto-saved Paraver sessions?" ),
+                      wxT( "Load auto-saved sessions" ),
+                      wxICON_QUESTION | wxYES_NO,
+                      this ) == wxYES ) 
+    || (  !prevSessionWasComplete && 
+        isSessionFile( file ) &&
+        wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load any of your last auto-saved Paraver sessions?" ),
+                      wxT( "Load auto-saved sessions" ),
+                      wxICON_QUESTION | wxYES_NO,
+                      this ) == wxYES ) )
+    {
       CheckForMultiSessionLoad();
+    }
   }
 }
 
