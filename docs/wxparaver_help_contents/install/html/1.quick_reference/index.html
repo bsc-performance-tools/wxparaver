@@ -3,7 +3,7 @@
 <HEAD>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" >
 	<TITLE>wxParaver Quick Reference</TITLE>
-	<meta name="generator" content="Bluefish 2.2.7" >
+	<meta name="generator" content="Bluefish 2.2.10" >
 	<meta name="author" content="pgonzalez" >
 	<META NAME="CREATED" CONTENT="20141126;16245600">
 	<META NAME="CHANGEDBY" CONTENT="Pedro Gonzalez">
@@ -11,14 +11,14 @@
 	<META NAME="CHANGEDBY" CONTENT="Pedro Gonzalez">
 	<STYLE TYPE="text/css">
 	<!--
-		ol.nested { 
+		ol.nested {
 		    counter-reset: section;
 		    list-style-type: none;
 		}
-		
+
 		ol.nested li.nested { counter-increment: section; }
 		ol.nested li.nested:before { content: counters(section, ".") ". "; }
-		
+
 	-->
 	</STYLE>
 </HEAD>
@@ -31,10 +31,10 @@
 <DIV ID="indice_contenido" DIR="LTR"><A NAME="indice_contenido|region"></A>
 	<OL class="nested">
 		<LI class="nested">
-		
-		
+
+
 			<A HREF="#main_window">Main Window</A>
-			
+
 			<OL class="nested">
 				<LI class="nested"><A HREF="#main_window_overview">Overview</A></LI>
 				<LI class="nested"><A HREF="#main_window_menu_bar">Menu Bar</A></LI>
@@ -43,27 +43,27 @@
 				<LI class="nested"><A HREF="#main_window_window_browser">Window Browser</A></LI>
 				<LI class="nested"><A HREF="#main_window_files_and_window_properties">Files &amp; Window Properties</A></LI>
 			</OL>
-				
+
 		</LI>
 
 
 
 		<LI class="nested">
-		
+
 			<A HREF="#__RefHeading__539_1169509088">Main Buttons</A>
-			
+
 			<OL class="nested">
 				<LI class="nested"><A HREF="#__RefHeading__511_1201041753">Main Window</A></LI>
 				<LI class="nested"><A HREF="#__RefHeading__515_1201041753">Histogram</A></LI>
 			</OL>
-				
+
 		</LI>
-		
-		
+
+
 		<LI class="nested">
-		
+
 			<A HREF="#__RefHeading__541_1169509088">Shortcuts Keys</A>
-			
+
 			<OL class="nested">
 				<LI class="nested"><A HREF="#__RefHeading__543_1169509088">Overview</A></LI>
 				<LI class="nested"><A HREF="#__RefHeading__545_1169509088">Menus</A></LI>
@@ -72,7 +72,18 @@
 				<LI class="nested"><A HREF="#__RefHeading__549_1169509088">Timeline Shortcut Keys</A></LI>
 				<LI class="nested"><A HREF="#__RefHeading__549_1169509089">Histogram Shortcut Keys</A></LI>
 			</OL>
-			
+
+		</LI>
+
+		<LI class="nested">
+
+			<A HREF="#objects_selection">Objects Selection</A>
+
+			<OL class="nested">
+				<LI class="nested"><A HREF="#objects_default_labelling">Objects default labelling</A></LI>
+				<LI class="nested"><A HREF="#objects_regex">Objects selection using regular expressions</A></LI>
+				<LI class="nested"><A HREF="#objects_regex_examples">Examples</A></LI>
+			</OL>
 		</LI>
 	</OL>
 </DIV>
@@ -113,7 +124,7 @@ arrow pointing to the right open submenus.</P>
 traces, load Paraver Configuration Files (analysis views constructed
 as combinations of timelines or histograms), or load/save Sessions
 (a global analysis state snapshot). Also the user will be able to change the
-main wxParaver settings with Preferences. 
+main wxParaver settings with Preferences.
 </P>
 <A NAME="main_window_menu_bar_hints"></A>
 <P ALIGN=LEFT>Under “Hints” you'll find a two-level structure of menus
@@ -144,7 +155,7 @@ execute other tools.</P>
 
 <A NAME="main_window_workspaces"></A>
 <H3 CLASS="western">Workspaces</H3>
-<P>Workspaces are sets of the most useful analyses and views and can be enabled or disabled at user request. Their state modify the 
+<P>Workspaces are sets of the most useful analyses and views and can be enabled or disabled at user request. Their state modify the
 <A HREF="#main_window_menu_bar_hints">“Hints”</A> menu next time it's opened.</P>
 <P ALIGN=LEFT>In the image below there are two active workspaces. The selection can be changed manually by clicking on the right
 button.</P>
@@ -221,7 +232,7 @@ you'll have to create it again if needed, while a hidden window remains loaded.<
 another to create a derived timeline, as if the second button seen in the previous <A HREF="#main_window_main_icons_bar">Main icons bar</A>
 section was clicked. The derived timeline dialog will be open.</P>
 <P ALIGN=LEFT>Also, right click in a timeline or a histogram entry will open
-their popup menus. 
+their popup menus.
 </P>
 <P ALIGN=LEFT><A HREF="#__RefHeading__537_1169509088"><FONT SIZE=2>&lt;&lt;</FONT></A></P>
 <P><BR><BR>
@@ -268,7 +279,7 @@ would be recomputed again if needed.</P>
 on the main actions: create windows and invoke utilities/external
 tools.</P>
 <P ALIGN=LEFT>They're basically divided between the main window
-and the histogram window. 
+and the histogram window.
 </P>
 
 <A NAME="__RefHeading__511_1201041753"></A>
@@ -388,7 +399,7 @@ and the histogram window.
 			</P>
 		</TD>
 		<TD WIDTH=91% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT>Open data timeline 
+			<P ALIGN=LEFT>Open data timeline
 			</P>
 		</TD>
 	</TR>
@@ -440,7 +451,7 @@ and the histogram window.
 		</TD>
 		<TD WIDTH=91% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
 			<P ALIGN=LEFT>Horizontal / Vertical. Turns 90º to swap rows
-			and values axis 
+			and values axis
 			</P>
 		</TD>
 	</TR>
@@ -463,6 +474,7 @@ and the histogram window.
 			colums</P>
 		</TD>
 	</TR>
+
 	<TR VALIGN=TOP>
 		<TD WIDTH=9% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
 			<P ALIGN=CENTER><IMG SRC="img/wxparaver.quickreference_html_12ca758.png" NAME="gráficos17" ALIGN=LEFT WIDTH=12 HEIGHT=12 BORDER=0><BR>
@@ -471,8 +483,27 @@ and the histogram window.
 		<TD WIDTH=91% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
 			<P ALIGN=LEFT>Inclusive/Exclusive overlap accumulation mode
 			(only with stacked values). When exclusive mode is set, overlapped
-			values are substracted from base values. 
+			values are substracted from base values.</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=9% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=CENTER><IMG SRC="img/histogram.select.sort_totals.png" NAME="gráficos19" ALIGN=LEFT BORDER=0><BR>
 			</P>
+		</TD>
+		<TD WIDTH=91% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Sort columns following total sort criteria</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=9% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=CENTER><IMG SRC="img/histogram.arrow_reverse.png" NAME="gráficos20" ALIGN=LEFT WIDTH=12 HEIGHT=12 BORDER=0><BR>
+			</P>
+		</TD>
+		<TD WIDTH=91% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Change between decreasing/increasing order for the current sort criteria</P>
 		</TD>
 	</TR>
 </TABLE>
@@ -515,7 +546,7 @@ click inside them).</P>
 	</TR>
 	<TR VALIGN=TOP>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
-			<P ALIGN=LEFT>Up / Down arrows 
+			<P ALIGN=LEFT>Up / Down arrows
 			</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
@@ -685,7 +716,7 @@ and opening traces.</P>
 			<P ALIGN=LEFT>Ctrl + L (Windows only)</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT>Open “Load Session” dialog 
+			<P ALIGN=LEFT>Open “Load Session” dialog
 			</P>
 		</TD>
 	</TR>
@@ -764,7 +795,7 @@ and opening traces.</P>
 			<P ALIGN=LEFT>Drag &amp; Drop</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT> Select a time range and zoom in 
+			<P ALIGN=LEFT> Select a time range and zoom in
 			</P>
 		</TD>
 	</TR>
@@ -774,7 +805,7 @@ and opening traces.</P>
 			<P ALIGN=LEFT>Ctrl + Drag &amp; Drop</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT> Select a region and zoom in 
+			<P ALIGN=LEFT> Select a region and zoom in
 			</P>
 		</TD>
 	</TR>
@@ -784,7 +815,7 @@ and opening traces.</P>
 			<P ALIGN=LEFT>Mouse Wheel</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT> Zoom in/out only in time axis 
+			<P ALIGN=LEFT> Zoom in/out only in time axis
 			</P>
 		</TD>
 	</TR>
@@ -804,7 +835,7 @@ and opening traces.</P>
 			<P ALIGN=LEFT>Shift + Drag &amp; Drop</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT> Pan only in time axis 
+			<P ALIGN=LEFT> Pan only in time axis
 			</P>
 		</TD>
 	</TR>
@@ -814,7 +845,7 @@ and opening traces.</P>
 			<P ALIGN=LEFT>Ctrl + Shift + Drag &amp; Drop</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT> Pan in both axis (rows and time) 
+			<P ALIGN=LEFT> Pan in both axis (rows and time)
 			</P>
 		</TD>
 	</TR>
@@ -934,7 +965,7 @@ and opening traces.</P>
 			<P ALIGN=LEFT>Drag &amp; Drop</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT> Select a columns range and zoom in 
+			<P ALIGN=LEFT> Select a columns range and zoom in
 			</P>
 		</TD>
 	</TR>
@@ -944,7 +975,7 @@ and opening traces.</P>
 			<P ALIGN=LEFT>Ctrl + Drag &amp; Drop</P>
 		</TD>
 		<TD WIDTH=50% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT> Select a region and zoom in 
+			<P ALIGN=LEFT> Select a region and zoom in
 			</P>
 		</TD>
 	</TR>
@@ -982,6 +1013,606 @@ and opening traces.</P>
 <P ALIGN=LEFT><A NAME="asterisk_copy_paste"></A>(*) After "Ctrl+C", "Ctrl+V" can be applied to the same kind of window as well as from timelines
 to histograms, and vice versa.
 </P>
+
+<P ALIGN=LEFT><BR><BR></P>
+<P ALIGN=LEFT><BR><BR></P>
+
+<A NAME="objects_selection"></A>
+<H2 CLASS="western" ALIGN=LEFT STYLE="page-break-before: always">Objects Selection</H2>
+
+<A NAME="objects_selection_window"></A>
+<H3 CLASS="western" ALIGN=LEFT>Objects selection window</H3>
+
+<P ALIGN=LEFT>The objects selection window can be shown clicking the mouse right button both from timeline or histogram windows.
+ The following pop-up menu is then shown:</P>
+ 
+ <P ALIGN=CENTER><IMG SRC="img/timeline.popup_menu.png" ALIGN=CENTER WIDTH=249 HEIGHT=508 BORDER=0><BR><BR>
+
+ <P ALIGN=LEFT>After clicking the "Select Objects" option, the symbolic information about objects is shown in a selection dialog.</P>
+<P ALIGN=LEFT>wxparaver reads these symbolic information from the <I>.row</I> file.
+It usually contains the names for the levels contained in the trace.
+</P>
+
+<P ALIGN=CENTER><IMG SRC="img/window.select_objects.png" ALIGN=CENTER WIDTH=345 HEIGHT=602 BORDER=0><BR><BR>
+</P>
+
+<P ALIGN=LEFT>This dialog allows objects selection at available levels, separated in different tabs.
+They can be all checked/unchecked at the same time with buttons "<i>Select All</i>" and "<i>Unselect All</i>",
+or use "<i>Invert</i>" to swap checked/unchecked states.</P>
+<P ALIGN=LEFT>A quick way to perform complex selection is by using the "<i>Add checks by objects matching</i>" box.
+After clicking the "<i>Apply</i>" button, the objects matching the regular expression written in the textbox will be checked.</P>
+
+<P ALIGN=LEFT><A HREF="#__RefHeading__537_1169509088"><FONT SIZE=2>&lt;&lt;</FONT></A></P>
+
+<A NAME="objects_default_labelling"></A>
+<H3 CLASS="western" ALIGN=LEFT>Objects default labelling</H3>
+
+<P ALIGN=LEFT>The objects default naming convention in EBNF is as follows:
+</P>
+<P ALIGN=LEFT>
+<I>
+<ol><li>id = [1-9][0-9]*</li>
+<li>node = id</li>
+<li>cpu = id</li>
+<li>appl = id</li>
+<li>task = id</li>
+<li>thread = id</li>
+<li>resource_hierarchy_label = "SYSTEM" | "NODE ", node | "CPU ", node, ".", cpu</li>
+<li>process_hierarchy_label = "WORKLOAD" | "APPL ", appl | "TASK ", appl, ".", task | "THREAD ", appl, ".", task, ".", thread</li>
+<li>label = resource_hierarchy_label | process_hierarchy_label</li>
+</ol></I></P>
+
+<P ALIGN=LEFT>
+Some valid labels are: "<I>TASK 2.24</I>", "<I>NODE 4</I>", etc.
+The multilevel numeric suffix references the upper levels index in the defined hierarchy, i.e: "<I>TASK 2.8</I>" is task 8 of application 2,
+ "<I>THREAD 1.2.16</I>" is the 16th thread of task 2 from the application 1.
+</P>
+
+<P ALIGN=LEFT>Most of the times, in the instrumentation phase, Extrae can gather object names and properly label
+every object for all these levels.
+If it isn't able, then it will just apply this default labelling.
+Also, in analysis phase, if the <I>.row</I> file is missing, wxparaver will apply it.
+</P>
+ 
+
+
+<P ALIGN=LEFT><A HREF="#__RefHeading__537_1169509088"><FONT SIZE=2>&lt;&lt;</FONT></A></P>
+
+<A NAME="objects_regex"></A>
+<H3 CLASS="western" ALIGN=LEFT>Objects selection using regular expressions</H3>
+
+<P ALIGN=LEFT>It uses by default the <a href="#objects_regex_quick_form_table">Quick Form</a>, a subset of Posix basic regular expression
+ adapted to our object name conventions, mainly around dot selection and repetitive metachars like '*','+' or '?'.
+ It widely covers the most common selection expressions.
+ For more specific and complex selections that this form can't express, the second option is to directly 
+ use <a href="#objects_regex_posix_form_table">Posix Form</a> (Posix basic regular expressions).
+It can be selected checking "Match as Posix Regular Expression" option. To see how they work, you can find a table with some <a href="#objects_regex_examples">examples</a> below</P>
+
+
+<A NAME="objects_regex_quick_form_table"></A>
+<P ALIGN=LEFT>Quick form:</P>
+
+<TABLE WIDTH=50% CELLPADDING=4 CELLSPACING=0 border="1">
+	<COL WIDTH=128*>
+	<COL WIDTH=128*>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><I>Reg. expression</I></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><I>Card.</I></P>
+		</TD>
+		<TD WIDTH=60% STYLE="border: 1px solid #000000; padding: 0.1cm">
+			<P ALIGN=LEFT><I>Meaning</I></P>
+		</TD>
+	</TR>
+
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>.</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>'.' (dot character)</P>
+		</TD>
+	</TR>
+
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>#</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Only one number</P>
+		</TD>
+	</TR>
+
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>?</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Only one character</P>
+		</TD>
+	</TR>
+
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>+</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1-n</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>One or many alfanumeric</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>*</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>0-n</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Zero or many alfanumeric</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>^</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>0</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Begin of expression</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>$</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>0</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>End of expression</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>[135]</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Set that matches specific numbers once</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>[1-3]</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Range that matches numbers 1 to 3 once</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>TASK</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none;border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Matches the string 'TASK'</P>
+		</TD>
+	</TR>
+
+</TABLE>
+
+
+<A NAME="objects_regex_posix_form_table"></A>
+<P ALIGN=LEFT>Posix basic regular expression form:</P>
+
+<TABLE WIDTH=50% CELLPADDING=4 CELLSPACING=0 border="1">
+	<COL WIDTH=128*>
+	<COL WIDTH=128*>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><I>Reg. expression</I></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><I>Card.</I></P>
+		</TD>
+		<TD WIDTH=60% STYLE="border: 1px solid #000000; padding: 0.1cm">
+			<P ALIGN=LEFT><I>Meaning</I></P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>.</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Any character (use [.] for dot character)</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>?</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>0-n</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Zero or one repetition of preceeding item</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>+</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1-n</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>One or many repetitions of preceeding item</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>*</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>0-n</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>zero or many repetitions of preceeding item</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>^</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>0</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Begin of expression</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>$</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>0</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>End of expression</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>[135]</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Set that matches specific numbers once</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>[1-3]</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Range that matches numbers 1 to 3 once</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>TASK</B></P>
+		</TD>
+		<TD WIDTH=10% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>1</P>
+		</TD>
+		<TD WIDTH=60% STYLE="border-top: none;border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>Matches the string 'TASK'</P>
+		</TD>
+	</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT>One important issue is about the presence of spaces at the end of this regular expression when writing in the textbox.
+Given that in some cases we explicitly want them, they're never trimmed, so it's important to be aware of that because they may totally change the selection.</P>
+
+<P ALIGN=LEFT><A HREF="#__RefHeading__537_1169509088"><FONT SIZE=2>&lt;&lt;</FONT></A></P>
+
+<A NAME="objects_regex_examples"></A>
+<H3 CLASS="western" ALIGN=LEFT>Examples</H3>
+<P ALIGN=LEFT>The following examples compare Quick and pure Posix forms to highlight their differences. The 
+same expressions are written for both of them. It shows how the Quick form is more compact in most of the use cases.</P>
+<P ALIGN=LEFT>They mainly follow the object default labelling, but as expected they can be used the same way with any other user defined label.</P>
+
+<P ALIGN=LEFT>Some results can be matched in many ways (denoted by 'or'). Others can only be done by combining more 
+than one expression (denoted with 'then'). To match these last ones just apply them one by one: write the first expression,
+ click on the "Apply" button, and carry on with next expression. Of course, in any step it's possible to swap between Posix and Quick
+  form for less or more general selections, or select some objects by directly clicking them.</P>
+
+ <P ALIGN=LEFT>Also note that when writing a 3-level expression it only can refer to threads matching them in an unique way.
+ Nevertheless a 2-level one can match some labels at two levels,
+ like, i.e, Quick form('1.*') matches 'THREAD <b>1.2</b>.3' at app-task level but also matches
+  'THREAD 2.<b>1.4</b>' at task-thread level.
+ Using parts of the string like 'THREAD', adding levels separator '.'/'[.]' (depending on Quick/Posix Form) or end of line '$' can solve these ambiguities.</P>
+
+ <P ALIGN=LEFT>Finally, an example is given to illustrate the existence of Posix Form regex without a compact 
+ translation to Quick Form.
+  That happens due to the redefinition of iterative metacharacters {'*','?','+'}, 
+  changing their meaning from repetition of preceeding expressions to repetition of any numeric or alphanumeric, more general and handy but less detailed.</P>
+
+<P ALIGN=LEFT>Examples:</P>
+
+<TABLE WIDTH=100% CELLPADDING=4 CELLSPACING=0 border="1">
+	<COL WIDTH=128*>
+	<COL WIDTH=128*>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><I>Quick</I></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><I>Posix</I></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: 1px solid #000000; border-bottom: 1px solid #000000; 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><I>Meaning</I></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border: 1px solid #000000; padding: 0.1cm">
+			<P ALIGN=LEFT><I>Matches</I></P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>*</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>.*</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Anything</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>All objects (all strings)</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>THREAD 1</B> or <B>THREAD 1*</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>THREAD 1</B> or <B>THREAD 1.*</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>All threads and all tasks from applications <I>starting</I> with 1.</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>THREAD 1.1.1, THREAD 1.1.2 ..., , THREAD 11.2.3, THREAD 12.1.8</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>THREAD 1.</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>THREAD 1[.]</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Any thread from any task for application 1.</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>THREAD 1.1.1, THREAD 1.1.2 ..., THREAD 1.8.8</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>THREAD 1.[24][1-3].*</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>THREAD 1[.][24][1-3][.].*</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Any thread from tasks 21, 22, 23, 41, 42, 43 for the application 1</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>THREAD 1.21.4, ..., THREAD 1.23.7, ..., THREAD 1.43.36</P>
+		</TD>
+	</TR>
+	
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>1.*</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>1[.].*</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>All objects with at least 2 levels with app or task level <I>ending</I> with 1.</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>TASK 1.1, TASK 1.2, ... TASK 11.32, THREAD 1.2.3, THREAD 2.1.4, THREAD 11.7.8 </P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>1.*.4$</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>1[.].*[.]4$</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Only thread 4 of all tasks from application 1</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>1.1.4, 1.2.4, 1.3.4, ..., 1.256.4</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>1.##.4$</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>1[.][1.9][0-9][.]4$</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Only thread 4 of two digits tasks from application 1</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>1.10.4, 1.11.4, 1.12.4, ..., 1.24.4</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>2.[1-8].1$</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>2[.][1-8][.]1$</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Only thread 1 of tasks 1 to 8 for application 2</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>2.1.1, 2.2.1, ..., 2.8.1</P>
+		</TD>
+	</TR>
+
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>1.[1-8].1</B> or <B>1.[1-8].1*</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>1[.][1-8][.]1</B> or <B>1[.][1-8][.]1.*</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Threads <I>starting</I> with 1 of tasks 1 to 8</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>1.1.1, 1.1.10, ..., 1.2.1, 1.2.10, ..., 1.8.16, THREAD 1.6.16</P>
+		</TD>
+	</TR>
+
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>1.[124].1+</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>1[.][124][.]1[0-9]+</B> </P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Threads with at least two digits long <I>starting</I> with 1 of tasks 1, 2, or 4 for application 1</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>1.1.10, 1.1.11, ..., 1.1.100, ..., 1.2.1, ..., 1.4.128, THREAD 1.4.13</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>CPU [1-9]$</B> then <B>CPU [1-2]#$</B> then <B>CPU 3[0-2]$</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>CPU [1-9]$</B> then <B>CPU [1-2][0-9]$</B> then <B>CPU 3[0-2]$</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>CPUs 1-9, then CPUs 10-29 and then CPUs 30-32</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>CPU 1, CPU 2, ..., CPU 32</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>^##.node4$</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>^[0-9][0-9][.]node4$</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Objects starting with two digits and ending with suffix '.node4'</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>00.node4, 01.node4, 02.node4</P>
+		</TD>
+	</TR>
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT>-</P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>THREAD 1[.]1+[.]2+</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Threads uniquely composed by 2's from tasks only composed by 1's for application 1</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none;border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>THREAD 1.1.2, THREAD 1.1.22, THREAD 1.11.2, THREAD 1.11.22, THREAD 1.111.2, THREAD 1.111.22 </P>
+		</TD>
+	</TR>
+
+</TABLE>
+
+<P ALIGN=LEFT><A HREF="#__RefHeading__537_1169509088"><FONT SIZE=2>&lt;&lt;</FONT></A></P>
+
 
 </BODY>
 </HTML>
