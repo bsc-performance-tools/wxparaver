@@ -493,7 +493,7 @@ and the histogram window.
 			</P>
 		</TD>
 		<TD WIDTH=91% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT>Sort columns following total sort criteria</P>
+			<P ALIGN=LEFT>Sort columns following sort criteria (Default, Total, Average, Maximum, Minimum, StDev, Avg/Max)</P>
 		</TD>
 	</TR>
 
@@ -1042,6 +1042,12 @@ or use "<i>Invert</i>" to swap checked/unchecked states.</P>
 <P ALIGN=LEFT>A quick way to perform complex selection is by using the "<i>Add checks by objects matching</i>" box.
 After clicking the "<i>Apply</i>" button, the objects matching the regular expression written in the textbox will be checked.</P>
 
+<P ALIGN=LEFT>All the selections or changes are cumulative. It is specially useful when we want a complex selection
+that can only be done by combining more than one regular expression. Then, just apply them one by one: write the first expression,
+ click on the "Apply" button, and carry on with next expression. Of course, in any step it's possible to swap between Posix and Quick
+  form for less or more general selections, or select some objects by directly clicking on them.</P>
+
+
 <P ALIGN=LEFT><A HREF="#__RefHeading__537_1169509088"><FONT SIZE=2>&lt;&lt;</FONT></A></P>
 
 <A NAME="objects_default_labelling"></A>
@@ -1063,7 +1069,7 @@ After clicking the "<i>Apply</i>" button, the objects matching the regular expre
 </ol></I></P>
 
 <P ALIGN=LEFT>
-Some valid labels are: "<I>TASK 2.24</I>", "<I>NODE 4</I>", etc.
+No id level starts with 0. Some valid labels are: "<I>TASK 2.24</I>", "<I>NODE 4</I>", etc.
 The multilevel numeric suffix references the upper levels index in the defined hierarchy, i.e: "<I>TASK 2.8</I>" is task 8 of application 2,
  "<I>THREAD 1.2.16</I>" is the 16th thread of task 2 from the application 1.
 </P>
@@ -1086,7 +1092,7 @@ Also, in analysis phase, if the <I>.row</I> file is missing, wxparaver will appl
  It widely covers the most common selection expressions.
  For more specific and complex selections that this form can't express, the second option is to directly 
  use <a href="#objects_regex_posix_form_table">Posix Form</a> (Posix basic regular expressions).
-It can be selected checking "Match as Posix Regular Expression" option. To see how they work, you can find a table with some <a href="#objects_regex_examples">examples</a> below</P>
+It can be selected checking "Match as Posix Regular Expression" option. To see how they work, you can find a table with some <a href="#objects_regex_examples">examples</a> below.</P>
 
 
 <A NAME="objects_regex_quick_form_table"></A>
@@ -1216,7 +1222,7 @@ It can be selected checking "Match as Posix Regular Expression" option. To see h
 			<P ALIGN=LEFT>1</P>
 		</TD>
 		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT>Range that matches numbers 1 to 3 once</P>
+			<P ALIGN=LEFT>Range that matches numbers 1 to 3 once. Ranges allowed inside 0-9</P>
 		</TD>
 	</TR>
 
@@ -1346,7 +1352,7 @@ It can be selected checking "Match as Posix Regular Expression" option. To see h
 			<P ALIGN=LEFT>1</P>
 		</TD>
 		<TD WIDTH=60% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT>Range that matches numbers 1 to 3 once</P>
+			<P ALIGN=LEFT>Range that matches numbers 1 to 3 once. Ranges allowed inside 0-9</P>
 		</TD>
 	</TR>
 
@@ -1373,12 +1379,9 @@ Given that in some cases we explicitly want them, they're never trimmed, so it's
 <H3 CLASS="western" ALIGN=LEFT>Examples</H3>
 <P ALIGN=LEFT>The following examples compare Quick and pure Posix forms to highlight their differences. The 
 same expressions are written for both of them. It shows how the Quick form is more compact in most of the use cases.</P>
-<P ALIGN=LEFT>They mainly follow the object default labelling, but as expected they can be used the same way with any other user defined label.</P>
 
 <P ALIGN=LEFT>Some results can be matched in many ways (denoted by 'or'). Others can only be done by combining more 
-than one expression (denoted with 'then'). To match these last ones just apply them one by one: write the first expression,
- click on the "Apply" button, and carry on with next expression. Of course, in any step it's possible to swap between Posix and Quick
-  form for less or more general selections, or select some objects by directly clicking them.</P>
+than one expression (denoted with 'then').</P>
 
  <P ALIGN=LEFT>Also note that when writing a 3-level expression it only can refer to threads matching them in an unique way.
  Nevertheless a 2-level one can match some labels at two levels,
@@ -1435,7 +1438,7 @@ than one expression (denoted with 'then'). To match these last ones just apply t
 			<P ALIGN=LEFT><B>THREAD 1</B> or <B>THREAD 1.*</B></P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
-			<P ALIGN=LEFT>All threads and all tasks from applications <I>starting</I> with 1.</P>
+			<P ALIGN=LEFT>All threads and all tasks from applications <I>starting</I> with 1</P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
 			<P ALIGN=LEFT>THREAD 1.1.1, THREAD 1.1.2 ..., , THREAD 11.2.3, THREAD 12.1.8</P>
@@ -1450,7 +1453,7 @@ than one expression (denoted with 'then'). To match these last ones just apply t
 			<P ALIGN=LEFT><B>THREAD 1[.]</B></P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
-			<P ALIGN=LEFT>Any thread from any task for application 1.</P>
+			<P ALIGN=LEFT>Any thread from any task for application 1</P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
 			<P ALIGN=LEFT>THREAD 1.1.1, THREAD 1.1.2 ..., THREAD 1.8.8</P>
@@ -1480,25 +1483,43 @@ than one expression (denoted with 'then'). To match these last ones just apply t
 			<P ALIGN=LEFT><B>1[.].*</B></P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
-			<P ALIGN=LEFT>All objects with at least 2 levels with app or task level <I>ending</I> with 1.</P>
+			<P ALIGN=LEFT>All objects with at least 2 levels with app or task level <I>ending</I> with 1</P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT>TASK 1.1, TASK 1.2, ... TASK 11.32, THREAD 1.2.3, THREAD 2.1.4, THREAD 11.7.8 </P>
+			<P ALIGN=LEFT>TASK 1.1, TASK 1.2, ... TASK 11.32, THREAD 1.2.3, THREAD 2.1.4, THREAD 11.7.8</P>
 		</TD>
 	</TR>
 
+
 	<TR VALIGN=TOP>
 		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
-			<P ALIGN=LEFT><B>1.*.4$</B></P>
+			<P ALIGN=LEFT><B>*.*.1$</B></P>
 		</TD>
 		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
-			<P ALIGN=LEFT><B>1[.].*[.]4$</B></P>
+			<P ALIGN=LEFT><B>.*[.].*[.]1$</B></P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
-			<P ALIGN=LEFT>Only thread 4 of all tasks from application 1</P>
+			<P ALIGN=LEFT>Only thread 1 of all tasks from all applications</P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT>1.1.4, 1.2.4, 1.3.4, ..., 1.256.4</P>
+			<P ALIGN=LEFT>1.1.1, 1.2.1, 2.1.1, ..., 48.24.1</P>
+		</TD>
+	</TR>
+
+
+
+	<TR VALIGN=TOP>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
+			<P ALIGN=LEFT><B>2.*.4$</B></P>
+		</TD>
+		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT><B>2[.].*[.]4$</B></P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
+			<P ALIGN=LEFT>Only thread 4 of all tasks from application <I>ending</I> with 2</P>
+		</TD>
+		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
+			<P ALIGN=LEFT>2.1.4, 2.2.4, 2.3.4, 12.1.4, 22.6.4</P>
 		</TD>
 	</TR>
 
@@ -1507,13 +1528,13 @@ than one expression (denoted with 'then'). To match these last ones just apply t
 			<P ALIGN=LEFT><B>1.##.4$</B></P>
 		</TD>
 		<TD WIDTH=20% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
-			<P ALIGN=LEFT><B>1[.][1.9][0-9][.]4$</B></P>
+			<P ALIGN=LEFT><B>1[.][0-9][0-9][.]4$</B></P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-right: none; padding: 0.1cm">
 			<P ALIGN=LEFT>Only thread 4 of two digits tasks from application 1</P>
 		</TD>
 		<TD WIDTH=30% STYLE="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0.1cm">
-			<P ALIGN=LEFT>1.10.4, 1.11.4, 1.12.4, ..., 1.24.4</P>
+			<P ALIGN=LEFT>1.10.4, 1.11.4, 1.12.4, ..., 1.24.4 (levels starting with 0 may match, by default there's none)</P>
 		</TD>
 	</TR>
 
