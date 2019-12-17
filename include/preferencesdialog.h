@@ -312,6 +312,9 @@ public:
 
 ////@begin PreferencesDialog member function declarations
 
+  bool GetAskForPrevSessionLoad() const { return askForPrevSessionLoad ; }
+  void SetAskForPrevSessionLoad(bool value) { askForPrevSessionLoad = value ; }
+
   std::string GetCfgsPath() const { return cfgsPath ; }
   void SetCfgsPath(std::string value) { cfgsPath = value ; }
 
@@ -516,9 +519,6 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  bool GetAskForPrevSessionLoad() const { return askForPrevSessionLoad ; }
-  void SetAskForPrevSessionLoad(bool value) { askForPrevSessionLoad = value ; }
-
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -633,6 +633,7 @@ public:
   wxTextCtrl* txtHintDescription;
   wxPanel* panelFilters;
 private:
+  bool askForPrevSessionLoad;
   std::string cfgsPath;
   bool colorUseZero;
   std::string filtersXMLPath;
@@ -701,7 +702,6 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  bool askForPrevSessionLoad;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

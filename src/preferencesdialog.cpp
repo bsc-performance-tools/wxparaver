@@ -453,8 +453,8 @@ void PreferencesDialog::CreateControls()
   wxStaticText* itemStaticText36 = new wxStaticText( panelGlobal, wxID_STATIC, _("minutes"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer33->Add(itemStaticText36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  checkGlobalAskForPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_ASK_FOR_PREV_SESSION, _("Ask if you want to load a previously auto-saved session on startup"), wxDefaultPosition, wxDefaultSize, 0 );
-  checkGlobalAskForPrevSessionLoad->SetValue(false);
+  checkGlobalAskForPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_ASK_FOR_PREV_SESSION, _("Show dialog for crashed auto-saved sessions on startup"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkGlobalAskForPrevSessionLoad->SetValue(true);
   itemStaticBoxSizer31->Add(checkGlobalAskForPrevSessionLoad, 1, wxGROW|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));

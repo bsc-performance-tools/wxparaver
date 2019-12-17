@@ -75,10 +75,10 @@ SessionSelectionDialog::SessionSelectionDialog()
   OnCreate();
 }
 
-SessionSelectionDialog::SessionSelectionDialog( wxWindow* parent, wxString folderPath, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+SessionSelectionDialog::SessionSelectionDialog( wxWindow* parent, wxString folderPath, bool isInitialized, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
-  Create(parent, folderPath, id, caption, pos, size, style);
+  Create(parent, folderPath, isInitialized, id, caption, pos, size, style);
   OnCreate();
 }
 
@@ -87,7 +87,7 @@ SessionSelectionDialog::SessionSelectionDialog( wxWindow* parent, wxString folde
  * SessionSelectionDialog creator
  */
 
-bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool isInitialized, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
 ////@begin SessionSelectionDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
@@ -101,6 +101,9 @@ bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, wxWi
   Centre();
 ////@end SessionSelectionDialog creation
   this->folderPath = folderPath;
+  this->isInitialized = isInitialized;
+  if ( isInitialized )
+    buttonCancel->SetLabel( _("&Cancel") );
   return true;
 }
 
@@ -245,7 +248,10 @@ bool SessionSelectionDialog::OnCreate()
   if ( wxDirExists( folderPath ) ) 
   {
     wxArrayString filesInDir;
-    wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*.session" ), wxDIR_FILES );
+    if ( isInitialized )
+      wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*.session" ), wxDIR_FILES );
+    else
+      wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*0.session" ), wxDIR_FILES );
     
     if ( filesInDir.size() == 0 )
       return false;
@@ -277,6 +283,7 @@ bool SessionSelectionDialog::OnCreate()
       
       dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
       dateTimes[i] = dt;
+      std::cout << dt << ", " << filesInDir[ i ] << std::endl;
     }
 
     for ( map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it = dtToFile.begin(); it != dtToFile.end(); ++it )
@@ -296,13 +303,11 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
   wxString dmy = parts[ 1 ] ;
   wxString hms = parts[ 2 ] ;
 
-  dmy = dmy.SubString( 6, 7 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 0, 3 ) + " " ; // DDMMYYYY
-//dmy = dmy.SubString( 0, 3 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 6, 7 ) + " " ; // YYYYMMDD (iso compliant)
-
+  dmy = dmy.SubString( 6, 7 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 0, 3 ) + " " ; // YYYYMMDD (iso compliant)
   hms = hms.SubString( 0, 1 ) + ":" + hms.SubString( 2, 3 ) + ":" + hms.SubString( 4, 5 ) ;
-  wxString status = ( parts.Last()[ 0 ] == '0' ? " [WARNING: session was not saved on exit]" : "" );
+  //wxString status = ( parts.Last()[ 0 ] == '0' ? " [WARNING: session was not saved on exit]" : "" );
   
-  return ( parts[ 0 ] + "\t| " + dmy + hms + status );
+  return ( parts[ 0 ] + "\t| " + dmy + hms );
 }
 
 /*!

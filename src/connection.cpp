@@ -90,13 +90,36 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   return true;
 }
 
-
+//                  ITEM , DataToSnd
+//connection->Poke( "add", _( std::to_string( getpid() ) ) );
+//connection->Poke( "del", _( std::to_string( getpid() ) ) );
 bool stConnection::OnPoke( const wxString& topic, 
                            const wxString& item, 
                            const void *data, 
                            size_t size, 
                            wxIPCFormat format )
 {
-  
-  
+
+  if ( item == wxT( "add" ) )
+  {
+    wxString dataStr( wxString::FromUTF8( (char *)data ));
+    std::cout << "[0] PID to insert = " << dataStr << std::endl;
+    wxGetApp().ManageSessionMap( 0, dataStr );
+    return true;
+  }
+  else if ( item == wxT( "upd" ) )
+  {
+    wxString dataStr( wxString::FromUTF8( (char *)data ));
+    std::cout << "[1] PID to update = " << dataStr << std::endl;
+    wxGetApp().ManageSessionMap( 1, dataStr );
+    return true;
+  }
+  else if ( item == wxT( "del" ) )
+  {
+    wxString dataStr( wxString::FromUTF8( (char *)data ));
+    std::cout << "[2] PID to delete = " << dataStr << std::endl;
+    wxGetApp().ManageSessionMap( 2, dataStr );
+    return true;
+  }
+  return false;
 }

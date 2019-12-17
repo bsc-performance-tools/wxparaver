@@ -74,10 +74,10 @@ class SessionSelectionDialog: public wxDialog
 public:
   /// Constructors
   SessionSelectionDialog();
-  SessionSelectionDialog( wxWindow* parent, wxString folderPath, wxWindowID id = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SESSIONSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_SESSIONSELECTIONDIALOG_SIZE, long style = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
+  SessionSelectionDialog( wxWindow* parent, wxString folderPath, bool isInitialized = false, wxWindowID id = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SESSIONSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_SESSIONSELECTIONDIALOG_SIZE, long style = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
 
   /// Creation
-  bool Create( wxWindow* parent, wxString folderPath, wxWindowID id = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SESSIONSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_SESSIONSELECTIONDIALOG_SIZE, long style = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
+  bool Create( wxWindow* parent, wxString folderPath, bool isInitialized, wxWindowID id = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SESSIONSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_SESSIONSELECTIONDIALOG_SIZE, long style = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
 
   /// Destructor
   ~SessionSelectionDialog();
@@ -116,6 +116,9 @@ public:
   std::map< wxString, wxString > GetLinksPerFileName() const { return linksPerFileName ; }
   void SetLinksPerFileName(std::map< wxString, wxString > value) { linksPerFileName = value ; }
 
+  bool GetIsInitialized() const { return isInitialized ; }
+  void SetIsInitialized(bool value) { isInitialized = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -133,6 +136,7 @@ public:
   wxButton* buttonLoad;
 private:
   std::map< wxString, wxString > linksPerFileName;
+  bool isInitialized;
 ////@end SessionSelectionDialog member variables
 
   wxString myPath;

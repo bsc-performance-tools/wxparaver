@@ -87,6 +87,7 @@ BEGIN_EVENT_TABLE( wxparaverApp, wxApp )
 
 ////@begin wxparaverApp event table entries
 ////@end wxparaverApp event table entries
+  EVT_TIMER( ID_TIMER_MULTI, wxparaverApp::OnSessionTimer )
 
 END_EVENT_TABLE()
 
@@ -210,8 +211,13 @@ void wxparaverApp::Init()
 	globalTimingBeginIsSet = false;
 	globalTimingCallDialog = NULL;
 	globalTimingEnd = 0;
+	sessionMgmtTimer = new wxTimer( this, ID_TIMER_MULTI );
 ////@end wxparaverApp member initialisation
   m_locale.Init();
+
+  sessionMgmtTimer->Stop(); 
+  sessionMgmtTimer->Start( 0 ); // ( 10 * 1E3 ); 
+
 #ifdef __WXMAC__
   wxSystemOptions::SetOption( "mac.toolbar.no-native", 1 );
 #endif
@@ -377,6 +383,23 @@ bool wxparaverApp::OnInit()
 #endif
         wxLogDebug( wxT( "Failed to create an IPC service." ) );
     }
+    else 
+    {
+      wxLogNull logNull;
+      stClient *client = new stClient;
+      wxString hostName = wxT( "localhost" );
+#ifdef WIN32
+      wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                             wxT( "wxparaver_service" ),
+                                                             wxT( "wxparaver" ) );
+#else
+      const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
+      wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                             service_name,
+                                                             wxT( "wxparaver" ) );
+#endif
+      connection->Poke( "add", _( std::to_string( getpid() ) ) );
+    }
   }
   
   if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
@@ -460,16 +483,16 @@ bool wxparaverApp::OnInit()
   }
 
 #if wxUSE_XPM
-  wxImage::AddHandler(new wxXPMHandler);
+  wxImage::AddHandler( new wxXPMHandler );
 #endif
 #if wxUSE_LIBPNG
-  wxImage::AddHandler(new wxPNGHandler);
+  wxImage::AddHandler( new wxPNGHandler );
 #endif
 #if wxUSE_LIBJPEG
-  wxImage::AddHandler(new wxJPEGHandler);
+  wxImage::AddHandler( new wxJPEGHandler );
 #endif
 #if wxUSE_GIF
-  wxImage::AddHandler(new wxGIFHandler);
+  wxImage::AddHandler( new wxGIFHandler );
 #endif
 
   wxSize mainWindowSize( ParaverConfig::getInstance()->getMainWindowWidth(),
@@ -482,7 +505,7 @@ bool wxparaverApp::OnInit()
   if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
   //else if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
-  //  mainWindow->checkForMultiSessionLoad();
+  //  mainWindow->MultiSessionLoad( false );
 
 
 #ifndef WIN32
@@ -633,6 +656,42 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
  * Cleanup for wxparaverApp
  */
 
+
+void wxparaverApp::OnSessionTimer( wxTimerEvent& event ) 
+{
+  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() && sessionMgmtTimer->GetInterval() >= 30 * 1E3 ){
+    const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
+    wxLogNull *tmpLogNull = new wxLogNull();
+    m_checker = new wxSingleInstanceChecker(name);
+    delete tmpLogNull;
+
+    if( m_checker->IsAnotherRunning() )
+    {
+      wxLogNull logNull;
+    
+      stClient *client = new stClient;
+      wxString hostName = wxT( "localhost" );
+  #ifdef WIN32
+      wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                             wxT( "wxparaver_service" ),
+                                                             wxT( "wxparaver" ) );
+  #else
+      const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
+      wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                             service_name,
+                                                             wxT( "wxparaver" ) );
+  #endif
+      
+      connection->Poke( "upd", _( std::to_string( getpid() ) ) );
+      connection->Disconnect();
+      delete connection;
+      delete client;
+    }
+  }
+  sessionMgmtTimer->Start( 0 );
+}
+
+
 int wxparaverApp::OnExit()
 {
 //  double w, h;
@@ -643,9 +702,44 @@ int wxparaverApp::OnExit()
   
   
   if( mainWindow != NULL )
-    ParaverConfig::getInstance()->closeCompleteSessionFile();
+    if ( paraverMain::AreSessionsValid() ) 
+      ParaverConfig::getInstance()->closeCompleteSessionFile();
     ParaverConfig::getInstance()->writeParaverConfigFile();
   
+//// Code that deletes PID from the sessions map starts here ////
+
+  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() ){
+    const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
+    wxLogNull *tmpLogNull = new wxLogNull();
+    m_checker = new wxSingleInstanceChecker(name);
+    delete tmpLogNull;
+
+    if( m_checker->IsAnotherRunning() )
+    {
+      wxLogNull logNull;
+    
+      stClient *client = new stClient;
+      wxString hostName = wxT( "localhost" );
+  #ifdef WIN32
+      wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                             wxT( "wxparaver_service" ),
+                                                             wxT( "wxparaver" ) );
+  #else
+      const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
+      wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                             service_name,
+                                                             wxT( "wxparaver" ) );
+  #endif
+      
+      connection->Poke( "del", _( std::to_string( getpid() ) ) );
+      connection->Disconnect();
+      delete connection;
+      delete client;
+    }
+  }
+  
+//// Code that deletes PID from the sessions map ends here  ////
+
   if( m_checker != NULL )
     delete m_checker;
     
@@ -768,7 +862,8 @@ void wxparaverApp::PrintVersion()
 }
 
 
-void wxparaverApp::ManageAutoSessions( wxString &pid )
+void wxparaverApp::ManageSessionMap( int action, wxString &pid )
 {
-  //mainWindow->UpdateSessionByPid( pid );
+  std::cout << "Action[" << action << "] for pid = " << pid << std::endl;
+  paraverMain::UpdateSessionManager( action, pid );
 }

@@ -132,6 +132,7 @@ inline double rint( double nr )
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, -1)
 ////@end control identifiers
 #define Z_TRAIL( x )  ( x < 10 ? "0" + std::to_string( x ) : std::to_string( x ) )
+#define ID_TIMER_MAIN 40010
 
 
 class gTimeline;
@@ -289,7 +290,6 @@ public:
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVESESSION
   void OnMenusavesessionClick( wxCommandEvent& event );
-  bool OnMenusavesession( );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for wxID_PREFERENCES
   void OnPreferencesClick( wxCommandEvent& event );
@@ -372,6 +372,7 @@ public:
   void OnTreeSelChanged( wxTreeEvent& event );
   
   void OnMenuLoadAutoSavedSession( wxCommandEvent& event );
+  void OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event );
   
   /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
   void OnTreeItemActivated( wxTreeEvent& event );
@@ -574,7 +575,7 @@ public:
   bool isCFG4DModeDisabled() const;
 
   void checkIfPrevSessionLoad( bool prevSessionWasComplete );
-  void CheckForMultiSessionLoad();
+  void MultiSessionLoad( bool isSessionInitialized );
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
@@ -594,6 +595,11 @@ public:
   static Window *beginDragWindow;
   static Window *endDragWindow;
   static bool disableUserMessages;
+
+  static void UpdateSessionManager( int action, wxString& pid );
+  static bool AreSessionsValid();
+  
+  bool OnMenusavesession( );
 
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
@@ -653,6 +659,11 @@ private:
 
   wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
+
+
+  static std::map< wxString, unsigned long > sessionMgr;
+  static unsigned long sessionIt;
+  static bool invalidSessions;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
 

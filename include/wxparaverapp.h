@@ -44,7 +44,8 @@
 #else
   const char PATH_SEP('/');
 #endif
-
+  
+#define ID_TIMER_MULTI 40011
 
 /*!
  * Forward declarations
@@ -122,10 +123,14 @@ public:
 	TTime GetGlobalTimingEnd() const { return globalTimingEnd ; }
 	void SetGlobalTimingEnd(TTime value) { globalTimingEnd = value ; }
 
+	wxTimer * GetSessionMgmtTimer() const { return sessionMgmtTimer ; }
+	void SetSessionMgmtTimer(wxTimer * value) { sessionMgmtTimer = value ; }
+
 ////@end wxparaverApp member function declarations
 
     static paraverMain* mainWindow;
     static wxCmdLineEntryDesc argumentsParseSyntax[];
+    static void ManageSessionMap( int action, wxString &pid );
     void ManageAutoSessions( wxString &pid );
     
 ////@begin wxparaverApp member variables
@@ -136,16 +141,17 @@ private:
 	bool globalTimingBeginIsSet;
 	wxDialog* globalTimingCallDialog;
 	TTime globalTimingEnd;
+	wxTimer * sessionMgmtTimer;
 ////@end wxparaverApp member variables
 
     wxLocale m_locale;
     
     wxSingleInstanceChecker *m_checker;
-    std::map< wxString, int> multiSessionMgmt;
     
     stServer *m_server;
     
     void PrintVersion();
+    void OnSessionTimer( wxTimerEvent& event );
 };
 
 /*!
