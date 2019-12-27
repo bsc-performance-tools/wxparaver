@@ -283,7 +283,6 @@ bool SessionSelectionDialog::OnCreate()
       
       dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
       dateTimes[i] = dt;
-      std::cout << dt << ", " << filesInDir[ i ] << std::endl;
     }
 
     for ( map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it = dtToFile.begin(); it != dtToFile.end(); ++it )

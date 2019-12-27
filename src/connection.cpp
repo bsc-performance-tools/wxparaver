@@ -69,7 +69,6 @@ bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
   }
   else if( dataStr == wxT( "BEGIN" ) )
   {
-        std::cout << "--> MAIN Begin... \n " << std::endl;
     wxparaverApp::mainWindow->SetCanServeSignal( false );
     tmpCommand.Clear();
   }
@@ -103,21 +102,21 @@ bool stConnection::OnPoke( const wxString& topic,
   if ( item == wxT( "add" ) )
   {
     wxString dataStr( wxString::FromUTF8( (char *)data ));
-    std::cout << "[0] PID to insert = " << dataStr << std::endl;
+    //std::cout << "[0] PID to insert = " << dataStr << std::endl;
     wxGetApp().ManageSessionMap( 0, dataStr );
     return true;
   }
   else if ( item == wxT( "upd" ) )
   {
     wxString dataStr( wxString::FromUTF8( (char *)data ));
-    std::cout << "[1] PID to update = " << dataStr << std::endl;
+    //std::cout << "[1] PID to update = " << dataStr << std::endl;
     wxGetApp().ManageSessionMap( 1, dataStr );
     return true;
   }
   else if ( item == wxT( "del" ) )
   {
     wxString dataStr( wxString::FromUTF8( (char *)data ));
-    std::cout << "[2] PID to delete = " << dataStr << std::endl;
+    //std::cout << "[2] PID to delete = " << dataStr << std::endl;
     wxGetApp().ManageSessionMap( 2, dataStr );
     return true;
   }

@@ -216,7 +216,7 @@ void wxparaverApp::Init()
   m_locale.Init();
 
   sessionMgmtTimer->Stop(); 
-  sessionMgmtTimer->Start( 0 ); // ( 10 * 1E3 ); 
+  sessionMgmtTimer->Start( 10 * 1E3 ); 
 
 #ifdef __WXMAC__
   wxSystemOptions::SetOption( "mac.toolbar.no-native", 1 );
@@ -369,6 +369,7 @@ bool wxparaverApp::OnInit()
   m_checker = new wxSingleInstanceChecker(name);
   delete tmpLogNull;
 
+  bool moreThanOneInstanceFound = false;
   if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
     if ( !m_checker->IsAnotherRunning() )
@@ -399,9 +400,11 @@ bool wxparaverApp::OnInit()
                                                              wxT( "wxparaver" ) );
 #endif
       connection->Poke( "add", _( std::to_string( getpid() ) ) );
+      moreThanOneInstanceFound = true;
     }
   }
   
+
   if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
     if ( !m_checker->IsAnotherRunning() )
@@ -468,7 +471,6 @@ bool wxparaverApp::OnInit()
         connection->Disconnect();
         delete connection;
         delete client;
-
         return true;
       }
       else
@@ -502,7 +504,8 @@ bool wxparaverApp::OnInit()
   mainWindow->Show(true);
 
   bool prevSessionWasComplete = ParaverConfig::getInstance()->initCompleteSessionFile();
-  if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 )
+  if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0
+       && !moreThanOneInstanceFound )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
   //else if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   //  mainWindow->MultiSessionLoad( false );
@@ -659,7 +662,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
 
 void wxparaverApp::OnSessionTimer( wxTimerEvent& event ) 
 {
-  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() && sessionMgmtTimer->GetInterval() >= 30 * 1E3 ){
+  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() && sessionMgmtTimer->GetInterval() >= 10 * 1E3 ){
     const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
     wxLogNull *tmpLogNull = new wxLogNull();
     m_checker = new wxSingleInstanceChecker(name);
@@ -688,7 +691,7 @@ void wxparaverApp::OnSessionTimer( wxTimerEvent& event )
       delete client;
     }
   }
-  sessionMgmtTimer->Start( 0 );
+  sessionMgmtTimer->Start( 10 * 1E3 ); 
 }
 
 
@@ -864,6 +867,6 @@ void wxparaverApp::PrintVersion()
 
 void wxparaverApp::ManageSessionMap( int action, wxString &pid )
 {
-  std::cout << "Action[" << action << "] for pid = " << pid << std::endl;
+  //std::cout << "Action[" << action << "] for pid = " << pid << std::endl;
   paraverMain::UpdateSessionManager( action, pid );
 }

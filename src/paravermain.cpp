@@ -424,7 +424,7 @@ void paraverMain::Init()
   btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
 
-  sessionTimer->Start( 0 );
+  sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
 
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
@@ -2484,12 +2484,11 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() == 0 )
     sessionTimer->Stop();
   else if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 &&
-           sessionTimer->GetInterval() >= ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 )
+           sessionTimer->GetInterval() > ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 )
   {
     sessionTimer->Stop();
-    sessionTimer->Start( 0 ); // ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 )
+    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
   }
-
 }
 
 
@@ -4117,19 +4116,16 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     #endif
     SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
 
-    for ( std::map< wxString, unsigned long >::iterator it = paraverMain::sessionMgr.begin() ; !paraverMain::invalidSessions && it != paraverMain::sessionMgr.end() ; ++it )
+    for (map< wxString, unsigned long >::iterator it = paraverMain::sessionMgr.begin() ; !paraverMain::invalidSessions && it != paraverMain::sessionMgr.end() ; ++it)
     {
-      if ( ( *it ).second != paraverMain::sessionIt )
+      if ( ( *it ).second < paraverMain::sessionIt )
         paraverMain::invalidSessions = true; 
-      else
-        ( *it ).second = paraverMain::paraverMain::sessionIt + 1;
+      //else
+        //std::cout << paraverMain::invalidSessions << "--> map[ " << (*it).first << " ] = " << (*it).second << std::endl;
+        //( *it ).second = paraverMain::paraverMain::sessionIt + 1;
+      //std::cout << ( *it ).second << " < " << paraverMain::sessionIt << "?\n";
     }
-
-    for (map< wxString, unsigned long >::iterator it = paraverMain::sessionMgr.begin(); it != paraverMain::sessionMgr.end() ; ++it)
-        std::cout << "map[ " << (*it).first << " ] = " << (*it).second << std::endl;
-
     ++paraverMain::sessionIt;
-    std::cout << "Session Iteration #" << paraverMain::sessionIt << " / Did it run OK? " << paraverMain::invalidSessions << std::endl;
   }
 }
 
@@ -4761,7 +4757,6 @@ void paraverMain::initSessionInfo()
 
   boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
   std::stringstream ss;
-//ss << Z_TRAIL( now.date().day() ) << Z_TRAIL( static_cast<int>( now.date().month() ) ) << Z_TRAIL( now.date().year() ) // ddmmyyyy
   ss << Z_TRAIL( now.date().year() ) << Z_TRAIL( static_cast<int>( now.date().month() ) ) << Z_TRAIL( now.date().day() ) 
      << "_" << Z_TRAIL( now.time_of_day().hours() ) << Z_TRAIL( now.time_of_day().minutes() ) << Z_TRAIL( now.time_of_day().seconds() ); //iso
 
@@ -4774,20 +4769,20 @@ void paraverMain::UpdateSessionManager( int action, wxString& pid )
   {
     case 0: //ADD
     {
-      std::pair< wxString, unsigned long> item = make_pair( pid, sessionIt );
+      std::pair< wxString, unsigned long> item = make_pair( pid, paraverMain::sessionIt );
       paraverMain::sessionMgr.insert( item );
+      break;
     }
-    
     case 1: //UPDATE
     {
-      paraverMain::sessionMgr[ pid ] = sessionIt;
-      for (map< wxString, unsigned long >::iterator it = paraverMain::sessionMgr.begin(); it != paraverMain::sessionMgr.end() ; ++it)
-        std::cout << "map[ " << (*it).first << " ] = " << (*it).second << std::endl;
+      paraverMain::sessionMgr[ pid ] = paraverMain::sessionIt;
+      break;
     }
-    default: //DEL [case 2]
+    default: //DEL
     {
       if ( paraverMain::sessionMgr.find( pid ) != paraverMain::sessionMgr.end() )
         paraverMain::sessionMgr.erase( pid );
+      break;
     }
   }
 }
