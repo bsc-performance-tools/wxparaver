@@ -369,7 +369,7 @@ bool wxparaverApp::OnInit()
   m_checker = new wxSingleInstanceChecker(name);
   delete tmpLogNull;
 
-  bool moreThanOneInstanceFound = false;
+  moreThanOneInstanceFound = false;
   if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
     if ( !m_checker->IsAnotherRunning() )
@@ -705,7 +705,7 @@ int wxparaverApp::OnExit()
   
   
   if( mainWindow != NULL )
-    if ( paraverMain::AreSessionsValid() ) 
+    if ( paraverMain::AreSessionsValid() && !moreThanOneInstanceFound ) 
       ParaverConfig::getInstance()->closeCompleteSessionFile();
     ParaverConfig::getInstance()->writeParaverConfigFile();
   

@@ -663,7 +663,7 @@ private:
 
   static std::map< wxString, unsigned long > sessionMgr;
   static unsigned long sessionIt;
-  static bool invalidSessions;
+  static bool validSessions;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
 

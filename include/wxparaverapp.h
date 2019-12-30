@@ -143,6 +143,7 @@ private:
 	TTime globalTimingEnd;
 	wxTimer * sessionMgmtTimer;
 ////@end wxparaverApp member variables
+    bool moreThanOneInstanceFound;
 
     wxLocale m_locale;
     

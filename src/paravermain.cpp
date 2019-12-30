@@ -209,7 +209,7 @@ Window *paraverMain::endDragWindow = NULL;
 bool paraverMain::disableUserMessages = false;
   
 unsigned long paraverMain::sessionIt = 0;
-bool paraverMain::invalidSessions = false;
+bool paraverMain::validSessions = true;
 std::map< wxString, unsigned long > paraverMain::sessionMgr;
 
 extern volatile bool sig1;
@@ -2489,6 +2489,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
     sessionTimer->Stop();
     sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
   }
+  //std::cout << ( paraverMain::validSessions ? "" : "NOT-" ) << "Valid\n" ;
 }
 
 
@@ -4116,15 +4117,17 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     #endif
     SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
 
-    for (map< wxString, unsigned long >::iterator it = paraverMain::sessionMgr.begin() ; !paraverMain::invalidSessions && it != paraverMain::sessionMgr.end() ; ++it)
+    //TODO Improve efficiency
+    for ( map< wxString, unsigned long >::iterator it = paraverMain::sessionMgr.begin() ; paraverMain::validSessions && it != paraverMain::sessionMgr.end() ; ++it )
     {
       if ( ( *it ).second < paraverMain::sessionIt )
-        paraverMain::invalidSessions = true; 
-      //else
-        //std::cout << paraverMain::invalidSessions << "--> map[ " << (*it).first << " ] = " << (*it).second << std::endl;
+        paraverMain::validSessions = false; 
+      else
+        //std::cout << (paraverMain::validSessions ? "V" : "N") << "--> map[ " << (*it).first << " ] = " << (*it).second << std::endl;
         //( *it ).second = paraverMain::paraverMain::sessionIt + 1;
       //std::cout << ( *it ).second << " < " << paraverMain::sessionIt << "?\n";
     }
+    std::cout << " SESSION SAVED \n";
     ++paraverMain::sessionIt;
   }
 }
@@ -4789,5 +4792,5 @@ void paraverMain::UpdateSessionManager( int action, wxString& pid )
 
 bool paraverMain::AreSessionsValid()
 {
-  return ( paraverMain::invalidSessions == false );
+  return paraverMain::validSessions;
 }
