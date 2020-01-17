@@ -34,6 +34,7 @@
 #include "paravermain.h"
 ////@end includes
 #include <wx/snglinst.h>
+#include "wx/dirctrl.h"
 #ifdef TRACING_ENABLED
 #include "extrae_user_events.h"
 #endif
@@ -131,7 +132,7 @@ public:
     static paraverMain* mainWindow;
     static wxCmdLineEntryDesc argumentsParseSyntax[];
     static void ManageSessionMap( int action, wxString &pid );
-    void ManageAutoSessions( wxString &pid );
+    void ValidateSession( bool setValidate );
     
 ////@begin wxparaverApp member variables
 private:
@@ -143,7 +144,7 @@ private:
 	TTime globalTimingEnd;
 	wxTimer * sessionMgmtTimer;
 ////@end wxparaverApp member variables
-    bool moreThanOneInstanceFound;
+    bool invalidateNoConnect;
 
     wxLocale m_locale;
     

@@ -99,7 +99,7 @@ bool stConnection::OnPoke( const wxString& topic,
                            wxIPCFormat format )
 {
 
-  if ( item == wxT( "add" ) )
+  /*if ( item == wxT( "add" ) )
   {
     wxString dataStr( wxString::FromUTF8( (char *)data ));
     //std::cout << "[0] PID to insert = " << dataStr << std::endl;
@@ -118,6 +118,13 @@ bool stConnection::OnPoke( const wxString& topic,
     wxString dataStr( wxString::FromUTF8( (char *)data ));
     //std::cout << "[2] PID to delete = " << dataStr << std::endl;
     wxGetApp().ManageSessionMap( 2, dataStr );
+    return true;
+  }
+ */ 
+  if ( item == wxT( "validate" ) )
+  {
+    bool valid = wxString::FromUTF8( (char *)data ) == _( "1" );
+    wxGetApp().ValidateSession( valid );
     return true;
   }
   return false;

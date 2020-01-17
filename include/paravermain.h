@@ -43,7 +43,7 @@
 #include "wx/toolbar.h"
 #include "wx/choicebk.h"
 #include "wx/toolbook.h"
-#include "wx/dirctrl.h"
+//#include "wx/dirctrl.h"
 ////@end includes
 #include "trace.h"
 #include "localkernel.h"
@@ -597,7 +597,8 @@ public:
   static bool disableUserMessages;
 
   static void UpdateSessionManager( int action, wxString& pid );
-  static bool AreSessionsValid();
+  static bool IsSessionValid();
+  static void ValidateSession( bool setValidate );
   
   bool OnMenusavesession( );
 
@@ -660,8 +661,6 @@ private:
   wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
 
-
-  static std::map< wxString, unsigned long > sessionMgr;
   static unsigned long sessionIt;
   static bool validSessions;
 

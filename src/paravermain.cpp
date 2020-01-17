@@ -210,7 +210,6 @@ bool paraverMain::disableUserMessages = false;
   
 unsigned long paraverMain::sessionIt = 0;
 bool paraverMain::validSessions = true;
-std::map< wxString, unsigned long > paraverMain::sessionMgr;
 
 extern volatile bool sig1;
 extern volatile bool sig2;
@@ -1069,32 +1068,20 @@ void paraverMain::OnExitClick( wxCommandEvent& event )
 {
   if ( !LoadedWindows::getInstance()->emptyWindows() )
   {
-    int question1 = wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
+    int question = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
                        wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO );
-    if ( question1 != wxYES )
+                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+    if ( question == wxCANCEL || (question == wxYES && !OnMenusavesession() ) )
     {
       event.Skip();
       return;
-    }
-    else //if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
-    {
-      int question2 = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
-                         wxT( "Please confirm" ),
-                         wxICON_QUESTION | wxYES_NO | wxCANCEL);
-
-      if ( question2 == wxCANCEL || (question2 == wxYES && !OnMenusavesession() ) )
-      {
-        event.Skip();
-        return;
-      }
     }
   }
 
   PrepareToExit();
   Destroy();
 }
-
 
 
 /*!
@@ -3629,27 +3616,16 @@ void paraverMain::PrepareToExit()
 
 void paraverMain::OnCloseWindow( wxCloseEvent& event )
 {
-  if ( event.CanVeto() && !LoadedWindows::getInstance()->emptyWindows() )
-  { 
-    int question1 = wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
+  if ( event.CanVeto() && !LoadedWindows::getInstance()->emptyWindows() && !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  {
+    int question1 = wxMessageBox( wxT( "Some windows are already open... Do you want to save this session before closing?" ),
                        wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO );
-    if ( question1 != wxYES )
+                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+    if ( question1 == wxCANCEL || (question1 == wxYES && !OnMenusavesession() ) )
     {
       event.Veto();
       return;
-    }
-    else if ( event.CanVeto() && !ParaverConfig::getInstance()->getGlobalSingleInstance() )
-    {
-      int question2 = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
-                         wxT( "Please confirm" ),
-                         wxICON_QUESTION | wxYES_NO | wxCANCEL);
-
-      if ( question2 == wxCANCEL || (question2 == wxYES && !OnMenusavesession() ) )
-      {
-        event.Veto();
-        return;
-      }
     }
   }
   PrepareToExit();
@@ -4117,17 +4093,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     #endif
     SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
 
-    //TODO Improve efficiency
-    for ( map< wxString, unsigned long >::iterator it = paraverMain::sessionMgr.begin() ; paraverMain::validSessions && it != paraverMain::sessionMgr.end() ; ++it )
-    {
-      if ( ( *it ).second < paraverMain::sessionIt )
-        paraverMain::validSessions = false; 
-      else
-        //std::cout << (paraverMain::validSessions ? "V" : "N") << "--> map[ " << (*it).first << " ] = " << (*it).second << std::endl;
-        //( *it ).second = paraverMain::paraverMain::sessionIt + 1;
-      //std::cout << ( *it ).second << " < " << paraverMain::sessionIt << "?\n";
-    }
-    std::cout << " SESSION SAVED \n";
+    //std::cout << " SESSION SAVED \n";
     ++paraverMain::sessionIt;
   }
 }
@@ -4768,7 +4734,7 @@ void paraverMain::initSessionInfo()
 
 void paraverMain::UpdateSessionManager( int action, wxString& pid )
 {
-  switch ( action )
+  /*switch ( action )
   {
     case 0: //ADD
     {
@@ -4787,10 +4753,16 @@ void paraverMain::UpdateSessionManager( int action, wxString& pid )
         paraverMain::sessionMgr.erase( pid );
       break;
     }
-  }
+  }*/
 }
 
-bool paraverMain::AreSessionsValid()
+bool paraverMain::IsSessionValid()
 {
   return paraverMain::validSessions;
+}
+
+
+void paraverMain::ValidateSession( bool setValidate )
+{
+  paraverMain::validSessions = paraverMain::validSessions && setValidate;
 }

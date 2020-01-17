@@ -369,19 +369,107 @@ bool wxparaverApp::OnInit()
   m_checker = new wxSingleInstanceChecker(name);
   delete tmpLogNull;
 
-  moreThanOneInstanceFound = false;
+  invalidateNoConnect = false;
   if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
+    m_server = new stServer;
+  
+    #ifdef WIN32
+    if( m_server->Create( wxT( "wxparaver_service" ) ) )
+    #else
+    const wxString service_full_name = wxString::Format( _( "/tmp/wxparaver_service-%s-%s" ), wxGetUserId().c_str(), wxString::Format( wxT( "%i" ), getpid() ) );
+    if( m_server->Create( service_full_name ) )
+    #endif
+    {
+      //if ( !m_checker->IsAnotherRunning() )
+      //{
+        wxLogNull logNull;
+        stClient *client = new stClient;
+        wxString hostName = wxT( "localhost" );
+        #ifdef WIN32
+          wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                                               wxT( "wxparaver_service" ),
+                                                               wxT( "wxparaver" ) );
+        #else
+        // List wxparaver_services in /tmp/wxparaver_service-USER_ID-* (Service Table, ST)
+        // Get ~/.paraver/AutoSavedSessions and produce a map from it (ASMap)
+        // Match pids from:
+        //   ASM  ST
+        // --> 0  1  =>  Do Nothing (well, not now, but later - premature and/or purged sessions)
+        // --> 1  0  =>  Session OK; Do Nothing :)
+        // --> 1  1  =>  Check connectivity: 
+        //            if so,  Session OK
+        //            if not, PURGE IF NECESSARY
+
+        const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
+
+        // AS : Autosaved Sessions
+        wxArrayString filesAS;
+        wxString folderPath( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "/AutosavedSessions" ) );
+        if ( wxDirExists( folderPath ) ) 
+          wxDir::GetAllFiles( folderPath, &filesAS, wxT( "*.session" ), wxDIR_FILES );
+
+        std::map< wxString, wxString > autoSessionMap;
+        for ( int i = 0; i < filesAS.size(); ++i )
+        {
+          wxString pid = filesAS[ i ].BeforeFirst( '_' ).AfterLast( 's' );
+          pid.Replace( "ps", "" );
+          autoSessionMap.insert( { pid, filesAS[ i ] } );
+          //std::cout << "\t" << pid << "\t->\t" << filesAS[ i ] << std::endl;
+        }
+          
+
+        // ST : Service Table
+        vector< wxString > failedConnections;
+        wxDir wxd( _( "/tmp/" ) );
+        wxString service, service_flag = _( "wxparaver_service*" );
+        bool cont = wxd.GetFirst( &service, service_flag );
+        while ( cont )
+        {
+          wxString service_PID = service.AfterLast( '-' );
+          if ( service != service_full_name && service_PID != wxString::Format( wxT( "%i" ), getpid() ) )
+            {
+              wxString service_name = _( "/tmp/" ) + service;
+              if ( autoSessionMap.find( service_PID ) != autoSessionMap.end() )
+              {
+                wxConnectionBase *connection = client->MakeConnection( hostName, service_name, wxT( "wxparaver" ) );
+                if ( connection == NULL )
+                {
+                  failedConnections.push_back( service_name );
+                  wxRemoveFile( service_name );
+                  invalidateNoConnect = true;
+                }
+                delete connection;
+              }
+              /*else //if ( autoSessionMap.find( service_PID ) == autoSessionMap.end() )
+              {
+                wxRemoveFile( service_name ); //Volatile: may delete running services
+                std::cout << "P >";
+              }*/
+
+              std::cout << service_PID << "\t-> " << (autoSessionMap.find( service_PID )!=autoSessionMap.end()) << "\n" ;
+            }
+            cont = wxd.GetNext( &service );
+        }
+        #endif
+        delete client;
+      //}
+    }
+    else
+    {
+      wxLogDebug( wxT( "Failed to create an IPC service." ) );
+    }
+  /*
     if ( !m_checker->IsAnotherRunning() )
     {
       m_server = new stServer;
     
-#ifdef WIN32
+      #ifdef WIN32
       if( !m_server->Create( wxT( "wxparaver_service" ) ) )
-#else
+      #else
       const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
       if( !m_server->Create( service_name ) )
-#endif
+      #endif
         wxLogDebug( wxT( "Failed to create an IPC service." ) );
     }
     else 
@@ -389,34 +477,34 @@ bool wxparaverApp::OnInit()
       wxLogNull logNull;
       stClient *client = new stClient;
       wxString hostName = wxT( "localhost" );
-#ifdef WIN32
+      #ifdef WIN32
       wxConnectionBase *connection = client->MakeConnection( hostName, 
                                                              wxT( "wxparaver_service" ),
                                                              wxT( "wxparaver" ) );
-#else
+      #else
       const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
       wxConnectionBase *connection = client->MakeConnection( hostName, 
                                                              service_name,
                                                              wxT( "wxparaver" ) );
-#endif
-      connection->Poke( "add", _( std::to_string( getpid() ) ) );
-      moreThanOneInstanceFound = true;
+      
+      #endif
+      delete connection;
+      delete client;
     }
+    */
   }
-  
-
-  if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  else //if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
     if ( !m_checker->IsAnotherRunning() )
     {
       m_server = new stServer;
     
-#ifdef WIN32
+    #ifdef WIN32
       if( !m_server->Create( wxT( "wxparaver_service" ) ) )
-#else
+    #else
       const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
       if( !m_server->Create( service_name ) )
-#endif
+    #endif
         wxLogDebug( wxT( "Failed to create an IPC service." ) );
     }
     else
@@ -425,23 +513,23 @@ bool wxparaverApp::OnInit()
     
       stClient *client = new stClient;
       wxString hostName = wxT( "localhost" );
-#ifdef WIN32
+    #ifdef WIN32
       wxConnectionBase *connection = client->MakeConnection( hostName, 
                                                              wxT( "wxparaver_service" ),
                                                              wxT( "wxparaver" ) );
-#else
+    #else
       const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
       wxConnectionBase *connection = client->MakeConnection( hostName, 
                                                              service_name,
                                                              wxT( "wxparaver" ) );
-#endif
+    #endif
       if( connection )
       {
-#if wxMAJOR_VERSION >= 3
+        #if wxMAJOR_VERSION >= 3
         connection->Execute( "BEGIN" );
-#else
+        #else
         connection->Execute( wxT( "BEGIN" ) );
-#endif
+        #endif
         connection->Execute( argv[ 0 ] );
         for( int i = 1; i < argc; ++i )
         {
@@ -480,7 +568,6 @@ bool wxparaverApp::OnInit()
         delete client;
         return false;
       }
-
     }
   }
 
@@ -504,8 +591,8 @@ bool wxparaverApp::OnInit()
   mainWindow->Show(true);
 
   bool prevSessionWasComplete = ParaverConfig::getInstance()->initCompleteSessionFile();
-  if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0
-       && !moreThanOneInstanceFound )
+  if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 
+       && invalidateNoConnect )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
   //else if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   //  mainWindow->MultiSessionLoad( false );
@@ -525,7 +612,6 @@ int wxparaverApp::OnRun()
 {
   if( mainWindow != NULL )
     return wxApp::OnRun();
-  
   return 0;
 }
 
@@ -662,7 +748,9 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
 
 void wxparaverApp::OnSessionTimer( wxTimerEvent& event ) 
 {
-  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() && sessionMgmtTimer->GetInterval() >= 10 * 1E3 ){
+  /*
+  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() && sessionMgmtTimer->GetInterval() >= 10 * 1E3 )
+  {
     const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
     wxLogNull *tmpLogNull = new wxLogNull();
     m_checker = new wxSingleInstanceChecker(name);
@@ -670,28 +758,51 @@ void wxparaverApp::OnSessionTimer( wxTimerEvent& event )
 
     if( m_checker->IsAnotherRunning() )
     {
-      wxLogNull logNull;
-    
-      stClient *client = new stClient;
-      wxString hostName = wxT( "localhost" );
-  #ifdef WIN32
-      wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                                             wxT( "wxparaver_service" ),
-                                                             wxT( "wxparaver" ) );
-  #else
-      const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
-      wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                                             service_name,
-                                                             wxT( "wxparaver" ) );
-  #endif
-      
-      connection->Poke( "upd", _( std::to_string( getpid() ) ) );
-      connection->Disconnect();
-      delete connection;
+
+      const wxString service_full_name = wxString::Format( _( "/tmp/wxparaver_service-%s-%s" ), wxGetUserId().c_str(), wxString::Format( wxT( "%i" ), getpid() ) );
+      //wxDir::GetAllFiles( _( "/tmp/" ) , &sessions, wxT( "*" ), wxDIR_FILES );
+
+      // Get all wxparaver services
+      wxDir wxd( _( "/tmp/" ) );
+      wxArrayString sessions;
+      wxString filename, serviceFlag = _( "wxparaver_service*" );
+      bool cont = wxd.GetFirst( &filename, serviceFlag );
+      while ( cont )
+      {
+          if ( filename != service_full_name )
+            sessions.Add( _( "/tmp/" ) + filename );
+          cont = wxd.GetNext( &filename );
+      }
+
+      // For each service...
+      for ( int str = 0; str < sessions.size(); ++str )
+      {
+        wxString service_name = sessions[ str ];
+        if ( service_name != service_full_name )
+        {
+          wxConnectionBase *connection = client->MakeConnection( hostName, 
+                                             service_name,
+                                             wxT( "wxparaver" ) );
+          if ( connection == NULL )
+          {
+            wxRemoveFile( service_name );
+            paraverMain::ValidateSession( false );
+            std::cout << "Session [" << service_name << "] WILL BE INVALIDATED!\n";
+          }
+          else //Can I connect?
+          {
+            std::string isValid = ( paraverMain::IsSessionValid() ? "1" : "0" );
+            std::cout << "Session [" << service_name << "] connected, sending =" << isValid << " wrt session=" << paraverMain::IsSessionValid() << "\n";
+            connection->Poke( "validate", isValid );
+          }
+          delete connection;
+        }
+      }
       delete client;
     }
   }
   sessionMgmtTimer->Start( 10 * 1E3 ); 
+  */
 }
 
 
@@ -701,11 +812,11 @@ int wxparaverApp::OnExit()
 //  wxparaverApp::mainWindow->GetAuiManager().GetDockSizeConstraint( &w, &h );
 //  cout<<w<<" "<<h<<endl;
 //  cout << wxparaverApp::mainWindow->GetAuiManager().SavePaneInfo(
-//            wxparaverApp::mainWindow->GetAuiManager().GetPane( wxparaverApp::mainWindow->choiceWindowBrowser ) ).mb_str()<<endl;
+//            wxparaverApp::mainWindow->GetAuiManager().GetPanel( wxparaverApp::mainWindow->choiceWindowBrowser ) ).mb_str()<<endl;
   
   
   if( mainWindow != NULL )
-    if ( paraverMain::AreSessionsValid() && !moreThanOneInstanceFound ) 
+    if ( paraverMain::IsSessionValid() && !invalidateNoConnect ) 
       ParaverConfig::getInstance()->closeCompleteSessionFile();
     ParaverConfig::getInstance()->writeParaverConfigFile();
   
@@ -716,29 +827,6 @@ int wxparaverApp::OnExit()
     wxLogNull *tmpLogNull = new wxLogNull();
     m_checker = new wxSingleInstanceChecker(name);
     delete tmpLogNull;
-
-    if( m_checker->IsAnotherRunning() )
-    {
-      wxLogNull logNull;
-    
-      stClient *client = new stClient;
-      wxString hostName = wxT( "localhost" );
-  #ifdef WIN32
-      wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                                             wxT( "wxparaver_service" ),
-                                                             wxT( "wxparaver" ) );
-  #else
-      const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
-      wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                                             service_name,
-                                                             wxT( "wxparaver" ) );
-  #endif
-      
-      connection->Poke( "del", _( std::to_string( getpid() ) ) );
-      connection->Disconnect();
-      delete connection;
-      delete client;
-    }
   }
   
 //// Code that deletes PID from the sessions map ends here  ////
@@ -764,14 +852,14 @@ int wxparaverApp::FilterEvent(wxEvent& event)
 
   if ( event.GetEventType() == wxEVT_KEY_DOWN )
   {
-    if ( ((wxKeyEvent&)event).ControlDown() )
+    if ( ( (wxKeyEvent&) event ).ControlDown() )
     {
-      long keyCode = ((wxKeyEvent&)event).GetKeyCode();
+      long keyCode = ( (wxKeyEvent&) event ).GetKeyCode();
  
       if ( keyCode == (long) 'S' )
       {
         wxFileDialog dialog( mainWindow, wxT( "Save session" ), _(""), _(""), _("*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT );
-        if( dialog.ShowModal() == wxID_OK )
+        if ( dialog.ShowModal() == wxID_OK )
         {
           SessionSaver::SaveSession( dialog.GetPath(), wxparaverApp::mainWindow->GetLoadedTraces() );
         }
@@ -779,7 +867,7 @@ int wxparaverApp::FilterEvent(wxEvent& event)
       else if ( keyCode == (long) 'L' )
       {
         wxFileDialog dialog( mainWindow, wxT( "Load session" ), _(""), _(""), _("*"), wxFD_OPEN|wxFD_FILE_MUST_EXIST );
-        if( dialog.ShowModal() == wxID_OK )
+        if ( dialog.ShowModal() == wxID_OK )
         {
           SessionSaver::LoadSession( dialog.GetPath() );
         }
@@ -867,6 +955,12 @@ void wxparaverApp::PrintVersion()
 
 void wxparaverApp::ManageSessionMap( int action, wxString &pid )
 {
-  //std::cout << "Action[" << action << "] for pid = " << pid << std::endl;
   paraverMain::UpdateSessionManager( action, pid );
+}
+
+
+
+void wxparaverApp::ValidateSession( bool setValidate )
+{
+  paraverMain::ValidateSession( setValidate );
 }

@@ -94,16 +94,14 @@ bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if (GetSizer())
-  {
+  if ( GetSizer() )
     GetSizer()->SetSizeHints(this);
-  }
   Centre();
 ////@end SessionSelectionDialog creation
   this->folderPath = folderPath;
   this->isInitialized = isInitialized;
   if ( isInitialized )
-    buttonCancel->SetLabel( _("&Cancel") );
+    buttonCancel->SetLabel( _( "&Cancel" ) );
   return true;
 }
 
