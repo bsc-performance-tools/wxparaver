@@ -87,7 +87,7 @@ BEGIN_EVENT_TABLE( wxparaverApp, wxApp )
 
 ////@begin wxparaverApp event table entries
 ////@end wxparaverApp event table entries
-  EVT_TIMER( ID_TIMER_MULTI, wxparaverApp::OnSessionTimer )
+//  EVT_TIMER( ID_TIMER_MULTI, wxparaverApp::OnSessionTimer )
 
 END_EVENT_TABLE()
 
@@ -193,7 +193,7 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
 
 wxparaverApp::wxparaverApp()
 {
-  wxSetEnv(wxT("UBUNTU_MENUPROXY"), wxT("0"));
+  wxSetEnv( wxT( "UBUNTU_MENUPROXY" ), wxT( "0" ) );
   Init();
 }
 
@@ -211,12 +211,9 @@ void wxparaverApp::Init()
 	globalTimingBeginIsSet = false;
 	globalTimingCallDialog = NULL;
 	globalTimingEnd = 0;
-	sessionMgmtTimer = new wxTimer( this, ID_TIMER_MULTI );
 ////@end wxparaverApp member initialisation
   m_locale.Init();
 
-  sessionMgmtTimer->Stop(); 
-  sessionMgmtTimer->Start( 10 * 1E3 ); 
 
 #ifdef __WXMAC__
   wxSystemOptions::SetOption( "mac.toolbar.no-native", 1 );
@@ -555,8 +552,10 @@ bool wxparaverApp::OnInit()
   if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 
        && invalidateNoConnect )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
-  //else if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
-  //  mainWindow->MultiSessionLoad( false );
+  
+  else if ( ParaverConfig::getInstance()->getGlobalSingleInstance() && ParaverConfig::getInstance()->getGlobalPrevSessionLoad() 
+            && !prevSessionWasComplete )
+    mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
 
 
 #ifndef WIN32
@@ -707,66 +706,6 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
  */
 
 
-void wxparaverApp::OnSessionTimer( wxTimerEvent& event ) 
-{
-  /*
-  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() && sessionMgmtTimer->GetInterval() >= 10 * 1E3 )
-  {
-    const wxString name = wxString::Format( _( "wxparaver-%s" ), wxGetUserId().c_str());
-    wxLogNull *tmpLogNull = new wxLogNull();
-    m_checker = new wxSingleInstanceChecker(name);
-    delete tmpLogNull;
-
-    if( m_checker->IsAnotherRunning() )
-    {
-
-      const wxString service_full_name = wxString::Format( _( "/tmp/wxparaver_service-%s-%s" ), wxGetUserId().c_str(), wxString::Format( wxT( "%i" ), getpid() ) );
-      //wxDir::GetAllFiles( _( "/tmp/" ) , &sessions, wxT( "*" ), wxDIR_FILES );
-
-      // Get all wxparaver services
-      wxDir wxd( _( "/tmp/" ) );
-      wxArrayString sessions;
-      wxString filename, serviceFlag = _( "wxparaver_service*" );
-      bool cont = wxd.GetFirst( &filename, serviceFlag );
-      while ( cont )
-      {
-          if ( filename != service_full_name )
-            sessions.Add( _( "/tmp/" ) + filename );
-          cont = wxd.GetNext( &filename );
-      }
-
-      // For each service...
-      for ( int str = 0; str < sessions.size(); ++str )
-      {
-        wxString service_name = sessions[ str ];
-        if ( service_name != service_full_name )
-        {
-          wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                             service_name,
-                                             wxT( "wxparaver" ) );
-          if ( connection == NULL )
-          {
-            wxRemoveFile( service_name );
-            paraverMain::ValidateSession( false );
-            std::cout << "Session [" << service_name << "] WILL BE INVALIDATED!\n";
-          }
-          else //Can I connect?
-          {
-            std::string isValid = ( paraverMain::IsSessionValid() ? "1" : "0" );
-            std::cout << "Session [" << service_name << "] connected, sending =" << isValid << " wrt session=" << paraverMain::IsSessionValid() << "\n";
-            connection->Poke( "validate", isValid );
-          }
-          delete connection;
-        }
-      }
-      delete client;
-    }
-  }
-  sessionMgmtTimer->Start( 10 * 1E3 ); 
-  */
-}
-
-
 int wxparaverApp::OnExit()
 {
 //  double w, h;
@@ -911,12 +850,6 @@ void wxparaverApp::PrintVersion()
     cout << " Build ";
 
   cout << auxDate << endl;
-}
-
-
-void wxparaverApp::ManageSessionMap( int action, wxString &pid )
-{
-  paraverMain::UpdateSessionManager( action, pid );
 }
 
 

@@ -4731,30 +4731,6 @@ void paraverMain::initSessionInfo()
   sessionInfo.sessionDate = ss.str();
 }
 
-void paraverMain::UpdateSessionManager( int action, wxString& pid )
-{
-  /*switch ( action )
-  {
-    case 0: //ADD
-    {
-      std::pair< wxString, unsigned long> item = make_pair( pid, paraverMain::sessionIt );
-      paraverMain::sessionMgr.insert( item );
-      break;
-    }
-    case 1: //UPDATE
-    {
-      paraverMain::sessionMgr[ pid ] = paraverMain::sessionIt;
-      break;
-    }
-    default: //DEL
-    {
-      if ( paraverMain::sessionMgr.find( pid ) != paraverMain::sessionMgr.end() )
-        paraverMain::sessionMgr.erase( pid );
-      break;
-    }
-  }*/
-}
-
 bool paraverMain::IsSessionValid()
 {
   return paraverMain::validSessions;
