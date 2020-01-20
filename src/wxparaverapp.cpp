@@ -374,15 +374,15 @@ bool wxparaverApp::OnInit()
   {
     m_server = new stServer;
   
-    #ifdef WIN32
-    if( m_server->Create( wxT( "wxparaver_service" ) ) )
-    #else
+#ifdef WIN32
+    // ToDo: port the unix code to Win32
+    if ( m_server->Create( wxT( "wxparaver_service" ) ) )
+#else
     const wxString service_full_name = wxString::Format( _( "/tmp/wxparaver_service-%s-%s" ), wxGetUserId().c_str(), wxString::Format( wxT( "%i" ), getpid() ) );
-    if( m_server->Create( service_full_name ) )
-    #endif
+    if ( m_server->Create( service_full_name ) )
+#endif
     {
-      //if ( !m_checker->IsAnotherRunning() )
-      //{
+
         wxLogNull logNull;
         stClient *client = new stClient;
         wxString hostName = wxT( "localhost" );
@@ -391,16 +391,14 @@ bool wxparaverApp::OnInit()
                                                                wxT( "wxparaver_service" ),
                                                                wxT( "wxparaver" ) );
         #else
+
         // List wxparaver_services in /tmp/wxparaver_service-USER_ID-* (Service Table, ST)
-        // Get ~/.paraver/AutoSavedSessions and produce a map from it (ASMap)
+        // Get ~/.paraver/AutoSavedSessions and produce a map from it (ASM)
         // Match pids from:
         //   ASM  ST
         // --> 0  1  => If older than 2.5 minutes, delete service. Otherwise do nothing ("premature" session)
         // --> 1  0  =>  Session OK; Do Nothing :)
-        // --> 1  1  =>  Check connectivity: 
-        //            if so,  Session OK
-        //            if not, PURGE IF NECESSARY
-
+        // --> 1  1  =>  Check connectivity: if not, PURGE IF NECESSARY
         const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
 
         // AS : Autosaved Sessions
@@ -415,7 +413,6 @@ bool wxparaverApp::OnInit()
           wxString pid = filesAS[ i ].BeforeFirst( '_' ).AfterLast( 's' );
           pid.Replace( "ps", "" );
           autoSessionMap.insert( { pid, filesAS[ i ] } );
-          //std::cout << "\t" << pid << "\t->\t" << filesAS[ i ] << std::endl;
         }
           
 
@@ -441,60 +438,21 @@ bool wxparaverApp::OnInit()
                 }
                 delete connection;
               }
-              else if ( autoSessionMap.find( service_PID ) == autoSessionMap.end() )
+              else //if ( autoSessionMap.find( service_PID ) == autoSessionMap.end() )
               {
                 time_t myTime = time( NULL );
                 time_t sessionTime = wxFileModificationTime( service_name );
-                if ( myTime - sessionTime > 150)
-                  wxRemoveFile( service_name ); //Volatile: may delete running services
-                std::cout << "P > " << myTime-sessionTime << "s of diff" << std::endl;
+                if ( myTime - sessionTime > 125)
+                  wxRemoveFile( service_name );
               }
-
-              std::cout << service_PID << "\t-> Found? " << (autoSessionMap.find( service_PID )==autoSessionMap.end() ? "No" : "Yes") << "\n" ;
             }
             cont = wxd.GetNext( &service );
         }
         #endif
         delete client;
-      //}
     }
     else
-    {
       wxLogDebug( wxT( "Failed to create an IPC service." ) );
-    }
-  /*
-    if ( !m_checker->IsAnotherRunning() )
-    {
-      m_server = new stServer;
-    
-      #ifdef WIN32
-      if( !m_server->Create( wxT( "wxparaver_service" ) ) )
-      #else
-      const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
-      if( !m_server->Create( service_name ) )
-      #endif
-        wxLogDebug( wxT( "Failed to create an IPC service." ) );
-    }
-    else 
-    {
-      wxLogNull logNull;
-      stClient *client = new stClient;
-      wxString hostName = wxT( "localhost" );
-      #ifdef WIN32
-      wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                                             wxT( "wxparaver_service" ),
-                                                             wxT( "wxparaver" ) );
-      #else
-      const wxString service_name = wxString::Format( _( "/tmp/wxparaver_service-%s" ), wxGetUserId().c_str());
-      wxConnectionBase *connection = client->MakeConnection( hostName, 
-                                                             service_name,
-                                                             wxT( "wxparaver" ) );
-      
-      #endif
-      delete connection;
-      delete client;
-    }
-    */
   }
   else //if( ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
