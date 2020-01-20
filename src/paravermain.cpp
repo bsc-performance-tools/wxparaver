@@ -3535,6 +3535,7 @@ void paraverMain::HandleMaxSessionFiles()
         dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInFolder[ i ] ) );
       }
 
+      // Remove >=10 oldest auto-saved session files
       map< boost::posix_time::ptime, wxString >::iterator it = dtToFile.begin();
       for ( int deleteCtr = 0 ; deleteCtr < filesInFolder.size()-CUTOFF ; ++deleteCtr )
       {
@@ -3545,9 +3546,7 @@ void paraverMain::HandleMaxSessionFiles()
         {
           wxDir::GetAllFiles( folderToRemove, &sessionFilesToRemove, wxT( "" ), wxDIR_FILES );
           for ( int iFile = 0 ; iFile < sessionFilesToRemove.size() ; ++iFile ) 
-          {
             wxRemoveFile( sessionFilesToRemove[ iFile ] );
-          }
           sessionFilesToRemove.Clear();
         } 
         wxRemoveFile( (*it).second );

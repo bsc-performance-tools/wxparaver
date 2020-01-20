@@ -35,6 +35,8 @@
 ////@end includes
 #include <wx/snglinst.h>
 #include "wx/dirctrl.h"
+#include "wx/filefn.h"
+#include <time.h>
 #ifdef TRACING_ENABLED
 #include "extrae_user_events.h"
 #endif

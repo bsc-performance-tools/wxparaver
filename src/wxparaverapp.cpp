@@ -395,7 +395,7 @@ bool wxparaverApp::OnInit()
         // Get ~/.paraver/AutoSavedSessions and produce a map from it (ASMap)
         // Match pids from:
         //   ASM  ST
-        // --> 0  1  =>  Do Nothing (well, not now, but later - premature and/or purged sessions)
+        // --> 0  1  => If older than 2.5 minutes, delete service. Otherwise do nothing ("premature" session)
         // --> 1  0  =>  Session OK; Do Nothing :)
         // --> 1  1  =>  Check connectivity: 
         //            if so,  Session OK
@@ -427,9 +427,9 @@ bool wxparaverApp::OnInit()
         while ( cont )
         {
           wxString service_PID = service.AfterLast( '-' );
+          wxString service_name = _( "/tmp/" ) + service;
           if ( service != service_full_name && service_PID != wxString::Format( wxT( "%i" ), getpid() ) )
             {
-              wxString service_name = _( "/tmp/" ) + service;
               if ( autoSessionMap.find( service_PID ) != autoSessionMap.end() )
               {
                 wxConnectionBase *connection = client->MakeConnection( hostName, service_name, wxT( "wxparaver" ) );
@@ -441,13 +441,16 @@ bool wxparaverApp::OnInit()
                 }
                 delete connection;
               }
-              /*else //if ( autoSessionMap.find( service_PID ) == autoSessionMap.end() )
+              else if ( autoSessionMap.find( service_PID ) == autoSessionMap.end() )
               {
-                wxRemoveFile( service_name ); //Volatile: may delete running services
-                std::cout << "P >";
-              }*/
+                time_t myTime = time( NULL );
+                time_t sessionTime = wxFileModificationTime( service_name );
+                if ( myTime - sessionTime > 150)
+                  wxRemoveFile( service_name ); //Volatile: may delete running services
+                std::cout << "P > " << myTime-sessionTime << "s of diff" << std::endl;
+              }
 
-              std::cout << service_PID << "\t-> " << (autoSessionMap.find( service_PID )!=autoSessionMap.end()) << "\n" ;
+              std::cout << service_PID << "\t-> Found? " << (autoSessionMap.find( service_PID )==autoSessionMap.end() ? "No" : "Yes") << "\n" ;
             }
             cont = wxd.GetNext( &service );
         }
