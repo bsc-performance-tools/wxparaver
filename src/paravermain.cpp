@@ -423,7 +423,7 @@ void paraverMain::Init()
   btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
 
-  sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 + 1 );
+  sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
 
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
