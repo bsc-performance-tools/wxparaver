@@ -423,7 +423,7 @@ void paraverMain::Init()
   btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
 
-  sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
+  sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 + 1 );
 
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
@@ -4074,7 +4074,7 @@ void paraverMain::OnSize( wxSizeEvent& event )
 
 void paraverMain::OnSessionTimer( wxTimerEvent& event )
 {
-  if ( ParaverConfig::getInstance()->getGlobalSingleInstance() ) 
+  if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 && ParaverConfig::getInstance()->getGlobalSingleInstance() ) 
   {
     #ifdef WIN32
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
@@ -4083,7 +4083,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     #endif
     SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
   }
-  else
+  else if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 ) //&& !ParaverConfig::getInstance()->getGlobalSingleInstance() 
   {
     #ifdef WIN32
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
@@ -4731,29 +4731,6 @@ void paraverMain::initSessionInfo()
   sessionInfo.sessionDate = ss.str();
 }
 
-void paraverMain::UpdateSessionManager( int action, wxString& pid )
-{
-  /*switch ( action )
-  {
-    case 0: //ADD
-    {
-      std::pair< wxString, unsigned long> item = make_pair( pid, paraverMain::sessionIt );
-      paraverMain::sessionMgr.insert( item );
-      break;
-    }
-    case 1: //UPDATE
-    {
-      paraverMain::sessionMgr[ pid ] = paraverMain::sessionIt;
-      break;
-    }
-    default: //DEL
-    {
-      if ( paraverMain::sessionMgr.find( pid ) != paraverMain::sessionMgr.end() )
-        paraverMain::sessionMgr.erase( pid );
-      break;
-    }
-  }*/
-}
 
 bool paraverMain::IsSessionValid()
 {

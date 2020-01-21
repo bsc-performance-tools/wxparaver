@@ -596,7 +596,6 @@ public:
   static Window *endDragWindow;
   static bool disableUserMessages;
 
-  static void UpdateSessionManager( int action, wxString& pid );
   static bool IsSessionValid();
   static void ValidateSession( bool setValidate );
   
