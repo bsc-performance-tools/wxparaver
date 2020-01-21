@@ -88,6 +88,7 @@ BEGIN_EVENT_TABLE( wxparaverApp, wxApp )
 ////@begin wxparaverApp event table entries
 ////@end wxparaverApp event table entries
 
+
 END_EVENT_TABLE()
 
 #if wxMAJOR_VERSION<3
@@ -192,7 +193,7 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
 
 wxparaverApp::wxparaverApp()
 {
-  wxSetEnv(wxT("UBUNTU_MENUPROXY"), wxT("0"));
+  wxSetEnv( wxT( "UBUNTU_MENUPROXY" ), wxT( "0" ) );
   Init();
 }
 
@@ -532,7 +533,7 @@ bool wxparaverApp::OnInit()
   if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 
        && invalidateNoConnect )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
-  else if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSingleInstance() 
+else if ( ParaverConfig::getInstance()->getGlobalSingleInstance() && ParaverConfig::getInstance()->getGlobalPrevSessionLoad() 
             && !prevSessionWasComplete )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
 
@@ -685,10 +686,6 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
  */
 
 
-void wxparaverApp::OnSessionTimer( wxTimerEvent& event ) 
-{
-}
-
 
 int wxparaverApp::OnExit()
 {
@@ -835,6 +832,7 @@ void wxparaverApp::PrintVersion()
 
   cout << auxDate << endl;
 }
+
 
 
 void wxparaverApp::ValidateSession( bool setValidate )

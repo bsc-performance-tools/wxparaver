@@ -48,7 +48,6 @@
   const char PATH_SEP('/');
 #endif
   
-
 /*!
  * Forward declarations
  */
@@ -150,7 +149,6 @@ private:
     stServer *m_server;
     
     void PrintVersion();
-    void OnSessionTimer( wxTimerEvent& event );
 };
 
 /*!

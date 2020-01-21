@@ -4731,7 +4731,6 @@ void paraverMain::initSessionInfo()
   sessionInfo.sessionDate = ss.str();
 }
 
-
 bool paraverMain::IsSessionValid()
 {
   return paraverMain::validSessions;
