@@ -13,6 +13,7 @@ noinst_HEADERS = advancedsaveconfiguration.h \
                     helpcontents.h \
                     histogramdialog.h \
                     histotablebase.h \
+										loadcfgdialog.h \
                     paravermain.h \
                     pg_extraprop.h \
                     pg_util.h \
