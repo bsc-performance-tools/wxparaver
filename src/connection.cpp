@@ -120,7 +120,8 @@ bool stConnection::OnPoke( const wxString& topic,
     wxGetApp().ManageSessionMap( 2, dataStr );
     return true;
   }
- */ 
+
+  
   if ( item == wxT( "validate" ) )
   {
     bool valid = wxString::FromUTF8( (char *)data ) == _( "1" );
@@ -128,4 +129,5 @@ bool stConnection::OnPoke( const wxString& topic,
     return true;
   }
   return false;
+ */ 
 }

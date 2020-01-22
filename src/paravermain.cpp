@@ -423,7 +423,8 @@ void paraverMain::Init()
   btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
 
-  sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
+  if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 )
+    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
 
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
@@ -2476,7 +2477,6 @@ void paraverMain::OnIdle( wxIdleEvent& event )
     sessionTimer->Stop();
     sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
   }
-  //std::cout << ( paraverMain::validSessions ? "" : "NOT-" ) << "Valid\n" ;
 }
 
 
@@ -4074,27 +4074,24 @@ void paraverMain::OnSize( wxSizeEvent& event )
 
 void paraverMain::OnSessionTimer( wxTimerEvent& event )
 {
-  if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 && ParaverConfig::getInstance()->getGlobalSingleInstance() ) 
+  string file;
+  if ( ParaverConfig::getInstance()->getGlobalSingleInstance() ) 
   {
     #ifdef WIN32
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session";
     #else
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session";
     #endif
-    SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
   }
-  else if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 ) //&& !ParaverConfig::getInstance()->getGlobalSingleInstance() 
+  else /*if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() ) */
   {
     #ifdef WIN32
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
     #else
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
     #endif
-    SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
-
-    //std::cout << " SESSION SAVED \n";
-    ++paraverMain::sessionIt;
   }
+  SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
 }
 
 

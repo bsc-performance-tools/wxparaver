@@ -660,7 +660,6 @@ private:
   wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
 
-  static unsigned long sessionIt;
   static bool validSessions;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
