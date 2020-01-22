@@ -3,6 +3,7 @@ noinst_HEADERS = \
               app_edit.xpm\
               arrow_down.xpm\
               arrow_left.xpm\
+							arrow_reverse.xpm\
               arrow_right.xpm\
               arrow_up.xpm\
               caution.xpm\
