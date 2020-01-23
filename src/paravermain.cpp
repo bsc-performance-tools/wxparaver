@@ -435,7 +435,7 @@ void paraverMain::Init()
   wxBitmap bmp( logoBSC_xpm );
 #endif
 
-  wxMemoryFSHandler::AddFile( wxT( "logoBSC.xpm" ), 
+  wxMemoryFSHandler::AddFile( wxT( "logoBSC.xpm" ),
 #ifdef WIN32
                               bmp,
 #else
