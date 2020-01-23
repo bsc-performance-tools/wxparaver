@@ -3,6 +3,7 @@ noinst_HEADERS = \
               app_edit.xpm\
               arrow_down.xpm\
               arrow_left.xpm\
+							arrow_reverse.xpm\
               arrow_right.xpm\
               arrow_up.xpm\
               caution.xpm\
@@ -24,6 +25,7 @@ noinst_HEADERS = \
               hide_cols.xpm\
               histo_color.xpm\
               histo_horvert.xpm\
+							histo_sort.xpm\
               histo_sum.xpm\
               histo_zoom.xpm\
               inclusive.xpm\
