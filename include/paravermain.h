@@ -135,6 +135,7 @@ inline double rint( double nr )
 #define ID_TIMER_MAIN 40010
 
 
+
 class gTimeline;
 class gHistogram;
 class HelpContents;
@@ -660,6 +661,7 @@ private:
   wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
 
+  static const int CUTOFF = 10;
   static bool validSessions;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );

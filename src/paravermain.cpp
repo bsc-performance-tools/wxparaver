@@ -207,8 +207,6 @@ Window *paraverMain::beginDragWindow = NULL;
 Window *paraverMain::endDragWindow = NULL;
 
 bool paraverMain::disableUserMessages = false;
-  
-unsigned long paraverMain::sessionIt = 0;
 bool paraverMain::validSessions = true;
 
 extern volatile bool sig1;
@@ -3515,7 +3513,6 @@ void paraverMain::HandleMaxSessionFiles()
 #endif
   
   wxArrayString filesInFolder, sessionFilesToRemove;
-  int CUTOFF = 10;
   if ( wxDirExists( folder ) )
   {
     wxDir::GetAllFiles( folder, &filesInFolder, wxT( "*.session" ), wxDIR_FILES );
@@ -4684,12 +4681,11 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
                       wxT( "Load auto-saved session" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
       DoLoadSession( file );
   }
-  else
+  else if ( !prevSessionWasComplete )//&&
+        //wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load any of your last crashed auto-saved Paraver sessions?" ),
+        //              wxT( "Load auto-saved sessions" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
   {
-    if ( !prevSessionWasComplete && isSessionFile( file ) &&
-        wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load any of your last crashed auto-saved Paraver sessions?" ),
-                      wxT( "Load auto-saved sessions" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
-      MultiSessionLoad( false );
+    MultiSessionLoad( false );
   }
 }
 

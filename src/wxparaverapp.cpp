@@ -533,8 +533,8 @@ bool wxparaverApp::OnInit()
   if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 
        && invalidateNoConnect )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
-else if ( ParaverConfig::getInstance()->getGlobalSingleInstance() && ParaverConfig::getInstance()->getGlobalPrevSessionLoad() 
-            && !prevSessionWasComplete )
+  else if ( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0
+          && ParaverConfig::getInstance()->getGlobalSingleInstance() && !prevSessionWasComplete   )
     mainWindow->checkIfPrevSessionLoad( prevSessionWasComplete );
 
 

@@ -94,8 +94,10 @@ bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if ( GetSizer() )
+  if (GetSizer())
+  {
     GetSizer()->SetSizeHints(this);
+  }
   Centre();
 ////@end SessionSelectionDialog creation
   this->folderPath = folderPath;
@@ -124,6 +126,7 @@ SessionSelectionDialog::~SessionSelectionDialog()
 void SessionSelectionDialog::Init()
 {
 ////@begin SessionSelectionDialog member initialisation
+  textDialogDescription = NULL;
   listSessions = NULL;
   buttonCancel = NULL;
   buttonLoad = NULL;
@@ -143,18 +146,21 @@ void SessionSelectionDialog::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemDialog1->SetSizer(itemBoxSizer2);
 
-  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Load a previous session (or start a new one)"));
+  textDialogDescription = new wxStaticText( itemDialog1, wxID_STATIC, _("Paraver closed unexpectedly. Do you want to load any of your last crashed auto-saved Paraver sessions?"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer2->Add(textDialogDescription, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemDialog1, wxID_ANY, _("List of crashed sessions"));
   wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
   itemBoxSizer2->Add(itemStaticBoxSizer1, 3, wxGROW|wxALL, 5);
 
   wxArrayString listSessionsStrings;
   listSessions = new wxListBox( itemDialog1, ID_SESSIONBOX, wxDefaultPosition, wxSize(500, 270), listSessionsStrings, wxLB_SINGLE );
-  itemStaticBoxSizer1->Add(listSessions, 0, wxGROW|wxALL, 5);
+  itemStaticBoxSizer1->Add(listSessions, 1, wxGROW|wxALL, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer2 = new wxStdDialogButtonSizer;
 
   itemBoxSizer2->Add(itemStdDialogButtonSizer2, 0, wxGROW|wxALL, 5);
-  buttonCancel = new wxButton( itemDialog1, wxID_CANCEL, _("&New Session"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCancel = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
   itemStdDialogButtonSizer2->AddButton(buttonCancel);
 
   buttonLoad = new wxButton( itemDialog1, wxID_OK, _("&Load Session"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -165,6 +171,13 @@ void SessionSelectionDialog::CreateControls()
   // Connect events and objects
   listSessions->Connect(ID_SESSIONBOX, wxEVT_CREATE, wxWindowCreateEventHandler(SessionSelectionDialog::OnCreate), NULL, this);
 ////@end SessionSelectionDialog content construction
+
+  textDialogDescription->Show( !isInitialized );
+  textDialogDescription->SetFont( textDialogDescription->GetFont().Bold() );
+  if ( isInitialized )
+  {
+    itemStaticBoxSizer1Static->SetLabel( _("List of auto-saved sessions") );
+  }
 }
 
 

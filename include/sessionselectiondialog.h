@@ -113,11 +113,11 @@ public:
 
 ////@begin SessionSelectionDialog member function declarations
 
-  std::map< wxString, wxString > GetLinksPerFileName() const { return linksPerFileName ; }
-  void SetLinksPerFileName(std::map< wxString, wxString > value) { linksPerFileName = value ; }
-
   bool GetIsInitialized() const { return isInitialized ; }
   void SetIsInitialized(bool value) { isInitialized = value ; }
+
+  std::map< wxString, wxString > GetLinksPerFileName() const { return linksPerFileName ; }
+  void SetLinksPerFileName(std::map< wxString, wxString > value) { linksPerFileName = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -131,12 +131,13 @@ public:
   std::string GetSessionPath();
 
 ////@begin SessionSelectionDialog member variables
+  wxStaticText* textDialogDescription;
   wxListBox* listSessions;
   wxButton* buttonCancel;
   wxButton* buttonLoad;
 private:
-  std::map< wxString, wxString > linksPerFileName;
   bool isInitialized;
+  std::map< wxString, wxString > linksPerFileName;
 ////@end SessionSelectionDialog member variables
 
   wxString myPath;
