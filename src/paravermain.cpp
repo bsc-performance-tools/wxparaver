@@ -3920,6 +3920,7 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   info.SetDescription( description );
   developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
   developers.Add( _("Pedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
+  developers.Add( _("Miguel Moreno Gomez (mmoreno@bsc.es)") );
   info.SetDevelopers( developers );
   info.SetWebSite( _("https://tools.bsc.es/paraver") );
   //info.SetCopyright(_T(""));
