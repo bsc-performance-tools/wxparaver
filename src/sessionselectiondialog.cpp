@@ -173,7 +173,7 @@ void SessionSelectionDialog::CreateControls()
 ////@end SessionSelectionDialog content construction
 
   textDialogDescription->Show( !isInitialized );
-  textDialogDescription->SetFont( textDialogDescription->GetFont().Bold() );
+  textDialogDescription->GetFont().SetWeight( wxFONTWEIGHT_BOLD );
   if ( isInitialized )
   {
     itemStaticBoxSizer1Static->SetLabel( _("List of auto-saved sessions") );
@@ -308,14 +308,28 @@ bool SessionSelectionDialog::OnCreate()
 
 wxString SessionSelectionDialog::FormatFileName( wxString fileName )
 {
-  wxArrayString parts = wxSplit( fileName, '_' );
+  //wxArrayString parts = wxSplit( fileName, '_' );
+  std::string fileString = std::string( fileName ) ;
+  wxArrayString parts;  
+  std::size_t end, begin = 0;
+  char delim = '_';
+  end = fileString.find( delim );
+  while ( end != std::string::npos ) 
+  {
+      parts.push_back( fileString.substr( begin, end - begin ) );
+      begin = end + 1;
+      end = fileString.find( delim, begin );
+  }
+  parts.push_back( fileString.substr( begin, end - begin ) );
+
+
+
   parts[ 0 ].Replace( "ps", "PID: " );
   wxString dmy = parts[ 1 ] ;
   wxString hms = parts[ 2 ] ;
 
   dmy = dmy.SubString( 6, 7 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 0, 3 ) + " " ; // YYYYMMDD (iso compliant)
   hms = hms.SubString( 0, 1 ) + ":" + hms.SubString( 2, 3 ) + ":" + hms.SubString( 4, 5 ) ;
-  //wxString status = ( parts.Last()[ 0 ] == '0' ? " [WARNING: session was not saved on exit]" : "" );
   
   return ( parts[ 0 ] + "\t| " + dmy + hms );
 }

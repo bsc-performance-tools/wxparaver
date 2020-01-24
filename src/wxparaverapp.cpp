@@ -429,11 +429,10 @@ bool wxparaverApp::OnInit()
             if ( connection == NULL )
             {
               wxRemoveFile( serviceName );
-              invalidateNoConnect = invalidateNoConnect || true;
+              invalidateNoConnect = true;
             }
             delete connection;
           }
-          
           serviceMap.erase( autoSessionPID );
         }
       }

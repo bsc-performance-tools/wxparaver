@@ -74,6 +74,7 @@
 
 #include <signal.h>
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 
 #ifdef WIN32
