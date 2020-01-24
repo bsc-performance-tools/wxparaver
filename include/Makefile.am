@@ -1,7 +1,5 @@
 
-
-
-noinst_HEADERS = advancedsaveconfiguration.h \
+noinst_HEADERS =    advancedsaveconfiguration.h \
                     connection.h \
                     copypaste.h \
                     cutfilterdialog.h \

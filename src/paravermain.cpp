@@ -66,7 +66,7 @@
 #include "histogramdialog.h"
 #include "cutfilterdialog.h"
 #include "labelconstructor.h"
-#include "autosessionmanager.h"
+#include "sessionsaver.h"
 #include "helpcontents.h"
 #include "filedialogext.h"
 #include "runscript.h"
