@@ -3560,11 +3560,11 @@ void paraverMain::PrepareToExit()
   if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
   #ifdef WIN32
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
-    string folder( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + "_session" );
+    wxString file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
+    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + "_session" );
   #else
-    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
-    string folder( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + "_session" );
+    wxString file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
+    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + "_session" );
   #endif
     
     sessionInfo.status = SessionInfo::CLOSED;
@@ -3586,7 +3586,7 @@ void paraverMain::PrepareToExit()
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
   #endif
     //else if ( !wxFileExists( file ) && !wxDirExists( folder ) )
-    SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
+    SessionSaver::SaveSession( file, GetLoadedTraces() );
 
     HandleMaxSessionFiles();
 
