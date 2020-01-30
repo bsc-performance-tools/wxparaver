@@ -54,6 +54,7 @@
 #include "preferencesdialog.h"
 #include "loadcfgdialog.h"
 #include "sessionselectiondialog.h"
+#include "connection.h"
 
 // DATE TIME INCLUDES
 //#include <boost/date_time/gregorian/gregorian.hpp>
@@ -700,5 +701,4 @@ private:
 void progressFunction( ProgressController *progress, void *callerWindow );
   
 
-#endif
-  // _PARAVERMAIN_H_
+#endif // _PARAVERMAIN_H_

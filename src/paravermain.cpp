@@ -76,6 +76,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+//#include "connection.h"
 
 #ifdef WIN32
 #include <sys/types.h>
@@ -446,6 +447,8 @@ void paraverMain::Init()
   
   initPG();
   initSessionInfo();
+
+  //HandleMaxSessionFiles();
 }
 
 /*!
@@ -3511,6 +3514,7 @@ void paraverMain::HandleMaxSessionFiles()
   wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "\\AutosavedSessions" ) ) ;
 #else
   wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "/AutosavedSessions" ) ) ;
+  wxString sessionFolder( _( "/tmp" ) ) ;
 #endif
   
   wxArrayString filesInFolder, sessionFilesToRemove;
@@ -3533,7 +3537,60 @@ void paraverMain::HandleMaxSessionFiles()
         dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInFolder[ i ] ) );
       }
 
-      // Remove >=10 oldest auto-saved session files
+      // Remove >=10 oldest auto-saved session files EXCEPT those in execution
+      
+      if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+      {
+
+        // ST : Service Table
+        wxDir wxd( _( "/tmp/" ) );
+        wxString service, serviceFlag = _( "wxparaver_service*" );
+        std::map< wxString, wxString > serviceMap;
+        bool cont = wxd.GetFirst( &service, serviceFlag );
+
+        while ( cont )
+        {
+          wxString servicePID = service.AfterLast( '-' );
+          wxString serviceName = _( "/tmp/" ) + service;
+          serviceMap.insert( { servicePID, serviceName } );
+          cont = wxd.GetNext( &service );
+        }
+
+        wxLogNull logNull;
+        stClient *client = new stClient;
+        wxString hostName = wxT( "localhost" );
+
+        map< boost::posix_time::ptime, wxString >::iterator it = dtToFile.begin();
+        for ( int deleteCtr = 0 ; deleteCtr < filesInFolder.size()-CUTOFF ; ++deleteCtr )
+        {
+          wxString folderToRemove = (*it).second; 
+          folderToRemove.Replace( ".session", "_session" );
+
+          wxString autoSessionPID = folderToRemove.BeforeFirst( '_' ).AfterLast( 's' );
+          autoSessionPID.Replace( "ps", "" );
+
+          wxString serviceName = serviceMap[ autoSessionPID ];
+          wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
+
+          if ( connection == NULL )
+          {
+            if ( wxDirExists( folderToRemove ) && wxFileExists( (*it).second ) )
+            {
+              wxDir::GetAllFiles( folderToRemove, &sessionFilesToRemove, wxT( "" ), wxDIR_FILES );
+              for ( int iFile = 0 ; iFile < sessionFilesToRemove.size() ; ++iFile ) 
+                wxRemoveFile( sessionFilesToRemove[ iFile ] );
+              sessionFilesToRemove.Clear();
+            } 
+            wxRemoveFile( (*it).second );
+            wxRmDir( folderToRemove );
+          } 
+          ++it;
+        }
+        delete client;
+      }
+
+
+/*
       map< boost::posix_time::ptime, wxString >::iterator it = dtToFile.begin();
       for ( int deleteCtr = 0 ; deleteCtr < filesInFolder.size()-CUTOFF ; ++deleteCtr )
       {
@@ -3551,6 +3608,8 @@ void paraverMain::HandleMaxSessionFiles()
         wxRmDir( folderToRemove );
         ++it;
       }
+*/
+
     }
   }
 }
@@ -3586,11 +3645,9 @@ void paraverMain::PrepareToExit()
   #else
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
   #endif
-    //else if ( !wxFileExists( file ) && !wxDirExists( folder ) )
     SessionSaver::SaveSession( file, GetLoadedTraces() );
 
     HandleMaxSessionFiles();
-
   }
 
 
@@ -3599,9 +3656,9 @@ void paraverMain::PrepareToExit()
   
   for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
-    (*it)->clearControlWindow();
-    (*it)->clearDataWindow();
-    (*it)->clearExtraControlWindow();
+    ( *it )->clearControlWindow();
+    ( *it )->clearDataWindow();
+    ( *it )->clearExtraControlWindow();
   }
 
   if( instChecker != NULL ) delete instChecker;

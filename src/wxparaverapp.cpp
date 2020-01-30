@@ -49,7 +49,7 @@
 
 #include "config.h"
 #include "wxparaverapp.h"
-#include "connection.h"
+//#include "connection.h"
 #include <wx/filename.h>
 #include "sessionsaver.h"
 #include "helpcontents.h"
