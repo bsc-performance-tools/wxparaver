@@ -3538,7 +3538,6 @@ void paraverMain::HandleMaxSessionFiles()
       }
 
       // Remove >=10 oldest auto-saved session files EXCEPT those in execution
-      
       if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
       {
 
@@ -3589,28 +3588,6 @@ void paraverMain::HandleMaxSessionFiles()
         }
         delete client;
       }
-
-
-/*
-      map< boost::posix_time::ptime, wxString >::iterator it = dtToFile.begin();
-      for ( int deleteCtr = 0 ; deleteCtr < filesInFolder.size()-CUTOFF ; ++deleteCtr )
-      {
-        wxString folderToRemove = (*it).second; 
-        folderToRemove.Replace( ".session", "_session" );
-
-        if ( wxDirExists( folderToRemove ) && wxFileExists( (*it).second ) )
-        {
-          wxDir::GetAllFiles( folderToRemove, &sessionFilesToRemove, wxT( "" ), wxDIR_FILES );
-          for ( int iFile = 0 ; iFile < sessionFilesToRemove.size() ; ++iFile ) 
-            wxRemoveFile( sessionFilesToRemove[ iFile ] );
-          sessionFilesToRemove.Clear();
-        } 
-        wxRemoveFile( (*it).second );
-        wxRmDir( folderToRemove );
-        ++it;
-      }
-*/
-
     }
   }
 }
