@@ -3583,7 +3583,8 @@ void paraverMain::HandleMaxSessionFiles()
             } 
             wxRemoveFile( (*it).second );
             wxRmDir( folderToRemove );
-          } 
+          }
+          delete connection;
           ++it;
         }
         delete client;
