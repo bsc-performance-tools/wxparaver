@@ -270,14 +270,6 @@ bool SessionSelectionDialog::OnCreate()
     listSessions->Clear();
     linksPerFileName.clear();
     
-    /*filesInDir.Sort();
-    for ( wxArrayString::iterator fullFilePath = filesInDir.begin(); fullFilePath != filesInDir.end(); ++fullFilePath ) 
-    {
-      wxString fileName = FormatFileName( ( *fullFilePath ).AfterLast( '/' ) );
-      listSessions->Append( fileName );
-      linksPerFileName[ fileName ] = ( *fullFilePath );
-    }*/
-
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
     vector< boost::posix_time::ptime > dateTimes( filesInDir.size() );
     for ( int i = 0 ; i < filesInDir.size() ; ++i )
@@ -309,29 +301,49 @@ bool SessionSelectionDialog::OnCreate()
 wxString SessionSelectionDialog::FormatFileName( wxString fileName )
 {
   //wxArrayString parts = wxSplit( fileName, '_' );
-  std::string fileString = std::string( fileName ) ;
+  std::string fileStringStd = std::string( fileName ) ;
   wxArrayString parts;  
+
   std::size_t end, begin = 0;
   char delim = '_';
-  end = fileString.find( delim );
+  end = fileStringStd.find( delim );
+
+
+  wxString subPart;
   while ( end != std::string::npos ) 
   {
-      parts.push_back( fileString.substr( begin, end - begin ) );
-      begin = end + 1;
-      end = fileString.find( delim, begin );
+    subPart = wxString( fileStringStd.substr( begin, end - begin ).c_str(), wxConvUTF8 );
+    parts.push_back( subPart );
+    begin = end + 1;
+    end = fileStringStd.find( delim, begin );
   }
-  parts.push_back( fileString.substr( begin, end - begin ) );
+  subPart = wxString( fileStringStd.substr( begin, end - begin ).c_str(), wxConvUTF8 );
+  parts.push_back( subPart );
 
 
 
-  parts[ 0 ].Replace( "ps", "PID: " );
-  wxString dmy = parts[ 1 ] ;
-  wxString hms = parts[ 2 ] ;
+  parts[ 0 ].Replace( _( "ps" ), _( "PID: " ) );
+  wxString dmy = parts[ 1 ];
+  wxString hms = parts[ 2 ]; 
 
-  dmy = dmy.SubString( 6, 7 ) + "/" + dmy.SubString( 4, 5 ) + "/" + dmy.SubString( 0, 3 ) + " " ; // YYYYMMDD (iso compliant)
-  hms = hms.SubString( 0, 1 ) + ":" + hms.SubString( 2, 3 ) + ":" + hms.SubString( 4, 5 ) ;
+  dmy = dmy.Mid( 6, 2 ) +  // YYYYMMDD (iso compliant)
+         "/" +
+        dmy.Mid( 4, 2 ) +
+         "/" +
+        dmy.Mid( 0, 4 );
+
+
+  hms = hms.Mid( 0, 2 ) +
+         ":" +
+        hms.Mid( 2, 2 ) +
+         ":" +
+        hms.Mid( 4, 2 );
   
-  return ( parts[ 0 ] + "\t| " + dmy + hms );
+  return parts[ 0 ] +
+          "\t| " +
+         dmy +
+         " " +
+         hms;
 }
 
 /*!

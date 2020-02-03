@@ -404,7 +404,7 @@ void paraverMain::Init()
   previousTraces = PreviousFiles::createPreviousTraces();
   raiseCurrentWindow = true;
   runApplication = NULL;
-  sessionTimer = new wxTimer( this, 2 );
+  sessionTimer = new wxTimer( this, ID_TIMER_MAIN );
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
@@ -424,7 +424,9 @@ void paraverMain::Init()
 ////@end paraverMain member initialisation
 
   if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 )
+  {
     sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
+  }
 
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
@@ -2472,7 +2474,9 @@ void paraverMain::OnIdle( wxIdleEvent& event )
 
 
   if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() == 0 )
+  {
     sessionTimer->Stop();
+  }
   else if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 &&
            sessionTimer->GetInterval() > ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 )
   {
@@ -3607,6 +3611,7 @@ void paraverMain::PrepareToExit()
                                           "_" +
                                           std::to_string( sessionInfo.status ) +
                                           ".session" ).c_str(), wxConvUTF8 ) );
+
     wxString folder( wxString( std:string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                            "\\AutosavedSessions" +
                                            "\\ps" +
@@ -3626,6 +3631,7 @@ void paraverMain::PrepareToExit()
                                           "_" +
                                           std::to_string( sessionInfo.status ) +
                                           ".session" ).c_str(), wxConvUTF8 ) );
+
     wxString folder( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                             "/AutosavedSessions" +
                                             "/ps" +
