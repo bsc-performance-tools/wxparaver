@@ -3511,9 +3511,9 @@ void paraverMain::OnActivate( wxActivateEvent& event )
 void paraverMain::HandleMaxSessionFiles()
 {
 #ifdef WIN32
-  wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "\\AutosavedSessions" ) ) ;
+  wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + _( "\\AutosavedSessions" ) ) ;
 #else
-  wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "/AutosavedSessions" ) ) ;
+  wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + _( "/AutosavedSessions" ) ) ;
   wxString sessionFolder( _( "/tmp" ) ) ;
 #endif
   
@@ -3563,10 +3563,10 @@ void paraverMain::HandleMaxSessionFiles()
         for ( int deleteCtr = 0 ; deleteCtr < filesInFolder.size()-CUTOFF ; ++deleteCtr )
         {
           wxString folderToRemove = (*it).second; 
-          folderToRemove.Replace( ".session", "_session" );
+          folderToRemove.Replace( wxT( ".session" ), wxT( "_session" ) );
 
           wxString autoSessionPID = folderToRemove.BeforeFirst( '_' ).AfterLast( 's' );
-          autoSessionPID.Replace( "ps", "" );
+          autoSessionPID.Replace( wxT( "ps" ), wxT( "" ) );
 
           wxString serviceName = serviceMap[ autoSessionPID ];
           wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
@@ -3581,7 +3581,7 @@ void paraverMain::HandleMaxSessionFiles()
               sessionFilesToRemove.Clear();
             } 
             wxRemoveFile( (*it).second );
-            wxRmDir( folderToRemove );
+            wxRmdir( folderToRemove );
           }
           delete connection;
           ++it;
@@ -3598,11 +3598,43 @@ void paraverMain::PrepareToExit()
   if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
   #ifdef WIN32
-    wxString file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
-    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + "_session" );
+    wxString file( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
+                                          "\\AutosavedSessions" +
+                                          "\\ps" +
+                                          std::to_string( sessionInfo.pid ) +
+                                          "_" +
+                                          sessionInfo.sessionDate +
+                                          "_" +
+                                          std::to_string( sessionInfo.status ) +
+                                          ".session" ).c_str(), wxConvUTF8 ) );
+    wxString folder( wxString( std:string( ParaverConfig::getInstance()->getGlobalSessionPath() +
+                                           "\\AutosavedSessions" +
+                                           "\\ps" +
+                                           std::to_string( sessionInfo.pid ) +
+                                           "_" +
+                                           sessionInfo.sessionDate +
+                                           "_" +
+                                           std::to_string( sessionInfo.status ) +
+                                           "_session" ).c_str(), wxConvUTF8 ) );
   #else
-    wxString file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
-    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + "_session" );
+    wxString file( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() + 
+                                          "/AutosavedSessions" +
+                                          "/ps" +
+                                          std::to_string( sessionInfo.pid ) +
+                                          "_" +
+                                          sessionInfo.sessionDate +
+                                          "_" +
+                                          std::to_string( sessionInfo.status ) +
+                                          ".session" ).c_str(), wxConvUTF8 ) );
+    wxString folder( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
+                                            "/AutosavedSessions" +
+                                            "/ps" +
+                                            std::to_string( sessionInfo.pid ) +
+                                            "_" +
+                                            sessionInfo.sessionDate +
+                                            "_" +
+                                            std::to_string( sessionInfo.status ) +
+                                            "_session" ).c_str(), wxConvUTF8 ) );
   #endif
     
     sessionInfo.status = SessionInfo::CLOSED;
@@ -3616,12 +3648,28 @@ void paraverMain::PrepareToExit()
       for ( wxArrayString::iterator it = filesInFolder.begin() ; it != filesInFolder.end() ; ++it )
         wxRemoveFile( *it );
       
-      wxRmDir( folder );
+      wxRmdir( folder );
     }
   #ifdef WIN32
-    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
+    file = wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
+                                  "\\AutosavedSessions" +
+                                  "\\ps" +
+                                  std::to_string( sessionInfo.pid ) +
+                                  "_" +
+                                  sessionInfo.sessionDate +
+                                  "_" +
+                                  std::to_string( sessionInfo.status ) +
+                                  ".session" ).c_str(), wxConvUTF8 );
   #else
-    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
+    file = wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
+                                  "/AutosavedSessions" +
+                                  "/ps" +
+                                  std::to_string( sessionInfo.pid ) +
+                                  "_" +
+                                  sessionInfo.sessionDate +
+                                  "_" +
+                                  std::to_string( sessionInfo.status ) +
+                                  ".session" ).c_str(), wxConvUTF8 );
   #endif
     SessionSaver::SaveSession( file, GetLoadedTraces() );
 
@@ -4730,9 +4778,9 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
 void paraverMain::MultiSessionLoad( bool isSessionInitialized )
 {
   #ifdef WIN32
-    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "\\AutosavedSessions" ) );
+    wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 )  + _( "\\AutosavedSessions" ) );
   #else
-    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "/AutosavedSessions" ) );
+    wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + _( "/AutosavedSessions" ) );
   #endif
 
   SessionSelectionDialog dialog( this, folder, isSessionInitialized );
@@ -4740,7 +4788,7 @@ void paraverMain::MultiSessionLoad( bool isSessionInitialized )
   {
     wxString path = dialog.GetSessionPath();
     wxString folderPath = path;
-    folderPath.Replace( ".session", "_session" );
+    folderPath.Replace( wxT( ".session" ), wxT( "_session" ) );
     SessionSaver::LoadSession( path );
   }
 }
