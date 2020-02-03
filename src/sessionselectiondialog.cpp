@@ -301,7 +301,7 @@ bool SessionSelectionDialog::OnCreate()
 wxString SessionSelectionDialog::FormatFileName( wxString fileName )
 {
   //wxArrayString parts = wxSplit( fileName, '_' );
-  std::string fileStringStd = std::string( fileName ) ;
+  std::string fileStringStd = std::string( fileName.mb_str() ) ;
   wxArrayString parts;  
 
   std::size_t end, begin = 0;
@@ -327,22 +327,22 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
   wxString hms = parts[ 2 ]; 
 
   dmy = dmy.Mid( 6, 2 ) +  // YYYYMMDD (iso compliant)
-         "/" +
+        wxT( "/" ) +
         dmy.Mid( 4, 2 ) +
-         "/" +
+        wxT( "/" ) +
         dmy.Mid( 0, 4 );
 
 
   hms = hms.Mid( 0, 2 ) +
-         ":" +
+        wxT( ":" ) +
         hms.Mid( 2, 2 ) +
-         ":" +
+        wxT( ":" ) +
         hms.Mid( 4, 2 );
   
   return parts[ 0 ] +
-          "\t| " +
+         wxT( "\t| " ) +
          dmy +
-         " " +
+         wxT( " " ) +
          hms;
 }
 

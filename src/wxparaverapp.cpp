@@ -408,7 +408,7 @@ bool wxparaverApp::OnInit()
 
       // AS : Autosaved Sessions
       wxArrayString filesAS;
-      wxString folderPath( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "/AutosavedSessions" ) );
+      wxString folderPath( ( ParaverConfig::getInstance()->getGlobalSessionPath() + string( "/AutosavedSessions" ) ).c_str(), wxConvUTF8 );
       wxString myServicePID = serviceFullName.AfterLast( '-' );
       if ( wxDirExists( folderPath ) ) 
       {
@@ -418,7 +418,7 @@ bool wxparaverApp::OnInit()
       for ( int i = 0; i < filesAS.size(); ++i )
       {
         wxString autoSessionPID = filesAS[ i ].BeforeFirst( '_' ).AfterLast( 's' );
-        autoSessionPID.Replace( "ps", "" );
+        autoSessionPID.Replace( wxT( "ps" ), wxT( "" ) );
 
         if ( serviceMap.find( autoSessionPID ) != serviceMap.end() )
         {
