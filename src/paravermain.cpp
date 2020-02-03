@@ -430,6 +430,7 @@ void paraverMain::Init()
 
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
+  firstSave = true;
   instChecker = NULL;
 
   wxFileSystem::AddHandler( new wxMemoryFSHandler() );
@@ -1064,6 +1065,23 @@ void paraverMain::OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event )
 }
 
 
+void paraverMain::exitManager( wxEvent& event )
+{
+  if ( !LoadedWindows::getInstance()->emptyWindows() )
+  {
+    int question = wxMessageBox( wxT( "Some windows are already open... Do you want to save this session before closing?" ),
+                       wxT( "Please confirm" ),
+                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+    if ( question == wxCANCEL || ( question == wxYES && !OnMenusavesession() ) )
+    {
+      event.Skip();
+      return;
+    }
+  }
+  PrepareToExit();
+  Destroy();
+}
 
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
@@ -1071,23 +1089,20 @@ void paraverMain::OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event )
 
 void paraverMain::OnExitClick( wxCommandEvent& event )
 {
-  if ( !LoadedWindows::getInstance()->emptyWindows() )
-  {
-    int question = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
-                       wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
-
-    if ( question == wxCANCEL || (question == wxYES && !OnMenusavesession() ) )
-    {
-      event.Skip();
-      return;
-    }
-  }
-
-  PrepareToExit();
-  Destroy();
+  exitManager( event );
 }
 
+/*!
+ * wxEVT_CLOSE_WINDOW event handler for ID_PARAVERMAIN
+ */
+
+void paraverMain::OnCloseWindow( wxCloseEvent& event )
+{
+  if ( event.CanVeto() )
+  {
+    exitManager( event );
+  }
+}
 
 /*!
  * Should we show tooltips?
@@ -3696,27 +3711,7 @@ void paraverMain::PrepareToExit()
   if( instChecker != NULL ) delete instChecker;
 }
 
-/*!
- * wxEVT_CLOSE_WINDOW event handler for ID_PARAVERMAIN
- */
 
-void paraverMain::OnCloseWindow( wxCloseEvent& event )
-{
-  if ( event.CanVeto() && !LoadedWindows::getInstance()->emptyWindows() && !ParaverConfig::getInstance()->getGlobalSingleInstance() )
-  {
-    int question1 = wxMessageBox( wxT( "Some windows are already open... Do you want to save this session before closing?" ),
-                       wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
-
-    if ( question1 == wxCANCEL || (question1 == wxYES && !OnMenusavesession() ) )
-    {
-      event.Veto();
-      return;
-    }
-  }
-  PrepareToExit();
-  Destroy();
-}
 
 
 #ifndef WIN32
@@ -4169,6 +4164,11 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     #else
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session";
     #endif
+    if ( firstSave )
+    {
+      ParaverConfig::getInstance()->cleanCompleteSessionFile();
+      firstSave = false;
+    }
   }
   else /*if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() ) */
   {

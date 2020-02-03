@@ -658,6 +658,7 @@ private:
   WorkspaceManager * workspacesManager;
 ////@end paraverMain member variables
   SessionInfo sessionInfo;
+  bool firstSave;
 
   wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
@@ -696,6 +697,7 @@ private:
   void setActiveWorkspacesText();
 
   bool isSessionFile( const std::string& filename );
+  void exitManager( wxEvent& event );
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );
