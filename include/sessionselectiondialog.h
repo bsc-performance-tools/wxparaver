@@ -128,7 +128,7 @@ public:
 
   /// Should we show tooltips?
   static bool ShowToolTips();
-  std::string GetSessionPath();
+  wxString GetSessionPath();
 
 ////@begin SessionSelectionDialog member variables
   wxStaticText* textDialogDescription;

@@ -60,21 +60,13 @@ BEGIN_EVENT_TABLE( FindDialog, wxDialog )
 
 ////@begin FindDialog event table entries
   EVT_UPDATE_UI( ID_CHECKNEXTOBJECT, FindDialog::OnChecknextobjectUpdate )
-
   EVT_UPDATE_UI( ID_STATICTYPE, FindDialog::OnStatictypeUpdate )
-
   EVT_UPDATE_UI( ID_CHOICEEVENTS, FindDialog::OnChoiceeventsUpdate )
-
   EVT_UPDATE_UI( ID_STATICSEMANTICVALUE, FindDialog::OnStaticsemanticvalueUpdate )
-
   EVT_UPDATE_UI( ID_COMBOSEMANTICVALUE, FindDialog::OnCombosemanticvalueUpdate )
-
   EVT_UPDATE_UI( ID_STATICSEMANTICDURATION, FindDialog::OnStaticsemanticdurationUpdate )
-
   EVT_UPDATE_UI( ID_CHOICEDURATIONFUNCTION, FindDialog::OnChoicedurationfunctionUpdate )
-
   EVT_UPDATE_UI( ID_TEXTSEMANTICDURATION, FindDialog::OnTextsemanticdurationUpdate )
-
 ////@end FindDialog event table entries
 
 END_EVENT_TABLE()
@@ -246,7 +238,7 @@ void FindDialog::CreateControls()
   choiceDurationFunction->SetStringSelection(_(">"));
   itemBoxSizer21->Add(choiceDurationFunction, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  spinSemanticDuration = new wxSpinCtrl( itemDialog1, ID_TEXTSEMANTICDURATION, _T("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
+  spinSemanticDuration = new wxSpinCtrl( itemDialog1, ID_TEXTSEMANTICDURATION, wxT("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
   itemBoxSizer21->Add(spinSemanticDuration, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine25 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );

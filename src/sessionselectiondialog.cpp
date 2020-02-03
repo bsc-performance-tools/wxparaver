@@ -361,8 +361,8 @@ void SessionSelectionDialog::OnCancelClick( wxCommandEvent& event )
 
 
 
-std::string SessionSelectionDialog::GetSessionPath()
+wxString SessionSelectionDialog::GetSessionPath()
 {
-  return std::string( myPath.mb_str() );
+  return myPath;
 }
 
