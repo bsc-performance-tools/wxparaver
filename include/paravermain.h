@@ -35,6 +35,7 @@
 #include <wx/treectrl.h>
 #include <wx/cmdline.h>
 #include <wx/imaglist.h>
+#include <wx/snglinst.h>
 
 ////@begin includes
 #include "wx/aui/framemanager.h"
@@ -42,7 +43,7 @@
 #include "wx/toolbar.h"
 #include "wx/choicebk.h"
 #include "wx/toolbook.h"
-#include "wx/dirctrl.h"
+//#include "wx/dirctrl.h"
 ////@end includes
 #include "trace.h"
 #include "localkernel.h"
@@ -52,6 +53,12 @@
 #include "workspacemanager.h"
 #include "preferencesdialog.h"
 #include "loadcfgdialog.h"
+#include "sessionselectiondialog.h"
+#include "connection.h"
+
+// DATE TIME INCLUDES
+//#include <boost/date_time/gregorian/gregorian.hpp>
+#include "boost/date_time/posix_time/posix_time.hpp"
 
 #ifdef WIN32
 #undef VERSION
@@ -97,6 +104,7 @@ inline double rint( double nr )
 #define ID_RECENTCFGS 10009
 #define ID_MENUSAVECFG 10011
 #define ID_MENULOADSESSION 10170
+#define ID_RECENTSESSIONS 10292
 #define ID_MENUSAVESESSION 10169
 #define wxID_HELPCONTENTS 10005
 #define wxID_TUTORIALS 10196
@@ -124,6 +132,9 @@ inline double rint( double nr )
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(300, 600)
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, -1)
 ////@end control identifiers
+#define Z_TRAIL( x )  ( x < 10 ? "0" + std::to_string( x ) : std::to_string( x ) )
+#define ID_TIMER_MAIN 40010
+
 
 
 class gTimeline;
@@ -194,6 +205,21 @@ struct PropertyClientData
 };
 
 
+struct SessionInfo
+{    
+    enum StatusID
+    {
+      OPEN   = 0,
+      CLOSED = 1
+    };
+    
+    unsigned int pid;
+    StatusID status;
+    std::string sessionDate;
+    //boost::posix_time::ptime sessionDate;    
+
+};
+
 /*!
  * paraverMain class declaration
  */
@@ -218,6 +244,7 @@ public:
 
   /// Creates the controls and sizers
   void CreateControls();
+  void initSessionInfo();
 
 ////@begin paraverMain event handler declarations
 
@@ -259,6 +286,9 @@ public:
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENULOADSESSION
   void OnMenuloadsessionClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_RECENTSESSIONS
+  void OnRecentsessionsUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUSAVESESSION
   void OnMenusavesessionClick( wxCommandEvent& event );
@@ -343,6 +373,9 @@ public:
   /// wxEVT_TREE_SEL_CHANGED event handler for wxID_ANY
   void OnTreeSelChanged( wxTreeEvent& event );
   
+  void OnMenuLoadAutoSavedSession( wxCommandEvent& event );
+  void OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event );
+  
   /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
   void OnTreeItemActivated( wxTreeEvent& event );
   void OnTreeRightClick( wxTreeEvent& event );
@@ -359,6 +392,7 @@ public:
 
   void OnPreviousTracesClick( wxCommandEvent& event );
   void OnPreviousCFGsClick( wxCommandEvent& event );
+  void OnPreviousSessionsClick( wxCommandEvent& event );
 
   void OnActivate( wxActivateEvent& event );
 ////@begin paraverMain member function declarations
@@ -440,6 +474,9 @@ public:
 
   PreviousFiles * GetPreviousCutFilteredTraces() const { return previousCutFilteredTraces ; }
   void SetPreviousCutFilteredTraces(PreviousFiles * value) { previousCutFilteredTraces = value ; }
+
+  PreviousFiles * GetPreviousSessions() const { return previousSessions ; }
+  void SetPreviousSessions(PreviousFiles * value) { previousSessions = value ; }
 
   PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
   void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
@@ -538,6 +575,9 @@ public:
   
   bool getAutoRedraw() const;
   bool isCFG4DModeDisabled() const;
+
+  void checkIfPrevSessionLoad( bool prevSessionWasComplete );
+  void MultiSessionLoad( bool isSessionInitialized );
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
@@ -557,6 +597,11 @@ public:
   static Window *beginDragWindow;
   static Window *endDragWindow;
   static bool disableUserMessages;
+
+  static bool IsSessionValid();
+  static void ValidateSession( bool setValidate );
+  
+  bool OnMenusavesession( );
 
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
@@ -599,6 +644,7 @@ private:
   ParaverConfig* paraverConfig;
   PreviousFiles * previousCFGs;
   PreviousFiles * previousCutFilteredTraces;
+  PreviousFiles * previousSessions;
   PreviousFiles * previousTraces;
   std::vector< PropertyClientData * > propertiesClientData;
   bool raiseCurrentWindow;
@@ -611,8 +657,13 @@ private:
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
 ////@end paraverMain member variables
+  SessionInfo sessionInfo;
 
+  wxSingleInstanceChecker *instChecker;
   std::map< std::string, PRV_UINT32 > traceInstance;
+
+  static const int CUTOFF = 10;
+  static bool validSessions;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
 
@@ -631,11 +682,11 @@ private:
                                    TraceOptions *traceOptions,
                                    std::vector< std::string > &filterToolOrder );
 
+  void HandleMaxSessionFiles();
   void PrepareToExit();
   
   void OnSessionTimer( wxTimerEvent& event );
   
-private:
   void refreshMenuHints();
   void setTraceWorkspaces( Trace *whichTrace );
 
@@ -650,5 +701,4 @@ private:
 void progressFunction( ProgressController *progress, void *callerWindow );
   
 
-#endif
-  // _PARAVERMAIN_H_
+#endif // _PARAVERMAIN_H_

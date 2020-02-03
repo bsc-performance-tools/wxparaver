@@ -46,7 +46,8 @@ std::string SessionSaver::v2Label( "#Paraver session file v2" );
 
 void SessionSaver::SaveSession( wxString onFile, const vector<Trace *>& traces )
 {
-  SessionSaver::SaveSession_v2( onFile, traces );
+  if ( traces.size() > 0 )
+    SessionSaver::SaveSession_v2( onFile, traces );
 /* version 1 DEPRECATED
   ofstream file( onFile.mb_str() );
   

@@ -25,7 +25,7 @@
 #define _PREFERENCESDIALOG_H_
 
 
-/*!
+/*!P
  * Includes
  */
 
@@ -81,6 +81,7 @@ class wxListBox;
 #define ID_DIRBROWSERBUTTON_DEFAULT_TMP 10245
 #define ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE 10158
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
+#define ID_GLOBAL_ASK_FOR_PREV_SESSION 10039
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
@@ -196,6 +197,9 @@ public:
 
 ////@begin PreferencesDialog event handler declarations
 
+  /// wxEVT_COMMAND_SPINCTRL_UPDATED event handler for ID_PREFERENCES_GLOBAL_TIME_SESSION
+  void OnPreferencesGlobalTimeSessionUpdated( wxSpinEvent& event );
+
   /// wxEVT_COLOURPICKER_CHANGED event handler for ID_COLOURPICKER_BACKGROUND
   void OnColourpickerBackgroundColourPickerChanged( wxColourPickerEvent& event );
 
@@ -307,6 +311,9 @@ public:
 ////@end PreferencesDialog event handler declarations
 
 ////@begin PreferencesDialog member function declarations
+
+  bool GetAskForPrevSessionLoad() const { return askForPrevSessionLoad ; }
+  void SetAskForPrevSessionLoad(bool value) { askForPrevSessionLoad = value ; }
 
   std::string GetCfgsPath() const { return cfgsPath ; }
   void SetCfgsPath(std::string value) { cfgsPath = value ; }
@@ -548,6 +555,7 @@ public:
   DirBrowserButton* dirBrowserButtonTmp;
   wxCheckBox* checkGlobalSingleInstance;
   wxSpinCtrl* spinSessionTime;
+  wxCheckBox* checkGlobalAskForPrevSessionLoad;
   wxPanel* panelTimeline;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
@@ -625,6 +633,7 @@ public:
   wxTextCtrl* txtHintDescription;
   wxPanel* panelFilters;
 private:
+  bool askForPrevSessionLoad;
   std::string cfgsPath;
   bool colorUseZero;
   std::string filtersXMLPath;

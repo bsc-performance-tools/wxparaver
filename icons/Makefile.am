@@ -3,7 +3,7 @@ noinst_HEADERS = \
               app_edit.xpm\
               arrow_down.xpm\
               arrow_left.xpm\
-							arrow_reverse.xpm\
+              arrow_reverse.xpm\
               arrow_right.xpm\
               arrow_up.xpm\
               caution.xpm\
@@ -13,7 +13,7 @@ noinst_HEADERS = \
               derived_add.xpm\
               derived_controlled_add.xpm\
               derived_controlled_clear_by.xpm\
-							derived_controlled_enumerate.xpm\
+              derived_controlled_enumerate.xpm\
               derived_controlled_maximum.xpm\
               derived_different.xpm\
               derived_divide.xpm\
@@ -25,7 +25,7 @@ noinst_HEADERS = \
               hide_cols.xpm\
               histo_color.xpm\
               histo_horvert.xpm\
-							histo_sort.xpm\
+              histo_sort.xpm\
               histo_sum.xpm\
               histo_zoom.xpm\
               inclusive.xpm\
@@ -40,7 +40,7 @@ noinst_HEADERS = \
               openfiltered.xpm\
               run_script.xpm\
               semantic_color.xpm\
-							short_labels.xpm\
+              short_labels.xpm\
               table.xpm\
               timeline.xpm\
               window_properties.xpm

@@ -74,7 +74,9 @@
 
 #include <signal.h>
 #include <iostream>
+#include <sstream>
 #include <algorithm>
+//#include "connection.h"
 
 #ifdef WIN32
 #include <sys/types.h>
@@ -152,6 +154,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( ID_MENUSAVECFG, paraverMain::OnMenusavecfgClick )
   EVT_UPDATE_UI( ID_MENUSAVECFG, paraverMain::OnMenusavecfgUpdate )
   EVT_MENU( ID_MENULOADSESSION, paraverMain::OnMenuloadsessionClick )
+  EVT_UPDATE_UI( ID_RECENTSESSIONS, paraverMain::OnRecentsessionsUpdate )
   EVT_MENU( ID_MENUSAVESESSION, paraverMain::OnMenusavesessionClick )
   EVT_MENU( wxID_PREFERENCES, paraverMain::OnPreferencesClick )
   EVT_UPDATE_UI( wxID_PREFERENCES, paraverMain::OnPreferencesUpdate )
@@ -191,7 +194,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
 
   EVT_ACTIVATE(paraverMain::OnActivate)
   
-  EVT_TIMER( wxID_ANY, paraverMain::OnSessionTimer )
+  EVT_TIMER( ID_TIMER_MAIN, paraverMain::OnSessionTimer )
 
 END_EVENT_TABLE()
 
@@ -206,6 +209,7 @@ Window *paraverMain::beginDragWindow = NULL;
 Window *paraverMain::endDragWindow = NULL;
 
 bool paraverMain::disableUserMessages = false;
+bool paraverMain::validSessions = true;
 
 extern volatile bool sig1;
 extern volatile bool sig2;
@@ -298,17 +302,11 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
     fileName = parser.GetParam( i ).mb_str();
 
     if ( isSessionFile( fileName ) )
-    {
       DoLoadSession( fileName );
-    }
     else if ( Trace::isTraceFile( fileName ) )
-    {
       DoLoadTrace( fileName );
-    }
     else if ( CFGLoader::isCFGFile( fileName ) && !loadedTraces.empty() )
-    {
       DoLoadCFG( fileName );
-    }
 
     fileName.erase();
   }
@@ -328,7 +326,6 @@ bool paraverMain::Create( wxWindow* parent, wxWindowID id, const wxString& capti
 
   return true;
 }
-
 
 /*!
  * paraverMain destructor
@@ -403,10 +400,11 @@ void paraverMain::Init()
   paraverConfig = ParaverConfig::getInstance();
   previousCFGs = PreviousFiles::createPreviousCFGs();
   previousCutFilteredTraces = PreviousFiles::createPreviousTreatedTraces();
+  previousSessions = PreviousFiles::createPreviousSessions();
   previousTraces = PreviousFiles::createPreviousTraces();
   raiseCurrentWindow = true;
   runApplication = NULL;
-  sessionTimer = new wxTimer( this );
+  sessionTimer = new wxTimer( this, ID_TIMER_MAIN );
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
@@ -425,8 +423,12 @@ void paraverMain::Init()
   btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
 
+  if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 )
+    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
+
   traceLoadedBefore = false;
   CFGLoadedBefore = false;
+  instChecker = NULL;
 
   wxFileSystem::AddHandler( new wxMemoryFSHandler() );
 #ifdef WIN32
@@ -444,6 +446,9 @@ void paraverMain::Init()
   workspacesManager->loadXML();
   
   initPG();
+  initSessionInfo();
+
+  //HandleMaxSessionFiles();
 }
 
 /*!
@@ -470,6 +475,8 @@ void paraverMain::CreateControls()
   menuFile->Append(ID_MENUSAVECFG, _("&Save Configuration..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(ID_MENULOADSESSION, _("Load Session...\tCTRL+l"), wxEmptyString, wxITEM_NORMAL);
+  wxMenu* itemMenu1 = new wxMenu;
+  menuFile->Append(ID_RECENTSESSIONS, _("Previous Sessions"), itemMenu1);
   menuFile->Append(ID_MENUSAVESESSION, _("Save Session...\tCTRL+S"), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(wxID_PREFERENCES, _("&Preferences..."), wxEmptyString, wxITEM_NORMAL);
@@ -708,6 +715,7 @@ void paraverMain::DoLoadSession( const string &whichFileName )
   if ( tmpFileName.IsFileReadable() )
   {
     SessionSaver::LoadSession( tmpFileName.GetFullPath() );
+    previousSessions->add( std::string( tmpFileName.GetFullPath().mb_str() ) );
   }
   else
   {
@@ -1037,6 +1045,23 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
   raiseCurrentWindow = true;
 }
 
+void paraverMain::OnMenuLoadAutoSavedSession( wxCommandEvent& event )
+{
+  #ifdef WIN32
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+  #else
+  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+  #endif
+  DoLoadSession( file );
+}
+
+
+void paraverMain::OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event )
+{
+  MultiSessionLoad( true );
+}
+
+
 
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for wxID_EXIT
@@ -1046,15 +1071,17 @@ void paraverMain::OnExitClick( wxCommandEvent& event )
 {
   if ( !LoadedWindows::getInstance()->emptyWindows() )
   {
-    if ( wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
+    int question = wxMessageBox( wxT( "Do you want to save this session before closing?" ),
                        wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO,
-                       this ) != wxYES )
+                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+    if ( question == wxCANCEL || (question == wxYES && !OnMenusavesession() ) )
     {
       event.Skip();
       return;
     }
   }
+
   PrepareToExit();
   Destroy();
 }
@@ -2146,6 +2173,28 @@ void paraverMain::OnPreviousCFGsClick( wxCommandEvent& event )
 }
 
 
+void paraverMain::OnPreviousSessionsClick( wxCommandEvent& event )
+{
+  int eventId = event.GetId();
+  int i = 0;
+
+  wxMenuItem *item = menuFile->FindItem( ID_RECENTSESSIONS );
+  wxMenu *menu = item->GetSubMenu();
+  wxMenuItemList& menuItems = menu->GetMenuItems();
+  wxMenuItemList::iterator menuIt = menuItems.begin(); ++menuIt; ++menuIt; //begin + 2 (load autosave + separator)
+
+  for ( menuIt ; menuIt != menuItems.end(); ++menuIt )
+  {
+    wxMenuItem *tmp = *menuIt;
+    int currentId = tmp->GetId();
+     if ( currentId == eventId )
+      DoLoadSession( previousSessions->getFiles()[i] );
+     
+    i++;
+  }
+}
+
+
 /*!
  * wxEVT_UPDATE_UI event handler for ID_RECENTTRACES
  */
@@ -2178,6 +2227,100 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
     }
   }
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_RECENTSESSIONS
+ */
+
+void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent& event )
+{
+  vector<string> v = previousSessions->getFiles();
+
+  wxMenuItem *tmpItem = menuFile->FindItem( ID_RECENTSESSIONS );
+  wxMenu *menuSessions = tmpItem->GetSubMenu();
+
+  wxMenuItemList& menuItems = menuSessions->GetMenuItems();
+  wxMenuItemList::iterator menuIt = menuItems.begin();
+
+  if ( v.begin() == v.end() && menuItems.size() == 0 )
+  {
+    if ( ParaverConfig::getInstance()->getGlobalSingleInstance() )
+    {
+      wxMenuItem *tmp0 = new wxMenuItem( menuSessions, wxID_ANY, _("Load Auto-Saved Session") );
+      menuSessions->Append( tmp0 );
+      Connect( tmp0->GetId(),
+               wxEVT_COMMAND_MENU_SELECTED,
+               (wxObjectEventFunction) &paraverMain::OnMenuLoadAutoSavedSession );
+      tmp0->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+    }
+    else
+    {
+      wxMenuItem *tmp0 = new wxMenuItem( menuSessions, wxID_ANY, _("Select from Auto-Saved Sessions") );
+      menuSessions->Append( tmp0 );
+      Connect( tmp0->GetId(),
+               wxEVT_COMMAND_MENU_SELECTED,
+               (wxObjectEventFunction) &paraverMain::OnMenuLoadAutoSavedSessionSelect );
+      tmp0->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+    }
+    menuSessions->AppendSeparator();
+  } 
+  else
+  {
+    for ( vector<string>::iterator it = v.begin(); it != v.end(); ++it )
+    {
+      // Handler load auto-session options
+      if ( menuItems.size() == 0 && it == v.begin() )
+      {
+        if ( ParaverConfig::getInstance()->getGlobalSingleInstance() )
+        {
+          wxMenuItem *tmp1 = new wxMenuItem( menuSessions, wxID_ANY, _("Load Auto-Saved Session") );
+          menuSessions->Append( tmp1 );
+          Connect( tmp1->GetId(),
+                   wxEVT_COMMAND_MENU_SELECTED,
+                   (wxObjectEventFunction) &paraverMain::OnMenuLoadAutoSavedSession );
+          tmp1->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+        }
+        else
+        {
+          wxMenuItem *tmp1 = new wxMenuItem( menuSessions, wxID_ANY, _("Select from Auto-Saved Sessions") );
+          menuSessions->Append( tmp1 );
+          Connect( tmp1->GetId(),
+                   wxEVT_COMMAND_MENU_SELECTED,
+                   (wxObjectEventFunction) &paraverMain::OnMenuLoadAutoSavedSessionSelect );
+          tmp1->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+        }
+
+        menuSessions->AppendSeparator();
+      }
+      else if ( menuItems.size() >= 2 && it == v.begin() )
+      {
+        wxMenuItem *tmp = *menuIt;
+        tmp->Enable( ParaverConfig::getInstance()->getGlobalPrevSessionLoad() && ParaverConfig::getInstance()->getGlobalSessionSaveTime() != 0 );
+        ++menuIt; ++menuIt;
+      }
+
+      // Item handler
+      if ( menuIt == menuItems.end() )
+      {
+        wxMenuItem *newItem = new wxMenuItem( menuSessions, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
+        menuSessions->Append( newItem );
+        Connect( newItem->GetId(),
+                 wxEVT_COMMAND_MENU_SELECTED,
+                 (wxObjectEventFunction)&paraverMain::OnPreviousSessionsClick );
+      }
+      else
+      {
+        wxMenuItem *tmp = *menuIt;
+        tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
+        ++menuIt;
+      }
+    }
+  }
+}
+
+
+
 /*!
  * wxEVT_UPDATE_UI event handler for ID_MENULOADCFG
  */
@@ -2331,12 +2474,11 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() == 0 )
     sessionTimer->Stop();
   else if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 &&
-           sessionTimer->GetInterval() != ParaverConfig::getInstance()->getGlobalSessionSaveTime() )
+           sessionTimer->GetInterval() > ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 )
   {
     sessionTimer->Stop();
-    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 1E3 * 60 );
+    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
   }
-
 }
 
 
@@ -2984,6 +3126,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetMaximumTraceSize( paraverConfig->getFiltersFilterTraceUpToMB() );
   preferences.SetSingleInstance( paraverConfig->getGlobalSingleInstance() );
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
+  preferences.SetAskForPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
 
   // TIMELINE
 
@@ -3078,6 +3221,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setFiltersFilterTraceUpToMB( (float)preferences.GetMaximumTraceSize() );
     paraverConfig->setGlobalSingleInstance( preferences.GetSingleInstance() );
     paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
+    paraverConfig->setGlobalPrevSessionLoad( preferences.GetAskForPrevSessionLoad() );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );
@@ -3362,17 +3506,140 @@ void paraverMain::OnActivate( wxActivateEvent& event )
   event.Skip();
 }
 
+
+
+void paraverMain::HandleMaxSessionFiles()
+{
+#ifdef WIN32
+  wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "\\AutosavedSessions" ) ) ;
+#else
+  wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "/AutosavedSessions" ) ) ;
+  wxString sessionFolder( _( "/tmp" ) ) ;
+#endif
+  
+  wxArrayString filesInFolder, sessionFilesToRemove;
+  if ( wxDirExists( folder ) )
+  {
+    wxDir::GetAllFiles( folder, &filesInFolder, wxT( "*.session" ), wxDIR_FILES );
+    if ( filesInFolder.size() > CUTOFF )
+    {
+      map< boost::posix_time::ptime, wxString > dtToFile;
+      for ( int i = 0 ; i < filesInFolder.size() ; ++i )
+      {
+        #ifdef WIN32
+        wxString datetime = filesInFolder[ i ].AfterLast( '\\' ).AfterFirst( '_' ).Left( 15 );
+        #else
+        wxString datetime = filesInFolder[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );
+        #endif
+        datetime[ 8 ] = 'T';
+        
+        boost::posix_time::ptime dt( boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) ) );
+        dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInFolder[ i ] ) );
+      }
+
+      // Remove >=10 oldest auto-saved session files EXCEPT those in execution
+      if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+      {
+
+        // ST : Service Table
+        wxDir wxd( _( "/tmp/" ) );
+        wxString service, serviceFlag = _( "wxparaver_service*" );
+        std::map< wxString, wxString > serviceMap;
+        bool cont = wxd.GetFirst( &service, serviceFlag );
+
+        while ( cont )
+        {
+          wxString servicePID = service.AfterLast( '-' );
+          wxString serviceName = _( "/tmp/" ) + service;
+          serviceMap.insert( { servicePID, serviceName } );
+          cont = wxd.GetNext( &service );
+        }
+
+        wxLogNull logNull;
+        stClient *client = new stClient;
+        wxString hostName = wxT( "localhost" );
+
+        map< boost::posix_time::ptime, wxString >::iterator it = dtToFile.begin();
+        for ( int deleteCtr = 0 ; deleteCtr < filesInFolder.size()-CUTOFF ; ++deleteCtr )
+        {
+          wxString folderToRemove = (*it).second; 
+          folderToRemove.Replace( ".session", "_session" );
+
+          wxString autoSessionPID = folderToRemove.BeforeFirst( '_' ).AfterLast( 's' );
+          autoSessionPID.Replace( "ps", "" );
+
+          wxString serviceName = serviceMap[ autoSessionPID ];
+          wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
+
+          if ( connection == NULL )
+          {
+            if ( wxDirExists( folderToRemove ) && wxFileExists( (*it).second ) )
+            {
+              wxDir::GetAllFiles( folderToRemove, &sessionFilesToRemove, wxT( "" ), wxDIR_FILES );
+              for ( int iFile = 0 ; iFile < sessionFilesToRemove.size() ; ++iFile ) 
+                wxRemoveFile( sessionFilesToRemove[ iFile ] );
+              sessionFilesToRemove.Clear();
+            } 
+            wxRemoveFile( (*it).second );
+            wxRmDir( folderToRemove );
+          }
+          delete connection;
+          ++it;
+        }
+        delete client;
+      }
+    }
+  }
+}
+
 void paraverMain::PrepareToExit()
 {
+  //Saves session before exit
+  if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  {
+  #ifdef WIN32
+    wxString file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
+    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + "_session" );
+  #else
+    wxString file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session" );
+    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + "_session" );
+  #endif
+    
+    sessionInfo.status = SessionInfo::CLOSED;
+
+    if ( wxFileExists( file ) && wxDirExists( folder ) )
+    {
+      wxRemoveFile( file );
+
+      wxArrayString filesInFolder;
+      wxDir::GetAllFiles( folder, &filesInFolder, wxT( "*" ), wxDIR_FILES );
+      for ( wxArrayString::iterator it = filesInFolder.begin() ; it != filesInFolder.end() ; ++it )
+        wxRemoveFile( *it );
+      
+      wxRmDir( folder );
+    }
+  #ifdef WIN32
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
+  #else
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" + "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
+  #endif
+    SessionSaver::SaveSession( file, GetLoadedTraces() );
+
+    HandleMaxSessionFiles();
+  }
+
+
   vector<Histogram *> histograms;
   LoadedWindows::getInstance()->getAll( histograms );
   
   for( vector<Histogram *>::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
-    (*it)->clearControlWindow();
-    (*it)->clearDataWindow();
-    (*it)->clearExtraControlWindow();
+    ( *it )->clearControlWindow();
+    ( *it )->clearDataWindow();
+    ( *it )->clearExtraControlWindow();
   }
+
+  if( instChecker != NULL ) delete instChecker;
 }
 
 /*!
@@ -3381,11 +3648,13 @@ void paraverMain::PrepareToExit()
 
 void paraverMain::OnCloseWindow( wxCloseEvent& event )
 {
-  if ( event.CanVeto() && !LoadedWindows::getInstance()->emptyWindows() )
+  if ( event.CanVeto() && !LoadedWindows::getInstance()->emptyWindows() && !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
-    if ( wxMessageBox( wxT( "Some windows are already open... continue closing?" ),
+    int question1 = wxMessageBox( wxT( "Some windows are already open... Do you want to save this session before closing?" ),
                        wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO) != wxYES )
+                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
+
+    if ( question1 == wxCANCEL || (question1 == wxYES && !OnMenusavesession() ) )
     {
       event.Veto();
       return;
@@ -3838,11 +4107,23 @@ void paraverMain::OnSize( wxSizeEvent& event )
 
 void paraverMain::OnSessionTimer( wxTimerEvent& event )
 {
-#ifdef WIN32
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
-#else
-  string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
-#endif
+  string file;
+  if ( ParaverConfig::getInstance()->getGlobalSingleInstance() ) 
+  {
+    #ifdef WIN32
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session";
+    #else
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session";
+    #endif
+  }
+  else /*if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() ) */
+  {
+    #ifdef WIN32
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
+    #else
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
+    #endif
+  }
   SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
 }
 
@@ -3857,6 +4138,7 @@ void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
   if( dialog.ShowModal() == wxID_OK )
   {
     SessionSaver::LoadSession( dialog.GetPath() );
+    previousSessions->add( std::string( dialog.GetPath().mb_str() ) );
   }
 }
 
@@ -3866,6 +4148,11 @@ void paraverMain::OnMenuloadsessionClick( wxCommandEvent& event )
  */
 
 void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
+{
+  OnMenusavesession();
+}
+
+bool paraverMain::OnMenusavesession( )
 {
   vector< wxString > extensions;
   extensions.push_back( wxT( "session" ) );
@@ -3884,8 +4171,11 @@ void paraverMain::OnMenusavesessionClick( wxCommandEvent& event )
   {
     wxFileName tmpFile( dialog.GetPath() );
     SessionSaver::SaveSession( tmpFile.GetFullPath(), GetLoadedTraces() );
+    return true;
   }
+  return false;
 }
+
 
 
 /*!
@@ -4409,3 +4699,75 @@ void paraverMain::insertSignalItem( bool isSig1 )
   AddPendingEvent( tmpEvent );
 }
 #endif // WIN32
+
+
+
+
+void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
+{ 
+  //to do : add alert popup
+  #ifdef WIN32
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
+  #else
+    string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
+  #endif
+  if ( ParaverConfig::getInstance()->getGlobalSingleInstance() )
+  {
+    if ( !prevSessionWasComplete && isSessionFile( file ) &&
+        wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last auto-saved Paraver session?" ),
+                      wxT( "Load auto-saved session" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
+      DoLoadSession( file );
+  }
+  else if ( !prevSessionWasComplete )//&&
+        //wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load any of your last crashed auto-saved Paraver sessions?" ),
+        //              wxT( "Load auto-saved sessions" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
+  {
+    MultiSessionLoad( false );
+  }
+}
+
+
+void paraverMain::MultiSessionLoad( bool isSessionInitialized )
+{
+  #ifdef WIN32
+    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "\\AutosavedSessions" ) );
+  #else
+    wxString folder( ParaverConfig::getInstance()->getGlobalSessionPath() + _( "/AutosavedSessions" ) );
+  #endif
+
+  SessionSelectionDialog dialog( this, folder, isSessionInitialized );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString path = dialog.GetSessionPath();
+    wxString folderPath = path;
+    folderPath.Replace( ".session", "_session" );
+    SessionSaver::LoadSession( path );
+  }
+}
+
+
+
+
+void paraverMain::initSessionInfo()
+{
+  sessionInfo.pid = getpid();
+  sessionInfo.status = SessionInfo::OPEN;
+
+  boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
+  std::stringstream ss;
+  ss << Z_TRAIL( now.date().year() ) << Z_TRAIL( static_cast<int>( now.date().month() ) ) << Z_TRAIL( now.date().day() ) 
+     << "_" << Z_TRAIL( now.time_of_day().hours() ) << Z_TRAIL( now.time_of_day().minutes() ) << Z_TRAIL( now.time_of_day().seconds() ); //iso
+
+  sessionInfo.sessionDate = ss.str();
+}
+
+bool paraverMain::IsSessionValid()
+{
+  return paraverMain::validSessions;
+}
+
+
+void paraverMain::ValidateSession( bool setValidate )
+{
+  paraverMain::validSessions = paraverMain::validSessions && setValidate;
+}
