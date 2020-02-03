@@ -43,7 +43,7 @@
 #include "wx/toolbar.h"
 #include "wx/choicebk.h"
 #include "wx/toolbook.h"
-//#include "wx/dirctrl.h"
+#include "wx/dirctrl.h"
 ////@end includes
 #include "trace.h"
 #include "localkernel.h"
@@ -618,6 +618,7 @@ public:
   wxButton* buttonForceRedraw;
   wxTextCtrl* txtActiveWorkspaces;
   wxButton* btnActiveWorkspaces;
+  PreviousFiles * previousSessions;
 private:
   bool CFGLoadedBefore;
   wxString CFGPath;
@@ -644,7 +645,6 @@ private:
   ParaverConfig* paraverConfig;
   PreviousFiles * previousCFGs;
   PreviousFiles * previousCutFilteredTraces;
-  PreviousFiles * previousSessions;
   PreviousFiles * previousTraces;
   std::vector< PropertyClientData * > propertiesClientData;
   bool raiseCurrentWindow;

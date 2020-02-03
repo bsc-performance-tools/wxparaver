@@ -404,7 +404,7 @@ void paraverMain::Init()
   previousTraces = PreviousFiles::createPreviousTraces();
   raiseCurrentWindow = true;
   runApplication = NULL;
-  sessionTimer = new wxTimer( this, ID_TIMER_MAIN );
+  sessionTimer = new wxTimer( this, 2 );
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
