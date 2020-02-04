@@ -360,7 +360,7 @@ bool wxparaverApp::OnInit()
                   wxOK|wxICON_ERROR );
   }
 
-  const wxString name = wxString( "wxparaver-" ) + wxGetUserId();
+  const wxString name = wxT( "wxparaver-" ) + wxGetUserId();
   wxLogNull *tmpLogNull = new wxLogNull();
   m_checker = new wxSingleInstanceChecker(name);
   delete tmpLogNull;
@@ -374,7 +374,7 @@ bool wxparaverApp::OnInit()
     // ToDo: port the unix code to Win32
     if ( m_server->Create( wxT( "wxparaver_service" ) ) )
 #else
-    const wxString serviceFullName = wxString( "/tmp/wxparaver_service-" ) + wxGetUserId() + wxT( "-" ) + wxString::Format( wxT( "%i" ), getpid() );
+    const wxString serviceFullName = wxT( "/tmp/wxparaver_service-" ) + wxGetUserId() + wxT( "-" ) + wxString::Format( wxT( "%i" ), getpid() );
     if ( m_server->Create( serviceFullName ) )
 #endif
     {
@@ -387,7 +387,7 @@ bool wxparaverApp::OnInit()
                                                              wxT( "wxparaver" ) );
       #else
 
-      const wxString serviceName = wxString( "/tmp/wxparaver_service-" ) + wxGetUserId();
+      const wxString serviceName = wxT( "/tmp/wxparaver_service-" ) + wxGetUserId();
         
 
       // Connectivity check for failing sessions
@@ -516,7 +516,7 @@ bool wxparaverApp::OnInit()
     #ifdef WIN32
       if( !m_server->Create( wxT( "wxparaver_service" ) ) )
     #else
-      const wxString serviceName = wxString( "/tmp/wxparaver_service-" ) + wxGetUserId();
+      const wxString serviceName = wxT( "/tmp/wxparaver_service-" ) + wxGetUserId();
       if( !m_server->Create( serviceName ) )
     #endif
         wxLogDebug( wxT( "Failed to create an IPC service." ) );
@@ -532,7 +532,7 @@ bool wxparaverApp::OnInit()
                                                              wxT( "wxparaver_service" ),
                                                              wxT( "wxparaver" ) );
     #else
-      const wxString serviceName = wxString( "/tmp/wxparaver_service-" ) + wxGetUserId();
+      const wxString serviceName = wxT( "/tmp/wxparaver_service-" ) + wxGetUserId();
       wxConnectionBase *connection = client->MakeConnection( hostName, 
                                                              serviceName,
                                                              wxT( "wxparaver" ) );
@@ -784,7 +784,7 @@ int wxparaverApp::OnExit()
 
   if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
-    const wxString name = wxString( "wxparaver-" ) + wxGetUserId();
+    const wxString name = wxT( "wxparaver-" ) + wxGetUserId();
     wxLogNull *tmpLogNull = new wxLogNull();
     m_checker = new wxSingleInstanceChecker(name);
     delete tmpLogNull;

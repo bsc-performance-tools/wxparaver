@@ -124,7 +124,6 @@ public:
 	TTime GetGlobalTimingEnd() const { return globalTimingEnd ; }
 	void SetGlobalTimingEnd(TTime value) { globalTimingEnd = value ; }
 
-
 ////@end wxparaverApp member function declarations
 
     static paraverMain* mainWindow;
