@@ -4813,7 +4813,16 @@ void paraverMain::MultiSessionLoad( bool isSessionInitialized )
 }
 
 
-
+inline std::string ZeroTrail( int number )
+{
+  stringstream trailedNumber;
+  if ( number < 10 )
+  {
+    trailedNumber << "0";
+  }
+  trailedNumber << number;
+  return trailedNumber.str();
+}
 
 void paraverMain::initSessionInfo()
 {
@@ -4822,8 +4831,13 @@ void paraverMain::initSessionInfo()
 
   boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
   std::stringstream ss;
-  ss << Z_TRAIL( now.date().year() ) << Z_TRAIL( static_cast<int>( now.date().month() ) ) << Z_TRAIL( now.date().day() ) 
-     << "_" << Z_TRAIL( now.time_of_day().hours() ) << Z_TRAIL( now.time_of_day().minutes() ) << Z_TRAIL( now.time_of_day().seconds() ); //iso
+  ss << ZeroTrail( now.date().year() ) 
+     << ZeroTrail( static_cast<int>( now.date().month() ) ) 
+     << ZeroTrail( now.date().day() ) 
+     << "_" 
+     << ZeroTrail( now.time_of_day().hours() ) 
+     << ZeroTrail( now.time_of_day().minutes() ) 
+     << ZeroTrail( now.time_of_day().seconds() ); //iso
 
   sessionInfo.sessionDate = ss.str();
 }

@@ -132,7 +132,6 @@ inline double rint( double nr )
 #define SYMBOL_PARAVERMAIN_SIZE wxSize(300, 600)
 #define SYMBOL_PARAVERMAIN_POSITION wxPoint(0, -1)
 ////@end control identifiers
-#define Z_TRAIL( x )  ( x < 10 ? "0" + std::to_string( x ) : std::to_string( x ) )
 #define ID_TIMER_MAIN 40010
 
 
