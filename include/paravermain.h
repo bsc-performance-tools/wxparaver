@@ -542,8 +542,19 @@ public:
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
 
-  Window *createBaseWindow( wxString whichName = wxString(wxT("")) );
+  Window *createBaseWindow( wxString whichName = wxString( wxT("") ) );
   void insertInTree( Window *whichWindow );
+
+  void createHelpContentsWindow( const wxString &helpContentsBaseRelativePath,                          // "/share/docs/html"
+                                 /*wxString helpContentsChapterRelativePath = wxString( wxT("") ), // "/1.quick_reference"
+                                 wxString helpContentsBasename =
+                                        wxString( wxFileName::GetPathSeparator() + wxString( wxT("index.html") ) ), // "main.html"
+                                 wxString helpContentsHRef = wxString( wxT("") ),                // "#section_1"
+                                 */const wxString &helpFile = wxString( wxT("") ),
+                                 const wxString &hRef = wxString( wxT("") ),                // "#section_1"
+                                 bool show = true,
+                                 bool reload = false );
+  bool getParaverHome( wxString &paraverHome );
 
   static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
   static wxString buildFormattedFileName( std::string windowName, const std::string& traceName );
@@ -634,8 +645,6 @@ private:
   void PrepareToExit();
   
   void OnSessionTimer( wxTimerEvent& event );
-  
-private:
   void refreshMenuHints();
   void setTraceWorkspaces( Trace *whichTrace );
 
@@ -645,6 +654,8 @@ private:
   void setActiveWorkspacesText();
 
   bool isSessionFile( const std::string& filename );
+  void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
+  void messageUndefinedParaverHome();
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );

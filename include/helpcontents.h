@@ -80,19 +80,19 @@ public:
   HelpContents();
   HelpContents( wxWindow* parent,
                 const wxString& whichHelpContentsRoot,
+                const bool whichLookForContents = true,
                 wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
                 const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
                 const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
                 const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
                 long style = SYMBOL_HELPCONTENTS_STYLE );
-
   /// Creation
   bool Create( wxWindow* parent,
-                wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
-                const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
-                const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
-                const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
-                long style = SYMBOL_HELPCONTENTS_STYLE );
+               wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
+               const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
+               const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
+               const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
+               long style = SYMBOL_HELPCONTENTS_STYLE );
 
   /// Destructor
   ~HelpContents();
@@ -142,6 +142,7 @@ public:
 
 ////@begin HelpContents member variables
   wxHtmlWindow* htmlWindow;
+  wxBitmapButton* buttonIndex;
   wxBitmapButton* buttonHistoryBack;
   wxBitmapButton* buttonHistoryForward;
 ////@end HelpContents member variables
@@ -151,10 +152,19 @@ public:
   const std::string GetHelpContentsRootStr();
   const wxString GetHelpContentsRoot();
 
+  //void LoadHtml( const wxString& relativePath, const wxString& htmlFile, const wxString& hRef );
+  void LoadHtml( const wxString& htmlFile );
+
   bool SetHelpContents( const wxString& whichHelpContents );
+
+  static bool isHtmlDoc( const wxString& whichPath );
+  static bool isHtmlReferenceInDoc( const wxString& whichPath );
+  void SetMyPage( bool isPage, const wxString &path );
 
 protected:
   wxString helpContentsRoot;
+  //wxString hRef;
+  bool lookForContents;
   wxString currentHelpContentsDir;
 
   std::string getCurrentHelpContentsFullPath();
@@ -171,6 +181,7 @@ protected:
   virtual void buildIndex();
   virtual void linkToWebPage( wxString& htmlDoc );
   virtual void helpMessage( wxString& htmlDoc );
+
 };
 
 
@@ -190,9 +201,9 @@ class TutorialsBrowser: public HelpContents
                       const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
                       long style = SYMBOL_HELPCONTENTS_STYLE );
     ~TutorialsBrowser();
-  
+
     void OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event );
-    
+
   protected:
     const wxString getTitle( int numTutorial, const wxString& path );
     void linkToWebPage( wxString& htmlDoc );
@@ -200,5 +211,4 @@ class TutorialsBrowser: public HelpContents
     void helpMessage( wxString& htmlDoc );
 };
 
-#endif
-  // _HELPCONTENTS_H_
+#endif // _HELPCONTENTS_H_

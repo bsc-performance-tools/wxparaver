@@ -190,7 +190,7 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
 
   EVT_ACTIVATE(paraverMain::OnActivate)
-  
+
   EVT_TIMER( wxID_ANY, paraverMain::OnSessionTimer )
 
 END_EVENT_TABLE()
@@ -3963,7 +3963,6 @@ void paraverMain::ShowRunCommand( wxString traceFile )
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_RUN_SCRIPT
  */
-
 void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
 {
   if( !loadedTraces.empty() )
@@ -3975,20 +3974,14 @@ void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
     ShowRunCommand( wxT("") );
 }
 
-
-/*!
- * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUITEM
- */
-
-void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
+/*
+  Read path where the current wxparaver.bin binary is installed
+*/
+bool paraverMain::getParaverHome( wxString &paraverHome )
 {
-  if ( helpContents != NULL )
-  {
-    helpContents->Show( true );
-  }
-  else
-  {
-/*#ifdef __WXMAC__
+  bool done = false;
+
+  /*#ifdef __WXMAC__
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef fileURL = CFBundleCopyResourceURL( mainBundle, CFSTR("aaa"), CFSTR("txt"), NULL );
     CFStringRef filePath = CFURLCopyFileSystemPath( fileURL, kCFURLPOSIXPathStyle );
@@ -3996,81 +3989,247 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
     const char *path = CFStringGetCStringPtr( filePath, encodingMethod );
     cout<<"File location: "<<path<<endl;
 #endif*/
-    wxString paraverHome;
+
+  //wxString paraverHome;
+
 #ifdef WIN32
-    std::string baseDir;
+  std::string baseDir;
 
-    char myPath[ MAX_LEN_PATH ];
-    HMODULE hModule = GetModuleHandle( NULL );
-    if ( hModule != NULL )
-    {
-      GetModuleFileName( NULL, myPath, ( sizeof( myPath ) ));
-      PathRemoveFileSpec( myPath );
-      /*char tmpMyPath[ MAX_LEN_PATH ];
-      size_t tmpSize;
-      wcstombs_s( &tmpSize, tmpMyPath, MAX_LEN_PATH, myPath, MAX_LEN_PATH );
-      baseDir = tmpMyPath;*/
-      baseDir = myPath;
-    }
-    paraverHome = wxT( baseDir.c_str() );
-    
-    if( paraverHome != wxT( "" ) )
+  char myPath[ MAX_LEN_PATH ];
+  HMODULE hModule = GetModuleHandle( NULL );
+  if ( hModule != NULL )
+  {
+    GetModuleFileName( NULL, myPath, ( sizeof( myPath ) ));
+    PathRemoveFileSpec( myPath );
+    /*char tmpMyPath[ MAX_LEN_PATH ];
+    size_t tmpSize;
+    wcstombs_s( &tmpSize, tmpMyPath, MAX_LEN_PATH, myPath, MAX_LEN_PATH );
+    baseDir = tmpMyPath;*/
+    baseDir = myPath;
+  }
+  paraverHome = wxT( baseDir.c_str() );
+
+  done = paraverHome != wxT( "" );
+
 #elif defined( __APPLE__ )
-    CFBundleRef mainBundle = CFBundleGetMainBundle();
-    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-    char tmpPath[PATH_MAX];
-    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)tmpPath, PATH_MAX))
-    {
-        throw ParaverKernelException();
-    }
-    CFRelease(resourcesURL);
 
-    paraverHome = tmpPath;
+  CFBundleRef mainBundle = CFBundleGetMainBundle();
+  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+  char tmpPath[PATH_MAX];
+  if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)tmpPath, PATH_MAX))
+  {
+    throw ParaverKernelException();
+  }
+  CFRelease(resourcesURL);
 
-    if( paraverHome != wxT( "" ) )
+  paraverHome = tmpPath;
+
+  done = paraverHome != wxT( "" );
+
 #else
-    if ( wxGetEnv( wxString( wxT( "PARAVER_HOME" ) ), &paraverHome ) )
+
+  done = wxGetEnv( wxString( wxT( "PARAVER_HOME" ) ), &paraverHome );
+
 #endif
+
+  return done;
+}
+
+void paraverMain::messageUnknownPath( wxString helpContentsPath, wxString paraverHome )
+{
+  wxString msg =
+          wxString( wxT( "Path to Help Contents doesn't exist:\n\n  " ) ) +
+          helpContentsPath +
+          wxString( wxT( "\n\nPlease check $PARAVER_HOME:\n\n" ) ) +
+          paraverHome;
+
+  wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
+  message.ShowModal();
+}
+
+
+void paraverMain::messageUndefinedParaverHome()
+{
+  wxString msg =
+            wxString( wxT( "Unable to find Help Contents.\n\n$PARAVER_HOME is undefined" ) );
+
+  wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
+  message.ShowModal();
+}
+
+
+// helpContentsBaseRelativePath is relative path to help base dir inside absolute $PARAVER_HOME:
+// i.e. Given helpContentsPath = "/share/docs/html"
+//      and having $PARAVER_HOME = "/opt/wxparaver"
+//      where $PARAVER_HOME + helpContentsPath contains 2 subdirs
+//            (/opt/wxparaver/share/docs/html/)1.quick_reference/index.html
+//            (/opt/wxparaver/share/docs/html/)2.paraver_toolset/index.html
+// a help window indexing both 1 and 2 subhelps is built.
+void paraverMain::createHelpContentsWindow(
+        const wxString &helpContentsBaseRelativePath,    // "/share/docs/html"
+        const wxString &helpFile, // empty or like "/1.quick_reference/index.html"
+        const wxString &hRef, // empty or like "#section_1"
+        bool show,
+        bool reload )
+{
+  wxString paraverHome;
+  if ( !getParaverHome( paraverHome ) )
+  {
+    messageUndefinedParaverHome();
+    return;
+  }
+
+  wxString helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath;
+  if ( !wxFileName( helpContentsAbsolutePath ).DirExists() )
+  {
+    messageUnknownPath( helpContentsBaseRelativePath, paraverHome );
+    return;
+  }
+
+  bool lookForContents = helpFile.IsEmpty(); // No helpFile ==> search for index.html
+  if ( lookForContents )
+  {
+std::cout << "0" << std::endl;
+    if ( helpContents == NULL )
     {
-      wxString helpContentsDir =
-              wxFileName::GetPathSeparator() +
-              wxString( wxT( "share" ) ) +
-              wxFileName::GetPathSeparator() +
-              wxString( wxT( "doc" ) ) +
-              wxFileName::GetPathSeparator() +
-              wxString( wxT( "wxparaver_help_contents" ) ) +
-              wxFileName::GetPathSeparator() +
-              wxString( wxT( "html" ) ) +
-              wxFileName::GetPathSeparator();
+      helpContents = new HelpContents( NULL, helpContentsAbsolutePath, lookForContents, wxID_ANY, _("Help Contents") );
+    }
+    helpContents->SetHelpContents( helpContentsAbsolutePath );
+    helpContents->Show( show );
+  }
+  else
+  {
+    helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath + helpFile;
+std::cout << "1 " << helpContentsAbsolutePath.mb_str() << std::endl;
+    if ( helpContents == NULL )
+    {
+      helpContents = new HelpContents( NULL, helpContentsAbsolutePath, lookForContents, wxID_ANY, _("Help Contents") );
+    }
+    //helpContentsAbsolutePath += wxString(hRef,  wxConvUTF8);
+    helpContentsAbsolutePath += hRef;
+    helpContents->SetMyPage( false, helpContentsAbsolutePath );
+    if ( helpContents->IsShown() )
+      helpContents->Refresh();
+    else
+      helpContents->Show();
+    helpContents->LoadHtml(helpContentsAbsolutePath);
 
-      wxString helpContentsRoot = paraverHome + helpContentsDir;
+//    helpContents->LoadPage( helpContentsAbsolutePath );
+std::cout << "2 " << helpContentsAbsolutePath.mb_str() << std::endl;
+  }
 
-      if ( wxFileName( helpContentsRoot ).DirExists() )
+  return;
+
+// -------------------------
+
+
+  if ( helpContents == NULL )
+  {
+    // First time after click in Help/Tutorials button
+
+    wxString helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath;
+    if ( wxFileName( helpContentsAbsolutePath ).DirExists() )
+    {
+      if ( helpFile.IsEmpty() )
       {
-        helpContents = new HelpContents( this, helpContentsRoot, wxID_ANY, _("Help Contents") );
-        helpContents->Show( true );
+std::cout << "0" << std::endl;
+        // Search for index.html file
+        bool lookForContents = true;
+        helpContents = new HelpContents( NULL, helpContentsAbsolutePath, lookForContents, wxID_ANY, _("Help Contents") );
+        helpContents->SetHelpContents( helpContentsAbsolutePath );
+        helpContents->Show( show );
       }
       else
       {
-        wxString msg =
-                wxString( wxT( "Path to Help Contents doesn't exist:\n\n  " ) ) +
-                helpContentsRoot +
-                wxString( wxT( "\n\nPlease check $PARAVER_HOME:\n\n" ) ) +
-                paraverHome;
-        
-        wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
-        message.ShowModal();
+        wxString helpContentsAbsolutePath3 = paraverHome + helpContentsBaseRelativePath + helpFile;
+std::cout << "1 " << helpContentsAbsolutePath3.mb_str() << "-->" << helpFile.mb_str() << "<--" << std::endl;
+        bool lookForContents = false;
+        helpContents = new HelpContents( NULL, helpContentsAbsolutePath3, lookForContents, wxID_ANY, _("Help Contents") );
+        helpContents->Update();
+        helpContents->Show();
+          /*helpContents->SetHelpContents( helpContentsAbsolutePath2 );
+          helpContents->Show( true );
+          helpContents->SetHelpContentsRoot( helpContentsAbsolutePath );
+          helpContents->LoadHtml( helpContentsAbsolutePath2 );
+          helpContents->Show( true );*/
       }
     }
     else
     {
-      wxString msg =
-                wxString( wxT( "Unable to find Help Contents.\n\n$PARAVER_HOME is undefined" ) );
-        
-      wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
-      message.ShowModal();
+      // BaseRelativePath don't exist!!
+        wxString tmpPathStr = wxFileName( helpContentsAbsolutePath ).GetPathWithSep();
+        wxFileName tmpPath = wxFileName( tmpPathStr );
+        if ( wxFileName( tmpPath ).DirExists() )
+        {
+std::cout << "2" << std::endl;
+          bool lookForContents = true;
+
+          helpContents = new HelpContents( NULL, tmpPathStr, lookForContents, wxID_ANY, _("Help Contents") );
+/*          helpContents->SetHelpContents( helpContentsAbsolutePath );
+          helpContents->Show( show );
+  */        
+        wxString helpContentsRoot = paraverHome + helpContentsBaseRelativePath;
+        if ( wxFileName( helpContentsRoot ).DirExists() )
+        { 
+          bool ready = helpContents->SetHelpContentsRoot( helpContentsRoot );
+          helpContents->Show(true);
+          //helpContents->SetHelpContents( helpContentsRoot );
+  std::cout << "3bis " << wxString(helpContentsRoot + helpFile).mb_str() << std::endl;
+          helpContents->LoadHtml( helpContentsRoot + helpFile );
+          if ( !ready )
+            messageUnknownPath( helpContentsRoot, wxString(wxT(" ")) );
+
+        }
+        else
+        {
+          messageUnknownPath( helpContentsBaseRelativePath, paraverHome );
+        }
+      }
     }
   }
+  else // helpContents exists
+  {
+    if ( reload )
+    {
+      bool ready = false;
+      wxString paraverHome;
+      if ( !getParaverHome( paraverHome ) )
+      {
+        messageUndefinedParaverHome();
+      }
+      else
+      {
+        wxString helpContentsRoot = paraverHome + helpContentsBaseRelativePath;
+        if ( wxFileName( helpContentsRoot ).DirExists() )
+        { 
+          ready = helpContents->SetHelpContentsRoot( helpContentsRoot );
+          //helpContents->SetHelpContents( helpContentsRoot );
+  std::cout << "3 " << wxString(helpContentsRoot + helpFile + hRef).mb_str() << std::endl;
+          helpContents->Show(true);
+
+          helpContents->LoadHtml( helpContentsRoot + helpFile + hRef );
+          if ( !ready )
+            messageUnknownPath( helpContentsRoot + helpFile + hRef, wxString(wxT(" ")) );
+        }
+      }
+    }
+
+    helpContents->Show( show );
+  }
+}
+
+
+void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
+{
+  wxChar SEP = wxFileName::GetPathSeparator();
+
+  wxString baseRelativePath = SEP +
+        wxString( wxT( "share" ) ) + SEP +
+        wxString( wxT( "doc" ) ) + SEP +
+        wxString( wxT( "wxparaver_help_contents" ) ) + SEP +
+        wxString( wxT( "html" ) ) + SEP;
+
+  createHelpContentsWindow( baseRelativePath );
 }
 
 
