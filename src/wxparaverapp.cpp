@@ -400,8 +400,8 @@ bool wxparaverApp::OnInit()
       while ( cont )
       {
         wxString servicePID = service.AfterLast( '-' );
-        wxString serviceName = wxT( "/tmp/" ) + service;
-        serviceMap.insert( { servicePID, serviceName } );
+        wxString serviceFileName = wxT( "/tmp/" ) + service;
+        serviceMap.insert( { servicePID, serviceFileName } );
         cont = wxd.GetNext( &service );
       }
 
@@ -422,13 +422,13 @@ bool wxparaverApp::OnInit()
 
         if ( serviceMap.find( autoSessionPID ) != serviceMap.end() )
         {
-          wxString serviceName = serviceMap[ autoSessionPID ];
-          if ( autoSessionPID != myServicePID && serviceName != serviceFullName )
+          wxString currentService = serviceMap[ autoSessionPID ];
+          if ( autoSessionPID != myServicePID && currentService != serviceFullName )
           {
-            wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
+            wxConnectionBase *connection = client->MakeConnection( hostName, currentService, wxT( "wxparaver" ) );
             if ( connection == NULL )
             {
-              wxRemoveFile( serviceName );
+              wxRemoveFile( currentService );
               invalidateNoConnect = true;
             }
             delete connection;
@@ -440,12 +440,12 @@ bool wxparaverApp::OnInit()
       //Premature check (or clean if no connect) for missing maps 
       for ( std::map< wxString, wxString >::iterator it = serviceMap.begin() ; it != serviceMap.end() ; ++it )
       {
-        wxString serviceName = ( *it ).second;
-        if ( serviceName != serviceFullName )
+        wxString currentService = ( *it ).second;
+        if ( currentService != serviceFullName )
         {
-          wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
+          wxConnectionBase *connection = client->MakeConnection( hostName, currentService, wxT( "wxparaver" ) );
           if ( connection == NULL )
-            wxRemoveFile( serviceName );
+            wxRemoveFile( currentService );
           delete connection;
           
         }
@@ -487,13 +487,13 @@ bool wxparaverApp::OnInit()
       while ( cont )
       {
         wxString servicePID = service.AfterLast( '-' );
-        wxString serviceName = _( "/tmp/" ) + service;
+        wxString currentService = _( "/tmp/" ) + service;
         if ( service != serviceFullName && servicePID != wxString::Format( wxT( "%i" ), getpid() ) )
         {
-          wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
+          wxConnectionBase *connection = client->MakeConnection( hostName, currentService, wxT( "wxparaver" ) );
           if ( connection == NULL )
           {
-            wxRemoveFile( serviceName );
+            wxRemoveFile( currentService );
             invalidateNoConnect = invalidateNoConnect || ( autoSessionMap.find( servicePID ) != autoSessionMap.end() );
           }
           delete connection;

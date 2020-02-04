@@ -3616,45 +3616,50 @@ void paraverMain::PrepareToExit()
   //Saves session before exit
   if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
   {
+    stringstream strPid;
+    stringstream strStatus;
+    strPid << sessionInfo.pid;
+    strStatus << sessionInfo.status;
   #ifdef WIN32
+
     wxString file( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                           "\\AutosavedSessions" +
                                           "\\ps" +
-                                          std::to_string( sessionInfo.pid ) +
+                                          strPid.str() +
                                           "_" +
                                           sessionInfo.sessionDate +
                                           "_" +
-                                          std::to_string( sessionInfo.status ) +
+                                          strStatus.str() +
                                           ".session" ).c_str(), wxConvUTF8 ) );
 
     wxString folder( wxString( std:string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                            "\\AutosavedSessions" +
                                            "\\ps" +
-                                           std::to_string( sessionInfo.pid ) +
+                                           strPid.str() +
                                            "_" +
                                            sessionInfo.sessionDate +
                                            "_" +
-                                           std::to_string( sessionInfo.status ) +
+                                           strStatus.str() +
                                            "_session" ).c_str(), wxConvUTF8 ) );
   #else
     wxString file( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() + 
                                           "/AutosavedSessions" +
                                           "/ps" +
-                                          std::to_string( sessionInfo.pid ) +
+                                          strPid.str() +
                                           "_" +
                                           sessionInfo.sessionDate +
                                           "_" +
-                                          std::to_string( sessionInfo.status ) +
+                                          strStatus.str() +
                                           ".session" ).c_str(), wxConvUTF8 ) );
 
     wxString folder( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                             "/AutosavedSessions" +
                                             "/ps" +
-                                            std::to_string( sessionInfo.pid ) +
+                                            strPid.str() +
                                             "_" +
                                             sessionInfo.sessionDate +
                                             "_" +
-                                            std::to_string( sessionInfo.status ) +
+                                            strStatus.str() +
                                             "_session" ).c_str(), wxConvUTF8 ) );
   #endif
     
@@ -3671,25 +3676,28 @@ void paraverMain::PrepareToExit()
       
       wxRmdir( folder );
     }
+
+    strStatus.str( std::string() ); //clear
+    strStatus << sessionInfo.status;
   #ifdef WIN32
     file = wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                   "\\AutosavedSessions" +
                                   "\\ps" +
-                                  std::to_string( sessionInfo.pid ) +
+                                  strPid.str() +
                                   "_" +
                                   sessionInfo.sessionDate +
                                   "_" +
-                                  std::to_string( sessionInfo.status ) +
+                                  strStatus.str() +
                                   ".session" ).c_str(), wxConvUTF8 );
   #else
     file = wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                   "/AutosavedSessions" +
                                   "/ps" +
-                                  std::to_string( sessionInfo.pid ) +
+                                  strPid.str() +
                                   "_" +
                                   sessionInfo.sessionDate +
                                   "_" +
-                                  std::to_string( sessionInfo.status ) +
+                                  strStatus.str() +
                                   ".session" ).c_str(), wxConvUTF8 );
   #endif
     SessionSaver::SaveSession( file, GetLoadedTraces() );
@@ -4172,10 +4180,15 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
   }
   else /*if ( !ParaverConfig::getInstance()->getGlobalSingleInstance() ) */
   {
+    stringstream strPid;
+    stringstream strStatus;
+    strPid << sessionInfo.pid;
+    strStatus << sessionInfo.status;
+
     #ifdef WIN32
-    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + strPid.str() + "_" + sessionInfo.sessionDate + "_" + strStatus.str() + ".session";
     #else
-    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + std::to_string( sessionInfo.pid ) + "_" + sessionInfo.sessionDate + "_" + std::to_string( sessionInfo.status ) + ".session";
+    file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + strPid.str() + "_" + sessionInfo.sessionDate + "_" + strStatus.str() + ".session";
     #endif
   }
   SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
