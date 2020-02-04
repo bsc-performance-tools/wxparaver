@@ -3965,7 +3965,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
       localKernel->copyPCF( tmpNameIn, tmpNameOut );
       delete traceCutter;
     }
-    else  if ( filterToolIDs[ i ] == TraceFilter::getID() )
+    else if ( filterToolIDs[ i ] == TraceFilter::getID() )
     {
       map< TTypeValuePair, TTypeValuePair > dummyTranslation; // it it's empty, it's ignored
 
