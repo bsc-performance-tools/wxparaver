@@ -215,8 +215,6 @@ struct SessionInfo
     unsigned int pid;
     StatusID status;
     std::string sessionDate;
-    //boost::posix_time::ptime sessionDate;    
-
 };
 
 /*!
@@ -231,9 +229,19 @@ class paraverMain: public wxFrame
 public:
   /// Constructors
   paraverMain();
-  paraverMain( wxWindow* parent, wxWindowID id = SYMBOL_PARAVERMAIN_IDNAME, const wxString& caption = SYMBOL_PARAVERMAIN_TITLE, const wxPoint& pos = SYMBOL_PARAVERMAIN_POSITION, const wxSize& size = SYMBOL_PARAVERMAIN_SIZE, long style = SYMBOL_PARAVERMAIN_STYLE );
+  paraverMain( wxWindow* parent, 
+               wxWindowID id = SYMBOL_PARAVERMAIN_IDNAME, 
+               const wxString& caption = SYMBOL_PARAVERMAIN_TITLE, 
+               const wxPoint& pos = SYMBOL_PARAVERMAIN_POSITION, 
+               const wxSize& size = SYMBOL_PARAVERMAIN_SIZE, 
+               long style = SYMBOL_PARAVERMAIN_STYLE );
 
-  bool Create( wxWindow* parent, wxWindowID id = SYMBOL_PARAVERMAIN_IDNAME, const wxString& caption = SYMBOL_PARAVERMAIN_TITLE, const wxPoint& pos = SYMBOL_PARAVERMAIN_POSITION, const wxSize& size = SYMBOL_PARAVERMAIN_SIZE, long style = SYMBOL_PARAVERMAIN_STYLE );
+  bool Create( wxWindow* parent, 
+               wxWindowID id = SYMBOL_PARAVERMAIN_IDNAME, 
+               const wxString& caption = SYMBOL_PARAVERMAIN_TITLE, 
+               const wxPoint& pos = SYMBOL_PARAVERMAIN_POSITION, 
+               const wxSize& size = SYMBOL_PARAVERMAIN_SIZE, 
+               long style = SYMBOL_PARAVERMAIN_STYLE );
 
   /// Destructor
   ~paraverMain();

@@ -94,7 +94,7 @@ bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if (GetSizer())
+  if ( GetSizer() )
   {
     GetSizer()->SetSizeHints(this);
   }

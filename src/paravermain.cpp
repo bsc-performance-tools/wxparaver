@@ -425,7 +425,7 @@ void paraverMain::Init()
 
   if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 )
   {
-    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
+    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60e3 );
   }
 
   traceLoadedBefore = false;
@@ -2493,10 +2493,11 @@ void paraverMain::OnIdle( wxIdleEvent& event )
     sessionTimer->Stop();
   }
   else if( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 &&
-           sessionTimer->GetInterval() > ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 )
+           sessionTimer->GetInterval() > 
+           ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60e3 )
   {
     sessionTimer->Stop();
-    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60 * 1E3 );
+    sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60e3 );
   }
 }
 
@@ -2631,11 +2632,16 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
 
 void paraverMain::OnMenusavecfgUpdate( wxUpdateUIEvent& event )
 {
+  /*
   if( LoadedWindows::getInstance()->emptyWindows() && 
       LoadedWindows::getInstance()->emptyHistograms() )
     event.Enable( false );
   else
     event.Enable( true );
+  */
+  bool areWindowsEmpty = LoadedWindows::getInstance()->emptyWindows() && 
+      LoadedWindows::getInstance()->emptyHistograms();
+  event.Enable( areWindowsEmpty );
 }
 
 
@@ -2724,10 +2730,13 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
 
 void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent& event )
 {
+  /*
   if ( loadedTraces.size() > 0 )
     tbarMain->EnableTool( ID_NEW_WINDOW, true );
   else
     tbarMain->EnableTool( ID_NEW_WINDOW, false );
+  */
+  tbarMain->EnableTool( ID_NEW_WINDOW, loadedTraces.size() > 0 );
 
   if ( currentTimeline != NULL )
     tbarMain->EnableTool( ID_NEW_WINDOW, true );
@@ -3093,7 +3102,9 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
       endDragWindow = timeline->GetMyWindow();
       if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace() ) &&
           Window::compatibleLevels( beginDragWindow, endDragWindow ) )
+      {
         ShowDerivedDialog();
+      }
       else
         wxMessageBox( wxT( "Incompatible windows used to derive." ), wxT( "Warning" ), wxOK|wxICON_EXCLAMATION, this );
     }
@@ -3361,8 +3372,10 @@ void paraverMain::selectTrace( Trace *trace )
 {
   size_t currentTrace;
   for ( currentTrace = 0; currentTrace < loadedTraces.size(); ++currentTrace )
+  {
     if ( loadedTraces[ currentTrace ] == trace )
       break;
+  }
 
   int currentPage  = choiceWindowBrowser->GetSelection();
 
@@ -3378,8 +3391,10 @@ PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
   PRV_UINT16 currentTrace;
 
   for ( currentTrace = 0; currentTrace < loadedTraces.size(); ++currentTrace )
+  {
     if ( loadedTraces[ currentTrace ] == trace )
       break;
+  }
 
   return currentTrace;
 }
@@ -3387,12 +3402,13 @@ PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 
 bool getUsedByHistogram( Window *whichWindow )
 {
-  if( whichWindow->getUsedByHistogram() )
+  if ( whichWindow->getUsedByHistogram() )
     return true;
-  else if( whichWindow->isDerivedWindow() )
+  else if ( whichWindow->isDerivedWindow() )
   {
-    if( getUsedByHistogram( whichWindow->getParent( 0 ) ) )
+    if ( getUsedByHistogram( whichWindow->getParent( 0 ) ) )
       return true;
+
     return getUsedByHistogram( whichWindow->getParent( 1 ) );
   }
   return false;
@@ -3530,9 +3546,13 @@ void paraverMain::OnActivate( wxActivateEvent& event )
 void paraverMain::HandleMaxSessionFiles()
 {
 #ifdef WIN32
-  wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + _( "\\AutosavedSessions" ) ) ;
+  wxString folder( 
+        wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) +
+        _( "\\AutosavedSessions" ) ) ;
 #else
-  wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + _( "/AutosavedSessions" ) ) ;
+  wxString folder( 
+        wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) +
+        _( "/AutosavedSessions" ) ) ;
   wxString sessionFolder( _( "/tmp" ) ) ;
 #endif
   
@@ -3559,20 +3579,35 @@ void paraverMain::HandleMaxSessionFiles()
       // Remove >=10 oldest auto-saved session files EXCEPT those in execution
       if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
       {
-
+#ifdef WIN32
         // ST : Service Table
-        wxDir wxd( _( "/tmp/" ) );
-        wxString service, serviceFlag = _( "wxparaver_service*" );
+        wxDir wxd( wxT( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) );
+        wxString service, serviceFlag = wxT( "wxparaver_service*" );
         std::map< wxString, wxString > serviceMap;
         bool cont = wxd.GetFirst( &service, serviceFlag );
 
         while ( cont )
         {
           wxString servicePID = service.AfterLast( '-' );
-          wxString serviceName = _( "/tmp/" ) + service;
+          wxString serviceName = wxT( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) + service;
           serviceMap.insert( { servicePID, serviceName } );
           cont = wxd.GetNext( &service );
         }
+#else
+        // ST : Service Table
+        wxDir wxd( wxT( "/tmp/" ) );
+        wxString service, serviceFlag = wxT( "wxparaver_service*" );
+        std::map< wxString, wxString > serviceMap;
+        bool cont = wxd.GetFirst( &service, serviceFlag );
+
+        while ( cont )
+        {
+          wxString servicePID = service.AfterLast( '-' );
+          wxString serviceName = wxT( "/tmp/" ) + service;
+          serviceMap.insert( { servicePID, serviceName } );
+          cont = wxd.GetNext( &service );
+        }
+#endif
 
         wxLogNull logNull;
         stClient *client = new stClient;
