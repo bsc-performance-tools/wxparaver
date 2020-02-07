@@ -1061,7 +1061,21 @@ void paraverMain::OnMenuLoadAutoSavedSession( wxCommandEvent& event )
 
 void paraverMain::OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event )
 {
-  MultiSessionLoad( true );
+  //MultiSessionLoad( true );
+  #ifdef WIN32
+    wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 )  + _( "\\AutosavedSessions" ) );
+  #else
+    wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + _( "/AutosavedSessions" ) );
+  #endif
+
+  SessionSelectionDialog dialog( this, folder, true );
+  if( dialog.ShowModal() == wxID_OK )
+  {
+    wxString path = dialog.GetSessionPath();
+    wxString folderPath = path;
+    folderPath.Replace( wxT( ".session" ), wxT( "_session" ) );
+    SessionSaver::LoadSession( path );
+  }
 }
 
 
@@ -4643,10 +4657,11 @@ void paraverMain::OnButtonForceRedrawUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::OnButtonForceRedrawClick( wxCommandEvent& event )
 {
-  if( currentTimeline != NULL )
+/*  if( currentTimeline != NULL )
     currentTimeline->setForceRedraw( true );
   else if( currentHisto != NULL )
-    currentHisto->setForceRecalc( true );
+    currentHisto->setForceRecalc( true );*/
+  currentHisto->setForceRecalc( currentTimeline != NULL || currentHisto != NULL );
 }
 
 
@@ -4815,9 +4830,7 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
         _( "/AutosavedSessions" ) );
   #endif
 
-  //SessionSelectionDialog dialog = SessionSelectionDialog( path );
   wxArrayString paths = SessionSelectionDialog( folder ).GetSessionPaths();
-
   if ( paths.size() > 0 )
   {
 #ifndef WIN32
@@ -4898,40 +4911,17 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
   else if ( wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last crashed auto-saved Paraver session?" ),
                       wxT( "Load auto-saved sessions" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
   {
-    //MultiSessionLoad( false );
     LastSessionLoad( false );
   }
 }
-
-
-void paraverMain::MultiSessionLoad( bool isSessionInitialized )
-{
-  #ifdef WIN32
-    wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 )  + _( "\\AutosavedSessions" ) );
-  #else
-    wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + _( "/AutosavedSessions" ) );
-  #endif
-
-  SessionSelectionDialog dialog( this, folder, isSessionInitialized );
-  if( dialog.ShowModal() == wxID_OK )
-  {
-    wxString path = dialog.GetSessionPath();
-    wxString folderPath = path;
-    folderPath.Replace( wxT( ".session" ), wxT( "_session" ) );
-    SessionSaver::LoadSession( path );
-  }
-}
-
-
 
 
 inline std::string ZeroTrail( int number )
 {
   stringstream trailedNumber;
   if ( number < 10 )
-  {
     trailedNumber << "0";
-  }
+  
   trailedNumber << number;
   return trailedNumber.str();
 }
