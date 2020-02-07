@@ -74,6 +74,7 @@ class SessionSelectionDialog: public wxDialog
 public:
   /// Constructors
   SessionSelectionDialog();
+  SessionSelectionDialog( wxString folderPath );
   SessionSelectionDialog( wxWindow* parent, wxString folderPath, bool isInitialized = false, wxWindowID id = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SESSIONSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_SESSIONSELECTIONDIALOG_SIZE, long style = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
 
   /// Creation
@@ -110,6 +111,7 @@ public:
 
 ////@end SessionSelectionDialog event handler declarations
   bool OnCreate();
+  bool OnCreateNoDialog();
 
 ////@begin SessionSelectionDialog member function declarations
 
@@ -128,7 +130,10 @@ public:
 
   /// Should we show tooltips?
   static bool ShowToolTips();
+  
+  // Retrieve data
   wxString GetSessionPath();
+  wxArrayString GetSessionPaths();
 
 ////@begin SessionSelectionDialog member variables
   wxStaticText* textDialogDescription;
@@ -142,6 +147,7 @@ private:
 
   wxString myPath;
   wxString folderPath;
+  wxArrayString allFilesInDir;
   wxString FormatFileName( wxString fileName );
 };
 

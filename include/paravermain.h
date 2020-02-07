@@ -585,6 +585,7 @@ public:
 
   void checkIfPrevSessionLoad( bool prevSessionWasComplete );
   void MultiSessionLoad( bool isSessionInitialized );
+  void LastSessionLoad( bool isSessionInitialized );
   
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );

@@ -4804,6 +4804,72 @@ void paraverMain::insertSignalItem( bool isSig1 )
 
 
 
+void paraverMain::LastSessionLoad( bool isSessionInitialized )
+{
+  #ifdef WIN32
+    wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 )  +
+        _( "\\AutosavedSessions" ) );
+  #else
+    wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + 
+        _( "/AutosavedSessions" ) );
+  #endif
+
+  //SessionSelectionDialog dialog = SessionSelectionDialog( path );
+  wxArrayString paths = SessionSelectionDialog( folder ).GetSessionPaths();
+
+  if ( paths.size() > 0 )
+  {
+#ifndef WIN32
+    wxLogNull logNull;
+    stClient *client = new stClient;
+    wxString hostName = wxT( "localhost" );
+    wxString pathToLoad = paths[ 0 ];
+    bool found = false;
+
+    for ( int idx = 0 ; idx < paths.size() && !found ; ++idx )
+    {
+      wxString path = paths[ idx ]; 
+      wxString folderPath = path;
+      folderPath.Replace( wxT( ".session" ), wxT( "_session" ) );
+
+      wxString folderPathSimple = folderPath.AfterLast( '/' );
+      wxString sessionPID = folderPathSimple.BeforeFirst( '_' ).AfterLast( 's' );
+      sessionPID.Replace( wxT( "ps" ), wxT( "" ) );
+
+      wxString serviceName = wxT( "/tmp/wxparaver_service-" ) + 
+          wxGetUserId() + 
+          wxT( "-" ) +
+          sessionPID;
+
+      wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
+
+      if ( connection == NULL && wxDirExists( folderPath ) && wxFileExists( path ) && wxFileExists( serviceName ) )
+      {
+        SessionSaver::LoadSession( path );
+        found = true;
+        //Replacing crashed session and prevent repetition in case older sessions fail
+        std::cout << "\n\nReplace --> " << path << std::endl;
+        wxRemoveFile( serviceName );
+        wxRemoveFile( path );
+        wxRmdir( folderPath );
+      }
+      delete connection;
+    }
+    delete client;
+#endif
+  }
+  else
+  {
+    wxMessageDialog message( 
+      this, 
+      _("An error occurred with last session's file.\nNo session will be loaded."), 
+      _("Warning"), 
+      wxOK );
+    message.ShowModal();
+  }
+}
+
+
 
 void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
 { 
@@ -4820,11 +4886,19 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
                       wxT( "Load auto-saved session" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
       DoLoadSession( file );
   }
+  /*
   else if ( !prevSessionWasComplete )//&&
-        //wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load any of your last crashed auto-saved Paraver sessions?" ),
+        //wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last crashed auto-saved Paraver session?" ),
         //              wxT( "Load auto-saved sessions" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
   {
     MultiSessionLoad( false );
+  }
+  */
+  else if ( wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last crashed auto-saved Paraver session?" ),
+                      wxT( "Load auto-saved sessions" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
+  {
+    //MultiSessionLoad( false );
+    LastSessionLoad( false );
   }
 }
 
@@ -4846,6 +4920,8 @@ void paraverMain::MultiSessionLoad( bool isSessionInitialized )
     SessionSaver::LoadSession( path );
   }
 }
+
+
 
 
 inline std::string ZeroTrail( int number )

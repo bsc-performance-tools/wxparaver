@@ -75,6 +75,16 @@ SessionSelectionDialog::SessionSelectionDialog()
   OnCreate();
 }
 
+
+// Version that gets 
+SessionSelectionDialog::SessionSelectionDialog( wxString folderPath )
+{
+  Init();
+  this->folderPath = folderPath;
+  this->isInitialized = false;
+  OnCreateNoDialog();
+}
+
 SessionSelectionDialog::SessionSelectionDialog( wxWindow* parent, wxString folderPath, bool isInitialized, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
 {
   Init();
@@ -102,8 +112,6 @@ bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool
 ////@end SessionSelectionDialog creation
   this->folderPath = folderPath;
   this->isInitialized = isInitialized;
-  if ( isInitialized )
-    buttonCancel->SetLabel( _( "&Cancel" ) );
   return true;
 }
 
@@ -281,22 +289,69 @@ bool SessionSelectionDialog::OnCreate()
       #endif
       datetime[ 8 ] = 'T';
 
-      boost::posix_time::ptime dt;;
+      boost::posix_time::ptime dt;
       dt = boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) );
       
       dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
       dateTimes[i] = dt;
     }
 
-    for ( map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it = dtToFile.begin(); it != dtToFile.end(); ++it )
+    map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it;
+    for ( it = dtToFile.begin(); it != dtToFile.end(); ++it )
     {
       wxString fileName = FormatFileName( (* it ).second.AfterLast( '/' ) );
       listSessions->Append( fileName );
-      linksPerFileName[ fileName ] = ( (* it ).second );
+      linksPerFileName[ fileName ] = (* it ).second;
     }
   }
   return true;
 }
+
+
+bool SessionSelectionDialog::OnCreateNoDialog()
+{
+  if ( wxDirExists( folderPath ) ) 
+  {
+    wxArrayString filesInDir;
+    if ( isInitialized )
+      wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*.session" ), wxDIR_FILES );
+    else
+      wxDir::GetAllFiles( folderPath, &filesInDir, wxT( "*0.session" ), wxDIR_FILES );
+    
+    if ( filesInDir.size() == 0 )
+      return false;
+    
+    linksPerFileName.clear();
+    
+    map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
+    vector< boost::posix_time::ptime > dateTimes( filesInDir.size() );
+    for ( int i = 0 ; i < filesInDir.size() ; ++i )
+    {
+      #ifdef WIN32
+      wxString datetime = filesInDir[ i ].AfterLast( '\\' ).AfterFirst( '_' ).Left( 15 );
+      #else
+      wxString datetime = filesInDir[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );
+      #endif
+      datetime[ 8 ] = 'T';
+
+      boost::posix_time::ptime dt;
+      dt = boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) );
+
+      dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
+      dateTimes[i] = dt;
+    }
+
+    map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it;
+    for ( it = dtToFile.begin(); it != dtToFile.end(); ++it )
+    {
+      wxString fileName = FormatFileName( (* it ).second.AfterLast( '/' ) );
+      allFilesInDir.push_back( (* it ).second );
+    }
+  }
+  return true;
+}
+
+
 
 wxString SessionSelectionDialog::FormatFileName( wxString fileName )
 {
@@ -322,9 +377,10 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
 
 
 
-  parts[ 0 ].Replace( _( "ps" ), _( "PID: " ) );
+  //parts[ 0 ].Replace( _( "ps" ), _( "PID: " ) );
   wxString dmy = parts[ 1 ];
   wxString hms = parts[ 2 ]; 
+
 
   dmy = dmy.Mid( 6, 2 ) +  // YYYYMMDD (iso compliant)
         wxT( "/" ) +
@@ -339,11 +395,15 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
         wxT( ":" ) +
         hms.Mid( 4, 2 );
   
-  return parts[ 0 ] +
-         wxT( "\t| " ) +
+  //return parts[ 0 ] +
+  //       wxT( "\t| " ) +
+  wxString crash = ( parts[3] == wxT( "0.session" ) ? wxT( " [Crashed]" ) : _( "" ) );
+
+  return _( "From: \t" ) + 
          dmy +
          wxT( " " ) +
-         hms;
+         hms + 
+         crash;
 }
 
 /*!
@@ -376,5 +436,12 @@ void SessionSelectionDialog::OnCancelClick( wxCommandEvent& event )
 wxString SessionSelectionDialog::GetSessionPath()
 {
   return myPath;
+}
+
+
+
+wxArrayString SessionSelectionDialog::GetSessionPaths()
+{
+  return allFilesInDir;
 }
 
