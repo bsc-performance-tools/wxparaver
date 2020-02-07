@@ -3450,10 +3450,11 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 
 void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent& event )
 {
-  if( currentTimeline != NULL || currentHisto != NULL )
+  /*if( currentTimeline != NULL || currentHisto != NULL )
     event.Enable( true );
   else
-    event.Enable( false );
+    event.Enable( false );*/
+  event.Enable( currentTimeline != NULL || currentHisto != NULL );
 }
 
 
@@ -4843,11 +4844,12 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
 
       wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
 
-      if ( connection == NULL && wxDirExists( folderPath ) && wxFileExists( path ) && wxFileExists( serviceName ) )
+      if ( connection == NULL && wxDirExists( folderPath ) && wxFileExists( path ) )
       {
         SessionSaver::LoadSession( path );
         found = true;
-        //Replacing crashed session and prevent repetition in case older sessions fail
+        // "Replacing" crashed session and prevent repetition
+        // in case older sessions fail
         wxRemoveFile( serviceName );
         wxRemoveFile( path );
         wxRmdir( folderPath );

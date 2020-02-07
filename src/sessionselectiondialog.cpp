@@ -279,7 +279,6 @@ bool SessionSelectionDialog::OnCreate()
     linksPerFileName.clear();
     
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
-    vector< boost::posix_time::ptime > dateTimes( filesInDir.size() );
     for ( int i = 0 ; i < filesInDir.size() ; ++i )
     {
       #ifdef WIN32
@@ -293,7 +292,6 @@ bool SessionSelectionDialog::OnCreate()
       dt = boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) );
       
       dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
-      dateTimes[i] = dt;
     }
 
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it;
@@ -324,7 +322,6 @@ bool SessionSelectionDialog::OnCreateNoDialog()
     linksPerFileName.clear();
     
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
-    vector< boost::posix_time::ptime > dateTimes( filesInDir.size() );
     for ( int i = 0 ; i < filesInDir.size() ; ++i )
     {
       #ifdef WIN32
@@ -338,13 +335,11 @@ bool SessionSelectionDialog::OnCreateNoDialog()
       dt = boost::posix_time::from_iso_string( std::string( datetime.mb_str() ) );
 
       dtToFile.insert( std::pair< boost::posix_time::ptime, wxString >( dt , filesInDir[ i ] ) );
-      dateTimes[i] = dt;
     }
 
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > >::iterator it;
     for ( it = dtToFile.begin(); it != dtToFile.end(); ++it )
     {
-      wxString fileName = FormatFileName( (* it ).second.AfterLast( '/' ) );
       allFilesInDir.push_back( (* it ).second );
     }
   }
@@ -375,12 +370,8 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
   subPart = wxString( fileStringStd.substr( begin, end - begin ).c_str(), wxConvUTF8 );
   parts.push_back( subPart );
 
-
-
-  //parts[ 0 ].Replace( _( "ps" ), _( "PID: " ) );
   wxString dmy = parts[ 1 ];
   wxString hms = parts[ 2 ]; 
-
 
   dmy = dmy.Mid( 6, 2 ) +  // YYYYMMDD (iso compliant)
         wxT( "/" ) +
@@ -395,8 +386,6 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
         wxT( ":" ) +
         hms.Mid( 4, 2 );
   
-  //return parts[ 0 ] +
-  //       wxT( "\t| " ) +
   wxString crash = ( parts[3] == wxT( "0.session" ) ? wxT( " [Crashed]" ) : _( "" ) );
 
   return _( "From: \t" ) + 
