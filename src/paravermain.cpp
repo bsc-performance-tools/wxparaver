@@ -4848,7 +4848,6 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
         SessionSaver::LoadSession( path );
         found = true;
         //Replacing crashed session and prevent repetition in case older sessions fail
-        std::cout << "\n\nReplace --> " << path << std::endl;
         wxRemoveFile( serviceName );
         wxRemoveFile( path );
         wxRmdir( folderPath );
