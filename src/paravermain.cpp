@@ -4833,7 +4833,6 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
   wxArrayString paths = SessionSelectionDialog( folder ).GetSessionPaths();
   if ( paths.size() > 0 )
   {
-#ifndef WIN32
     wxLogNull logNull;
     stClient *client = new stClient;
     wxString hostName = wxT( "localhost" );
@@ -4845,24 +4844,32 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
       wxString path = paths[ idx ]; 
       wxString folderPath = path;
       folderPath.Replace( wxT( ".session" ), wxT( "_session" ) );
-
+      
+#ifdef WIN32
+      wxString folderPathSimple = folderPath.AfterLast( '\\' );
+      wxString sessionPID = folderPathSimple.BeforeFirst( '_' ).AfterLast( 's' );
+      sessionPID.Replace( wxT( "ps" ), wxT( "" ) );
+      wxString serviceName = wxT( "wxparaver_service-" ) + 
+          wxGetUserId() + 
+          wxT( "-" ) +
+          sessionPID;
+#else
       wxString folderPathSimple = folderPath.AfterLast( '/' );
       wxString sessionPID = folderPathSimple.BeforeFirst( '_' ).AfterLast( 's' );
       sessionPID.Replace( wxT( "ps" ), wxT( "" ) );
-
       wxString serviceName = wxT( "/tmp/wxparaver_service-" ) + 
           wxGetUserId() + 
           wxT( "-" ) +
           sessionPID;
-
+#endif
       wxConnectionBase *connection = client->MakeConnection( hostName, serviceName, wxT( "wxparaver" ) );
 
       if ( connection == NULL && wxDirExists( folderPath ) && wxFileExists( path ) )
       {
         SessionSaver::LoadSession( path );
         found = true;
-        // "Replacing" crashed session and prevent repetition
-        // in case older sessions fail
+        // "Replacing" crashed session and prevent
+        // repetition in case older sessions fail
         wxRemoveFile( serviceName );
         wxRemoveFile( path );
         wxRmdir( folderPath );
@@ -4870,7 +4877,6 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
       delete connection;
     }
     delete client;
-#endif
   }
   else
   {

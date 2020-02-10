@@ -388,8 +388,7 @@ wxString SessionSelectionDialog::FormatFileName( wxString fileName )
   
   wxString crash = ( parts[3] == wxT( "0.session" ) ? wxT( " [Crashed]" ) : _( "" ) );
 
-  return _( "From: \t" ) + 
-         dmy +
+  return dmy +
          wxT( " " ) +
          hms + 
          crash;
