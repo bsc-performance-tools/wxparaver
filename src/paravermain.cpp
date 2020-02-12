@@ -4045,9 +4045,6 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
       // traceSoftwareCounters modifies the pcf, don't copy here!
       delete traceSoftwareCounters;
     }
-    else
-    {
-    }
 
     localKernel->copyROW( tmpNameIn, tmpNameOut );
     tmpFiles.push_back( tmpNameOut );
@@ -4527,10 +4524,15 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 {
+  /*
   if( loadedTraces.empty() || traceWorkspaces[ loadedTraces[ currentTrace ] ].empty() )
     GetMenuBar()->EnableTop( 1, false );
   else
     GetMenuBar()->EnableTop( 1, true );
+  */
+  GetMenuBar()->EnableTop( 1, 
+                           !loadedTraces.empty() && 
+                           !traceWorkspaces[ loadedTraces[ currentTrace ] ].empty() );
 }
 
 
@@ -4844,7 +4846,7 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
       wxString path = paths[ idx ]; 
       wxString folderPath = path;
       folderPath.Replace( wxT( ".session" ), wxT( "_session" ) );
-      
+
 #ifdef WIN32
       wxString folderPathSimple = folderPath.AfterLast( '\\' );
       wxString sessionPID = folderPathSimple.BeforeFirst( '_' ).AfterLast( 's' );

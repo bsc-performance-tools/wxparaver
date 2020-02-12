@@ -442,7 +442,6 @@ void gHistogram::execute()
 
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
 
-
   if( myHistogram->getZoom() )
     fillZoom();
   else
@@ -610,7 +609,7 @@ void gHistogram::fillZoom()
     }
     else
     {
-      numDrawCols = myHistogram->getNumRows();
+      numDrawCols = myHistogram->getNumColumns();
       numDrawRows = numCols;
     }
     selectedColumns.insert( selectedColumns.begin(), numCols, true );
@@ -668,6 +667,7 @@ void gHistogram::fillZoom()
         THistogramColumn tmpEndCol = endCol;
         if( myHistogram->getHideColumns() )
           tmpEndCol = noVoidColumns[ endCol ];
+
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
         else

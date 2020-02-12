@@ -219,7 +219,7 @@ wxString HistoTableBase::GetValue( int row, int col )
     else
       label = wxString::FromAscii( "-" );
   }
-  else
+  else if ( row < myHisto->getNumRows() && col < myHisto->getNumColumns() ) // the if is CKC's bug fix
   {
     if( myHisto->getCellValue( semValue, row, col, idStat, myHisto->getSelectedPlane() ) )
     {
@@ -229,6 +229,7 @@ wxString HistoTableBase::GetValue( int row, int col )
     else
       label = wxString::FromAscii( "-" );
   }
+  else label = wxString::FromAscii( "-" );
 
   return label;
 }
@@ -248,49 +249,16 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
 {
   wxGridCellAttr *tmpAttr = new wxGridCellAttr();
   Window *controlWindow = myHisto->getControlWindow();
-
-  if( myHisto->getHorizontal() && myHisto->getFirstRowColored() )
+  if ( row < myHisto->getNumRows() && col < myHisto->getNumColumns() )
   {
-    if( row == 0 )
+    if( myHisto->getHorizontal() && myHisto->getFirstRowColored() )
     {
-      tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
-      tmpAttr->SetFont( cellFontBold );
-
-      TSemanticValue tmpValue = ( col * myHisto->getControlDelta() ) +
-                                myHisto->getControlMin();
-      rgb tmpCol;
-      if( controlWindow->isCodeColorSet() )
-        tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
-                                                          myHisto->getControlMin(),
-                                                          myHisto->getControlMax() );
-      else
-        tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
-                                                              controlWindow->getMinimumY(),
-                                                              controlWindow->getMaximumY() );
-      tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-      tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-        
-      return tmpAttr;
-    }
-    else if( myHisto->getOnlyTotals() )
-      return tmpAttr;
-
-    --row;
-  }
-  else if( myHisto->getOnlyTotals() )
-  {
-    return tmpAttr;
-  }
-  else if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
-  {
-    if( col == 0 )
-    {
-      tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
-      tmpAttr->SetFont( cellFontBold );
-
-      if( row < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) )
+      if( row == 0 )
       {
-        TSemanticValue tmpValue = ( row * myHisto->getControlDelta() ) +
+        tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
+        tmpAttr->SetFont( cellFontBold );
+
+        TSemanticValue tmpValue = ( col * myHisto->getControlDelta() ) +
                                   myHisto->getControlMin();
         rgb tmpCol;
         if( controlWindow->isCodeColorSet() )
@@ -303,43 +271,75 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
                                                                 controlWindow->getMaximumY() );
         tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
         tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+          
+        return tmpAttr;
       }
+      else if( myHisto->getOnlyTotals() )
+        return tmpAttr;
+
+      --row;
+    }
+    else if( myHisto->getOnlyTotals() )
+    {
       return tmpAttr;
     }
-    --col;
-  }
-
-  if( !myHisto->getHorizontal() )
-  {
-    int tmp = row;
-    row = col;
-    col = tmp;
-  }
-
-  PRV_UINT16 idStat;
-  if( !myHisto->getIdStat( myHisto->getCurrentStat(), idStat ) )
-    throw( std::exception() );
-  TSemanticValue semValue;
-  if( ( myHisto->getHorizontal() && row < myHisto->getNumRows() ) ||
-    ( !myHisto->getHorizontal() && col < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) ) )
-  {
-    if( myHisto->itsCommunicationStat( myHisto->getCurrentStat() ) )
+    else if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
     {
-      if( myHisto->getCommCellValue( semValue, row, col, idStat, myHisto->getCommSelectedPlane() ) )
+      if( col == 0 )
       {
-        if( myHisto->getShowColor() )
+        tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
+        tmpAttr->SetFont( cellFontBold );
+
+        if( row < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) )
         {
-          rgb tmpCol = myHisto->calcGradientColor( semValue );
+          TSemanticValue tmpValue = ( row * myHisto->getControlDelta() ) +
+                                    myHisto->getControlMin();
+          rgb tmpCol;
+          if( controlWindow->isCodeColorSet() )
+            tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
+                                                              myHisto->getControlMin(),
+                                                              myHisto->getControlMax() );
+          else
+            tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
+                                                                  controlWindow->getMinimumY(),
+                                                                  controlWindow->getMaximumY() );
           tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
           tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
         }
+        return tmpAttr;
       }
+      --col;
     }
-    else
+
+    if( !myHisto->getHorizontal() )
     {
-      if( myHisto->getCellValue( semValue, row, col, idStat, myHisto->getSelectedPlane() ) )
+      int tmp = row;
+      row = col;
+      col = tmp;
+    }
+
+    PRV_UINT16 idStat;
+    if( !myHisto->getIdStat( myHisto->getCurrentStat(), idStat ) )
+      throw( std::exception() );
+    TSemanticValue semValue;
+    if( ( myHisto->getHorizontal() && row < myHisto->getNumRows() ) ||
+      ( !myHisto->getHorizontal() && col < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) ) )
+    {
+      if( myHisto->itsCommunicationStat( myHisto->getCurrentStat() ) )
       {
-        if( myHisto->getShowColor() )
+        if( myHisto->getCommCellValue( semValue, row, col, idStat, myHisto->getCommSelectedPlane() ) )
+        {
+          if( myHisto->getShowColor() )
+          {
+            rgb tmpCol = myHisto->calcGradientColor( semValue );
+            tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+            tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+          }
+        }
+      }
+      else 
+      {
+        if( myHisto->getCellValue( semValue, row, col, idStat, myHisto->getSelectedPlane() ) && myHisto->getShowColor() )
         {
           rgb tmpCol;
           if( myHisto->getColorMode() == SemanticColor::COLOR )
@@ -363,6 +363,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         }
       }
     }
+    
   }
 
   return tmpAttr;
