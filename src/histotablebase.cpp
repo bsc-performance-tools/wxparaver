@@ -249,16 +249,49 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
 {
   wxGridCellAttr *tmpAttr = new wxGridCellAttr();
   Window *controlWindow = myHisto->getControlWindow();
-  if ( row < myHisto->getNumRows() && col < myHisto->getNumColumns() )
-  {
-    if( myHisto->getHorizontal() && myHisto->getFirstRowColored() )
-    {
-      if( row == 0 )
-      {
-        tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
-        tmpAttr->SetFont( cellFontBold );
 
-        TSemanticValue tmpValue = ( col * myHisto->getControlDelta() ) +
+  if( myHisto->getHorizontal() && myHisto->getFirstRowColored() )
+  {
+    if( row == 0 )
+    {
+      tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
+      tmpAttr->SetFont( cellFontBold );
+
+      TSemanticValue tmpValue = ( col * myHisto->getControlDelta() ) +
+                                myHisto->getControlMin();
+      rgb tmpCol;
+      if( controlWindow->isCodeColorSet() )
+        tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
+                                                          myHisto->getControlMin(),
+                                                          myHisto->getControlMax() );
+      else
+        tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
+                                                              controlWindow->getMinimumY(),
+                                                              controlWindow->getMaximumY() );
+      tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+      tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+        
+      return tmpAttr;
+    }
+    else if( myHisto->getOnlyTotals() )
+      return tmpAttr;
+
+    --row;
+  }
+  else if( myHisto->getOnlyTotals() )
+  {
+    return tmpAttr;
+  }
+  else if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
+  {
+    if( col == 0 )
+    {
+      tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
+      tmpAttr->SetFont( cellFontBold );
+
+      if( row < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) )
+      {
+        TSemanticValue tmpValue = ( row * myHisto->getControlDelta() ) +
                                   myHisto->getControlMin();
         rgb tmpCol;
         if( controlWindow->isCodeColorSet() )
@@ -271,101 +304,60 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
                                                                 controlWindow->getMaximumY() );
         tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
         tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-          
-        return tmpAttr;
       }
-      else if( myHisto->getOnlyTotals() )
-        return tmpAttr;
-
-      --row;
-    }
-    else if( myHisto->getOnlyTotals() )
-    {
       return tmpAttr;
     }
-    else if( !myHisto->getHorizontal() && myHisto->getFirstRowColored() )
-    {
-      if( col == 0 )
-      {
-        tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
-        tmpAttr->SetFont( cellFontBold );
+    --col;
+  }
 
-        if( row < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) )
+  if( !myHisto->getHorizontal() )
+  {
+    int tmp = row;
+    row = col;
+    col = tmp;
+  }
+
+  PRV_UINT16 idStat;
+  if( !myHisto->getIdStat( myHisto->getCurrentStat(), idStat ) )
+    throw( std::exception() );
+  TSemanticValue semValue;
+  if( ( myHisto->getHorizontal() && row < myHisto->getNumRows() ) ||
+    ( !myHisto->getHorizontal() && col < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) ) )
+  {
+    if ( myHisto->itsCommunicationStat( myHisto->getCurrentStat() ) &&
+         myHisto->getCommCellValue( semValue, row, col, idStat, myHisto->getCommSelectedPlane() ) &&
+         myHisto->getShowColor() )
+    {
+      rgb tmpCol = myHisto->calcGradientColor( semValue );
+      tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+      tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+    }
+    else if ( row < myHisto->getNumRows() && col < myHisto->getNumColumns() )
+    {
+      if( myHisto->getCellValue( semValue, row, col, idStat, myHisto->getSelectedPlane() ) && myHisto->getShowColor() )
+      {
+        rgb tmpCol;
+        if( myHisto->getColorMode() == SemanticColor::COLOR )
         {
-          TSemanticValue tmpValue = ( row * myHisto->getControlDelta() ) +
-                                    myHisto->getControlMin();
-          rgb tmpCol;
-          if( controlWindow->isCodeColorSet() )
-            tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
-                                                              myHisto->getControlMin(),
-                                                              myHisto->getControlMax() );
-          else
-            tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
-                                                                  controlWindow->getMinimumY(),
-                                                                  controlWindow->getMaximumY() );
+          tmpCol = myHisto->getDataWindow()->getCodeColor().calcColor( semValue,
+                                                                       myHisto->getMinGradient(),
+                                                                       myHisto->getMaxGradient() );
           tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
           tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
         }
-        return tmpAttr;
-      }
-      --col;
-    }
-
-    if( !myHisto->getHorizontal() )
-    {
-      int tmp = row;
-      row = col;
-      col = tmp;
-    }
-
-    PRV_UINT16 idStat;
-    if( !myHisto->getIdStat( myHisto->getCurrentStat(), idStat ) )
-      throw( std::exception() );
-    TSemanticValue semValue;
-    if( ( myHisto->getHorizontal() && row < myHisto->getNumRows() ) ||
-      ( !myHisto->getHorizontal() && col < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) ) )
-    {
-      if( myHisto->itsCommunicationStat( myHisto->getCurrentStat() ) )
-      {
-        if( myHisto->getCommCellValue( semValue, row, col, idStat, myHisto->getCommSelectedPlane() ) )
+        else
         {
-          if( myHisto->getShowColor() )
+          if( myHisto->getColorMode() == SemanticColor::GRADIENT || 
+              ( myHisto->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && semValue != 0.0 ) )
           {
-            rgb tmpCol = myHisto->calcGradientColor( semValue );
+            tmpCol = myHisto->calcGradientColor( semValue );
             tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
             tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
           }
         }
       }
-      else 
-      {
-        if( myHisto->getCellValue( semValue, row, col, idStat, myHisto->getSelectedPlane() ) && myHisto->getShowColor() )
-        {
-          rgb tmpCol;
-          if( myHisto->getColorMode() == SemanticColor::COLOR )
-          {
-            tmpCol = myHisto->getDataWindow()->getCodeColor().calcColor( semValue,
-                                                                         myHisto->getMinGradient(),
-                                                                         myHisto->getMaxGradient() );
-            tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-            tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-          }
-          else
-          {
-            if( myHisto->getColorMode() == SemanticColor::GRADIENT || 
-                ( myHisto->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && semValue != 0.0 ) )
-            {
-              tmpCol = myHisto->calcGradientColor( semValue );
-              tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-              tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-            }
-          }
-        }
-      }
     }
-    
   }
-
   return tmpAttr;
 }
 
