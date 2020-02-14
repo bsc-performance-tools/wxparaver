@@ -2058,7 +2058,7 @@ void paraverMain::OnTreeKeyPress( wxKeyEvent& event )
   wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
 
   if ( event.GetKeyCode() == WXK_F2 && !currentTree->IsEmpty() )
-    currentTree->EditLabel( currentTree->GetFocusedItem() );  
+    currentTree->EditLabel( currentTree->GetSelection() );  
 }
 
 
@@ -2071,7 +2071,7 @@ void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
   if ( !event.IsEditCancelled() )
   {
     TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( 
-        currentTree->GetItemData( currentTree->GetFocusedItem() ) );
+        currentTree->GetItemData( currentTree->GetSelection() ) );
 
     if( gHistogram *histo = itemData->getHistogram() )
     {
@@ -2091,7 +2091,7 @@ void paraverMain::renameTreeItem( )
 {
   wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
   if( !currentTree->IsEmpty() )
-    currentTree->EditLabel( currentTree->GetFocusedItem() );
+    currentTree->EditLabel( currentTree->GetSelection() );
 }
 
 
