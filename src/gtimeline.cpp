@@ -1910,6 +1910,12 @@ void gTimeline::OnPopUpClone()
   clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
 }
 
+void gTimeline::OnPopUpRename()
+{
+  ( (paraverMain *) parent )->renameTreeItem( );
+}
+
+
 
 void gTimeline::OnPopUpFitTimeScale()
 {

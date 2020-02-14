@@ -462,6 +462,7 @@ public:
   void OnPopUpPasteFilterCommunications();
   void OnPopUpPasteFilterEvents();
   void OnPopUpClone();
+  void OnPopUpRename();
   void OnPopUpFitTimeScale();
   void OnPopUpFitSemanticScaleMin();
   void OnPopUpFitSemanticScaleMax();

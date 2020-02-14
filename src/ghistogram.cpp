@@ -1350,6 +1350,11 @@ void gHistogram::OnPopUpClone()
 }
 
 
+void gHistogram::OnPopUpRename()
+{
+  paraverMain::myParaverMain->renameTreeItem( );
+}
+
 void gHistogram::OnPopUpFitTimeScale()
 {
   myHistogram->setWindowBeginTime( 0 );

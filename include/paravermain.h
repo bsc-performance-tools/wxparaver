@@ -386,7 +386,11 @@ public:
   /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
   void OnTreeItemActivated( wxTreeEvent& event );
   void OnTreeRightClick( wxTreeEvent& event );
+  void OnTreeEndLabelRename( wxTreeEvent& event );
+  void OnTreeKeyPress( wxKeyEvent& event );
   
+  void renameTreeItem( );
+
   void OnTreeBeginDrag( wxTreeEvent& event );
   void OnTreeEndDrag( wxTreeEvent& event );
   

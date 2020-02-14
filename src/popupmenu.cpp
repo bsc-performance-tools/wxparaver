@@ -53,6 +53,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_PASTE_DEFAULT_SPECIAL, gPopUpMenu::OnMenuPasteDefaultSpecial )
   EVT_MENU( ID_MENU_PASTE_SPECIAL, gPopUpMenu::OnMenuPasteSpecial )
   EVT_MENU( ID_MENU_CLONE, gPopUpMenu::OnMenuClone )
+  EVT_MENU( ID_MENU_RENAME, gPopUpMenu::OnMenuRename )
   EVT_MENU( wxID_UNDO, gPopUpMenu::OnMenuUndoZoom )
   EVT_MENU( wxID_REDO, gPopUpMenu::OnMenuRedoZoom )
   EVT_MENU( wxID_ZOOM_100, gPopUpMenu::OnMenuFitTime )
@@ -217,6 +218,7 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
   Enable( FindItem( _( STR_PASTE_SPECIAL ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE_SPECIAL ) );
 
   Enable( FindItem( _( STR_CLONE ) ), true );
+  Enable( FindItem( _( STR_RENAME ) ), true );
 
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
   Enable( FindItem( _( STR_FIT_SEMANTIC ) ), true );
@@ -243,6 +245,7 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
   Enable( FindItem( _( STR_PASTE_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_SPECIAL ) );
 
   Enable( FindItem( _( STR_CLONE ) ), true );
+  Enable( FindItem( _( STR_RENAME ) ), true );
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
   Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
   
@@ -443,6 +446,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
   buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
+  buildItem( this, _( STR_RENAME ), ITEMNORMAL, NULL, ID_MENU_RENAME );
 
   AppendSeparator();
 
@@ -830,6 +834,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
   buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
+  buildItem( this, _( STR_RENAME ), ITEMNORMAL, NULL, ID_MENU_RENAME );
 
   AppendSeparator();
 
@@ -1328,6 +1333,15 @@ void gPopUpMenu::OnMenuClone( wxCommandEvent& event )
     timeline->OnPopUpClone();
   else
     histogram->OnPopUpClone();
+}
+
+
+void gPopUpMenu::OnMenuRename( wxCommandEvent& event )
+{
+  if ( timeline != NULL )
+    timeline->OnPopUpRename();
+  else
+    histogram->OnPopUpRename();
 }
 
 

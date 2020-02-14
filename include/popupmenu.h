@@ -51,6 +51,7 @@ class gHistogram;
 #define ID_MENU_FILTER_EVENTS                     30008
 #define ID_MENU_PASTE_SPECIAL                     30009
 #define ID_MENU_CLONE                             30010
+#define ID_MENU_RENAME                            30101
 #define ID_MENU_UNDO_ZOOM                         30011
 #define ID_MENU_REDO_ZOOM                         30012
 #define ID_MENU_FIT_TIME                          30013
@@ -187,6 +188,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuPasteDefaultSpecial( wxCommandEvent& event);
     void OnMenuPasteSpecial( wxCommandEvent& event);
     void OnMenuClone( wxCommandEvent& event);
+    void OnMenuRename( wxCommandEvent& event);
     void OnMenuUndoZoom( wxCommandEvent& event);
     void OnMenuRedoZoom( wxCommandEvent& event);
     void OnMenuFitTime( wxCommandEvent& event);

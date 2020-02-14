@@ -186,7 +186,10 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_TREE_SEL_CHANGED( wxID_ANY, paraverMain::OnTreeSelChanged )
   EVT_TREE_ITEM_ACTIVATED( wxID_ANY, paraverMain::OnTreeItemActivated )
   EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY, paraverMain::OnTreeRightClick)
+  EVT_TREE_END_LABEL_EDIT( wxID_ANY, paraverMain::OnTreeEndLabelRename )
+  //EVT_KEY_DOWN( wxID_ANY, paraverMain::OnTreeKeyPress )
   
+
   EVT_TREE_BEGIN_DRAG(wxID_ANY, paraverMain::OnTreeBeginDrag)
   EVT_TREE_END_DRAG( wxID_ANY, paraverMain::OnTreeEndDrag)
 
@@ -591,6 +594,7 @@ void paraverMain::CreateControls()
 
 ////@end paraverMain content construction
   wxTreeCtrl* tmpTree = createTree( imageList );
+  tmpTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), NULL, this );
   choiceWindowBrowser->AddPage( tmpTree, _( "All Traces" ) );
 #if wxMAJOR_VERSION>=3
   choiceWindowBrowser->AddPage( createTree( imageList ), _( "Dummy Tree" ) );
@@ -836,6 +840,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     setTraceWorkspaces( tr );
  
     wxTreeCtrl *newTree = createTree( imageList );
+    newTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), NULL, this );
 
     if( paraverConfig->getGlobalFullTracePath() )
       choiceWindowBrowser->AddPage( newTree, wxString::FromAscii( tr->getFileNameNumbered().c_str() ) );
@@ -2017,6 +2022,9 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
 }
 
 
+/*!
+ * wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
+ */
 void paraverMain::OnTreeRightClick( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
@@ -2025,23 +2033,68 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
     event.Skip();
     return;
   }
+
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
-  
   endDragWindow = NULL;
 
   if( gHistogram *histo = itemData->getHistogram() )
   {
     beginDragWindow = NULL;
-
     histo->rightDownManager();
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
     beginDragWindow = timeline->GetMyWindow();
-
     timeline->rightDownManager();
   }
 }
+
+
+/*!
+ * wxEVT_KEY_DOWN event handler for wxID_ANY
+ */
+void paraverMain::OnTreeKeyPress( wxKeyEvent& event )
+{
+  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+
+  if ( event.GetKeyCode() == WXK_F2 && !currentTree->IsEmpty() )
+    currentTree->EditLabel( currentTree->GetFocusedItem() );  
+}
+
+
+/*!
+ * wxEVT_TREE_END_LABEL_EDIT event handler for wxID_ANY
+ */
+void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
+{
+  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+  if ( !event.IsEditCancelled() )
+  {
+    TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( 
+        currentTree->GetItemData( currentTree->GetFocusedItem() ) );
+
+    if( gHistogram *histo = itemData->getHistogram() )
+    {
+      histo->GetHistogram()->setName( std::string( event.GetLabel().mb_str() ) );
+      histo->GetHistogram()->setChanged( true );
+    }
+    else if( gTimeline *timeline = itemData->getTimeline() )
+    {
+      timeline->GetMyWindow()->setName( std::string( event.GetLabel().mb_str() ) );
+      timeline->GetMyWindow()->setChanged( true );
+    }
+  }
+}
+
+
+void paraverMain::renameTreeItem( ) 
+{
+  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+  if( !currentTree->IsEmpty() )
+    currentTree->EditLabel( currentTree->GetFocusedItem() );
+}
+
+
 
 
 /*!
@@ -2545,7 +2598,7 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
       currentTimeline = NULL;
     }
   }
-  
+
   setActiveWorkspacesText();
   refreshMenuHints();
 }

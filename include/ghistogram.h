@@ -331,6 +331,7 @@ public:
   void OnPopUpPasteControlDimensions();
 
   void OnPopUpClone();
+  void OnPopUpRename();
   void OnPopUpFitTimeScale();
   void OnPopUpFitObjects();
   void OnPopUpRowSelection();
