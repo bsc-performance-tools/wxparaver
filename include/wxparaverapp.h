@@ -34,6 +34,9 @@
 #include "paravermain.h"
 ////@end includes
 #include <wx/snglinst.h>
+#include "wx/dirctrl.h"
+#include "wx/filefn.h"
+#include <time.h>
 #ifdef TRACING_ENABLED
 #include "extrae_user_events.h"
 #endif
@@ -44,8 +47,7 @@
 #else
   const char PATH_SEP('/');
 #endif
-
-
+  
 /*!
  * Forward declarations
  */
@@ -126,6 +128,7 @@ public:
 
     static paraverMain* mainWindow;
     static wxCmdLineEntryDesc argumentsParseSyntax[];
+    void ValidateSession( bool setValidate );
     
 ////@begin wxparaverApp member variables
 private:
@@ -136,6 +139,7 @@ private:
 	wxDialog* globalTimingCallDialog;
 	TTime globalTimingEnd;
 ////@end wxparaverApp member variables
+    bool invalidateNoConnect;
 
     wxLocale m_locale;
     

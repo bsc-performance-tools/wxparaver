@@ -21,7 +21,12 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
+
+#ifndef _CONNECTION_H_
+#define _CONNECTION_H_
+
 #include "wx/ipc.h"
+//#include "autosessionmanager.h"
 
 class stServer: public wxServer
 {
@@ -38,8 +43,10 @@ class stConnection: public wxConnection
 #if wxMAJOR_VERSION >= 3
     bool OnExecute( const wxString& topic, const void *data, size_t size, wxIPCFormat format );
 #else
-    bool OnExecute( const wxString& topic,     wxChar *data,    int size, wxIPCFormat format );
+    bool OnExecute( const wxString& topic,      wxChar *data, int size, wxIPCFormat format );
 #endif
+
+    bool OnPoke( const wxString& topic, const wxString& item, const void *data, size_t size, wxIPCFormat format );
 };
 
 class stClient: public wxClient
@@ -49,3 +56,4 @@ class stClient: public wxClient
     wxConnectionBase *OnMakeConnection() { return new stConnection; }
 };
 
+#endif // _CONNECTION_H_

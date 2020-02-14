@@ -26,7 +26,8 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     saveconfigurationdialog.cpp \
                     sequencedriver.cpp \
                     sessionsaver.cpp \
-										timelinetreeselector.cpp \
+                    sessionselectiondialog.cpp \
+				timelinetreeselector.cpp \
                     windows_tree.cpp \
                     wxparaverapp.cpp 
 

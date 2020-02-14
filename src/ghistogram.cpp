@@ -447,7 +447,6 @@ void gHistogram::execute()
 
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
 
-
   if( myHistogram->getZoom() )
     fillZoom();
   else
@@ -643,7 +642,7 @@ void gHistogram::fillZoom()
     }
     else
     {
-      numDrawCols = myHistogram->getNumRows();
+      numDrawCols = myHistogram->getNumColumns();
       numDrawRows = numCols;
     }
     selectedColumns.insert( selectedColumns.begin(), numCols, true );

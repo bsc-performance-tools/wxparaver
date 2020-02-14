@@ -151,12 +151,6 @@ void LoadCFGDialog::CreateControls()
   searchBar = new wxTextCtrl( itemDialog1, ID_SEARCHCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
   itemBoxSizer2->Add(searchBar, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer1, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer1->Add(itemBoxSizer4, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
   wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(itemBoxSizer3, 3, wxGROW|wxALL, 5);
 
@@ -205,9 +199,8 @@ void LoadCFGDialog::OnDirctrlSelChanged( wxTreeEvent& event )
   {
     fName.AssignDir( myPath );
     wxArrayString filesInDir;
-    wxDir myDir( myPath );
+    wxDir::GetAllFiles( myPath, &filesInDir, wxT( "*.cfg" ), wxDIR_FILES );
     
-    myDir.GetAllFiles( myPath, &filesInDir, wxT( "*.cfg" ), wxDIR_FILES );
     listDirs->Clear();
     linksPerFileName.clear();
     filesInDir.Sort();
@@ -395,7 +388,3 @@ void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
     EndModal( wxID_OK );
   }
 }
-
-
-
-

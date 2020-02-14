@@ -222,7 +222,7 @@ wxString HistoTableBase::GetValue( int row, int col )
     else
       label = wxString::FromAscii( "-" );
   }
-  else
+  else if ( row < myHisto->getNumRows() && col < myHisto->getNumColumns() ) // the if is CKC's bug fix
   {
     if( myHisto->getCellValue( semValue, row, col, idStat, myHisto->getSelectedPlane() ) )
     {
@@ -232,6 +232,7 @@ wxString HistoTableBase::GetValue( int row, int col )
     else
       label = wxString::FromAscii( "-" );
   }
+  else label = wxString::FromAscii( "-" );
 
   return label;
 }
@@ -326,48 +327,40 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
   if( ( myHisto->getHorizontal() && row < myHisto->getNumRows() ) ||
     ( !myHisto->getHorizontal() && col < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) ) )
   {
-    if( myHisto->itsCommunicationStat( myHisto->getCurrentStat() ) )
+    if ( myHisto->itsCommunicationStat( myHisto->getCurrentStat() ) &&
+         myHisto->getCommCellValue( semValue, row, col, idStat, myHisto->getCommSelectedPlane() ) &&
+         myHisto->getShowColor() )
     {
-      if( myHisto->getCommCellValue( semValue, row, col, idStat, myHisto->getCommSelectedPlane() ) )
+      rgb tmpCol = myHisto->calcGradientColor( semValue );
+      tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+      tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+    }
+    else if ( row < myHisto->getNumRows() && col < myHisto->getNumColumns() )
+    {
+      if( myHisto->getCellValue( semValue, row, col, idStat, myHisto->getSelectedPlane() ) && myHisto->getShowColor() )
       {
-        if( myHisto->getShowColor() )
+        rgb tmpCol;
+        if( myHisto->getColorMode() == SemanticColor::COLOR )
         {
-          rgb tmpCol = myHisto->calcGradientColor( semValue );
+          tmpCol = myHisto->getDataWindow()->getCodeColor().calcColor( semValue,
+                                                                       myHisto->getMinGradient(),
+                                                                       myHisto->getMaxGradient() );
           tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
           tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
         }
-      }
-    }
-    else
-    {
-      if( myHisto->getCellValue( semValue, row, col, idStat, myHisto->getSelectedPlane() ) )
-      {
-        if( myHisto->getShowColor() )
+        else
         {
-          rgb tmpCol;
-          if( myHisto->getColorMode() == SemanticColor::COLOR )
+          if( myHisto->getColorMode() == SemanticColor::GRADIENT || 
+              ( myHisto->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && semValue != 0.0 ) )
           {
-            tmpCol = myHisto->getDataWindow()->getCodeColor().calcColor( semValue,
-                                                                         myHisto->getMinGradient(),
-                                                                         myHisto->getMaxGradient() );
+            tmpCol = myHisto->calcGradientColor( semValue );
             tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
             tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-          }
-          else
-          {
-            if( myHisto->getColorMode() == SemanticColor::GRADIENT || 
-                ( myHisto->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && semValue != 0.0 ) )
-            {
-              tmpCol = myHisto->calcGradientColor( semValue );
-              tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-              tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
-            }
           }
         }
       }
     }
   }
-
   return tmpAttr;
 }
 

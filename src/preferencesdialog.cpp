@@ -73,6 +73,7 @@ IMPLEMENT_DYNAMIC_CLASS( PreferencesDialog, wxPropertySheetDialog )
 BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
 
 ////@begin PreferencesDialog event table entries
+  EVT_SPINCTRL( ID_PREFERENCES_GLOBAL_TIME_SESSION, PreferencesDialog::OnPreferencesGlobalTimeSessionUpdated )
   EVT_COLOURPICKER_CHANGED( ID_COLOURPICKER_BACKGROUND, PreferencesDialog::OnColourpickerBackgroundColourPickerChanged )
   EVT_UPDATE_UI( ID_COLOURPICKER_ZERO, PreferencesDialog::OnColourpickerZeroUpdate )
   EVT_BUTTON( ID_BUTTON_DEFAULT_TIMELINE, PreferencesDialog::OnButtonDefaultTimelineClick )
@@ -233,6 +234,7 @@ void PreferencesDialog::Init()
   dirBrowserButtonTmp = NULL;
   checkGlobalSingleInstance = NULL;
   spinSessionTime = NULL;
+  checkGlobalAskForPrevSessionLoad = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -450,6 +452,10 @@ void PreferencesDialog::CreateControls()
 
   wxStaticText* itemStaticText36 = new wxStaticText( panelGlobal, wxID_STATIC, _("minutes"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer33->Add(itemStaticText36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  checkGlobalAskForPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_ASK_FOR_PREV_SESSION, _("Show dialog for crashed auto-saved sessions on startup"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkGlobalAskForPrevSessionLoad->SetValue(true);
+  itemStaticBoxSizer31->Add(checkGlobalAskForPrevSessionLoad, 1, wxGROW|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1380,6 +1386,8 @@ bool PreferencesDialog::TransferDataToWindow()
   txtMaximumTraceSize->SetValue( maximumTraceSize );
   checkGlobalSingleInstance->SetValue( singleInstance );
   spinSessionTime->SetValue( sessionSaveTime );
+  checkGlobalAskForPrevSessionLoad->SetValue( askForPrevSessionLoad );
+  checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
@@ -1517,6 +1525,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   maximumTraceSize = (float)txtMaximumTraceSize->GetValue();
   singleInstance = checkGlobalSingleInstance->GetValue();
   sessionSaveTime = spinSessionTime->GetValue();
+  askForPrevSessionLoad = checkGlobalAskForPrevSessionLoad->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );
@@ -2187,3 +2196,12 @@ void PreferencesDialog::OnRadioeventypesSelected( wxCommandEvent& event )
   tmpWrk.setType( WorkspaceValue::EVENT );
 }
 
+
+/*!
+ * wxEVT_COMMAND_SPINCTRL_UPDATED event handler for ID_PREFERENCES_GLOBAL_TIME_SESSION
+ */
+
+void PreferencesDialog::OnPreferencesGlobalTimeSessionUpdated( wxSpinEvent& event )
+{
+  checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
+}

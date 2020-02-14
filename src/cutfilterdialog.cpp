@@ -433,13 +433,13 @@ void CutFilterDialog::CreateControls()
   radioCutterCutByTime = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_CUT_BY_TIME, _("Cut by time"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
   radioCutterCutByTime->SetValue(true);
   if (CutFilterDialog::ShowToolTips())
-    radioCutterCutByTime->SetToolTip(_("Select this to cut [begin time, end time] region of the trace."));
+    radioCutterCutByTime->SetToolTip(_("Select this as a cut [begin time, end time] of the region of the trace."));
   itemBoxSizer42->Add(radioCutterCutByTime, 1, wxALIGN_LEFT|wxLEFT|wxTOP, 2);
 
   radioCutterCutByTimePercent = new wxRadioButton( itemScrolledWindow38, ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT, _("Cut by time %"), wxDefaultPosition, wxDefaultSize, 0 );
   radioCutterCutByTimePercent->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
-    radioCutterCutByTimePercent->SetToolTip(_("Select this to cut [begin % time, end % time] region of the trace."));
+    radioCutterCutByTimePercent->SetToolTip(_("Select this as a cut [begin % time, end % time] of the region of the trace."));
   itemBoxSizer42->Add(radioCutterCutByTimePercent, 1, wxALIGN_LEFT|wxLEFT, 2);
 
   wxBoxSizer* itemBoxSizer45 = new wxBoxSizer(wxVERTICAL);
@@ -475,7 +475,7 @@ void CutFilterDialog::CreateControls()
 
   textCutterTasks = new wxTextCtrl( itemScrolledWindow38, ID_TEXTCTRL_CUTTER_TASKS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
-    textCutterTasks->SetToolTip(_("Keep only information of tasks specified, separated by commas. Ranges marked with \"-\" are allowed. I.e. \"1-32,33,64-128\". Leave it empty to select all the tasks."));
+    textCutterTasks->SetToolTip(_("Keep only information of the tasks specified, separated by commas. Ranges marked within \"-\" are allowed. I.e. \"1-32,33,64-128\". Leave it empty to select all the tasks."));
   itemBoxSizer52->Add(textCutterTasks, 1, wxGROW|wxALL, 2);
 
   wxStaticLine* itemStaticLine55 = new wxStaticLine( itemScrolledWindow38, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
@@ -485,14 +485,14 @@ void CutFilterDialog::CreateControls()
   itemStaticBoxSizer40->Add(itemBoxSizer56, 0, wxGROW|wxALL, 2);
   buttonCutterSelectRegion = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_SELECT_REGION, _("Select Region..."), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
-    buttonCutterSelectRegion->SetToolTip(_("Fill times range directly clicking or dragging from timelines. You can click on different timelines."));
+    buttonCutterSelectRegion->SetToolTip(_("Fill times range directly by clicking or dragging from timelines. You can click on different timelines."));
   itemBoxSizer56->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  buttonCutterAllWindow = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_WINDOW, _("All Window"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCutterAllWindow = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_WINDOW, _("All Windows"), wxDefaultPosition, wxDefaultSize, 0 );
   buttonCutterAllWindow->Enable(false);
   itemBoxSizer56->Add(buttonCutterAllWindow, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  buttonCutterAllTrace = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_TRACE, _("All Trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCutterAllTrace = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_TRACE, _("All Traces"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     buttonCutterAllTrace->SetToolTip(_("Set range [0%, 100%]."));
   itemBoxSizer56->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
@@ -505,7 +505,7 @@ void CutFilterDialog::CreateControls()
   checkCutterUseOriginalTime = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, _("Use original time"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterUseOriginalTime->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
-    checkCutterUseOriginalTime->SetToolTip(_("If not set, after the cut the first timestamp will be set to 0, and the difference with the original time will be substracted to all the times. If set, original time is kept."));
+    checkCutterUseOriginalTime->SetToolTip(_("If not set, after the cut the first timestamp will be set to 0, and the difference with the original time will be substracted to all times. If set, original time will be kept."));
   itemBoxSizer61->Add(checkCutterUseOriginalTime, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
   checkCutterRemoveFirstState = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CUTTER_REMOVE_FIRST_STATE, _("Remove first state"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -519,7 +519,7 @@ void CutFilterDialog::CreateControls()
   checkCutterDontBreakStates = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CUTTER_BREAK_STATES, _("Don't break states"), wxDefaultPosition, wxDefaultSize, 0 );
   checkCutterDontBreakStates->SetValue(false);
   if (CutFilterDialog::ShowToolTips())
-    checkCutterDontBreakStates->SetToolTip(_("If set, no matter the given limits, the states in the middle of the cut are maintained. If not set the limits will split them. This options is overriden if \"Use original time\" is set."));
+    checkCutterDontBreakStates->SetToolTip(_("If set, no matter the given limits, the states in the middle of the cut are maintained. If not set, the limits will split them. This option will be overriden if \"Use original time\" is set."));
   itemBoxSizer64->Add(checkCutterDontBreakStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
   checkCutterRemoveLastState = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CUTTER_REMOVE_LAST_STATE, _("Remove last state"), wxDefaultPosition, wxDefaultSize, 0 );
