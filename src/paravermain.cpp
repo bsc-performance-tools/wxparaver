@@ -2055,10 +2055,10 @@ void paraverMain::OnTreeRightClick( wxTreeEvent& event )
  */
 void paraverMain::OnTreeKeyPress( wxKeyEvent& event )
 {
-  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
 
   if ( event.GetKeyCode() == WXK_F2 && !currentTree->IsEmpty() )
-    currentTree->EditLabel( currentTree->GetSelection() );  
+    currentTree->EditLabel( currentTree->GetSelection() );
 }
 
 
@@ -2067,7 +2067,7 @@ void paraverMain::OnTreeKeyPress( wxKeyEvent& event )
  */
 void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
 {
-  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
   if ( !event.IsEditCancelled() )
   {
     TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( 
@@ -2089,7 +2089,7 @@ void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
 
 void paraverMain::renameTreeItem( ) 
 {
-  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
+  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
   if( !currentTree->IsEmpty() )
     currentTree->EditLabel( currentTree->GetSelection() );
 }

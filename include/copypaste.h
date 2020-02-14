@@ -49,7 +49,7 @@ using namespace std;
 #define STR_FILTER_EVENTS_XT    "Filter:Events"
 #define STR_FILTER_ALL          "All"
 #define STR_CLONE               "Clone"
-#define STR_RENAME              "Rename"
+#define STR_RENAME              "Rename\tF2"
 #define STR_FIT_TIME            "Fit Time Scale"
 #define STR_FIT_SEMANTIC        "Fit Semantic Scale"
 #define STR_FIT_OBJECTS         "Fit Objects"
