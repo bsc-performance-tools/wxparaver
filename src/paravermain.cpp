@@ -4712,11 +4712,10 @@ void paraverMain::OnButtonForceRedrawUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::OnButtonForceRedrawClick( wxCommandEvent& event )
 {
-/*  if( currentTimeline != NULL )
+  if( currentTimeline != NULL )
     currentTimeline->setForceRedraw( true );
   else if( currentHisto != NULL )
-    currentHisto->setForceRecalc( true );*/
-  currentHisto->setForceRecalc( currentTimeline != NULL || currentHisto != NULL );
+    currentHisto->setForceRecalc( true );
 }
 
 
