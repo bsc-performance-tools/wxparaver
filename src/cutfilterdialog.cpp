@@ -828,7 +828,7 @@ void CutFilterDialog::CreateControls()
 
   //fileBrowserButtonInputTrace->SetPath( wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() ) );
 
-  wxString tmpWildCard = wxT( "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*" );
+  wxString tmpWildCard = wxT( "Paraver trace (*.prv;*.prv.gz;*.csv)|*.prv;*.prv.gz;*.csv|All files (*.*)|*.*" );
   fileBrowserButtonInputTrace->SetDialogMessage( _( "Load Trace" ) );
   fileBrowserButtonInputTrace->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonInputTrace->SetTextBox( textCtrlInputTrace );

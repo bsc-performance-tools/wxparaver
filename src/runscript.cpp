@@ -550,7 +550,7 @@ void RunScript::CreateControls()
 
   wxNotebook* itemNotebook24 = new wxNotebook( itemDialog1, ID_NOTEBOOK_DIMEMAS, wxDefaultPosition, wxDefaultSize, wxBK_TOP );
 
-  wxScrolledWindow* itemScrolledWindow25 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_MAIN, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL|wxTAB_TRAVERSAL );
+  wxScrolledWindow* itemScrolledWindow25 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_MAIN, wxDefaultPosition, wxSize(-1, 80), wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL|wxTAB_TRAVERSAL );
   itemScrolledWindow25->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxVERTICAL);
   itemScrolledWindow25->SetSizer(itemBoxSizer26);
@@ -559,24 +559,24 @@ void RunScript::CreateControls()
   checkBoxReuseDimemasTrace->SetValue(true);
   if (RunScript::ShowToolTips())
     checkBoxReuseDimemasTrace->SetToolTip(_("Check this if you want to run many simulations varying only the Dimemas parametrization but the translated trace (obtained from given .prv trace). If unchecked, prv2dim is previously called in order to get this translation."));
-  itemBoxSizer26->Add(checkBoxReuseDimemasTrace, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 4);
+  itemBoxSizer26->Add(checkBoxReuseDimemasTrace, 1, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 4);
 
   checkBoxDontTranslateIdleStates = new wxCheckBox( itemScrolledWindow25, ID_CHECKBOX_PRV2DIM_N, _("Don't generate initial idle states when translating"), wxDefaultPosition, wxDefaultSize, 0 );
   checkBoxDontTranslateIdleStates->SetValue(false);
   if (RunScript::ShowToolTips())
     checkBoxDontTranslateIdleStates->SetToolTip(_("If checked, parameter -n is passed to prv2dim translator, forbidding generation of initial idle states. prv2dim translation phase is engaged only if Dimemas trace is missing or you don't want to reuse it (previous \"Reuse Dimemas\" unchecked)"));
-  itemBoxSizer26->Add(checkBoxDontTranslateIdleStates, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 4);
+  itemBoxSizer26->Add(checkBoxDontTranslateIdleStates, 1, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 4);
 
   checkBoxDimemasVerbose = new wxCheckBox( itemScrolledWindow25, ID_CHECKBOX_VERBOSE, _("Verbose"), wxDefaultPosition, wxDefaultSize, 0 );
   checkBoxDimemasVerbose->SetValue(false);
   if (RunScript::ShowToolTips())
     checkBoxDimemasVerbose->SetToolTip(_("If unset, Dimemas shows only simulation times"));
-  itemBoxSizer26->Add(checkBoxDimemasVerbose, 0, wxALIGN_LEFT|wxALL, 4);
+  itemBoxSizer26->Add(checkBoxDimemasVerbose, 1, wxALIGN_LEFT|wxALL, 4);
 
   itemScrolledWindow25->FitInside();
   itemNotebook24->AddPage(itemScrolledWindow25, _("Main"));
 
-  wxScrolledWindow* itemScrolledWindow30 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_ADVANCED, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL|wxTAB_TRAVERSAL );
+  wxScrolledWindow* itemScrolledWindow30 = new wxScrolledWindow( itemNotebook24, ID_SCROLLEDWINDOW_DIMEMAS_ADVANCED, wxDefaultPosition, wxSize(-1, 80), wxFULL_REPAINT_ON_RESIZE|wxHSCROLL|wxVSCROLL|wxTAB_TRAVERSAL );
   itemScrolledWindow30->SetScrollbars(1, 1, 0, 0);
   wxBoxSizer* itemBoxSizer31 = new wxBoxSizer(wxHORIZONTAL);
   itemScrolledWindow30->SetSizer(itemBoxSizer31);
@@ -1017,7 +1017,7 @@ void RunScript::CreateControls()
   // Trace browser
   fileBrowserButtonTrace->SetTextBox( textCtrlTrace );
   fileBrowserButtonTrace->SetDialogMessage( _( "Load Trace" ) );
-  wxString tmpWildCard = wxT( "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*" );
+  wxString tmpWildCard = wxT( "Paraver trace (*.prv;*.prv.gz;*.csv)|*.prv;*.prv.gz;*.csv|All files (*.*)|*.*" );
   fileBrowserButtonTrace->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonTrace->Enable();
 

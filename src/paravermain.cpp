@@ -1014,7 +1014,7 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
     tracePath = wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() );
 
   wxFileDialog dialog( this, _( "Load Trace" ), tracePath, _( "" ), 
-    _( "Paraver trace (*.prv;*.prv.gz)|*.prv;*.prv.gz|All files (*.*)|*.*" ),
+    _( "Paraver trace (*.prv;*.prv.gz;*.csv)|*.prv;*.prv.gz;*.csv|All files (*.*)|*.*" ),
     wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_CHANGE_DIR );
 
   raiseCurrentWindow = false;
@@ -2797,12 +2797,6 @@ void paraverMain::OnToolNewWindowClick( wxCommandEvent& event )
 
 void paraverMain::OnToolNewWindowUpdate( wxUpdateUIEvent& event )
 {
-  /*
-  if ( loadedTraces.size() > 0 )
-    tbarMain->EnableTool( ID_NEW_WINDOW, true );
-  else
-    tbarMain->EnableTool( ID_NEW_WINDOW, false );
-  */
   tbarMain->EnableTool( ID_NEW_WINDOW, loadedTraces.size() > 0 );
 
   if ( currentTimeline != NULL )
@@ -3517,10 +3511,6 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 
 void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent& event )
 {
-  /*if( currentTimeline != NULL || currentHisto != NULL )
-    event.Enable( true );
-  else
-    event.Enable( false );*/
   event.Enable( currentTimeline != NULL || currentHisto != NULL );
 }
 
@@ -4577,12 +4567,6 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 {
-  /*
-  if( loadedTraces.empty() || traceWorkspaces[ loadedTraces[ currentTrace ] ].empty() )
-    GetMenuBar()->EnableTop( 1, false );
-  else
-    GetMenuBar()->EnableTop( 1, true );
-  */
   GetMenuBar()->EnableTop( 1, 
                            !loadedTraces.empty() && 
                            !traceWorkspaces[ loadedTraces[ currentTrace ] ].empty() );
@@ -4960,14 +4944,6 @@ void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
                       wxT( "Load auto-saved session" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
       DoLoadSession( file );
   }
-  /*
-  else if ( !prevSessionWasComplete )//&&
-        //wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last crashed auto-saved Paraver session?" ),
-        //              wxT( "Load auto-saved sessions" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
-  {
-    MultiSessionLoad( false );
-  }
-  */
   else if ( wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last crashed auto-saved Paraver session?" ),
                       wxT( "Load auto-saved sessions" ), wxICON_QUESTION | wxYES_NO, this ) == wxYES )
   {
