@@ -2708,7 +2708,7 @@ void paraverMain::OnMenusavecfgUpdate( wxUpdateUIEvent& event )
   */
   bool areWindowsEmpty = LoadedWindows::getInstance()->emptyWindows() && 
       LoadedWindows::getInstance()->emptyHistograms();
-  event.Enable( areWindowsEmpty );
+  event.Enable( !areWindowsEmpty );
 }
 
 
