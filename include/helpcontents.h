@@ -147,21 +147,18 @@ public:
 
   bool SetHelpContentsRoot( const std::string& whichRoot );
   bool SetHelpContentsRoot( const wxString& whichRoot );
+
   const std::string GetHelpContentsRootStr();
   const wxString GetHelpContentsRoot();
 
-  //void LoadHtml( const wxString& relativePath, const wxString& htmlFile, const wxString& hRef );
   void LoadHtml( const wxString& htmlFile );
-
   bool SetHelpContents( const wxString& whichHelpContents );
 
   static bool isHtmlDoc( const wxString& whichPath );
   static bool isHtmlReferenceInDoc( const wxString& whichPath );
-  void SetMyPage( bool isPage, const wxString &path );
 
 protected:
   wxString helpContentsRoot;
-  //wxString hRef;
   bool lookForContents;
   wxString currentHelpContentsDir;
 
@@ -179,7 +176,6 @@ protected:
   virtual void buildIndex();
   virtual void linkToWebPage( wxString& htmlDoc );
   virtual void helpMessage( wxString& htmlDoc );
-
 };
 
 
