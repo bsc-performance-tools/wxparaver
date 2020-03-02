@@ -538,22 +538,15 @@ public:
   
   bool getAutoRedraw() const;
   bool isCFG4DModeDisabled() const;
-  
-  // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
+ 
   void ShowRunCommand( wxString traceFile );
 
   Window *createBaseWindow( wxString whichName = wxString( wxT("") ) );
   void insertInTree( Window *whichWindow );
 
-  void createHelpContentsWindow( const wxString &helpContentsBaseRelativePath,                          // "/share/docs/html"
-                                 /*wxString helpContentsChapterRelativePath = wxString( wxT("") ), // "/1.quick_reference"
-                                 wxString helpContentsBasename =
-                                        wxString( wxFileName::GetPathSeparator() + wxString( wxT("index.html") ) ), // "main.html"
-                                 wxString helpContentsHRef = wxString( wxT("") ),                // "#section_1"
-                                 */const wxString &helpFile = wxString( wxT("") ),
-                                 const wxString &hRef = wxString( wxT("") ),                // "#section_1"
-                                 bool show = true,
-                                 bool reload = false );
+  void createHelpContentsWindow( const wxString &helpContentsBaseRelativePath,
+                                 const wxString &helpFile = wxString( wxT("") ),
+                                 const wxString &hRef = wxString( wxT("") ));
   bool getParaverHome( wxString &paraverHome );
 
   static wxString getHintComposed( const std::pair< std::string, std::string >& hint );

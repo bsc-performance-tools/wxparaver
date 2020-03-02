@@ -99,8 +99,8 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   if (( myLevel >= SYSTEM ) && ( myLevel <= CPU ))
   {
     minLevel = NODE;
-    buildPanel( _("Node"), NODE );
-    buildPanel( _("CPU"), CPU );
+    buildPanel( wxT("Node"), NODE );
+    buildPanel( wxT("CPU"), CPU );
   }
   else if (( myLevel >= WORKLOAD ) && ( myLevel <= THREAD ))
   {
@@ -141,15 +141,15 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   if (( myLevel >= SYSTEM ) && ( myLevel <= CPU ))
   {
     minLevel = NODE;
-    buildPanel( _("Node"), NODE );
-    buildPanel( _("CPU"), CPU );
+    buildPanel( wxT("Node"), NODE );
+    buildPanel( wxT("CPU"), CPU );
   }
   else if (( myLevel >= WORKLOAD ) && ( myLevel <= THREAD ))
   {
     minLevel = APPLICATION;
-    buildPanel( _("Application"), APPLICATION );
-    buildPanel( _("Task"), TASK );
-    buildPanel( _("Thread"), THREAD );
+    buildPanel( wxT("Application"), APPLICATION );
+    buildPanel( wxT("Task"), TASK );
+    buildPanel( wxT("Thread"), THREAD );
   }
   
   LayoutDialog();
@@ -195,18 +195,14 @@ void RowsSelectionDialog::OnRegularExpressionHelp( wxCommandEvent& event )
 
   wxString helpRegEx = wxString( wxT( "#objects_regex" ) );
 
-  bool show = true;
-  bool reload = true;
-
-  paraverMain::myParaverMain->createHelpContentsWindow( helpContentsDir, helpChapter, helpRegEx, show, reload );
+  paraverMain::myParaverMain->createHelpContentsWindow( helpContentsDir, helpChapter, helpRegEx );
 }
 
 
 /*
  * Dynamic panel building
  */
-void RowsSelectionDialog::buildPanel( const wxString& title,
-                                      TWindowLevel whichLevel )
+void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichLevel )
 {
   wxPanel *myPanel;
 
@@ -301,7 +297,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   // RE: Text box
   bool initialCheckState = false;
 
-  wxStaticBox* regularExpressionBox = new wxStaticBox(myPanel, wxID_ANY, _(" Add checks by objects matching "));
+  wxStaticBox* regularExpressionBox = new wxStaticBox(myPanel, wxID_ANY, wxT(" Add checks by objects matching "));
   wxStaticBoxSizer* regularExpressionBoxSizer = new wxStaticBoxSizer( regularExpressionBox, wxVERTICAL );
   wxBoxSizer *regularExpressionSizerUp = new wxBoxSizer( wxHORIZONTAL );
   wxBoxSizer *regularExpressionSizerDown = new wxBoxSizer( wxVERTICAL );
@@ -320,9 +316,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
 
   // userRegularExpr->SetValidator( getValidator(  ) );
 
-  //wxRegEx *aux = new wxRegEx( wxString("[:alpha]* ?1[.][12][.][0-9]") );// example for thread 1.1.1
-  //wxRegEx *aux = new wxRegEx( wxString( wxT( "([:alnum:]|[_-. ])+" ) ) );// example for many things
-  wxRegEx *aux = new wxRegEx( wxString( wxT( ".*" ) ) );// example for many things
+  wxRegEx *aux = new wxRegEx( wxString( wxT( ".*" ) ) );
   validRE.push_back( aux );
 
   // RE: APPLY button
@@ -337,7 +331,6 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   regularExpressionSizerUp->Add( auxButton, 0, wxGROW | wxALL, 5 );
 
   // RE: Help button
-  //wxBitmap bitmap( wxT( "icons/help.xpm" ) );
   wxBitmapButton *auxButtonBMP = new wxBitmapButton( myPanel,
                                                      wxID_ANY,
                                                      wxBitmap( wxT( "icons/help.xpm" ) ),
@@ -588,8 +581,9 @@ wxString RowsSelectionDialog::buildRegularExpressionString( const wxString& ente
       case wxChar('?'):
         parsedRE += wxString( wxT( "[[:alpha:]]" ) );
         break;
-      case wxChar('^'): // need this?
-        parsedRE += wxString( wxT( "^" ) );
+//      case wxChar('^'): // need this?
+//        parsedRE += wxString( wxT( "^" ) );
+//        break;
       default:
         parsedRE += enteredRE.GetChar( i );
         break;
@@ -636,7 +630,6 @@ void RowsSelectionDialog::checkMatches( const int &iTab, wxRegEx *&levelRE )
 }
 
 
-
 // false: simple mode
 // true : basicPosixRegExprMode 
 wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
@@ -652,7 +645,7 @@ wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
                                 _("*"),  // many alphanum, but '.'
                                 _("#"),  // any number
                                 _("$")   // any char
-                                };
+                              };
     myValidator = new wxTextValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
     wxArrayString charIncludes( (size_t)15, allowedChars );
     myValidator->SetIncludes( charIncludes );
@@ -667,7 +660,7 @@ wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
                                 _("#"),  // used?
                                 _("^"),  // begin of line
                                 _("$")   // end of line
-                                };
+                              };
     myValidator = new wxTextValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
     wxArrayString charIncludes( (size_t)15, allowedChars );
     myValidator->SetIncludes( charIncludes );
@@ -680,33 +673,25 @@ wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
 wxString RowsSelectionDialog::getMyToolTip( const bool posixBasicRegExpTip )
 {
   return ( posixBasicRegExpTip?
-           _( "Posix basic regular expression form:\n"
-              "  . : any character (use [.] for dot)\n"
-              "  ? : zero or one repetition of preceeding item\n"
-              "  + : one or many repetitions of preceeding item\n"
-              "  * : zero or many repetitions of preceeding item\n"
-              "  $ : end of line\n"
-              "  [1234] : set that matches from 1 to 4\n"
-              "  [1-3] : range that matches from 1 to 3\n\n"
-              "Examples:\n"
-              "  .* --> anything\n"
-              "  1[.][1-8][.]1$ --> 1.1.1, 1.2.1, ...1.8.1\n"
-              "  1[.][13]+[.]1  --> 1.1.1, 1.3.1, 1.11.1, 1.13.12, 1.31.17\n\n" ) :
-           _( "Quick form:\n"
-              "  . : '.' (dot character)\n"
-              "  # : only one number\n"
-              "  ? : only one character\n"
-              "  + : one or many alfanumeric\n"
-              "  * : zero or many alfanumeric\n"
-              "  $ : end of line\n"
-              "  [1234] : set that matches from 1 to 4\n"
-              "  [1-3] : range that matches from 1 to 3\n\n"
-              "Examples:\n"
-              "  * --> anything\n"
-              "  1.[1-8].1$ --> Thread 1 of tasks 1 to 8; 1.1.1, 1.2.1, ...1.8.1\n"
-              "  1.[13]+.1  --> Threads starting with 1 from tasks 1,3,11,13,31,33..; 1.1.1, 1.3.1, 1.11.1, 1.13.12, 1.31.17\n\n"
-              "  THREAD 1.2##.1$  (3 digits per task, only thread 1)\n"
-              "  TASK 1.3[1-3] (1.31, 1.32, 1.33)\n\n" ) );
+           wxT( "Posix basic regular expression form:\n"
+                "  . : any character (use [.] for dot)\n"
+                "  ? : 0 - 1 repetition of preceeding item\n"
+                "  + : 1 - n repetitions of preceeding item\n"
+                "  * : 0 - n repetitions of preceeding item\n"
+                "  ^ : begin of line\n"
+                "  $ : end of line\n"
+                "  [1234] : set that matches from 1 to 4\n"
+                "  [1-3] : range that matches from 1 to 3\n\n" ) :
+           wxT( "Quick form:\n"
+                "  . : '.' (dot character)\n"
+                "  # : only one number\n"
+                "  ? : only one character\n"
+                "  + : one or many alfanumeric\n"
+                "  * : zero or many alfanumeric\n"
+                "  ^ : begin of line\n"
+                "  $ : end of line\n"
+                "  [1234] : set that matches from 1 to 4\n"
+                "  [1-3] : range that matches from 1 to 3\n\n" ) );
 }
 
 

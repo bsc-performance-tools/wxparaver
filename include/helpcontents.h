@@ -21,10 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-
 #ifndef _HELPCONTENTS_H_
 #define _HELPCONTENTS_H_
-
 
 /*!
  * Includes
@@ -71,7 +69,7 @@ class wxHtmlWindow;
  */
 
 class HelpContents: public wxDialog
-{    
+{
   DECLARE_DYNAMIC_CLASS( HelpContents )
   DECLARE_EVENT_TABLE()
 
@@ -171,11 +169,11 @@ protected:
   std::string getHrefFullPath( wxHtmlLinkEvent &event );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
 
-  const wxString getHtmlIndex( const wxString& path );
+  const wxString appendIndexHtmlToURL( const wxString& path );
   void appendHelpContents( const wxString& title, const wxString& path, wxString& htmlDoc );
   bool helpContentsFound( wxArrayString & tutorials );
   bool DetectHelpContentsIndexInPath( const wxString& whichTutorial );
-  
+
   virtual const wxString getTitle( int numTutorial, const wxString& path );
   virtual void buildIndexTemplate( wxString title, wxString filePrefix );
   virtual void buildIndex();
