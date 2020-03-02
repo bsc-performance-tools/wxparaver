@@ -459,72 +459,11 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
   return isHtmlReference;
 }
 
-/*
-void HelpContents::LoadHtml( const wxString& relativePath,
-                             /*const wxString& htmlFile,
-                             const wxString& hRef*//*)
-{*/
-  /*wxFileName candidate( relativePath );
 
-  SetHelpContentsRoot( candidate.GetPathWithSep() );
-  htmlWindow->LoadPage( relativePath + wxFileName::GetPathSeparator() + htmlFile );*/
-/*  wxString paraverHome;
-  if ( paraverMain::myParaverMain->getParaverHome( paraverHome ) )
-  {
-    wxString tmpPage = paraverHome  + wxFileName::GetPathSeparator() +
-                       relativePath /*+ wxFileName::GetPathSeparator() +
-                       htmlFile + hRef;
-    std::cout << " HelpContents::LoadHtml ->" <<tmpPage.mb_str() << std::endl;
-    htmlWindow->LoadPage( tmpPage );
-  }
-}
-
-*/
 void HelpContents::LoadHtml( const wxString& htmlFile )
 {
   htmlWindow->LoadPage( htmlFile );
 }
-
-/*
-bool HelpContents::LoadFromRelativeBase( const wxString& relativePath )
-{
-  bool htmlFound = false;
-  wxFileName candidate( whichPath );
-  if ( isHtmlDoc( whichPath ) )
-  {
-  std::cout << "isHtmlDoc !! HelpContents::SetHelpContents: whichPath " <<whichPath.mb_str() << std::endl;
-    // relativepath/index.html
-
-    SetHelpContentsRoot( candidate.GetPathWithSep() );
-    htmlWindow->LoadPage( whichPath );
-    htmlFound = true;
-  }
-  else if ( isHtmlReferenceInDoc( whichPath ) )
-  {
-    // TODO: merge with upper?
-    // relativepath/index.html#reference
-    std::cout << "isHtmlReferenceInDoc !! HelpContents::SetHelpContents: whichPath " << whichPath.mb_str() << std::endl;
-
-    //SetHelpContentsRoot( candidate.GetPathWithSep() );
-    SetHelpContentsRoot( wxT("") );
-    htmlWindow->LoadPage( whichPath );
-    htmlFound = true;
-  }
-  else if ( candidate.IsDirReadable() )
-  {
-  std::cout << "IsDirReadable !! HelpContents::SetHelpContents: whichPath " <<whichPath.mb_str() << std::endl;
-    // relativepath
-    wxString tmpTutorial = appendIndexHtmlToURL( candidate.GetPathWithSep() );
-    if ( !tmpTutorial.IsEmpty() )
-    {
-      htmlWindow->LoadPage( tmpTutorial );
-      htmlFound = true;
-    }
-  }
-
-  return htmlFound;
-}
-*/
 
 // Change TutorialsRoot and load it
 // whichPath = [ relativepath/index.html | relativepath/index.html#reference | relativepath ]
@@ -534,26 +473,22 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
   wxFileName candidate( whichPath );
   if ( isHtmlDoc( whichPath ) )
   {
-  std::cout << "isHtmlDoc !! HelpContents::SetHelpContents: whichPath " <<whichPath.mb_str() << std::endl;
     // relativepath/index.html
-
     SetHelpContentsRoot( candidate.GetPathWithSep() );
     htmlWindow->LoadPage( whichPath );
     htmlFound = true;
   }
   else if ( isHtmlReferenceInDoc( whichPath ) )
   {
-    // TODO: merge with upper?
+    // TODO: merge with upper
     // relativepath/index.html#reference
     SetHelpContentsRoot( candidate.GetPathWithSep() );
     //SetHelpContentsRoot( wxT("") );
-    std::cout << "isHtmlReferenceInDoc !! HelpContents::SetHelpContents: whichPath " << whichPath.mb_str() << std::endl;
     htmlWindow->LoadPage( whichPath );
     htmlFound = true;
   }
   else if ( candidate.IsDirReadable() )
   {
-  std::cout << "IsDirReadable !! HelpContents::SetHelpContents: whichPath " <<whichPath.mb_str() << std::endl;
     // relativepath
     wxString tmpTutorial = appendIndexHtmlToURL( candidate.GetPathWithSep() );
     if ( !tmpTutorial.IsEmpty() )
@@ -735,17 +670,17 @@ void HelpContents::OnBitmapbuttonForwardUpdate( wxUpdateUIEvent& event )
 }
 
 
-
+/*
 void HelpContents::SetMyPage( bool isPage, const wxString &path )
 {
-  std::cout << "Try " << path.mb_str() << std::endl;
+//  std::cout << "Try " << path.mb_str() << std::endl;
 
   if (htmlWindow != NULL)
   {
     if (htmlWindow->LoadPage( path )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
     {
       //firstTime = true;
-      std::cout << "FIRST TIME : " << path.mb_str() << std::endl;
+//      std::cout << "FIRST TIME : " << path.mb_str() << std::endl;
       if ( htmlWindow->IsShown() )
         htmlWindow->Refresh();
       else
@@ -761,15 +696,15 @@ void HelpContents::SetMyPage( bool isPage, const wxString &path )
 
     if ( isHtmlReferenceInDoc(path) )
     {
-      std::cout << ">> isHtmlReferenceInDoc" << std::endl;
+//      std::cout << ">> isHtmlReferenceInDoc" << std::endl;
       if (!htmlWindow->LoadPage( path )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
       //if (!htmlWindow->ScrollToAnchor( href )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
       {
-        std::cout << ">> !htmlWindow->LoadPage( href ) " << href.mb_str() << std::endl;
+//        std::cout << ">> !htmlWindow->LoadPage( href ) " << href.mb_str() << std::endl;
         htmlWindow->Scroll(-1,60);
         if (!htmlWindow->LoadPage( newPath )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
         {
-          std::cout << ">> !htmlWindow->LoadPage( newPath ) " << newPath.mb_str() << std::endl;
+//          std::cout << ">> !htmlWindow->LoadPage( newPath ) " << newPath.mb_str() << std::endl;
 
           if (!htmlWindow->LoadPage( path )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
           {
@@ -781,7 +716,7 @@ void HelpContents::SetMyPage( bool isPage, const wxString &path )
           }
           else
           {
-            std::cout << "HelpContents::HelpContents: = 1) path >> " << path.mb_str() << std::endl;
+//            std::cout << "HelpContents::HelpContents: = 1) path >> " << path.mb_str() << std::endl;
             if ( htmlWindow->IsShown() )
               htmlWindow->Refresh();
             else
@@ -790,7 +725,7 @@ void HelpContents::SetMyPage( bool isPage, const wxString &path )
         }
         else
         {
-          std::cout << "HelpContents::HelpContents: = 2) newPath >> " << newPath.mb_str() << std::endl;
+//          std::cout << "HelpContents::HelpContents: = 2) newPath >> " << newPath.mb_str() << std::endl;
           if ( htmlWindow->IsShown() )
             htmlWindow->Refresh();
           else
@@ -799,7 +734,7 @@ void HelpContents::SetMyPage( bool isPage, const wxString &path )
       }
       else
       {
-       std::cout << "HelpContents::HelpContents: = 3) href >> " << href.mb_str() << std::endl;
+//       std::cout << "HelpContents::HelpContents: = 3) href >> " << href.mb_str() << std::endl;
        //htmlWindow->Scroll(-1,600);
        if ( htmlWindow->IsShown() )
           htmlWindow->Refresh();
@@ -838,7 +773,7 @@ void HelpContents::SetMyPage( bool isPage, const wxString &path )
 
   //event.Skip();
 }
-
+*/
 
 
 /*=============================================================================
@@ -904,7 +839,6 @@ const wxString TutorialsBrowser::getTitle( int numTutorial, const wxString& path
 
   return helpContentsTitle;
 }
-
 
 
 void TutorialsBrowser::linkToWebPage( wxString& htmlDoc )
@@ -1069,7 +1003,9 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
     // If current clicked link points to a tutorial index.html file, keep its
     //   tutorial directory name to allow relative references.
     if (DetectHelpContentsIndexInPath( event.GetLinkInfo().GetHref() ))
-      std::cout << "CONTENT DETECTED" << std::endl;
+    {
+//      std::cout << "CONTENT DETECTED" << std::endl;
+    }
 
     // and let the html window browse it.
     event.Skip();
@@ -1081,4 +1017,3 @@ void TutorialsBrowser::buildIndex()
 {
   buildIndexTemplate( wxString( wxT( "Tutorials" ) ), wxString( wxT( "tutorials" ) ) );
 }
-
