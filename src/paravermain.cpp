@@ -265,7 +265,7 @@ paraverMain::paraverMain()
   LocalKernel::init();
   localKernel = new LocalKernel( userMessage );
   myParaverMain = this;
-  
+
   Init();
   ShowToolTips();
 }
@@ -280,7 +280,7 @@ paraverMain::paraverMain( wxWindow* parent, wxWindowID id, const wxString& capti
 
   Init();
   Create( parent, id, caption, pos, size, style );
-  
+
   defaultTitleBarSize = GetSize() - GetClientSize();
   ShowToolTips();
 }
@@ -364,7 +364,7 @@ paraverMain::~paraverMain()
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     delete *it;
   delete localKernel;
-  
+
   delete imageList;
   if ( tutorialsWindow != NULL )
   {
@@ -374,7 +374,7 @@ paraverMain::~paraverMain()
   {
     delete helpContents;
   }
-  
+
   wxMemoryFSHandler::RemoveFile( wxT("logoBSC.xpm") );
 }
 
@@ -448,9 +448,9 @@ void paraverMain::Init()
                               wxBITMAP( logoBSC ),
 #endif
                               wxBITMAP_TYPE_XPM );
-                              
+
   workspacesManager->loadXML();
-  
+
   initPG();
   initSessionInfo();
 
@@ -462,7 +462,7 @@ void paraverMain::Init()
  */
 
 void paraverMain::CreateControls()
-{    
+{
 ////@begin paraverMain content construction
   paraverMain* itemFrame1 = this;
 
@@ -600,12 +600,12 @@ void paraverMain::CreateControls()
   choiceWindowBrowser->AddPage( createTree( imageList ), _( "Dummy Tree" ) );
   choiceWindowBrowser->DeletePage( 1 );
 #endif
-  
+
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 1, wxT("Paraver Files") );
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 2, wxT("Window Properties") );
-  
+
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
-  
+
   setActiveWorkspacesText();
 //  refreshMenuHints();
 
@@ -689,7 +689,7 @@ void paraverMain::refreshMenuHints()
                wxEVT_COMMAND_MENU_SELECTED,
                (wxObjectEventFunction)&paraverMain::OnHintClick );
     }
-      
+
     menuHints->AppendSubMenu( currentWorkspaceMenu, currentWorkspaceName );
 
     ++currentWorkspace;
@@ -744,7 +744,7 @@ bool paraverMain::DoLoadTrace( const string &path )
 
   // Append whole path.
   wxFileName tmpFileName( wxString( path.c_str(), wxConvUTF8 ) );
-    
+
 #ifdef WIN32
   tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
                          wxPATH_NORM_LONG );
@@ -760,7 +760,7 @@ bool paraverMain::DoLoadTrace( const string &path )
   {
     wxString tmpSize;
     tmpSize << rint( traceSize / 1E6 );
-    wxMessageDialog maxSizeDialog( this, 
+    wxMessageDialog maxSizeDialog( this,
             wxString( wxT( "The size (" ) ) +
                       tmpSize +
                       wxString( wxT( " MB) of the trace\n\n  " ) ) +
@@ -777,18 +777,18 @@ bool paraverMain::DoLoadTrace( const string &path )
         canServeSignal = true;
         return true;
         break;
-        
+
       case wxID_NO:
         break;
-      
+
       case wxID_CANCEL:
         canServeSignal = true;
         return true;
         break;
-        
+
     }
   }
-  
+
   map< string, PRV_UINT32 >::iterator it = traceInstance.find( std::string( tmpFileName.GetFullName().mb_str() ) );
   if ( it == traceInstance.end() )
     traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ] = 0;
@@ -838,7 +838,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     loadedTraces.push_back( tr );
     currentTrace = loadedTraces.size() - 1;
     setTraceWorkspaces( tr );
- 
+
     wxTreeCtrl *newTree = createTree( imageList );
     newTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), NULL, this );
 
@@ -906,7 +906,7 @@ bool paraverMain::DoLoadCFG( const string &path )
     {
       tmpTraceToUse = loadedTraces[ currentTrace ];
     }
-    
+
     if( !CFGLoader::loadCFG( localKernel, path, tmpTraceToUse,
                              newWindows, newHistograms, options ) )
     {
@@ -939,7 +939,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         message.ShowModal();
         raiseCurrentWindow = true;
       }
-      
+
       wxTreeItemId child;
       for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
       {
@@ -1137,12 +1137,12 @@ bool paraverMain::ShowToolTips()
   }
   /*
   wxTipProvider *tipProvider = wxCreateFileTipProvider( wxT( "./tips.txt" ), s_index );
-  
-  // this returns a bool 
+
+  // this returns a bool
   wxShowTip( this, tipProvider, true);
   delete tipProvider;
   */
-  
+
   return true;
 }
 
@@ -1515,7 +1515,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       delete tmpRest;
       return;
     }
-    
+
     tmpClientData->ownerHistogram->setExtraControlDelta( property->GetValue().GetDouble() );
     tmpClientData->ownerHistogram->setCompute3DScale( false );
     tmpClientData->ownerHistogram->setRecalc( true );
@@ -1525,7 +1525,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     tmpClientData->ownerHistogram->setSelectedPlane( property->GetValue().GetLong() );
     tmpClientData->ownerHistogram->setRedraw( true );
   }
-  
+
   // Timeline related properties
   else if( propName == _( "Level" ) )
   {
@@ -1559,7 +1559,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == _( "Comm from.From" ) )
   {
     prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
-  
+
     Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearCommFrom();
     vector< TObjectOrder > selection;
@@ -1591,7 +1591,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   else if( propName == _( "Comm to.To" ) )
   {
     prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
-  
+
     Filter *filter = tmpClientData->ownerTimeline->getFilter();
     filter->clearCommTo();
     vector< TObjectOrder > selection;
@@ -1906,7 +1906,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       valuesStr[ idx ].ToDouble( &tmpDouble );
       values.push_back( tmpDouble );
     }
-    
+
     tmpClientData->ownerTimeline->setExtraFunctionParam( functionLevel, position, paramIdx, values );
     spreadSetRedraw( tmpClientData->ownerTimeline );
   }
@@ -1916,12 +1916,12 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     TParamIndex paramIdx;
     TWindowLevel functionLevel;
     unsigned long tmpLong;
-    
+
     paramData.BeforeFirst( ' ' ).ToULong( &tmpLong );
     paramIdx = tmpLong;
     paramData.AfterFirst( ' ' ).ToULong( &tmpLong );
     functionLevel = (TWindowLevel)tmpLong;
-    
+
     wxArrayString valuesStr = property->GetValue().GetArrayString();
     TParamValue values;
     for( unsigned int idx = 0; idx < valuesStr.GetCount(); idx++ )
@@ -1933,7 +1933,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     tmpClientData->ownerTimeline->setFunctionParam( functionLevel, paramIdx, values );
     spreadSetRedraw( tmpClientData->ownerTimeline );
   }
-  
+
   delete tmpRest;
 }
 
@@ -2241,11 +2241,11 @@ void paraverMain::OnPreviousCFGsClick( wxCommandEvent& event )
 {
   int eventId = event.GetId();
   int i = 0;
-  
+
   wxMenuItem *item = menuFile->FindItem( ID_RECENTCFGS );
   wxMenu *menu = item->GetSubMenu();
   wxMenuItemList& menuItems = menu->GetMenuItems();
-  
+
   for ( wxMenuItemList::iterator menuIt = menuItems.begin(); menuIt != menuItems.end(); ++menuIt )
   {
     wxMenuItem *tmp = *menuIt;
@@ -2446,7 +2446,7 @@ void progressFunction( ProgressController *progress, void *callerWindow )
   int p;
   if ( progress->getCurrentProgress() > progress->getEndLimit() )
     p = numeric_limits<int>::max();
-  else 
+  else
     p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
 
   wxString newMessage;
@@ -2455,7 +2455,7 @@ void progressFunction( ProgressController *progress, void *callerWindow )
     newMessage = wxString::FromAscii( progress->getMessage().c_str() );
     progress->clearMessageChanged();
   }
-  
+
   if( !paraverMain::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 //  app->Yield();
@@ -2472,7 +2472,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   OnRecenttracesUpdate( tmpEvent );
   OnMenuloadcfgUpdate( tmpEvent );
 #endif
-  
+
   if( canServeSignal )
   {
     while( !loadFilesQueue.empty() )
@@ -2488,7 +2488,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
         DoLoadTrace( fileStr );
     }
   }
-  
+
   if( wxTheApp->IsActive() )
   {
     int iTrace = 0;
@@ -2500,10 +2500,10 @@ void paraverMain::OnIdle( wxIdleEvent& event )
       {
         vector<Window *> windows;
         vector<Histogram *> histograms;
-        
+
         LoadedWindows::getInstance()->getAll( *it, windows );
         LoadedWindows::getInstance()->getAll( *it, histograms );
-        
+
         if( windows.begin() == windows.end() && histograms.begin() == histograms.end() )
         {
           if( currentTrace == iTrace )
@@ -2611,10 +2611,10 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
 {
   if ( !CFGLoadedBefore )
     CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
- 
+
   vector< wxString > extensions;
   extensions.push_back( wxT( "cfg" ) );
-  
+
   FileDialogExtension dialog( parent,
                               _( "Save Configuration" ),
                               CFGPath,
@@ -2633,7 +2633,7 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
     CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms );
     previousCFGs->add( std::string( CFGPath.mb_str() ) );
   }
-}   
+}
 
 
 
@@ -2647,7 +2647,7 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
   vector<Window *> timelines;
   vector<Histogram *> histograms;
   SaveConfigurationDialog saveDialog( this );
-  
+
   saveDialog.SetOptions( options );
   LoadedWindows::getInstance()->getAll( timelines );
   LoadedWindows::getInstance()->getAll( histograms );
@@ -2725,13 +2725,13 @@ Window *paraverMain::createBaseWindow( wxString whichName )
   // Create new window
   Window *newWindow = Window::create( localKernel, loadedTraces[ currentTrace ] );
   ++numNewWindows;
-  
+
   if ( whichName.IsEmpty() )
   {
     whichName = wxString( wxT( "New window #" ) );
     whichName << numNewWindows;
   }
-  
+
   newWindow->setName( std::string( whichName.mb_str() ) );
   newWindow->setTimeUnit( loadedTraces[ currentTrace ]->getTimeUnit());
   newWindow->addZoom( 0, loadedTraces[ currentTrace ]->getEndTime(),
@@ -2767,7 +2767,7 @@ Window *paraverMain::createBaseWindow( wxString whichName )
     newWindow->setLevelFunction( THREAD, semanticFunction );
   else
     newWindow->setLevelFunction( THREAD, "State As Is" );
-    
+
   return newWindow;
 }
 
@@ -2779,7 +2779,7 @@ void paraverMain::insertInTree( Window *whichWindow )
   wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
 
   BuildTree( this,
-             allTracesPage, allTracesPage->GetRootItem(), 
+             allTracesPage, allTracesPage->GetRootItem(),
              currentPage,   currentPage->GetRootItem(),
              whichWindow );
 }
@@ -2827,13 +2827,13 @@ void paraverMain::ShowDerivedDialog()
   if ( beginDragWindow == NULL ||
       beginDragWindow->getTrace() == loadedTraces[ currentTrace ] )
     derivedDialog.SetCurrentWindow1( beginDragWindow );
-  else 
+  else
     derivedDialog.SetCurrentWindow1( NULL );
 
   if ( endDragWindow == NULL ||
       endDragWindow->getTrace() == loadedTraces[ currentTrace ] )
     derivedDialog.SetCurrentWindow2( endDragWindow );
-  else 
+  else
     derivedDialog.SetCurrentWindow2( NULL );
 
   raiseCurrentWindow = false;
@@ -2880,7 +2880,7 @@ void paraverMain::ShowDerivedDialog()
       newWindow->setNotNullGradientColorMode();
     else if( beginDragWindow->isFunctionLineColorSet() )
       newWindow->setFunctionLineColorMode();
-    
+
     newWindow->setDrawModeObject( beginDragWindow->getDrawModeObject() );
     newWindow->setDrawModeTime( beginDragWindow->getDrawModeTime() );
     newWindow->getGradientColor().setGradientFunction(
@@ -2902,7 +2902,7 @@ void paraverMain::ShowDerivedDialog()
         newWindow->setSelectedRows( (TWindowLevel)level, tmpSel );
       }
     }
-    
+
     // Semantic
     vector< string > auxCompose = derivedDialog.GetTopCompose1();
     newWindow->setLevelFunction( TOPCOMPOSE1, auxCompose[0] );
@@ -2940,7 +2940,7 @@ void paraverMain::ShowDerivedDialog()
     wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
 
     BuildTree( this,
-               allTracesPage, allTracesPage->GetRootItem(), 
+               allTracesPage, allTracesPage->GetRootItem(),
                currentPage,   currentPage->GetRootItem(),
                newWindow );
 
@@ -3071,7 +3071,7 @@ void paraverMain::ShowHistogramDialog()
       tmpHisto->Show();
     }
     tmpHisto->execute();
-    
+
     currentWindow = (wxWindow *)tmpHisto;
   }
   raiseCurrentWindow = true;
@@ -3133,7 +3133,7 @@ int paraverMain::GetNextPosX()
     initialPosX += GetDefaultTitleBarHeight();
   else
     initialPosX += GetSize().GetWidth();
-    
+
   return initialPosX;
 }
 
@@ -3141,7 +3141,7 @@ int paraverMain::GetNextPosX()
 int paraverMain::GetNextPosY()
 {
   initialPosY += GetDefaultTitleBarHeight();
-  
+
   return initialPosY;
 }
 
@@ -3293,7 +3293,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 
   // ShowModal calls it by default
   //preferences.TransferDataToWindow();
-  
+
   raiseCurrentWindow = true;
   if ( preferences.ShowModal() == wxID_OK )
   {
@@ -3360,7 +3360,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setHistogramSaveTextFormat( ( ParaverConfig::TTextFormat ) preferences.GetHistogramSaveTextFormat() );
     paraverConfig->setHistogramSkipCreateDialog( preferences.GetHistogramSkipCreateDialog() );
 
-    // COLORS 
+    // COLORS
     paraverConfig->setColorsTimelineBackground( preferences.GetTimelineColourBackground() );
     paraverConfig->setColorsTimelineAxis( preferences.GetTimelineColourAxis() );
     paraverConfig->setColorsTimelineUseZero( preferences.GetColorUseZero() );
@@ -3385,7 +3385,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
       (*it)->getGradientColor().setBelowOutlierColor( preferences.GetGradientColourLow() );
       (*it)->getGradientColor().setAboveOutlierColor( preferences.GetGradientColourTop() );
     }
-    
+
     // FILTER
     paraverConfig->setFiltersXMLPath( preferences.GetFiltersXMLPath() );
 
@@ -3399,7 +3399,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     {
       setTraceWorkspaces( *it );
     }
-    
+
     setActiveWorkspacesText();
     refreshMenuHints();
   }
@@ -3426,7 +3426,7 @@ void paraverMain::OnPreferencesUpdate( wxUpdateUIEvent& event )
 ////@begin wxEVT_UPDATE_UI event handler for ID_PREFERENCES in paraverMain.
   // Before editing this code, remove the block markers.
   event.Skip();
-////@end wxEVT_UPDATE_UI event handler for ID_PREFERENCES in paraverMain. 
+////@end wxEVT_UPDATE_UI event handler for ID_PREFERENCES in paraverMain.
 }
 
 void paraverMain::selectTrace( Trace *trace )
@@ -3555,10 +3555,10 @@ void paraverMain::UnloadTrace( int whichTrace )
 {
   vector<Window *> windows;
   vector<Histogram *> histograms;
-  
+
   LoadedWindows::getInstance()->getAll( loadedTraces[ whichTrace ], windows );
   LoadedWindows::getInstance()->getAll( loadedTraces[ whichTrace ], histograms );
-  
+
   for( vector<Window *>::iterator it = windows.begin(); it != windows.end(); ++it )
   {
     (*it)->setShowWindow( false );
@@ -3574,7 +3574,7 @@ void paraverMain::UnloadTrace( int whichTrace )
     (*it)->setShowWindow( false );
     (*it)->setDestroy( true );
   }
-  
+
   traceWorkspaces.erase( loadedTraces[ whichTrace ] );
   firstUserWorkspace.erase( loadedTraces[ whichTrace ] );
   loadedTraces[ whichTrace ]->setUnload( true );
@@ -3862,7 +3862,7 @@ void paraverMain::OnSignal()
     canServeSignal = true;
     return;
   }
-  
+
   if( currentSignal.badTimes )
   {
     wxMessageDialog message( this, _( "Missing times separator ':' in file paraload.sig" ), _( "Signal Handler Manager" ), wxOK | wxICON_EXCLAMATION );
@@ -3889,7 +3889,7 @@ void paraverMain::OnSignal()
     canServeSignal = true;
     return;
   }
-  
+
   // Code only for sigusr1: load cfg
   if( currentSignal.isSignal1() && !currentSignal.cfgFileName.empty() )
     DoLoadCFG( currentSignal.cfgFileName );
@@ -3920,7 +3920,7 @@ void paraverMain::OnSignal()
       //currentTimeline->setRedraw( true );
       gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), currentTimeline, dummyFound );
       tmpTimeline->redraw();
-      
+
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
         tmpTimeline->saveImage( false, wxString::FromAscii( currentSignal.imageFileName.c_str() ) );
@@ -3930,12 +3930,12 @@ void paraverMain::OnSignal()
       // Zoom
       currentHisto->setWindowBeginTime( currentSignal.beginTime );
       currentHisto->setWindowEndTime( currentSignal.endTime );
-      
+
       // Redraw
       currentHisto->setChanged( true );
       gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), currentHisto );
       tmpHistogram->execute();
-      
+
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
         tmpHistogram->saveImage( false, wxString::FromAscii( currentSignal.imageFileName.c_str() ) );
@@ -3944,7 +3944,7 @@ void paraverMain::OnSignal()
 
   // Refresh
   choiceWindowBrowser->UpdateWindowUI();
-  
+
   canServeSignal = true;
 }
 #endif
@@ -4138,11 +4138,11 @@ void paraverMain::MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
     // 3) Default
     cutFilterDialog->SetNameSourceTrace( paraverConfig->getGlobalTracesPath() + PATH_SEP );
   }
-}                                                    
+}
 
 
 void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                                                  TraceOptions *traceOptions, 
+                                                  TraceOptions *traceOptions,
                                                   const string& xmlFile,
                                                   vector< string > &filterToolOrder )
 {
@@ -4164,7 +4164,7 @@ void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialo
     // Default Path
     XMLPath =  paraverConfig->getFiltersXMLPath() + PATH_SEP;
   }
-  
+
   // If xmlFile empty we consider that information is given by parameter
   cutFilterDialog->TransferTraceOptionsToWindow( traceOptions, filterToolOrder );
 }
@@ -4176,7 +4176,7 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
   filterToolOrder   = cutFilterDialog->GetFilterToolOrder();
   string srcTrace   = cutFilterDialog->GetNameSourceTrace();
   string dstTrace   = cutFilterDialog->GetNameDestinyTrace();
-  
+
   DoLoadFilteredTrace( srcTrace, dstTrace, cutFilterDialog->GetTraceOptions(), filterToolOrder );
 
   if ( cutFilterDialog->GetLoadResultingTrace() )
@@ -4185,7 +4185,7 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
   }
 
   XMLLoadedBefore = cutFilterDialog->GetLoadedXMLPath( XMLPath );
-  
+
   if ( cutFilterDialog->GetRunAppWithResultingTrace() )
   {
     wxString auxTrace =  wxString::FromAscii( dstTrace.c_str() );
@@ -4198,14 +4198,14 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
                                        bool loadTrace,
                                        const string& xmlFile )
 {
-  CutFilterDialog *cutFilterDialog = new CutFilterDialog( this );  
+  CutFilterDialog *cutFilterDialog = new CutFilterDialog( this );
 
   MainSettingsCutFilterDialog( cutFilterDialog, filename, loadTrace );
-  
+
   TraceOptions *traceOptions = TraceOptions::create( localKernel );
   vector< string > filterToolOrder;
   OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, xmlFile, filterToolOrder );
-  
+
   if( cutFilterDialog->ShowModal() == wxID_OK )
   {
     OnOKCutFilterDialog( cutFilterDialog, filterToolOrder );
@@ -4214,7 +4214,7 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
 #if wxMAJOR_VERSION<3
   cutFilterDialog->MakeModal( false );
 #endif
-  
+
   delete traceOptions;
   delete cutFilterDialog;
 }
@@ -4247,7 +4247,7 @@ void paraverMain::OnSize( wxSizeEvent& event )
 {
   paraverConfig->setMainWindowWidth( event.GetSize().GetWidth() );
   paraverConfig->setMainWindowHeight( event.GetSize().GetHeight() );
-  
+
   event.Skip();
 }
 
@@ -4313,7 +4313,7 @@ bool paraverMain::OnMenusavesession( )
 {
   vector< wxString > extensions;
   extensions.push_back( wxT( "session" ) );
-  
+
   FileDialogExtension dialog( this,
                               wxT( "Save session" ),
                               _(""),
@@ -4344,7 +4344,7 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   wxAboutDialogInfo info;
   wxArrayString developers;
   wxString description;
-  
+
   info.SetName( _("wxParaver") );
   info.SetVersion( wxString() << _( VERSION ) << _( " (Build " ) + \
                    wxString() << _( __DATE__ ) << _( ")" ) );
@@ -4403,7 +4403,7 @@ void paraverMain::ShowRunCommand( wxString traceFile )
   }
 
   runApplication = new RunScript( (wxWindow *)this, traceFile );
-  
+
   runApplication->Show();
 }
 
@@ -4411,7 +4411,6 @@ void paraverMain::ShowRunCommand( wxString traceFile )
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_RUN_SCRIPT
  */
-
 void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
 {
   if( !loadedTraces.empty() )
@@ -4424,19 +4423,14 @@ void paraverMain::OnToolRunApplicationClick( wxCommandEvent& event )
 }
 
 
-/*!
- * wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUITEM
- */
-
-void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
+/*
+  Reads path where the current wxparaver.bin binary is installed
+*/
+bool paraverMain::getParaverHome( wxString &paraverHome )
 {
-  if ( helpContents != NULL )
-  {
-    helpContents->Show( true );
-  }
-  else
-  {
-/*#ifdef __WXMAC__
+  bool done = false;
+
+  /*#ifdef __WXMAC__
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef fileURL = CFBundleCopyResourceURL( mainBundle, CFSTR("aaa"), CFSTR("txt"), NULL );
     CFStringRef filePath = CFURLCopyFileSystemPath( fileURL, kCFURLPOSIXPathStyle );
@@ -4444,81 +4438,135 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
     const char *path = CFStringGetCStringPtr( filePath, encodingMethod );
     cout<<"File location: "<<path<<endl;
 #endif*/
-    wxString paraverHome;
+
+  //wxString paraverHome;
+
 #ifdef WIN32
-    std::string baseDir;
+  std::string baseDir;
 
-    char myPath[ MAX_LEN_PATH ];
-    HMODULE hModule = GetModuleHandle( NULL );
-    if ( hModule != NULL )
-    {
-      GetModuleFileName( NULL, myPath, ( sizeof( myPath ) ));
-      PathRemoveFileSpec( myPath );
-      /*char tmpMyPath[ MAX_LEN_PATH ];
-      size_t tmpSize;
-      wcstombs_s( &tmpSize, tmpMyPath, MAX_LEN_PATH, myPath, MAX_LEN_PATH );
-      baseDir = tmpMyPath;*/
-      baseDir = myPath;
-    }
-    paraverHome = wxT( baseDir.c_str() );
-    
-    if( paraverHome != wxT( "" ) )
-#elif defined( __APPLE__ )
-    CFBundleRef mainBundle = CFBundleGetMainBundle();
-    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-    char tmpPath[PATH_MAX];
-    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)tmpPath, PATH_MAX))
-    {
-        throw ParaverKernelException();
-    }
-    CFRelease(resourcesURL);
-
-    paraverHome = tmpPath;
-
-    if( paraverHome != wxT( "" ) )
-#else
-    if ( wxGetEnv( wxString( wxT( "PARAVER_HOME" ) ), &paraverHome ) )
-#endif
-    {
-      wxString helpContentsDir =
-              wxFileName::GetPathSeparator() +
-              wxString( wxT( "share" ) ) +
-              wxFileName::GetPathSeparator() +
-              wxString( wxT( "doc" ) ) +
-              wxFileName::GetPathSeparator() +
-              wxString( wxT( "wxparaver_help_contents" ) ) +
-              wxFileName::GetPathSeparator() +
-              wxString( wxT( "html" ) ) +
-              wxFileName::GetPathSeparator();
-
-      wxString helpContentsRoot = paraverHome + helpContentsDir;
-
-      if ( wxFileName( helpContentsRoot ).DirExists() )
-      {
-        helpContents = new HelpContents( this, helpContentsRoot, wxID_ANY, _("Help Contents") );
-        helpContents->Show( true );
-      }
-      else
-      {
-        wxString msg =
-                wxString( wxT( "Path to Help Contents doesn't exist:\n\n  " ) ) +
-                helpContentsRoot +
-                wxString( wxT( "\n\nPlease check $PARAVER_HOME:\n\n" ) ) +
-                paraverHome;
-        
-        wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
-        message.ShowModal();
-      }
-    }
-    else
-    {
-      wxString msg =
-                wxString( wxT( "Unable to find Help Contents.\n\n$PARAVER_HOME is undefined" ) );
-        
-      wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
-      message.ShowModal();
-    }
+  char myPath[ MAX_LEN_PATH ];
+  HMODULE hModule = GetModuleHandle( NULL );
+  if ( hModule != NULL )
+  {
+    GetModuleFileName( NULL, myPath, ( sizeof( myPath ) ));
+    PathRemoveFileSpec( myPath );
+    /*char tmpMyPath[ MAX_LEN_PATH ];
+    size_t tmpSize;
+    wcstombs_s( &tmpSize, tmpMyPath, MAX_LEN_PATH, myPath, MAX_LEN_PATH );
+    baseDir = tmpMyPath;*/
+    baseDir = myPath;
   }
+  paraverHome = wxT( baseDir.c_str() );
+
+  done = paraverHome != wxT( "" );
+
+#elif defined( __APPLE__ )
+
+  CFBundleRef mainBundle = CFBundleGetMainBundle();
+  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+  char tmpPath[PATH_MAX];
+  if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)tmpPath, PATH_MAX))
+  {
+    throw ParaverKernelException();
+  }
+  CFRelease(resourcesURL);
+
+  paraverHome = tmpPath;
+
+  done = paraverHome != wxT( "" );
+
+#else
+
+  done = wxGetEnv( wxString( wxT( "PARAVER_HOME" ) ), &paraverHome );
+
+#endif
+
+  return done;
+}
+
+
+void paraverMain::messageUnknownPath( wxString helpContentsPath, wxString paraverHome )
+{
+  wxString msg =
+          wxString( wxT( "Path to Help Contents doesn't exist:\n\n  " ) ) +
+          helpContentsPath +
+          wxString( wxT( "\n\nPlease check $PARAVER_HOME:\n\n" ) ) +
+          paraverHome;
+
+  wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
+  message.ShowModal();
+}
+
+
+void paraverMain::messageUndefinedParaverHome()
+{
+  wxString msg =
+            wxString( wxT( "Unable to find Help Contents.\n\n$PARAVER_HOME is undefined" ) );
+
+  wxMessageDialog message( this, msg, _( "Warning" ), wxOK | wxICON_WARNING );
+  message.ShowModal();
+}
+
+
+// helpContentsBaseRelativePath is relative path to help base dir inside absolute $PARAVER_HOME:
+// i.e. Given helpContentsPath = "/share/docs/html"
+//      and having $PARAVER_HOME = "/opt/wxparaver"
+//      where $PARAVER_HOME + helpContentsPath contains 2 subdirs
+//            (/opt/wxparaver/share/docs/html/)1.quick_reference/index.html
+//            (/opt/wxparaver/share/docs/html/)2.paraver_toolset/index.html
+// a help window indexing both 1 and 2 subhelps is built.
+void paraverMain::createHelpContentsWindow(
+        const wxString &helpContentsBaseRelativePath,  // relative path"/share/docs/html/"
+        const wxString &helpFile, // empty or relative subpath like "1.quick_reference/index.html"
+        const wxString &hRef)     // empty or href like "#section_1"
+{
+  wxString paraverHome;
+  if ( !getParaverHome( paraverHome ) )
+  {
+    messageUndefinedParaverHome();
+    return;
+  }
+
+  wxString helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath;
+  if ( !wxFileName( helpContentsAbsolutePath ).DirExists() )
+  {
+    messageUnknownPath( helpContentsBaseRelativePath, paraverHome );
+    return;
+  }
+
+  bool lookForContents = helpFile.IsEmpty();
+
+  if ( helpContents == NULL )
+    helpContents = new HelpContents( NULL, helpContentsAbsolutePath, lookForContents, wxID_ANY, _("Help Contents") );
+
+  helpContents->SetHelpContents( helpContentsAbsolutePath );
+
+  if ( helpContents->IsShown() )
+    helpContents->Refresh();
+  else
+    helpContents->Show();
+
+  if (!lookForContents)
+  {
+    helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
+    helpContents->LoadHtml(helpContentsAbsolutePath);
+    //helpContents->htmlWindow->LoadPage( helpContentsAbsolutePath );
+    helpContents->Show();
+  }
+}
+
+
+void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
+{
+  wxChar SEP = wxFileName::GetPathSeparator();
+
+  wxString baseRelativePath = SEP +
+        wxString( wxT( "share" ) ) + SEP +
+        wxString( wxT( "doc" ) ) + SEP +
+        wxString( wxT( "wxparaver_help_contents" ) ) + SEP +
+        wxString( wxT( "html" ) ) + SEP;
+
+  createHelpContentsWindow( baseRelativePath );
 }
 
 
@@ -4580,10 +4628,10 @@ void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
 {
   vector< string > tmpWorkspaces = workspacesManager->getWorkspaces( WorkspaceManager::ALL );
-  
+
   if( tmpWorkspaces.empty() )
   {
-    wxMessageDialog emptyWorkspacesDialog( this, 
+    wxMessageDialog emptyWorkspacesDialog( this,
                                            _( "No Workspaces available.\nDo you want to open Preferences dialog to create any?" ),
                                            _( "No Workspaces" ),
                                            wxYES_NO| wxICON_QUESTION );
@@ -4594,7 +4642,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
 
     return;
   }
-  
+
   wxArrayString tmpNames;
   wxArrayInt tmpActive;
   int position = 0;
@@ -4605,10 +4653,10 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
       tmpActive.Add( position );
     ++position;
   }
-  
-  wxMultiChoiceDialog tmpChoiceDialog( this, _("Select active workspaces"),  _( "Workspaces" ), tmpNames );  
+
+  wxMultiChoiceDialog tmpChoiceDialog( this, _("Select active workspaces"),  _( "Workspaces" ), tmpNames );
   tmpChoiceDialog.SetSelections( tmpActive );
-  
+
   if ( tmpChoiceDialog.ShowModal() == wxID_OK )
   {
     tmpActive = tmpChoiceDialog.GetSelections();
@@ -4617,7 +4665,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
     {
       traceWorkspaces[ loadedTraces[ currentTrace ] ].push_back( tmpWorkspaces[ tmpActive[ i ] ] );
     }
-    
+
     setActiveWorkspacesText();
     refreshMenuHints();
 
@@ -4642,7 +4690,7 @@ void paraverMain::setActiveWorkspacesText()
     {
       if ( !tmpActive.IsEmpty() )
         tmpActive += _( "+" );
-        
+
       if( tmpCurrentWorkspace < firstUserWorkspace[ loadedTraces[ currentTrace ] ] )
         tmpActive += wxString::FromAscii( it->c_str() );
       else
@@ -4654,7 +4702,7 @@ void paraverMain::setActiveWorkspacesText()
       }
       ++tmpCurrentWorkspace;
     }
-    
+
     txtActiveWorkspaces->SetValue( tmpActive );
   }
 }
@@ -4763,7 +4811,7 @@ void paraverMain::insertSignalItem( bool isSig1 )
     {
       auxLine.clear();
     }
-    
+
     // Is it useful? Save it!
     if( auxLine[0] != '#' )
     {
@@ -4771,7 +4819,7 @@ void paraverMain::insertSignalItem( bool isSig1 )
       auxLine.clear();
     }
   }
-  
+
   // POSTCOND:
   // lines[0] must contain paraver cfg
   // lines[1] must contain time range to set the window
@@ -4781,7 +4829,7 @@ void paraverMain::insertSignalItem( bool isSig1 )
   {
     bool found = false;
     PRV_INT16 current = currentTrace;
-  
+
     // Is that trace loaded? First, try with current!
     if ( loadedTraces.size() > 0 )
     {
@@ -4789,7 +4837,7 @@ void paraverMain::insertSignalItem( bool isSig1 )
                                loadedTraces[ current ]->getTraceName(),
                                lines[ 2 ] );
     }
-    
+
     if ( !found )
     {
       // then continue with all the list
@@ -4850,7 +4898,7 @@ void paraverMain::insertSignalItem( bool isSig1 )
   }
 
   signalQueue.push( tmpSignalItem );
-  
+
   wxIdleEvent tmpEvent;
   AddPendingEvent( tmpEvent );
 }

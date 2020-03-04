@@ -485,11 +485,11 @@ void gHistogram::fillGrid()
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
   bool firstRowColored = myHistogram->getFirstRowColored();
-  
+
   zoomHisto->Show( false );
   gridHisto->Show( true );
   mainSizer->Layout();
-  
+
   if( tableBase == NULL )
     tableBase = new HistoTableBase( myHistogram );
   tableBase->setSelectedRows( &selectedRows );

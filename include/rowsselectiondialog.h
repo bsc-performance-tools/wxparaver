@@ -56,6 +56,7 @@ class Window;
  */
 
 #define ID_ROWSSELECTIONDIALOG 10078
+
 #define SYMBOL_ROWSSELECTIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_ROWSSELECTIONDIALOG_TITLE _("Objects Selection")
 #define SYMBOL_ROWSSELECTIONDIALOG_IDNAME ID_ROWSSELECTIONDIALOG
@@ -161,7 +162,9 @@ private:
   std::vector< wxCheckBox *> checkBoxPosixBasicRegExp;
   std::vector< wxTextCtrl *> textCtrlRegularExpr;
   std::vector< wxButton * > applyButtons;
+  std::vector< wxButton * > helpRE;
   std::vector< wxRegEx * > validRE;
+
   wxString getMyToolTip( const bool posixBasicRegExpTip );
   void OnCheckBoxMatchPosixRegExpClicked( wxCommandEvent& event );
   wxTextValidator *getValidator( bool basicPosixRegExprMode ); // DELETE ME?
@@ -170,6 +173,7 @@ private:
   int countMatches( int iTab, wxRegEx *&levelRE );
   void checkMatches( const int &iTab, wxRegEx *&levelRE );
   void OnRegularExpressionApply( wxCommandEvent& event );
+  void OnRegularExpressionHelp( wxCommandEvent& event );
   void OnCheckListBoxSelected( wxCommandEvent& event );
 
   void OnSelectAllButtonClicked( wxCommandEvent& event );

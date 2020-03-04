@@ -22,6 +22,7 @@ noinst_HEADERS = \
               derived_product.xpm\
               derived_substract.xpm\
               file_browser.xpm\
+							help.xpm\
               hide_cols.xpm\
               histo_color.xpm\
               histo_horvert.xpm\

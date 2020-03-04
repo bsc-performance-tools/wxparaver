@@ -593,8 +593,13 @@ public:
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
 
-  Window *createBaseWindow( wxString whichName = wxString(wxT("")) );
+  Window *createBaseWindow( wxString whichName = wxString( wxT("") ) );
   void insertInTree( Window *whichWindow );
+
+  void createHelpContentsWindow( const wxString &helpContentsBaseRelativePath,
+                                 const wxString &helpFile = wxString( wxT("") ),
+                                 const wxString &hRef = wxString( wxT("") ));
+  bool getParaverHome( wxString &paraverHome );
 
   static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
   static wxString buildFormattedFileName( std::string windowName, const std::string& traceName );
@@ -709,6 +714,8 @@ private:
 
   bool isSessionFile( const std::string& filename );
   void exitManager( wxEvent& event );
+  void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
+  void messageUndefinedParaverHome();
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );
