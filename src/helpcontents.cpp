@@ -616,7 +616,14 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 
 void HelpContents::OnButtonCloseClick( wxCommandEvent& event )
 {
-  Close();
+  if ( IsModal() )
+  {
+    EndModal( wxID_OK );
+  }
+  else
+  {
+    Close();
+  }
 }
 
 

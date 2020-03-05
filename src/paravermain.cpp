@@ -4518,7 +4518,8 @@ void paraverMain::messageUndefinedParaverHome()
 void paraverMain::createHelpContentsWindow(
         const wxString &helpContentsBaseRelativePath,  // relative path"/share/docs/html/"
         const wxString &helpFile, // empty or relative subpath like "1.quick_reference/index.html"
-        const wxString &hRef)     // empty or href like "#section_1"
+        const wxString &hRef,      // empty or href like "#section_1"
+        bool  isModal )
 {
   wxString paraverHome;
   if ( !getParaverHome( paraverHome ) )
@@ -4541,17 +4542,29 @@ void paraverMain::createHelpContentsWindow(
 
   helpContents->SetHelpContents( helpContentsAbsolutePath );
 
-  if ( helpContents->IsShown() )
-    helpContents->Refresh();
+  if (lookForContents)
+  {
+    if ( helpContents->IsShown() )
+      helpContents->Raise();
+    else
+    {
+      if ( isModal )
+        helpContents->ShowModal();
+      else
+        helpContents->Show();
+    }
+  }
   else
-    helpContents->Show();
-
-  if (!lookForContents)
   {
     helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
     helpContents->LoadHtml(helpContentsAbsolutePath);
     //helpContents->htmlWindow->LoadPage( helpContentsAbsolutePath );
-    helpContents->Show();
+    {
+      if ( isModal )
+        helpContents->ShowModal();
+      else
+        helpContents->Show();
+    }
   }
 }
 

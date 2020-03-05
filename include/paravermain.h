@@ -598,7 +598,8 @@ public:
 
   void createHelpContentsWindow( const wxString &helpContentsBaseRelativePath,
                                  const wxString &helpFile = wxString( wxT("") ),
-                                 const wxString &hRef = wxString( wxT("") ));
+                                 const wxString &hRef = wxString( wxT("") ),
+                                 bool  isModal = false );
   bool getParaverHome( wxString &paraverHome );
 
   static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
