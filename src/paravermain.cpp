@@ -1094,7 +1094,6 @@ void paraverMain::exitManager( wxEvent& event )
 
     if ( question == wxCANCEL || ( question == wxYES && !OnMenusavesession() ) )
     {
-      event.Skip();
       return;
     }
   }
