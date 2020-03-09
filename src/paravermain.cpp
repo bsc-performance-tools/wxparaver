@@ -2762,8 +2762,12 @@ Window *paraverMain::createBaseWindow( wxString whichName )
     newWindow->setLevelFunction( (TWindowLevel)windowLevel, "As Is" );
 
   string semanticFunction = loadedTraces[ currentTrace ]->getDefaultSemanticFunc( THREAD );
+  std::string traceFileName = loadedTraces[ currentTrace ]->getFileName() ;
+  std::string traceFileExt = traceFileName.substr( traceFileName.length() - 3 ) ;
   if ( semanticFunction != "" )
     newWindow->setLevelFunction( THREAD, semanticFunction );
+  else if ( traceFileExt == "csv" ) // csv
+    newWindow->setLevelFunction( THREAD, "Last Evt Val" );
   else
     newWindow->setLevelFunction( THREAD, "State As Is" );
 
