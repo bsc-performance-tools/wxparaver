@@ -740,11 +740,18 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
   {
     if ( mainWindow->GetTutorialsWindow() == NULL )
       mainWindow->SetTutorialsWindow( 
+            /*tutorialsWindow
+              new HelpContents::createObject( HelpContents::TUTORIAL,
+                      mainWindow, 
+                      wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
+                      true, wxID_ANY, _("Tutorials") )
+
+              */
               new TutorialsBrowser( mainWindow,
                                     wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
-                                    wxID_ANY,
-                                    _( "Tutorials" ) ) );
- 
+                                    wxID_ANY, _( "Tutorials" ) ) 
+    );
+
     if ( !mainWindow->GetTutorialsWindow()->SetHelpContents( tmpTutorial ) )
       wxMessageBox( wxT( "Unable to find index.html in tutorial dir.\n\n"
                           "Please check whole path or create/place index.html file." ),

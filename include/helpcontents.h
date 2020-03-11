@@ -68,12 +68,19 @@ class wxHtmlWindow;
  * HelpContents class declaration
  */
 
+
 class HelpContents: public wxDialog
 {
   DECLARE_DYNAMIC_CLASS( HelpContents )
   DECLARE_EVENT_TABLE()
 
 public:
+  enum TContents 
+  {
+    HELP,
+    TUTORIAL
+  };
+
   /// Constructors
   HelpContents();
   HelpContents( wxWindow* parent,
@@ -91,6 +98,16 @@ public:
                const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
                const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
                long style = SYMBOL_HELPCONTENTS_STYLE );
+
+  static HelpContents* createObject( TContents whichObject,
+                                     wxWindow* parent,
+                                     const wxString& whichHelpContentsRoot,
+                                     const bool whichLookForContents = true,
+                                     wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
+                                     const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
+                                     const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
+                                     const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
+                                     long style = SYMBOL_HELPCONTENTS_STYLE);
 
   /// Destructor
   ~HelpContents();

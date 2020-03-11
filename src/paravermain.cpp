@@ -4390,7 +4390,9 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
   if ( tutorialsWindow == NULL )
   {
     tutorialsRoot = wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 );
-    tutorialsWindow = new TutorialsBrowser( this, tutorialsRoot, wxID_ANY, _("Tutorials") );
+    //tutorialsWindow = new TutorialsBrowser( this, tutorialsRoot, wxID_ANY, _("Tutorials") );
+    tutorialsWindow = HelpContents::createObject( HelpContents::TUTORIAL, this, tutorialsRoot, 
+                                                  true, wxID_ANY, _("Tutorials") );
   }
 
   tutorialsWindow->Show( true );
@@ -4541,8 +4543,11 @@ void paraverMain::createHelpContentsWindow(
   bool lookForContents = helpFile.IsEmpty();
 
   if ( helpContents == NULL )
-    helpContents = new HelpContents( NULL, helpContentsAbsolutePath, lookForContents, wxID_ANY, _("Help Contents") );
-
+  {
+    //helpContents = new HelpContents( NULL, helpContentsAbsolutePath, lookForContents, wxID_ANY, _("Help Contents") );
+    helpContents = HelpContents::createObject( HelpContents::HELP, NULL, helpContentsAbsolutePath, 
+                                               lookForContents, wxID_ANY, _("Help Contents") );
+  }
   helpContents->SetHelpContents( helpContentsAbsolutePath );
 
   if (lookForContents)

@@ -95,6 +95,46 @@ HelpContents::HelpContents()
   Init();
 }
 
+/*
+  Factory that manages both HelpContents and its child TutorialsBrowser
+  to 
+*/
+HelpContents* HelpContents::createObject( TContents whichObject,
+                                     wxWindow* parent,
+                                     const wxString& whichHelpContentsRoot,
+                                     const bool whichLookForContents,
+                                     wxWindowID id,
+                                     const wxString& caption,
+                                     const wxPoint& pos,
+                                     const wxSize& size,
+                                     long style)
+{
+  HelpContents* item = NULL;
+  switch( whichObject )
+  {
+    case HelpContents::HELP:
+      item = new HelpContents( parent,
+                           whichHelpContentsRoot,
+                           whichLookForContents,
+                           id, SYMBOL_HELPCONTENTS_TITLE, 
+                           pos, size, style );
+      break;
+    case HelpContents::TUTORIAL: 
+      item = new TutorialsBrowser( parent,
+                               whichHelpContentsRoot,
+                               id, SYMBOL_TUTORIALSBROWSER_TITLE, 
+                               pos, 
+                               size, 
+                               style );
+      break;
+    default:
+      break;
+  }
+  if ( item != NULL && whichLookForContents )
+    item->buildIndex();
+  return item;
+}
+
 
 HelpContents::HelpContents( wxWindow* parent,
                             const wxString& whichHelpContentsRoot,
@@ -188,7 +228,7 @@ void HelpContents::appendHelpContents( const wxString& title,
 void HelpContents::helpMessage( wxString& htmlDoc )
 {
   htmlDoc += wxT("<P><H3>No Help Contents found!?</H3></P>");
-  htmlDoc += wxT("<P>Please check that <B>root directory</B> to Help Contents exists.</P>");
+  htmlDoc += wxT("<P>Please check that a <B>root directory</B> to Help Contents exists.</P>");
   htmlDoc += wxT("<P>The current one is ");
   htmlDoc += GetHelpContentsRoot();
   htmlDoc += wxT("</P>");
@@ -336,8 +376,7 @@ void HelpContents::CreateControls()
 
 ////@end HelpContents content construction
 
-  if ( lookForContents )
-    buildIndex();
+  
 }
 
 
@@ -676,113 +715,6 @@ void HelpContents::OnBitmapbuttonForwardUpdate( wxUpdateUIEvent& event )
   buttonHistoryForward->Enable( htmlWindow->HistoryCanForward() );
 }
 
-
-/*
-void HelpContents::SetMyPage( bool isPage, const wxString &path )
-{
-//  std::cout << "Try " << path.mb_str() << std::endl;
-
-  if (htmlWindow != NULL)
-  {
-    if (htmlWindow->LoadPage( path )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
-    {
-      //firstTime = true;
-//      std::cout << "FIRST TIME : " << path.mb_str() << std::endl;
-      if ( htmlWindow->IsShown() )
-        htmlWindow->Refresh();
-      else
-        htmlWindow->Show();
-    }
-  }
-
-  if (!isPage)
-  {
-    wxString newPath = path;
-    wxString href = wxT("");
-    wxString htmlPath;
-
-    if ( isHtmlReferenceInDoc(path) )
-    {
-//      std::cout << ">> isHtmlReferenceInDoc" << std::endl;
-      if (!htmlWindow->LoadPage( path )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
-      //if (!htmlWindow->ScrollToAnchor( href )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
-      {
-//        std::cout << ">> !htmlWindow->LoadPage( href ) " << href.mb_str() << std::endl;
-        htmlWindow->Scroll(-1,60);
-        if (!htmlWindow->LoadPage( newPath )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
-        {
-//          std::cout << ">> !htmlWindow->LoadPage( newPath ) " << newPath.mb_str() << std::endl;
-
-          if (!htmlWindow->LoadPage( path )) //(!htmlWindow->LoadFile( wxFileName( newPath )))
-          {
-            std::cout << ">> !htmlWindow->LoadPage( path ) " << path.mb_str() << std::endl;
-
-            std::cout << "ERROR1: FILE: HelpContents::HelpContents!!!" << href.mb_str() << std::endl;
-            std::cout << "ERROR1: FILE: HelpContents::HelpContents!!!" << newPath.mb_str() << std::endl;
-            std::cout << "ERROR1: FILE: HelpContents::HelpContents!!!" << path.mb_str() << std::endl;
-          }
-          else
-          {
-//            std::cout << "HelpContents::HelpContents: = 1) path >> " << path.mb_str() << std::endl;
-            if ( htmlWindow->IsShown() )
-              htmlWindow->Refresh();
-            else
-              htmlWindow->Show();
-          }
-        }
-        else
-        {
-//          std::cout << "HelpContents::HelpContents: = 2) newPath >> " << newPath.mb_str() << std::endl;
-          if ( htmlWindow->IsShown() )
-            htmlWindow->Refresh();
-          else
-            htmlWindow->Show();
-        }
-      }
-      else
-      {
-//       std::cout << "HelpContents::HelpContents: = 3) href >> " << href.mb_str() << std::endl;
-       //htmlWindow->Scroll(-1,600);
-       if ( htmlWindow->IsShown() )
-          htmlWindow->Refresh();
-        else
-          htmlWindow->Show();
-      }
-    }
-    else
-    {
-      if ( !htmlWindow->LoadPage( path ) )
-      {
-        std::cout << "ERROR2: FILE: HelpContents::HelpContents!!!" << path.mb_str() << std::endl;
-      }
-      else
-      {
-        std::cout << "HelpContents::HelpContents: = 2) Show >> " << path.mb_str() << std::endl;
-        //htmlWindow->Show(true);
-      }
-    }
-  }
-  else
-  {
-    if ( !htmlWindow->SetPage( path ) )
-    {
-      std::cout << "ERROR3: PAGE: HelpContents::HelpContents!!!" << path.mb_str() << std::endl;
-    }
-    else
-    {
-      std::cout << "HelpContents::HelpContents: =  3) Show >> " << path.mb_str() << std::endl;
-      if ( htmlWindow->IsShown() )
-        htmlWindow->Refresh();
-      else
-        htmlWindow->Show();
-    }
-  }
-
-  //event.Skip();
-}
-*/
-
-
 /*=============================================================================
  * class TutorialsBrowser
  *===========================================================================*/
@@ -850,59 +782,43 @@ const wxString TutorialsBrowser::getTitle( int numTutorial, const wxString& path
 
 void TutorialsBrowser::linkToWebPage( wxString& htmlDoc )
 {
-  htmlDoc += wxT("<P><H3>Latest tutorials</H3></P>");
+  htmlDoc += wxT( "<P><H3>Latest tutorials</H3></P>" );
 
-  htmlDoc += wxT("<P>Find them available at <A HREF=\"download_tutorials\">https://tools.bsc.es/paraver-tutorials</A></P>");
-  htmlDoc += wxT("<UL>");
-  htmlDoc += wxT("<LI>As single <A HREF=\"download_tutorials_targz\">.tar.gz</A> package (127MB).</LI>");
-  htmlDoc += wxT("<LI>As single <A HREF=\"download_tutorials_zip\">.zip</A> package (127 MB).</LI>");
-  htmlDoc += wxT("</UL>");
+  htmlDoc += wxT( "<P>Find them available at <A HREF=\"download_tutorials\">https://tools.bsc.es/paraver-tutorials</A></P>" );
+  htmlDoc += wxT( "<UL>" );
+  htmlDoc += wxT( "<LI>As single <A HREF=\"download_tutorials_targz\">.tar.gz</A> package (127 MB).</LI>" );
+  htmlDoc += wxT( "<LI>As single <A HREF=\"download_tutorials_zip\">.zip</A> package (127 MB).</LI>" );
+  htmlDoc += wxT( "</UL>" );
 }
 
 
 void TutorialsBrowser::helpMessage( wxString& htmlDoc )
 {
-  htmlDoc += wxT("<P><H3>No tutorial found!?</H3></P>");
-/*
-  htmlDoc += wxT("<P>Before going on, please have in mind that:</P>");
-  htmlDoc += wxT("<UL>");
-  htmlDoc += wxT("<LI>A single <B>tutorials root directory</B> must contain all ");
-  htmlDoc += wxT("the <B>tutorials directories</B> that you want <B>visible</B> for wxparaver.</LI>");
-  htmlDoc += wxT("<LI>In their own directories, every tutorial has a <B>first page</B> called <TT>index.html</TT>, and also related content (like traces, cfgs, etc.).</LI>");
-  htmlDoc += wxT("<LI>You <B>don't</B> need to <B>write</B> any global tutorials page; we walk through the included tutorials ");
-  htmlDoc += wxT("in the given root directory and build it for you.</LI>");
-  htmlDoc += wxT("<LI>The tutorial title showed in this automatically built main index is read from:</LI>");
-  htmlDoc += wxT("<OL type=\"1\">");
-  htmlDoc += wxT("<LI>The <TT>TITLE</TT> tag in the<TT>index.html</TT> file.</LI>");
-  htmlDoc += wxT("<LI>If this tag is missing or empty, from a single line file named <TT>tutorial_title</TT>");
-  htmlDoc += wxT(", also local to this tutorial.</LI>");
-  htmlDoc += wxT("<LI>If no <TT>tutorial_title</TT> file is found, we give a numbered 'Tutorial #'.</LI>");
-  htmlDoc += wxT("</OL>");
-  htmlDoc += wxT("</UL>");
-*/
-  htmlDoc += wxT("<P>Please check that <B>root directory</B> to tutorials is properly defined:</P>");
+  htmlDoc += wxT( "<P><H3>No tutorials found!?</H3></P>" );
+  htmlDoc += wxT( "<P>Please check that a <B>root directory</B> to tutorials is properly defined:</P>" );
 
-  htmlDoc += wxT("<OL type=\"1\">");
-  htmlDoc += wxT("<LI>Open <A HREF=\"init_preferences\"><I>Preferences Window</I></A>.</LI>");
-  htmlDoc += wxT("<LI>Select <I>Global</I> tab.</LI>");
-  htmlDoc += wxT("<LI>In the <I>Default directories</I> box, change the <I>Tutorials root</I> directory");
-  htmlDoc += wxT("<LI>Save your new settings clicking the <I>Ok</I> button in the <I>Preferences Window</I>.</LI>");
-  htmlDoc += wxT("<LI>After that, we automatically refresh the tutorials list.</LI>");
-  htmlDoc += wxT("<LI>If nothing happens, come back here and press the button <I>Index</I> to rebuild the tutorials list.");
-  htmlDoc += wxT("</OL>");
+  htmlDoc += wxT( "<OL type=\"1\">" );
+  htmlDoc += wxT( "<LI>Open the <A HREF=\"init_preferences\"><I>Preferences Window</I></A>.</LI>" );
+  htmlDoc += wxT( "<LI>Select <I>Global</I> tab.</LI>" );
+  htmlDoc += wxT( "<LI>In the <I>Default directories</I> box, change the <I>Tutorials root</I> directory." );
+  htmlDoc += wxT( "<LI>Save your new settings by clicking the <I>Ok</I> button in the <I>Preferences Window</I>.</LI>" );
+  htmlDoc += wxT( "<LI>After that, we will automatically refresh the tutorials list.</LI>" );
+  htmlDoc += wxT( "<LI>If nothing happens, come back here and press the <I>Index</I> button (the first one at the bottom-left) " );
+  htmlDoc += wxT( "to rebuild the tutorials list.</OL>" );
 
-  htmlDoc += wxT("<P>If the button <I>Index</I> doesn't seem to work (you're still reading this help!), please verify that:</P>");
+  htmlDoc += wxT( "<P>If the button <I>Index</I> doesn't seem to work (you're still reading this help!), please verify that:</P>" );
 
-  htmlDoc += wxT("<UL>");
-  htmlDoc += wxT("<LI>Every tutorial is <B>uncompressed</B>.</LI>");
-  htmlDoc += wxT("<LI>Every tutorial is inside its own <B>subdirectory</B>.</LI>");
-  htmlDoc += wxT("<LI>These subdirectories (or tutorials) are copied/linked into the root directory that ");
-  htmlDoc += wxT("you selected before (i.e: /home/myuser/mytutorials/tut1/, /home/myuser/mytutorials/tut2/, etc).</LI>");
-  htmlDoc += wxT("<LI>Every tutorial has a main <B>index.html</B> (i.e: /home/myuser/mytutorials/tut1/index.html ).</LI>");
-  htmlDoc += wxT("</UL>");
+  htmlDoc += wxT( "<UL>" );
+  htmlDoc += wxT( "<LI>Every tutorial is <B>uncompressed</B>.</LI>" );
+  htmlDoc += wxT( "<LI>Every tutorial is inside its own <B>subdirectory</B>.</LI>" );
+  htmlDoc += wxT( "<LI>These subdirectories (or tutorials) are copied/linked into the root directory that " );
+  htmlDoc += wxT( "you have selected before (i.e: /home/myuser/mytutorials/tut1/, /home/myuser/mytutorials/tut2/, etc).</LI>" );
+  htmlDoc += wxT( "<LI>Every tutorial has a main <B>index.html</B> (i.e: /home/myuser/mytutorials/tut1/index.html ).</LI>" );
+  htmlDoc += wxT( "</UL>" );
 
-  htmlDoc += wxT("<P>If you still get this help after checking these steps again, please contact us at paraver@bsc.es.</P>");
+  htmlDoc += wxT( "<P>If you still get this help after checking these steps again, please contact us at paraver@bsc.es.</P>" );
 }
+
 
 
 /*!
