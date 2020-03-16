@@ -1975,7 +1975,9 @@ void gTimeline::OnPopUpPunctualColorWindow()
 {
   vector<Window *> compatWindows;
   int selIndex = 0;
-  
+
+  setDestroy( false );
+
   LoadedWindows::getInstance()->getDerivedCompatible( myWindow->getTrace(), compatWindows );
   compatWindows.erase( std::find( compatWindows.begin(), compatWindows.end(), myWindow ) );
   
@@ -2002,6 +2004,8 @@ void gTimeline::OnPopUpPunctualColorWindow()
   }
   
   delete dialog;
+
+  setDestroy( true );
 }
 
 void gTimeline::OnPopUpCodeColor()
@@ -2117,6 +2121,8 @@ void gTimeline::OnPopUpPasteSpecial()
 
 void gTimeline::OnPopUpRowSelection()
 {
+  setDestroy( false );
+
   RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
 
   if ( dialog->ShowModal() == wxID_OK )
@@ -2131,6 +2137,8 @@ void gTimeline::OnPopUpRowSelection()
   }
 
   delete dialog;
+
+  setDestroy( true );
 }
 
 
@@ -3399,7 +3407,9 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 {
   wxString imagePath;
   ParaverConfig::TImageFormat filterIndex;
-  
+
+  setDestroy( false );
+
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
@@ -3455,7 +3465,10 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
                                extensions );
       saveDialog.SetFilterIndex( filterIndex );
       if ( saveDialog.ShowModal() != wxID_OK )
+      {
+        setDestroy( true );
         return;
+      }
 
       filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
@@ -3632,8 +3645,9 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
   }
 
   // Save timeline image without scale
-  baseLayer.SaveFile( imagePath, imageType );  
+  baseLayer.SaveFile( imagePath, imageType );
 
+  setDestroy( true );
 }
 
 
@@ -3642,6 +3656,8 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   wxString imageName;
   wxString tmpSuffix;
   wxString defaultDir;
+
+  setDestroy( false );
 
   imageName = buildFormattedFileName();
   
@@ -3702,8 +3718,11 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                              extensions );
     saveDialog.SetFilterIndex( filterIndex );
     if ( saveDialog.ShowModal() != wxID_OK )
+    {
+      setDestroy( true );
       return;
-      
+    }
+
     filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetPath();
   }
@@ -3795,6 +3814,8 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     tmpImage->save();
     delete tmpImage;
   }
+
+  setDestroy( true );
 }
 
 
@@ -4531,6 +4552,8 @@ void gTimeline::saveText()
   wxString tmpSuffix;
   wxString defaultDir;
 
+  setDestroy( false );
+
   fileName = buildFormattedFileName();
 
 #ifdef WIN32
@@ -4631,6 +4654,8 @@ void gTimeline::saveText()
     paraverMain::dialogProgress = NULL;
     delete progress;
   }
+
+  setDestroy( true );
 }
 
 
@@ -4639,8 +4664,12 @@ void gTimeline::saveCFG()
   vector< Window * > timelines;
   timelines.push_back( GetMyWindow() );
 
+  setDestroy( false );
+
   paraverMain::myParaverMain->SaveConfigurationFile(
           (wxWindow *)this, SaveOptions(), timelines, vector< Histogram * >() );
+
+  setDestroy( true );
 }
 
 

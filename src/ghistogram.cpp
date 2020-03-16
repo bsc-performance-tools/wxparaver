@@ -1392,7 +1392,8 @@ void gHistogram::OnPopUpFitObjects()
 
 void gHistogram::OnPopUpRowSelection()
 {
-  
+  setDestroy( false );
+
   RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
 
   if ( dialog->ShowModal() == wxID_OK )
@@ -1405,7 +1406,10 @@ void gHistogram::OnPopUpRowSelection()
     myHistogram->setRecalc( true );
     //updateHistogram();
   }
+
   delete dialog;
+
+  setDestroy( true );
 }
 
 
@@ -2589,8 +2593,6 @@ void gHistogram::OnToolHideColumnsUpdate( wxUpdateUIEvent& event )
 }
 
 
-
-
 /*!
  * wxEVT_GRID_CELL_LEFT_CLICK event handler for ID_GRIDHISTO
  */
@@ -2643,7 +2645,9 @@ void gHistogram::saveText( bool onlySelectedPlane )
   wxString fileName;
   wxString tmpSuffix;
   wxString defaultDir;
-  
+
+  setDestroy( false );
+
   fileName = buildFormattedFileName( onlySelectedPlane );
 
 #ifdef WIN32
@@ -2731,15 +2735,17 @@ void gHistogram::saveText( bool onlySelectedPlane )
 
     output->dumpHistogram( myHistogram, fileName, onlySelectedPlane, myHistogram->getHideColumns(),
                             true, true, false, progress );
-                            
+
     delete output;
-    
+
     // Delete progress controller
     paraverMain::dialogProgress->Show( false );
     delete paraverMain::dialogProgress;
     paraverMain::dialogProgress = NULL;
     delete progress;
   }
+
+  setDestroy( true );
 }
 
 
@@ -2747,7 +2753,9 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
 {
   wxString imagePath;
   ParaverConfig::TImageFormat filterIndex;
-  
+
+  setDestroy( false );
+
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
@@ -2801,13 +2809,16 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
                                wxDefaultPosition,
                                wxDefaultSize,
                                _( "filedlg" ),
-                               extensions );                          
+                               extensions );
 
       saveDialog.SetFilterIndex( filterIndex );
 
       if ( saveDialog.ShowModal() != wxID_OK )
+      {
+        setDestroy( true );
         return;
-        
+      }
+
       filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
@@ -2909,6 +2920,8 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
 
   wxImage baseLayer = imageBitmap.ConvertToImage();
   baseLayer.SaveFile( imagePath, imageType );
+
+  setDestroy( true );
 }
 
 
@@ -2916,18 +2929,20 @@ void gHistogram::saveCFG()
 {
   vector< Histogram * > histograms;
   vector< Window * > windows;
-  
+
+  setDestroy( false );
+
   histograms.push_back( GetHistogram() );
 
   if ( myHistogram->getControlWindow() != NULL  )
       windows.push_back( myHistogram->getControlWindow() );
   if ( myHistogram->getDataWindow() != NULL  )
       windows.push_back( myHistogram->getDataWindow() );
-  
-
 
   paraverMain::myParaverMain->SaveConfigurationFile(
           (wxWindow *)this, SaveOptions(), windows, histograms );
+
+  setDestroy( true );
 }
 
 
