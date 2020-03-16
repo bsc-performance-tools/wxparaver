@@ -39,6 +39,23 @@ class Trace;
 
 using namespace std;
 
+
+class gWindow
+{
+  public:
+    gWindow()
+    {
+      destroy = true;
+    }
+
+    bool canDestroy() const { return destroy ; }
+    void setDestroy( bool value ) { destroy = value ; }
+
+  private:
+    bool destroy;
+};
+
+
 wxTreeCtrl * createTree( wxImageList *imageList );
 wxTreeCtrl *getAllTracesTree();
 wxTreeCtrl *getSelectedTraceTree( Trace *trace );

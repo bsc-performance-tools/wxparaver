@@ -66,6 +66,7 @@ using boost::posix_time::ptime;
 #include "recordlist.h"
 #include "popupmenu.h"
 #include "copypaste.h"
+#include "windows_tree.h"
 
 /*!
  * Forward declarations
@@ -79,6 +80,7 @@ class wxBoxSizer;
 ////@end forward declarations
 class Window;
 class ProgressController;
+
 
 /*!
  * Control identifiers
@@ -119,12 +121,12 @@ class ProgressController;
 #define ID_TIMER_MOTION 40001
 #define ID_TIMER_WHEEL 40002
 
+
 /*!
  * gTimeline class declaration
  */
-
-class gTimeline: public wxFrame
-{    
+class gTimeline: public wxFrame, public gWindow
+{
   DECLARE_CLASS( gTimeline )
   DECLARE_EVENT_TABLE()
 

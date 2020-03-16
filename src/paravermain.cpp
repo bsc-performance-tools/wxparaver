@@ -3511,10 +3511,28 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 /*!
  * wxEVT_UPDATE_UI event handler for ID_TOOLDELETE
  */
-
 void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( currentTimeline != NULL || currentHisto != NULL );
+  bool enableButtonDestroy;
+
+  if( currentTimeline != NULL )
+  {
+    bool dummyFound;
+    gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), currentTimeline, dummyFound );
+    enableButtonDestroy = tmpTimeline->canDestroy();
+  }
+  else if ( currentHisto != NULL )
+  {
+    gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), currentHisto );
+    enableButtonDestroy = tmpHistogram->canDestroy();
+  }
+  else // Both null
+  {
+    enableButtonDestroy = false;
+  }
+
+//  event.Enable( currentTimeline != NULL || currentHisto != NULL );
+  event.Enable( enableButtonDestroy );
 }
 
 

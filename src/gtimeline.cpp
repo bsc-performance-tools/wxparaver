@@ -53,7 +53,7 @@
 #include "labelconstructor.h"
 #include "drawmode.h"
 #include "loadedwindows.h"
-#include "windows_tree.h"
+//#include "windows_tree.h" --> to .gtimeline.h
 #include "caution.xpm"
 #include "caution_yellow.xpm"
 #include "output.h"
@@ -126,13 +126,20 @@ wxProgressDialog *gTimeline::dialogProgress = NULL;
  */
 //class paraverMain;
 #include "paravermain.h"
-gTimeline::gTimeline()
+gTimeline::gTimeline() :
+        gWindow()
 {
   Init();
   parent = NULL;
 }
 
-gTimeline::gTimeline( wxWindow* whichParent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+gTimeline::gTimeline( wxWindow* whichParent,
+                      wxWindowID id,
+                      const wxString& caption,
+                      const wxPoint& pos,
+                      const wxSize& size,
+                      long style ) :
+        gWindow()
 {
   Init();
   Create( whichParent, id, caption, pos, size, style );

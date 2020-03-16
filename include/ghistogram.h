@@ -41,6 +41,8 @@
 #include "paraverkerneltypes.h"
 #include "popupmenu.h"
 #include "copypaste.h"
+#include "windows_tree.h"
+
 // TEMPLATES
 #include "zoomhistory.h"
 
@@ -55,6 +57,7 @@ class wxStatusBar;
 ////@end forward declarations
 class Histogram;
 class HistoTableBase;
+class gWindow;
 
 /*!
  * Control identifiers
@@ -96,8 +99,8 @@ class HistoTableBase;
  * gHistogram class declaration
  */
 
-class gHistogram: public wxFrame
-{    
+class gHistogram: public wxFrame, public gWindow
+{
   DECLARE_CLASS( gHistogram )
   DECLARE_EVENT_TABLE()
 

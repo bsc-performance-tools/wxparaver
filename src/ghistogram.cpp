@@ -151,12 +151,19 @@ wxProgressDialog *gHistogram::dialogProgress = NULL;
  * gHistogram constructors
  */
 
-gHistogram::gHistogram()
+gHistogram::gHistogram() :
+        gWindow()
 {
   Init();
 }
 
-gHistogram::gHistogram( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+gHistogram::gHistogram( wxWindow* parent,
+                        wxWindowID id,
+                        const wxString& caption,
+                        const wxPoint& pos,
+                        const wxSize& size,
+                        long style ) :
+        gWindow()
 {
   Init();
   Create( parent, id, caption, pos, size, style );
