@@ -4390,7 +4390,6 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
   if ( tutorialsWindow == NULL )
   {
     tutorialsRoot = wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 );
-    //tutorialsWindow = new TutorialsBrowser( this, tutorialsRoot, wxID_ANY, _("Tutorials") );
     tutorialsWindow = HelpContents::createObject( HelpContents::TUTORIAL, this, tutorialsRoot, 
                                                   true, wxID_ANY, _("Tutorials") );
   }
@@ -4550,7 +4549,7 @@ void paraverMain::createHelpContentsWindow(
   }
   helpContents->SetHelpContents( helpContentsAbsolutePath );
 
-  if (lookForContents)
+  if ( lookForContents )
   {
     if ( helpContents->IsShown() )
       helpContents->Raise();

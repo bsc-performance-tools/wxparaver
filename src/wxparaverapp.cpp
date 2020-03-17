@@ -739,22 +739,20 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
   if ( paraverCommandLineParser.Found( wxT( "t" ), &tmpTutorial ) )
   {
     if ( mainWindow->GetTutorialsWindow() == NULL )
+    {
       mainWindow->SetTutorialsWindow( 
-            /*tutorialsWindow
-              new HelpContents::createObject( HelpContents::TUTORIAL,
+              HelpContents::createObject( 
+                      HelpContents::TUTORIAL,
                       mainWindow, 
                       wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
-                      true, wxID_ANY, _("Tutorials") )
-
-              */
-              new TutorialsBrowser( mainWindow,
-                                    wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
-                                    wxID_ANY, _( "Tutorials" ) ) 
-    );
+                      true, wxID_ANY, _("Tutorials") 
+              )
+      );
+    }
 
     if ( !mainWindow->GetTutorialsWindow()->SetHelpContents( tmpTutorial ) )
       wxMessageBox( wxT( "Unable to find index.html in tutorial dir.\n\n"
-                          "Please check whole path or create/place index.html file." ),
+                         "Please check whole path or create/place index.html file." ),
                     wxT( "Tutorial" ), wxICON_INFORMATION|wxOK );
     else
       mainWindow->GetTutorialsWindow()->Show( true );
@@ -766,9 +764,6 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
 /*!
  * Cleanup for wxparaverApp
  */
-
-
-
 int wxparaverApp::OnExit()
 {
 //  double w, h;
