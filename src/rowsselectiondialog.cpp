@@ -195,7 +195,7 @@ void RowsSelectionDialog::OnRegularExpressionHelp( wxCommandEvent& event )
 
   wxString helpRegEx = wxString( wxT( "#objects_regex" ) );
 
-  paraverMain::myParaverMain->createHelpContentsWindow(helpContentsDir, helpChapter, helpRegEx, true );
+  paraverMain::myParaverMain->createHelpContentsWindow( helpContentsDir, helpChapter, helpRegEx, true );
 }
 
 

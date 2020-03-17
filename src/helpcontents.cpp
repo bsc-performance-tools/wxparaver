@@ -68,6 +68,7 @@ BEGIN_EVENT_TABLE( HelpContents, wxDialog )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackUpdate )
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardUpdate )
+  EVT_BUTTON( ID_BROWSER_BUTTON, HelpContents::OnBrowserButtonClick )
   EVT_BUTTON( ID_BUTTON_CLOSE, HelpContents::OnButtonCloseClick )
 ////@end HelpContents event table entries
 
@@ -82,6 +83,7 @@ BEGIN_EVENT_TABLE( TutorialsBrowser, wxDialog )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, TutorialsBrowser::OnBitmapbuttonBackUpdate )
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardUpdate )
+  EVT_BUTTON( ID_BROWSER_BUTTON, TutorialsBrowser::OnBrowserButtonClick )
   EVT_BUTTON( ID_BUTTON_CLOSE, TutorialsBrowser::OnButtonCloseClick )
 
 END_EVENT_TABLE()
@@ -182,6 +184,10 @@ HelpContents::~HelpContents()
 void HelpContents::Init()
 {
   currentHelpContentsDir = wxT("");
+
+  wxChar SEP = wxFileName::GetPathSeparator();
+  indexFileName = wxT( "" );
+  subindexLink = wxT( "" );
 }
 
 
@@ -310,7 +316,7 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
   contentsHtmlIndex += wxT("</BODY></HTML>");
 
   // Load /home/user/.paraver/<file_prefix>_index.html if exist, create otherwise.
-  wxString indexFileName =
+  indexFileName =
         wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) +
         wxString( wxFileName::GetPathSeparator() ) +
         filePrefix +
@@ -368,6 +374,10 @@ void HelpContents::CreateControls()
   if (HelpContents::ShowToolTips())
     buttonHistoryForward->SetToolTip(_("Next page"));
   itemBoxSizer4->Add(buttonHistoryForward, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxButton* itemButton1 = new wxButton( itemDialog1, ID_BROWSER_BUTTON, _("Open in Browser"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemButton1->SetName(wxT("BrowserButton"));
+  itemBoxSizer4->Add(itemButton1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   itemBoxSizer4->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -491,7 +501,6 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
     size_t untilHash = whichPath.Find( wxChar('#'), fromEnd );
     size_t firstPos = 0;
     wxString tmpCandidate = whichPath.Mid( firstPos, untilHash );
-
     isHtmlReference = wxFileName( tmpCandidate ).FileExists(); // So we assume section referenced exists in html
   }
 
@@ -577,7 +586,9 @@ const std::string HelpContents::GetHelpContentsRootStr()
 bool HelpContents::DetectHelpContentsIndexInPath( const wxString& whichPath )
 {
   bool indexFound = false;
-
+  subindexLink = wxT( "" );
+  if ( whichPath[0] == '#' )
+    subindexLink = whichPath;
   // Idea to detect tutorial:
   //   /home/user/root-tutorials/ => dir depth tutorials = 3
   //   vs.
@@ -598,7 +609,7 @@ bool HelpContents::DetectHelpContentsIndexInPath( const wxString& whichPath )
   size_t dirsDepthCurrentLink = currentLink.GetDirCount();
 
   if (( dirsDepthCurrentLink == dirsDepthHelpContents + 1 ) && // naive comparison!
-                                                             // path may differ?
+                                                               // path may differ?
       ( ( currentLink.GetFullName().Cmp( wxT("index.html") ) == 0 ) ||
         isHtmlReferenceInDoc( whichPath ) ) )
   {
@@ -673,6 +684,7 @@ void HelpContents::OnButtonCloseClick( wxCommandEvent& event )
 void HelpContents::OnButtonIndexClick( wxCommandEvent& event )
 {
   buildIndex();
+  currentHelpContentsDir = wxT( "" ); // MAY CAUSE FAILURES
 }
 
 
@@ -925,7 +937,7 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   {
     // If current clicked link points to a tutorial index.html file, keep its
     //   tutorial directory name to allow relative references.
-    if (DetectHelpContentsIndexInPath( event.GetLinkInfo().GetHref() ))
+    if ( DetectHelpContentsIndexInPath( event.GetLinkInfo().GetHref() ) )
     {
 //      std::cout << "CONTENT DETECTED" << std::endl;
     }
@@ -940,3 +952,36 @@ void TutorialsBrowser::buildIndex()
 {
   buildIndexTemplate( wxString( wxT( "Tutorials" ) ), wxString( wxT( "tutorials" ) ) );
 }
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON
+ */
+
+void HelpContents::OnBrowserButtonClick( wxCommandEvent& event )
+{
+  buildIndex(); // redone to prevent indexFileName failures
+
+  //BUG: subsections "index.html#section" will not load - yet
+  wxChar SEP = wxFileName::GetPathSeparator();
+  wxString helpContentsDir = 
+        helpContentsRoot + SEP +
+        currentHelpContentsDir + SEP +
+        wxString( wxT( "index.html") ) +
+        subindexLink;
+  
+  if ( currentHelpContentsDir == wxT( "" ) )
+    helpContentsDir = indexFileName;
+
+  if ( wxLaunchDefaultBrowser( helpContentsDir ) )
+  {  // There should be a option in preferences to choose if you want to close
+     // the dialog, or not. BUG: cursor will be in busy mode until Paraver is closed...
+    
+    event.Skip();
+    if ( IsModal() )
+      EndModal( wxID_OK );
+    else
+      Close();
+  }
+}
+
