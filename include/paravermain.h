@@ -717,6 +717,8 @@ private:
   void exitManager( wxEvent& event );
   void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
   void messageUndefinedParaverHome();
+  
+  void helpQuestion();
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );

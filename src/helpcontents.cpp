@@ -68,7 +68,6 @@ BEGIN_EVENT_TABLE( HelpContents, wxDialog )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, HelpContents::OnBitmapbuttonBackUpdate )
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, HelpContents::OnBitmapbuttonForwardUpdate )
-  EVT_BUTTON( ID_BROWSER_BUTTON, HelpContents::OnBrowserButtonClick )
   EVT_BUTTON( ID_BUTTON_CLOSE, HelpContents::OnButtonCloseClick )
 ////@end HelpContents event table entries
 
@@ -83,7 +82,6 @@ BEGIN_EVENT_TABLE( TutorialsBrowser, wxDialog )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_BACK, TutorialsBrowser::OnBitmapbuttonBackUpdate )
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardUpdate )
-  EVT_BUTTON( ID_BROWSER_BUTTON, TutorialsBrowser::OnBrowserButtonClick )
   EVT_BUTTON( ID_BUTTON_CLOSE, TutorialsBrowser::OnButtonCloseClick )
 
 END_EVENT_TABLE()
@@ -147,7 +145,8 @@ HelpContents::HelpContents( wxWindow* parent,
                             const wxSize& size,
                             long style ) :
         helpContentsRoot( whichHelpContentsRoot ),
-        lookForContents(whichLookForContents)
+        lookForContents( whichLookForContents ),
+        dialogCaption( caption )
 {
   Init();
   Create(parent, id, caption, pos, size, style);
@@ -227,6 +226,7 @@ void HelpContents::appendHelpContents( const wxString& title,
                                        const wxString& path,
                                        wxString& htmlDoc )
 {
+  //htmlDoc += wxT("<LI><P><A HREF=\"") + path + wxT("\">") + title + wxT("</A></P></LI>");
   htmlDoc += wxT("<LI><P><A HREF=\"") + path + wxT("\">") + title + wxT("</A></P></LI>");
 }
 
@@ -274,7 +274,7 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
 {
   // Write html index
   wxString contentsHtmlIndex;
-  wxString contentsList;
+  wxString contentsList = wxT("<UL>");
 
   contentsHtmlIndex += wxT("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">");
   contentsHtmlIndex += wxT("<HTML>");
@@ -328,8 +328,9 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
     // Write it in /home/user/.paraver as <file_prefix>_index.html
     indexFile.Write( contentsHtmlIndex );
     indexFile.Close();
-    if ( !IsModal() && !wxLaunchDefaultBrowser( indexFileName ) )
-      htmlWindow->LoadPage( indexFileName );
+    //htmlWindow->LoadPage( indexFileName );
+    std::cout << "Opt BI: ";
+    LoadHtml( indexFileName );
   }
   else
   {
@@ -375,10 +376,6 @@ void HelpContents::CreateControls()
   if (HelpContents::ShowToolTips())
     buttonHistoryForward->SetToolTip(_("Next page"));
   itemBoxSizer4->Add(buttonHistoryForward, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  wxButton* itemButton1 = new wxButton( itemDialog1, ID_BROWSER_BUTTON, _("Open in Browser"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemButton1->SetName(wxT("BrowserButton"));
-  itemBoxSizer4->Add(itemButton1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   itemBoxSizer4->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -511,7 +508,19 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
 
 void HelpContents::LoadHtml( const wxString& htmlFile )
 {
-  htmlWindow->LoadPage( htmlFile );
+  std::cout << "BROWSER? " << paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() << std::endl;
+  if ( paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() && 
+       dialogCaption == SYMBOL_HELPCONTENTS_TITLE )
+  {   
+    if( !wxLaunchDefaultBrowser( htmlFile ) )
+      htmlWindow->LoadPage( htmlFile );
+    else if ( IsModal() )
+      EndModal( wxID_OK );
+    else
+      Close();
+  }
+  else 
+    htmlWindow->LoadPage( htmlFile );
 }
 
 // Change TutorialsRoot and load it
@@ -524,7 +533,9 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
   {
     // relativepath/index.html
     SetHelpContentsRoot( candidate.GetPathWithSep() );
-    htmlWindow->LoadPage( whichPath );
+    //htmlWindow->LoadPage( whichPath );
+    std::cout << "Opt 0: ";
+    LoadHtml( indexFileName );
     htmlFound = true;
   }
   else if ( isHtmlReferenceInDoc( whichPath ) )
@@ -533,7 +544,9 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
     // relativepath/index.html#reference
     SetHelpContentsRoot( candidate.GetPathWithSep() );
     //SetHelpContentsRoot( wxT("") );
-    htmlWindow->LoadPage( whichPath );
+    //htmlWindow->LoadPage( whichPath );
+    std::cout << "Opt 1: ";
+    LoadHtml( indexFileName );
     htmlFound = true;
   }
   else if ( candidate.IsDirReadable() )
@@ -542,7 +555,9 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
     wxString tmpTutorial = appendIndexHtmlToURL( candidate.GetPathWithSep() );
     if ( !tmpTutorial.IsEmpty() )
     {
-      htmlWindow->LoadPage( tmpTutorial );
+      //htmlWindow->LoadPage( tmpTutorial );
+      std::cout << "Opt 2: ";
+      LoadHtml( indexFileName );
       htmlFound = true;
     }
   }
@@ -955,11 +970,9 @@ void TutorialsBrowser::buildIndex()
 }
 
 
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON
- */
-
-void HelpContents::OnBrowserButtonClick( wxCommandEvent& event )
+// local stash //
+/*
+void OnBrowserButtonClick( wxCommandEvent& event )
 {
   buildIndex(); // redone to prevent indexFileName failures
 
@@ -985,4 +998,4 @@ void HelpContents::OnBrowserButtonClick( wxCommandEvent& event )
       Close();
   }
 }
-
+*/

@@ -3221,6 +3221,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetSingleInstance( paraverConfig->getGlobalSingleInstance() );
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
   preferences.SetAskForPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
+  preferences.SetHelpContentsUsesBrowser( paraverConfig->getGlobalHelpContentsUsesBrowser() );
 
   // TIMELINE
 
@@ -3303,6 +3304,13 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     //It is called by default
     //preferences.TransferDataFromWindow();
 
+    //If showing help contents' window has changed, destroy it [CHAPUZA QUE FUNCIONA]
+    if ( preferences.GetHelpContentsUsesBrowser() != paraverConfig->getGlobalHelpContentsUsesBrowser() )
+    {
+      delete helpContents;
+      helpContents = NULL;
+    }  
+
     // Apply Preferences
 
     // GLOBAL
@@ -3316,6 +3324,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setGlobalSingleInstance( preferences.GetSingleInstance() );
     paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
     paraverConfig->setGlobalPrevSessionLoad( preferences.GetAskForPrevSessionLoad() );
+    paraverConfig->setGlobalHelpContentsUsesBrowser( preferences.GetHelpContentsUsesBrowser() );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );
@@ -4564,20 +4573,20 @@ void paraverMain::createHelpContentsWindow(
   else
   {
     helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
-    helpContents->LoadHtml(helpContentsAbsolutePath);
-    //helpContents->htmlWindow->LoadPage( helpContentsAbsolutePath );
-    {
-      if ( isModal )
-        helpContents->ShowModal();
-      else
-        helpContents->Show();
-    }
+    helpContents->LoadHtml( helpContentsAbsolutePath );
+    if ( isModal )
+      helpContents->ShowModal();
+    else
+      helpContents->Show();
   }
 }
 
 
 void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
 {
+  if ( !paraverConfig->getGlobalHelpContentsQuestionAnswered() )
+    helpQuestion(); // do the same for the regex help...
+
   wxChar SEP = wxFileName::GetPathSeparator();
 
   wxString baseRelativePath = SEP +
@@ -5057,4 +5066,19 @@ bool paraverMain::IsSessionValid()
 void paraverMain::ValidateSession( bool setValidate )
 {
   paraverMain::validSessions = paraverMain::validSessions && setValidate;
+}
+
+
+void paraverMain::helpQuestion()
+{
+  int question = wxMessageBox( wxT( "Do you want to use your system's browser to open the Help menu? You can change this setting at the Preferences menu." ),
+          wxT( "Please confirm" ),
+          wxICON_QUESTION|wxYES_NO);
+
+       /* wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last auto-saved Paraver session?" ),
+                      wxT( "Load auto-saved session" ), 
+                      wxICON_QUESTION | wxYES_NO, this )*/
+
+  paraverConfig->setGlobalHelpContentsUsesBrowser( question == wxYES );
+  paraverConfig->setGlobalHelpContentsQuestionAnswered( true );
 }

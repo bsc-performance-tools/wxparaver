@@ -218,6 +218,7 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
+  helpContentsUsesBrowser = false;
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
@@ -235,6 +236,7 @@ void PreferencesDialog::Init()
   checkGlobalSingleInstance = NULL;
   spinSessionTime = NULL;
   checkGlobalAskForPrevSessionLoad = NULL;
+  checkGlobalHelpOnBrowser = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -456,6 +458,10 @@ void PreferencesDialog::CreateControls()
   checkGlobalAskForPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_ASK_FOR_PREV_SESSION, _("Show dialog for crashed auto-saved sessions on startup"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalAskForPrevSessionLoad->SetValue(true);
   itemStaticBoxSizer31->Add(checkGlobalAskForPrevSessionLoad, 1, wxGROW|wxALL, 5);
+
+  checkGlobalHelpOnBrowser = new wxCheckBox( panelGlobal, ID_HELP_CONTENTS_IN_BROWSER, _("Show help contents on a browser"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkGlobalHelpOnBrowser->SetValue(false);
+  itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1389,6 +1395,8 @@ bool PreferencesDialog::TransferDataToWindow()
   checkGlobalAskForPrevSessionLoad->SetValue( askForPrevSessionLoad );
   checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 
+  checkGlobalHelpOnBrowser->SetValue( helpContentsUsesBrowser );
+
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
   txtTimelineNameFormatFull->SetValue( wxString::FromAscii( timelineNameFormatFull.c_str() ) );
@@ -1526,6 +1534,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   singleInstance = checkGlobalSingleInstance->GetValue();
   sessionSaveTime = spinSessionTime->GetValue();
   askForPrevSessionLoad = checkGlobalAskForPrevSessionLoad->GetValue();
+  helpContentsUsesBrowser = checkGlobalHelpOnBrowser->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );
