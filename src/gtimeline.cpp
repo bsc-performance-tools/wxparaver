@@ -4673,6 +4673,12 @@ void gTimeline::saveCFG()
 }
 
 
+bool gTimeline::insideDerivedWindow()
+{
+  return ( myWindow->isDerivedWindow() || myWindow->getChild() != NULL );
+}
+
+
 void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
   if( myWindow->getReady() )

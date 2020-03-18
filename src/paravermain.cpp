@@ -3468,6 +3468,7 @@ bool getUsedByHistogram( Window *whichWindow )
 {
   if ( whichWindow->getUsedByHistogram() )
     return true;
+
   else if ( whichWindow->isDerivedWindow() )
   {
     if ( getUsedByHistogram( whichWindow->getParent( 0 ) ) )
@@ -3486,6 +3487,7 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 {
   if( currentHisto != NULL )
     currentHisto->setDestroy( true );
+
   if( currentTimeline != NULL )
   {
     if( !getUsedByHistogram( currentTimeline ) )
@@ -3503,7 +3505,6 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
                     _( "Paraver information" ),
                     wxOK | wxICON_INFORMATION );
     }
-
   }
 }
 

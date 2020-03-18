@@ -2946,6 +2946,13 @@ void gHistogram::saveCFG()
 }
 
 
+bool gHistogram::insideDerivedWindow()
+{
+  return false;
+}
+
+
+
 /*!
  * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_LABEL_COLORS
  */

@@ -30,6 +30,8 @@
 #include <wx/display.h>
 
 
+
+
 wxTreeCtrl * createTree( wxImageList *imageList )
 {
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
@@ -242,7 +244,6 @@ wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found
   
   return retItemId;
 }
-
 
 
 // precond : current is a derived gTimeline

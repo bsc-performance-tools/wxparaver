@@ -545,6 +545,8 @@ public:
   void saveText();
   void saveCFG();
 
+  virtual bool insideDerivedWindow();
+
   typedef enum {  RAW_LINE = 0,
                   BEGIN_OBJECT_SECTION,
                   END_OBJECT_SECTION,
