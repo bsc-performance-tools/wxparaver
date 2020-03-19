@@ -4556,11 +4556,13 @@ void paraverMain::createHelpContentsWindow(
     helpContents = HelpContents::createObject( HelpContents::HELP, NULL, helpContentsAbsolutePath, 
                                                lookForContents, wxID_ANY, _("Help Contents") );
   }
-  helpContents->SetHelpContents( helpContentsAbsolutePath );
-
+  bool htmlInHelpPath = helpContents->SetHelpContents( helpContentsAbsolutePath );
+  helpContentsAbsolutePath = wxT( "file://" ) + paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
   if ( lookForContents )
   {
-    if ( helpContents->IsShown() )
+    if ( paraverConfig->getGlobalHelpContentsUsesBrowser() )
+    { } //helpContents->buildIndex();
+    else if ( helpContents->IsShown() )
       helpContents->Raise();
     else
     {
@@ -4572,11 +4574,10 @@ void paraverMain::createHelpContentsWindow(
   }
   else
   {
-    helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
     helpContents->LoadHtml( helpContentsAbsolutePath );
-    if ( isModal )
+    if ( !paraverConfig->getGlobalHelpContentsUsesBrowser() && isModal )
       helpContents->ShowModal();
-    else
+    else if ( !paraverConfig->getGlobalHelpContentsUsesBrowser() )
       helpContents->Show();
   }
 }

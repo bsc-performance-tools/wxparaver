@@ -183,8 +183,6 @@ HelpContents::~HelpContents()
 void HelpContents::Init()
 {
   currentHelpContentsDir = wxT("");
-
-  wxChar SEP = wxFileName::GetPathSeparator();
   indexFileName = wxT( "" );
   subindexLink = wxT( "" );
 }
@@ -329,7 +327,6 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
     indexFile.Write( contentsHtmlIndex );
     indexFile.Close();
     //htmlWindow->LoadPage( indexFileName );
-    std::cout << "Opt BI: ";
     LoadHtml( indexFileName );
   }
   else
@@ -508,7 +505,6 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
 
 void HelpContents::LoadHtml( const wxString& htmlFile )
 {
-  std::cout << "BROWSER? " << paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() << std::endl;
   if ( paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() && 
        dialogCaption == SYMBOL_HELPCONTENTS_TITLE )
   {   
@@ -533,8 +529,6 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
   {
     // relativepath/index.html
     SetHelpContentsRoot( candidate.GetPathWithSep() );
-    //htmlWindow->LoadPage( whichPath );
-    std::cout << "Opt 0: ";
     LoadHtml( indexFileName );
     htmlFound = true;
   }
@@ -543,9 +537,6 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
     // TODO: merge with upper
     // relativepath/index.html#reference
     SetHelpContentsRoot( candidate.GetPathWithSep() );
-    //SetHelpContentsRoot( wxT("") );
-    //htmlWindow->LoadPage( whichPath );
-    std::cout << "Opt 1: ";
     LoadHtml( indexFileName );
     htmlFound = true;
   }
@@ -555,8 +546,6 @@ bool HelpContents::SetHelpContents( const wxString& whichPath )
     wxString tmpTutorial = appendIndexHtmlToURL( candidate.GetPathWithSep() );
     if ( !tmpTutorial.IsEmpty() )
     {
-      //htmlWindow->LoadPage( tmpTutorial );
-      std::cout << "Opt 2: ";
       LoadHtml( indexFileName );
       htmlFound = true;
     }
@@ -968,34 +957,3 @@ void TutorialsBrowser::buildIndex()
 {
   buildIndexTemplate( wxString( wxT( "Tutorials" ) ), wxString( wxT( "tutorials" ) ) );
 }
-
-
-// local stash //
-/*
-void OnBrowserButtonClick( wxCommandEvent& event )
-{
-  buildIndex(); // redone to prevent indexFileName failures
-
-  //BUG: subsections "index.html#section" will not load - yet
-  wxChar SEP = wxFileName::GetPathSeparator();
-  wxString helpContentsDir = 
-        helpContentsRoot + SEP +
-        currentHelpContentsDir + SEP +
-        wxString( wxT( "index.html") ) +
-        subindexLink;
-  
-  if ( currentHelpContentsDir == wxT( "" ) )
-    helpContentsDir = indexFileName;
-
-  if ( wxLaunchDefaultBrowser( helpContentsDir ) )
-  {  // There should be a option in preferences to choose if you want to close
-     // the dialog, or not. BUG: cursor will be in busy mode until Paraver is closed...
-    
-    event.Skip();
-    if ( IsModal() )
-      EndModal( wxID_OK );
-    else
-      Close();
-  }
-}
-*/
