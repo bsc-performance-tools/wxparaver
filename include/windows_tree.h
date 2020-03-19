@@ -49,9 +49,7 @@ class gWindow
     }
 
     bool canDestroy() const { return destroy ; }
-    void setDestroy( bool value ) { destroy = value ; }
-
-    virtual bool insideDerivedWindow() = 0;
+    virtual void setDestroy( bool value ) { destroy = value ; }
 
   private:
     bool destroy;

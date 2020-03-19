@@ -4673,9 +4673,36 @@ void gTimeline::saveCFG()
 }
 
 
-bool gTimeline::insideDerivedWindow()
+void gTimeline::setDestroyParents( bool value )
 {
-  return ( myWindow->isDerivedWindow() || myWindow->getChild() != NULL );
+  gWindow::setDestroy( value );
+
+  if ( myWindow->getParent( 0 ) != NULL )
+  {
+    for( int i = 0; i < 2; ++i )
+    {
+      bool dummyFound;
+      gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getParent( i ), dummyFound );
+      tmpTimeline->setDestroyParents( value );
+    }
+  }
+}
+
+
+void gTimeline::setDestroy( bool value )
+{
+  if ( myWindow->getChild() != NULL )
+  {
+    // I'm inside a derived window => recursively navigate to "final" child window
+    bool dummyFound;
+    gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getChild(), dummyFound );
+    tmpTimeline->setDestroy( value );
+  }
+  else
+  {
+    // And recursively descent
+    setDestroyParents( value );
+  }
 }
 
 

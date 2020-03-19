@@ -21,15 +21,12 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-
 #include "windows_tree.h"
 #include "loadedwindows.h"
 #include "gtimeline.h"
 #include "ghistogram.h"
 #include "paravermain.h"
 #include <wx/display.h>
-
-
 
 
 wxTreeCtrl * createTree( wxImageList *imageList )

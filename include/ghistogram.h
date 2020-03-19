@@ -386,8 +386,6 @@ public:
   void saveImage( bool showSaveDialog, wxString whichFileName );
   void saveText( bool onlySelectedPlane = false );
 
-  virtual bool insideDerivedWindow();
-
   void rightDownManager();
 
   static wxProgressDialog *dialogProgress;
