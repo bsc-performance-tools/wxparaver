@@ -1392,7 +1392,7 @@ void gHistogram::OnPopUpFitObjects()
 
 void gHistogram::OnPopUpRowSelection()
 {
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
 
@@ -1409,7 +1409,7 @@ void gHistogram::OnPopUpRowSelection()
 
   delete dialog;
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 
@@ -2646,7 +2646,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
   wxString tmpSuffix;
   wxString defaultDir;
 
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   fileName = buildFormattedFileName( onlySelectedPlane );
 
@@ -2745,7 +2745,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
     delete progress;
   }
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 
@@ -2754,7 +2754,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
   wxString imagePath;
   ParaverConfig::TImageFormat filterIndex;
 
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
@@ -2815,7 +2815,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
 
       if ( saveDialog.ShowModal() != wxID_OK )
       {
-        setDestroy( true );
+        setEnableDestroyButton( true );
         return;
       }
 
@@ -2921,7 +2921,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
   wxImage baseLayer = imageBitmap.ConvertToImage();
   baseLayer.SaveFile( imagePath, imageType );
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 
@@ -2930,7 +2930,7 @@ void gHistogram::saveCFG()
   vector< Histogram * > histograms;
   vector< Window * > windows;
 
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   histograms.push_back( GetHistogram() );
 
@@ -2942,7 +2942,7 @@ void gHistogram::saveCFG()
   paraverMain::myParaverMain->SaveConfigurationFile(
           (wxWindow *)this, SaveOptions(), windows, histograms );
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 

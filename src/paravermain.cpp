@@ -3520,12 +3520,12 @@ void paraverMain::OnTooldeleteUpdate( wxUpdateUIEvent& event )
   {
     bool dummyFound;
     gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), currentTimeline, dummyFound );
-    enableButtonDestroy = tmpTimeline->canDestroy();
+    enableButtonDestroy = tmpTimeline->getEnableDestroyButton();
   }
   else if ( currentHisto != NULL )
   {
     gHistogram *tmpHistogram = getGHistogramFromWindow( getAllTracesTree()->GetRootItem(), currentHisto );
-    enableButtonDestroy = tmpHistogram->canDestroy();
+    enableButtonDestroy = tmpHistogram->getEnableDestroyButton();
   }
   else // Both null
   {

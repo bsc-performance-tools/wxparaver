@@ -1976,7 +1976,7 @@ void gTimeline::OnPopUpPunctualColorWindow()
   vector<Window *> compatWindows;
   int selIndex = 0;
 
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   LoadedWindows::getInstance()->getDerivedCompatible( myWindow->getTrace(), compatWindows );
   compatWindows.erase( std::find( compatWindows.begin(), compatWindows.end(), myWindow ) );
@@ -2005,7 +2005,7 @@ void gTimeline::OnPopUpPunctualColorWindow()
   
   delete dialog;
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 void gTimeline::OnPopUpCodeColor()
@@ -2121,7 +2121,7 @@ void gTimeline::OnPopUpPasteSpecial()
 
 void gTimeline::OnPopUpRowSelection()
 {
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
 
@@ -2138,7 +2138,7 @@ void gTimeline::OnPopUpRowSelection()
 
   delete dialog;
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 
@@ -3408,7 +3408,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
   wxString imagePath;
   ParaverConfig::TImageFormat filterIndex;
 
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
@@ -3466,7 +3466,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
       saveDialog.SetFilterIndex( filterIndex );
       if ( saveDialog.ShowModal() != wxID_OK )
       {
-        setDestroy( true );
+        setEnableDestroyButton( true );
         return;
       }
 
@@ -3647,7 +3647,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
   // Save timeline image without scale
   baseLayer.SaveFile( imagePath, imageType );
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 
@@ -3657,7 +3657,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   wxString tmpSuffix;
   wxString defaultDir;
 
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   imageName = buildFormattedFileName();
   
@@ -3719,7 +3719,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     saveDialog.SetFilterIndex( filterIndex );
     if ( saveDialog.ShowModal() != wxID_OK )
     {
-      setDestroy( true );
+      setEnableDestroyButton( true );
       return;
     }
 
@@ -3815,7 +3815,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     delete tmpImage;
   }
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 
@@ -4552,7 +4552,7 @@ void gTimeline::saveText()
   wxString tmpSuffix;
   wxString defaultDir;
 
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   fileName = buildFormattedFileName();
 
@@ -4655,7 +4655,7 @@ void gTimeline::saveText()
     delete progress;
   }
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 
@@ -4664,18 +4664,18 @@ void gTimeline::saveCFG()
   vector< Window * > timelines;
   timelines.push_back( GetMyWindow() );
 
-  setDestroy( false );
+  setEnableDestroyButton( false );
 
   paraverMain::myParaverMain->SaveConfigurationFile(
           (wxWindow *)this, SaveOptions(), timelines, vector< Histogram * >() );
 
-  setDestroy( true );
+  setEnableDestroyButton( true );
 }
 
 
-void gTimeline::setDestroyParents( bool value )
+void gTimeline::setEnableDestroyParents( bool value )
 {
-  gWindow::setDestroy( value );
+  gWindow::setEnableDestroyButton( value );
 
   if ( myWindow->getParent( 0 ) != NULL )
   {
@@ -4683,25 +4683,25 @@ void gTimeline::setDestroyParents( bool value )
     {
       bool dummyFound;
       gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getParent( i ), dummyFound );
-      tmpTimeline->setDestroyParents( value );
+      tmpTimeline->setEnableDestroyParents( value );
     }
   }
 }
 
 
-void gTimeline::setDestroy( bool value )
+void gTimeline::setEnableDestroyButton( bool value )
 {
   if ( myWindow->getChild() != NULL )
   {
     // I'm inside a derived window => recursively navigate to "final" child window
     bool dummyFound;
     gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getChild(), dummyFound );
-    tmpTimeline->setDestroy( value );
+    tmpTimeline->setEnableDestroyButton( value );
   }
   else
   {
     // And recursively descent
-    setDestroyParents( value );
+    setEnableDestroyParents( value );
   }
 }
 

@@ -545,7 +545,7 @@ public:
   void saveText();
   void saveCFG();
 
-  void setDestroy( bool value );
+  void setEnableDestroyButton( bool value );
 
   typedef enum {  RAW_LINE = 0,
                   BEGIN_OBJECT_SECTION,
@@ -719,7 +719,7 @@ private:
                        int imageStepXRectangle,
                        bool drawLabel );
 
-  void setDestroyParents( bool value );
+  void setEnableDestroyParents( bool value );
 
   class ScaleImageVertical
   {
