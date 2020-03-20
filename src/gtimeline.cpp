@@ -4693,14 +4693,14 @@ void gTimeline::setEnableDestroyButton( bool value )
 {
   if ( myWindow->getChild() != NULL )
   {
-    // I'm inside a derived window => recursively navigate to "final" child window
+    // I'm inside a derived window => recursively navigate descendants looking for "final" child window
     bool dummyFound;
     gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getChild(), dummyFound );
     tmpTimeline->setEnableDestroyButton( value );
   }
   else
   {
-    // And recursively descent
+    // And recursively visit ancestors
     setEnableDestroyParents( value );
   }
 }

@@ -30,7 +30,7 @@
  */
 
 ////@begin includes
-#include "include/filebrowserbutton.h"
+#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -49,26 +49,26 @@ class RunScript;
 class RunningProcess : public wxProcess
 {
   DECLARE_EVENT_TABLE()
-  
+
   public:
     RunningProcess( RunScript *whichParent, const wxString& whichCommand )
       : wxProcess( (wxDialog *)whichParent ), command( whichCommand )
-    {    
+    {
       parent = whichParent;
       Redirect();
       msgTimer.SetOwner( this, ID_TIMER_MESSAGE );
       msgTimer.Start( 500 );
-    }    
+    }
 
     virtual void OnTerminate( int pid, int status );
     virtual bool HasInput();
-    
+
     virtual void OnTimerMessage( wxTimerEvent& event );
 
   protected:
     RunScript *parent;
     wxString command;
-    
+
     wxString outMsg;
     wxString errMsg;
 
@@ -171,12 +171,11 @@ class wxHtmlWindow;
  */
 
 class RunScript: public wxDialog
-{    
+{
   DECLARE_DYNAMIC_CLASS( RunScript )
   DECLARE_EVENT_TABLE()
 
 public:
-  
 
   /// Constructors
   RunScript();
@@ -298,7 +297,7 @@ public:
   void OnProcessTerminated( int pid );
 
   void AppendToLog( wxString msg, bool formatOutput = true );
-  
+
   void setTrace( wxString whichTrace );
 
   void setDimemas();
@@ -422,13 +421,13 @@ private:
   // extensions to detect in log
   wxArrayString extensions;
   wxArrayString extensionsDimemas;
-  
+
   // Tags to detect times
   wxString iterationTag;
   wxString punctualTimeTag;
   wxString rangeTimeTag;
   wxArrayString timeMarkTags;
-  
+
   // Hidden app parameters
   wxString clusteringCSV;
   wxString foldingCSV;
@@ -459,7 +458,7 @@ private:
   wxString getEnvironmentPath( TEnvironmentVar envVar, wxString command = wxString( wxT("") ) );
   wxString doubleQuote( const wxString& path );
   wxString expandVariables( wxString command );
-  
+
   wxString GetCommand( wxString &command, wxString &parameters, TExternalApp selectedApp = DEFAULT );
   wxString GetReachableCommand( TExternalApp selectedApp = DEFAULT ); // adds path to the binary
 
@@ -474,7 +473,7 @@ private:
   // TODO: This method's been copied from HelpContents; consider write new class
   std::string getHrefFullPath( wxHtmlLinkEvent &event,  wxString whichSuffixToErase = wxT("") );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
-  
+
   // Execution
   //void OnTerminateShellCommand( int pid, int status );
 

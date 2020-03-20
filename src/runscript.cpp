@@ -1054,6 +1054,7 @@ void RunScript::CreateControls()
   {
     fileBrowserButtonClusteringXML->SetPath( clusteringXML );
   }
+
   clusteringRadioGenerateSeqNumbered->SetValue( true );
 }
 
@@ -1312,7 +1313,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       }
 
       parameters += wxString( wxT( " -i " ) );
-      
+
       // !clusteringCSV.IsEmpty() ==> checkBoxClusteringUseSemanticWindow->IsEnabled()
       if ( !clusteringCSV.IsEmpty() && 
             checkBoxClusteringUseSemanticWindow->IsChecked() )
@@ -1452,12 +1453,12 @@ void RunScript::ShowWarning( wxString whichMessage )
 void RunScript::ShowWarningUnreachableProgram( wxString program, TEnvironmentVar envVar, bool alsoPrintPath )
 {
   wxString auxMessage;
-  
+
   if ( envVar == PATH && alsoPrintPath )
   {
     alsoPrintPath = false;
   }
-  
+
   auxMessage = wxString( wxT( "Unable to find:" ) );
   auxMessage += wxString( wxT( "\n\n\t" ) ) + program + wxString( wxT( "\n\n" ) );
   auxMessage += wxString( wxT( "Please check that the program is reachable through the environment variable" ) );
@@ -1642,7 +1643,7 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       active &= !fileBrowserButtonDimemasCFG->GetPath().IsEmpty();
       active &= !textCtrlOutputTrace->GetValue().IsEmpty();      
       break;
-      
+
     case STATS_WRAPPER:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();      
       break;
@@ -1686,13 +1687,13 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
   if ( !helpOption || formatOutput )
   {
     TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
-   
+
     switch ( selectedApp )
     {
  //     case DIMEMAS_WRAPPER:
  //       msg = insertLog( msg, extensionsDimemas );
  //       break;
-        
+
       default:
         msg = insertLog( msg, extensions );
         break;
@@ -1768,10 +1769,10 @@ void RunScript::adaptWindowToApplicationSelection()
       toolTip = wxString( wxT( "Extra parameters passed to 'stats'\n"
                                "-events_histo[:type1[-type2],...]\n"
                                "-thread_calls[:type1[-type2],...]\n" ) );
-      
+
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Parameters" ) ); 
       labelTextCtrlDefaultParameters->SetToolTip( toolTip );
-                                                  
+
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
       textCtrlDefaultParameters->SetToolTip( toolTip );
 
@@ -1784,7 +1785,7 @@ void RunScript::adaptWindowToApplicationSelection()
     case CLUSTERING:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
-      
+
       if ( textCtrlClusteringOutputTrace->IsEmpty() )
       {
         wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
@@ -1796,7 +1797,7 @@ void RunScript::adaptWindowToApplicationSelection()
       if ( clusteringCSV.IsEmpty() )
       {
         checkBoxClusteringUseSemanticWindow->Enable( false );
-        
+
         // This two others are chained by their own Update_UI with previous one
         // Anyway, it's made here
         checkBoxClusteringCSVValueAsDimension->Enable( false );
@@ -1809,9 +1810,9 @@ void RunScript::adaptWindowToApplicationSelection()
     case FOLDING:
       toolTip = wxString( wxT( "Event type that determines the folded regions."
                                " Allowed formats include either numerical or string"
-                               " (i.e. 90000001 or 'Cluster ID')." ) );  
-    
-      labelTextCtrlDefaultParameters->SetLabel( wxT( "Event type/name" ) ); 
+                               " (i.e. 90000001 or 'Cluster ID')." ) );
+
+      labelTextCtrlDefaultParameters->SetLabel( wxT( "Event type/name" ) );
       labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
@@ -1829,13 +1830,13 @@ void RunScript::adaptWindowToApplicationSelection()
     default:
       toolTip = wxString( wxT( "Command and parameters to execute\n"
                                "%TRACE refers to input trace" ) );
-                               
+
       labelTextCtrlDefaultParameters->SetLabel( wxT( "Command" ) );
       labelTextCtrlDefaultParameters->SetToolTip( toolTip );
-                                                 
+
       textCtrlDefaultParameters->SetValidator( wxTextValidator( wxFILTER_NONE ));
       textCtrlDefaultParameters->SetToolTip( toolTip );
-                                                  
+
       labelTextCtrlDefaultParameters->Show();
       textCtrlDefaultParameters->Show();
       break;
@@ -1924,7 +1925,7 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
         int globalPos = initSubStr + initSuffixPos;
 
         extensionsPositions.push_back( std::make_pair( globalPos, extensions[i] ) );
-        
+
         // Advance: compute new end of the substring 
         initSubStr = globalPos + extensions[i].Len();
       }
@@ -2039,7 +2040,7 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
         }
 
         candidateFound = candidateFound &&
-                         wxFileName::FileExists( candidateFile.GetFullPath().Trim( TRIM_LEFT ) ); 
+                         wxFileName::FileExists( candidateFile.GetFullPath().Trim( TRIM_LEFT ) );
 
         if ( !candidateFound )
         {
@@ -2064,7 +2065,7 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
 
         wxString linkName = rawFormat( candidateName );
         wxString linkFullPath = candidateFile.GetFullPath().Trim( TRIM_LEFT );
-        
+
         wxString currentLink;
         if ( tunePrvLinksForClustering && 
              extensionsPositions[i].second.Cmp( wxString( wxT( ".prv" ))) == 0 )
@@ -2080,10 +2081,10 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
         {
           currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") + linkName + wxT("</A>");
         }
-        
+
         auxLine = currentLink + trashTail + auxLine;
         endSubStr = currentPos;
-        
+
         // Advance vector of positions-extensions to next useful (position, ext)
         // Ex: After succesful detection of link, any extension inside must be ignored.
         //   Good link:                    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -2179,7 +2180,7 @@ wxString RunScript::insertTimeMarkLink( wxString rawLine,  std::pair< int, wxStr
 
     if ( tmpBeginRangePos != wxNOT_FOUND && tmpEndRangePos != wxNOT_FOUND )
     {
-    
+
       int tmpInit = tmpBeginRangePos + 1;
       subStr = rawLine.Mid( tmpInit, endLine - tmpInit - 1  );
       currentLink = wxT("<A HREF=\"") + subStr + extensions[ 9 ] + wxT("\">") + subStr + wxT("</A>");
@@ -2265,8 +2266,15 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     std::vector< Trace * > loadedTraces = paraverMain::myParaverMain->GetLoadedTraces();
     Trace *clusteredTrace = loadedTraces.back();
 
-    // Create cluster id window
+    // Create cluster id window: get sourceWindow
     Window *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
+
+    // Create cluster id window: avoid sourceWindow destruction
+    bool dummyfound;
+    gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
+    currentWindow->setEnableDestroyButton( false );
+
+    // Create cluster id window: create and fill newWindow with tuned sourceWindow properties
     Window *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
 
     TTime beginZoomTime;
@@ -2309,6 +2317,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     newWindow->setComputeYMaxOnInit( true );
 
     paraverMain::myParaverMain->insertInTree( newWindow );
+
+    currentWindow->setEnableDestroyButton( true );
   }
   else if ( matchHrefExtension( event, wxT(".prv") ) || matchHrefExtension( event, wxT(".prv.gz")))
   {
@@ -2335,9 +2345,9 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     // prepare command
     wxString command = wxString( wxT( "gnuplot -persist " ) ) +
                        doubleQuote( tmpFile );
-    
+
     runDetachedProcess( command );
-    
+
     wxFileName::SetCwd( currentWorkingDir ); // restore the old
   }
   else if ( matchHrefExtension( event, _(".cfg")))
@@ -2390,6 +2400,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), paraverMain::myParaverMain->GetCurrentTimeline(), found );
     if ( found )
     {
+      currentWindow->setEnableDestroyButton( false );
+
       // Get time from href
       wxString tmpTime = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
       string time = std::string( tmpTime.Mid( 0, tmpTime.Len() - extensions[8].Len() ).Trim(true).Trim(false).mb_str() );
@@ -2402,6 +2414,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
       tmpTimes.push_back( TRecordTime(auxt1) );
       vector< TObjectOrder > dummySelectedObjects;
       currentWindow->drawTimeMarks( tmpTimes, dummySelectedObjects );
+
+      currentWindow->setEnableDestroyButton( true );
     }
   }
   else if ( matchHrefExtension( event, extensions[9] ))  // "_time_range_mark"
@@ -2410,6 +2424,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), paraverMain::myParaverMain->GetCurrentTimeline(), found );
     if ( found )
     {
+      currentWindow->setEnableDestroyButton( false );
+
       wxString hrefData = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
       int tmpTimesSeparator = hrefData.Find( wxString( wxT(",") ) );
       if ( tmpTimesSeparator != wxNOT_FOUND )
@@ -2435,6 +2451,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
         currentWindow->drawTimeMarks( tmpTimes, dummySelectedObjects );
       }
     }
+
+    currentWindow->setEnableDestroyButton( true );
   }
   else
   {
@@ -2495,8 +2513,8 @@ void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
     buttonDimemasGUI->SetToolTip( _("Edit Dimemas Configuration File using DimemasGUI.") );
     
   if ( !active && buttonDimemasGUI->IsEnabled() )
-    buttonDimemasGUI->SetToolTip( _("DimemasGUI instance running...") );    
-          
+    buttonDimemasGUI->SetToolTip( _("DimemasGUI instance running...") );
+
   buttonDimemasGUI->Enable( active );
 }
 
@@ -2779,7 +2797,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
       break;
     }
   }
-  
+
   if ( i == 3 )
   {
     wxMessageBox( _( "Unable to find gvim, nedit or gedit. Please check $PATH variable." ), _( "Edit Clustering Configuration XML" ) );
