@@ -4021,7 +4021,11 @@ void paraverMain::OnFindDialog()
     return;
   TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
   if( item->getTimeline() != NULL )
+  {
+    item->getTimeline()->setEnableDestroyButton( false );
     item->getTimeline()->OnFindDialog();
+    item->getTimeline()->setEnableDestroyButton( true );
+  }
 }
 
 /*!

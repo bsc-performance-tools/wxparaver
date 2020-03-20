@@ -39,7 +39,8 @@ class Trace;
 
 using namespace std;
 
-
+// gTimeline and gHistogram ancestor
+// May absorb other methods.
 class gWindow
 {
   public:
@@ -53,7 +54,6 @@ class gWindow
 
   private:
     bool enableButtonDestroy;
-
 };
 
 
