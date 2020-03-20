@@ -637,11 +637,12 @@ bool HelpContents::DetectHelpContentsIndexInPath( const wxString& whichPath )
  */
 void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 {
-  if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) )
+  if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
+       event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
   {
     if ( !wxLaunchDefaultBrowser( event.GetLinkInfo().GetHref(), wxBROWSER_NOBUSYCURSOR ) )
     {
-      wxMessageDialog message( this, wxT("Unable to find/open default browser."), wxT( "Warning" ), wxOK );
+      wxMessageDialog message( this, wxT( "Unable to find/open default browser." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
     }
   }
@@ -866,12 +867,12 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
       buildIndex();
     }
   }
-  else if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT("https") ||
-            event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT("mailto") )
+  else if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
+            event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
   {
     if ( !wxLaunchDefaultBrowser( event.GetLinkInfo().GetHref(), wxBROWSER_NOBUSYCURSOR ) )
     {
-      wxMessageDialog message( this, wxT("Unable to find/open default browser."), wxT( "Warning" ), wxOK );
+      wxMessageDialog message( this, wxT( "Unable to find/open default browser." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
     }
   }
