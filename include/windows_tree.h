@@ -45,14 +45,14 @@ class gWindow
   public:
     gWindow()
     {
-      destroy = true;
+      enableButtonDestroy = true;
     }
 
-    bool getEnableDestroyButton() const { return destroy ; }
-    virtual void setEnableDestroyButton( bool value ) { destroy = value ; }
+    bool getEnableDestroyButton() const { return enableButtonDestroy ; }
+    virtual void setEnableDestroyButton( bool value ) { enableButtonDestroy = value ; }
 
   private:
-    bool destroy;
+    bool enableButtonDestroy;
 
 };
 
