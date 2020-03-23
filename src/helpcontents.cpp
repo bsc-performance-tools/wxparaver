@@ -508,7 +508,7 @@ void HelpContents::LoadHtml( const wxString& htmlFile )
   if ( paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() && 
        dialogCaption == SYMBOL_HELPCONTENTS_TITLE )
   {   
-    if( !wxLaunchDefaultBrowser( htmlFile, wxBROWSER_NOBUSYCURSOR ) )
+    if( !wxLaunchDefaultApplication( htmlFile, wxBROWSER_NOBUSYCURSOR ) )
       htmlWindow->LoadPage( htmlFile );
     else if ( IsModal() )
       EndModal( wxID_OK );
@@ -640,7 +640,7 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
        event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
   {
-    if ( !wxLaunchDefaultBrowser( event.GetLinkInfo().GetHref(), wxBROWSER_NOBUSYCURSOR ) )
+    if ( !wxLaunchDefaultApplication( event.GetLinkInfo().GetHref(), wxBROWSER_NOBUSYCURSOR ) )
     {
       wxMessageDialog message( this, wxT( "Unable to find/open default browser." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
@@ -870,7 +870,7 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   else if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
             event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
   {
-    if ( !wxLaunchDefaultBrowser( event.GetLinkInfo().GetHref(), wxBROWSER_NOBUSYCURSOR ) )
+    if ( !wxLaunchDefaultApplication( event.GetLinkInfo().GetHref(), wxBROWSER_NOBUSYCURSOR ) )
     {
       wxMessageDialog message( this, wxT( "Unable to find/open default browser." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
