@@ -3304,11 +3304,11 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     //It is called by default
     //preferences.TransferDataFromWindow();
 
-    //If showing help contents' window has changed, destroy it [CHAPUZA QUE FUNCIONA]
+    //If showing help contents' window has changed, destroy it [CHAPUZA QUE FUNCIONA] 
     if ( preferences.GetHelpContentsUsesBrowser() != paraverConfig->getGlobalHelpContentsUsesBrowser() )
     {
-      delete helpContents;
-      helpContents = NULL;
+      delete helpContents; 
+      helpContents = NULL; 
     }  
 
     // Apply Preferences
@@ -4586,7 +4586,7 @@ void paraverMain::createHelpContentsWindow(
 void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
 {
   if ( !paraverConfig->getGlobalHelpContentsQuestionAnswered() )
-    helpQuestion(); // do the same for the regex help...
+    helpQuestion();
 
   wxChar SEP = wxFileName::GetPathSeparator();
 
@@ -5075,11 +5075,7 @@ void paraverMain::helpQuestion()
   int question = wxMessageBox( wxT( "Do you want to use your system's browser to open the Help menu? You can change this setting at the Preferences menu." ),
           wxT( "Please confirm" ),
           wxICON_QUESTION|wxYES_NO);
-
-       /* wxMessageBox( wxT( "Paraver closed unexpectedly. Do you want to load your last auto-saved Paraver session?" ),
-                      wxT( "Load auto-saved session" ), 
-                      wxICON_QUESTION | wxYES_NO, this )*/
-
+  
   paraverConfig->setGlobalHelpContentsUsesBrowser( question == wxYES );
   paraverConfig->setGlobalHelpContentsQuestionAnswered( true );
 }

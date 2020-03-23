@@ -182,6 +182,8 @@ bool RowsSelectionDialog::Create( wxWindow* parent,
 
 void RowsSelectionDialog::OnRegularExpressionHelp( wxCommandEvent& event )
 {
+  if ( !paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsQuestionAnswered() )
+    paraverMain::myParaverMain->helpQuestion();
   wxChar SEP = wxFileName::GetPathSeparator();
 
   wxString helpContentsDir = SEP +
