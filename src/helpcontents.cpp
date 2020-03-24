@@ -40,6 +40,8 @@
 
 #include "helpcontents.h"
 #include "paravermain.h"
+#include "wx/filesys.h"
+#include <wx/mimetype.h>
 
 ////@begin XPM images
 #include "../icons/index.xpm"
@@ -502,13 +504,29 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
   return isHtmlReference;
 }
 
+bool launchApp( const wxString& htmlFile )
+{
+#if wxMAJOR_VERSION >= 3
+  return wxLaunchDefaultApplication( htmlFile, wxBROWSER_NOBUSYCURSOR );
+#else
+  wxFileType* file_type = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT("html") );
+  if ( file_type != NULL )
+  {
+    wxString open_command = file_type->GetOpenCommand( htmlFile );
+    wxExecute( open_command );
+    return true;
+  }
+  return false;
+#endif
+}
+
 
 void HelpContents::LoadHtml( const wxString& htmlFile )
 {
   if ( paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() && 
        dialogCaption == SYMBOL_HELPCONTENTS_TITLE )
-  {   
-    if( !wxLaunchDefaultApplication( htmlFile, wxBROWSER_NOBUSYCURSOR ) )
+  {
+    if( !launchApp( htmlFile ) )
       htmlWindow->LoadPage( htmlFile );
     else if ( IsModal() )
       EndModal( wxID_OK );
@@ -640,7 +658,7 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
        event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
   {
-    if ( !wxLaunchDefaultApplication( event.GetLinkInfo().GetHref(), wxBROWSER_NOBUSYCURSOR ) )
+    if( !launchApp( event.GetLinkInfo().GetHref() ) )
     {
       wxMessageDialog message( this, wxT( "Unable to find/open default browser." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
@@ -870,7 +888,7 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   else if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
             event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
   {
-    if ( !wxLaunchDefaultApplication( event.GetLinkInfo().GetHref(), wxBROWSER_NOBUSYCURSOR ) )
+    if( !launchApp( event.GetLinkInfo().GetHref() ) )
     {
       wxMessageDialog message( this, wxT( "Unable to find/open default browser." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
