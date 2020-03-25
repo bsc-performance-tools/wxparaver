@@ -3304,13 +3304,6 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     //It is called by default
     //preferences.TransferDataFromWindow();
 
-    //If showing help contents' window has changed, destroy it [CHAPUZA QUE FUNCIONA] 
-    if ( preferences.GetHelpContentsUsesBrowser() != paraverConfig->getGlobalHelpContentsUsesBrowser() )
-    {
-      delete helpContents; 
-      helpContents = NULL; 
-    }  
-
     // Apply Preferences
 
     // GLOBAL
@@ -4556,12 +4549,26 @@ void paraverMain::createHelpContentsWindow(
     helpContents = HelpContents::createObject( HelpContents::HELP, NULL, helpContentsAbsolutePath, 
                                                lookForContents, wxID_ANY, _("Help Contents") );
   }
-  bool htmlInHelpPath = helpContents->SetHelpContents( helpContentsAbsolutePath );
-  helpContentsAbsolutePath = wxT( "file://" ) + paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
+
+  // If helpFile has no "html" at the end, use Help Content's Index as hCAP (which works)
+  if ( helpFile.SubString( helpFile.size() - 4, helpFile.size() - 1) != wxT( "html" ) )
+  {
+    helpContentsAbsolutePath = wxT( "file://" ) + 
+          wxString::FromAscii( paraverConfig->getParaverConfigDir().c_str() ) +
+          wxString( wxFileName::GetPathSeparator() ) +
+          wxString( wxT( "help_contents" ) ) + wxT( "_index.html" );
+  }
+  else // Otherwise use previous hCAP
+  {
+    helpContentsAbsolutePath = wxT( "file://" ) + paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
+  }
+
   if ( lookForContents )
   {
     if ( paraverConfig->getGlobalHelpContentsUsesBrowser() )
-    { } //helpContents->buildIndex();
+    { 
+      helpContents->LoadHtml( helpContentsAbsolutePath );
+    } //helpContents->buildIndex();
     else if ( helpContents->IsShown() )
       helpContents->Raise();
     else

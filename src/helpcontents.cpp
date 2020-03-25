@@ -328,8 +328,8 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
     // Write it in /home/user/.paraver as <file_prefix>_index.html
     indexFile.Write( contentsHtmlIndex );
     indexFile.Close();
-    //htmlWindow->LoadPage( indexFileName );
-    LoadHtml( indexFileName );
+    htmlWindow->LoadPage( indexFileName );
+    //LoadHtml( indexFileName );
   }
   else
   {
