@@ -3221,6 +3221,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetSingleInstance( paraverConfig->getGlobalSingleInstance() );
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
   preferences.SetAskForPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
+  preferences.SetHelpContentsUsesBrowser( paraverConfig->getGlobalHelpContentsUsesBrowser() );
 
   // TIMELINE
 
@@ -3316,6 +3317,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setGlobalSingleInstance( preferences.GetSingleInstance() );
     paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
     paraverConfig->setGlobalPrevSessionLoad( preferences.GetAskForPrevSessionLoad() );
+    paraverConfig->setGlobalHelpContentsUsesBrowser( preferences.GetHelpContentsUsesBrowser() );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );
@@ -4412,7 +4414,6 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
   if ( tutorialsWindow == NULL )
   {
     tutorialsRoot = wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 );
-    //tutorialsWindow = new TutorialsBrowser( this, tutorialsRoot, wxID_ANY, _("Tutorials") );
     tutorialsWindow = HelpContents::createObject( HelpContents::TUTORIAL, this, tutorialsRoot, 
                                                   true, wxID_ANY, _("Tutorials") );
   }
@@ -4570,11 +4571,27 @@ void paraverMain::createHelpContentsWindow(
     helpContents = HelpContents::createObject( HelpContents::HELP, NULL, helpContentsAbsolutePath, 
                                                lookForContents, wxID_ANY, _("Help Contents") );
   }
-  helpContents->SetHelpContents( helpContentsAbsolutePath );
 
-  if (lookForContents)
+  // If helpFile has no "html" at the end, use Help Content's Index as hCAP (which works)
+  if ( helpFile.SubString( helpFile.size() - 4, helpFile.size() - 1) != wxT( "html" ) )
   {
-    if ( helpContents->IsShown() )
+    helpContentsAbsolutePath = wxT( "file://" ) + 
+          wxString::FromAscii( paraverConfig->getParaverConfigDir().c_str() ) +
+          wxString( wxFileName::GetPathSeparator() ) +
+          wxString( wxT( "help_contents" ) ) + wxT( "_index.html" );
+  }
+  else // Otherwise use previous hCAP
+  {
+    helpContentsAbsolutePath = wxT( "file://" ) + paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
+  }
+
+  if ( lookForContents )
+  {
+    if ( paraverConfig->getGlobalHelpContentsUsesBrowser() )
+    { 
+      helpContents->LoadHtml( helpContentsAbsolutePath );
+    } //helpContents->buildIndex();
+    else if ( helpContents->IsShown() )
       helpContents->Raise();
     else
     {
@@ -4586,21 +4603,20 @@ void paraverMain::createHelpContentsWindow(
   }
   else
   {
-    helpContentsAbsolutePath = paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
-    helpContents->LoadHtml(helpContentsAbsolutePath);
-    //helpContents->htmlWindow->LoadPage( helpContentsAbsolutePath );
-    {
-      if ( isModal )
-        helpContents->ShowModal();
-      else
-        helpContents->Show();
-    }
+    helpContents->LoadHtml( helpContentsAbsolutePath );
+    if ( !paraverConfig->getGlobalHelpContentsUsesBrowser() && isModal )
+      helpContents->ShowModal();
+    else if ( !paraverConfig->getGlobalHelpContentsUsesBrowser() )
+      helpContents->Show();
   }
 }
 
 
 void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
 {
+  if ( !paraverConfig->getGlobalHelpContentsQuestionAnswered() )
+    helpQuestion();
+
   wxChar SEP = wxFileName::GetPathSeparator();
 
   wxString baseRelativePath = SEP +
@@ -5080,4 +5096,15 @@ bool paraverMain::IsSessionValid()
 void paraverMain::ValidateSession( bool setValidate )
 {
   paraverMain::validSessions = paraverMain::validSessions && setValidate;
+}
+
+
+void paraverMain::helpQuestion()
+{
+  int question = wxMessageBox( wxT( "Do you want to use your system's browser to open the Help menu? You can change this setting at the Preferences menu." ),
+          wxT( "Please confirm" ),
+          wxICON_QUESTION|wxYES_NO);
+  
+  paraverConfig->setGlobalHelpContentsUsesBrowser( question == wxYES );
+  paraverConfig->setGlobalHelpContentsQuestionAnswered( true );
 }

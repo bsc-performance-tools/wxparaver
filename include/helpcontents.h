@@ -178,6 +178,9 @@ protected:
   wxString helpContentsRoot;
   bool lookForContents;
   wxString currentHelpContentsDir;
+  wxString indexFileName;
+  wxString subindexLink;
+  wxString dialogCaption;
 
   std::string getCurrentHelpContentsFullPath();
   std::string getHrefFullPath( wxHtmlLinkEvent &event );

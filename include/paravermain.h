@@ -619,6 +619,7 @@ public:
   static void ValidateSession( bool setValidate );
   
   bool OnMenusavesession( );
+  void helpQuestion();
 
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
@@ -717,6 +718,7 @@ private:
   void exitManager( wxEvent& event );
   void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
   void messageUndefinedParaverHome();
+  
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );

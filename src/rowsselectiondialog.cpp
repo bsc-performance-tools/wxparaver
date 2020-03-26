@@ -182,6 +182,8 @@ bool RowsSelectionDialog::Create( wxWindow* parent,
 
 void RowsSelectionDialog::OnRegularExpressionHelp( wxCommandEvent& event )
 {
+  if ( !paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsQuestionAnswered() )
+    paraverMain::myParaverMain->helpQuestion();
   wxChar SEP = wxFileName::GetPathSeparator();
 
   wxString helpContentsDir = SEP +
@@ -195,7 +197,7 @@ void RowsSelectionDialog::OnRegularExpressionHelp( wxCommandEvent& event )
 
   wxString helpRegEx = wxString( wxT( "#objects_regex" ) );
 
-  paraverMain::myParaverMain->createHelpContentsWindow(helpContentsDir, helpChapter, helpRegEx, true );
+  paraverMain::myParaverMain->createHelpContentsWindow( helpContentsDir, helpChapter, helpRegEx, true );
 }
 
 

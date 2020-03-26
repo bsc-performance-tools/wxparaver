@@ -213,20 +213,6 @@ RunScript::RunScript( wxWindow* parent,
      fileBrowserButtonTrace->SetPath( whichTrace );
   }
 
-/*
-  if ( !whichCommand.IsEmpty() )
-  {
-    wxString auxCommand = whichCommand;
-
-    int nextPos = auxCommand.Find( wxT( "%20" ) ) ;
-    if ( nextPos != wxNOT_FOUND )
-    {
-      auxCommand.Replace( wxT( "%20" ), wxT( " " ) );
-    }
-    
-    textCtrlDefaultParameters->SetValue( auxCommand );
-  }
-*/
   helpOption = false; 
 }
 
