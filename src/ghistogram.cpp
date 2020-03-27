@@ -2016,8 +2016,12 @@ void gHistogram::OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event )
 void gHistogram::OnLeftDown( wxMouseEvent& event )
 {
   zoomHisto->SetFocus();
-  zoomDragging = true;
-  zoomPointBegin = event.GetPosition();
+  if( openControlActivated ||
+      !myHistogram->getSortColumns() )
+  {
+    zoomDragging = true;
+    zoomPointBegin = event.GetPosition();
+  }
 }
 
 
@@ -2121,13 +2125,7 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     if( yBegin < 0 ) yBegin = 0;
     if( xEnd > zoomHisto->GetSize().GetWidth() - 5 ) xEnd = zoomHisto->GetSize().GetWidth() - 1;
     if( yEnd > zoomHisto->GetSize().GetHeight() ) yEnd = zoomHisto->GetSize().GetHeight() - 1;
-/*
-    if ( !event.ControlDown() )
-    {
-      yBegin = 0;
-      yEnd = zoomHisto->GetSize().GetHeight() - 1;
-    }
-*/
+
     THistogramColumn columnBegin, columnEnd;
     TObjectOrder objectBegin, objectEnd;
     openControlGetParameters( xBegin, xEnd, yBegin, yEnd,
@@ -2140,6 +2138,20 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     }
     else
     {
+      vector<THistogramColumn> noVoidColumns;
+      if( myHistogram->getHideColumns() )
+        columnSelection.getSelected( noVoidColumns );
+
+      columnBegin = getSortedRealColumn( columnBegin, noVoidColumns );
+
+      if( myHistogram->getHideColumns() && columnEnd >= noVoidColumns.size() )
+        columnEnd = getSortedRealColumn( noVoidColumns.size() - 1, noVoidColumns ) + 1;
+      else
+        columnEnd = getSortedRealColumn( columnEnd, noVoidColumns );
+
+      if( columnEnd < columnBegin )
+        swap( columnBegin, columnEnd );
+
       objectBegin = selectedRows[ objectBegin ];
       objectEnd = selectedRows[ objectEnd ];
       zoom( columnBegin, columnEnd, objectBegin, objectEnd );
@@ -2181,17 +2193,59 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
     objectBegin = 0;
     objectEnd = selectedRows.size() - 1;
   }
-  
-  
+}
+
+void gHistogram::openControlMinMaxParam( THistogramColumn& columnBegin, THistogramColumn& columnEnd,
+                                         TParamValue& minParam, TParamValue& maxParam )
+{
+  THistogramLimit min = myHistogram->getControlMin();
+  THistogramLimit max = myHistogram->getControlMax();
+  THistogramLimit delta = myHistogram->getControlDelta();
+  vector<THistogramColumn> noVoidColumns;
+
   if( myHistogram->getHideColumns() )
-  {
-    vector<THistogramColumn> noVoidColumns;
     columnSelection.getSelected( noVoidColumns );
-    columnBegin = noVoidColumns[ columnBegin ];
-    if( columnEnd >= noVoidColumns.size() )
-      columnEnd = noVoidColumns[ noVoidColumns.size() - 1 ] + 1;
+
+  if( columnBegin == columnEnd && delta != 1.0 )
+    ++columnEnd;
+
+  if( myHistogram->getSortColumns() )
+  {
+    for( THistogramColumn iColumn = columnBegin; iColumn <= columnEnd; ++iColumn )
+    {
+      THistogramColumn realColumn = getSortedRealColumn( iColumn, noVoidColumns );
+      
+      minParam.push_back( ( realColumn * delta ) + min );
+
+      if( delta == 1.0 )
+       maxParam.push_back( ( realColumn * delta ) + min );
+      else
+      {
+        if( ( ( realColumn * delta ) + min + delta ) >= max )
+          maxParam.push_back( max );
+        else
+          maxParam.push_back( ( realColumn * delta ) + min + delta );
+      }
+    }
+  }
+  else
+  {
+    columnBegin = getSortedRealColumn( columnBegin, noVoidColumns );
+
+    if( myHistogram->getHideColumns() && columnEnd >= noVoidColumns.size() )
+      columnEnd = getSortedRealColumn( noVoidColumns.size() - 1, noVoidColumns ) + 1;
     else
-      columnEnd = noVoidColumns[ columnEnd ];
+      columnEnd = getSortedRealColumn( columnEnd, noVoidColumns );
+
+    if( columnEnd < columnBegin )
+      swap( columnBegin, columnEnd );
+
+    if( ( ( columnEnd * delta ) + min ) >= max )
+      maxParam.push_back( max );
+    else
+      maxParam.push_back( ( columnEnd * delta ) + min );
+
+    minParam.push_back( ( columnBegin * delta ) + min );
   }
 }
 
@@ -2204,7 +2258,10 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
                                                         found );
   if( !found )
     throw std::exception();
-    
+
+  TParamValue minParam, maxParam;
+  openControlMinMaxParam( columnBegin, columnEnd, minParam, maxParam );
+
   gTimeline *openWindow = NULL;
   Window *controlCloned = myHistogram->getControlWindow()->clone();
   controlCloned->unsetUsedByHistogram( myHistogram );
@@ -2227,10 +2284,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     extraLastPos = controlCloned->getExtraNumPositions( TOPCOMPOSE1 ) - 1;
   }
 
-  if( columnBegin == columnEnd && delta != 1.0 )
-    ++columnEnd;
-
-  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max || delta == 1.0 )
+  if ( ( ( columnEnd * delta ) + min ) >= max || delta == 1.0 )
   {
     if( useExtraCompose )
       controlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Select Range" );
@@ -2244,34 +2298,27 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     else
       controlCloned->setLevelFunction( onLevel, "Select Range [)" );
   }
-      
-  TParamValue param;
-  if( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
-    param.push_back( max );
-  else
-    param.push_back( ( columnEnd * delta ) + min/* + delta*/ );
+  
   if( useExtraCompose )
-    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 0, param );
+    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 0, maxParam );
   else
-    controlCloned->setFunctionParam( onLevel, 0, param );
-    
-  param.clear();
-  param.push_back( ( columnBegin * delta ) + min );
+    controlCloned->setFunctionParam( onLevel, 0, maxParam );
+
   if( useExtraCompose )
-    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 1, param );
+    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 1, minParam );
   else
-    controlCloned->setFunctionParam( onLevel, 1, param );
+    controlCloned->setFunctionParam( onLevel, 1, minParam );
   
   string name = controlCloned->getName();
   name = name.substr( 0, name.find_last_of( '.' ) );
   stringstream tmpStr;
   tmpStr << name << " 2DZoom range [" << ( columnBegin * delta ) + min << ",";
-  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
+  if ( ( ( columnEnd * delta ) + min ) >= max )
     tmpStr << max << "]";
   else if ( delta == 1 )
-    tmpStr << ( columnEnd * delta ) + min/* + delta*/ << "]";
+    tmpStr << ( columnEnd * delta ) + min << "]";
   else
-    tmpStr << ( columnEnd * delta ) + min/* + delta*/ << ")";
+    tmpStr << ( columnEnd * delta ) + min << ")";
   controlCloned->setName( tmpStr.str() );
 
   controlCloned->setWindowBeginTime( myHistogram->getBeginTime() );
@@ -2351,7 +2398,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";
     else if( extraDelta == 1 )
-        tmpStr << ( plane * extraDelta ) + extraMin/* + extraDelta*/ << "]";
+        tmpStr << ( plane * extraDelta ) + extraMin << "]";
     else
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     extraControlCloned->setName( tmpStr.str() );
@@ -2371,14 +2418,14 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     if ( ( ( columnEnd * delta ) + min + delta ) >= max )
       tmpStr << max << "]";
     else if( delta == 1 )
-      tmpStr << ( columnEnd * delta ) + min/* + delta*/ << "]";
+      tmpStr << ( columnEnd * delta ) + min << "]";
     else
       tmpStr << ( columnEnd * delta ) + min + delta << ")";
     tmpStr << "/[" << ( plane * extraDelta ) + extraMin << ",";
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";
     else if( extraDelta == 1 )
-        tmpStr << ( plane * extraDelta ) + extraMin/* + extraDelta*/ << "]";
+        tmpStr << ( plane * extraDelta ) + extraMin << "]";
     else
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     productWin->setName( tmpStr.str() );
@@ -2457,23 +2504,35 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     if ( !commStat )
     {
       iPlane = myHistogram->getSelectedPlane();
+      vector<THistogramColumn> noVoidColumns;
+      if( myHistogram->getHideColumns() )
+        columnSelection.getSelected( noVoidColumns );
 
+      THistogramColumn tmpRealCol = 0;
       for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
-        myHistogram->setFirstCell( iCol, iPlane );
-        while( !myHistogram->endCell( iCol, iPlane ) && myHistogram->getCurrentRow( iCol, iPlane ) < objectBegin )
-          myHistogram->setNextCell( iCol, iPlane );
+        if( myHistogram->getSortColumns() )
+          tmpRealCol = getSortedRealColumn( iCol, noVoidColumns );
+        else
+          tmpRealCol = iCol;
+        myHistogram->setFirstCell( tmpRealCol, iPlane );
+        while( !myHistogram->endCell( tmpRealCol, iPlane ) && myHistogram->getCurrentRow( tmpRealCol, iPlane ) < objectBegin )
+          myHistogram->setNextCell( tmpRealCol, iPlane );
       }
       
       TObjectOrder maxRow = tmpSelectedRows.size();
       vector< bool > present( maxRow, false );
       for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
-        while ( !myHistogram->endCell( iCol, iPlane ) )
+        if( myHistogram->getSortColumns() )
+          tmpRealCol = getSortedRealColumn( iCol, noVoidColumns );
+        else
+          tmpRealCol = iCol;
+        while ( !myHistogram->endCell( tmpRealCol, iPlane ) )
         {
-          TObjectOrder currentRow = selectedRows[ myHistogram->getCurrentRow( iCol, iPlane ) ];
+          TObjectOrder currentRow = selectedRows[ myHistogram->getCurrentRow( tmpRealCol, iPlane ) ];
           present[ currentRow ] = true;
-          myHistogram->setNextCell( iCol, iPlane );
+          myHistogram->setNextCell( tmpRealCol, iPlane );
         }
       }
 
@@ -2505,7 +2564,13 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       for (TObjectOrder i = 0; i < maxRow; ++i )
         tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && present[ i ];
     }
-
+    
+    // If no object have values, show all of them. Otherwise a segfault can occur if no objets are shown
+    if( std::find( tmpSelectedRows.begin(), tmpSelectedRows.end(), true ) == tmpSelectedRows.end() )
+    {
+      for( vector<bool>::iterator it = tmpSelectedRows.begin(); it != tmpSelectedRows.end(); ++it )
+        *it = true;
+    }
     openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), tmpSelectedRows );
 
     openWindow->GetMyWindow()->unsetUsedByHistogram( myHistogram );

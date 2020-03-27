@@ -454,6 +454,8 @@ private:
   void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                  THistogramColumn& columnBegin, THistogramColumn& columnEnd,
                                  TObjectOrder& objectBegin, TObjectOrder& objectEnd, bool zoomxy  );
+  void openControlMinMaxParam( THistogramColumn& columnBegin, THistogramColumn& columnEnd,
+                               TParamValue& minParam, TParamValue& maxParam );
   void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
                           TObjectOrder objectBegin, TObjectOrder objectEnd );
 
