@@ -53,7 +53,7 @@
 #include "labelconstructor.h"
 #include "drawmode.h"
 #include "loadedwindows.h"
-#include "windows_tree.h"
+//#include "windows_tree.h" --> to .gtimeline.h
 #include "caution.xpm"
 #include "caution_yellow.xpm"
 #include "output.h"
@@ -126,13 +126,20 @@ wxProgressDialog *gTimeline::dialogProgress = NULL;
  */
 //class paraverMain;
 #include "paravermain.h"
-gTimeline::gTimeline()
+gTimeline::gTimeline() :
+        gWindow()
 {
   Init();
   parent = NULL;
 }
 
-gTimeline::gTimeline( wxWindow* whichParent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+gTimeline::gTimeline( wxWindow* whichParent,
+                      wxWindowID id,
+                      const wxString& caption,
+                      const wxPoint& pos,
+                      const wxSize& size,
+                      long style ) :
+        gWindow()
 {
   Init();
   Create( whichParent, id, caption, pos, size, style );
@@ -1910,6 +1917,12 @@ void gTimeline::OnPopUpClone()
   clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
 }
 
+void gTimeline::OnPopUpRename()
+{
+  ( (paraverMain *) parent )->renameTreeItem( );
+}
+
+
 
 void gTimeline::OnPopUpFitTimeScale()
 {
@@ -1962,7 +1975,9 @@ void gTimeline::OnPopUpPunctualColorWindow()
 {
   vector<Window *> compatWindows;
   int selIndex = 0;
-  
+
+  setEnableDestroyButton( false );
+
   LoadedWindows::getInstance()->getDerivedCompatible( myWindow->getTrace(), compatWindows );
   compatWindows.erase( std::find( compatWindows.begin(), compatWindows.end(), myWindow ) );
   
@@ -1989,6 +2004,8 @@ void gTimeline::OnPopUpPunctualColorWindow()
   }
   
   delete dialog;
+
+  setEnableDestroyButton( true );
 }
 
 void gTimeline::OnPopUpCodeColor()
@@ -2104,6 +2121,8 @@ void gTimeline::OnPopUpPasteSpecial()
 
 void gTimeline::OnPopUpRowSelection()
 {
+  setEnableDestroyButton( false );
+
   RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
 
   if ( dialog->ShowModal() == wxID_OK )
@@ -2118,6 +2137,8 @@ void gTimeline::OnPopUpRowSelection()
   }
 
   delete dialog;
+
+  setEnableDestroyButton( true );
 }
 
 
@@ -3386,7 +3407,9 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 {
   wxString imagePath;
   ParaverConfig::TImageFormat filterIndex;
-  
+
+  setEnableDestroyButton( false );
+
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
@@ -3442,7 +3465,10 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
                                extensions );
       saveDialog.SetFilterIndex( filterIndex );
       if ( saveDialog.ShowModal() != wxID_OK )
+      {
+        setEnableDestroyButton( true );
         return;
+      }
 
       filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
@@ -3619,8 +3645,9 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
   }
 
   // Save timeline image without scale
-  baseLayer.SaveFile( imagePath, imageType );  
+  baseLayer.SaveFile( imagePath, imageType );
 
+  setEnableDestroyButton( true );
 }
 
 
@@ -3629,6 +3656,8 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   wxString imageName;
   wxString tmpSuffix;
   wxString defaultDir;
+
+  setEnableDestroyButton( false );
 
   imageName = buildFormattedFileName();
   
@@ -3689,8 +3718,11 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                              extensions );
     saveDialog.SetFilterIndex( filterIndex );
     if ( saveDialog.ShowModal() != wxID_OK )
+    {
+      setEnableDestroyButton( true );
       return;
-      
+    }
+
     filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetPath();
   }
@@ -3782,6 +3814,8 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     tmpImage->save();
     delete tmpImage;
   }
+
+  setEnableDestroyButton( true );
 }
 
 
@@ -4518,6 +4552,8 @@ void gTimeline::saveText()
   wxString tmpSuffix;
   wxString defaultDir;
 
+  setEnableDestroyButton( false );
+
   fileName = buildFormattedFileName();
 
 #ifdef WIN32
@@ -4618,6 +4654,8 @@ void gTimeline::saveText()
     paraverMain::dialogProgress = NULL;
     delete progress;
   }
+
+  setEnableDestroyButton( true );
 }
 
 
@@ -4626,8 +4664,45 @@ void gTimeline::saveCFG()
   vector< Window * > timelines;
   timelines.push_back( GetMyWindow() );
 
+  setEnableDestroyButton( false );
+
   paraverMain::myParaverMain->SaveConfigurationFile(
           (wxWindow *)this, SaveOptions(), timelines, vector< Histogram * >() );
+
+  setEnableDestroyButton( true );
+}
+
+
+void gTimeline::setEnableDestroyParents( bool value )
+{
+  gWindow::setEnableDestroyButton( value );
+
+  if ( myWindow->getParent( 0 ) != NULL )
+  {
+    for( int i = 0; i < 2; ++i )
+    {
+      bool dummyFound;
+      gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getParent( i ), dummyFound );
+      tmpTimeline->setEnableDestroyParents( value );
+    }
+  }
+}
+
+
+void gTimeline::setEnableDestroyButton( bool value )
+{
+  if ( myWindow->getChild() != NULL )
+  {
+    // I'm inside a derived window => recursively navigate descendants looking for "final" child window
+    bool dummyFound;
+    gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myWindow->getChild(), dummyFound );
+    tmpTimeline->setEnableDestroyButton( value );
+  }
+  else
+  {
+    // And recursively visit ancestors
+    setEnableDestroyParents( value );
+  }
 }
 
 

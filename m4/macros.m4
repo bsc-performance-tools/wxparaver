@@ -295,7 +295,6 @@ AC_DEFUN([AX_PROG_WITH_OTF2],
       LIBS_OTF2="-L$OTF2_DIR/lib"
       LDFLAGS_OTF2="-L$OTF2_DIR/lib -lotf2"
    fi     
-   AM_CONDITIONAL([WANT_OTF2PRV], [test "x${OTF2_DIR}" != "x"] )
 
    AC_SUBST(OTF2_DIR)
 ])

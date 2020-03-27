@@ -21,7 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -36,6 +35,7 @@
 ////@begin includes
 #include "wx/bookctrl.h"
 ////@end includes
+#include "wx/filename.h"
 
 #include "rowsselectiondialog.h"
 #include "labelconstructor.h"
@@ -44,10 +44,12 @@
 #include "window.h"
 //#include "pg_extraprop.h"
 //#include "windows_tree.h"
+#include "paravermain.h" // for help
 
 
 ////@begin XPM images
 ////@end XPM images
+#include "../icons/help.xpm"
 
 /*!
  * RowsSelectionDialog type definition
@@ -97,8 +99,8 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   if (( myLevel >= SYSTEM ) && ( myLevel <= CPU ))
   {
     minLevel = NODE;
-    buildPanel( _("Node"), NODE );
-    buildPanel( _("CPU"), CPU );
+    buildPanel( wxT("Node"), NODE );
+    buildPanel( wxT("CPU"), CPU );
   }
   else if (( myLevel >= WORKLOAD ) && ( myLevel <= THREAD ))
   {
@@ -139,15 +141,15 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   if (( myLevel >= SYSTEM ) && ( myLevel <= CPU ))
   {
     minLevel = NODE;
-    buildPanel( _("Node"), NODE );
-    buildPanel( _("CPU"), CPU );
+    buildPanel( wxT("Node"), NODE );
+    buildPanel( wxT("CPU"), CPU );
   }
   else if (( myLevel >= WORKLOAD ) && ( myLevel <= THREAD ))
   {
     minLevel = APPLICATION;
-    buildPanel( _("Application"), APPLICATION );
-    buildPanel( _("Task"), TASK );
-    buildPanel( _("Thread"), THREAD );
+    buildPanel( wxT("Application"), APPLICATION );
+    buildPanel( wxT("Task"), TASK );
+    buildPanel( wxT("Thread"), THREAD );
   }
   
   LayoutDialog();
@@ -177,11 +179,32 @@ bool RowsSelectionDialog::Create( wxWindow* parent,
   return true;
 }
 
+
+void RowsSelectionDialog::OnRegularExpressionHelp( wxCommandEvent& event )
+{
+  if ( !paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsQuestionAnswered() )
+    paraverMain::myParaverMain->helpQuestion();
+  wxChar SEP = wxFileName::GetPathSeparator();
+
+  wxString helpContentsDir = SEP +
+        wxString( wxT( "share" ) ) + SEP +
+        wxString( wxT( "doc" ) ) + SEP +
+        wxString( wxT( "wxparaver_help_contents" ) ) + SEP +
+        wxString( wxT( "html" ) ) + SEP;
+
+  wxString helpChapter = wxString( wxT( "1.quick_reference" ) ) + SEP +
+          wxString( wxT( "index.html"));
+
+  wxString helpRegEx = wxString( wxT( "#objects_regex" ) );
+
+  paraverMain::myParaverMain->createHelpContentsWindow( helpContentsDir, helpChapter, helpRegEx, true );
+}
+
+
 /*
  * Dynamic panel building
  */
-void RowsSelectionDialog::buildPanel( const wxString& title,
-                                      TWindowLevel whichLevel )
+void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichLevel )
 {
   wxPanel *myPanel;
 
@@ -276,7 +299,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   // RE: Text box
   bool initialCheckState = false;
 
-  wxStaticBox* regularExpressionBox = new wxStaticBox(myPanel, wxID_ANY, _(" Add checks by objects matching "));
+  wxStaticBox* regularExpressionBox = new wxStaticBox(myPanel, wxID_ANY, wxT(" Add checks by objects matching "));
   wxStaticBoxSizer* regularExpressionBoxSizer = new wxStaticBoxSizer( regularExpressionBox, wxVERTICAL );
   wxBoxSizer *regularExpressionSizerUp = new wxBoxSizer( wxHORIZONTAL );
   wxBoxSizer *regularExpressionSizerDown = new wxBoxSizer( wxVERTICAL );
@@ -295,9 +318,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
 
   // userRegularExpr->SetValidator( getValidator(  ) );
 
-  //wxRegEx *aux = new wxRegEx( wxString("[:alpha]* ?1[.][12][.][0-9]") );// example for thread 1.1.1
-  //wxRegEx *aux = new wxRegEx( wxString( wxT( "([:alnum:]|[_-. ])+" ) ) );// example for many things
-  wxRegEx *aux = new wxRegEx( wxString( wxT( ".*" ) ) );// example for many things
+  wxRegEx *aux = new wxRegEx( wxString( wxT( ".*" ) ) );
   validRE.push_back( aux );
 
   // RE: APPLY button
@@ -310,6 +331,22 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
   applyButtons.push_back( auxButton );
 
   regularExpressionSizerUp->Add( auxButton, 0, wxGROW | wxALL, 5 );
+
+  // RE: Help button
+  wxBitmapButton *auxButtonBMP = new wxBitmapButton( myPanel,
+                                                     wxID_ANY,
+                                                     wxBitmap( wxT( "icons/help.xpm" ) ),
+                                                     wxDefaultPosition, wxDefaultSize,
+                                                     wxBU_AUTODRAW );
+  auxButtonBMP->SetToolTip(_("Regular expressions help."));
+  auxButtonBMP->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
+                      wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionHelp ),
+                      NULL,
+                      this );
+  auxButtonBMP->Enable( true );
+  helpRE.push_back( auxButtonBMP );
+
+  regularExpressionSizerUp->Add( auxButtonBMP, 0, wxGROW | wxALL, 5 );
 
   // RE: Check
   wxCheckBox *auxCheckBox = new wxCheckBox( myPanel, wxID_ANY, _("Match as Posix Basic Regular Expression"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -339,10 +376,18 @@ void RowsSelectionDialog::buildPanel( const wxString& title,
  */
 RowsSelectionDialog::~RowsSelectionDialog()
 {
+  // TODO: MEMORY ALLOCATED NOT FREED
+
   for ( vector< wxCheckListBox* >::iterator it = levelCheckList.begin(); it != levelCheckList.end(); ++it )
   {
     (*it)->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED,
                        wxCommandEventHandler( RowsSelectionDialog::OnCheckListBoxSelected ) );
+  }
+
+  for ( vector< wxCheckBox* >::iterator it = checkBoxPosixBasicRegExp.begin(); it != checkBoxPosixBasicRegExp.end(); ++it )
+  {
+    (*it)->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED,
+                       wxCommandEventHandler( RowsSelectionDialog::OnCheckBoxMatchPosixRegExpClicked ));
   }
 
   for ( vector< wxButton * >::iterator it = selectionButtons.begin(); it != selectionButtons.end(); ++it )
@@ -355,6 +400,24 @@ RowsSelectionDialog::~RowsSelectionDialog()
     ++it; 
     (*it)->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED,
                        wxCommandEventHandler( RowsSelectionDialog::OnInvertButtonClicked )); 
+  }
+
+  for ( vector< wxTextCtrl * >::iterator it = textCtrlRegularExpr.begin(); it != textCtrlRegularExpr.end(); ++it )
+  {
+    (*it)->Disconnect( wxEVT_COMMAND_TEXT_ENTER ,
+                       wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionApply ) );
+  }
+
+  for ( vector< wxButton * >::iterator it = applyButtons.begin(); it != applyButtons.end(); ++it )
+  {
+    (*it)->Disconnect( wxEVT_COMMAND_TEXT_ENTER ,
+                       wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionApply ) );
+  }
+
+  for ( vector< wxButton * >::iterator it = helpRE.begin(); it != helpRE.end(); ++it )
+  {
+    (*it)->Disconnect( wxEVT_COMMAND_TEXT_ENTER ,
+                       wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionHelp ) );
   }
 
   /*if ( myTimeline != NULL )
@@ -383,6 +446,7 @@ RowsSelectionDialog::~RowsSelectionDialog()
     delete textCtrlRegularExpr[ l ];
     delete applyButtons[ l ];
     delete validRE[ l ];
+    delete helpRE[ l ];
   }
 }
 
@@ -516,9 +580,12 @@ wxString RowsSelectionDialog::buildRegularExpressionString( const wxString& ente
       case wxChar('#'):
         parsedRE += wxString( wxT( "[[:digit:]]" ) );
         break;
-      case wxChar('$'):
+      case wxChar('?'):
         parsedRE += wxString( wxT( "[[:alpha:]]" ) );
         break;
+//      case wxChar('^'): // need this?
+//        parsedRE += wxString( wxT( "^" ) );
+//        break;
       default:
         parsedRE += enteredRE.GetChar( i );
         break;
@@ -565,7 +632,6 @@ void RowsSelectionDialog::checkMatches( const int &iTab, wxRegEx *&levelRE )
 }
 
 
-
 // false: simple mode
 // true : basicPosixRegExprMode 
 wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
@@ -581,7 +647,7 @@ wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
                                 _("*"),  // many alphanum, but '.'
                                 _("#"),  // any number
                                 _("$")   // any char
-                                };
+                              };
     myValidator = new wxTextValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
     wxArrayString charIncludes( (size_t)15, allowedChars );
     myValidator->SetIncludes( charIncludes );
@@ -590,12 +656,13 @@ wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
   {
     wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
                                 _("5"), _("6"), _("7"), _("8"), _("9"),
-                                _("."),  // level separator
-                                _("+"),  // any alphanum, but '.'
-                                _("*"),  // many alphanum, but '.'
-                                _("#"),  // any number
-                                _("$")   // any char
-                                };
+                                _("."),  // any character
+                                _("+"),  // zero or one repetition of preceeding item
+                                _("*"),  // zero or many repetitions of preceeding item
+                                _("#"),  // used?
+                                _("^"),  // begin of line
+                                _("$")   // end of line
+                              };
     myValidator = new wxTextValidator( (long int)wxFILTER_INCLUDE_CHAR_LIST );
     wxArrayString charIncludes( (size_t)15, allowedChars );
     myValidator->SetIncludes( charIncludes );
@@ -608,28 +675,25 @@ wxTextValidator* RowsSelectionDialog::getValidator( bool basicPosixRegExprMode )
 wxString RowsSelectionDialog::getMyToolTip( const bool posixBasicRegExpTip )
 {
   return ( posixBasicRegExpTip?
-           _( "Posix basic regular expression form:\n"
-              "  . : any character (use [.] for dot)\n"
-              "  ? : zero or one repetition of preceeding item\n"
-              "  + : one or many repetitions of preceeding item\n"
-              "  * : zero or many repetitions of preceeding item\n"
-              "  [12345] : set that matches from 1 to 5\n"
-              "  [1-3] : range that matches from 1 to 3\n\n"
-              "Examples:\n"
-              "  .* (anything)\n"
-              "  THREAD 1[.][1][.][1-9]  (THREAD 1.1.1, ...THREAD 1.1.9)\n"
-              "  1[.][13]+[.]1    (1.1.1, 1.11.1, 1.13.1, 1.31.1, ...)\n\n") :
-           _( "Quick form:\n"
-              "  . : '.' (dot character)\n"
-              "  # : only one number\n"
-              "  $ : only one character\n"
-              "  + : one or many alfanumeric\n"
-              "  * : zero or many alfanumeric\n"
-              "  [12345] : set that matches from 1 to 5\n"
-              "  [1-3] : range that matches from 1 to 3\n\n"
-              "Examples:\n"
-              "  THREAD 1.2##.1  (3 digits per task)\n"
-              "  TASK 1.3[1-3] (1.31, 1.32, 1.33)\n\n" ) );
+           wxT( "Posix basic regular expression form:\n"
+                "  . : any character (use [.] for dot)\n"
+                "  ? : 0 - 1 repetition of preceeding item\n"
+                "  + : 1 - n repetitions of preceeding item\n"
+                "  * : 0 - n repetitions of preceeding item\n"
+                "  ^ : begin of line\n"
+                "  $ : end of line\n"
+                "  [1234] : set that matches from 1 to 4\n"
+                "  [1-3] : range that matches from 1 to 3\n\n" ) :
+           wxT( "Quick form:\n"
+                "  . : '.' (dot character)\n"
+                "  # : only one number\n"
+                "  ? : only one character\n"
+                "  + : one or many alfanumeric\n"
+                "  * : zero or many alfanumeric\n"
+                "  ^ : begin of line\n"
+                "  $ : end of line\n"
+                "  [1234] : set that matches from 1 to 4\n"
+                "  [1-3] : range that matches from 1 to 3\n\n" ) );
 }
 
 

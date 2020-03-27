@@ -386,7 +386,11 @@ public:
   /// wxEVT_TREE_ITEM_ACTIVATED event handler for wxID_ANY
   void OnTreeItemActivated( wxTreeEvent& event );
   void OnTreeRightClick( wxTreeEvent& event );
+  void OnTreeEndLabelRename( wxTreeEvent& event );
+  void OnTreeKeyPress( wxKeyEvent& event );
   
+  void renameTreeItem( );
+
   void OnTreeBeginDrag( wxTreeEvent& event );
   void OnTreeEndDrag( wxTreeEvent& event );
   
@@ -589,8 +593,14 @@ public:
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
 
-  Window *createBaseWindow( wxString whichName = wxString(wxT("")) );
+  Window *createBaseWindow( wxString whichName = wxString( wxT("") ) );
   void insertInTree( Window *whichWindow );
+
+  void createHelpContentsWindow( const wxString &helpContentsBaseRelativePath,
+                                 const wxString &helpFile = wxString( wxT("") ),
+                                 const wxString &hRef = wxString( wxT("") ),
+                                 bool  isModal = false );
+  bool getParaverHome( wxString &paraverHome );
 
   static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
   static wxString buildFormattedFileName( std::string windowName, const std::string& traceName );
@@ -609,6 +619,7 @@ public:
   static void ValidateSession( bool setValidate );
   
   bool OnMenusavesession( );
+  void helpQuestion();
 
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
@@ -705,6 +716,9 @@ private:
 
   bool isSessionFile( const std::string& filename );
   void exitManager( wxEvent& event );
+  void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
+  void messageUndefinedParaverHome();
+  
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );

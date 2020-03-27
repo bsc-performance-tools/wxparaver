@@ -39,6 +39,24 @@ class Trace;
 
 using namespace std;
 
+// gTimeline and gHistogram ancestor
+// May absorb other methods.
+class gWindow
+{
+  public:
+    gWindow()
+    {
+      enableButtonDestroy = true;
+    }
+
+    bool getEnableDestroyButton() const { return enableButtonDestroy ; }
+    virtual void setEnableDestroyButton( bool value ) { enableButtonDestroy = value ; }
+
+  private:
+    bool enableButtonDestroy;
+};
+
+
 wxTreeCtrl * createTree( wxImageList *imageList );
 wxTreeCtrl *getAllTracesTree();
 wxTreeCtrl *getSelectedTraceTree( Trace *trace );

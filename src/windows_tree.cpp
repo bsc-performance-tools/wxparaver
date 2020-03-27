@@ -21,7 +21,6 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-
 #include "windows_tree.h"
 #include "loadedwindows.h"
 #include "gtimeline.h"
@@ -242,7 +241,6 @@ wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found
   
   return retItemId;
 }
-
 
 
 // precond : current is a derived gTimeline

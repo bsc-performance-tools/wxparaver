@@ -155,12 +155,19 @@ wxProgressDialog *gHistogram::dialogProgress = NULL;
  * gHistogram constructors
  */
 
-gHistogram::gHistogram()
+gHistogram::gHistogram() :
+        gWindow()
 {
   Init();
 }
 
-gHistogram::gHistogram( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+gHistogram::gHistogram( wxWindow* parent,
+                        wxWindowID id,
+                        const wxString& caption,
+                        const wxPoint& pos,
+                        const wxSize& size,
+                        long style ) :
+        gWindow()
 {
   Init();
   Create( parent, id, caption, pos, size, style );
@@ -490,11 +497,11 @@ void gHistogram::fillGrid()
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
   bool firstRowColored = myHistogram->getFirstRowColored();
-  
+
   zoomHisto->Show( false );
   gridHisto->Show( true );
   mainSizer->Layout();
-  
+
   if( tableBase == NULL )
     tableBase = new HistoTableBase( myHistogram );
   tableBase->setSelectedRows( &selectedRows );
@@ -1374,6 +1381,11 @@ void gHistogram::OnPopUpClone()
 }
 
 
+void gHistogram::OnPopUpRename()
+{
+  paraverMain::myParaverMain->renameTreeItem( );
+}
+
 void gHistogram::OnPopUpFitTimeScale()
 {
   myHistogram->setWindowBeginTime( 0 );
@@ -1404,7 +1416,8 @@ void gHistogram::OnPopUpFitObjects()
 
 void gHistogram::OnPopUpRowSelection()
 {
-  
+  setEnableDestroyButton( false );
+
   RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
 
   if ( dialog->ShowModal() == wxID_OK )
@@ -1417,7 +1430,10 @@ void gHistogram::OnPopUpRowSelection()
     myHistogram->setRecalc( true );
     //updateHistogram();
   }
+
   delete dialog;
+
+  setEnableDestroyButton( true );
 }
 
 
@@ -2665,8 +2681,6 @@ void gHistogram::OnToolHideColumnsUpdate( wxUpdateUIEvent& event )
 }
 
 
-
-
 /*!
  * wxEVT_GRID_CELL_LEFT_CLICK event handler for ID_GRIDHISTO
  */
@@ -2719,7 +2733,9 @@ void gHistogram::saveText( bool onlySelectedPlane )
   wxString fileName;
   wxString tmpSuffix;
   wxString defaultDir;
-  
+
+  setEnableDestroyButton( false );
+
   fileName = buildFormattedFileName( onlySelectedPlane );
 
 #ifdef WIN32
@@ -2807,15 +2823,17 @@ void gHistogram::saveText( bool onlySelectedPlane )
 
     output->dumpHistogram( myHistogram, fileName, onlySelectedPlane, myHistogram->getHideColumns(),
                             true, true, false, progress );
-                            
+
     delete output;
-    
+
     // Delete progress controller
     paraverMain::dialogProgress->Show( false );
     delete paraverMain::dialogProgress;
     paraverMain::dialogProgress = NULL;
     delete progress;
   }
+
+  setEnableDestroyButton( true );
 }
 
 
@@ -2823,7 +2841,9 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
 {
   wxString imagePath;
   ParaverConfig::TImageFormat filterIndex;
-  
+
+  setEnableDestroyButton( false );
+
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
@@ -2877,13 +2897,16 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
                                wxDefaultPosition,
                                wxDefaultSize,
                                _( "filedlg" ),
-                               extensions );                          
+                               extensions );
 
       saveDialog.SetFilterIndex( filterIndex );
 
       if ( saveDialog.ShowModal() != wxID_OK )
+      {
+        setEnableDestroyButton( true );
         return;
-        
+      }
+
       filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
@@ -2985,6 +3008,8 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
 
   wxImage baseLayer = imageBitmap.ConvertToImage();
   baseLayer.SaveFile( imagePath, imageType );
+
+  setEnableDestroyButton( true );
 }
 
 
@@ -2992,18 +3017,20 @@ void gHistogram::saveCFG()
 {
   vector< Histogram * > histograms;
   vector< Window * > windows;
-  
+
+  setEnableDestroyButton( false );
+
   histograms.push_back( GetHistogram() );
 
   if ( myHistogram->getControlWindow() != NULL  )
       windows.push_back( myHistogram->getControlWindow() );
   if ( myHistogram->getDataWindow() != NULL  )
       windows.push_back( myHistogram->getDataWindow() );
-  
-
 
   paraverMain::myParaverMain->SaveConfigurationFile(
           (wxWindow *)this, SaveOptions(), windows, histograms );
+
+  setEnableDestroyButton( true );
 }
 
 

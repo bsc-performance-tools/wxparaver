@@ -21,10 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-
 #ifndef _HELPCONTENTS_H_
 #define _HELPCONTENTS_H_
-
 
 /*!
  * Includes
@@ -70,29 +68,46 @@ class wxHtmlWindow;
  * HelpContents class declaration
  */
 
+
 class HelpContents: public wxDialog
-{    
+{
   DECLARE_DYNAMIC_CLASS( HelpContents )
   DECLARE_EVENT_TABLE()
 
 public:
+  enum TContents 
+  {
+    HELP,
+    TUTORIAL
+  };
+
   /// Constructors
   HelpContents();
   HelpContents( wxWindow* parent,
                 const wxString& whichHelpContentsRoot,
+                const bool whichLookForContents = true,
                 wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
                 const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
                 const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
                 const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
                 long style = SYMBOL_HELPCONTENTS_STYLE );
-
   /// Creation
   bool Create( wxWindow* parent,
-                wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
-                const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
-                const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
-                const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
-                long style = SYMBOL_HELPCONTENTS_STYLE );
+               wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
+               const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
+               const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
+               const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
+               long style = SYMBOL_HELPCONTENTS_STYLE );
+
+  static HelpContents* createObject( TContents whichObject,
+                                     wxWindow* parent,
+                                     const wxString& whichHelpContentsRoot,
+                                     const bool whichLookForContents = true,
+                                     wxWindowID id = SYMBOL_HELPCONTENTS_IDNAME,
+                                     const wxString& caption = SYMBOL_HELPCONTENTS_TITLE,
+                                     const wxPoint& pos = SYMBOL_HELPCONTENTS_POSITION,
+                                     const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
+                                     long style = SYMBOL_HELPCONTENTS_STYLE);
 
   /// Destructor
   ~HelpContents();
@@ -142,30 +157,40 @@ public:
 
 ////@begin HelpContents member variables
   wxHtmlWindow* htmlWindow;
+  wxBitmapButton* buttonIndex;
   wxBitmapButton* buttonHistoryBack;
   wxBitmapButton* buttonHistoryForward;
 ////@end HelpContents member variables
 
   bool SetHelpContentsRoot( const std::string& whichRoot );
   bool SetHelpContentsRoot( const wxString& whichRoot );
+
   const std::string GetHelpContentsRootStr();
   const wxString GetHelpContentsRoot();
 
+  void LoadHtml( const wxString& htmlFile );
   bool SetHelpContents( const wxString& whichHelpContents );
+
+  static bool isHtmlDoc( const wxString& whichPath );
+  static bool isHtmlReferenceInDoc( const wxString& whichPath );
 
 protected:
   wxString helpContentsRoot;
+  bool lookForContents;
   wxString currentHelpContentsDir;
+  wxString indexFileName;
+  wxString subindexLink;
+  wxString dialogCaption;
 
   std::string getCurrentHelpContentsFullPath();
   std::string getHrefFullPath( wxHtmlLinkEvent &event );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
 
-  const wxString getHtmlIndex( const wxString& path );
+  const wxString appendIndexHtmlToURL( const wxString& path );
   void appendHelpContents( const wxString& title, const wxString& path, wxString& htmlDoc );
   bool helpContentsFound( wxArrayString & tutorials );
   bool DetectHelpContentsIndexInPath( const wxString& whichTutorial );
-  
+
   virtual const wxString getTitle( int numTutorial, const wxString& path );
   virtual void buildIndexTemplate( wxString title, wxString filePrefix );
   virtual void buildIndex();
@@ -190,9 +215,9 @@ class TutorialsBrowser: public HelpContents
                       const wxSize& size = SYMBOL_HELPCONTENTS_SIZE,
                       long style = SYMBOL_HELPCONTENTS_STYLE );
     ~TutorialsBrowser();
-  
+
     void OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event );
-    
+
   protected:
     const wxString getTitle( int numTutorial, const wxString& path );
     void linkToWebPage( wxString& htmlDoc );
@@ -200,5 +225,4 @@ class TutorialsBrowser: public HelpContents
     void helpMessage( wxString& htmlDoc );
 };
 
-#endif
-  // _HELPCONTENTS_H_
+#endif // _HELPCONTENTS_H_
