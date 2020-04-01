@@ -2086,6 +2086,22 @@ void paraverMain::OnTreeEndLabelRename( wxTreeEvent& event )
 }
 
 
+gTimeline * paraverMain::GetSelectedTimeline()
+{
+  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
+  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( currentTree->GetSelection() ) );
+  return itemData->getTimeline();
+}
+
+
+gHistogram * paraverMain::GetSelectedHistogram()
+{
+  wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );
+  TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( currentTree->GetItemData( currentTree->GetSelection() ) );
+  return itemData->getHistogram();
+}
+
+
 void paraverMain::renameTreeItem( ) 
 {
   wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( choiceWindowBrowser->GetSelection() );

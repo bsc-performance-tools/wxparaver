@@ -528,6 +528,9 @@ public:
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
 ////@end paraverMain member function declarations
+  
+  gTimeline  * GetSelectedTimeline();
+  gHistogram * GetSelectedHistogram();
 
   /// Should we show tooltips?
   bool ShowToolTips();
