@@ -77,6 +77,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 ////@begin CutFilterDialog event table entries
   EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
+  EVT_KEY_DOWN( CutFilterDialog::OnKeyDown )
   EVT_TEXT( ID_TEXTCTRL_CUT_FILTER_INPUT_TRACE, CutFilterDialog::OnTextctrlCutFilterInputTraceTextUpdated )
   EVT_TEXT( ID_TEXTCTRL_CUT_FILTER_XML, CutFilterDialog::OnTextctrlCutFilterXmlTextUpdated )
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnChecklistboxExecutionChainDoubleClicked )
@@ -87,6 +88,8 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlClick )
   EVT_UPDATE_UI( ID_BUTTON_SAVE_XML, CutFilterDialog::OnButtonSaveXmlUpdate )
   EVT_NOTEBOOK_PAGE_CHANGED( ID_NOTEBOOK_CUT_FILTER_OPTIONS, CutFilterDialog::OnNotebookCutFilterOptionsPageChanged )
+  EVT_RADIOBUTTON( ID_RADIOBUTTON_CUTTER_CUT_BY_TIME, CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected )
+  EVT_RADIOBUTTON( ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT, CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected )
   EVT_BUTTON( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionClick )
   EVT_UPDATE_UI( ID_BUTTON_CUTTER_SELECT_REGION, CutFilterDialog::OnButtonCutterSelectRegionUpdate )
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_WINDOW, CutFilterDialog::OnButtonCutterAllWindowClick )
@@ -106,6 +109,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_ADD, CutFilterDialog::OnButtonScKeepEventsAddClick )
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_DELETE, CutFilterDialog::OnButtonScKeepEventsDeleteClick )
   EVT_BUTTON( wxID_APPLY, CutFilterDialog::OnApplyClick )
+  EVT_UPDATE_UI( wxID_APPLY, CutFilterDialog::OnApplyUpdate )
   EVT_UPDATE_UI( wxID_APPLY, CutFilterDialog::OnApplyUpdate )
 ////@end CutFilterDialog event table entries
 
@@ -270,6 +274,8 @@ void CutFilterDialog::Init()
   reSingleType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( ")$" ) );
   reRangeOfTypes = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[-]" ) ) + reType + wxString( wxT( ")$" ) );
   reValuesSepByCommaForType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[:]" ) ) + reValuesSepByComma + wxString( wxT( ")$" ) );
+
+  cutterUsesOriginalTime = true;
 }
 
 
@@ -807,6 +813,8 @@ void CutFilterDialog::CreateControls()
 
   itemStdDialogButtonSizer133->Realize();
 
+  // Connect events and objects
+  buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), NULL, this);
 ////@end CutFilterDialog content construction
 
 
@@ -1031,21 +1039,19 @@ void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
 {
   // if timeline is not on visible, show it
   gTimeline * timeline = paraverMain::myParaverMain->GetSelectedTimeline();
-
   if ( timeline->GetMyWindow() == paraverMain::myParaverMain->GetCurrentTimeline() && !timeline->IsShown() )  
   {
     Window *tmpWin = timeline->GetMyWindow();
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
 
     if( tmpWin->getShowWindow() )
-    {
       timeline->Raise();
-    }
   } 
 
   radioCutterCutByTime->SetValue( true );
   wxGetApp().ActivateGlobalTiming( this );
   waitingGlobalTiming = true;
+  cutterUsesOriginalTime = true;
 }
 
 
@@ -2932,3 +2938,61 @@ void CutFilterDialog::OnButtonCutterAllWindowUpdate( wxUpdateUIEvent& event )
 
 }
 
+
+/*!
+ * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CUTTER_CUT_BY_TIME
+ */
+
+void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& event )
+{
+  double auxBeginTime, auxEndTime, maxTimelineTime;
+  maxTimelineTime = (double) paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime();
+
+  if ( !cutterUsesOriginalTime && (
+       !textCutterBeginCut->GetValue().IsEmpty() && !textCutterEndCut->GetValue().IsEmpty() ) )
+  {
+    textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
+    textCutterEndCut->GetValue().ToDouble( &auxEndTime );
+
+    
+    // convert from percentage to original time
+    wxString bTime = formatNumber( ( auxBeginTime/100.0f ) * maxTimelineTime );
+    bTime.Replace( ".", "" );
+    wxString eTime = formatNumber( ( auxEndTime/100.0f ) * maxTimelineTime );
+    eTime.Replace( ".", "" );
+
+    textCutterBeginCut->SetValue( bTime );
+    textCutterEndCut->SetValue( eTime );
+  }
+  cutterUsesOriginalTime = true;
+  event.Skip();
+}
+
+
+/*!
+ * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT
+ */
+
+void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& event )
+{
+  double auxBeginTime, auxEndTime, maxTimelineTime;
+  maxTimelineTime = (double) paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime();
+
+  if ( cutterUsesOriginalTime && (
+       !textCutterBeginCut->GetValue().IsEmpty() && !textCutterEndCut->GetValue().IsEmpty() ) )
+  {
+    textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
+    textCutterEndCut->GetValue().ToDouble( &auxEndTime );
+
+    // convert from original time to percentage
+    wxString bTime = formatNumber( 100*( auxBeginTime / maxTimelineTime ) );
+    bTime.Replace( ".", "" );
+    wxString eTime = formatNumber( 100*( auxEndTime / maxTimelineTime ) );
+    eTime.Replace( ".", "" );
+
+    textCutterBeginCut->SetValue( bTime );
+    textCutterEndCut->SetValue( eTime );
+  }
+  cutterUsesOriginalTime = false;
+  event.Skip();
+}

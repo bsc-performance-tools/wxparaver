@@ -5097,6 +5097,13 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
     return;
   }
 
+  if( event.ControlDown() && event.GetKeyCode() == WXK_ESCAPE )
+  {
+    std::cout << "Escape!\n";
+    OnPopUpTiming( !timing );
+    return;
+  }
+
   if( zooming && event.GetKeyCode() == WXK_ESCAPE )
   {
     escapePressed = true;
@@ -5932,4 +5939,3 @@ void gTimeline::doDrawCaution( wxDC& whichDC )
                          true );
   }
 }
-

@@ -171,6 +171,9 @@ public:
   /// wxEVT_IDLE event handler for ID_CUTFILTERDIALOG
   void OnIdle( wxIdleEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG
+  void OnKeyDown( wxKeyEvent& event );
+
   /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTCTRL_CUT_FILTER_INPUT_TRACE
   void OnTextctrlCutFilterInputTraceTextUpdated( wxCommandEvent& event );
 
@@ -200,6 +203,12 @@ public:
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED event handler for ID_NOTEBOOK_CUT_FILTER_OPTIONS
   void OnNotebookCutFilterOptionsPageChanged( wxNotebookEvent& event );
+
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CUTTER_CUT_BY_TIME
+  void OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CUTTER_CUT_BY_PERCENT
+  void OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUTTER_SELECT_REGION
   void OnButtonCutterSelectRegionClick( wxCommandEvent& event );
@@ -462,6 +471,8 @@ private:
   wxString reValuesSepByComma;
 
   wxString reValuesSepByCommaForType;
+
+  bool cutterUsesOriginalTime;
 
 
   bool isFileSelected( FileBrowserButton *fpc );
