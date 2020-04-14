@@ -5040,18 +5040,30 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
       {
         wxString path = dirDialog.GetPath();
         wxString command;
+
+        wxString textEditor = ParaverConfig::getInstance()->getGlobalExternalTextEditor();
 #ifdef WIN32
-        command << _( "wordpad.exe " ) /*<< " +" << lineStr << " "*/ << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
-        wxExecute( command );
-#else
-        // As before
-        command << _( "gvim " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+        command << textEditor /*<< " +" << lineStr << " "*/ << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
         if( wxExecute( command ) == 0 )
         {
           command.Clear();
-          command << _( "nedit " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+          command << _( "wordpad.exe " ) /*<< " +" << lineStr << " "*/ << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
+          wxExecute( command );
+        }
+#else
+        // As before
+        command << textEditor << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+        if( wxExecute( command ) == 0 )
+        {
+          command.Clear();
+          command << _( "gvim " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
           if( wxExecute( command ) == 0 )
-            wxMessageBox( _( "Install gvim or nedit for view source code files." ), _( "Show source code" ) );
+          {
+            command.Clear();
+            command << _( "nedit " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+            if( wxExecute( command ) == 0 )
+              wxMessageBox( _( "Install gvim or nedit for view source code files. Alternatively, set a proper command for an external text editor." ), _( "Show source code" ) );
+          }
         }
 #endif
       }
@@ -5093,13 +5105,6 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'T' )
   {
-    OnPopUpTiming( !timing );
-    return;
-  }
-
-  if( event.ControlDown() && event.GetKeyCode() == WXK_ESCAPE )
-  {
-    std::cout << "Escape!\n";
     OnPopUpTiming( !timing );
     return;
   }
@@ -5939,3 +5944,4 @@ void gTimeline::doDrawCaution( wxDC& whichDC )
                          true );
   }
 }
+

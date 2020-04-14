@@ -3238,6 +3238,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
   preferences.SetAskForPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
   preferences.SetHelpContentsUsesBrowser( paraverConfig->getGlobalHelpContentsUsesBrowser() );
+  preferences.SetExternalTextEditor( paraverConfig->getGlobalExternalTextEditor() );
 
   // TIMELINE
 
@@ -3334,6 +3335,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
     paraverConfig->setGlobalPrevSessionLoad( preferences.GetAskForPrevSessionLoad() );
     paraverConfig->setGlobalHelpContentsUsesBrowser( preferences.GetHelpContentsUsesBrowser() );
+    paraverConfig->setGlobalExternalTextEditor( std::string( preferences.GetExternalTextEditor().mb_str() ) );
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );

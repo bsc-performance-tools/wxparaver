@@ -171,6 +171,7 @@ void PreferencesDialog::Init()
   filtersXMLPath = "";
   globalFillStateGaps = false;
   globalFullTracePath = false;
+  helpContentsUsesBrowser = false;
   histogramAutofit3DScale = true;
   histogramAutofitControlScale = true;
   histogramAutofitDataGradient = true;
@@ -218,7 +219,7 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  helpContentsUsesBrowser = false;
+  externalTextEditor = "";
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
@@ -237,6 +238,8 @@ void PreferencesDialog::Init()
   spinSessionTime = NULL;
   checkGlobalAskForPrevSessionLoad = NULL;
   checkGlobalHelpOnBrowser = NULL;
+  textCtrlTextEditor = NULL;
+  dirChangeButtonEditor = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -462,6 +465,29 @@ void PreferencesDialog::CreateControls()
   checkGlobalHelpOnBrowser = new wxCheckBox( panelGlobal, ID_HELP_CONTENTS_IN_BROWSER, _("Show help contents on a browser"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalHelpOnBrowser->SetValue(false);
   itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(panelGlobal, wxID_ANY, _(" Default eternal applications"));
+  wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxVERTICAL);
+  itemBoxSizer3->Add(itemStaticBoxSizer1, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer1->Add(itemBoxSizer5, 1, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer1->Add(itemBoxSizer6, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText7 = new wxStaticText( panelGlobal, wxID_STATIC, _("Text editor"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    itemStaticText7->SetToolTip(_("Text editor to use"));
+  itemBoxSizer6->Add(itemStaticText7, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  textCtrlTextEditor = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_TXTEDIT, _("gedit"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    textCtrlTextEditor->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
+  itemBoxSizer6->Add(textCtrlTextEditor, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  dirChangeButtonEditor = new DirBrowserButton( panelGlobal, ID_DIRCHANGEBUTTON, _("Change"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    dirChangeButtonEditor->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
+  itemBoxSizer6->Add(dirChangeButtonEditor, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1396,6 +1422,7 @@ bool PreferencesDialog::TransferDataToWindow()
   checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 
   checkGlobalHelpOnBrowser->SetValue( helpContentsUsesBrowser );
+  textCtrlTextEditor->SetValue( externalTextEditor );
 
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
@@ -1535,6 +1562,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   sessionSaveTime = spinSessionTime->GetValue();
   askForPrevSessionLoad = checkGlobalAskForPrevSessionLoad->GetValue();
   helpContentsUsesBrowser = checkGlobalHelpOnBrowser->GetValue();
+  externalTextEditor = textCtrlTextEditor->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );

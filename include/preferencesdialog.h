@@ -83,6 +83,8 @@ class wxListBox;
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
 #define ID_GLOBAL_ASK_FOR_PREV_SESSION 10039
 #define ID_HELP_CONTENTS_IN_BROWSER 10159
+#define ID_TEXTCTRL_TXTEDIT 10246
+#define ID_DIRCHANGEBUTTON 10046
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
@@ -349,6 +351,9 @@ public:
   rgb GetGradientColourTop() const { return gradientColourTop ; }
   void SetGradientColourTop(rgb value) { gradientColourTop = value ; }
 
+  bool GetHelpContentsUsesBrowser() const { return helpContentsUsesBrowser ; }
+  void SetHelpContentsUsesBrowser(bool value) { helpContentsUsesBrowser = value ; }
+
   bool GetHistogramAutofit3DScale() const { return histogramAutofit3DScale ; }
   void SetHistogramAutofit3DScale(bool value) { histogramAutofit3DScale = value ; }
 
@@ -520,8 +525,8 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  bool GetHelpContentsUsesBrowser() const { return helpContentsUsesBrowser ; }
-  void SetHelpContentsUsesBrowser(bool value) { helpContentsUsesBrowser = value ; }
+  wxString GetExternalTextEditor() const { return externalTextEditor ; }
+  void SetExternalTextEditor(wxString value) { externalTextEditor = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -561,6 +566,8 @@ public:
   wxSpinCtrl* spinSessionTime;
   wxCheckBox* checkGlobalAskForPrevSessionLoad;
   wxCheckBox* checkGlobalHelpOnBrowser;
+  wxTextCtrl* textCtrlTextEditor;
+  DirBrowserButton* dirChangeButtonEditor;
   wxPanel* panelTimeline;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
@@ -650,6 +657,7 @@ private:
   rgb gradientColourNegativeBegin;
   rgb gradientColourNegativeEnd;
   rgb gradientColourTop;
+  bool helpContentsUsesBrowser;
   bool histogramAutofit3DScale;
   bool histogramAutofitControlScale;
   bool histogramAutofitDataGradient;
@@ -707,7 +715,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  bool helpContentsUsesBrowser;
+  wxString externalTextEditor;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

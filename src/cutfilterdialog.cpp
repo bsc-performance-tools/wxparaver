@@ -77,7 +77,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 ////@begin CutFilterDialog event table entries
   EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
-  EVT_KEY_DOWN( CutFilterDialog::OnKeyDown )
+  //EVT_KEY_DOWN( CutFilterDialog::OnKeyDown )
   EVT_TEXT( ID_TEXTCTRL_CUT_FILTER_INPUT_TRACE, CutFilterDialog::OnTextctrlCutFilterInputTraceTextUpdated )
   EVT_TEXT( ID_TEXTCTRL_CUT_FILTER_XML, CutFilterDialog::OnTextctrlCutFilterXmlTextUpdated )
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnChecklistboxExecutionChainDoubleClicked )
@@ -814,7 +814,7 @@ void CutFilterDialog::CreateControls()
   itemStdDialogButtonSizer133->Realize();
 
   // Connect events and objects
-  buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), NULL, this);
+  //buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), NULL, this);
 ////@end CutFilterDialog content construction
 
 

@@ -2766,7 +2766,9 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   // TODO -> PUT IN CLASSES
   vector< wxString > editor;
   vector< wxString > versionParameter;
-  
+  wxString externalApp( ParaverConfig::getInstance()->getGlobalExternalTextEditor().c_str(), wxConvUTF8 );
+  editor.push_back( externalApp );
+  versionParameter.push_back( _( "--version" ) ); // needed?
   editor.push_back( _( "gvim" ) );
   versionParameter.push_back( _( "--version" ) );
   editor.push_back( _( "nedit" ) );
@@ -2786,7 +2788,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
 
   if ( i == 3 )
   {
-    wxMessageBox( _( "Unable to find gvim, nedit or gedit. Please check $PATH variable." ), _( "Edit Clustering Configuration XML" ) );
+    wxMessageBox( _( "Unable to find an external app, gvim, nedit or gedit. Please check $PATH variable." ), _( "Edit Clustering Configuration XML" ) );
   }
 #endif
 }
