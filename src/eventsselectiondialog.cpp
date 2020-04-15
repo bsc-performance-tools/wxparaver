@@ -1121,7 +1121,7 @@ void EventsSelectionDialog::GetEventValueLabels( wxArrayString & whichEventValue
       else
         ++typeEndLimit;
 
-      wxString tmpStr = wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, i, true, precision ).c_str() );
+      wxString tmpStr = wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, i, true, precision, false ).c_str() );
 
       whichEventValues.Add( tmpStr );
     }
@@ -1129,19 +1129,19 @@ void EventsSelectionDialog::GetEventValueLabels( wxArrayString & whichEventValue
   else
   {
     wxString tmpStr;
-    tmpStr << wxT("< ") << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, lastMin, false, precision ).c_str() );
+    tmpStr << wxT("< ") << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, lastMin, false, precision, false ).c_str() );
     whichEventValues.Add( tmpStr );
 
     TSemanticValue step = ( lastMax - lastMin ) / 20.0;
     for( int i = 0; i <= 20; ++i )
     {
       tmpStr.Clear();
-      tmpStr << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, ( i * step ) + lastMin, false, precision ).c_str() );
+      tmpStr << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, ( i * step ) + lastMin, false, precision, false ).c_str() );
       whichEventValues.Add( tmpStr );
     }
 
     tmpStr.Clear();
-    tmpStr << wxT("> ") << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, lastMax, false, precision ).c_str() );
+    tmpStr << wxT("> ") << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, lastMax, false, precision, false ).c_str() );
     whichEventValues.Add( tmpStr );
   }
 }

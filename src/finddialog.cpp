@@ -414,7 +414,7 @@ void FindDialog::InitControlsBeforeShow()
   for( TSemanticValue val = myWindow->getMinimumY(); val <= max; ++val )
   {
     string strSemantic = LabelConstructor::semanticLabel( myWindow, val, true, 
-                                                          ParaverConfig::getInstance()->getTimelinePrecision() );
+                                                          ParaverConfig::getInstance()->getTimelinePrecision(), false );
     comboSemanticValue->Append( wxString::FromAscii( strSemantic.c_str() ) );
   }
   comboSemanticValue->SetSelection( 0 );
