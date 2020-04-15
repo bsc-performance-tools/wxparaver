@@ -110,7 +110,6 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_DELETE, CutFilterDialog::OnButtonScKeepEventsDeleteClick )
   EVT_BUTTON( wxID_APPLY, CutFilterDialog::OnApplyClick )
   EVT_UPDATE_UI( wxID_APPLY, CutFilterDialog::OnApplyUpdate )
-  EVT_UPDATE_UI( wxID_APPLY, CutFilterDialog::OnApplyUpdate )
 ////@end CutFilterDialog event table entries
 
 END_EVENT_TABLE()
@@ -2957,9 +2956,9 @@ void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& even
     
     // convert from percentage to original time
     wxString bTime = formatNumber( ( auxBeginTime/100.0f ) * maxTimelineTime );
-    bTime.Replace( ".", "" );
+    bTime.Replace( wxT( "." ), wxT( "" ) );
     wxString eTime = formatNumber( ( auxEndTime/100.0f ) * maxTimelineTime );
-    eTime.Replace( ".", "" );
+    eTime.Replace( wxT( "." ), wxT( "" ) );
 
     textCutterBeginCut->SetValue( bTime );
     textCutterEndCut->SetValue( eTime );
@@ -2986,9 +2985,9 @@ void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& e
 
     // convert from original time to percentage
     wxString bTime = formatNumber( 100*( auxBeginTime / maxTimelineTime ) );
-    bTime.Replace( ".", "" );
+    bTime.Replace( wxT( "." ), wxT( "" ) );
     wxString eTime = formatNumber( 100*( auxEndTime / maxTimelineTime ) );
-    eTime.Replace( ".", "" );
+    eTime.Replace( wxT( "." ), wxT( "" ) );
 
     textCutterBeginCut->SetValue( bTime );
     textCutterEndCut->SetValue( eTime );
@@ -2996,3 +2995,17 @@ void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& e
   cutterUsesOriginalTime = false;
   event.Skip();
 }
+
+
+/*!
+ * wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG
+ */
+
+void CutFilterDialog::OnKeyDown( wxKeyEvent& event )
+{
+////@begin wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG in CutFilterDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG in CutFilterDialog. 
+}
+
