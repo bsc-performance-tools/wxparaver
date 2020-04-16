@@ -54,7 +54,7 @@ class BrowserButton : public wxButton
                    const wxString& name = wxT( "button" ) );
     ~BrowserButton() {}
   
-    void SetTextBox( wxTextCtrl *whichTextCtrl );
+    void SetTextBox( wxTextCtrl *whichTextCtrl, bool readOnly = true );
     
     void SetDialogMessage( const wxString& whichDialogMessage )
     { dialogMessage = whichDialogMessage; }

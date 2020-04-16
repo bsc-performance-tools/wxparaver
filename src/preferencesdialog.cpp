@@ -168,6 +168,7 @@ void PreferencesDialog::Init()
 ////@begin PreferencesDialog member initialisation
   cfgsPath = "";
   colorUseZero = false;
+  externalTextEditor = "";
   filtersXMLPath = "";
   globalFillStateGaps = false;
   globalFullTracePath = false;
@@ -219,7 +220,6 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  externalTextEditor = "";
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
@@ -239,7 +239,7 @@ void PreferencesDialog::Init()
   checkGlobalAskForPrevSessionLoad = NULL;
   checkGlobalHelpOnBrowser = NULL;
   textCtrlTextEditor = NULL;
-  dirChangeButtonEditor = NULL;
+  fileChangeButtonEditor = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -466,7 +466,7 @@ void PreferencesDialog::CreateControls()
   checkGlobalHelpOnBrowser->SetValue(false);
   itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(panelGlobal, wxID_ANY, _(" Default eternal applications"));
+  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(panelGlobal, wxID_ANY, _(" Default external applications"));
   wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxVERTICAL);
   itemBoxSizer3->Add(itemStaticBoxSizer1, 0, wxGROW|wxALL, 5);
   wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
@@ -474,20 +474,20 @@ void PreferencesDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer1->Add(itemBoxSizer6, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText7 = new wxStaticText( panelGlobal, wxID_STATIC, _("Text editor"), wxDefaultPosition, wxDefaultSize, 0 );
+  wxStaticText* itemStaticText7 = new wxStaticText( panelGlobal, wxID_STATIC, _("Text editor exec."), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
   if (PreferencesDialog::ShowToolTips())
-    itemStaticText7->SetToolTip(_("Text editor to use"));
+    itemStaticText7->SetToolTip(_("List of text editors to use"));
   itemBoxSizer6->Add(itemStaticText7, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  textCtrlTextEditor = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_TXTEDIT, _("gedit"), wxDefaultPosition, wxDefaultSize, 0 );
+  textCtrlTextEditor = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_TXTEDIT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    textCtrlTextEditor->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
+    textCtrlTextEditor->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by priority"));
   itemBoxSizer6->Add(textCtrlTextEditor, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  dirChangeButtonEditor = new DirBrowserButton( panelGlobal, ID_DIRCHANGEBUTTON, _("Change"), wxDefaultPosition, wxDefaultSize, 0 );
+  fileChangeButtonEditor = new FileBrowserButton( panelGlobal, ID_FILECHANGEBUTTON, _("Change"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    dirChangeButtonEditor->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
-  itemBoxSizer6->Add(dirChangeButtonEditor, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    fileChangeButtonEditor->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by priority"));
+  itemBoxSizer6->Add(fileChangeButtonEditor, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1255,24 +1255,34 @@ void PreferencesDialog::CreateControls()
   itemPropertySheetDialog1 = NULL;
   
   dirBrowserButtonTrace->SetTextBox( textCtrlTrace );
-  dirBrowserButtonTrace->SetDialogMessage( _( "Select Traces Default Directory" ) );
+  dirBrowserButtonTrace->SetDialogMessage( wxT( "Select Traces Default Directory" ) );
   dirBrowserButtonTrace->Enable();
   
   dirBrowserButtonCFG->SetTextBox( textCtrlCFG );
-  dirBrowserButtonCFG->SetDialogMessage( _( "Select Paraver CFGs Default Directory" ) );
+  dirBrowserButtonCFG->SetDialogMessage( wxT( "Select Paraver CFGs Default Directory" ) );
   dirBrowserButtonCFG->Enable();
   
   dirBrowserButtonXML->SetTextBox( textCtrlXML );
-  dirBrowserButtonXML->SetDialogMessage( _( "Select Cut/Filter XMLs Default Directory" ) );
+  dirBrowserButtonXML->SetDialogMessage( wxT( "Select Cut/Filter XMLs Default Directory" ) );
   dirBrowserButtonXML->Enable();
   
   dirBrowserButtonTutorials->SetTextBox( textCtrlTutorials );
-  dirBrowserButtonTutorials->SetDialogMessage( _( "Select Tutorials Root Directory" ) );
+  dirBrowserButtonTutorials->SetDialogMessage( wxT( "Select Tutorials Root Directory" ) );
   dirBrowserButtonTutorials->Enable();
   
   dirBrowserButtonTmp->SetTextBox( textCtrlTmp );
-  dirBrowserButtonTmp->SetDialogMessage( _( "Select TMP Default Directory" ) );
+  dirBrowserButtonTmp->SetDialogMessage( wxT( "Select TMP Default Directory" ) );
   dirBrowserButtonTmp->Enable();
+
+  fileChangeButtonEditor->SetTextBox( textCtrlTextEditor, false );
+  fileChangeButtonEditor->SetDialogMessage( wxT( "Select External Text Editors" ) );
+  fileChangeButtonEditor->Enable();
+  #ifdef WIN32
+    fileChangeButtonEditor->SetFileDialogWildcard( wxT( "*.exe" ) );
+    fileChangeButtonEditor->SetDialogDefaultDir( _("C:\\Program Files") );
+  #else
+    fileChangeButtonEditor->SetDialogDefaultDir( _("/usr/bin") );
+  #endif
   
   fileBrowserHintPath->SetTextBox( txtHintPath );
   fileBrowserHintPath->SetFileDialogWildcard( _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ) );

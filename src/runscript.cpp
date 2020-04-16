@@ -2764,31 +2764,24 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
 #else
   
   // TODO -> PUT IN CLASSES
-  vector< wxString > editor;
-  vector< wxString > versionParameter;
-  wxString externalApp( ParaverConfig::getInstance()->getGlobalExternalTextEditor().c_str(), wxConvUTF8 );
-  editor.push_back( externalApp );
-  versionParameter.push_back( _( "--version" ) ); // needed?
-  editor.push_back( _( "gvim" ) );
-  versionParameter.push_back( _( "--version" ) );
-  editor.push_back( _( "nedit" ) );
-  versionParameter.push_back( _( "-version" ) );
-  editor.push_back( _( "gedit" ) );
-  versionParameter.push_back( _( "--version" ) );
-
+  wxArrayString editor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalTextEditor(), ',' );
+  //wxArrayString versionParameter;
+  
   size_t i;
   for ( i = 0; i < editor.size(); ++i )
   {
-    if ( existCommand( editor[ i ], versionParameter[ i ] ) )
+    //versionParameter.push_back( _( "--version" ) ); // same for all editors? replace
+    //if ( existCommand( editor[ i ], versionParameter[ i ] ) )
+    if ( existCommand( editor[ i ], wxT( "--version" ) ) )
     {
       runCommand( editor[ i ], fileToEdit );
       break;
     }
   }
 
-  if ( i == 3 )
+  if ( i >= editor.size() )
   {
-    wxMessageBox( _( "Unable to find an external app, gvim, nedit or gedit. Please check $PATH variable." ), _( "Edit Clustering Configuration XML" ) );
+    wxMessageBox( _( "Unable to find an external app. Please check the external text editor variable at preferences." ), _( "Edit Clustering Configuration XML" ) );
   }
 #endif
 }

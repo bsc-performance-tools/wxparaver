@@ -5041,30 +5041,34 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
         wxString path = dirDialog.GetPath();
         wxString command;
 
-        wxString textEditor = ParaverConfig::getInstance()->getGlobalExternalTextEditor();
+        // DEFAULT:   gvim, nedit, gedit, xed, kate
+        wxArrayString textEditor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalTextEditor(), ',' );
+        bool cmdExecuted = false;
+
 #ifdef WIN32
-        command << textEditor /*<< " +" << lineStr << " "*/ << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
-        if( wxExecute( command ) == 0 )
+        for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
+        {
+          command << textEditor[ idx ] << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
+          cmdExecuted = ( wxExecute( command ) != 0 );
+          if ( !cmdExecuted )
+            command.Clear();
+        }
+        if ( !cmdExecuted )
         {
           command.Clear();
-          command << _( "wordpad.exe " ) /*<< " +" << lineStr << " "*/ << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
-          wxExecute( command );
+          command << _( "wordpad.exe " ) << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
         }
 #else
         // As before
-        command << textEditor << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
-        if( wxExecute( command ) == 0 )
+        for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
         {
-          command.Clear();
-          command << _( "gvim " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
-          if( wxExecute( command ) == 0 )
-          {
+          command << textEditor[ idx ] << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+          cmdExecuted = ( wxExecute( command ) != 0 );
+          if ( !cmdExecuted )
             command.Clear();
-            command << _( "nedit " ) << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
-            if( wxExecute( command ) == 0 )
-              wxMessageBox( _( "Install gvim or nedit for view source code files. Alternatively, set a proper command for an external text editor." ), _( "Show source code" ) );
-          }
         }
+        if ( !cmdExecuted )
+          wxMessageBox( _( "No text editor(s) set at preferences." ), _( "Show source code" ) );
 #endif
       }
     }

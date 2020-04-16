@@ -76,14 +76,15 @@ void BrowserButton::Init()
 }
 
 
-void BrowserButton::SetTextBox( wxTextCtrl *whichTextCtrl )
+void BrowserButton::SetTextBox( wxTextCtrl *whichTextCtrl, bool readOnly )
 {
   associatedTextCtrl = whichTextCtrl; 
   
   if ( associatedTextCtrl != NULL )
   {
     SetDialogStyle( wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR );
-    whichTextCtrl->SetWindowStyle( wxTE_READONLY );
+    if ( readOnly )
+      whichTextCtrl->SetWindowStyle( wxTE_READONLY );
   }
 }
 
