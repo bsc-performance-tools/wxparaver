@@ -70,7 +70,9 @@ class BrowserButton : public wxButton
 
     // Mimics FilePicker
     wxString GetPath() const
-    { return ( !fullPath.IsEmpty()? fullPath: wxString( wxT("") ) ); }
+    { 
+      return ( !fullPath.IsEmpty()? fullPath : wxString( wxT("") ) ); 
+    }
 
     bool Enable( bool enable = true );
 
@@ -122,6 +124,7 @@ class FileBrowserButton : public BrowserButton
     
     // Remember this path and modify associated wxTextCtrl
     void SetPath( const wxString& whichPath );
+    void SetPaths( const wxArrayString& whichFullPaths );
     void ChangePath( const wxString& whichPath );
 
     void OnButton( wxMouseEvent& event );
