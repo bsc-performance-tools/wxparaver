@@ -5049,9 +5049,11 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
         for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
         {
           command << textEditor[ idx ] << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
-          cmdExecuted = ( wxExecute( command ) != 0 );
+          cmdExecuted = ( wxExecute( command + wxT( " --version" ), wxEXEC_SYNC ) == 0 );
           if ( !cmdExecuted )
             command.Clear();
+          else 
+            cmdExecuted = ( wxExecute( command ) != 0 );
         }
         if ( !cmdExecuted )
         {
@@ -5063,9 +5065,12 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
         for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
         {
           command << textEditor[ idx ] << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
-          cmdExecuted = ( wxExecute( command ) != 0 );
+          cmdExecuted = ( wxExecute( command + wxT( " --version" ), wxEXEC_SYNC ) == 0 );
+
           if ( !cmdExecuted )
             command.Clear();
+          else 
+            cmdExecuted = ( wxExecute( command ) != 0 );
         }
         if ( !cmdExecuted )
           wxMessageBox( _( "No text editor(s) set at preferences." ), _( "Show source code" ) );
