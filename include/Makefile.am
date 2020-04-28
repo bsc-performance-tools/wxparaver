@@ -5,6 +5,7 @@ noinst_HEADERS =    advancedsaveconfiguration.h \
                     cutfilterdialog.h \
                     derivedtimelinedialog.h \
                     eventsselectiondialog.h \
+                    exitdialog.h \
                     filebrowserbutton.h \
                     filedialogext.h \
                     finddialog.h \

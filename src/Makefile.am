@@ -7,6 +7,7 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     cutfilterdialog.cpp \
                     derivedtimelinedialog.cpp \
                     eventsselectiondialog.cpp \
+                    exitdialog.cpp \
                     filebrowserbutton.cpp \
                     filedialogext.cpp \
                     finddialog.cpp \

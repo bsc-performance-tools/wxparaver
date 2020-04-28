@@ -69,6 +69,7 @@
 #include "sessionsaver.h"
 #include "helpcontents.h"
 #include "filedialogext.h"
+#include "exitdialog.h"
 #include "runscript.h"
 #include <wx/display.h>
 
@@ -1088,26 +1089,22 @@ void paraverMain::exitManager( wxEvent& event )
 {
   if ( !LoadedWindows::getInstance()->emptyWindows() )
   {
+    /*
     wxMessageDialog questionDialog( this,
             wxT( "Some windows are already open... Do you want to save this session before closing?" ),
             wxT( "Please confirm" ),
             wxICON_QUESTION | wxYES_NO | wxCANCEL);
-    /*
     Original layout of buttons:   No(2) | Cancel(3) | Yes(1) --> (1, 2, 3)
     Translated layout of buttons: Close without saving (2) | Cancel (3) | Save and Exit (1) --> (1, 2, 3)
     Current layout of buttons:    Save and Exit (1) | Cancel (3) |  Close without saving (2) --> (2, 1, 3)
     */
-    wxMessageDialog::ButtonLabel yesButton( wxT( "Save and exit" ) );
-    wxMessageDialog::ButtonLabel  noButton( wxT( "Close without saving" ) );
-    wxMessageDialog::ButtonLabel cclButton( wxT( "Cancel" ) );
-    questionDialog.SetYesNoCancelLabels( noButton, yesButton, cclButton );
-    
+
+    ExitDialog questionDialog( this );
     int question = questionDialog.ShowModal();
     //if ( question == wxID_CANCEL || ( question == wxID_YES && !OnMenusavesession() ) )
     
-    // This should be read as: don't exit Paraver if question is cancelled, 
+    // This should be read as: do NOT exit Paraver if question is cancelled, 
     // or clicked save+exit and the session wasn't saved at the following menu
-    std::cout  << question << std::endl;
     if ( question == wxID_CANCEL || ( question == wxID_NO && !OnMenusavesession() ) )
     {
       return;
