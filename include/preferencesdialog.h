@@ -349,6 +349,9 @@ public:
   rgb GetGradientColourTop() const { return gradientColourTop ; }
   void SetGradientColourTop(rgb value) { gradientColourTop = value ; }
 
+  bool GetHelpContentsUsesBrowser() const { return helpContentsUsesBrowser ; }
+  void SetHelpContentsUsesBrowser(bool value) { helpContentsUsesBrowser = value ; }
+
   bool GetHistogramAutofit3DScale() const { return histogramAutofit3DScale ; }
   void SetHistogramAutofit3DScale(bool value) { histogramAutofit3DScale = value ; }
 
@@ -520,9 +523,6 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  bool GetHelpContentsUsesBrowser() const { return helpContentsUsesBrowser ; }
-  void SetHelpContentsUsesBrowser(bool value) { helpContentsUsesBrowser = value ; }
-
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -650,6 +650,7 @@ private:
   rgb gradientColourNegativeBegin;
   rgb gradientColourNegativeEnd;
   rgb gradientColourTop;
+  bool helpContentsUsesBrowser;
   bool histogramAutofit3DScale;
   bool histogramAutofitControlScale;
   bool histogramAutofitDataGradient;
@@ -707,7 +708,6 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  bool helpContentsUsesBrowser;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

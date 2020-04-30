@@ -4384,6 +4384,7 @@ bool paraverMain::OnMenusavesession( )
   {
     wxFileName tmpFile( dialog.GetPath() );
     SessionSaver::SaveSession( tmpFile.GetFullPath(), GetLoadedTraces() );
+    previousSessions->add( std::string( dialog.GetPath().mb_str() ) );
     return true;
   }
   return false;
@@ -5004,7 +5005,7 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
         _( "/AutosavedSessions" ) );
   #endif
 
-  wxArrayString paths = SessionSelectionDialog( folder ).GetSessionPaths();
+  wxArrayString paths = SessionSelectionDialog( folder, isSessionInitialized ).GetSessionPaths();
   if ( paths.size() > 0 )
   {
     wxLogNull logNull;

@@ -74,7 +74,7 @@ class SessionSelectionDialog: public wxDialog
 public:
   /// Constructors
   SessionSelectionDialog();
-  SessionSelectionDialog( wxString folderPath );
+  SessionSelectionDialog( wxString folderPath, bool isInitialized = false );
   SessionSelectionDialog( wxWindow* parent, wxString folderPath, bool isInitialized = false, wxWindowID id = SYMBOL_SESSIONSELECTIONDIALOG_IDNAME, const wxString& caption = SYMBOL_SESSIONSELECTIONDIALOG_TITLE, const wxPoint& pos = SYMBOL_SESSIONSELECTIONDIALOG_POSITION, const wxSize& size = SYMBOL_SESSIONSELECTIONDIALOG_SIZE, long style = SYMBOL_SESSIONSELECTIONDIALOG_STYLE );
 
   /// Creation

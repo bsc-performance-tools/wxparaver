@@ -171,6 +171,7 @@ void PreferencesDialog::Init()
   filtersXMLPath = "";
   globalFillStateGaps = false;
   globalFullTracePath = false;
+  helpContentsUsesBrowser = false;
   histogramAutofit3DScale = true;
   histogramAutofitControlScale = true;
   histogramAutofitDataGradient = true;
@@ -218,7 +219,6 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  helpContentsUsesBrowser = false;
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;

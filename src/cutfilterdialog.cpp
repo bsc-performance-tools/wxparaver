@@ -339,7 +339,7 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer9->Add(itemBoxSizer14, 0, wxGROW, 2);
 
-  itemBoxSizer14->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
+  itemBoxSizer14->Add(115, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
 
   checkLoadResultingTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_LOAD_RESULTING_TRACE, _("Load the processed trace"), wxDefaultPosition, wxDefaultSize, 0 );
   checkLoadResultingTrace->SetValue(true);
@@ -350,7 +350,7 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer9->Add(itemBoxSizer17, 0, wxGROW, 2);
 
-  itemBoxSizer17->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
+  itemBoxSizer17->Add(100, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
 
   checkRunAppWithResultingTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_RUN_APP_WITH_RESULTING_TRACE, _("Run application with the processed trace"), wxDefaultPosition, wxDefaultSize, 0 );
   checkRunAppWithResultingTrace->SetValue(false);
@@ -422,7 +422,7 @@ void CutFilterDialog::CreateControls()
 
   boxSizerExecutionChain->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  notebookTools = new wxNotebook( itemDialog1, ID_NOTEBOOK_CUT_FILTER_OPTIONS, wxDefaultPosition, wxSize(-1, 300), wxBK_DEFAULT );
+  notebookTools = new wxNotebook( itemDialog1, ID_NOTEBOOK_CUT_FILTER_OPTIONS, wxDefaultPosition, wxSize(-1, 500), wxBK_DEFAULT );
 
   wxScrolledWindow* itemScrolledWindow38 = new wxScrolledWindow( notebookTools, ID_PANEL_CUTTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   itemScrolledWindow38->SetScrollbars(1, 10, 0, 0);
