@@ -30,6 +30,7 @@
 
 ////@begin includes
 #include "wx/html/htmlwin.h"
+#include "wx/statline.h"
 ////@end includes
 
 #include "wx/help.h"    // pruebas wxHelpController
@@ -41,6 +42,7 @@
 
 ////@begin forward declarations
 class wxHtmlWindow;
+class wxStaticLine;
 ////@end forward declarations
 
 /*!
@@ -53,6 +55,7 @@ class wxHtmlWindow;
 #define ID_BUTTON_INDEX 10194
 #define ID_BITMAPBUTTON_BACK 10217
 #define ID_BITMAPBUTTON_FORWARD 10218
+#define ID_BITMAPBUTTON_DOWNLOAD 10000
 #define ID_BUTTON_CLOSE 10195
 #define SYMBOL_HELPCONTENTS_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_HELPCONTENTS_TITLE _("Help Contents")
@@ -160,6 +163,8 @@ public:
   wxBitmapButton* buttonIndex;
   wxBitmapButton* buttonHistoryBack;
   wxBitmapButton* buttonHistoryForward;
+  wxStaticLine* staticLineDownloadSeparator;
+  wxBitmapButton* buttonDownloadTutorial;
 ////@end HelpContents member variables
 
   bool SetHelpContentsRoot( const std::string& whichRoot );
@@ -218,6 +223,8 @@ class TutorialsBrowser: public HelpContents
 
     void OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event );
 
+    void OnButtonDownloadClick(  wxCommandEvent& event );
+    
   protected:
     const wxString getTitle( int numTutorial, const wxString& path );
     void linkToWebPage( wxString& htmlDoc );
