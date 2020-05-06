@@ -69,6 +69,7 @@
 #include "sessionsaver.h"
 #include "helpcontents.h"
 #include "filedialogext.h"
+#include "exitdialog.h"
 #include "runscript.h"
 #include <wx/display.h>
 
@@ -1088,11 +1089,23 @@ void paraverMain::exitManager( wxEvent& event )
 {
   if ( !LoadedWindows::getInstance()->emptyWindows() )
   {
-    int question = wxMessageBox( wxT( "Some windows are already open... Do you want to save this session before closing?" ),
-                       wxT( "Please confirm" ),
-                       wxICON_QUESTION | wxYES_NO | wxCANCEL);
+    /*
+    wxMessageDialog questionDialog( this,
+            wxT( "Some windows are already open... Do you want to save this session before closing?" ),
+            wxT( "Please confirm" ),
+            wxICON_QUESTION | wxYES_NO | wxCANCEL);
+    Original layout of buttons:   No(2) | Cancel(3) | Yes(1) --> (1, 2, 3)
+    Translated layout of buttons: Close without saving (2) | Cancel (3) | Save and Exit (1) --> (1, 2, 3)
+    Current layout of buttons:    Save and Exit (1) | Cancel (3) |  Close without saving (2) --> (2, 1, 3)
+    */
 
-    if ( question == wxCANCEL || ( question == wxYES && !OnMenusavesession() ) )
+    ExitDialog questionDialog( this );
+    int question = questionDialog.ShowModal();
+    //if ( question == wxID_CANCEL || ( question == wxID_YES && !OnMenusavesession() ) )
+    
+    // This should be read as: do NOT exit Paraver if question is cancelled, 
+    // or clicked save+exit and the session wasn't saved at the following menu
+    if ( question == wxID_CANCEL || ( question == wxID_NO && !OnMenusavesession() ) )
     {
       return;
     }
@@ -4373,6 +4386,7 @@ bool paraverMain::OnMenusavesession( )
   {
     wxFileName tmpFile( dialog.GetPath() );
     SessionSaver::SaveSession( tmpFile.GetFullPath(), GetLoadedTraces() );
+    previousSessions->add( std::string( dialog.GetPath().mb_str() ) );
     return true;
   }
   return false;
@@ -4993,7 +5007,7 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
         _( "/AutosavedSessions" ) );
   #endif
 
-  wxArrayString paths = SessionSelectionDialog( folder ).GetSessionPaths();
+  wxArrayString paths = SessionSelectionDialog( folder, isSessionInitialized ).GetSessionPaths();
   if ( paths.size() > 0 )
   {
     wxLogNull logNull;

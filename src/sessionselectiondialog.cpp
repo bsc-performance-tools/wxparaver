@@ -77,11 +77,11 @@ SessionSelectionDialog::SessionSelectionDialog()
 
 
 // Version that gets 
-SessionSelectionDialog::SessionSelectionDialog( wxString folderPath )
+SessionSelectionDialog::SessionSelectionDialog( wxString folderPath, bool isInitialized )
 {
   Init();
   this->folderPath = folderPath;
-  this->isInitialized = false;
+  this->isInitialized = isInitialized;
   OnCreateNoDialog();
 }
 
@@ -180,10 +180,12 @@ void SessionSelectionDialog::CreateControls()
   listSessions->Connect(ID_SESSIONBOX, wxEVT_CREATE, wxWindowCreateEventHandler(SessionSelectionDialog::OnCreate), NULL, this);
 ////@end SessionSelectionDialog content construction
 
+
   textDialogDescription->Show( !isInitialized );
   textDialogDescription->GetFont().SetWeight( wxFONTWEIGHT_BOLD );
   if ( isInitialized )
   {
+    textDialogDescription->SetLabel( _("Select one of your last auto-saved Paraver sessions") );
     itemStaticBoxSizer1Static->SetLabel( _("List of auto-saved sessions") );
   }
 }

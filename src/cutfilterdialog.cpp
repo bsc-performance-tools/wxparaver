@@ -110,7 +110,6 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_BUTTON( ID_BUTTON_SC_KEEP_EVENTS_DELETE, CutFilterDialog::OnButtonScKeepEventsDeleteClick )
   EVT_BUTTON( wxID_APPLY, CutFilterDialog::OnApplyClick )
   EVT_UPDATE_UI( wxID_APPLY, CutFilterDialog::OnApplyUpdate )
-  EVT_UPDATE_UI( wxID_APPLY, CutFilterDialog::OnApplyUpdate )
 ////@end CutFilterDialog event table entries
 
 END_EVENT_TABLE()
@@ -340,7 +339,7 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer9->Add(itemBoxSizer14, 0, wxGROW, 2);
 
-  itemBoxSizer14->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
+  itemBoxSizer14->Add(115, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
 
   checkLoadResultingTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_LOAD_RESULTING_TRACE, _("Load the processed trace"), wxDefaultPosition, wxDefaultSize, 0 );
   checkLoadResultingTrace->SetValue(true);
@@ -351,7 +350,7 @@ void CutFilterDialog::CreateControls()
   wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer9->Add(itemBoxSizer17, 0, wxGROW, 2);
 
-  itemBoxSizer17->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
+  itemBoxSizer17->Add(100, 5, 1, wxALIGN_CENTER_VERTICAL, 2);
 
   checkRunAppWithResultingTrace = new wxCheckBox( itemDialog1, ID_CHECKBOX_RUN_APP_WITH_RESULTING_TRACE, _("Run application with the processed trace"), wxDefaultPosition, wxDefaultSize, 0 );
   checkRunAppWithResultingTrace->SetValue(false);
@@ -423,7 +422,7 @@ void CutFilterDialog::CreateControls()
 
   boxSizerExecutionChain->Add(5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  notebookTools = new wxNotebook( itemDialog1, ID_NOTEBOOK_CUT_FILTER_OPTIONS, wxDefaultPosition, wxSize(-1, 300), wxBK_DEFAULT );
+  notebookTools = new wxNotebook( itemDialog1, ID_NOTEBOOK_CUT_FILTER_OPTIONS, wxDefaultPosition, wxSize(-1, 500), wxBK_DEFAULT );
 
   wxScrolledWindow* itemScrolledWindow38 = new wxScrolledWindow( notebookTools, ID_PANEL_CUTTER, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   itemScrolledWindow38->SetScrollbars(1, 10, 0, 0);
@@ -2957,9 +2956,9 @@ void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& even
     
     // convert from percentage to original time
     wxString bTime = formatNumber( ( auxBeginTime/100.0f ) * maxTimelineTime );
-    bTime.Replace( ".", "" );
+    bTime.Replace( wxT( "." ), wxT( "" ) );
     wxString eTime = formatNumber( ( auxEndTime/100.0f ) * maxTimelineTime );
-    eTime.Replace( ".", "" );
+    eTime.Replace( wxT( "." ), wxT( "" ) );
 
     textCutterBeginCut->SetValue( bTime );
     textCutterEndCut->SetValue( eTime );
@@ -2986,9 +2985,9 @@ void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& e
 
     // convert from original time to percentage
     wxString bTime = formatNumber( 100*( auxBeginTime / maxTimelineTime ) );
-    bTime.Replace( ".", "" );
+    bTime.Replace( wxT( "." ), wxT( "" ) );
     wxString eTime = formatNumber( 100*( auxEndTime / maxTimelineTime ) );
-    eTime.Replace( ".", "" );
+    eTime.Replace( wxT( "." ), wxT( "" ) );
 
     textCutterBeginCut->SetValue( bTime );
     textCutterEndCut->SetValue( eTime );
@@ -2996,3 +2995,17 @@ void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& e
   cutterUsesOriginalTime = false;
   event.Skip();
 }
+
+
+/*!
+ * wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG
+ */
+
+void CutFilterDialog::OnKeyDown( wxKeyEvent& event )
+{
+////@begin wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG in CutFilterDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG in CutFilterDialog. 
+}
+

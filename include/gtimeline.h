@@ -98,6 +98,7 @@ class ProgressController;
 #define ID_CHECKBOX3 10083
 #define ID_CHECKBOX4 10084
 #define ID_CHECKBOX5 10004
+#define ID_CHECKBOX6 10005
 #define ID_RICHTEXTCTRL 10043
 #define ID_SCROLLED_TIMING 10044
 #define ID_TEXTCTRL_INITIALTIME 10045
@@ -169,6 +170,18 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftUp( wxMouseEvent& event );
+
+  /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDClick( wxMouseEvent& event );
+
   /// wxEVT_MIDDLE_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMiddleUp( wxMouseEvent& event );
 
@@ -186,18 +199,6 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
-
-  /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftUp( wxMouseEvent& event );
-
-  /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDClick( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -578,6 +579,7 @@ public:
   wxCheckBox* checkWWPreviousNext;
   wxCheckBox* checkWWText;
   wxCheckBox* checkWWShowDate;
+  wxCheckBox* checkWWHex;
   wxRichTextCtrl* whatWhereText;
   wxScrolledWindow* timingZone;
   wxTextCtrl* initialTimeText;
@@ -680,9 +682,10 @@ private:
                          TObjectOrder whichRow,
                          TSemanticValue whichSemantic,
                          bool textMode,
-                         bool showDate );
+                         bool showDate,
+                         bool hexMode );
   void printWhatWhere( );
-  void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode );
+  void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode );
   void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate );
 
   // Returns: window_name_with_spaces_underscored@traceName (without extension PRV)

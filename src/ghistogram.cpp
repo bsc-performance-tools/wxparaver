@@ -1928,7 +1928,8 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
       tmpLabel =  LabelConstructor::semanticLabel( myHistogram->getDataWindow(),
                                                    value,
                                                    true,
-                                                   ParaverConfig::getInstance()->getHistogramPrecision() );
+                                                   ParaverConfig::getInstance()->getHistogramPrecision(),
+                                                   false );
     }
 
     text << _( "= " ) << wxString::FromAscii( tmpLabel.c_str() );
