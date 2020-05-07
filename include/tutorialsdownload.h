@@ -70,17 +70,19 @@ class TutorialsDownload
     static TutorialsDownload *getInstance();
     
     const vector<TutorialData>& getTutorialsList();
+    void downloadInstall( const vector<PRV_UINT16>& whichTutorials );
+    const TutorialData& findTutorial( PRV_UINT16 whichId ) const;
     
   private:
     TutorialsDownload();
     ~TutorialsDownload();
     
     static TutorialsDownload *instance;
-    static bool              tutorialsListUpdated;
-
-
+    
+    bool tutorialsListUpdated;
     vector<TutorialData> tutorialsList;
 
+    void download( const TutorialData& whichTutorial ) const;
 };
 
 #endif // _TUTORIALSDOWNLOAD_H_

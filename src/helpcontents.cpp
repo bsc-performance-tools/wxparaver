@@ -985,6 +985,13 @@ void TutorialsBrowser::OnButtonDownloadClick(  wxCommandEvent& event )
   
   if( selDialog.ShowModal() == wxID_OK )
   {
-  
+    wxArrayInt selection = selDialog.GetSelections();
+    vector<PRV_UINT16> tutorialsIndex;
+    
+    for( size_t i = 0; i < selection.GetCount(); ++i )
+      tutorialsIndex.push_back( tutorialsData[ selection.Item( i ) ].getId() );
+    
+    if( tutorialsIndex.size() > 0 )
+      TutorialsDownload::getInstance()->downloadInstall( tutorialsIndex );
   }
 }
