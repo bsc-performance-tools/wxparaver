@@ -5062,7 +5062,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
         wxString command;
 
         // DEFAULT:   gvim, nedit, gedit, xed, kate
-        wxArrayString textEditor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalTextEditor(), ',' );
+        wxArrayString textEditor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalTextEditors(), ',' );
         bool cmdExecuted = false;
 
 #ifdef WIN32

@@ -168,7 +168,6 @@ void PreferencesDialog::Init()
 ////@begin PreferencesDialog member initialisation
   cfgsPath = "";
   colorUseZero = false;
-  externalTextEditor = "";
   filtersXMLPath = "";
   globalFillStateGaps = false;
   globalFullTracePath = false;
@@ -220,6 +219,8 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
+  externalTextEditors = "gvim, nedit, gedit, xed, kate, nano, xdg-open, Notepad++.exe, wordpad.exe";
+  externalPDFReaders = "evince, okular, xreader, Acrobat.exe";
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
@@ -239,7 +240,9 @@ void PreferencesDialog::Init()
   checkGlobalAskForPrevSessionLoad = NULL;
   checkGlobalHelpOnBrowser = NULL;
   textCtrlTextEditor = NULL;
-  fileChangeButtonEditor = NULL;
+  fileSetTextEditorsButton = NULL;
+  textCtrlPDFReader = NULL;
+  fileSetPDFReadersButton = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -466,28 +469,42 @@ void PreferencesDialog::CreateControls()
   checkGlobalHelpOnBrowser->SetValue(false);
   itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxALL, 5);
 
-  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(panelGlobal, wxID_ANY, _(" Default external applications"));
+  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(panelGlobal, wxID_ANY, _("External program lists"));
   wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxVERTICAL);
   itemBoxSizer3->Add(itemStaticBoxSizer1, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer1->Add(itemBoxSizer5, 1, wxGROW|wxALL, 5);
-
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer1->Add(itemBoxSizer6, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText7 = new wxStaticText( panelGlobal, wxID_STATIC, _("Text editor exec."), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+  wxStaticText* itemStaticText7 = new wxStaticText( panelGlobal, wxID_STATIC, _("Text editors"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
   if (PreferencesDialog::ShowToolTips())
     itemStaticText7->SetToolTip(_("List of text editors to use"));
   itemBoxSizer6->Add(itemStaticText7, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   textCtrlTextEditor = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_TXTEDIT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    textCtrlTextEditor->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by priority"));
+    textCtrlTextEditor->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by decreasing priority"));
   itemBoxSizer6->Add(textCtrlTextEditor, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  fileChangeButtonEditor = new FileBrowserButton( panelGlobal, ID_FILECHANGEBUTTON, _("Change"), wxDefaultPosition, wxDefaultSize, 0 );
+  fileSetTextEditorsButton = new FileBrowserButton( panelGlobal, ID_FILECHANGEBUTTON, _("Set"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
-    fileChangeButtonEditor->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by priority"));
-  itemBoxSizer6->Add(fileChangeButtonEditor, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    fileSetTextEditorsButton->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by decreasing priority"));
+  itemBoxSizer6->Add(fileSetTextEditorsButton, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer1->Add(itemBoxSizer5, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText6 = new wxStaticText( panelGlobal, wxID_STATIC, _("PDF readers"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+  if (PreferencesDialog::ShowToolTips())
+    itemStaticText6->SetToolTip(_("List of PDF readers to use"));
+  itemBoxSizer5->Add(itemStaticText6, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  textCtrlPDFReader = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_PDFREADER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    textCtrlPDFReader->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by decreasing priority"));
+  itemBoxSizer5->Add(textCtrlPDFReader, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  fileSetPDFReadersButton = new FileBrowserButton( panelGlobal, ID_FILEBROWSERBUTTON, _("Set"), wxDefaultPosition, wxDefaultSize, 0 );
+  if (PreferencesDialog::ShowToolTips())
+    fileSetPDFReadersButton->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by decreasing priority"));
+  itemBoxSizer5->Add(fileSetPDFReadersButton, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1274,14 +1291,25 @@ void PreferencesDialog::CreateControls()
   dirBrowserButtonTmp->SetDialogMessage( wxT( "Select TMP Default Directory" ) );
   dirBrowserButtonTmp->Enable();
 
-  fileChangeButtonEditor->SetTextBox( textCtrlTextEditor, false );
-  fileChangeButtonEditor->SetDialogMessage( wxT( "Select External Text Editors" ) );
-  fileChangeButtonEditor->Enable();
+  fileSetTextEditorsButton->SetTextBox( textCtrlTextEditor, false );
+  fileSetTextEditorsButton->SetDialogMessage( wxT( "Select External Text Editors" ) );
+  fileSetTextEditorsButton->Enable();
   #ifdef WIN32
-    fileChangeButtonEditor->SetFileDialogWildcard( wxT( "*.exe" ) );
-    fileChangeButtonEditor->SetDialogDefaultDir( _("C:\\Program Files") );
+    fileSetTextEditorsButton->SetFileDialogWildcard( wxT( "*.exe" ) );
+    fileSetTextEditorsButton->SetDialogDefaultDir( _("C:\\Program Files") );
   #else
-    fileChangeButtonEditor->SetDialogDefaultDir( _("/usr/bin") );
+    fileSetTextEditorsButton->SetDialogDefaultDir( _("/usr/bin") );
+  #endif
+
+
+  fileSetPDFReadersButton->SetTextBox( textCtrlPDFReader, false );
+  fileSetPDFReadersButton->SetDialogMessage( wxT( "Select External PDF Readers" ) );
+  fileSetPDFReadersButton->Enable();
+  #ifdef WIN32
+    fileSetPDFReadersButton->SetFileDialogWildcard( wxT( "*.exe" ) );
+    fileSetPDFReadersButton->SetDialogDefaultDir( _("C:\\Program Files") );
+  #else
+    fileSetPDFReadersButton->SetDialogDefaultDir( _("/usr/bin") );
   #endif
   
   fileBrowserHintPath->SetTextBox( txtHintPath );
@@ -1432,7 +1460,8 @@ bool PreferencesDialog::TransferDataToWindow()
   checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 
   checkGlobalHelpOnBrowser->SetValue( helpContentsUsesBrowser );
-  textCtrlTextEditor->SetValue( externalTextEditor );
+  textCtrlTextEditor->SetValue( externalTextEditors );
+  textCtrlPDFReader->SetValue( externalPDFReaders );
 
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
@@ -1572,7 +1601,8 @@ bool PreferencesDialog::TransferDataFromWindow()
   sessionSaveTime = spinSessionTime->GetValue();
   askForPrevSessionLoad = checkGlobalAskForPrevSessionLoad->GetValue();
   helpContentsUsesBrowser = checkGlobalHelpOnBrowser->GetValue();
-  externalTextEditor = textCtrlTextEditor->GetValue();
+  externalTextEditors = textCtrlTextEditor->GetValue();
+  externalPDFReaders = textCtrlPDFReader->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );

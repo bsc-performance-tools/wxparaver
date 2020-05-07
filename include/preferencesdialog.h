@@ -85,6 +85,8 @@ class wxListBox;
 #define ID_HELP_CONTENTS_IN_BROWSER 10159
 #define ID_TEXTCTRL_TXTEDIT 10246
 #define ID_FILECHANGEBUTTON 10046
+#define ID_TEXTCTRL_PDFREADER 10249
+#define ID_FILEBROWSERBUTTON 10041
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
@@ -324,9 +326,6 @@ public:
   bool GetColorUseZero() const { return colorUseZero ; }
   void SetColorUseZero(bool value) { colorUseZero = value ; }
 
-  wxString GetExternalTextEditor() const { return externalTextEditor ; }
-  void SetExternalTextEditor(wxString value) { externalTextEditor = value ; }
-
   std::string GetFiltersXMLPath() const { return filtersXMLPath ; }
   void SetFiltersXMLPath(std::string value) { filtersXMLPath = value ; }
 
@@ -528,6 +527,12 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
+  wxString GetExternalTextEditors() const { return externalTextEditors ; }
+  void SetExternalTextEditors(wxString value) { externalTextEditors = value ; }
+
+  wxString GetExternalPDFReaders() const { return externalPDFReaders ; }
+  void SetExternalPDFReaders(wxString value) { externalPDFReaders = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -567,7 +572,9 @@ public:
   wxCheckBox* checkGlobalAskForPrevSessionLoad;
   wxCheckBox* checkGlobalHelpOnBrowser;
   wxTextCtrl* textCtrlTextEditor;
-  FileBrowserButton* fileChangeButtonEditor;
+  FileBrowserButton* fileSetTextEditorsButton;
+  wxTextCtrl* textCtrlPDFReader;
+  FileBrowserButton* fileSetPDFReadersButton;
   wxPanel* panelTimeline;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
@@ -648,7 +655,6 @@ private:
   bool askForPrevSessionLoad;
   std::string cfgsPath;
   bool colorUseZero;
-  wxString externalTextEditor;
   std::string filtersXMLPath;
   bool globalFillStateGaps;
   bool globalFullTracePath;
@@ -716,6 +722,8 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
+  wxString externalTextEditors;
+  wxString externalPDFReaders;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

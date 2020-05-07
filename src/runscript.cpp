@@ -2360,7 +2360,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
   }
   else if ( matchHrefExtension( event, _(".pdf")))
-  {
+  {/*
     wxString command;
     wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
     command << _( "evince " ) << tmpFile;
@@ -2378,7 +2378,29 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
           wxExecute( command );
         }
       }
+    }*/
+
+
+    wxArrayString textEditor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalPDFReaders(), ',' );
+    wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
+    wxString command;
+
+    size_t i;
+    for ( i = 0; i < textEditor.size(); ++i )
+    {
+      if ( existCommand( textEditor[ i ], wxT( "--version" ) ) )
+      {
+        runCommand( textEditor[ i ], tmpFile );
+        break;
+      }
     }
+
+    if ( i >= textEditor.size() )
+    {
+      wxMessageBox( _( "Unable to find an external app. Please check the external text editor variable at preferences." ), _( "Edit Clustering Configuration XML" ) );
+    }
+
+
   }
   else if ( matchHrefExtension( event, extensions[8] )) // "_time_mark"
   {
@@ -2764,7 +2786,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
 #else
   
   // TODO -> PUT IN CLASSES
-  wxArrayString editor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalTextEditor(), ',' );
+  wxArrayString editor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalTextEditors(), ',' );
   //wxArrayString versionParameter;
   
   size_t i;
