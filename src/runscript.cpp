@@ -2360,27 +2360,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     paraverMain::myParaverMain->ShowCutTraceWindow( traceName, loadTrace, strXmlFile );
   }
   else if ( matchHrefExtension( event, _(".pdf")))
-  {/*
-    wxString command;
-    wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
-    command << _( "evince " ) << tmpFile;
-    if( wxExecute( command ) == 0 )
-    {
-      command.Clear();
-      command << _( "okular " ) << tmpFile;
-      if( wxExecute( command ) == 0 )
-      {
-        wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
-        if( filetype != NULL )
-        {
-          command.Clear();
-          command = filetype->GetOpenCommand( tmpFile );
-          wxExecute( command );
-        }
-      }
-    }*/
-
-
+  {
     wxArrayString textEditor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalPDFReaders(), ',' );
     wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
     wxString command;
@@ -2397,10 +2377,14 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
     if ( i >= textEditor.size() )
     {
-      wxMessageBox( _( "Unable to find an external app. Please check the external text editor variable at preferences." ), _( "Edit Clustering Configuration XML" ) );
+      wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
+      if( filetype != NULL )
+      {
+        command.Clear();
+        command = filetype->GetOpenCommand( tmpFile );
+        wxExecute( command );
+      }
     }
-
-
   }
   else if ( matchHrefExtension( event, extensions[8] )) // "_time_mark"
   {
