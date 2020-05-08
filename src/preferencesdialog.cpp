@@ -109,6 +109,22 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_UPDATE_UI( ID_FILE_BUTTON_WORKSPACE_HINT_PATH, PreferencesDialog::OnFileButtonWorkspaceHintPathUpdate )
   EVT_TEXT( ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION, PreferencesDialog::OnTextctrlWorkspaceHintDescriptionTextUpdated )
   EVT_UPDATE_UI( ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION, PreferencesDialog::OnTextctrlWorkspaceHintDescriptionUpdate )
+  EVT_LISTBOX( ID_LISTBOX_TEXT_EDITORS, PreferencesDialog::OnListboxTextEditorsSelected )
+  EVT_BUTTON( ID_BUTTON_TXT_ADD, PreferencesDialog::OnButtonTxtAddClick )
+  EVT_BUTTON( ID_BUTTON_TXT_DEL, PreferencesDialog::OnButtonTxtDelClick )
+  EVT_UPDATE_UI( ID_BUTTON_TXT_DEL, PreferencesDialog::OnButtonTxtDelUpdate )
+  EVT_BUTTON( ID_BUTTON_TXT_UP, PreferencesDialog::OnButtonTxtUpClick )
+  EVT_UPDATE_UI( ID_BUTTON_TXT_UP, PreferencesDialog::OnButtonTxtUpUpdate )
+  EVT_BUTTON( ID_BUTTON_TXT_DOWN, PreferencesDialog::OnButtonTxtDownClick )
+  EVT_UPDATE_UI( ID_BUTTON_TXT_DOWN, PreferencesDialog::OnButtonTxtDownUpdate )
+  EVT_LISTBOX( ID_LISTBOX_PDF_READERS, PreferencesDialog::OnListboxPdfReadersSelected )
+  EVT_BUTTON( ID_BUTTON_PDF_ADD, PreferencesDialog::OnButtonPdfAddClick )
+  EVT_BUTTON( ID_BUTTON_PDF_DEL, PreferencesDialog::OnButtonPdfDelClick )
+  EVT_UPDATE_UI( ID_BUTTON_PDF_DEL, PreferencesDialog::OnButtonPdfDelUpdate )
+  EVT_BUTTON( ID_BUTTON_PDF_UP, PreferencesDialog::OnButtonPdfUpClick )
+  EVT_UPDATE_UI( ID_BUTTON_PDF_UP, PreferencesDialog::OnButtonPdfUpUpdate )
+  EVT_BUTTON( ID_BUTTON_PDF_DOWN, PreferencesDialog::OnButtonPdfDownClick )
+  EVT_UPDATE_UI( ID_BUTTON_PDF_DOWN, PreferencesDialog::OnButtonPdfDownUpdate )
 ////@end PreferencesDialog event table entries
 
 END_EVENT_TABLE()
@@ -168,6 +184,8 @@ void PreferencesDialog::Init()
 ////@begin PreferencesDialog member initialisation
   cfgsPath = "";
   colorUseZero = false;
+  externalPDFReaders = "evince, okular, xreader, Acrobat.exe";
+  externalTextEditors = "gvim, nedit, gedit, xed, kate, nano, xdg-open, Notepad++.exe, wordpad.exe";
   filtersXMLPath = "";
   globalFillStateGaps = false;
   globalFullTracePath = false;
@@ -219,8 +237,6 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  externalTextEditors = "gvim, nedit, gedit, xed, kate, nano, xdg-open, Notepad++.exe, wordpad.exe";
-  externalPDFReaders = "evince, okular, xreader, Acrobat.exe";
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
@@ -239,10 +255,6 @@ void PreferencesDialog::Init()
   spinSessionTime = NULL;
   checkGlobalAskForPrevSessionLoad = NULL;
   checkGlobalHelpOnBrowser = NULL;
-  textCtrlTextEditor = NULL;
-  fileSetTextEditorsButton = NULL;
-  textCtrlPDFReader = NULL;
-  fileSetPDFReadersButton = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -318,6 +330,17 @@ void PreferencesDialog::Init()
   txtHintPath = NULL;
   fileBrowserHintPath = NULL;
   txtHintDescription = NULL;
+  panelExternal = NULL;
+  listTextEditors = NULL;
+  buttonAddTextEditor = NULL;
+  buttonDeleteTextEditor = NULL;
+  buttonUpTextEditor = NULL;
+  buttonDownTextEditor = NULL;
+  listPDFReaders = NULL;
+  buttonAddPDFReader = NULL;
+  buttonDeletePDFReader = NULL;
+  buttonUpPDFReader = NULL;
+  buttonDownPDFReader = NULL;
   panelFilters = NULL;
 ////@end PreferencesDialog member initialisation
 }
@@ -468,43 +491,6 @@ void PreferencesDialog::CreateControls()
   checkGlobalHelpOnBrowser = new wxCheckBox( panelGlobal, ID_HELP_CONTENTS_IN_BROWSER, _("Show help contents on a browser"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalHelpOnBrowser->SetValue(false);
   itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxALL, 5);
-
-  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(panelGlobal, wxID_ANY, _("External program lists"));
-  wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxVERTICAL);
-  itemBoxSizer3->Add(itemStaticBoxSizer1, 0, wxGROW|wxALL, 5);
-  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer1->Add(itemBoxSizer6, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText7 = new wxStaticText( panelGlobal, wxID_STATIC, _("Text editors"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-  if (PreferencesDialog::ShowToolTips())
-    itemStaticText7->SetToolTip(_("List of text editors to use"));
-  itemBoxSizer6->Add(itemStaticText7, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  textCtrlTextEditor = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_TXTEDIT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  if (PreferencesDialog::ShowToolTips())
-    textCtrlTextEditor->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by decreasing priority"));
-  itemBoxSizer6->Add(textCtrlTextEditor, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  fileSetTextEditorsButton = new FileBrowserButton( panelGlobal, ID_FILECHANGEBUTTON, _("Set"), wxDefaultPosition, wxDefaultSize, 0 );
-  if (PreferencesDialog::ShowToolTips())
-    fileSetTextEditorsButton->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by decreasing priority"));
-  itemBoxSizer6->Add(fileSetTextEditorsButton, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer1->Add(itemBoxSizer5, 0, wxGROW|wxALL, 5);
-  wxStaticText* itemStaticText6 = new wxStaticText( panelGlobal, wxID_STATIC, _("PDF readers"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-  if (PreferencesDialog::ShowToolTips())
-    itemStaticText6->SetToolTip(_("List of PDF readers to use"));
-  itemBoxSizer5->Add(itemStaticText6, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  textCtrlPDFReader = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_PDFREADER, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  if (PreferencesDialog::ShowToolTips())
-    textCtrlPDFReader->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by decreasing priority"));
-  itemBoxSizer5->Add(textCtrlPDFReader, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-  fileSetPDFReadersButton = new FileBrowserButton( panelGlobal, ID_FILEBROWSERBUTTON, _("Set"), wxDefaultPosition, wxDefaultSize, 0 );
-  if (PreferencesDialog::ShowToolTips())
-    fileSetPDFReadersButton->SetToolTip(_("List of comma-separated executables for a text editor(s), ordered by decreasing priority"));
-  itemBoxSizer5->Add(fileSetPDFReadersButton, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1259,6 +1245,79 @@ void PreferencesDialog::CreateControls()
 
   GetBookCtrl()->AddPage(panelWorkspaces, _("Workspaces"));
 
+  panelExternal = new wxPanel( GetBookCtrl(), ID_PREFERENCES_EXTERNAL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+  panelExternal->SetSizer(itemBoxSizer5);
+
+  wxBoxSizer* itemBoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer5->Add(itemBoxSizer9, 1, wxGROW|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer2Static = new wxStaticBox(panelExternal, wxID_ANY, _("Text Editors"));
+  wxStaticBoxSizer* itemStaticBoxSizer2 = new wxStaticBoxSizer(itemStaticBoxSizer2Static, wxHORIZONTAL);
+  itemBoxSizer9->Add(itemStaticBoxSizer2, 2, wxGROW|wxALL, 5);
+  wxArrayString listTextEditorsStrings;
+  listTextEditorsStrings.Add(_("gedit"));
+  listTextEditorsStrings.Add(_("gvim"));
+  listTextEditorsStrings.Add(_("kate"));
+  listTextEditorsStrings.Add(_("xed"));
+  listTextEditorsStrings.Add(_("xdg-open"));
+  listTextEditorsStrings.Add(_("Notepad++.exe"));
+  listTextEditorsStrings.Add(_("wordpad.exe"));
+  listTextEditors = new wxListBox( panelExternal, ID_LISTBOX_TEXT_EDITORS, wxDefaultPosition, wxDefaultSize, listTextEditorsStrings, wxLB_HSCROLL );
+  itemStaticBoxSizer2->Add(listTextEditors, 1, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer2->Add(itemBoxSizer13, 0, wxALIGN_TOP|wxALL, 0);
+  buttonAddTextEditor = new wxBitmapButton( panelExternal, ID_BUTTON_TXT_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer13->Add(buttonAddTextEditor, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonDeleteTextEditor = new wxBitmapButton( panelExternal, ID_BUTTON_TXT_DEL, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer13->Add(buttonDeleteTextEditor, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonUpTextEditor = new wxBitmapButton( panelExternal, ID_BUTTON_TXT_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer13->Add(buttonUpTextEditor, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonDownTextEditor = new wxBitmapButton( panelExternal, ID_BUTTON_TXT_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer13->Add(buttonDownTextEditor, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  wxStaticLine* itemStaticLine18 = new wxStaticLine( panelExternal, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemBoxSizer9->Add(itemStaticLine18, 0, wxGROW|wxTOP|wxBOTTOM, 10);
+
+  wxStaticLine* itemStaticLine19 = new wxStaticLine( panelExternal, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemBoxSizer5->Add(itemStaticLine19, 0, wxGROW|wxTOP|wxBOTTOM, 10);
+
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer5->Add(itemBoxSizer10, 1, wxGROW|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer11Static = new wxStaticBox(panelExternal, wxID_ANY, _("PDF Readers"));
+  wxStaticBoxSizer* itemStaticBoxSizer11 = new wxStaticBoxSizer(itemStaticBoxSizer11Static, wxHORIZONTAL);
+  itemBoxSizer10->Add(itemStaticBoxSizer11, 2, wxGROW|wxALL, 5);
+  wxArrayString listPDFReadersStrings;
+  listPDFReadersStrings.Add(_("okular"));
+  listPDFReadersStrings.Add(_("evince"));
+  listPDFReadersStrings.Add(_("xreader"));
+  listPDFReadersStrings.Add(_("xdg-open"));
+  listPDFReadersStrings.Add(_("Acrobat.exe"));
+  listPDFReaders = new wxListBox( panelExternal, ID_LISTBOX_PDF_READERS, wxDefaultPosition, wxDefaultSize, listPDFReadersStrings, wxLB_HSCROLL );
+  itemStaticBoxSizer11->Add(listPDFReaders, 1, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer11->Add(itemBoxSizer14, 0, wxALIGN_TOP|wxALL, 0);
+  buttonAddPDFReader = new wxBitmapButton( panelExternal, ID_BUTTON_PDF_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer14->Add(buttonAddPDFReader, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonDeletePDFReader = new wxBitmapButton( panelExternal, ID_BUTTON_PDF_DEL, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer14->Add(buttonDeletePDFReader, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonUpPDFReader = new wxBitmapButton( panelExternal, ID_BUTTON_PDF_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer14->Add(buttonUpPDFReader, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonDownPDFReader = new wxBitmapButton( panelExternal, ID_BUTTON_PDF_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  itemBoxSizer14->Add(buttonDownPDFReader, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  wxStaticLine* itemStaticLine22 = new wxStaticLine( panelExternal, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemBoxSizer10->Add(itemStaticLine22, 0, wxGROW|wxTOP|wxBOTTOM, 10);
+
+  GetBookCtrl()->AddPage(panelExternal, _("External applications"));
+
   panelFilters = new wxPanel( GetBookCtrl(), ID_PREFERENCES_FILTERS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   panelFilters->Show(false);
   panelFilters->Enable(false);
@@ -1290,27 +1349,6 @@ void PreferencesDialog::CreateControls()
   dirBrowserButtonTmp->SetTextBox( textCtrlTmp );
   dirBrowserButtonTmp->SetDialogMessage( wxT( "Select TMP Default Directory" ) );
   dirBrowserButtonTmp->Enable();
-
-  fileSetTextEditorsButton->SetTextBox( textCtrlTextEditor, false );
-  fileSetTextEditorsButton->SetDialogMessage( wxT( "Select External Text Editors" ) );
-  fileSetTextEditorsButton->Enable();
-  #ifdef WIN32
-    fileSetTextEditorsButton->SetFileDialogWildcard( wxT( "*.exe" ) );
-    fileSetTextEditorsButton->SetDialogDefaultDir( _("C:\\Program Files") );
-  #else
-    fileSetTextEditorsButton->SetDialogDefaultDir( _("/usr/bin") );
-  #endif
-
-
-  fileSetPDFReadersButton->SetTextBox( textCtrlPDFReader, false );
-  fileSetPDFReadersButton->SetDialogMessage( wxT( "Select External PDF Readers" ) );
-  fileSetPDFReadersButton->Enable();
-  #ifdef WIN32
-    fileSetPDFReadersButton->SetFileDialogWildcard( wxT( "*.exe" ) );
-    fileSetPDFReadersButton->SetDialogDefaultDir( _("C:\\Program Files") );
-  #else
-    fileSetPDFReadersButton->SetDialogDefaultDir( _("/usr/bin") );
-  #endif
   
   fileBrowserHintPath->SetTextBox( txtHintPath );
   fileBrowserHintPath->SetFileDialogWildcard( _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ) );
@@ -1460,8 +1498,6 @@ bool PreferencesDialog::TransferDataToWindow()
   checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 
   checkGlobalHelpOnBrowser->SetValue( helpContentsUsesBrowser );
-  textCtrlTextEditor->SetValue( externalTextEditors );
-  textCtrlPDFReader->SetValue( externalPDFReaders );
 
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
@@ -1601,8 +1637,6 @@ bool PreferencesDialog::TransferDataFromWindow()
   sessionSaveTime = spinSessionTime->GetValue();
   askForPrevSessionLoad = checkGlobalAskForPrevSessionLoad->GetValue();
   helpContentsUsesBrowser = checkGlobalHelpOnBrowser->GetValue();
-  externalTextEditors = textCtrlTextEditor->GetValue();
-  externalPDFReaders = textCtrlPDFReader->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );
@@ -2282,3 +2316,215 @@ void PreferencesDialog::OnPreferencesGlobalTimeSessionUpdated( wxSpinEvent& even
 {
   checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 }
+
+
+/*!
+ * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TEXT_EDITORS
+ */
+
+void PreferencesDialog::OnListboxTextEditorsSelected( wxCommandEvent& event )
+{
+////@begin wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TEXT_EDITORS in PreferencesDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TEXT_EDITORS in PreferencesDialog. 
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TEXT_ADD
+ */
+
+void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
+{
+////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TEXT_ADD in PreferencesDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TEXT_ADD in PreferencesDialog. 
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TEXT_DEL
+ */
+
+void PreferencesDialog::OnButtonTxtDelClick( wxCommandEvent& event )
+{
+  listTextEditors->Delete( listTextEditors->GetSelection() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_TEXT_DEL
+ */
+
+void PreferencesDialog::OnButtonTxtDelUpdate( wxUpdateUIEvent& event )
+{
+////@begin wxEVT_UPDATE_UI event handler for ID_BUTTON_TEXT_DEL in PreferencesDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_UPDATE_UI event handler for ID_BUTTON_TEXT_DEL in PreferencesDialog. 
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TEXT_UP
+ */
+
+void PreferencesDialog::OnButtonTxtUpClick( wxCommandEvent& event )
+{
+  int tmpSel = listTextEditors->GetSelection();
+  wxArrayString items = listTextEditors->GetStrings();
+  wxString tmpStr = items[ tmpSel ];
+  items[ tmpSel ] = items[ tmpSel - 1 ];
+  items[ tmpSel - 1 ] = tmpStr;
+  listTextEditors->Set( items );
+  listTextEditors->SetSelection( tmpSel - 1 );
+}
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_TEXT_UP
+ */
+
+void PreferencesDialog::OnButtonTxtUpUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND &&
+                listTextEditors->GetSelection() > 0 );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON3
+ */
+
+void PreferencesDialog::OnButtonTxtDownClick( wxCommandEvent& event )
+{
+  int tmpSel = listTextEditors->GetSelection();
+  wxArrayString items = listTextEditors->GetStrings();
+  wxString tmpStr = items[ tmpSel ];
+  items[ tmpSel ] = items[ tmpSel + 1 ];
+  items[ tmpSel + 1 ] = tmpStr;
+  listTextEditors->Set( items );
+  listTextEditors->SetSelection( tmpSel + 1 );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON3
+ */
+
+void PreferencesDialog::OnButtonTxtDownUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND &&
+                listTextEditors->GetSelection() < int( listTextEditors->GetCount() ) - 1 );
+}
+
+
+/*!
+ * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX1
+ */
+
+void PreferencesDialog::OnListboxPdfReadersSelected( wxCommandEvent& event )
+{
+////@begin wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX1 in PreferencesDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX1 in PreferencesDialog. 
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON4
+ */
+
+void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
+{
+  /*fileSetPDFReadersButton->SetTextBox( textCtrlPDFReader, false );
+  fileSetPDFReadersButton->SetDialogMessage( wxT( "Select External PDF Readers" ) );
+  fileSetPDFReadersButton->Enable();
+  #ifdef WIN32
+    fileSetPDFReadersButton->SetFileDialogWildcard( wxT( "*.exe" ) );
+    fileSetPDFReadersButton->SetDialogDefaultDir( _("C:\\Program Files") );
+  #else
+    fileSetPDFReadersButton->SetDialogDefaultDir( _("/usr/bin") );
+  #endif
+  */
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON5
+ */
+
+void PreferencesDialog::OnButtonPdfDelClick( wxCommandEvent& event )
+{
+  listPDFReaders->Delete( listPDFReaders->GetSelection() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON5
+ */
+
+void PreferencesDialog::OnButtonPdfDelUpdate( wxUpdateUIEvent& event )
+{
+////@begin wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON5 in PreferencesDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+////@end wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON5 in PreferencesDialog. 
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON6
+ */
+
+void PreferencesDialog::OnButtonPdfUpClick( wxCommandEvent& event )
+{
+  int tmpSel = listPDFReaders->GetSelection();
+  wxArrayString items = listPDFReaders->GetStrings();
+  wxString tmpStr = items[ tmpSel ];
+  items[ tmpSel ] = items[ tmpSel - 1 ];
+  items[ tmpSel - 1 ] = tmpStr;
+  listPDFReaders->Set( items );
+  listPDFReaders->SetSelection( tmpSel - 1 );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON6
+ */
+
+void PreferencesDialog::OnButtonPdfUpUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND &&
+                listPDFReaders->GetSelection() > 0 );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON7
+ */
+
+void PreferencesDialog::OnButtonPdfDownClick( wxCommandEvent& event )
+{
+  int tmpSel = listPDFReaders->GetSelection();
+  wxArrayString items = listPDFReaders->GetStrings();
+  wxString tmpStr = items[ tmpSel ];
+  items[ tmpSel ] = items[ tmpSel + 1 ];
+  items[ tmpSel + 1 ] = tmpStr;
+  listPDFReaders->Set( items );
+  listPDFReaders->SetSelection( tmpSel + 1 );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON7
+ */
+
+void PreferencesDialog::OnButtonPdfDownUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND &&
+                listPDFReaders->GetSelection() < int( listPDFReaders->GetCount() ) - 1 );
+}
+

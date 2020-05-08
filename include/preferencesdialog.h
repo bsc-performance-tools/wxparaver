@@ -54,8 +54,8 @@
 ////@begin forward declarations
 class wxSpinCtrl;
 class DirBrowserButton;
-class FileBrowserButton;
 class wxColourPickerCtrl;
+class FileBrowserButton;
 ////@end forward declarations
 class wxCheckBox;
 class wxListBox;
@@ -83,10 +83,6 @@ class wxListBox;
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
 #define ID_GLOBAL_ASK_FOR_PREV_SESSION 10039
 #define ID_HELP_CONTENTS_IN_BROWSER 10159
-#define ID_TEXTCTRL_TXTEDIT 10246
-#define ID_FILECHANGEBUTTON 10046
-#define ID_TEXTCTRL_PDFREADER 10249
-#define ID_FILEBROWSERBUTTON 10041
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
@@ -163,6 +159,17 @@ class wxListBox;
 #define ID_TEXTCTRL_WORKSPACE_HINT_PATH 10283
 #define ID_FILE_BUTTON_WORKSPACE_HINT_PATH 10282
 #define ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION 10281
+#define ID_PREFERENCES_EXTERNAL 10040
+#define ID_LISTBOX_TEXT_EDITORS 10042
+#define ID_BUTTON_TXT_ADD 10343
+#define ID_BUTTON_TXT_DEL 10344
+#define ID_BUTTON_TXT_UP 10345
+#define ID_BUTTON_TXT_DOWN 10346
+#define ID_LISTBOX_PDF_READERS 10048
+#define ID_BUTTON_PDF_ADD 10349
+#define ID_BUTTON_PDF_DEL 10350
+#define ID_BUTTON_PDF_UP 10351
+#define ID_BUTTON_PDF_DOWN 10352
 #define ID_PREFERENCES_FILTERS 10070
 #define SYMBOL_PREFERENCESDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX
 #define SYMBOL_PREFERENCESDIALOG_TITLE _("Preferences")
@@ -313,6 +320,54 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION
   void OnTextctrlWorkspaceHintDescriptionUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TEXT_EDITORS
+  void OnListboxTextEditorsSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TXT_ADD
+  void OnButtonTxtAddClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TXT_DEL
+  void OnButtonTxtDelClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_TXT_DEL
+  void OnButtonTxtDelUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TXT_UP
+  void OnButtonTxtUpClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_TXT_UP
+  void OnButtonTxtUpUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TXT_DOWN
+  void OnButtonTxtDownClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_TXT_DOWN
+  void OnButtonTxtDownUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_PDF_READERS
+  void OnListboxPdfReadersSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_PDF_ADD
+  void OnButtonPdfAddClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_PDF_DEL
+  void OnButtonPdfDelClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_PDF_DEL
+  void OnButtonPdfDelUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_PDF_UP
+  void OnButtonPdfUpClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_PDF_UP
+  void OnButtonPdfUpUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_PDF_DOWN
+  void OnButtonPdfDownClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_PDF_DOWN
+  void OnButtonPdfDownUpdate( wxUpdateUIEvent& event );
+
 ////@end PreferencesDialog event handler declarations
 
 ////@begin PreferencesDialog member function declarations
@@ -325,6 +380,12 @@ public:
 
   bool GetColorUseZero() const { return colorUseZero ; }
   void SetColorUseZero(bool value) { colorUseZero = value ; }
+
+  wxString GetExternalPDFReaders() const { return externalPDFReaders ; }
+  void SetExternalPDFReaders(wxString value) { externalPDFReaders = value ; }
+
+  wxString GetExternalTextEditors() const { return externalTextEditors ; }
+  void SetExternalTextEditors(wxString value) { externalTextEditors = value ; }
 
   std::string GetFiltersXMLPath() const { return filtersXMLPath ; }
   void SetFiltersXMLPath(std::string value) { filtersXMLPath = value ; }
@@ -527,12 +588,6 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  wxString GetExternalTextEditors() const { return externalTextEditors ; }
-  void SetExternalTextEditors(wxString value) { externalTextEditors = value ; }
-
-  wxString GetExternalPDFReaders() const { return externalPDFReaders ; }
-  void SetExternalPDFReaders(wxString value) { externalPDFReaders = value ; }
-
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -571,10 +626,6 @@ public:
   wxSpinCtrl* spinSessionTime;
   wxCheckBox* checkGlobalAskForPrevSessionLoad;
   wxCheckBox* checkGlobalHelpOnBrowser;
-  wxTextCtrl* textCtrlTextEditor;
-  FileBrowserButton* fileSetTextEditorsButton;
-  wxTextCtrl* textCtrlPDFReader;
-  FileBrowserButton* fileSetPDFReadersButton;
   wxPanel* panelTimeline;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
@@ -650,11 +701,24 @@ public:
   wxTextCtrl* txtHintPath;
   FileBrowserButton* fileBrowserHintPath;
   wxTextCtrl* txtHintDescription;
+  wxPanel* panelExternal;
+  wxListBox* listTextEditors;
+  wxBitmapButton* buttonAddTextEditor;
+  wxBitmapButton* buttonDeleteTextEditor;
+  wxBitmapButton* buttonUpTextEditor;
+  wxBitmapButton* buttonDownTextEditor;
+  wxListBox* listPDFReaders;
+  wxBitmapButton* buttonAddPDFReader;
+  wxBitmapButton* buttonDeletePDFReader;
+  wxBitmapButton* buttonUpPDFReader;
+  wxBitmapButton* buttonDownPDFReader;
   wxPanel* panelFilters;
 private:
   bool askForPrevSessionLoad;
   std::string cfgsPath;
   bool colorUseZero;
+  wxString externalPDFReaders;
+  wxString externalTextEditors;
   std::string filtersXMLPath;
   bool globalFillStateGaps;
   bool globalFullTracePath;
@@ -722,8 +786,6 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  wxString externalTextEditors;
-  wxString externalPDFReaders;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

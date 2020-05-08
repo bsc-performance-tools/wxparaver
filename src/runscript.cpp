@@ -2242,6 +2242,7 @@ bool RunScript::matchHrefExtension( wxHtmlLinkEvent &event, const wxString exten
 void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 {
   wxString auxCommand;
+  std::cout << "Hi! \n";
   
 //  if ( tunePrvLinksForClustering && matchHrefExtension( event, wxT(".clustered.prv") ) )
   if ( tunePrvLinksForClustering && matchHrefExtension( event, extensions[ 10 ] ) ) // _link_to_clustered_trace
@@ -2361,6 +2362,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".pdf")))
   {
+    /* TODO : Use wxList !!!
+
     wxArrayString textEditor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalPDFReaders(), ',' );
     wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
     wxString command;
@@ -2384,7 +2387,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
         command = filetype->GetOpenCommand( tmpFile );
         wxExecute( command );
       }
-    }
+    }*/
   }
   else if ( matchHrefExtension( event, extensions[8] )) // "_time_mark"
   {
