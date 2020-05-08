@@ -2337,10 +2337,32 @@ void PreferencesDialog::OnListboxTextEditorsSelected( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TEXT_ADD in PreferencesDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_TEXT_ADD in PreferencesDialog. 
+#ifdef WIN32
+  wxString dialogDefaultDir = wxT( "C:\\Program Files" );  
+  wxString fileDialogWildcard = _( "*.exe" );  
+#else
+  wxString dialogDefaultDir = _( "/usr/bin" );  
+  wxString fileDialogWildcard = _( "" );  
+#endif
+  long whichDialogStyle = wxFD_DEFAULT_STYLE | wxFD_MULTIPLE;
+  wxFileDialog myDialog ( this,
+                         wxT( "Select External Text Editors" ),
+                         dialogDefaultDir,
+                         _( "" ),
+                         fileDialogWildcard, 
+                         whichDialogStyle );
+    if ( myDialog.ShowModal() == wxID_OK )
+    {
+      wxArrayString paths;
+      for ( int i = 0 ; i < paths.size() ; ++i )
+        listTextEditors->Append( paths[ i ] );
+      /*myDialog.GetPaths( paths );
+      if ( !paths.IsEmpty() )
+        SetPaths( paths );
+      else
+        SetPath( myDialog.GetPath() ); */
+    }
+
 }
 
 
@@ -2360,10 +2382,8 @@ void PreferencesDialog::OnButtonTxtDelClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonTxtDelUpdate( wxUpdateUIEvent& event )
 {
-////@begin wxEVT_UPDATE_UI event handler for ID_BUTTON_TEXT_DEL in PreferencesDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_UPDATE_UI event handler for ID_BUTTON_TEXT_DEL in PreferencesDialog. 
+  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND &&
+                listTextEditors->GetCount() > 1 );
 }
 
 
@@ -2439,16 +2459,31 @@ void PreferencesDialog::OnListboxPdfReadersSelected( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
 {
-  /*fileSetPDFReadersButton->SetTextBox( textCtrlPDFReader, false );
-  fileSetPDFReadersButton->SetDialogMessage( wxT( "Select External PDF Readers" ) );
-  fileSetPDFReadersButton->Enable();
-  #ifdef WIN32
-    fileSetPDFReadersButton->SetFileDialogWildcard( wxT( "*.exe" ) );
-    fileSetPDFReadersButton->SetDialogDefaultDir( _("C:\\Program Files") );
-  #else
-    fileSetPDFReadersButton->SetDialogDefaultDir( _("/usr/bin") );
-  #endif
-  */
+#ifdef WIN32
+  wxString dialogDefaultDir = wxT( "C:\\Program Files" );  
+  wxString fileDialogWildcard = _( "*.exe" );  
+#else
+  wxString dialogDefaultDir = _( "/usr/bin" );  
+  wxString fileDialogWildcard = _( "" );  
+#endif
+  long whichDialogStyle = wxFD_DEFAULT_STYLE | wxFD_MULTIPLE;
+  wxFileDialog myDialog ( this,
+                         wxT( "Select External Text Editors" ),
+                         dialogDefaultDir,
+                         _( "" ),
+                         fileDialogWildcard, 
+                         whichDialogStyle );
+    if ( myDialog.ShowModal() == wxID_OK )
+    {
+      wxArrayString paths;
+      for ( int i = 0 ; i < paths.size() ; ++i )
+        listPDFReaders->Append( paths[ i ] );
+      /*myDialog.GetPaths( paths );
+      if ( !paths.IsEmpty() )
+        SetPaths( paths );
+      else
+        SetPath( myDialog.GetPath() ); */
+    }
 }
 
 
@@ -2468,10 +2503,8 @@ void PreferencesDialog::OnButtonPdfDelClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonPdfDelUpdate( wxUpdateUIEvent& event )
 {
-////@begin wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON5 in PreferencesDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_UPDATE_UI event handler for ID_BITMAPBUTTON5 in PreferencesDialog. 
+  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND &&
+                listPDFReaders->GetCount() > 1 );
 }
 
 
