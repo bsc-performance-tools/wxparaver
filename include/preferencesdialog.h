@@ -381,12 +381,6 @@ public:
   bool GetColorUseZero() const { return colorUseZero ; }
   void SetColorUseZero(bool value) { colorUseZero = value ; }
 
-  wxString GetExternalPDFReaders() const { return externalPDFReaders ; }
-  void SetExternalPDFReaders(wxString value) { externalPDFReaders = value ; }
-
-  wxString GetExternalTextEditors() const { return externalTextEditors ; }
-  void SetExternalTextEditors(wxString value) { externalTextEditors = value ; }
-
   std::string GetFiltersXMLPath() const { return filtersXMLPath ; }
   void SetFiltersXMLPath(std::string value) { filtersXMLPath = value ; }
 
@@ -588,6 +582,12 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
+  wxArrayString GetGlobalExternalTextEditors() const { return textEditorOptions ; }
+  void SetGlobalExternalTextEditors(wxArrayString value) { textEditorOptions = value ; }
+
+  wxArrayString GetGlobalExternalPDFReaders() const { return pdfReaderOptions ; }
+  void SetGlobalExternalPDFReaders(wxArrayString value) { pdfReaderOptions = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -717,8 +717,6 @@ private:
   bool askForPrevSessionLoad;
   std::string cfgsPath;
   bool colorUseZero;
-  wxString externalPDFReaders;
-  wxString externalTextEditors;
   std::string filtersXMLPath;
   bool globalFillStateGaps;
   bool globalFullTracePath;
@@ -786,6 +784,8 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
+  wxArrayString textEditorOptions;
+  wxArrayString pdfReaderOptions;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

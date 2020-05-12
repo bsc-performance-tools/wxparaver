@@ -620,6 +620,9 @@ public:
 
   static bool IsSessionValid();
   static void ValidateSession( bool setValidate );
+
+  static wxArrayString FromVectorStringToWxArray( std::vector< std::string > vec );
+  static std::vector< std::string > FromWxArrayToVectorString( wxArrayString arr );
   
   bool OnMenusavesession( );
   void helpQuestion();

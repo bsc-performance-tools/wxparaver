@@ -3234,6 +3234,26 @@ void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent& event )
     tbarMain->EnableTool( ID_NEW_HISTOGRAM, false );
 }
 
+wxArrayString paraverMain::FromVectorStringToWxArray( std::vector< std::string > vec ) 
+{
+  wxArrayString arr;
+  for ( int i = 0 ; i < vec.size(); ++i )
+  {
+    wxString myWxStr( vec[ i ] );
+    arr.Add( myWxStr );
+  }
+  return arr;
+}
+
+std::vector< std::string > paraverMain::FromWxArrayToVectorString( wxArrayString arr ) 
+{
+  std::vector< std::string > vec(0);
+  for ( int i = 0 ; i < arr.size() ; ++i)
+  {
+    vec.push_back( std::string( arr[ i ].mb_str() ) );
+  }
+  return vec;
+}
 
 void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 {
@@ -3251,8 +3271,6 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
   preferences.SetAskForPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
   preferences.SetHelpContentsUsesBrowser( paraverConfig->getGlobalHelpContentsUsesBrowser() );
-  preferences.SetExternalTextEditors( paraverConfig->getGlobalExternalTextEditors() );
-  preferences.SetExternalPDFReaders( paraverConfig->getGlobalExternalPDFReaders() );
 
   // TIMELINE
 
@@ -3324,6 +3342,14 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   // FILTER
   preferences.SetFiltersXMLPath( paraverConfig->getFiltersXMLPath() );
 
+  // EXTERNAL APPS
+  wxArrayString externalTextEditors = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalTextEditors() );
+  wxArrayString externalPDFReaders = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalPDFReaders() );
+  
+  preferences.SetGlobalExternalTextEditors( externalTextEditors );
+  preferences.SetGlobalExternalPDFReaders( externalPDFReaders );
+
+
   preferences.SetPanel( whichPanelID );
 
   // ShowModal calls it by default
@@ -3349,8 +3375,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
     paraverConfig->setGlobalPrevSessionLoad( preferences.GetAskForPrevSessionLoad() );
     paraverConfig->setGlobalHelpContentsUsesBrowser( preferences.GetHelpContentsUsesBrowser() );
-    paraverConfig->setGlobalExternalTextEditors( std::string( preferences.GetExternalTextEditors().mb_str() ) );
-    paraverConfig->setGlobalExternalPDFReaders( std::string( preferences.GetExternalPDFReaders().mb_str() ) );
+
 
     // TIMELINE
     paraverConfig->setTimelineDefaultName( preferences.GetTimelineNameFormatPrefix() );
@@ -3427,6 +3452,12 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     // FILTER
     paraverConfig->setFiltersXMLPath( preferences.GetFiltersXMLPath() );
 
+    // EXTERNAL APPS
+    std::vector< std::string > vectorTextEditors = paraverMain::FromWxArrayToVectorString( preferences.GetGlobalExternalTextEditors() );
+    std::vector< std::string > vectorPDFReaders = paraverMain::FromWxArrayToVectorString( preferences.GetGlobalExternalPDFReaders() );
+    paraverConfig->setGlobalExternalTextEditors( vectorTextEditors );
+    paraverConfig->setGlobalExternalPDFReaders( vectorPDFReaders );
+    
     // Save Preferences to File
     paraverConfig->writeParaverConfigFile();
 

@@ -2362,9 +2362,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".pdf")))
   {
-    /* TODO : Use wxList !!!
-
-    wxArrayString textEditor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalPDFReaders(), ',' );
+    wxArrayString textEditor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalPDFReaders() );
     wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
     wxString command;
 
@@ -2387,7 +2385,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
         command = filetype->GetOpenCommand( tmpFile );
         wxExecute( command );
       }
-    }*/
+    }
   }
   else if ( matchHrefExtension( event, extensions[8] )) // "_time_mark"
   {
@@ -2773,7 +2771,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
 #else
   
   // TODO -> PUT IN CLASSES
-  wxArrayString editor = wxSplit( ParaverConfig::getInstance()->getGlobalExternalTextEditors(), ',' );
+  wxArrayString editor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors() );
   //wxArrayString versionParameter;
   
   size_t i;

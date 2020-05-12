@@ -184,8 +184,6 @@ void PreferencesDialog::Init()
 ////@begin PreferencesDialog member initialisation
   cfgsPath = "";
   colorUseZero = false;
-  externalPDFReaders = "evince, okular, xreader, Acrobat.exe";
-  externalTextEditors = "gvim, nedit, gedit, xed, kate, nano, xdg-open, Notepad++.exe, wordpad.exe";
   filtersXMLPath = "";
   globalFillStateGaps = false;
   globalFullTracePath = false;
@@ -1255,13 +1253,6 @@ void PreferencesDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer2 = new wxStaticBoxSizer(itemStaticBoxSizer2Static, wxHORIZONTAL);
   itemBoxSizer9->Add(itemStaticBoxSizer2, 2, wxGROW|wxALL, 5);
   wxArrayString listTextEditorsStrings;
-  listTextEditorsStrings.Add(_("gedit"));
-  listTextEditorsStrings.Add(_("gvim"));
-  listTextEditorsStrings.Add(_("kate"));
-  listTextEditorsStrings.Add(_("xed"));
-  listTextEditorsStrings.Add(_("xdg-open"));
-  listTextEditorsStrings.Add(_("Notepad++.exe"));
-  listTextEditorsStrings.Add(_("wordpad.exe"));
   listTextEditors = new wxListBox( panelExternal, ID_LISTBOX_TEXT_EDITORS, wxDefaultPosition, wxDefaultSize, listTextEditorsStrings, wxLB_HSCROLL );
   itemStaticBoxSizer2->Add(listTextEditors, 1, wxGROW|wxALL, 5);
 
@@ -1291,11 +1282,6 @@ void PreferencesDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer11 = new wxStaticBoxSizer(itemStaticBoxSizer11Static, wxHORIZONTAL);
   itemBoxSizer10->Add(itemStaticBoxSizer11, 2, wxGROW|wxALL, 5);
   wxArrayString listPDFReadersStrings;
-  listPDFReadersStrings.Add(_("okular"));
-  listPDFReadersStrings.Add(_("evince"));
-  listPDFReadersStrings.Add(_("xreader"));
-  listPDFReadersStrings.Add(_("xdg-open"));
-  listPDFReadersStrings.Add(_("Acrobat.exe"));
   listPDFReaders = new wxListBox( panelExternal, ID_LISTBOX_PDF_READERS, wxDefaultPosition, wxDefaultSize, listPDFReadersStrings, wxLB_HSCROLL );
   itemStaticBoxSizer11->Add(listPDFReaders, 1, wxGROW|wxALL, 5);
 
@@ -1604,6 +1590,11 @@ bool PreferencesDialog::TransferDataToWindow()
 
   // FILTERS
 
+  // EXTERNAL APPS
+  if ( !textEditorOptions.IsEmpty() )
+    listTextEditors->InsertItems( textEditorOptions, 0 );
+  if ( !pdfReaderOptions.IsEmpty() )
+    listPDFReaders->InsertItems( pdfReaderOptions, 0 );
 
   // WORKSPACES
   std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( WorkspaceManager::USER_DEFINED );
@@ -1708,6 +1699,11 @@ bool PreferencesDialog::TransferDataFromWindow()
   gradientColourNegativeEnd   = wxColourToRGB( colourPickerNegativeGradientEnd->GetColour() );
   gradientColourLow           = wxColourToRGB( colourPickerGradientLow->GetColour() );
   gradientColourTop           = wxColourToRGB( colourPickerGradientTop->GetColour() );
+
+
+  // EXTERNAL APPS
+  textEditorOptions = listTextEditors->GetStrings();
+  pdfReaderOptions = listPDFReaders->GetStrings();
 
   // WORKSPACES
   if( wxWindow::FindFocus() == txtWorkspaceName )
@@ -2351,18 +2347,16 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
                          _( "" ),
                          fileDialogWildcard, 
                          whichDialogStyle );
-    if ( myDialog.ShowModal() == wxID_OK )
+  if ( myDialog.ShowModal() == wxID_OK )
+  {
+    wxArrayString paths;
+    myDialog.GetPaths( paths );
+    for ( int i = 0 ; i < paths.size() ; ++i )
     {
-      wxArrayString paths;
-      for ( int i = 0 ; i < paths.size() ; ++i )
-        listTextEditors->Append( paths[ i ] );
-      /*myDialog.GetPaths( paths );
-      if ( !paths.IsEmpty() )
-        SetPaths( paths );
-      else
-        SetPath( myDialog.GetPath() ); */
+      wxFileName tmpFileName = paths[ i ];
+      listTextEditors->Append( tmpFileName.GetFullName() );
     }
-
+  }
 }
 
 
@@ -2473,17 +2467,16 @@ void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
                          _( "" ),
                          fileDialogWildcard, 
                          whichDialogStyle );
-    if ( myDialog.ShowModal() == wxID_OK )
+  if ( myDialog.ShowModal() == wxID_OK )
+  {
+    wxArrayString paths;
+    myDialog.GetPaths( paths );
+    for ( int i = 0 ; i < paths.size() ; ++i )
     {
-      wxArrayString paths;
-      for ( int i = 0 ; i < paths.size() ; ++i )
-        listPDFReaders->Append( paths[ i ] );
-      /*myDialog.GetPaths( paths );
-      if ( !paths.IsEmpty() )
-        SetPaths( paths );
-      else
-        SetPath( myDialog.GetPath() ); */
+      wxFileName tmpFileName = paths[ i ];
+      listPDFReaders->Append( tmpFileName.GetFullName() );
     }
+  }
 }
 
 
