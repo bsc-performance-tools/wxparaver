@@ -169,48 +169,6 @@ void FileBrowserButton::SetPath( const wxString& whichFullPath )
   }
 }
 
-void FileBrowserButton::SetPaths( const wxArrayString& whichFullPaths )
-{
-  wxString path, fileNamesList, filePathsList;
-  if ( whichFullPaths.size() > 0 )
-  {
-    SetPath( whichFullPaths[ 0 ] );
-    wxFileName tmpFileName = whichFullPaths[ 0 ];
-    path = tmpFileName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
-    fileNamesList += tmpFileName.GetFullName();
-    filePathsList += path;
-    if ( whichFullPaths.size() != 1 ) 
-    { //separator
-      fileNamesList += wxT( ", " );
-      filePathsList += wxT( ", " );
-    }
-  }
-  
-  for ( int idx = 1 ; idx < whichFullPaths.size(); ++idx )
-  {
-    wxFileName tmpFileName = whichFullPaths[ idx ];
-    path = tmpFileName.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
-    fileNamesList += tmpFileName.GetFullName();
-    filePathsList += path;
-
-    // Next time OnButton will navigate directly to the dir and file given
-
-    if ( idx != whichFullPaths.size()-1 ) 
-    { //separator
-      fileNamesList += wxT( ", " );
-      filePathsList += wxT( ", " );
-    }
-  }
-
-  BrowserButton::SetPath( path );
-
-  if ( associatedTextCtrl != NULL )
-  {
-    associatedTextCtrl->SetToolTip( filePathsList );
-    associatedTextCtrl->SetValue( fileNamesList );
-  }
-}
-
 
 void FileBrowserButton::ChangePath( const wxString& whichFullPath )
 {
@@ -243,13 +201,7 @@ void FileBrowserButton::OnButton( wxMouseEvent& event )
   if ( myDialog.ShowModal() == wxID_OK )
   {
     wxString myPaths = wxT( "" );
-    wxArrayString paths;
-    myDialog.GetPaths( paths );
-
-    if ( !paths.IsEmpty() )
-      SetPaths( paths );
-    else
-      SetPath( myDialog.GetPath() );
+    SetPath( myDialog.GetPath() );
   }
 }
 
