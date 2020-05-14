@@ -1962,7 +1962,11 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
 void PreferencesDialog::OnButtonWorkspacesDeleteClick( wxCommandEvent& event )
 {
   workspaceContainer.erase( listWorkspaces->GetStringSelection() );
+
+  int tmpSel = listWorkspaces->GetSelection();
+  tmpSel = std::max( 0, std::min( tmpSel - 1 , listWorkspaces->GetSelection() - 1 ) );
   listWorkspaces->Delete( listWorkspaces->GetSelection() );
+  listWorkspaces->SetSelection( tmpSel );
 }
 
 
@@ -2075,7 +2079,11 @@ void PreferencesDialog::OnButtonHintAddClick( wxCommandEvent& event )
 void PreferencesDialog::OnButtonHintDeleteClick( wxCommandEvent& event )
 {
   workspaceContainer[ listWorkspaces->GetStringSelection() ].removeHintCFG( listHintsWorkspace->GetSelection() );
+
+  int tmpSel = listHintsWorkspace->GetSelection();
+  tmpSel = std::max( 0, std::min( tmpSel - 1 , listHintsWorkspace->GetSelection() - 1 ) );
   listHintsWorkspace->Delete( listHintsWorkspace->GetSelection() );
+  listHintsWorkspace->SetSelection( tmpSel );
 }
 
 
@@ -2366,7 +2374,10 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonTxtDelClick( wxCommandEvent& event )
 {
+  int tmpSel = listTextEditors->GetSelection();
+  tmpSel = std::max( 0, std::min( tmpSel - 1 , listTextEditors->GetSelection() - 1 ) );
   listTextEditors->Delete( listTextEditors->GetSelection() );
+  listTextEditors->SetSelection( tmpSel );
 }
 
 
@@ -2486,7 +2497,10 @@ void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonPdfDelClick( wxCommandEvent& event )
 {
+  int tmpSel = listPDFReaders->GetSelection();
+  tmpSel = std::max( 0, std::min( tmpSel - 1 , listPDFReaders->GetSelection() - 1 ) );
   listPDFReaders->Delete( listPDFReaders->GetSelection() );
+  listPDFReaders->SetSelection( tmpSel );
 }
 
 

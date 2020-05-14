@@ -2747,14 +2747,22 @@ std::cout << "Pid: " << command << " " << tmpmyProcessPid
 
 bool RunScript::existCommand( const wxString& program, const wxString& parameter )
 {
-  wxString command = _( "/bin/sh -c '" ) + program + _(" ") + parameter + _(" 1>&- 2>&-'");
+#ifdef WIN32
+  return wxExecute( program + _(" ") + wxT( " --version" ), wxEXEC_SYNC ) == 0 ;
+#else
+  wxString command = program + _(" ") + parameter + _(" 1>&- 2>&-'");
   return ( wxExecute( command, wxEXEC_SYNC ) == 0 );
+#endif
 }
 
 
 void RunScript::runCommand( const wxString& program, const wxString& parameter )
 {
+#ifdef WIN32
+  wxString command = program + _(" ") + parameter ;
+#else
   wxString command = _( "/bin/sh -c '" ) + program + _(" ") + parameter + _(" 1>&- 2>&-'");
+#endif
   wxExecute( command ); // ASYNC
 }
 
@@ -2765,10 +2773,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
 {
   wxString fileToEdit = fileBrowserButtonClusteringXML->GetPath();
   wxString command;
-#ifdef WIN32
-  command = _( "wordpad.exe " ) + fileToEdit;
-  wxExecute( command );
-#else
+
   
   // TODO -> PUT IN CLASSES
   wxArrayString editor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors() );
@@ -2777,20 +2782,21 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   size_t i;
   for ( i = 0; i < editor.size(); ++i )
   {
-    //versionParameter.push_back( _( "--version" ) ); // same for all editors? replace
-    //if ( existCommand( editor[ i ], versionParameter[ i ] ) )
     if ( existCommand( editor[ i ], wxT( "--version" ) ) )
     {
       runCommand( editor[ i ], fileToEdit );
       break;
     }
   }
-
   if ( i >= editor.size() )
   {
-    wxMessageBox( _( "Unable to find an external app. Please check the external text editor variable at preferences." ), _( "Edit Clustering Configuration XML" ) );
-  }
+#ifdef WIN32
+    command = _( "wordpad.exe " ) + fileToEdit;
+    wxExecute( command );
+#else
+    wxMessageBox( _( "Unable to find an external app. Please check the external application's text editors list at Preferences." ), _( "No external app found" ) );
 #endif
+  }
 }
 
 

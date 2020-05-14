@@ -5065,36 +5065,22 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
         wxArrayString textEditor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors() );
         bool cmdExecuted = false;
 
-#ifdef WIN32
         for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
         {
+#ifdef WIN32
           command << textEditor[ idx ] << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
           cmdExecuted = ( wxExecute( command + wxT( " --version" ), wxEXEC_SYNC ) == 0 );
-          if ( !cmdExecuted )
-            command.Clear();
-          else 
-            cmdExecuted = ( wxExecute( command ) != 0 );
-        }
-        if ( !cmdExecuted )
-        {
-          command.Clear();
-          command << _( "wordpad.exe " ) << path << _( "\\" ) << wxString::FromAscii( fileStr.c_str() );
-        }
 #else
-        // As before
-        for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
-        {
-          command << textEditor[ idx ] << _( " +" ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
+          command << textEditor[ idx ] << _( " + " ) << wxString::FromAscii( lineStr.c_str() ) << _( " " ) << path << _( "/" ) << wxString::FromAscii( fileStr.c_str() );
           cmdExecuted = ( wxExecute( command + wxT( " --version" ), wxEXEC_SYNC ) == 0 );
-
+#endif
           if ( !cmdExecuted )
             command.Clear();
           else 
             cmdExecuted = ( wxExecute( command ) != 0 );
         }
         if ( !cmdExecuted )
-          wxMessageBox( _( "No text editor(s) set at preferences." ), _( "Show source code" ) );
-#endif
+          wxMessageBox( _( "Unable to find an external app. Please check the external application's text editors list at Preferences." ), _( "No external app found" ) );
       }
     }
     else
