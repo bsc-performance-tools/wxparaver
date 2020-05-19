@@ -55,6 +55,8 @@
 #include "../icons/delete.xpm"
 #include "../icons/arrow_up.xpm"
 #include "../icons/arrow_down.xpm"
+#include "../icons/report_add.xpm"
+#include "../icons/report_disk.xpm"
 ////@end XPM images
 
 using namespace std;
@@ -86,6 +88,9 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_UP, PreferencesDialog::OnButtonWorkspacesUpUpdate )
   EVT_BUTTON( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownClick )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownUpdate )
+  EVT_BUTTON( ID_BUTTON_WORKSPACES_IMPORT, PreferencesDialog::OnButtonWorkspacesImportClick )
+  EVT_BUTTON( ID_BUTTON_WORKSPACES_EXPORT, PreferencesDialog::OnButtonWorkspacesExportClick )
+  EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_EXPORT, PreferencesDialog::OnButtonWorkspacesExportUpdate )
   EVT_TEXT( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameTextUpdated )
   EVT_UPDATE_UI( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameUpdate )
   EVT_RADIOBUTTON( ID_RADIOSTATES, PreferencesDialog::OnRadiostatesSelected )
@@ -316,6 +321,8 @@ void PreferencesDialog::Init()
   buttonDeleteWorkspace = NULL;
   buttonUpWorkspace = NULL;
   buttonDownWorkspace = NULL;
+  buttonImportWorkspace = NULL;
+  buttonExportWorkspace = NULL;
   txtWorkspaceName = NULL;
   radioStates = NULL;
   radioEventTypes = NULL;
@@ -1151,16 +1158,34 @@ void PreferencesDialog::CreateControls()
   wxBoxSizer* itemBoxSizer180 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer178->Add(itemBoxSizer180, 0, wxALIGN_TOP|wxALL, 0);
   buttonAddWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonAddWorkspace->SetToolTip(_("Add workspaces..."));
   itemBoxSizer180->Add(buttonAddWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDeleteWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonDeleteWorkspace->SetToolTip(_("Delete selected workspace"));
   itemBoxSizer180->Add(buttonDeleteWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonUpWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonUpWorkspace->SetToolTip(_("Move workspace up"));
   itemBoxSizer180->Add(buttonUpWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDownWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonDownWorkspace->SetToolTip(_("Move workspace down"));
   itemBoxSizer180->Add(buttonDownWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonImportWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_IMPORT, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/report_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonImportWorkspace->SetToolTip(_("Import workspaces"));
+  itemBoxSizer180->Add(buttonImportWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+  buttonExportWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_EXPORT, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/report_disk.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonExportWorkspace->SetToolTip(_("Export workspaces"));
+  itemBoxSizer180->Add(buttonExportWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine185 = new wxStaticLine( panelWorkspaces, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
   itemBoxSizer177->Add(itemStaticLine185, 0, wxGROW|wxTOP|wxBOTTOM, 10);
@@ -1203,15 +1228,23 @@ void PreferencesDialog::CreateControls()
   wxBoxSizer* itemBoxSizer195 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer193->Add(itemBoxSizer195, 0, wxALIGN_TOP|wxALL, 0);
   buttonAddHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonAddHint->SetToolTip(_("Add hints..."));
   itemBoxSizer195->Add(buttonAddHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDeleteHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonDeleteHint->SetToolTip(_("Delete selected hints"));
   itemBoxSizer195->Add(buttonDeleteHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonUpHint = new wxBitmapButton( panelWorkspaces, ID_BITMAP_HINT_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonUpHint->SetToolTip(_("Move hint up"));
   itemBoxSizer195->Add(buttonUpHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDownHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonDownHint->SetToolTip(_("Move hint down"));
   itemBoxSizer195->Add(buttonDownHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer200 = new wxBoxSizer(wxHORIZONTAL);
@@ -1259,15 +1292,23 @@ void PreferencesDialog::CreateControls()
   wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxVERTICAL);
   itemStaticBoxSizer2->Add(itemBoxSizer13, 0, wxALIGN_TOP|wxALL, 0);
   buttonAddTextEditor = new wxBitmapButton( panelExternal, ID_BUTTON_TXT_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonAddTextEditor->SetToolTip(_("Add text editors..."));
   itemBoxSizer13->Add(buttonAddTextEditor, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDeleteTextEditor = new wxBitmapButton( panelExternal, ID_BUTTON_TXT_DEL, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonDeleteTextEditor->SetToolTip(_("Delete selected text editor"));
   itemBoxSizer13->Add(buttonDeleteTextEditor, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonUpTextEditor = new wxBitmapButton( panelExternal, ID_BUTTON_TXT_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonUpTextEditor->SetToolTip(_("Move text editor up"));
   itemBoxSizer13->Add(buttonUpTextEditor, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDownTextEditor = new wxBitmapButton( panelExternal, ID_BUTTON_TXT_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonDownTextEditor->SetToolTip(_("Move text editor down"));
   itemBoxSizer13->Add(buttonDownTextEditor, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine18 = new wxStaticLine( panelExternal, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
@@ -1288,15 +1329,23 @@ void PreferencesDialog::CreateControls()
   wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxVERTICAL);
   itemStaticBoxSizer11->Add(itemBoxSizer14, 0, wxALIGN_TOP|wxALL, 0);
   buttonAddPDFReader = new wxBitmapButton( panelExternal, ID_BUTTON_PDF_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonAddPDFReader->SetToolTip(_("Add PDF readers..."));
   itemBoxSizer14->Add(buttonAddPDFReader, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDeletePDFReader = new wxBitmapButton( panelExternal, ID_BUTTON_PDF_DEL, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonDeletePDFReader->SetToolTip(_("Delete selected PDF reader"));
   itemBoxSizer14->Add(buttonDeletePDFReader, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonUpPDFReader = new wxBitmapButton( panelExternal, ID_BUTTON_PDF_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonUpPDFReader->SetToolTip(_("Move PDF reader up"));
   itemBoxSizer14->Add(buttonUpPDFReader, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDownPDFReader = new wxBitmapButton( panelExternal, ID_BUTTON_PDF_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (PreferencesDialog::ShowToolTips())
+    buttonDownPDFReader->SetToolTip(_("Move PDF reader down"));
   itemBoxSizer14->Add(buttonDownPDFReader, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine22 = new wxStaticLine( panelExternal, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
@@ -1413,6 +1462,16 @@ wxBitmap PreferencesDialog::GetBitmapResource( const wxString& name )
   else if (name == wxT("icons/arrow_down.xpm"))
   {
     wxBitmap bitmap(arrow_down_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/report_add.xpm"))
+  {
+    wxBitmap bitmap(report_add);
+    return bitmap;
+  }
+  else if (name == wxT("icons/report_disk.xpm"))
+  {
+    wxBitmap bitmap(report_disk);
     return bitmap;
   }
   return wxNullBitmap;
@@ -2566,5 +2625,93 @@ void PreferencesDialog::OnButtonPdfDownUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND &&
                 listPDFReaders->GetSelection() < int( listPDFReaders->GetCount() ) - 1 );
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BITMAPBUTTON
+ */
+
+void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
+{
+  wxString dialogDefaultDir = _( "" );
+  wxString fileDialogWildcard = _( "Workspace file (*.ws)|*.ws|All files (*.*)|*" );  
+
+  long whichDialogStyle = wxFD_DEFAULT_STYLE | wxFD_MULTIPLE;
+  wxFileDialog myDialog ( this,
+                         wxT( "Import workspaces" ),
+                         dialogDefaultDir,
+                         _( "" ),
+                         fileDialogWildcard, 
+                         whichDialogStyle );
+  if ( myDialog.ShowModal() == wxID_OK )
+  {
+    wxArrayString paths;
+    myDialog.GetPaths( paths );
+    for ( int i = 0 ; i < paths.size() ; ++i )
+    {
+      wxFileName tmpFileName = paths[ i ];
+      Workspace ws;
+      std::string wsPath( tmpFileName.GetPath().c_str() );
+    #ifdef WIN32
+      wsPath.append( "\\" );
+    #else
+      wsPath.append( "/" );
+    #endif
+      wsPath.append( tmpFileName.GetFullName().c_str() );
+      ws.loadXML( wsPath );
+
+      wxString wsName( ws.getName().c_str(), wxConvUTF8 );
+      workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
+      
+      listWorkspaces->Append( ws.getName() );
+      WorkspaceManager::getInstance()->addWorkspace( ws );
+    }
+  }
+}
+
+
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_EXPORT
+ */
+
+void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
+{
+#ifdef WIN32
+  wxString dialogDefaultDir = _(".\\");
+#else
+  wxString dialogDefaultDir = _("./");
+#endif
+
+  wxString fileDialogWildcard = _( ".ws" ); 
+
+  wxString defaultFile = listWorkspaces->GetString( listWorkspaces->GetSelection() );  
+  long whichDialogStyle = wxFD_SAVE | wxFD_CHANGE_DIR;
+  wxFileDialog myDialog ( this,
+                         wxT( "Export workspaces" ),
+                         dialogDefaultDir,
+                         _( "" ),
+                         fileDialogWildcard, 
+                         whichDialogStyle );
+  if ( myDialog.ShowModal() == wxID_OK )
+  {
+    Workspace ws = workspaceContainer[ defaultFile ];
+    std::string chosenPath( myDialog.GetPath().mb_str() );
+    if ( myDialog.GetPath().AfterLast( '.' ) != _( "ws" ) )
+      chosenPath.append( _( ".ws" ) );
+    ws.saveXML( chosenPath );
+  }
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_EXPORT
+ */
+
+void PreferencesDialog::OnButtonWorkspacesExportUpdate( wxUpdateUIEvent& event )
+{
+  event.Skip();
 }
 

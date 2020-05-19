@@ -147,6 +147,8 @@ class wxListBox;
 #define ID_BUTTON_WORKSPACES_DELETE 10272
 #define ID_BUTTON_WORKSPACES_UP 10273
 #define ID_BUTTON_WORKSPACES_DOWN 10274
+#define ID_BUTTON_WORKSPACES_IMPORT 10276
+#define ID_BUTTON_WORKSPACES_EXPORT 10275
 #define ID_TEXT_WORKSPACE_NAME 10275
 #define ID_RADIOSTATES 10037
 #define ID_RADIOEVENTYPES 10038
@@ -247,6 +249,15 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_DOWN
   void OnButtonWorkspacesDownUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_IMPORT
+  void OnButtonWorkspacesImportClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_EXPORT
+  void OnButtonWorkspacesExportClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_EXPORT
+  void OnButtonWorkspacesExportUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXT_WORKSPACE_NAME
   void OnTextWorkspaceNameTextUpdated( wxCommandEvent& event );
@@ -483,11 +494,17 @@ public:
   float GetMaximumTraceSize() const { return maximumTraceSize ; }
   void SetMaximumTraceSize(float value) { maximumTraceSize = value ; }
 
+  wxArrayString GetGlobalExternalPDFReaders() const { return pdfReaderOptions ; }
+  void SetGlobalExternalPDFReaders(wxArrayString value) { pdfReaderOptions = value ; }
+
   PRV_UINT16 GetSessionSaveTime() const { return sessionSaveTime ; }
   void SetSessionSaveTime(PRV_UINT16 value) { sessionSaveTime = value ; }
 
   bool GetSingleInstance() const { return singleInstance ; }
   void SetSingleInstance(bool value) { singleInstance = value ; }
+
+  wxArrayString GetGlobalExternalTextEditors() const { return textEditorOptions ; }
+  void SetGlobalExternalTextEditors(wxArrayString value) { textEditorOptions = value ; }
 
   PRV_UINT32 GetTimelineColor() const { return timelineColor ; }
   void SetTimelineColor(PRV_UINT32 value) { timelineColor = value ; }
@@ -581,12 +598,6 @@ public:
 
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
-
-  wxArrayString GetGlobalExternalTextEditors() const { return textEditorOptions ; }
-  void SetGlobalExternalTextEditors(wxArrayString value) { textEditorOptions = value ; }
-
-  wxArrayString GetGlobalExternalPDFReaders() const { return pdfReaderOptions ; }
-  void SetGlobalExternalPDFReaders(wxArrayString value) { pdfReaderOptions = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -689,6 +700,8 @@ public:
   wxBitmapButton* buttonDeleteWorkspace;
   wxBitmapButton* buttonUpWorkspace;
   wxBitmapButton* buttonDownWorkspace;
+  wxBitmapButton* buttonImportWorkspace;
+  wxBitmapButton* buttonExportWorkspace;
   wxTextCtrl* txtWorkspaceName;
   wxRadioButton* radioStates;
   wxRadioButton* radioEventTypes;
@@ -751,8 +764,10 @@ private:
   bool histogramThousandSeparator;
   bool histogramZoom;
   float maximumTraceSize;
+  wxArrayString pdfReaderOptions;
   PRV_UINT16 sessionSaveTime;
   bool singleInstance;
+  wxArrayString textEditorOptions;
   PRV_UINT32 timelineColor;
   rgb timelineColourAxis;
   rgb timelineColourBackground;
@@ -784,8 +799,6 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  wxArrayString textEditorOptions;
-  wxArrayString pdfReaderOptions;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace
