@@ -253,6 +253,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_IMPORT
   void OnButtonWorkspacesImportClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_IMPORT
+  void OnButtonWorkspacesImportUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_WORKSPACES_EXPORT
   void OnButtonWorkspacesExportClick( wxCommandEvent& event );
 

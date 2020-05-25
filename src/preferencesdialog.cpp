@@ -89,6 +89,7 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_BUTTON( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownClick )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_DOWN, PreferencesDialog::OnButtonWorkspacesDownUpdate )
   EVT_BUTTON( ID_BUTTON_WORKSPACES_IMPORT, PreferencesDialog::OnButtonWorkspacesImportClick )
+  EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_IMPORT, PreferencesDialog::OnButtonWorkspacesImportUpdate )
   EVT_BUTTON( ID_BUTTON_WORKSPACES_EXPORT, PreferencesDialog::OnButtonWorkspacesExportClick )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_EXPORT, PreferencesDialog::OnButtonWorkspacesExportUpdate )
   EVT_TEXT( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameTextUpdated )
@@ -2006,7 +2007,8 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
   workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace( std::string( workspaceName.mb_str() ), tmpWorkspaceType ) ) );
     
   // Focus in name text control  
-  listWorkspaces->Select( listWorkspaces->GetCount() - 1 );
+  if ( listWorkspaces->GetCount() > 0 )
+    listWorkspaces->Select( listWorkspaces->GetCount() - 1 );
   wxCommandEvent tmpCmdEvent;
   OnListboxWorkspacesSelected( tmpCmdEvent );
   UpdateWindowUI( wxUPDATE_UI_RECURSE );
@@ -2025,7 +2027,13 @@ void PreferencesDialog::OnButtonWorkspacesDeleteClick( wxCommandEvent& event )
   int tmpSel = listWorkspaces->GetSelection();
   tmpSel = std::max( 0, std::min( tmpSel - 1 , listWorkspaces->GetSelection() - 1 ) );
   listWorkspaces->Delete( listWorkspaces->GetSelection() );
-  listWorkspaces->SetSelection( tmpSel );
+  if ( listWorkspaces->GetCount() > 0 )
+  {
+    listWorkspaces->SetSelection( tmpSel );
+    OnListboxWorkspacesSelected( event );
+  }
+  else 
+    listHintsWorkspace->Clear();
 }
 
 
@@ -2123,7 +2131,8 @@ void PreferencesDialog::OnButtonHintAddClick( wxCommandEvent& event )
   listHintsWorkspace->Append( paraverMain::getHintComposed( tmpHint ) );
   
   // Focus in description text control  
-  listHintsWorkspace->Select( listHintsWorkspace->GetCount() - 1 );
+  if ( listHintsWorkspace->GetCount() > 0 )
+    listHintsWorkspace->Select( listHintsWorkspace->GetCount() - 1 );
   wxCommandEvent tmpCmdEvent;
   OnListboxHintsWorkspaceSelected( tmpCmdEvent );
   UpdateWindowUI( wxUPDATE_UI_RECURSE );
@@ -2142,7 +2151,8 @@ void PreferencesDialog::OnButtonHintDeleteClick( wxCommandEvent& event )
   int tmpSel = listHintsWorkspace->GetSelection();
   tmpSel = std::max( 0, std::min( tmpSel - 1 , listHintsWorkspace->GetSelection() - 1 ) );
   listHintsWorkspace->Delete( listHintsWorkspace->GetSelection() );
-  listHintsWorkspace->SetSelection( tmpSel );
+  if ( listHintsWorkspace->GetCount() > 0  )
+    listHintsWorkspace->SetSelection( tmpSel );
 }
 
 
@@ -2418,7 +2428,8 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
   {
     wxArrayString paths;
     myDialog.GetPaths( paths );
-    for ( int i = 0 ; i < paths.size() ; ++i )
+    int i;
+    for ( i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
       listTextEditors->Append( tmpFileName.GetFullName() );
@@ -2436,7 +2447,9 @@ void PreferencesDialog::OnButtonTxtDelClick( wxCommandEvent& event )
   int tmpSel = listTextEditors->GetSelection();
   tmpSel = std::max( 0, std::min( tmpSel - 1 , listTextEditors->GetSelection() - 1 ) );
   listTextEditors->Delete( listTextEditors->GetSelection() );
-  listTextEditors->SetSelection( tmpSel );
+
+  if ( listTextEditors->GetCount() > 0  )
+    listTextEditors->SetSelection( tmpSel );
 }
 
 
@@ -2446,8 +2459,7 @@ void PreferencesDialog::OnButtonTxtDelClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonTxtDelUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND &&
-                listTextEditors->GetCount() > 1 );
+  event.Enable( listTextEditors->GetSelection() != wxNOT_FOUND );
 }
 
 
@@ -2559,7 +2571,9 @@ void PreferencesDialog::OnButtonPdfDelClick( wxCommandEvent& event )
   int tmpSel = listPDFReaders->GetSelection();
   tmpSel = std::max( 0, std::min( tmpSel - 1 , listPDFReaders->GetSelection() - 1 ) );
   listPDFReaders->Delete( listPDFReaders->GetSelection() );
-  listPDFReaders->SetSelection( tmpSel );
+
+  if ( listPDFReaders->GetCount() > 0  )
+    listPDFReaders->SetSelection( tmpSel );
 }
 
 
@@ -2569,8 +2583,7 @@ void PreferencesDialog::OnButtonPdfDelClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonPdfDelUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND &&
-                listPDFReaders->GetCount() > 1 );
+  event.Enable( listPDFReaders->GetSelection() != wxNOT_FOUND );
 }
 
 
@@ -2671,6 +2684,15 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
 }
 
 
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_WORKSPACES_IMPORT
+ */
+
+void PreferencesDialog::OnButtonWorkspacesImportUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( true );
+}
+
 
 
 /*!
@@ -2712,6 +2734,5 @@ void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesExportUpdate( wxUpdateUIEvent& event )
 {
-  event.Skip();
+  event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
 }
-
