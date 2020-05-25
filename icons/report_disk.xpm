@@ -1,5 +1,5 @@
 /* XPM */
-static char *report_disk[] = {
+static const char *report_disk[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 154 2 ",
 "   c #7E3118",

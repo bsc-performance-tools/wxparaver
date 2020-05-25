@@ -3239,7 +3239,7 @@ wxArrayString paraverMain::FromVectorStringToWxArray( std::vector< std::string >
   wxArrayString arr;
   for ( int i = 0 ; i < vec.size(); ++i )
   {
-    wxString myWxStr( vec[ i ] );
+    wxString myWxStr( vec[ i ].c_str(), wxConvUTF8 );
     arr.Add( myWxStr );
   }
   return arr;

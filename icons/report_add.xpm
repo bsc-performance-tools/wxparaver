@@ -1,5 +1,5 @@
 /* XPM */
-static char *report_add[] = {
+static const char *report_add[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 112 2 ",
 "   c #7E3118",

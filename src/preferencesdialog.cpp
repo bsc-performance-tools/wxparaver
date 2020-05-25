@@ -2652,19 +2652,19 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
     {
       wxFileName tmpFileName = paths[ i ];
       Workspace ws;
-      std::string wsPath( tmpFileName.GetPath().c_str() );
+      std::string wsPath( tmpFileName.GetPath().mb_str() );
     #ifdef WIN32
       wsPath.append( "\\" );
     #else
       wsPath.append( "/" );
     #endif
-      wsPath.append( tmpFileName.GetFullName().c_str() );
+      wsPath.append( tmpFileName.GetFullName().mb_str() );
       ws.loadXML( wsPath );
 
       wxString wsName( ws.getName().c_str(), wxConvUTF8 );
       workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
       
-      listWorkspaces->Append( ws.getName() );
+      listWorkspaces->Append( wsName );
       WorkspaceManager::getInstance()->addWorkspace( ws );
     }
   }
@@ -2700,7 +2700,7 @@ void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
     Workspace ws = workspaceContainer[ defaultFile ];
     std::string chosenPath( myDialog.GetPath().mb_str() );
     if ( myDialog.GetPath().AfterLast( '.' ) != _( "ws" ) )
-      chosenPath.append( _( ".ws" ) );
+      chosenPath.append( ".ws" );
     ws.saveXML( chosenPath );
   }
 }
