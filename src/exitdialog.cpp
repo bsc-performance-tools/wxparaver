@@ -139,25 +139,27 @@ void ExitDialog::CreateControls()
   itemDialog1->SetSizer(itemBoxSizer2);
 
   wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer1, 0, wxALIGN_LEFT|wxALL, 5);
+  itemBoxSizer2->Add(itemBoxSizer1, 0, wxGROW|wxALL, 5);
 
   wxStaticBitmap* itemStaticBitmap1 = new wxStaticBitmap( itemDialog1, wxID_STATIC, itemDialog1->GetBitmapResource(wxT("icons/logout.xpm")), wxDefaultPosition, wxSize(48, 48), 0 );
   itemBoxSizer1->Add(itemStaticBitmap1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStaticText* itemStaticText2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Some windows are already open... Do you want to save this session before closing?"), wxDefaultPosition, wxSize(270, 50), 0 );
-  itemBoxSizer1->Add(itemStaticText2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxStaticText* itemStaticText2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Some windows are already open... Do you want to save this session before closing?"), wxDefaultPosition, wxSize(270, -1), 0 );
+  itemBoxSizer1->Add(itemStaticText2, 1, wxGROW|wxALL, 5);
+
+  itemBoxSizer2->Add(5, 0, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(itemBoxSizer3, 0, wxGROW|wxALL, 5);
 
-  saveExitButton = new wxButton( itemDialog1, ID_BUTTON_SAVE_EXIT, _("Save and exit"), wxDefaultPosition, wxSize(130, -1), 0 );
-  itemBoxSizer3->Add(saveExitButton, 0, wxGROW|wxALL, 5);
+  saveExitButton = new wxButton( itemDialog1, ID_BUTTON_SAVE_EXIT, _("Save and exit"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer3->Add(saveExitButton, 1, wxGROW|wxALL, 5);
 
-  cancelButton = new wxButton( itemDialog1, ID_BUTTON_CANCEL, _("Cancel"), wxDefaultPosition, wxSize(130, -1), 0 );
-  itemBoxSizer3->Add(cancelButton, 0, wxGROW|wxALL, 5);
+  cancelButton = new wxButton( itemDialog1, ID_BUTTON_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer3->Add(cancelButton, 1, wxGROW|wxALL, 5);
 
-  noSaveExitButton = new wxButton( itemDialog1, ID_BUTTON_CLOSE_NO_SAVE, _("Close without saving"), wxDefaultPosition, wxSize(130, -1), 0 );
-  itemBoxSizer3->Add(noSaveExitButton, 0, wxGROW|wxALL, 5);
+  noSaveExitButton = new wxButton( itemDialog1, ID_BUTTON_CLOSE_NO_SAVE, _("Close without saving"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer3->Add(noSaveExitButton, 1, wxGROW|wxALL, 5);
 
 ////@end ExitDialog content construction
 }
