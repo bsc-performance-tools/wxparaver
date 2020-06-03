@@ -455,7 +455,9 @@ void paraverMain::Init()
   initPG();
   initSessionInfo();
 
-  //HandleMaxSessionFiles();
+  if ( ParaverConfig::getInstance()->isFirstExecution() )
+    filterExternalApps();
+  
 }
 
 /*!
@@ -3234,13 +3236,28 @@ void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent& event )
     tbarMain->EnableTool( ID_NEW_HISTOGRAM, false );
 }
 
-wxArrayString paraverMain::FromVectorStringToWxArray( std::vector< std::string > vec ) 
+wxArrayString paraverMain::FromVectorStringToWxArray( std::vector< std::string > vec, std::string fileType ) 
 {
   wxArrayString arr;
   for ( int i = 0 ; i < vec.size(); ++i )
   {
     wxString myWxStr( vec[ i ].c_str(), wxConvUTF8 );
-    arr.Add( myWxStr );
+#ifdef WIN32
+    wxString command = myWxStr + wxT( " --version" );
+#else
+    wxString command = myWxStr + wxT( " --version 1>&- 2>&-'");
+#endif
+    if ( wxExecute( command, wxEXEC_SYNC ) == 0 )
+      arr.Add( myWxStr );
+  }
+
+  if ( arr.size() == 0 )
+  {
+    // default type: "txt"
+    wxString errMessage = _( "No text editors installed. Please verify the External Applications tab and add a text editor." );
+    if ( fileType == "pdf" )
+      errMessage = _( "No PDF readers installed. Please verify the External Applications tab and add a PDF reader." );
+    wxMessageBox( errMessage, _( "No programs found" ), wxOK );
   }
   return arr;
 }
@@ -3248,10 +3265,9 @@ wxArrayString paraverMain::FromVectorStringToWxArray( std::vector< std::string >
 std::vector< std::string > paraverMain::FromWxArrayToVectorString( wxArrayString arr ) 
 {
   std::vector< std::string > vec(0);
-  for ( int i = 0 ; i < arr.size() ; ++i)
-  {
+  for ( int i = 0 ; i < arr.size() ; ++i )
     vec.push_back( std::string( arr[ i ].mb_str() ) );
-  }
+
   return vec;
 }
 
@@ -3271,7 +3287,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
   preferences.SetAskForPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
   preferences.SetHelpContentsUsesBrowser( paraverConfig->getGlobalHelpContentsUsesBrowser() );
-
+ 
   // TIMELINE
 
   preferences.SetTimelineNameFormatPrefix( paraverConfig->getTimelineDefaultName() );
@@ -3343,8 +3359,8 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetFiltersXMLPath( paraverConfig->getFiltersXMLPath() );
 
   // EXTERNAL APPS
-  wxArrayString externalTextEditors = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalTextEditors() );
-  wxArrayString externalPDFReaders = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalPDFReaders() );
+  wxArrayString externalTextEditors = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalTextEditors(), "txt" );
+  wxArrayString externalPDFReaders = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalPDFReaders(), "pdf" );
   
   preferences.SetGlobalExternalTextEditors( externalTextEditors );
   preferences.SetGlobalExternalPDFReaders( externalPDFReaders );
@@ -5151,6 +5167,61 @@ void paraverMain::initSessionInfo()
 
   sessionInfo.sessionDate = ss.str();
 }
+
+
+void paraverMain::filterExternalApps()
+{
+  //Get WX variants and check
+  wxArrayString externalTextEditors = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalTextEditors(), "txt" );
+  wxArrayString newTxt;
+
+  for ( int i = 0 ; i < externalTextEditors.size(); ++i )
+  {
+    wxString myWxStr( externalTextEditors[ i ].c_str(), wxConvUTF8 );
+#ifdef WIN32
+    wxString command = myWxStr + wxT( " --version" );
+#else
+    wxString command = myWxStr + wxT( " --version 1>&- 2>&-'");
+#endif
+    if ( wxExecute( command, wxEXEC_SYNC ) == 0 )
+      newTxt.Add( myWxStr );
+  }
+
+  if ( newTxt.size() == 0 )
+  {
+    // default type: "txt"
+    wxString errMessage = _( "No text editors installed. Please verify the External Applications tab and add at least a text editor." );
+    wxMessageBox( errMessage, _( "No programs found" ), wxOK );
+  }
+
+
+
+  wxArrayString externalPDFReaders = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalPDFReaders(), "pdf" );
+  wxArrayString newPDF;
+  for ( int i = 0 ; i < externalPDFReaders.size(); ++i )
+  {
+    wxString myWxStr( externalPDFReaders[ i ].c_str(), wxConvUTF8 );
+#ifdef WIN32
+    wxString command = myWxStr + wxT( " --version" );
+#else
+    wxString command = myWxStr + wxT( " --version 1>&- 2>&-'");
+#endif
+    if ( wxExecute( command, wxEXEC_SYNC ) == 0 )
+      newPDF.Add( myWxStr );
+  }
+
+  if ( newPDF.size() == 0 )
+  {
+    // default type: "pdf"
+    wxString errMessage = _( "No PDF readers installed. Please verify the External Applications tab and add at least a PDF reader." );
+    wxMessageBox( errMessage, _( "No programs found" ), wxOK );
+  }
+
+  // Pass them back
+  paraverConfig->setGlobalExternalTextEditors( FromWxArrayToVectorString( newTxt ) );
+  paraverConfig->setGlobalExternalPDFReaders( FromWxArrayToVectorString( newPDF ) );
+}
+
 
 bool paraverMain::IsSessionValid()
 {

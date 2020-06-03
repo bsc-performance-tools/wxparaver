@@ -2415,7 +2415,7 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
   wxString fileDialogWildcard = _( "*.exe" );  
 #else
   wxString dialogDefaultDir = _( "/usr/bin" );  
-  wxString fileDialogWildcard = _( "" );  
+  wxString fileDialogWildcard = _( "*" );  
 #endif
   long whichDialogStyle = wxFD_DEFAULT_STYLE | wxFD_MULTIPLE;
   wxFileDialog myDialog ( this,

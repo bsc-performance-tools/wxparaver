@@ -779,6 +779,7 @@ int wxparaverApp::OnExit()
     {
       ParaverConfig::getInstance()->closeCompleteSessionFile();
     }
+    ParaverConfig::getInstance()->setFirstExecutionFinished();
     ParaverConfig::getInstance()->writeParaverConfigFile();
   }
   

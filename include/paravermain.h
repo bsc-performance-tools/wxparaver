@@ -252,6 +252,7 @@ public:
   /// Creates the controls and sizers
   void CreateControls();
   void initSessionInfo();
+  void filterExternalApps();
 
 ////@begin paraverMain event handler declarations
 
@@ -621,7 +622,7 @@ public:
   static bool IsSessionValid();
   static void ValidateSession( bool setValidate );
 
-  static wxArrayString FromVectorStringToWxArray( std::vector< std::string > vec );
+  static wxArrayString FromVectorStringToWxArray( std::vector< std::string > vec, std::string fileType = "txt" );
   static std::vector< std::string > FromWxArrayToVectorString( wxArrayString arr );
   
   bool OnMenusavesession( );

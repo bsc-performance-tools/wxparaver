@@ -5061,8 +5061,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
         wxString path = dirDialog.GetPath();
         wxString command;
 
-        // DEFAULT:   gvim, nedit, gedit, xed, kate
-        wxArrayString textEditor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors() );
+        wxArrayString textEditor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors(), "txt" );
         bool cmdExecuted = false;
 
         for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
