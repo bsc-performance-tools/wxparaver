@@ -31910,7 +31910,7 @@ Example: 50000001;50000002[;type] "</string>
                           <string name="proxy-Id name">"ID_BUTTON_CUTTER_ALL_WINDOW"</string>
                           <long name="proxy-Id value">10198</long>
                           <string name="proxy-Implementation filename">""</string>
-                          <string name="proxy-Label">"All Window"</string>
+                          <string name="proxy-Label">"Whole Window"</string>
                           <string name="proxy-Member variable name">"buttonCutterAllWindow"</string>
                           <string name="proxy-Name">""</string>
                           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
@@ -31978,7 +31978,7 @@ Example: 50000001;50000002[;type] "</string>
                           <string name="proxy-Id name">"ID_BUTTON_CUTTER_ALL_TRACE"</string>
                           <long name="proxy-Id value">10115</long>
                           <string name="proxy-Implementation filename">""</string>
-                          <string name="proxy-Label">"All Trace"</string>
+                          <string name="proxy-Label">"Whole Trace"</string>
                           <string name="proxy-Member variable name">"buttonCutterAllTrace"</string>
                           <string name="proxy-Name">""</string>
                           <string name="proxy-Platform">"&lt;Any platform&gt;"</string>
