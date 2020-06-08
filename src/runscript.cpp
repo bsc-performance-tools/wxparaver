@@ -2368,7 +2368,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     size_t i;
     for ( i = 0; i < pdfReaders.size(); ++i )
     {
-      if ( existCommand( pdfReaders[ i ], wxT( "--version" ) ) )
+      if ( existCommand( pdfReaders[ i ] ) )
       {
         runCommand( pdfReaders[ i ], tmpFile );
         break;
@@ -2744,24 +2744,15 @@ std::cout << "Pid: " << command << " " << tmpmyProcessPid
 //}
 
 
-bool RunScript::existCommand( const wxString& program, const wxString& parameter )
+bool RunScript::existCommand( const wxString& program )
 {
-#ifdef WIN32
   return wxExecute( program + _(" ") + wxT( " --version" ), wxEXEC_SYNC ) == 0 ;
-#else
-  wxString command = program + _(" ") + parameter + _(" 1>&- 2>&-'");
-  return ( wxExecute( command, wxEXEC_SYNC ) == 0 );
-#endif
 }
 
 
 void RunScript::runCommand( const wxString& program, const wxString& parameter )
 {
-#ifdef WIN32
-  wxString command = program + _(" ") + parameter ;
-#else
-  wxString command = _( "/bin/sh -c '" ) + program + _(" ") + parameter + _(" 1>&- 2>&-'");
-#endif
+  wxString command = program + _(" ") + parameter;
   wxExecute( command ); // ASYNC
 }
 
@@ -2780,7 +2771,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   size_t i;
   for ( i = 0; i < editor.size(); ++i )
   {
-    if ( existCommand( editor[ i ], wxT( "--version" ) ) )
+    if ( existCommand( editor[ i ] ) )
     {
       runCommand( editor[ i ], fileToEdit );
       break;

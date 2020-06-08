@@ -478,7 +478,7 @@ private:
   //void OnTerminateShellCommand( int pid, int status );
 
   //bool shellCommand( const wxString& program, const wxString& whichFile );
-  bool existCommand( const wxString& program, const wxString& parameter );
+  bool existCommand( const wxString& program );
   void runCommand( const wxString& program, const wxString& parameter );
   void runDetachedProcess( wxString command, bool checkPidDimemasGUI = false );
 };
