@@ -72,6 +72,7 @@
 #include "exitdialog.h"
 #include "runscript.h"
 #include <wx/display.h>
+#include <wx/process.h>
 
 #include <signal.h>
 #include <iostream>
@@ -223,7 +224,8 @@ static bool userMessage( UserMessageID message )
 {
   if( paraverMain::disableUserMessages )
     return true;
-  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( userMessages[ message ].c_str() )  + _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
+  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( userMessages[ message ].c_str() )  + 
+        _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();
   paraverMain::myParaverMain->SetRaiseCurrentWindow( true );
@@ -455,9 +457,11 @@ void paraverMain::Init()
   initPG();
   initSessionInfo();
 
-  if ( ParaverConfig::getInstance()->isFirstExecution() )
+  if ( !ParaverConfig::getInstance()->getAppsChecked() )
+  {
     filterExternalApps();
-  
+    ParaverConfig::getInstance()->setAppsChecked();
+  }
 }
 
 /*!
@@ -3242,22 +3246,7 @@ wxArrayString paraverMain::FromVectorStringToWxArray( std::vector< std::string >
   for ( int i = 0 ; i < vec.size(); ++i )
   {
     wxString myWxStr( vec[ i ].c_str(), wxConvUTF8 );
-#ifdef WIN32
-    wxString command = myWxStr + wxT( " --version" );
-#else
-    wxString command = myWxStr + wxT( " --version 1>&- 2>&-'");
-#endif
-    if ( wxExecute( command, wxEXEC_SYNC ) == 0 )
-      arr.Add( myWxStr );
-  }
-
-  if ( arr.size() == 0 )
-  {
-    // default type: "txt"
-    wxString errMessage = _( "No text editors installed. Please verify the External Applications tab and add a text editor." );
-    if ( fileType == "pdf" )
-      errMessage = _( "No PDF readers installed. Please verify the External Applications tab and add a PDF reader." );
-    wxMessageBox( errMessage, _( "No programs found" ), wxOK );
+    arr.Add( myWxStr );
   }
   return arr;
 }
@@ -5177,14 +5166,16 @@ void paraverMain::filterExternalApps()
 
   for ( int i = 0 ; i < externalTextEditors.size(); ++i )
   {
-    wxString myWxStr( externalTextEditors[ i ].c_str(), wxConvUTF8 );
+    //wxString myWxStr( externalTextEditors[ i ].wc_str(), wxConvUTF8 );
 #ifdef WIN32
-    wxString command = myWxStr + wxT( " --version" );
+    wxString command = externalTextEditors[ i ] + wxT( " --version" );
 #else
-    wxString command = myWxStr + wxT( " --version 1>&- 2>&-'");
+    //wxString command = myWxStr + wxT( " --version 1>/dev/null 2>/dev/null'");
+    wxString command = externalTextEditors[ i ] + wxT( " --version 1>&- 2>&-'");
 #endif
-    if ( wxExecute( command, wxEXEC_SYNC ) == 0 )
-      newTxt.Add( myWxStr );
+    int execRes = wxExecute( command, wxEXEC_SYNC );
+    if ( execRes == 0 )
+      newTxt.Add( externalTextEditors[ i ] );
   }
 
   if ( newTxt.size() == 0 )
@@ -5198,16 +5189,17 @@ void paraverMain::filterExternalApps()
 
   wxArrayString externalPDFReaders = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalPDFReaders(), "pdf" );
   wxArrayString newPDF;
+
   for ( int i = 0 ; i < externalPDFReaders.size(); ++i )
   {
-    wxString myWxStr( externalPDFReaders[ i ].c_str(), wxConvUTF8 );
 #ifdef WIN32
-    wxString command = myWxStr + wxT( " --version" );
+    wxString command = externalPDFReaders[ i ] + wxT( " --version" );
 #else
-    wxString command = myWxStr + wxT( " --version 1>&- 2>&-'");
+    wxString command = externalPDFReaders[ i ] + wxT( " --version 1>&- 2>&-'");
 #endif
-    if ( wxExecute( command, wxEXEC_SYNC ) == 0 )
-      newPDF.Add( myWxStr );
+    int execRes = wxExecute( command, wxEXEC_SYNC );
+    if ( execRes == 0 )
+      newPDF.Add( externalPDFReaders[ i ] );
   }
 
   if ( newPDF.size() == 0 )

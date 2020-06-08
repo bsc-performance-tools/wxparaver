@@ -2428,8 +2428,7 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
   {
     wxArrayString paths;
     myDialog.GetPaths( paths );
-    int i;
-    for ( i = 0 ; i < paths.size() ; ++i )
+    for ( int i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
       listTextEditors->Append( tmpFileName.GetFullName() );
@@ -2540,11 +2539,11 @@ void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
   wxString fileDialogWildcard = _( "*.exe" );  
 #else
   wxString dialogDefaultDir = _( "/usr/bin" );  
-  wxString fileDialogWildcard = _( "" );  
+  wxString fileDialogWildcard = _( "*" );  
 #endif
   long whichDialogStyle = wxFD_DEFAULT_STYLE | wxFD_MULTIPLE;
   wxFileDialog myDialog ( this,
-                         wxT( "Select External Text Editors" ),
+                         wxT( "Select External PDF Readers" ),
                          dialogDefaultDir,
                          _( "" ),
                          fileDialogWildcard, 

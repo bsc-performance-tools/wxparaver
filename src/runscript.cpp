@@ -2361,21 +2361,21 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
   }
   else if ( matchHrefExtension( event, _(".pdf")))
   {
-    wxArrayString textEditor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalPDFReaders(), "pdf" );
+    wxArrayString pdfReaders = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalPDFReaders(), "pdf" );
     wxString tmpFile = wxString( getHrefFullPath( event ).c_str(), wxConvUTF8 );
     wxString command;
 
     size_t i;
-    for ( i = 0; i < textEditor.size(); ++i )
+    for ( i = 0; i < pdfReaders.size(); ++i )
     {
-      if ( existCommand( textEditor[ i ], wxT( "--version" ) ) )
+      if ( existCommand( pdfReaders[ i ], wxT( "--version" ) ) )
       {
-        runCommand( textEditor[ i ], tmpFile );
+        runCommand( pdfReaders[ i ], tmpFile );
         break;
       }
     }
 
-    if ( i >= textEditor.size() )
+    if ( i >= pdfReaders.size() )
     {
       wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
       if( filetype != NULL )
@@ -2773,8 +2773,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   wxString fileToEdit = fileBrowserButtonClusteringXML->GetPath();
   wxString command;
 
-  
-  // TODO -> PUT IN CLASSES
+
   wxArrayString editor = paraverMain::FromVectorStringToWxArray( ParaverConfig::getInstance()->getGlobalExternalTextEditors(), "txt" );
   //wxArrayString versionParameter;
   
