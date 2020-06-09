@@ -27,10 +27,12 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 #include "paraverkerneltypes.h"
 
 using std::string;
 using std::vector;
+using std::ofstream;
 
 
 class TutorialData
@@ -83,6 +85,8 @@ class TutorialsDownload
     vector<TutorialData> tutorialsList;
 
     void download( const TutorialData& whichTutorial ) const;
+    
+    void testDownload( const string& server, const string& path, ofstream& storeFile ) const;
 };
 
 #endif // _TUTORIALSDOWNLOAD_H_
