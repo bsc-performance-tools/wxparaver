@@ -118,9 +118,10 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, Tr
 {
   if ( timeline != NULL )
   {
+    bool tmpProcessModel = timeline->GetMyWindow()->getLevel() >= WORKLOAD && timeline->GetMyWindow()->getLevel() <= THREAD;
     if ( timeline->GetMyWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           timeline->GetMyWindow()->getTrace()->isSameObjectStruct( destinyTrace ) )
+           timeline->GetMyWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, tmpProcessModel ) )
        )
       return allowed[property][SAME_TRACE][TIMELINE][destiny];
     else
@@ -128,9 +129,11 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, Tr
   }
   else
   {
+    bool tmpProcessModel = histogram->GetHistogram()->getControlWindow()->getLevel() >= WORKLOAD &&
+                           histogram->GetHistogram()->getControlWindow()->getLevel() <= THREAD;
     if ( histogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           histogram->GetHistogram()->getControlWindow()->getTrace()->isSameObjectStruct( destinyTrace ) )
+           histogram->GetHistogram()->getControlWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, tmpProcessModel ) )
        )
       return allowed[property][SAME_TRACE][HISTOGRAM][destiny];
     else
@@ -262,13 +265,21 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline, const string prope
     else if ( property == STR_OBJECTS )
     {
       vector< bool > auxRows;
+      int firstLevel;
       int lastLevel;
-      if( whichTimeline->GetMyWindow()->getTrace()->existResourceInfo() && 
-          timeline->GetMyWindow()->getTrace()->existResourceInfo() )
-        lastLevel = CPU;
-      else
+
+      if( timeline->GetMyWindow()->getLevel() >= WORKLOAD && timeline->GetMyWindow()->getLevel() <= THREAD )
+      {
+        firstLevel = WORKLOAD;
         lastLevel = THREAD;
-      for( int iLevel = APPLICATION; iLevel <= lastLevel; ++iLevel )
+      }
+      else
+      {
+        firstLevel = NODE;
+        lastLevel = CPU;
+      }
+
+      for( int iLevel = firstLevel; iLevel <= lastLevel; ++iLevel )
       {
         if( iLevel == SYSTEM )
           continue;
