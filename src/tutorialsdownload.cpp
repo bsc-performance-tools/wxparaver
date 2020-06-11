@@ -30,10 +30,9 @@
 #include <boost/bind.hpp>
 #include <boost/asio/ssl.hpp>
 
-//#include <wx/wfstream.h>
-//#include <wx/protocol/http.h>
 #include <wx/uri.h>
 #include <wx/filename.h>
+#include <wx/msgdlg.h>
 
 #include "paraverkernelexception.h"
 #include "tutorialsdownload.h"
@@ -95,21 +94,6 @@ const TutorialData& TutorialsDownload::findTutorial( PRV_UINT16 whichId ) const
   }
   
   throw std::exception();
-}
-
-
-void TutorialsDownload::download( const TutorialData& whichTutorial ) const
-{
-  wxURI tutorialURI( wxString::FromUTF8( whichTutorial.getUrl().c_str() ) );
-  wxString path   = tutorialURI.GetPath();
-  wxString server = tutorialURI.GetServer();
-
-  wxFileName outputFilePath( path );
-  ofstream storeFile( string( "/home/eloy/" ) + string( outputFilePath.GetFullName().mb_str() ) );
-  
-  testDownload( string( server.mb_str() ), string( path.mb_str() ), storeFile );
-  
-  storeFile.close();
 }
 
 
@@ -334,19 +318,28 @@ class client
     ofstream& store_;
 };
 
-void TutorialsDownload::testDownload( const string& server, const string& path, ofstream& storeFile ) const
+void TutorialsDownload::download( const TutorialData& whichTutorial ) const
 {
+  wxURI tutorialURI( wxString::FromUTF8( whichTutorial.getUrl().c_str() ) );
+  wxString path   = tutorialURI.GetPath();
+  wxString server = tutorialURI.GetServer();
+
+  wxFileName outputFilePath( path );
+  ofstream storeFile( string( "/home/eloy/" ) + string( outputFilePath.GetFullName().mb_str() ) );
+  
   try
   {
     boost::asio::ssl::context ctx( boost::asio::ssl::context::sslv23 );
     ctx.set_default_verify_paths();
 
     boost::asio::io_service io_service;
-    client c( io_service, ctx, server, path, storeFile );
+    client c( io_service, ctx, std::string( server.mb_str() ), std::string( path.mb_str() ), storeFile );
     io_service.run();
   }
   catch ( ParaverKernelException& e )
   {
-    std::cout << e.what() << "\n";
+    wxMessageBox( wxString::FromUTF8( e.what() ), wxT( "Download failed" ), wxICON_ERROR );
   }
+  
+  storeFile.close();
 }
