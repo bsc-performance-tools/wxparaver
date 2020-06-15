@@ -32,6 +32,7 @@
 #endif
 
 #include "pg_util.h"
+#include "wxparaverapp.h"
 #include "paravermain.h"
 #include "pg_extraprop.h"
 #include "trace.h"
@@ -1429,6 +1430,13 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
 }
 
 
+void closeOpenedPropertyDialog()
+{
+  wxDialog *tmpDialog = wxparaverApp::mainWindow->GetOpenedPropertyDialog();
+  if( tmpDialog != NULL )
+    tmpDialog->EndModal( wxID_CANCEL );
+}
+
 void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window *whichWindow,
                                         std::vector< PropertyClientData * >& whichPropertiesClientData )
 {
@@ -2513,6 +2521,7 @@ void updateTimelineProperties( wxPropertyGrid* windowProperties,
                                std::vector< PropertyClientData * >& whichPropertiesClientData )
 {
   updateCategoriesState( windowProperties );
+  closeOpenedPropertyDialog();
   windowProperties->Freeze();
   windowProperties->Clear();
   
@@ -2563,6 +2572,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   int selected, pos;
 
   whichHisto->setChanged( false );
+  closeOpenedPropertyDialog();
   windowProperties->Freeze();
   windowProperties->Clear();
 

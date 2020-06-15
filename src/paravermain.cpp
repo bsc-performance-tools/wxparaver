@@ -414,6 +414,7 @@ void paraverMain::Init()
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
+  openedPropertyDialog = NULL;
   menuFile = NULL;
   menuHints = NULL;
   menuHelp = NULL;

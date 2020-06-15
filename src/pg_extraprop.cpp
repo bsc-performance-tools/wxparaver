@@ -470,6 +470,8 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
                                         hideChoiceOperators,
                                         windowTitle );
 
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( &eventsDialog );
+
     eventsDialog.Move( propgrid->GetGoodEditorDialogPosition( this, eventsDialog.GetSize() ) );
 
     if ( eventsDialog.ShowModal() == wxID_OK && numLabels )
@@ -523,8 +525,11 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
       paraverMain::myParaverMain->spreadSetChanged( currentWindow );
       paraverMain::myParaverMain->spreadSetRedraw( currentWindow );
 
+      wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
       return true;
     }
+
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
   }
 
   return false;
@@ -771,6 +776,8 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
                                                            ID_ROWSSELECTIONDIALOG,
                                                            myWindowName,
                                                            parentIsGtimeline );
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( dialog );
+    
     if ( dialog->ShowModal() == wxID_OK )
     {
       wxArrayInt tmpArray;
@@ -789,6 +796,7 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
       SetValueInEvent( tmp );
     }
   
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
     delete dialog;
   }
   
@@ -1017,13 +1025,19 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
                                            selectedWindow,
                                            myCurrentTrace,
                                            myNeedNoneElement );
+    
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( &timelineSelector );
+
     timelineSelector.Move( wxGetMousePosition() );
     
     int retCode = timelineSelector.ShowModal();
     if( retCode == wxID_OK )
     {
       if( selectedWindow == timelineSelector.getSelection() )
+      {
+        wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
         return false;
+      }
       selectedWindow = timelineSelector.getSelection();
       if( selectedWindow != NULL )
         SetValueInEvent( wxString( selectedWindow->getName().c_str(), wxConvUTF8 ) );
@@ -1032,10 +1046,12 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
     }
     else
     {
+      wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
       return false;
-    }
-    
+    }    
   }
+
+  wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
   return true;
 }
 
