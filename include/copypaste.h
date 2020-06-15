@@ -105,7 +105,8 @@ class gPasteWindowProperties
     void commonMenuSettings( );
     void commonTimeSettings( TRecordTime destinyTraceEndTime );
     void commonFilterSettings( gTimeline *whichTimeline );
-    bool seekAllowed( const string property, int destiny, Trace *destinyTrace );
+    bool seekAllowed( const string property, int destiny, gTimeline* destinyWindow );
+    bool seekAllowed( const string property, int destiny, gHistogram* destinyHistogram );
 };
 
 #endif // _COPYPASTE_H_

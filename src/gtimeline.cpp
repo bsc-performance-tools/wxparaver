@@ -2034,7 +2034,9 @@ void gTimeline::OnPopUpPasteDefaultSpecial()
   pasteActions->paste( this, "Time" );
   myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
   pasteActions->paste( this, "Size" );
-  pasteActions->paste( this, "Objects" );
+
+  if ( pasteActions->isAllowed( this, STR_OBJECTS ) )
+    pasteActions->paste( this, "Objects" );
 
   myWindow->setRedraw( true );
   myWindow->setChanged( true );

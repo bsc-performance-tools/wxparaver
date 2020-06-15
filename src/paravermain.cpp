@@ -3200,7 +3200,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
     if ( gTimeline *timeline = itemData->getTimeline())
     {
       endDragWindow = timeline->GetMyWindow();
-      if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace() ) &&
+      if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace(), endDragWindow->isLevelProcessModel() ) &&
           Window::compatibleLevels( beginDragWindow, endDragWindow ) )
       {
         ShowDerivedDialog();
