@@ -401,6 +401,7 @@ public:
   void spreadSetRedraw( Window *whichWindow );
   /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
   void OnPropertyGridChange( wxPropertyGridEvent& event );
+  void OnPropertyGridChanging( wxPropertyGridEvent& event );
 
   void OnPreviousTracesClick( wxCommandEvent& event );
   void OnPreviousCFGsClick( wxCommandEvent& event );
@@ -694,6 +695,8 @@ private:
 
   static const int CUTOFF = 10;
   static bool validSessions;
+
+  wxVariant propertyPrevValue;
 
 //  void updateTreeItem( wxTreeCtrl *tree, wxTreeItemId& id );
 

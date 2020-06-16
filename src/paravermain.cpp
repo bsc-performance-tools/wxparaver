@@ -196,8 +196,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_TREE_END_DRAG( wxID_ANY, paraverMain::OnTreeEndDrag)
 
   EVT_PG_CHANGED( ID_FOREIGN, paraverMain::OnPropertyGridChange )
-
-  EVT_ACTIVATE(paraverMain::OnActivate)
+  EVT_PG_CHANGING( ID_FOREIGN, paraverMain::OnPropertyGridChanging )
+  EVT_ACTIVATE( paraverMain::OnActivate )
   
   EVT_TIMER( ID_TIMER_MAIN, paraverMain::OnSessionTimer )
 
@@ -1275,6 +1275,13 @@ void paraverMain::spreadSetRedraw( Window *whichWindow )
     spreadSetRedrawRecursive( whichWindow );
 }
 
+/*!
+ * wxEVT_PG_CHANGING event handler for ID_FOREIGN
+ */
+void paraverMain::OnPropertyGridChanging( wxPropertyGridEvent& event )
+{
+  propertyPrevValue = event.GetProperty()->GetValue();
+}
 
 /*!
  * wxEVT_PG_CHANGED event handler for ID_FOREIGN
@@ -1285,13 +1292,19 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   if( property == NULL )
     return;
 
+  if( property->GetDisplayedString() == _( "" ) )
+  {
+    property->SetValue( propertyPrevValue );
+    return;
+  }
+
   PropertyClientData *tmpClientData = (PropertyClientData *)property->GetClientData();
   if( tmpClientData == NULL )
     return;
 
   const wxString& propName = tmpClientData->propName;
   wxString *tmpRest = new wxString(_(""));
-
+  
   if( propName == _( "Mode" ) )
   {
     if( tmpClientData->ownerTimeline != NULL )
