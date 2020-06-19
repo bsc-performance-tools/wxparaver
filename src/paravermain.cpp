@@ -2637,6 +2637,7 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
     {
       currentWindow = item->getTimeline();
       currentTimeline = item->getTimeline()->GetMyWindow();
+      beginDragWindow = currentTimeline;
       currentHisto = NULL;
     }
     else if( item->getHistogram() != NULL )
@@ -2864,7 +2865,8 @@ void paraverMain::ShowDerivedDialog()
 {
   DerivedTimelineDialog derivedDialog( this );
   vector<TWindowID> timelines;
-  LoadedWindows::getInstance()->getDerivedCompatible( loadedTraces[ currentTrace ], timelines );
+
+  LoadedWindows::getInstance()->getDerivedCompatible( currentTimeline->getTrace(), timelines );
 
   ++numNewDerived;
   wxString tmpName( _( "New Derived Window #" ) );
@@ -2876,18 +2878,19 @@ void paraverMain::ShowDerivedDialog()
   derivedDialog.SetTimelines2( timelines );
 
   // Set current window
-  if ( beginDragWindow == NULL ||
-      beginDragWindow->getTrace() == loadedTraces[ currentTrace ] )
-    derivedDialog.SetCurrentWindow1( beginDragWindow );
+  derivedDialog.SetCurrentWindow1( beginDragWindow );
+  if( endDragWindow == NULL )
+  {
+    vector<Window *> tmpTimelinesWindow2;
+    LoadedWindows::getInstance()->getAll( currentTimeline->getTrace(), tmpTimelinesWindow2 );
+    if( tmpTimelinesWindow2[ 0 ] == beginDragWindow && tmpTimelinesWindow2.size() > 1 )
+      derivedDialog.SetCurrentWindow2( tmpTimelinesWindow2[ 1 ] );
+    else
+      derivedDialog.SetCurrentWindow2( tmpTimelinesWindow2[ 0 ] );
+  }
   else
-    derivedDialog.SetCurrentWindow1( NULL );
-
-  if ( endDragWindow == NULL ||
-      endDragWindow->getTrace() == loadedTraces[ currentTrace ] )
     derivedDialog.SetCurrentWindow2( endDragWindow );
-  else
-    derivedDialog.SetCurrentWindow2( NULL );
-
+    
   raiseCurrentWindow = false;
   if( derivedDialog.ShowModal() == wxID_OK )
   {
@@ -2917,7 +2920,7 @@ void paraverMain::ShowDerivedDialog()
     newWindow->setShowChildrenWindow( false );
 
     // Size
-    newWindow->setWidth( beginDragWindow->getWidth() ); // magic numbers!
+    newWindow->setWidth( beginDragWindow->getWidth() );
     newWindow->setHeight( beginDragWindow->getHeight() );
 
     newWindow->setMaximumY( beginDragWindow->getMaximumY() );
