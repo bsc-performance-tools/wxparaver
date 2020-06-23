@@ -1224,6 +1224,7 @@ void gHistogram::OnPopUpPasteObjects()
 void gHistogram::OnPopUpPasteSize()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
+  myHistogram->setRedraw( true );
   updateHistogram();
 }
 
