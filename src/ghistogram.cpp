@@ -442,7 +442,7 @@ void gHistogram::execute()
   }
 
   selectedRows.clear();
-  selectedRows = myHistogram->getSelectedRows();
+  selectedRows = myHistogram->getSelectedRows( beginRow, endRow );
   if ( selectedRows.size() == 0 )
     myHistogram->getControlWindow()->getSelectedRows( myHistogram->getControlWindow()->getLevel(),
                                                       selectedRows, beginRow, endRow, true );
