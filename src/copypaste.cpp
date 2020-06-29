@@ -44,8 +44,8 @@ void gPasteWindowProperties::commonMenuSettings( )
         allowed[STR_PASTE_SPECIAL][trace][origin][destiny] = true;
       }
 
-  // Timeline/histogram different Menu properties
-  if ( timeline != NULL )
+  // Timeline/sourceHistogram different Menu properties
+  if ( sourceTimeline != NULL )
   {
   }
   else
@@ -59,14 +59,14 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
   TRecordTime sourceBeginTime;
   int source;
 
-  if ( timeline != NULL )
+  if ( sourceTimeline != NULL )
   {
-    sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
+    sourceBeginTime = sourceTimeline->GetMyWindow()->getWindowBeginTime();
     source          = TIMELINE;
   }
   else
   {
-    sourceBeginTime = histogram->GetHistogram()->getBeginTime();
+    sourceBeginTime = sourceHistogram->GetHistogram()->getBeginTime();
     source          = HISTOGRAM;
   }
 
@@ -84,13 +84,12 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
   }
 }
 
-
-void gPasteWindowProperties::commonFilterSettings( gTimeline *whichTimeline )
+void gPasteWindowProperties::commonFilterSettings( gTimeline *destinyTimeline )
 {
-  if ( timeline != NULL )
+  if ( sourceTimeline != NULL )
   {
-    if ( timeline->GetMyWindow()->isDerivedWindow() ||
-         whichTimeline ->GetMyWindow()->isDerivedWindow() )
+    if ( sourceTimeline->GetMyWindow()->isDerivedWindow() ||
+         destinyTimeline->GetMyWindow()->isDerivedWindow() )
     {
       for( int trace = SAME_TRACE; trace <= DIFF_TRACE; trace++ )
       {
@@ -113,18 +112,17 @@ void gPasteWindowProperties::commonFilterSettings( gTimeline *whichTimeline )
   }
 }
 
-
-bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gTimeline *destinyWindow )
+bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gTimeline *destinyTimeline )
 {
-  Trace *destinyTrace = destinyWindow->GetMyWindow()->getTrace();
+  Trace *destinyTrace = destinyTimeline->GetMyWindow()->getTrace();
 
-  if ( timeline != NULL )
+  if ( sourceTimeline != NULL )
   {
-    bool isProcessModel = timeline->GetMyWindow()->isLevelProcessModel();
-    if ( timeline->GetMyWindow()->getTrace() == destinyTrace ||
+    bool isProcessModel = sourceTimeline->GetMyWindow()->isLevelProcessModel();
+    if ( sourceTimeline->GetMyWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           Window::compatibleLevels( timeline->GetMyWindow(), destinyWindow->GetMyWindow() ) &&
-           timeline->GetMyWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
+           Window::compatibleLevels( sourceTimeline->GetMyWindow(), destinyTimeline->GetMyWindow() ) &&
+           sourceTimeline->GetMyWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
        )
       return allowed[property][SAME_TRACE][TIMELINE][destiny];
     else
@@ -132,11 +130,12 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gT
   }
   else
   {
-    bool isProcessModel = histogram->GetHistogram()->getControlWindow()->isLevelProcessModel();
-    if ( histogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace ||
+    bool isProcessModel = sourceHistogram->GetHistogram()->getControlWindow()->isLevelProcessModel();
+    if ( sourceHistogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           Window::compatibleLevels( histogram->GetHistogram()->getControlWindow(), destinyWindow->GetMyWindow() ) &&
-           histogram->GetHistogram()->getControlWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
+//           Window::compatibleLevels( sourceHistogram->GetHistogram()->getControlWindow(), destinyTimeline->GetMyWindow() ) &&
+           sourceHistogram->GetHistogram()->getControlWindow()->getLevel() == destinyTimeline->GetMyWindow()->getLevel() &&
+           sourceHistogram->GetHistogram()->getControlWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
        )
       return allowed[property][SAME_TRACE][HISTOGRAM][destiny];
     else
@@ -149,13 +148,14 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gH
 {
   Trace *destinyTrace = destinyHistogram->GetHistogram()->getControlWindow()->getTrace();
 
-  if ( timeline != NULL )
+  if ( sourceTimeline != NULL )
   {
-    bool isProcessModel = timeline->GetMyWindow()->isLevelProcessModel();
-    if ( timeline->GetMyWindow()->getTrace() == destinyTrace ||
+    bool isProcessModel = sourceTimeline->GetMyWindow()->isLevelProcessModel();
+    if ( sourceTimeline->GetMyWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           Window::compatibleLevels( timeline->GetMyWindow(), destinyHistogram->GetHistogram()->getControlWindow() ) &&
-           timeline->GetMyWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
+           //Window::compatibleLevels( sourceTimeline->GetMyWindow(), destinyHistogram->GetHistogram()->getControlWindow() ) &&
+           sourceTimeline->GetMyWindow()->getLevel() == destinyHistogram->GetHistogram()->getControlWindow()->getLevel() &&
+           sourceTimeline->GetMyWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
        )
       return allowed[property][SAME_TRACE][TIMELINE][destiny];
     else
@@ -163,11 +163,12 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gH
   }
   else
   {
-    bool isProcessModel = histogram->GetHistogram()->getControlWindow()->isLevelProcessModel();
-    if ( histogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace ||
+    bool isProcessModel = sourceHistogram->GetHistogram()->getControlWindow()->isLevelProcessModel();
+    if ( sourceHistogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           Window::compatibleLevels( histogram->GetHistogram()->getControlWindow(), destinyHistogram->GetHistogram()->getControlWindow() ) &&
-           histogram->GetHistogram()->getControlWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
+           //Window::compatibleLevels( sourceHistogram->GetHistogram()->getControlWindow(), destinyHistogram->GetHistogram()->getControlWindow() ) &&
+           sourceHistogram->GetHistogram()->getControlWindow()->getLevel() == destinyHistogram->GetHistogram()->getControlWindow()->getLevel() &&
+           sourceHistogram->GetHistogram()->getControlWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
        )
       return allowed[property][SAME_TRACE][HISTOGRAM][destiny];
     else
@@ -178,8 +179,8 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gH
 
 gPasteWindowProperties::gPasteWindowProperties()
 {
-  timeline = NULL;
-  histogram = NULL;
+  sourceTimeline = NULL;
+  sourceHistogram = NULL;
 
   vector< bool > destiny( 2 , false );
   vector < vector< bool > > source( 2, destiny );
@@ -259,50 +260,50 @@ gPasteWindowProperties *gPasteWindowProperties::getInstance()
 }
 
 
-void gPasteWindowProperties::copy( gTimeline* whichTimeline )
+void gPasteWindowProperties::copy( gTimeline *whichTimeline )
 {
-  timeline = whichTimeline;
-  histogram = NULL;
+  sourceTimeline = whichTimeline;
+  sourceHistogram = NULL;
 }
 
 
-void gPasteWindowProperties::copy( gHistogram* whichHistogram )
+void gPasteWindowProperties::copy( gHistogram *whichHistogram )
 {
-  timeline = NULL;
-  histogram = whichHistogram;
+  sourceTimeline = NULL;
+  sourceHistogram = whichHistogram;
 }
 
 
-void gPasteWindowProperties::paste( gTimeline* whichTimeline, const string property )
+void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string property )
 {
-  if ( timeline != NULL )
+  if ( sourceTimeline != NULL )
   {
-    // paste timeline -> whichtimeline
+    // paste sourceTimeline -> destinyTimeline
     if ( property == STR_TIME )
     {
-      TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
-      TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
+      TRecordTime sourceBeginTime = sourceTimeline->GetMyWindow()->getWindowBeginTime();
+      TRecordTime sourceEndTime   = sourceTimeline->GetMyWindow()->getWindowEndTime();
 
-      sourceBeginTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, timeline->GetMyWindow()->getTrace()->getTimeUnit() );
-      sourceEndTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, timeline->GetMyWindow()->getTrace()->getTimeUnit() );
+      sourceBeginTime = destinyTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, sourceTimeline->GetMyWindow()->getTrace()->getTimeUnit() );
+      sourceEndTime = destinyTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, sourceTimeline->GetMyWindow()->getTrace()->getTimeUnit() );
       
-      whichTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
-      whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
+      destinyTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
+      destinyTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
     }
     else if ( property == STR_SIZE )
     {
       int width, height;
-      width = timeline->GetMyWindow()->getWidth();
-      height = timeline->GetMyWindow()->getHeight();
-      whichTimeline->resizeDrawZone( width, height );
+      width = sourceTimeline->GetMyWindow()->getWidth();
+      height = sourceTimeline->GetMyWindow()->getHeight();
+      destinyTimeline->resizeDrawZone( width, height );
     }
     else if ( property == STR_OBJECTS )
     {
-      vector< bool > auxRows;
+      vector< TObjectOrder > auxRows;
       int firstLevel;
       int lastLevel;
 
-      if( timeline->GetMyWindow()->getLevel() >= WORKLOAD && timeline->GetMyWindow()->getLevel() <= THREAD )
+      if( sourceTimeline->GetMyWindow()->getLevel() >= WORKLOAD && sourceTimeline->GetMyWindow()->getLevel() <= THREAD )
       {
         firstLevel = WORKLOAD;
         lastLevel = THREAD;
@@ -315,46 +316,44 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline, const string prope
 
       for( int iLevel = firstLevel; iLevel <= lastLevel; ++iLevel )
       {
-        if( iLevel == SYSTEM )
-          continue;
-        timeline->GetMyWindow()->getSelectedRows( (TWindowLevel)iLevel, auxRows, true );
-        whichTimeline->GetMyWindow()->setSelectedRows( (TWindowLevel)iLevel, auxRows );
+        sourceTimeline->GetMyWindow()->getSelectedRows( (TWindowLevel)iLevel, auxRows, true );
+        destinyTimeline->GetMyWindow()->setSelectedRows( (TWindowLevel)iLevel, auxRows );
       }
-      whichTimeline->GetMyWindow()->addZoom( whichTimeline->GetMyWindow()->getWindowBeginTime(),
-                                             whichTimeline->GetMyWindow()->getWindowEndTime(),
-                                             timeline->GetMyWindow()->getZoomSecondDimension().first,
-                                             timeline->GetMyWindow()->getZoomSecondDimension().second );
+      destinyTimeline->GetMyWindow()->addZoom( destinyTimeline->GetMyWindow()->getWindowBeginTime(),
+                                               destinyTimeline->GetMyWindow()->getWindowEndTime(),
+                                               sourceTimeline->GetMyWindow()->getZoomSecondDimension().first,
+                                               sourceTimeline->GetMyWindow()->getZoomSecondDimension().second );
     }
     else if ( property == STR_DURATION )
     {
-      TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
-      TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
+      TRecordTime sourceBeginTime = sourceTimeline->GetMyWindow()->getWindowBeginTime();
+      TRecordTime sourceEndTime   = sourceTimeline->GetMyWindow()->getWindowEndTime();
 
-      sourceBeginTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, timeline->GetMyWindow()->getTrace()->getTimeUnit() );
-      sourceEndTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, timeline->GetMyWindow()->getTrace()->getTimeUnit() );
+      sourceBeginTime = destinyTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, sourceTimeline->GetMyWindow()->getTrace()->getTimeUnit() );
+      sourceEndTime = destinyTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, sourceTimeline->GetMyWindow()->getTrace()->getTimeUnit() );
 
       TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
-      TRecordTime newEndTime      = whichTimeline->GetMyWindow()->getWindowBeginTime() + sourceDuration;
+      TRecordTime newEndTime      = destinyTimeline->GetMyWindow()->getWindowBeginTime() + sourceDuration;
 
-      whichTimeline->GetMyWindow()->setWindowEndTime( newEndTime );
+      destinyTimeline->GetMyWindow()->setWindowEndTime( newEndTime );
     }
     else if ( property == STR_FILTER_COMMS )
     {
-      whichTimeline->GetMyWindow()->getFilter()->copyCommunicationsSection( timeline->GetMyWindow()->getFilter() );
+      destinyTimeline->GetMyWindow()->getFilter()->copyCommunicationsSection( sourceTimeline->GetMyWindow()->getFilter() );
     }
     else if ( property == STR_FILTER_EVENTS )
     {
-      whichTimeline->GetMyWindow()->getFilter()->copyEventsSection( timeline->GetMyWindow()->getFilter() );
+      destinyTimeline->GetMyWindow()->getFilter()->copyEventsSection( sourceTimeline->GetMyWindow()->getFilter() );
     }
     else if ( property == STR_FILTER_ALL )
     {
-      whichTimeline->GetMyWindow()->getFilter()->copyEventsSection( timeline->GetMyWindow()->getFilter() );
-      whichTimeline->GetMyWindow()->getFilter()->copyCommunicationsSection( timeline->GetMyWindow()->getFilter() );
+      destinyTimeline->GetMyWindow()->getFilter()->copyEventsSection( sourceTimeline->GetMyWindow()->getFilter() );
+      destinyTimeline->GetMyWindow()->getFilter()->copyCommunicationsSection( sourceTimeline->GetMyWindow()->getFilter() );
     }
     else if ( property == STR_SEMANTIC_SCALE )
     {
-      whichTimeline->GetMyWindow()->setMinimumY( timeline->GetMyWindow()->getMinimumY() );
-      whichTimeline->GetMyWindow()->setMaximumY( timeline->GetMyWindow()->getMaximumY() );
+      destinyTimeline->GetMyWindow()->setMinimumY( sourceTimeline->GetMyWindow()->getMinimumY() );
+      destinyTimeline->GetMyWindow()->setMaximumY( sourceTimeline->GetMyWindow()->getMaximumY() );
     }
     else
     {
@@ -362,48 +361,48 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline, const string prope
   }
   else
   {
-    // paste histogram -> timeline
+    // paste sourceHistogram -> destinyTimeline
     if ( property == STR_TIME )
     {
-      TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
-      TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
+      TRecordTime sourceBeginTime = sourceHistogram->GetHistogram()->getBeginTime();
+      TRecordTime sourceEndTime   = sourceHistogram->GetHistogram()->getEndTime();
 
-      sourceBeginTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, histogram->GetHistogram()->getTrace()->getTimeUnit() );
-      sourceEndTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, histogram->GetHistogram()->getTrace()->getTimeUnit() );
+      sourceBeginTime = destinyTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, sourceHistogram->GetHistogram()->getTrace()->getTimeUnit() );
+      sourceEndTime = destinyTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, sourceHistogram->GetHistogram()->getTrace()->getTimeUnit() );
 
-      whichTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
-      whichTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
+      destinyTimeline->GetMyWindow()->setWindowBeginTime( sourceBeginTime );
+      destinyTimeline->GetMyWindow()->setWindowEndTime( sourceEndTime );
     }
     else if ( property == STR_SIZE )
     {
       int width, height;
-      histogram->GetSize( &width, &height);
-      whichTimeline->SetSize( width, height );
+      sourceHistogram->GetSize( &width, &height);
+      destinyTimeline->SetSize( width, height );
     }
     else if ( property == STR_OBJECTS )
     {
-      vector< bool > auxRows = histogram->GetHistogram()->getSelectedBooleanRows();
-      whichTimeline->GetMyWindow()->setSelectedRows( whichTimeline->GetMyWindow()->getLevel(), auxRows );
+      vector< TObjectOrder > auxRows = sourceHistogram->GetHistogram()->getSelectedRows();
+      destinyTimeline->GetMyWindow()->setSelectedRows( destinyTimeline->GetMyWindow()->getLevel(), auxRows );
 
     }
     else if ( property == STR_DURATION )
     {
-      TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
-      TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
+      TRecordTime sourceBeginTime = sourceHistogram->GetHistogram()->getBeginTime();
+      TRecordTime sourceEndTime   = sourceHistogram->GetHistogram()->getEndTime();
 
-      sourceBeginTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, histogram->GetHistogram()->getTrace()->getTimeUnit() );
-      sourceEndTime = whichTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, histogram->GetHistogram()->getTrace()->getTimeUnit() );
+      sourceBeginTime = destinyTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceBeginTime, sourceHistogram->GetHistogram()->getTrace()->getTimeUnit() );
+      sourceEndTime = destinyTimeline->GetMyWindow()->customUnitsToTraceUnits( sourceEndTime, sourceHistogram->GetHistogram()->getTrace()->getTimeUnit() );
 
       TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
-      TRecordTime newEndTime      = whichTimeline->GetMyWindow()->getWindowBeginTime() + sourceDuration;
+      TRecordTime newEndTime      = destinyTimeline->GetMyWindow()->getWindowBeginTime() + sourceDuration;
 
-      whichTimeline->GetMyWindow()->setWindowEndTime( newEndTime );
+      destinyTimeline->GetMyWindow()->setWindowEndTime( newEndTime );
     }
     else if ( property == STR_SEMANTIC_SCALE )
     {
-      Window *controlWin = histogram->GetHistogram()->getControlWindow();
-      whichTimeline->GetMyWindow()->setMinimumY( controlWin->getMinimumY() );
-      whichTimeline->GetMyWindow()->setMaximumY( controlWin->getMaximumY() );
+      Window *controlWin = sourceHistogram->GetHistogram()->getControlWindow();
+      destinyTimeline->GetMyWindow()->setMinimumY( controlWin->getMinimumY() );
+      destinyTimeline->GetMyWindow()->setMaximumY( controlWin->getMaximumY() );
     }
     else
     {
@@ -413,45 +412,45 @@ void gPasteWindowProperties::paste( gTimeline* whichTimeline, const string prope
 }
 
 
-void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string property )
+void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string property )
 {
-  if ( timeline != NULL )
+  if ( sourceTimeline != NULL )
   {
-    // paste timeline -> histogram
+    // paste sourceTimeline -> destinyHistogram
     if ( property == STR_TIME )
     {
-      whichHistogram->GetHistogram()->setWindowBeginTime( timeline->GetMyWindow()->getWindowBeginTime() );
-      whichHistogram->GetHistogram()->setWindowEndTime( timeline->GetMyWindow()->getWindowEndTime() );
+      destinyHistogram->GetHistogram()->setWindowBeginTime( sourceTimeline->GetMyWindow()->getWindowBeginTime() );
+      destinyHistogram->GetHistogram()->setWindowEndTime( sourceTimeline->GetMyWindow()->getWindowEndTime() );
     }
     else if ( property == STR_SIZE )
     {
       int width, height;
-      timeline->GetSize( &width, &height);
-      whichHistogram->SetSize( width, height );
+      sourceTimeline->GetSize( &width, &height);
+      destinyHistogram->SetSize( width, height );
     }
     else if ( property == STR_OBJECTS )
     {
-      whichHistogram->GetHistogram()->addZoom( timeline->GetMyWindow()->getZoomSecondDimension().first,
-                                               timeline->GetMyWindow()->getZoomSecondDimension().second );
+      destinyHistogram->GetHistogram()->addZoom( sourceTimeline->GetMyWindow()->getZoomSecondDimension().first,
+                                               sourceTimeline->GetMyWindow()->getZoomSecondDimension().second );
       
-      SelectionManagement< TObjectOrder, TWindowLevel >* tSel = timeline->GetMyWindow()->getSelectedRows();
-      vector< bool > auxRows;
-      tSel->getSelected( auxRows, timeline->GetMyWindow()->getLevel() );
-      whichHistogram->setSelectedRows( auxRows );
+      SelectionManagement< TObjectOrder, TWindowLevel >* tSel = sourceTimeline->GetMyWindow()->getSelectedRows();
+      vector< TObjectOrder > auxRows;
+      tSel->getSelected( auxRows, sourceTimeline->GetMyWindow()->getLevel() );
+      destinyHistogram->GetHistogram()->setSelectedRows( auxRows );
     }
     else if ( property == STR_DURATION )
     {
-      TRecordTime sourceBeginTime = timeline->GetMyWindow()->getWindowBeginTime();
-      TRecordTime sourceEndTime   = timeline->GetMyWindow()->getWindowEndTime();
+      TRecordTime sourceBeginTime = sourceTimeline->GetMyWindow()->getWindowBeginTime();
+      TRecordTime sourceEndTime   = sourceTimeline->GetMyWindow()->getWindowEndTime();
       TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
-      TRecordTime newEndTime      = whichHistogram->GetHistogram()->getBeginTime() + sourceDuration;
+      TRecordTime newEndTime      = destinyHistogram->GetHistogram()->getBeginTime() + sourceDuration;
 
-      whichHistogram->GetHistogram()->setWindowEndTime( newEndTime );
+      destinyHistogram->GetHistogram()->setWindowEndTime( newEndTime );
     }
     else if ( property == STR_SEMANTIC_SCALE )
     {
-      whichHistogram->GetHistogram()->setMinGradient( timeline->GetMyWindow()->getMinimumY() );
-      whichHistogram->GetHistogram()->setMaxGradient( timeline->GetMyWindow()->getMaximumY() );
+      destinyHistogram->GetHistogram()->setMinGradient( sourceTimeline->GetMyWindow()->getMinimumY() );
+      destinyHistogram->GetHistogram()->setMaxGradient( sourceTimeline->GetMyWindow()->getMaximumY() );
     }
     else
     {
@@ -462,49 +461,49 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     // paste histogram -> histogram
     if ( property == STR_TIME )
     {
-      whichHistogram->GetHistogram()->setWindowBeginTime( histogram->GetHistogram()->getBeginTime() );
-      whichHistogram->GetHistogram()->setWindowEndTime( histogram->GetHistogram()->getEndTime() );
+      destinyHistogram->GetHistogram()->setWindowBeginTime( sourceHistogram->GetHistogram()->getBeginTime() );
+      destinyHistogram->GetHistogram()->setWindowEndTime( sourceHistogram->GetHistogram()->getEndTime() );
     }
     else if ( property == STR_SIZE )
     {
       int width, height;
-      histogram->GetSize( &width, &height);
-      whichHistogram->SetSize( width, height );
+      sourceHistogram->GetSize( &width, &height);
+      destinyHistogram->SetSize( width, height );
     }
     else if ( property == STR_OBJECTS )
     {
-      whichHistogram->GetHistogram()->addZoom( histogram->GetHistogram()->getZoomSecondDimension().first,
-                                               histogram->GetHistogram()->getZoomSecondDimension().second );
+      destinyHistogram->GetHistogram()->addZoom( sourceHistogram->GetHistogram()->getZoomSecondDimension().first,
+                                                 sourceHistogram->GetHistogram()->getZoomSecondDimension().second );
       
-      vector< bool > auxRows = histogram->GetHistogram()->getSelectedBooleanRows();
-      whichHistogram->setSelectedRows( auxRows );
+      vector< TObjectOrder > auxRows = sourceHistogram->GetHistogram()->getSelectedRows();
+      destinyHistogram->GetHistogram()->setSelectedRows( auxRows );
     }
     else if ( property == STR_DURATION )
     {
-      TRecordTime sourceBeginTime = histogram->GetHistogram()->getBeginTime();
-      TRecordTime sourceEndTime   = histogram->GetHistogram()->getEndTime();
+      TRecordTime sourceBeginTime = sourceHistogram->GetHistogram()->getBeginTime();
+      TRecordTime sourceEndTime   = sourceHistogram->GetHistogram()->getEndTime();
       TRecordTime sourceDuration  = sourceEndTime - sourceBeginTime;
-      TRecordTime newEndTime      = whichHistogram->GetHistogram()->getBeginTime() + sourceDuration;
+      TRecordTime newEndTime      = destinyHistogram->GetHistogram()->getBeginTime() + sourceDuration;
 
-      whichHistogram->GetHistogram()->setWindowEndTime( newEndTime );
+      destinyHistogram->GetHistogram()->setWindowEndTime( newEndTime );
     }
     else if ( property == STR_SEMANTIC_SCALE )
     {
-      whichHistogram->GetHistogram()->setMinGradient( histogram->GetHistogram()->getMinGradient() );
-      whichHistogram->GetHistogram()->setMaxGradient( histogram->GetHistogram()->getMaxGradient() );
+      destinyHistogram->GetHistogram()->setMinGradient( sourceHistogram->GetHistogram()->getMinGradient() );
+      destinyHistogram->GetHistogram()->setMaxGradient( sourceHistogram->GetHistogram()->getMaxGradient() );
     }
     else if( property == STR_CONTROL_SCALE )
     {
-      Histogram *srcHisto = histogram->GetHistogram();
-      Histogram *dstHisto = whichHistogram->GetHistogram();
+      Histogram *srcHisto = sourceHistogram->GetHistogram();
+      Histogram *dstHisto = destinyHistogram->GetHistogram();
       dstHisto->setControlMin( srcHisto->getControlMin() );
       dstHisto->setControlMax( srcHisto->getControlMax() );
       dstHisto->setControlDelta( srcHisto->getControlDelta() );
     }
     else if( property == STR_3D_SCALE )
     {
-      Histogram *srcHisto = histogram->GetHistogram();
-      Histogram *dstHisto = whichHistogram->GetHistogram();
+      Histogram *srcHisto = sourceHistogram->GetHistogram();
+      Histogram *dstHisto = destinyHistogram->GetHistogram();
       if( dstHisto->getExtraControlDelta() == srcHisto->getExtraControlDelta() )
       {
         double planeMin = dstHisto->getPlaneMinValue();
@@ -518,8 +517,8 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
     }
     else if( property == STR_CONTROL_DIMENSIONS )
     {
-      Histogram *srcHisto = histogram->GetHistogram();
-      Histogram *dstHisto = whichHistogram->GetHistogram();
+      Histogram *srcHisto = sourceHistogram->GetHistogram();
+      Histogram *dstHisto = destinyHistogram->GetHistogram();
       dstHisto->setControlDelta( srcHisto->getControlDelta() );
       THistogramLimit newMax =
               dstHisto->getControlMin() + ( srcHisto->getControlMax() - srcHisto->getControlMin() );
@@ -532,65 +531,65 @@ void gPasteWindowProperties::paste( gHistogram* whichHistogram, const string pro
 }
 
 
-bool gPasteWindowProperties::isAllowed( gTimeline *whichTimeline, const string property )
+bool gPasteWindowProperties::isAllowed( gTimeline *destinyTimeline, const string property )
 {
-  if ( timeline == NULL && histogram == NULL )
+  if ( sourceTimeline == NULL && sourceHistogram == NULL )
     return false;
 
   /*if ( property == STR_TIME )
-    commonTimeSettings( whichTimeline->GetMyWindow()->getTrace()->getEndTime() );*/
+    commonTimeSettings( destinyTimeline->GetMyWindow()->getTrace()->getEndTime() );*/
   
   if ( property == STR_FILTER ||
        property == STR_FILTER_ALL ||
        property == STR_FILTER_EVENTS ||
        property == STR_FILTER_COMMS )
-    commonFilterSettings( whichTimeline );
+    commonFilterSettings( destinyTimeline );
 
   commonMenuSettings();
 
-  return seekAllowed( property, TIMELINE, whichTimeline );
+  return seekAllowed( property, TIMELINE, destinyTimeline );
 }
 
 
-bool gPasteWindowProperties::isAllowed( gHistogram *whichHistogram, const string property )
+bool gPasteWindowProperties::isAllowed( gHistogram *destinyHistogram, const string property )
 {
 
-  if ( timeline == NULL && histogram == NULL )
+  if ( sourceTimeline == NULL && sourceHistogram == NULL )
     return false;
 
   if ( property == STR_TIME )
-    commonTimeSettings( whichHistogram->GetHistogram()->getControlWindow()->getTrace()->getEndTime() );
+    commonTimeSettings( destinyHistogram->GetHistogram()->getControlWindow()->getTrace()->getEndTime() );
     
   commonMenuSettings();
 
-  return seekAllowed( property, HISTOGRAM, whichHistogram );
+  return seekAllowed( property, HISTOGRAM, destinyHistogram );
 }
 
 
 TRecordTime gPasteWindowProperties::getBeginTime()
 {
-  if ( timeline != NULL )
-    return timeline->GetMyWindow()->getWindowBeginTime();
+  if ( sourceTimeline != NULL )
+    return sourceTimeline->GetMyWindow()->getWindowBeginTime();
 
-  return histogram->GetHistogram()->getBeginTime();
+  return sourceHistogram->GetHistogram()->getBeginTime();
 }
 
 TRecordTime gPasteWindowProperties::getEndTime()
 {
-  if ( timeline != NULL )
-    return timeline->GetMyWindow()->getWindowEndTime();
+  if ( sourceTimeline != NULL )
+    return sourceTimeline->GetMyWindow()->getWindowEndTime();
 
-  return histogram->GetHistogram()->getEndTime();
+  return sourceHistogram->GetHistogram()->getEndTime();
 }
 
-void gPasteWindowProperties::verifyRemove( gTimeline *whichTimeline )
+void gPasteWindowProperties::verifyRemove( gTimeline *destinyTimeline )
 {
-  if( whichTimeline == timeline )
-    timeline = NULL;
+  if( destinyTimeline == sourceTimeline )
+    sourceTimeline = NULL;
 }
 
-void gPasteWindowProperties::verifyRemove( gHistogram *whichHistogram )
+void gPasteWindowProperties::verifyRemove( gHistogram *destinyHistogram )
 {
-  if( whichHistogram == histogram )
-    histogram = NULL;
+  if( destinyHistogram == sourceHistogram )
+    sourceHistogram = NULL;
 }

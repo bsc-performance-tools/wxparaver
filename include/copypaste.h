@@ -74,21 +74,21 @@ class gPasteWindowProperties
     ~gPasteWindowProperties();
 
     static gPasteWindowProperties *getInstance();
-    
-    void copy( gTimeline* whichTimeline );
+
+    void copy( gTimeline *whichTimeline );
     void copy( gHistogram* whichHistogram );
 
-    void paste( gTimeline* whichTimeline, const string property );
-    void paste( gHistogram* whichHistogram, const string property );
+    void paste( gTimeline* destinyTimeline, const string property );
+    void paste( gHistogram* destinyHistogram, const string property );
 
-    bool isAllowed( gTimeline* whichTimeline, const string tag );
-    bool isAllowed( gHistogram* whichHistogram, const string tag );
+    bool isAllowed( gTimeline* destinyTimeline, const string tag );
+    bool isAllowed( gHistogram* destinyHistogram, const string tag );
 
     TRecordTime getBeginTime();
     TRecordTime getEndTime();
 
-    void verifyRemove( gTimeline *whichTimeline );
-    void verifyRemove( gHistogram *whichHistogram );
+    void verifyRemove( gTimeline *destinyTimeline );
+    void verifyRemove( gHistogram *destinyHistogram );
     
   private:
     #define SAME_TRACE 0
@@ -96,16 +96,16 @@ class gPasteWindowProperties
     #define TIMELINE 0
     #define HISTOGRAM 1
 
-    gTimeline  *timeline;
-    gHistogram *histogram;
+    gTimeline  *sourceTimeline;
+    gHistogram *sourceHistogram;
     map < const string, vector< vector < vector< bool > > > > allowed;
 
     gPasteWindowProperties();
 
     void commonMenuSettings( );
     void commonTimeSettings( TRecordTime destinyTraceEndTime );
-    void commonFilterSettings( gTimeline *whichTimeline );
-    bool seekAllowed( const string property, int destiny, gTimeline* destinyWindow );
+    void commonFilterSettings( gTimeline *destinyTimeline );
+    bool seekAllowed( const string property, int destiny, gTimeline* destinyTimeline );
     bool seekAllowed( const string property, int destiny, gHistogram* destinyHistogram );
 };
 
