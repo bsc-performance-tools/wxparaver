@@ -33,8 +33,10 @@
 #include <wx/uri.h>
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
+#include <wx/filefn.h> 
 
 #include "paraverkernelexception.h"
+#include "paraverconfig.h"
 #include "tutorialsdownload.h"
 
 using boost::asio::ip::tcp;
@@ -80,7 +82,14 @@ void TutorialsDownload::downloadInstall( const vector<PRV_UINT16>& whichTutorial
 {
   for( vector<PRV_UINT16>::const_iterator it = whichTutorials.begin(); it != whichTutorials.end(); ++it )
   {
-    download( findTutorial( *it ) );
+    string tutorialFile;
+    if( download( findTutorial( *it ), tutorialFile ) )
+    {
+      if ( install( tutorialFile ) )
+      {
+        wxRemoveFile( wxString::FromUTF8( tutorialFile.c_str() ) );
+      }
+    }
   }
 }
 
@@ -96,6 +105,24 @@ const TutorialData& TutorialsDownload::findTutorial( PRV_UINT16 whichId ) const
   throw std::exception();
 }
 
+bool TutorialsDownload::install( const string& tutorialFile ) const
+{
+  string tutorialsPath = ParaverConfig::getInstance()->getGlobalTutorialsPath();
+  
+  if( !wxFileName::Mkdir( wxString::FromUTF8( tutorialsPath.c_str() ), 0777, wxPATH_MKDIR_FULL ) )
+  {
+    wxMessageBox( wxT( "Failed creating directory " ) + wxString::FromUTF8( tutorialsPath.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
+    return false;
+  }
+  wxString command = wxT( "tar xf " ) + wxString::FromUTF8( tutorialFile.c_str() ) + wxT( " --directory " ) + wxString::FromUTF8( tutorialsPath.c_str() );
+  if( wxExecute( command, wxEXEC_SYNC ) != 0 )
+  {
+    wxMessageBox( wxT( "Failed installing tutorial " ) + wxString::FromUTF8( tutorialFile.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
+    return false;
+  }
+
+  return true;
+}
 
 // Download using client based on https://github.com/alexandruc/SimpleHttpsClient ( boost::ASIO )
 class client
@@ -318,15 +345,17 @@ class client
     ofstream& store_;
 };
 
-void TutorialsDownload::download( const TutorialData& whichTutorial ) const
+bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tutorialFile ) const
 {
   wxURI tutorialURI( wxString::FromUTF8( whichTutorial.getUrl().c_str() ) );
   wxString path   = tutorialURI.GetPath();
   wxString server = tutorialURI.GetServer();
 
   wxFileName outputFilePath( path );
-  ofstream storeFile( string( "/home/eloy/" ) + string( outputFilePath.GetFullName().mb_str() ) );
-  
+  string downloadPath = ParaverConfig::getInstance()->getParaverConfigDir();
+  tutorialFile = downloadPath + string( outputFilePath.GetFullName().mb_str() );
+  ofstream storeFile( tutorialFile );
+
   try
   {
     boost::asio::ssl::context ctx( boost::asio::ssl::context::sslv23 );
@@ -339,7 +368,12 @@ void TutorialsDownload::download( const TutorialData& whichTutorial ) const
   catch ( ParaverKernelException& e )
   {
     wxMessageBox( wxString::FromUTF8( e.what() ), wxT( "Download failed" ), wxICON_ERROR );
+    storeFile.close();
+
+    return false;
   }
   
   storeFile.close();
+
+  return true;
 }

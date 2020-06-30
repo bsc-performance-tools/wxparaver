@@ -84,9 +84,8 @@ class TutorialsDownload
     bool tutorialsListUpdated;
     vector<TutorialData> tutorialsList;
 
-    void download( const TutorialData& whichTutorial ) const;
-    
-    void testDownload( const string& server, const string& path, ofstream& storeFile ) const;
+    bool download( const TutorialData &whichTutorial, string &tutorialFile ) const;
+    bool install( const string& tutorialFile ) const;
 };
 
 #endif // _TUTORIALSDOWNLOAD_H_
