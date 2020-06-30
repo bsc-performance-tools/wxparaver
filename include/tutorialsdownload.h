@@ -35,6 +35,31 @@ using std::vector;
 using std::ofstream;
 
 
+class TutorialsProgress
+{
+  public:
+    TutorialsProgress( wxString& title,
+                       wxString& message,
+                       unsigned int whichNumTutorials );
+
+    ~TutorialsProgress();
+
+    void nextTutorial();
+    void setMessage( wxString& whichMessage );
+    void setCurrentDownloadSize( unsigned int whichSize );
+    void setCurrentInstallSize( unsigned int whichSize );
+    void updateDownload( int whichValue );
+    void updateInstall( int whichValue );
+
+  private:
+    wxProgressDialog *dialog;
+    unsigned int numTutorials;
+    unsigned int currentTutorial;
+    unsigned int currentDownloadSize;
+    unsigned int currentInstallSize;
+
+};
+
 class TutorialData
 {
   public:
@@ -84,8 +109,8 @@ class TutorialsDownload
     bool tutorialsListUpdated;
     vector<TutorialData> tutorialsList;
 
-    bool download( const TutorialData &whichTutorial, string &tutorialFile ) const;
-    bool install( const string& tutorialFile ) const;
+    bool download( const TutorialData &whichTutorial, string &tutorialFile, TutorialsProgress& progress ) const;
+    bool install( const string& tutorialFile, TutorialsProgress& progress ) const;
 };
 
-#endif // _TUTORIALSDOWNLOAD_H_
+#endif // _TUTORIALSDOWNLOAD_H_c

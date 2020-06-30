@@ -33,7 +33,8 @@
 #include <wx/uri.h>
 #include <wx/filename.h>
 #include <wx/msgdlg.h>
-#include <wx/filefn.h> 
+#include <wx/filefn.h>
+#include <wx/progdlg.h>
 
 #include "paraverkernelexception.h"
 #include "paraverconfig.h"
@@ -43,86 +44,62 @@ using boost::asio::ip::tcp;
 using std::stringstream;
 
 
-TutorialsDownload *TutorialsDownload::instance = NULL;
-
-TutorialsDownload *TutorialsDownload::getInstance()
+TutorialsProgress::TutorialsProgress( wxString& title,
+                                      wxString& message,
+                                      unsigned int whichNumTutorials ) :
+        numTutorials( whichNumTutorials ),
+        currentTutorial( 0 ),
+        currentDownloadSize( 0 ),
+        currentInstallSize( 0 )
 {
-  if( instance == NULL )
-    instance = new TutorialsDownload();
-    return instance;
+  dialog = new wxProgressDialog( title, message, numTutorials * 100, NULL, wxPD_APP_MODAL|wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME );
 }
 
-TutorialsDownload::TutorialsDownload()
+TutorialsProgress::~TutorialsProgress()
 {
-  tutorialsListUpdated = false;
+  if( dialog != NULL )
+    delete dialog;
 }
 
-TutorialsDownload::~TutorialsDownload()
-{}
-
-const vector<TutorialData>& TutorialsDownload::getTutorialsList()
+void TutorialsProgress::nextTutorial()
 {
-  if( tutorialsListUpdated )
-    return tutorialsList;
-    
-  // TODO: Download and parse tutorials data from server
-  
-  // Tutorial data example. Debug purposes.
-  TutorialData tmp( 1, "https://tools.bsc.es/sites/default/files/documentation/1.introduction_to_paraver_mpi.tar.gz", "Paraver introduction (MPI)", 1 );
-  //TutorialData tmp( 1, "https://tools.bsc.es/paraver-tutorials", "Paraver introduction (MPI)", 1 );
-  tutorialsList.push_back( tmp );
-  
-  tutorialsListUpdated = true;
-  
-  return tutorialsList;
+  ++currentTutorial;
 }
 
-
-void TutorialsDownload::downloadInstall( const vector<PRV_UINT16>& whichTutorials )
+void TutorialsProgress::setMessage( wxString& whichMessage )
 {
-  for( vector<PRV_UINT16>::const_iterator it = whichTutorials.begin(); it != whichTutorials.end(); ++it )
-  {
-    string tutorialFile;
-    if( download( findTutorial( *it ), tutorialFile ) )
-    {
-      if ( install( tutorialFile ) )
-      {
-        wxRemoveFile( wxString::FromUTF8( tutorialFile.c_str() ) );
-      }
-    }
-  }
+  dialog->Update( 100 * currentTutorial, whichMessage );
+  dialog->Layout();
 }
 
-
-const TutorialData& TutorialsDownload::findTutorial( PRV_UINT16 whichId ) const
+void TutorialsProgress::setCurrentDownloadSize( unsigned int whichSize )
 {
-  for( vector<TutorialData>::const_iterator it = tutorialsList.begin(); it != tutorialsList.end(); ++it )
-  {
-    if( it->getId() == whichId )
-      return *it;
-  }
-  
-  throw std::exception();
+  currentDownloadSize = whichSize;
 }
 
-bool TutorialsDownload::install( const string& tutorialFile ) const
+void TutorialsProgress::setCurrentInstallSize( unsigned int whichSize )
 {
-  string tutorialsPath = ParaverConfig::getInstance()->getGlobalTutorialsPath();
-  
-  if( !wxFileName::Mkdir( wxString::FromUTF8( tutorialsPath.c_str() ), 0777, wxPATH_MKDIR_FULL ) )
-  {
-    wxMessageBox( wxT( "Failed creating directory " ) + wxString::FromUTF8( tutorialsPath.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
-    return false;
-  }
-  wxString command = wxT( "tar xf " ) + wxString::FromUTF8( tutorialFile.c_str() ) + wxT( " --directory " ) + wxString::FromUTF8( tutorialsPath.c_str() );
-  if( wxExecute( command, wxEXEC_SYNC ) != 0 )
-  {
-    wxMessageBox( wxT( "Failed installing tutorial " ) + wxString::FromUTF8( tutorialFile.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
-    return false;
-  }
-
-  return true;
+  currentInstallSize = whichSize;
 }
+
+void TutorialsProgress::updateDownload( int whichValue )
+{
+  int newValue = 100 * currentTutorial;
+
+  newValue += ( (double)whichValue / (double)currentDownloadSize ) * 90.0;
+
+  dialog->Update( newValue );
+}
+
+void TutorialsProgress::updateInstall( int whichValue )
+{
+  int newValue = ( 100 * currentTutorial ) + 90;
+
+  newValue += ( (double)whichValue / (double)currentInstallSize ) * 10.0;
+
+  dialog->Update( newValue );
+}
+
 
 // Download using client based on https://github.com/alexandruc/SimpleHttpsClient ( boost::ASIO )
 class client
@@ -131,10 +108,12 @@ class client
     client( boost::asio::io_service& io_service,
             boost::asio::ssl::context& context,
             const std::string& server, const std::string& path,
-            ofstream& storeFile )
+            ofstream& storeFile,
+            TutorialsProgress& progress )
             : resolver_( io_service ),
               socket_( io_service, context ),
-              store_( storeFile )
+              store_( storeFile ),
+              progress_( progress )
     {
 
         // Form the request. We specify the "Connection: close" header so that the
@@ -296,7 +275,9 @@ class client
         {
           if( !header.compare( 0, 15, "Content-Length:" ) )
           {
-            std::cout << "TOTAL BYTES OF FILE: " << header.substr( 16 ) << std::endl;
+            stringstream tmpSstr( header.substr( 16 ) );
+            tmpSstr >> totalBytes_;
+            progress_.setCurrentDownloadSize( totalBytes_ );
           }
         } 
         // Write whatever content we already have to output.
@@ -323,7 +304,8 @@ class client
       {
         // Write all of the data that has been read so far.
         store_ << &response_;
-        std::cout << "store tellp: " << store_.tellp() << std::endl;
+        //std::cout << "store tellp: " << store_.tellp() << std::endl;
+        progress_.updateDownload( store_.tellp() );
         // Continue reading remaining data until EOF.
         boost::asio::async_read( socket_, 
                                  response_,
@@ -343,9 +325,98 @@ class client
     boost::asio::streambuf request_;
     boost::asio::streambuf response_;
     ofstream& store_;
+    int totalBytes_;
+    TutorialsProgress& progress_;
 };
 
-bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tutorialFile ) const
+
+TutorialsDownload *TutorialsDownload::instance = NULL;
+
+TutorialsDownload *TutorialsDownload::getInstance()
+{
+  if( instance == NULL )
+    instance = new TutorialsDownload();
+    return instance;
+}
+
+TutorialsDownload::TutorialsDownload()
+{
+  tutorialsListUpdated = false;
+}
+
+TutorialsDownload::~TutorialsDownload()
+{}
+
+const vector<TutorialData>& TutorialsDownload::getTutorialsList()
+{
+  if( tutorialsListUpdated )
+    return tutorialsList;
+    
+  // TODO: Download and parse tutorials data from server
+  
+  // Tutorial data example. Debug purposes.
+  TutorialData tmp( 1, "https://tools.bsc.es/sites/default/files/documentation/1.introduction_to_paraver_mpi.tar.gz", "Paraver introduction (MPI)", 1 );
+  tutorialsList.push_back( tmp );
+  TutorialData tmp2( 2, "https://tools.bsc.es/sites/default/files/documentation/2.introduction_to_dimemas.tar.gz", "Dimemas introduction", 1 );
+  tutorialsList.push_back(tmp2);
+  TutorialData tmp3( 3, "https://tools.bsc.es/sites/default/files/documentation/3.introduction_to_paraver_and_dimemas_methodology.tar.gz", "Introduction to Paraver and Dimemas methodology", 1 );
+  tutorialsList.push_back(tmp3);
+  TutorialData tmp4( 4, "https://tools.bsc.es/sites/default/files/documentation/4.methodology_of_analysis.tar.gz", "Methodology", 1 );
+  tutorialsList.push_back(tmp4);
+  TutorialData tmp5( 5, "https://tools.bsc.es/sites/default/files/documentation/5.tutorial_on_hydroc.tar.gz", "Tutorial on HydroC analysis (MPI, Dimemas, CUDA)", 1 );
+  tutorialsList.push_back(tmp5);
+  TutorialData tmp6( 6, "https://tools.bsc.es/sites/default/files/documentation/6.paraver_trace_preparation.tar.gz", "Trace preparation", 1 );
+  tutorialsList.push_back(tmp6);
+  //TutorialData tmp7( 7, "https://tools.bsc.es/sites/default/files/documentation/trace_alignment.tar.gz", "Trace alignment tutorial", 1 );
+  //tutorialsList.push_back(tmp7);
+  //TutorialData tmp( 1, "https://tools.bsc.es/paraver-tutorials", "Paraver introduction (MPI)", 1 );
+
+  tutorialsListUpdated = true;
+
+  tutorialsListUpdated = true;
+  
+  return tutorialsList;
+}
+
+
+void TutorialsDownload::downloadInstall( const vector<PRV_UINT16>& whichTutorials )
+{
+  wxString myTitle( wxT( "Download and install tutorials" ) );
+  wxString myMessage( wxT( "" ) );
+  TutorialsProgress progress( myTitle, myMessage, whichTutorials.size() );
+
+  for( vector<PRV_UINT16>::const_iterator it = whichTutorials.begin(); it != whichTutorials.end(); ++it )
+  {
+    string tutorialFile;
+    TutorialData data = findTutorial( *it );
+
+    myMessage = wxString::FromUTF8( data.getName().c_str() );
+    progress.setMessage( myMessage );
+    if( download( data, tutorialFile, progress ) )
+    {
+      if ( install( tutorialFile, progress ) )
+      {
+        wxRemoveFile( wxString::FromUTF8( tutorialFile.c_str() ) );
+        progress.nextTutorial();
+      }
+    }
+  }
+}
+
+
+const TutorialData& TutorialsDownload::findTutorial( PRV_UINT16 whichId ) const
+{
+  for( vector<TutorialData>::const_iterator it = tutorialsList.begin(); it != tutorialsList.end(); ++it )
+  {
+    if( it->getId() == whichId )
+      return *it;
+  }
+  
+  throw std::exception();
+}
+
+
+bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tutorialFile, TutorialsProgress& progress ) const
 {
   wxURI tutorialURI( wxString::FromUTF8( whichTutorial.getUrl().c_str() ) );
   wxString path   = tutorialURI.GetPath();
@@ -362,7 +433,7 @@ bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tut
     ctx.set_default_verify_paths();
 
     boost::asio::io_service io_service;
-    client c( io_service, ctx, std::string( server.mb_str() ), std::string( path.mb_str() ), storeFile );
+    client c( io_service, ctx, std::string( server.mb_str() ), std::string( path.mb_str() ), storeFile, progress );
     io_service.run();
   }
   catch ( ParaverKernelException& e )
@@ -374,6 +445,30 @@ bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tut
   }
   
   storeFile.close();
+
+  return true;
+}
+
+
+bool TutorialsDownload::install( const string& tutorialFile, TutorialsProgress& progress ) const
+{
+  string tutorialsPath = ParaverConfig::getInstance()->getGlobalTutorialsPath();
+  
+  progress.setCurrentInstallSize( 1 );
+
+  if( !wxFileName::Mkdir( wxString::FromUTF8( tutorialsPath.c_str() ), 0777, wxPATH_MKDIR_FULL ) )
+  {
+    wxMessageBox( wxT( "Failed creating directory " ) + wxString::FromUTF8( tutorialsPath.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
+    return false;
+  }
+  wxString command = wxT( "tar xf " ) + wxString::FromUTF8( tutorialFile.c_str() ) + wxT( " --directory " ) + wxString::FromUTF8( tutorialsPath.c_str() );
+  if( wxExecute( command, wxEXEC_SYNC ) != 0 )
+  {
+    wxMessageBox( wxT( "Failed installing tutorial " ) + wxString::FromUTF8( tutorialFile.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
+    return false;
+  }
+
+  progress.updateInstall( 1 );
 
   return true;
 }
