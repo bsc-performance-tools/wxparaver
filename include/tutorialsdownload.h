@@ -28,6 +28,11 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
+
 #include "paraverkerneltypes.h"
 
 using std::string;
@@ -82,6 +87,16 @@ class TutorialData
     string     getName() const { return name; };
     PRV_UINT16 getVersion() const { return version; };
     
+
+    template< class Archive >
+    void serialize( Archive & ar, const unsigned int version )
+    {
+      ar & boost::serialization::make_nvp( "id", id );
+      ar & boost::serialization::make_nvp( "url", url );
+      ar & boost::serialization::make_nvp( "name", name );
+      ar & boost::serialization::make_nvp( "version", version );
+    }
+    
   private:
     PRV_UINT16 id;
     string     url;
@@ -91,18 +106,31 @@ class TutorialData
 };
 
 
+BOOST_CLASS_VERSION( TutorialData, 1 )
+
+
 class TutorialsDownload
 {
   public:
     static TutorialsDownload *getInstance();
+
+    ~TutorialsDownload();
     
+    void writeList( std::string& fullPath );
+
     const vector<TutorialData>& getTutorialsList();
     void downloadInstall( const vector<PRV_UINT16>& whichTutorials );
     const TutorialData& findTutorial( PRV_UINT16 whichId ) const;
-    
+
+    template< class Archive >
+    void serialize( Archive & ar, const unsigned int version )
+    {
+      ar & boost::serialization::make_nvp( "tutorialsList", tutorialsList );
+    }
+
+
   private:
     TutorialsDownload();
-    ~TutorialsDownload();
     
     static TutorialsDownload *instance;
     
@@ -112,5 +140,7 @@ class TutorialsDownload
     bool download( const TutorialData &whichTutorial, string &tutorialFile, TutorialsProgress& progress ) const;
     bool install( const string& tutorialFile, TutorialsProgress& progress ) const;
 };
+
+BOOST_CLASS_VERSION( TutorialsDownload, 1 )
 
 #endif // _TUTORIALSDOWNLOAD_H_c

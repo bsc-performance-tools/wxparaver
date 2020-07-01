@@ -347,14 +347,8 @@ TutorialsDownload::TutorialsDownload()
 TutorialsDownload::~TutorialsDownload()
 {}
 
-const vector<TutorialData>& TutorialsDownload::getTutorialsList()
+void TutorialsDownload::writeList( std::string& fullPath )
 {
-  if( tutorialsListUpdated )
-    return tutorialsList;
-    
-  // TODO: Download and parse tutorials data from server
-  
-  // Tutorial data example. Debug purposes.
   TutorialData tmp( 1, "https://tools.bsc.es/sites/default/files/documentation/1.introduction_to_paraver_mpi.tar.gz", "Paraver introduction (MPI)", 1 );
   tutorialsList.push_back( tmp );
   TutorialData tmp2( 2, "https://tools.bsc.es/sites/default/files/documentation/2.introduction_to_dimemas.tar.gz", "Dimemas introduction", 1 );
@@ -369,9 +363,24 @@ const vector<TutorialData>& TutorialsDownload::getTutorialsList()
   tutorialsList.push_back(tmp6);
   //TutorialData tmp7( 7, "https://tools.bsc.es/sites/default/files/documentation/trace_alignment.tar.gz", "Trace alignment tutorial", 1 );
   //tutorialsList.push_back(tmp7);
-  //TutorialData tmp( 1, "https://tools.bsc.es/paraver-tutorials", "Paraver introduction (MPI)", 1 );
 
-  tutorialsListUpdated = true;
+  std::ofstream ofs( fullPath.c_str() );
+  if( ofs.good() )
+  {
+    boost::archive::xml_oarchive oa( ofs );
+    oa << boost::serialization::make_nvp( "tutorials", *this );
+  }
+  ofs.close();
+}
+
+
+const vector<TutorialData>& TutorialsDownload::getTutorialsList()
+{
+  if( tutorialsListUpdated )
+    return tutorialsList;
+    
+  // TODO: Download and parse tutorials data from server
+  
 
   tutorialsListUpdated = true;
   
