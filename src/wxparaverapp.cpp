@@ -647,8 +647,9 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
 {
   if ( paraverCommandLineParser.Found( wxT( "generate_tutorials_file" ) ) )
   {
-    std::string tmpTutorialFile( "./tutorials_list.xml" );
+    std::string tmpTutorialFile( "./" + TutorialsDownload::tutorialsListFile );
     TutorialsDownload::getInstance()->writeList( tmpTutorialFile );
+    mainWindow->Close();
     return;
   }
 

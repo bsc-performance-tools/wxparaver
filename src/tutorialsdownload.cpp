@@ -43,6 +43,8 @@
 using boost::asio::ip::tcp;
 using std::stringstream;
 
+std::string TutorialsDownload::tutorialsListFile = "tutorials_list.xml";
+
 
 TutorialsProgress::TutorialsProgress( wxString& title,
                                       wxString& message,
@@ -374,13 +376,21 @@ void TutorialsDownload::writeList( std::string& fullPath )
 }
 
 
-const vector<TutorialData>& TutorialsDownload::getTutorialsList()
+vector<TutorialData> TutorialsDownload::getTutorialsList()
 {
   if( tutorialsListUpdated )
     return tutorialsList;
     
   // TODO: Download and parse tutorials data from server
-  
+
+
+  std::ifstream ifs( ParaverConfig::getInstance()->getParaverConfigDir() + TutorialsDownload::tutorialsListFile );
+  if( ifs.good() )
+  {
+    boost::archive::xml_iarchive ia( ifs );
+    ia >> boost::serialization::make_nvp( "tutorials", *this );
+  }
+  ifs.close();
 
   tutorialsListUpdated = true;
   

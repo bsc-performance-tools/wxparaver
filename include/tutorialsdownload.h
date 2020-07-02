@@ -68,6 +68,9 @@ class TutorialsProgress
 class TutorialData
 {
   public:
+    TutorialData()
+    {}
+    
     TutorialData( PRV_UINT16 whichId,
                   string     whichUrl,
                   string     whichName,
@@ -112,13 +115,15 @@ BOOST_CLASS_VERSION( TutorialData, 1 )
 class TutorialsDownload
 {
   public:
-    static TutorialsDownload *getInstance();
+    static std::string tutorialsListFile;
 
+    static TutorialsDownload *getInstance();
+    
     ~TutorialsDownload();
     
     void writeList( std::string& fullPath );
 
-    const vector<TutorialData>& getTutorialsList();
+    vector<TutorialData> getTutorialsList();
     void downloadInstall( const vector<PRV_UINT16>& whichTutorials );
     const TutorialData& findTutorial( PRV_UINT16 whichId ) const;
 
@@ -128,16 +133,16 @@ class TutorialsDownload
       ar & boost::serialization::make_nvp( "tutorialsList", tutorialsList );
     }
 
+  protected:
+    TutorialsDownload();
 
   private:
-    TutorialsDownload();
-    
     static TutorialsDownload *instance;
     
     bool tutorialsListUpdated;
     vector<TutorialData> tutorialsList;
 
-    bool download( const TutorialData &whichTutorial, string &tutorialFile, TutorialsProgress& progress ) const;
+    bool download( const TutorialData& whichTutorial, string& tutorialFile, TutorialsProgress& progress ) const;
     bool install( const string& tutorialFile, TutorialsProgress& progress ) const;
 };
 
