@@ -62,7 +62,6 @@ class TutorialsProgress
     unsigned int currentTutorial;
     unsigned int currentDownloadSize;
     unsigned int currentInstallSize;
-
 };
 
 class TutorialData
@@ -87,12 +86,14 @@ class TutorialData
     
     PRV_UINT16 getId() const { return id; }
     string     getUrl() const { return url; }
-    string     getName() const { return name; };
-    PRV_UINT16 getVersion() const { return version; };
+    string     getName() const { return name; }
+    PRV_UINT16 getVersion() const { return version; }
     
+    void setName( string whichName ) { name = whichName; }
+    void setVersion( PRV_UINT16 whichVersion ) { version = whichVersion; }
 
     template< class Archive >
-    void serialize( Archive & ar, const unsigned int version )
+    void serialize( Archive & ar, const unsigned int whichVersion )
     {
       ar & boost::serialization::make_nvp( "id", id );
       ar & boost::serialization::make_nvp( "url", url );
@@ -128,7 +129,7 @@ class TutorialsDownload
     const TutorialData& findTutorial( PRV_UINT16 whichId ) const;
 
     template< class Archive >
-    void serialize( Archive & ar, const unsigned int version )
+    void serialize( Archive & ar, const unsigned int whichVersion )
     {
       ar & boost::serialization::make_nvp( "tutorialsList", tutorialsList );
     }
@@ -142,10 +143,13 @@ class TutorialsDownload
     bool tutorialsListUpdated;
     vector<TutorialData> tutorialsList;
 
+    void loadXML( const std::string& whichFilename, TutorialsDownload *whichTutorials, const std::string& whichTag );
+    void loadXML( const std::string& whichFilename, vector<TutorialData>& whichTutorials, const std::string& whichTag );
+    bool downloadTutorialsList() const;
     bool download( const TutorialData& whichTutorial, string& tutorialFile, TutorialsProgress& progress ) const;
     bool install( const string& tutorialFile, TutorialsProgress& progress ) const;
 };
 
 BOOST_CLASS_VERSION( TutorialsDownload, 1 )
 
-#endif // _TUTORIALSDOWNLOAD_H_c
+#endif // _TUTORIALSDOWNLOAD_H_

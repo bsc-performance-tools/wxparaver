@@ -39,6 +39,7 @@
 #include "paraverkernelexception.h"
 #include "paraverconfig.h"
 #include "tutorialsdownload.h"
+#include "wxparaverapp.h"
 
 using boost::asio::ip::tcp;
 using std::stringstream;
@@ -111,7 +112,7 @@ class client
             boost::asio::ssl::context& context,
             const std::string& server, const std::string& path,
             ofstream& storeFile,
-            TutorialsProgress& progress )
+            TutorialsProgress *progress )
             : resolver_( io_service ),
               socket_( io_service, context ),
               store_( storeFile ),
@@ -279,7 +280,8 @@ class client
           {
             stringstream tmpSstr( header.substr( 16 ) );
             tmpSstr >> totalBytes_;
-            progress_.setCurrentDownloadSize( totalBytes_ );
+            if( progress_ != NULL )
+              progress_->setCurrentDownloadSize( totalBytes_ );
           }
         } 
         // Write whatever content we already have to output.
@@ -306,8 +308,10 @@ class client
       {
         // Write all of the data that has been read so far.
         store_ << &response_;
-        //std::cout << "store tellp: " << store_.tellp() << std::endl;
-        progress_.updateDownload( store_.tellp() );
+
+        if( progress_ != NULL )
+          progress_->updateDownload( store_.tellp() );
+          
         // Continue reading remaining data until EOF.
         boost::asio::async_read( socket_, 
                                  response_,
@@ -328,7 +332,7 @@ class client
     boost::asio::streambuf response_;
     ofstream& store_;
     int totalBytes_;
-    TutorialsProgress& progress_;
+    TutorialsProgress *progress_;
 };
 
 
@@ -378,23 +382,36 @@ void TutorialsDownload::writeList( std::string& fullPath )
 
 vector<TutorialData> TutorialsDownload::getTutorialsList()
 {
-  if( tutorialsListUpdated )
-    return tutorialsList;
-    
-  // TODO: Download and parse tutorials data from server
-
-
-  std::ifstream ifs( ParaverConfig::getInstance()->getParaverConfigDir() + TutorialsDownload::tutorialsListFile );
-  if( ifs.good() )
+  if( !tutorialsListUpdated )
   {
-    boost::archive::xml_iarchive ia( ifs );
-    ia >> boost::serialization::make_nvp( "tutorials", *this );
+    downloadTutorialsList();
+    loadXML( ParaverConfig::getInstance()->getParaverConfigDir() + TutorialsDownload::tutorialsListFile, this, "tutorials" );
+    tutorialsListUpdated = true;
   }
-  ifs.close();
 
-  tutorialsListUpdated = true;
-  
-  return tutorialsList;
+  vector<TutorialData> tutorialsListState = tutorialsList;
+  vector<TutorialData> installedTutorials;
+  loadXML( ParaverConfig::getInstance()->getGlobalTutorialsPath() + PATH_SEP + TutorialsDownload::tutorialsListFile,
+           installedTutorials,
+           "installed_tutorials" );
+
+  for( vector<TutorialData>::iterator it = tutorialsListState.begin(); it != tutorialsListState.end(); ++it )
+  {
+    for( vector<TutorialData>::const_iterator itInstalled = installedTutorials.begin(); itInstalled != installedTutorials.end(); ++itInstalled )
+    {
+      if( itInstalled->getId() == it->getId() )
+      {
+        if( itInstalled->getVersion() < it->getVersion() )
+          it->setName( "[NEW VERSION] " + it->getName() );
+        else
+          it->setName( "[INSTALLED] " + it->getName() );
+
+        break;
+      }
+    }
+  }
+
+  return tutorialsListState;
 }
 
 
@@ -403,6 +420,12 @@ void TutorialsDownload::downloadInstall( const vector<PRV_UINT16>& whichTutorial
   wxString myTitle( wxT( "Download and install tutorials" ) );
   wxString myMessage( wxT( "" ) );
   TutorialsProgress progress( myTitle, myMessage, whichTutorials.size() );
+
+  vector<TutorialData> installedTutorials;
+
+  loadXML( ParaverConfig::getInstance()->getGlobalTutorialsPath() + PATH_SEP + TutorialsDownload::tutorialsListFile, 
+           installedTutorials,
+           "installed_tutorials" );
 
   for( vector<PRV_UINT16>::const_iterator it = whichTutorials.begin(); it != whichTutorials.end(); ++it )
   {
@@ -416,10 +439,34 @@ void TutorialsDownload::downloadInstall( const vector<PRV_UINT16>& whichTutorial
       if ( install( tutorialFile, progress ) )
       {
         wxRemoveFile( wxString::FromUTF8( tutorialFile.c_str() ) );
+        
+        vector<TutorialData>::iterator itInstalled;
+        for( itInstalled = installedTutorials.begin(); itInstalled != installedTutorials.end(); ++itInstalled )
+        {
+          if( itInstalled->getId() == data.getId() )
+          {
+            itInstalled->setVersion( data.getVersion() );
+            break;
+          }
+        }
+
+        if ( itInstalled == installedTutorials.end() )
+        {
+          installedTutorials.push_back( data );
+        }
+        
         progress.nextTutorial();
       }
     }
   }
+
+  std::ofstream ofs( ParaverConfig::getInstance()->getGlobalTutorialsPath() + PATH_SEP + TutorialsDownload::tutorialsListFile );
+  if( ofs.good() )
+  {
+    boost::archive::xml_oarchive oa( ofs );
+    oa << boost::serialization::make_nvp( "installed_tutorials", installedTutorials );
+  }
+  ofs.close();
 }
 
 
@@ -432,6 +479,61 @@ const TutorialData& TutorialsDownload::findTutorial( PRV_UINT16 whichId ) const
   }
   
   throw std::exception();
+}
+
+
+void TutorialsDownload::loadXML( const std::string& whichFilename, TutorialsDownload *whichTutorials, const std::string& whichTag )
+{
+  std::ifstream ifs( whichFilename );
+  if( ifs.good() )
+  {
+    boost::archive::xml_iarchive ia( ifs );
+    ia >> boost::serialization::make_nvp( whichTag.c_str(), *whichTutorials );
+  }
+  ifs.close();
+}
+
+
+void TutorialsDownload::loadXML( const std::string& whichFilename, vector<TutorialData>& whichTutorials, const std::string& whichTag )
+{
+  std::ifstream ifs( whichFilename );
+  if( ifs.good() )
+  {
+    boost::archive::xml_iarchive ia( ifs );
+    ia >> boost::serialization::make_nvp( whichTag.c_str(), whichTutorials );
+  }
+  ifs.close();
+}
+
+
+bool TutorialsDownload::downloadTutorialsList() const
+{
+  std::string path   = "/sites/default/files/documentation/" + TutorialsDownload::tutorialsListFile;
+  std::string server = "tools.bsc.es";
+
+  std::string tutorialFile = ParaverConfig::getInstance()->getParaverConfigDir() + TutorialsDownload::tutorialsListFile;
+  ofstream storeFile( tutorialFile );
+
+  try
+  {
+    boost::asio::ssl::context ctx( boost::asio::ssl::context::sslv23 );
+    ctx.set_default_verify_paths();
+
+    boost::asio::io_service io_service;
+    client c( io_service, ctx, server, path, storeFile, NULL );
+    io_service.run();
+  }
+  catch ( ParaverKernelException& e )
+  {
+    wxMessageBox( wxString::FromUTF8( e.what() ), wxT( "Download failed" ), wxICON_ERROR );
+    storeFile.close();
+
+    return false;
+  }
+  
+  storeFile.close();
+
+  return true;
 }
 
 
@@ -452,7 +554,7 @@ bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tut
     ctx.set_default_verify_paths();
 
     boost::asio::io_service io_service;
-    client c( io_service, ctx, std::string( server.mb_str() ), std::string( path.mb_str() ), storeFile, progress );
+    client c( io_service, ctx, std::string( server.mb_str() ), std::string( path.mb_str() ), storeFile, &progress );
     io_service.run();
   }
   catch ( ParaverKernelException& e )

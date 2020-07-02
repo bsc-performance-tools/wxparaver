@@ -843,7 +843,12 @@ void TutorialsBrowser::linkToWebPage( wxString& htmlDoc )
 
 void TutorialsBrowser::helpMessage( wxString& htmlDoc )
 {
-  htmlDoc += wxT( "<P><H3>No tutorials found!?</H3></P>" );
+  htmlDoc += wxT( "<P><H2>No tutorials found!?</H2></P>" );
+  htmlDoc += wxT( "<P><H3>Install using the download dialog</H3></P>" );
+  htmlDoc += wxT( "<P>You can automatically download and install any of the available tutorials by clicking the <B>\"Download and Install\"</B> button.</P>" );
+  htmlDoc += wxT( "<P>Just check in the desired tutorials and press the <B>\"OK\"</B> button.</P>" );
+
+  htmlDoc += wxT( "<P><H3>Manual installation</H3></P>" );
   htmlDoc += wxT( "<P>Please check that a <B>root directory</B> to tutorials is properly defined:</P>" );
 
   htmlDoc += wxT( "<OL type=\"1\">" );
@@ -993,5 +998,7 @@ void TutorialsBrowser::OnButtonDownloadClick(  wxCommandEvent& event )
     
     if( tutorialsIndex.size() > 0 )
       TutorialsDownload::getInstance()->downloadInstall( tutorialsIndex );
+
+    buildIndex();
   }
 }
