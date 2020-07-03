@@ -21,6 +21,7 @@ noinst_HEADERS = \
               derived_minimum.xpm\
               derived_product.xpm\
               derived_substract.xpm\
+							download.xpm\
               file_browser.xpm\
 							help.xpm\
               hide_cols.xpm\
