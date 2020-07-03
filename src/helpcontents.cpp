@@ -35,18 +35,21 @@
 ////@begin includes
 ////@end includes
 #include <wx/file.h>
+#include <wx/choicdlg.h>
+#include "wx/filesys.h"
+#include <wx/mimetype.h>
 
 #include <string>
 
 #include "helpcontents.h"
 #include "paravermain.h"
-#include "wx/filesys.h"
-#include <wx/mimetype.h>
+#include "tutorialsdownload.h"
 
 ////@begin XPM images
 #include "../icons/index.xpm"
 #include "../icons/arrow_left.xpm"
 #include "../icons/arrow_right.xpm"
+#include "../icons/download.xpm"
 ////@end XPM images
 
 /*!
@@ -85,6 +88,7 @@ BEGIN_EVENT_TABLE( TutorialsBrowser, wxDialog )
   EVT_BUTTON( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardClick )
   EVT_UPDATE_UI( ID_BITMAPBUTTON_FORWARD, TutorialsBrowser::OnBitmapbuttonForwardUpdate )
   EVT_BUTTON( ID_BUTTON_CLOSE, TutorialsBrowser::OnButtonCloseClick )
+  EVT_BUTTON( ID_BITMAPBUTTON_DOWNLOAD, TutorialsBrowser::OnButtonDownloadClick )
 
 END_EVENT_TABLE()
 
@@ -152,6 +156,9 @@ HelpContents::HelpContents( wxWindow* parent,
 {
   Init();
   Create(parent, id, caption, pos, size, style);
+  
+  buttonDownloadTutorial->Hide();
+  staticLineDownloadSeparator->Hide();
 }
 
 
@@ -172,7 +179,7 @@ bool HelpContents::Create( wxWindow* parent,
   CreateControls();
   Centre();
 ////@end HelpContents creation
-
+  
   return true;
 }
 
@@ -376,14 +383,20 @@ void HelpContents::CreateControls()
     buttonHistoryForward->SetToolTip(_("Next page"));
   itemBoxSizer4->Add(buttonHistoryForward, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
+  staticLineDownloadSeparator = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemBoxSizer4->Add(staticLineDownloadSeparator, 0, wxGROW|wxALL, 5);
+
+  buttonDownloadTutorial = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_DOWNLOAD, itemDialog1->GetBitmapResource(wxT("icons/download.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
+  if (HelpContents::ShowToolTips())
+    buttonDownloadTutorial->SetToolTip(_("Download and install tutorials"));
+  itemBoxSizer4->Add(buttonDownloadTutorial, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
   itemBoxSizer4->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxButton* itemButton9 = new wxButton( itemDialog1, ID_BUTTON_CLOSE, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer4->Add(itemButton9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 ////@end HelpContents content construction
-
-  
 }
 
 
@@ -417,6 +430,11 @@ wxBitmap HelpContents::GetBitmapResource( const wxString& name )
   else if (name == wxT("icons/arrow_right.xpm"))
   {
     wxBitmap bitmap(arrow_right_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/download.xpm"))
+  {
+    wxBitmap bitmap(download_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -757,6 +775,9 @@ TutorialsBrowser::TutorialsBrowser( wxWindow* parent,
 {
 //  Init();
 //  Create(parent, id, caption, pos, size, style);
+
+  buttonDownloadTutorial->Show();
+  staticLineDownloadSeparator->Show();
 }
 
 
@@ -822,7 +843,12 @@ void TutorialsBrowser::linkToWebPage( wxString& htmlDoc )
 
 void TutorialsBrowser::helpMessage( wxString& htmlDoc )
 {
-  htmlDoc += wxT( "<P><H3>No tutorials found!?</H3></P>" );
+  htmlDoc += wxT( "<P><H2>No tutorials found!?</H2></P>" );
+  htmlDoc += wxT( "<P><H3>Install using the download dialog</H3></P>" );
+  htmlDoc += wxT( "<P>You can automatically download and install any of the available tutorials by clicking the <B>\"Download and Install\"</B> button.</P>" );
+  htmlDoc += wxT( "<P>Just check in the desired tutorials and press the <B>\"OK\"</B> button.</P>" );
+
+  htmlDoc += wxT( "<P><H3>Manual installation</H3></P>" );
   htmlDoc += wxT( "<P>Please check that a <B>root directory</B> to tutorials is properly defined:</P>" );
 
   htmlDoc += wxT( "<OL type=\"1\">" );
@@ -947,4 +973,32 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
 void TutorialsBrowser::buildIndex()
 {
   buildIndexTemplate( wxString( wxT( "Tutorials" ) ), wxString( wxT( "tutorials" ) ) );
+}
+
+
+void TutorialsBrowser::OnButtonDownloadClick(  wxCommandEvent& event )
+{
+  vector<TutorialData> tutorialsData;
+  
+  tutorialsData = TutorialsDownload::getInstance()->getTutorialsList();
+  wxArrayString tutorialChoices;
+  
+  for( vector<TutorialData>::const_iterator it = tutorialsData.begin(); it != tutorialsData.end(); ++it )
+    tutorialChoices.Add( wxString::FromUTF8( it->getName().c_str() ) );
+
+  wxMultiChoiceDialog selDialog( this, wxT( "Select tutorials to download and install:" ), wxT( "Tutorials download" ), tutorialChoices );
+  
+  if( selDialog.ShowModal() == wxID_OK )
+  {
+    wxArrayInt selection = selDialog.GetSelections();
+    vector<PRV_UINT16> tutorialsIndex;
+    
+    for( size_t i = 0; i < selection.GetCount(); ++i )
+      tutorialsIndex.push_back( tutorialsData[ selection.Item( i ) ].getId() );
+    
+    if( tutorialsIndex.size() > 0 )
+      TutorialsDownload::getInstance()->downloadInstall( tutorialsIndex );
+
+    buildIndex();
+  }
 }

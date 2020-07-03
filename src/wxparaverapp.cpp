@@ -35,26 +35,28 @@
 ////@begin includes
 ////@end includes
 
-#include "labelconstructor.h"
 
 // Signal handling
 #include <signal.h>
 #include <stdio.h>
 
 #include <wx/filefn.h>
+#include <wx/filename.h>
 
 #ifdef __WXMAC__
 #include <wx/sysopt.h>
 #endif
 
+#include "labelconstructor.h"
+
 #include "config.h"
 #include "wxparaverapp.h"
 //#include "connection.h"
-#include <wx/filename.h>
 #include "sessionsaver.h"
 #include "helpcontents.h"
 #include "gtimeline.h"
 #include "ghistogram.h"
+#include "tutorialsdownload.h"
 
 ////@begin XPM images
 ////@end XPM images
@@ -129,6 +131,13 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL },
 
+  { wxCMD_LINE_SWITCH, 
+    wxT("gtf"),
+    wxT("generate_tutorials_file"),
+    wxT(""),
+    wxCMD_LINE_VAL_NONE,
+    wxCMD_LINE_PARAM_OPTIONAL },
+
    { wxCMD_LINE_PARAM, 
     NULL,
     NULL,
@@ -174,6 +183,13 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
       "containing the index.html file, or the whole url, like "
       "path/file.html (then, other names than 'index' are allowed).",
     wxCMD_LINE_VAL_STRING,
+    wxCMD_LINE_PARAM_OPTIONAL },
+
+  { wxCMD_LINE_SWITCH, 
+    "gtf",
+    "generate_tutorials_file",
+    "",
+    wxCMD_LINE_VAL_NONE,
     wxCMD_LINE_PARAM_OPTIONAL },
 
    { wxCMD_LINE_PARAM, 
@@ -629,6 +645,14 @@ int wxparaverApp::OnRun()
 
 void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )  
 {
+  if ( paraverCommandLineParser.Found( wxT( "generate_tutorials_file" ) ) )
+  {
+    std::string tmpTutorialFile( "./" + TutorialsDownload::tutorialsListFile );
+    TutorialsDownload::getInstance()->writeList( tmpTutorialFile );
+    mainWindow->Close();
+    return;
+  }
+
   if ( paraverCommandLineParser.Found( wxT( "i" ) ) )
   {
     string fileName;
