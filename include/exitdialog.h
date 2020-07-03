@@ -51,7 +51,7 @@
 #define SYMBOL_EXITDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_EXITDIALOG_TITLE _("Exit Dialog")
 #define SYMBOL_EXITDIALOG_IDNAME ID_EXITDIALOG
-#define SYMBOL_EXITDIALOG_SIZE wxSize(445, 300)
+#define SYMBOL_EXITDIALOG_SIZE wxDefaultSize
 #define SYMBOL_EXITDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -84,6 +84,12 @@ public:
 
 ////@begin ExitDialog event handler declarations
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SAVE_EXIT
+  void OnButtonSaveExitClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CANCEL
+  void OnButtonCancelClick( wxCommandEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CLOSE_NO_SAVE
   void OnButtonCloseNoSaveClick( wxCommandEvent& event );
 
@@ -104,6 +110,7 @@ public:
 ////@begin ExitDialog member variables
   wxButton* saveExitButton;
   wxButton* cancelButton;
+  wxButton* noSaveExitButton;
 ////@end ExitDialog member variables
 };
 
