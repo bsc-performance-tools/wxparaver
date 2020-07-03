@@ -32,6 +32,7 @@ noinst_HEADERS = \
               inclusive.xpm\
               index.xpm\
               logoBSC.xpm\
+							logout.xpm\
               new_derived_window.xpm\
               new_histogram.xpm\
               new_window.xpm\
