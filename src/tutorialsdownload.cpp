@@ -471,7 +471,8 @@ void TutorialsDownload::downloadInstall( const vector<PRV_UINT16>& whichTutorial
     }
   }
 
-  std::ofstream ofs( ParaverConfig::getInstance()->getGlobalTutorialsPath() + PATH_SEP + TutorialsDownload::tutorialsListFile );
+  string tmpStr( ParaverConfig::getInstance()->getGlobalTutorialsPath() + PATH_SEP + TutorialsDownload::tutorialsListFile );
+  std::ofstream ofs( tmpStr.c_str() );
   if( ofs.good() )
   {
     boost::archive::xml_oarchive oa( ofs );
@@ -495,7 +496,7 @@ const TutorialData& TutorialsDownload::findTutorial( PRV_UINT16 whichId ) const
 
 void TutorialsDownload::loadXML( const std::string& whichFilename, TutorialsDownload *whichTutorials, const std::string& whichTag )
 {
-  std::ifstream ifs( whichFilename );
+  std::ifstream ifs( whichFilename.c_str() );
   if( ifs.good() )
   {
     boost::archive::xml_iarchive ia( ifs );
@@ -507,7 +508,7 @@ void TutorialsDownload::loadXML( const std::string& whichFilename, TutorialsDown
 
 void TutorialsDownload::loadXML( const std::string& whichFilename, vector<TutorialData>& whichTutorials, const std::string& whichTag )
 {
-  std::ifstream ifs( whichFilename );
+  std::ifstream ifs( whichFilename.c_str() );
   if( ifs.good() )
   {
     boost::archive::xml_iarchive ia( ifs );
@@ -523,7 +524,7 @@ bool TutorialsDownload::downloadTutorialsList() const
   std::string server = "tools.bsc.es";
 
   std::string tutorialFile = ParaverConfig::getInstance()->getParaverConfigDir() + TutorialsDownload::tutorialsListFile;
-  ofstream storeFile( tutorialFile );
+  ofstream storeFile( tutorialFile.c_str() );
 
   try
   {
@@ -557,7 +558,7 @@ bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tut
   wxFileName outputFilePath( path );
   string downloadPath = ParaverConfig::getInstance()->getParaverConfigDir();
   tutorialFile = downloadPath + string( outputFilePath.GetFullName().mb_str() );
-  ofstream storeFile( tutorialFile );
+  ofstream storeFile( tutorialFile.c_str() );
 
   try
   {
