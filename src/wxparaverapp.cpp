@@ -421,7 +421,7 @@ bool wxparaverApp::OnInit()
         wxString serviceFileName = wxT( 
           "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) +
            service;
-        serviceMap.insert( { servicePID, serviceFileName } );
+        serviceMap.insert( std::pair< wxString, wxString >( servicePID, serviceFileName ) );
         cont = wxd.GetNext( &service );
       }
 
@@ -445,7 +445,7 @@ bool wxparaverApp::OnInit()
       {
         wxString servicePID = service.AfterLast( '-' );
         wxString serviceFileName = wxT( "/tmp/" ) + service;
-        serviceMap.insert( { servicePID, serviceFileName } );
+        serviceMap.insert( std::pair< wxString, wxString >( servicePID, serviceFileName ) );
         cont = wxd.GetNext( &service );
       }
 
