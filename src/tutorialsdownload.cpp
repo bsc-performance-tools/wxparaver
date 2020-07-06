@@ -156,7 +156,7 @@ class client
     {
       if ( !err )
       {
-        socket_.set_verify_mode( boost::asio::ssl::verify_peer );
+        socket_.set_verify_mode( boost::asio::ssl::verify_none );
         socket_.set_verify_callback( boost::bind( &client::verify_certificate, this, _1, _2 ) );
 
         boost::asio::async_connect( socket_.lowest_layer(), 
