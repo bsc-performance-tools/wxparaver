@@ -3757,7 +3757,7 @@ void paraverMain::HandleMaxSessionFiles()
         {
           wxString servicePID = service.AfterLast( '-' );
           wxString serviceName = wxT( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) + service;
-          serviceMap.insert( { servicePID, serviceName } );
+          serviceMap.insert( std::pair< wxString, wxString >( servicePID, serviceName ) );
           cont = wxd.GetNext( &service );
         }
 #else
@@ -3771,7 +3771,8 @@ void paraverMain::HandleMaxSessionFiles()
         {
           wxString servicePID = service.AfterLast( '-' );
           wxString serviceName = wxT( "/tmp/" ) + service;
-          serviceMap.insert( { servicePID, serviceName } );
+          
+          serviceMap.insert( std::pair< wxString, wxString >( servicePID, serviceName ) );
           cont = wxd.GetNext( &service );
         }
 #endif
