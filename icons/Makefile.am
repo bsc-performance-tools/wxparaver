@@ -41,6 +41,8 @@ noinst_HEADERS = \
               opencontrol.xpm\
               opendata.xpm\
               openfiltered.xpm\
+							report_add.xpm\
+							report_disk.xpm\
               run_script.xpm\
               semantic_color.xpm\
               short_labels.xpm\
