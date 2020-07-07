@@ -732,6 +732,8 @@ private:
   void exitManager( wxEvent& event );
   void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
   void messageUndefinedParaverHome();
+
+  Trace *getCurrentTrace() const;
   
 };
 

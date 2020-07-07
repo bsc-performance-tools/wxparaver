@@ -642,13 +642,13 @@ void paraverMain::refreshMenuHints()
 
   // Create updated one
   size_t currentWorkspace = 0;
-  for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(); it != traceWorkspaces[  loadedTraces[ currentTrace ]  ].end(); ++it )
+  for ( vector< string >::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace()  ].end(); ++it )
   {
     wxString currentWorkspaceName = wxString::FromAscii( it->c_str() );
     wxMenu *currentWorkspaceMenu = new wxMenu();
 
     std::vector< std::pair< std::string, std::string > > currentHints;
-    if( currentWorkspace < firstUserWorkspace[ loadedTraces[ currentTrace ] ] ) // Distributed workspaces
+    if( currentWorkspace < firstUserWorkspace[ getCurrentTrace() ] ) // Distributed workspaces
     {
       currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
       if( workspacesManager->existWorkspace( *it, WorkspaceManager::USER_DEFINED ) )
@@ -902,18 +902,7 @@ bool paraverMain::DoLoadCFG( const string &path )
     vector<Histogram *> newHistograms;
     SaveOptions options;
 
-    Trace *tmpTraceToUse = NULL;
-    if( choiceWindowBrowser->GetSelection() == 0 )
-    {
-      if( currentTimeline != NULL )
-        tmpTraceToUse = currentTimeline->getTrace();
-      else if( currentHisto != NULL )
-        tmpTraceToUse = currentHisto->getTrace();
-    }
-    else
-    {
-      tmpTraceToUse = loadedTraces[ currentTrace ];
-    }
+    Trace *tmpTraceToUse = getCurrentTrace();
 
     if( !CFGLoader::loadCFG( localKernel, path, tmpTraceToUse,
                              newWindows, newHistograms, options ) )
@@ -2006,6 +1995,12 @@ void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
     if( timeline->IsShown() )
       timeline->Raise();
   }
+
+  if( choiceWindowBrowser->GetSelection() == 0 )
+  {
+    refreshMenuHints();
+    setActiveWorkspacesText();
+  }
 }
 
 /*!
@@ -2772,7 +2767,7 @@ int paraverMain::initialPosY = 0;
 Window *paraverMain::createBaseWindow( wxString whichName )
 {
   // Create new window
-  Window *newWindow = Window::create( localKernel, loadedTraces[ currentTrace ] );
+  Window *newWindow = Window::create( localKernel, getCurrentTrace() );
   ++numNewWindows;
 
   if ( whichName.IsEmpty() )
@@ -4721,7 +4716,7 @@ wxString paraverMain::getHintComposed( const std::pair< std::string, std::string
 {
 //  wxFileName filename( wxString::FromAscii(  hint.first.c_str() ) );
 //  return filename.GetName() + _( " - " ) + wxString::FromAscii(  hint.second.c_str() );
-  return wxString::FromAscii(  hint.second.c_str() );
+  return wxString::FromAscii( hint.second.c_str() );
 }
 
 
@@ -4764,7 +4759,7 @@ void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 {
   GetMenuBar()->EnableTop( 1, 
                            !loadedTraces.empty() && 
-                           !traceWorkspaces[ loadedTraces[ currentTrace ] ].empty() );
+                           !traceWorkspaces[ getCurrentTrace() ].empty() );
 }
 
 
@@ -4825,7 +4820,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
 
 void paraverMain::setActiveWorkspacesText()
 {
-  if ( currentTrace == -1 || traceWorkspaces[ loadedTraces[ currentTrace ] ].empty() )
+  if ( currentTrace == -1 || traceWorkspaces[ getCurrentTrace() ].empty() )
   {
     txtActiveWorkspaces->SetValue( _("None") );
   }
@@ -4833,12 +4828,12 @@ void paraverMain::setActiveWorkspacesText()
   {
     wxString tmpActive;
     size_t tmpCurrentWorkspace = 0;
-    for ( vector< string >::iterator it = traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(); it != traceWorkspaces[ loadedTraces[ currentTrace ] ].end(); ++it )
+    for ( vector< string >::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace() ].end(); ++it )
     {
       if ( !tmpActive.IsEmpty() )
         tmpActive += _( "+" );
 
-      if( tmpCurrentWorkspace < firstUserWorkspace[ loadedTraces[ currentTrace ] ] )
+      if( tmpCurrentWorkspace < firstUserWorkspace[ getCurrentTrace() ] )
         tmpActive += wxString::FromAscii( it->c_str() );
       else
       {
@@ -5253,4 +5248,24 @@ void paraverMain::helpQuestion()
   
   paraverConfig->setGlobalHelpContentsUsesBrowser( question == wxYES );
   paraverConfig->setGlobalHelpContentsQuestionAnswered( true );
+}
+
+Trace *paraverMain::getCurrentTrace() const
+{
+  Trace *tmpTraceToUse = NULL;
+  if( choiceWindowBrowser->GetSelection() == 0 )
+  {
+    if( currentTimeline != NULL )
+      tmpTraceToUse = currentTimeline->getTrace();
+    else if( currentHisto != NULL )
+      tmpTraceToUse = currentHisto->getTrace();
+    else
+      tmpTraceToUse = loadedTraces[ currentTrace ];
+  }
+  else
+  {
+    tmpTraceToUse = loadedTraces[ currentTrace ];
+  }
+
+  return tmpTraceToUse;
 }
