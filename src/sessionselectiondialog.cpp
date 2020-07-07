@@ -104,7 +104,7 @@ bool SessionSelectionDialog::Create( wxWindow* parent, wxString folderPath, bool
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if ( GetSizer() )
+  if (GetSizer())
   {
     GetSizer()->SetSizeHints(this);
   }
@@ -176,8 +176,6 @@ void SessionSelectionDialog::CreateControls()
 
   itemStdDialogButtonSizer2->Realize();
 
-  // Connect events and objects
-  listSessions->Connect(ID_SESSIONBOX, wxEVT_CREATE, wxWindowCreateEventHandler(SessionSelectionDialog::OnCreate), NULL, this);
 ////@end SessionSelectionDialog content construction
 
 
@@ -259,9 +257,6 @@ wxIcon SessionSelectionDialog::GetIconResource( const wxString& name )
   return wxNullIcon;
 ////@end SessionSelectionDialog icon retrieval
 }
-
-
-void SessionSelectionDialog::OnCreate( wxWindowCreateEvent& event ) { }
 
 
 bool SessionSelectionDialog::OnCreate()

@@ -97,9 +97,6 @@ public:
   /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_SESSIONBOX
   void OnSessionboxDoubleClicked( wxCommandEvent& event );
 
-  /// wxEVT_CREATE event handler for ID_SESSIONBOX
-  void OnCreate( wxWindowCreateEvent& event );
-
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
   void OnCancelClick( wxCommandEvent& event );
 
