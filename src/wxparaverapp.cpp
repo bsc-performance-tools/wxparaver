@@ -663,7 +663,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
     {
       fileName = paraverCommandLineParser.GetParam( i ).mb_str();
 
-      if ( Trace::isTraceFile( fileName ) )
+      if ( mainWindow->GetLocalKernel()->isTraceFile( fileName ) )
       {
         if( currentTrace != NULL )
           delete currentTrace;

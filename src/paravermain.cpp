@@ -309,7 +309,7 @@ void paraverMain::commandLineLoadings( wxCmdLineParser &parser )
 
     if ( isSessionFile( fileName ) )
       DoLoadSession( fileName );
-    else if ( Trace::isTraceFile( fileName ) )
+    else if ( localKernel->isTraceFile( fileName ) )
       DoLoadTrace( fileName );
     else if ( CFGLoader::isCFGFile( fileName ) && !loadedTraces.empty() )
       DoLoadCFG( fileName );
@@ -2015,7 +2015,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
     if( !fileName.IsDir() )
     {
       string auxFile = std::string( fileName.GetFullPath().mb_str() );
-      if( Trace::isTraceFile( auxFile ))
+      if( localKernel->isTraceFile( auxFile ))
         DoLoadTrace( auxFile );
       else if( CFGLoader::isCFGFile( auxFile ) && loadedTraces.size() > 0 )
         DoLoadCFG( auxFile );
