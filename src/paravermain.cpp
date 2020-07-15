@@ -2861,7 +2861,7 @@ void paraverMain::ShowDerivedDialog()
   DerivedTimelineDialog derivedDialog( this );
   vector<TWindowID> timelines;
 
-  LoadedWindows::getInstance()->getDerivedCompatible( currentTimeline->getTrace(), timelines );
+  LoadedWindows::getInstance()->getDerivedCompatible( beginDragWindow->getTrace(), timelines );
 
   ++numNewDerived;
   wxString tmpName( _( "New Derived Window #" ) );
@@ -2876,12 +2876,10 @@ void paraverMain::ShowDerivedDialog()
   derivedDialog.SetCurrentWindow1( beginDragWindow );
   if( endDragWindow == NULL )
   {
-    vector<Window *> tmpTimelinesWindow2;
-    LoadedWindows::getInstance()->getAll( currentTimeline->getTrace(), tmpTimelinesWindow2 );
-    if( tmpTimelinesWindow2[ 0 ] == beginDragWindow && tmpTimelinesWindow2.size() > 1 )
-      derivedDialog.SetCurrentWindow2( tmpTimelinesWindow2[ 1 ] );
+    if( LoadedWindows::getInstance()->getWindow( timelines[ 0 ] ) == beginDragWindow && timelines.size() > 1 )
+      derivedDialog.SetCurrentWindow2( LoadedWindows::getInstance()->getWindow( timelines[ 1 ] ) );
     else
-      derivedDialog.SetCurrentWindow2( tmpTimelinesWindow2[ 0 ] );
+      derivedDialog.SetCurrentWindow2( LoadedWindows::getInstance()->getWindow( timelines[ 0 ] ) );
   }
   else
     derivedDialog.SetCurrentWindow2( endDragWindow );
