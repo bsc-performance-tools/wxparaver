@@ -797,13 +797,9 @@ int wxparaverApp::OnExit()
 //            wxparaverApp::mainWindow->GetAuiManager().GetPanel( wxparaverApp::mainWindow->choiceWindowBrowser ) ).mb_str()<<endl;
 
   
-  if ( mainWindow != NULL )
+  if ( mainWindow != NULL && paraverMain::IsSessionValid() && !invalidateNoConnect ) 
   {
-    if ( paraverMain::IsSessionValid() && !invalidateNoConnect ) 
-    {
-      ParaverConfig::getInstance()->closeCompleteSessionFile();
-    }
-    ParaverConfig::getInstance()->writeParaverConfigFile();
+    ParaverConfig::getInstance()->closeCompleteSessionFile();
   }
   
 //// Code that deletes PID from the sessions map starts here ////

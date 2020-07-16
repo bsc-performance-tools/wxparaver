@@ -3375,6 +3375,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   {
     //It is called by default
     //preferences.TransferDataFromWindow();
+    
 
     // Apply Preferences
 
