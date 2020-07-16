@@ -1081,7 +1081,7 @@ void paraverMain::OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event )
 }
 
 
-void paraverMain::exitManager( wxEvent& event )
+void paraverMain::exitManager()
 {
   if ( !LoadedWindows::getInstance()->emptyWindows() )
   {
@@ -1116,7 +1116,7 @@ void paraverMain::exitManager( wxEvent& event )
 
 void paraverMain::OnExitClick( wxCommandEvent& event )
 {
-  exitManager( event );
+  exitManager();
 }
 
 /*!
@@ -1127,7 +1127,7 @@ void paraverMain::OnCloseWindow( wxCloseEvent& event )
 {
   if ( event.CanVeto() )
   {
-    exitManager( event );
+    exitManager();
   }
 }
 

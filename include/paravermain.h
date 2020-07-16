@@ -631,6 +631,7 @@ public:
   
   bool OnMenusavesession( );
   void helpQuestion();
+  void exitManager();
 
 ////@begin paraverMain member variables
   wxAuiManager m_auiManager;
@@ -729,7 +730,6 @@ private:
   void setActiveWorkspacesText();
 
   bool isSessionFile( const std::string& filename );
-  void exitManager( wxEvent& event );
   void messageUnknownPath( wxString helpContentsPath, wxString paraverHome );
   void messageUndefinedParaverHome();
 

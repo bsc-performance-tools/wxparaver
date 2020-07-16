@@ -858,6 +858,14 @@ int wxparaverApp::FilterEvent(wxEvent& event)
       }
       else if ( keyCode == (long) 'F' )
         mainWindow->OnFindDialog();
+      else if ( keyCode == (long) 'Q' )
+        mainWindow->exitManager();
+      else if ( keyCode == (long) 'O' )
+      {
+        wxCommandEvent dummyEvent;
+        mainWindow->OnOpenClick( dummyEvent );
+      }
+
 #ifdef WIN32
       else if ( keyCode == (long) 'C' )
         mainWindow->OnKeyCopy();
