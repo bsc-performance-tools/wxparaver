@@ -1263,13 +1263,18 @@ void gTimeline::drawRowFunction( wxDC& dc, ValuesType valueToDraw, int& lineLast
 template<>
 void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& lineLastPos, wxCoord objectPos, wxCoord timePos, float magnify )
 {
-  if( valueToDraw < myWindow->getMinimumY() )
-    valueToDraw = myWindow->getMinimumY();
+  TSemanticValue realMin = myWindow->getMinimumY();
+  
+  if( myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
+    realMin = 0.0;
+  
+  if( valueToDraw < realMin )
+    valueToDraw = realMin;
   else if( valueToDraw > myWindow->getMaximumY() )
     valueToDraw = myWindow->getMaximumY();
 
-  double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
-                  / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+  double tmpPos = ( valueToDraw - realMin ) 
+                  / ( myWindow->getMaximumY() - realMin );
   int currentPos = objectHeight * tmpPos;
   
   dc.SetPen( foregroundColour );
@@ -1306,13 +1311,18 @@ void gTimeline::drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& lineLa
 template<>
 void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify )
 {
-  if( valueToDraw < myWindow->getMinimumY() )
-    valueToDraw = myWindow->getMinimumY();
+  TSemanticValue realMin = myWindow->getMinimumY();
+  
+  if( myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
+    realMin = 0.0;
+
+  if( valueToDraw < realMin )
+    valueToDraw = realMin;
   else if( valueToDraw > myWindow->getMaximumY() )
     valueToDraw = myWindow->getMaximumY();
 
-  double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
-                  / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+  double tmpPos = ( valueToDraw - realMin ) 
+                  / ( myWindow->getMaximumY() - realMin );
   int currentPos = ( timeAxisPos - drawBorder ) * tmpPos;
 
   rgb colorToDraw = myWindow->getCodeColor().calcColor( whichObject + 1, 0, whichObject + 1 );
@@ -1350,16 +1360,21 @@ void gTimeline::drawRowPunctual( wxDC& dc, ValuesType& valuesToDrawList, wxCoord
 template<>
 void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemanticValue> >& valuesToDrawList, wxCoord objectPos, wxCoord timePos, float magnify )
 {
+  TSemanticValue realMin = myWindow->getMinimumY();
+  
+  if( myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
+    realMin = 0.0;
+
   TSemanticValue valueToDraw;
   for( vector< pair<TSemanticValue,TSemanticValue> >::iterator itValues = valuesToDrawList.begin(); itValues != valuesToDrawList.end(); ++itValues )
   {
     valueToDraw = (*itValues).first;
 
-    if( valueToDraw < myWindow->getMinimumY() || valueToDraw > myWindow->getMaximumY() )
+    if( valueToDraw < realMin || valueToDraw > myWindow->getMaximumY() )
       continue;
 
-    double tmpPos = ( valueToDraw - myWindow->getMinimumY() ) 
-                    / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+    double tmpPos = ( valueToDraw - realMin ) 
+                    / ( myWindow->getMaximumY() - realMin );
     int currentPos = floor( ( (double)objectHeight / (double)magnify ) * tmpPos ) * magnify;
     
     if( myWindow->getPunctualColorWindow() != NULL )
