@@ -35,7 +35,7 @@
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
-#include "include/filebrowserbutton.h"
+#include "filebrowserbutton.h"
 #include "wx/clrpicker.h"
 #include "wx/statline.h"
 ////@end includes
@@ -121,6 +121,7 @@ class wxListBox;
 #define ID_PREFERENCES_HISTOGRAM_SHOW_UNITS 10028
 #define ID_PREFERENCES_HISTOGRAM_PRECISION 10074
 #define ID_PREFERENCES_HISTOGRAM_AUTOFIT_CONTROL 10030
+#define ID_PREFERENCES_HISTOGRAM_AUTOFIT_CONTROL_ZERO 10041
 #define ID_PREFERENCES_HISTOGRAM_AUTOFIT_3D 10030
 #define ID_PREFERENCES_HISTOGRAM_AUTOFIT_DATA_GRADIENT 10029
 #define ID_PREFERENCES_HISTOGRAM_NUMCOLUMNS 10075
@@ -602,6 +603,9 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
+  bool GetHistogramAutofitControlScaleZero() const { return histogramAutofitControlScaleZero ; }
+  void SetHistogramAutofitControlScaleZero(bool value) { histogramAutofitControlScaleZero = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -678,6 +682,7 @@ public:
   wxCheckBox* checkHistogramShowUnits;
   wxSpinCtrl* txtHistogramPrecision;
   wxCheckBox* checkHistogramAutofitControlScale;
+  wxCheckBox* checkHistogramAutofitControlScaleZero;
   wxCheckBox* checkHistogramAutofit3DScale;
   wxCheckBox* checkHistogramAutofitDataGradient;
   wxSpinCtrl* txtHistogramNumColumns;
@@ -802,6 +807,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
+  bool histogramAutofitControlScaleZero;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

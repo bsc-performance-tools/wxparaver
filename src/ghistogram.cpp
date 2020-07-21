@@ -485,6 +485,7 @@ void gHistogram::execute()
   SetFocus();
 }
 
+
 void gHistogram::fillGrid()
 {
   wxFont labelFont = gridHisto->GetLabelFont();
@@ -542,6 +543,7 @@ void gHistogram::fillGrid()
   gridHisto->EndBatch();
   gridHisto->ForceRefresh();
 }
+
 
 void gHistogram::fillZoom()
 {
@@ -712,6 +714,7 @@ void gHistogram::fillZoom()
   ready = true;
 }
 
+
 void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn,
                              vector<THistogramColumn>& noVoidColumns, wxMemoryDC& bufferDraw )
 {
@@ -865,10 +868,12 @@ vector< TObjectOrder > gHistogram::getSelectedRows()
   return myHistogram->getSelectedRows();
 }
 
+
 void gHistogram::setSelectedRows( vector< bool > &selected )
 {
   myHistogram->setSelectedRows( selected );
 }
+
 
 void gHistogram::setSelectedRows( vector< TObjectOrder > &selected )
 {
@@ -1056,6 +1061,7 @@ bool isSyncedWithGroup( Window *whichWindow, unsigned int whichGroup )
   return whichWindow != NULL && whichWindow->isSync() && whichWindow->getSyncGroup() == whichGroup && whichWindow->getShowWindow();
 }
 
+
 void gHistogram::updateHistogram()
 {
   //rowSelection.getSelected( selectedRows );
@@ -1146,15 +1152,18 @@ void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
   }
 }
 
+
 void gHistogram::OnPopUpCopy()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
 }
 
+
 void gHistogram::OnPopUpPaste()
 {
 //  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
 }
+
 
 void gHistogram::OnPopUpPasteSpecial()
 {
@@ -1198,6 +1207,7 @@ void gHistogram::OnPopUpPasteSpecial()
   delete dialog;
 }
 
+
 void gHistogram::OnPopUpPasteDefaultSpecial()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Time" );
@@ -1207,12 +1217,14 @@ void gHistogram::OnPopUpPasteDefaultSpecial()
   updateHistogram();
 }
 
+
 void gHistogram::OnPopUpPasteTime()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Time" );
   myHistogram->setRecalc( true );
   updateHistogram();
 }
+
 
 void gHistogram::OnPopUpPasteObjects()
 {
@@ -1221,6 +1233,7 @@ void gHistogram::OnPopUpPasteObjects()
   updateHistogram();
 }
 
+
 void gHistogram::OnPopUpPasteSize()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
@@ -1228,12 +1241,14 @@ void gHistogram::OnPopUpPasteSize()
   updateHistogram();
 }
 
+
 void gHistogram::OnPopUpPasteDuration()
 {
   gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Duration" );
   myHistogram->setRecalc( true );
   updateHistogram();
 }
+
 
 void gHistogram::OnPopUpPasteSemanticScale()
 {
@@ -1243,6 +1258,7 @@ void gHistogram::OnPopUpPasteSemanticScale()
   myHistogram->setRedraw( true );
   updateHistogram();
 }
+
 
 void gHistogram::OnPopUpPasteControlScale()
 {
@@ -1258,6 +1274,7 @@ void gHistogram::OnPopUpPasteControlScale()
   updateHistogram();
 }
 
+
 void gHistogram::OnPopUpPaste3DScale()
 {
   myHistogram->setCompute3DScale( false );
@@ -1265,6 +1282,7 @@ void gHistogram::OnPopUpPaste3DScale()
   updateHistogram();
   myHistogram->setRecalc( true );
 }
+
 
 void gHistogram::OnPopUpPasteControlDimensions()
 {
@@ -1363,6 +1381,7 @@ void gHistogram::OnPopUpRename()
   paraverMain::myParaverMain->renameTreeItem( );
 }
 
+
 void gHistogram::OnPopUpFitTimeScale()
 {
   myHistogram->setWindowBeginTime( 0 );
@@ -1421,12 +1440,21 @@ void gHistogram::OnPopUpAutoControlScale( bool state )
     myHistogram->setRecalc( true );
 }
 
+
+void gHistogram::OnPopUpAutoControlScaleZero( bool state )
+{
+  myHistogram->setCompute2DScaleZero( state );
+  myHistogram->setRecalc( true );
+}
+
+
 void gHistogram::OnPopUpAuto3DScale( bool state )
 {
   myHistogram->setCompute3DScale( state );
   if( state )
     myHistogram->setRecalc( true );
 }
+
 
 void gHistogram::OnPopUpAutoDataGradient( bool state )
 {
@@ -1435,11 +1463,13 @@ void gHistogram::OnPopUpAutoDataGradient( bool state )
     myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeSemanticLast()
 {
   myHistogram->setDrawModeColumns( DRAW_LAST );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeSemanticRandom()
 {
@@ -1447,11 +1477,13 @@ void gHistogram::OnPopUpDrawModeSemanticRandom()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeSemanticRandomNotZero()
 {
   myHistogram->setDrawModeColumns( DRAW_RANDNOTZERO );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeSemanticMaximum()
 {
@@ -1459,11 +1491,13 @@ void gHistogram::OnPopUpDrawModeSemanticMaximum()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeSemanticMinimumNotZero()
 {
   myHistogram->setDrawModeColumns( DRAW_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeSemanticAbsoluteMaximum()
 {
@@ -1471,11 +1505,13 @@ void gHistogram::OnPopUpDrawModeSemanticAbsoluteMaximum()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeSemanticAbsoluteMinimumNotZero()
 {
   myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeSemanticAverage()
 {
@@ -1483,11 +1519,13 @@ void gHistogram::OnPopUpDrawModeSemanticAverage()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeSemanticAverageNotZero()
 {
   myHistogram->setDrawModeColumns( DRAW_AVERAGENOTZERO );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeSemanticMode()
 {
@@ -1495,11 +1533,13 @@ void gHistogram::OnPopUpDrawModeSemanticMode()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeObjectsLast()
 {
   myHistogram->setDrawModeObjects( DRAW_LAST );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeObjectsRandom()
 {
@@ -1507,11 +1547,13 @@ void gHistogram::OnPopUpDrawModeObjectsRandom()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeObjectsRandomNotZero()
 {
   myHistogram->setDrawModeObjects( DRAW_RANDNOTZERO );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeObjectsMaximum()
 {
@@ -1519,11 +1561,13 @@ void gHistogram::OnPopUpDrawModeObjectsMaximum()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeObjectsMinimumNotZero()
 {
   myHistogram->setDrawModeObjects( DRAW_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeObjectsAbsoluteMaximum()
 {
@@ -1531,11 +1575,13 @@ void gHistogram::OnPopUpDrawModeObjectsAbsoluteMaximum()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero()
 {
   myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeObjectsAverage()
 {
@@ -1543,17 +1589,20 @@ void gHistogram::OnPopUpDrawModeObjectsAverage()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeObjectsAverageNotZero()
 {
   myHistogram->setDrawModeObjects( DRAW_AVERAGENOTZERO );
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeObjectsMode()
 {
   myHistogram->setDrawModeObjects( DRAW_MODE );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeBothLast()
 {
@@ -1562,12 +1611,14 @@ void gHistogram::OnPopUpDrawModeBothLast()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeBothRandom()
 {
   myHistogram->setDrawModeObjects( DRAW_RANDOM );
   myHistogram->setDrawModeColumns( DRAW_RANDOM );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeBothRandomNotZero()
 {
@@ -1576,12 +1627,14 @@ void gHistogram::OnPopUpDrawModeBothRandomNotZero()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeBothMaximum()
 {
   myHistogram->setDrawModeObjects( DRAW_MAXIMUM );
   myHistogram->setDrawModeColumns( DRAW_MAXIMUM );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeBothMinimumNotZero()
 {
@@ -1590,12 +1643,14 @@ void gHistogram::OnPopUpDrawModeBothMinimumNotZero()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeBothAbsoluteMaximum()
 {
   myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MAXIMUM );
   myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MAXIMUM );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeBothAbsoluteMinimumNotZero()
 {
@@ -1604,12 +1659,14 @@ void gHistogram::OnPopUpDrawModeBothAbsoluteMinimumNotZero()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeBothAverage()
 {
   myHistogram->setDrawModeObjects( DRAW_AVERAGE );
   myHistogram->setDrawModeColumns( DRAW_AVERAGE );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpDrawModeBothAverageNotZero()
 {
@@ -1618,6 +1675,7 @@ void gHistogram::OnPopUpDrawModeBothAverageNotZero()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpDrawModeBothMode()
 {
   myHistogram->setDrawModeObjects( DRAW_MODE );
@@ -1625,11 +1683,13 @@ void gHistogram::OnPopUpDrawModeBothMode()
   myHistogram->setRedraw( true );
 }
 
+
 void gHistogram::OnPopUpPixelSize( PRV_UINT16 whichPixelSize )
 {
   myHistogram->setPixelSize( whichPixelSize );
   myHistogram->setRedraw( true );
 }
+
 
 void gHistogram::OnPopUpUndoZoom()
 {
@@ -1646,6 +1706,7 @@ void gHistogram::OnPopUpUndoZoom()
   }
 }
 
+
 void gHistogram::OnPopUpRedoZoom()
 {
   if ( !GetHistogram()->emptyNextZoom() )
@@ -1660,6 +1721,7 @@ void gHistogram::OnPopUpRedoZoom()
     zoom( columnBegin, columnEnd, objectBegin, objectEnd, delta );
   }
 }
+
 
 void gHistogram::rightDownManager()
 {
@@ -1878,6 +1940,7 @@ void gHistogram::OnZoomContextMenu( wxContextMenuEvent& event )
 {
   rightDownManager();
 }
+
 
 void gHistogram::OnTimerZoom( wxTimerEvent& event )
 {
@@ -2147,6 +2210,7 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
   }
 }
 
+
 void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                            THistogramColumn& columnBegin, THistogramColumn& columnEnd,
                                            TObjectOrder& objectBegin, TObjectOrder& objectEnd, bool zoomxy )
@@ -2189,6 +2253,7 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
       columnEnd = noVoidColumns[ columnEnd ];
   }
 }
+
 
 void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
                                     TObjectOrder objectBegin, TObjectOrder objectEnd )
@@ -3101,6 +3166,7 @@ void gHistogram::OnToolInclusiveUpdate( wxUpdateUIEvent& event )
   event.Enable( myHistogram->getInclusiveEnabled() );
   event.Check( myHistogram->getInclusive() );
 }
+
 
 void progressFunctionHistogram( ProgressController *progress, void *callerWindow )
 {

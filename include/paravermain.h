@@ -479,6 +479,9 @@ public:
   int GetNumNewWindows() const { return numNewWindows ; }
   void SetNumNewWindows(int value) { numNewWindows = value ; }
 
+  wxDialog * GetOpenedPropertyDialog() const { return openedPropertyDialog ; }
+  void SetOpenedPropertyDialog(wxDialog * value) { openedPropertyDialog = value ; }
+
   ParaverConfig* GetParaverConfig() const { return paraverConfig ; }
   void SetParaverConfig(ParaverConfig* value) { paraverConfig = value ; }
 
@@ -523,9 +526,6 @@ public:
 
   WorkspaceManager * GetWorkspacesManager() const { return workspacesManager ; }
   void SetWorkspacesManager(WorkspaceManager * value) { workspacesManager = value ; }
-
-  wxDialog * GetOpenedPropertyDialog() const { return openedPropertyDialog ; }
-  void SetOpenedPropertyDialog(wxDialog * value) { openedPropertyDialog = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -672,6 +672,7 @@ private:
   int numNewDerived;
   int numNewHistograms;
   int numNewWindows;
+  wxDialog * openedPropertyDialog;
   ParaverConfig* paraverConfig;
   PreviousFiles * previousCFGs;
   PreviousFiles * previousCutFilteredTraces;
@@ -686,7 +687,6 @@ private:
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
-  wxDialog * openedPropertyDialog;
 ////@end paraverMain member variables
   SessionInfo sessionInfo;
   bool firstSave;

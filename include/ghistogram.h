@@ -339,6 +339,7 @@ public:
   void OnPopUpFitObjects();
   void OnPopUpRowSelection();
   void OnPopUpAutoControlScale( bool state );
+  void OnPopUpAutoControlScaleZero( bool state );
   void OnPopUpAuto3DScale( bool state );
   void OnPopUpAutoDataGradient( bool state );
   void OnPopUpUndoZoom();

@@ -403,6 +403,7 @@ void paraverMain::Init()
   numNewDerived = 0;
   numNewHistograms = 0;
   numNewWindows = 0;
+  openedPropertyDialog = NULL;
   paraverConfig = ParaverConfig::getInstance();
   previousCFGs = PreviousFiles::createPreviousCFGs();
   previousCutFilteredTraces = PreviousFiles::createPreviousTreatedTraces();
@@ -414,7 +415,6 @@ void paraverMain::Init()
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
-  openedPropertyDialog = NULL;
   menuFile = NULL;
   menuHints = NULL;
   menuHelp = NULL;
@@ -3329,6 +3329,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetHistogramShowUnits( paraverConfig->getHistogramShowUnits() );
   preferences.SetHistogramPrecision( paraverConfig->getHistogramPrecision() );
   preferences.SetHistogramAutofitControlScale( paraverConfig->getHistogramAutofitControlScale() );
+  preferences.SetHistogramAutofitControlScaleZero( paraverConfig->getHistogramAutofitControlScaleZero() );
   preferences.SetHistogramAutofit3DScale( paraverConfig->getHistogramAutofitThirdDimensionScale() );
   preferences.SetHistogramAutofitDataGradient( paraverConfig->getHistogramAutofitDataGradient() );
   preferences.SetHistogramNumColumns( paraverConfig->getHistogramNumColumns() );
@@ -3432,6 +3433,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setHistogramShowUnits( preferences.GetHistogramShowUnits() );
     paraverConfig->setHistogramPrecision( preferences.GetHistogramPrecision() );
     paraverConfig->setHistogramAutofitControlScale( preferences.GetHistogramAutofitControlScale() );
+    paraverConfig->setHistogramAutofitControlScaleZero( preferences.GetHistogramAutofitControlScaleZero() );
     paraverConfig->setHistogramAutofitThirdDimensionScale( preferences.GetHistogramAutofit3DScale() );
     paraverConfig->setHistogramAutofitDataGradient( preferences.GetHistogramAutofitDataGradient() );
     paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );

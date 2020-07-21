@@ -51,7 +51,6 @@ class gHistogram;
 #define ID_MENU_FILTER_EVENTS                     30008
 #define ID_MENU_PASTE_SPECIAL                     30009
 #define ID_MENU_CLONE                             30010
-#define ID_MENU_RENAME                            30101
 #define ID_MENU_UNDO_ZOOM                         30011
 #define ID_MENU_REDO_ZOOM                         30012
 #define ID_MENU_FIT_TIME                          30013
@@ -142,7 +141,8 @@ class gHistogram;
 #define ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MAXIMUM             30098
 #define ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO    30099
 #define ID_MENU_NOT_NULL_GRADIENT_COLOR_2D                 30100
-
+#define ID_MENU_RENAME                                     30101
+#define ID_MENU_AUTO_CONTROL_SCALE_ZERO                    30102
 
 #define ID_MENU_SYNC_GROUP_BASE                   31000
 
@@ -259,6 +259,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuTiming( wxCommandEvent& event );
     
     void OnMenuAutoControlScale( wxCommandEvent& event );
+    void OnMenuAutoControlScaleZero( wxCommandEvent& event );
     void OnMenuAuto3DScale( wxCommandEvent& event );
     void OnMenuAutoDataGradient( wxCommandEvent& event );
     

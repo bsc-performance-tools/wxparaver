@@ -241,6 +241,7 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
+  histogramAutofitControlScaleZero = false;
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
@@ -297,6 +298,7 @@ void PreferencesDialog::Init()
   checkHistogramShowUnits = NULL;
   txtHistogramPrecision = NULL;
   checkHistogramAutofitControlScale = NULL;
+  checkHistogramAutofitControlScaleZero = NULL;
   checkHistogramAutofit3DScale = NULL;
   checkHistogramAutofitDataGradient = NULL;
   txtHistogramNumColumns = NULL;
@@ -919,6 +921,12 @@ void PreferencesDialog::CreateControls()
   if (PreferencesDialog::ShowToolTips())
     checkHistogramAutofitControlScale->SetToolTip(_("Fit control scale when histogram is created."));
   itemStaticBoxSizer126->Add(checkHistogramAutofitControlScale, 0, wxGROW|wxTOP, 5);
+
+  checkHistogramAutofitControlScaleZero = new wxCheckBox( panelHistogram, ID_PREFERENCES_HISTOGRAM_AUTOFIT_CONTROL_ZERO, _("Autofit Control Scale Zeros"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramAutofitControlScaleZero->SetValue(false);
+  if (PreferencesDialog::ShowToolTips())
+    checkHistogramAutofitControlScaleZero->SetToolTip(_("Fit control scale zeros when histogram is created."));
+  itemStaticBoxSizer126->Add(checkHistogramAutofitControlScaleZero, 0, wxGROW, 5);
 
   checkHistogramAutofit3DScale = new wxCheckBox( panelHistogram, ID_PREFERENCES_HISTOGRAM_AUTOFIT_3D, _("Autofit 3D Scale"), wxDefaultPosition, wxDefaultSize, 0 );
   checkHistogramAutofit3DScale->SetValue(false);
@@ -1618,6 +1626,7 @@ bool PreferencesDialog::TransferDataToWindow()
   txtHistogramPrecision->SetValue( ( int )histogramPrecision );
 
   checkHistogramAutofitControlScale->SetValue( histogramAutofitControlScale );
+  checkHistogramAutofitControlScaleZero->SetValue( histogramAutofitControlScaleZero );
   checkHistogramAutofit3DScale->SetValue( histogramAutofit3DScale );
   checkHistogramAutofitDataGradient->SetValue( histogramAutofitDataGradient );
   txtHistogramNumColumns->SetValue( ( int )histogramNumColumns );
@@ -1736,6 +1745,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   histogramPrecision = ( PRV_UINT32 )txtHistogramPrecision->GetValue();
 
   histogramAutofitControlScale = checkHistogramAutofitControlScale->GetValue();
+  histogramAutofitControlScaleZero = checkHistogramAutofitControlScaleZero->GetValue();
   histogramAutofit3DScale = checkHistogramAutofit3DScale->GetValue();
   histogramAutofitDataGradient = checkHistogramAutofitDataGradient->GetValue();
   histogramNumColumns = ( THistogramColumn )txtHistogramNumColumns->GetValue();

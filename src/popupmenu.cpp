@@ -112,6 +112,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_CFG, gPopUpMenu::OnMenuSaveTimelineAsCFG )
   EVT_MENU( ID_MENU_SAVE_ALL_PLANES_AS_TEXT, gPopUpMenu::OnMenuSaveAllPlanesAsText )
   EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
+  EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE_ZERO, gPopUpMenu::OnMenuAutoControlScaleZero )
   EVT_MENU( ID_MENU_AUTO_3D_SCALE, gPopUpMenu::OnMenuAuto3DScale )
   EVT_MENU( ID_MENU_AUTO_DATA_GRADIENT, gPopUpMenu::OnMenuAutoDataGradient )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_LINEAR, gPopUpMenu::OnMenuGradientFunction )
@@ -249,13 +250,15 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
   Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
   
-  Enable( FindItem( _( STR_CONTROL_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE) );
-  Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS) );
+  Enable( FindItem( _( STR_CONTROL_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE ) );
+  Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS ) );
   if( whichHistogram->GetHistogram()->getThreeDimensions() &&
       histogram != NULL && histogram->GetHistogram()->getThreeDimensions() )
     Enable( FindItem( _( STR_3D_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_3D_SCALE) );
   else
     Enable( FindItem( _( STR_3D_SCALE ) ), false );
+
+  Enable( FindItem( _( STR_AUTOFIT_CONTROL_ZERO ) ), whichHistogram->GetHistogram()->getCompute2DScale() );
 
   Enable( FindItem( _( "Image..." ) ), whichHistogram->GetHistogram()->getZoom() );
 }
@@ -844,12 +847,20 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   
   buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, wxID_ZOOM_100 );
   buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
+  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
+
   buildItem( this, 
              _( "Auto Fit Control Scale" ),
              ITEMCHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoControlScale,
              ID_MENU_AUTO_CONTROL_SCALE,
              histogram->GetHistogram()->getCompute2DScale() );
+  buildItem( this, 
+             _( STR_AUTOFIT_CONTROL_ZERO ),
+             ITEMCHECK,
+             (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoControlScaleZero,
+             ID_MENU_AUTO_CONTROL_SCALE_ZERO,
+             histogram->GetHistogram()->getCompute2DScaleZero() );
   if( histogram->GetHistogram()->getThreeDimensions() )
     buildItem( this, 
                _( "Auto Fit 3D Scale" ),
@@ -864,7 +875,6 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
              ID_MENU_AUTO_DATA_GRADIENT,
              histogram->GetHistogram()->getComputeGradient() );
 
-  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
   AppendSeparator();
 
   buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::COLOR );
@@ -1845,6 +1855,13 @@ void gPopUpMenu::OnMenuAutoControlScale( wxCommandEvent& event )
 {
   if( histogram != NULL )
     histogram->OnPopUpAutoControlScale( event.IsChecked() );
+}
+
+
+void gPopUpMenu::OnMenuAutoControlScaleZero( wxCommandEvent& event )
+{
+  if( histogram != NULL )
+    histogram->OnPopUpAutoControlScaleZero( event.IsChecked() );
 }
 
 
