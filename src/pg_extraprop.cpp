@@ -980,7 +980,7 @@ bool prvNumbersListProperty::OnEvent( wxPropertyGrid* propgrid,
                                       wxWindow* WXUNUSED(primary),
                                       wxEvent& event )
 {
-  return true;
+  return false;
 }
 
 
