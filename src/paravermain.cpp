@@ -462,6 +462,8 @@ void paraverMain::Init()
   {
     filterExternalApps();
     ParaverConfig::getInstance()->setAppsChecked();
+
+    paraverConfig->writeParaverConfigFile();
   }
 }
 
@@ -4358,6 +4360,7 @@ void paraverMain::OnSize( wxSizeEvent& event )
   paraverConfig->setMainWindowWidth( event.GetSize().GetWidth() );
   paraverConfig->setMainWindowHeight( event.GetSize().GetHeight() );
 
+  paraverConfig->writeParaverConfigFile( false );
   event.Skip();
 }
 
@@ -4497,7 +4500,7 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
 
   if ( tutorialsWindow == NULL )
   {
-    tutorialsRoot = wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 );
+    tutorialsRoot = wxString( GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 );
     tutorialsWindow = HelpContents::createObject( HelpContents::TUTORIAL, this, tutorialsRoot, 
                                                   true, wxID_ANY, _("Tutorials") );
   }
@@ -5249,6 +5252,8 @@ void paraverMain::helpQuestion()
   
   paraverConfig->setGlobalHelpContentsUsesBrowser( question == wxYES );
   paraverConfig->setGlobalHelpContentsQuestionAnswered( true );
+
+  paraverConfig->writeParaverConfigFile();
 }
 
 Trace *paraverMain::getCurrentTrace() const

@@ -335,7 +335,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   // RE: Help button
   wxBitmapButton *auxButtonBMP = new wxBitmapButton( myPanel,
                                                      wxID_ANY,
-                                                     wxBitmap( wxT( "icons/help.xpm" ) ),
+                                                     wxBitmap( help_xpm ),
                                                      wxDefaultPosition, wxDefaultSize,
                                                      wxBU_AUTODRAW );
   auxButtonBMP->SetToolTip(_("Regular expressions help."));
