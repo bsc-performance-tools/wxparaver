@@ -228,6 +228,9 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME
   void OnCheckboxCheckCutterOriginalTimeUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CUTTER_KEEP_EVENTS
+  void OnCheckboxCutterKeepEventsUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FILTER_DISCARD_STATE
   void OnCheckboxFilterDiscardStateUpdate( wxUpdateUIEvent& event );
 

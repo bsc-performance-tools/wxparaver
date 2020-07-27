@@ -77,7 +77,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
 ////@begin CutFilterDialog event table entries
   EVT_INIT_DIALOG( CutFilterDialog::OnInitDialog )
   EVT_IDLE( CutFilterDialog::OnIdle )
-  //EVT_KEY_DOWN( CutFilterDialog::OnKeyDown )
+  EVT_KEY_DOWN( CutFilterDialog::OnKeyDown )
   EVT_TEXT( ID_TEXTCTRL_CUT_FILTER_INPUT_TRACE, CutFilterDialog::OnTextctrlCutFilterInputTraceTextUpdated )
   EVT_TEXT( ID_TEXTCTRL_CUT_FILTER_XML, CutFilterDialog::OnTextctrlCutFilterXmlTextUpdated )
   EVT_LISTBOX_DCLICK( ID_CHECKLISTBOX_EXECUTION_CHAIN, CutFilterDialog::OnChecklistboxExecutionChainDoubleClicked )
@@ -96,6 +96,7 @@ BEGIN_EVENT_TABLE( CutFilterDialog, wxDialog )
   EVT_UPDATE_UI( ID_BUTTON_CUTTER_ALL_WINDOW, CutFilterDialog::OnButtonCutterAllWindowUpdate )
   EVT_BUTTON( ID_BUTTON_CUTTER_ALL_TRACE, CutFilterDialog::OnButtonCutterAllTraceClick )
   EVT_UPDATE_UI( ID_CHECKBOX_CHECK_CUTTER_ORIGINAL_TIME, CutFilterDialog::OnCheckboxCheckCutterOriginalTimeUpdate )
+  EVT_UPDATE_UI( ID_CHECKBOX_CUTTER_KEEP_EVENTS, CutFilterDialog::OnCheckboxCutterKeepEventsUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_FILTER_DISCARD_STATE, CutFilterDialog::OnCheckboxFilterDiscardStateUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_FILTER_DISCARD_EVENT, CutFilterDialog::OnCheckboxFilterDiscardEventUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_FILTER_DISCARD_COMMUNICATION, CutFilterDialog::OnCheckboxFilterDiscardCommunicationUpdate )
@@ -494,11 +495,11 @@ void CutFilterDialog::CreateControls()
     buttonCutterSelectRegion->SetToolTip(_("Fill times range directly clicking or dragging from timelines. You can click on different timelines."));
   itemBoxSizer56->Add(buttonCutterSelectRegion, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  buttonCutterAllWindow = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_WINDOW, _("All Window"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCutterAllWindow = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_WINDOW, _("Whole Window"), wxDefaultPosition, wxDefaultSize, 0 );
   buttonCutterAllWindow->Enable(false);
   itemBoxSizer56->Add(buttonCutterAllWindow, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
-  buttonCutterAllTrace = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_TRACE, _("All Trace"), wxDefaultPosition, wxDefaultSize, 0 );
+  buttonCutterAllTrace = new wxButton( itemScrolledWindow38, ID_BUTTON_CUTTER_ALL_TRACE, _("Whole Trace"), wxDefaultPosition, wxDefaultSize, 0 );
   if (CutFilterDialog::ShowToolTips())
     buttonCutterAllTrace->SetToolTip(_("Set range [0%, 100%]."));
   itemBoxSizer56->Add(buttonCutterAllTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
@@ -813,7 +814,7 @@ void CutFilterDialog::CreateControls()
   itemStdDialogButtonSizer133->Realize();
 
   // Connect events and objects
-  //buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), NULL, this);
+  buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), NULL, this);
 ////@end CutFilterDialog content construction
 
 
@@ -3007,5 +3008,15 @@ void CutFilterDialog::OnKeyDown( wxKeyEvent& event )
   // Before editing this code, remove the block markers.
   event.Skip();
 ////@end wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG in CutFilterDialog. 
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CUTTER_KEEP_EVENTS
+ */
+
+void CutFilterDialog::OnCheckboxCutterKeepEventsUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( checkCutterDontBreakStates->IsChecked() );
 }
 
