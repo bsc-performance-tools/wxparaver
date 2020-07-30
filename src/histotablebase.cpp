@@ -192,6 +192,8 @@ wxString HistoTableBase::GetValue( int row, int col )
       else
         totals->getAll( vTotals, idStat, col, myHisto->getSelectedPlane() );
 
+      delete totals;
+      
       if( iTotal >= vTotals.size() )
         label = wxString::FromAscii( "" );
       else if( vTotals[ 0 ] != 0.0 )

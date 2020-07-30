@@ -649,7 +649,7 @@ void gHistogram::fillZoom()
     }
     else
     {
-      numDrawCols = myHistogram->getNumColumns();
+      numDrawCols = myHistogram->getNumRows();
       numDrawRows = numCols;
     }
     selectedColumns.insert( selectedColumns.begin(), numCols, true );
