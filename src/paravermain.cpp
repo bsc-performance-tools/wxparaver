@@ -3288,6 +3288,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetSessionSaveTime( paraverConfig->getGlobalSessionSaveTime() );
   preferences.SetAskForPrevSessionLoad( paraverConfig->getGlobalPrevSessionLoad() );
   preferences.SetHelpContentsUsesBrowser( paraverConfig->getGlobalHelpContentsUsesBrowser() );
+  preferences.SetDisableTimelineZoomMouseWheel( paraverConfig->getDisableTimelineZoomMouseWheel() );
  
   // TIMELINE
 
@@ -3394,6 +3395,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setGlobalSessionSaveTime( preferences.GetSessionSaveTime() );
     paraverConfig->setGlobalPrevSessionLoad( preferences.GetAskForPrevSessionLoad() );
     paraverConfig->setGlobalHelpContentsUsesBrowser( preferences.GetHelpContentsUsesBrowser() );
+    paraverConfig->setDisableTimelineZoomMouseWheel( preferences.GetDisableTimelineZoomMouseWheel() );
 
 
     // TIMELINE

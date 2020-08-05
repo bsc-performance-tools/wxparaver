@@ -83,6 +83,7 @@ class wxListBox;
 #define ID_PREFERENCES_GLOBAL_TIME_SESSION 10168
 #define ID_GLOBAL_ASK_FOR_PREV_SESSION 10039
 #define ID_HELP_CONTENTS_IN_BROWSER 10159
+#define ID_DISABLE_TIMELINE_ZOOM_MOUSE_WHEEL 10043
 #define ID_PREFERENCES_TIMELINE 10072
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
@@ -432,6 +433,9 @@ public:
   bool GetHistogramAutofitControlScale() const { return histogramAutofitControlScale ; }
   void SetHistogramAutofitControlScale(bool value) { histogramAutofitControlScale = value ; }
 
+  bool GetHistogramAutofitControlScaleZero() const { return histogramAutofitControlScaleZero ; }
+  void SetHistogramAutofitControlScaleZero(bool value) { histogramAutofitControlScaleZero = value ; }
+
   bool GetHistogramAutofitDataGradient() const { return histogramAutofitDataGradient ; }
   void SetHistogramAutofitDataGradient(bool value) { histogramAutofitDataGradient = value ; }
 
@@ -603,8 +607,8 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  bool GetHistogramAutofitControlScaleZero() const { return histogramAutofitControlScaleZero ; }
-  void SetHistogramAutofitControlScaleZero(bool value) { histogramAutofitControlScaleZero = value ; }
+  bool GetDisableTimelineZoomMouseWheel() const { return disableTimelineZoomMouseWheel ; }
+  void SetDisableTimelineZoomMouseWheel(bool value) { disableTimelineZoomMouseWheel = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -644,6 +648,7 @@ public:
   wxSpinCtrl* spinSessionTime;
   wxCheckBox* checkGlobalAskForPrevSessionLoad;
   wxCheckBox* checkGlobalHelpOnBrowser;
+  wxCheckBox* checkDisableTimelineZoomMouseWheel;
   wxPanel* panelTimeline;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
@@ -750,6 +755,7 @@ private:
   bool helpContentsUsesBrowser;
   bool histogramAutofit3DScale;
   bool histogramAutofitControlScale;
+  bool histogramAutofitControlScaleZero;
   bool histogramAutofitDataGradient;
   PRV_UINT32 histogramDrawmodeObjects;
   PRV_UINT32 histogramDrawmodeSemantic;
@@ -807,7 +813,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  bool histogramAutofitControlScaleZero;
+  bool disableTimelineZoomMouseWheel;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

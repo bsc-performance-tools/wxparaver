@@ -196,6 +196,7 @@ void PreferencesDialog::Init()
   helpContentsUsesBrowser = false;
   histogramAutofit3DScale = true;
   histogramAutofitControlScale = true;
+  histogramAutofitControlScaleZero = false;
   histogramAutofitDataGradient = true;
   histogramDrawmodeObjects = 0;
   histogramDrawmodeSemantic = 0;
@@ -241,7 +242,7 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  histogramAutofitControlScaleZero = false;
+  disableTimelineZoomMouseWheel = false;
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
@@ -260,6 +261,7 @@ void PreferencesDialog::Init()
   spinSessionTime = NULL;
   checkGlobalAskForPrevSessionLoad = NULL;
   checkGlobalHelpOnBrowser = NULL;
+  checkDisableTimelineZoomMouseWheel = NULL;
   panelTimeline = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
@@ -479,10 +481,10 @@ void PreferencesDialog::CreateControls()
   itemBoxSizer3->Add(itemStaticBoxSizer31, 0, wxGROW|wxALL, 5);
   checkGlobalSingleInstance = new wxCheckBox( panelGlobal, ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE, _("Allow only one running instance"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalSingleInstance->SetValue(false);
-  itemStaticBoxSizer31->Add(checkGlobalSingleInstance, 1, wxGROW|wxALL, 5);
+  itemStaticBoxSizer31->Add(checkGlobalSingleInstance, 1, wxGROW|wxALL, 2);
 
   wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer31->Add(itemBoxSizer33, 1, wxGROW|wxALL, 5);
+  itemStaticBoxSizer31->Add(itemBoxSizer33, 1, wxGROW|wxALL, 2);
   wxStaticText* itemStaticText34 = new wxStaticText( panelGlobal, wxID_STATIC, _("Automatically save session every"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer33->Add(itemStaticText34, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -494,11 +496,15 @@ void PreferencesDialog::CreateControls()
 
   checkGlobalAskForPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_ASK_FOR_PREV_SESSION, _("Show dialog for crashed auto-saved sessions on startup"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalAskForPrevSessionLoad->SetValue(true);
-  itemStaticBoxSizer31->Add(checkGlobalAskForPrevSessionLoad, 1, wxGROW|wxALL, 5);
+  itemStaticBoxSizer31->Add(checkGlobalAskForPrevSessionLoad, 1, wxGROW|wxALL, 2);
 
   checkGlobalHelpOnBrowser = new wxCheckBox( panelGlobal, ID_HELP_CONTENTS_IN_BROWSER, _("Show help contents on a browser"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalHelpOnBrowser->SetValue(false);
-  itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxALL, 5);
+  itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxALL, 2);
+
+  checkDisableTimelineZoomMouseWheel = new wxCheckBox( panelGlobal, ID_DISABLE_TIMELINE_ZOOM_MOUSE_WHEEL, _("Disable timeline zoom with mouse wheel"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkDisableTimelineZoomMouseWheel->SetValue(false);
+  itemStaticBoxSizer31->Add(checkDisableTimelineZoomMouseWheel, 1, wxGROW|wxALL, 2);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -1552,6 +1558,7 @@ bool PreferencesDialog::TransferDataToWindow()
   checkGlobalAskForPrevSessionLoad->Enable( spinSessionTime->GetValue() != 0 );
 
   checkGlobalHelpOnBrowser->SetValue( helpContentsUsesBrowser );
+  checkDisableTimelineZoomMouseWheel->SetValue( disableTimelineZoomMouseWheel );
 
   // TIMELINE
   txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
@@ -1697,6 +1704,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   sessionSaveTime = spinSessionTime->GetValue();
   askForPrevSessionLoad = checkGlobalAskForPrevSessionLoad->GetValue();
   helpContentsUsesBrowser = checkGlobalHelpOnBrowser->GetValue();
+  disableTimelineZoomMouseWheel = checkDisableTimelineZoomMouseWheel->GetValue();
 
   // TIMELINE
   timelineNameFormatPrefix = std::string( txtTimelineNameFormatPrefix->GetValue().mb_str() );

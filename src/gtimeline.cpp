@@ -5589,7 +5589,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   bool zoomOut = event.GetWheelRotation() < 0;
   bool zoomIn = !zoomOut;
 
-  if( !myWindow->getReady() )
+  if( !myWindow->getReady() || ParaverConfig::getInstance()->getDisableTimelineZoomMouseWheel() )
     return;
 
   if( zoomOut )
