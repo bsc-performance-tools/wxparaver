@@ -143,6 +143,7 @@ class gHistogram;
 #define ID_MENU_NOT_NULL_GRADIENT_COLOR_2D                 30100
 #define ID_MENU_RENAME                                     30101
 #define ID_MENU_AUTO_CONTROL_SCALE_ZERO                    30102
+#define ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO                 30103
 
 #define ID_MENU_SYNC_GROUP_BASE                   31000
 
@@ -264,6 +265,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuAutoDataGradient( wxCommandEvent& event );
     
     void OnMenuGradientFunction( wxCommandEvent& event );
+    void OnMenuSemanticScaleMinAtZero( wxCommandEvent& event );
 
     void OnMenuSynchronize( wxCommandEvent& event );
     void OnMenuRemoveGroup( wxCommandEvent& event );

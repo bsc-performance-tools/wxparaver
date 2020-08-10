@@ -1265,7 +1265,7 @@ void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& line
 {
   TSemanticValue realMin = myWindow->getMinimumY();
   
-  if( myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
+  if( myWindow->getSemanticScaleMinAtZero() && myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
     realMin = 0.0;
   
   if( valueToDraw < realMin )
@@ -1313,7 +1313,7 @@ void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& li
 {
   TSemanticValue realMin = myWindow->getMinimumY();
   
-  if( myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
+  if( myWindow->getSemanticScaleMinAtZero() && myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
     realMin = 0.0;
 
   if( valueToDraw < realMin )
@@ -1362,7 +1362,7 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
 {
   TSemanticValue realMin = myWindow->getMinimumY();
   
-  if( myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
+  if( myWindow->getSemanticScaleMinAtZero() && myWindow->getExistSemanticZero() && myWindow->getMinimumY() > 0.0 )
     realMin = 0.0;
 
   TSemanticValue valueToDraw;

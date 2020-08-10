@@ -190,6 +190,7 @@ void PreferencesDialog::Init()
 ////@begin PreferencesDialog member initialisation
   cfgsPath = "";
   colorUseZero = false;
+  disableTimelineZoomMouseWheel = false;
   filtersXMLPath = "";
   globalFillStateGaps = false;
   globalFullTracePath = false;
@@ -242,7 +243,7 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  disableTimelineZoomMouseWheel = false;
+  timelineSemanticScaleMinAtZero = false;
   panelGlobal = NULL;
   checkGlobalFillStateGaps = NULL;
   checkGlobalFullTracePath = NULL;
@@ -267,6 +268,7 @@ void PreferencesDialog::Init()
   txtTimelineNameFormatFull = NULL;
   checkTimelineCommunicationLines = NULL;
   checkTimelineEventLines = NULL;
+  checkSemanticScaleMinAtZero = NULL;
   choiceTimelineColor = NULL;
   choiceTimelineGradientFunction = NULL;
   choiceTimelineDrawmodeTime = NULL;
@@ -562,6 +564,10 @@ void PreferencesDialog::CreateControls()
   if (PreferencesDialog::ShowToolTips())
     checkTimelineEventLines->SetToolTip(_("View event flags in new timelines."));
   itemStaticBoxSizer47->Add(checkTimelineEventLines, 0, wxGROW, 5);
+
+  checkSemanticScaleMinAtZero = new wxCheckBox( panelTimeline, ID_PREFERENCES_SEMANTIC_SCALE_MIN_AT_ZERO, _("Semantic Scale Min at Zero"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkSemanticScaleMinAtZero->SetValue(false);
+  itemStaticBoxSizer47->Add(checkSemanticScaleMinAtZero, 0, wxGROW, 5);
 
   wxBoxSizer* itemBoxSizer50 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer47->Add(itemBoxSizer50, 0, wxGROW|wxTOP, 5);
@@ -1566,7 +1572,7 @@ bool PreferencesDialog::TransferDataToWindow()
 
   checkTimelineEventLines->SetValue( timelineEventLines );
   checkTimelineCommunicationLines->SetValue( timelineCommunicationLines );
-
+  checkSemanticScaleMinAtZero->SetValue( timelineSemanticScaleMinAtZero );
   options.clear();
   LabelConstructor::getGUIGroupLabels( LabelConstructor::COLOR, options );
   setLabelsChoiceBox( options, timelineColor, choiceTimelineColor );
@@ -1713,6 +1719,7 @@ bool PreferencesDialog::TransferDataFromWindow()
 
   timelineEventLines = checkTimelineEventLines->IsChecked();
   timelineCommunicationLines = checkTimelineCommunicationLines->IsChecked();
+  timelineSemanticScaleMinAtZero = checkSemanticScaleMinAtZero->IsChecked();
 
   timelineColor = ( PRV_UINT32 )choiceTimelineColor->GetCurrentSelection();
   timelineGradientFunction = ( PRV_UINT32 )choiceTimelineGradientFunction->GetCurrentSelection();

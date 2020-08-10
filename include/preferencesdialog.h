@@ -35,7 +35,7 @@
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
-#include "filebrowserbutton.h"
+#include "include/filebrowserbutton.h"
 #include "wx/clrpicker.h"
 #include "wx/statline.h"
 ////@end includes
@@ -89,6 +89,7 @@ class wxListBox;
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
 #define ID_PREFERENCES_TIMELINE_COMMUNICATION_LINES 10090
 #define ID_PREFERENCES_TIMELINE_EVENT_LINES 10088
+#define ID_PREFERENCES_SEMANTIC_SCALE_MIN_AT_ZERO 10044
 #define ID_PREFERENCES_TIMELINE_COLOR 10086
 #define ID_PREFERENCES_TIMELINE_GRADIENT 10015
 #define ID_PREFERENCES_TIMELINE_DRAWMODE_TIME 10012
@@ -397,6 +398,9 @@ public:
   bool GetColorUseZero() const { return colorUseZero ; }
   void SetColorUseZero(bool value) { colorUseZero = value ; }
 
+  bool GetDisableTimelineZoomMouseWheel() const { return disableTimelineZoomMouseWheel ; }
+  void SetDisableTimelineZoomMouseWheel(bool value) { disableTimelineZoomMouseWheel = value ; }
+
   std::string GetFiltersXMLPath() const { return filtersXMLPath ; }
   void SetFiltersXMLPath(std::string value) { filtersXMLPath = value ; }
 
@@ -607,8 +611,8 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  bool GetDisableTimelineZoomMouseWheel() const { return disableTimelineZoomMouseWheel ; }
-  void SetDisableTimelineZoomMouseWheel(bool value) { disableTimelineZoomMouseWheel = value ; }
+  bool GetTimelineSemanticScaleMinAtZero() const { return timelineSemanticScaleMinAtZero ; }
+  void SetTimelineSemanticScaleMinAtZero(bool value) { timelineSemanticScaleMinAtZero = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -654,6 +658,7 @@ public:
   wxTextCtrl* txtTimelineNameFormatFull;
   wxCheckBox* checkTimelineCommunicationLines;
   wxCheckBox* checkTimelineEventLines;
+  wxCheckBox* checkSemanticScaleMinAtZero;
   wxChoice* choiceTimelineColor;
   wxChoice* choiceTimelineGradientFunction;
   wxChoice* choiceTimelineDrawmodeTime;
@@ -743,6 +748,7 @@ private:
   bool askForPrevSessionLoad;
   std::string cfgsPath;
   bool colorUseZero;
+  bool disableTimelineZoomMouseWheel;
   std::string filtersXMLPath;
   bool globalFillStateGaps;
   bool globalFullTracePath;
@@ -813,7 +819,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  bool disableTimelineZoomMouseWheel;
+  bool timelineSemanticScaleMinAtZero;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace

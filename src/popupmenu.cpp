@@ -119,6 +119,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_STEPS, gPopUpMenu::OnMenuGradientFunction )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, gPopUpMenu::OnMenuGradientFunction )
   EVT_MENU( ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, gPopUpMenu::OnMenuGradientFunction )
+  EVT_MENU( ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO, gPopUpMenu::OnMenuSemanticScaleMinAtZero )
   EVT_MENU( ID_MENU_PASTE_CONTROL_SCALE, gPopUpMenu::OnMenuPasteControlScale )
   EVT_MENU( ID_MENU_PASTE_3D_SCALE, gPopUpMenu::OnMenuPaste3DScale )
   EVT_MENU( ID_MENU_NEWGROUP, gPopUpMenu::OnMenuSynchronize )
@@ -491,6 +492,11 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuColor->Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->isCodeColorSet() == false &&
                                                 timeline->GetMyWindow()->isFunctionLineColorSet() == false &&
                                                 timeline->GetMyWindow()->isPunctualColorSet() == false );
+
+  wxMenuItem *tmpSemScaleMinZero = buildItem( popUpMenuColor, _( "Semantic scale min at 0" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScaleMinAtZero, ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO, timeline->GetMyWindow()->getSemanticScaleMinAtZero() );
+  popUpMenuColor->Enable( tmpSemScaleMinZero->GetId(), timeline->GetMyWindow()->isFunctionLineColorSet() ||
+                                                       timeline->GetMyWindow()->isFusedLinesColorSet() ||
+                                                       timeline->GetMyWindow()->isPunctualColorSet() );
 
   AppendSubMenu( popUpMenuColor, _( "Paint As" ));
 
@@ -1896,6 +1902,13 @@ void gPopUpMenu::OnMenuGradientFunction( wxCommandEvent& event )
     timeline->OnMenuGradientFunction( gradFunc );
   else if( histogram != NULL )
     histogram->OnMenuGradientFunction( gradFunc );
+}
+
+
+void gPopUpMenu::OnMenuSemanticScaleMinAtZero( wxCommandEvent& event )
+{
+  timeline->GetMyWindow()->setSemanticScaleMinAtZero( event.IsChecked() );
+  timeline->GetMyWindow()->setRedraw( true );
 }
 
 

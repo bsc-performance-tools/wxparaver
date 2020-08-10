@@ -3297,6 +3297,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   //preferences.GetTimelineDefaultCFG( paraverConfig->setTimelineDefaultCFG() );
   preferences.SetTimelineEventLines( paraverConfig->getTimelineViewEventsLines() );
   preferences.SetTimelineCommunicationLines( paraverConfig->getTimelineViewCommunicationsLines() );
+  preferences.SetTimelineSemanticScaleMinAtZero( paraverConfig->getTimelineSemanticScaleMinAtZero() );
   preferences.SetTimelineColor( ( PRV_UINT32 )paraverConfig->getTimelineColor() );
   preferences.SetTimelineGradientFunction( ( PRV_UINT32 )paraverConfig->getTimelineGradientFunction() );
   preferences.SetTimelineDrawmodeTime( ( PRV_UINT32 )paraverConfig->getTimelineDrawmodeTime() );
@@ -3405,6 +3406,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setTimelinePrecision( preferences.GetTimelineWWPrecision() );
     paraverConfig->setTimelineViewEventsLines( preferences.GetTimelineEventLines() );
     paraverConfig->setTimelineViewCommunicationsLines( preferences.GetTimelineCommunicationLines() );
+    paraverConfig->setTimelineSemanticScaleMinAtZero( preferences.GetTimelineSemanticScaleMinAtZero() );
     paraverConfig->setTimelineColor( (SemanticColor::TColorFunction)preferences.GetTimelineColor() );
     paraverConfig->setTimelineGradientFunction( (GradientColor::TGradientFunction)preferences.GetTimelineGradientFunction() );
     paraverConfig->setTimelineDrawmodeTime( (DrawModeMethod)preferences.GetTimelineDrawmodeTime() );
