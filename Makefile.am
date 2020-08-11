@@ -44,6 +44,12 @@ if ENABLE_DEPENDENCIES_AWARE_INSTALL
 		( cp  $(DESTDIR)$(bindir)/wxparaver $(DESTDIR)$(bindir)/wxparaver.tmp && \
 			$(SED) "s|@inst_WXPROPGRID_LIB_PATH@||g" < $(DESTDIR)$(bindir)/wxparaver.tmp > $(DESTDIR)$(bindir)/wxparaver )
 
+	test "x${OPENSSL_LDFLAGS}" != "x" && \
+		( cp  $(DESTDIR)$(bindir)/wxparaver $(DESTDIR)$(bindir)/wxparaver.tmp && \
+			$(SED) "s|@inst_LIBSSL_LIBDIR@|${OPENSSL_LDFLAGS}:|g"  < $(DESTDIR)$(bindir)/wxparaver.tmp > $(DESTDIR)$(bindir)/wxparaver ) || \
+		( cp  $(DESTDIR)$(bindir)/wxparaver $(DESTDIR)$(bindir)/wxparaver.tmp && \
+			$(SED) "s|@inst_LIBSSL_LIBDIR@||g" < $(DESTDIR)$(bindir)/wxparaver.tmp > $(DESTDIR)$(bindir)/wxparaver )
+
 	cp  $(DESTDIR)$(bindir)/wxparaver $(DESTDIR)$(bindir)/wxparaver.tmp && \
 	$(AWK) \
 			'{  \
@@ -83,6 +89,7 @@ else
 	$(SED) "s|@inst_BOOST_LIBDIR@||g ; \
           s|@inst_WXWIDGETS_LIBDIR@||g ; \
           s|@inst_WXPROPGRID_LIB_PATH@||g ; \
+		  s|@inst_LIBSSL_LIBDIR@||g ; \
 					s|@inst_LOGIN_NODE_DETECTION@||g" < ./docs/wxparaver > $(DESTDIR)$(bindir)/wxparaver
 endif
 	
