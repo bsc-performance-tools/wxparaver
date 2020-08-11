@@ -697,7 +697,9 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeTime, _( "Time" ));
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeObjects, _( "Objects" ));
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeBoth, _( "Both" ));
-  AppendSubMenu( popUpMenuDrawMode, _( "Drawmode" ));
+  wxMenuItem *tmpDrawModeSubMenu = AppendSubMenu( popUpMenuDrawMode, _( "Drawmode" ));
+  Enable( tmpDrawModeSubMenu->GetId(), !timeline->GetMyWindow()->isPunctualColorSet() || 
+                                       timeline->GetMyWindow()->getPunctualColorWindow() != NULL );
 
   buildItem( popUpMenuPixelSize,
              _( "x1" ),
