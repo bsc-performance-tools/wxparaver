@@ -75,7 +75,7 @@ if ENABLE_DEPENDENCIES_AWARE_INSTALL
 				} '	$(DESTDIR)$(bindir)/wxparaver.tmp > $(DESTDIR)$(bindir)/wxparaver
 		
 	( cp  $(DESTDIR)$(bindir)/wxparaver $(DESTDIR)$(bindir)/wxparaver.tmp && \
-			$(SED) "s|@inst_LOGIN_NODE_DETECTION@|if [ ! \"$$\(hostname \| grep login\)x\" = \"x\" ]; then export OMP_NUM_THREADS=4 ; fi|g" < $(DESTDIR)$(bindir)/wxparaver.tmp > $(DESTDIR)$(bindir)/wxparaver )
+			$(SED) "s|@inst_LOGIN_NODE_DETECTION@|if [ ! \"$$\(hostname \| grep login\)x\" = \"x\" ]; then export OMP_NUM_THREADS=4 ; ulimit -Ss 128000 ; fi|g" < $(DESTDIR)$(bindir)/wxparaver.tmp > $(DESTDIR)$(bindir)/wxparaver )
 	
 	test -f $(DESTDIR)$(bindir)/wxparaver.tmp && rm -fv $(DESTDIR)$(bindir)/wxparaver.tmp
   
