@@ -261,9 +261,6 @@ public:
 
 ////@begin gHistogram member function declarations
 
-  SelectionManagement<THistogramColumn,int> GetColumnSelection() const { return columnSelection ; }
-  void SetColumnSelection(SelectionManagement<THistogramColumn,int> value) { columnSelection = value ; }
-
   wxBitmap GetDrawImage() const { return drawImage ; }
   void SetDrawImage(wxBitmap value) { drawImage = value ; }
 
@@ -321,6 +318,9 @@ public:
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
 ////@end gHistogram member function declarations
+
+  const SelectionManagement< THistogramColumn, int >& GetColumnSelection() const { return columnSelection; }
+  void SetColumnSelection( const SelectionManagement< THistogramColumn, int >& value ) { columnSelection = value; }
 
   void execute();
 
@@ -421,7 +421,6 @@ public:
   wxStaticBitmap* xtraWarning;
   wxStatusBar* histoStatus;
 private:
-  SelectionManagement<THistogramColumn,int> columnSelection;
   wxBitmap drawImage;
   bool escapePressed;
   double lastPosZoomX;
@@ -441,6 +440,8 @@ private:
   wxPoint zoomPointEnd;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
+
+  SelectionManagement<THistogramColumn,int> columnSelection;
 
   // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;

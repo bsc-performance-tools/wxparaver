@@ -454,6 +454,22 @@ void gHistogram::execute()
 
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
 
+  PRV_UINT16 idStat;
+  THistogramColumn numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+  THistogramColumn curPlane;
+
+  myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
+  if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
+  {
+    curPlane = myHistogram->getCommSelectedPlane();
+    columnSelection.init( myHistogram->getCommColumnTotals(), idStat, numCols, curPlane );
+  }
+  else
+  {
+    curPlane = myHistogram->getSelectedPlane();
+    columnSelection.init( myHistogram->getColumnTotals(), idStat, numCols, curPlane );
+  }
+
   if( myHistogram->getZoom() )
     fillZoom();
   else
@@ -503,7 +519,7 @@ void gHistogram::fillGrid()
   mainSizer->Layout();
 
   if( tableBase == NULL )
-    tableBase = new HistoTableBase( myHistogram );
+    tableBase = new HistoTableBase( this );
   tableBase->setSelectedRows( &selectedRows );
   cellFontBold.SetWeight( wxFONTWEIGHT_BOLD );
   tableBase->setDefaultFontBold( cellFontBold );
@@ -623,10 +639,6 @@ void gHistogram::fillZoom()
 
   if( myHistogram->getHideColumns() )
   {
-    if( commStat )
-      columnSelection.init( myHistogram->getCommColumnTotals(), idStat, numCols, curPlane );
-    else
-      columnSelection.init( myHistogram->getColumnTotals(), idStat, numCols, curPlane );
     columnSelection.getSelected( noVoidSemRanges );
     if( horizontal )
     {
