@@ -185,7 +185,7 @@ wxString HistoTableBase::GetValue( int row, int col )
       if( !myHisto->getHorizontal() )
         col = row;
         
-      col = myHisto->getSortedColumn( col );
+      col = myHisto->getSemanticSortedColumn( col );
 
       if( myHisto->itsCommunicationStat( myHisto->getCurrentStat() ) )
         totals->getAll( vTotals, idStat, col, myHisto->getCommSelectedPlane() );
@@ -262,7 +262,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
       tmpAttr->SetFont( cellFontBold );
 
-      TSemanticValue tmpValue = ( myHisto->getSortedColumn( col ) * myHisto->getControlDelta() ) +
+      TSemanticValue tmpValue = ( myHisto->getSemanticSortedColumn( col ) * myHisto->getControlDelta() ) +
                                 myHisto->getControlMin();
       rgb tmpCol;
       if( controlWindow->isCodeColorSet() )
@@ -296,7 +296,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
 
       if( row < (int)myHisto->getNumColumns( myHisto->getCurrentStat() ) )
       {
-        TSemanticValue tmpValue = ( myHisto->getSortedColumn( row ) * myHisto->getControlDelta() ) +
+        TSemanticValue tmpValue = ( myHisto->getSemanticSortedColumn( row ) * myHisto->getControlDelta() ) +
                                   myHisto->getControlMin();
         rgb tmpCol;
         if( controlWindow->isCodeColorSet() )

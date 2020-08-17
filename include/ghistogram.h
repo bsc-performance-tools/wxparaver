@@ -448,10 +448,10 @@ private:
   void updateHistogram();
 
   void OnTimerZoom( wxTimerEvent& event );
-  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const vector<THistogramColumn>& noVoidColumns ) const;
+  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const vector<THistogramColumn>& noVoidSemRanges ) const;
 
-  THistogramColumn getSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns  ) const;
-  THistogramColumn getRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidColumns  ) const;
+  THistogramColumn getSemanticSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidSemRanges  ) const;
+  THistogramColumn getSemanticRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidSemRanges  ) const;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
                    vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
 
