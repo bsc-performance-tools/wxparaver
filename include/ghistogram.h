@@ -452,7 +452,6 @@ private:
   TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const vector<THistogramColumn>& noVoidSemRanges ) const;
 
   THistogramColumn getSemanticSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidSemRanges  ) const;
-  THistogramColumn getSemanticRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidSemRanges  ) const;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
                    vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
 

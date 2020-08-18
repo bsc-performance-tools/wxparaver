@@ -578,20 +578,6 @@ THistogramColumn gHistogram::getSemanticSortedRealColumn( THistogramColumn which
   return realSortCol;
 }
 
-THistogramColumn gHistogram::getSemanticRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidSemRanges ) const
-{
-  THistogramColumn realCol = whichCol;
-
-  if( myHistogram->getHideColumns() && myHistogram->getSemanticSortColumns() && myHistogram->getSemanticSortReverse() )
-    realCol = myHistogram->getNumColumns() - noVoidSemRanges.size() + whichCol;
-  else if( myHistogram->getHideColumns() && !myHistogram->getSemanticSortColumns() && !myHistogram->getSemanticSortReverse() )
-    realCol = noVoidSemRanges[ whichCol ];
-  else if( myHistogram->getHideColumns() && !myHistogram->getSemanticSortColumns() && myHistogram->getSemanticSortReverse() )
-    realCol = noVoidSemRanges[ noVoidSemRanges.size() - whichCol - 1 ];
-    
-  return realCol;
-}
-
 void gHistogram::fillZoom()
 {
   bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
@@ -683,7 +669,7 @@ void gHistogram::fillZoom()
 
   for( THistogramColumn iCol = 0; iCol < tmpNumCols; ++iCol )
   {
-    THistogramColumn realCol = getSemanticRealColumn( iCol, noVoidSemRanges );
+    THistogramColumn realCol = myHistogram->getSemanticRealColumn( iCol, noVoidSemRanges );
 
     if( commStat )
       myHistogram->setCommFirstCell( realCol, curPlane );
@@ -698,7 +684,7 @@ void gHistogram::fillZoom()
              && rint( ( endCol + 2 ) * cellWidth ) == rint( ( beginCol + 1 ) * cellWidth ) )
       {
         ++endCol;
-        THistogramColumn tmpEndCol = getSemanticRealColumn( endCol, noVoidSemRanges );
+        THistogramColumn tmpEndCol = myHistogram->getSemanticRealColumn( endCol, noVoidSemRanges );
 
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
@@ -712,7 +698,7 @@ void gHistogram::fillZoom()
              && rint( ( endCol + 2 ) * cellHeight ) == rint( ( beginCol + 1 ) * cellHeight ) )
       {
         ++endCol;
-        THistogramColumn tmpEndCol = getSemanticRealColumn( endCol, noVoidSemRanges );
+        THistogramColumn tmpEndCol = myHistogram->getSemanticRealColumn( endCol, noVoidSemRanges );
 
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
@@ -781,7 +767,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
     valuesColumns.clear();
     for( THistogramColumn drawCol = beginColumn; drawCol <= endColumn; ++drawCol )
     {
-      THistogramColumn iCol = getSemanticRealColumn( drawCol, noVoidSemRanges );
+      THistogramColumn iCol = myHistogram->getSemanticRealColumn( drawCol, noVoidSemRanges );
 
       if( !( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
             ( !commStat && myHistogram->endCell( iCol, curPlane ) ) ) )
@@ -1945,7 +1931,7 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
 
   if( column > 0 )
   {
-    text << wxString::FromAscii( myHistogram->getColumnLabel( getSemanticRealColumn( column - 1, noVoidSemRanges ) ).c_str() )
+    text << wxString::FromAscii( myHistogram->getColumnLabel( myHistogram->getSemanticRealColumn( column - 1, noVoidSemRanges ) ).c_str() )
          << _( "  " );
   }
   
@@ -1978,7 +1964,7 @@ TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjec
   PRV_UINT16 idStat;
   
   myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
-  column = getSemanticRealColumn( column, noVoidSemRanges );
+  column = myHistogram->getSemanticRealColumn( column, noVoidSemRanges );
   
   if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
   {
