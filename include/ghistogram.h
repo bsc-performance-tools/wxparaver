@@ -197,6 +197,18 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_INCLUSIVE
   void OnToolInclusiveUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOOL_CHOICE_SORTBY
+  void OnToolChoiceSortbySelected( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_CHOICE_SORTBY
+  void OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_REVERSE
+  void OnToolReverseClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_REVERSE
+  void OnToolReverseUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_PAINT event handler for ID_ZOOMHISTO
   void OnPaint( wxPaintEvent& event );
 
@@ -248,9 +260,6 @@ public:
 ////@end gHistogram event handler declarations
 
 ////@begin gHistogram member function declarations
-
-  SelectionManagement<THistogramColumn,int> GetColumnSelection() const { return columnSelection ; }
-  void SetColumnSelection(SelectionManagement<THistogramColumn,int> value) { columnSelection = value ; }
 
   wxBitmap GetDrawImage() const { return drawImage ; }
   void SetDrawImage(wxBitmap value) { drawImage = value ; }
@@ -309,6 +318,9 @@ public:
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
 ////@end gHistogram member function declarations
+
+  const SelectionManagement< THistogramColumn, int >& GetColumnSelection() const { return columnSelection; }
+  void SetColumnSelection( const SelectionManagement< THistogramColumn, int >& value ) { columnSelection = value; }
 
   void execute();
 
@@ -400,6 +412,7 @@ public:
 ////@begin gHistogram member variables
   wxPanel* panelToolbar;
   wxToolBar* tbarHisto;
+  wxChoice* choiceSortBy;
   wxPanel* panelData;
   wxBoxSizer* mainSizer;
   wxScrolledWindow* zoomHisto;
@@ -409,7 +422,6 @@ public:
   wxStaticBitmap* xtraWarning;
   wxStatusBar* histoStatus;
 private:
-  SelectionManagement<THistogramColumn,int> columnSelection;
   wxBitmap drawImage;
   bool escapePressed;
   double lastPosZoomX;
@@ -430,21 +442,31 @@ private:
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
 
+  SelectionManagement<THistogramColumn,int> columnSelection;
+
   // Returns: histogram_plane_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName( bool onlySelectedPlane = true ) const;
 
   void updateHistogram();
+
   void OnTimerZoom( wxTimerEvent& event );
-  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const;
+  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const vector<THistogramColumn>& noVoidSemRanges ) const;
+
+  THistogramColumn getSemanticSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidSemRanges  ) const;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
                    vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
+
   void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                  THistogramColumn& columnBegin, THistogramColumn& columnEnd,
                                  TObjectOrder& objectBegin, TObjectOrder& objectEnd, bool zoomxy  );
+  void openControlMinMaxParam( THistogramColumn& columnBegin, THistogramColumn& columnEnd,
+                               TParamValue& minParam, TParamValue& maxParam );
   void openControlWindow( THistogramColumn columnBegin, THistogramColumn columnEnd,
                           TObjectOrder objectBegin, TObjectOrder objectEnd );
+
   void zoom( THistogramLimit newColumnBegin, THistogramLimit newColumnEnd,
              TObjectOrder newObjectBegin, TObjectOrder newObjectEnd, THistogramLimit newDelta = -1.0 );
+
 };
 
 void progressFunctionHistogram( ProgressController *progress, void *callerWindow );
