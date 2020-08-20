@@ -61,6 +61,7 @@ using boost::posix_time::ptime;
 #include "wx/scrolwin.h"
 #include "wx/timer.h"
 #include "wx/icon.h"
+#include "wx/slider.h"
 
 #include "paraverkerneltypes.h"
 #include "recordlist.h"
@@ -112,7 +113,16 @@ class ProgressController;
 #define ID_TEXTCTRL_DURATION 10047
 #define wxID_STATIC_SLOPE 10290
 #define ID_TEXTCTRL_SLOPE 10003
+#define ID_SCROLLEDWINDOW 10008
+#define ID_CHECKBOX_CUSTOM_PALETTE 10606
 #define ID_SCROLLED_COLORS 10049
+#define ID_PANEL 10009
+#define wxID_STATIC1 10295
+#define ID_SLIDER0 10010
+#define wxID_STATIC2 10293
+#define ID_SLIDER1 10011
+#define wxID_STATIC3 10294
+#define ID_SLIDER2 10012
 #define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
 #define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
@@ -172,12 +182,6 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
-
   /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
@@ -202,6 +206,12 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
 
@@ -214,8 +224,20 @@ public:
   /// wxEVT_UPDATE_UI event handler for wxID_STATIC_SLOPE
   void OnStaticSlopeUpdate( wxUpdateUIEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CUSTOM_PALETTE
+  void OnCheckboxCustomPaletteUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_COLORS
-  void OnColorsPanelUpdate( wxUpdateUIEvent& event );
+  void OnScrolledColorsUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for wxID_STATIC1
+  void OnStaticSelectedColorUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_SLIDER_UPDATED event handler for ID_SLIDER0
+  void OnSliderSelectedColorUpdated( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SLIDER0
+  void OnSliderSelectedColorUpdateUI( wxUpdateUIEvent& event );
 
 ////@end gTimeline event handler declarations
 
@@ -541,6 +563,7 @@ public:
   
   bool IsSplit() const;
   void OnPopUpTiming( bool whichTiming );
+  void OnItemColorLeftUp( wxMouseEvent& event );
 
   void saveImage( bool showSaveDialog, wxString whichFileName );
   void saveImageLegend( bool showSaveDialog = true );
@@ -593,8 +616,18 @@ public:
   wxTextCtrl* durationText;
   wxStaticText* slopeLabel;
   wxTextCtrl* slopeText;
+  wxScrolledWindow* colorsPanelGlobal;
+  wxCheckBox* checkboxCustomPalette;
   wxScrolledWindow* colorsPanel;
   wxBoxSizer* colorsSizer;
+  wxBoxSizer* sizerSelectedColor;
+  wxPanel* panelSelectedColor;
+  wxStaticText* labelSelectedColorRed;
+  wxSlider* sliderSelectedRed;
+  wxStaticText* labelSelectedColorGreen;
+  wxSlider* sliderSelectedGreen;
+  wxStaticText* labelSelectedColorBlue;
+  wxSlider* sliderSelectedBlue;
   wxBitmap bufferImage;
   wxBitmap commImage;
   bool drawCaution;
