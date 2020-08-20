@@ -3738,6 +3738,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     }
     tmpWildcard = tmpWildcard.BeforeLast( '|' );
 
+    /*
     FileDialogExtension saveDialog( this,
                              _("Save Image Legend"),
                              defaultDir,
@@ -3749,14 +3750,18 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                              _( "filedlg" ),
                              extensions );
     saveDialog.SetFilterIndex( filterIndex );
+    */
+
+    SaveImageDialog saveDialog( this, defaultDir, imageName );
+
     if ( saveDialog.ShowModal() != wxID_OK )
     {
       setEnableDestroyButton( true );
       return;
     }
 
-    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
-    imagePath = saveDialog.GetPath();
+    filterIndex = ParaverConfig::PNG; //ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    imagePath = saveDialog.GetImageFilePath(); // .GetPath();
   }
   
   // Get colors

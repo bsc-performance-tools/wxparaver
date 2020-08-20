@@ -1814,8 +1814,18 @@ void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuSaveImageLegend( wxCommandEvent& event )
 {
+  /*
   if ( timeline != NULL )
     timeline->saveImageLegend();
+  */
+  if ( timeline != NULL )
+  {
+    timeline->saveImageLegend();
+  }
+  /*else if ( histogram != NULL )
+  { 
+    histogram->saveImageLegend();
+  }*/
 }
 
 

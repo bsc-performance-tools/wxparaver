@@ -23,6 +23,7 @@ noinst_HEADERS =    advancedsaveconfiguration.h \
                     rowsselectiondialog.h \
                     runscript.h \
                     saveconfigurationdialog.h \
+                    saveimagedialog.h \
                     sequencedriver.h \
                     sessionsaver.h \
                     sessionselectiondialog.h \
