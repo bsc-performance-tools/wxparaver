@@ -26,7 +26,7 @@
 #include <string>
 #include "paraverkerneltypes.h"
 
-class Histogram;
+class gHistogram;
 
 using std::vector;
 using std::string;
@@ -36,7 +36,7 @@ class HistoTableBase : public wxGridTableBase
 {
   public:
     HistoTableBase();
-    HistoTableBase( Histogram* whichHisto );
+    HistoTableBase( gHistogram* whichHisto );
     virtual ~HistoTableBase();
 
     virtual int GetNumberRows();
@@ -55,7 +55,7 @@ class HistoTableBase : public wxGridTableBase
     void setDefaultFontBold( wxFont& whichFont );
 
   private:
-    Histogram *myHisto;
+    gHistogram *myHisto;
     vector< TObjectOrder > *selectedRows;
     wxFont cellFontBold;
 

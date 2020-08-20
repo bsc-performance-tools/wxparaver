@@ -130,6 +130,10 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_UPDATE_UI( ID_TOOL_ONLY_TOTALS, gHistogram::OnToolOnlyTotalsUpdate )
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
+  EVT_CHOICE( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbySelected )
+  EVT_UPDATE_UI( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbyUpdate )
+  EVT_MENU( ID_TOOL_REVERSE, gHistogram::OnToolReverseClick )
+  EVT_UPDATE_UI( ID_TOOL_REVERSE, gHistogram::OnToolReverseUpdate )
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
   EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
@@ -229,6 +233,7 @@ void gHistogram::Init()
   zoomDragging = false;
   panelToolbar = NULL;
   tbarHisto = NULL;
+  choiceSortBy = NULL;
   panelData = NULL;
   mainSizer = NULL;
   zoomHisto = NULL;
@@ -303,19 +308,19 @@ void gHistogram::CreateControls()
   if (gHistogram::ShowToolTips())
     itemStaticBitmap1->SetToolTip(_("Sort columns by"));
   tbarHisto->AddControl(itemStaticBitmap1);
-  wxArrayString itemChoice2Strings;
-  itemChoice2Strings.Add(_("Default"));
-  itemChoice2Strings.Add(_("Total"));
-  itemChoice2Strings.Add(_("Average"));
-  itemChoice2Strings.Add(_("Maximum"));
-  itemChoice2Strings.Add(_("Minimum"));
-  itemChoice2Strings.Add(_("StDev"));
-  itemChoice2Strings.Add(_("Avg/Max"));
-  wxChoice* itemChoice2 = new wxChoice( tbarHisto, ID_TOOL_CHOICE_SORTBY, wxDefaultPosition, wxDefaultSize, itemChoice2Strings, 0 );
-  itemChoice2->SetStringSelection(_("Default"));
+  wxArrayString choiceSortByStrings;
+  choiceSortByStrings.Add(_("Default"));
+  choiceSortByStrings.Add(_("Total"));
+  choiceSortByStrings.Add(_("Average"));
+  choiceSortByStrings.Add(_("Maximum"));
+  choiceSortByStrings.Add(_("Minimum"));
+  choiceSortByStrings.Add(_("StDev"));
+  choiceSortByStrings.Add(_("Avg/Max"));
+  choiceSortBy = new wxChoice( tbarHisto, ID_TOOL_CHOICE_SORTBY, wxDefaultPosition, wxDefaultSize, choiceSortByStrings, 0 );
+  choiceSortBy->SetStringSelection(_("Default"));
   if (gHistogram::ShowToolTips())
-    itemChoice2->SetToolTip(_("Sort columns by"));
-  tbarHisto->AddControl(itemChoice2);
+    choiceSortBy->SetToolTip(_("Sort columns by"));
+  tbarHisto->AddControl(choiceSortBy);
   wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_reverse.xpm")));
   wxBitmap itemtool1BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_REVERSE, wxEmptyString, itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
@@ -449,6 +454,22 @@ void gHistogram::execute()
 
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
 
+  PRV_UINT16 idStat;
+  THistogramColumn numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+  THistogramColumn curPlane;
+
+  myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
+  if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
+  {
+    curPlane = myHistogram->getCommSelectedPlane();
+    columnSelection.init( myHistogram->getCommColumnTotals(), idStat, numCols, curPlane );
+  }
+  else
+  {
+    curPlane = myHistogram->getSelectedPlane();
+    columnSelection.init( myHistogram->getColumnTotals(), idStat, numCols, curPlane );
+  }
+
   if( myHistogram->getZoom() )
     fillZoom();
   else
@@ -499,7 +520,7 @@ void gHistogram::fillGrid()
   mainSizer->Layout();
 
   if( tableBase == NULL )
-    tableBase = new HistoTableBase( myHistogram );
+    tableBase = new HistoTableBase( this );
   tableBase->setSelectedRows( &selectedRows );
   cellFontBold.SetWeight( wxFONTWEIGHT_BOLD );
   tableBase->setDefaultFontBold( cellFontBold );
@@ -544,6 +565,19 @@ void gHistogram::fillGrid()
   gridHisto->ForceRefresh();
 }
 
+THistogramColumn gHistogram::getSemanticSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidSemRanges ) const
+{
+  THistogramColumn realSortCol = myHistogram->getSemanticSortedColumn( whichCol );
+
+  if( myHistogram->getHideColumns() && myHistogram->getSemanticSortColumns() && myHistogram->getSemanticSortReverse() )
+    realSortCol = myHistogram->getSemanticSortedColumn( myHistogram->getNumColumns() - noVoidSemRanges.size() + whichCol );
+  else if( myHistogram->getHideColumns() && !myHistogram->getSemanticSortColumns() && !myHistogram->getSemanticSortReverse() )
+    realSortCol = noVoidSemRanges[ whichCol ];
+  else if( myHistogram->getHideColumns() && !myHistogram->getSemanticSortColumns() && myHistogram->getSemanticSortReverse() )
+    realSortCol = noVoidSemRanges[ noVoidSemRanges.size() - whichCol - 1 ];
+
+  return realSortCol;
+}
 
 void gHistogram::fillZoom()
 {
@@ -555,7 +589,7 @@ void gHistogram::fillZoom()
   bool horizontal = myHistogram->getHorizontal();
   double cellWidth;
   double cellHeight;
-  vector<THistogramColumn> noVoidColumns;
+  vector<THistogramColumn> noVoidSemRanges;
   vector<bool> selectedColumns;
   PRV_UINT16 pixelSize = myHistogram->getPixelSize();
   
@@ -592,20 +626,16 @@ void gHistogram::fillZoom()
 
   if( myHistogram->getHideColumns() )
   {
-    if( commStat )
-      columnSelection.init( myHistogram->getCommColumnTotals(), idStat, numCols, curPlane );
-    else
-      columnSelection.init( myHistogram->getColumnTotals(), idStat, numCols, curPlane );
-    columnSelection.getSelected( noVoidColumns );
+    columnSelection.getSelected( noVoidSemRanges );
     if( horizontal )
     {
-      numDrawCols = noVoidColumns.size();
+      numDrawCols = noVoidSemRanges.size();
       numDrawRows = myHistogram->getNumRows();
     }
     else
     {
       numDrawCols = myHistogram->getNumRows();
-      numDrawRows = noVoidColumns.size();
+      numDrawRows = noVoidSemRanges.size();
     }
     columnSelection.getSelected( selectedColumns );
   }
@@ -618,7 +648,7 @@ void gHistogram::fillZoom()
     }
     else
     {
-      numDrawCols = myHistogram->getNumColumns();
+      numDrawCols = myHistogram->getNumRows();
       numDrawRows = numCols;
     }
     selectedColumns.insert( selectedColumns.begin(), numCols, true );
@@ -631,7 +661,7 @@ void gHistogram::fillZoom()
 
   THistogramColumn tmpNumCols = numCols;
   if( myHistogram->getHideColumns() )
-    tmpNumCols = noVoidColumns.size();
+    tmpNumCols = noVoidSemRanges.size();
 
   bufferDraw.SetBrush( *wxGREY_BRUSH );
   bufferDraw.SetPen( *wxTRANSPARENT_PEN );
@@ -640,15 +670,12 @@ void gHistogram::fillZoom()
 
   for( THistogramColumn iCol = 0; iCol < tmpNumCols; ++iCol )
   {
-    THistogramColumn realCol = iCol;
-    if( myHistogram->getHideColumns() )
-      realCol = noVoidColumns[ iCol ];
-      
+    THistogramColumn realCol = myHistogram->getSemanticRealColumn( iCol, noVoidSemRanges );
+
     if( commStat )
       myHistogram->setCommFirstCell( realCol, curPlane );
     else
       myHistogram->setFirstCell( realCol, curPlane );
-
 
     THistogramColumn beginCol = iCol;
     THistogramColumn endCol = beginCol;
@@ -658,9 +685,8 @@ void gHistogram::fillZoom()
              && rint( ( endCol + 2 ) * cellWidth ) == rint( ( beginCol + 1 ) * cellWidth ) )
       {
         ++endCol;
-        THistogramColumn tmpEndCol = endCol;
-        if( myHistogram->getHideColumns() )
-          tmpEndCol = noVoidColumns[ endCol ];
+        THistogramColumn tmpEndCol = myHistogram->getSemanticRealColumn( endCol, noVoidSemRanges );
+
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
         else
@@ -673,9 +699,7 @@ void gHistogram::fillZoom()
              && rint( ( endCol + 2 ) * cellHeight ) == rint( ( beginCol + 1 ) * cellHeight ) )
       {
         ++endCol;
-        THistogramColumn tmpEndCol = endCol;
-        if( myHistogram->getHideColumns() )
-          tmpEndCol = noVoidColumns[ endCol ];
+        THistogramColumn tmpEndCol = myHistogram->getSemanticRealColumn( endCol, noVoidSemRanges );
 
         if( commStat )
           myHistogram->setCommFirstCell( tmpEndCol, curPlane );
@@ -684,7 +708,7 @@ void gHistogram::fillZoom()
       }
     }
 
-    drawColumn( beginCol, endCol, noVoidColumns, bufferDraw );
+    drawColumn( beginCol, endCol, noVoidSemRanges, bufferDraw );
     if( endCol > iCol )
       iCol = endCol;
   }
@@ -716,7 +740,7 @@ void gHistogram::fillZoom()
 
 
 void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn,
-                             vector<THistogramColumn>& noVoidColumns, wxMemoryDC& bufferDraw )
+                             vector<THistogramColumn>& noVoidSemRanges, wxMemoryDC& bufferDraw )
 {
   TObjectOrder numRows = myHistogram->getNumRows();
   
@@ -745,10 +769,8 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
     valuesColumns.clear();
     for( THistogramColumn drawCol = beginColumn; drawCol <= endColumn; ++drawCol )
     {
-      THistogramColumn iCol = drawCol;
-      if( myHistogram->getHideColumns() )
-        iCol = noVoidColumns[ drawCol ];
-        
+      THistogramColumn iCol = myHistogram->getSemanticRealColumn( drawCol, noVoidSemRanges );
+
       if( !( ( commStat && myHistogram->endCommCell( iCol, curPlane ) ) ||
             ( !commStat && myHistogram->endCell( iCol, curPlane ) ) ) )
       {
@@ -802,9 +824,8 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
           
       rgb tmpCol;
       Window *controlWindow = myHistogram->getControlWindow();
-      THistogramColumn tmpBeginCol = beginColumn;
-      if( myHistogram->getHideColumns() )
-        tmpBeginCol = noVoidColumns[ beginColumn ];
+      
+      THistogramColumn tmpBeginCol = getSemanticSortedRealColumn( beginColumn, noVoidSemRanges );
 
       TSemanticValue tmpValue = ( tmpBeginCol * myHistogram->getControlDelta() ) +
                                 myHistogram->getControlMin();
@@ -1945,7 +1966,7 @@ void gHistogram::OnZoomContextMenu( wxContextMenuEvent& event )
 void gHistogram::OnTimerZoom( wxTimerEvent& event )
 {
   wxString text;
-  vector<THistogramColumn> noVoidColumns;
+  vector<THistogramColumn> noVoidSemRanges;
 
   THistogramColumn column = myHistogram->getHorizontal() ? floor( lastPosZoomX / zoomCellWidth ) :
                                                            floor( lastPosZoomY / zoomCellHeight );
@@ -1954,9 +1975,9 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
 
   if( myHistogram->getHideColumns() )
   {
-    columnSelection.getSelected( noVoidColumns );
-    if( column > noVoidColumns.size() )
-      column = noVoidColumns.size();
+    columnSelection.getSelected( noVoidSemRanges );
+    if( column > noVoidSemRanges.size() )
+      column = noVoidSemRanges.size();
   }
   else
   {
@@ -1973,15 +1994,13 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
 
   if( column > 0 )
   {
-    if( myHistogram->getHideColumns() )
-      column = noVoidColumns[ column - 1 ] + 1;
-    text << wxString::FromAscii( myHistogram->getColumnLabel( column - 1 ).c_str() )
+    text << wxString::FromAscii( myHistogram->getColumnLabel( myHistogram->getSemanticRealColumn( column - 1, noVoidSemRanges ) ).c_str() )
          << _( "  " );
   }
   
   if( row > 0 && column > 0 )
   {
-    TSemanticValue value = getZoomSemanticValue( column - 1, row - 1 );
+    TSemanticValue value = getZoomSemanticValue( column - 1, row - 1, noVoidSemRanges );
     string tmpLabel;
     if ( !myHistogram->getCodeColor() )
     {
@@ -2002,13 +2021,14 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
   histoStatus->SetStatusText( text );
 }
 
-TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjectOrder row ) const
+TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const vector<THistogramColumn>& noVoidSemRanges ) const
 {
   THistogramColumn plane;
   TSemanticValue value = 0.0;
   PRV_UINT16 idStat;
   
   myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
+  column = myHistogram->getSemanticRealColumn( column, noVoidSemRanges );
   
   if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
   {
@@ -2074,8 +2094,12 @@ void gHistogram::OnToolOpenFilteredControlWindowUpdate( wxUpdateUIEvent& event )
 void gHistogram::OnLeftDown( wxMouseEvent& event )
 {
   zoomHisto->SetFocus();
-  zoomDragging = true;
-  zoomPointBegin = event.GetPosition();
+  if( openControlActivated ||
+      !myHistogram->getSemanticSortColumns() )
+  {
+    zoomDragging = true;
+    zoomPointBegin = event.GetPosition();
+  }
 }
 
 
@@ -2179,13 +2203,7 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     if( yBegin < 0 ) yBegin = 0;
     if( xEnd > zoomHisto->GetSize().GetWidth() - 5 ) xEnd = zoomHisto->GetSize().GetWidth() - 1;
     if( yEnd > zoomHisto->GetSize().GetHeight() ) yEnd = zoomHisto->GetSize().GetHeight() - 1;
-/*
-    if ( !event.ControlDown() )
-    {
-      yBegin = 0;
-      yEnd = zoomHisto->GetSize().GetHeight() - 1;
-    }
-*/
+
     THistogramColumn columnBegin, columnEnd;
     TObjectOrder objectBegin, objectEnd;
     openControlGetParameters( xBegin, xEnd, yBegin, yEnd,
@@ -2198,6 +2216,20 @@ void gHistogram::OnLeftUp( wxMouseEvent& event )
     }
     else
     {
+      vector<THistogramColumn> noVoidSemRanges;
+      if( myHistogram->getHideColumns() )
+        columnSelection.getSelected( noVoidSemRanges );
+
+      columnBegin = getSemanticSortedRealColumn( columnBegin, noVoidSemRanges );
+
+      if( myHistogram->getHideColumns() && columnEnd >= noVoidSemRanges.size() )
+        columnEnd = getSemanticSortedRealColumn( noVoidSemRanges.size() - 1, noVoidSemRanges ) + 1;
+      else
+        columnEnd = getSemanticSortedRealColumn( columnEnd, noVoidSemRanges );
+
+      if( columnEnd < columnBegin )
+        swap( columnBegin, columnEnd );
+
       objectBegin = selectedRows[ objectBegin ];
       objectEnd = selectedRows[ objectEnd ];
       zoom( columnBegin, columnEnd, objectBegin, objectEnd );
@@ -2240,17 +2272,59 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
     objectBegin = 0;
     objectEnd = selectedRows.size() - 1;
   }
-  
-  
+}
+
+void gHistogram::openControlMinMaxParam( THistogramColumn& columnBegin, THistogramColumn& columnEnd,
+                                         TParamValue& minParam, TParamValue& maxParam )
+{
+  THistogramLimit min = myHistogram->getControlMin();
+  THistogramLimit max = myHistogram->getControlMax();
+  THistogramLimit delta = myHistogram->getControlDelta();
+  vector<THistogramColumn> noVoidSemRanges;
+
   if( myHistogram->getHideColumns() )
+    columnSelection.getSelected( noVoidSemRanges );
+
+  if( columnBegin == columnEnd && delta != 1.0 )
+    ++columnEnd;
+
+  if( myHistogram->getSemanticSortColumns() )
   {
-    vector<THistogramColumn> noVoidColumns;
-    columnSelection.getSelected( noVoidColumns );
-    columnBegin = noVoidColumns[ columnBegin ];
-    if( columnEnd >= noVoidColumns.size() )
-      columnEnd = noVoidColumns[ noVoidColumns.size() - 1 ] + 1;
+    for( THistogramColumn iColumn = columnBegin; iColumn <= columnEnd; ++iColumn )
+    {
+      THistogramColumn realColumn = getSemanticSortedRealColumn( iColumn, noVoidSemRanges );
+      
+      minParam.push_back( ( realColumn * delta ) + min );
+
+      if( delta == 1.0 )
+       maxParam.push_back( ( realColumn * delta ) + min );
+      else
+      {
+        if( ( ( realColumn * delta ) + min + delta ) >= max )
+          maxParam.push_back( max );
+        else
+          maxParam.push_back( ( realColumn * delta ) + min + delta );
+      }
+    }
+  }
+  else
+  {
+    columnBegin = getSemanticSortedRealColumn( columnBegin, noVoidSemRanges );
+
+    if( myHistogram->getHideColumns() && columnEnd >= noVoidSemRanges.size() )
+      columnEnd = getSemanticSortedRealColumn( noVoidSemRanges.size() - 1, noVoidSemRanges ) + 1;
     else
-      columnEnd = noVoidColumns[ columnEnd ];
+      columnEnd = getSemanticSortedRealColumn( columnEnd, noVoidSemRanges );
+
+    if( columnEnd < columnBegin )
+      swap( columnBegin, columnEnd );
+
+    if( ( ( columnEnd * delta ) + min ) >= max )
+      maxParam.push_back( max );
+    else
+      maxParam.push_back( ( columnEnd * delta ) + min );
+
+    minParam.push_back( ( columnBegin * delta ) + min );
   }
 }
 
@@ -2264,7 +2338,10 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
                                                         found );
   if( !found )
     throw std::exception();
-    
+
+  TParamValue minParam, maxParam;
+  openControlMinMaxParam( columnBegin, columnEnd, minParam, maxParam );
+
   gTimeline *openWindow = NULL;
   Window *controlCloned = myHistogram->getControlWindow()->clone();
   controlCloned->unsetUsedByHistogram( myHistogram );
@@ -2287,10 +2364,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     extraLastPos = controlCloned->getExtraNumPositions( TOPCOMPOSE1 ) - 1;
   }
 
-  if( columnBegin == columnEnd && delta != 1.0 )
-    ++columnEnd;
-
-  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max || delta == 1.0 )
+  if ( ( ( columnEnd * delta ) + min ) >= max || delta == 1.0 )
   {
     if( useExtraCompose )
       controlCloned->setExtraLevelFunction( onLevel, extraLastPos, "Select Range" );
@@ -2304,34 +2378,27 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     else
       controlCloned->setLevelFunction( onLevel, "Select Range [)" );
   }
-      
-  TParamValue param;
-  if( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
-    param.push_back( max );
-  else
-    param.push_back( ( columnEnd * delta ) + min/* + delta*/ );
+  
   if( useExtraCompose )
-    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 0, param );
+    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 0, maxParam );
   else
-    controlCloned->setFunctionParam( onLevel, 0, param );
-    
-  param.clear();
-  param.push_back( ( columnBegin * delta ) + min );
+    controlCloned->setFunctionParam( onLevel, 0, maxParam );
+
   if( useExtraCompose )
-    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 1, param );
+    controlCloned->setExtraFunctionParam( onLevel, extraLastPos, 1, minParam );
   else
-    controlCloned->setFunctionParam( onLevel, 1, param );
+    controlCloned->setFunctionParam( onLevel, 1, minParam );
   
   string name = controlCloned->getName();
   name = name.substr( 0, name.find_last_of( '.' ) );
   stringstream tmpStr;
   tmpStr << name << " 2DZoom range [" << ( columnBegin * delta ) + min << ",";
-  if ( ( ( columnEnd * delta ) + min/* + delta*/ ) >= max )
+  if ( ( ( columnEnd * delta ) + min ) >= max )
     tmpStr << max << "]";
   else if ( delta == 1 )
-    tmpStr << ( columnEnd * delta ) + min/* + delta*/ << "]";
+    tmpStr << ( columnEnd * delta ) + min << "]";
   else
-    tmpStr << ( columnEnd * delta ) + min/* + delta*/ << ")";
+    tmpStr << ( columnEnd * delta ) + min << ")";
   controlCloned->setName( tmpStr.str() );
 
   controlCloned->setWindowBeginTime( myHistogram->getBeginTime() );
@@ -2411,7 +2478,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";
     else if( extraDelta == 1 )
-        tmpStr << ( plane * extraDelta ) + extraMin/* + extraDelta*/ << "]";
+        tmpStr << ( plane * extraDelta ) + extraMin << "]";
     else
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     extraControlCloned->setName( tmpStr.str() );
@@ -2431,14 +2498,14 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     if ( ( ( columnEnd * delta ) + min + delta ) >= max )
       tmpStr << max << "]";
     else if( delta == 1 )
-      tmpStr << ( columnEnd * delta ) + min/* + delta*/ << "]";
+      tmpStr << ( columnEnd * delta ) + min << "]";
     else
       tmpStr << ( columnEnd * delta ) + min + delta << ")";
     tmpStr << "/[" << ( plane * extraDelta ) + extraMin << ",";
     if ( ( ( plane * extraDelta ) + extraMin + extraDelta ) >= extraMax )
       tmpStr << extraMax << "]";
     else if( extraDelta == 1 )
-        tmpStr << ( plane * extraDelta ) + extraMin/* + extraDelta*/ << "]";
+        tmpStr << ( plane * extraDelta ) + extraMin << "]";
     else
         tmpStr << ( plane * extraDelta ) + extraMin + extraDelta << ")";
     productWin->setName( tmpStr.str() );
@@ -2517,23 +2584,35 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     if ( !commStat )
     {
       iPlane = myHistogram->getSelectedPlane();
+      vector<THistogramColumn> noVoidSemRanges;
+      if( myHistogram->getHideColumns() )
+        columnSelection.getSelected( noVoidSemRanges );
 
+      THistogramColumn tmpRealCol = 0;
       for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
-        myHistogram->setFirstCell( iCol, iPlane );
-        while( !myHistogram->endCell( iCol, iPlane ) && myHistogram->getCurrentRow( iCol, iPlane ) < objectBegin )
-          myHistogram->setNextCell( iCol, iPlane );
+        if( myHistogram->getSemanticSortColumns() )
+          tmpRealCol = getSemanticSortedRealColumn( iCol, noVoidSemRanges );
+        else
+          tmpRealCol = iCol;
+        myHistogram->setFirstCell( tmpRealCol, iPlane );
+        while( !myHistogram->endCell( tmpRealCol, iPlane ) && myHistogram->getCurrentRow( tmpRealCol, iPlane ) < objectBegin )
+          myHistogram->setNextCell( tmpRealCol, iPlane );
       }
       
       TObjectOrder maxRow = tmpSelectedRows.size();
       vector< bool > present( maxRow, false );
       for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
-        while ( !myHistogram->endCell( iCol, iPlane ) )
+        if( myHistogram->getSemanticSortColumns() )
+          tmpRealCol = getSemanticSortedRealColumn( iCol, noVoidSemRanges );
+        else
+          tmpRealCol = iCol;
+        while ( !myHistogram->endCell( tmpRealCol, iPlane ) )
         {
-          TObjectOrder currentRow = selectedRows[ myHistogram->getCurrentRow( iCol, iPlane ) ];
+          TObjectOrder currentRow = selectedRows[ myHistogram->getCurrentRow( tmpRealCol, iPlane ) ];
           present[ currentRow ] = true;
-          myHistogram->setNextCell( iCol, iPlane );
+          myHistogram->setNextCell( tmpRealCol, iPlane );
         }
       }
 
@@ -2565,7 +2644,13 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       for (TObjectOrder i = 0; i < maxRow; ++i )
         tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && present[ i ];
     }
-
+    
+    // If no object have values, show all of them. Otherwise a segfault can occur if no objets are shown
+    if( std::find( tmpSelectedRows.begin(), tmpSelectedRows.end(), true ) == tmpSelectedRows.end() )
+    {
+      for( vector<bool>::iterator it = tmpSelectedRows.begin(); it != tmpSelectedRows.end(); ++it )
+        *it = true;
+    }
     openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), tmpSelectedRows );
 
     openWindow->GetMyWindow()->unsetUsedByHistogram( myHistogram );
@@ -3251,5 +3336,60 @@ void gHistogram::OnToolShortLabelsClick( wxCommandEvent& event )
   myHistogram->setRedraw( true );
   if( !myHistogram->getZoom() )
     gridHisto->Refresh();
+}
+
+
+/*!
+ * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOOL_CHOICE_SORTBY
+ */
+
+void gHistogram::OnToolChoiceSortbySelected( wxCommandEvent& event )
+{
+  if( event.GetSelection() == 0 && myHistogram->getSemanticSortColumns() )
+  {
+    myHistogram->setSemanticSortColumns( false );
+    myHistogram->setRedraw( true );
+  }
+  else if( event.GetSelection() > 0 && 
+           ( !myHistogram->getSemanticSortColumns() || myHistogram->getSemanticSortCriteria() != event.GetSelection() - 1 ) )
+  {
+    myHistogram->setSemanticSortColumns( true );
+    myHistogram->setSemanticSortCriteria( (THistoTotals)( event.GetSelection() - 1 ) );
+    myHistogram->setRedraw( true );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_REVERSE
+ */
+
+void gHistogram::OnToolReverseClick( wxCommandEvent& event )
+{
+  myHistogram->setSemanticSortReverse( event.IsChecked() );
+  myHistogram->setRedraw( true );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_REVERSE
+ */
+
+void gHistogram::OnToolReverseUpdate( wxUpdateUIEvent& event )
+{
+  event.Check( myHistogram->getSemanticSortReverse() );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_CHOICE_SORTBY
+ */
+
+void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
+{
+  if( !myHistogram->getSemanticSortColumns() )
+    choiceSortBy->SetSelection( 0 );
+  else
+    choiceSortBy->SetSelection( (int)myHistogram->getSemanticSortCriteria() + 1 );
 }
 
