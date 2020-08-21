@@ -833,7 +833,8 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       if( myHistogram->getControlWindow()->isCodeColorSet() )
         tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                           myHistogram->getControlMin(),
-                                                          myHistogram->getControlMax() );
+                                                          myHistogram->getControlMax(),
+                                                          controlWindow->getUseCustomPalette() );
       else
         tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
                                                               controlWindow->getMinimumY(),
@@ -858,7 +859,8 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       if( myHistogram->getColorMode() == SemanticColor::COLOR )
       {
         tmpColorToDraw = myHistogram->getDataWindow()->getCodeColor().calcColor( tmpValueToDraw,
-                                                                                 myHistogram->getMinGradient(), myHistogram->getMaxGradient() );
+                                                                                 myHistogram->getMinGradient(), myHistogram->getMaxGradient(),
+                                                                                 myHistogram->getDataWindow()->getUseCustomPalette() );
         tmpDrawColor = true;
       }
       else

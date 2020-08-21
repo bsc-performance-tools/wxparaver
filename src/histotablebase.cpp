@@ -278,7 +278,8 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       if( controlWindow->isCodeColorSet() )
         tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                           myHisto->GetHistogram()->getControlMin(),
-                                                          myHisto->GetHistogram()->getControlMax() );
+                                                          myHisto->GetHistogram()->getControlMax(),
+                                                          controlWindow->getUseCustomPalette() );
       else
         tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
                                                               controlWindow->getMinimumY(),
@@ -312,7 +313,8 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         if( controlWindow->isCodeColorSet() )
           tmpCol = controlWindow->getCodeColor().calcColor( tmpValue,
                                                             myHisto->GetHistogram()->getControlMin(),
-                                                            myHisto->GetHistogram()->getControlMax() );
+                                                            myHisto->GetHistogram()->getControlMax(),
+                                                            controlWindow->getUseCustomPalette() );
         else
           tmpCol = controlWindow->getGradientColor().calcColor( tmpValue,
                                                                 controlWindow->getMinimumY(),
@@ -356,7 +358,8 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         {
           tmpCol = myHisto->GetHistogram()->getDataWindow()->getCodeColor().calcColor( semValue,
                                                                        myHisto->GetHistogram()->getMinGradient(),
-                                                                       myHisto->GetHistogram()->getMaxGradient() );
+                                                                       myHisto->GetHistogram()->getMaxGradient(),
+                                                                       myHisto->GetHistogram()->getDataWindow()->getUseCustomPalette() );
           tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
           tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
         }

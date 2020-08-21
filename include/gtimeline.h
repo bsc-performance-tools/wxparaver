@@ -115,6 +115,7 @@ class ProgressController;
 #define ID_TEXTCTRL_SLOPE 10003
 #define ID_SCROLLEDWINDOW 10008
 #define ID_CHECKBOX_CUSTOM_PALETTE 10606
+#define ID_BUTTON_CUSTOM_PALETTE_APPLY 10006
 #define ID_SCROLLED_COLORS 10049
 #define ID_PANEL 10009
 #define wxID_STATIC1 10295
@@ -182,6 +183,18 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
   /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
@@ -200,18 +213,6 @@ public:
   /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMouseWheel( wxMouseEvent& event );
 
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
-
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
 
@@ -223,6 +224,9 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for wxID_STATIC_SLOPE
   void OnStaticSlopeUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_CHECKBOX_CUSTOM_PALETTE
+  void OnCheckboxCustomPaletteClick( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CUSTOM_PALETTE
   void OnCheckboxCustomPaletteUpdate( wxUpdateUIEvent& event );
@@ -618,6 +622,7 @@ public:
   wxTextCtrl* slopeText;
   wxScrolledWindow* colorsPanelGlobal;
   wxCheckBox* checkboxCustomPalette;
+  wxButton* buttonCustomPaletteApply;
   wxScrolledWindow* colorsPanel;
   wxBoxSizer* colorsSizer;
   wxBoxSizer* sizerSelectedColor;
@@ -693,6 +698,7 @@ private:
   size_t lastValuesSize;
   bool codeColorSet;
   GradientColor::TGradientFunction gradientFunc;
+  TSemanticValue selectedCustomValue;
 
 #ifdef __WXMAC__
   wxBitmap zoomBMP;
