@@ -183,18 +183,6 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
-
   /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
@@ -213,6 +201,18 @@ public:
   /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMouseWheel( wxMouseEvent& event );
 
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
 
@@ -230,6 +230,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_CUSTOM_PALETTE
   void OnCheckboxCustomPaletteUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUSTOM_PALETTE_APPLY
+  void OnButtonCustomPaletteApplyClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_BUTTON_CUSTOM_PALETTE_APPLY
+  void OnButtonCustomPaletteApplyUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_COLORS
   void OnScrolledColorsUpdate( wxUpdateUIEvent& event );
@@ -692,6 +698,8 @@ private:
 ////@end gTimeline member variables
 
   // colorsPanel update info
+  bool forceRedoColors;
+  bool enableApplyButton;
   SemanticInfoType lastType;
   TSemanticValue lastMin;
   TSemanticValue lastMax;
@@ -699,6 +707,7 @@ private:
   bool codeColorSet;
   GradientColor::TGradientFunction gradientFunc;
   TSemanticValue selectedCustomValue;
+  wxPanel *selectedItemColor;
 
 #ifdef __WXMAC__
   wxBitmap zoomBMP;

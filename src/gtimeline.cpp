@@ -113,6 +113,8 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_UPDATE_UI( wxID_STATIC_SLOPE, gTimeline::OnStaticSlopeUpdate )
   EVT_CHECKBOX( ID_CHECKBOX_CUSTOM_PALETTE, gTimeline::OnCheckboxCustomPaletteClick )
   EVT_UPDATE_UI( ID_CHECKBOX_CUSTOM_PALETTE, gTimeline::OnCheckboxCustomPaletteUpdate )
+  EVT_BUTTON( ID_BUTTON_CUSTOM_PALETTE_APPLY, gTimeline::OnButtonCustomPaletteApplyClick )
+  EVT_UPDATE_UI( ID_BUTTON_CUSTOM_PALETTE_APPLY, gTimeline::OnButtonCustomPaletteApplyUpdate )
   EVT_UPDATE_UI( ID_SCROLLED_COLORS, gTimeline::OnScrolledColorsUpdate )
   EVT_UPDATE_UI( wxID_STATIC1, gTimeline::OnStaticSelectedColorUpdate )
   EVT_SLIDER( ID_SLIDER0, gTimeline::OnSliderSelectedColorUpdated )
@@ -279,6 +281,8 @@ void gTimeline::Init()
   whatWhereRow = 0;
   whatWhereSemantic = 0.0;
 
+  forceRedoColors = false;
+  enableApplyButton = false;
   lastType = NO_TYPE;
   lastMin = 0;
   lastMax = 15;
@@ -289,6 +293,9 @@ void gTimeline::Init()
 #ifdef WIN32
   wheelZoomObjects = false;
 #endif
+
+  selectedItemColor = NULL;
+  selectedCustomValue = 0;
 }
 
 
@@ -344,6 +351,7 @@ void gTimeline::CreateControls()
   itemBoxSizer7->Add(checkWWHex, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, wxDLG_UNIT(whatWherePanel, wxSize(2, -1)).x);
 
   whatWhereText = new wxRichTextCtrl( whatWherePanel, ID_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  whatWhereText->Enable(false);
   itemBoxSizer6->Add(whatWhereText, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, wxDLG_UNIT(whatWherePanel, wxSize(5, -1)).x);
 
   whatWherePanel->FitInside();
@@ -466,15 +474,15 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -570,6 +578,7 @@ void gTimeline::redraw()
 #endif
   myWindow->setReady( false );
   redoColors = true;
+  enableApplyButton = false;
 
   semanticValuesToColor.clear();
   semanticColorsToValue.clear();
@@ -811,7 +820,7 @@ void gTimeline::redraw()
 #ifdef __WXMAC__
   dc.DrawBitmap( bufferImage, 0, 0, false );
 #else
-  bufferDraw.SelectObject(wxNullBitmap);
+  bufferDraw.SelectObject( wxNullBitmap );
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 #endif
@@ -3239,11 +3248,11 @@ class CustomColorSemValue : public wxObject
 
 void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
 {
-  wxPanel *tmpItemColor = (wxPanel *)event.GetEventObject();
-  panelSelectedColor->SetBackgroundColour( tmpItemColor->GetBackgroundColour() );
-  sliderSelectedRed->SetValue( tmpItemColor->GetBackgroundColour().Red() );
-  sliderSelectedGreen->SetValue( tmpItemColor->GetBackgroundColour().Green() );
-  sliderSelectedBlue->SetValue( tmpItemColor->GetBackgroundColour().Blue() );
+  selectedItemColor = (wxPanel *)event.GetEventObject();
+  panelSelectedColor->SetBackgroundColour( selectedItemColor->GetBackgroundColour() );
+  sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
+  sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
+  sliderSelectedBlue->SetValue( selectedItemColor->GetBackgroundColour().Blue() );
   
   selectedCustomValue = ( (CustomColorSemValue *)event.m_callbackUserData )->myValue;
 }
@@ -3259,13 +3268,15 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
 
   PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   
-  if( redoColors &&
-      ( myWindow->getSemanticInfoType() != lastType ||
-        myWindow->getMinimumY() != lastMin ||
-        myWindow->getMaximumY() != lastMax ||
-        semanticValuesToColor.size() != lastValuesSize ||
-        myWindow->isCodeColorSet() != codeColorSet ||
-        myWindow->getGradientColor().getGradientFunction() != gradientFunc )
+  if( forceRedoColors || 
+      ( redoColors &&
+        ( myWindow->getSemanticInfoType() != lastType ||
+          myWindow->getMinimumY() != lastMin ||
+          myWindow->getMaximumY() != lastMax ||
+          semanticValuesToColor.size() != lastValuesSize ||
+          myWindow->isCodeColorSet() != codeColorSet ||
+          myWindow->getGradientColor().getGradientFunction() != gradientFunc )
+      ) 
     )
   {
     lastType = myWindow->getSemanticInfoType();
@@ -3378,7 +3389,8 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
       
         CustomColorSemValue *tmpSemValue = new CustomColorSemValue();
         tmpSemValue->myValue = i;
-        itemColor->Connect( itemColor->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnItemColorLeftUp), tmpSemValue, this);
+        if ( checkboxCustomPalette->IsChecked() )
+          itemColor->Connect( itemColor->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnItemColorLeftUp), tmpSemValue, this);
 
         if( i < ceil( myWindow->getMaximumY() ) )
           colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );
@@ -3460,6 +3472,7 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
     colorsPanel->Layout();
     colorsPanel->FitInside();
   }
+  forceRedoColors = false;
   redoColors = false;
 }
 
@@ -6095,12 +6108,15 @@ void gTimeline::OnSliderSelectedColorUpdated( wxCommandEvent& event )
 
   wxColor tmpColor( redColor, greenColor, blueColor );
   panelSelectedColor->SetBackgroundColour( tmpColor );
+  selectedItemColor->SetBackgroundColour( tmpColor );
   
   rgb tmpRGBColor;
   tmpRGBColor.red = redColor;
   tmpRGBColor.green = greenColor;
   tmpRGBColor.blue = blueColor;
   myWindow->getCodeColor().setCustomColor( selectedCustomValue, tmpRGBColor );
+
+  enableApplyButton = true;
 }
 
 
@@ -6121,7 +6137,7 @@ void gTimeline::OnCheckboxCustomPaletteUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnStaticSelectedColorUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() );
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
 }
 
 
@@ -6131,7 +6147,7 @@ void gTimeline::OnStaticSelectedColorUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnSliderSelectedColorUpdateUI( wxUpdateUIEvent& event )
 {
-  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() );
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
 }
 
 
@@ -6142,7 +6158,41 @@ void gTimeline::OnSliderSelectedColorUpdateUI( wxUpdateUIEvent& event )
 void gTimeline::OnCheckboxCustomPaletteClick( wxCommandEvent& event )
 {
   myWindow->setUseCustomPalette( event.IsChecked() );
-  //if ( estoDeLoQUeHemosHablado )
-    myWindow->setRedraw( true );
+  if ( !event.IsChecked() )
+  {
+    enableApplyButton = false;
+    selectedItemColor = NULL;
+    sliderSelectedRed->SetValue( 0 );
+    sliderSelectedGreen->SetValue( 0 );
+    sliderSelectedBlue->SetValue( 0 );
+    panelSelectedColor->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+  }
+
+  if( myWindow->getCodeColor().existCustomColors() )
+    myWindow->setForceRedraw( true );
+
+  forceRedoColors = true;
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_CUSTOM_PALETTE_APPLY
+ */
+
+void gTimeline::OnButtonCustomPaletteApplyClick( wxCommandEvent& event )
+{
+  enableApplyButton = false;
+
+  myWindow->setForceRedraw( true );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_BUTTON_CUSTOM_PALETTE_APPLY
+ */
+
+void gTimeline::OnButtonCustomPaletteApplyUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( enableApplyButton );
 }
 
