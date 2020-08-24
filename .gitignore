@@ -37,4 +37,4 @@ makefile.vc
 vc90.idb
 vc90.pdb
 wxparaver-autosave.pjd
-
+.vscode/
