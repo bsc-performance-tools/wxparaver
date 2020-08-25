@@ -6127,6 +6127,7 @@ void gTimeline::OnSliderSelectedColorUpdated( wxCommandEvent& event )
 void gTimeline::OnCheckboxCustomPaletteUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( myWindow->isCodeColorSet() );
+  event.Check( myWindow->getUseCustomPalette() );
   panelSelectedColor->Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() );
 }
 
