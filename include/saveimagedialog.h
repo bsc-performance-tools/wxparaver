@@ -55,7 +55,7 @@ class wxGenericDirCtrl;
 #define ID_FILEPATHSAVEIMGCTRL 10501
 #define ID_SAVEDIRCTRL 10502
 #define ID_SAVELISTBOX 10503
-#define ID_CHOICE 10001
+#define ID_FILETYPECHOICE 10001
 #define ID_SAVEIMAGECHECKBOX 10504
 #define ID_SAVEIMAGETEXTCTRL 10505
 #define ID_SAVELEGENDCHECKBOX 10506
@@ -80,7 +80,7 @@ class SaveImageDialog: public wxDialog
 public:
   /// Constructors
   SaveImageDialog();
-  SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
+  SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, bool isHistogram = false, wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
@@ -112,14 +112,14 @@ public:
   /// wxEVT_COMMAND_TREE_SEL_CHANGED event handler for ID_SAVEDIRCTRL
   void OnSavedirctrlSelChanged( wxTreeEvent& event );
 
-  /// wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_SAVEDIRCTRL
-  void OnSavedirctrlItemActivated( wxTreeEvent& event );
-
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_SAVELISTBOX
   void OnSavelistboxSelected( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_SAVELISTBOX
   void OnSavelistboxDoubleClicked( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_FILETYPECHOICE
+  void OnFiletypechoiceSelected( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVEIMAGECHECKBOX
   void OnSaveimagecheckboxClick( wxCommandEvent& event );
@@ -155,6 +155,7 @@ public:
   wxTextCtrl* searchBar;
   wxGenericDirCtrl* treeDirs;
   wxListBox* listDirs;
+  wxChoice* fileTypeChoice;
   wxCheckBox* imageCheckbox;
   wxTextCtrl* imageFileName;
   wxCheckBox* legendCheckbox;
@@ -167,6 +168,8 @@ public:
   wxString selectedImageFilePath;
   wxString selectedLegendFilePath;
   std::map< wxString, wxString > linksPerFileName;
+  wxString fileTypeText;
+  bool isHistogram;
 };
 
 #endif

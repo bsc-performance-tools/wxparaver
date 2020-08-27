@@ -59,9 +59,9 @@ BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
   EVT_TEXT_ENTER( ID_SAVESEARCHTEXTCTRL, SaveImageDialog::OnSavesearchtextctrlEnter )
   EVT_TEXT_ENTER( ID_FILEPATHSAVEIMGCTRL, SaveImageDialog::OnFilepathsaveimgctrlEnter )
   EVT_TREE_SEL_CHANGED( wxID_TREECTRL, SaveImageDialog::OnSavedirctrlSelChanged )
-  EVT_TREE_ITEM_ACTIVATED( wxID_TREECTRL, SaveImageDialog::OnSavedirctrlItemActivated )
   EVT_LISTBOX( ID_SAVELISTBOX, SaveImageDialog::OnSavelistboxSelected )
   EVT_LISTBOX_DCLICK( ID_SAVELISTBOX, SaveImageDialog::OnSavelistboxDoubleClicked )
+  EVT_CHOICE( ID_FILETYPECHOICE, SaveImageDialog::OnFiletypechoiceSelected )
   EVT_CHECKBOX( ID_SAVEIMAGECHECKBOX, SaveImageDialog::OnSaveimagecheckboxClick )
   EVT_CHECKBOX( ID_SAVELEGENDCHECKBOX, SaveImageDialog::OnSavelegendcheckboxClick )
   EVT_BUTTON( wxID_OK, SaveImageDialog::OnOkClick )
@@ -81,8 +81,8 @@ SaveImageDialog::SaveImageDialog()
   Init();
 }
 
-SaveImageDialog::SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
-  : directoryStartingPath( directoryStartingPath ), defaultFileName( defaultFileName )
+SaveImageDialog::SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, bool isHistogram, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+  : directoryStartingPath( directoryStartingPath ), defaultFileName( defaultFileName ), isHistogram( isHistogram )
 {
   Init();
   Create(parent, id, caption, pos, size, style);
@@ -132,6 +132,7 @@ void SaveImageDialog::Init()
   searchBar = NULL;
   treeDirs = NULL;
   listDirs = NULL;
+  fileTypeChoice = NULL;
   imageCheckbox = NULL;
   imageFileName = NULL;
   legendCheckbox = NULL;
@@ -181,7 +182,7 @@ void SaveImageDialog::CreateControls()
   wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(itemBoxSizer3, 3, wxGROW|wxALL, 5);
 
-  treeDirs = new wxGenericDirCtrl( itemDialog1, ID_SAVEDIRCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxT("All files (*.*)|*.*"), 0 );
+  treeDirs = new wxGenericDirCtrl( itemDialog1, ID_SAVEDIRCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_DIR_ONLY, wxT("All files (*.*)|*.*"), 0 );
   itemBoxSizer3->Add(treeDirs, 1, wxGROW|wxALL, 5);
 
   wxArrayString listDirsStrings;
@@ -194,14 +195,14 @@ void SaveImageDialog::CreateControls()
   wxStaticText* itemStaticText1 = new wxStaticText( itemDialog1, wxID_STATIC, _("File type:"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer6->Add(itemStaticText1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxArrayString itemChoice2Strings;
-  itemChoice2Strings.Add(_("BMP Image"));
-  itemChoice2Strings.Add(_("PNG Image"));
-  itemChoice2Strings.Add(_("JPG Image"));
-  itemChoice2Strings.Add(_("XPM Image"));
-  wxChoice* itemChoice2 = new wxChoice( itemDialog1, ID_CHOICE, wxDefaultPosition, wxDefaultSize, itemChoice2Strings, 0 );
-  itemChoice2->SetStringSelection(_("PNG Image"));
-  itemBoxSizer6->Add(itemChoice2, 0, wxGROW|wxALL, 5);
+  wxArrayString fileTypeChoiceStrings;
+  fileTypeChoiceStrings.Add(_("BMP Image"));
+  fileTypeChoiceStrings.Add(_("JPG Image"));
+  fileTypeChoiceStrings.Add(_("PNG Image"));
+  fileTypeChoiceStrings.Add(_("XPM Image"));
+  fileTypeChoice = new wxChoice( itemDialog1, ID_FILETYPECHOICE, wxDefaultPosition, wxDefaultSize, fileTypeChoiceStrings, 0 );
+  fileTypeChoice->SetStringSelection(_("PNG Image"));
+  itemBoxSizer6->Add(fileTypeChoice, 0, wxGROW|wxALL, 5);
 
   wxStaticBox* itemStaticBoxSizer4Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Image to save"));
   wxStaticBoxSizer* itemStaticBoxSizer4 = new wxStaticBoxSizer(itemStaticBoxSizer4Static, wxVERTICAL);
@@ -211,7 +212,7 @@ void SaveImageDialog::CreateControls()
   itemStaticBoxSizer4->Add(itemBoxSizer5, 1, wxGROW|wxALL, 5);
 
   imageCheckbox = new wxCheckBox( itemDialog1, ID_SAVEIMAGECHECKBOX, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
-  imageCheckbox->SetValue(false);
+  imageCheckbox->SetValue(true);
   itemBoxSizer5->Add(imageCheckbox, 1, wxGROW|wxALL, 5);
 
   imageFileName = new wxTextCtrl( itemDialog1, ID_SAVEIMAGETEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
@@ -239,6 +240,13 @@ void SaveImageDialog::CreateControls()
   itemStdDialogButtonSizer1->Realize();
 
 ////@end SaveImageDialog content construction
+  fileTypeText = _( ".png" );
+
+  if ( isHistogram )
+  {
+    wxString histogramLabel = wxT( "Histogram" );
+    imageCheckbox->SetLabel( histogramLabel );
+  }
 }
 
 
@@ -257,6 +265,7 @@ void SaveImageDialog::OnFilepathsaveimgctrlEnter( wxCommandEvent& event )
     wxDir myDir( myPath );
 
     myDir.GetAllFiles( myPath, &filesInDir, wxT( "*" ), wxDIR_FILES );
+    
     listDirs->Clear();
     linksPerFileName.clear();
     filesInDir.Sort();
@@ -293,7 +302,7 @@ void SaveImageDialog::OnSavedirctrlSelChanged( wxTreeEvent& event )
   {
     fName.AssignDir( myPath );
     wxArrayString filesInDir;
-    wxDir::GetAllFiles( myPath, &filesInDir, wxT( "*" ), wxDIR_FILES ); // wxT( "*.png" )
+    wxDir::GetAllFiles( myPath, &filesInDir, wxT( "*" ), wxDIR_FILES ); // wxT( "*.png|*.bmp|*.xpm|*.jpg" )
     
     listDirs->Clear();
     linksPerFileName.clear();
@@ -305,23 +314,16 @@ void SaveImageDialog::OnSavedirctrlSelChanged( wxTreeEvent& event )
       linksPerFileName[ fileName ] = ( *fullFilePath );
     }
   }
+  /*else if () 
+  {
+    // ...
+  }*/
   searchBar->Clear();
   searchBar->WriteText( myPath );
   event.Skip();
 }
 
 
-/*!
- * wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL
- */
-
-void SaveImageDialog::OnSavedirctrlItemActivated( wxTreeEvent& event )
-{
-////@begin wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL in SaveImageDialog. 
-}
 
 
 /*!
@@ -333,15 +335,11 @@ void SaveImageDialog::OnSavelistboxSelected( wxCommandEvent& event )
   wxString myPath = linksPerFileName[ listDirs->GetString( listDirs->GetSelection() ) ];
   selectedImageFilePath = myPath;
   
-  // Set up image and legend filenames
-  if ( imageCheckbox->IsChecked() )
-  {
-    imageFileName->SetLabel( fileNameBar->GetLabel() + _( "_IMAGE.png" ) );
-  }
-  if ( legendCheckbox->IsChecked() )
-  {
-    legendFileName->SetLabel( fileNameBar->GetLabel() + _( "_LEGEND.png" ) );
-  }
+  wxString fileNameWithoutType = listDirs->GetString( listDirs->GetSelection() ).BeforeLast( '.' );
+//  std::cout << "IMG = " << fileNameWithoutType.mb_str() << " [" << fileTypeText.mb_str() << "]\tPATH = " << myPath.mb_str() << std::endl;
+
+  fileNameBar->Clear();
+  fileNameBar->WriteText( fileNameWithoutType );
 }
 
 
@@ -351,23 +349,26 @@ void SaveImageDialog::OnSavelistboxSelected( wxCommandEvent& event )
 
 void SaveImageDialog::OnSavelistboxDoubleClicked( wxCommandEvent& event )
 {
-#if wxMAJOR_VERSION<3
-  MakeModal( false );
-#endif
-  EndModal( wxID_OK );
+  if ( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !searchBar->IsEmpty() && !fileNameBar->IsEmpty() )
+  {
+  #if wxMAJOR_VERSION<3
+    MakeModal( false );
+  #endif
+    EndModal( wxID_OK );
+  }
 }
-
 
 /*!
  * wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_IMAGECHECKBOX
  */
 
 void SaveImageDialog::OnSaveimagecheckboxClick( wxCommandEvent& event )
-{
-////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_IMAGECHECKBOX in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_IMAGECHECKBOX in SaveImageDialog. 
+{ 
+  imageFileName->Clear();
+  if ( imageCheckbox->IsChecked() && !fileNameBar->IsEmpty() )
+    imageFileName->WriteText( fileNameBar->GetValue() + fileTypeText ); // is [   + _( "_IMAGE" )   ] necessary?
+    
+  buttonSave->Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !searchBar->IsEmpty() && !fileNameBar->IsEmpty() );
 }
 
 
@@ -377,10 +378,11 @@ void SaveImageDialog::OnSaveimagecheckboxClick( wxCommandEvent& event )
 
 void SaveImageDialog::OnSavelegendcheckboxClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_LEGENDCHECKBOX in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_LEGENDCHECKBOX in SaveImageDialog. 
+  legendFileName->Clear();
+  if ( legendCheckbox->IsChecked() && !fileNameBar->IsEmpty() ) 
+    legendFileName->WriteText( fileNameBar->GetValue() + _( "_LEGEND" ) + fileTypeText );
+  
+  buttonSave->Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !searchBar->IsEmpty() && !fileNameBar->IsEmpty() );
 }
 
 
@@ -390,10 +392,13 @@ void SaveImageDialog::OnSavelegendcheckboxClick( wxCommandEvent& event )
 
 void SaveImageDialog::OnOkClick( wxCommandEvent& event )
 {
-#if wxMAJOR_VERSION<3
-  MakeModal( false );
-#endif
-  EndModal( wxID_OK );
+  if ( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !searchBar->IsEmpty() ) 
+  {
+  #if wxMAJOR_VERSION<3
+    MakeModal( false );
+  #endif
+    EndModal( wxID_OK );
+  }
 }
 
 
@@ -403,7 +408,7 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
 
 void SaveImageDialog::OnOkUpdate( wxUpdateUIEvent& event )
 {
-  buttonSave->Enable( fileNameBar->GetLabel() != _( "" ) );
+  //buttonSave->Enable( !fileNameBar->IsEmpty() );
   //buttonSave->Enable( listDirs->GetSelection() != wxNOT_FOUND );
 }
 
@@ -485,10 +490,33 @@ void SaveImageDialog::OnSavesearchtextctrlEnter( wxCommandEvent& event )
  */
 
 void SaveImageDialog::OnSavesearchtextctrlTextUpdated( wxCommandEvent& event )
-{
-////@begin wxEVT_COMMAND_TEXT_UPDATED event handler for ID_SAVESEARCHTEXTCTRL in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_TEXT_UPDATED event handler for ID_SAVESEARCHTEXTCTRL in SaveImageDialog. 
+{ 
+// refresh image/legend names
+  OnSaveimagecheckboxClick( event );
+  OnSavelegendcheckboxClick( event );
 }
 
+
+/*!
+ * wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_CHOICE
+ */
+
+void SaveImageDialog::OnFiletypechoiceSelected( wxCommandEvent& event )
+{ 
+  switch ( fileTypeChoice->GetSelection() ) 
+  {
+    case 0 :
+      fileTypeText = wxT( ".bmp" );
+      break;
+    case 1 :
+      fileTypeText = wxT( ".jpg" );
+      break;
+    case 2 :
+      fileTypeText = wxT( ".png" );
+      break;
+    case 3 :
+      fileTypeText = wxT( ".xpm" );
+      break;
+  }
+  OnSavelistboxSelected( event ); // refresh image/legend names
+}
