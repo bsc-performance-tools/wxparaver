@@ -565,8 +565,9 @@ public:
   void OnPopUpTiming( bool whichTiming );
   void OnItemColorLeftUp( wxMouseEvent& event );
 
-  void saveImage( bool showSaveDialog, wxString whichFileName );
-  void saveImageLegend( bool showSaveDialog = true );
+  void saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
+  void saveImageLegend( bool showSaveDialog = true, wxString whichFileName = _( "" ), ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
+  void saveImageDialog( wxString whichFileName );
 
   void saveText();
   void saveCFG();

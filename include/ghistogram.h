@@ -396,7 +396,8 @@ public:
   void OnMenuGradientFunction( GradientColor::TGradientFunction function );
   
   void saveCFG();
-  void saveImage( bool showSaveDialog, wxString whichFileName );
+  void saveImageDialog( wxString whichFileName );
+  void saveImage( bool showSaveDialog, wxString whichFileName = _( "" ), ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
   void saveText( bool onlySelectedPlane = false );
 
   void rightDownManager();

@@ -3519,17 +3519,71 @@ wxString gTimeline::buildFormattedFileName() const
 }
 
 
-void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
+void gTimeline::saveImageDialog( wxString whichFileName )
+{
+  wxString imageName;
+  wxString tmpSuffix;
+  wxString defaultDir;
+
+  setEnableDestroyButton( false );
+
+  imageName = buildFormattedFileName();
+  
+#ifdef WIN32
+  defaultDir = _(".\\");
+#else
+  defaultDir = _("./");
+#endif
+
+  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  tmpSuffix = _(".");
+  if ( myWindow->isGradientColorSet() )
+     tmpSuffix +=
+            wxString( _( "gradient" ) ) +
+            _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  else if ( myWindow->isNotNullGradientColorSet() )
+     tmpSuffix +=
+            wxString( _( "nn_gradient" ) ) +
+            _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  else
+    tmpSuffix +=
+            wxString( _( "code" ) ) +
+            _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  
+  wxString imagePath = imageName + tmpSuffix;
+  
+ 
+
+  SaveImageDialog saveDialog( this, defaultDir, imageName );
+  if ( saveDialog.ShowModal() != wxID_OK )
+  {
+    setEnableDestroyButton( true );
+    return;
+  }
+
+  filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ); //ParaverConfig::PNG; //ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+  imagePath = saveDialog.GetImageFilePath(); // .GetPath();
+
+  if ( saveDialog.DialogSavesImage() )
+    saveImage( false, imagePath, filterIndex );
+  if ( saveDialog.DialogSavesLegend() )
+    saveImageLegend( false, imagePath, filterIndex );
+}
+
+void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
 {
   wxString imagePath;
-  ParaverConfig::TImageFormat filterIndex;
+ /* ParaverConfig::TImageFormat filterIndex;*/
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    filterIndex = ParaverConfig::PNG;
+    //filterIndex = ParaverConfig::PNG;
   }
   else
   {
@@ -3767,15 +3821,19 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 }
 
 
-void gTimeline::saveImageLegend( bool showSaveDialog )
+void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
 {
   wxString imageName;
   wxString tmpSuffix;
   wxString defaultDir;
 
+
   setEnableDestroyButton( false );
 
-  imageName = buildFormattedFileName();
+  if( !whichFileName.IsEmpty() )
+    imageName = whichFileName;
+  else
+    imageName = buildFormattedFileName();
   
 #ifdef WIN32
   defaultDir = _(".\\");
@@ -3783,7 +3841,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   defaultDir = _("./");
 #endif
 
-  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  // ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   tmpSuffix = _(".");
   if ( myWindow->isGradientColorSet() )
      tmpSuffix +=
@@ -3822,7 +3880,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     }
     tmpWildcard = tmpWildcard.BeforeLast( '|' );
 
-    /*
+    
     FileDialogExtension saveDialog( this,
                              _("Save Image Legend"),
                              defaultDir,
@@ -3833,10 +3891,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                              wxDefaultSize,
                              _( "filedlg" ),
                              extensions );
-    saveDialog.SetFilterIndex( filterIndex );
-    */
-
-    SaveImageDialog saveDialog( this, defaultDir, imageName );
+    
 
     if ( saveDialog.ShowModal() != wxID_OK )
     {
@@ -3844,10 +3899,9 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
       return;
     }
 
-    filterIndex = ParaverConfig::PNG; //ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
-    imagePath = saveDialog.GetImageFilePath(); // .GetPath();
+    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    imagePath = saveDialog.GetPath();
   }
-  
   // Get colors
   wxColour foregroundColour = GetForegroundColour();
   wxColour backgroundColour = GetBackgroundColour();

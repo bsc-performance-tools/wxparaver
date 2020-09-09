@@ -2901,7 +2901,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
 }
 
 
-void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
+void gHistogram::saveImageDialog( wxString whichFileName )
 {
   wxString imagePath;
   ParaverConfig::TImageFormat filterIndex;
@@ -2912,6 +2912,54 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
   {
     imagePath = whichFileName;
     filterIndex = ParaverConfig::PNG;
+  }
+  else
+  {
+    wxString imageName;
+    wxString tmpSuffix;
+    wxString defaultDir;
+
+    imageName = buildFormattedFileName();
+
+  #ifdef WIN32
+    defaultDir = _(".\\");
+  #else
+    defaultDir = _("./");
+  #endif
+
+    //filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
+
+    tmpSuffix = _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    imagePath = imageName + tmpSuffix;
+
+    SaveImageDialog saveDialog( this, defaultDir, imageName, true );
+    //saveDialog.SetFilterIndex( filterIndex );
+    
+    if ( saveDialog.ShowModal() != wxID_OK )
+    {
+      setEnableDestroyButton( true );
+      return;
+    }
+
+    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    imagePath = saveDialog.GetImageFilePath();
+  
+    saveImage( false, imagePath, filterIndex );
+  }
+}
+
+void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
+{
+  wxString imagePath;
+  //ParaverConfig::TImageFormat filterIndex;
+
+  setEnableDestroyButton( false );
+
+  if( !whichFileName.IsEmpty() )
+  {
+    imagePath = whichFileName;
+    //filterIndex = ParaverConfig::PNG;
   }
   else
   {
@@ -2951,7 +2999,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
         tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
       }
       tmpWildcard = tmpWildcard.BeforeLast( '|' );
-
+      
       FileDialogExtension saveDialog( this,
                                _("Save Image"),
                                defaultDir,
@@ -2964,7 +3012,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
                                extensions );
 
       saveDialog.SetFilterIndex( filterIndex );
-
+      
       if ( saveDialog.ShowModal() != wxID_OK )
       {
         setEnableDestroyButton( true );

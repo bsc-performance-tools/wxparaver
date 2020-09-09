@@ -98,6 +98,10 @@ public:
   wxString GetImageFilePath();
   wxString GetLegendFilePath();
 
+  bool DialogSavesImage();
+  bool DialogSavesLegend();
+  int GetFilterIndex(); // Should it be ParaverConfig::TImageFormat ???
+
 ////@begin SaveImageDialog event handler declarations
 
   /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_SAVESEARCHTEXTCTRL
@@ -130,14 +134,12 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for wxID_OK
-  void OnOkUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
   void OnCancelClick( wxCommandEvent& event );
 
 ////@end SaveImageDialog event handler declarations
 
+  void updateFileNamesAndPaths();
 ////@begin SaveImageDialog member function declarations
 
   /// Retrieves bitmap resources
@@ -167,6 +169,7 @@ public:
   wxString defaultFileName;
   wxString selectedImageFilePath;
   wxString selectedLegendFilePath;
+
   std::map< wxString, wxString > linksPerFileName;
   wxString fileTypeText;
   bool isHistogram;

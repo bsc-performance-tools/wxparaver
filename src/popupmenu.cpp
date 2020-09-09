@@ -1806,26 +1806,17 @@ void gPopUpMenu::OnMenuSaveHistogramAsCFG( wxCommandEvent& event )
 void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 {
   if ( timeline != NULL )
-    timeline->saveImage( true, wxT( "" ) );
+    timeline->saveImageDialog( wxT( "" ) );
   else if ( histogram != NULL )
-    histogram->saveImage( true, wxT( "" ) );
+    histogram->saveImageDialog( wxT( "" ) );
+    //histogram->saveImage( true, wxT( "" ) );
 }
 
 
 void gPopUpMenu::OnMenuSaveImageLegend( wxCommandEvent& event )
 {
-  /*
   if ( timeline != NULL )
     timeline->saveImageLegend();
-  */
-  if ( timeline != NULL )
-  {
-    timeline->saveImageLegend();
-  }
-  /*else if ( histogram != NULL )
-  { 
-    histogram->saveImageLegend();
-  }*/
 }
 
 
