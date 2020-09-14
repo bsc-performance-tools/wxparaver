@@ -738,6 +738,13 @@ private:
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode );
   void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate );
 
+  TSemanticValue getSemanticValueFromFusedLines( int whichY );
+  bool canRepresentSemanticValueFromFunctionLine( int whichX,
+                                                  int whichY, 
+                                                  double &semanticRangePerPixel );
+  TSemanticValue getSemanticValueFromFunctionLine( int whichX, int whichY, TObjectOrder whichObject, double semanticRangePerPixel );
+  
+
   // Returns: window_name_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName() const;
 

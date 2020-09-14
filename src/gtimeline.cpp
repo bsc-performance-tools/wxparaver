@@ -4909,12 +4909,15 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   }
   else
   {
-    if( myWindow->isFunctionLineColorSet() )
-      return;
+    // TODO: DELETE ME
+    //if( myWindow->isFunctionLineColorSet() )
+    //  return;
 
+    if( !myWindow->isFunctionLineColorSet() )
+    {
 #ifdef __WXMAC__
-    wxImage tmpImage = bufferImage.ConvertToImage();
-    tmpColor = wxColour( tmpImage.GetRed( motionEvent.GetX(), motionEvent.GetY() ),
+      wxImage tmpImage = bufferImage.ConvertToImage();
+      tmpColor = wxColour( tmpImage.GetRed( motionEvent.GetX(), motionEvent.GetY() ),
                          tmpImage.GetGreen( motionEvent.GetX(), motionEvent.GetY() ),
                          tmpImage.GetBlue( motionEvent.GetX(), motionEvent.GetY() ) );
 /*
@@ -4924,31 +4927,34 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     itImage.Offset( tmpPixelData, motionEvent.GetX(), motionEvent.GetY() );
     tmpColor = wxColour( itImage.Red(), itImage.Green(), itImage.Blue() );*/
 #else  
-    dc.GetPixel( motionEvent.GetX(), motionEvent.GetY(), &tmpColor );
+      dc.GetPixel( motionEvent.GetX(), motionEvent.GetY(), &tmpColor );
 #endif
 
-    if( tmpColor == backgroundColour )
-      return;
+      // TODO: DELETE ME
+      if( tmpColor == backgroundColour )
+        return;
 
-    rgb color = { (ParaverColor)tmpColor.Red(), (ParaverColor)tmpColor.Green(), (ParaverColor)tmpColor.Blue() };
-    TSemanticValue firstValue, secondValue;
-    Window *winToUse = myWindow;
-    if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != NULL )
-      winToUse = myWindow->getPunctualColorWindow();
+      rgb color = { (ParaverColor)tmpColor.Red(), (ParaverColor)tmpColor.Green(), (ParaverColor)tmpColor.Blue() };
+      TSemanticValue firstValue, secondValue;
 
-    if( winToUse->isCodeColorSet() )
-    {
-      string tmpString;
-      firstValue = *( semanticColorsToValue[ color ].begin() );
-      tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
-      if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
-        LabelConstructor::transformToShort( tmpString );
-      label = wxString::FromAscii( tmpString.c_str() );
-    }
-    else if( !winToUse->calcValueFromColor( color, firstValue, secondValue ) )
-    {
-      if( !winToUse->isCodeColorSet() )
+      Window *winToUse = myWindow;
+      if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != NULL )
+        winToUse = myWindow->getPunctualColorWindow();
+
+
+      if( winToUse->isCodeColorSet() )
       {
+        // CODE COLOR
+        string tmpString;
+        firstValue = *( semanticColorsToValue[ color ].begin() );
+        tmpString = LabelConstructor::semanticLabel( winToUse, firstValue, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
+        if( winToUse->getSemanticInfoType() == EVENTVALUE_TYPE )
+          LabelConstructor::transformToShort( tmpString );
+        label = wxString::FromAscii( tmpString.c_str() );
+      }
+      else if( !winToUse->calcValueFromColor( color, firstValue, secondValue ) )
+      {
+        // GRADIENT COLOR
         //GradientColor& grad = myWindow->getGradientColor();
         if( color == winToUse->getGradientColor().getAboveOutlierColor() )
           label = wxT( "> " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, winToUse->getMaximumY(), false,
@@ -4957,32 +4963,61 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
           label = wxT( "< " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, winToUse->getMinimumY(), false,
                                                                                       ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
         else
-          return;
-      }
-      else
-        return;
-    }
-    else
-    {
-      if( winToUse->isFusedLinesColorSet() )
-      {
-        string tmpString;
-        tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue - 1, winToUse->getLevel(), winToUse->getTrace() );
-        label = wxString::FromAscii( tmpString.c_str() );
+          return;      
       }
       else
       {
-        // Gradient
-        firstValue = *( semanticColorsToValue[ color ].begin() );
-        label = wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, firstValue, false,
-                                                                      ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
-        if( semanticColorsToValue[ color ].size() > 1 )
+        if( winToUse->isFusedLinesColorSet() )
         {
-          secondValue = *( --( semanticColorsToValue[ color ].end() ) );
-          label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, secondValue, false,
-                                                                                        ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
+          string tmpString;
+          tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue - 1, winToUse->getLevel(), winToUse->getTrace() );
+          label = wxString::FromAscii( tmpString.c_str() );
+        }
+        else
+        {
+          // Gradient
+          firstValue = *( semanticColorsToValue[ color ].begin() );
+          label = wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, firstValue, false,
+                                                                        ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
+          if( semanticColorsToValue[ color ].size() > 1 )
+          {
+            secondValue = *( --( semanticColorsToValue[ color ].end() ) );
+            label += wxT( " - " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, secondValue, false,
+                                                                                          ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
+          }
         }
       }
+    }
+    else // Function Line
+    {
+      TObjectOrder object;
+      TTime time;
+      if( pixelToTimeObject( motionEvent.GetX(), motionEvent.GetY(), time, object ) )
+      {
+        double semanticRangePerPixel;
+        if( canRepresentSemanticValueFromFunctionLine( motionEvent.GetX(),
+                                                       motionEvent.GetY(),
+                                                       semanticRangePerPixel ) )
+        {
+          TSemanticValue tmpSemantic = getSemanticValueFromFunctionLine( motionEvent.GetX(),
+                                                                         motionEvent.GetY(),
+                                                                         object,
+                                                                         semanticRangePerPixel );
+          std::cout << "\t tmpSemantic Value = " << tmpSemantic << std::endl;
+          string tmpString;
+          tmpString = LabelConstructor::semanticLabel( myWindow, tmpSemantic, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
+          if( myWindow->getSemanticInfoType() == EVENTVALUE_TYPE )
+            LabelConstructor::transformToShort( tmpString );
+          label = wxString::FromAscii( tmpString.c_str() );
+        }
+        else
+          label = wxString( wxT( "" ) );
+      }
+      else
+      {
+        label = wxT( "ERROR: Zoom high!" );
+      }
+      
     }
   }
 
@@ -5317,6 +5352,111 @@ bool gTimeline::pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& 
 }
 
 
+bool gTimeline::canRepresentSemanticValueFromFunctionLine( int whichX,
+                                                           int whichY,
+                                                           double &semanticRangePerPixel )
+{
+  bool canRepresent = false;
+             
+  if( myWindow->isFunctionLineColorSet() && objectHeight != 0 )
+  {
+    TSemanticValue semanticRange = myWindow->getMaximumY() - myWindow->getMinimumY() + 1;
+    int numberOfPixels = objectHeight;
+    semanticRangePerPixel = (double)semanticRange / numberOfPixels;
+    if ( semanticRangePerPixel <= 1.0 )
+      canRepresent = true;
+        std::cout << "  semanticRange = " << semanticRange << "\n";
+        std::cout << "  numberOfPixels         = " << numberOfPixels << "\n";
+        std::cout << "  semanticRangePerPixel = " << semanticRangePerPixel << "\n";
+  }
+
+  return canRepresent;
+}
+
+
+TSemanticValue gTimeline::getSemanticValueFromFunctionLine( int whichX,
+                                                            int whichY,
+                                                            TObjectOrder whichObject,
+                                                            double semanticRangePerPixel )
+{
+  // TODO: delete couts
+  TSemanticValue tmpSemantic = 0.0;
+
+  int numberOfPixels = objectHeight;
+  int minPos = objectPosList[ whichObject ];
+  int maxPos = minPos + objectHeight;
+
+  // Check all pixels of the object and find one with foreground color
+  wxColour pixelColor;
+  wxMemoryDC dc( bufferImage );
+  int tmpHeight;
+  for ( tmpHeight = minPos; tmpHeight <= maxPos; ++tmpHeight )
+  {
+    dc.GetPixel( whichX, tmpHeight, &pixelColor );
+    if ( pixelColor == GetForegroundColour() )
+    {
+      int relPixel = numberOfPixels - ( tmpHeight - minPos );
+
+      TSemanticValue semanticRange = myWindow->getMaximumY() - myWindow->getMinimumY();
+      semanticRangePerPixel = (double)semanticRange / numberOfPixels;
+
+      tmpSemantic = semanticRangePerPixel * relPixel + myWindow->getMinimumY();
+
+      //    std::cout << "  relPixel (inv'd scale) = " << relPixel << "\n"; 
+      //    std::cout << tmpHeight << " [X]  tmpSemantic              = " << tmpSemantic << "\n";
+      break;
+    }
+/*
+    else
+    {
+      int relPixel = numberOfPixels - ( tmpHeight - minPos );
+      TSemanticValue semanticRange = myWindow->getMaximumY() - myWindow->getMinimumY();
+      semanticRangePerPixel = (double)semanticRange / numberOfPixels;
+
+      TSemanticValue tmp2Semantic = semanticRangePerPixel * relPixel + myWindow->getMinimumY();
+      //    std::cout << tmpHeight << " [ ]  tmpSemantic              = " << tmp2Semantic << "\n";
+    }
+  */  
+  } 
+
+/*
+    std::cout << "Function Line debugging" << std::endl;
+    std::cout << "\t SemV = " << (double)tmpSemantic << std::endl;
+    std::cout << "\t MaxY = " << myWindow->getMaximumY() << std::endl;
+    //std::cout << "\t Step = " << semanticStep << std::endl;
+    std::cout << "\t Obj. = " << whichObject << std::endl;
+    std::cout << "\t my_Y = " << whichY << std::endl;
+    std::cout << "\t brdr = " << drawBorder << std::endl;
+  
+    std::cout << "\t SemInfo = " << myWindow->getSemanticInfoType() << std::endl;
+  */
+  SemanticInfoType tmpSemInfoType = myWindow->getSemanticInfoType();
+  if (( tmpSemInfoType >= OBJECT_TYPE && tmpSemInfoType <= CPU_TYPE ) || tmpSemInfoType == STATE_TYPE )
+  {
+    tmpSemantic = round( tmpSemantic );
+  }
+
+  tmpSemantic = min( tmpSemantic, myWindow->getMaximumY() );
+
+  return tmpSemantic;
+}
+
+
+TSemanticValue gTimeline::getSemanticValueFromFusedLines( int whichY )
+{
+ TSemanticValue tmpSemantic = 0.0;
+  
+  if( myWindow->isFusedLinesColorSet() )
+  {
+    TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
+                                  ( timeAxisPos - drawBorder );
+    tmpSemantic = myWindow->getMaximumY() - ( semanticStep * ( whichY - drawBorder - 1 ) );//( semanticStep * y ) + myWindow->getMinimumY();
+  }
+
+  return tmpSemantic;
+}
+
+
 /*!
  * wxEVT_LEFT_DCLICK event handler for ID_SCROLLEDWINDOW
  */
@@ -5326,17 +5466,11 @@ void gTimeline::OnScrolledWindowLeftDClick( wxMouseEvent& event )
   TObjectOrder object;
   TTime time;
 
+  // TODO: Does this go to getSemanticValueFromFusedLines?
   if( !pixelToTimeObject( event.GetX(), event.GetY(), time, object ) )
     return;
 
-  TSemanticValue tmpSemantic = 0.0;
-  
-  if( myWindow->isFusedLinesColorSet() )
-  {
-    TSemanticValue semanticStep = ( myWindow->getMaximumY() - myWindow->getMinimumY() ) /
-                     ( timeAxisPos - drawBorder );
-    tmpSemantic = myWindow->getMaximumY() - ( semanticStep * ( event.GetY() - drawBorder - 1 ) );//( semanticStep * y ) + myWindow->getMinimumY();
-  }
+  TSemanticValue tmpSemantic = getSemanticValueFromFusedLines( event.GetY() );
 
   if( !splitter->IsSplit() )
   {
