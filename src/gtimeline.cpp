@@ -771,6 +771,9 @@ void gTimeline::redraw()
                                        progress );
   }
 
+  // Draw before any row
+  drawZeroAxis( bufferDraw, selectedSet );
+
   // Drawmode: Group objects with same wxCoord in objectPosList
   PRV_UINT32 rowToDraw = 0;
   if( myWindow->getWindowBeginTime() != myWindow->getWindowEndTime() )
@@ -814,9 +817,7 @@ void gTimeline::redraw()
       }
     }
   }
-
-  drawZeroAxis( bufferDraw, selectedSet );
-
+  
 #ifdef __WXMAC__
   dc.DrawBitmap( bufferImage, 0, 0, false );
 #else
@@ -1205,7 +1206,7 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
 {
   if( myWindow->getMaximumY() > 0.0 && myWindow->getMinimumY() < 0.0 )
   {
-    rgb rgbAxisColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis();
+    rgb rgbAxisColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineZeroDashLine();
     wxColour axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
     dc.SetPen( wxPen( axisColour, 1, wxLONG_DASH ) );
     
