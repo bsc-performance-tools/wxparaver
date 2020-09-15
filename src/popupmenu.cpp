@@ -106,7 +106,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_PIXEL_SIZE_x8, gPopUpMenu::OnMenuPixelSize )
   EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
   EVT_MENU( ID_MENU_SAVE_IMAGE, gPopUpMenu::OnMenuSaveImage )
-  EVT_MENU( ID_MENU_SAVE_IMAGE_LEGEND, gPopUpMenu::OnMenuSaveImageLegend )
+  //EVT_MENU( ID_MENU_SAVE_IMAGE_LEGEND, gPopUpMenu::OnMenuSaveImageLegend )
   EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_TEXT, gPopUpMenu::OnMenuSaveTimelineAsText )
   EVT_MENU( ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT, gPopUpMenu::OnMenuSaveCurrentPlaneAsText )
   EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_CFG, gPopUpMenu::OnMenuSaveTimelineAsCFG )
@@ -781,7 +781,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   buildItem( popUpMenuSave, _( "Configuration..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsCFG, ID_MENU_SAVE_TIMELINE_AS_CFG );
   buildItem( popUpMenuSave, _( "Image..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
-  buildItem( popUpMenuSave, _( "Image Legend..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImageLegend, ID_MENU_SAVE_IMAGE_LEGEND );
+  //buildItem( popUpMenuSave, _( "Image Legend..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImageLegend, ID_MENU_SAVE_IMAGE_LEGEND );
   buildItem( popUpMenuSave, _( "Text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsText, ID_MENU_SAVE_TIMELINE_AS_TEXT );
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
 
@@ -1810,13 +1810,6 @@ void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
   else if ( histogram != NULL )
     histogram->saveImageDialog( wxT( "" ) );
     //histogram->saveImage( true, wxT( "" ) );
-}
-
-
-void gPopUpMenu::OnMenuSaveImageLegend( wxCommandEvent& event )
-{
-  if ( timeline != NULL )
-    timeline->saveImageLegend();
 }
 
 

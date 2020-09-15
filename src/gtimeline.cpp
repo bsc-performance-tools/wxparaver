@@ -3565,12 +3565,18 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   }
 
   filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ); //ParaverConfig::PNG; //ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
-  imagePath = saveDialog.GetImageFilePath(); // .GetPath();
+  
 
   if ( saveDialog.DialogSavesImage() )
+  {
+    imagePath = saveDialog.GetImageFilePath(); // .GetPath();
     saveImage( false, imagePath, filterIndex );
+  }
   if ( saveDialog.DialogSavesLegend() )
+  {
+    imagePath = saveDialog.GetLegendFilePath(); // .GetPath();
     saveImageLegend( false, imagePath, filterIndex );
+  }
 }
 
 void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
@@ -3859,7 +3865,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
             _(".") +
             wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
   
-  wxString imagePath = imageName + tmpSuffix;
+  wxString imagePath = imageName ; //+ tmpSuffix;
   
   if( showSaveDialog )
   {

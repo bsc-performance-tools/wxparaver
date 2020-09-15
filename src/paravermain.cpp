@@ -3645,7 +3645,29 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   {
     wxArrayInt sel = dialog.GetSelections();
     for( size_t i = 0; i < sel.GetCount(); ++i )
-      UnloadTrace( sel.Item( i ) );
+    {
+      vector<Window *> windows;
+      LoadedWindows::getInstance()->getAll( loadedTraces[ sel.Item( i ) ], windows );
+
+      bool isThereHistogramLinkedToWindow = false;
+      for( vector<Window *>::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
+      {
+        (*it)->setShowWindow( false ); 
+        isThereHistogramLinkedToWindow = getUsedByHistogram( (*it) );
+        if( isThereHistogramLinkedToWindow )
+        {
+          wxString traceNum = wxString::Format( wxT( "%i" ), sel.Item( i ) );
+          wxMessageBox( _( "Cannot delete trace #" ) + traceNum + _( ", which is being used in an histogram." ),
+                        _( "Paraver information" ),
+                        wxOK | wxICON_INFORMATION ); 
+        }
+      }
+      if ( !isThereHistogramLinkedToWindow )
+      {
+        UnloadTrace( sel.Item( i ) );
+      }
+
+    }
   }
 
   raiseCurrentWindow = true;
