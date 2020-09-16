@@ -218,7 +218,7 @@ void SaveImageDialog::CreateControls()
   itemBoxSizer5->Add(imageFileName, 5, wxGROW|wxLEFT|wxRIGHT, 5);
 
   wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer4->Add(itemBoxSizer8, 0, wxGROW|wxALL, 5);
+  itemStaticBoxSizer4->Add(itemBoxSizer8, 1, wxGROW|wxALL, 5);
 
   legendCheckbox = new wxCheckBox( itemDialog1, ID_SAVELEGENDCHECKBOX, _("Legend"), wxDefaultPosition, wxDefaultSize, 0 );
   legendCheckbox->SetValue(false);
