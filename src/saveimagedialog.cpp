@@ -80,8 +80,8 @@ SaveImageDialog::SaveImageDialog()
   Init();
 }
 
-SaveImageDialog::SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, bool isHistogram, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
-  : directoryStartingPath( directoryStartingPath ), defaultFileName( defaultFileName ), isHistogram( isHistogram )
+SaveImageDialog::SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, bool isHistogram, wxString legendSuffix, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+  : directoryStartingPath( directoryStartingPath ), defaultFileName( defaultFileName ), isHistogram( isHistogram ), legendSuffix( legendSuffix )
 {
   Init();
   Create(parent, id, caption, pos, size, style);
@@ -382,7 +382,8 @@ void SaveImageDialog::OnSaveimagecheckboxClick( wxCommandEvent& event )
 void SaveImageDialog::OnSavelegendcheckboxClick( wxCommandEvent& event )
 {
   legendFileName->Clear();
-  selectedLegendFilePath = fileNameBar->GetValue() + _( "_LEGEND" ) + fileTypeText;
+
+  selectedLegendFilePath = fileNameBar->GetValue() + legendSuffix + fileTypeText;
   if ( legendCheckbox->IsChecked() && !fileNameBar->IsEmpty() ) 
     legendFileName->WriteText( selectedLegendFilePath );
   

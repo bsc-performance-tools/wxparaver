@@ -3536,28 +3536,14 @@ void gTimeline::saveImageDialog( wxString whichFileName )
 #endif
 
   ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-  tmpSuffix = _(".");
+  
+  wxString legendSuffix = _( "_code_legend" );
   if ( myWindow->isGradientColorSet() )
-     tmpSuffix +=
-            wxString( _( "gradient" ) ) +
-            _(".") +
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+     legendSuffix= _( "_gradient_legend" );
   else if ( myWindow->isNotNullGradientColorSet() )
-     tmpSuffix +=
-            wxString( _( "nn_gradient" ) ) +
-            _(".") +
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-  else
-    tmpSuffix +=
-            wxString( _( "code" ) ) +
-            _(".") +
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-  
-  wxString imagePath = imageName + tmpSuffix;
-  
- 
+     legendSuffix= _( "_nn_gradient_legend" ); 
 
-  SaveImageDialog saveDialog( this, defaultDir, imageName );
+  SaveImageDialog saveDialog( this, defaultDir, imageName, false, legendSuffix );
   if ( saveDialog.ShowModal() != wxID_OK )
   {
     setEnableDestroyButton( true );
@@ -3569,13 +3555,13 @@ void gTimeline::saveImageDialog( wxString whichFileName )
 
   if ( saveDialog.DialogSavesImage() )
   {
-    imagePath = saveDialog.GetImageFilePath(); // .GetPath();
-    saveImage( false, imagePath, filterIndex );
+    imageName = saveDialog.GetImageFilePath(); // .GetPath();
+    saveImage( false, imageName, filterIndex );
   }
   if ( saveDialog.DialogSavesLegend() )
   {
-    imagePath = saveDialog.GetLegendFilePath(); // .GetPath();
-    saveImageLegend( false, imagePath, filterIndex );
+    imageName = saveDialog.GetLegendFilePath(); // .GetPath();
+    saveImageLegend( false, imageName, filterIndex );
   }
 }
 
