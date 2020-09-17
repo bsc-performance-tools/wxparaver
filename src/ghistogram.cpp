@@ -60,6 +60,8 @@
 #include "filedialogext.h"
 //#include "progresscontroller.h"
 
+#include <algorithm> // TODO: delete me
+
 #define wxTEST_GRAPHICS 1
 
 #if wxTEST_GRAPHICS
@@ -2407,7 +2409,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   controlCloned->setWindowEndTime( myHistogram->getEndTime() );
   controlCloned->addZoom( myHistogram->getBeginTime(), myHistogram->getEndTime(), 
                           selectedRows[ objectBegin ], selectedRows[ objectEnd ] );
-
+  
   if( myHistogram->getThreeDimensions() )
   {
     Window *extraControlCloned = myHistogram->getExtraControlWindow()->clone();
@@ -2574,11 +2576,12 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   
   if( openWindow != NULL )
   {
-    vector<bool> tmpSelectedRows;
     THistogramColumn iPlane;
     bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
-    tmpControlWindow->GetMyWindow()->getSelectedRows( tmpControlWindow->GetMyWindow()->getLevel(),
-                                                      tmpSelectedRows );
+
+    vector< bool > tmpSelectedRows = myHistogram->getSelectedBooleanRows( );
+    TObjectOrder maxRow = tmpSelectedRows.size();
+    vector< bool > present( maxRow, false );
 
     if( columnBegin == columnEnd || delta == 1.0 )
       ++columnEnd;
@@ -2602,24 +2605,25 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
           myHistogram->setNextCell( tmpRealCol, iPlane );
       }
       
-      TObjectOrder maxRow = tmpSelectedRows.size();
-      vector< bool > present( maxRow, false );
       for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
         if( myHistogram->getSemanticSortColumns() )
           tmpRealCol = getSemanticSortedRealColumn( iCol, noVoidSemRanges );
         else
           tmpRealCol = iCol;
+
         while ( !myHistogram->endCell( tmpRealCol, iPlane ) )
         {
-          TObjectOrder currentRow = selectedRows[ myHistogram->getCurrentRow( tmpRealCol, iPlane ) ];
-          present[ currentRow ] = true;
+          TObjectOrder currentObject = myHistogram->getCurrentRow( tmpRealCol, iPlane );
+          if ( currentObject >= objectBegin && currentObject <= objectEnd )
+          {
+            TObjectOrder currentRow = selectedRows[ currentObject ];
+            present[ currentRow ] = true;
+          }
+
           myHistogram->setNextCell( tmpRealCol, iPlane );
         }
       }
-
-      for (TObjectOrder i = 0; i < maxRow; ++i )
-        tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && present[ i ];
     }
     else
     {
@@ -2632,25 +2636,29 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
           myHistogram->setCommNextCell( iCol, iPlane );
       }
 
-      TObjectOrder maxRow = tmpSelectedRows.size();
-      vector< bool > present( maxRow, false );
       for( THistogramColumn iCol = columnBegin; iCol < columnEnd; ++iCol )
       {
         while ( !myHistogram->endCommCell( iCol, iPlane ) )
         {
-          TObjectOrder currentRow = selectedRows[ myHistogram->getCommCurrentRow( iCol, iPlane ) ];
-          present[ currentRow ] = true;
+          TObjectOrder currentObject = myHistogram->getCommCurrentRow( iCol, iPlane );
+          if ( currentObject >= objectBegin && currentObject <= objectEnd )
+          {
+            TObjectOrder currentRow = selectedRows[ myHistogram->getCommCurrentRow( iCol, iPlane ) ];
+            present[ currentRow ] = true;
+          }
+
           myHistogram->setCommNextCell( iCol, iPlane );
         }
       }
-      for (TObjectOrder i = 0; i < maxRow; ++i )
-        tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && present[ i ];
     }
+
+    for ( TObjectOrder i = 0; i < maxRow; ++i )
+      tmpSelectedRows[ i ] = tmpSelectedRows[ i ] && present[ i ];
     
     // If no object have values, show all of them. Otherwise a segfault can occur if no objets are shown
     if( std::find( tmpSelectedRows.begin(), tmpSelectedRows.end(), true ) == tmpSelectedRows.end() )
     {
-      for( vector<bool>::iterator it = tmpSelectedRows.begin(); it != tmpSelectedRows.end(); ++it )
+      for( vector< bool >::iterator it = tmpSelectedRows.begin(); it != tmpSelectedRows.end(); ++it )
         *it = true;
     }
     openWindow->GetMyWindow()->setSelectedRows( openWindow->GetMyWindow()->getLevel(), tmpSelectedRows );
