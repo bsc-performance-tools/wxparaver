@@ -132,8 +132,11 @@ void SaveImageDialog::Init()
   treeDirs = NULL;
   listDirs = NULL;
   fileTypeChoice = NULL;
+  imageToSaveSizer = NULL;
+  imageSizer = NULL;
   imageCheckbox = NULL;
   imageFileName = NULL;
+  legendSizer = NULL;
   legendCheckbox = NULL;
   legendFileName = NULL;
   buttonSave = NULL;
@@ -179,13 +182,13 @@ void SaveImageDialog::CreateControls()
   itemBoxSizer1->Add(searchBar, 5, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer3, 3, wxGROW|wxLEFT|wxRIGHT, 5);
+  itemBoxSizer2->Add(itemBoxSizer3, 1, wxGROW|wxLEFT|wxRIGHT, 5);
 
-  treeDirs = new wxGenericDirCtrl( itemDialog1, ID_SAVEDIRCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_DIR_ONLY|wxSTATIC_BORDER, wxT("All files (*.*)|*.*"), 0 );
+  treeDirs = new wxGenericDirCtrl( itemDialog1, ID_SAVEDIRCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 300), wxDIRCTRL_DIR_ONLY|wxSTATIC_BORDER, wxT("All files (*.*)|*.*"), 0 );
   itemBoxSizer3->Add(treeDirs, 1, wxGROW|wxALL, 5);
 
   wxArrayString listDirsStrings;
-  listDirs = new wxListBox( itemDialog1, ID_SAVELISTBOX, wxDefaultPosition, wxDefaultSize, listDirsStrings, wxLB_SINGLE|wxSTATIC_BORDER );
+  listDirs = new wxListBox( itemDialog1, ID_SAVELISTBOX, wxDefaultPosition, wxSize(-1, 300), listDirsStrings, wxLB_SINGLE|wxSTATIC_BORDER );
   itemBoxSizer3->Add(listDirs, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
@@ -204,28 +207,28 @@ void SaveImageDialog::CreateControls()
   itemBoxSizer6->Add(fileTypeChoice, 0, wxGROW|wxALL, 5);
 
   wxStaticBox* itemStaticBoxSizer4Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Image to save"));
-  wxStaticBoxSizer* itemStaticBoxSizer4 = new wxStaticBoxSizer(itemStaticBoxSizer4Static, wxVERTICAL);
-  itemBoxSizer2->Add(itemStaticBoxSizer4, 1, wxGROW|wxLEFT|wxRIGHT, 5);
+  imageToSaveSizer = new wxStaticBoxSizer(itemStaticBoxSizer4Static, wxVERTICAL);
+  itemBoxSizer2->Add(imageToSaveSizer, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer4->Add(itemBoxSizer5, 1, wxGROW|wxALL, 5);
+  imageSizer = new wxBoxSizer(wxHORIZONTAL);
+  imageToSaveSizer->Add(imageSizer, 0, wxGROW|wxALL, 5);
 
   imageCheckbox = new wxCheckBox( itemDialog1, ID_SAVEIMAGECHECKBOX, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
   imageCheckbox->SetValue(true);
-  itemBoxSizer5->Add(imageCheckbox, 1, wxGROW|wxALL, 5);
+  imageSizer->Add(imageCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   imageFileName = new wxTextCtrl( itemDialog1, ID_SAVEIMAGETEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  itemBoxSizer5->Add(imageFileName, 5, wxGROW|wxLEFT|wxRIGHT, 5);
+  imageSizer->Add(imageFileName, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
-  wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer4->Add(itemBoxSizer8, 1, wxGROW|wxALL, 5);
+  legendSizer = new wxBoxSizer(wxHORIZONTAL);
+  imageToSaveSizer->Add(legendSizer, 0, wxGROW|wxALL, 5);
 
   legendCheckbox = new wxCheckBox( itemDialog1, ID_SAVELEGENDCHECKBOX, _("Legend"), wxDefaultPosition, wxDefaultSize, 0 );
   legendCheckbox->SetValue(false);
-  itemBoxSizer8->Add(legendCheckbox, 1, wxGROW|wxALL, 5);
+  legendSizer->Add(legendCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   legendFileName = new wxTextCtrl( itemDialog1, ID_SAVELEGENDTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  itemBoxSizer8->Add(legendFileName, 5, wxGROW|wxLEFT|wxRIGHT, 5);
+  legendSizer->Add(legendFileName, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
 
@@ -244,11 +247,15 @@ void SaveImageDialog::CreateControls()
 
   if ( isHistogram )
   {
-    wxString histogramLabel = wxT( "Histogram" );
+    //wxString histogramLabel = wxT( "Histogram" );
     //imageCheckbox->SetLabel( histogramLabel );
     imageCheckbox->Hide();
+    /*
     legendCheckbox->Hide();
     legendFileName->Hide();
+    */
+    imageToSaveSizer->Hide( (wxSizer*) legendSizer, true );
+    Layout();
   }
   fileNameBar->WriteText( defaultFileName );
   searchBar->WriteText( directoryStartingPath );

@@ -43,6 +43,7 @@
 
 ////@begin forward declarations
 class wxGenericDirCtrl;
+class wxBoxSizer;
 ////@end forward declarations
 
 /*!
@@ -158,8 +159,11 @@ public:
   wxGenericDirCtrl* treeDirs;
   wxListBox* listDirs;
   wxChoice* fileTypeChoice;
+  wxStaticBoxSizer* imageToSaveSizer;
+  wxBoxSizer* imageSizer;
   wxCheckBox* imageCheckbox;
   wxTextCtrl* imageFileName;
+  wxBoxSizer* legendSizer;
   wxCheckBox* legendCheckbox;
   wxTextCtrl* legendFileName;
   wxButton* buttonSave;
