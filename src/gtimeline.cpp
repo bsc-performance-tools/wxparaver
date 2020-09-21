@@ -1362,9 +1362,22 @@ void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& line
   else if( valueToDraw > myWindow->getMaximumY() )
     valueToDraw = myWindow->getMaximumY();
 
-  double tmpPos = ( valueToDraw - realMin ) 
-                  / ( myWindow->getMaximumY() - realMin );
-  int currentPos = objectHeight * tmpPos;
+  TSemanticValue tmpSemantic = valueToDraw - realMin;
+  TSemanticValue semanticRange = myWindow->getMaximumY() - realMin;
+  GradientColor::TGradientFunction selectedPaintAsMode = GetMyWindow()->getGradientColor().getGradientFunction();
+  int currentPos;
+  if ( selectedPaintAsMode == GradientColor::LINEAR )
+  {
+    double normalizedSemanticValue = tmpSemantic / semanticRange; // between 0 and 1
+    currentPos = objectHeight * normalizedSemanticValue;
+  }
+  else if ( selectedPaintAsMode == GradientColor::LOGARITHMIC )
+  {
+    double normalizedSemanticValue = ( log( semanticRange * tmpSemantic + 1 ) / log( semanticRange ) ) / 2.0; // between 0 and 1
+//                   tmpSemantic = ( exp( 2.0 * ( relPixel / numberOfPixels ) * log( semanticRange ) ) / semanticRange ) - 1;
+
+    currentPos = objectHeight * normalizedSemanticValue;
+  }
   
   dc.SetPen( foregroundColour );
   if( currentPos != lineLastPos )
@@ -5388,6 +5401,8 @@ TSemanticValue gTimeline::getSemanticValueFromFunctionLine( int whichX,
 
   // Check all pixels of the object and find one with foreground color
   wxColour pixelColor;
+  GradientColor::TGradientFunction selectedPaintAsMode = GetMyWindow()->getGradientColor().getGradientFunction(); //== GradientColor::LOGARITHMIC;
+  
   wxMemoryDC dc( bufferImage );
   int tmpHeight;
   for ( tmpHeight = minPos; tmpHeight <= maxPos; ++tmpHeight )
@@ -5396,14 +5411,33 @@ TSemanticValue gTimeline::getSemanticValueFromFunctionLine( int whichX,
     if ( pixelColor == GetForegroundColour() )
     {
       int relPixel = numberOfPixels - ( tmpHeight - minPos );
+      TSemanticValue semanticRange = myWindow->getMaximumY() - myWindow->getMinimumY() + 1; // + 1!!!!;
 
-      TSemanticValue semanticRange = myWindow->getMaximumY() - myWindow->getMinimumY();
-      semanticRangePerPixel = (double)semanticRange / numberOfPixels;
+      if ( selectedPaintAsMode == GradientColor::LINEAR )
+      {
+        semanticRangePerPixel = (double)semanticRange / numberOfPixels; // TODO: se recalcula!
+        tmpSemantic = semanticRangePerPixel * relPixel + myWindow->getMinimumY();
+      }
+      else if ( selectedPaintAsMode == GradientColor::LOGARITHMIC )
+      {
+        // x --> 0 < x < 2
+        //tmpSemantic = ( exp( ( 2* relPixel / numberOfPixels ) * log( semanticRange ) ) - 1)/ semanticRange;
+        double tmpCurrentSem1 = (double)relPixel / numberOfPixels;
+        double tmpCurrentSem2 = log( semanticRange );
+        double tmpCurr = 2.0 * tmpCurrentSem1 *tmpCurrentSem2;
+        double tmpCurr2 = exp(tmpCurr);
+        
+        double tmpCurrentSem = exp( 2.0 * ( (double)relPixel / numberOfPixels ) * log( semanticRange ) - 1 );
+        tmpSemantic = (double)tmpCurrentSem / semanticRange + 1; // +1? needed but, why?
+          std::cout << "  tmpCurrentSem 1= " << tmpCurrentSem1 << "\n"; 
+          std::cout << "  tmpCurrentSem2 = " << tmpCurrentSem2 << "\n"; 
+          std::cout << "  tmpCurr = " << tmpCurr << "\n"; 
+          std::cout << "  tmpCurr2 = " << tmpCurr2 << "\n"; 
+          std::cout << "  tmpCurrentSem = " << tmpCurrentSem << "\n"; 
 
-      tmpSemantic = semanticRangePerPixel * relPixel + myWindow->getMinimumY();
-
-      //    std::cout << "  relPixel (inv'd scale) = " << relPixel << "\n"; 
-      //    std::cout << tmpHeight << " [X]  tmpSemantic              = " << tmpSemantic << "\n";
+      }
+          std::cout << "  relPixel (inv'd scale) = " << relPixel << "\n"; 
+          std::cout << tmpHeight << " [X]  tmpSemantic              = " << (double)tmpSemantic << "\n";
       break;
     }
 /*
