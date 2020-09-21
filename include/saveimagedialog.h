@@ -43,6 +43,7 @@
 
 ////@begin forward declarations
 class wxGenericDirCtrl;
+class wxBoxSizer;
 ////@end forward declarations
 
 /*!
@@ -55,7 +56,7 @@ class wxGenericDirCtrl;
 #define ID_FILEPATHSAVEIMGCTRL 10501
 #define ID_SAVEDIRCTRL 10502
 #define ID_SAVELISTBOX 10503
-#define ID_CHOICE 10001
+#define ID_FILETYPECHOICE 10001
 #define ID_SAVEIMAGECHECKBOX 10504
 #define ID_SAVEIMAGETEXTCTRL 10505
 #define ID_SAVELEGENDCHECKBOX 10506
@@ -80,7 +81,7 @@ class SaveImageDialog: public wxDialog
 public:
   /// Constructors
   SaveImageDialog();
-  SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
+  SaveImageDialog( wxWindow* parent, wxString& directoryStartingPath, wxString defaultFileName, bool isHistogram = false, wxString legendSuffix = _( "_legend" ), wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
 
   /// Creation
   bool Create( wxWindow* parent, wxWindowID id = SYMBOL_SAVEIMAGEDIALOG_IDNAME, const wxString& caption = SYMBOL_SAVEIMAGEDIALOG_TITLE, const wxPoint& pos = SYMBOL_SAVEIMAGEDIALOG_POSITION, const wxSize& size = SYMBOL_SAVEIMAGEDIALOG_SIZE, long style = SYMBOL_SAVEIMAGEDIALOG_STYLE );
@@ -98,6 +99,10 @@ public:
   wxString GetImageFilePath();
   wxString GetLegendFilePath();
 
+  bool DialogSavesImage();
+  bool DialogSavesLegend();
+  int GetFilterIndex(); // Should it be ParaverConfig::TImageFormat ???
+
 ////@begin SaveImageDialog event handler declarations
 
   /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_SAVESEARCHTEXTCTRL
@@ -112,14 +117,14 @@ public:
   /// wxEVT_COMMAND_TREE_SEL_CHANGED event handler for ID_SAVEDIRCTRL
   void OnSavedirctrlSelChanged( wxTreeEvent& event );
 
-  /// wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_SAVEDIRCTRL
-  void OnSavedirctrlItemActivated( wxTreeEvent& event );
-
   /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_SAVELISTBOX
   void OnSavelistboxSelected( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_SAVELISTBOX
   void OnSavelistboxDoubleClicked( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_FILETYPECHOICE
+  void OnFiletypechoiceSelected( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVEIMAGECHECKBOX
   void OnSaveimagecheckboxClick( wxCommandEvent& event );
@@ -130,14 +135,12 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for wxID_OK
-  void OnOkUpdate( wxUpdateUIEvent& event );
-
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
   void OnCancelClick( wxCommandEvent& event );
 
 ////@end SaveImageDialog event handler declarations
 
+  void updateFileNamesAndPaths();
 ////@begin SaveImageDialog member function declarations
 
   /// Retrieves bitmap resources
@@ -155,8 +158,12 @@ public:
   wxTextCtrl* searchBar;
   wxGenericDirCtrl* treeDirs;
   wxListBox* listDirs;
+  wxChoice* fileTypeChoice;
+  wxStaticBoxSizer* imageToSaveSizer;
+  wxBoxSizer* imageSizer;
   wxCheckBox* imageCheckbox;
   wxTextCtrl* imageFileName;
+  wxBoxSizer* legendSizer;
   wxCheckBox* legendCheckbox;
   wxTextCtrl* legendFileName;
   wxButton* buttonSave;
@@ -166,7 +173,11 @@ public:
   wxString defaultFileName;
   wxString selectedImageFilePath;
   wxString selectedLegendFilePath;
+
   std::map< wxString, wxString > linksPerFileName;
+  wxString fileTypeText;
+  bool isHistogram;
+  wxString legendSuffix;
 };
 
 #endif

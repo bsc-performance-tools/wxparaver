@@ -247,7 +247,6 @@ class gPopUpMenu : public wxMenu
 
     // Save 
     void OnMenuSaveImage( wxCommandEvent& event ); // both
-    void OnMenuSaveImageLegend( wxCommandEvent& event );
 
     void OnMenuSaveTimelineAsCFG( wxCommandEvent& event );
     void OnMenuSaveTimelineAsText( wxCommandEvent& event );
