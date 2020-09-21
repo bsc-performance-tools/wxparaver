@@ -2927,15 +2927,10 @@ void gHistogram::saveImageDialog( wxString whichFileName )
   {
     wxString imageName;
     wxString tmpSuffix;
-    wxString defaultDir;
-
     imageName = buildFormattedFileName();
 
-  #ifdef WIN32
-    defaultDir = _(".\\");
-  #else
-    defaultDir = _("./");
-  #endif
+    wxFileName startingDir( wxString::FromAscii( myHistogram->getTrace()->getFileName().c_str() ) );
+    wxString defaultDir = startingDir.GetPath();
 
     //filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
 

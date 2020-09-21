@@ -3551,18 +3551,14 @@ wxString gTimeline::buildFormattedFileName() const
 void gTimeline::saveImageDialog( wxString whichFileName )
 {
   wxString imageName;
-  wxString tmpSuffix;
-  wxString defaultDir;
+  wxString tmpSuffix; 
 
   setEnableDestroyButton( false );
-
   imageName = buildFormattedFileName();
-  
-#ifdef WIN32
-  defaultDir = _(".\\");
-#else
-  defaultDir = _("./");
-#endif
+    
+
+  wxFileName startingDir( wxString::FromAscii( myWindow->getTrace()->getFileName().c_str() ) );
+  wxString defaultDir = startingDir.GetPath();
 
   ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   
@@ -3613,7 +3609,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
     wxString defaultDir;
 
     imageName = buildFormattedFileName();
-    
+ 
   #ifdef WIN32
     defaultDir = _(".\\");
   #else

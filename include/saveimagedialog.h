@@ -135,6 +135,9 @@ public:
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_OK
   void OnOkClick( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for wxID_OK
+  void OnOkUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
   void OnCancelClick( wxCommandEvent& event );
 
@@ -169,7 +172,7 @@ public:
   wxButton* buttonSave;
   wxButton* buttonCancel;
 ////@end SaveImageDialog member variables
-  wxString directoryStartingPath;
+  static wxString directoryStartingPath;
   wxString defaultFileName;
   wxString selectedImageFilePath;
   wxString selectedLegendFilePath;
