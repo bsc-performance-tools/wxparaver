@@ -307,8 +307,8 @@ AC_DEFUN([AX_PROG_WITH_DEBUG_LEVEL],
 [
    AC_ARG_WITH(debug-level,
       AC_HELP_STRING(
-         [--with-debug-level@<:@=DIR@:>@],
-         [select debug level between "release", "debug" or "none"]
+         [--with-debug-level@<:@=MODE@:>@],
+         [select debug level between "release", "debug" or "none" (default: "none")]
       ),
       [
        if test "${withval}" = "yes" ; then #with
@@ -318,12 +318,12 @@ AC_DEFUN([AX_PROG_WITH_DEBUG_LEVEL],
        else
             DEBUG_LEVEL=${withval}
        fi],
-      [DEBUG_LEVEL="release"]
+      [DEBUG_LEVEL="none"]
    )
    
    CPPFLAGS_DEBUG_LEVEL=""
-   if test "${DEBUG_LEVEL}" = "default" ; then
-      CPPFLAGS_DEBUG_LEVEL="-O0"
+   if test "${DEBUG_LEVEL}" = "none" ; then
+      CPPFLAGS_DEBUG_LEVEL=""
       AC_MSG_NOTICE([Debug mode set to ${DEBUG_LEVEL} (${CPPFLAGS_DEBUG_LEVEL})])
    elif test "${DEBUG_LEVEL}" = "release" ; then
       CPPFLAGS_DEBUG_LEVEL="-O2"
@@ -331,11 +331,8 @@ AC_DEFUN([AX_PROG_WITH_DEBUG_LEVEL],
    elif test "${DEBUG_LEVEL}" = "debug" ; then
       CPPFLAGS_DEBUG_LEVEL="-Og -g"
       AC_MSG_NOTICE([Debug mode set to ${DEBUG_LEVEL} (${CPPFLAGS_DEBUG_LEVEL})])
-   elif test "${DEBUG_LEVEL}" != "none" ; then
+   else
       AC_MSG_NOTICE([Incorrect debug mode found in ${DEBUG_LEVEL}])
-   else #none
-      CPPFLAGS_DEBUG_LEVEL="-O0"
-      AC_MSG_NOTICE([Debug mode set to ${DEBUG_LEVEL} (${CPPFLAGS_DEBUG_LEVEL})])
    fi
 ])
 
