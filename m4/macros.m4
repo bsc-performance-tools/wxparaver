@@ -326,10 +326,10 @@ AC_DEFUN([AX_PROG_WITH_DEBUG_LEVEL],
       CPPFLAGS_DEBUG_LEVEL=""
       AC_MSG_NOTICE([Debug mode set to ${DEBUG_LEVEL} (${CPPFLAGS_DEBUG_LEVEL})])
    elif test "${DEBUG_LEVEL}" = "release" ; then
-      CPPFLAGS_DEBUG_LEVEL="-O2"
+      CPPFLAGS_DEBUG_LEVEL="-O2 -g0"
       AC_MSG_NOTICE([Debug mode set to ${DEBUG_LEVEL} (${CPPFLAGS_DEBUG_LEVEL})])
    elif test "${DEBUG_LEVEL}" = "debug" ; then
-      CPPFLAGS_DEBUG_LEVEL="-Og -g"
+      CPPFLAGS_DEBUG_LEVEL="-O0 -ggdb3"
       AC_MSG_NOTICE([Debug mode set to ${DEBUG_LEVEL} (${CPPFLAGS_DEBUG_LEVEL})])
    else
       AC_MSG_NOTICE([Incorrect debug mode found in ${DEBUG_LEVEL}])
