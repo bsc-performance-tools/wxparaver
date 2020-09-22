@@ -3554,19 +3554,29 @@ PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 }
 
 
-bool getUsedByHistogram( Window *whichWindow )
+bool canDeleteWindow( Window *whichWindow, bool deleteAllTraceWindows )
 {
   if ( whichWindow->getUsedByHistogram() )
-    return true;
+  {
+    if( !deleteAllTraceWindows )
+      return false;
 
+    const std::set<Histogram *> histogramsUsed;
+    for( std::set<Histogram *>::const_iterator it = histogramsUsed.begin() ; it != histogramsUsed.end(); ++it )
+    {
+      if ( ( *it )->getTrace() != whichWindow->getTrace() )
+        return false;
+    }
+  }
   else if ( whichWindow->isDerivedWindow() )
   {
-    if ( getUsedByHistogram( whichWindow->getParent( 0 ) ) )
-      return true;
+    if ( whichWindow->getTrace() != whichWindow->getParent( 0 )->getTrace() || !canDeleteWindow( whichWindow->getParent( 0 ), deleteAllTraceWindows ) )
+      return false;
 
-    return getUsedByHistogram( whichWindow->getParent( 1 ) );
+    return whichWindow->getTrace() != whichWindow->getParent( 1 )->getTrace() || !canDeleteWindow( whichWindow->getParent( 1 ), deleteAllTraceWindows );
   }
-  return false;
+
+  return true;
 }
 
 /*!
@@ -3580,7 +3590,7 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 
   if( currentTimeline != NULL )
   {
-    if( !getUsedByHistogram( currentTimeline ) )
+    if( !canDeleteWindow( currentTimeline, false ) )
     {
       if( currentTimeline->getChild() != NULL )
         wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
@@ -3652,8 +3662,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
       bool isThereHistogramLinkedToWindow = false;
       for( vector<Window *>::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
       {
-        (*it)->setShowWindow( false ); 
-        isThereHistogramLinkedToWindow = getUsedByHistogram( (*it) );
+        isThereHistogramLinkedToWindow = !canDeleteWindow( (*it), true );
         if( isThereHistogramLinkedToWindow )
         {
           wxString traceNum = wxString::Format( wxT( "%i" ), sel.Item( i ) );
@@ -3662,6 +3671,8 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
                         wxOK | wxICON_INFORMATION ); 
         }
       }
+
+
       if ( !isThereHistogramLinkedToWindow )
       {
         UnloadTrace( sel.Item( i ) );
