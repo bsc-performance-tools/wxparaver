@@ -2576,7 +2576,14 @@ void paraverMain::OnIdle( wxIdleEvent& event )
           continue;
         }
         else
+        {
+          (*it)->setUnload( false );
+          wxString traceName = wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() );
+          wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used by some windows in other traces." ),
+                        _( "Warning" ),
+                        wxOK | wxICON_EXCLAMATION ); 
           ++iTrace;
+        }
       }
       else
         ++iTrace;
@@ -3554,29 +3561,29 @@ PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 }
 
 
-bool canDeleteWindow( Window *whichWindow, bool deleteAllTraceWindows )
+bool getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows )
 {
   if ( whichWindow->getUsedByHistogram() )
   {
     if( !deleteAllTraceWindows )
-      return false;
+      return true;
 
-    const std::set<Histogram *> histogramsUsed;
+    const std::set<Histogram *> histogramsUsed = whichWindow->getHistograms();
     for( std::set<Histogram *>::const_iterator it = histogramsUsed.begin() ; it != histogramsUsed.end(); ++it )
     {
       if ( ( *it )->getTrace() != whichWindow->getTrace() )
-        return false;
+        return true;
     }
   }
   else if ( whichWindow->isDerivedWindow() )
   {
-    if ( whichWindow->getTrace() != whichWindow->getParent( 0 )->getTrace() || !canDeleteWindow( whichWindow->getParent( 0 ), deleteAllTraceWindows ) )
-      return false;
+    if ( getUsedBySomeHistogram( whichWindow->getParent( 0 ), deleteAllTraceWindows ) )
+      return true;
 
-    return whichWindow->getTrace() != whichWindow->getParent( 1 )->getTrace() || !canDeleteWindow( whichWindow->getParent( 1 ), deleteAllTraceWindows );
+    return getUsedBySomeHistogram( whichWindow->getParent( 1 ), deleteAllTraceWindows );
   }
 
-  return true;
+  return false;
 }
 
 /*!
@@ -3590,7 +3597,7 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 
   if( currentTimeline != NULL )
   {
-    if( !canDeleteWindow( currentTimeline, false ) )
+    if( !getUsedBySomeHistogram( currentTimeline, false ) )
     {
       if( currentTimeline->getChild() != NULL )
         wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
@@ -3662,13 +3669,13 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
       bool isThereHistogramLinkedToWindow = false;
       for( vector<Window *>::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
       {
-        isThereHistogramLinkedToWindow = !canDeleteWindow( (*it), true );
+        isThereHistogramLinkedToWindow = getUsedBySomeHistogram( (*it), true );
         if( isThereHistogramLinkedToWindow )
         {
-          wxString traceNum = wxString::Format( wxT( "%i" ), sel.Item( i ) );
-          wxMessageBox( _( "Cannot delete trace #" ) + traceNum + _( ", which is being used in an histogram." ),
-                        _( "Paraver information" ),
-                        wxOK | wxICON_INFORMATION ); 
+          wxString traceName = wxString::FromAscii( loadedTraces[ sel.Item( i ) ]->getTraceNameNumbered().c_str() );
+          wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used in an histogram." ),
+                        _( "Warning" ),
+                        wxOK | wxICON_EXCLAMATION ); 
         }
       }
 
