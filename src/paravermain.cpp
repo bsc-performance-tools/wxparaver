@@ -2506,6 +2506,54 @@ void progressFunction( ProgressController *progress, void *callerWindow )
 //  app->Yield();
 }
 
+
+bool isWindowRelatedToOtherTraces( Window *whichWindow, Trace *whichTrace, Window *parentWindow, Window *childWindow )
+{
+  bool isRelated = false;
+
+  if ( whichWindow->getTrace() != whichTrace && !whichWindow->getTrace()->getUnload() )
+  {
+    return true;
+  }
+  
+  if( whichWindow->isDerivedWindow() )
+  {
+    // Recursive
+    bool parent1 = false;
+    bool parent2 = false;
+    if( parentWindow != whichWindow->getParent( 0 ) )
+      parent1 = isWindowRelatedToOtherTraces( whichWindow->getParent( 0 ), whichTrace, NULL, whichWindow );
+    if( parentWindow != whichWindow->getParent( 1 ) )
+      parent2 = isWindowRelatedToOtherTraces( whichWindow->getParent( 1 ), whichTrace, NULL, whichWindow );
+    isRelated = parent1 || parent2;
+  }
+
+  if( whichWindow->getChild() != NULL && whichWindow->getChild() != childWindow )
+  {
+    isRelated = isRelated || isWindowRelatedToOtherTraces( whichWindow->getChild(), whichTrace, whichWindow, NULL );
+  }
+    
+  return isRelated;
+}
+
+
+bool allWindowsRelatedToOtherTraces( vector<Window *> windows )
+{
+  if ( windows.empty() )
+    return false;
+    
+  for ( vector< Window * >::iterator it = windows.begin() ; it != windows.end() ; ++it )
+  {
+    if( !(*it)->isDerivedWindow() && (*it)->getChild() == NULL )
+      return false;
+
+    if( !isWindowRelatedToOtherTraces( *it, (*it)->getTrace(), NULL, NULL ) )
+      return false;
+  }
+
+  return true;
+}
+
 /*!
  * wxEVT_IDLE event handler for ID_PARAVERMAIN
  */
@@ -2549,7 +2597,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
         LoadedWindows::getInstance()->getAll( *it, windows );
         LoadedWindows::getInstance()->getAll( *it, histograms );
 
-        if( windows.begin() == windows.end() && histograms.begin() == histograms.end() )
+        if( windows.empty() && histograms.empty() )
         {
           if( currentTrace == iTrace )
             currentTrace = -1;
@@ -2576,7 +2624,17 @@ void paraverMain::OnIdle( wxIdleEvent& event )
           continue;
         }
         else
+        {
+          if ( allWindowsRelatedToOtherTraces( windows ) )
+          {
+            (*it)->setUnload( false );
+            wxString traceName = wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() );
+            wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used by some windows in other traces." ),
+                          _( "Warning" ),
+                          wxOK | wxICON_EXCLAMATION );
+          }
           ++iTrace;
+        }
       }
       else
         ++iTrace;
@@ -3554,18 +3612,37 @@ PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 }
 
 
-bool getUsedByHistogram( Window *whichWindow )
+bool paraverMain::getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete )
 {
   if ( whichWindow->getUsedByHistogram() )
-    return true;
-
-  else if ( whichWindow->isDerivedWindow() )
   {
-    if ( getUsedByHistogram( whichWindow->getParent( 0 ) ) )
+    if( !deleteAllTraceWindows )
       return true;
 
-    return getUsedByHistogram( whichWindow->getParent( 1 ) );
+    const std::set<Histogram *> histogramsUsed = whichWindow->getHistograms();
+    for( std::set<Histogram *>::const_iterator it = histogramsUsed.begin() ; it != histogramsUsed.end(); ++it )
+    {
+      bool traceToDeleteFound = false;
+      for ( size_t i = 0; i < tracesToDelete.GetCount(); ++i )
+      {
+        if ( loadedTraces[ tracesToDelete.Item( i ) ] == (*it)->getTrace() )
+        {
+          traceToDeleteFound = true;
+          break;
+        }
+      }
+      if ( !traceToDeleteFound && ( *it )->getTrace() != whichWindow->getTrace() )
+        return true;
+    }
   }
+  else if ( whichWindow->isDerivedWindow() )
+  {
+    if ( getUsedBySomeHistogram( whichWindow->getParent( 0 ), deleteAllTraceWindows, tracesToDelete ) )
+      return true;
+
+    return getUsedBySomeHistogram( whichWindow->getParent( 1 ), deleteAllTraceWindows, tracesToDelete );
+  }
+
   return false;
 }
 
@@ -3580,7 +3657,8 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 
   if( currentTimeline != NULL )
   {
-    if( !getUsedByHistogram( currentTimeline ) )
+    wxArrayInt dummyArray;
+    if( !getUsedBySomeHistogram( currentTimeline, false, dummyArray ) )
     {
       if( currentTimeline->getChild() != NULL )
         wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
@@ -3652,16 +3730,17 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
       bool isThereHistogramLinkedToWindow = false;
       for( vector<Window *>::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
       {
-        (*it)->setShowWindow( false ); 
-        isThereHistogramLinkedToWindow = getUsedByHistogram( (*it) );
+        isThereHistogramLinkedToWindow = getUsedBySomeHistogram( (*it), true, sel );
         if( isThereHistogramLinkedToWindow )
         {
-          wxString traceNum = wxString::Format( wxT( "%i" ), sel.Item( i ) );
-          wxMessageBox( _( "Cannot delete trace #" ) + traceNum + _( ", which is being used in an histogram." ),
-                        _( "Paraver information" ),
-                        wxOK | wxICON_INFORMATION ); 
+          wxString traceName = wxString::FromAscii( loadedTraces[ sel.Item( i ) ]->getTraceNameNumbered().c_str() );
+          wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used in an histogram." ),
+                        _( "Warning" ),
+                        wxOK | wxICON_EXCLAMATION ); 
         }
       }
+
+
       if ( !isThereHistogramLinkedToWindow )
       {
         UnloadTrace( sel.Item( i ) );

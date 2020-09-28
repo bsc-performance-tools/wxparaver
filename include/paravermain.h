@@ -734,6 +734,7 @@ private:
   void messageUndefinedParaverHome();
 
   Trace *getCurrentTrace() const;
+  bool getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete );
   
 };
 
