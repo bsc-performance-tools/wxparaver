@@ -2507,11 +2507,11 @@ void progressFunction( ProgressController *progress, void *callerWindow )
 }
 
 
-bool isWindowRelatedToOtherTraces( Window *whichWindow, Trace *whichTrace, Window *parentWindow )
+bool isWindowRelatedToOtherTraces( Window *whichWindow, Trace *whichTrace, Window *parentWindow, Window *childWindow )
 {
   bool isRelated = false;
 
-  if ( whichWindow->getTrace() != whichTrace )
+  if ( whichWindow->getTrace() != whichTrace && !whichWindow->getTrace()->getUnload() )
   {
     return true;
   }
@@ -2522,15 +2522,15 @@ bool isWindowRelatedToOtherTraces( Window *whichWindow, Trace *whichTrace, Windo
     bool parent1 = false;
     bool parent2 = false;
     if( parentWindow != whichWindow->getParent( 0 ) )
-      parent1 = isWindowRelatedToOtherTraces( whichWindow->getParent( 0 ), whichTrace, NULL );
+      parent1 = isWindowRelatedToOtherTraces( whichWindow->getParent( 0 ), whichTrace, NULL, whichWindow );
     if( parentWindow != whichWindow->getParent( 1 ) )
-      parent2 = isWindowRelatedToOtherTraces( whichWindow->getParent( 1 ), whichTrace, NULL );
+      parent2 = isWindowRelatedToOtherTraces( whichWindow->getParent( 1 ), whichTrace, NULL, whichWindow );
     isRelated = parent1 || parent2;
   }
 
-  if( whichWindow->getChild() != NULL )
+  if( whichWindow->getChild() != NULL && whichWindow->getChild() != childWindow )
   {
-    isRelated = isRelated || isWindowRelatedToOtherTraces( whichWindow->getChild(), whichTrace, whichWindow );
+    isRelated = isRelated || isWindowRelatedToOtherTraces( whichWindow->getChild(), whichTrace, whichWindow, NULL );
   }
     
   return isRelated;
@@ -2547,7 +2547,7 @@ bool allWindowsRelatedToOtherTraces( vector<Window *> windows )
     if( !(*it)->isDerivedWindow() && (*it)->getChild() == NULL )
       return false;
 
-    if( !isWindowRelatedToOtherTraces( *it, (*it)->getTrace(), NULL ) )
+    if( !isWindowRelatedToOtherTraces( *it, (*it)->getTrace(), NULL, NULL ) )
       return false;
   }
 
@@ -2631,7 +2631,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
             wxString traceName = wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() );
             wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used by some windows in other traces." ),
                           _( "Warning" ),
-                          wxOK | wxICON_EXCLAMATION ); 
+                          wxOK | wxICON_EXCLAMATION );
           }
           ++iTrace;
         }
