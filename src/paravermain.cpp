@@ -3612,7 +3612,7 @@ PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 }
 
 
-bool getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows )
+bool paraverMain::getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete )
 {
   if ( whichWindow->getUsedByHistogram() )
   {
@@ -3622,16 +3622,25 @@ bool getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows )
     const std::set<Histogram *> histogramsUsed = whichWindow->getHistograms();
     for( std::set<Histogram *>::const_iterator it = histogramsUsed.begin() ; it != histogramsUsed.end(); ++it )
     {
-      if ( ( *it )->getTrace() != whichWindow->getTrace() )
+      bool traceToDeleteFound = false;
+      for ( size_t i = 0; i < tracesToDelete.GetCount(); ++i )
+      {
+        if ( loadedTraces[ tracesToDelete.Item( i ) ] == (*it)->getTrace() )
+        {
+          traceToDeleteFound = true;
+          break;
+        }
+      }
+      if ( !traceToDeleteFound && ( *it )->getTrace() != whichWindow->getTrace() )
         return true;
     }
   }
   else if ( whichWindow->isDerivedWindow() )
   {
-    if ( getUsedBySomeHistogram( whichWindow->getParent( 0 ), deleteAllTraceWindows ) )
+    if ( getUsedBySomeHistogram( whichWindow->getParent( 0 ), deleteAllTraceWindows, tracesToDelete ) )
       return true;
 
-    return getUsedBySomeHistogram( whichWindow->getParent( 1 ), deleteAllTraceWindows );
+    return getUsedBySomeHistogram( whichWindow->getParent( 1 ), deleteAllTraceWindows, tracesToDelete );
   }
 
   return false;
@@ -3648,7 +3657,8 @@ void paraverMain::OnTooldeleteClick( wxCommandEvent& event )
 
   if( currentTimeline != NULL )
   {
-    if( !getUsedBySomeHistogram( currentTimeline, false ) )
+    wxArrayInt dummyArray;
+    if( !getUsedBySomeHistogram( currentTimeline, false, dummyArray ) )
     {
       if( currentTimeline->getChild() != NULL )
         wxMessageBox( _( "Cannot delete parent windows. Delete first derived window" ),
@@ -3720,7 +3730,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
       bool isThereHistogramLinkedToWindow = false;
       for( vector<Window *>::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
       {
-        isThereHistogramLinkedToWindow = getUsedBySomeHistogram( (*it), true );
+        isThereHistogramLinkedToWindow = getUsedBySomeHistogram( (*it), true, sel );
         if( isThereHistogramLinkedToWindow )
         {
           wxString traceName = wxString::FromAscii( loadedTraces[ sel.Item( i ) ]->getTraceNameNumbered().c_str() );
