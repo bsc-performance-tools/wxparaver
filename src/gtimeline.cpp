@@ -3245,11 +3245,23 @@ class CustomColorSemValue : public wxObject
 {
   public:
     TSemanticValue myValue;
+    wxPanel *myPanel;
 };
 
 void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
 {
-  selectedItemColor = (wxPanel *)event.GetEventObject();
+  selectedItemColor = ( (CustomColorSemValue *)event.m_callbackUserData )->myPanel;
+  panelSelectedColor->SetBackgroundColour( selectedItemColor->GetBackgroundColour() );
+  sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
+  sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
+  sliderSelectedBlue->SetValue( selectedItemColor->GetBackgroundColour().Blue() );
+  
+  selectedCustomValue = ( (CustomColorSemValue *)event.m_callbackUserData )->myValue;
+}
+
+void gTimeline::OnTextColorLeftUp( wxMouseEvent& event )
+{
+  selectedItemColor = ( (CustomColorSemValue *)event.m_callbackUserData )->myPanel;
   panelSelectedColor->SetBackgroundColour( selectedItemColor->GetBackgroundColour() );
   sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
   sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
@@ -3388,10 +3400,16 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
         itemSizer->Add( itemText, 1, wxGROW );
         colorsSizer->Add( itemSizer, 0, wxGROW|wxALL, 2 );
       
-        CustomColorSemValue *tmpSemValue = new CustomColorSemValue();
-        tmpSemValue->myValue = i;
+        CustomColorSemValue *tmpItemSemValue = new CustomColorSemValue();
+        tmpItemSemValue->myValue = i;
+        tmpItemSemValue->myPanel = itemColor;
+        CustomColorSemValue *tmpTextSemValue = new CustomColorSemValue();
+        *tmpTextSemValue = *tmpItemSemValue;
         if ( checkboxCustomPalette->IsChecked() )
-          itemColor->Connect( itemColor->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnItemColorLeftUp), tmpSemValue, this);
+        {
+          itemColor->Connect( itemColor->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnItemColorLeftUp), tmpItemSemValue, this);
+          itemText->Connect( itemText->GetId(), wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnTextColorLeftUp), tmpTextSemValue, this);
+        }
 
         if( i < ceil( myWindow->getMaximumY() ) )
           colorsSizer->Add( new wxStaticLine( colorsPanel, wxID_ANY ), 0, wxGROW|wxALL, 2 );

@@ -574,7 +574,8 @@ public:
   bool IsSplit() const;
   void OnPopUpTiming( bool whichTiming );
   void OnItemColorLeftUp( wxMouseEvent& event );
-
+  void OnTextColorLeftUp( wxMouseEvent& event );
+  
   void saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
   void saveImageLegend( bool showSaveDialog = true, wxString whichFileName = _( "" ), ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
   void saveImageDialog( wxString whichFileName );
