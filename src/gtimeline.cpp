@@ -1428,6 +1428,7 @@ void gTimeline::drawRowFusedLines( wxDC& dc, TSemanticValue valueToDraw, int& li
   int currentPos = ( timeAxisPos - drawBorder ) * tmpPos;
 
   rgb colorToDraw = myWindow->getCodeColor().calcColor( whichObject + 1, 0, whichObject + 1, false );
+  semanticColorsToValue[ colorToDraw ].insert( whichObject );
   dc.SetPen( wxPen( wxColour( colorToDraw.red, colorToDraw.green, colorToDraw.blue ) ) );
   if( currentPos != lineLastPos )
   {
@@ -4965,7 +4966,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
           LabelConstructor::transformToShort( tmpString );
         label = wxString::FromAscii( tmpString.c_str() );
       }
-      else if( !winToUse->calcValueFromColor( color, firstValue, secondValue ) )
+      else if( winToUse->isColorOutlier( color ) )
       {
         // GRADIENT COLOR
         //GradientColor& grad = myWindow->getGradientColor();
@@ -4976,14 +4977,15 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
           label = wxT( "< " ) + wxString::FromAscii( LabelConstructor::semanticLabel( winToUse, winToUse->getMinimumY(), false,
                                                                                       ParaverConfig::getInstance()->getTimelinePrecision(), false ).c_str() );
         else
-          return;      
+          return;
       }
       else
       {
         if( winToUse->isFusedLinesColorSet() )
         {
           string tmpString;
-          tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue - 1, winToUse->getLevel(), winToUse->getTrace() );
+          firstValue = *( semanticColorsToValue[ color ].begin() );
+          tmpString = LabelConstructor::objectLabel( (TObjectOrder)firstValue, winToUse->getLevel(), winToUse->getTrace() );
           label = wxString::FromAscii( tmpString.c_str() );
         }
         else

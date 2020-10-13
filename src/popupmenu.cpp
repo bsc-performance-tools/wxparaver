@@ -489,9 +489,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
   buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
   wxMenuItem *tmpGradFunc = popUpMenuColor->AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
-  popUpMenuColor->Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->isCodeColorSet() == false &&
-                                                timeline->GetMyWindow()->isFunctionLineColorSet() == true &&
-                                                timeline->GetMyWindow()->isPunctualColorSet() == false );
+  popUpMenuColor->Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->isGradientColorSet() ||
+                                                timeline->GetMyWindow()->isNotNullGradientColorSet() ||
+                                                timeline->GetMyWindow()->isFunctionLineColorSet() ||
+                                                timeline->GetMyWindow()->isPunctualColorSet() );
 
   wxMenuItem *tmpSemScaleMinZero = buildItem( popUpMenuColor, _( "Semantic scale min at 0" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScaleMinAtZero, ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO, timeline->GetMyWindow()->getSemanticScaleMinAtZero() );
   popUpMenuColor->Enable( tmpSemScaleMinZero->GetId(), timeline->GetMyWindow()->isFunctionLineColorSet() ||
