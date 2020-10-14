@@ -1210,7 +1210,11 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
     wxColour axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
     dc.SetPen( wxPen( axisColour, 1, wxLONG_DASH ) );
     
-    TSemanticValue relativeZero = myWindow->getMaximumY() / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
+    TSemanticValue relativeZero = Normalizer::calculate( 0.0,
+                                                         myWindow->getMinimumY(),
+                                                         myWindow->getMaximumY(),
+                                                         GetMyWindow()->getGradientColor().getGradientFunction(), 
+                                                         true );
 
     if( myWindow->isFusedLinesColorSet() )
     {
@@ -1220,7 +1224,7 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
     else if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
     {
       wxCoord lastPos = 0;
-      wxCoord relativePos = relativeZero * objectHeight;
+      wxCoord relativePos = ( 1.0 - relativeZero ) * objectHeight;
       for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
       {
         wxCoord tmpObjPos = objectPosList[ *it ];
@@ -1362,22 +1366,12 @@ void gTimeline::drawRowFunction( wxDC& dc, TSemanticValue valueToDraw, int& line
   else if( valueToDraw > myWindow->getMaximumY() )
     valueToDraw = myWindow->getMaximumY();
 
-  TSemanticValue tmpSemantic = valueToDraw - realMin;
-  TSemanticValue semanticRange = myWindow->getMaximumY() - realMin;
-  GradientColor::TGradientFunction selectedPaintAsMode = GetMyWindow()->getGradientColor().getGradientFunction();
-  int currentPos;
-  if ( selectedPaintAsMode == GradientColor::LINEAR )
-  {
-    double normalizedSemanticValue = tmpSemantic / semanticRange; // between 0 and 1
-    currentPos = objectHeight * normalizedSemanticValue;
-  }
-  else if ( selectedPaintAsMode == GradientColor::LOGARITHMIC )
-  {
-    double normalizedSemanticValue = ( log( semanticRange * tmpSemantic + 1 ) / log( semanticRange ) ) / 2.0; // between 0 and 1
-//                   tmpSemantic = ( exp( 2.0 * ( relPixel / numberOfPixels ) * log( semanticRange ) ) / semanticRange ) - 1;
-
-    currentPos = objectHeight * normalizedSemanticValue;
-  }
+  double normalizedSemanticValue = Normalizer::calculate( valueToDraw, 
+                                                          myWindow->getMinimumY(),
+                                                          myWindow->getMaximumY(),
+                                                          GetMyWindow()->getGradientColor().getGradientFunction(),
+                                                          true );
+  int currentPos = objectHeight * normalizedSemanticValue;
   
   dc.SetPen( foregroundColour );
   if( currentPos != lineLastPos )
@@ -5018,7 +5012,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
                                                                          motionEvent.GetY(),
                                                                          object,
                                                                          semanticRangePerPixel );
-          std::cout << "\t tmpSemantic Value = " << tmpSemantic << std::endl;
+          //std::cout << "\t tmpSemantic Value = " << tmpSemantic << std::endl;
           string tmpString;
           tmpString = LabelConstructor::semanticLabel( myWindow, tmpSemantic, true, ParaverConfig::getInstance()->getTimelinePrecision(), false );
           if( myWindow->getSemanticInfoType() == EVENTVALUE_TYPE )
@@ -5380,9 +5374,11 @@ bool gTimeline::canRepresentSemanticValueFromFunctionLine( int whichX,
     semanticRangePerPixel = (double)semanticRange / numberOfPixels;
     if ( semanticRangePerPixel <= 1.0 )
       canRepresent = true;
+/*
         std::cout << "  semanticRange = " << semanticRange << "\n";
         std::cout << "  numberOfPixels         = " << numberOfPixels << "\n";
         std::cout << "  semanticRangePerPixel = " << semanticRangePerPixel << "\n";
+  */
   }
 
   return canRepresent;
@@ -5431,15 +5427,15 @@ TSemanticValue gTimeline::getSemanticValueFromFunctionLine( int whichX,
         
         double tmpCurrentSem = exp( 2.0 * ( (double)relPixel / numberOfPixels ) * log( semanticRange ) - 1 );
         tmpSemantic = (double)tmpCurrentSem / semanticRange + 1; // +1? needed but, why?
-          std::cout << "  tmpCurrentSem 1= " << tmpCurrentSem1 << "\n"; 
+  /*        std::cout << "  tmpCurrentSem 1= " << tmpCurrentSem1 << "\n"; 
           std::cout << "  tmpCurrentSem2 = " << tmpCurrentSem2 << "\n"; 
           std::cout << "  tmpCurr = " << tmpCurr << "\n"; 
           std::cout << "  tmpCurr2 = " << tmpCurr2 << "\n"; 
           std::cout << "  tmpCurrentSem = " << tmpCurrentSem << "\n"; 
-
+*/
       }
-          std::cout << "  relPixel (inv'd scale) = " << relPixel << "\n"; 
-          std::cout << tmpHeight << " [X]  tmpSemantic              = " << (double)tmpSemantic << "\n";
+//          std::cout << "  relPixel (inv'd scale) = " << relPixel << "\n"; 
+//          std::cout << tmpHeight << " [X]  tmpSemantic              = " << (double)tmpSemantic << "\n";
       break;
     }
 /*
