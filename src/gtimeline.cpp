@@ -5362,16 +5362,57 @@ bool gTimeline::getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder w
   wxColour pixelColor;
   wxMemoryDC dc( bufferImage );
   
-  int tmpHeight;
-  for ( tmpHeight = minPos; tmpHeight <= maxPos; ++tmpHeight )
+  // Get 3 pixels  (top/center/bottom)
+  std::vector< wxColour > nearbyPixels;
+  int tmpY;
+  for ( int i = -1; i <= 1; ++i )
   {
-    dc.GetPixel( whichX, tmpHeight, &pixelColor );
-    if ( pixelColor == GetForegroundColour() )
+    tmpY = whichY + i;
+    if ( tmpY > drawBorder && tmpY < timeAxisPos ) 
     {
-      int relPixel = objectHeight - ( tmpHeight - minPos );
-      TSemanticValue semanticRange = myWindow->getMaximumY() - myWindow->getMinimumY() + 1; // + 1!!!!;
+      dc.GetPixel( whichX, tmpY, &pixelColor ); 
+      nearbyPixels.push_back( pixelColor );
     }
+    else
+      nearbyPixels.push_back( GetBackgroundColour() );
   }
+
+  // 0-0-0: No pixels found
+  if ( nearbyPixels[ 0 ] == GetBackgroundColour() && 
+       nearbyPixels[ 1 ] == GetBackgroundColour() && 
+       nearbyPixels[ 2 ] == GetBackgroundColour() )
+  {
+    return false;
+  }
+
+  // 0-1-X: Is middle pixel the only one? ==> horizontal line
+  if ( nearbyPixels[ 0 ] == GetBackgroundColour() && 
+       nearbyPixels[ 1 ] == GetForegroundColour() ) 
+  {
+    whichPixelPos = objectHeight - ( whichY - minPos );
+    return true;
+  }
+  
+  // 0-0-1: Bottom
+  if ( nearbyPixels[ 0 ] == GetBackgroundColour() && 
+       nearbyPixels[ 1 ] == GetBackgroundColour() && 
+       nearbyPixels[ 2 ] == GetForegroundColour() ) 
+  {
+    whichPixelPos = objectHeight - ( whichY + 1 - minPos );
+    return true;
+  }
+  
+  // 1-X-X 
+  int tmpCurrentPos = whichY - 1;
+  dc.GetPixel( whichX, tmpCurrentPos, &pixelColor );
+  while ( pixelColor == GetForegroundColour() )
+  {
+    --tmpCurrentPos;
+    if( tmpCurrentPos == 0 )
+      return false;
+    dc.GetPixel( whichX, tmpCurrentPos, &pixelColor ); 
+  }
+  whichPixelPos = objectHeight - ( tmpCurrentPos + 1 - minPos );
 
   return true;
 }
