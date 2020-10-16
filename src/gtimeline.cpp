@@ -1472,9 +1472,12 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
     if( valueToDraw < realMin || valueToDraw > myWindow->getMaximumY() )
       continue;
 
-    double tmpPos = ( valueToDraw - realMin ) 
-                    / ( myWindow->getMaximumY() - realMin );
-    int currentPos = floor( ( (double)objectHeight / (double)magnify ) * tmpPos ) * magnify;
+    double normalizedSemanticValue = Normalizer::calculate( valueToDraw,
+                                                            myWindow->getMinimumY(),
+                                                            myWindow->getMaximumY(),
+                                                            myWindow->getGradientColor().getGradientFunction(),
+                                                            true );
+    int currentPos = floor( ( (double)objectHeight / (double)magnify ) * normalizedSemanticValue ) * magnify;
     
     if( myWindow->getPunctualColorWindow() != NULL )
     {
