@@ -5371,11 +5371,9 @@ bool gTimeline::getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder w
   for ( int i = -1; i <= 1; ++i )
   {
     tmpY = whichY + i;
-    if ( tmpY > drawBorder && tmpY < timeAxisPos ) 
-    {
-      dc.GetPixel( whichX, tmpY, &pixelColor ); 
+    dc.GetPixel( whichX, tmpY, &pixelColor ); 
+    if ( tmpY > drawBorder && tmpY < timeAxisPos && pixelColor == GetForegroundColour() ) 
       nearbyPixels.push_back( pixelColor );
-    }
     else
       nearbyPixels.push_back( GetBackgroundColour() );
   }
