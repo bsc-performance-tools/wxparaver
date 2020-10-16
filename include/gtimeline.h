@@ -183,6 +183,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowLeftDown( wxMouseEvent& event );
+
   /// wxEVT_LEFT_UP event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftUp( wxMouseEvent& event );
 
@@ -206,12 +212,6 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowEraseBackground( wxEraseEvent& event );
-
-  /// wxEVT_LEFT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowLeftDown( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -420,6 +420,9 @@ public:
 
   bool GetZooming() const { return zooming ; }
   void SetZooming(bool value) { zooming = value ; }
+
+  std::map< int, std::set<TSemanticValue> >  GetSemanticPixelsToValue() const { return semanticPixelsToValue ; }
+  void SetSemanticPixelsToValue(std::map< int, std::set<TSemanticValue> >  value) { semanticPixelsToValue = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -697,6 +700,7 @@ private:
   long zoomEndY;
   bool zoomXY;
   bool zooming;
+  std::map< int, std::set<TSemanticValue> >  semanticPixelsToValue; // // Used by function line drawings
 ////@end gTimeline member variables
 
   // colorsPanel update info
@@ -739,6 +743,10 @@ private:
   void printWhatWhere( );
   void printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool textMode, bool hexMode );
   void printWWRecords( TObjectOrder whichRow, bool clickedValue, bool textMode, bool showDate );
+
+  TSemanticValue getSemanticValueFromFusedLines( int whichY );
+  bool getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder whichObject, int& whichPixelPos );
+
 
   // Returns: window_name_with_spaces_underscored@traceName (without extension PRV)
   wxString buildFormattedFileName() const;
