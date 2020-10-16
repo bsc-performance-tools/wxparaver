@@ -5378,22 +5378,13 @@ bool gTimeline::getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder w
       nearbyPixels.push_back( GetBackgroundColour() );
   }
 
-  // 0-0-0: No pixels found
-  if ( nearbyPixels[ 0 ] == GetBackgroundColour() && 
-       nearbyPixels[ 1 ] == GetBackgroundColour() && 
-       nearbyPixels[ 2 ] == GetBackgroundColour() )
+  // 0-0-0 or 1-1-1 : Background or in the middle of a vertical line
+  if ( nearbyPixels[ 0 ] == nearbyPixels[ 1 ]  && 
+       nearbyPixels[ 1 ] == nearbyPixels[ 2 ] )
   {
     return false;
   }
 
-  // 0-1-X: Is middle pixel the only one? ==> horizontal line
-  if ( nearbyPixels[ 0 ] == GetBackgroundColour() && 
-       nearbyPixels[ 1 ] == GetForegroundColour() ) 
-  {
-    whichPixelPos = objectHeight - ( whichY - minPos );
-    return true;
-  }
-  
   // 0-0-1: Bottom
   if ( nearbyPixels[ 0 ] == GetBackgroundColour() && 
        nearbyPixels[ 1 ] == GetBackgroundColour() && 
@@ -5402,20 +5393,24 @@ bool gTimeline::getPixelFromFunctionLine( int whichX, int whichY, TObjectOrder w
     whichPixelPos = objectHeight - ( whichY + 1 - minPos );
     return true;
   }
-  
-  // 1-X-X 
-  int tmpCurrentPos = whichY - 1;
-  dc.GetPixel( whichX, tmpCurrentPos, &pixelColor );
-  while ( pixelColor == GetForegroundColour() )
-  {
-    --tmpCurrentPos;
-    if( tmpCurrentPos == 0 )
-      return false;
-    dc.GetPixel( whichX, tmpCurrentPos, &pixelColor ); 
-  }
-  whichPixelPos = objectHeight - ( tmpCurrentPos + 1 - minPos );
 
-  return true;
+  // 1-0-0: Top
+  if ( nearbyPixels[ 0 ] == GetForegroundColour() && 
+       nearbyPixels[ 1 ] == GetBackgroundColour() && 
+       nearbyPixels[ 2 ] == GetBackgroundColour() ) 
+  {
+    whichPixelPos = objectHeight - ( whichY - 1 - minPos );
+    return true;
+  }
+
+  // X-1-X: Is middle pixel the only one? ==> horizontal line
+  if ( nearbyPixels[ 1 ] == GetForegroundColour() ) 
+  {
+    whichPixelPos = objectHeight - ( whichY - minPos );
+    return true;
+  }
+
+  return false;
 }
 
 
