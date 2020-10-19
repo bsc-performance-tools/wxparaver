@@ -1208,7 +1208,11 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
   if( myWindow->getMaximumY() > 0.0 && myWindow->getMinimumY() < 0.0 )
   {
     rgb rgbAxisColour = ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineZeroDashLine();
-    wxColour axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
+    wxColour axisColour;
+    if( rgbAxisColour == ((paraverMain *)parent)->GetParaverConfig()->getColorsTimelineAxis() )
+      axisColour = wxColour( rgbAxisColour.red - 1, rgbAxisColour.green ,rgbAxisColour.blue );
+    else
+      axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
     dc.SetPen( wxPen( axisColour, 1, wxLONG_DASH ) );
     
     TSemanticValue relativeZero = Normalizer::calculate( 0.0,
