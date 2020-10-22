@@ -853,11 +853,11 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
     {
     }
   }
-  else if ( parentIsGtimeline and myTimeline != NULL )
+  else if ( parentIsGtimeline && myTimeline != NULL )
   {
     ZoomAwareTransferData( dialogSelections, ((gTimeline *)GetParent())->getCurrentZoomRange() );
   }
-  else if ( parentIsGtimeline and myHistogram != NULL )
+  else if ( parentIsGtimeline && myHistogram != NULL )
   {
     std::vector< TObjectOrder > selection;
     mySelectedRows->getSelected( selection, myLevel );
