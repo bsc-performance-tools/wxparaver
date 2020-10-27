@@ -28,6 +28,8 @@
 #pragma hdrstop
 #endif
 
+#include <boost/asio.hpp>
+
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
@@ -37,7 +39,6 @@
 #include <ostream>
 #include <string>
 #include <sstream>
-#include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/asio/ssl.hpp>
 

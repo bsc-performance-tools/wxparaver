@@ -33,13 +33,13 @@
 #include <wx/progdlg.h>
 #include "prvtypes.h"
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <hash_set>
 #else
 #include <ext/hash_set>
 #endif
 
-#ifdef WIN32
+#ifdef _MSC_VER
 using namespace stdext;
 #else
 using namespace __gnu_cxx;
@@ -443,7 +443,7 @@ public:
   bool drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
   void drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected );
   
-#ifdef WIN32
+#ifdef _MSC_VER
   template<typename ValuesType>
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
@@ -476,7 +476,7 @@ public:
   void drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify );
 
   void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw );
-#ifdef WIN32
+#ifdef _MSC_VER
   void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw );
 #else
   void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord, hashCommCoord >& commsToDraw );

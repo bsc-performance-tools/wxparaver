@@ -741,7 +741,7 @@ void gTimeline::redraw()
 
   vector< vector< TSemanticValue > > valuesToDraw;
   vector< hash_set< PRV_INT32 > > eventsToDraw;
-#ifdef WIN32
+#ifdef _MSC_VER
   vector< hash_set< commCoord > > commsToDraw;
 #else
   vector< hash_set< commCoord, hashCommCoord > > commsToDraw;
@@ -1245,7 +1245,7 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
   }
 }
 
-#ifdef WIN32
+#ifdef _MSC_VER
 template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
@@ -1524,13 +1524,13 @@ void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder ro
 }
 
 
-#ifdef WIN32
+#ifdef _MSC_VER
 void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw )
 #else
 void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord, hashCommCoord >& commsToDraw )
 #endif
 {
-#ifdef WIN32
+#ifdef _MSC_VER
   for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
   for( hash_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )

@@ -3938,7 +3938,7 @@ void paraverMain::PrepareToExit()
                                           strStatus.str() +
                                           ".session" ).c_str(), wxConvUTF8 ) );
 
-    wxString folder( wxString( std:string( ParaverConfig::getInstance()->getGlobalSessionPath() +
+    wxString folder( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                            "\\AutosavedSessions" +
                                            "\\ps" +
                                            strPid.str() +
@@ -4662,21 +4662,17 @@ bool paraverMain::getParaverHome( wxString &paraverHome )
   //wxString paraverHome;
 
 #ifdef WIN32
-  std::string baseDir;
+  std::wstring baseDir;
 
-  char myPath[ MAX_LEN_PATH ];
+  TCHAR myPath[ MAX_LEN_PATH ];
   HMODULE hModule = GetModuleHandle( NULL );
   if ( hModule != NULL )
   {
     GetModuleFileName( NULL, myPath, ( sizeof( myPath ) ));
     PathRemoveFileSpec( myPath );
-    /*char tmpMyPath[ MAX_LEN_PATH ];
-    size_t tmpSize;
-    wcstombs_s( &tmpSize, tmpMyPath, MAX_LEN_PATH, myPath, MAX_LEN_PATH );
-    baseDir = tmpMyPath;*/
     baseDir = myPath;
   }
-  paraverHome = wxT( baseDir.c_str() );
+  paraverHome = wxString( baseDir.c_str(), wxConvUTF8 );
 
   done = paraverHome != wxT( "" );
 
