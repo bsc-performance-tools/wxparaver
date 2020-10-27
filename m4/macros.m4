@@ -101,18 +101,22 @@ AC_DEFUN([AX_PROG_WITH_PARAVER],
    
       if test -d "${PARAVER_DIR}/lib" && \
          test -f "${PARAVER_DIR}/lib/libparaver-api.so" || \
+         test -f "${PARAVER_DIR}/lib/libparaver-api.a" || \
          test -f "${PARAVER_DIR}/lib/libparaver-api.dylib" ; then
          PARAVER_RPATH_LIB="lib"
       elif test -d "${PARAVER_DIR}/lib64" && \
          test -f "${PARAVER_DIR}/lib64/libparaver-api.so" || \
+         test -f "${PARAVER_DIR}/lib64/libparaver-api.a" || \
          test -f "${PARAVER_DIR}/lib64/libparaver-api.dylib" ; then
          PARAVER_RPATH_LIB="lib64"
       elif test -d "${PARAVER_DIR}/lib/paraver-kernel" && \
          test -f "${PARAVER_DIR}/lib/paraver-kernel/libparaver-api.so" || \
+         test -f "${PARAVER_DIR}/lib/paraver-kernel/libparaver-api.a" || \
          test -f "${PARAVER_DIR}/lib/paraver-kernel/libparaver-api.dylib" ; then
          PARAVER_RPATH_LIB="lib/paraver-kernel"
       elif test -d "${PARAVER_DIR}/lib64/paraver-kernel" && \
          test -f "${PARAVER_DIR}/lib64/paraver-kernel/libparaver-api.so" || \
+         test -f "${PARAVER_DIR}/lib64/paraver-kernel/libparaver-api.a" || \
          test -f "${PARAVER_DIR}/lib64/paraver-kernel/libparaver-api.dylib" ; then
          PARAVER_RPATH_LIB="lib64/paraver-kernel"
       else
