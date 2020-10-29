@@ -340,3 +340,27 @@ AC_DEFUN([AX_PROG_WITH_DEBUG_LEVEL],
    fi
 ])
 
+
+# AX_PROG_ENABLE_MINGW
+# ---------------------
+AC_DEFUN([AX_PROG_ENABLE_MINGW],
+[
+   AC_ARG_ENABLE(mingw,
+      AC_HELP_STRING(
+         [--enable-mingw],
+         [enable flags for MinGw environment (default: disabled)]
+      ),
+      [enable_mingw="${enableval}"],
+      [enable_mingw="no"]
+   )
+
+   MINGW_CPPFLAGS=""
+   MINGW_LIBS=""
+
+   if test "${enable_mingw}" = "yes" ; then
+      MINGW_CPPFLAGS="-Wa,-mbig-obj -I/usr/include/libxml2"
+      MINGW_LIBS="-L/usr/lib -lparaver-kernel -lxml2 -lz -llzma -lshlwapi -lwinpthread -lws2_32"
+   fi
+])
+
+
