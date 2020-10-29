@@ -262,7 +262,7 @@ void gHistogram::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  panelToolbar = new wxPanel( itemFrame1, HISTO_PANEL_TOOLBAR, wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(200, -1)), wxTAB_TRAVERSAL );
+  panelToolbar = new wxPanel( itemFrame1, HISTO_PANEL_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
   panelToolbar->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
   itemBoxSizer2->Add(panelToolbar, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
 
