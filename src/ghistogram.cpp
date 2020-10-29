@@ -233,7 +233,6 @@ void gHistogram::Init()
   tableBase = NULL;
   timerZoom = new wxTimer( this );
   zoomDragging = false;
-  panelToolbar = NULL;
   tbarHisto = NULL;
   choiceSortBy = NULL;
   panelData = NULL;
@@ -259,57 +258,50 @@ void gHistogram::CreateControls()
 ////@begin gHistogram content construction
   gHistogram* itemFrame1 = this;
 
-  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
-  itemFrame1->SetSizer(itemBoxSizer2);
-
-  panelToolbar = new wxPanel( itemFrame1, HISTO_PANEL_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-  panelToolbar->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
-  itemBoxSizer2->Add(panelToolbar, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(5, -1)).x);
-
-  tbarHisto = new wxToolBar( panelToolbar, ID_TOOLBAR_HISTOGRAM, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL );
-  wxBitmap itemtool5Bitmap(itemFrame1->GetBitmapResource(wxT("icons/opencontrol.xpm")));
-  wxBitmap itemtool5BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool5Bitmap, itemtool5BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
-  wxBitmap itemtool6Bitmap(itemFrame1->GetBitmapResource(wxT("icons/opendata.xpm")));
+  tbarHisto = CreateToolBar( wxTB_FLAT|wxTB_HORIZONTAL, ID_TOOLBAR_HISTOGRAM );
+  wxBitmap itemtool2Bitmap(itemFrame1->GetBitmapResource(wxT("icons/opencontrol.xpm")));
+  wxBitmap itemtool2BitmapDisabled;
+  tbarHisto->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool2Bitmap, itemtool2BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
+  wxBitmap itemtool3Bitmap(itemFrame1->GetBitmapResource(wxT("icons/opendata.xpm")));
+  wxBitmap itemtool3BitmapDisabled;
+  tbarHisto->AddTool(ID_TOOL_OPEN_DATA_WINDOW, _("Open Data Window"), itemtool3Bitmap, itemtool3BitmapDisabled, wxITEM_NORMAL, _("Open Data Window"), wxEmptyString);
+  wxBitmap itemtool4Bitmap(itemFrame1->GetBitmapResource(wxT("icons/open3d.xpm")));
+  wxBitmap itemtool4BitmapDisabled;
+  tbarHisto->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open 3rd Window"), itemtool4Bitmap, itemtool4BitmapDisabled, wxITEM_NORMAL, _("Open 3rd Window"), wxEmptyString);
+  tbarHisto->AddSeparator();
+  wxBitmap itemtool6Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_zoom.xpm")));
   wxBitmap itemtool6BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_OPEN_DATA_WINDOW, _("Open Data Window"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_NORMAL, _("Open Data Window"), wxEmptyString);
-  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("icons/open3d.xpm")));
+  tbarHisto->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool6Bitmap, itemtool6BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
+  wxBitmap itemtool7Bitmap(itemFrame1->GetBitmapResource(wxT("icons/openfiltered.xpm")));
   wxBitmap itemtool7BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_OPEN_EXTRA_WINDOW, _("Open 3rd Window"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _("Open 3rd Window"), wxEmptyString);
+  tbarHisto->AddTool(ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, _("Open Filtered Control Window"), itemtool7Bitmap, itemtool7BitmapDisabled, wxITEM_NORMAL, _("Open Filtered Control Window"), wxEmptyString);
   tbarHisto->AddSeparator();
-  wxBitmap itemtool9Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_zoom.xpm")));
+  wxBitmap itemtool9Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_color.xpm")));
   wxBitmap itemtool9BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOLZOOM, _("Zoom"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_CHECK, _("Histogram zoom"), wxEmptyString);
-  wxBitmap itemtool10Bitmap(itemFrame1->GetBitmapResource(wxT("icons/openfiltered.xpm")));
+  tbarHisto->AddTool(ID_TOOLGRADIENT, _("View Data Gradient Colors"), itemtool9Bitmap, itemtool9BitmapDisabled, wxITEM_CHECK, _("View Data Gradient Colors"), wxEmptyString);
+  wxBitmap itemtool10Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_horvert.xpm")));
   wxBitmap itemtool10BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_OPEN_FILTERED_CONTROL_WINDOW, _("Open Filtered Control Window"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_NORMAL, _("Open Filtered Control Window"), wxEmptyString);
-  tbarHisto->AddSeparator();
-  wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_color.xpm")));
+  tbarHisto->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool10Bitmap, itemtool10BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
+  wxBitmap itemtool11Bitmap(itemFrame1->GetBitmapResource(wxT("icons/hide_cols.xpm")));
+  wxBitmap itemtool11BitmapDisabled;
+  tbarHisto->AddTool(ID_TOOL_HIDE_COLUMNS, _("Hide Empty Columns"), itemtool11Bitmap, itemtool11BitmapDisabled, wxITEM_CHECK, _("Hide Empty Columns"), wxEmptyString);
+  wxBitmap itemtool12Bitmap(itemFrame1->GetBitmapResource(wxT("icons/semantic_color.xpm")));
   wxBitmap itemtool12BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOLGRADIENT, _("View Data Gradient Colors"), itemtool12Bitmap, itemtool12BitmapDisabled, wxITEM_CHECK, _("View Data Gradient Colors"), wxEmptyString);
-  wxBitmap itemtool13Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_horvert.xpm")));
+  tbarHisto->AddTool(ID_TOOL_LABEL_COLORS, _("Enable Header Colors"), itemtool12Bitmap, itemtool12BitmapDisabled, wxITEM_CHECK, _("Enable Header Colors"), wxEmptyString);
+  wxBitmap itemtool13Bitmap(itemFrame1->GetBitmapResource(wxT("icons/short_labels.xpm")));
   wxBitmap itemtool13BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOLHORIZVERT, _("Horizontal/Vertical"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_CHECK, _("Horizontal/Vertical"), wxEmptyString);
-  wxBitmap itemtool14Bitmap(itemFrame1->GetBitmapResource(wxT("icons/hide_cols.xpm")));
+  tbarHisto->AddTool(ID_TOOL_SHORT_LABELS, _("Shrink Header Labels"), itemtool13Bitmap, itemtool13BitmapDisabled, wxITEM_CHECK, _("Shrink Header Labels"), wxEmptyString);
+  wxBitmap itemtool14Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_sum.xpm")));
   wxBitmap itemtool14BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_HIDE_COLUMNS, _("Hide Empty Columns"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_CHECK, _("Hide Empty Columns"), wxEmptyString);
-  wxBitmap itemtool15Bitmap(itemFrame1->GetBitmapResource(wxT("icons/semantic_color.xpm")));
+  tbarHisto->AddTool(ID_TOOL_ONLY_TOTALS, _("Show Totals Only"), itemtool14Bitmap, itemtool14BitmapDisabled, wxITEM_CHECK, _("Show Totals Only"), wxEmptyString);
+  wxBitmap itemtool15Bitmap(itemFrame1->GetBitmapResource(wxT("icons/inclusive.xpm")));
   wxBitmap itemtool15BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_LABEL_COLORS, _("Enable Header Colors"), itemtool15Bitmap, itemtool15BitmapDisabled, wxITEM_CHECK, _("Enable Header Colors"), wxEmptyString);
-  wxBitmap itemtool16Bitmap(itemFrame1->GetBitmapResource(wxT("icons/short_labels.xpm")));
-  wxBitmap itemtool16BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_SHORT_LABELS, _("Shrink Header Labels"), itemtool16Bitmap, itemtool16BitmapDisabled, wxITEM_CHECK, _("Shrink Header Labels"), wxEmptyString);
-  wxBitmap itemtool17Bitmap(itemFrame1->GetBitmapResource(wxT("icons/histo_sum.xpm")));
-  wxBitmap itemtool17BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_ONLY_TOTALS, _("Show Totals Only"), itemtool17Bitmap, itemtool17BitmapDisabled, wxITEM_CHECK, _("Show Totals Only"), wxEmptyString);
-  wxBitmap itemtool18Bitmap(itemFrame1->GetBitmapResource(wxT("icons/inclusive.xpm")));
-  wxBitmap itemtool18BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool18Bitmap, itemtool18BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
+  tbarHisto->AddTool(ID_TOOL_INCLUSIVE, _("Inclusive/Exclusive"), itemtool15Bitmap, itemtool15BitmapDisabled, wxITEM_CHECK, _("Inclusive/Exclusive"), wxEmptyString);
   tbarHisto->AddSeparator();
-  wxStaticBitmap* itemStaticBitmap1 = new wxStaticBitmap( tbarHisto, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("icons/histo_sort.xpm")), wxDefaultPosition, wxDLG_UNIT(tbarHisto, wxSize(6, 4)), 0 );
+  wxStaticBitmap* itemStaticBitmap17 = new wxStaticBitmap( tbarHisto, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("icons/histo_sort.xpm")), wxDefaultPosition, wxDLG_UNIT(tbarHisto, wxSize(6, 4)), 0 );
   if (gHistogram::ShowToolTips())
-    itemStaticBitmap1->SetToolTip(_("Sort columns by"));
-  tbarHisto->AddControl(itemStaticBitmap1);
+    itemStaticBitmap17->SetToolTip(_("Sort columns by"));
+  tbarHisto->AddControl(itemStaticBitmap17);
   wxArrayString choiceSortByStrings;
   choiceSortByStrings.Add(_("Default"));
   choiceSortByStrings.Add(_("Total"));
@@ -323,10 +315,14 @@ void gHistogram::CreateControls()
   if (gHistogram::ShowToolTips())
     choiceSortBy->SetToolTip(_("Sort columns by"));
   tbarHisto->AddControl(choiceSortBy);
-  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_reverse.xpm")));
-  wxBitmap itemtool1BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_REVERSE, wxEmptyString, itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
+  wxBitmap itemtool19Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_reverse.xpm")));
+  wxBitmap itemtool19BitmapDisabled;
+  tbarHisto->AddTool(ID_TOOL_REVERSE, wxEmptyString, itemtool19Bitmap, itemtool19BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
   tbarHisto->Realize();
+  itemFrame1->SetToolBar(tbarHisto);
+
+  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+  itemFrame1->SetSizer(itemBoxSizer2);
 
   panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
   panelData->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
@@ -384,7 +380,7 @@ void gHistogram::CreateControls()
 
 #ifdef __WXGTK__
   SetToolBar( tbarHisto );
-  panelToolbar->Hide();
+//  panelToolbar->Hide();
 #endif
 
   gridHisto->CreateGrid( 0, 0 );
