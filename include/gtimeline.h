@@ -183,6 +183,18 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMotion( wxMouseEvent& event );
+
+  /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMouseWheel( wxMouseEvent& event );
+
+  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowKeyDown( wxKeyEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_ERASE_BACKGROUND event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowEraseBackground( wxEraseEvent& event );
 
@@ -200,18 +212,6 @@ public:
 
   /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowRightDown( wxMouseEvent& event );
-
-  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowMotion( wxMouseEvent& event );
-
-  /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowMouseWheel( wxMouseEvent& event );
-
-  /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowKeyDown( wxKeyEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -364,6 +364,9 @@ public:
   wxFont GetSemanticFont() const { return semanticFont ; }
   void SetSemanticFont(wxFont value) { semanticFont = value ; }
 
+  std::map< int, std::set<TSemanticValue> >  GetSemanticPixelsToValue() const { return semanticPixelsToValue ; }
+  void SetSemanticPixelsToValue(std::map< int, std::set<TSemanticValue> >  value) { semanticPixelsToValue = value ; }
+
   std::map< TSemanticValue, rgb > GetSemanticValuesToColor() const { return semanticValuesToColor ; }
   void SetSemanticValuesToColor(std::map< TSemanticValue, rgb > value) { semanticValuesToColor = value ; }
 
@@ -420,9 +423,6 @@ public:
 
   bool GetZooming() const { return zooming ; }
   void SetZooming(bool value) { zooming = value ; }
-
-  std::map< int, std::set<TSemanticValue> >  GetSemanticPixelsToValue() const { return semanticPixelsToValue ; }
-  void SetSemanticPixelsToValue(std::map< int, std::set<TSemanticValue> >  value) { semanticPixelsToValue = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -681,6 +681,7 @@ private:
   wxStopWatch * redrawStopWatch;
   std::map< rgb, std::set<TSemanticValue> > semanticColorsToValue;
   wxFont semanticFont;
+  std::map< int, std::set<TSemanticValue> >  semanticPixelsToValue; // // Used by function line drawings
   std::map< TSemanticValue, rgb > semanticValuesToColor; // Stored for SaveImage legend
   bool splitChanged;
   PRV_INT32 timeAxisPos;
@@ -700,7 +701,6 @@ private:
   long zoomEndY;
   bool zoomXY;
   bool zooming;
-  std::map< int, std::set<TSemanticValue> >  semanticPixelsToValue; // // Used by function line drawings
 ////@end gTimeline member variables
 
   // colorsPanel update info
