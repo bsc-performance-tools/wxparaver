@@ -394,6 +394,7 @@ void gHistogram::CreateControls()
 #else
   gridHisto->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
 #endif
+
 }
 
 
@@ -505,6 +506,9 @@ void gHistogram::execute()
   }
 
   SetFocus();
+
+
+  
 }
 
 
@@ -3434,3 +3438,10 @@ void gHistogram::OnToolReverseUpdate( wxUpdateUIEvent& event )
 
 
 
+void gHistogram::updateSortOptions()
+{
+  if( !myHistogram->getSemanticSortColumns() )
+    choiceSortBy->SetSelection( 0 );
+  else
+    choiceSortBy->SetSelection( (int)myHistogram->getSemanticSortCriteria() + 1 );
+}

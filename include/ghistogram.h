@@ -316,6 +316,8 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end gHistogram member function declarations
 
+  void updateSortOptions();
+
   const SelectionManagement< THistogramColumn, int >& GetColumnSelection() const { return columnSelection; }
   void SetColumnSelection( const SelectionManagement< THistogramColumn, int >& value ) { columnSelection = value; }
 
