@@ -133,7 +133,6 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
   EVT_CHOICE( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbySelected )
-  EVT_UPDATE_UI( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbyUpdate )
   EVT_MENU( ID_TOOL_REVERSE, gHistogram::OnToolReverseClick )
   EVT_UPDATE_UI( ID_TOOL_REVERSE, gHistogram::OnToolReverseUpdate )
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
@@ -3430,15 +3429,4 @@ void gHistogram::OnToolReverseUpdate( wxUpdateUIEvent& event )
 }
 
 
-/*!
- * wxEVT_UPDATE_UI event handler for ID_TOOL_CHOICE_SORTBY
- */
-
-void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
-{
-  if( !myHistogram->getSemanticSortColumns() )
-    choiceSortBy->SetSelection( 0 );
-  else
-    choiceSortBy->SetSelection( (int)myHistogram->getSemanticSortCriteria() + 1 );
-}
 
