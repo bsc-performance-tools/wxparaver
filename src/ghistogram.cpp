@@ -261,11 +261,11 @@ void gHistogram::CreateControls()
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
   itemFrame1->SetSizer(itemBoxSizer2);
 
-  panelToolbar = new wxPanel( itemFrame1, HISTO_PANEL_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  panelToolbar = new wxPanel( itemFrame1, HISTO_PANEL_TOOLBAR, wxDefaultPosition, wxDLG_UNIT(itemFrame1, wxSize(400, -1)), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
   panelToolbar->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
   itemBoxSizer2->Add(panelToolbar, 0, wxGROW, wxDLG_UNIT(itemFrame1, wxSize(2, -1)).x);
 
-  tbarHisto = new wxToolBar( panelToolbar, ID_TOOLBAR_HISTOGRAM, wxDefaultPosition, wxDLG_UNIT(panelToolbar, wxSize(400, -1)), wxTB_FLAT|wxTB_HORIZONTAL );
+  tbarHisto = new wxToolBar( panelToolbar, ID_TOOLBAR_HISTOGRAM, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL );
   wxBitmap itemtool3Bitmap(itemFrame1->GetBitmapResource(wxT("icons/opencontrol.xpm")));
   wxBitmap itemtool3BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_OPEN_CONTROL_WINDOW, _("Open Control Window"), itemtool3Bitmap, itemtool3BitmapDisabled, wxITEM_NORMAL, _("Open Control Window"), wxEmptyString);
