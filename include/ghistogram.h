@@ -65,6 +65,7 @@ class gWindow;
 
 ////@begin control identifiers
 #define ID_GHISTOGRAM 10004
+#define HISTO_PANEL_TOOLBAR 10001
 #define ID_TOOLBAR_HISTOGRAM 10059
 #define ID_TOOL_OPEN_CONTROL_WINDOW 10050
 #define ID_TOOL_OPEN_DATA_WINDOW 10051
@@ -407,6 +408,7 @@ public:
   
 
 ////@begin gHistogram member variables
+  wxPanel* panelToolbar;
   wxToolBar* tbarHisto;
   wxChoice* choiceSortBy;
   wxPanel* panelData;
