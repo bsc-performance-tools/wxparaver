@@ -3268,17 +3268,20 @@ void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
 {
   selectedItemColor = ( (CustomColorSemValue *)event.m_callbackUserData )->myPanel;
   panelSelectedColor->SetBackgroundColour( selectedItemColor->GetBackgroundColour() );
+  panelSelectedColor->Refresh();
   sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
   sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
   sliderSelectedBlue->SetValue( selectedItemColor->GetBackgroundColour().Blue() );
   
   selectedCustomValue = ( (CustomColorSemValue *)event.m_callbackUserData )->myValue;
+
 }
 
 void gTimeline::OnTextColorLeftUp( wxMouseEvent& event )
 {
   selectedItemColor = ( (CustomColorSemValue *)event.m_callbackUserData )->myPanel;
   panelSelectedColor->SetBackgroundColour( selectedItemColor->GetBackgroundColour() );
+  panelSelectedColor->Refresh();
   sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
   sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
   sliderSelectedBlue->SetValue( selectedItemColor->GetBackgroundColour().Blue() );
