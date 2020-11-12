@@ -178,7 +178,6 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
-  EVT_UPDATE_UI( wxID_STATIC_AUTO_REDRAW, paraverMain::OnStaticAutoRedrawUpdate )
   EVT_UPDATE_UI( ID_CHECKBOX_AUTO_REDRAW, paraverMain::OnCheckboxAutoRedrawUpdate )
   EVT_BUTTON( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawClick )
   EVT_UPDATE_UI( ID_BUTTON_FORCE_REDRAW, paraverMain::OnButtonForceRedrawUpdate )
@@ -569,9 +568,6 @@ void paraverMain::CreateControls()
 
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
   panelAutoRedraw->SetSizer(itemBoxSizer4);
-
-  wxStaticBitmap* itemStaticBitmap5 = new wxStaticBitmap( panelAutoRedraw, wxID_STATIC_AUTO_REDRAW, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer4->Add(itemStaticBitmap5, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelAutoRedraw, wxSize(2, -1)).x);
 
   checkAutoRedraw = new wxCheckBox( panelAutoRedraw, ID_CHECKBOX_AUTO_REDRAW, _("Automatic Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
   checkAutoRedraw->SetValue(true);
