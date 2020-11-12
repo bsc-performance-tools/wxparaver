@@ -4953,16 +4953,6 @@ void paraverMain::setActiveWorkspacesText()
 
 
 /*!
- * wxEVT_UPDATE_UI event handler for wxID_STATIC_AUTO_REDRAW
- */
-
-void paraverMain::OnStaticAutoRedrawUpdate( wxUpdateUIEvent& event )
-{
-  event.Enable( currentTimeline != NULL || currentHisto != NULL );
-}
-
-
-/*!
  * wxEVT_UPDATE_UI event handler for ID_CHECKBOX_AUTO_REDRAW
  */
 
