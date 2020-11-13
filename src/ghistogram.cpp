@@ -2910,8 +2910,10 @@ void gHistogram::saveText( bool onlySelectedPlane )
   setEnableDestroyButton( true );
 }
 
+#ifdef DEFAULT_IMAGE_DIALOG
+#else
 
-void gHistogram::saveImageDialog( wxString whichFileName )
+void gHistogram::saveImageDialog( bool showSaveDialog,  wxString whichFileName )
 {
   wxString imagePath;
   ParaverConfig::TImageFormat filterIndex;
@@ -2927,6 +2929,16 @@ void gHistogram::saveImageDialog( wxString whichFileName )
   {
     wxString imageName;
     wxString tmpSuffix;
+    wxString defaultDir;
+
+    imageName = buildFormattedFileName();
+
+  #ifdef WIN32
+    defaultDir = _(".\\");
+  #else
+    defaultDir = _("./");
+  #endif
+
     imageName = buildFormattedFileName();
 
     wxFileName startingDir( wxString::FromAscii( myHistogram->getTrace()->getFileName().c_str() ) );
@@ -2939,8 +2951,9 @@ void gHistogram::saveImageDialog( wxString whichFileName )
     imagePath = imageName + tmpSuffix;
 
     SaveImageDialog saveDialog( this, defaultDir, imageName, true );
-    //saveDialog.SetFilterIndex( filterIndex );
-    
+ 
+    saveDialog.SetFilterIndex( filterIndex );
+ 
     if ( saveDialog.ShowModal() != wxID_OK )
     {
       setEnableDestroyButton( true );
@@ -2953,6 +2966,84 @@ void gHistogram::saveImageDialog( wxString whichFileName )
     saveImage( false, imagePath, filterIndex );
   }
 }
+#endif
+
+#ifdef DEFAULT_IMAGE_DIALOG 
+void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
+{
+  wxString imagePath;
+  ParaverConfig::TImageFormat filterIndex;
+
+  setEnableDestroyButton( false );
+
+  if( !whichFileName.IsEmpty() )
+  {
+    imagePath = whichFileName;
+    filterIndex = ParaverConfig::PNG;
+  }
+  else
+  {
+    wxString imageName;
+    wxString tmpSuffix;
+    wxString defaultDir;
+
+    imageName = buildFormattedFileName();
+
+  #ifdef WIN32
+    defaultDir = _(".\\");
+  #else
+    defaultDir = _("./");
+  #endif
+
+    filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
+
+    tmpSuffix = _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    imagePath = imageName + tmpSuffix;
+
+    if( showSaveDialog )
+    {
+      // Builds following wildcard, but the 'E' in JPEG  
+      // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+      // Also build extensions vector -> FileDialogExtension
+      wxString tmpWildcard;
+      std::vector< wxString > extensions;
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      {
+        wxString currentFormat =
+              wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      
+        extensions.push_back( currentFormat );
+                      
+        tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
+      }
+      tmpWildcard = tmpWildcard.BeforeLast( '|' );
+
+      FileDialogExtension saveDialog( this,
+                               _("Save Image"),
+                               defaultDir,
+                               imageName + tmpSuffix,
+                               tmpWildcard,
+                               wxFD_SAVE | wxFD_CHANGE_DIR,
+                               wxDefaultPosition,
+                               wxDefaultSize,
+                               _( "filedlg" ),
+                               extensions );
+
+      saveDialog.SetFilterIndex( filterIndex );
+
+      if ( saveDialog.ShowModal() != wxID_OK )
+      {
+        setEnableDestroyButton( true );
+        return;
+      }
+
+      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      imagePath = saveDialog.GetPath();
+    }
+  }
+#else
 
 void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
 {
@@ -2979,7 +3070,6 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, Paraver
   #else
     defaultDir = _("./");
   #endif
-
     filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
 
     tmpSuffix = _(".") +
@@ -3028,6 +3118,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, Paraver
       imagePath = saveDialog.GetPath();
     }
   }
+#endif
   
   // Build image to be saved as: title image + timeline image
 

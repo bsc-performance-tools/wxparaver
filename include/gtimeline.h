@@ -130,6 +130,7 @@ class ProgressController;
 #define SYMBOL_GTIMELINE_SIZE wxSize(400, 300)
 #define SYMBOL_GTIMELINE_POSITION wxDefaultPosition
 ////@end control identifiers
+#define DEFAULT_IMAGE_DIALOG 1
 
 #define ID_TIMER_SIZE 40000
 #define ID_TIMER_MOTION 40001
@@ -578,10 +579,16 @@ public:
   void OnPopUpTiming( bool whichTiming );
   void OnItemColorLeftUp( wxMouseEvent& event );
   void OnTextColorLeftUp( wxMouseEvent& event );
-  
+
+#ifdef DEFAULT_IMAGE_DIALOG
+  void saveImage( bool showSaveDialog, wxString whichFileName  );
+  void saveImageLegend( bool showSaveDialog = true  );
+  void saveImageDialog( wxString whichFileName );
+#else  
   void saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
   void saveImageLegend( bool showSaveDialog = true, wxString whichFileName = _( "" ), ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
   void saveImageDialog( wxString whichFileName );
+#endif
 
   void saveText();
   void saveCFG();

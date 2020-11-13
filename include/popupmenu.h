@@ -35,6 +35,8 @@
 
 using namespace std;
 
+#define DEFAULT_IMAGE_DIALOG 1
+
 enum ItemType {ITEMNORMAL, ITEMRADIO, ITEMCHECK};
 
 class gTimeline;
@@ -247,6 +249,7 @@ class gPopUpMenu : public wxMenu
 
     // Save 
     void OnMenuSaveImage( wxCommandEvent& event ); // both
+    void OnMenuSaveImageLegend( wxCommandEvent& event ); // both
 
     void OnMenuSaveTimelineAsCFG( wxCommandEvent& event );
     void OnMenuSaveTimelineAsText( wxCommandEvent& event );

@@ -3581,6 +3581,426 @@ wxString gTimeline::buildFormattedFileName() const
   return ( paraverMain::buildFormattedFileName( myWindow->getName(), myWindow->getTrace()->getTraceNameNumbered() ) );
 }
 
+#ifdef DEFAULT_IMAGE_DIALOG
+
+
+void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
+{
+  wxString imagePath;
+  ParaverConfig::TImageFormat filterIndex;
+
+  setEnableDestroyButton( false );
+
+  if( !whichFileName.IsEmpty() )
+  {
+    imagePath = whichFileName;
+    filterIndex = ParaverConfig::PNG;
+  }
+  else
+  {
+    wxString imageName;
+    wxString tmpSuffix;
+    wxString defaultDir;
+
+    imageName = buildFormattedFileName();
+    
+  #ifdef WIN32
+    defaultDir = _(".\\");
+  #else
+    defaultDir = _("./");
+  #endif
+
+    filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+    tmpSuffix = _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    imagePath = imageName + tmpSuffix;
+    
+    if( showSaveDialog )
+    {
+      // Builds following wildcard, but the 'E' in JPEG  
+      // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+      // Also build extensions vector -> FileDialogExtension
+      wxString tmpWildcard;
+      std::vector< wxString > extensions;
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      {
+        wxString currentFormat =
+              wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      
+        extensions.push_back( currentFormat );
+
+        tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
+      }
+      tmpWildcard = tmpWildcard.BeforeLast( '|' );
+
+      FileDialogExtension saveDialog( this,
+                               _("Save Image"),
+                               defaultDir,
+                               imageName + tmpSuffix,
+                               tmpWildcard,
+                               wxFD_SAVE | wxFD_CHANGE_DIR,
+                               wxDefaultPosition,
+                               wxDefaultSize,
+                               _( "filedlg" ),
+                               extensions );
+      saveDialog.SetFilterIndex( filterIndex );
+      if ( saveDialog.ShowModal() != wxID_OK )
+      {
+        setEnableDestroyButton( true );
+        return;
+      }
+
+      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      imagePath = saveDialog.GetPath();
+    }
+  }
+  
+  // Get title
+  wxString longTitle = wxString::FromAscii(
+          ( myWindow->getName() + " @ " +
+            myWindow->getTrace()->getTraceNameNumbered() ).c_str());
+  wxString shortTitle = wxString::FromAscii( ( myWindow->getName() ).c_str() );
+  wxString writtenTitle = longTitle;
+
+  // Get colors
+  wxColour foregroundColour = GetForegroundColour();
+  wxColour backgroundColour = GetBackgroundColour();
+
+  // Get font
+  wxFont titleFont = semanticFont;
+
+  // Get dimensions
+  wxImage img = drawImage.ConvertToImage();
+  int timelineWidth = img.GetWidth();
+  int timelineHeight = img.GetHeight();
+
+  int titleMargin = 5; // used in 4 sides
+  int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
+  int titleWidth = timelineWidth;
+  int titleWritableWidth = titleWidth - ( 2 * titleMargin );
+
+  int imageHeigth = titleHeigth + timelineHeight;
+  int imageWidth = timelineWidth;
+
+  // Build DC for title
+  wxBitmap titleBitmap( titleWidth, titleHeigth );
+  wxMemoryDC titleDC( titleBitmap );
+
+  // Set font and check if using it the title will fit
+  titleDC.SetFont( titleFont );
+  wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
+
+  if ( titleSize.GetWidth() > titleWritableWidth )
+  {
+    titleSize = titleDC.GetTextExtent( shortTitle );
+    writtenTitle = shortTitle;
+  }
+
+  // Set colors
+  titleDC.SetBackground( wxBrush( backgroundColour ) );
+  titleDC.Clear();
+
+  titleDC.SetPen( wxPen( backgroundColour, 1 ) );
+  titleDC.SetTextBackground( backgroundColour );
+  titleDC.SetTextForeground( foregroundColour );
+
+  // Compute title image size
+  titleDC.DrawText( writtenTitle, titleMargin, titleMargin );
+
+  wxBitmap imageBitmap( imageWidth, imageHeigth );
+  wxMemoryDC imageDC( imageBitmap );
+  wxCoord xsrc = 0;
+  wxCoord ysrc = 0;
+  wxCoord xdst = 0;
+  wxCoord ydst = 0;
+  imageDC.Blit( xdst, ydst, titleWidth, titleHeigth, &titleDC, xsrc, ysrc );
+
+#ifdef __WXMAC__
+  wxBitmap tmpDrawImage( drawImage.GetWidth(), drawImage.GetHeight() );
+  wxMemoryDC timelineDC( tmpDrawImage );
+  drawStackedImages( timelineDC );
+#else
+  wxMemoryDC timelineDC( drawImage );
+#endif
+  xsrc = 0;
+  ysrc = 0;
+  xdst = 0;
+  ydst = titleHeigth;
+  imageDC.Blit( xdst, ydst, timelineWidth, timelineHeight, &timelineDC, xsrc, ysrc );
+
+  // Get image type and save
+#if wxMAJOR_VERSION<3
+  long imageType;
+#else
+  wxBitmapType imageType;
+#endif
+  switch( filterIndex )
+  {
+    case ParaverConfig::BMP:
+      imageType = wxBITMAP_TYPE_BMP;
+      break;
+    case ParaverConfig::JPG:
+      imageType = wxBITMAP_TYPE_JPEG;
+      break;
+    case ParaverConfig::PNG:
+      imageType = wxBITMAP_TYPE_PNG;
+      break;
+    case ParaverConfig::XPM:
+      imageType = wxBITMAP_TYPE_XPM;
+      break;
+    default:
+      imageType = wxBITMAP_TYPE_PNG;
+      break;
+  }
+
+  imageDC.SelectObject( wxNullBitmap );
+  wxImage baseLayer = imageBitmap.ConvertToImage();
+
+  // Save timeline with gradient scale
+  if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
+  {
+    ScaleImageVertical *tmpImage;
+
+    // Create DC for timeline image
+    wxMemoryDC tmpTimelineDC( imageBitmap ); // reuse imageDC?
+
+    // Create DC for scale
+    int wantedWidth = baseLayer.GetWidth();
+    int backgroundMode = wxSOLID;
+    tmpImage = new ScaleImageHorizontalGradientColor(
+            myWindow,
+            semanticValuesToColor,
+            backgroundColour, foregroundColour, backgroundMode,
+            titleFont,
+            imagePath, wxString( _( "horiz.labels" ) ),
+            imageType,
+            wantedWidth );
+    tmpImage->process();
+    //tmpImage->save();
+
+    wxBitmap *tmpScale = tmpImage->getBitmap();
+    wxMemoryDC tmpScaleDC( *tmpScale );
+
+    // Create DC for destiny image
+    int totalHeigth = baseLayer.GetHeight() + tmpScale->GetHeight();
+    int totalWidth  = baseLayer.GetWidth() > tmpScale->GetWidth() ? baseLayer.GetWidth(): tmpScale->GetWidth();
+    wxBitmap tmpScaledTimelineBitmap( totalWidth, totalHeigth );
+    wxMemoryDC tmpScaledTimelineDC( tmpScaledTimelineBitmap );
+    tmpScaledTimelineDC.SetBackground( backgroundColour );
+    tmpScaledTimelineDC.Clear();
+
+    // Copy to destiny
+    int xsrc = 0;
+    int ysrc = 0;
+    int xdst = 0;
+    int ydst = 0;
+
+    tmpScaledTimelineDC.Blit( xdst, ydst,
+                             imageBitmap.GetWidth(), imageBitmap.GetHeight(),
+                             &tmpTimelineDC,
+                             xsrc, ysrc );
+
+    xdst = totalWidth - tmpScale->GetWidth();
+    if ( xdst < 0 )
+    {
+      xdst = 0;
+    }
+    ydst = imageBitmap.GetHeight();
+    tmpScaledTimelineDC.Blit( xdst, ydst,
+                              tmpScale->GetWidth(), tmpScale->GetHeight(),
+                              &tmpScaleDC,
+                              xsrc, ysrc );
+
+    //tmpScaledTimelineDC->SelectObject( wxNullBitmap );
+
+    wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
+    wxString currentFormat =
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                    ParaverConfig::TImageFormat( filterIndex ) ).c_str() );
+    wxString tmpScaledTimelinePath = wxFileName( imagePath ).GetPathWithSep() +
+                                     wxFileName( imagePath ).GetName() +
+                                     wxString( _(".w_legend.") ) +
+                                     currentFormat;
+    tmpScaledTimeline.SaveFile( tmpScaledTimelinePath, imageType );
+  }
+
+  // Save timeline image without scale
+  baseLayer.SaveFile( imagePath, imageType );
+
+  setEnableDestroyButton( true );
+}
+
+
+void gTimeline::saveImageLegend( bool showSaveDialog )
+{
+  wxString imageName;
+  wxString tmpSuffix;
+  wxString defaultDir;
+
+  setEnableDestroyButton( false );
+
+  imageName = buildFormattedFileName();
+  
+#ifdef WIN32
+  defaultDir = _(".\\");
+#else
+  defaultDir = _("./");
+#endif
+
+  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  tmpSuffix = _(".");
+  if ( myWindow->isGradientColorSet() )
+     tmpSuffix +=
+            wxString( _( "gradient" ) ) +
+            _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  else if ( myWindow->isNotNullGradientColorSet() )
+     tmpSuffix +=
+            wxString( _( "nn_gradient" ) ) +
+            _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  else
+    tmpSuffix +=
+            wxString( _( "code" ) ) +
+            _(".") +
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  
+  wxString imagePath = imageName + tmpSuffix;
+  
+  if( showSaveDialog )
+  {
+    // Builds following wildcard, but the 'E' in JPEG  
+    // _("BMP image|*.bmp|JPEG image|*.jpg|PNG image|*.png|XPM image|*.xpm")
+    // Also build extensions vector -> FileDialogExtension
+    wxString tmpWildcard;
+    std::vector< wxString > extensions;
+    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+    {
+      wxString currentFormat =
+            wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+                    ParaverConfig::TImageFormat( i ) ).c_str() );
+                    
+      extensions.push_back( currentFormat );
+      
+      tmpWildcard += currentFormat.Upper() + _(" image|*.") + currentFormat + _("|");
+    }
+    tmpWildcard = tmpWildcard.BeforeLast( '|' );
+
+    FileDialogExtension saveDialog( this,
+                             _("Save Image Legend"),
+                             defaultDir,
+                             imageName + tmpSuffix,
+                             tmpWildcard,
+                             wxFD_SAVE | wxFD_CHANGE_DIR,
+                             wxDefaultPosition,
+                             wxDefaultSize,
+                             _( "filedlg" ),
+                             extensions );
+    saveDialog.SetFilterIndex( filterIndex );
+    if ( saveDialog.ShowModal() != wxID_OK )
+    {
+      setEnableDestroyButton( true );
+      return;
+    }
+
+    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    imagePath = saveDialog.GetPath();
+  }
+  
+  // Get colors
+  wxColour foregroundColour = GetForegroundColour();
+  wxColour backgroundColour = GetBackgroundColour();
+
+  // Get font
+  wxFont titleFont = semanticFont;
+
+  // Get image type and save
+#if wxMAJOR_VERSION<3
+  long imageType;
+#else
+  wxBitmapType imageType;
+#endif
+  int backgroundMode = wxTRANSPARENT; // default
+  switch( filterIndex )
+  {
+    case ParaverConfig::BMP:
+      imageType = wxBITMAP_TYPE_BMP;
+      backgroundMode = wxSOLID;
+      break;
+    case ParaverConfig::JPG:
+      imageType = wxBITMAP_TYPE_JPEG;
+      backgroundMode = wxSOLID;
+      break;
+    case ParaverConfig::PNG:
+      imageType = wxBITMAP_TYPE_PNG;
+      break;
+    case ParaverConfig::XPM:
+      imageType = wxBITMAP_TYPE_XPM;
+      break;
+    default:
+      imageType = wxBITMAP_TYPE_PNG;
+      break;
+  }
+
+  ScaleImageVertical *tmpImage;
+  if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
+  {
+    tmpImage = new ScaleImageHorizontalGradientColor( myWindow, semanticValuesToColor,
+                                                       //backgroundColour, foregroundColour, backgroundMode,
+                                                       *wxWHITE, *wxBLACK, backgroundMode,
+                                                       titleFont,
+                                                       //imagePath, wxString( _( "horiz.labels.transp" ) ),
+                                                       imagePath, wxString( _( "" ) ),
+                                                       imageType );
+    tmpImage->process();
+    tmpImage->save();
+    delete tmpImage;
+   }
+  else if ( myWindow->isCodeColorSet() )
+  {
+    tmpImage = new ScaleImageVerticalCodeColor( myWindow, semanticValuesToColor,
+                                                 //backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE, *wxBLACK, backgroundMode,
+                                                 titleFont,
+                                                 // imagePath, wxString( _( "vert.labels.transp" ) ),
+                                                 imagePath, wxString( _( "" ) ),
+                                                 imageType );
+    tmpImage->process();
+    tmpImage->save();
+    delete tmpImage;
+  }
+  else if ( myWindow->isFusedLinesColorSet() )
+  {
+    std::map< TSemanticValue, rgb > tmpObjects;
+
+    TObjectOrder beginRow = myWindow->getZoomSecondDimension().first;
+    TObjectOrder endRow = myWindow->getZoomSecondDimension().second;
+    vector<TObjectOrder> selected;
+    myWindow->getSelectedRows( myWindow->getLevel(), selected, beginRow, endRow, true );
+
+    for( vector<TObjectOrder>::iterator it = selected.begin(); it != selected.end(); ++it )
+    {
+      rgb tmprgb = myWindow->getCodeColor().calcColor( (*it) + 1, 0, myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1, false );
+      tmpObjects[ (TSemanticValue)(*it) ] = tmprgb;
+    }
+    tmpImage = new ScaleImageVerticalFusedLines( myWindow, tmpObjects,
+                                                 //backgroundColour, foregroundColour, backgroundMode,
+                                                 *wxWHITE, *wxBLACK, backgroundMode,
+                                                 titleFont,
+                                                 // imagePath, wxString( _( "vert.labels.transp" ) ),
+                                                 imagePath, wxString( _( "" ) ),
+                                                 imageType );
+    tmpImage->process();
+    tmpImage->save();
+    delete tmpImage;
+  }
+
+  setEnableDestroyButton( true );
+}
+
+
+#else 
 
 void gTimeline::saveImageDialog( wxString whichFileName )
 {
@@ -4044,6 +4464,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
   setEnableDestroyButton( true );
 }
 
+#endif
 
 //---------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------
