@@ -4669,7 +4669,7 @@ bool paraverMain::getParaverHome( wxString &paraverHome )
   {
     GetModuleFileName( NULL, myPath, ( sizeof( myPath ) ));
     PathRemoveFileSpec( myPath );
-    string tmpParaverPath( myPath );
+    wstring tmpParaverPath( myPath );
     baseDir = tmpParaverPath.substr( 0, tmpParaverPath.size() - 4 );
   }
   paraverHome = wxString( baseDir.c_str(), wxConvUTF8 );
@@ -4763,14 +4763,22 @@ void paraverMain::createHelpContentsWindow(
   // If helpFile has no "html" at the end, use Help Content's Index as hCAP (which works)
   if ( helpFile.SubString( helpFile.size() - 4, helpFile.size() - 1) != wxT( "html" ) )
   {
+#ifdef WIN32
+    helpContentsAbsolutePath = wxT( "file:///" ) + 
+#else
     helpContentsAbsolutePath = wxT( "file://" ) + 
+#endif
           wxString::FromAscii( paraverConfig->getParaverConfigDir().c_str() ) +
           wxString( wxFileName::GetPathSeparator() ) +
           wxString( wxT( "help_contents" ) ) + wxT( "_index.html" );
   }
   else // Otherwise use previous hCAP
   {
+#ifdef WIN32
+    helpContentsAbsolutePath = wxT( "file:///" ) + paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
+#else
     helpContentsAbsolutePath = wxT( "file://" ) + paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
+#endif
   }
 
   if ( lookForContents )
