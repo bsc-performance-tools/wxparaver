@@ -4669,7 +4669,8 @@ bool paraverMain::getParaverHome( wxString &paraverHome )
   {
     GetModuleFileName( NULL, myPath, ( sizeof( myPath ) ));
     PathRemoveFileSpec( myPath );
-    baseDir = myPath;
+    string tmpParaverPath( myPath );
+    baseDir = tmpParaverPath.substr( 0, tmpParaverPath.size() - 4 );
   }
   paraverHome = wxString( baseDir.c_str(), wxConvUTF8 );
 
