@@ -30,7 +30,6 @@
  */
 
 ////@begin includes
-#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -161,7 +160,7 @@ class wxHtmlWindow;
 #define SYMBOL_RUNSCRIPT_STYLE wxCAPTION|wxRESIZE_BORDER|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_RUNSCRIPT_TITLE _("Run Application")
 #define SYMBOL_RUNSCRIPT_IDNAME ID_RUN_APPLICATION
-#define SYMBOL_RUNSCRIPT_SIZE wxSize(600, 1400)
+#define SYMBOL_RUNSCRIPT_SIZE wxSize(600, -1)
 #define SYMBOL_RUNSCRIPT_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -198,6 +197,9 @@ public:
   void CreateControls();
 
 ////@begin RunScript event handler declarations
+
+  /// wxEVT_CLOSE_WINDOW event handler for ID_RUN_APPLICATION
+  void OnCloseWindow( wxCloseEvent& event );
 
   /// wxEVT_IDLE event handler for ID_RUN_APPLICATION
   void OnIdle( wxIdleEvent& event );
