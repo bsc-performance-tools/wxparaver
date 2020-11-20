@@ -244,7 +244,7 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
   popUpMenuPaste->Enable( popUpMenuPaste->FindItem( _( STR_DURATION ) ), sharedProperties->isAllowed( whichHistogram, STR_DURATION )  );
   popUpMenuPaste->Enable( popUpMenuPaste->FindItem( _( STR_SEMANTIC_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_SEMANTIC_SCALE)  );
 
-  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), whichHistogram->GetHistogram()->isSync()  && whichHistogram->GetHistogram()->getSyncGroup() > 0 );
+  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), whichHistogram->GetHistogram()->isSync() && whichHistogram->GetHistogram()->getSyncGroup() > 0 );
 
   Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE ) );
   Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_DEFAULT_SPECIAL ) );
@@ -1959,17 +1959,6 @@ void gPopUpMenu::OnMenuSynchronize( wxCommandEvent& event )
         histogram->GetHistogram()->addToSyncGroup( group );
     }
   }
-/*
-  bool enableRemoveGroup = false;
-  if( timeline != NULL ) {
-    std::cout << "GR = " << timeline->GetMyWindow()->getSyncGroup() << std::endl;
-    enableRemoveGroup = ( timeline->GetMyWindow()->getSyncGroup() > 0;
-  }
-  else if( histogram != NULL ) 
-    enableRemoveGroup = ( histogram->GetHistogram()->getSyncGroup() > 0; 
-  
-  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), enableRemoveGroup && whichTimeline->GetMyWindow()->isSync() );
-*/
 }
 
 
