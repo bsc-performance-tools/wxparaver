@@ -559,8 +559,19 @@ bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tut
   wxFileName outputFilePath( path );
   string downloadPath = ParaverConfig::getInstance()->getParaverConfigDir();
   tutorialFile = downloadPath + string( outputFilePath.GetFullName().mb_str() );
+#ifdef WIN32
+  wxString tmpHome;
+  if ( !wxparaverApp::mainWindow->getParaverHome( tmpHome ) )
+    return false;
+    
+  wxString command = tmpHome + wxT( "\\bin\\wget.exe --no-check-certificate -P " ) + wxString::FromUTF8( downloadPath.c_str() ) + wxT( " " ) + wxString::FromUTF8( whichTutorial.getUrl().c_str() );
+  if( wxExecute( command, wxEXEC_SYNC ) != 0 )
+  {
+    wxMessageBox( wxT( "Failed downloading tutorial " ) + wxString::FromUTF8( whichTutorial.getUrl().c_str() ), wxT( "Download failed" ), wxICON_ERROR );
+    return false;
+  }
+#else
   ofstream storeFile( tutorialFile.c_str() );
-
   try
   {
     boost::asio::ssl::context ctx( boost::asio::ssl::context::sslv23 );
@@ -577,8 +588,8 @@ bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tut
 
     return false;
   }
-  
   storeFile.close();
+#endif
 
   return true;
 }
@@ -595,7 +606,14 @@ bool TutorialsDownload::install( const string& tutorialFile, TutorialsProgress& 
     wxMessageBox( wxT( "Failed creating directory " ) + wxString::FromUTF8( tutorialsPath.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
     return false;
   }
+#ifdef WIN32
+  wxString tmpHome;
+  if ( !wxparaverApp::mainWindow->getParaverHome( tmpHome ) )
+    return false;
+  wxString command = tmpHome + wxT( "\\bin\\tar.exe --force-local -xf " ) + wxString::FromUTF8( tutorialFile.c_str() ) + wxT( " --one-top-level=" ) + wxString::FromUTF8( tutorialsPath.c_str() );
+#else
   wxString command = wxT( "tar xf " ) + wxString::FromUTF8( tutorialFile.c_str() ) + wxT( " --directory " ) + wxString::FromUTF8( tutorialsPath.c_str() );
+#endif
   if( wxExecute( command, wxEXEC_SYNC ) != 0 )
   {
     wxMessageBox( wxT( "Failed installing tutorial " ) + wxString::FromUTF8( tutorialFile.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
