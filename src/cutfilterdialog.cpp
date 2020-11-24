@@ -2945,8 +2945,8 @@ void CutFilterDialog::OnButtonCutterAllWindowUpdate( wxUpdateUIEvent& event )
 
 void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& event )
 {
-  double auxBeginTime, auxEndTime, maxTimelineTime;
-  maxTimelineTime = (double) paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime();
+  double auxBeginTime, auxEndTime, maxTraceTime;
+  maxTraceTime = (double) paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getEndTime();
 
   if ( !cutterUsesOriginalTime && (
        !textCutterBeginCut->GetValue().IsEmpty() && !textCutterEndCut->GetValue().IsEmpty() ) )
@@ -2956,10 +2956,8 @@ void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& even
 
     
     // convert from percentage to original time
-    wxString bTime = formatNumber( ( auxBeginTime/100.0f ) * maxTimelineTime );
-    bTime.Replace( wxT( "." ), wxT( "" ) );
-    wxString eTime = formatNumber( ( auxEndTime/100.0f ) * maxTimelineTime );
-    eTime.Replace( wxT( "." ), wxT( "" ) );
+    wxString bTime = formatNumber( ( auxBeginTime/100.0f ) * maxTraceTime );
+    wxString eTime = formatNumber( ( auxEndTime/100.0f ) * maxTraceTime );
 
     textCutterBeginCut->SetValue( bTime );
     textCutterEndCut->SetValue( eTime );
@@ -2975,8 +2973,8 @@ void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& even
 
 void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& event )
 {
-  double auxBeginTime, auxEndTime, maxTimelineTime;
-  maxTimelineTime = (double) paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime();
+  double auxBeginTime, auxEndTime, maxTraceTime;
+  maxTraceTime = (double) paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getEndTime();
 
   if ( cutterUsesOriginalTime && (
        !textCutterBeginCut->GetValue().IsEmpty() && !textCutterEndCut->GetValue().IsEmpty() ) )
@@ -2985,13 +2983,11 @@ void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& e
     textCutterEndCut->GetValue().ToDouble( &auxEndTime );
 
     // convert from original time to percentage
-    wxString bTime = formatNumber( 100*( auxBeginTime / maxTimelineTime ) );
-    bTime.Replace( wxT( "." ), wxT( "" ) );
-    wxString eTime = formatNumber( 100*( auxEndTime / maxTimelineTime ) );
-    eTime.Replace( wxT( "." ), wxT( "" ) );
+    wxString bPercentTime = formatNumber( 100*( auxBeginTime / maxTraceTime ) );
+    wxString ePercentTime = formatNumber( 100*( auxEndTime / maxTraceTime ) );
 
-    textCutterBeginCut->SetValue( bTime );
-    textCutterEndCut->SetValue( eTime );
+    textCutterBeginCut->SetValue( bPercentTime );
+    textCutterEndCut->SetValue( ePercentTime );
   }
   cutterUsesOriginalTime = false;
   event.Skip();
