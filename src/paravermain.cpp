@@ -4584,8 +4584,13 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   description << _( "\ntools@bsc.es\n" );
   info.SetDescription( description );
   developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
+#ifdef WIN32
+  developers.Add( _("\nPedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
+  developers.Add( _("\nMiguel Moreno Gomez (miguel.moreno@bsc.es)") );
+#else
   developers.Add( _("Pedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
   developers.Add( _("Miguel Moreno Gomez (miguel.moreno@bsc.es)") );
+#endif
   info.SetDevelopers( developers );
   info.SetWebSite( _("https://tools.bsc.es/paraver") );
   //info.SetCopyright(_T(""));
