@@ -365,7 +365,11 @@ void RunScript::Init()
 
   // application names
   application[ DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );
+#ifdef WIN32
+  application[ STATS_WRAPPER ]       = wxString( wxT("stats.exe") );
+#else
   application[ STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );
+#endif
   application[ CLUSTERING ]          = wxString( wxT("BurstClustering") );
   application[ FOLDING ]             = wxString( wxT("rri-auto") );
   application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED
