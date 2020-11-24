@@ -403,28 +403,29 @@ bool wxparaverApp::OnInit()
       wxString hostName = wxT( "localhost" );
 
   #ifdef WIN32
-
       const wxString serviceName = wxT( "wxparaver_service-" ) + wxGetUserId();
 
       // Connectivity check for failing sessions
       // ST : Service Table
       
       // Are services stored here in Windows?
-      wxDir wxd( wxT( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) ); 
+      wxDir wxd( wxT( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\" ) ); 
       wxString service, serviceFlag = wxT( "wxparaver_service*" );
       std::map< wxString, wxString > serviceMap;
-      bool cont = wxd.GetFirst( &service, serviceFlag );
-
-      while ( cont )
+      if ( wxd.IsOpened() )
       {
-        wxString servicePID = service.AfterLast( '-' );
-        wxString serviceFileName = wxT( 
-          "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) +
-           service;
-        serviceMap.insert( std::pair< wxString, wxString >( servicePID, serviceFileName ) );
-        cont = wxd.GetNext( &service );
-      }
+        bool cont = wxd.GetFirst( &service, serviceFlag );
 
+        while ( cont )
+        {
+          wxString servicePID = service.AfterLast( '-' );
+          wxString serviceFileName = wxT( 
+            "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\" ) +
+            service;
+          serviceMap.insert( std::pair< wxString, wxString >( servicePID, serviceFileName ) );
+          cont = wxd.GetNext( &service );
+        }
+      }
       // AS : Autosaved Sessions
       wxArrayString filesAS;
       wxString folderPath( ( ParaverConfig::getInstance()->getGlobalSessionPath() + 
