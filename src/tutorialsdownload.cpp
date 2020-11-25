@@ -610,9 +610,17 @@ bool TutorialsDownload::install( const string& tutorialFile, TutorialsProgress& 
   wxString tmpHome;
   if ( !wxparaverApp::mainWindow->getParaverHome( tmpHome ) )
     return false;
-  wxString command = tmpHome + wxT( "\\bin\\tar.exe --force-local -xf " ) + wxString::FromUTF8( tutorialFile.c_str() ) + wxT( " --one-top-level=" ) + wxString::FromUTF8( tutorialsPath.c_str() );
+  wxString command = tmpHome + wxT( "\\bin\\gzip.exe -k -d " ) + wxString::FromUTF8( tutorialFile.c_str() );
+  if( wxExecute( command, wxEXEC_SYNC ) != 0 )
+  {
+    wxMessageBox( wxT( "Failed unzipping file " ) + wxString::FromUTF8( tutorialFile.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
+    return false;
+  }
+  command = tmpHome + wxT( "\\bin\\tar.exe --force-local -xf " ) + wxString::FromUTF8( tutorialFile.substr( 0, tutorialFile.size() - 3 ).c_str() ) +
+            wxT( " --one-top-level=" ) + wxString::FromUTF8( tutorialsPath.c_str() );
 #else
-  wxString command = wxT( "tar xf " ) + wxString::FromUTF8( tutorialFile.c_str() ) + wxT( " --directory " ) + wxString::FromUTF8( tutorialsPath.c_str() );
+  wxString command = wxT( "tar xf " ) + wxString::FromUTF8( tutorialFile.c_str() ) +
+                     wxT( " --directory " ) + wxString::FromUTF8( tutorialsPath.c_str() );
 #endif
   if( wxExecute( command, wxEXEC_SYNC ) != 0 )
   {
