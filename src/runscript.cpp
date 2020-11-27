@@ -2787,7 +2787,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   if ( i >= editor.size() )
   {
 #ifdef WIN32
-    command = _( "wordpad.exe " ) + fileToEdit;
+    command = _( "C:\\Windows\\system32\\NOTEPAD.EXE " ) + fileToEdit;
     wxExecute( command );
 #else
     wxMessageBox( _( "Unable to find an external app. Please check the external application's text editors list at Preferences." ), _( "No external app found" ) );

@@ -2456,7 +2456,11 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
     for ( int i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
+    #ifdef WIN32
+      listTextEditors->Append( tmpFileName.GetFullPath() );
+    #else
       listTextEditors->Append( tmpFileName.GetFullName() );
+    #endif
     }
   }
 }
@@ -2580,7 +2584,11 @@ void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
     for ( int i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
+    #ifdef WIN32  
+      listPDFReaders->Append( tmpFileName.GetFullPath() );
+    #else
       listPDFReaders->Append( tmpFileName.GetFullName() );
+    #endif
     }
   }
 }

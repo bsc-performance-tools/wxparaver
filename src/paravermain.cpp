@@ -73,6 +73,7 @@
 #include "runscript.h"
 #include <wx/display.h>
 #include <wx/process.h>
+#include <wx/mimetype.h>
 
 #include <signal.h>
 #include <iostream>
@@ -5282,22 +5283,30 @@ void paraverMain::initSessionInfo()
 void paraverMain::filterExternalApps()
 {
   //Get WX variants and check
-  wxArrayString externalTextEditors = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalTextEditors(), "txt" );
   wxArrayString newTxt;
 
+#ifdef WIN32
+  wxMimeTypesManager mimeTypeMgr;
+  wxFileType* tmpFT = mimeTypeMgr.GetFileTypeFromExtension( wxT( "txt" ) );
+  wxString tmpCmd = tmpFT->GetOpenCommand( tmpCmd );
+
+  wxString myCmd = tmpFT->GetOpenCommand( tmpCmd );
+  if ( myCmd.size() > 2 && myCmd.substr( myCmd.size() - 2, myCmd.size() - 1 ) == "\"\"" )
+    myCmd = myCmd.substr( 0, myCmd.size() - 3 );
+
+  newTxt.Add( myCmd );
+#else
+  wxArrayString externalTextEditors = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalTextEditors(), "txt" );
+  
   for ( int i = 0 ; i < externalTextEditors.size(); ++i )
   {
-    //wxString myWxStr( externalTextEditors[ i ].wc_str(), wxConvUTF8 );
-#ifdef WIN32
-    wxString command = externalTextEditors[ i ] + wxT( " --version" );
-#else
-    //wxString command = myWxStr + wxT( " --version 1>/dev/null 2>/dev/null'");
     wxString command = externalTextEditors[ i ] + wxT( " --version 1>&- 2>&-'");
-#endif
     int execRes = wxExecute( command, wxEXEC_SYNC );
+
     if ( execRes == 0 )
       newTxt.Add( externalTextEditors[ i ] );
   }
+#endif
 
   if ( newTxt.size() == 0 )
   {
@@ -5306,22 +5315,29 @@ void paraverMain::filterExternalApps()
     wxMessageBox( errMessage, _( "No programs found" ), wxOK );
   }
 
-
-
-  wxArrayString externalPDFReaders = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalPDFReaders(), "pdf" );
   wxArrayString newPDF;
 
+#ifdef WIN32
+  tmpFT = mimeTypeMgr.GetFileTypeFromExtension( wxT( "pdf" ) );
+  tmpCmd = wxT( "" );
+
+  myCmd = tmpFT->GetOpenCommand( tmpCmd );
+  if ( myCmd.size() > 2 && myCmd.substr( myCmd.size() - 2, myCmd.size() - 1 ) == "\"\"" )
+    myCmd = myCmd.substr( 0, myCmd.size() - 3 );
+
+  newPDF.Add( myCmd );
+#else
+  wxArrayString externalPDFReaders = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalPDFReaders(), "pdf" );
+  
   for ( int i = 0 ; i < externalPDFReaders.size(); ++i )
   {
-#ifdef WIN32
-    wxString command = externalPDFReaders[ i ] + wxT( " --version" );
-#else
     wxString command = externalPDFReaders[ i ] + wxT( " --version 1>&- 2>&-'");
-#endif
     int execRes = wxExecute( command, wxEXEC_SYNC );
+
     if ( execRes == 0 )
       newPDF.Add( externalPDFReaders[ i ] );
   }
+#endif
 
   if ( newPDF.size() == 0 )
   {
