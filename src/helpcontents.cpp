@@ -524,7 +524,7 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
 
 bool launchApp( const wxString& htmlFile )
 {
-#if wxMAJOR_VERSION >= 3
+#if wxMAJOR_VERSION >= 3 && !WIN32
   return wxLaunchDefaultBrowser( htmlFile, wxBROWSER_NOBUSYCURSOR );
 #else
   wxFileType* file_type = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT("html") );
@@ -551,7 +551,7 @@ void HelpContents::LoadHtml( const wxString& htmlFile )
     else
       Close();
   }
-  else 
+  else
     htmlWindow->LoadPage( htmlFile );
 }
 

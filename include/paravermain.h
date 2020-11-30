@@ -120,7 +120,6 @@ inline double rint( double nr )
 #define ID_DIRCTRLFILES 10160
 #define ID_FOREIGN 10010
 #define ID_PANEL_AUTOREDRAW 10001
-#define wxID_STATIC_AUTO_REDRAW 10291
 #define ID_CHECKBOX_AUTO_REDRAW 10007
 #define ID_BUTTON_FORCE_REDRAW 10012
 #define ID_PANEL_WORKSPACES 10266
@@ -360,9 +359,6 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_FOREIGN
   void OnForeignUpdate( wxUpdateUIEvent& event );
-
-  /// wxEVT_UPDATE_UI event handler for wxID_STATIC_AUTO_REDRAW
-  void OnStaticAutoRedrawUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_AUTO_REDRAW
   void OnCheckboxAutoRedrawUpdate( wxUpdateUIEvent& event );

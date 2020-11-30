@@ -471,8 +471,6 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
@@ -480,6 +478,8 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -738,7 +738,7 @@ void gTimeline::redraw()
 
   vector< vector< TSemanticValue > > valuesToDraw;
   vector< hash_set< PRV_INT32 > > eventsToDraw;
-#ifdef WIN32
+#ifdef _MSC_VER
   vector< hash_set< commCoord > > commsToDraw;
 #else
   vector< hash_set< commCoord, hashCommCoord > > commsToDraw;
@@ -1242,7 +1242,7 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
   }
 }
 
-#ifdef WIN32
+#ifdef _MSC_VER
 template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
@@ -1521,13 +1521,13 @@ void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder ro
 }
 
 
-#ifdef WIN32
+#ifdef _MSC_VER
 void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw )
 #else
 void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord, hashCommCoord >& commsToDraw )
 #endif
 {
-#ifdef WIN32
+#ifdef _MSC_VER
   for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
   for( hash_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
@@ -3268,17 +3268,20 @@ void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
 {
   selectedItemColor = ( (CustomColorSemValue *)event.m_callbackUserData )->myPanel;
   panelSelectedColor->SetBackgroundColour( selectedItemColor->GetBackgroundColour() );
+  panelSelectedColor->Refresh();
   sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
   sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
   sliderSelectedBlue->SetValue( selectedItemColor->GetBackgroundColour().Blue() );
   
   selectedCustomValue = ( (CustomColorSemValue *)event.m_callbackUserData )->myValue;
+
 }
 
 void gTimeline::OnTextColorLeftUp( wxMouseEvent& event )
 {
   selectedItemColor = ( (CustomColorSemValue *)event.m_callbackUserData )->myPanel;
   panelSelectedColor->SetBackgroundColour( selectedItemColor->GetBackgroundColour() );
+  panelSelectedColor->Refresh();
   sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
   sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
   sliderSelectedBlue->SetValue( selectedItemColor->GetBackgroundColour().Blue() );
@@ -6700,7 +6703,9 @@ void gTimeline::OnSliderSelectedColorUpdated( wxCommandEvent& event )
 
   wxColor tmpColor( redColor, greenColor, blueColor );
   panelSelectedColor->SetBackgroundColour( tmpColor );
+  panelSelectedColor->Refresh();
   selectedItemColor->SetBackgroundColour( tmpColor );
+  selectedItemColor->Refresh();
   
   rgb tmpRGBColor;
   tmpRGBColor.red = redColor;

@@ -4,14 +4,14 @@ SUBDIRS = \
           src \
           icons
 
- 
+
 install-data-hook:
 	if test -f $(DESTDIR)$(bindir)/dimemas-wrapper.sh ; then \
 		cp -f $(DESTDIR)$(bindir)/dimemas-wrapper.sh $(DESTDIR)$(bindir)/old.dimemas-wrapper.sh ; \
 	fi
 	cp -f ./docs/dimemas-wrapper.sh $(DESTDIR)$(bindir)
 	chmod a+x $(DESTDIR)$(bindir)/dimemas-wrapper.sh
-	
+
 	if test -f $(DESTDIR)$(bindir)/stats-wrapper.sh ; then \
 		cp -f $(DESTDIR)$(bindir)/stats-wrapper.sh $(DESTDIR)$(bindir)/old.stats-wrapper.sh ; \
 	fi
@@ -21,8 +21,11 @@ install-data-hook:
 	if test -f $(DESTDIR)$(bindir)/wxparaver ; then \
 		cp -f $(DESTDIR)$(bindir)/wxparaver $(DESTDIR)$(bindir)/old.wxparaver ; \
 	fi
-	
-	
+	if test "x${MINGW_CPPFLAGS}" != "x" ; then \
+		cp -f ./docs/wxparaver.bat $(DESTDIR)$(prefix) ; \
+	fi
+
+
 if ENABLE_DEPENDENCIES_AWARE_INSTALL
 	cp -f ./docs/wxparaver $(DESTDIR)$(bindir)/wxparaver
   
