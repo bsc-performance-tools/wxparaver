@@ -5381,8 +5381,8 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
     else
     {
       timerSize->Start( 250, true );
-    }
 #endif
+    }
   }
 }
 
