@@ -767,7 +767,7 @@ private:
   bool pixelToTimeObject( long x, long y, TTime& onTime, TObjectOrder& onObject );
   
   void doDrawCaution( wxDC& whichDC );
-
+  
   // Called by saveLabelsImage
   void drawRectangle( wxMemoryDC& labelDC,
                        wxMemoryDC& scaleDC,

@@ -1647,13 +1647,12 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   if( !wxparaverApp::mainWindow->IsIconized() && myWindow->getShowWindow() )
   {
     this->Show();
-    if( !myWindow->getReady() )
+    if( !myWindow->getReady() && !wxparaverApp::mainWindow->GetSomeWinIsRedraw() )
     {
-      if( gTimeline::dialogProgress == NULL )
-      {
-        myWindow->setReady( true );
-        redraw();
-      }
+      myWindow->setReady( true );
+      wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
+      redraw();
+      wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
     }
   }
   else
@@ -1930,18 +1929,19 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
  */
 void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
 {
-  if( this->IsShown() )
+  if( this->IsShown() && 
+      ( myWindow->getForceRedraw() || 
+        ( wxparaverApp::mainWindow->getAutoRedraw() && myWindow->getRedraw() && !wxparaverApp::mainWindow->GetSomeWinIsRedraw() ) 
+      )
+    )
   {
-    if( myWindow->getForceRedraw() || ( wxparaverApp::mainWindow->getAutoRedraw() && myWindow->getRedraw() ) )
-    {
-      if( gTimeline::dialogProgress != NULL )
-        return;
-      myWindow->setForceRedraw( false );
-      myWindow->setRedraw( false );
-      splitChanged = false;
-      redraw();
-      drawZone->Refresh();
-    }
+    wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
+    myWindow->setForceRedraw( false );
+    myWindow->setRedraw( false );
+    splitChanged = false;
+    redraw();
+    drawZone->Refresh();
+    wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
   }
 }
 
@@ -5360,16 +5360,30 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
 {
   if( myWindow->getReady() )
   {
+    if ( !wxparaverApp::mainWindow->GetSomeWinIsRedraw() )
+    {
 #ifdef WIN32
-    redraw();
-#else
-    if( splitChanged )
+      wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
       redraw();
+      wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
+#else
+      if( splitChanged )
+      {
+        wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
+        redraw();
+        wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
+      }
+      else
+        myWindow->setRedraw( true );
+
+      Refresh();
+    }
     else
-      myWindow->setRedraw( true );
+    {
+      timerSize->Start( 250, true );
+    }
 #endif
   }
-  Refresh();
 }
 
 

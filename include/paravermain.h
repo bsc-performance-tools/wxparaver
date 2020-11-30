@@ -523,6 +523,9 @@ public:
   WorkspaceManager * GetWorkspacesManager() const { return workspacesManager ; }
   void SetWorkspacesManager(WorkspaceManager * value) { workspacesManager = value ; }
 
+  bool GetSomeWinIsRedraw() const { return someWinIsRedraw ; }
+  void SetSomeWinIsRedraw(bool value) { someWinIsRedraw = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -683,6 +686,7 @@ private:
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
+  bool someWinIsRedraw;
 ////@end paraverMain member variables
   SessionInfo sessionInfo;
   bool firstSave;

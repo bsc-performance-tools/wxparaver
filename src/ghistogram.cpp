@@ -1094,19 +1094,23 @@ void gHistogram::updateHistogram()
 {
   //rowSelection.getSelected( selectedRows );
 
-  if( myHistogram->getForceRecalc() || ( wxparaverApp::mainWindow->getAutoRedraw() && myHistogram->getRecalc() ) )
+  if( myHistogram->getForceRecalc() || 
+      ( wxparaverApp::mainWindow->getAutoRedraw() && myHistogram->getRecalc() && !wxparaverApp::mainWindow->GetSomeWinIsRedraw() ) )
   {
     unsigned int tmpGroup = myHistogram->getSyncGroup();
     if( ( isSyncedWithGroup( myHistogram->getControlWindow(), tmpGroup )      && !myHistogram->getControlWindow()->getReady() ) ||
         ( isSyncedWithGroup( myHistogram->getDataWindow(), tmpGroup )         && !myHistogram->getDataWindow()->getReady() ) ||
         ( isSyncedWithGroup( myHistogram->getExtraControlWindow(), tmpGroup ) && !myHistogram->getExtraControlWindow()->getReady() ) )
       return;
-    if( gHistogram::dialogProgress != NULL )
-      return;
+
+    wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
     myHistogram->setRecalc( false );
     myHistogram->setForceRecalc( false );
+
     execute();
     myHistogram->setChanged( true );
+    
+    wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
   }
   else if( this->IsShown() )
   {
