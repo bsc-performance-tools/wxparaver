@@ -629,7 +629,6 @@ void gTimeline::redraw()
     gTimeline::dialogProgress->Fit();
 #endif // WIN32
   }
-
   // Get selected rows
   vector<bool>         selected;
   vector<TObjectOrder> selectedSet;
@@ -709,7 +708,6 @@ void gTimeline::redraw()
   dc.DrawBitmap( bufferImage, 0, 0, false );
   drawZone->Update();
 #endif
-
   if( !drawAxis( bufferDraw, selectedSet ) )
   {
     SetTitle( winTitle );
@@ -6739,7 +6737,6 @@ void gTimeline::OnCheckboxCustomPaletteUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( myWindow->isCodeColorSet() );
   event.Check( myWindow->getUseCustomPalette() );
-  panelSelectedColor->Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() );
 }
 
 
