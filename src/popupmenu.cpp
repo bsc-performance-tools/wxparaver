@@ -217,7 +217,7 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
   popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( _( STR_FILTER_COMMS ) ), sharedProperties->isAllowed( whichTimeline, STR_FILTER_COMMS) );
   popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( _( STR_FILTER_EVENTS ) ), sharedProperties->isAllowed( whichTimeline, STR_FILTER_EVENTS) );
 
-  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), whichTimeline->GetMyWindow()->isSync() && whichTimeline->GetMyWindow()->getSyncGroup() > 0 );
+  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), SyncWindows::getInstance()->getNumGroups() > 1 );
   
   Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE ) );
   Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE_DEFAULT_SPECIAL ) );
@@ -244,7 +244,7 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
   popUpMenuPaste->Enable( popUpMenuPaste->FindItem( _( STR_DURATION ) ), sharedProperties->isAllowed( whichHistogram, STR_DURATION )  );
   popUpMenuPaste->Enable( popUpMenuPaste->FindItem( _( STR_SEMANTIC_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_SEMANTIC_SCALE)  );
 
-  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), whichHistogram->GetHistogram()->isSync() && whichHistogram->GetHistogram()->getSyncGroup() > 0 );
+  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), SyncWindows::getInstance()->getNumGroups() > 1 );
 
   Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE ) );
   Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_DEFAULT_SPECIAL ) );
@@ -429,6 +429,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuSave = new wxMenu;
   popUpMenuRun = new wxMenu;
   popUpMenuSync = new wxMenu;
+  popUpMenuSyncRemove = new wxMenu;
 
 #ifdef __WXMAC__
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
@@ -766,10 +767,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   
   AppendSeparator();
 
-  vector<unsigned int> tmpGroups;
+  vector< TGroupId > tmpGroups;
   SyncWindows::getInstance()->getGroups( tmpGroups );
-  unsigned int i = 0;
-  for( vector<unsigned int>::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
+  TGroupId i = 0;
+  for( vector< TGroupId >::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
     buildItem( popUpMenuSync, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
                ID_MENU_SYNC_GROUP_BASE + i, timeline->GetMyWindow()->isSync() && timeline->GetMyWindow()->getSyncGroup() == *itGroup );
@@ -778,7 +779,14 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuSync->AppendSeparator();
   buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
              ID_MENU_NEWGROUP, FALSE );
-  buildItem( popUpMenuSync, _( STR_SYNC_REMOVE_GROUP ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_REMOVE_GROUP );
+
+  i = 1;
+  for( vector< TGroupId >::const_iterator itGroup = ++tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
+  {
+    buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
+    ++i;
+  }
+  popUpMenuSync->AppendSubMenu( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_GROUP ) );
 
   AppendSubMenu( popUpMenuSync, _( STR_SYNCHRONIZE ) );
 
@@ -831,6 +839,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuColor2D = new wxMenu;
   popUpMenuSave = new wxMenu;
   popUpMenuSync = new wxMenu;
+  popUpMenuSyncRemove = new wxMenu;
   
 #ifdef __WXMAC__
   buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
@@ -1131,10 +1140,10 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
-  vector<unsigned int> tmpGroups;
+  vector< TGroupId > tmpGroups;
   SyncWindows::getInstance()->getGroups( tmpGroups );
-  unsigned int i = 0;
-  for( vector<unsigned int>::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
+  TGroupId i = 0;
+  for( vector< TGroupId >::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
     buildItem( popUpMenuSync, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
                ID_MENU_SYNC_GROUP_BASE + i, histogram->GetHistogram()->isSync() && histogram->GetHistogram()->getSyncGroup() == *itGroup );
@@ -1143,8 +1152,15 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuSync->AppendSeparator();
   buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
              ID_MENU_NEWGROUP, FALSE );
-  buildItem( popUpMenuSync, _( STR_SYNC_REMOVE_GROUP ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_REMOVE_GROUP );
-
+  
+  i = 1;
+  for( vector< TGroupId >::const_iterator itGroup = ++tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
+  {
+    buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
+    ++i;
+  }
+  popUpMenuSync->AppendSubMenu( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_GROUP ) );
+  
   AppendSubMenu( popUpMenuSync, _( STR_SYNCHRONIZE ) );
 
   AppendSeparator();
@@ -1940,10 +1956,10 @@ void gPopUpMenu::OnMenuSynchronize( wxCommandEvent& event )
   }
   else
   {
-    vector<unsigned int> tmpGroups;
+    vector<TGroupId> tmpGroups;
     SyncWindows::getInstance()->getGroups( tmpGroups );
     
-    unsigned int group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
+    TGroupId group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
     if( timeline != NULL )
     {
       if( timeline->GetMyWindow()->isSync() && group == timeline->GetMyWindow()->getSyncGroup() )
@@ -1964,18 +1980,9 @@ void gPopUpMenu::OnMenuSynchronize( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuRemoveGroup( wxCommandEvent& event )
 {
-  if( timeline != NULL )
-  {
-    if( !timeline->GetMyWindow()->isSync() )
-      return;
-    SyncWindows::getInstance()->removeAll( timeline->GetMyWindow()->getSyncGroup() );
-  }
-  else if( histogram != NULL )
-  {
-    if( !histogram->GetHistogram()->isSync() )
-      return;
-    SyncWindows::getInstance()->removeAll( histogram->GetHistogram()->getSyncGroup() );
-  }
+  vector< TGroupId > tmpGroups;
+  SyncWindows::getInstance()->getGroups( tmpGroups );
+  SyncWindows::getInstance()->removeAll( tmpGroups[ event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE ] );
 }
 
 
