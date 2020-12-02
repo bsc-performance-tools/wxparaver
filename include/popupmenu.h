@@ -148,6 +148,7 @@ class gHistogram;
 #define ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO                 30103
 
 #define ID_MENU_SYNC_GROUP_BASE                   31000
+#define ID_MENU_SYNC_REMOVE_GROUP_BASE            32000
 
 class gPopUpMenu : public wxMenu
 {
@@ -315,6 +316,7 @@ class gPopUpMenu : public wxMenu
     wxMenu *popUpMenuSave;
     wxMenu *popUpMenuRun;
     wxMenu *popUpMenuSync;
+    wxMenu *popUpMenuSyncRemove;
 
     wxMenuItem *buildItem( wxMenu *popUp,
                            const wxString &title,
