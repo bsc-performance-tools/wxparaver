@@ -58,6 +58,7 @@ class wxToggleButton;
 #define ID_ADVANCEDSAVECONFIGURATION 10186
 #define ID_CHOICE_WINDOW 10185
 #define ID_SCROLLEDWINDOW1 10187
+#define ID_SCROLLED_LINK_PROPERTIES 10000
 #define ID_TOGGLEBUTTON_LIST_SELECTED 10197
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE _("Save Basic CFG - Properties Editor")
@@ -144,6 +145,7 @@ public:
 ////@begin AdvancedSaveConfiguration member variables
   wxChoice* choiceWindow;
   wxScrolledWindow* scrolledWindow;
+  wxScrolledWindow* scrolledLinkProperties;
   wxToggleButton* toggleOnlySelected;
   wxButton* buttonSave;
 ////@end AdvancedSaveConfiguration member variables

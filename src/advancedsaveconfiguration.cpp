@@ -191,6 +191,7 @@ void AdvancedSaveConfiguration::Init()
 ////@begin AdvancedSaveConfiguration member initialisation
   choiceWindow = NULL;
   scrolledWindow = NULL;
+  scrolledLinkProperties = NULL;
   toggleOnlySelected = NULL;
   buttonSave = NULL;
 ////@end AdvancedSaveConfiguration member initialisation
@@ -213,36 +214,49 @@ void AdvancedSaveConfiguration::CreateControls()
   itemDialog1->SetSizer(itemBoxSizer2);
 
   wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer3, 0, wxGROW|wxALL|wxFIXED_MINSIZE, 5);
+  itemBoxSizer2->Add(itemBoxSizer3, 1, wxGROW|wxALL, 5);
+
+  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer3->Add(itemBoxSizer4, 1, wxGROW|wxFIXED_MINSIZE, 5);
+
+  wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer4->Add(itemBoxSizer5, 0, wxGROW|wxALL|wxFIXED_MINSIZE, 5);
 
   wxArrayString choiceWindowStrings;
   choiceWindow = new wxChoice( itemDialog1, ID_CHOICE_WINDOW, wxDefaultPosition, wxDefaultSize, choiceWindowStrings, 0 );
-  itemBoxSizer3->Add(choiceWindow, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer5->Add(choiceWindow, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   scrolledWindow = new wxScrolledWindow( itemDialog1, ID_SCROLLEDWINDOW1, wxDefaultPosition, wxSize(450, 400), wxSUNKEN_BORDER|wxVSCROLL|wxTAB_TRAVERSAL );
-  itemBoxSizer2->Add(scrolledWindow, 1, wxGROW|wxALL|wxFIXED_MINSIZE, 5);
+  itemBoxSizer4->Add(scrolledWindow, 1, wxGROW|wxALL|wxFIXED_MINSIZE, 5);
   scrolledWindow->SetScrollbars(15, 15, 0, 0);
 
-  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer6, 0, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer8 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer3->Add(itemBoxSizer8, 1, wxGROW, 5);
+
+  scrolledLinkProperties = new wxScrolledWindow( itemDialog1, ID_SCROLLED_LINK_PROPERTIES, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL );
+  itemBoxSizer8->Add(scrolledLinkProperties, 1, wxGROW|wxALL, 5);
+  scrolledLinkProperties->SetScrollbars(1, 1, 0, 0);
+
+  wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer2->Add(itemBoxSizer10, 0, wxGROW|wxALL, 5);
 
   toggleOnlySelected = new wxToggleButton( itemDialog1, ID_TOGGLEBUTTON_LIST_SELECTED, _("View selected"), wxDefaultPosition, wxDefaultSize, 0 );
   toggleOnlySelected->SetValue(false);
   toggleOnlySelected->SetName(wxT("List Selected"));
-  itemBoxSizer6->Add(toggleOnlySelected, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer10->Add(toggleOnlySelected, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  itemBoxSizer6->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer10->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer9 = new wxStdDialogButtonSizer;
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer13 = new wxStdDialogButtonSizer;
 
-  itemBoxSizer6->Add(itemStdDialogButtonSizer9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-  wxButton* itemButton10 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer9->AddButton(itemButton10);
+  itemBoxSizer10->Add(itemStdDialogButtonSizer13, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  wxButton* itemButton14 = new wxButton( itemDialog1, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer13->AddButton(itemButton14);
 
   buttonSave = new wxButton( itemDialog1, wxID_SAVE, _("&Save"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer9->AddButton(buttonSave);
+  itemStdDialogButtonSizer13->AddButton(buttonSave);
 
-  itemStdDialogButtonSizer9->Realize();
+  itemStdDialogButtonSizer13->Realize();
 
 ////@end AdvancedSaveConfiguration content construction
 
