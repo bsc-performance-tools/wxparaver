@@ -778,7 +778,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   }
   popUpMenuSync->AppendSeparator();
   buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
-             ID_MENU_NEWGROUP, FALSE );
+             ID_MENU_NEWGROUP );
 
   i = 1;
   for( vector< TGroupId >::const_iterator itGroup = ++tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
@@ -786,6 +786,9 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
     buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
     ++i;
   }
+  popUpMenuSyncRemove->AppendSeparator();
+  buildItem( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_ALL_GROUPS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllGroups,
+             ID_MENU_SYNC_REMOVE_ALL_GROUPS );
   popUpMenuSync->AppendSubMenu( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_GROUP ) );
 
   AppendSubMenu( popUpMenuSync, _( STR_SYNCHRONIZE ) );
@@ -1151,7 +1154,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   }
   popUpMenuSync->AppendSeparator();
   buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
-             ID_MENU_NEWGROUP, FALSE );
+             ID_MENU_NEWGROUP );
   
   i = 1;
   for( vector< TGroupId >::const_iterator itGroup = ++tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
@@ -1159,6 +1162,10 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
     buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
     ++i;
   }
+  popUpMenuSyncRemove->AppendSeparator();
+  buildItem( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_ALL_GROUPS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllGroups,
+             ID_MENU_SYNC_REMOVE_ALL_GROUPS );
+
   popUpMenuSync->AppendSubMenu( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_GROUP ) );
   
   AppendSubMenu( popUpMenuSync, _( STR_SYNCHRONIZE ) );
@@ -1982,7 +1989,14 @@ void gPopUpMenu::OnMenuRemoveGroup( wxCommandEvent& event )
 {
   vector< TGroupId > tmpGroups;
   SyncWindows::getInstance()->getGroups( tmpGroups );
-  SyncWindows::getInstance()->removeAll( tmpGroups[ event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE ] );
+  SyncWindows::getInstance()->removeAllWindows( tmpGroups[ event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE ] );
+}
+
+
+void gPopUpMenu::OnMenuRemoveAllGroups( wxCommandEvent& event )
+{
+  vector< TGroupId > tmpGroups;
+  SyncWindows::getInstance()->removeAllGroups();
 }
 
 
