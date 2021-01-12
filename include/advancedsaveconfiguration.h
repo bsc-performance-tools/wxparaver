@@ -36,11 +36,13 @@
 
 #include <vector>
 #include <map>
+#include <set>
+
 #include "paraverkerneltypes.h"
 #include "window.h"
 #include "histogram.h"
 
-
+using std::multimap;
 
 /*!
  * Forward declarations
@@ -66,6 +68,65 @@ class wxToggleButton;
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE wxDefaultSize
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION wxDefaultPosition
 ////@end control identifiers
+
+
+/*!
+ * CFGS4D Linked properties classes
+ */
+
+class CFGS4DLinkedProperty
+{
+  public:
+    CFGS4DLinkedProperty()
+    {}
+
+    ~CFGS4DLinkedProperty()
+    {}
+    
+    void setCustomName( std::string whichName );
+    std::string getCustomName() const;
+
+    void insertLink( Window *whichWindow );
+    void insertLink( Histogram *whichHistogram );
+    void removeLink( Window *whichWindow );
+    void removeLink( Histogram *whichHistogram );
+    
+    void getLinks( std::set<Window *>& onSet ) const;
+    void getLinks( std::set<Histogram *>& onSet ) const;
+    
+  private:
+    std::string customName;
+    std::set<Window *> windows;
+    std::set<Histogram *> histograms;
+};
+
+class CFGS4DLinkedPropertiesManager
+{
+  public:
+    CFGS4DLinkedPropertiesManager()
+    {}
+
+    ~CFGS4DLinkedPropertiesManager()
+    {}
+    
+    void setCustomName( std::string originalName, std::string customName );
+    std::string getCustomName( std::string originalName ) const;
+
+    void insertLink( std::string originalName, Window *whichWindow );
+    void insertLink( std::string originalName, Histogram *whichHistogram );
+    void removeLink( std::string originalName, Window *whichWindow );
+    void removeLink( std::string originalName, Histogram *whichHistogram );
+
+    void getLinks( std::string whichName, std::set<Window *>& onSet ) const;
+    void getLinks( std::string whichName, std::set<Histogram *>& onSet ) const;
+
+    void getLinksName( std::vector<std::string>& onVector ) const;
+    
+  private:
+    std::map< std::string, CFGS4DLinkedProperty > enabledProperties;
+};
+
+
 
 /*!
  * AdvancedSaveConfiguration class declaration
@@ -218,6 +279,8 @@ public:
     void OnStatisticsButtonClick( wxCommandEvent& event );
     
     void RefreshList( bool showFullList );
+
+    void updateLinkProperties();
 };
 
 #endif

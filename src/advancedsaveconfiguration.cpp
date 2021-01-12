@@ -742,6 +742,8 @@ void AdvancedSaveConfiguration::OnCheckBoxClicked( wxCommandEvent& event )
   wxButton *relatedButton = GetButtonByName( currentTextCtrlName );
   if ( relatedButton != NULL )
     relatedButton->Enable( currentCheckBox->GetValue() );
+
+  updateLinkProperties();
 }
 
 
@@ -1011,3 +1013,114 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
   EndModal( wxID_CANCEL );
 }
 
+
+void AdvancedSaveConfiguration::updateLinkProperties()
+{
+
+}
+
+/*!
+ * CFGS4DLinkedProperty Methods
+ */
+
+void CFGS4DLinkedProperty::setCustomName( string whichName )
+{
+  customName = whichName;
+}
+
+string CFGS4DLinkedProperty::getCustomName() const
+{
+  return customName;
+}
+
+void CFGS4DLinkedProperty::insertLink( Window *whichWindow )
+{
+  windows.insert( whichWindow );
+}
+
+void CFGS4DLinkedProperty::insertLink( Histogram *whichHistogram )
+{
+  histograms.insert( whichHistogram );
+}
+
+void CFGS4DLinkedProperty::removeLink( Window *whichWindow )
+{
+  windows.erase( whichWindow );
+}
+
+void CFGS4DLinkedProperty::removeLink( Histogram *whichHistogram )
+{
+  histograms.erase( whichHistogram );
+}
+
+void CFGS4DLinkedProperty::getLinks( std::set<Window *>& onSet ) const
+{
+  onSet = windows;
+}
+
+void CFGS4DLinkedProperty::getLinks( std::set<Histogram *>& onSet ) const
+{
+  onSet = histograms;
+}
+
+
+/*
+ * CFGS4DLinkedPropertiesManager Methods
+ */
+
+void CFGS4DLinkedPropertiesManager::setCustomName( std::string originalName, std::string customName )
+{
+  enabledProperties[ originalName ].setCustomName( customName );
+}
+
+std::string CFGS4DLinkedPropertiesManager::getCustomName( std::string originalName ) const
+{
+  map<string, CFGS4DLinkedProperty>::const_iterator it = enabledProperties.find( originalName );
+  if ( it != enabledProperties.end() )
+    return it->second.getCustomName();
+
+  return "";
+}
+
+void CFGS4DLinkedPropertiesManager::insertLink( std::string originalName, Window *whichWindow )
+{
+  enabledProperties[ originalName ].insertLink( whichWindow );
+}
+
+void CFGS4DLinkedPropertiesManager::insertLink( std::string originalName, Histogram *whichHistogram )
+{
+  enabledProperties[ originalName ].insertLink( whichHistogram );
+}
+
+void CFGS4DLinkedPropertiesManager::removeLink( std::string originalName, Window *whichWindow )
+{
+  enabledProperties[ originalName ].removeLink( whichWindow );  
+}
+
+void CFGS4DLinkedPropertiesManager::removeLink( std::string originalName, Histogram *whichHistogram )
+{
+  enabledProperties[ originalName ].removeLink( whichHistogram );  
+}
+
+void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, std::set<Window *>& onSet ) const
+{
+  map<string, CFGS4DLinkedProperty>::const_iterator it = enabledProperties.find( whichName );
+  if ( it != enabledProperties.end() )
+    it->second.getLinks( onSet );  
+}
+
+void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, std::set<Histogram *>& onSet ) const
+{
+  map<string, CFGS4DLinkedProperty>::const_iterator it = enabledProperties.find( whichName );
+  if ( it != enabledProperties.end() )
+    it->second.getLinks( onSet );  
+}
+
+void CFGS4DLinkedPropertiesManager::getLinksName( std::vector<std::string>& onVector ) const
+{
+  for( std::map< std::string, CFGS4DLinkedProperty >::const_iterator it = enabledProperties.begin();
+       it != enabledProperties.end(); ++it )
+  {
+    onVector.push_back( it->first );
+  }
+}
