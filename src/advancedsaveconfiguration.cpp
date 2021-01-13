@@ -36,6 +36,7 @@
 ////@begin includes
 ////@end includes
 #include "advancedsaveconfiguration.h"
+#include <wx/statline.h>
 
 ////@begin XPM images
 ////@end XPM images
@@ -292,7 +293,7 @@ void AdvancedSaveConfiguration::CreateControls()
   {
     buttonSave->SetLabel( _("Ok") );
     choiceWindow->Enable( false );
-
+    scrolledLinkProperties->Hide();
     // doesn't work
     //SetPosition( wxPoint( GetParent()->GetPosition().x + 20 ,
     //                      GetParent()->GetPosition().y + 20 ));
@@ -743,7 +744,25 @@ void AdvancedSaveConfiguration::OnCheckBoxClicked( wxCommandEvent& event )
   if ( relatedButton != NULL )
     relatedButton->Enable( currentCheckBox->GetValue() );
 
-  updateLinkProperties();
+  if( editionMode == PROPERTIES_TAGS )
+  {
+    if( currentCheckBox->GetValue() )
+    {
+      if( isTimeline )
+        linksManager.insertLink( std::string( currentTextCtrlName.mb_str() ), timelines[ currentItem ] );
+      else
+        linksManager.insertLink( std::string( currentTextCtrlName.mb_str() ), histograms[ currentItem ] );
+    }
+    else
+    {
+      if( isTimeline )
+        linksManager.removeLink( std::string( currentTextCtrlName.mb_str() ), timelines[ currentItem ] );
+      else
+        linksManager.removeLink( std::string( currentTextCtrlName.mb_str() ), histograms[ currentItem ] );
+    }
+
+    updateLinkPropertiesWidgets();
+  }
 }
 
 
@@ -1014,9 +1033,76 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
 }
 
 
-void AdvancedSaveConfiguration::updateLinkProperties()
+void AdvancedSaveConfiguration::buildLinkWindowWidget( wxBoxSizer *boxSizerLinks, wxString& strWindowName )
 {
+  wxBoxSizer *boxSizerLinkWindow;
+  boxSizerLinkWindow = new wxBoxSizer( wxHORIZONTAL );
+  boxSizerLinkWindow->Add( 0, 0, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 20 );
+  
+  wxCheckBox *auxCheckBox = new wxCheckBox( scrolledLinkProperties,
+                                            wxID_ANY,
+                                            strWindowName,
+                                            wxDefaultPosition,
+                                            wxDefaultSize,
+                                            0,
+                                            wxDefaultValidator );
 
+  boxSizerLinkWindow->Add( auxCheckBox, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );  
+  boxSizerLinks->Add( boxSizerLinkWindow );
+}
+
+void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
+{
+  vector<string> links;
+  linksManager.getLinksName( links );
+
+  scrolledLinkProperties->DestroyChildren();
+
+  wxBoxSizer *boxSizerLinks = new wxBoxSizer( wxVERTICAL );
+
+  for( vector<string>::iterator it = links.begin(); it != links.end(); ++it )
+  {
+    wxBoxSizer *boxSizerOriginalName = new wxBoxSizer( wxHORIZONTAL );
+
+    wxString originalNameLabel = wxString::FromAscii( (*it).c_str() );
+    wxString fullOriginalNameLabel = originalNameLabel;
+    if ( originalNameLabel.AfterLast( KParamSeparator[0] ) != originalNameLabel )
+       originalNameLabel = originalNameLabel.AfterLast( KParamSeparator[0] );
+
+    wxCheckBox *auxCheckBox = new wxCheckBox( scrolledLinkProperties,
+                                              wxID_ANY,
+                                              originalNameLabel,
+                                              wxDefaultPosition,
+                                              wxDefaultSize,
+                                              0,
+                                              wxDefaultValidator,
+                                              fullOriginalNameLabel + KCheckBoxSuffix );
+    boxSizerOriginalName->Add( auxCheckBox, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+    boxSizerLinks->Add( boxSizerOriginalName );
+
+    CFGS4DLinkedProperty::TWindowsSet linkedWindows;
+    CFGS4DLinkedProperty::THistogramsSet linkedHistograms;
+    linksManager.getLinks( *it, linkedWindows );
+    linksManager.getLinks( *it, linkedHistograms );
+
+    wxBoxSizer *boxSizerLinkWindow;
+    for( CFGS4DLinkedProperty::TWindowsSet::iterator itWin = linkedWindows.begin(); itWin != linkedWindows.end(); ++itWin )
+    {
+      wxString tmpStr = wxString::FromAscii( (*itWin)->getName().c_str() );
+      buildLinkWindowWidget( boxSizerLinks, tmpStr );
+    }
+
+    for( CFGS4DLinkedProperty::THistogramsSet::iterator itHisto = linkedHistograms.begin(); itHisto != linkedHistograms.end(); ++itHisto )
+    {
+      wxString tmpStr = wxString::FromAscii( (*itHisto)->getName().c_str() );
+      buildLinkWindowWidget( boxSizerLinks, tmpStr );
+    }
+
+    boxSizerLinks->Add( new wxStaticLine( scrolledLinkProperties ), 0, wxEXPAND|wxALL, 3 );
+  }
+
+  scrolledLinkProperties->SetSizer( boxSizerLinks );
+  scrolledLinkProperties->FitInside();
 }
 
 /*!
@@ -1053,16 +1139,20 @@ void CFGS4DLinkedProperty::removeLink( Histogram *whichHistogram )
   histograms.erase( whichHistogram );
 }
 
-void CFGS4DLinkedProperty::getLinks( std::set<Window *>& onSet ) const
+void CFGS4DLinkedProperty::getLinks( CFGS4DLinkedProperty::TWindowsSet& onSet ) const
 {
   onSet = windows;
 }
 
-void CFGS4DLinkedProperty::getLinks( std::set<Histogram *>& onSet ) const
+void CFGS4DLinkedProperty::getLinks( CFGS4DLinkedProperty::THistogramsSet& onSet ) const
 {
   onSet = histograms;
 }
 
+size_t CFGS4DLinkedProperty::getLinksSize() const
+{
+  return windows.size() + histograms.size();
+}
 
 /*
  * CFGS4DLinkedPropertiesManager Methods
@@ -1094,22 +1184,26 @@ void CFGS4DLinkedPropertiesManager::insertLink( std::string originalName, Histog
 
 void CFGS4DLinkedPropertiesManager::removeLink( std::string originalName, Window *whichWindow )
 {
-  enabledProperties[ originalName ].removeLink( whichWindow );  
+  enabledProperties[ originalName ].removeLink( whichWindow );
+  if( enabledProperties[ originalName ].getLinksSize() == 0 )
+    enabledProperties.erase( originalName );
 }
 
 void CFGS4DLinkedPropertiesManager::removeLink( std::string originalName, Histogram *whichHistogram )
 {
-  enabledProperties[ originalName ].removeLink( whichHistogram );  
+  enabledProperties[ originalName ].removeLink( whichHistogram );
+  if( enabledProperties[ originalName ].getLinksSize() == 0 )
+    enabledProperties.erase( originalName );
 }
 
-void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, std::set<Window *>& onSet ) const
+void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, CFGS4DLinkedProperty::TWindowsSet& onSet ) const
 {
   map<string, CFGS4DLinkedProperty>::const_iterator it = enabledProperties.find( whichName );
   if ( it != enabledProperties.end() )
     it->second.getLinks( onSet );  
 }
 
-void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, std::set<Histogram *>& onSet ) const
+void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, CFGS4DLinkedProperty::THistogramsSet& onSet ) const
 {
   map<string, CFGS4DLinkedProperty>::const_iterator it = enabledProperties.find( whichName );
   if ( it != enabledProperties.end() )

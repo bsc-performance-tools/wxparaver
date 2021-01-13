@@ -74,9 +74,28 @@ class wxToggleButton;
  * CFGS4D Linked properties classes
  */
 
+struct lessWinCompare
+{
+  bool operator()( Window *win1, Window *win2 ) const
+  {
+    return win1->getName() < win2->getName();
+  }
+};
+
+struct lessHistoCompare
+{
+  bool operator()( Histogram *histo1, Histogram *histo2 ) const
+  {
+    return histo1->getName() < histo2->getName();
+  }
+};
+
 class CFGS4DLinkedProperty
 {
   public:
+    typedef std::set<Window *, lessWinCompare> TWindowsSet;
+    typedef std::set<Histogram *, lessHistoCompare> THistogramsSet;
+
     CFGS4DLinkedProperty()
     {}
 
@@ -91,13 +110,17 @@ class CFGS4DLinkedProperty
     void removeLink( Window *whichWindow );
     void removeLink( Histogram *whichHistogram );
     
-    void getLinks( std::set<Window *>& onSet ) const;
-    void getLinks( std::set<Histogram *>& onSet ) const;
+    void getLinks( CFGS4DLinkedProperty::TWindowsSet& onSet ) const;
+    void getLinks( CFGS4DLinkedProperty::THistogramsSet& onSet ) const;
+    
+    size_t getLinksSize() const;
     
   private:
     std::string customName;
-    std::set<Window *> windows;
-    std::set<Histogram *> histograms;
+    CFGS4DLinkedProperty::TWindowsSet windows;
+    CFGS4DLinkedProperty::THistogramsSet histograms;
+    std::map<Window *, bool> linkedwindow;
+    std::map<Histogram *, bool> linkedhistogram;
 };
 
 class CFGS4DLinkedPropertiesManager
@@ -117,8 +140,8 @@ class CFGS4DLinkedPropertiesManager
     void removeLink( std::string originalName, Window *whichWindow );
     void removeLink( std::string originalName, Histogram *whichHistogram );
 
-    void getLinks( std::string whichName, std::set<Window *>& onSet ) const;
-    void getLinks( std::string whichName, std::set<Histogram *>& onSet ) const;
+    void getLinks( std::string whichName, CFGS4DLinkedProperty::TWindowsSet& onSet ) const;
+    void getLinks( std::string whichName, CFGS4DLinkedProperty::THistogramsSet& onSet ) const;
 
     void getLinksName( std::vector<std::string>& onVector ) const;
     
@@ -247,6 +270,8 @@ public:
 
     TEditorMode editionMode;
 
+    CFGS4DLinkedPropertiesManager linksManager;
+
     int GetSelectionIndexCorrected( int index, bool &isTimeline );
 
     wxString BuildName( Window *current );
@@ -280,7 +305,8 @@ public:
     
     void RefreshList( bool showFullList );
 
-    void updateLinkProperties();
+    void buildLinkWindowWidget( wxBoxSizer *boxSizerLinks, wxString& strWindowName );
+    void updateLinkPropertiesWidgets();
 };
 
 #endif
