@@ -5297,10 +5297,13 @@ void paraverMain::filterExternalApps()
 #else
   wxArrayString externalTextEditors = paraverMain::FromVectorStringToWxArray( paraverConfig->getGlobalExternalTextEditors(), "txt" );
   
+  wxArrayString dummyOutput;
+  wxArrayString dummyErrors;
+
   for ( int i = 0 ; i < externalTextEditors.size(); ++i )
   {
     wxString command = externalTextEditors[ i ] + wxT( " --version 1>&- 2>&-'");
-    int execRes = wxExecute( command, wxEXEC_SYNC );
+    int execRes = wxExecute( command, dummyOutput, dummyErrors, wxEXEC_SYNC );
 
     if ( execRes == 0 )
       newTxt.Add( externalTextEditors[ i ] );
@@ -5331,7 +5334,7 @@ void paraverMain::filterExternalApps()
   for ( int i = 0 ; i < externalPDFReaders.size(); ++i )
   {
     wxString command = externalPDFReaders[ i ] + wxT( " --version 1>&- 2>&-'");
-    int execRes = wxExecute( command, wxEXEC_SYNC );
+    int execRes = wxExecute( command, dummyOutput, dummyErrors, wxEXEC_SYNC );
 
     if ( execRes == 0 )
       newPDF.Add( externalPDFReaders[ i ] );
