@@ -1091,7 +1091,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkClicked( wxCommandEvent& event )
 {
   Window *tmpWin;
   Histogram *tmpHisto;
-  CheckboxLinkData *tmpData = ( CheckboxLinkData *)event.GetEventUserData();
+  CheckboxLinkData *tmpData = ( CheckboxLinkData *)event.m_callbackUserData;
   tmpData->getData( tmpWin );
   if( tmpWin != NULL )
   {
@@ -1231,7 +1231,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
 
 void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &event )
 {
-  string tmpOriginalName  = ( ( OriginalNameData *)event.GetEventUserData() )->myOriginalName;
+  string tmpOriginalName  = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
   linkedManager.setCustomName( tmpOriginalName, string( event.GetString().mb_str() ) );
 }
 
@@ -1271,12 +1271,11 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
 
     boxSizerOriginalName->Add( auxCheckBox, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 2 );
 
-
     wxString tmpCustomName;
     if( linkedManager.getLinksSize( *it ) > 0 )
-      tmpCustomName = linkedManager.getCustomName( *it );
+      tmpCustomName = wxString::FromAscii( linkedManager.getCustomName( *it ).c_str() );
     else
-      tmpCustomName = unlinkedManager.getCustomName( *it );
+      tmpCustomName = wxString::FromAscii( unlinkedManager.getCustomName( *it ).c_str() );
 
     wxArrayString forbiddenChars;
     forbiddenChars.Add( wxT("|") );
@@ -1292,7 +1291,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
                                                  excludeVerticalBar );
     OriginalNameData *tmpData = new OriginalNameData();
     tmpData->myOriginalName = *it;
-    customNameText->Connect( wxEVT_TEXT,
+    customNameText->Connect( wxEVT_COMMAND_TEXT_UPDATED,
                              wxCommandEventHandler( AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged ),
                              tmpData,
                              this ); 
