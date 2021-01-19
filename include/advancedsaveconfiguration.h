@@ -90,38 +90,41 @@ struct lessHistoCompare
   }
 };
 
-class CFGS4DLinkedProperty
+typedef std::set<Window *, lessWinCompare> TWindowsSet;
+typedef std::set<Histogram *, lessHistoCompare> THistogramsSet;
+
+class CFGS4DPropertyWindowsList
 {
   public:
-    typedef std::set<Window *, lessWinCompare> TWindowsSet;
-    typedef std::set<Histogram *, lessHistoCompare> THistogramsSet;
 
-    CFGS4DLinkedProperty()
+    CFGS4DPropertyWindowsList()
     {}
 
-    ~CFGS4DLinkedProperty()
+    ~CFGS4DPropertyWindowsList()
     {}
     
     void setCustomName( std::string whichName );
     std::string getCustomName() const;
 
-    void insertLink( Window *whichWindow );
-    void insertLink( Histogram *whichHistogram );
-    void removeLink( Window *whichWindow );
-    void removeLink( Histogram *whichHistogram );
+    void insertWindow( Window *whichWindow );
+    void insertWindow( Histogram *whichHistogram );
+    void removeWindow( Window *whichWindow );
+    void removeWindow( Histogram *whichHistogram );
     
-    void getLinks( CFGS4DLinkedProperty::TWindowsSet& onSet ) const;
-    void getLinks( CFGS4DLinkedProperty::THistogramsSet& onSet ) const;
+    void getWindowList( TWindowsSet& onSet ) const;
+    void getWindowList( THistogramsSet& onSet ) const;
     
-    size_t getLinksSize() const;
+    bool existsWindow( Window *whichWindow ) const;
+    bool existsWindow( Histogram *whichHistogram ) const;
+    
+    size_t getListSize() const;
     
   private:
     std::string customName;
-    CFGS4DLinkedProperty::TWindowsSet windows;
-    CFGS4DLinkedProperty::THistogramsSet histograms;
-    std::map<Window *, bool> linkedwindow;
-    std::map<Histogram *, bool> linkedhistogram;
+    TWindowsSet windows;
+    THistogramsSet histograms;
 };
+
 
 class CFGS4DLinkedPropertiesManager
 {
@@ -140,13 +143,15 @@ class CFGS4DLinkedPropertiesManager
     void removeLink( std::string originalName, Window *whichWindow );
     void removeLink( std::string originalName, Histogram *whichHistogram );
 
-    void getLinks( std::string whichName, CFGS4DLinkedProperty::TWindowsSet& onSet ) const;
-    void getLinks( std::string whichName, CFGS4DLinkedProperty::THistogramsSet& onSet ) const;
+    void getLinks( std::string whichName, TWindowsSet& onSet ) const;
+    void getLinks( std::string whichName, THistogramsSet& onSet ) const;
 
-    void getLinksName( std::vector<std::string>& onVector ) const;
+    void getLinksName( std::set<std::string>& onSet ) const;
     
+    size_t getLinksSize( const std::string whichName ) const;
+
   private:
-    std::map< std::string, CFGS4DLinkedProperty > enabledProperties;
+    std::map< std::string, CFGS4DPropertyWindowsList > enabledProperties;
 };
 
 
@@ -270,7 +275,8 @@ public:
 
     TEditorMode editionMode;
 
-    CFGS4DLinkedPropertiesManager linksManager;
+    CFGS4DLinkedPropertiesManager unlinkedManager;
+    CFGS4DLinkedPropertiesManager linkedManager;
 
     int GetSelectionIndexCorrected( int index, bool &isTimeline );
 
@@ -300,13 +306,22 @@ public:
     wxTextCtrl *GetTextCtrlByName( const wxString& widgetName ) const;
     wxButton *GetButtonByName( const wxString& widgetName ) const;
 
-    void OnCheckBoxClicked( wxCommandEvent& event );
+    void OnCheckBoxPropertyClicked( wxCommandEvent& event );
+    void OnCheckBoxLinkClicked( wxCommandEvent& event );
     void OnStatisticsButtonClick( wxCommandEvent& event );
     
     void RefreshList( bool showFullList );
 
-    void buildLinkWindowWidget( wxBoxSizer *boxSizerLinks, wxString& strWindowName );
+    void buildWindowsSetWidgets( const std::string& propertyName, wxBoxSizer *boxSizerLinks, bool checked );
+    template <typename WindowType>
+    void buildLinkWindowWidget( wxBoxSizer *boxSizerLinks, 
+                                const std::string& propertyName,
+                                WindowType *whichWindow,
+                                bool checked );
     void updateLinkPropertiesWidgets();
+    void OnCheckBoxLinkPropertyClicked( wxCommandEvent& event );
+    void OnLinkedPropertiesNameChanged( wxCommandEvent& event );
+
 };
 
 #endif

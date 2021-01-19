@@ -43,6 +43,59 @@
 
 using namespace std;
 
+class OriginalNameData : public wxObject
+{
+  public:
+    std::string myOriginalName;
+};
+
+class CheckboxLinkData : public wxObject
+{
+  public:
+    CheckboxLinkData()
+    {}
+
+    ~CheckboxLinkData()
+    {}
+  
+    void setPropertyName( const string& whichName )
+    {
+      propertyName = whichName;
+    }
+
+    void setData( Window *whichWindow )
+    {
+      myWindow = whichWindow;
+      myHistogram = NULL;
+    }
+
+    void setData( Histogram *whichHistogram )
+    {
+      myWindow = NULL;
+      myHistogram = whichHistogram;
+    }
+
+    string& getPropertyName()
+    {
+      return propertyName;
+    }
+
+    void getData( Window *&onWindow )
+    {
+      onWindow = myWindow;
+    }
+    
+    void getData( Histogram *&onHistogram )
+    {
+      onHistogram = myHistogram;
+    }
+
+  private:
+    string propertyName;
+    Window *myWindow;
+    Histogram *myHistogram;
+};
+
 /*!
  * AdvancedSaveConfiguration type definition
  */
@@ -331,7 +384,7 @@ void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel( bool showFullList )
       wxString currentCheckBoxName = wxString::FromAscii( it->first.c_str() );
       GetCheckBoxByName( currentCheckBoxName )->Disconnect(
               wxEVT_COMMAND_CHECKBOX_CLICKED,
-              wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
+              wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxPropertyClicked ),
               NULL,
               this );
     }
@@ -598,7 +651,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
     }
 
     auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
-                          wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxClicked ),
+                          wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxPropertyClicked ),
                           NULL,
                           this ); 
   }
@@ -734,7 +787,7 @@ wxButton *AdvancedSaveConfiguration::GetButtonByName( const wxString& widgetName
 }
 
 
-void AdvancedSaveConfiguration::OnCheckBoxClicked( wxCommandEvent& event )
+void AdvancedSaveConfiguration::OnCheckBoxPropertyClicked( wxCommandEvent& event )
 {
   wxCheckBox *currentCheckBox = static_cast<wxCheckBox *>( event.GetEventObject() );
   wxString currentTextCtrlName = currentCheckBox->GetName().BeforeLast( KSuffixSeparator[0] );
@@ -749,16 +802,18 @@ void AdvancedSaveConfiguration::OnCheckBoxClicked( wxCommandEvent& event )
     if( currentCheckBox->GetValue() )
     {
       if( isTimeline )
-        linksManager.insertLink( std::string( currentTextCtrlName.mb_str() ), timelines[ currentItem ] );
+        unlinkedManager.insertLink( std::string( currentTextCtrlName.mb_str() ), timelines[ currentItem ] );
       else
-        linksManager.insertLink( std::string( currentTextCtrlName.mb_str() ), histograms[ currentItem ] );
+        unlinkedManager.insertLink( std::string( currentTextCtrlName.mb_str() ), histograms[ currentItem ] );
+
+      unlinkedManager.setCustomName( std::string( currentTextCtrlName.mb_str() ), std::string( GetTextCtrlByName( currentTextCtrlName )->GetValue().mb_str() ) );
     }
     else
     {
       if( isTimeline )
-        linksManager.removeLink( std::string( currentTextCtrlName.mb_str() ), timelines[ currentItem ] );
+        unlinkedManager.removeLink( std::string( currentTextCtrlName.mb_str() ), timelines[ currentItem ] );
       else
-        linksManager.removeLink( std::string( currentTextCtrlName.mb_str() ), histograms[ currentItem ] );
+        unlinkedManager.removeLink( std::string( currentTextCtrlName.mb_str() ), histograms[ currentItem ] );
     }
 
     updateLinkPropertiesWidgets();
@@ -1032,8 +1087,51 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
   EndModal( wxID_CANCEL );
 }
 
+void AdvancedSaveConfiguration::OnCheckBoxLinkClicked( wxCommandEvent& event )
+{
+  Window *tmpWin;
+  Histogram *tmpHisto;
+  CheckboxLinkData *tmpData = ( CheckboxLinkData *)event.GetEventUserData();
+  tmpData->getData( tmpWin );
+  if( tmpWin != NULL )
+  {
+    if( event.IsChecked() )
+    {
+      unlinkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
+      linkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
+    }
+    else
+    {
+      unlinkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
+      linkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
+    }
+  }
+  else
+  {
+    tmpData->getData( tmpHisto );
+    if( tmpHisto != NULL )
+    {
+      if( event.IsChecked() )
+      {
+        unlinkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
+        linkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
+      }
+      else
+      {
+        unlinkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
+        linkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
+      }
+    }
+  }
 
-void AdvancedSaveConfiguration::buildLinkWindowWidget( wxBoxSizer *boxSizerLinks, wxString& strWindowName )
+  updateLinkPropertiesWidgets();
+}
+
+template <typename WindowType>
+void AdvancedSaveConfiguration::buildLinkWindowWidget( wxBoxSizer *boxSizerLinks,
+                                                       const string& propertyName,
+                                                       WindowType *whichWindow,
+                                                       bool checked )
 {
   wxBoxSizer *boxSizerLinkWindow;
   boxSizerLinkWindow = new wxBoxSizer( wxHORIZONTAL );
@@ -1041,26 +1139,114 @@ void AdvancedSaveConfiguration::buildLinkWindowWidget( wxBoxSizer *boxSizerLinks
   
   wxCheckBox *auxCheckBox = new wxCheckBox( scrolledLinkProperties,
                                             wxID_ANY,
-                                            strWindowName,
+                                            BuildName( whichWindow ),
                                             wxDefaultPosition,
                                             wxDefaultSize,
                                             0,
                                             wxDefaultValidator );
+  auxCheckBox->SetValue( checked );
+  CheckboxLinkData *tmpData = new CheckboxLinkData;
+  tmpData->setPropertyName( propertyName );
+  tmpData->setData( whichWindow );
+  auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
+                        wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxLinkClicked ),
+                        tmpData,
+                        this ); 
 
   boxSizerLinkWindow->Add( auxCheckBox, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );  
   boxSizerLinks->Add( boxSizerLinkWindow );
 }
 
+void AdvancedSaveConfiguration::buildWindowsSetWidgets( const string& propertyName, wxBoxSizer *boxSizerLinks, bool checked )
+{
+  TWindowsSet tmpWinSet;
+  THistogramsSet tmpHistoSet;
+
+  if( checked )
+  {
+    linkedManager.getLinks( propertyName, tmpWinSet );
+    linkedManager.getLinks( propertyName, tmpHistoSet );
+  }
+  else
+  {
+    unlinkedManager.getLinks( propertyName, tmpWinSet );
+    unlinkedManager.getLinks( propertyName, tmpHistoSet );
+  }
+
+  for( TWindowsSet::iterator itWin = tmpWinSet.begin(); itWin != tmpWinSet.end(); ++itWin )
+  {
+    buildLinkWindowWidget( boxSizerLinks, propertyName, *itWin, checked );
+  }
+
+  for( THistogramsSet::iterator itHisto = tmpHistoSet.begin(); itHisto != tmpHistoSet.end(); ++itHisto )
+  {
+    buildLinkWindowWidget( boxSizerLinks, propertyName, *itHisto, checked );
+  }
+}
+
+void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& event )
+{
+  string tmpName = string( ( (wxCheckBox *)event.GetEventObject() )->GetLabel().mb_str() );
+
+  if( event.IsChecked() )
+  {
+    TWindowsSet tmpWinSet;
+    unlinkedManager.getLinks( tmpName, tmpWinSet );
+    for( TWindowsSet::iterator it = tmpWinSet.begin(); it != tmpWinSet.end(); ++it )
+    {
+      unlinkedManager.removeLink( tmpName, *it );
+      linkedManager.insertLink( tmpName, *it );
+    }
+
+    THistogramsSet tmpHistoSet;
+    unlinkedManager.getLinks( tmpName, tmpHistoSet );
+    for( THistogramsSet::iterator it = tmpHistoSet.begin(); it != tmpHistoSet.end(); ++it )
+    {
+      unlinkedManager.removeLink( tmpName, *it );
+      linkedManager.insertLink( tmpName, *it ); 
+    }
+  }
+  else
+  {
+    TWindowsSet tmpWinSet;
+    linkedManager.getLinks( tmpName, tmpWinSet );
+    for( TWindowsSet::iterator it = tmpWinSet.begin(); it != tmpWinSet.end(); ++it )
+    {
+      linkedManager.removeLink( tmpName, *it );
+      unlinkedManager.insertLink( tmpName, *it );
+    }
+
+    THistogramsSet tmpHistoSet;
+    linkedManager.getLinks( tmpName, tmpHistoSet );
+    for( THistogramsSet::iterator it = tmpHistoSet.begin(); it != tmpHistoSet.end(); ++it )
+    {
+      linkedManager.removeLink( tmpName, *it ); 
+      unlinkedManager.insertLink( tmpName, *it );
+    }
+  }
+
+  updateLinkPropertiesWidgets();
+}
+
+
+void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &event )
+{
+  string tmpOriginalName  = ( ( OriginalNameData *)event.GetEventUserData() )->myOriginalName;
+  linkedManager.setCustomName( tmpOriginalName, string( event.GetString().mb_str() ) );
+}
+
+
 void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
 {
-  vector<string> links;
-  linksManager.getLinksName( links );
+  set<string> links;
+  unlinkedManager.getLinksName( links );
+  linkedManager.getLinksName( links );
 
   scrolledLinkProperties->DestroyChildren();
 
   wxBoxSizer *boxSizerLinks = new wxBoxSizer( wxVERTICAL );
 
-  for( vector<string>::iterator it = links.begin(); it != links.end(); ++it )
+  for( set<string>::iterator it = links.begin(); it != links.end(); ++it )
   {
     wxBoxSizer *boxSizerOriginalName = new wxBoxSizer( wxHORIZONTAL );
 
@@ -1077,27 +1263,47 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
                                               0,
                                               wxDefaultValidator,
                                               fullOriginalNameLabel + KCheckBoxSuffix );
-    boxSizerOriginalName->Add( auxCheckBox, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
-    boxSizerLinks->Add( boxSizerOriginalName );
+    auxCheckBox->SetValue( unlinkedManager.getLinksSize( *it ) == 0 );
+    auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
+                          wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked ),
+                          NULL,
+                          this ); 
 
-    CFGS4DLinkedProperty::TWindowsSet linkedWindows;
-    CFGS4DLinkedProperty::THistogramsSet linkedHistograms;
-    linksManager.getLinks( *it, linkedWindows );
-    linksManager.getLinks( *it, linkedHistograms );
+    boxSizerOriginalName->Add( auxCheckBox, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 2 );
 
-    wxBoxSizer *boxSizerLinkWindow;
-    for( CFGS4DLinkedProperty::TWindowsSet::iterator itWin = linkedWindows.begin(); itWin != linkedWindows.end(); ++itWin )
-    {
-      wxString tmpStr = wxString::FromAscii( (*itWin)->getName().c_str() );
-      buildLinkWindowWidget( boxSizerLinks, tmpStr );
-    }
 
-    for( CFGS4DLinkedProperty::THistogramsSet::iterator itHisto = linkedHistograms.begin(); itHisto != linkedHistograms.end(); ++itHisto )
-    {
-      wxString tmpStr = wxString::FromAscii( (*itHisto)->getName().c_str() );
-      buildLinkWindowWidget( boxSizerLinks, tmpStr );
-    }
+    wxString tmpCustomName;
+    if( linkedManager.getLinksSize( *it ) > 0 )
+      tmpCustomName = linkedManager.getCustomName( *it );
+    else
+      tmpCustomName = unlinkedManager.getCustomName( *it );
 
+    wxArrayString forbiddenChars;
+    forbiddenChars.Add( wxT("|") );
+    wxTextValidator excludeVerticalBar( wxFILTER_EXCLUDE_CHAR_LIST );
+    excludeVerticalBar.SetExcludes( forbiddenChars );
+
+    wxTextCtrl *customNameText = new wxTextCtrl( scrolledLinkProperties,
+                                                 wxID_ANY,
+                                                 tmpCustomName,
+                                                 wxDefaultPosition,
+                                                 wxDefaultSize,
+                                                 0,
+                                                 excludeVerticalBar );
+    OriginalNameData *tmpData = new OriginalNameData();
+    tmpData->myOriginalName = *it;
+    customNameText->Connect( wxEVT_TEXT,
+                             wxCommandEventHandler( AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged ),
+                             tmpData,
+                             this ); 
+
+    boxSizerOriginalName->Add( customNameText, 2, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+
+    boxSizerLinks->Add( boxSizerOriginalName, 0, wxEXPAND );
+
+    buildWindowsSetWidgets( *it, boxSizerLinks, false );
+    buildWindowsSetWidgets( *it, boxSizerLinks, true );
+    
     boxSizerLinks->Add( new wxStaticLine( scrolledLinkProperties ), 0, wxEXPAND|wxALL, 3 );
   }
 
@@ -1106,50 +1312,60 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
 }
 
 /*!
- * CFGS4DLinkedProperty Methods
+ * CFGS4DPropertyWindowsList Methods
  */
 
-void CFGS4DLinkedProperty::setCustomName( string whichName )
+void CFGS4DPropertyWindowsList::setCustomName( string whichName )
 {
   customName = whichName;
 }
 
-string CFGS4DLinkedProperty::getCustomName() const
+string CFGS4DPropertyWindowsList::getCustomName() const
 {
   return customName;
 }
 
-void CFGS4DLinkedProperty::insertLink( Window *whichWindow )
+void CFGS4DPropertyWindowsList::insertWindow( Window *whichWindow )
 {
   windows.insert( whichWindow );
 }
 
-void CFGS4DLinkedProperty::insertLink( Histogram *whichHistogram )
+void CFGS4DPropertyWindowsList::insertWindow( Histogram *whichHistogram )
 {
   histograms.insert( whichHistogram );
 }
 
-void CFGS4DLinkedProperty::removeLink( Window *whichWindow )
+void CFGS4DPropertyWindowsList::removeWindow( Window *whichWindow )
 {
   windows.erase( whichWindow );
 }
 
-void CFGS4DLinkedProperty::removeLink( Histogram *whichHistogram )
+void CFGS4DPropertyWindowsList::removeWindow( Histogram *whichHistogram )
 {
   histograms.erase( whichHistogram );
 }
 
-void CFGS4DLinkedProperty::getLinks( CFGS4DLinkedProperty::TWindowsSet& onSet ) const
+void CFGS4DPropertyWindowsList::getWindowList( TWindowsSet& onSet ) const
 {
   onSet = windows;
 }
 
-void CFGS4DLinkedProperty::getLinks( CFGS4DLinkedProperty::THistogramsSet& onSet ) const
+void CFGS4DPropertyWindowsList::getWindowList( THistogramsSet& onSet ) const
 {
   onSet = histograms;
 }
 
-size_t CFGS4DLinkedProperty::getLinksSize() const
+bool CFGS4DPropertyWindowsList::existsWindow( Window *whichWindow ) const
+{
+  return windows.find( whichWindow ) != windows.end();
+}
+
+bool CFGS4DPropertyWindowsList::existsWindow( Histogram *whichHistogram ) const
+{
+  return histograms.find( whichHistogram ) != histograms.end();
+}
+
+size_t CFGS4DPropertyWindowsList::getListSize() const
 {
   return windows.size() + histograms.size();
 }
@@ -1165,7 +1381,7 @@ void CFGS4DLinkedPropertiesManager::setCustomName( std::string originalName, std
 
 std::string CFGS4DLinkedPropertiesManager::getCustomName( std::string originalName ) const
 {
-  map<string, CFGS4DLinkedProperty>::const_iterator it = enabledProperties.find( originalName );
+  map<string, CFGS4DPropertyWindowsList>::const_iterator it = enabledProperties.find( originalName );
   if ( it != enabledProperties.end() )
     return it->second.getCustomName();
 
@@ -1174,47 +1390,56 @@ std::string CFGS4DLinkedPropertiesManager::getCustomName( std::string originalNa
 
 void CFGS4DLinkedPropertiesManager::insertLink( std::string originalName, Window *whichWindow )
 {
-  enabledProperties[ originalName ].insertLink( whichWindow );
+  enabledProperties[ originalName ].insertWindow( whichWindow );
 }
 
 void CFGS4DLinkedPropertiesManager::insertLink( std::string originalName, Histogram *whichHistogram )
 {
-  enabledProperties[ originalName ].insertLink( whichHistogram );
+  enabledProperties[ originalName ].insertWindow( whichHistogram );
 }
 
 void CFGS4DLinkedPropertiesManager::removeLink( std::string originalName, Window *whichWindow )
 {
-  enabledProperties[ originalName ].removeLink( whichWindow );
-  if( enabledProperties[ originalName ].getLinksSize() == 0 )
+  enabledProperties[ originalName ].removeWindow( whichWindow );
+  if( enabledProperties[ originalName ].getListSize() == 0 )
     enabledProperties.erase( originalName );
 }
 
 void CFGS4DLinkedPropertiesManager::removeLink( std::string originalName, Histogram *whichHistogram )
 {
-  enabledProperties[ originalName ].removeLink( whichHistogram );
-  if( enabledProperties[ originalName ].getLinksSize() == 0 )
+  enabledProperties[ originalName ].removeWindow( whichHistogram );
+  if( enabledProperties[ originalName ].getListSize() == 0 )
     enabledProperties.erase( originalName );
 }
 
-void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, CFGS4DLinkedProperty::TWindowsSet& onSet ) const
+void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, TWindowsSet& onSet ) const
 {
-  map<string, CFGS4DLinkedProperty>::const_iterator it = enabledProperties.find( whichName );
+  map<string, CFGS4DPropertyWindowsList>::const_iterator it = enabledProperties.find( whichName );
   if ( it != enabledProperties.end() )
-    it->second.getLinks( onSet );  
+    it->second.getWindowList( onSet );  
 }
 
-void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, CFGS4DLinkedProperty::THistogramsSet& onSet ) const
+void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, THistogramsSet& onSet ) const
 {
-  map<string, CFGS4DLinkedProperty>::const_iterator it = enabledProperties.find( whichName );
+  map<string, CFGS4DPropertyWindowsList>::const_iterator it = enabledProperties.find( whichName );
   if ( it != enabledProperties.end() )
-    it->second.getLinks( onSet );  
+    it->second.getWindowList( onSet );  
 }
 
-void CFGS4DLinkedPropertiesManager::getLinksName( std::vector<std::string>& onVector ) const
+void CFGS4DLinkedPropertiesManager::getLinksName( std::set<std::string>& onSet ) const
 {
-  for( std::map< std::string, CFGS4DLinkedProperty >::const_iterator it = enabledProperties.begin();
+  for( std::map< std::string, CFGS4DPropertyWindowsList >::const_iterator it = enabledProperties.begin();
        it != enabledProperties.end(); ++it )
   {
-    onVector.push_back( it->first );
+    onSet.insert( it->first );
   }
+}
+
+size_t CFGS4DLinkedPropertiesManager::getLinksSize( const std::string whichName ) const
+{
+  map<string, CFGS4DPropertyWindowsList>::const_iterator it = enabledProperties.find( whichName );
+  if ( it != enabledProperties.end() )
+    return  it->second.getListSize();
+
+  return 0;
 }
