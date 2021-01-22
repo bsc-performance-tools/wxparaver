@@ -307,7 +307,7 @@ public:
     wxButton *GetButtonByName( const wxString& widgetName ) const;
 
     void OnCheckBoxPropertyClicked( wxCommandEvent& event );
-    void OnCheckBoxLinkClicked( wxCommandEvent& event );
+    void OnCheckBoxLinkWindowClicked( wxCommandEvent& event );
     void OnStatisticsButtonClick( wxCommandEvent& event );
     
     void RefreshList( bool showFullList );

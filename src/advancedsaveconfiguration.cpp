@@ -799,21 +799,30 @@ void AdvancedSaveConfiguration::OnCheckBoxPropertyClicked( wxCommandEvent& event
 
   if( editionMode == PROPERTIES_TAGS )
   {
+    string tmpOriginalName = std::string( currentTextCtrlName.mb_str() );
     if( currentCheckBox->GetValue() )
     {
+      bool existsCustomName = ( unlinkedManager.getLinksSize( tmpOriginalName ) + linkedManager.getLinksSize( tmpOriginalName ) ) > 0;
       if( isTimeline )
-        unlinkedManager.insertLink( std::string( currentTextCtrlName.mb_str() ), timelines[ currentItem ] );
+        unlinkedManager.insertLink( tmpOriginalName, timelines[ currentItem ] );
       else
-        unlinkedManager.insertLink( std::string( currentTextCtrlName.mb_str() ), histograms[ currentItem ] );
+        unlinkedManager.insertLink( tmpOriginalName, histograms[ currentItem ] );
 
-      unlinkedManager.setCustomName( std::string( currentTextCtrlName.mb_str() ), std::string( GetTextCtrlByName( currentTextCtrlName )->GetValue().mb_str() ) );
+      if( !existsCustomName )
+        unlinkedManager.setCustomName( tmpOriginalName, std::string( GetTextCtrlByName( currentTextCtrlName )->GetValue().mb_str() ) );
     }
     else
     {
       if( isTimeline )
-        unlinkedManager.removeLink( std::string( currentTextCtrlName.mb_str() ), timelines[ currentItem ] );
+      {
+        unlinkedManager.removeLink( tmpOriginalName, timelines[ currentItem ] );
+        linkedManager.removeLink( tmpOriginalName, timelines[ currentItem ] );
+      }
       else
-        unlinkedManager.removeLink( std::string( currentTextCtrlName.mb_str() ), histograms[ currentItem ] );
+      {
+        unlinkedManager.removeLink( tmpOriginalName, histograms[ currentItem ] );
+        linkedManager.removeLink( tmpOriginalName, histograms[ currentItem ] );
+      }
     }
 
     updateLinkPropertiesWidgets();
@@ -1087,41 +1096,59 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
   EndModal( wxID_CANCEL );
 }
 
-void AdvancedSaveConfiguration::OnCheckBoxLinkClicked( wxCommandEvent& event )
+void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& event )
 {
   Window *tmpWin;
   Histogram *tmpHisto;
   CheckboxLinkData *tmpData = ( CheckboxLinkData *)event.m_callbackUserData;
-  tmpData->getData( tmpWin );
-  if( tmpWin != NULL )
+
+  if( event.IsChecked() )
   {
-    if( event.IsChecked() )
+    bool existsCustomName = linkedManager.getLinksSize( tmpData->getPropertyName() ) > 0;
+    string tmpCustomName = unlinkedManager.getCustomName( tmpData->getPropertyName() );
+
+    tmpData->getData( tmpWin );
+    if( tmpWin != NULL )
     {
       unlinkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
       linkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
     }
     else
     {
-      unlinkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
-      linkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
-    }
-  }
-  else
-  {
-    tmpData->getData( tmpHisto );
-    if( tmpHisto != NULL )
-    {
-      if( event.IsChecked() )
+      tmpData->getData( tmpHisto );
+      if( tmpHisto != NULL )
       {
         unlinkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
         linkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
       }
-      else
+    }
+
+    if( !existsCustomName )
+      linkedManager.setCustomName( tmpData->getPropertyName(), tmpCustomName );
+  }
+  else
+  {
+    bool existsCustomName = unlinkedManager.getLinksSize( tmpData->getPropertyName() ) > 0;
+    string tmpCustomName = linkedManager.getCustomName( tmpData->getPropertyName() );
+
+    tmpData->getData( tmpWin );
+    if( tmpWin != NULL )
+    {
+      linkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
+      unlinkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
+    }
+    else
+    {
+      tmpData->getData( tmpHisto );
+      if( tmpHisto != NULL )
       {
-        unlinkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
         linkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
+        unlinkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
       }
     }
+
+    if( !existsCustomName )
+      unlinkedManager.setCustomName( tmpData->getPropertyName(), tmpCustomName );
   }
 
   updateLinkPropertiesWidgets();
@@ -1149,7 +1176,7 @@ void AdvancedSaveConfiguration::buildLinkWindowWidget( wxBoxSizer *boxSizerLinks
   tmpData->setPropertyName( propertyName );
   tmpData->setData( whichWindow );
   auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
-                        wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxLinkClicked ),
+                        wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked ),
                         tmpData,
                         this ); 
 
@@ -1186,43 +1213,53 @@ void AdvancedSaveConfiguration::buildWindowsSetWidgets( const string& propertyNa
 
 void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& event )
 {
-  string tmpName = string( ( (wxCheckBox *)event.GetEventObject() )->GetLabel().mb_str() );
+  string tmpOriginalName = string( ( (wxCheckBox *)event.GetEventObject() )->GetLabel().mb_str() );
 
   if( event.IsChecked() )
   {
+    bool existsCustomName = linkedManager.getLinksSize( tmpOriginalName ) > 0;
+    string tmpCustomName = unlinkedManager.getCustomName( tmpOriginalName );
+
     TWindowsSet tmpWinSet;
-    unlinkedManager.getLinks( tmpName, tmpWinSet );
+    unlinkedManager.getLinks( tmpOriginalName, tmpWinSet );
     for( TWindowsSet::iterator it = tmpWinSet.begin(); it != tmpWinSet.end(); ++it )
     {
-      unlinkedManager.removeLink( tmpName, *it );
-      linkedManager.insertLink( tmpName, *it );
+      unlinkedManager.removeLink( tmpOriginalName, *it );
+      linkedManager.insertLink( tmpOriginalName, *it );
     }
 
     THistogramsSet tmpHistoSet;
-    unlinkedManager.getLinks( tmpName, tmpHistoSet );
+    unlinkedManager.getLinks( tmpOriginalName, tmpHistoSet );
     for( THistogramsSet::iterator it = tmpHistoSet.begin(); it != tmpHistoSet.end(); ++it )
     {
-      unlinkedManager.removeLink( tmpName, *it );
-      linkedManager.insertLink( tmpName, *it ); 
+      unlinkedManager.removeLink( tmpOriginalName, *it );
+      linkedManager.insertLink( tmpOriginalName, *it ); 
     }
+
+    if( !existsCustomName )
+      linkedManager.setCustomName( tmpOriginalName, tmpCustomName );
   }
   else
   {
+    string tmpCustomName = linkedManager.getCustomName( tmpOriginalName );
+
     TWindowsSet tmpWinSet;
-    linkedManager.getLinks( tmpName, tmpWinSet );
+    linkedManager.getLinks( tmpOriginalName, tmpWinSet );
     for( TWindowsSet::iterator it = tmpWinSet.begin(); it != tmpWinSet.end(); ++it )
     {
-      linkedManager.removeLink( tmpName, *it );
-      unlinkedManager.insertLink( tmpName, *it );
+      linkedManager.removeLink( tmpOriginalName, *it );
+      unlinkedManager.insertLink( tmpOriginalName, *it );
     }
-
+ 
     THistogramsSet tmpHistoSet;
-    linkedManager.getLinks( tmpName, tmpHistoSet );
+    linkedManager.getLinks( tmpOriginalName, tmpHistoSet );
     for( THistogramsSet::iterator it = tmpHistoSet.begin(); it != tmpHistoSet.end(); ++it )
     {
-      linkedManager.removeLink( tmpName, *it ); 
-      unlinkedManager.insertLink( tmpName, *it );
+      linkedManager.removeLink( tmpOriginalName, *it ); 
+      unlinkedManager.insertLink( tmpOriginalName, *it );
     }
+
+    unlinkedManager.setCustomName( tmpOriginalName, tmpCustomName );
   }
 
   updateLinkPropertiesWidgets();
@@ -1232,6 +1269,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
 void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &event )
 {
   string tmpOriginalName  = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
+  unlinkedManager.setCustomName( tmpOriginalName, string( event.GetString().mb_str() ) );
   linkedManager.setCustomName( tmpOriginalName, string( event.GetString().mb_str() ) );
 }
 
@@ -1375,7 +1413,8 @@ size_t CFGS4DPropertyWindowsList::getListSize() const
 
 void CFGS4DLinkedPropertiesManager::setCustomName( std::string originalName, std::string customName )
 {
-  enabledProperties[ originalName ].setCustomName( customName );
+  if( enabledProperties.find( originalName ) != enabledProperties.end() )
+    enabledProperties[ originalName ].setCustomName( customName );
 }
 
 std::string CFGS4DLinkedPropertiesManager::getCustomName( std::string originalName ) const
