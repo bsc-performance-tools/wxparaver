@@ -673,13 +673,13 @@ void AdvancedSaveConfiguration::OnTextCtrlPropertyChanged( wxCommandEvent &event
   if ( isTimeline && linkedManager.existsWindow( tmpOriginalName, timelines[ currentItem ] ) )
   {
     linkedManager.setCustomName( tmpOriginalName, tmpCustomName );
+    updateAliasForLinkedWindows( tmpOriginalName, tmpCustomName );
   }
   else if ( !isTimeline && linkedManager.existsWindow( tmpOriginalName, histograms[ currentItem ] ) )
   {
     linkedManager.setCustomName( tmpOriginalName, tmpCustomName );
+    updateAliasForLinkedWindows( tmpOriginalName, tmpCustomName );
   }
-
-  updateAliasForLinkedWindows( tmpOriginalName, tmpCustomName );
 
   updateLinkPropertiesWidgets();
 }
@@ -1130,14 +1130,21 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
   if( event.IsChecked() )
   {
     bool existsCustomName = linkedManager.getLinksSize( tmpData->getPropertyName() ) > 0;
-    string tmpCustomName = unlinkedManager.getCustomName( tmpData->getPropertyName() );
+    string tmpCustomName;
+    if( !existsCustomName )
+      tmpCustomName = unlinkedManager.getCustomName( tmpData->getPropertyName() );
+    else
+      tmpCustomName = linkedManager.getCustomName( tmpData->getPropertyName() );
 
     tmpData->getData( tmpWin );
     if( tmpWin != NULL )
     {
       unlinkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
       linkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
-      tmpWin->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
+      if ( tmpWin == timelines[ currentItem ] )
+        GetTextCtrlByName( wxString::FromAscii( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+      else
+        tmpWin->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
     }
     else
     {
@@ -1146,7 +1153,10 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
       {
         unlinkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
         linkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
-        tmpHisto->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
+        if ( tmpHisto == histograms[ currentItem ] )
+          GetTextCtrlByName( wxString::FromAscii( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+        else
+          tmpHisto->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
       }
     }
 
@@ -1245,7 +1255,11 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
   if( event.IsChecked() )
   {
     bool existsCustomName = linkedManager.getLinksSize( tmpOriginalName ) > 0;
-    string tmpCustomName = unlinkedManager.getCustomName( tmpOriginalName );
+    string tmpCustomName;
+    if( !existsCustomName )
+      tmpCustomName = unlinkedManager.getCustomName( tmpOriginalName );
+    else
+      tmpCustomName = linkedManager.getCustomName( tmpOriginalName );
 
     TWindowsSet tmpWinSet;
     unlinkedManager.getLinks( tmpOriginalName, tmpWinSet );
@@ -1253,7 +1267,10 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
     {
       unlinkedManager.removeLink( tmpOriginalName, *it );
       linkedManager.insertLink( tmpOriginalName, *it );
-      (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
+      if ( (*it) == timelines[ currentItem ] )
+        GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+      else
+        (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
 
     THistogramsSet tmpHistoSet;
@@ -1262,7 +1279,10 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
     {
       unlinkedManager.removeLink( tmpOriginalName, *it );
       linkedManager.insertLink( tmpOriginalName, *it ); 
-      (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
+      if ( (*it) == histograms[ currentItem ] )
+        GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+      else
+        (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
 
     if( !existsCustomName )
