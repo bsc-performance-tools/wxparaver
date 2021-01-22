@@ -146,6 +146,9 @@ class CFGS4DLinkedPropertiesManager
     void getLinks( std::string whichName, TWindowsSet& onSet ) const;
     void getLinks( std::string whichName, THistogramsSet& onSet ) const;
 
+    bool existsWindow( std::string whichName, Window *whichWindow ) const;
+    bool existsWindow( std::string whichName, Histogram *whichHistogram ) const;
+
     void getLinksName( std::set<std::string>& onSet ) const;
     
     size_t getLinksSize( const std::string whichName ) const;
@@ -309,7 +312,8 @@ public:
     void OnCheckBoxPropertyClicked( wxCommandEvent& event );
     void OnCheckBoxLinkWindowClicked( wxCommandEvent& event );
     void OnStatisticsButtonClick( wxCommandEvent& event );
-    
+    void OnTextCtrlPropertyChanged( wxCommandEvent &event );
+
     void RefreshList( bool showFullList );
 
     void buildWindowsSetWidgets( const std::string& propertyName, wxBoxSizer *boxSizerLinks, bool checked );
@@ -319,9 +323,10 @@ public:
                                 WindowType *whichWindow,
                                 bool checked );
     void updateLinkPropertiesWidgets();
+    void updateAliasForLinkedWindows( std::string whichOriginalName, std::string whichCustomName );
+
     void OnCheckBoxLinkPropertyClicked( wxCommandEvent& event );
     void OnLinkedPropertiesNameChanged( wxCommandEvent& event );
-
 };
 
 #endif

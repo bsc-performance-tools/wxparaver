@@ -618,8 +618,13 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
                                   excludeVerticalBar,
                                   rowBaseName + KTextCtrlSuffix ); 
     auxTextCtrl->Enable( enabledTag[ it->first ] );
-
     auxTextCtrl->SetValidator( excludeVerticalBar );
+    OriginalNameData *tmpDataName = new OriginalNameData();
+    tmpDataName->myOriginalName = it->first;
+    auxTextCtrl->Connect( wxEVT_COMMAND_TEXT_UPDATED,
+                          wxCommandEventHandler( AdvancedSaveConfiguration::OnTextCtrlPropertyChanged ),
+                          tmpDataName,
+                          this ); 
 
     auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
 
@@ -639,9 +644,9 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
         auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
 
         auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
-                        wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
-                        NULL,
-                        this ); 
+                            wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
+                            NULL,
+                            this ); 
 
       }
       else
@@ -657,6 +662,26 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
   }
 
   return auxBoxSizer;
+}
+
+
+void AdvancedSaveConfiguration::OnTextCtrlPropertyChanged( wxCommandEvent &event )
+{
+  string tmpOriginalName  = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
+  string tmpCustomName = string( event.GetString().mb_str() );
+
+  if ( isTimeline && linkedManager.existsWindow( tmpOriginalName, timelines[ currentItem ] ) )
+  {
+    linkedManager.setCustomName( tmpOriginalName, tmpCustomName );
+  }
+  else if ( !isTimeline && linkedManager.existsWindow( tmpOriginalName, histograms[ currentItem ] ) )
+  {
+    linkedManager.setCustomName( tmpOriginalName, tmpCustomName );
+  }
+
+  updateAliasForLinkedWindows( tmpOriginalName, tmpCustomName );
+
+  updateLinkPropertiesWidgets();
 }
 
 
@@ -1112,6 +1137,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
     {
       unlinkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
       linkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
+      tmpWin->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
     }
     else
     {
@@ -1120,6 +1146,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
       {
         unlinkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
         linkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
+        tmpHisto->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
       }
     }
 
@@ -1226,6 +1253,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
     {
       unlinkedManager.removeLink( tmpOriginalName, *it );
       linkedManager.insertLink( tmpOriginalName, *it );
+      (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
 
     THistogramsSet tmpHistoSet;
@@ -1234,6 +1262,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
     {
       unlinkedManager.removeLink( tmpOriginalName, *it );
       linkedManager.insertLink( tmpOriginalName, *it ); 
+      (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
 
     if( !existsCustomName )
@@ -1265,12 +1294,44 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
   updateLinkPropertiesWidgets();
 }
 
+void AdvancedSaveConfiguration::updateAliasForLinkedWindows( std::string whichOriginalName, 
+                                                             std::string whichCustomName )
+{
+  TWindowsSet tmpWin;
+  linkedManager.getLinks( whichOriginalName, tmpWin );
+  for( TWindowsSet::iterator it = tmpWin.begin(); it != tmpWin.end(); ++it )
+  {
+    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName);
+  }
+
+  THistogramsSet tmpHisto;
+  linkedManager.getLinks( whichOriginalName, tmpHisto );
+  for( THistogramsSet::iterator it = tmpHisto.begin(); it != tmpHisto.end(); ++it )
+  {
+    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName);
+  }
+}
+
 
 void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &event )
 {
   string tmpOriginalName  = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
-  unlinkedManager.setCustomName( tmpOriginalName, string( event.GetString().mb_str() ) );
-  linkedManager.setCustomName( tmpOriginalName, string( event.GetString().mb_str() ) );
+  string tmpCustomName = string( event.GetString().mb_str() );
+  
+  unlinkedManager.setCustomName( tmpOriginalName, tmpCustomName );
+  linkedManager.setCustomName( tmpOriginalName, tmpCustomName );
+
+  updateAliasForLinkedWindows( tmpOriginalName, tmpCustomName );
+
+  TWindowsSet tmpWin;
+  linkedManager.getLinks( tmpOriginalName, tmpWin );
+  if ( tmpWin.find( timelines[ currentItem ] ) != tmpWin.end() )
+    GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+
+  THistogramsSet tmpHisto;
+  linkedManager.getLinks( tmpOriginalName, tmpHisto );
+  if ( tmpHisto.find( histograms[ currentItem ] ) != tmpHisto.end() )
+    GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
 }
 
 
@@ -1347,6 +1408,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
   scrolledLinkProperties->SetSizer( boxSizerLinks );
   scrolledLinkProperties->FitInside();
 }
+
 
 /*!
  * CFGS4DPropertyWindowsList Methods
@@ -1464,6 +1526,22 @@ void CFGS4DLinkedPropertiesManager::getLinks( std::string whichName, THistograms
     it->second.getWindowList( onSet );  
 }
 
+bool CFGS4DLinkedPropertiesManager::existsWindow( std::string whichName, Window *whichWindow ) const
+{
+  map<string, CFGS4DPropertyWindowsList>::const_iterator it = enabledProperties.find( whichName );
+  if ( it != enabledProperties.end() )
+    return it->second.existsWindow( whichWindow );
+  return false;
+}
+
+bool CFGS4DLinkedPropertiesManager::existsWindow( std::string whichName, Histogram *whichHistogram ) const
+{
+  map<string, CFGS4DPropertyWindowsList>::const_iterator it = enabledProperties.find( whichName );
+  if ( it != enabledProperties.end() )
+    return it->second.existsWindow( whichHistogram ); 
+  return false;
+}
+
 void CFGS4DLinkedPropertiesManager::getLinksName( std::set<std::string>& onSet ) const
 {
   for( std::map< std::string, CFGS4DPropertyWindowsList >::const_iterator it = enabledProperties.begin();
@@ -1481,3 +1559,4 @@ size_t CFGS4DLinkedPropertiesManager::getLinksSize( const std::string whichName 
 
   return 0;
 }
+
