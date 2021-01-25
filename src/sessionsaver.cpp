@@ -105,7 +105,12 @@ void SessionSaver::SaveSession_v2( wxString onFile, const vector<Trace *>& trace
       if( !(*itWin)->getUsedByHistogram() && (*itWin)->getChild() == NULL )
         vTimelines.push_back( *itWin );
     }
-    CFGLoader::saveCFG( string( cfgFileName.GetFullPath().mb_str() ), SaveOptions(), vTimelines, vHistograms );
+
+    // TODO: search for each linked properties manager in the timelines and histograms vectors
+    CFGS4DLinkedPropertiesManager dummyManager;
+    vector<CFGS4DLinkedPropertiesManager> dummyList;
+    dummyList.push_back( dummyManager );
+    CFGLoader::saveCFG( string( cfgFileName.GetFullPath().mb_str() ), SaveOptions(), vTimelines, vHistograms, dummyList );
   }
 
   file.close();

@@ -314,6 +314,10 @@ wxIcon SaveConfigurationDialog::GetIconResource( const wxString& name )
 ////@end SaveConfigurationDialog icon retrieval
 }
 
+const CFGS4DLinkedPropertiesManager& SaveConfigurationDialog::getLinkedPropertiesManager() const
+{
+  return linkedProperties;
+}
 
 bool SaveConfigurationDialog::TransferDataToWindow()
 {
@@ -499,6 +503,7 @@ void SaveConfigurationDialog::OnSaveClick( wxCommandEvent& event )
       AdvancedSaveConfiguration tagEditorDialog( (wxWindow *)this, selectedTimelines, selectedHistograms );
       if ( tagEditorDialog.ShowModal() == wxID_OK )
       {
+        linkedProperties = tagEditorDialog.getLinkedPropertiesManager();
         EndModal( wxID_OK );
       }
     }

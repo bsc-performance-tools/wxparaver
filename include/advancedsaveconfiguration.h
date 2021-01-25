@@ -41,6 +41,7 @@
 #include "paraverkerneltypes.h"
 #include "window.h"
 #include "histogram.h"
+#include "cfgs4d.h"
 
 using std::multimap;
 
@@ -68,95 +69,6 @@ class wxToggleButton;
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE wxDefaultSize
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION wxDefaultPosition
 ////@end control identifiers
-
-
-/*!
- * CFGS4D Linked properties classes
- */
-
-struct lessWinCompare
-{
-  bool operator()( Window *win1, Window *win2 ) const
-  {
-    return win1->getName() < win2->getName();
-  }
-};
-
-struct lessHistoCompare
-{
-  bool operator()( Histogram *histo1, Histogram *histo2 ) const
-  {
-    return histo1->getName() < histo2->getName();
-  }
-};
-
-typedef std::set<Window *, lessWinCompare> TWindowsSet;
-typedef std::set<Histogram *, lessHistoCompare> THistogramsSet;
-
-class CFGS4DPropertyWindowsList
-{
-  public:
-
-    CFGS4DPropertyWindowsList()
-    {}
-
-    ~CFGS4DPropertyWindowsList()
-    {}
-    
-    void setCustomName( std::string whichName );
-    std::string getCustomName() const;
-
-    void insertWindow( Window *whichWindow );
-    void insertWindow( Histogram *whichHistogram );
-    void removeWindow( Window *whichWindow );
-    void removeWindow( Histogram *whichHistogram );
-    
-    void getWindowList( TWindowsSet& onSet ) const;
-    void getWindowList( THistogramsSet& onSet ) const;
-    
-    bool existsWindow( Window *whichWindow ) const;
-    bool existsWindow( Histogram *whichHistogram ) const;
-    
-    size_t getListSize() const;
-    
-  private:
-    std::string customName;
-    TWindowsSet windows;
-    THistogramsSet histograms;
-};
-
-
-class CFGS4DLinkedPropertiesManager
-{
-  public:
-    CFGS4DLinkedPropertiesManager()
-    {}
-
-    ~CFGS4DLinkedPropertiesManager()
-    {}
-    
-    void setCustomName( std::string originalName, std::string customName );
-    std::string getCustomName( std::string originalName ) const;
-
-    void insertLink( std::string originalName, Window *whichWindow );
-    void insertLink( std::string originalName, Histogram *whichHistogram );
-    void removeLink( std::string originalName, Window *whichWindow );
-    void removeLink( std::string originalName, Histogram *whichHistogram );
-
-    void getLinks( std::string whichName, TWindowsSet& onSet ) const;
-    void getLinks( std::string whichName, THistogramsSet& onSet ) const;
-
-    bool existsWindow( std::string whichName, Window *whichWindow ) const;
-    bool existsWindow( std::string whichName, Histogram *whichHistogram ) const;
-
-    void getLinksName( std::set<std::string>& onSet ) const;
-    
-    size_t getLinksSize( const std::string whichName ) const;
-
-  private:
-    std::map< std::string, CFGS4DPropertyWindowsList > enabledProperties;
-};
-
 
 
 /*!
@@ -231,6 +143,8 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end AdvancedSaveConfiguration member function declarations
 
+  const CFGS4DLinkedPropertiesManager& getLinkedPropertiesManager() const;
+
   /// Should we show tooltips?
   static bool ShowToolTips();
 
@@ -242,10 +156,6 @@ public:
   wxButton* buttonSave;
 ////@end AdvancedSaveConfiguration member variables
 
-    //bool TransferDataFromWindow();
-
-//    const std::map< std::string, std::string >& GetCFG4DAliasList() const { return renamedTag; };
-//    const std::map< std::string, bool >&   GetCFG4DEnabledList() const { return enabledTag; };
 
   protected:
     const static wxString KParamSeparator;

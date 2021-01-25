@@ -5314,8 +5314,15 @@ void gTimeline::saveCFG()
 
   setEnableDestroyButton( false );
 
-  paraverMain::myParaverMain->SaveConfigurationFile(
-          (wxWindow *)this, SaveOptions(), timelines, vector< Histogram * >() );
+  // TODO: use the window linked properties manager if any
+  CFGS4DLinkedPropertiesManager dummyManager;
+  vector<CFGS4DLinkedPropertiesManager> dummyList;
+  dummyList.push_back( dummyManager );
+  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow *)this,
+                                                     SaveOptions(),
+                                                     timelines,
+                                                     vector< Histogram * >(),
+                                                     dummyList );
 
   setEnableDestroyButton( true );
 }

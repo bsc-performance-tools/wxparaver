@@ -2708,9 +2708,10 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
 
 
 void paraverMain::SaveConfigurationFile( wxWindow *parent,
-                                          SaveOptions options,
-                                          vector< Window * > timelines,
-                                          vector< Histogram * > histograms )
+                                         SaveOptions options,
+                                         vector< Window * > timelines,
+                                         vector< Histogram * > histograms,
+                                         const vector<CFGS4DLinkedPropertiesManager>& linkedProperties )
 {
   if ( !CFGLoadedBefore )
     CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
@@ -2733,7 +2734,7 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
     CFGPath = dialog.GetPath();
     CFGLoadedBefore = true;
 
-    CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms );
+    CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms, linkedProperties );
     previousCFGs->add( std::string( CFGPath.mb_str() ) );
   }
 }
@@ -2779,8 +2780,11 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     timelines = saveDialog.GetSelectedTimelines();
     histograms = saveDialog.GetSelectedHistograms();
     options = saveDialog.GetOptions();
+    const CFGS4DLinkedPropertiesManager& linkedProperties = saveDialog.getLinkedPropertiesManager();
+    vector<CFGS4DLinkedPropertiesManager> propertiesList;
+    propertiesList.push_back( linkedProperties );
 
-    SaveConfigurationFile( (wxWindow *)this, options, timelines, histograms );
+    SaveConfigurationFile( (wxWindow *)this, options, timelines, histograms, propertiesList );
 
     // Disable CFG4D once it is saved
     for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )

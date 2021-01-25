@@ -572,9 +572,11 @@ public:
   bool DoLoadCFG( const std::string &path );
   
   void SaveConfigurationFile( wxWindow *parent,
-                               SaveOptions options,
-                               std::vector< Window * > timelines,
-                               std::vector< Histogram * > histograms );
+                              SaveOptions options,
+                              vector< Window * > timelines,
+                              vector< Histogram * > histograms,
+                              const vector< CFGS4DLinkedPropertiesManager >& linkedProperties );
+                               
 
   void ShowPreferences( wxWindowID whichPanelID = ID_PREFERENCES_GLOBAL );
   

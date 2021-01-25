@@ -3242,8 +3242,15 @@ void gHistogram::saveCFG()
   if ( myHistogram->getDataWindow() != NULL  )
       windows.push_back( myHistogram->getDataWindow() );
 
-  paraverMain::myParaverMain->SaveConfigurationFile(
-          (wxWindow *)this, SaveOptions(), windows, histograms );
+  // TODO: use the histogram linked properties manager if any
+  CFGS4DLinkedPropertiesManager dummyManager;
+  vector<CFGS4DLinkedPropertiesManager> dummyList;
+  dummyList.push_back( dummyManager );
+  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow *)this,
+                                                     SaveOptions(),
+                                                     windows,
+                                                     histograms,
+                                                     dummyList );
 
   setEnableDestroyButton( true );
 }
