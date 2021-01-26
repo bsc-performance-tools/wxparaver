@@ -1354,15 +1354,20 @@ void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &e
 
   updateAliasForLinkedWindows( tmpOriginalName, tmpCustomName );
 
-  TWindowsSet tmpWin;
-  linkedManager.getLinks( tmpOriginalName, tmpWin );
-  if ( tmpWin.find( timelines[ currentItem ] ) != tmpWin.end() )
-    GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
-
-  THistogramsSet tmpHisto;
-  linkedManager.getLinks( tmpOriginalName, tmpHisto );
-  if ( tmpHisto.find( histograms[ currentItem ] ) != tmpHisto.end() )
-    GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+  if( isTimeline )
+  {
+    TWindowsSet tmpWin;
+    linkedManager.getLinks( tmpOriginalName, tmpWin );
+    if ( tmpWin.find( timelines[ currentItem ] ) != tmpWin.end() )
+      GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+  }
+  else
+  {
+    THistogramsSet tmpHisto;
+    linkedManager.getLinks( tmpOriginalName, tmpHisto );
+    if ( tmpHisto.find( histograms[ currentItem ] ) != tmpHisto.end() )
+      GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+  }
 }
 
 
