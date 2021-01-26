@@ -228,11 +228,11 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   for ( size_t row = (size_t)0; row < myTrace->getLevelObjects( whichLevel ); ++row )
   {
     if( whichLevel == CPU || whichLevel == NODE )
-      choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row + 1,
+      choices.Add( wxString::FromUTF8( LabelConstructor::objectLabel( (TObjectOrder)row + 1,
                                                                        whichLevel,
                                                                        myTrace ).c_str() ) );
     else
-      choices.Add( wxString::FromAscii( LabelConstructor::objectLabel( (TObjectOrder)row,
+      choices.Add( wxString::FromUTF8( LabelConstructor::objectLabel( (TObjectOrder)row,
                                                                        whichLevel,
                                                                        myTrace ).c_str() ) );
   }

@@ -835,7 +835,7 @@ void CutFilterDialog::CreateControls()
   UpdateExecutionChain();
   EnableAllTabsFromToolsList();
 
-  //fileBrowserButtonInputTrace->SetPath( wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() ) );
+  //fileBrowserButtonInputTrace->SetPath( wxString::FromUTF8( paraverConfig->getGlobalTracesPath().c_str() ) );
 
   wxString tmpWildCard = wxT( "Paraver trace (*.prv;*.prv.gz;*.csv)|*.prv;*.prv.gz;*.csv|All files (*.*)|*.*" );
   fileBrowserButtonInputTrace->SetDialogMessage( _( "Load Trace" ) );
@@ -1025,7 +1025,7 @@ wxString CutFilterDialog::formatNumber( double value )
   auxSStr.precision( ParaverConfig::getInstance()->getHistogramPrecision() );
   auxSStr << fixed;
   auxSStr << value;
-  auxNumber << wxString::FromAscii( auxSStr.str().c_str() );
+  auxNumber << wxString::FromUTF8( auxSStr.str().c_str() );
 
   return auxNumber;
 }
@@ -1232,7 +1232,7 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 
   aux.str("");
   aux << traceOptions->get_max_trace_size();
-  textCutterMaximumTraceSize->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+  textCutterMaximumTraceSize->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
 
   if ( traceOptions->get_by_time() )
     radioCutterCutByTime->SetValue( true );
@@ -1243,21 +1243,21 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
   {
     aux.str("");
     aux << traceOptions->get_min_cutting_time();
-    textCutterBeginCut->SetValue(  wxString::FromAscii( aux.str().c_str() ) );
+    textCutterBeginCut->SetValue(  wxString::FromUTF8( aux.str().c_str() ) );
 
     aux.str("");
     aux << traceOptions->get_max_cutting_time();
-    textCutterEndCut->SetValue(  wxString::FromAscii( aux.str().c_str() ) );
+    textCutterEndCut->SetValue(  wxString::FromUTF8( aux.str().c_str() ) );
   }
   else
   {
     aux.str("");
     aux << traceOptions->get_minimum_time_percentage();
-    textCutterBeginCut->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+    textCutterBeginCut->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
 
     aux.str("");
     aux << traceOptions->get_maximum_time_percentage();
-    textCutterEndCut->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+    textCutterEndCut->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
   }
 
   checkCutterUseOriginalTime->SetValue( traceOptions->get_original_time() );
@@ -1278,7 +1278,7 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 
   TraceOptions::TTasksList auxList;
   traceOptions->get_tasks_list( auxList );
-  textCutterTasks->SetValue( wxString::FromAscii( auxList ).Trim( true ).Trim( false ) );
+  textCutterTasks->SetValue( wxString::FromUTF8( auxList ).Trim( true ).Trim( false ) );
 }
 
 
@@ -1697,7 +1697,7 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
 
   aux.str("");
   aux << traceOptions->get_min_state_time();
-  textFilterMinBurstTime->SetValue( wxString::FromAscii( aux.str().c_str() ));
+  textFilterMinBurstTime->SetValue( wxString::FromUTF8( aux.str().c_str() ));
 
   // Events
   checkFilterDiscardListedEvents->SetValue( traceOptions->get_discard_given_types() );
@@ -1709,7 +1709,7 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
   // Communications
   aux.str("");
   aux << traceOptions->get_min_comm_size();
-  textFilterSize->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+  textFilterSize->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
 }
 
 
@@ -2084,11 +2084,11 @@ void CutFilterDialog::TransferSoftwareCountersDataToWindow( TraceOptions *traceO
 
   aux.str("");
   aux << traceOptions->get_sc_sampling_interval();
-  textSCSamplingInterval->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+  textSCSamplingInterval->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
  
   aux.str("");
   aux << traceOptions->get_sc_minimum_burst_time();
-  textSCMinimumBurstTime->SetValue( wxString::FromAscii( aux.str().c_str() ) );
+  textSCMinimumBurstTime->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
 
   // Selected events
   bool done = SetSoftwareCountersEventsListToString( string( traceOptions->get_sc_types() ),
@@ -2502,7 +2502,7 @@ void CutFilterDialog::UpdateExecutionChain()
   {
     stringstream aux;
     aux << order++;
-    items.Add(  wxString::FromAscii( aux.str().c_str() ) + _( ".- " ) + wxString::FromAscii( (*it).c_str() ) );
+    items.Add(  wxString::FromUTF8( aux.str().c_str() ) + _( ".- " ) + wxString::FromUTF8( (*it).c_str() ) );
   }
 
   checkListExecutionChain->Clear();

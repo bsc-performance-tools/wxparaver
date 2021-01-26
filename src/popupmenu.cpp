@@ -1209,7 +1209,7 @@ void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
       Enable( FindItem( _( STR_PASTE_SPECIAL ) ),
               gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, STR_PASTE_SPECIAL ) );
     }
-    Enable( FindItem( wxString::FromAscii( tag.c_str() ) ), gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, tag ));
+    Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( histogram, tag ));
   }
   else
   {
@@ -1223,26 +1223,26 @@ void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
               gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, STR_PASTE_SPECIAL ));
 
     }
-    Enable( FindItem( wxString::FromAscii( tag.c_str() ) ), gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, tag ));
+    Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( timeline, tag ));
   }
 }
 
 
 void gPopUpMenu::enable( const string tag, bool enable )
 {
-  Enable( FindItem( wxString::FromAscii( tag.c_str() ) ), enable );
+  Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), enable );
 }
 
 
 void gPopUpMenu::enable( const string tag )
 {
-  Enable( FindItem( wxString::FromAscii( tag.c_str() ) ), true );
+  Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), true );
 }
 
 
 void gPopUpMenu::disable( const string tag )
 {
-  Enable( FindItem( wxString::FromAscii( tag.c_str() ) ), false );
+  Enable( FindItem( wxString::FromUTF8( tag.c_str() ) ), false );
 }
 
 

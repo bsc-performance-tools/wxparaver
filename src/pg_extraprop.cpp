@@ -598,7 +598,7 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
     for( vector<string>::const_iterator it = functions[ i ].begin(); 
          it != functions[ i ].end(); ++it )
     {
-      wxString tmpStr( wxString::FromAscii( (*it).c_str() ) );
+      wxString tmpStr( wxString::FromUTF8( (*it).c_str() ) );
       subMenus[ i ]->AppendCheckItem( idMenu, tmpStr );
       if( tmpStr == value )
       {
@@ -613,7 +613,7 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
                             wxCommandEventHandler( SemanticMenu::OnMenu ),
                             NULL,
                             this );
-    Append( i, wxString::FromAscii( levels[ i ].c_str() ), subMenus[ i ] );
+    Append( i, wxString::FromUTF8( levels[ i ].c_str() ), subMenus[ i ] );
   }
 }
 
@@ -815,12 +815,12 @@ void prvRowsSelectionProperty::GetStringValueFromVector( vector<TObjectOrder> &w
     }
 
     if( myTimeline->getLevel() == CPU )
-      onString += wxString::FromAscii( LabelConstructor::objectLabel( *it + 1,
+      onString += wxString::FromUTF8( LabelConstructor::objectLabel( *it + 1,
                                                                       myTimeline->getLevel(),
                                                                       myTimeline->getTrace(),
                                                                       false ).c_str() );
     else
-      onString += wxString::FromAscii( LabelConstructor::objectLabel( *it,
+      onString += wxString::FromUTF8( LabelConstructor::objectLabel( *it,
                                                                       myTimeline->getLevel(),
                                                                       myTimeline->getTrace(),
                                                                       false ).c_str() );

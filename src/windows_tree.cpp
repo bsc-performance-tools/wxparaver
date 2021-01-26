@@ -67,14 +67,14 @@ void appendHistogram2Tree( gHistogram *ghistogram )
   // Refresh tree in current page and always in global page
   wxTreeCtrl *allTracesPage = getAllTracesTree();
   wxTreeCtrl *currentPage = getSelectedTraceTree( ghistogram->GetHistogram()->getControlWindow()->getTrace() );
-  TreeBrowserItemData *currentData =  new TreeBrowserItemData( wxString::FromAscii( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
+  TreeBrowserItemData *currentData =  new TreeBrowserItemData( wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), ghistogram );
 
   wxTreeItemId tmpCurrentWindowId;
   tmpCurrentWindowId = allTracesPage->AppendItem( allTracesPage->GetRootItem(),
-                                                   wxString::FromAscii( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
+                                                   wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
                                                    currentData );
   tmpCurrentWindowId = currentPage->AppendItem( currentPage->GetRootItem(),
-                                                 wxString::FromAscii( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
+                                                 wxString::FromUTF8( ghistogram->GetHistogram()->getName().c_str() ), 0, -1,
                                                  new TreeBrowserItemData( *currentData ) );
 }
 
@@ -284,9 +284,9 @@ void BuildTree( paraverMain *parent,
   }
   
 #if wxMAJOR_VERSION<3 || !__WXGTK__
-  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), tmpPos );
+  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), tmpPos );
 #else
-  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ) );
+  gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
 #endif
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
@@ -295,11 +295,11 @@ void BuildTree( paraverMain *parent,
   tmpTimeline->Move( tmpPos );
 #endif
 
-  currentData =  new TreeBrowserItemData( wxString::FromAscii( window->getName().c_str() ), tmpTimeline );
+  currentData =  new TreeBrowserItemData( wxString::FromUTF8( window->getName().c_str() ), tmpTimeline );
 
   int iconNumber = getIconNumber( window );
-  currentWindowId1 = root1->AppendItem( idRoot1, wxString::FromAscii( window->getName().c_str() ), iconNumber, -1, currentData );
-  currentWindowId2 = root2->AppendItem( idRoot2, wxString::FromAscii( window->getName().c_str() ), iconNumber, -1, new TreeBrowserItemData( *currentData ) );
+  currentWindowId1 = root1->AppendItem( idRoot1, wxString::FromUTF8( window->getName().c_str() ), iconNumber, -1, currentData );
+  currentWindowId2 = root2->AppendItem( idRoot2, wxString::FromUTF8( window->getName().c_str() ), iconNumber, -1, new TreeBrowserItemData( *currentData ) );
 
   if ( window->getParent( 0 ) != NULL )
   {
@@ -335,7 +335,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
       *currentWindow = tmpTimeline;
       tree->SelectItem( id );
     }
-    tmpName = wxString::FromAscii( tmpWindow->getName().c_str() );
+    tmpName = wxString::FromUTF8( tmpWindow->getName().c_str() );
     
     for ( vector<Window *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
     {
@@ -383,7 +383,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
       *currentWindow = tmpHistogram;
       tree->SelectItem( id );
     }
-    tmpName = wxString::FromAscii( tmpHisto->getName().c_str() );
+    tmpName = wxString::FromUTF8( tmpHisto->getName().c_str() );
     for ( vector<Histogram *>::iterator it = allHistograms.begin(); it != allHistograms.end(); it++ )
     {
       if ( *it == tmpHisto )

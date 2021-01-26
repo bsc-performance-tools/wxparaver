@@ -324,7 +324,7 @@ void HelpContents::buildIndexTemplate( wxString title, wxString filePrefix )
 
   // Load /home/user/.paraver/<file_prefix>_index.html if exist, create otherwise.
   indexFileName =
-        wxString::FromAscii( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) +
+        wxString::FromUTF8( paraverMain::myParaverMain->GetParaverConfig()->getParaverConfigDir().c_str() ) +
         wxString( wxFileName::GetPathSeparator() ) +
         filePrefix +
         wxT( "_index.html" );
@@ -607,7 +607,7 @@ bool HelpContents::SetHelpContentsRoot( const wxString& whichRoot )
 
 bool HelpContents::SetHelpContentsRoot( const std::string& whichRoot )
 {
-  return SetHelpContentsRoot( wxString::FromAscii( whichRoot.c_str() ) );
+  return SetHelpContentsRoot( wxString::FromUTF8( whichRoot.c_str() ) );
 }
 
 
@@ -808,7 +808,7 @@ const wxString TutorialsBrowser::getTitle( int numTutorial, const wxString& path
 
       if ( auxLine.size() > 0 )
       {
-        helpContentsTitle = wxString::FromAscii( auxLine.c_str() );
+        helpContentsTitle = wxString::FromUTF8( auxLine.c_str() );
       }
       else
       {

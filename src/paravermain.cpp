@@ -224,7 +224,7 @@ static bool userMessage( UserMessageID message )
 {
   if( paraverMain::disableUserMessages )
     return true;
-  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( userMessages[ message ].c_str() )  + 
+  wxMessageDialog tmpDialog( NULL, wxString::FromUTF8( userMessages[ message ].c_str() )  + 
         _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();
@@ -644,7 +644,7 @@ void paraverMain::refreshMenuHints()
   size_t currentWorkspace = 0;
   for ( vector< string >::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace()  ].end(); ++it )
   {
-    wxString currentWorkspaceName = wxString::FromAscii( it->c_str() );
+    wxString currentWorkspaceName = wxString::FromUTF8( it->c_str() );
     wxMenu *currentWorkspaceMenu = new wxMenu();
 
     std::vector< std::pair< std::string, std::string > > currentHints;
@@ -734,7 +734,7 @@ void paraverMain::DoLoadSession( const string &whichFileName )
   }
   else
   {
-    wxString errMessage = wxString::FromAscii( whichFileName.c_str() ) + _( " isn't a valid session file." );
+    wxString errMessage = wxString::FromUTF8( whichFileName.c_str() ) + _( " isn't a valid session file." );
     wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
     raiseCurrentWindow = false;
     message.ShowModal();
@@ -772,7 +772,7 @@ bool paraverMain::DoLoadTrace( const string &path )
             wxString( wxT( "The size (" ) ) +
                       tmpSize +
                       wxString( wxT( " MB) of the trace\n\n  " ) ) +
-                      wxString::FromAscii( tmpPath.c_str() ) +
+                      wxString::FromUTF8( tmpPath.c_str() ) +
                       wxString( wxT( "\n\nexceeds the maximum loadable defined"
                                      " in Preferences.\n\nWould you like to cut/filter the trace?" ) ),
             wxT( "Reduce trace size" ),
@@ -835,7 +835,7 @@ bool paraverMain::DoLoadTrace( const string &path )
       reducePath = tmpPath;
     reducePath += "\t";
 
-    paraverMain::dialogProgress->Pulse( wxString::FromAscii( reducePath.c_str() ) );
+    paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
@@ -851,9 +851,9 @@ bool paraverMain::DoLoadTrace( const string &path )
     newTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), NULL, this );
 
     if( paraverConfig->getGlobalFullTracePath() )
-      choiceWindowBrowser->AddPage( newTree, wxString::FromAscii( tr->getFileNameNumbered().c_str() ) );
+      choiceWindowBrowser->AddPage( newTree, wxString::FromUTF8( tr->getFileNameNumbered().c_str() ) );
     else
-      choiceWindowBrowser->AddPage( newTree, wxFileName( wxString::FromAscii( tr->getFileNameNumbered().c_str() ) ).GetFullName() );
+      choiceWindowBrowser->AddPage( newTree, wxFileName( wxString::FromUTF8( tr->getFileNameNumbered().c_str() ) ).GetFullName() );
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( tmpPath );
@@ -864,7 +864,7 @@ bool paraverMain::DoLoadTrace( const string &path )
   catch( ParaverKernelException& ex )
   {
     loaded = false;
-    wxMessageDialog message( this, wxString::FromAscii( ex.what() ), _( "Error loading trace" ), wxOK );
+    wxMessageDialog message( this, wxString::FromUTF8( ex.what() ), _( "Error loading trace" ), wxOK );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
@@ -890,7 +890,7 @@ bool paraverMain::DoLoadCFG( const string &path )
 {
   if( !CFGLoader::isCFGFile( path ))
   {
-    wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " isn't a valid cfg." );
+    wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " isn't a valid cfg." );
     wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
     raiseCurrentWindow = false;
     message.ShowModal();
@@ -907,7 +907,7 @@ bool paraverMain::DoLoadCFG( const string &path )
     if( !CFGLoader::loadCFG( localKernel, path, tmpTraceToUse,
                              newWindows, newHistograms, options ) )
     {
-      wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
+      wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromUTF8( CFGLoader::errorLine.c_str() ) + _( "'" );
       wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK|wxICON_ERROR );
       raiseCurrentWindow = false;
       message.ShowModal();
@@ -930,7 +930,7 @@ bool paraverMain::DoLoadCFG( const string &path )
     {
       if( !CFGLoader::errorLine.empty() )
       {
-        wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " loaded with error in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
+        wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " loaded with error in:\n'" ) + wxString::FromUTF8( CFGLoader::errorLine.c_str() ) + _( "'" );
         wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK|wxICON_EXCLAMATION );
         raiseCurrentWindow = false;
         message.ShowModal();
@@ -969,9 +969,9 @@ bool paraverMain::DoLoadCFG( const string &path )
           }
         }
 #if wxMAJOR_VERSION<3 || !__WXGTK__
-        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ), tmpPos );
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ), tmpPos );
 #else
-        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
         tmpHisto->updateSortOptions();
@@ -1009,7 +1009,7 @@ bool paraverMain::DoLoadCFG( const string &path )
 void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
   if ( !traceLoadedBefore )
-    tracePath = wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() );
+    tracePath = wxString::FromUTF8( paraverConfig->getGlobalTracesPath().c_str() );
 
   wxFileDialog dialog( this, _( "Load Trace" ), tracePath, _( "" ), 
     _( "Paraver trace (*.prv;*.prv.gz;*.csv)|*.prv;*.prv.gz;*.csv|All files (*.*)|*.*" ),
@@ -1032,7 +1032,7 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
   if ( !CFGLoadedBefore )
-   CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
+   CFGPath =  wxString::FromUTF8( paraverConfig->getGlobalCFGsPath().c_str() );
 
   //wxFileDialog dialog( this, _( "Load Configuration" ), CFGPath, _( "" ),
   //                      _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
@@ -2208,7 +2208,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   {
     if( (*it)->getDestroy() )
       continue;
-    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
+    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
     tmpHisto->SetHistogram( *it );
 
     appendHistogram2Tree( tmpHisto );
@@ -2341,7 +2341,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
   {
     if( menuIt == menuItems.end() )
     {
-      wxMenuItem *newItem = new wxMenuItem( menuTraces, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
+      wxMenuItem *newItem = new wxMenuItem( menuTraces, wxID_ANY, wxString::FromUTF8( (*it).c_str() ) );
       menuTraces->Append( newItem );
       Connect( newItem->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
@@ -2350,7 +2350,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
     else
     {
       wxMenuItem *tmp = *menuIt;
-      tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
+      tmp->SetItemLabel( wxString::FromUTF8( (*it).c_str() ) );
       ++menuIt;
     }
   }
@@ -2431,7 +2431,7 @@ void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent& event )
       // Item handler
       if ( menuIt == menuItems.end() )
       {
-        wxMenuItem *newItem = new wxMenuItem( menuSessions, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
+        wxMenuItem *newItem = new wxMenuItem( menuSessions, wxID_ANY, wxString::FromUTF8( (*it).c_str() ) );
         menuSessions->Append( newItem );
         Connect( newItem->GetId(),
                  wxEVT_COMMAND_MENU_SELECTED,
@@ -2440,7 +2440,7 @@ void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent& event )
       else
       {
         wxMenuItem *tmp = *menuIt;
-        tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
+        tmp->SetItemLabel( wxString::FromUTF8( (*it).c_str() ) );
         ++menuIt;
       }
     }
@@ -2470,7 +2470,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
   {
     if( menuIt == menuItems.end() )
     {
-      wxMenuItem *newItem = new wxMenuItem( menuCFGs, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
+      wxMenuItem *newItem = new wxMenuItem( menuCFGs, wxID_ANY, wxString::FromUTF8( (*it).c_str() ) );
       menuCFGs->Append( newItem );
       Connect( newItem->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
@@ -2479,7 +2479,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
     else
     {
       wxMenuItem *tmp = *menuIt;
-      tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
+      tmp->SetItemLabel( wxString::FromUTF8( (*it).c_str() ) );
       ++menuIt;
     }
   }
@@ -2496,7 +2496,7 @@ void progressFunction( ProgressController *progress, void *callerWindow )
   wxString newMessage;
   if( progress->getMessageChanged() )
   {
-    newMessage = wxString::FromAscii( progress->getMessage().c_str() );
+    newMessage = wxString::FromUTF8( progress->getMessage().c_str() );
     progress->clearMessageChanged();
   }
 
@@ -2627,7 +2627,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
           if ( allWindowsRelatedToOtherTraces( windows ) )
           {
             (*it)->setUnload( false );
-            wxString traceName = wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() );
+            wxString traceName = wxString::FromUTF8( (*it)->getTraceNameNumbered().c_str() );
             wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used by some windows in other traces." ),
                           _( "Warning" ),
                           wxOK | wxICON_EXCLAMATION );
@@ -2714,7 +2714,7 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
                                          const vector<CFGS4DLinkedPropertiesManager>& linkedProperties )
 {
   if ( !CFGLoadedBefore )
-    CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
+    CFGPath =  wxString::FromUTF8( paraverConfig->getGlobalCFGsPath().c_str() );
 
   vector< wxString > extensions;
   extensions.push_back( wxT( "cfg" ) );
@@ -3154,7 +3154,7 @@ void paraverMain::ShowHistogramDialog()
 
     string composedName = newHistogram->getName() + " @ " +
                           newHistogram->getControlWindow()->getTrace()->getTraceName();
-    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( composedName.c_str() ) );
+    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
     tmpHisto->SetHistogram( newHistogram );
 
     appendHistogram2Tree( tmpHisto );
@@ -3716,7 +3716,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   wxArrayString choices;
 
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
-    choices.Add( wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() ) );
+    choices.Add( wxString::FromUTF8( (*it)->getTraceNameNumbered().c_str() ) );
   wxMultiChoiceDialog dialog( this, _("Select the traces to unload:"), _("Unload Traces"), choices );
 
   raiseCurrentWindow = false;
@@ -3736,7 +3736,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
         isThereHistogramLinkedToWindow = getUsedBySomeHistogram( (*it), true, sel );
         if( isThereHistogramLinkedToWindow )
         {
-          wxString traceName = wxString::FromAscii( loadedTraces[ sel.Item( i ) ]->getTraceNameNumbered().c_str() );
+          wxString traceName = wxString::FromUTF8( loadedTraces[ sel.Item( i ) ]->getTraceNameNumbered().c_str() );
           wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used in an histogram." ),
                         _( "Warning" ),
                         wxOK | wxICON_EXCLAMATION ); 
@@ -4139,7 +4139,7 @@ void paraverMain::OnSignal()
 
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
-        tmpTimeline->saveImage( false, wxString::FromAscii( currentSignal.imageFileName.c_str() ) );
+        tmpTimeline->saveImage( false, wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
     }
     else // Histogram
     {
@@ -4154,7 +4154,7 @@ void paraverMain::OnSignal()
 
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
-        tmpHistogram->saveImage( false, wxString::FromAscii( currentSignal.imageFileName.c_str() ) );
+        tmpHistogram->saveImage( false, wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
     }
   }
 
@@ -4275,7 +4275,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
     else
       tmpNameOut = localKernel->getNewTraceName( tmpNameIn, filterToolIDs[ i ], false );
 
-    paraverMain::dialogProgress->Pulse( wxString::FromAscii( tmpNameOut.c_str() ) );
+    paraverMain::dialogProgress->Pulse( wxString::FromUTF8( tmpNameOut.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
@@ -4371,7 +4371,7 @@ void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialo
     filterToolOrder = traceOptions->parseDoc( (char *)xmlFile.c_str() );
 
     // Keep my XMLPath
-    wxString auxName = wxString::FromAscii( xmlFile.c_str() );
+    wxString auxName = wxString::FromUTF8( xmlFile.c_str() );
     wxString auxPath = wxFileName( auxName ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
     XMLPath = std::string( auxPath.mb_str() );
 
@@ -4408,7 +4408,7 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
 
   if ( cutFilterDialog->GetRunAppWithResultingTrace() )
   {
-    wxString auxTrace =  wxString::FromAscii( dstTrace.c_str() );
+    wxString auxTrace =  wxString::FromUTF8( dstTrace.c_str() );
     ShowRunCommand( auxTrace );
   }
 }
@@ -4502,7 +4502,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + strPid.str() + "_" + sessionInfo.sessionDate + "_" + strStatus.str() + ".session";
     #endif
   }
-  SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
+  SessionSaver::SaveSession( wxString::FromUTF8( file.c_str() ), GetLoadedTraces() );
 }
 
 
@@ -4777,7 +4777,7 @@ void paraverMain::createHelpContentsWindow(
 #else
     helpContentsAbsolutePath = wxT( "file://" ) + 
 #endif
-          wxString::FromAscii( paraverConfig->getParaverConfigDir().c_str() ) +
+          wxString::FromUTF8( paraverConfig->getParaverConfigDir().c_str() ) +
           wxString( wxFileName::GetPathSeparator() ) +
           wxString( wxT( "help_contents" ) ) + wxT( "_index.html" );
   }
@@ -4836,9 +4836,9 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
 
 wxString paraverMain::getHintComposed( const std::pair< std::string, std::string >& hint )
 {
-//  wxFileName filename( wxString::FromAscii(  hint.first.c_str() ) );
-//  return filename.GetName() + _( " - " ) + wxString::FromAscii(  hint.second.c_str() );
-  return wxString::FromAscii( hint.second.c_str() );
+//  wxFileName filename( wxString::FromUTF8(  hint.first.c_str() ) );
+//  return filename.GetName() + _( " - " ) + wxString::FromUTF8(  hint.second.c_str() );
+  return wxString::FromUTF8( hint.second.c_str() );
 }
 
 
@@ -4854,10 +4854,10 @@ bool isForbidden( const char& c )
 wxString paraverMain::buildFormattedFileName( std::string windowName, const std::string& traceName )
 {
   std::replace_if( windowName.begin(), windowName.end(), isForbidden, '_' );
-  wxString auxTraceName = wxString::FromAscii( traceName.c_str() );
+  wxString auxTraceName = wxString::FromUTF8( traceName.c_str() );
   auxTraceName.Remove( auxTraceName.Find( wxT( ".prv" ) ) );
 
-  return ( wxString::FromAscii( windowName.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
+  return ( wxString::FromUTF8( windowName.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
 }
 
 
@@ -4866,7 +4866,7 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
   int hintId = event.GetId();
   wxMenuItem *tmpMenuItem = menuHints->FindItem( hintId );
 
-  wxFileName tmpCFG( wxString::FromAscii( ( (MenuHintFile *) tmpMenuItem->GetRefData() )->fileName.c_str() ) );
+  wxFileName tmpCFG( wxString::FromUTF8( ( (MenuHintFile *) tmpMenuItem->GetRefData() )->fileName.c_str() ) );
   if ( tmpCFG.IsRelative() )
   {
     wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
@@ -4912,7 +4912,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
   int position = 0;
   for ( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
   {
-    tmpNames.Add( wxString::FromAscii( it->c_str() ) );
+    tmpNames.Add( wxString::FromUTF8( it->c_str() ) );
     if ( std::find( traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(), traceWorkspaces[ loadedTraces[ currentTrace ] ].end(),*it ) != traceWorkspaces[ loadedTraces[ currentTrace ] ].end() )
       tmpActive.Add( position );
     ++position;
@@ -4956,13 +4956,13 @@ void paraverMain::setActiveWorkspacesText()
         tmpActive += _( "+" );
 
       if( tmpCurrentWorkspace < firstUserWorkspace[ getCurrentTrace() ] )
-        tmpActive += wxString::FromAscii( it->c_str() );
+        tmpActive += wxString::FromUTF8( it->c_str() );
       else
       {
         if( workspacesManager->existWorkspace( it->c_str(), WorkspaceManager::DISTRIBUTED ) )
-          tmpActive += wxString::FromAscii( it->c_str() ) + wxT( "#2" );
+          tmpActive += wxString::FromUTF8( it->c_str() ) + wxT( "#2" );
         else
-          tmpActive += wxString::FromAscii( it->c_str() );
+          tmpActive += wxString::FromUTF8( it->c_str() );
       }
       ++tmpCurrentWorkspace;
     }

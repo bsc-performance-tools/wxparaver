@@ -1523,7 +1523,7 @@ wxString PreferencesDialog::formatNumber( long value )
 //  auxSStr.precision( ParaverConfig::getInstance()->getPrecision() );
 //  auxSStr << fixed;
   auxSStr << value;
-  auxNumber << wxString::FromAscii( auxSStr.str().c_str() );
+  auxNumber << wxString::FromUTF8( auxSStr.str().c_str() );
 
   return auxNumber;
 }
@@ -1538,7 +1538,7 @@ void PreferencesDialog::setLabelsChoiceBox( const vector< string > &list,
   for( vector< string >::const_iterator it = list.begin(); it != list.end(); ++it )
   {
     // add every string of the list to the choice box
-    choiceBox->Append( wxString::FromAscii( (*it).c_str() ) );
+    choiceBox->Append( wxString::FromUTF8( (*it).c_str() ) );
   }
 
   choiceBox->Select( selected );
@@ -1552,11 +1552,11 @@ bool PreferencesDialog::TransferDataToWindow()
   // GLOBAL
   checkGlobalFillStateGaps->SetValue( globalFillStateGaps );
   checkGlobalFullTracePath->SetValue( globalFullTracePath );
-  dirBrowserButtonTrace->SetPath( wxString::FromAscii( tracesPath.c_str() ) );
-  dirBrowserButtonCFG->SetPath( wxString::FromAscii( cfgsPath.c_str() ) );
-  dirBrowserButtonXML->SetPath( wxString::FromAscii( filtersXMLPath.c_str() ) );
-  dirBrowserButtonTutorials->SetPath( wxString::FromAscii( tutorialsPath.c_str() ) );
-  dirBrowserButtonTmp->SetPath( wxString::FromAscii( tmpPath.c_str() ) );
+  dirBrowserButtonTrace->SetPath( wxString::FromUTF8( tracesPath.c_str() ) );
+  dirBrowserButtonCFG->SetPath( wxString::FromUTF8( cfgsPath.c_str() ) );
+  dirBrowserButtonXML->SetPath( wxString::FromUTF8( filtersXMLPath.c_str() ) );
+  dirBrowserButtonTutorials->SetPath( wxString::FromUTF8( tutorialsPath.c_str() ) );
+  dirBrowserButtonTmp->SetPath( wxString::FromUTF8( tmpPath.c_str() ) );
   txtMaximumTraceSize->SetValue( maximumTraceSize );
   checkGlobalSingleInstance->SetValue( singleInstance );
   spinSessionTime->SetValue( sessionSaveTime );
@@ -1567,8 +1567,8 @@ bool PreferencesDialog::TransferDataToWindow()
   checkDisableTimelineZoomMouseWheel->SetValue( disableTimelineZoomMouseWheel );
 
   // TIMELINE
-  txtTimelineNameFormatPrefix->SetValue( wxString::FromAscii( timelineNameFormatPrefix.c_str() ) );
-  txtTimelineNameFormatFull->SetValue( wxString::FromAscii( timelineNameFormatFull.c_str() ) );
+  txtTimelineNameFormatPrefix->SetValue( wxString::FromUTF8( timelineNameFormatPrefix.c_str() ) );
+  txtTimelineNameFormatFull->SetValue( wxString::FromUTF8( timelineNameFormatFull.c_str() ) );
 
   checkTimelineEventLines->SetValue( timelineEventLines );
   checkTimelineCommunicationLines->SetValue( timelineCommunicationLines );
@@ -1615,8 +1615,8 @@ bool PreferencesDialog::TransferDataToWindow()
   setLabelsChoiceBox( options, timelineSaveTextFormat, choiceTimelineSaveTextFormat );
 
   // HISTOGRAM
-  txtHistogramNameFormatPrefix->SetValue( wxString::FromAscii( histogramNameFormatPrefix.c_str() ) );
-  txtHistogramNameFormatFull->SetValue( wxString::FromAscii( histogramNameFormatFull.c_str() ) );
+  txtHistogramNameFormatPrefix->SetValue( wxString::FromUTF8( histogramNameFormatPrefix.c_str() ) );
+  txtHistogramNameFormatFull->SetValue( wxString::FromUTF8( histogramNameFormatFull.c_str() ) );
 
   checkHistogramZoom->SetValue( histogramZoom );
   checkHistogramHorizontal->SetValue( histogramHorizontal );
@@ -1682,12 +1682,12 @@ bool PreferencesDialog::TransferDataToWindow()
   std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( WorkspaceManager::USER_DEFINED );
   for( std::vector<std::string>::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
   {
-    listWorkspaces->Append( wxString::FromAscii( it->c_str() ) );
-    workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromAscii( it->c_str() ),
+    listWorkspaces->Append( wxString::FromUTF8( it->c_str() ) );
+    workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromUTF8( it->c_str() ),
                                                               WorkspaceManager::getInstance()->getWorkspace( *it, WorkspaceManager::USER_DEFINED ) ) );
   }
   
-  fileBrowserHintPath->SetPath( wxString::FromAscii( cfgsPath.c_str() ) );
+  fileBrowserHintPath->SetPath( wxString::FromUTF8( cfgsPath.c_str() ) );
 
   return true;
 }
@@ -2237,8 +2237,8 @@ void PreferencesDialog::OnListboxHintsWorkspaceSelected( wxCommandEvent& event )
   }
   std::pair< std::string, std::string > tmpHint = workspaceContainer[ listWorkspaces->GetStringSelection() ]
                                                   .getHintCFG( listHintsWorkspace->GetSelection() );
-  txtHintDescription->ChangeValue( wxString::FromAscii( tmpHint.second.c_str() ) );
-  fileBrowserHintPath->ChangePath( wxString::FromAscii( tmpHint.first.c_str() ) );
+  txtHintDescription->ChangeValue( wxString::FromUTF8( tmpHint.second.c_str() ) );
+  fileBrowserHintPath->ChangePath( wxString::FromUTF8( tmpHint.first.c_str() ) );
 }
 
 

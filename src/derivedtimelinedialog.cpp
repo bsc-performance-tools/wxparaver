@@ -574,7 +574,7 @@ void DerivedTimelineDialog::presetTimelineComboBox( vector< Window * > timelines
                                                     int& currentSelection )
 {
   for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
-    comboBox->Append( wxString::FromAscii( (*it)->getName().c_str() ) );
+    comboBox->Append( wxString::FromUTF8( (*it)->getName().c_str() ) );
 
   currentSelection = 0;
   for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
@@ -597,7 +597,7 @@ void DerivedTimelineDialog::presetStringChoiceBox( vector< string > list,
   
   for( vector< string >::iterator it = list.begin(); it != list.end(); ++it )
   {
-    aux << wxString::FromAscii( (*it).c_str() );
+    aux << wxString::FromUTF8( (*it).c_str() );
     choiceBox->Append( aux );
     aux.clear();
   }
@@ -617,7 +617,7 @@ void DerivedTimelineDialog::presetNameField( string whichName, wxTextCtrl *field
 {
   wxString auxName;
 
-  auxName << wxString::FromAscii( whichName.c_str() );
+  auxName << wxString::FromUTF8( whichName.c_str() );
   field->SetValue( auxName );
 }
 
@@ -705,7 +705,7 @@ void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
 
       wxString aux1;
 
-      aux1 << wxString::FromAscii( namesParameters[ 0 ].c_str() );
+      aux1 << wxString::FromUTF8( namesParameters[ 0 ].c_str() );
       widgetLabelMinCompose1->SetLabel( aux1 );
 
       setParameterComposeField( defaultValues[ 0 ], widgetMinCompose1 );
@@ -724,8 +724,8 @@ void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
 
       wxString aux1, aux2;
 
-      aux1 << wxString::FromAscii( namesParameters[ 0 ].c_str() );
-      aux2 << wxString::FromAscii( namesParameters[ 1 ].c_str() );
+      aux1 << wxString::FromUTF8( namesParameters[ 0 ].c_str() );
+      aux2 << wxString::FromUTF8( namesParameters[ 1 ].c_str() );
       widgetLabelMinCompose1->SetLabel( aux1 );
       widgetLabelMaxCompose1->SetLabel( aux2 );
 
@@ -761,7 +761,7 @@ void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
 
       wxString aux1;
 
-      aux1 << wxString::FromAscii( namesParameters[ 0 ].c_str() );
+      aux1 << wxString::FromUTF8( namesParameters[ 0 ].c_str() );
       widgetLabelMinCompose2->SetLabel( aux1 );
 
       setParameterComposeField( defaultValues[ 0 ], widgetMinCompose2 );
@@ -780,8 +780,8 @@ void DerivedTimelineDialog::setParametersCompose( PRV_UINT32 compose,
 
       wxString aux1, aux2;
 
-      aux1 << wxString::FromAscii( namesParameters[ 0 ].c_str() );
-      aux2 << wxString::FromAscii( namesParameters[ 1 ].c_str() );
+      aux1 << wxString::FromUTF8( namesParameters[ 0 ].c_str() );
+      aux2 << wxString::FromUTF8( namesParameters[ 1 ].c_str() );
       widgetLabelMinCompose2->SetLabel( aux1 );
       widgetLabelMaxCompose2->SetLabel( aux2 );
 

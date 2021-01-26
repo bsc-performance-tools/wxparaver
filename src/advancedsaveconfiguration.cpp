@@ -362,15 +362,15 @@ void AdvancedSaveConfiguration::CreateControls()
 
 wxString AdvancedSaveConfiguration::BuildName( Window *current )
 {
-  return  ( wxString::FromAscii( current->getName().c_str() ) + _( " @ " ) +
-            wxString::FromAscii( current->getTrace()->getTraceNameNumbered().c_str() ) );
+  return  ( wxString::FromUTF8( current->getName().c_str() ) + _( " @ " ) +
+            wxString::FromUTF8( current->getTrace()->getTraceNameNumbered().c_str() ) );
 }
 
 
 wxString AdvancedSaveConfiguration::BuildName( Histogram *current )
 {
-  return  ( wxString::FromAscii( current->getName().c_str() ) + _( " @ " ) +
-            wxString::FromAscii( current->getTrace()->getTraceNameNumbered().c_str() ) );
+  return  ( wxString::FromUTF8( current->getName().c_str() ) + _( " @ " ) +
+            wxString::FromUTF8( current->getTrace()->getTraceNameNumbered().c_str() ) );
 }
 
 
@@ -387,7 +387,7 @@ void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel( bool showFullList )
   {
     if ( allowedLevel( it->first ) && ( showFullList || enabledTag[ it->first ] ))
     {
-      wxString currentCheckBoxName = wxString::FromAscii( it->first.c_str() );
+      wxString currentCheckBoxName = wxString::FromUTF8( it->first.c_str() );
       GetCheckBoxByName( currentCheckBoxName )->Disconnect(
               wxEVT_COMMAND_CHECKBOX_CLICKED,
               wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxPropertyClicked ),
@@ -589,7 +589,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
     auxBoxSizer = new wxBoxSizer( wxHORIZONTAL );
     auxBoxSizerLeft = new wxBoxSizer( wxHORIZONTAL );
 
-    rowLabel = wxString::FromAscii( it->first.c_str() );
+    rowLabel = wxString::FromUTF8( it->first.c_str() );
     rowBaseName = rowLabel;
     if ( rowLabel.AfterLast( KParamSeparator[0] ) != rowLabel )
     {
@@ -617,7 +617,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
 
     auxTextCtrl = new wxTextCtrl( scrolledWindow,
                                   wxID_ANY,
-                                  wxString::FromAscii( it->second.c_str() ),
+                                  wxString::FromUTF8( it->second.c_str() ),
                                   wxDefaultPosition,
                                   wxDefaultSize,
                                   0,
@@ -636,7 +636,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
 
     if ( editionMode == PROPERTIES_TAGS )
     {
-      if( wxString::FromAscii( it->first.c_str() ) == _( "Statistic" ) )
+      if( wxString::FromUTF8( it->first.c_str() ) == _( "Statistic" ) )
       {
         auxButton = new wxButton( scrolledWindow,
                                   wxID_ANY, _("..."),
@@ -644,7 +644,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
                                   wxDefaultSize,
                                   wxBU_EXACTFIT,
                                   wxDefaultValidator,
-                                  wxString::FromAscii( it->first.c_str() ) + KButtonSuffix );
+                                  wxString::FromUTF8( it->first.c_str() ) + KButtonSuffix );
         // auxBoxSizer->Add( auxButton, 0, wxEXPAND | wxGROW | wxALL, 2 );
         auxButton->Enable( enabledTag[ it->first ] );
         auxBoxSizer->Add( auxButton, 1, wxALIGN_CENTER_VERTICAL | wxALL, 2 );
@@ -895,7 +895,7 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
     if ( !allowedLevel( it->first ) || ( !showFullList && !enabledTag[ it->first ] ))
       continue;
 
-    wxString currentTagName = wxString::FromAscii( it->first.c_str() );
+    wxString currentTagName = wxString::FromUTF8( it->first.c_str() );
 
     currentTextCtrl = GetTextCtrlByName( currentTagName );
     if ( GetCheckBoxByName( currentTagName )->GetValue() && currentTextCtrl->GetValue().IsEmpty() )
@@ -903,12 +903,12 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
       if ( auxMap.find( it->first ) != auxMap.end() )
       {
         // found! => recover the value in the map
-        currentTextCtrl->SetValue( wxString::FromAscii( auxMap.find( it->first )->second.c_str() ) );
+        currentTextCtrl->SetValue( wxString::FromUTF8( auxMap.find( it->first )->second.c_str() ) );
       }
       else
       {
         // copy the key
-        currentTextCtrl->SetValue( wxString::FromAscii( it->first.c_str() ) );
+        currentTextCtrl->SetValue( wxString::FromUTF8( it->first.c_str() ) );
       }
     }
   }
@@ -930,7 +930,7 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
     if ( !allowedLevel( it->first ) || ( !showFullList && !enabledTag[ it->first ] ))
       continue;
 
-    wxString currentTagName = wxString::FromAscii( it->first.c_str() );
+    wxString currentTagName = wxString::FromUTF8( it->first.c_str() );
     enabledTag[ it->first ] = GetCheckBoxByName( currentTagName )->GetValue();
 
     if ( enabledTag[ it->first ] )
@@ -1152,7 +1152,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
       unlinkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
       linkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
       if ( tmpWin == timelines[ currentItem ] )
-        GetTextCtrlByName( wxString::FromAscii( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+        GetTextCtrlByName( wxString::FromUTF8( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
       else
         tmpWin->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
     }
@@ -1164,7 +1164,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
         unlinkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
         linkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
         if ( tmpHisto == histograms[ currentItem ] )
-          GetTextCtrlByName( wxString::FromAscii( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+          GetTextCtrlByName( wxString::FromUTF8( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
         else
           tmpHisto->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
       }
@@ -1279,7 +1279,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
       unlinkedManager.removeLink( tmpOriginalName, *it );
       linkedManager.insertLink( tmpOriginalName, *it );
       if ( (*it) == timelines[ currentItem ] )
-        GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+        GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
       else
         (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
@@ -1291,7 +1291,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
       unlinkedManager.removeLink( tmpOriginalName, *it );
       linkedManager.insertLink( tmpOriginalName, *it ); 
       if ( (*it) == histograms[ currentItem ] )
-        GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+        GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
       else
         (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
@@ -1359,14 +1359,14 @@ void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &e
     TWindowsSet tmpWin;
     linkedManager.getLinks( tmpOriginalName, tmpWin );
     if ( tmpWin.find( timelines[ currentItem ] ) != tmpWin.end() )
-      GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+      GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
   }
   else
   {
     THistogramsSet tmpHisto;
     linkedManager.getLinks( tmpOriginalName, tmpHisto );
     if ( tmpHisto.find( histograms[ currentItem ] ) != tmpHisto.end() )
-      GetTextCtrlByName( wxString::FromAscii( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromAscii( tmpCustomName.c_str() ) );
+      GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
   }
 }
 
@@ -1385,7 +1385,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
   {
     wxBoxSizer *boxSizerOriginalName = new wxBoxSizer( wxHORIZONTAL );
 
-    wxString originalNameLabel = wxString::FromAscii( (*it).c_str() );
+    wxString originalNameLabel = wxString::FromUTF8( (*it).c_str() );
     wxString fullOriginalNameLabel = originalNameLabel;
     if ( originalNameLabel.AfterLast( KParamSeparator[0] ) != originalNameLabel )
        originalNameLabel = originalNameLabel.AfterLast( KParamSeparator[0] );
@@ -1409,9 +1409,9 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
 
     wxString tmpCustomName;
     if( linkedManager.getLinksSize( *it ) > 0 )
-      tmpCustomName = wxString::FromAscii( linkedManager.getCustomName( *it ).c_str() );
+      tmpCustomName = wxString::FromUTF8( linkedManager.getCustomName( *it ).c_str() );
     else
-      tmpCustomName = wxString::FromAscii( unlinkedManager.getCustomName( *it ).c_str() );
+      tmpCustomName = wxString::FromUTF8( unlinkedManager.getCustomName( *it ).c_str() );
 
     wxArrayString forbiddenChars;
     forbiddenChars.Add( wxT("|") );
