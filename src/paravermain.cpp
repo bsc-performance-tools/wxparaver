@@ -412,10 +412,10 @@ void paraverMain::Init()
   raiseCurrentWindow = true;
   runApplication = NULL;
   sessionTimer = new wxTimer( this, ID_TIMER_MAIN );
+  someWinIsRedraw = false;
   traceLoadedBefore = false;
   tutorialsWindow = NULL;
   workspacesManager = WorkspaceManager::getInstance();
-  someWinIsRedraw = false;
   menuFile = NULL;
   menuHints = NULL;
   menuHelp = NULL;
@@ -1288,7 +1288,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     return;
   }
 
-  PropertyClientData *tmpClientData = (PropertyClientData *)property->GetClientData();
+  PropertyClientData *tmpClientData = (PropertyClientData *)property->GetClientObject();
   if( tmpClientData == NULL )
     return;
 
@@ -2246,7 +2246,7 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
       return;
     lastHisto = currentHisto;
 
-    updateHistogramProperties( windowProperties, currentHisto, propertiesClientData );
+    updateHistogramProperties( windowProperties, currentHisto );
   }
   else if( currentTimeline != NULL )
   {
@@ -2255,7 +2255,7 @@ void paraverMain::OnForeignUpdate( wxUpdateUIEvent& event )
       return;
     lastTimeline = currentTimeline;
 
-    updateTimelineProperties( windowProperties, currentTimeline, propertiesClientData );
+    updateTimelineProperties( windowProperties, currentTimeline );
   }
 }
 

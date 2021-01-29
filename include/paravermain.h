@@ -195,25 +195,26 @@ struct SignalItem
 
 
 // 
-struct PropertyClientData
+class PropertyClientData : public wxClientData
 {
-  Window *ownerTimeline;
-  Histogram *ownerHistogram;
-  wxString propName;
+  public:
+    Window *ownerTimeline;
+    Histogram *ownerHistogram;
+    wxString propName;
 };
 
 
 struct SessionInfo
 {    
-    enum StatusID
-    {
-      OPEN   = 0,
-      CLOSED = 1
-    };
-    
-    unsigned int pid;
-    StatusID status;
-    std::string sessionDate;
+  enum StatusID
+  {
+    OPEN   = 0,
+    CLOSED = 1
+  };
+  
+  unsigned int pid;
+  StatusID status;
+  std::string sessionDate;
 };
 
 /*!
@@ -493,9 +494,6 @@ public:
   PreviousFiles * GetPreviousTraces() const { return previousTraces ; }
   void SetPreviousTraces(PreviousFiles * value) { previousTraces = value ; }
 
-  std::vector< PropertyClientData * > GetPropertiesClientData() const { return propertiesClientData ; }
-  void SetPropertiesClientData(std::vector< PropertyClientData * > value) { propertiesClientData = value ; }
-
   bool GetRaiseCurrentWindow() const { return raiseCurrentWindow ; }
   void SetRaiseCurrentWindow(bool value) { raiseCurrentWindow = value ; }
 
@@ -507,6 +505,9 @@ public:
 
   std::queue<SignalItem> GetSignalQueue() const { return signalQueue ; }
   void SetSignalQueue(std::queue<SignalItem> value) { signalQueue = value ; }
+
+  bool GetSomeWinIsRedraw() const { return someWinIsRedraw ; }
+  void SetSomeWinIsRedraw(bool value) { someWinIsRedraw = value ; }
 
   bool GetTraceLoadedBefore() const { return traceLoadedBefore ; }
   void SetTraceLoadedBefore(bool value) { traceLoadedBefore = value ; }
@@ -522,9 +523,6 @@ public:
 
   WorkspaceManager * GetWorkspacesManager() const { return workspacesManager ; }
   void SetWorkspacesManager(WorkspaceManager * value) { workspacesManager = value ; }
-
-  bool GetSomeWinIsRedraw() const { return someWinIsRedraw ; }
-  void SetSomeWinIsRedraw(bool value) { someWinIsRedraw = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -678,17 +676,16 @@ private:
   PreviousFiles * previousCFGs;
   PreviousFiles * previousCutFilteredTraces;
   PreviousFiles * previousTraces;
-  std::vector< PropertyClientData * > propertiesClientData;
   bool raiseCurrentWindow;
   RunScript * runApplication;
   wxTimer * sessionTimer;
   std::queue<SignalItem> signalQueue;
+  bool someWinIsRedraw;
   bool traceLoadedBefore;
   wxString tracePath;
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
-  bool someWinIsRedraw;
 ////@end paraverMain member variables
   SessionInfo sessionInfo;
   bool firstSave;
