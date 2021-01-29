@@ -194,7 +194,7 @@ struct SignalItem
 };
 
 
-// 
+// wxPropertyGrid 1.4.15 + wxWidgets 2.8.12 does not support SetClientObject
 struct PropertyClientData
 {
   Window *ownerTimeline;
