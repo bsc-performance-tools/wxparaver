@@ -1265,6 +1265,7 @@ void paraverMain::spreadSetRedraw( Window *whichWindow )
     spreadSetRedrawRecursive( whichWindow );
 }
 
+
 /*!
  * wxEVT_PG_CHANGING event handler for ID_FOREIGN
  */
@@ -1272,6 +1273,7 @@ void paraverMain::OnPropertyGridChanging( wxPropertyGridEvent& event )
 {
   propertyPrevValue = event.GetProperty()->GetValue();
 }
+
 
 /*!
  * wxEVT_PG_CHANGED event handler for ID_FOREIGN
@@ -1293,7 +1295,6 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
     return;
 
   const wxString& propName = tmpClientData->propName;
-  wxString *tmpRest = new wxString(_(""));
   
   if( propName == _( "Mode" ) )
   {
@@ -1308,7 +1309,19 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       tmpClientData->ownerHistogram->setChanged( true );
     }
   }
-  else if( propName == wxString( "Name", wxConvUTF8 ) )
+  else
+    SetPropertyValue( event, property, propName, tmpClientData );
+}
+
+
+void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
+                                    wxPGProperty *property,
+                                    const wxString& propName,
+                                    PropertyClientData *tmpClientData )
+{
+  wxString *tmpRest = new wxString(_(""));
+
+  if( propName == wxString( "Name", wxConvUTF8 ) )
   {
     wxString tmpName = property->GetValue().GetString();
     if( tmpClientData->ownerTimeline != NULL )

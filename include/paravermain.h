@@ -75,6 +75,7 @@ class wxToolbook;
 class wxGenericDirCtrl;
 class wxPropertyGrid;
 ////@end forward declarations
+class wxPGProperty;
 class wxCheckBox;
 class ProgressController;
 class wxPropertyGridEvent;
@@ -398,6 +399,10 @@ public:
   /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
   void OnPropertyGridChange( wxPropertyGridEvent& event );
   void OnPropertyGridChanging( wxPropertyGridEvent& event );
+  void SetPropertyValue( wxPropertyGridEvent& event,
+                         wxPGProperty *property,
+                         const wxString& propName,
+                         PropertyClientData *tmpClientData );
 
   void OnPreviousTracesClick( wxCommandEvent& event );
   void OnPreviousCFGsClick( wxCommandEvent& event );
