@@ -501,7 +501,7 @@ bool insertLinkedPropertyShown( Window* whichWindow,
     tmpLinked.indexLink = whichHistogram->getCFGS4DIndexLink( tmpLinked.propertyName );
   }
 
-  if( tmpLinked.indexLink == 0 )
+  if( tmpLinked.indexLink == NO_INDEX_LINK )
     return true;
 
   return linkedPropertiesShown.insert( tmpLinked ).second;
