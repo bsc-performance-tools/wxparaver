@@ -399,10 +399,6 @@ public:
   /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
   void OnPropertyGridChange( wxPropertyGridEvent& event );
   void OnPropertyGridChanging( wxPropertyGridEvent& event );
-  void SetPropertyValue( wxPropertyGridEvent& event,
-                         wxPGProperty *property,
-                         const wxString& propName,
-                         PropertyClientData *tmpClientData );
 
   void OnPreviousTracesClick( wxCommandEvent& event );
   void OnPreviousCFGsClick( wxCommandEvent& event );
@@ -742,7 +738,18 @@ private:
 
   Trace *getCurrentTrace() const;
   bool getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete );
-  
+
+  template< typename T >
+  bool linkedSetPropertyValue( T *whichWindow,
+                               wxPropertyGridEvent& event,
+                               wxPGProperty *property,
+                               const wxString& propName );
+  void SetPropertyValue( wxPropertyGridEvent& event,
+                         wxPGProperty *property,
+                         const wxString& propName,
+                         Window *whichTimeline,
+                         Histogram *whichHistogram );
+
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );
