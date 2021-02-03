@@ -212,6 +212,8 @@ gHistogram::~gHistogram()
   if( myHistogram != NULL )
     delete myHistogram;
   myHistogram = NULL;
+  
+  delete redrawStopWatch;
 }
 
 

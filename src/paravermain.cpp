@@ -378,6 +378,10 @@ paraverMain::~paraverMain()
     delete helpContents;
   }
 
+  for( std::vector< PropertyClientData * >::iterator it = propertiesClientData.begin();
+       it != propertiesClientData.end(); ++it )
+    delete *it; 
+
   wxMemoryFSHandler::RemoveFile( wxT("logoBSC.xpm") );
 }
 

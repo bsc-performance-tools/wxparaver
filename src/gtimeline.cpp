@@ -191,6 +191,7 @@ gTimeline::~gTimeline()
   delete timerSize;
   delete timerMotion;
   delete myWindow;
+  delete redrawStopWatch;
 }
 
 
