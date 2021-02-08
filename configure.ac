@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT(wxparaver, 4.9.0, tools@bsc.es)
+AC_INIT(wxparaver, 4.9.1, tools@bsc.es)
 AC_CONFIG_SRCDIR([src/wxparaverapp.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
