@@ -78,7 +78,7 @@ DIMEMAS_CFG_PATH=`dirname ${DIMEMAS_TRACE}`
 # DETECTION OF DIMEMAS VERSION
 # Transforms "Dimemas version x.x.x" to a number xxx
 #DIMEMAS_VERSION=`Dimemas -h | grep version | head -n 1 | awk -F ' ' '{ print $3; };' | sed 's/\.//g' | sed 's/[a-zA-Z]//g'`
-DIMEMAS_VERSION=$(${DIMEMAS_ENV}Dimemas -v | head -n 1 | sed 's/Dimemas v//g' | sed 's/\.//g' | awk -F ' ' '{ print $1; };')
+DIMEMAS_VERSION=$(${DIMEMAS_ENV}Dimemas -v | head -n 1 | sed 's/Dimemas v//g' | sed 's/Dimemas //g' | sed 's/\.//g' | awk -F ' ' '{ print $1; };')
 DIMEMAS_MINIMUM_VERSION=512
 
 if [ "$DIMEMAS_VERSION" -gt "$DIMEMAS_MINIMUM_VERSION" ]; then
