@@ -985,9 +985,9 @@ wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
     widgetName = SingleTimelinePropertyLabels[ propertyIndex ];
 
   prvEventInfoProperty::InfoType infoType;
-  if ( propertyIndex == SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUES ] )
+  if ( propertyIndex == SINGLE_EVENTTYPEVALUES )
     infoType = prvEventInfoProperty::TYPES;
-  else if ( propertyIndex == SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEVALUES ] )
+  else if ( propertyIndex == SINGLE_EVENTVALUEVALUES )
     infoType = prvEventInfoProperty::VALUES;
 
   if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
