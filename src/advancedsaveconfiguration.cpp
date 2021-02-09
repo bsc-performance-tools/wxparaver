@@ -446,7 +446,7 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
 
   string semanticLevel, function, paramAlias;
   string innerKey;
-  PRV_UINT32 numParameter;
+  TParamIndex numParameter;
   string nameParameter;
   bool enabled;
   Window *currentWindow = timelines[ currentItem ]; // TRY to set this static
@@ -922,7 +922,7 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
   Window::TParamAlias auxActiveParametersTags;
   string semanticLevel;
   string function;
-  PRV_UINT32 numParameter;
+  TParamIndex numParameter;
   string newAlias;
 
   for( map< string, string >::iterator it = renamedTag.begin(); it != renamedTag.end(); ++it )

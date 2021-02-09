@@ -31,6 +31,7 @@
 
 #include <vector>
 #include <queue>
+#include <string>
 #include <wx/progdlg.h>
 #include <wx/treectrl.h>
 #include <wx/cmdline.h>
@@ -200,21 +201,24 @@ struct PropertyClientData
 {
   Window *ownerTimeline;
   Histogram *ownerHistogram;
-  wxString propName;
+  std::string propName;
+  size_t extraTopComposeLevel;
+  TWindowLevel semanticLevel;
+  TParamIndex numParameter;
 };
 
 
 struct SessionInfo
 {    
-    enum StatusID
-    {
-      OPEN   = 0,
-      CLOSED = 1
-    };
-    
-    unsigned int pid;
-    StatusID status;
-    std::string sessionDate;
+  enum StatusID
+  {
+    OPEN   = 0,
+    CLOSED = 1
+  };
+  
+  unsigned int pid;
+  StatusID status;
+  std::string sessionDate;
 };
 
 /*!
@@ -743,10 +747,12 @@ private:
   bool linkedSetPropertyValue( T *whichWindow,
                                wxPropertyGridEvent& event,
                                wxPGProperty *property,
-                               const wxString& propName );
+                               const string& propName,
+                               PropertyClientData *whichClientData );
   void SetPropertyValue( wxPropertyGridEvent& event,
                          wxPGProperty *property,
-                         const wxString& propName,
+                         const string& propName,
+                         PropertyClientData *tmpClientData,
                          Window *whichTimeline,
                          Histogram *whichHistogram );
 
