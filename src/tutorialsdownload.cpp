@@ -610,7 +610,7 @@ bool TutorialsDownload::install( const string& tutorialFile, TutorialsProgress& 
   wxString tmpHome;
   if ( !wxparaverApp::mainWindow->getParaverHome( tmpHome ) )
     return false;
-  wxString command = tmpHome + wxT( "\\bin\\gzip.exe -k -d " ) + wxString::FromUTF8( tutorialFile.c_str() );
+  wxString command = tmpHome + wxT( "\\bin\\gzip.exe -k -d -f " ) + wxString::FromUTF8( tutorialFile.c_str() );
   if( wxExecute( command, wxEXEC_SYNC ) != 0 )
   {
     wxMessageBox( wxT( "Failed unzipping file " ) + wxString::FromUTF8( tutorialFile.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
