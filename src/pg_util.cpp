@@ -890,7 +890,6 @@ wxPGId AppendCFG4DprvRowsSelectionPropertyWindow( wxPropertyGrid* windowProperti
 
     retId = windowProperties->Append( auxProperty );
   }
-  else
 
   fillPropertyClientData( whichWindow, NULL, auxProperty, widgetName, whichPropertiesClientData );
 

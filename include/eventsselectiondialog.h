@@ -390,7 +390,7 @@ public:
   bool ChangedEventTypesSelection() const;
   bool ChangedOperatorTypeValue() const ;
   bool ChangedEventValuesFunction() const;
-  bool ChangedEventValues() const;
+  bool ChangedEventValuesSelection() const;
 
   private:
 

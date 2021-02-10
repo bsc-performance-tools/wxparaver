@@ -45,6 +45,7 @@
 #include "eventsselectiondialog.h"
 #include "rowsselectiondialog.h"
 #include "timelinetreeselector.h"
+#include "paraverlabels.h"
 
 
 /**********************************************************
@@ -476,36 +477,21 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
     if ( eventsDialog.ShowModal() == wxID_OK && numLabels )
     {
+      TWindowsSet timelines;
+      TWindowsSet allTimelines;
+
       if ( eventsDialog.ChangedEventTypesFunction() )
       {
-        currentWindow->getFilter()->setEventTypeFunction( eventsDialog.GetNameEventTypesFunction() );
-      }
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEFUNCTION ] ),
+                                                      SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEFUNCTION ],
+                                                      timelines );
+        if( timelines.size() == 0 )
+          timelines.insert( currentWindow );
 
-      if ( eventsDialog.ChangedEventValuesFunction() )
-      {
-        currentWindow->getFilter()->setEventValueFunction( eventsDialog.GetNameEventValuesFunction() );
-      }
-
-      if ( eventsDialog.ChangedOperatorTypeValue() )
-      {
-        int func = eventsDialog.GetIndexOperatorTypeValue();
-
-        if ( func == 0 )
-          currentWindow->getFilter()->setOpTypeValueAnd();
-        else 
-          currentWindow->getFilter()->setOpTypeValueOr();
-      }
-
-      if ( eventsDialog.ChangedEventValues() )
-      {
-        wxArrayDouble tmpEventValues = eventsDialog.GetEventValues();
-
-        Filter *filter = currentWindow->getFilter();
-        filter->clearEventValues();
-
-        for( unsigned int i = 0; i < tmpEventValues.GetCount(); ++i )
+        for( TWindowsSet::iterator it = timelines.begin(); it != timelines.end(); ++it )
         {
-          filter->insertEventValue( (TSemanticValue)tmpEventValues[ i ] );
+          allTimelines.insert( *it );
+          (*it)->getFilter()->setEventTypeFunction( eventsDialog.GetNameEventTypesFunction() );
         }
       }
 
@@ -513,19 +499,99 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
       {
         wxArrayInt tmpEventTypes = eventsDialog.GetEventTypesSelection();
 
-        Filter *filter = currentWindow->getFilter();
-        filter->clearEventTypes();
+        timelines.clear();
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUES ] ),
+                                                      SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUES ],
+                                                      timelines );
+        if( timelines.size() == 0 )
+          timelines.insert( currentWindow );
 
-        for( unsigned int i = 0; i < tmpEventTypes.GetCount(); ++i )
+        for( TWindowsSet::iterator it = timelines.begin(); it != timelines.end(); ++it )
         {
-          filter->insertEventType( (TEventType)tmpEventTypes[ i ] );
+          allTimelines.insert( *it );
+
+          Filter *filter = (*it)->getFilter();
+          filter->clearEventTypes();
+
+          for( unsigned int i = 0; i < tmpEventTypes.GetCount(); ++i )
+          {
+            filter->insertEventType( (TEventType)tmpEventTypes[ i ] );
+          }
         }
       }
 
-      paraverMain::myParaverMain->spreadSetChanged( currentWindow );
-      paraverMain::myParaverMain->spreadSetRedraw( currentWindow );
+      if ( eventsDialog.ChangedOperatorTypeValue() )
+      {
+        int func = eventsDialog.GetIndexOperatorTypeValue();
+
+        timelines.clear();
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUESOP ] ),
+                                                      SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUESOP ],
+                                                      timelines );
+        if( timelines.size() == 0 )
+          timelines.insert( currentWindow );
+
+        for( TWindowsSet::iterator it = timelines.begin(); it != timelines.end(); ++it )
+        {
+          allTimelines.insert( *it );
+
+          if ( func == 0 )
+            (*it)->getFilter()->setOpTypeValueAnd();
+          else 
+            (*it)->getFilter()->setOpTypeValueOr();
+        }
+      }
+
+      if ( eventsDialog.ChangedEventValuesFunction() )
+      {
+        timelines.clear();
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEFUNCTION ] ),
+                                                      SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEFUNCTION ],
+                                                      timelines );
+        if( timelines.size() == 0 )
+          timelines.insert( currentWindow );
+
+        for( TWindowsSet::iterator it = timelines.begin(); it != timelines.end(); ++it )
+        {
+          allTimelines.insert( *it );
+          (*it)->getFilter()->setEventValueFunction( eventsDialog.GetNameEventValuesFunction() );
+        }
+      }
+
+      if ( eventsDialog.ChangedEventValuesSelection() )
+      {
+        wxArrayDouble tmpEventValues = eventsDialog.GetEventValues();
+
+        timelines.clear();
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEVALUES ] ),
+                                                      SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEVALUES ],
+                                                      timelines );
+        if( timelines.size() == 0 )
+          timelines.insert( currentWindow );
+
+        for( TWindowsSet::iterator it = timelines.begin(); it != timelines.end(); ++it )
+        {
+          allTimelines.insert( *it );
+
+          Filter *filter = (*it)->getFilter();
+          filter->clearEventValues();
+          for( unsigned int i = 0; i < tmpEventValues.GetCount(); ++i )
+          {
+            filter->insertEventValue( (TSemanticValue)tmpEventValues[ i ] );
+          }
+        }
+      }
+
+      wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
+      for( TWindowsSet::iterator it = allTimelines.begin(); it != allTimelines.end(); ++it )
+      {
+        paraverMain::myParaverMain->spreadSetChanged( *it );
+        paraverMain::myParaverMain->spreadSetRedraw( *it );
+      }
+      wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
 
       wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+
       return true;
     }
 

@@ -584,7 +584,7 @@ bool EventsSelectionDialog::ChangedEventValuesFunction() const
 }
 
 
-bool EventsSelectionDialog::ChangedEventValues() const
+bool EventsSelectionDialog::ChangedEventValuesSelection() const
 {
   return changedEventValues;
 }
