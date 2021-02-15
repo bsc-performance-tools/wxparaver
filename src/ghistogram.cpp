@@ -214,6 +214,7 @@ gHistogram::~gHistogram()
   myHistogram = NULL;
   
   delete redrawStopWatch;
+  delete timerZoom;
 }
 
 
@@ -463,7 +464,7 @@ void gHistogram::execute()
   THistogramColumn curPlane;
 
   myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
-  if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
+  if( myHistogram->isCommunicationStat( myHistogram->getCurrentStat() ) )
   {
     curPlane = myHistogram->getCommSelectedPlane();
     columnSelection.init( myHistogram->getCommColumnTotals(), idStat, numCols, curPlane );
@@ -518,7 +519,7 @@ void gHistogram::fillGrid()
 {
   wxFont labelFont = gridHisto->GetLabelFont();
   wxFont cellFontBold = gridHisto->GetDefaultCellFont();
-  bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+  bool commStat = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
   bool firstRowColored = myHistogram->getFirstRowColored();
 
@@ -588,7 +589,7 @@ THistogramColumn gHistogram::getSemanticSortedRealColumn( THistogramColumn which
 
 void gHistogram::fillZoom()
 {
-  bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+  bool commStat = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
   PRV_UINT16 idStat;
   THistogramColumn curPlane;
   THistogramColumn numCols, numDrawCols;
@@ -751,7 +752,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
 {
   TObjectOrder numRows = myHistogram->getNumRows();
   
-  bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+  bool commStat = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
   bool horizontal = myHistogram->getHorizontal();
   bool firstRowColored = myHistogram->getFirstRowColored();
   PRV_UINT16 idStat;
@@ -2043,7 +2044,7 @@ TSemanticValue gHistogram::getZoomSemanticValue( THistogramColumn column, TObjec
   myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
   column = myHistogram->getSemanticRealColumn( column, noVoidSemRanges );
   
-  if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
+  if( myHistogram->isCommunicationStat( myHistogram->getCurrentStat() ) )
   {
     plane = myHistogram->getCommSelectedPlane();
     if( myHistogram->planeCommWithValues( plane ) )
@@ -2445,7 +2446,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     }
 
     PRV_UINT32 plane;
-    if( myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
+    if( myHistogram->isCommunicationStat( myHistogram->getCurrentStat() ) )
       plane = myHistogram->getCommSelectedPlane();
     else
       plane = myHistogram->getSelectedPlane();
@@ -2586,7 +2587,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   if( openWindow != NULL )
   {
     THistogramColumn iPlane;
-    bool commStat = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+    bool commStat = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
 
     vector< bool > tmpSelectedRows = myHistogram->getSelectedBooleanRows( );
     TObjectOrder maxRow = tmpSelectedRows.size();
@@ -2800,7 +2801,7 @@ wxString gHistogram::buildFormattedFileName( bool onlySelectedPlane ) const
   if ( onlySelectedPlane )
   {
     histoNameNoSpaces += "_";
-    bool isCommStatistic = myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() );
+    bool isCommStatistic = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
     if ( !isCommStatistic )
       histoNameNoSpaces += myHistogram->getPlaneLabel( myHistogram->getSelectedPlane() );
     else
@@ -3257,7 +3258,7 @@ void gHistogram::saveCFG()
 
 void gHistogram::OnToolLabelColorsClick( wxCommandEvent& event )
 {
-  if ( !myHistogram->itsCommunicationStat( myHistogram->getCurrentStat() ) )
+  if ( !myHistogram->isCommunicationStat( myHistogram->getCurrentStat() ) )
   {
     myHistogram->setFirstRowColored( event.IsChecked() );
     myHistogram->setRedraw( true );

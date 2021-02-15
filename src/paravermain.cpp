@@ -378,6 +378,12 @@ paraverMain::~paraverMain()
     delete helpContents;
   }
 
+  delete sessionTimer;
+  delete previousCFGs;
+  delete previousCutFilteredTraces;
+  delete previousSessions;
+  delete previousTraces;
+
   for( std::vector< PropertyClientData * >::iterator it = propertiesClientData.begin();
        it != propertiesClientData.end(); ++it )
     delete *it; 
