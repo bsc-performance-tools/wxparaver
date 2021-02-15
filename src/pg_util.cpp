@@ -2658,7 +2658,7 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
     arrayStr.Add( wxString::FromAscii( (*it).c_str() ) );
   arrayInt.Add( 0 );
   arrayInt.Add( 1 );
-  if( whichHisto->itsCommunicationStat( whichHisto->getCurrentStat() ) )
+  if( whichHisto->isCommunicationStat( whichHisto->getCurrentStat() ) )
     selected = 0;
   else
     selected = 1;

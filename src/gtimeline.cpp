@@ -188,8 +188,9 @@ gTimeline::~gTimeline()
 ////@end gTimeline destruction
   gPasteWindowProperties::getInstance()->verifyRemove( this );
 
-  delete timerSize;
   delete timerMotion;
+  delete timerSize;
+  delete timerWheel;
   delete myWindow;
   delete redrawStopWatch;
 }

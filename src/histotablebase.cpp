@@ -98,7 +98,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
     else
       label = wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals)( iTotal - 1 ) ).c_str() );
   }
-  else if( myHisto->GetHistogram()->itsCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
+  else if( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
     label = wxString::FromAscii( myHisto->GetHistogram()->getRowLabel( (*selectedRows)[ row ] ).c_str() );
   else if( myHisto->GetHistogram()->getHorizontal() )
     label = wxString::FromAscii( myHisto->GetHistogram()->getRowLabel( (*selectedRows)[ row ] ).c_str() );
@@ -125,7 +125,7 @@ wxString HistoTableBase::GetColLabelValue( int col )
     --col;
   }
 
-  if( myHisto->GetHistogram()->itsCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
+  if( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
     return wxString::FromAscii( myHisto->GetHistogram()->getRowLabel( col ).c_str() );
     
   if( myHisto->GetHistogram()->getHorizontal() )
@@ -188,7 +188,7 @@ wxString HistoTableBase::GetValue( int row, int col )
       else
         col = myHisto->GetHistogram()->getSemanticSortedColumn( col );
 
-      if( myHisto->GetHistogram()->itsCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
+      if( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
         totals->getAll( vTotals, idStat, col, myHisto->GetHistogram()->getCommSelectedPlane() );
       else
         totals->getAll( vTotals, idStat, col, myHisto->GetHistogram()->getSelectedPlane() );
@@ -216,7 +216,7 @@ wxString HistoTableBase::GetValue( int row, int col )
       }
     }
   }
-  else if( myHisto->GetHistogram()->itsCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
+  else if( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
   {
     if( myHisto->GetHistogram()->getCommCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getCommSelectedPlane() ) )
     {
@@ -341,7 +341,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
   if( ( myHisto->GetHistogram()->getHorizontal() && row < myHisto->GetHistogram()->getNumRows() ) ||
     ( !myHisto->GetHistogram()->getHorizontal() && col < (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) ) )
   {
-    if ( myHisto->GetHistogram()->itsCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) &&
+    if ( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) &&
          myHisto->GetHistogram()->getCommCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getCommSelectedPlane() ) &&
          myHisto->GetHistogram()->getShowColor() )
     {

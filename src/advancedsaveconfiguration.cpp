@@ -642,7 +642,7 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram, con
   switch ( editionMode )
   {
     case HISTOGRAM_STATISTIC_TAGS:
-      selected = ( currentHistogram->itsCommunicationStat( currentHistogram->getCurrentStat() ) )? 0 : 1;
+      selected = ( currentHistogram->isCommunicationStat( currentHistogram->getCurrentStat() ) )? 0 : 1;
       currentHistogram->getStatisticsLabels( fullTagList, selected );
       BuildTagMaps( currentHistogram->getCFG4DStatisticsAliasList(), showFullList );
       break;
