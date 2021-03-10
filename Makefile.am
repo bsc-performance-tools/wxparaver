@@ -132,6 +132,7 @@ dist-hook:
 	cp -f ./docs/dimemas-wrapper.sh $(distdir)/docs
 	cp -f ./docs/stats-wrapper.sh   $(distdir)/docs
 	cp -f ./docs/wxparaver          $(distdir)/docs
+	cp -f ./docs/wxparaver.bat      $(distdir)/docs
 
 	cp -f ./docs/paraload.sig       $(distdir)/docs
 	cp -f ./docs/paraload-v1.0.sig  $(distdir)/docs
