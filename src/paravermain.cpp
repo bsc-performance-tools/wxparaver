@@ -788,12 +788,13 @@ bool paraverMain::DoLoadTrace( const string &path )
             wxT( "Reduce trace size" ),
             wxYES_NO|wxCANCEL|wxICON_QUESTION );
 
+    bool tmpResult = true;
     switch( maxSizeDialog.ShowModal() )
     {
       case wxID_YES:
-        ShowCutTraceWindow( tmpPath, true );
+        tmpResult = ShowCutTraceWindow( tmpPath, true );
         canServeSignal = true;
-        return true;
+        return tmpResult;
         break;
 
       case wxID_NO:
@@ -801,7 +802,7 @@ bool paraverMain::DoLoadTrace( const string &path )
 
       case wxID_CANCEL:
         canServeSignal = true;
-        return true;
+        return false;
         break;
 
     }
@@ -4420,10 +4421,12 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
 }
 
 
-void paraverMain::ShowCutTraceWindow( const string& filename,
-                                       bool loadTrace,
-                                       const string& xmlFile )
+bool paraverMain::ShowCutTraceWindow( const string& filename,
+                                      bool loadTrace,
+                                      const string& xmlFile )
 {
+  bool tmpResult = false;
+
   CutFilterDialog *cutFilterDialog = new CutFilterDialog( this );
 
   MainSettingsCutFilterDialog( cutFilterDialog, filename, loadTrace );
@@ -4435,6 +4438,7 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
   if( cutFilterDialog->ShowModal() == wxID_OK )
   {
     OnOKCutFilterDialog( cutFilterDialog, filterToolOrder );
+    tmpResult = true;
   }
 
 #if wxMAJOR_VERSION<3
@@ -4443,6 +4447,8 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
 
   delete traceOptions;
   delete cutFilterDialog;
+
+  return tmpResult;
 }
 
 

@@ -579,17 +579,17 @@ public:
   void ShowPreferences( wxWindowID whichPanelID = ID_PREFERENCES_GLOBAL );
   
   void MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                                     const std::string& filename,
-                                     bool loadTrace );
+                                    const std::string& filename,
+                                    bool loadTrace );
   void OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                                       TraceOptions *traceOptions,
-                                       const std::string& xmlFile,
-                                       std::vector< std::string > &filterToolOrder );
+                                      TraceOptions *traceOptions,
+                                      const std::string& xmlFile,
+                                      std::vector< std::string > &filterToolOrder );
   void OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                             std::vector< std::string > filterToolOrder );
-  void ShowCutTraceWindow( const std::string& filename = "",
-                            bool loadTrace = true,
-                            const std::string& xmlFile = "" );
+                            std::vector< std::string > filterToolOrder );
+  bool ShowCutTraceWindow( const std::string& filename = "",
+                           bool loadTrace = true,
+                           const std::string& xmlFile = "" );
   
   bool getAutoRedraw() const;
   bool isCFG4DModeDisabled() const;
