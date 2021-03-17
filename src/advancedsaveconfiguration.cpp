@@ -1405,7 +1405,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
                           NULL,
                           this ); 
 
-    boxSizerOriginalName->Add( auxCheckBox, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+    boxSizerOriginalName->Add( auxCheckBox, 1, wxEXPAND | wxALL, 2 );
 
     wxString tmpCustomName;
     if( linkedManager.getLinksSize( *it ) > 0 )
@@ -1433,7 +1433,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
                              tmpData,
                              this ); 
 
-    boxSizerOriginalName->Add( customNameText, 2, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 2 );
+    boxSizerOriginalName->Add( customNameText, 2, wxEXPAND | wxALL, 2 );
 
     boxSizerLinks->Add( boxSizerOriginalName, 0, wxEXPAND );
 

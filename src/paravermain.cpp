@@ -1379,6 +1379,8 @@ string getPropertyName( Window *whichWindow,
   }
   else if( whichHistogram != NULL )
     return HistogramPropertyLabels[ histogramIndex ];
+
+  return "";
 }
 
 void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
