@@ -472,8 +472,6 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
     wxparaverApp::mainWindow->SetOpenedPropertyDialog( &eventsDialog );
 
-    eventsDialog.Move( propgrid->GetGoodEditorDialogPosition( this, eventsDialog.GetSize() ) );
-
     if ( eventsDialog.ShowModal() == wxID_OK && numLabels )
     {
       if ( eventsDialog.ChangedEventTypesFunction() )

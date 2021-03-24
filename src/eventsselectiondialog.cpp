@@ -355,7 +355,7 @@ void EventsSelectionDialog::CreateControls()
   itemBoxSizer5->Add(typesRegexSearch, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
   wxArrayString checkListSelectTypesStrings;
-  checkListSelectTypes = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxDefaultSize, checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
+  checkListSelectTypes = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxSize(500, -1), checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
   itemStaticBoxSizer5->Add(checkListSelectTypes, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
