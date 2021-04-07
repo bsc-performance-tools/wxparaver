@@ -44,6 +44,7 @@
 #include <algorithm>
 #include <wx/filename.h>
 #include <wx/display.h>
+#include <wx/valnum.h>
 
 #include "config_traits.h"
 #include "wxparaverapp.h"
@@ -116,15 +117,21 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_BUTTON( ID_BUTTON_CUSTOM_PALETTE_APPLY, gTimeline::OnButtonCustomPaletteApplyClick )
   EVT_UPDATE_UI( ID_BUTTON_CUSTOM_PALETTE_APPLY, gTimeline::OnButtonCustomPaletteApplyUpdate )
   EVT_UPDATE_UI( ID_SCROLLED_COLORS, gTimeline::OnScrolledColorsUpdate )
-  EVT_UPDATE_UI( wxID_STATIC1, gTimeline::OnStaticSelectedColorUpdate )
-  EVT_SLIDER( ID_SLIDER0, gTimeline::OnSliderSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_SLIDER0, gTimeline::OnSliderSelectedColorUpdateUI )
-  EVT_UPDATE_UI( wxID_STATIC2, gTimeline::OnStaticSelectedColorUpdate )
-  EVT_SLIDER( ID_SLIDER1, gTimeline::OnSliderSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_SLIDER1, gTimeline::OnSliderSelectedColorUpdateUI )
-  EVT_UPDATE_UI( wxID_STATIC3, gTimeline::OnStaticSelectedColorUpdate )
-  EVT_SLIDER( ID_SLIDER2, gTimeline::OnSliderSelectedColorUpdated )
-  EVT_UPDATE_UI( ID_SLIDER2, gTimeline::OnSliderSelectedColorUpdateUI )
+  EVT_UPDATE_UI( wxID_STATIC_RED, gTimeline::OnStaticSelectedColorUpdate )
+  EVT_SLIDER( ID_SLIDER_RED, gTimeline::OnSliderSelectedColorUpdated )
+  EVT_UPDATE_UI( ID_SLIDER_RED, gTimeline::OnSliderSelectedColorUpdateUI )
+  EVT_TEXT( ID_TEXT_RED, gTimeline::OnTextSelectedColorUpdated )
+  EVT_UPDATE_UI( ID_TEXT_RED, gTimeline::OnTextSelectedColorUpdate )
+  EVT_UPDATE_UI( wxID_STATIC_GREEN, gTimeline::OnStaticSelectedColorUpdate )
+  EVT_SLIDER( ID_SLIDER_GREEN, gTimeline::OnSliderSelectedColorUpdated )
+  EVT_UPDATE_UI( ID_SLIDER_GREEN, gTimeline::OnSliderSelectedColorUpdateUI )
+  EVT_TEXT( ID_TEXT_GREEN, gTimeline::OnTextSelectedColorUpdated )
+  EVT_UPDATE_UI( ID_TEXT_GREEN, gTimeline::OnTextSelectedColorUpdate )
+  EVT_UPDATE_UI( wxID_STATIC_BLUE, gTimeline::OnStaticSelectedColorUpdate )
+  EVT_SLIDER( ID_SLIDER_BLUE, gTimeline::OnSliderSelectedColorUpdated )
+  EVT_UPDATE_UI( ID_SLIDER_BLUE, gTimeline::OnSliderSelectedColorUpdateUI )
+  EVT_TEXT( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdated )
+  EVT_UPDATE_UI( ID_TEXT_BLUE, gTimeline::OnTextSelectedColorUpdate )
 ////@end gTimeline event table entries
 
   EVT_TIMER( ID_TIMER_SIZE, gTimeline::OnTimerSize )
@@ -262,10 +269,13 @@ void gTimeline::Init()
   panelSelectedColor = NULL;
   labelSelectedColorRed = NULL;
   sliderSelectedRed = NULL;
+  textSelectedRed = NULL;
   labelSelectedColorGreen = NULL;
   sliderSelectedGreen = NULL;
+  textSelectedGreen = NULL;
   labelSelectedColorBlue = NULL;
   sliderSelectedBlue = NULL;
+  textSelectedBlue = NULL;
 ////@end gTimeline member initialisation
 
   zoomXY = false;
@@ -421,15 +431,15 @@ void gTimeline::CreateControls()
 
   wxBoxSizer* itemBoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer2->Add(itemBoxSizer5, 1, wxGROW, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  colorsPanel = new wxScrolledWindow( colorsPanelGlobal, ID_SCROLLED_COLORS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  itemBoxSizer5->Add(colorsPanel, 2, wxGROW, wxDLG_UNIT(colorsPanelGlobal, wxSize(5, -1)).x);
+  colorsPanel = new wxScrolledWindow( colorsPanelGlobal, ID_SCROLLED_COLORS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL|wxVSCROLL|wxTAB_TRAVERSAL );
+  itemBoxSizer5->Add(colorsPanel, 1, wxGROW, wxDLG_UNIT(colorsPanelGlobal, wxSize(5, -1)).x);
   colorsPanel->SetScrollbars(1, 5, 0, 0);
   colorsSizer = new wxBoxSizer(wxVERTICAL);
   colorsPanel->SetSizer(colorsSizer);
 
   colorsPanel->FitInside();
   sizerSelectedColor = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer5->Add(sizerSelectedColor, 3, wxALIGN_TOP|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  itemBoxSizer5->Add(sizerSelectedColor, 2, wxALIGN_TOP|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
   wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
   sizerSelectedColor->Add(itemBoxSizer1, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
   panelSelectedColor = new wxPanel( colorsPanelGlobal, ID_PANEL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
@@ -437,33 +447,45 @@ void gTimeline::CreateControls()
   itemBoxSizer1->Add(panelSelectedColor, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
 
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxVERTICAL);
-  sizerSelectedColor->Add(itemBoxSizer4, 2, wxALIGN_TOP|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  sizerSelectedColor->Add(itemBoxSizer4, 3, wxALIGN_TOP|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer4->Add(itemBoxSizer10, 0, wxGROW|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  labelSelectedColorRed = new wxStaticText( colorsPanelGlobal, wxID_STATIC1, _("Red"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer10->Add(labelSelectedColorRed, 1, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  labelSelectedColorRed = new wxStaticText( colorsPanelGlobal, wxID_STATIC_RED, _("Red"), wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
+  itemBoxSizer10->Add(labelSelectedColorRed, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
 
-  sliderSelectedRed = new wxSlider( colorsPanelGlobal, ID_SLIDER0, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS );
-  itemBoxSizer10->Add(sliderSelectedRed, 4, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  sliderSelectedRed = new wxSlider( colorsPanelGlobal, ID_SLIDER_RED, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+  itemBoxSizer10->Add(sliderSelectedRed, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+
+  textSelectedRed = new wxTextCtrl( colorsPanelGlobal, ID_TEXT_RED, wxEmptyString, wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
+  textSelectedRed->SetMaxLength(3);
+  itemBoxSizer10->Add(textSelectedRed, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
 
   wxBoxSizer* itemBoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer4->Add(itemBoxSizer13, 0, wxGROW|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  labelSelectedColorGreen = new wxStaticText( colorsPanelGlobal, wxID_STATIC2, _("Green"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer13->Add(labelSelectedColorGreen, 1, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  labelSelectedColorGreen = new wxStaticText( colorsPanelGlobal, wxID_STATIC_GREEN, _("Green"), wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
+  itemBoxSizer13->Add(labelSelectedColorGreen, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
 
-  sliderSelectedGreen = new wxSlider( colorsPanelGlobal, ID_SLIDER1, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS );
-  itemBoxSizer13->Add(sliderSelectedGreen, 4, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  sliderSelectedGreen = new wxSlider( colorsPanelGlobal, ID_SLIDER_GREEN, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+  itemBoxSizer13->Add(sliderSelectedGreen, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+
+  textSelectedGreen = new wxTextCtrl( colorsPanelGlobal, ID_TEXT_GREEN, wxEmptyString, wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
+  textSelectedGreen->SetMaxLength(3);
+  itemBoxSizer13->Add(textSelectedGreen, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
 
   wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer4->Add(itemBoxSizer16, 0, wxGROW|wxLEFT|wxRIGHT, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
-  labelSelectedColorBlue = new wxStaticText( colorsPanelGlobal, wxID_STATIC3, _("Blue"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer16->Add(labelSelectedColorBlue, 1, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  labelSelectedColorBlue = new wxStaticText( colorsPanelGlobal, wxID_STATIC_BLUE, _("Blue"), wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
+  itemBoxSizer16->Add(labelSelectedColorBlue, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
 
-  sliderSelectedBlue = new wxSlider( colorsPanelGlobal, ID_SLIDER2, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS );
+  sliderSelectedBlue = new wxSlider( colorsPanelGlobal, ID_SLIDER_BLUE, 0, 0, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
   sliderSelectedBlue->SetHelpText(_("blueSlider"));
   if (gTimeline::ShowToolTips())
     sliderSelectedBlue->SetToolTip(_("blueSlider"));
-  itemBoxSizer16->Add(sliderSelectedBlue, 4, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+  itemBoxSizer16->Add(sliderSelectedBlue, 1, wxGROW|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
+
+  textSelectedBlue = new wxTextCtrl( colorsPanelGlobal, ID_TEXT_BLUE, wxEmptyString, wxDefaultPosition, wxDLG_UNIT(colorsPanelGlobal, wxSize(30, -1)), 0 );
+  textSelectedBlue->SetMaxLength(3);
+  itemBoxSizer16->Add(textSelectedBlue, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(colorsPanelGlobal, wxSize(2, -1)).x);
 
   colorsPanelGlobal->FitInside();
   infoZone->AddPage(colorsPanelGlobal, _("Colors"));
@@ -473,6 +495,8 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
@@ -480,8 +504,6 @@ void gTimeline::CreateControls()
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -494,6 +516,12 @@ void gTimeline::CreateControls()
   checkWWPreviousNext->SetValue( paraverConfig->getTimelineWhatWherePreviousNext() );
   checkWWText->SetValue( paraverConfig->getTimelineWhatWhereText() );
   //checkWWShowDate->SetValue( paraverConfig->getTimelineWhatWhereShowDate() );
+
+  wxIntegerValidator<unsigned short> tmpVal;
+  tmpVal.SetRange( 0, 255 );
+  textSelectedRed->SetValidator( tmpVal );
+  textSelectedGreen->SetValidator( tmpVal );
+  textSelectedBlue->SetValidator( tmpVal );
 }
 
 
@@ -1619,10 +1647,10 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
-#ifndef WIN32
+/*#ifndef WIN32
   if( IsActive() )
     drawZone->SetFocus();
-#endif
+#endif*/
 
   if( myWindow->getDestroy() )
     return;
@@ -3272,9 +3300,11 @@ void gTimeline::OnItemColorLeftUp( wxMouseEvent& event )
   sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
   sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
   sliderSelectedBlue->SetValue( selectedItemColor->GetBackgroundColour().Blue() );
+  textSelectedRed->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Red() ) );
+  textSelectedGreen->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Green() ) );
+  textSelectedBlue->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Blue() ) );
   
   selectedCustomValue = ( (CustomColorSemValue *)event.m_callbackUserData )->myValue;
-
 }
 
 void gTimeline::OnTextColorLeftUp( wxMouseEvent& event )
@@ -3285,6 +3315,9 @@ void gTimeline::OnTextColorLeftUp( wxMouseEvent& event )
   sliderSelectedRed->SetValue( selectedItemColor->GetBackgroundColour().Red() );
   sliderSelectedGreen->SetValue( selectedItemColor->GetBackgroundColour().Green() );
   sliderSelectedBlue->SetValue( selectedItemColor->GetBackgroundColour().Blue() );
+  textSelectedRed->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Red() ) );
+  textSelectedGreen->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Green() ) );
+  textSelectedBlue->ChangeValue( wxString::Format( wxT( "%i" ), selectedItemColor->GetBackgroundColour().Blue() ) );
   
   selectedCustomValue = ( (CustomColorSemValue *)event.m_callbackUserData )->myValue;
 }
@@ -6703,10 +6736,8 @@ void gTimeline::doDrawCaution( wxDC& whichDC )
 }
 
 
-
-
 /*!
- * wxEVT_COMMAND_SLIDER_UPDATED event handler for ID_SLIDER0
+ * wxEVT_COMMAND_SLIDER_UPDATED event handler for ID_SLIDER_*
  */
 
 void gTimeline::OnSliderSelectedColorUpdated( wxCommandEvent& event )
@@ -6720,7 +6751,11 @@ void gTimeline::OnSliderSelectedColorUpdated( wxCommandEvent& event )
   panelSelectedColor->Refresh();
   selectedItemColor->SetBackgroundColour( tmpColor );
   selectedItemColor->Refresh();
-  
+
+  textSelectedRed->ChangeValue( wxString::Format( wxT( "%i" ), redColor ) );
+  textSelectedGreen->ChangeValue( wxString::Format( wxT( "%i" ), greenColor ) );
+  textSelectedBlue->ChangeValue( wxString::Format( wxT( "%i" ), blueColor ) );
+
   rgb tmpRGBColor;
   tmpRGBColor.red = redColor;
   tmpRGBColor.green = greenColor;
@@ -6753,7 +6788,7 @@ void gTimeline::OnStaticSelectedColorUpdate( wxUpdateUIEvent& event )
 
 
 /*!
- * wxEVT_UPDATE_UI event handler for ID_SLIDER0
+ * wxEVT_UPDATE_UI event handler for ID_SLIDER_*
  */
 
 void gTimeline::OnSliderSelectedColorUpdateUI( wxUpdateUIEvent& event )
@@ -6805,5 +6840,49 @@ void gTimeline::OnButtonCustomPaletteApplyClick( wxCommandEvent& event )
 void gTimeline::OnButtonCustomPaletteApplyUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( enableApplyButton );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TEXT_*
+ */
+
+void gTimeline::OnTextSelectedColorUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
+}
+
+
+/*!
+ * wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXT_*
+ */
+
+void gTimeline::OnTextSelectedColorUpdated( wxCommandEvent& event )
+{
+  unsigned long redColor;
+  unsigned long greenColor;
+  unsigned long blueColor;
+
+  textSelectedRed->GetValue().ToULong( &redColor );
+  textSelectedGreen->GetValue().ToULong( &greenColor );
+  textSelectedBlue->GetValue().ToULong( &blueColor );
+
+  wxColor tmpColor( redColor, greenColor, blueColor );
+  panelSelectedColor->SetBackgroundColour( tmpColor );
+  panelSelectedColor->Refresh();
+  selectedItemColor->SetBackgroundColour( tmpColor );
+  selectedItemColor->Refresh();
+
+  sliderSelectedRed->SetValue( redColor );
+  sliderSelectedGreen->SetValue( greenColor );
+  sliderSelectedBlue->SetValue( blueColor );
+
+  rgb tmpRGBColor;
+  tmpRGBColor.red = redColor;
+  tmpRGBColor.green = greenColor;
+  tmpRGBColor.blue = blueColor;
+  myWindow->getCodeColor().setCustomColor( selectedCustomValue, tmpRGBColor );
+
+  enableApplyButton = true;
 }
 

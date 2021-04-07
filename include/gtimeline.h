@@ -118,12 +118,15 @@ class ProgressController;
 #define ID_BUTTON_CUSTOM_PALETTE_APPLY 10006
 #define ID_SCROLLED_COLORS 10049
 #define ID_PANEL 10009
-#define wxID_STATIC1 10295
-#define ID_SLIDER0 10010
-#define wxID_STATIC2 10293
-#define ID_SLIDER1 10011
-#define wxID_STATIC3 10294
-#define ID_SLIDER2 10012
+#define wxID_STATIC_RED 10295
+#define ID_SLIDER_RED 10010
+#define ID_TEXT_RED 10015
+#define wxID_STATIC_GREEN 10293
+#define ID_SLIDER_GREEN 10011
+#define ID_TEXT_GREEN 10014
+#define wxID_STATIC_BLUE 10294
+#define ID_SLIDER_BLUE 10012
+#define ID_TEXT_BLUE 10013
 #define SYMBOL_GTIMELINE_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR|wxWANTS_CHARS|wxFULL_REPAINT_ON_RESIZE
 #define SYMBOL_GTIMELINE_TITLE _("gTimeline")
 #define SYMBOL_GTIMELINE_IDNAME ID_GTIMELINE
@@ -184,6 +187,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMotion( wxMouseEvent& event );
+
+  /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMouseWheel( wxMouseEvent& event );
+
   /// wxEVT_KEY_DOWN event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowKeyDown( wxKeyEvent& event );
 
@@ -207,12 +216,6 @@ public:
 
   /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowRightDown( wxMouseEvent& event );
-
-  /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowMotion( wxMouseEvent& event );
-
-  /// wxEVT_MOUSEWHEEL event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowMouseWheel( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -241,14 +244,20 @@ public:
   /// wxEVT_UPDATE_UI event handler for ID_SCROLLED_COLORS
   void OnScrolledColorsUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for wxID_STATIC1
+  /// wxEVT_UPDATE_UI event handler for wxID_STATIC_RED
   void OnStaticSelectedColorUpdate( wxUpdateUIEvent& event );
 
-  /// wxEVT_COMMAND_SLIDER_UPDATED event handler for ID_SLIDER0
+  /// wxEVT_COMMAND_SLIDER_UPDATED event handler for ID_SLIDER_RED
   void OnSliderSelectedColorUpdated( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_SLIDER0
+  /// wxEVT_UPDATE_UI event handler for ID_SLIDER_RED
   void OnSliderSelectedColorUpdateUI( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXT_RED
+  void OnTextSelectedColorUpdated( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TEXT_RED
+  void OnTextSelectedColorUpdate( wxUpdateUIEvent& event );
 
 ////@end gTimeline event handler declarations
 
@@ -647,10 +656,13 @@ public:
   wxPanel* panelSelectedColor;
   wxStaticText* labelSelectedColorRed;
   wxSlider* sliderSelectedRed;
+  wxTextCtrl* textSelectedRed;
   wxStaticText* labelSelectedColorGreen;
   wxSlider* sliderSelectedGreen;
+  wxTextCtrl* textSelectedGreen;
   wxStaticText* labelSelectedColorBlue;
   wxSlider* sliderSelectedBlue;
+  wxTextCtrl* textSelectedBlue;
   wxBitmap bufferImage;
   wxBitmap commImage;
   bool drawCaution;
