@@ -35,6 +35,7 @@
 #include "cfg.h"
 #include "window.h"
 #include "histogram.h"
+#include "cfgs4d.h"
 
 /*!
  * Forward declarations
@@ -147,6 +148,8 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end SaveConfigurationDialog member function declarations
 
+  const CFGS4DLinkedPropertiesManager& getLinkedPropertiesManager() const;
+
   /// Should we show tooltips?
   static bool ShowToolTips();
 
@@ -178,6 +181,7 @@ private:
   std::vector<Window *> timelines;
 ////@end SaveConfigurationDialog member variables
   std::vector< std::string > traces;
+  CFGS4DLinkedPropertiesManager linkedProperties;
 
   Window    *FindWindow( const wxString &windowName );
   Histogram *FindHistogram( const wxString &windowName );

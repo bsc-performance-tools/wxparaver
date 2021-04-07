@@ -49,6 +49,7 @@
 #include "paravermain.h"
 #include "paraverkernelexception.h"
 #include "cfg.h"
+#include "cfgs4d.h"
 #include "window.h"
 #include "histogram.h"
 #include "gtimeline.h"
@@ -121,6 +122,8 @@
 #include "derived_controlled_enumerate.xpm"
 
 #include <algorithm>
+
+using std::string;
 
 class MenuHintFile : public wxObjectRefData
 {
@@ -224,7 +227,7 @@ static bool userMessage( UserMessageID message )
 {
   if( paraverMain::disableUserMessages )
     return true;
-  wxMessageDialog tmpDialog( NULL, wxString::FromAscii( userMessages[ message ].c_str() )  + 
+  wxMessageDialog tmpDialog( NULL, wxString::FromUTF8( userMessages[ message ].c_str() )  + 
         _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();
@@ -654,7 +657,7 @@ void paraverMain::refreshMenuHints()
   size_t currentWorkspace = 0;
   for ( vector< string >::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace()  ].end(); ++it )
   {
-    wxString currentWorkspaceName = wxString::FromAscii( it->c_str() );
+    wxString currentWorkspaceName = wxString::FromUTF8( it->c_str() );
     wxMenu *currentWorkspaceMenu = new wxMenu();
 
     std::vector< std::pair< std::string, std::string > > currentHints;
@@ -744,7 +747,7 @@ void paraverMain::DoLoadSession( const string &whichFileName )
   }
   else
   {
-    wxString errMessage = wxString::FromAscii( whichFileName.c_str() ) + _( " isn't a valid session file." );
+    wxString errMessage = wxString::FromUTF8( whichFileName.c_str() ) + _( " isn't a valid session file." );
     wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
     raiseCurrentWindow = false;
     message.ShowModal();
@@ -782,7 +785,7 @@ bool paraverMain::DoLoadTrace( const string &path )
             wxString( wxT( "The size (" ) ) +
                       tmpSize +
                       wxString( wxT( " MB) of the trace\n\n  " ) ) +
-                      wxString::FromAscii( tmpPath.c_str() ) +
+                      wxString::FromUTF8( tmpPath.c_str() ) +
                       wxString( wxT( "\n\nexceeds the maximum loadable defined"
                                      " in Preferences.\n\nWould you like to cut/filter the trace?" ) ),
             wxT( "Reduce trace size" ),
@@ -846,7 +849,7 @@ bool paraverMain::DoLoadTrace( const string &path )
       reducePath = tmpPath;
     reducePath += "\t";
 
-    paraverMain::dialogProgress->Pulse( wxString::FromAscii( reducePath.c_str() ) );
+    paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
@@ -862,9 +865,9 @@ bool paraverMain::DoLoadTrace( const string &path )
     newTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), NULL, this );
 
     if( paraverConfig->getGlobalFullTracePath() )
-      choiceWindowBrowser->AddPage( newTree, wxString::FromAscii( tr->getFileNameNumbered().c_str() ) );
+      choiceWindowBrowser->AddPage( newTree, wxString::FromUTF8( tr->getFileNameNumbered().c_str() ) );
     else
-      choiceWindowBrowser->AddPage( newTree, wxFileName( wxString::FromAscii( tr->getFileNameNumbered().c_str() ) ).GetFullName() );
+      choiceWindowBrowser->AddPage( newTree, wxFileName( wxString::FromUTF8( tr->getFileNameNumbered().c_str() ) ).GetFullName() );
     choiceWindowBrowser->ChangeSelection( choiceWindowBrowser->GetPageCount() - 1 );
 
     previousTraces->add( tmpPath );
@@ -875,7 +878,7 @@ bool paraverMain::DoLoadTrace( const string &path )
   catch( ParaverKernelException& ex )
   {
     loaded = false;
-    wxMessageDialog message( this, wxString::FromAscii( ex.what() ), _( "Error loading trace" ), wxOK );
+    wxMessageDialog message( this, wxString::FromUTF8( ex.what() ), _( "Error loading trace" ), wxOK );
     raiseCurrentWindow = false;
     message.ShowModal();
     raiseCurrentWindow = true;
@@ -901,7 +904,7 @@ bool paraverMain::DoLoadCFG( const string &path )
 {
   if( !CFGLoader::isCFGFile( path ))
   {
-    wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " isn't a valid cfg." );
+    wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " isn't a valid cfg." );
     wxMessageDialog message( this, errMessage, _( "Invalid file" ), wxOK );
     raiseCurrentWindow = false;
     message.ShowModal();
@@ -918,7 +921,7 @@ bool paraverMain::DoLoadCFG( const string &path )
     if( !CFGLoader::loadCFG( localKernel, path, tmpTraceToUse,
                              newWindows, newHistograms, options ) )
     {
-      wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
+      wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " failed to load in:\n'" ) + wxString::FromUTF8( CFGLoader::errorLine.c_str() ) + _( "'" );
       wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK|wxICON_ERROR );
       raiseCurrentWindow = false;
       message.ShowModal();
@@ -941,7 +944,7 @@ bool paraverMain::DoLoadCFG( const string &path )
     {
       if( !CFGLoader::errorLine.empty() )
       {
-        wxString errMessage = wxString::FromAscii( path.c_str() ) + _( " loaded with error in:\n'" ) + wxString::FromAscii( CFGLoader::errorLine.c_str() ) + _( "'" );
+        wxString errMessage = wxString::FromUTF8( path.c_str() ) + _( " loaded with error in:\n'" ) + wxString::FromUTF8( CFGLoader::errorLine.c_str() ) + _( "'" );
         wxMessageDialog message( this, errMessage, _( "Loading error" ), wxOK|wxICON_EXCLAMATION );
         raiseCurrentWindow = false;
         message.ShowModal();
@@ -980,9 +983,9 @@ bool paraverMain::DoLoadCFG( const string &path )
           }
         }
 #if wxMAJOR_VERSION<3 || !__WXGTK__
-        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ), tmpPos );
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ), tmpPos );
 #else
-        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
+        gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
         tmpHisto->updateSortOptions();
@@ -1020,7 +1023,7 @@ bool paraverMain::DoLoadCFG( const string &path )
 void paraverMain::OnOpenClick( wxCommandEvent& event )
 {
   if ( !traceLoadedBefore )
-    tracePath = wxString::FromAscii( paraverConfig->getGlobalTracesPath().c_str() );
+    tracePath = wxString::FromUTF8( paraverConfig->getGlobalTracesPath().c_str() );
 
   wxFileDialog dialog( this, _( "Load Trace" ), tracePath, _( "" ), 
     _( "Paraver trace (*.prv;*.prv.gz;*.csv)|*.prv;*.prv.gz;*.csv|All files (*.*)|*.*" ),
@@ -1043,7 +1046,7 @@ void paraverMain::OnOpenClick( wxCommandEvent& event )
 void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 {
   if ( !CFGLoadedBefore )
-   CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
+   CFGPath =  wxString::FromUTF8( paraverConfig->getGlobalCFGsPath().c_str() );
 
   //wxFileDialog dialog( this, _( "Load Configuration" ), CFGPath, _( "" ),
   //                      _( "Paraver configuration file (*.cfg)|*.cfg|All files (*.*)|*.*" ),
@@ -1276,12 +1279,47 @@ void paraverMain::spreadSetRedraw( Window *whichWindow )
     spreadSetRedrawRecursive( whichWindow );
 }
 
+
 /*!
  * wxEVT_PG_CHANGING event handler for ID_FOREIGN
  */
 void paraverMain::OnPropertyGridChanging( wxPropertyGridEvent& event )
 {
   propertyPrevValue = event.GetProperty()->GetValue();
+}
+
+template< typename T >
+bool paraverMain::linkedSetPropertyValue( T *whichWindow,
+                                          wxPropertyGridEvent& event,
+                                          wxPGProperty *property,
+                                          const string& propName,
+                                          PropertyClientData *whichClientData )
+{
+  bool isLinkedProperty = false;
+
+  TWindowsSet timelines;
+  CFGS4DGlobalManager::getInstance()->getLinks( whichWindow->getCFGS4DIndexLink( propName ),
+                                                propName,
+                                                timelines );
+  if( timelines.size() > 0 )
+  {
+    isLinkedProperty = true;
+    for( TWindowsSet::iterator it = timelines.begin(); it != timelines.end(); ++it )
+      SetPropertyValue( event, property, propName, whichClientData, *it, NULL );
+  }
+
+  THistogramsSet histograms;
+  CFGS4DGlobalManager::getInstance()->getLinks( whichWindow->getCFGS4DIndexLink( propName ),
+                                                propName,
+                                                histograms );
+  if( histograms.size() > 0 )
+  {
+    isLinkedProperty = true;
+    for( THistogramsSet::iterator it = histograms.begin(); it != histograms.end(); ++it )
+      SetPropertyValue( event, property, propName, whichClientData, NULL, *it );
+  }
+
+  return isLinkedProperty;
 }
 
 /*!
@@ -1303,10 +1341,11 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   if( tmpClientData == NULL )
     return;
 
-  const wxString& propName = tmpClientData->propName;
-  wxString *tmpRest = new wxString(_(""));
+  wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
   
-  if( propName == _( "Mode" ) )
+  const string& propName = tmpClientData->propName;
+
+  if( propName == "Mode" )
   {
     if( tmpClientData->ownerTimeline != NULL )
     {
@@ -1319,194 +1358,236 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       tmpClientData->ownerHistogram->setChanged( true );
     }
   }
-  else if( propName == wxString( "Name", wxConvUTF8 ) )
+  else
+  {
+    if( tmpClientData->ownerTimeline != NULL )
+    {
+      if ( !linkedSetPropertyValue( tmpClientData->ownerTimeline, event, property, propName, tmpClientData ) )
+        SetPropertyValue( event, property, propName, tmpClientData, tmpClientData->ownerTimeline, NULL );
+    }
+    else if ( tmpClientData->ownerHistogram != NULL )
+    {
+      if ( !linkedSetPropertyValue( tmpClientData->ownerHistogram, event, property, propName, tmpClientData ) )
+        SetPropertyValue( event, property, propName, tmpClientData, NULL, tmpClientData->ownerHistogram );
+    }
+  }
+
+  wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
+}
+
+string getPropertyName( Window *whichWindow,
+                        Histogram *whichHistogram,
+                        TSingleTimelineProperties singleIndex,
+                        TDerivedTimelineProperties derivedIndex,
+                        THistogramProperties histogramIndex )
+{
+  if( whichWindow != NULL )
+  {
+    if( whichWindow->isDerivedWindow() )
+      return DerivedTimelinePropertyLabels[ derivedIndex ];
+    else
+      return SingleTimelinePropertyLabels[ singleIndex ];
+  }
+  else if( whichHistogram != NULL )
+    return HistogramPropertyLabels[ histogramIndex ];
+
+  return "";
+}
+
+void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
+                                    wxPGProperty *property,
+                                    const string& propName,
+                                    PropertyClientData *whichClientData,
+                                    Window *whichTimeline,
+                                    Histogram *whichHistogram )
+{
+  if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NAME, DERIVED_NAME, HISTOGRAM_NAME ) )
   {
     wxString tmpName = property->GetValue().GetString();
-    if( tmpClientData->ownerTimeline != NULL )
+    if( whichTimeline != NULL )
     {
-      tmpClientData->ownerTimeline->setName( std::string( tmpName.mb_str() ) );
-      tmpClientData->ownerTimeline->setChanged( true );
+      whichTimeline->setName( std::string( tmpName.mb_str() ) );
+      whichTimeline->setChanged( true );
     }
-    else if( tmpClientData->ownerHistogram != NULL )
+    else if( whichHistogram != NULL )
     {
-      tmpClientData->ownerHistogram->setName( std::string( tmpName.mb_str() ) );
-      tmpClientData->ownerHistogram->setChanged( true );
+      whichHistogram->setName( std::string( tmpName.mb_str() ) );
+      whichHistogram->setChanged( true );
     }
   }
-  else if( propName == _( "Begin time" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_BEGINTIME, DERIVED_BEGINTIME, HISTOGRAM_BEGINTIME ) )
   {
     TTime tmpValue;
-    if( tmpClientData->ownerTimeline != NULL )
+    if( whichTimeline != NULL )
     {
       bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                  tmpClientData->ownerTimeline->getTimeUnit(),
+                                                  whichTimeline->getTimeUnit(),
                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
                                                   tmpValue );
 
       if (!done)
         tmpValue = property->GetValue().GetDouble();
 
-      tmpClientData->ownerTimeline->setWindowBeginTime( tmpClientData->ownerTimeline->windowUnitsToTraceUnits( tmpValue ) );
+      whichTimeline->setWindowBeginTime( whichTimeline->windowUnitsToTraceUnits( tmpValue ) );
 
       // modify current zoom directly
-      pair< TTime, TTime > zoomInfo = tmpClientData->ownerTimeline->getZoomFirstDimension();
+      pair< TTime, TTime > zoomInfo = whichTimeline->getZoomFirstDimension();
       zoomInfo.first = property->GetValue().GetDouble(); // begin
-      tmpClientData->ownerTimeline->setZoomFirstDimension( zoomInfo );
+      whichTimeline->setZoomFirstDimension( zoomInfo );
 
-      tmpClientData->ownerTimeline->setChanged( true );
-      tmpClientData->ownerTimeline->setRedraw( true );
+      whichTimeline->setChanged( true );
+      whichTimeline->setRedraw( true );
     }
-    else if( tmpClientData->ownerHistogram != NULL )
+    else if( whichHistogram != NULL )
     {
       bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                  tmpClientData->ownerHistogram->getControlWindow()->getTimeUnit(),
+                                                  whichHistogram->getControlWindow()->getTimeUnit(),
                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
                                                   tmpValue );
 
       if (!done)
         tmpValue = property->GetValue().GetDouble();
 
-      tmpClientData->ownerHistogram->setWindowBeginTime( tmpClientData->ownerHistogram->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
-      tmpClientData->ownerHistogram->setChanged( true );
-      tmpClientData->ownerHistogram->setRecalc( true );
+      whichHistogram->setWindowBeginTime( whichHistogram->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
+      whichHistogram->setChanged( true );
+      whichHistogram->setRecalc( true );
     }
   }
-  else if( propName == _( "End time" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_ENDTIME, DERIVED_ENDTIME, HISTOGRAM_ENDTIME ) )
   {
     TTime tmpValue;
-    if( tmpClientData->ownerTimeline != NULL )
+    if( whichTimeline != NULL )
     {
       bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                  tmpClientData->ownerTimeline->getTimeUnit(),
+                                                  whichTimeline->getTimeUnit(),
                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
                                                   tmpValue );
 
       if (!done)
         tmpValue = property->GetValue().GetDouble();
 
-      tmpClientData->ownerTimeline->setWindowEndTime( tmpClientData->ownerTimeline->windowUnitsToTraceUnits( tmpValue ) );
+      whichTimeline->setWindowEndTime( whichTimeline->windowUnitsToTraceUnits( tmpValue ) );
 
       // modify current zoom directly
-      pair< TTime, TTime > zoomInfo = tmpClientData->ownerTimeline->getZoomFirstDimension();
+      pair< TTime, TTime > zoomInfo = whichTimeline->getZoomFirstDimension();
       zoomInfo.second = property->GetValue().GetDouble(); // end
-      tmpClientData->ownerTimeline->setZoomFirstDimension( zoomInfo );
+      whichTimeline->setZoomFirstDimension( zoomInfo );
 
-      tmpClientData->ownerTimeline->setChanged( true );
-      tmpClientData->ownerTimeline->setRedraw( true );
+      whichTimeline->setChanged( true );
+      whichTimeline->setRedraw( true );
     }
-    else if( tmpClientData->ownerHistogram != NULL )
+    else if( whichHistogram != NULL )
     {
       bool done = LabelConstructor::getTimeValue( std::string( property->GetValue().GetString().mb_str()),
-                                                  tmpClientData->ownerHistogram->getControlWindow()->getTimeUnit(),
+                                                  whichHistogram->getControlWindow()->getTimeUnit(),
                                                   ParaverConfig::getInstance()->getTimelinePrecision(),
                                                   tmpValue );
 
       if (!done)
         tmpValue = property->GetValue().GetDouble();
 
-      tmpClientData->ownerHistogram->setWindowEndTime( tmpClientData->ownerHistogram->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
-      tmpClientData->ownerHistogram->setChanged( true );
-      tmpClientData->ownerHistogram->setRecalc( true );
+      whichHistogram->setWindowEndTime( whichHistogram->getControlWindow()->windowUnitsToTraceUnits( tmpValue ) );
+      whichHistogram->setChanged( true );
+      whichHistogram->setRecalc( true );
     }
   }
-  else if( propName == _( "Semantic Minimum" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SEMANTICMINIMUM, DERIVED_SEMANTICMINIMUM, HISTOGRAM_NULL ) )
   {
     double tmpValue = property->GetValue().GetDouble();
-    tmpClientData->ownerTimeline->setMinimumY( tmpValue );
-    tmpClientData->ownerTimeline->setRedraw( true );
+    whichTimeline->setMinimumY( tmpValue );
+    whichTimeline->setRedraw( true );
   }
-  else if( propName == _( "Semantic Maximum" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SEMANTICMAXIMUM, DERIVED_SEMANTICMAXIMUM, HISTOGRAM_NULL ) )
   {
     double tmpValue = property->GetValue().GetDouble();
-    tmpClientData->ownerTimeline->setMaximumY( tmpValue );
-    tmpClientData->ownerTimeline->setRedraw( true );
+    whichTimeline->setMaximumY( tmpValue );
+    whichTimeline->setRedraw( true );
   }
   // Control Window related properties
-  else if( propName == _( "ControlWindow" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLWINDOW ) )
   {
-    tmpClientData->ownerHistogram->setControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
-    tmpClientData->ownerHistogram->setRecalc( true );
+    whichHistogram->setControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
+    whichHistogram->setRecalc( true );
   }
-  else if( propName == _( "ControlMinimum" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLMINIMUM ) )
   {
-    tmpClientData->ownerHistogram->setControlMin( property->GetValue().GetDouble() );
+    whichHistogram->setControlMin( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = tmpClientData->ownerHistogram->getZoomFirstDimension();
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = whichHistogram->getZoomFirstDimension();
     zoomInfo.first.begin = property->GetValue().GetDouble(); // minimum
-    tmpClientData->ownerHistogram->setZoomFirstDimension( zoomInfo );
+    whichHistogram->setZoomFirstDimension( zoomInfo );
 
-    tmpClientData->ownerHistogram->setCompute2DScale( false );
-    tmpClientData->ownerHistogram->setRecalc( true );
+    whichHistogram->setCompute2DScale( false );
+    whichHistogram->setRecalc( true );
   }
-  else if( propName == _( "ControlMaximum" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLMAXIMUM ) )
   {
-    tmpClientData->ownerHistogram->setControlMax( property->GetValue().GetDouble() );
+    whichHistogram->setControlMax( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = tmpClientData->ownerHistogram->getZoomFirstDimension();
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = whichHistogram->getZoomFirstDimension();
     zoomInfo.first.end = property->GetValue().GetDouble(); // maximum
-    tmpClientData->ownerHistogram->setZoomFirstDimension( zoomInfo );
+    whichHistogram->setZoomFirstDimension( zoomInfo );
 
-    tmpClientData->ownerHistogram->setCompute2DScale( false );
-    tmpClientData->ownerHistogram->setRecalc( true );
+    whichHistogram->setCompute2DScale( false );
+    whichHistogram->setRecalc( true );
   }
-  else if( propName == _( "ControlDelta" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLDELTA ) )
   {
     if( property->GetValue().GetDouble() == 0 )
     {
-      property->SetValue( tmpClientData->ownerHistogram->getControlDelta() );
-      delete tmpRest;
+      property->SetValue( whichHistogram->getControlDelta() );
       return;
     }
-    tmpClientData->ownerHistogram->setControlDelta( property->GetValue().GetDouble() );
+    whichHistogram->setControlDelta( property->GetValue().GetDouble() );
 
     // modify current zoom directly
-    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = tmpClientData->ownerHistogram->getZoomFirstDimension();
+    pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = whichHistogram->getZoomFirstDimension();
     zoomInfo.second.begin = property->GetValue().GetDouble(); // delta
-    tmpClientData->ownerHistogram->setZoomFirstDimension( zoomInfo );
+    whichHistogram->setZoomFirstDimension( zoomInfo );
 
-    tmpClientData->ownerHistogram->setCompute2DScale( false );
-    tmpClientData->ownerHistogram->setRecalc( true );
+    whichHistogram->setCompute2DScale( false );
+    whichHistogram->setRecalc( true );
   }
   // Data Window related properties
-  else if( propName == _( "DataWindow" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_DATAWINDOW ) )
   {
-    tmpClientData->ownerHistogram->setDataWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
-    tmpClientData->ownerHistogram->setRecalc( true );
+    whichHistogram->setDataWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
+    whichHistogram->setRecalc( true );
   }
-  else if( propName == _( "DataMinimum" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_MINIMUMGRADIENT ) )
   {
-    tmpClientData->ownerHistogram->setMinGradient( property->GetValue().GetDouble() );
-    tmpClientData->ownerHistogram->setComputeGradient( false );
-    tmpClientData->ownerHistogram->setRedraw( true );
+    whichHistogram->setMinGradient( property->GetValue().GetDouble() );
+    whichHistogram->setComputeGradient( false );
+    whichHistogram->setRedraw( true );
   }
-  else if( propName == _( "DataMaximum" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_MAXIMUMGRADIENT ) )
   {
-    tmpClientData->ownerHistogram->setMaxGradient( property->GetValue().GetDouble() );
-    tmpClientData->ownerHistogram->setComputeGradient( false );
-    tmpClientData->ownerHistogram->setRedraw( true );
+    whichHistogram->setMaxGradient( property->GetValue().GetDouble() );
+    whichHistogram->setComputeGradient( false );
+    whichHistogram->setRedraw( true );
   }
   // Histogram related properties
-  else if( propName == wxString( "Type", wxConvUTF8 ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_TYPE ) )
   {
     if( property->GetValue().GetLong() == 0 )
-      tmpClientData->ownerHistogram->setCurrentStat( tmpClientData->ownerHistogram->getFirstCommStatistic() );
+      whichHistogram->setCurrentStat( whichHistogram->getFirstCommStatistic() );
     else
-      tmpClientData->ownerHistogram->setCurrentStat( tmpClientData->ownerHistogram->getFirstStatistic() );
-    tmpClientData->ownerHistogram->setRedraw( true );
-    tmpClientData->ownerHistogram->setChanged( true );
+      whichHistogram->setCurrentStat( whichHistogram->getFirstStatistic() );
+    whichHistogram->setRedraw( true );
+    whichHistogram->setChanged( true );
   }
-  else if( propName == _( "Statistic" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_STATISTIC ) )
   {
-    bool getOriginalList = ( !tmpClientData->ownerHistogram->getCFG4DEnabled() || !tmpClientData->ownerHistogram->getCFG4DMode() );
+    bool getOriginalList = ( !whichHistogram->getCFG4DEnabled() || !whichHistogram->getCFG4DMode() );
     if ( getOriginalList )
     {
-      tmpClientData->ownerHistogram->setCurrentStat( std::string( property->GetDisplayedString().mb_str() ) );
+      whichHistogram->setCurrentStat( std::string( property->GetDisplayedString().mb_str() ) );
     }
     else
     {
-      map< string, string > statList( tmpClientData->ownerHistogram->getCFG4DStatisticsAliasList() );
+      map< string, string > statList( whichHistogram->getCFG4DStatisticsAliasList() );
       string selected( std::string( property->GetDisplayedString().mb_str() ) );
       for ( map< string, string >::iterator it = statList.begin(); it != statList.end(); ++it )
       {
@@ -1515,136 +1596,134 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
           selected = it->first;
         }
       }
-      tmpClientData->ownerHistogram->setCurrentStat( selected );
+      whichHistogram->setCurrentStat( selected );
     }
 
-    tmpClientData->ownerHistogram->setRedraw( true );
+    whichHistogram->setRedraw( true );
   }
-  else if( propName == _( "3D3rdWindow" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3D3RDWINDOW ) )
   {
     if( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() == NULL )
-      tmpClientData->ownerHistogram->clearExtraControlWindow();
+      whichHistogram->clearExtraControlWindow();
     else
-      tmpClientData->ownerHistogram->setExtraControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
-    tmpClientData->ownerHistogram->setRecalc( true );
+      whichHistogram->setExtraControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
+    whichHistogram->setRecalc( true );
   }
-  else if( propName == _( "3DMinimum" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DMINIMUM ) )
   {
-    tmpClientData->ownerHistogram->setExtraControlMin( property->GetValue().GetDouble() );
-    tmpClientData->ownerHistogram->setCompute3DScale( false );
-    tmpClientData->ownerHistogram->setRecalc( true );
+    whichHistogram->setExtraControlMin( property->GetValue().GetDouble() );
+    whichHistogram->setCompute3DScale( false );
+    whichHistogram->setRecalc( true );
   }
-  else if( propName == _( "3DMaximum" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DMAXIMUM ) )
   {
-    tmpClientData->ownerHistogram->setExtraControlMax( property->GetValue().GetDouble() );
-    tmpClientData->ownerHistogram->setCompute3DScale( false );
-    tmpClientData->ownerHistogram->setRecalc( true );
+    whichHistogram->setExtraControlMax( property->GetValue().GetDouble() );
+    whichHistogram->setCompute3DScale( false );
+    whichHistogram->setRecalc( true );
   }
-  else if( propName == _( "3DDelta" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DDELTA ) )
   {
     if( property->GetValue().GetDouble() == 0 )
     {
-      property->SetValue( tmpClientData->ownerHistogram->getExtraControlDelta() );
-      delete tmpRest;
+      property->SetValue( whichHistogram->getExtraControlDelta() );
       return;
     }
 
-    tmpClientData->ownerHistogram->setExtraControlDelta( property->GetValue().GetDouble() );
-    tmpClientData->ownerHistogram->setCompute3DScale( false );
-    tmpClientData->ownerHistogram->setRecalc( true );
+    whichHistogram->setExtraControlDelta( property->GetValue().GetDouble() );
+    whichHistogram->setCompute3DScale( false );
+    whichHistogram->setRecalc( true );
   }
-  else if( propName == _( "3DPlane" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DPLANE ) )
   {
-    tmpClientData->ownerHistogram->setSelectedPlane( property->GetValue().GetLong() );
-    tmpClientData->ownerHistogram->setRedraw( true );
+    whichHistogram->setSelectedPlane( property->GetValue().GetLong() );
+    whichHistogram->setRedraw( true );
   }
 
   // Timeline related properties
-  else if( propName == _( "Level" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_LEVEL, DERIVED_LEVEL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevel( (TWindowLevel)property->GetValue().GetLong() );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevel( (TWindowLevel)property->GetValue().GetLong() );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Time Unit" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TIMEUNIT, DERIVED_TIMEUNIT, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setTimeUnit( (TWindowLevel)property->GetValue().GetLong() );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
-
+    whichTimeline->setTimeUnit( (TTimeUnit)property->GetValue().GetLong() );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Logical" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMLOGICAL, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setLogical( property->GetValue().GetBool() );
-    tmpClientData->ownerTimeline->setRedraw( true );
+    whichTimeline->getFilter()->setLogical( property->GetValue().GetBool() );
+    whichTimeline->setRedraw( true );
   }
-  else if( propName == _( "Physical" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMPHYSICAL, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
-    tmpClientData->ownerTimeline->setRedraw( true );
+    whichTimeline->getFilter()->setPhysical( property->GetValue().GetBool() );
+    whichTimeline->setRedraw( true );
   }
-  else if( propName == _( "Comm from.FromFunction" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setCommFromFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->getFilter()->setCommFromFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Comm from.From" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
     prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
 
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     filter->clearCommFrom();
     vector< TObjectOrder > selection;
-    myProperty->GetSelectionAsVector( tmpClientData->ownerTimeline->getLevel(), selection );
+    myProperty->GetSelectionAsVector( whichTimeline->getLevel(), selection );
     for( vector< TObjectOrder >::iterator it = selection.begin(); it != selection.end(); ++it )
     {
       filter->insertCommFrom( long(*it) );
     }
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName == _( "FromToOp" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMFROMTOOP, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
     long op = property->GetValue().GetLong();
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     if( op == 0 )
       filter->setOpFromToAnd();
     else if( op == 1 )
       filter->setOpFromToOr();
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName == _( "Comm to.ToFunction" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTOFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setCommToFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->getFilter()->setCommToFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Comm to.To" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTOVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
     prvRowsSelectionProperty *myProperty = (prvRowsSelectionProperty *)event.GetProperty();
 
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     filter->clearCommTo();
     vector< TObjectOrder > selection;
-    myProperty->GetSelectionAsVector( tmpClientData->ownerTimeline->getLevel(), selection );
+    myProperty->GetSelectionAsVector( whichTimeline->getLevel(), selection );
     for( vector< TObjectOrder >::iterator it = selection.begin(); it != selection.end(); ++it )
     {
       filter->insertCommTo( long(*it) );
     }
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName == _( "Comm tag.TagFunction" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setCommTagFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->getFilter()->setCommTagFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Comm tag.Tag" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     filter->clearCommTags();
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
@@ -1654,49 +1733,48 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       filter->insertCommTag( tmpLong );
     }
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName == _( "TagSizeOp" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMTAGSIZEOP, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
     long op = property->GetValue().GetLong();
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     if( op == 0 )
       filter->setOpTagSizeAnd();
     else if( op == 1 )
       filter->setOpTagSizeOr();
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName == _( "Comm size.SizeFunction" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMSIZEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setCommSizeFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->getFilter()->setCommSizeFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Comm size.Size" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMSIZEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     filter->clearCommSizes();
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
     {
       long long tmpLong;
       value[ idx ].ToLongLong( &tmpLong );
-      // cout << value[idx] << endl;
       filter->insertCommSize( tmpLong );
     }
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName == _( "Comm bandwidth.BWFunction" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMBANDWIDTHFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setBandWidthFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->getFilter()->setBandWidthFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Comm bandwidth.Bandwidth" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMMBANDWIDTHVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     filter->clearBandWidth();
     wxArrayString value = property->GetValue().GetArrayString();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
@@ -1706,45 +1784,45 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       filter->insertBandWidth( tmpDouble );
     }
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName == _( "Event type.TypeFunction" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setEventTypeFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->getFilter()->setEventTypeFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Event type.Types" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     filter->clearEventTypes();
     wxArrayInt value = ( (prvEventTypeProperty *) property )->GetValueAsArrayInt();
     for( unsigned int idx = 0; idx < value.GetCount(); idx++ )
       filter->insertEventType( value[ idx ] );
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "TypeValueOp" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTTYPEVALUESOP, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
     long op = property->GetValue().GetLong();
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     if( op == 0 )
       filter->setOpTypeValueAnd();
     else if( op == 1 )
       filter->setOpTypeValueOr();
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName == _( "Event value.ValueFunction" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEFUNCTION, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->getFilter()->setEventValueFunction( std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->getFilter()->setEventValueFunction( std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Event value.Values" ) )
+  else if( propName ==  getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    Filter *filter = tmpClientData->ownerTimeline->getFilter();
+    Filter *filter = whichTimeline->getFilter();
     filter->clearEventValues();
 
     wxArrayString value = property->GetValue().GetArrayString();
@@ -1755,181 +1833,153 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       filter->insertEventValue( tmpDouble );
     }
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName.StartsWith( _( "Extra Top Compose " ), tmpRest ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EXTRATOPCOMPOSE1, DERIVED_EXTRATOPCOMPOSE1, HISTOGRAM_NULL ) )
   {
-    // propName = "Extra Top Compose 1"
-    // startwith  "Extra Top Compose "
-    // tmpRest  =                   "1"
-    //                               |
-    //                               L pos
-    size_t position;
-    unsigned long tmpPos;
-    tmpRest->ToULong( &tmpPos );
-    position = (size_t)tmpPos;
+    size_t position = whichClientData->extraTopComposeLevel;
 
     int reversedIndex = (int)position;
-    int maxPos = (int)tmpClientData->ownerTimeline->getExtraNumPositions( TOPCOMPOSE1 );
+    int maxPos = (int)whichTimeline->getExtraNumPositions( TOPCOMPOSE1 );
     position = (size_t)(maxPos - reversedIndex);
 
-    tmpClientData->ownerTimeline->setExtraLevelFunction( TOPCOMPOSE1, position, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setExtraLevelFunction( TOPCOMPOSE1, position, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Top Compose 1" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TOPCOMPOSE1, DERIVED_TOPCOMPOSE1, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( TOPCOMPOSE1, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( TOPCOMPOSE1, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Top Compose 2" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TOPCOMPOSE2, DERIVED_TOPCOMPOSE2, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( TOPCOMPOSE2, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( TOPCOMPOSE2, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Factor #1" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR1, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setFactor( 0, property->GetValue().GetDouble() );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setFactor( 0, property->GetValue().GetDouble() );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Derived" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_DERIVED, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( DERIVED, std::string( property->GetDisplayedString().mb_str() ) );
+    whichTimeline->setLevelFunction( DERIVED, std::string( property->GetDisplayedString().mb_str() ) );
 
     // Change Derived operation Icon: find icon in list
-    int iconNumber = getIconNumber( tmpClientData->ownerTimeline );
+    int iconNumber = getIconNumber( whichTimeline );
 
     // Change Derived operation Icon: set both trees, global and trace tree
     wxTreeCtrl *globalTreePage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
     wxTreeCtrl *currentTraceTreePage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( currentTrace + 1 );
     bool found;
-    wxTreeItemId idInGlobalTree = getItemIdFromWindow( globalTreePage->GetRootItem(), tmpClientData->ownerTimeline, found );
+    wxTreeItemId idInGlobalTree = getItemIdFromWindow( globalTreePage->GetRootItem(), whichTimeline, found );
     globalTreePage->SetItemImage( idInGlobalTree, iconNumber );
-    wxTreeItemId idInCurrentTraceTree = getItemIdFromWindow( currentTraceTreePage->GetRootItem(), tmpClientData->ownerTimeline, found );
+    wxTreeItemId idInCurrentTraceTree = getItemIdFromWindow( currentTraceTreePage->GetRootItem(), whichTimeline, found );
     currentTraceTreePage->SetItemImage( idInCurrentTraceTree, iconNumber );
 
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Factor #2" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR2, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setFactor( 1, property->GetValue().GetDouble() );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setFactor( 1, property->GetValue().GetDouble() );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Compose Workload" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSEWORKLOAD, DERIVED_COMPOSEWORKLOAD, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( COMPOSEWORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( COMPOSEWORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Workload" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_WORKLOAD, DERIVED_WORKLOAD, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( WORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( WORKLOAD, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Compose Appl" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSEAPPL, DERIVED_COMPOSEAPPL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( COMPOSEAPPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( COMPOSEAPPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Application" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_APPLICATION, DERIVED_APPLICATION, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( APPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( APPLICATION, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Compose Task" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSETASK, DERIVED_COMPOSETASK, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( COMPOSETASK, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( COMPOSETASK, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Task" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_TASK, DERIVED_TASK, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( TASK, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( TASK, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Compose System" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSESYSTEM, DERIVED_COMPOSESYSTEM, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( COMPOSESYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( COMPOSESYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "System" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_SYSTEM, DERIVED_SYSTEM, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( SYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( SYSTEM, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Compose Node" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSENODE, DERIVED_COMPOSENODE, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( COMPOSENODE, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( COMPOSENODE, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Node" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NODE, DERIVED_NODE, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( NODE, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( NODE, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Compose CPU" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSECPU, DERIVED_COMPOSECPU, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( COMPOSECPU, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( COMPOSECPU, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "CPU" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_CPU, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( CPU, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( CPU, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Compose Thread" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_COMPOSETHREAD, DERIVED_COMPOSETHREAD, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( COMPOSETHREAD, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( COMPOSETHREAD, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName == _( "Thread" ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_THREAD, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
-    tmpClientData->ownerTimeline->setLevelFunction( THREAD, std::string( property->GetDisplayedString().mb_str() ) );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-    spreadSetChanged( tmpClientData->ownerTimeline );
+    whichTimeline->setLevelFunction( THREAD, std::string( property->GetDisplayedString().mb_str() ) );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
   }
-  else if( propName.StartsWith( _( "Extra Param " ), tmpRest ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_FUNCTIONPARAMETERS, DERIVED_FUNCTIONPARAMETERS, HISTOGRAM_NULL ) )
   {
-    // propName = "Extra Param 1 2 3"
-    // startwith  "Extra Param "
-    // *tmpRest =             "1 2 3"
-    //                         | | |
-    //                         | | L pos
-    //                         | L function level
-    //                         L param index
-    wxString paramData = *tmpRest;
-    TParamIndex paramIdx;
-    TWindowLevel functionLevel;
-    size_t position;
-    unsigned long tmpLong;
-
-    paramData.BeforeFirst( ' ' ).ToULong( &tmpLong );
-    paramIdx = tmpLong;
-
-    paramData.AfterFirst( ' ' ).BeforeFirst( ' ' ).ToULong( &tmpLong );
-    functionLevel = (TWindowLevel)tmpLong;
-
-    paramData.AfterLast( ' ' ).ToULong( &tmpLong );
-    int reversedIndex = (int)tmpLong;
-    int maxPos = (int)tmpClientData->ownerTimeline->getExtraNumPositions( TOPCOMPOSE1 );
-    position = (size_t)(maxPos - reversedIndex);
+    TParamIndex paramIdx = whichClientData->numParameter;
+    TWindowLevel functionLevel = whichClientData->semanticLevel;
+    size_t extraTopComposeLevel = whichClientData->extraTopComposeLevel;
 
     wxArrayString valuesStr = property->GetValue().GetArrayString();
     TParamValue values;
@@ -1940,34 +1990,13 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
       values.push_back( tmpDouble );
     }
 
-    tmpClientData->ownerTimeline->setExtraFunctionParam( functionLevel, position, paramIdx, values );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
+    if( extraTopComposeLevel > 0 )
+      whichTimeline->setExtraFunctionParam( functionLevel, extraTopComposeLevel - 1, paramIdx, values );
+    else
+      whichTimeline->setFunctionParam( functionLevel, paramIdx, values );
+    
+    spreadSetRedraw( whichTimeline );
   }
-  else if( propName.BeforeFirst( ' ' ) == _( "Param" ) )
-  {
-    wxString paramData = propName.AfterFirst( ' ' );
-    TParamIndex paramIdx;
-    TWindowLevel functionLevel;
-    unsigned long tmpLong;
-
-    paramData.BeforeFirst( ' ' ).ToULong( &tmpLong );
-    paramIdx = tmpLong;
-    paramData.AfterFirst( ' ' ).ToULong( &tmpLong );
-    functionLevel = (TWindowLevel)tmpLong;
-
-    wxArrayString valuesStr = property->GetValue().GetArrayString();
-    TParamValue values;
-    for( unsigned int idx = 0; idx < valuesStr.GetCount(); idx++ )
-    {
-      double tmpDouble;
-      valuesStr[ idx ].ToDouble( &tmpDouble );
-      values.push_back( tmpDouble );
-    }
-    tmpClientData->ownerTimeline->setFunctionParam( functionLevel, paramIdx, values );
-    spreadSetRedraw( tmpClientData->ownerTimeline );
-  }
-
-  delete tmpRest;
 }
 
 
@@ -2219,7 +2248,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   {
     if( (*it)->getDestroy() )
       continue;
-    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( (*it)->getName().c_str() ) );
+    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
     tmpHisto->SetHistogram( *it );
 
     appendHistogram2Tree( tmpHisto );
@@ -2352,7 +2381,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
   {
     if( menuIt == menuItems.end() )
     {
-      wxMenuItem *newItem = new wxMenuItem( menuTraces, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
+      wxMenuItem *newItem = new wxMenuItem( menuTraces, wxID_ANY, wxString::FromUTF8( (*it).c_str() ) );
       menuTraces->Append( newItem );
       Connect( newItem->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
@@ -2361,7 +2390,7 @@ void paraverMain::OnRecenttracesUpdate( wxUpdateUIEvent& event )
     else
     {
       wxMenuItem *tmp = *menuIt;
-      tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
+      tmp->SetItemLabel( wxString::FromUTF8( (*it).c_str() ) );
       ++menuIt;
     }
   }
@@ -2442,7 +2471,7 @@ void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent& event )
       // Item handler
       if ( menuIt == menuItems.end() )
       {
-        wxMenuItem *newItem = new wxMenuItem( menuSessions, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
+        wxMenuItem *newItem = new wxMenuItem( menuSessions, wxID_ANY, wxString::FromUTF8( (*it).c_str() ) );
         menuSessions->Append( newItem );
         Connect( newItem->GetId(),
                  wxEVT_COMMAND_MENU_SELECTED,
@@ -2451,7 +2480,7 @@ void paraverMain::OnRecentsessionsUpdate( wxUpdateUIEvent& event )
       else
       {
         wxMenuItem *tmp = *menuIt;
-        tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
+        tmp->SetItemLabel( wxString::FromUTF8( (*it).c_str() ) );
         ++menuIt;
       }
     }
@@ -2481,7 +2510,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
   {
     if( menuIt == menuItems.end() )
     {
-      wxMenuItem *newItem = new wxMenuItem( menuCFGs, wxID_ANY, wxString::FromAscii( (*it).c_str() ) );
+      wxMenuItem *newItem = new wxMenuItem( menuCFGs, wxID_ANY, wxString::FromUTF8( (*it).c_str() ) );
       menuCFGs->Append( newItem );
       Connect( newItem->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
@@ -2490,7 +2519,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
     else
     {
       wxMenuItem *tmp = *menuIt;
-      tmp->SetItemLabel( wxString::FromAscii( (*it).c_str() ) );
+      tmp->SetItemLabel( wxString::FromUTF8( (*it).c_str() ) );
       ++menuIt;
     }
   }
@@ -2507,7 +2536,7 @@ void progressFunction( ProgressController *progress, void *callerWindow )
   wxString newMessage;
   if( progress->getMessageChanged() )
   {
-    newMessage = wxString::FromAscii( progress->getMessage().c_str() );
+    newMessage = wxString::FromUTF8( progress->getMessage().c_str() );
     progress->clearMessageChanged();
   }
 
@@ -2638,7 +2667,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
           if ( allWindowsRelatedToOtherTraces( windows ) )
           {
             (*it)->setUnload( false );
-            wxString traceName = wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() );
+            wxString traceName = wxString::FromUTF8( (*it)->getTraceNameNumbered().c_str() );
             wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used by some windows in other traces." ),
                           _( "Warning" ),
                           wxOK | wxICON_EXCLAMATION );
@@ -2719,12 +2748,13 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
 
 
 void paraverMain::SaveConfigurationFile( wxWindow *parent,
-                                          SaveOptions options,
-                                          vector< Window * > timelines,
-                                          vector< Histogram * > histograms )
+                                         SaveOptions options,
+                                         vector< Window * > timelines,
+                                         vector< Histogram * > histograms,
+                                         const vector<CFGS4DLinkedPropertiesManager>& linkedProperties )
 {
   if ( !CFGLoadedBefore )
-    CFGPath =  wxString::FromAscii( paraverConfig->getGlobalCFGsPath().c_str() );
+    CFGPath =  wxString::FromUTF8( paraverConfig->getGlobalCFGsPath().c_str() );
 
   vector< wxString > extensions;
   extensions.push_back( wxT( "cfg" ) );
@@ -2744,7 +2774,7 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
     CFGPath = dialog.GetPath();
     CFGLoadedBefore = true;
 
-    CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms );
+    CFGLoader::saveCFG( std::string( CFGPath.mb_str() ), options, timelines, histograms, linkedProperties );
     previousCFGs->add( std::string( CFGPath.mb_str() ) );
   }
 }
@@ -2790,8 +2820,11 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     timelines = saveDialog.GetSelectedTimelines();
     histograms = saveDialog.GetSelectedHistograms();
     options = saveDialog.GetOptions();
+    const CFGS4DLinkedPropertiesManager& linkedProperties = saveDialog.getLinkedPropertiesManager();
+    vector<CFGS4DLinkedPropertiesManager> propertiesList;
+    propertiesList.push_back( linkedProperties );
 
-    SaveConfigurationFile( (wxWindow *)this, options, timelines, histograms );
+    SaveConfigurationFile( (wxWindow *)this, options, timelines, histograms, propertiesList );
 
     // Disable CFG4D once it is saved
     for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
@@ -3161,7 +3194,7 @@ void paraverMain::ShowHistogramDialog()
 
     string composedName = newHistogram->getName() + " @ " +
                           newHistogram->getControlWindow()->getTrace()->getTraceName();
-    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromAscii( composedName.c_str() ) );
+    gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
     tmpHisto->SetHistogram( newHistogram );
 
     appendHistogram2Tree( tmpHisto );
@@ -3723,7 +3756,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
   wxArrayString choices;
 
   for( vector<Trace *>::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
-    choices.Add( wxString::FromAscii( (*it)->getTraceNameNumbered().c_str() ) );
+    choices.Add( wxString::FromUTF8( (*it)->getTraceNameNumbered().c_str() ) );
   wxMultiChoiceDialog dialog( this, _("Select the traces to unload:"), _("Unload Traces"), choices );
 
   raiseCurrentWindow = false;
@@ -3743,7 +3776,7 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
         isThereHistogramLinkedToWindow = getUsedBySomeHistogram( (*it), true, sel );
         if( isThereHistogramLinkedToWindow )
         {
-          wxString traceName = wxString::FromAscii( loadedTraces[ sel.Item( i ) ]->getTraceNameNumbered().c_str() );
+          wxString traceName = wxString::FromUTF8( loadedTraces[ sel.Item( i ) ]->getTraceNameNumbered().c_str() );
           wxMessageBox( _( "Cannot delete trace " ) + traceName + _( ", which is being used in an histogram." ),
                         _( "Warning" ),
                         wxOK | wxICON_EXCLAMATION ); 
@@ -4146,7 +4179,7 @@ void paraverMain::OnSignal()
 
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
-        tmpTimeline->saveImage( false, wxString::FromAscii( currentSignal.imageFileName.c_str() ) );
+        tmpTimeline->saveImage( false, wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
     }
     else // Histogram
     {
@@ -4161,7 +4194,7 @@ void paraverMain::OnSignal()
 
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
-        tmpHistogram->saveImage( false, wxString::FromAscii( currentSignal.imageFileName.c_str() ) );
+        tmpHistogram->saveImage( false, wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
     }
   }
 
@@ -4282,7 +4315,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
     else
       tmpNameOut = localKernel->getNewTraceName( tmpNameIn, filterToolIDs[ i ], false );
 
-    paraverMain::dialogProgress->Pulse( wxString::FromAscii( tmpNameOut.c_str() ) );
+    paraverMain::dialogProgress->Pulse( wxString::FromUTF8( tmpNameOut.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
@@ -4378,7 +4411,7 @@ void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialo
     filterToolOrder = traceOptions->parseDoc( (char *)xmlFile.c_str() );
 
     // Keep my XMLPath
-    wxString auxName = wxString::FromAscii( xmlFile.c_str() );
+    wxString auxName = wxString::FromUTF8( xmlFile.c_str() );
     wxString auxPath = wxFileName( auxName ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
     XMLPath = std::string( auxPath.mb_str() );
 
@@ -4415,7 +4448,7 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
 
   if ( cutFilterDialog->GetRunAppWithResultingTrace() )
   {
-    wxString auxTrace =  wxString::FromAscii( dstTrace.c_str() );
+    wxString auxTrace =  wxString::FromUTF8( dstTrace.c_str() );
     ShowRunCommand( auxTrace );
   }
 }
@@ -4514,7 +4547,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + strPid.str() + "_" + sessionInfo.sessionDate + "_" + strStatus.str() + ".session";
     #endif
   }
-  SessionSaver::SaveSession( wxString::FromAscii( file.c_str() ), GetLoadedTraces() );
+  SessionSaver::SaveSession( wxString::FromUTF8( file.c_str() ), GetLoadedTraces() );
 }
 
 
@@ -4789,7 +4822,7 @@ void paraverMain::createHelpContentsWindow(
 #else
     helpContentsAbsolutePath = wxT( "file://" ) + 
 #endif
-          wxString::FromAscii( paraverConfig->getParaverConfigDir().c_str() ) +
+          wxString::FromUTF8( paraverConfig->getParaverConfigDir().c_str() ) +
           wxString( wxFileName::GetPathSeparator() ) +
           wxString( wxT( "help_contents" ) ) + wxT( "_index.html" );
   }
@@ -4848,9 +4881,9 @@ void paraverMain::OnHelpcontentsClick( wxCommandEvent& event )
 
 wxString paraverMain::getHintComposed( const std::pair< std::string, std::string >& hint )
 {
-//  wxFileName filename( wxString::FromAscii(  hint.first.c_str() ) );
-//  return filename.GetName() + _( " - " ) + wxString::FromAscii(  hint.second.c_str() );
-  return wxString::FromAscii( hint.second.c_str() );
+//  wxFileName filename( wxString::FromUTF8(  hint.first.c_str() ) );
+//  return filename.GetName() + _( " - " ) + wxString::FromUTF8(  hint.second.c_str() );
+  return wxString::FromUTF8( hint.second.c_str() );
 }
 
 
@@ -4866,10 +4899,10 @@ bool isForbidden( const char& c )
 wxString paraverMain::buildFormattedFileName( std::string windowName, const std::string& traceName )
 {
   std::replace_if( windowName.begin(), windowName.end(), isForbidden, '_' );
-  wxString auxTraceName = wxString::FromAscii( traceName.c_str() );
+  wxString auxTraceName = wxString::FromUTF8( traceName.c_str() );
   auxTraceName.Remove( auxTraceName.Find( wxT( ".prv" ) ) );
 
-  return ( wxString::FromAscii( windowName.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
+  return ( wxString::FromUTF8( windowName.c_str() ) + wxString( wxT( '@' ) ) + auxTraceName );
 }
 
 
@@ -4878,7 +4911,7 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
   int hintId = event.GetId();
   wxMenuItem *tmpMenuItem = menuHints->FindItem( hintId );
 
-  wxFileName tmpCFG( wxString::FromAscii( ( (MenuHintFile *) tmpMenuItem->GetRefData() )->fileName.c_str() ) );
+  wxFileName tmpCFG( wxString::FromUTF8( ( (MenuHintFile *) tmpMenuItem->GetRefData() )->fileName.c_str() ) );
   if ( tmpCFG.IsRelative() )
   {
     wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
@@ -4924,7 +4957,7 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
   int position = 0;
   for ( vector< string >::iterator it = tmpWorkspaces.begin(); it != tmpWorkspaces.end(); ++it )
   {
-    tmpNames.Add( wxString::FromAscii( it->c_str() ) );
+    tmpNames.Add( wxString::FromUTF8( it->c_str() ) );
     if ( std::find( traceWorkspaces[ loadedTraces[ currentTrace ] ].begin(), traceWorkspaces[ loadedTraces[ currentTrace ] ].end(),*it ) != traceWorkspaces[ loadedTraces[ currentTrace ] ].end() )
       tmpActive.Add( position );
     ++position;
@@ -4968,13 +5001,13 @@ void paraverMain::setActiveWorkspacesText()
         tmpActive += _( "+" );
 
       if( tmpCurrentWorkspace < firstUserWorkspace[ getCurrentTrace() ] )
-        tmpActive += wxString::FromAscii( it->c_str() );
+        tmpActive += wxString::FromUTF8( it->c_str() );
       else
       {
         if( workspacesManager->existWorkspace( it->c_str(), WorkspaceManager::DISTRIBUTED ) )
-          tmpActive += wxString::FromAscii( it->c_str() ) + wxT( "#2" );
+          tmpActive += wxString::FromUTF8( it->c_str() ) + wxT( "#2" );
         else
-          tmpActive += wxString::FromAscii( it->c_str() );
+          tmpActive += wxString::FromUTF8( it->c_str() );
       }
       ++tmpCurrentWorkspace;
     }

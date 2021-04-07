@@ -31,6 +31,7 @@
 
 #include <vector>
 #include <queue>
+#include <string>
 #include <wx/progdlg.h>
 #include <wx/treectrl.h>
 #include <wx/cmdline.h>
@@ -75,6 +76,7 @@ class wxToolbook;
 class wxGenericDirCtrl;
 class wxPropertyGrid;
 ////@end forward declarations
+class wxPGProperty;
 class wxCheckBox;
 class ProgressController;
 class wxPropertyGridEvent;
@@ -194,26 +196,29 @@ struct SignalItem
 };
 
 
-// 
+// wxPropertyGrid 1.4.15 + wxWidgets 2.8.12 does not support SetClientObject
 struct PropertyClientData
 {
   Window *ownerTimeline;
   Histogram *ownerHistogram;
-  wxString propName;
+  std::string propName;
+  size_t extraTopComposeLevel;
+  TWindowLevel semanticLevel;
+  TParamIndex numParameter;
 };
 
 
 struct SessionInfo
 {    
-    enum StatusID
-    {
-      OPEN   = 0,
-      CLOSED = 1
-    };
-    
-    unsigned int pid;
-    StatusID status;
-    std::string sessionDate;
+  enum StatusID
+  {
+    OPEN   = 0,
+    CLOSED = 1
+  };
+  
+  unsigned int pid;
+  StatusID status;
+  std::string sessionDate;
 };
 
 /*!
@@ -572,9 +577,11 @@ public:
   bool DoLoadCFG( const std::string &path );
   
   void SaveConfigurationFile( wxWindow *parent,
-                               SaveOptions options,
-                               std::vector< Window * > timelines,
-                               std::vector< Histogram * > histograms );
+                              SaveOptions options,
+                              vector< Window * > timelines,
+                              vector< Histogram * > histograms,
+                              const vector< CFGS4DLinkedPropertiesManager >& linkedProperties );
+                               
 
   void ShowPreferences( wxWindowID whichPanelID = ID_PREFERENCES_GLOBAL );
   
@@ -735,7 +742,20 @@ private:
 
   Trace *getCurrentTrace() const;
   bool getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete );
-  
+
+  template< typename T >
+  bool linkedSetPropertyValue( T *whichWindow,
+                               wxPropertyGridEvent& event,
+                               wxPGProperty *property,
+                               const string& propName,
+                               PropertyClientData *whichClientData );
+  void SetPropertyValue( wxPropertyGridEvent& event,
+                         wxPGProperty *property,
+                         const string& propName,
+                         PropertyClientData *tmpClientData,
+                         Window *whichTimeline,
+                         Histogram *whichHistogram );
+
 };
 
 void progressFunction( ProgressController *progress, void *callerWindow );

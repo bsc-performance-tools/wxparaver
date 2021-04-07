@@ -80,7 +80,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
 
   if( myHisto->GetHistogram()->getOnlyTotals() )
   {
-    label = wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals)( row ) ).c_str() );
+    label = wxString::FromUTF8( LabelConstructor::histoTotalLabel( (THistoTotals)( row ) ).c_str() );
   }
   else if( myHisto->GetHistogram()->getHorizontal() && row >= myHisto->GetHistogram()->getNumRows() )
   {
@@ -88,7 +88,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
     if( iTotal == 0 )
       label = wxT( "" );
     else
-      label = wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals)( iTotal - 1 ) ).c_str() );
+      label = wxString::FromUTF8( LabelConstructor::histoTotalLabel( (THistoTotals)( iTotal - 1 ) ).c_str() );
   }
   else if( !myHisto->GetHistogram()->getHorizontal() && row >= (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) )
   {
@@ -96,14 +96,14 @@ wxString HistoTableBase::GetRowLabelValue( int row )
     if( iTotal == 0 )
       label = wxT( "" );
     else
-      label = wxString::FromAscii( LabelConstructor::histoTotalLabel( (THistoTotals)( iTotal - 1 ) ).c_str() );
+      label = wxString::FromUTF8( LabelConstructor::histoTotalLabel( (THistoTotals)( iTotal - 1 ) ).c_str() );
   }
   else if( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
-    label = wxString::FromAscii( myHisto->GetHistogram()->getRowLabel( (*selectedRows)[ row ] ).c_str() );
+    label = wxString::FromUTF8( myHisto->GetHistogram()->getRowLabel( (*selectedRows)[ row ] ).c_str() );
   else if( myHisto->GetHistogram()->getHorizontal() )
-    label = wxString::FromAscii( myHisto->GetHistogram()->getRowLabel( (*selectedRows)[ row ] ).c_str() );
+    label = wxString::FromUTF8( myHisto->GetHistogram()->getRowLabel( (*selectedRows)[ row ] ).c_str() );
   else
-    label = wxString::FromAscii( myHisto->GetHistogram()->getColumnLabel( row ).c_str() );
+    label = wxString::FromUTF8( myHisto->GetHistogram()->getColumnLabel( row ).c_str() );
 
   int w, h;
   wxFont tmpFont( GetView()->GetLabelFont() );
@@ -126,12 +126,12 @@ wxString HistoTableBase::GetColLabelValue( int col )
   }
 
   if( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
-    return wxString::FromAscii( myHisto->GetHistogram()->getRowLabel( col ).c_str() );
+    return wxString::FromUTF8( myHisto->GetHistogram()->getRowLabel( col ).c_str() );
     
   if( myHisto->GetHistogram()->getHorizontal() )
-    return wxString::FromAscii( myHisto->GetHistogram()->getColumnLabel( col ).c_str() );
+    return wxString::FromUTF8( myHisto->GetHistogram()->getColumnLabel( col ).c_str() );
   else
-    return wxString::FromAscii( myHisto->GetHistogram()->getRowLabel( (*selectedRows)[ col ] ).c_str() );
+    return wxString::FromUTF8( myHisto->GetHistogram()->getRowLabel( (*selectedRows)[ col ] ).c_str() );
 }
 
 
@@ -178,7 +178,7 @@ wxString HistoTableBase::GetValue( int row, int col )
       iTotal = col - (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) - 1;
 
     if( iTotal == -1 )
-      label = wxString::FromAscii( "" );
+      label = wxString::FromUTF8( "" );
     else
     {
       HistogramTotals *totals = myHisto->GetHistogram()->getTotals( myHisto->GetHistogram()->getCurrentStat() );
@@ -197,13 +197,13 @@ wxString HistoTableBase::GetValue( int row, int col )
 
       // Paint total cells
       if( iTotal >= vTotals.size() )
-        label = wxString::FromAscii( "" );
+        label = wxString::FromUTF8( "" );
       else if( vTotals[ 0 ] != 0.0 )
       {
         if( iTotal == AVGDIVMAX )
-          label = wxString::FromAscii( LabelConstructor::histoCellLabel( myHisto->GetHistogram(), vTotals[ iTotal ], false ).c_str());
+          label = wxString::FromUTF8( LabelConstructor::histoCellLabel( myHisto->GetHistogram(), vTotals[ iTotal ], false ).c_str());
         else
-          label = wxString::FromAscii( LabelConstructor::histoCellLabel( myHisto->GetHistogram(), vTotals[ iTotal ], true ).c_str());
+          label = wxString::FromUTF8( LabelConstructor::histoCellLabel( myHisto->GetHistogram(), vTotals[ iTotal ], true ).c_str());
       }
       else
       {
@@ -212,7 +212,7 @@ wxString HistoTableBase::GetValue( int row, int col )
           if( myHisto->GetHistogram()->getHorizontal() )
             GetView()->SetColSize( drawCol, 0 );
         }
-        label = wxString::FromAscii( "-" );
+        label = wxString::FromUTF8( "-" );
       }
     }
   }
@@ -221,20 +221,20 @@ wxString HistoTableBase::GetValue( int row, int col )
     if( myHisto->GetHistogram()->getCommCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getCommSelectedPlane() ) )
     {
       tmpStr = LabelConstructor::histoCellLabel( myHisto->GetHistogram(), semValue, true );
-      label = wxString::FromAscii( tmpStr.c_str() );
+      label = wxString::FromUTF8( tmpStr.c_str() );
     }
     else
-      label = wxString::FromAscii( "-" );
+      label = wxString::FromUTF8( "-" );
   }
   else if ( row < myHisto->GetHistogram()->getNumRows() && col < myHisto->GetHistogram()->getNumColumns() ) // the if is CKC's bug fix
   {
     if( myHisto->GetHistogram()->getCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getSelectedPlane() ) )
     {
       tmpStr = LabelConstructor::histoCellLabel( myHisto->GetHistogram(), semValue, true );
-      label = wxString::FromAscii( tmpStr.c_str() );
+      label = wxString::FromUTF8( tmpStr.c_str() );
     }
     else
-      label = wxString::FromAscii( "-" );
+      label = wxString::FromUTF8( "-" );
 
     if( myHisto->GetHistogram()->getHideColumns() && !myHisto->GetHistogram()->getHorizontal() )
     {
@@ -244,7 +244,7 @@ wxString HistoTableBase::GetValue( int row, int col )
         GetView()->SetRowSize( drawRow, 0 );
     }
   }
-  else label = wxString::FromAscii( "-" );
+  else label = wxString::FromUTF8( "-" );
 
   return label;
 }

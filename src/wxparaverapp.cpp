@@ -702,7 +702,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
                                   
             gHistogram* tmpGHisto = new gHistogram( mainWindow, 
                 wxID_ANY, 
-                wxString::FromAscii( composedName.c_str() ) );
+                wxString::FromUTF8( composedName.c_str() ) );
             tmpGHisto->SetHistogram( histo );
 
             histo->setZoom( true );
@@ -725,7 +725,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             wxPoint tmpPos( window->getPosX(), window->getPosY() );
             gTimeline* tmpTimeline = new gTimeline( mainWindow, 
                     wxID_ANY, 
-                    wxString::FromAscii( composedName.c_str() ), 
+                    wxString::FromUTF8( composedName.c_str() ), 
                     tmpPos );
             tmpTimeline->SetMyWindow( window );
             tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );

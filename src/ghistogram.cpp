@@ -1048,7 +1048,7 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   string composedName = myHistogram->getName() + " @ " +
                         myHistogram->getTrace()->getTraceNameNumbered();
 
-  this->SetTitle( wxString::FromAscii( composedName.c_str() ) );
+  this->SetTitle( wxString::FromUTF8( composedName.c_str() ) );
 
   if(  !wxparaverApp::mainWindow->IsIconized() && myHistogram->getShowWindow() )
   {
@@ -1352,7 +1352,7 @@ void gHistogram::OnPopUpClone()
   string composedName = clonedName + " @ " +
                         clonedHistogram->getTrace()->getTraceNameNumbered();
 
-  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, wxString::FromAscii( composedName.c_str() ), position );
+  gHistogram *clonedGHistogram = new gHistogram( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), position );
   clonedGHistogram->myHistogram = clonedHistogram;
   clonedGHistogram->SetClientSize( size );
 
@@ -2003,12 +2003,12 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
     row = myHistogram->getNumRows();
     
   if( row > 0 )
-    text << wxString::FromAscii( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
+    text << wxString::FromUTF8( myHistogram->getRowLabel( selectedRows[ row - 1 ] ).c_str() )
          << _( "  " );
 
   if( column > 0 )
   {
-    text << wxString::FromAscii( myHistogram->getColumnLabel( myHistogram->getSemanticRealColumn( column - 1, noVoidSemRanges ) ).c_str() )
+    text << wxString::FromUTF8( myHistogram->getColumnLabel( myHistogram->getSemanticRealColumn( column - 1, noVoidSemRanges ) ).c_str() )
          << _( "  " );
   }
   
@@ -2029,7 +2029,7 @@ void gHistogram::OnTimerZoom( wxTimerEvent& event )
                                                    false );
     }
 
-    text << _( "= " ) << wxString::FromAscii( tmpLabel.c_str() );
+    text << _( "= " ) << wxString::FromUTF8( tmpLabel.c_str() );
   }
   
   histoStatus->SetStatusText( text );
@@ -2830,7 +2830,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
 
   vector< wxString > extensions;
   tmpSuffix = _(".") +
-        wxString::FromAscii( LabelConstructor::getDataFileSuffix(
+        wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
                 ParaverConfig::getInstance()->getHistogramSaveTextFormat() ).c_str() );
 
   // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
@@ -2839,7 +2839,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
   for ( PRV_UINT16 i = 0; i < PRV_UINT16( ParaverConfig::PLAIN ); ++i )
   {
     wxString currentFormat =
-          wxString::FromAscii( LabelConstructor::getDataFileSuffix(
+          wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
                   ParaverConfig::TTextFormat( i ) ).c_str() );
     tmpWildcard +=
             currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
@@ -2901,7 +2901,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
       reducePath = fileName;
     reducePath += "\t";
 
-    paraverMain::dialogProgress->Pulse( wxString::FromAscii( reducePath.c_str() ) );
+    paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
     paraverMain::dialogProgress->Show();
 
@@ -2951,13 +2951,13 @@ void gHistogram::saveImageDialog( bool showSaveDialog,  wxString whichFileName )
 
     imageName = buildFormattedFileName();
 
-    wxFileName startingDir( wxString::FromAscii( myHistogram->getTrace()->getFileName().c_str() ) );
+    wxFileName startingDir( wxString::FromUTF8( myHistogram->getTrace()->getFileName().c_str() ) );
     wxString defaultDir = startingDir.GetPath();
 
     //filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
 
     tmpSuffix = _(".") +
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+            wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     imagePath = imageName + tmpSuffix;
 
     SaveImageDialog saveDialog( this, defaultDir, imageName, true );
@@ -3008,7 +3008,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
     filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
 
     tmpSuffix = _(".") +
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+            wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     imagePath = imageName + tmpSuffix;
 
     if( showSaveDialog )
@@ -3021,7 +3021,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
       for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
       {
         wxString currentFormat =
-              wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+              wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
                       ParaverConfig::TImageFormat( i ) ).c_str() );
                       
         extensions.push_back( currentFormat );
@@ -3083,7 +3083,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, Paraver
     filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
 
     tmpSuffix = _(".") +
-            wxString::FromAscii( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+            wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     imagePath = imageName + tmpSuffix;
 
     if( showSaveDialog )
@@ -3096,7 +3096,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, Paraver
       for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
       {
         wxString currentFormat =
-              wxString::FromAscii( LabelConstructor::getImageFileSuffix(
+              wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
                       ParaverConfig::TImageFormat( i ) ).c_str() );
                       
         extensions.push_back( currentFormat );
@@ -3133,10 +3133,10 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, Paraver
   // Build image to be saved as: title image + timeline image
 
   // Get title
-  wxString longTitle = wxString::FromAscii(
+  wxString longTitle = wxString::FromUTF8(
           ( myHistogram->getName() + " @ " +
             myHistogram->getTrace()->getTraceNameNumbered() ).c_str());
-  wxString shortTitle = wxString::FromAscii( ( myHistogram->getName() ).c_str() );
+  wxString shortTitle = wxString::FromUTF8( ( myHistogram->getName() ).c_str() );
   wxString writtenTitle = longTitle;
 
   // Get colors
@@ -3245,8 +3245,15 @@ void gHistogram::saveCFG()
   if ( myHistogram->getDataWindow() != NULL  )
       windows.push_back( myHistogram->getDataWindow() );
 
-  paraverMain::myParaverMain->SaveConfigurationFile(
-          (wxWindow *)this, SaveOptions(), windows, histograms );
+  // TODO: use the histogram linked properties manager if any
+  CFGS4DLinkedPropertiesManager dummyManager;
+  vector<CFGS4DLinkedPropertiesManager> dummyList;
+  dummyList.push_back( dummyManager );
+  paraverMain::myParaverMain->SaveConfigurationFile( (wxWindow *)this,
+                                                     SaveOptions(),
+                                                     windows,
+                                                     histograms,
+                                                     dummyList );
 
   setEnableDestroyButton( true );
 }
@@ -3424,7 +3431,7 @@ void progressFunctionHistogram( ProgressController *progress, void *callerWindow
   wxString newMessage;
   if( progress->getMessageChanged() )
   {
-    newMessage = wxString::FromAscii( progress->getMessage().c_str() );
+    newMessage = wxString::FromUTF8( progress->getMessage().c_str() );
     progress->clearMessageChanged();
   }
 
