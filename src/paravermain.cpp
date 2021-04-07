@@ -3063,6 +3063,9 @@ void paraverMain::ShowDerivedDialog()
     newWindow->setFactor( 0, derivedDialog.GetFactorTimeline1() );
     newWindow->setFactor( 1, derivedDialog.GetFactorTimeline2() );
 
+    newWindow->setShift( 0, derivedDialog.GetShiftTimeline1() );
+    newWindow->setShift( 1, derivedDialog.GetShiftTimeline2() );
+
     TParamValue auxParam = derivedDialog.GetMinCompose1();
     if ( auxParam.size() > 0 )
       newWindow->setFunctionParam( TOPCOMPOSE1, 0, auxParam );

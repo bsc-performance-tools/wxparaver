@@ -136,6 +136,8 @@ void DerivedTimelineDialog::Init()
   factorTimeline2 = 1.0;
   lastTimeline1 = 0;
   lastTimeline2 = 0;
+  shiftTimeline1 = 0;
+  shiftTimeline2 = 0;
   widgetName = NULL;
   widgetTopCompose1 = NULL;
   widgetLabelMinCompose1 = NULL;
@@ -150,11 +152,13 @@ void DerivedTimelineDialog::Init()
   widgetLabelTimelines1 = NULL;
   widgetLabelTimelines2 = NULL;
   widgetFactorTimeline1 = NULL;
+  spinShiftTimeline1 = NULL;
   txtTimelines1 = NULL;
   buttonTimelines1 = NULL;
   widgetOperations = NULL;
   txtTimelines2 = NULL;
   buttonTimelines2 = NULL;
+  spinShiftTimeline2 = NULL;
   widgetFactorTimeline2 = NULL;
   swapWindowsButton = NULL;
 ////@end DerivedTimelineDialog member initialisation
@@ -284,6 +288,12 @@ void DerivedTimelineDialog::CreateControls()
   wxStaticText* itemStaticText6 = new wxStaticText( itemDialog1, wxID_STATIC, _("Factor"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer5->Add(itemStaticText6, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
+  wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer1->Add(itemBoxSizer6, 1, wxALIGN_LEFT|wxALL, 5);
+
+  wxStaticText* itemStaticText7 = new wxStaticText( itemDialog1, wxID_STATIC, _("Shift"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer6->Add(itemStaticText7, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
   wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer1->Add(itemBoxSizer7, 1, wxALIGN_LEFT|wxALL, 5);
 
@@ -302,6 +312,12 @@ void DerivedTimelineDialog::CreateControls()
   widgetLabelTimelines2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer17->Add(widgetLabelTimelines2, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
+  wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer1->Add(itemBoxSizer23, 1, wxALIGN_LEFT|wxALL, 5);
+
+  wxStaticText* itemStaticText24 = new wxStaticText( itemDialog1, wxID_STATIC, _("Shift"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer23->Add(itemStaticText24, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
+
   wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer1->Add(itemBoxSizer19, 1, wxALIGN_LEFT|wxALL, 5);
 
@@ -316,6 +332,12 @@ void DerivedTimelineDialog::CreateControls()
 
   widgetFactorTimeline1 = new wxTextCtrl( itemDialog1, ID_FACTOR_TIMELINE_1, _("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer11->Add(widgetFactorTimeline1, 5, wxALIGN_CENTER_VERTICAL, 5);
+
+  wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer10->Add(itemBoxSizer27, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+
+  spinShiftTimeline1 = new wxSpinCtrl( itemDialog1, ID_SHIFT_TIMELINE1, wxT("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -10, 10, 0 );
+  itemBoxSizer27->Add(spinShiftTimeline1, 5, wxALIGN_CENTER_VERTICAL, 5);
 
   wxBoxSizer* itemBoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer10->Add(itemBoxSizer14, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
@@ -341,6 +363,12 @@ void DerivedTimelineDialog::CreateControls()
 
   buttonTimelines2 = new wxButton( itemDialog1, ID_TIMELINES_BUTTON2, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
   itemBoxSizer22->Add(buttonTimelines2, 0, wxALIGN_CENTER_VERTICAL, 5);
+
+  wxBoxSizer* itemBoxSizer29 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer10->Add(itemBoxSizer29, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+
+  spinShiftTimeline2 = new wxSpinCtrl( itemDialog1, ID_SHIFT_TIMELINE2, wxT("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -10, 10, 0 );
+  itemBoxSizer29->Add(spinShiftTimeline2, 5, wxALIGN_CENTER_VERTICAL, 5);
 
   wxBoxSizer* itemBoxSizer26 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer10->Add(itemBoxSizer26, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
@@ -496,6 +524,9 @@ bool DerivedTimelineDialog::TransferDataFromWindow()
       minCompose2 = paramsMinCompose2;
     else if ( widgetMaxCompose2->IsShown() )
       maxCompose2 = paramsMaxCompose2;
+
+    shiftTimeline1 = spinShiftTimeline1->GetValue();
+    shiftTimeline2 = spinShiftTimeline2->GetValue();
   }
 
   return true;

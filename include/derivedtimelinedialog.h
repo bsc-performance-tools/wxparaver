@@ -32,6 +32,7 @@
 
 ////@begin includes
 #include "wx/statline.h"
+#include "wx/spinctrl.h"
 ////@end includes
 
 #include "window.h"
@@ -42,6 +43,7 @@
  */
 
 ////@begin forward declarations
+class wxSpinCtrl;
 ////@end forward declarations
 
 /*!
@@ -58,11 +60,13 @@
 #define ID_MINCOMPOSE2 10041
 #define ID_MAXCOMPOSE2 10040
 #define ID_FACTOR_TIMELINE_1 10035
+#define ID_SHIFT_TIMELINE1 10006
 #define ID_TIMELINES_TEXT1 10036
 #define ID_TIMELINES_BUTTON1 10004
 #define ID_OPERATIONS 10037
 #define ID_TIMELINES_TEXT2 10038
 #define ID_TIMELINES_BUTTON2 10005
+#define ID_SHIFT_TIMELINE2 10007
 #define ID_FACTOR_TIMELINE_2 10039
 #define ID_SWAP_WINDOWS 10033
 #define SYMBOL_DERIVEDTIMELINEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
@@ -173,6 +177,12 @@ public:
   std::vector< std::string > GetTopCompose2() const { return topCompose2 ; }
   void SetTopCompose2(std::vector< std::string > value) { topCompose2 = value ; }
 
+  PRV_INT16 GetShiftTimeline1() const { return shiftTimeline1 ; }
+  void SetShiftTimeline1(PRV_INT16 value) { shiftTimeline1 = value ; }
+
+  PRV_INT16 GetShiftTimeline2() const { return shiftTimeline2 ; }
+  void SetShiftTimeline2(PRV_INT16 value) { shiftTimeline2 = value ; }
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -201,11 +211,13 @@ public:
   wxStaticText* widgetLabelTimelines1;
   wxStaticText* widgetLabelTimelines2;
   wxTextCtrl* widgetFactorTimeline1;
+  wxSpinCtrl* spinShiftTimeline1;
   wxTextCtrl* txtTimelines1;
   wxButton* buttonTimelines1;
   wxChoice* widgetOperations;
   wxTextCtrl* txtTimelines2;
   wxButton* buttonTimelines2;
+  wxSpinCtrl* spinShiftTimeline2;
   wxTextCtrl* widgetFactorTimeline2;
   wxButton* swapWindowsButton;
 private:
@@ -225,6 +237,8 @@ private:
   std::vector<TWindowID> timelines2;
   std::vector< std::string > topCompose1;
   std::vector< std::string > topCompose2;
+  PRV_INT16 shiftTimeline1;
+  PRV_INT16 shiftTimeline2;
 ////@end DerivedTimelineDialog member variables
 
   void presetTimelineComboBox( std::vector< Window * > timelines,
