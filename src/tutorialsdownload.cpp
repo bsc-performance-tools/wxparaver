@@ -67,12 +67,12 @@ TutorialsProgress::TutorialsProgress( wxString& title,
         currentDownloadSize( 0 ),
         currentInstallSize( 0 )
 {
-  dialog = new wxProgressDialog( title, message, numTutorials * 100, NULL, wxPD_APP_MODAL|wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME );
+  dialog = new wxProgressDialog( title, message, numTutorials * 100, nullptr, wxPD_APP_MODAL|wxPD_AUTO_HIDE|wxPD_ELAPSED_TIME );
 }
 
 TutorialsProgress::~TutorialsProgress()
 {
-  if( dialog != NULL )
+  if( dialog != nullptr )
     delete dialog;
 }
 
@@ -292,7 +292,7 @@ class client
           {
             stringstream tmpSstr( header.substr( 16 ) );
             tmpSstr >> totalBytes_;
-            if( progress_ != NULL )
+            if( progress_ != nullptr )
               progress_->setCurrentDownloadSize( totalBytes_ );
           }
         } 
@@ -321,7 +321,7 @@ class client
         // Write all of the data that has been read so far.
         store_ << &response_;
 
-        if( progress_ != NULL )
+        if( progress_ != nullptr )
           progress_->updateDownload( store_.tellp() );
           
         // Continue reading remaining data until EOF.
@@ -348,11 +348,11 @@ class client
 };
 
 
-TutorialsDownload *TutorialsDownload::instance = NULL;
+TutorialsDownload *TutorialsDownload::instance = nullptr;
 
 TutorialsDownload *TutorialsDownload::getInstance()
 {
-  if( instance == NULL )
+  if( instance == nullptr )
     instance = new TutorialsDownload();
     return instance;
 }
@@ -533,7 +533,7 @@ bool TutorialsDownload::downloadTutorialsList() const
     ctx.set_default_verify_paths();
 
     boost::asio::io_service io_service;
-    client c( io_service, ctx, server, path, storeFile, NULL );
+    client c( io_service, ctx, server, path, storeFile, nullptr );
     io_service.run();
   }
   catch ( ParaverKernelException& e )

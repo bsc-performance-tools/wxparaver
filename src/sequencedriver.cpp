@@ -64,7 +64,7 @@ bool RunAppClusteringAction::execute( std::string whichTrace )
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
-  if( runAppDialog == NULL )
+  if( runAppDialog == nullptr )
   {
     runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
@@ -95,7 +95,7 @@ bool RunAppFoldingAction::execute( std::string whichTrace )
   TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   std::string tmpFileName = ( (CSVFileNameState *)tmpSequence->getState( TraceEditSequence::csvFileNameState ) )->getData();
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
-  if( runAppDialog == NULL )
+  if( runAppDialog == nullptr )
   {
     runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
@@ -125,7 +125,7 @@ bool RunAppDimemasAction::execute( std::string whichTrace )
 
   //TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
   RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
-  if( runAppDialog == NULL )
+  if( runAppDialog == nullptr )
   {
     runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );

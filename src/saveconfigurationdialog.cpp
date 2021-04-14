@@ -124,22 +124,22 @@ SaveConfigurationDialog::~SaveConfigurationDialog()
 void SaveConfigurationDialog::Init()
 {
 ////@begin SaveConfigurationDialog member initialisation
-  initialTrace = NULL;
-  choiceTraceSelector = NULL;
-  listTimelines = NULL;
-  buttonSetAllTimelines = NULL;
-  buttonUnsetAllTimelines = NULL;
-  listHistograms = NULL;
-  buttonSetAllHistograms = NULL;
-  buttonUnsetAllHistograms = NULL;
-  optRelativeBegin = NULL;
-  optRelativeEnd = NULL;
-  optComputeSemantic = NULL;
-  radioAllTrace = NULL;
-  radioAllWindow = NULL;
-  optComputeGradient = NULL;
-  textDescription = NULL;
-  checkboxSaveCFGBasicMode = NULL;
+  initialTrace = nullptr;
+  choiceTraceSelector = nullptr;
+  listTimelines = nullptr;
+  buttonSetAllTimelines = nullptr;
+  buttonUnsetAllTimelines = nullptr;
+  listHistograms = nullptr;
+  buttonSetAllHistograms = nullptr;
+  buttonUnsetAllHistograms = nullptr;
+  optRelativeBegin = nullptr;
+  optRelativeEnd = nullptr;
+  optComputeSemantic = nullptr;
+  radioAllTrace = nullptr;
+  radioAllWindow = nullptr;
+  optComputeGradient = nullptr;
+  textDescription = nullptr;
+  checkboxSaveCFGBasicMode = nullptr;
 ////@end SaveConfigurationDialog member initialisation
 }
 
@@ -349,7 +349,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
     aux.clear();
 
     // Autoselection
-    if ( initialTrace != NULL )
+    if ( initialTrace != nullptr )
     {
       if( initialTrace->getTraceNameNumbered() != (*it) )
       {
@@ -411,7 +411,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
 
 Window *SaveConfigurationDialog::FindWindow( const wxString &windowName )
 {
-  Window *elem = NULL;
+  Window *elem = nullptr;
 
   for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
@@ -431,7 +431,7 @@ Window *SaveConfigurationDialog::FindWindow( const wxString &windowName )
 
 Histogram *SaveConfigurationDialog::FindHistogram( const wxString &windowName )
 {
-  Histogram *elem = NULL;
+  Histogram *elem = nullptr;
 
   for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {

@@ -144,38 +144,38 @@ void HistogramDialog::Init()
 {
 ////@begin HistogramDialog member initialisation
   controlTimelineAutofit = true;
-  controlTimelineSelected = NULL;
-  currentWindow = NULL;
-  dataTimelineSelected = NULL;
+  controlTimelineSelected = nullptr;
+  currentWindow = nullptr;
+  dataTimelineSelected = nullptr;
   extraControlTimelineAutofit = true;
-  extraControlTimelineSelected = NULL;
+  extraControlTimelineSelected = nullptr;
   waitingGlobalTiming = false;
-  txtControlTimelines = NULL;
-  buttonControlTimelines = NULL;
-  buttonControlTimelineAutoFit = NULL;
-  labelControlTimelineMin = NULL;
-  txtControlTimelineMin = NULL;
-  labelControlTimelineMax = NULL;
-  txtControlTimelineMax = NULL;
-  labelControlTimelineDelta = NULL;
-  txtControlTimelineDelta = NULL;
-  txtDataTimelines = NULL;
-  buttonDataTimelines = NULL;
-  txt3DTimelines = NULL;
-  button3DTimelines = NULL;
-  button3DTimelineAutoFit = NULL;
-  label3DTimelineMin = NULL;
-  txt3DTimelineMin = NULL;
-  label3DTimelineMax = NULL;
-  txt3DTimelineMax = NULL;
-  label3DTimelineDelta = NULL;
-  txt3DTimelineDelta = NULL;
-  txtBeginTime = NULL;
-  txtEndTime = NULL;
-  radioAllWindow = NULL;
-  radioAllTrace = NULL;
-  radioManual = NULL;
-  buttonSelect = NULL;
+  txtControlTimelines = nullptr;
+  buttonControlTimelines = nullptr;
+  buttonControlTimelineAutoFit = nullptr;
+  labelControlTimelineMin = nullptr;
+  txtControlTimelineMin = nullptr;
+  labelControlTimelineMax = nullptr;
+  txtControlTimelineMax = nullptr;
+  labelControlTimelineDelta = nullptr;
+  txtControlTimelineDelta = nullptr;
+  txtDataTimelines = nullptr;
+  buttonDataTimelines = nullptr;
+  txt3DTimelines = nullptr;
+  button3DTimelines = nullptr;
+  button3DTimelineAutoFit = nullptr;
+  label3DTimelineMin = nullptr;
+  txt3DTimelineMin = nullptr;
+  label3DTimelineMax = nullptr;
+  txt3DTimelineMax = nullptr;
+  label3DTimelineDelta = nullptr;
+  txt3DTimelineDelta = nullptr;
+  txtBeginTime = nullptr;
+  txtEndTime = nullptr;
+  radioAllWindow = nullptr;
+  radioAllTrace = nullptr;
+  radioManual = nullptr;
+  buttonSelect = nullptr;
 ////@end HistogramDialog member initialisation
 }
 
@@ -444,7 +444,7 @@ bool HistogramDialog::TransferDataFromWindow()
   }
 
 
-  if ( extraControlTimelineSelected != NULL )
+  if ( extraControlTimelineSelected != nullptr )
   {
     if ( !GetExtraControlTimelineAutofit() )
     {
@@ -567,7 +567,7 @@ void HistogramDialog::updateExtraControlTimelineAutofit()
 {
   TSemanticValue min, max, delta;
 
-  if ( extraControlTimelineSelected == NULL )
+  if ( extraControlTimelineSelected == nullptr )
   {
     txt3DTimelineMin->Clear();
     txt3DTimelineMax->Clear();
@@ -702,14 +702,14 @@ void HistogramDialog::computeColumns( Window *current, TSemanticValue &min, TSem
   delta = computeDelta( min, max );
 }
 
-// if current = NULL, PUT none
+// if current = nullptr, PUT none
 PRV_UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget )
 {
   Window *aux;
   int pos = 0;
   int posSelected = 0;
 
-  if ( current == NULL )
+  if ( current == nullptr )
     listWidget->Append( _( "- - - None - - -" ) );
 
   for( vector< TWindowID >::iterator it = listTimelines.begin(); it != listTimelines.end(); ++it )
@@ -724,7 +724,7 @@ PRV_UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listT
     pos++;
   }
 
-  if ( current == NULL )
+  if ( current == nullptr )
     posSelected = 0;
 
   return posSelected;
@@ -749,7 +749,7 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
 
   buttonControlTimelineAutoFit->SetValue( controlTimelineAutofit );
 
-  LoadedWindows::getInstance()->getValidDataWindow( current, NULL, dataTimelines );
+  LoadedWindows::getInstance()->getValidDataWindow( current, nullptr, dataTimelines );
   txtDataTimelines->SetValue( wxString( current->getName().c_str(), wxConvUTF8 ) );
   
   LoadedWindows::getInstance()->getValidControlWindow( current, current, extraControlTimelines );
@@ -964,7 +964,7 @@ void HistogramDialog::OnHistogram3dtimelinebuttonClick( wxCommandEvent& event )
                                          wxT( "3D Timeline" ),
                                          extraControlTimelines,
                                          extraControlTimelineSelected,
-                                         extraControlTimelineSelected == NULL ? controlTimelineSelected->getTrace() : extraControlTimelineSelected->getTrace(),
+                                         extraControlTimelineSelected == nullptr ? controlTimelineSelected->getTrace() : extraControlTimelineSelected->getTrace(),
                                          true );
   timelineSelector.Move( wxGetMousePosition() );
   
@@ -974,7 +974,7 @@ void HistogramDialog::OnHistogram3dtimelinebuttonClick( wxCommandEvent& event )
     if( extraControlTimelineSelected == timelineSelector.getSelection() )
       return;
     extraControlTimelineSelected = timelineSelector.getSelection();
-    if( extraControlTimelineSelected == NULL )
+    if( extraControlTimelineSelected == nullptr )
       txt3DTimelines->SetValue( wxT( "None" ) );
     else
     {

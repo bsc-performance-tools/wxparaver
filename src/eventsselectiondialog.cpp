@@ -126,33 +126,33 @@ EventsSelectionDialog::EventsSelectionDialog()
 void EventsSelectionDialog::Init()
 {
 ////@begin EventsSelectionDialog member initialisation
-  boxSizerFunctionTypes = NULL;
-  staticTextFunctionTypes = NULL;
-  choiceOperatorFunctionTypes = NULL;
-  checkboxSetAllTypes = NULL;
-  typesRegexSearch = NULL;
-  checkListSelectTypes = NULL;
-  buttonSetAllTypes = NULL;
-  buttonUnsetAllTypes = NULL;
-  choiceOperatorTypeValue = NULL;
-  boxSizerFunctionValues = NULL;
-  staticTextFunctionValues = NULL;
-  choiceOperatorFunctionValues = NULL;
-  checkboxSetAllValues = NULL;
-  valuesRegexSearch = NULL;
-  checkListSelectValues = NULL;
-  textCtrlAddValues = NULL;
-  buttonAddValues = NULL;
-  buttonShortLabels = NULL;
-  buttonSetAllValues = NULL;
-  buttonUnsetAllValues = NULL;
-  applyButton = NULL;
+  boxSizerFunctionTypes = nullptr;
+  staticTextFunctionTypes = nullptr;
+  choiceOperatorFunctionTypes = nullptr;
+  checkboxSetAllTypes = nullptr;
+  typesRegexSearch = nullptr;
+  checkListSelectTypes = nullptr;
+  buttonSetAllTypes = nullptr;
+  buttonUnsetAllTypes = nullptr;
+  choiceOperatorTypeValue = nullptr;
+  boxSizerFunctionValues = nullptr;
+  staticTextFunctionValues = nullptr;
+  choiceOperatorFunctionValues = nullptr;
+  checkboxSetAllValues = nullptr;
+  valuesRegexSearch = nullptr;
+  checkListSelectValues = nullptr;
+  textCtrlAddValues = nullptr;
+  buttonAddValues = nullptr;
+  buttonShortLabels = nullptr;
+  buttonSetAllValues = nullptr;
+  buttonUnsetAllValues = nullptr;
+  applyButton = nullptr;
 ////@end EventsSelectionDialog member initialisation
 
   hideOperatorsList = false;
 
-  currentWindow = NULL;
-  currentFilter = NULL;
+  currentWindow = nullptr;
+  currentFilter = nullptr;
 
   changedEventTypesFunction = false;
   previousEventTypesFunction = 0;
@@ -468,7 +468,7 @@ void EventsSelectionDialog::CreateControls()
   itemStdDialogButtonSizer32->Realize();
 
   // Connect events and objects
-  textCtrlAddValues->Connect(ID_TEXTCTRL_ADD_VALUES, wxEVT_KEY_DOWN, wxKeyEventHandler(EventsSelectionDialog::OnTextCtrlKeyDown), NULL, this);
+  textCtrlAddValues->Connect(ID_TEXTCTRL_ADD_VALUES, wxEVT_KEY_DOWN, wxKeyEventHandler(EventsSelectionDialog::OnTextCtrlKeyDown), nullptr, this);
 ////@end EventsSelectionDialog content construction
 
   textCtrlAddValues->SetValidator( wxTextValidator( wxFILTER_NUMERIC ));

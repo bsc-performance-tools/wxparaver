@@ -182,78 +182,78 @@ void CutFilterDialog::Init()
   changedXMLParameters = false;
   globalXMLsPath = "";
   loadResultingTrace = true;
-  localKernel = NULL;
+  localKernel = nullptr;
   nameSourceTrace = "";
   newXMLsPath = false;
   runAppWithResultingTrace = false;
   waitingGlobalTiming = false;
-  textCtrlInputTrace = NULL;
-  fileBrowserButtonInputTrace = NULL;
-  txtOutputTrace = NULL;
-  textCtrlOutputTrace = NULL;
-  fileBrowserButtonOutputTrace = NULL;
-  checkLoadResultingTrace = NULL;
-  checkRunAppWithResultingTrace = NULL;
-  textCtrlXML = NULL;
-  fileBrowserButtonXML = NULL;
-  boxSizerExecutionChain = NULL;
-  txtExecutionChain = NULL;
-  checkListExecutionChain = NULL;
-  buttonUp = NULL;
-  buttonDown = NULL;
-  buttonSaveXml = NULL;
-  notebookTools = NULL;
-  radioCutterCutByTime = NULL;
-  radioCutterCutByTimePercent = NULL;
-  textCutterBeginCut = NULL;
-  textCutterEndCut = NULL;
-  textCutterTasks = NULL;
-  buttonCutterSelectRegion = NULL;
-  buttonCutterAllWindow = NULL;
-  buttonCutterAllTrace = NULL;
-  checkCutterUseOriginalTime = NULL;
-  checkCutterRemoveFirstState = NULL;
-  checkCutterDontBreakStates = NULL;
-  checkCutterRemoveLastState = NULL;
-  checkCutterKeepEvents = NULL;
-  textCutterMaximumTraceSize = NULL;
-  checkFilterDiscardStateRecords = NULL;
-  checkFilterDiscardEventRecords = NULL;
-  checkFilterDiscardCommunicationRecords = NULL;
-  staticBoxSizerFilterStates = NULL;
-  checkListFilterStates = NULL;
-  buttonFilterSelectAll = NULL;
-  buttonFilterUnselectAll = NULL;
-  labelFilterMinBurstTime = NULL;
-  textFilterMinBurstTime = NULL;
-  staticBoxSizerFilterEvents = NULL;
-  listboxFilterEvents = NULL;
-  buttonFilterAdd = NULL;
-  buttonFilterDelete = NULL;
-  checkFilterDiscardListedEvents = NULL;
-  staticBoxSizerFilterCommunications = NULL;
-  staticTextFilterSize = NULL;
-  textFilterSize = NULL;
-  staticTextFilterSizeUnit = NULL;
-  radioSCOnIntervals = NULL;
-  radioSCOnStates = NULL;
-  staticTextSCSamplingInterval = NULL;
-  textSCSamplingInterval = NULL;
-  staticTextSCMinimumBurstTime = NULL;
-  textSCMinimumBurstTime = NULL;
-  listSCSelectedEvents = NULL;
-  buttonSCSelectedEventsAdd = NULL;
-  buttonSCSelectedEventsDelete = NULL;
-  radioSCCountEvents = NULL;
-  radioSCAccumulateValues = NULL;
-  checkSCRemoveStates = NULL;
-  checkSCSummarizeUseful = NULL;
-  checkSCGlobalCounters = NULL;
-  checkSCOnlyInBurstsCounting = NULL;
-  listSCKeepEvents = NULL;
-  buttonSCKeepEventsAdd = NULL;
-  buttonSCKeepEventsDelete = NULL;
-  buttonApply = NULL;
+  textCtrlInputTrace = nullptr;
+  fileBrowserButtonInputTrace = nullptr;
+  txtOutputTrace = nullptr;
+  textCtrlOutputTrace = nullptr;
+  fileBrowserButtonOutputTrace = nullptr;
+  checkLoadResultingTrace = nullptr;
+  checkRunAppWithResultingTrace = nullptr;
+  textCtrlXML = nullptr;
+  fileBrowserButtonXML = nullptr;
+  boxSizerExecutionChain = nullptr;
+  txtExecutionChain = nullptr;
+  checkListExecutionChain = nullptr;
+  buttonUp = nullptr;
+  buttonDown = nullptr;
+  buttonSaveXml = nullptr;
+  notebookTools = nullptr;
+  radioCutterCutByTime = nullptr;
+  radioCutterCutByTimePercent = nullptr;
+  textCutterBeginCut = nullptr;
+  textCutterEndCut = nullptr;
+  textCutterTasks = nullptr;
+  buttonCutterSelectRegion = nullptr;
+  buttonCutterAllWindow = nullptr;
+  buttonCutterAllTrace = nullptr;
+  checkCutterUseOriginalTime = nullptr;
+  checkCutterRemoveFirstState = nullptr;
+  checkCutterDontBreakStates = nullptr;
+  checkCutterRemoveLastState = nullptr;
+  checkCutterKeepEvents = nullptr;
+  textCutterMaximumTraceSize = nullptr;
+  checkFilterDiscardStateRecords = nullptr;
+  checkFilterDiscardEventRecords = nullptr;
+  checkFilterDiscardCommunicationRecords = nullptr;
+  staticBoxSizerFilterStates = nullptr;
+  checkListFilterStates = nullptr;
+  buttonFilterSelectAll = nullptr;
+  buttonFilterUnselectAll = nullptr;
+  labelFilterMinBurstTime = nullptr;
+  textFilterMinBurstTime = nullptr;
+  staticBoxSizerFilterEvents = nullptr;
+  listboxFilterEvents = nullptr;
+  buttonFilterAdd = nullptr;
+  buttonFilterDelete = nullptr;
+  checkFilterDiscardListedEvents = nullptr;
+  staticBoxSizerFilterCommunications = nullptr;
+  staticTextFilterSize = nullptr;
+  textFilterSize = nullptr;
+  staticTextFilterSizeUnit = nullptr;
+  radioSCOnIntervals = nullptr;
+  radioSCOnStates = nullptr;
+  staticTextSCSamplingInterval = nullptr;
+  textSCSamplingInterval = nullptr;
+  staticTextSCMinimumBurstTime = nullptr;
+  textSCMinimumBurstTime = nullptr;
+  listSCSelectedEvents = nullptr;
+  buttonSCSelectedEventsAdd = nullptr;
+  buttonSCSelectedEventsDelete = nullptr;
+  radioSCCountEvents = nullptr;
+  radioSCAccumulateValues = nullptr;
+  checkSCRemoveStates = nullptr;
+  checkSCSummarizeUseful = nullptr;
+  checkSCGlobalCounters = nullptr;
+  checkSCOnlyInBurstsCounting = nullptr;
+  listSCKeepEvents = nullptr;
+  buttonSCKeepEventsAdd = nullptr;
+  buttonSCKeepEventsDelete = nullptr;
+  buttonApply = nullptr;
 ////@end CutFilterDialog member initialisation
   outputPath = "";
   xmlConfigurationFile.Clear(); // paranoic
@@ -814,7 +814,7 @@ void CutFilterDialog::CreateControls()
   itemStdDialogButtonSizer133->Realize();
 
   // Connect events and objects
-  buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), NULL, this);
+  buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), nullptr, this);
 ////@end CutFilterDialog content construction
 
 
@@ -1377,7 +1377,7 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
   size_t oldMaxStates = checkListFilterStates->GetCount();
 
   // Look for all the given states in the checkboxlist, and check them.
-  while( s < 20 && statesList[ s ] != NULL )
+  while( s < 20 && statesList[ s ] != nullptr )
   { 
     bool found = false;
     wxString stateNameToCheck( statesList[ s ], wxConvUTF8 );
@@ -1689,7 +1689,7 @@ void CutFilterDialog::TransferFilterDataToWindow( TraceOptions *traceOptions )
   {
     TraceOptions::TStateNames auxNames;
     for( int i = 0; i < 20; ++i )
-      auxNames[ i ] = NULL;
+      auxNames[ i ] = nullptr;
 
     traceOptions->get_state_names( auxNames );
     CheckStatesList( auxNames );
@@ -1743,7 +1743,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 
       TraceOptions::TStateNames auxNames;
       for( int i = 0; i < 20; ++i )
-        auxNames[ i ] = NULL;
+        auxNames[ i ] = nullptr;
         
       traceOptions->set_all_states( allStatesSelected );
       if ( allStatesSelected )
@@ -2843,7 +2843,7 @@ void CutFilterDialog::TransferTraceOptionsToWindow( TraceOptions *traceOptions,
 
 void CutFilterDialog::TransferXMLFileToWindow( const wxString& whichXMLFile )
 {
-  if ( traceOptions != NULL )
+  if ( traceOptions != nullptr )
   {
     delete traceOptions;
     traceOptions = TraceOptions::create( GetLocalKernel() );
@@ -2900,7 +2900,7 @@ void CutFilterDialog::OnTextctrlCutFilterInputTraceTextUpdated( wxCommandEvent& 
 
 void CutFilterDialog::OnButtonCutterAllWindowClick( wxCommandEvent& event )
 {
-  if( paraverMain::myParaverMain->GetCurrentTimeline() != NULL )
+  if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
   {
     stringstream tmpsstr;
     tmpsstr << fixed;
@@ -2912,7 +2912,7 @@ void CutFilterDialog::OnButtonCutterAllWindowClick( wxCommandEvent& event )
     tmpsstr << paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime();
     textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
   }
-  else if( paraverMain::myParaverMain->GetCurrentHisto() != NULL )
+  else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
   {
     stringstream tmpsstr;
     tmpsstr << fixed;
@@ -2933,8 +2933,8 @@ void CutFilterDialog::OnButtonCutterAllWindowClick( wxCommandEvent& event )
 
 void CutFilterDialog::OnButtonCutterAllWindowUpdate( wxUpdateUIEvent& event )
 {
-  buttonCutterAllWindow->Enable( paraverMain::myParaverMain->GetCurrentTimeline() != NULL ||
-                                 paraverMain::myParaverMain->GetCurrentHisto() != NULL );
+  buttonCutterAllWindow->Enable( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr ||
+                                 paraverMain::myParaverMain->GetCurrentHisto() != nullptr );
 
 }
 

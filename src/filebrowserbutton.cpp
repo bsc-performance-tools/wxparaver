@@ -61,13 +61,13 @@ BrowserButton::BrowserButton( wxWindow* parent,
 {
   // Button enabled only if textCtrl is associated
   SetTextBox( whichTextCtrl );
-  Enable( associatedTextCtrl != NULL );
+  Enable( associatedTextCtrl != nullptr );
 }
 
 
 void BrowserButton::Init()
 {
-  associatedTextCtrl = NULL;
+  associatedTextCtrl = nullptr;
   fullPath = wxT( "" );
     
   dialogMessage = wxT( "Choose a file" );
@@ -80,7 +80,7 @@ void BrowserButton::SetTextBox( wxTextCtrl *whichTextCtrl, bool readOnly )
 {
   associatedTextCtrl = whichTextCtrl; 
   
-  if ( associatedTextCtrl != NULL )
+  if ( associatedTextCtrl != nullptr )
   {
     if ( readOnly )
     {
@@ -95,13 +95,13 @@ void BrowserButton::SetTextBox( wxTextCtrl *whichTextCtrl, bool readOnly )
 
 bool BrowserButton::Enable( bool enable )
 {
-  if ( associatedTextCtrl != NULL )
+  if ( associatedTextCtrl != nullptr )
   {
     wxButton::Enable( enable );
     associatedTextCtrl->Enable( enable );
   }
 
-  return ( associatedTextCtrl != NULL );
+  return ( associatedTextCtrl != nullptr );
 }
 
 
@@ -162,7 +162,7 @@ void FileBrowserButton::SetPath( const wxString& whichFullPath )
   dialogDefaultDir = path;
   fileDialogDefaultFile = fileName;
 
-  if ( associatedTextCtrl != NULL )
+  if ( associatedTextCtrl != nullptr )
   {
     associatedTextCtrl->SetToolTip( whichFullPath );
     associatedTextCtrl->SetValue( fileName );
@@ -182,7 +182,7 @@ void FileBrowserButton::ChangePath( const wxString& whichFullPath )
   dialogDefaultDir = path;
   fileDialogDefaultFile = fileName;
 
-  if ( associatedTextCtrl != NULL )
+  if ( associatedTextCtrl != nullptr )
   {
     associatedTextCtrl->SetToolTip( whichFullPath );
     associatedTextCtrl->ChangeValue( fileName );

@@ -150,7 +150,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   
 END_EVENT_TABLE()
 
-wxProgressDialog *gHistogram::dialogProgress = NULL;
+wxProgressDialog *gHistogram::dialogProgress = nullptr;
 
 /*!
  * gHistogram constructors
@@ -202,16 +202,16 @@ gHistogram::~gHistogram()
 ////@end gHistogram destruction
   gPasteWindowProperties::getInstance()->verifyRemove( this );
   
-  if( tableBase != NULL )
+  if( tableBase != nullptr )
   {
-    gridHisto->SetTable( NULL );
+    gridHisto->SetTable( nullptr );
     delete tableBase;
-    tableBase = NULL;
+    tableBase = nullptr;
   }
 
-  if( myHistogram != NULL )
+  if( myHistogram != nullptr )
     delete myHistogram;
-  myHistogram = NULL;
+  myHistogram = nullptr;
   
   delete redrawStopWatch;
   delete timerZoom;
@@ -228,26 +228,26 @@ void gHistogram::Init()
   escapePressed = false;
   lastPosZoomX = 0;
   lastPosZoomY = 0;
-  myHistogram = NULL;
+  myHistogram = nullptr;
   openControlActivated = false;
   ready = false;
   redrawStopWatch = new wxStopWatch();
-  tableBase = NULL;
+  tableBase = nullptr;
   timerZoom = new wxTimer( this );
   zoomDragging = false;
-  panelToolbar = NULL;
-  tbarHisto = NULL;
-  choiceSortBy = NULL;
-  panelData = NULL;
-  mainSizer = NULL;
-  zoomHisto = NULL;
-  gridHisto = NULL;
-  warningSizer = NULL;
-  controlWarning = NULL;
-  xtraWarning = NULL;
-  histoStatus = NULL;
+  panelToolbar = nullptr;
+  tbarHisto = nullptr;
+  choiceSortBy = nullptr;
+  panelData = nullptr;
+  mainSizer = nullptr;
+  zoomHisto = nullptr;
+  gridHisto = nullptr;
+  warningSizer = nullptr;
+  controlWarning = nullptr;
+  xtraWarning = nullptr;
+  histoStatus = nullptr;
 ////@end gHistogram member initialisation
-  parent = NULL;
+  parent = nullptr;
 
 }
 
@@ -375,13 +375,13 @@ void gHistogram::CreateControls()
   itemFrame1->SetStatusBar(histoStatus);
 
   // Connect events and objects
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_PAINT, wxPaintEventHandler(gHistogram::OnPaint), NULL, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), NULL, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), NULL, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), NULL, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_KEY_DOWN, wxKeyEventHandler(gHistogram::OnZoomHistoKeyDown), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_PAINT, wxPaintEventHandler(gHistogram::OnPaint), nullptr, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), nullptr, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), nullptr, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), nullptr, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), nullptr, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), nullptr, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_KEY_DOWN, wxKeyEventHandler(gHistogram::OnZoomHistoKeyDown), nullptr, this);
 ////@end gHistogram content construction
 
 #ifdef __WXGTK__
@@ -403,7 +403,7 @@ void gHistogram::CreateControls()
 
 void gHistogram::execute()
 {
-  if( myHistogram == NULL )
+  if( myHistogram == nullptr )
     return;
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );
@@ -411,7 +411,7 @@ void gHistogram::execute()
   gridHisto->Show( false );
   Update();
 
-  ProgressController *progress = NULL;
+  ProgressController *progress = nullptr;
 
   if ( myHistogram->getShowProgressBar() )
   {
@@ -421,7 +421,7 @@ void gHistogram::execute()
     progress->setHandler( progressFunctionHistogram, this );
 
 #ifndef WIN32
-    if( gHistogram::dialogProgress == NULL )
+    if( gHistogram::dialogProgress == nullptr )
       gHistogram::dialogProgress = new wxProgressDialog( wxT("Computing window..."),
                                                          wxT(""),
                                                          numeric_limits<int>::max(),
@@ -482,14 +482,14 @@ void gHistogram::execute()
 
   ready = true;
   
-  if( gHistogram::dialogProgress != NULL )
+  if( gHistogram::dialogProgress != nullptr )
   {
     gHistogram::dialogProgress->Show( false );
     delete gHistogram::dialogProgress;
-    gHistogram::dialogProgress = NULL;
+    gHistogram::dialogProgress = nullptr;
   }
   
-  if ( progress != NULL )
+  if ( progress != nullptr )
     delete progress;
 
   redrawStopWatch->Pause();
@@ -527,7 +527,7 @@ void gHistogram::fillGrid()
   gridHisto->Show( true );
   mainSizer->Layout();
 
-  if( tableBase == NULL )
+  if( tableBase == nullptr )
     tableBase = new HistoTableBase( this );
   tableBase->setSelectedRows( &selectedRows );
   cellFontBold.SetWeight( wxFONTWEIGHT_BOLD );
@@ -1089,7 +1089,7 @@ void gHistogram::OnIdle( wxIdleEvent& event )
 
 bool isSyncedWithGroup( Window *whichWindow, unsigned int whichGroup )
 {
-  return whichWindow != NULL && whichWindow->isSync() && whichWindow->getSyncGroup() == whichGroup && whichWindow->getShowWindow();
+  return whichWindow != nullptr && whichWindow->isSync() && whichWindow->getSyncGroup() == whichGroup && whichWindow->getShowWindow();
 }
 
 
@@ -1389,7 +1389,7 @@ void gHistogram::OnPopUpClone()
       throw new ParaverKernelException( ParaverKernelException::undefined, "ERROR! NOT FOUND ORIGINAL DATA WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
   }
 
-  if ( GetHistogram()->getExtraControlWindow() != NULL &&
+  if ( GetHistogram()->getExtraControlWindow() != nullptr &&
        GetHistogram()->getExtraControlWindow() != GetHistogram()->getControlWindow() &&
        GetHistogram()->getExtraControlWindow() != GetHistogram()->getDataWindow() )
   {
@@ -2356,7 +2356,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   TParamValue minParam, maxParam;
   openControlMinMaxParam( columnBegin, columnEnd, minParam, maxParam );
 
-  gTimeline *openWindow = NULL;
+  gTimeline *openWindow = nullptr;
   Window *controlCloned = myHistogram->getControlWindow()->clone();
   controlCloned->unsetUsedByHistogram( myHistogram );
   controlCloned->removeFromSync();
@@ -2584,7 +2584,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
                                           false );
   }
   
-  if( openWindow != NULL )
+  if( openWindow != nullptr )
   {
     THistogramColumn iPlane;
     bool commStat = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
@@ -2707,7 +2707,7 @@ void gHistogram::OnToolOpenDataWindowClick( wxCommandEvent& event )
 
 void gHistogram::OnToolOpenExtraWindowClick( wxCommandEvent& event )
 {
-  if( myHistogram->getExtraControlWindow() != NULL )
+  if( myHistogram->getExtraControlWindow() != nullptr )
     myHistogram->getExtraControlWindow()->setRaiseWindow( true );
 }
 
@@ -2718,7 +2718,7 @@ void gHistogram::OnToolOpenExtraWindowClick( wxCommandEvent& event )
 
 void gHistogram::OnToolOpenExtraWindowUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myHistogram->getExtraControlWindow() != NULL );
+  event.Enable( myHistogram->getExtraControlWindow() != nullptr );
 }
 
 
@@ -2870,7 +2870,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
     ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
     progress->setHandler( progressFunction, this );
 
-    if( paraverMain::dialogProgress == NULL )
+    if( paraverMain::dialogProgress == nullptr )
       paraverMain::dialogProgress = new wxProgressDialog( wxT("Save Histogram Text"),
                                                           wxT(""),
                                                           numeric_limits<int>::max(),
@@ -2913,7 +2913,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
     // Delete progress controller
     paraverMain::dialogProgress->Show( false );
     delete paraverMain::dialogProgress;
-    paraverMain::dialogProgress = NULL;
+    paraverMain::dialogProgress = nullptr;
     delete progress;
   }
 
@@ -3240,9 +3240,9 @@ void gHistogram::saveCFG()
 
   histograms.push_back( GetHistogram() );
 
-  if ( myHistogram->getControlWindow() != NULL  )
+  if ( myHistogram->getControlWindow() != nullptr  )
       windows.push_back( myHistogram->getControlWindow() );
-  if ( myHistogram->getDataWindow() != NULL  )
+  if ( myHistogram->getDataWindow() != nullptr  )
       windows.push_back( myHistogram->getDataWindow() );
 
   // TODO: use the histogram linked properties manager if any
@@ -3416,7 +3416,7 @@ void gHistogram::OnToolInclusiveUpdate( wxUpdateUIEvent& event )
 
 void progressFunctionHistogram( ProgressController *progress, void *callerWindow )
 {
-  if( gHistogram::dialogProgress != NULL )
+  if( gHistogram::dialogProgress != nullptr )
   {
     gHistogram::dialogProgress->Refresh();
     gHistogram::dialogProgress->Update();
@@ -3438,7 +3438,7 @@ void progressFunctionHistogram( ProgressController *progress, void *callerWindow
 // Disabled because some window managers can't show the dialog later
 /*  if( ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
   {
-    if( gHistogram::dialogProgress != NULL && !gHistogram::dialogProgress->IsShown() )
+    if( gHistogram::dialogProgress != nullptr && !gHistogram::dialogProgress->IsShown() )
     {
       gHistogram::dialogProgress->Show();
       gHistogram::dialogProgress->Raise();
@@ -3447,7 +3447,7 @@ void progressFunctionHistogram( ProgressController *progress, void *callerWindow
     ( (gHistogram*)callerWindow )->GetRedrawStopWatch()->Pause();
   }
   */
-  if( gHistogram::dialogProgress != NULL && !gHistogram::dialogProgress->Update( p, newMessage ) )
+  if( gHistogram::dialogProgress != nullptr && !gHistogram::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }
 

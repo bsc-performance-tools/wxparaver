@@ -181,7 +181,7 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
                                  _("Make a selection:"),
                                  m_label,
                                  choiceCount,
-                                 choiceCount?&labels[0]:NULL,
+                                 choiceCount?&labels[0]:nullptr,
                                  wxCHOICEDLG_STYLE );
 
         dlg.Move( propgrid->GetGoodEditorDialogPosition(this,dlg.GetSize()) );
@@ -588,12 +588,12 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
       }
       wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
 
-      wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+      wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
 
       return true;
     }
 
-    wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
   }
 
   return false;
@@ -675,7 +675,7 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
     }
     subMenus[ i ]->Connect( wxEVT_COMMAND_MENU_SELECTED, 
                             wxCommandEventHandler( SemanticMenu::OnMenu ),
-                            NULL,
+                            nullptr,
                             this );
     Append( i, wxString::FromUTF8( levels[ i ].c_str() ), subMenus[ i ] );
   }
@@ -693,7 +693,7 @@ void SemanticMenu::OnMenu( wxCommandEvent& event )
   for( vector<wxMenu *>::iterator it = subMenus.begin();
        it != subMenus.end(); ++it )
   {
-    if( ( lastItem = (*it)->FindItem( currentItemID ) ) != NULL )
+    if( ( lastItem = (*it)->FindItem( currentItemID ) ) != nullptr )
     {
       if( !lastItem->IsChecked() )
         lastItem->Check( true );
@@ -860,7 +860,7 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
       SetValueInEvent( tmp );
     }
   
-    wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
     delete dialog;
   }
   
@@ -1099,23 +1099,23 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
     {
       if( selectedWindow == timelineSelector.getSelection() )
       {
-        wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+        wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
         return false;
       }
       selectedWindow = timelineSelector.getSelection();
-      if( selectedWindow != NULL )
+      if( selectedWindow != nullptr )
         SetValueInEvent( wxString( selectedWindow->getName().c_str(), wxConvUTF8 ) );
       else
         SetValueInEvent( wxT( "None" ) );
     }
     else
     {
-      wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+      wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
       return false;
     }    
   }
 
-  wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+  wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
   return true;
 }
 

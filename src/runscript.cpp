@@ -253,84 +253,84 @@ RunScript::~RunScript()
 void RunScript::Init()
 {
 ////@begin RunScript member initialisation
-  myProcess = NULL;
+  myProcess = nullptr;
   myProcessPid = 0;
-  choiceApplication = NULL;
-  buttonEditApplication = NULL;
-  textCtrlTrace = NULL;
-  fileBrowserButtonTrace = NULL;
-  boxSizerParameters = NULL;
-  labelTextCtrlDefaultParameters = NULL;
-  textCtrlDefaultParameters = NULL;
-  dimemasSection = NULL;
-  labelFilePickerDimemasCFG = NULL;
-  textCtrlDimemasCFG = NULL;
-  fileBrowserButtonDimemasCFG = NULL;
-  buttonDimemasGUI = NULL;
-  labelTextCtrlOutputTrace = NULL;
-  textCtrlOutputTrace = NULL;
-  checkBoxReuseDimemasTrace = NULL;
-  checkBoxDontTranslateIdleStates = NULL;
-  checkBoxDimemasVerbose = NULL;
-  textCtrlDimemasBandwidth = NULL;
-  textCtrlDimemasLatency = NULL;
-  radioButtonDimemasDefaultTasksMapping = NULL;
-  radioButtonDimemasFillNodes = NULL;
-  radioButtonDimemasInterleaved = NULL;
-  radioButtonDimemasTasksPerNode = NULL;
-  spinCtrlDimemasTasksPerNode = NULL;
-  statsSection = NULL;
-  statsLabelTextCtrlOutputName = NULL;
-  statsTextCtrlOutputName = NULL;
-  statsCheckBoxShowBurstsHistogram = NULL;
-  statsCheckBoxShowCommsHistogram = NULL;
-  statsCheckBoxOnlyDatFile = NULL;
-  statsCheckBoxExclusiveTimes = NULL;
-  clusteringSection = NULL;
-  textCtrlClusteringXML = NULL;
-  fileBrowserButtonClusteringXML = NULL;
-  buttonClusteringXML = NULL;
-  textCtrlClusteringOutputTrace = NULL;
-  checkBoxClusteringUseSemanticWindow = NULL;
-  checkBoxClusteringCSVValueAsDimension = NULL;
-  checkBoxClusteringNormalize = NULL;
-  checkBoxClusteringNumberOfSamples = NULL;
-  clusteringTextBoxNumberOfSamples = NULL;
-  checkBoxClusteringGenerateSeq = NULL;
-  clusteringRadioGenerateSeqNumbered = NULL;
-  clusteringRadioGenerateSeqFASTA = NULL;
-  clusteringSizerAlgorithm = NULL;
-  clusteringRadioXMLDefined = NULL;
-  clusteringRadioDBScan = NULL;
-  clusteringRadioRefinement = NULL;
-  clusteringAlgorithmLineSeparator = NULL;
-  clusteringSizerDBScan = NULL;
-  clusteringTextBoxDBScanEpsilon = NULL;
-  clusteringTextBoxDBScanMinPoints = NULL;
-  clusteringSizerRefinement = NULL;
-  clusteringCheckBoxRefinementPrintData = NULL;
-  clusteringCheckBoxRefinementTune = NULL;
-  clusteringLabelRefinementEpsilon = NULL;
-  clusteringLabelRefinementEpsilonMin = NULL;
-  clusteringTextBoxRefinementEpsilonMin = NULL;
-  clusteringLabelRefinementEpsilonMax = NULL;
-  clusteringTextBoxRefinementEpsilonMax = NULL;
-  clusteringLabelRefinementSteps = NULL;
-  clusteringTextBoxRefinementSteps = NULL;
-  clusteringLabelRefinementMinPoints = NULL;
-  clusteringTextBoxRefinementMinPoints = NULL;
-  foldingSection = NULL;
-  checkboxFoldingOnly = NULL;
-  checkboxFoldingReuseFiles = NULL;
-  checkboxFoldingUseSemanticValues = NULL;
-  comboboxFoldingModel = NULL;
-  labelCommandPreview = NULL;
-  buttonHelpScript = NULL;
-  buttonRun = NULL;
-  buttonKill = NULL;
-  buttonClearLog = NULL;
-  listboxRunLog = NULL;
-  buttonExit = NULL;
+  choiceApplication = nullptr;
+  buttonEditApplication = nullptr;
+  textCtrlTrace = nullptr;
+  fileBrowserButtonTrace = nullptr;
+  boxSizerParameters = nullptr;
+  labelTextCtrlDefaultParameters = nullptr;
+  textCtrlDefaultParameters = nullptr;
+  dimemasSection = nullptr;
+  labelFilePickerDimemasCFG = nullptr;
+  textCtrlDimemasCFG = nullptr;
+  fileBrowserButtonDimemasCFG = nullptr;
+  buttonDimemasGUI = nullptr;
+  labelTextCtrlOutputTrace = nullptr;
+  textCtrlOutputTrace = nullptr;
+  checkBoxReuseDimemasTrace = nullptr;
+  checkBoxDontTranslateIdleStates = nullptr;
+  checkBoxDimemasVerbose = nullptr;
+  textCtrlDimemasBandwidth = nullptr;
+  textCtrlDimemasLatency = nullptr;
+  radioButtonDimemasDefaultTasksMapping = nullptr;
+  radioButtonDimemasFillNodes = nullptr;
+  radioButtonDimemasInterleaved = nullptr;
+  radioButtonDimemasTasksPerNode = nullptr;
+  spinCtrlDimemasTasksPerNode = nullptr;
+  statsSection = nullptr;
+  statsLabelTextCtrlOutputName = nullptr;
+  statsTextCtrlOutputName = nullptr;
+  statsCheckBoxShowBurstsHistogram = nullptr;
+  statsCheckBoxShowCommsHistogram = nullptr;
+  statsCheckBoxOnlyDatFile = nullptr;
+  statsCheckBoxExclusiveTimes = nullptr;
+  clusteringSection = nullptr;
+  textCtrlClusteringXML = nullptr;
+  fileBrowserButtonClusteringXML = nullptr;
+  buttonClusteringXML = nullptr;
+  textCtrlClusteringOutputTrace = nullptr;
+  checkBoxClusteringUseSemanticWindow = nullptr;
+  checkBoxClusteringCSVValueAsDimension = nullptr;
+  checkBoxClusteringNormalize = nullptr;
+  checkBoxClusteringNumberOfSamples = nullptr;
+  clusteringTextBoxNumberOfSamples = nullptr;
+  checkBoxClusteringGenerateSeq = nullptr;
+  clusteringRadioGenerateSeqNumbered = nullptr;
+  clusteringRadioGenerateSeqFASTA = nullptr;
+  clusteringSizerAlgorithm = nullptr;
+  clusteringRadioXMLDefined = nullptr;
+  clusteringRadioDBScan = nullptr;
+  clusteringRadioRefinement = nullptr;
+  clusteringAlgorithmLineSeparator = nullptr;
+  clusteringSizerDBScan = nullptr;
+  clusteringTextBoxDBScanEpsilon = nullptr;
+  clusteringTextBoxDBScanMinPoints = nullptr;
+  clusteringSizerRefinement = nullptr;
+  clusteringCheckBoxRefinementPrintData = nullptr;
+  clusteringCheckBoxRefinementTune = nullptr;
+  clusteringLabelRefinementEpsilon = nullptr;
+  clusteringLabelRefinementEpsilonMin = nullptr;
+  clusteringTextBoxRefinementEpsilonMin = nullptr;
+  clusteringLabelRefinementEpsilonMax = nullptr;
+  clusteringTextBoxRefinementEpsilonMax = nullptr;
+  clusteringLabelRefinementSteps = nullptr;
+  clusteringTextBoxRefinementSteps = nullptr;
+  clusteringLabelRefinementMinPoints = nullptr;
+  clusteringTextBoxRefinementMinPoints = nullptr;
+  foldingSection = nullptr;
+  checkboxFoldingOnly = nullptr;
+  checkboxFoldingReuseFiles = nullptr;
+  checkboxFoldingUseSemanticValues = nullptr;
+  comboboxFoldingModel = nullptr;
+  labelCommandPreview = nullptr;
+  buttonHelpScript = nullptr;
+  buttonRun = nullptr;
+  buttonKill = nullptr;
+  buttonClearLog = nullptr;
+  listboxRunLog = nullptr;
+  buttonExit = nullptr;
 ////@end RunScript member initialisation
 
   //executionStatus = -2;
@@ -1097,7 +1097,7 @@ wxIcon RunScript::GetIconResource( const wxString& name )
  */
 void RunScript::OnButtonExitClick( wxCommandEvent& event )
 {
-  paraverMain::myParaverMain->SetRunApplication( NULL );
+  paraverMain::myParaverMain->SetRunApplication( nullptr );
   Destroy();
 }
 
@@ -1625,7 +1625,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
 void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
 {
   // Check parameters
-  bool active = ( myProcess == NULL );
+  bool active = ( myProcess == nullptr );
 
   TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
 
@@ -1671,7 +1671,7 @@ void RunScript::OnProcessTerminated( int pid )
     pidDimemasGUI = 0;
 
   delete myProcess;
-  myProcess = NULL;
+  myProcess = nullptr;
 }
 
 
@@ -1712,7 +1712,7 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
  */
 void RunScript::OnIdle( wxIdleEvent& event )
 {
-  if ( myProcess != NULL && myProcess->HasInput() )
+  if ( myProcess != nullptr && myProcess->HasInput() )
   {
     event.RequestMore();
   }
@@ -2385,7 +2385,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     if ( i >= pdfReaders.size() )
     {
       wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
-      if( filetype != NULL )
+      if( filetype != nullptr )
       {
         command.Clear();
         command = filetype->GetOpenCommand( tmpFile );
@@ -2471,7 +2471,7 @@ void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
     ShowWarning( wxT( "Unable to execute command. Please check it and rerun" ) );
 
     delete localProcess;
-    localProcess = NULL;
+    localProcess = nullptr;
   }
   else
   {
@@ -2505,7 +2505,7 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
  */
 void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
 {
-  // bool active = ( myProcess == NULL );
+  // bool active = ( myProcess == nullptr );
   bool active = ( pidDimemasGUI == 0 );
   
   if ( active && !buttonDimemasGUI->IsEnabled() )
@@ -2670,7 +2670,7 @@ void RunScript::OnCheckboxClusteringRefinementTuneClick( wxCommandEvent& event )
  */
 void RunScript::OnButtonKillUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myProcess != NULL );
+  event.Enable( myProcess != nullptr );
 }
 
 
@@ -2830,7 +2830,7 @@ void RunScript::OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event 
  */
 void RunScript::OnButtonExitUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myProcess == NULL );
+  event.Enable( myProcess == nullptr );
 }
 
 
@@ -2849,7 +2849,7 @@ void RunScript::OnTextctrlClusteringNumberOfSamplesUpdate( wxUpdateUIEvent& even
 
 void RunScript::OnCloseWindow( wxCloseEvent& event )
 {
-  paraverMain::myParaverMain->SetRunApplication( NULL );
+  paraverMain::myParaverMain->SetRunApplication( nullptr );
   Destroy();
 }
 

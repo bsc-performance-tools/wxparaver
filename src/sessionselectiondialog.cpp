@@ -134,10 +134,10 @@ SessionSelectionDialog::~SessionSelectionDialog()
 void SessionSelectionDialog::Init()
 {
 ////@begin SessionSelectionDialog member initialisation
-  textDialogDescription = NULL;
-  listSessions = NULL;
-  buttonCancel = NULL;
-  buttonLoad = NULL;
+  textDialogDescription = nullptr;
+  listSessions = nullptr;
+  buttonCancel = nullptr;
+  buttonLoad = nullptr;
 ////@end SessionSelectionDialog member initialisation
 }
 

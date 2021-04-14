@@ -140,7 +140,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   
 END_EVENT_TABLE()
 
-wxProgressDialog *gTimeline::dialogProgress = NULL;
+wxProgressDialog *gTimeline::dialogProgress = nullptr;
 
 /*!
  * gTimeline constructors
@@ -151,7 +151,7 @@ gTimeline::gTimeline() :
         gWindow()
 {
   Init();
-  parent = NULL;
+  parent = nullptr;
 }
 
 gTimeline::gTimeline( wxWindow* whichParent,
@@ -223,7 +223,7 @@ void gTimeline::Init()
   lastEventFoundTime = 0;
   lastFoundObject = 0;
   lastSemanticFoundTime = 0;
-  myWindow = NULL;
+  myWindow = nullptr;
   objectHeight = 1;
   redoColors = false;
   redrawStopWatch = new wxStopWatch();
@@ -238,44 +238,44 @@ void gTimeline::Init()
   wheelZoomEndTime = 0;
   wheelZoomFactor = 1;
   zooming = false;
-  splitter = NULL;
-  drawZone = NULL;
-  infoZone = NULL;
-  whatWherePanel = NULL;
-  checkWWSemantic = NULL;
-  checkWWEvents = NULL;
-  checkWWCommunications = NULL;
-  checkWWPreviousNext = NULL;
-  checkWWText = NULL;
-  checkWWShowDate = NULL;
-  checkWWHex = NULL;
-  whatWhereText = NULL;
-  timingZone = NULL;
-  initialTimeText = NULL;
-  initialSemanticLabel = NULL;
-  initialSemanticText = NULL;
-  finalTimeText = NULL;
-  finalSemanticLabel = NULL;
-  finalSemanticText = NULL;
-  durationText = NULL;
-  slopeLabel = NULL;
-  slopeText = NULL;
-  colorsPanelGlobal = NULL;
-  checkboxCustomPalette = NULL;
-  buttonCustomPaletteApply = NULL;
-  colorsPanel = NULL;
-  colorsSizer = NULL;
-  sizerSelectedColor = NULL;
-  panelSelectedColor = NULL;
-  labelSelectedColorRed = NULL;
-  sliderSelectedRed = NULL;
-  textSelectedRed = NULL;
-  labelSelectedColorGreen = NULL;
-  sliderSelectedGreen = NULL;
-  textSelectedGreen = NULL;
-  labelSelectedColorBlue = NULL;
-  sliderSelectedBlue = NULL;
-  textSelectedBlue = NULL;
+  splitter = nullptr;
+  drawZone = nullptr;
+  infoZone = nullptr;
+  whatWherePanel = nullptr;
+  checkWWSemantic = nullptr;
+  checkWWEvents = nullptr;
+  checkWWCommunications = nullptr;
+  checkWWPreviousNext = nullptr;
+  checkWWText = nullptr;
+  checkWWShowDate = nullptr;
+  checkWWHex = nullptr;
+  whatWhereText = nullptr;
+  timingZone = nullptr;
+  initialTimeText = nullptr;
+  initialSemanticLabel = nullptr;
+  initialSemanticText = nullptr;
+  finalTimeText = nullptr;
+  finalSemanticLabel = nullptr;
+  finalSemanticText = nullptr;
+  durationText = nullptr;
+  slopeLabel = nullptr;
+  slopeText = nullptr;
+  colorsPanelGlobal = nullptr;
+  checkboxCustomPalette = nullptr;
+  buttonCustomPaletteApply = nullptr;
+  colorsPanel = nullptr;
+  colorsSizer = nullptr;
+  sizerSelectedColor = nullptr;
+  panelSelectedColor = nullptr;
+  labelSelectedColorRed = nullptr;
+  sliderSelectedRed = nullptr;
+  textSelectedRed = nullptr;
+  labelSelectedColorGreen = nullptr;
+  sliderSelectedGreen = nullptr;
+  textSelectedGreen = nullptr;
+  labelSelectedColorBlue = nullptr;
+  sliderSelectedBlue = nullptr;
+  textSelectedBlue = nullptr;
 ////@end gTimeline member initialisation
 
   zoomXY = false;
@@ -306,7 +306,7 @@ void gTimeline::Init()
   wheelZoomObjects = false;
 #endif
 
-  selectedItemColor = NULL;
+  selectedItemColor = nullptr;
   selectedCustomValue = 0;
 }
 
@@ -493,17 +493,17 @@ void gTimeline::CreateControls()
   splitter->SplitHorizontally(drawZone, infoZone, wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
 
   // Connect events and objects
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), nullptr, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -635,7 +635,7 @@ void gTimeline::redraw()
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );
 
-  ProgressController *progress = NULL;
+  ProgressController *progress = nullptr;
   if ( myWindow->getShowProgressBar() )
   {
     progress = ProgressController::create( myWindow->getKernel() );
@@ -644,7 +644,7 @@ void gTimeline::redraw()
   // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
   // Waiting for wxwidgets 3 code adaptation to prove that its solved.
 #ifndef WIN32
-    if( gTimeline::dialogProgress == NULL )
+    if( gTimeline::dialogProgress == nullptr )
       gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                         wxT(""),
                                                         numeric_limits<int>::max(),
@@ -775,7 +775,7 @@ void gTimeline::redraw()
   vector< vector< vector< pair<TSemanticValue,TSemanticValue> > > > valuesToDrawPunctual;
   if( myWindow->isPunctualColorSet() )
   {
-    if( myWindow->getPunctualColorWindow() != NULL )
+    if( myWindow->getPunctualColorWindow() != nullptr )
       myWindow->getPunctualColorWindow()->init( myWindow->getWindowBeginTime(), NOCREATE );
 
     myWindow->computeSemanticPunctualParallel( selectedSet, selected,
@@ -901,14 +901,14 @@ void gTimeline::redraw()
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 #endif
 
-  if( gTimeline::dialogProgress != NULL )
+  if( gTimeline::dialogProgress != nullptr )
   {
     gTimeline::dialogProgress->Show( false );
     delete gTimeline::dialogProgress;
-    gTimeline::dialogProgress = NULL;
+    gTimeline::dialogProgress = nullptr;
   }
 
-  if ( progress != NULL )
+  if ( progress != nullptr )
     delete progress;
 
 #if wxMAJOR_VERSION>=3
@@ -1508,7 +1508,7 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
                                                             true );
     int currentPos = floor( ( (double)objectHeight / (double)magnify ) * normalizedSemanticValue ) * magnify;
     
-    if( myWindow->getPunctualColorWindow() != NULL )
+    if( myWindow->getPunctualColorWindow() != nullptr )
     {
       TSemanticValue valueToColor = (*itValues).second;
       rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToColor, *( myWindow->getPunctualColorWindow() ) );
@@ -1980,7 +1980,7 @@ void gTimeline::OnPopUpCopy()
 }
 
 
-// simple windows can let this method do the entire work passing a NULL clonedWindow
+// simple windows can let this method do the entire work passing a nullptr clonedWindow
 // derived windows must pass existing clonedWindow, because Window::clone is recursive
 gTimeline *gTimeline::clone( Window *clonedWindow,
                              wxWindow *parent,
@@ -1988,7 +1988,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
                              wxTreeItemId idRoot2,
                              bool mustRedraw )
 {
-  if ( clonedWindow == NULL )
+  if ( clonedWindow == nullptr )
     clonedWindow = myWindow->clone(); // recursive clone
 
   // Create empty gTimeline and assign window with same dimensions.
@@ -2074,7 +2074,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
 
 void gTimeline::OnPopUpClone()
 {
-  clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
+  clone( nullptr, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
 }
 
 void gTimeline::OnPopUpRename()
@@ -2157,7 +2157,7 @@ void gTimeline::OnPopUpPunctualColorWindow()
   if ( dialog->ShowModal() == wxID_OK )
   {
     if( dialog->GetSelection() == 0 )
-      myWindow->setPunctualColorWindow( NULL );
+      myWindow->setPunctualColorWindow( nullptr );
     else
       myWindow->setPunctualColorWindow( compatWindows[ dialog->GetSelection() - 1 ] );
     myWindow->setRedraw( true );
@@ -2535,7 +2535,7 @@ void gTimeline::OnPopUpUndoZoom()
     else
     {
       wxString tmpMsg( wxT( "Unable to browse current objects in previous zoom!\n\nPlease select objects." ) );
-      wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
+      wxMessageDialog tmpDialog( nullptr, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
       if ( tmpDialog.ShowModal() == wxID_OK )
       {
         OnPopUpRowSelection();
@@ -2566,7 +2566,7 @@ void gTimeline::OnPopUpRedoZoom()
     else
     {
       wxString tmpMsg( wxT( "Unable to browse current objects in next zoom!\n\nPlease select objects." ) );
-      wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
+      wxMessageDialog tmpDialog( nullptr, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
       if ( tmpDialog.ShowModal() == wxID_OK )
       {
         OnPopUpRowSelection();
@@ -2602,7 +2602,7 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
  */
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
-  if( gTimeline::dialogProgress != NULL )
+  if( gTimeline::dialogProgress != nullptr )
     return;
 
   if( wheelZoomFactor != 1.0 )
@@ -2810,7 +2810,7 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
 
 void gTimeline::OnNotebookInfoPageChanging( wxNotebookEvent& event )
 {
-  if( myWindow == NULL )
+  if( myWindow == nullptr )
     return;
   canRedraw = false;
   infoZone->ChangeSelection( event.GetSelection() );
@@ -5284,7 +5284,7 @@ void gTimeline::saveText()
     ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
     progress->setHandler( progressFunction, this );
 
-    if( paraverMain::dialogProgress == NULL )
+    if( paraverMain::dialogProgress == nullptr )
       paraverMain::dialogProgress = new wxProgressDialog( wxT("Save Timeline Text"),
                                                           wxT(""),
                                                           numeric_limits<int>::max(),
@@ -5334,7 +5334,7 @@ void gTimeline::saveText()
     // Delete progress controller
     paraverMain::dialogProgress->Show( false );
     delete paraverMain::dialogProgress;
-    paraverMain::dialogProgress = NULL;
+    paraverMain::dialogProgress = nullptr;
     delete progress;
   }
 
@@ -5367,7 +5367,7 @@ void gTimeline::setEnableDestroyParents( bool value )
 {
   gWindow::setEnableDestroyButton( value );
 
-  if ( myWindow->getParent( 0 ) != NULL )
+  if ( myWindow->getParent( 0 ) != nullptr )
   {
     for( int i = 0; i < 2; ++i )
     {
@@ -5381,7 +5381,7 @@ void gTimeline::setEnableDestroyParents( bool value )
 
 void gTimeline::setEnableDestroyButton( bool value )
 {
-  if ( myWindow->getChild() != NULL )
+  if ( myWindow->getChild() != nullptr )
   {
     // I'm inside a derived window => recursively navigate descendants looking for "final" child window
     bool dummyFound;
@@ -5465,7 +5465,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   {
     TSemanticValue firstValue, secondValue;
     Window *winToUse = myWindow;
-    if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != NULL )
+    if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != nullptr )
       winToUse = myWindow->getPunctualColorWindow();
 
     if( !myWindow->isFunctionLineColorSet() )
@@ -5772,7 +5772,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
       string lineStr = valueStr.substr( 0, valueStr.find_first_of( ' ', 0 ) );
       string fileStr = valueStr.substr( valueStr.find_first_of( '(', 0 ) + 1,
                                            valueStr.length() - valueStr.find_first_of( '(', 0 ) - 2 );
-      wxDirDialog dirDialog( NULL, _( "Choose the directory to find to source files" ) );
+      wxDirDialog dirDialog( nullptr, _( "Choose the directory to find to source files" ) );
       if( dirDialog.ShowModal() == wxID_OK )
       {
         wxString path = dirDialog.GetPath();
@@ -6294,7 +6294,7 @@ void gTimeline::OnFindDialog()
 
 void progressFunctionTimeline( ProgressController *progress, void *callerWindow )
 {
-  if( gTimeline::dialogProgress != NULL )
+  if( gTimeline::dialogProgress != nullptr )
   {
     gTimeline::dialogProgress->Refresh();
     gTimeline::dialogProgress->Update();
@@ -6316,7 +6316,7 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
 // Disabled because some window managers can't show the dialog later
 /*  if( ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
   {
-    if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->IsShown() )
+    if( gTimeline::dialogProgress != nullptr && !gTimeline::dialogProgress->IsShown() )
     {
       gTimeline::dialogProgress->Show();
       gTimeline::dialogProgress->Raise();
@@ -6326,7 +6326,7 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
   }
 */
   
-  if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->Update( p, newMessage ) )
+  if( gTimeline::dialogProgress != nullptr && !gTimeline::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }
 
@@ -6790,7 +6790,7 @@ void gTimeline::OnCheckboxCustomPaletteUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnStaticSelectedColorUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != nullptr );
 }
 
 
@@ -6800,7 +6800,7 @@ void gTimeline::OnStaticSelectedColorUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnSliderSelectedColorUpdateUI( wxUpdateUIEvent& event )
 {
-  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != nullptr );
 }
 
 
@@ -6814,7 +6814,7 @@ void gTimeline::OnCheckboxCustomPaletteClick( wxCommandEvent& event )
   if ( !event.IsChecked() )
   {
     enableApplyButton = false;
-    selectedItemColor = NULL;
+    selectedItemColor = nullptr;
     sliderSelectedRed->SetValue( 0 );
     sliderSelectedGreen->SetValue( 0 );
     sliderSelectedBlue->SetValue( 0 );
@@ -6856,7 +6856,7 @@ void gTimeline::OnButtonCustomPaletteApplyUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnTextSelectedColorUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != nullptr );
 }
 
 

@@ -66,12 +66,12 @@ class CheckboxLinkData : public wxObject
     void setData( Window *whichWindow )
     {
       myWindow = whichWindow;
-      myHistogram = NULL;
+      myHistogram = nullptr;
     }
 
     void setData( Histogram *whichHistogram )
     {
-      myWindow = NULL;
+      myWindow = nullptr;
       myHistogram = whichHistogram;
     }
 
@@ -243,11 +243,11 @@ AdvancedSaveConfiguration::~AdvancedSaveConfiguration()
 void AdvancedSaveConfiguration::Init()
 {
 ////@begin AdvancedSaveConfiguration member initialisation
-  choiceWindow = NULL;
-  scrolledWindow = NULL;
-  scrolledLinkProperties = NULL;
-  toggleOnlySelected = NULL;
-  buttonSave = NULL;
+  choiceWindow = nullptr;
+  scrolledWindow = nullptr;
+  scrolledLinkProperties = nullptr;
+  toggleOnlySelected = nullptr;
+  buttonSave = nullptr;
 ////@end AdvancedSaveConfiguration member initialisation
   isTimeline = true;
   currentItem = 0;
@@ -391,7 +391,7 @@ void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel( bool showFullList )
       GetCheckBoxByName( currentCheckBoxName )->Disconnect(
               wxEVT_COMMAND_CHECKBOX_CLICKED,
               wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxPropertyClicked ),
-              NULL,
+              nullptr,
               this );
     }
   }
@@ -575,8 +575,8 @@ bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
 wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >::iterator it,
                                                            bool showFullList )
 {
-  wxBoxSizer *auxBoxSizer = NULL;
-  wxBoxSizer *auxBoxSizerLeft = NULL;
+  wxBoxSizer *auxBoxSizer = nullptr;
+  wxBoxSizer *auxBoxSizerLeft = nullptr;
   wxCheckBox *auxCheckBox;
   wxTextCtrl *auxTextCtrl;
   wxButton   *auxButton;
@@ -651,7 +651,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
 
         auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                             wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
-                            NULL,
+                            nullptr,
                             this ); 
 
       }
@@ -663,7 +663,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
 
     auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
                           wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxPropertyClicked ),
-                          NULL,
+                          nullptr,
                           this ); 
   }
 
@@ -705,7 +705,7 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const bool showFullList )
       it = renamedTag.find( *itOrd );
 
       auxBoxSizer = BuildTagRowWidgets( it, showFullList );
-      if ( auxBoxSizer != NULL )
+      if ( auxBoxSizer != nullptr )
       {
         boxSizerCurrentItem->Add( auxBoxSizer, 0, wxGROW|wxALL, 2 );
       }
@@ -829,7 +829,7 @@ void AdvancedSaveConfiguration::OnCheckBoxPropertyClicked( wxCommandEvent& event
   GetTextCtrlByName( currentTextCtrlName )->Enable( currentCheckBox->GetValue() );
 
   wxButton *relatedButton = GetButtonByName( currentTextCtrlName );
-  if ( relatedButton != NULL )
+  if ( relatedButton != nullptr )
     relatedButton->Enable( currentCheckBox->GetValue() );
 
   if( editionMode == PROPERTIES_TAGS )
@@ -1147,7 +1147,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
       tmpCustomName = linkedManager.getCustomName( tmpData->getPropertyName() );
 
     tmpData->getData( tmpWin );
-    if( tmpWin != NULL )
+    if( tmpWin != nullptr )
     {
       unlinkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
       linkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
@@ -1159,7 +1159,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
     else
     {
       tmpData->getData( tmpHisto );
-      if( tmpHisto != NULL )
+      if( tmpHisto != nullptr )
       {
         unlinkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
         linkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
@@ -1179,7 +1179,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
     string tmpCustomName = linkedManager.getCustomName( tmpData->getPropertyName() );
 
     tmpData->getData( tmpWin );
-    if( tmpWin != NULL )
+    if( tmpWin != nullptr )
     {
       linkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
       unlinkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
@@ -1187,7 +1187,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
     else
     {
       tmpData->getData( tmpHisto );
-      if( tmpHisto != NULL )
+      if( tmpHisto != nullptr )
       {
         linkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
         unlinkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
@@ -1402,7 +1402,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
     auxCheckBox->SetToolTip( wxT( "Link/Unlink all windows" ) );
     auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
                           wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked ),
-                          NULL,
+                          nullptr,
                           this ); 
 
     boxSizerOriginalName->Add( auxCheckBox, 1, wxEXPAND | wxALL, 2 );

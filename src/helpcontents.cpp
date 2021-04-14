@@ -115,7 +115,7 @@ HelpContents* HelpContents::createObject( TContents whichObject,
                                      const wxSize& size,
                                      long style)
 {
-  HelpContents* item = NULL;
+  HelpContents* item = nullptr;
   switch( whichObject )
   {
     case HelpContents::HELP:
@@ -136,7 +136,7 @@ HelpContents* HelpContents::createObject( TContents whichObject,
     default:
       break;
   }
-  if ( item != NULL && whichLookForContents )
+  if ( item != nullptr && whichLookForContents )
     item->buildIndex();
   return item;
 }
@@ -528,7 +528,7 @@ bool launchApp( const wxString& htmlFile )
   return wxLaunchDefaultBrowser( htmlFile, wxBROWSER_NOBUSYCURSOR );
 #else
   wxFileType* file_type = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT("html") );
-  if ( file_type != NULL )
+  if ( file_type != nullptr )
   {
     wxString open_command = file_type->GetOpenCommand( htmlFile );
     wxExecute( open_command );

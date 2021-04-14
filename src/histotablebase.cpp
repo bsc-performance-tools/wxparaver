@@ -107,7 +107,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
 
   int w, h;
   wxFont tmpFont( GetView()->GetLabelFont() );
-  GetView()->GetTextExtent( label, &w, &h, NULL, NULL, &tmpFont );
+  GetView()->GetTextExtent( label, &w, &h, nullptr, nullptr, &tmpFont );
   if( !myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() && !myHisto->GetHistogram()->getOnlyTotals() )
     GetView()->SetRowLabelSize( 0 );
   else if( GetView()->GetRowLabelSize() == 0 || GetView()->GetRowLabelSize() - 5 < w )

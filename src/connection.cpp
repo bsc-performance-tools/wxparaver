@@ -42,7 +42,7 @@ wxConnectionBase *stServer::OnAcceptConnection( const wxString& topic )
   if( topic.Lower() == wxT( "wxparaver" ) )
     return new stConnection();
   else
-    return NULL;
+    return nullptr;
 }
 
 #if wxMAJOR_VERSION >= 3

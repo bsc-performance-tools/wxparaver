@@ -119,9 +119,9 @@ ExitDialog::~ExitDialog()
 void ExitDialog::Init()
 {
 ////@begin ExitDialog member initialisation
-  saveExitButton = NULL;
-  cancelButton = NULL;
-  noSaveExitButton = NULL;
+  saveExitButton = nullptr;
+  cancelButton = nullptr;
+  noSaveExitButton = nullptr;
 ////@end ExitDialog member initialisation
 }
 
