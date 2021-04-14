@@ -36,7 +36,7 @@
 #ifdef _MSC_VER
 #include <hash_set>
 #else
-#include <ext/hash_set>
+#include  <unordered_set>
 #endif
 
 #ifdef _MSC_VER
@@ -458,8 +458,8 @@ public:
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
                 vector< ValuesType >& valuesToDraw,
-                hash_set< PRV_INT32 >& eventsToDraw,
-                hash_set< commCoord >& commsToDraw,
+                std::unordered_set< PRV_INT32 >& eventsToDraw,
+                std::unordered_set< commCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                 wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
 #else
@@ -467,8 +467,8 @@ public:
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
                 vector< ValuesType >& valuesToDraw,
-                hash_set< PRV_INT32 >& eventsToDraw,
-                hash_set< commCoord, hashCommCoord >& commsToDraw,
+                std::unordered_set< PRV_INT32 >& eventsToDraw,
+                std::unordered_set< commCoord, hashCommCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                 wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
 #endif
@@ -485,11 +485,11 @@ public:
   template<typename ValuesType>
   void drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify );
 
-  void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw );
+  void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, std::unordered_set< PRV_INT32 >& eventsToDraw );
 #ifdef _MSC_VER
-  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw );
+  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set< commCoord >& commsToDraw );
 #else
-  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord, hashCommCoord >& commsToDraw );
+  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set< commCoord, hashCommCoord >& commsToDraw );
 #endif
   
   void drawCommunicationLines( bool draw );

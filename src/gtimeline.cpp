@@ -765,11 +765,11 @@ void gTimeline::redraw()
   PRV_INT32 timePos = objectAxisPos + 1;
 
   vector< vector< TSemanticValue > > valuesToDraw;
-  vector< hash_set< PRV_INT32 > > eventsToDraw;
+  vector< unordered_set< PRV_INT32 > > eventsToDraw;
 #ifdef _MSC_VER
-  vector< hash_set< commCoord > > commsToDraw;
+  vector< unordered_set< commCoord > > commsToDraw;
 #else
-  vector< hash_set< commCoord, hashCommCoord > > commsToDraw;
+  vector< unordered_set< commCoord, hashCommCoord > > commsToDraw;
 #endif
 
   vector< vector< vector< pair<TSemanticValue,TSemanticValue> > > > valuesToDrawPunctual;
@@ -1275,8 +1275,8 @@ template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
                          vector< ValuesType >& valuesToDraw,
-                         hash_set< PRV_INT32 >& eventsToDraw,
-                         hash_set< commCoord >& commsToDraw,
+                         unordered_set< PRV_INT32 >& eventsToDraw,
+                         unordered_set< commCoord >& commsToDraw,
                          wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
 #else
@@ -1284,8 +1284,8 @@ template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
                          vector< ValuesType >& valuesToDraw,
-                         hash_set< PRV_INT32 >& eventsToDraw,
-                         hash_set< commCoord, hashCommCoord >& commsToDraw,
+                         unordered_set< PRV_INT32 >& eventsToDraw,
+                         unordered_set< commCoord, hashCommCoord >& commsToDraw,
                          wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
 #endif
@@ -1528,9 +1528,9 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
 }
 
 
-void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw )
+void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, unordered_set< PRV_INT32 >& eventsToDraw )
 {
-  for( hash_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
+  for( unordered_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
   {
     eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
     eventdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
@@ -1550,15 +1550,15 @@ void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder ro
 
 
 #ifdef _MSC_VER
-void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw )
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set< commCoord >& commsToDraw )
 #else
-void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord, hashCommCoord >& commsToDraw )
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set< commCoord, hashCommCoord >& commsToDraw )
 #endif
 {
 #ifdef _MSC_VER
-  for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
-  for( hash_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #endif
   {
     if( it->recType & LOG )
