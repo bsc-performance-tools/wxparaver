@@ -69,8 +69,8 @@ bool RunAppClusteringAction::execute( std::string whichTrace )
     runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
-  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
-  runAppDialog->setClustering( wxString::FromAscii( tmpFileName.c_str() ) );
+  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
+  runAppDialog->setClustering( wxString::FromUTF8( tmpFileName.c_str() ) );
 
   runAppDialog->Show();
   runAppDialog->Raise();
@@ -100,8 +100,8 @@ bool RunAppFoldingAction::execute( std::string whichTrace )
     runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
-  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
-  runAppDialog->setFolding( wxString::FromAscii( tmpFileName.c_str() ) );
+  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
+  runAppDialog->setFolding( wxString::FromUTF8( tmpFileName.c_str() ) );
 
   runAppDialog->Show();
   runAppDialog->Raise();
@@ -130,7 +130,7 @@ bool RunAppDimemasAction::execute( std::string whichTrace )
     runAppDialog = new RunScript( wxparaverApp::mainWindow );
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
-  runAppDialog->setTrace( wxString::FromAscii( whichTrace.c_str() ) );
+  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
   runAppDialog->setDimemas();
 
   runAppDialog->Show();
@@ -213,8 +213,8 @@ bool RunSpectralAction::execute( std::string whichTrace )
     if ( wxFileName::IsFileExecutable( spectralBin ) )
     {
       // Throw command '$SPECTRAL_HOME/bin/csv-analysis "trace.prv" "saved.csv" X' with X = 0
-      wxString traceFileName( _("\"") + wxString::FromAscii( whichTrace.c_str() ) + _("\"") );
-      wxString csvFileName( _("\"") + wxString::FromAscii( tmpFileName.c_str() ) + _("\"") );
+      wxString traceFileName( _("\"") + wxString::FromUTF8( whichTrace.c_str() ) + _("\"") );
+      wxString csvFileName( _("\"") + wxString::FromUTF8( tmpFileName.c_str() ) + _("\"") );
       
       long tmpValue = wxGetNumberFromUser( _( "Please enter the number of iterations" ), _( "Iterations" ),
                                            _( "Iterations" ), 3, 0, 100 );
@@ -237,12 +237,12 @@ bool RunSpectralAction::execute( std::string whichTrace )
       std::string tmpIterTrace = whichTrace;
       size_t lastDot = tmpIterTrace.find_last_of(".");
       tmpIterTrace = tmpIterTrace.substr( 0, lastDot ) + std::string( ".iterations.prv" );
-      wxString tmpIterTrace_wx = wxString::FromAscii( tmpIterTrace.c_str() );
+      wxString tmpIterTrace_wx = wxString::FromUTF8( tmpIterTrace.c_str() );
 
       std::string tmpCFG = wxparaverApp::mainWindow->GetLocalKernel()->getDistributedCFGsPath() + PATH_SEP +
                   std::string("spectral") + PATH_SEP +
                   std::string("periodicity.cfg");
-      wxString tmpCFG_wx = wxString::FromAscii( tmpCFG.c_str() );
+      wxString tmpCFG_wx = wxString::FromUTF8( tmpCFG.c_str() );
       
       if ( wxFileName::FileExists( tmpIterTrace_wx ) )
       {
@@ -329,9 +329,9 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
 
   CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
   std::string tmpFileName;
-  wxFileName tmpTraceName( wxString::FromAscii( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
+  wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
   tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromAscii( TraceEditSequence::dirNameClustering.c_str() ) );
+  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameClustering.c_str() ) );
   
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
@@ -406,9 +406,9 @@ void SequenceDriver::sequenceDimemas( gTimeline *whichTimeline )
   mySequence->addState( TraceEditSequence::csvWindowState, tmpWindowState );
 
   std::string tmpFileName;
-  wxFileName tmpTraceName( wxString::FromAscii( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
+  wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
   tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromAscii( TraceEditSequence::dirNameDimemas.c_str() ) );
+  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameDimemas.c_str() ) );
   
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
@@ -459,9 +459,9 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
 
   CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
   std::string tmpFileName;
-  wxFileName tmpTraceName( wxString::FromAscii( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
+  wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
   tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromAscii( TraceEditSequence::dirNameFolding.c_str() ) );
+  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameFolding.c_str() ) );
   
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
@@ -530,9 +530,9 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
   // CSV file name state
   CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
   std::string tmpFileName;
-  wxFileName tmpTraceName( wxString::FromAscii( tmpWindow->getTrace()->getFileName().c_str() ) );
+  wxFileName tmpTraceName( wxString::FromUTF8( tmpWindow->getTrace()->getFileName().c_str() ) );
   tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromAscii( TraceEditSequence::dirNameSpectral.c_str() ) );
+  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameSpectral.c_str() ) );
   if( !tmpTraceName.DirExists() )
     tmpTraceName.Mkdir();
   std::string auxName = tmpWindow->getName() + "_";

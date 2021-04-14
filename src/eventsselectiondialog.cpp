@@ -208,7 +208,7 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
   for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
   {
     // Fill wxChoice and select the current
-    int i = choiceOperatorFunctionTypes->Append( wxString::FromAscii( (*it).c_str() ) );
+    int i = choiceOperatorFunctionTypes->Append( wxString::FromUTF8( (*it).c_str() ) );
     if( (*it) == currentFilter->getEventTypeFunction() )
     {
       choiceOperatorFunctionTypes->SetSelection( i );
@@ -232,7 +232,7 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
 
   for( vector<string>::iterator it = filterFunctions.begin(); it != filterFunctions.end(); ++it )
   {
-    int i = choiceOperatorFunctionValues->Append( wxString::FromAscii( (*it).c_str() ) );
+    int i = choiceOperatorFunctionValues->Append( wxString::FromUTF8( (*it).c_str() ) );
     if( (*it) == currentFilter->getEventValueFunction() )
     {
       choiceOperatorFunctionValues->SetSelection( i );
@@ -355,7 +355,7 @@ void EventsSelectionDialog::CreateControls()
   itemBoxSizer5->Add(typesRegexSearch, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
   wxArrayString checkListSelectTypesStrings;
-  checkListSelectTypes = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxDefaultSize, checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
+  checkListSelectTypes = new wxCheckListBox( itemDialog1, ID_CHECKLISTBOX_TYPES, wxDefaultPosition, wxSize(500, -1), checkListSelectTypesStrings, wxLB_EXTENDED|wxLB_HSCROLL );
   itemStaticBoxSizer5->Add(checkListSelectTypes, 1, wxGROW|wxALL, 5);
 
   wxBoxSizer* itemBoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
@@ -584,7 +584,7 @@ bool EventsSelectionDialog::ChangedEventValuesFunction() const
 }
 
 
-bool EventsSelectionDialog::ChangedEventValues() const
+bool EventsSelectionDialog::ChangedEventValuesSelection() const
 {
   return changedEventValues;
 }
@@ -1121,7 +1121,7 @@ void EventsSelectionDialog::GetEventValueLabels( wxArrayString & whichEventValue
       else
         ++typeEndLimit;
 
-      wxString tmpStr = wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, i, true, precision, false ).c_str() );
+      wxString tmpStr = wxString::FromUTF8( LabelConstructor::semanticLabel( currentWindow, i, true, precision, false ).c_str() );
 
       whichEventValues.Add( tmpStr );
     }
@@ -1129,19 +1129,19 @@ void EventsSelectionDialog::GetEventValueLabels( wxArrayString & whichEventValue
   else
   {
     wxString tmpStr;
-    tmpStr << wxT("< ") << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, lastMin, false, precision, false ).c_str() );
+    tmpStr << wxT("< ") << wxString::FromUTF8( LabelConstructor::semanticLabel( currentWindow, lastMin, false, precision, false ).c_str() );
     whichEventValues.Add( tmpStr );
 
     TSemanticValue step = ( lastMax - lastMin ) / 20.0;
     for( int i = 0; i <= 20; ++i )
     {
       tmpStr.Clear();
-      tmpStr << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, ( i * step ) + lastMin, false, precision, false ).c_str() );
+      tmpStr << wxString::FromUTF8( LabelConstructor::semanticLabel( currentWindow, ( i * step ) + lastMin, false, precision, false ).c_str() );
       whichEventValues.Add( tmpStr );
     }
 
     tmpStr.Clear();
-    tmpStr << wxT("> ") << wxString::FromAscii( LabelConstructor::semanticLabel( currentWindow, lastMax, false, precision, false ).c_str() );
+    tmpStr << wxT("> ") << wxString::FromUTF8( LabelConstructor::semanticLabel( currentWindow, lastMax, false, precision, false ).c_str() );
     whichEventValues.Add( tmpStr );
   }
 }
@@ -1302,8 +1302,8 @@ bool EventInfoManager::matchesAllRegex( string whichName, string whichValue )
 
   for( vector< wxRegEx * >::iterator it = filterRegEx.begin(); it != filterRegEx.end(); ++it )
   {
-    if ( !(*it)->Matches( wxString::FromAscii( whichName.c_str() ) ) &&
-         !(*it)->Matches( wxString::FromAscii( whichValue.c_str() ) ) )
+    if ( !(*it)->Matches( wxString::FromUTF8( whichName.c_str() ) ) &&
+         !(*it)->Matches( wxString::FromUTF8( whichValue.c_str() ) ) )
     {
       matchesAll = false;
       break;
@@ -1440,7 +1440,7 @@ void EventTypesInfoManager::init()
     string tmpstr;
     currentWindow->getTrace()->getEventLabels().getEventTypeLabel( (*it), tmpstr );
 
-    labels.Add( wxString() << ( *it ) << _( " " ) << wxString::FromAscii( tmpstr.c_str() ) );
+    labels.Add( wxString() << ( *it ) << _( " " ) << wxString::FromUTF8( tmpstr.c_str() ) );
 
     // Check if event type i in current filter
     vector< TEventType >::iterator itType = find( tmpSelectedTypes.begin(), tmpSelectedTypes.end(), ( *it ) );
@@ -1706,7 +1706,7 @@ void EventValuesInfoManager::init( TEventType whichType, bool shortVersion, bool
         LabelConstructor::transformToShort( tmpLabel );
     }
 
-    tmpEventValues.Add( wxString::FromAscii( tmpLabel.c_str() ) );
+    tmpEventValues.Add( wxString::FromUTF8( tmpLabel.c_str() ) );
 
     // and also 6) Filter values using given parameter regular expr.
     if ( matchesAllRegex( tmpLabel, tmpValue.str() ) )

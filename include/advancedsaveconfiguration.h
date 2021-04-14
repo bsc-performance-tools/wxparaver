@@ -36,11 +36,14 @@
 
 #include <vector>
 #include <map>
+#include <set>
+
 #include "paraverkerneltypes.h"
 #include "window.h"
 #include "histogram.h"
+#include "cfgs4d.h"
 
-
+using std::multimap;
 
 /*!
  * Forward declarations
@@ -58,6 +61,7 @@ class wxToggleButton;
 #define ID_ADVANCEDSAVECONFIGURATION 10186
 #define ID_CHOICE_WINDOW 10185
 #define ID_SCROLLEDWINDOW1 10187
+#define ID_SCROLLED_LINK_PROPERTIES 10000
 #define ID_TOGGLEBUTTON_LIST_SELECTED 10197
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE _("Save Basic CFG - Properties Editor")
@@ -65,6 +69,7 @@ class wxToggleButton;
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE wxDefaultSize
 #define SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION wxDefaultPosition
 ////@end control identifiers
+
 
 /*!
  * AdvancedSaveConfiguration class declaration
@@ -138,20 +143,19 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end AdvancedSaveConfiguration member function declarations
 
+  const CFGS4DLinkedPropertiesManager& getLinkedPropertiesManager() const;
+
   /// Should we show tooltips?
   static bool ShowToolTips();
 
 ////@begin AdvancedSaveConfiguration member variables
   wxChoice* choiceWindow;
   wxScrolledWindow* scrolledWindow;
+  wxScrolledWindow* scrolledLinkProperties;
   wxToggleButton* toggleOnlySelected;
   wxButton* buttonSave;
 ////@end AdvancedSaveConfiguration member variables
 
-    //bool TransferDataFromWindow();
-
-//    const std::map< std::string, std::string >& GetCFG4DAliasList() const { return renamedTag; };
-//    const std::map< std::string, bool >&   GetCFG4DEnabledList() const { return enabledTag; };
 
   protected:
     const static wxString KParamSeparator;
@@ -184,6 +188,9 @@ public:
 
     TEditorMode editionMode;
 
+    CFGS4DLinkedPropertiesManager unlinkedManager;
+    CFGS4DLinkedPropertiesManager linkedManager;
+
     int GetSelectionIndexCorrected( int index, bool &isTimeline );
 
     wxString BuildName( Window *current );
@@ -212,10 +219,24 @@ public:
     wxTextCtrl *GetTextCtrlByName( const wxString& widgetName ) const;
     wxButton *GetButtonByName( const wxString& widgetName ) const;
 
-    void OnCheckBoxClicked( wxCommandEvent& event );
+    void OnCheckBoxPropertyClicked( wxCommandEvent& event );
+    void OnCheckBoxLinkWindowClicked( wxCommandEvent& event );
     void OnStatisticsButtonClick( wxCommandEvent& event );
-    
+    void OnTextCtrlPropertyChanged( wxCommandEvent &event );
+
     void RefreshList( bool showFullList );
+
+    void buildWindowsSetWidgets( const std::string& propertyName, wxBoxSizer *boxSizerLinks, bool checked );
+    template <typename WindowType>
+    void buildLinkWindowWidget( wxBoxSizer *boxSizerLinks, 
+                                const std::string& propertyName,
+                                WindowType *whichWindow,
+                                bool checked );
+    void updateLinkPropertiesWidgets();
+    void updateAliasForLinkedWindows( std::string whichOriginalName, std::string whichCustomName );
+
+    void OnCheckBoxLinkPropertyClicked( wxCommandEvent& event );
+    void OnLinkedPropertiesNameChanged( wxCommandEvent& event );
 };
 
 #endif

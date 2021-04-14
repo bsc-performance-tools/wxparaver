@@ -314,6 +314,10 @@ wxIcon SaveConfigurationDialog::GetIconResource( const wxString& name )
 ////@end SaveConfigurationDialog icon retrieval
 }
 
+const CFGS4DLinkedPropertiesManager& SaveConfigurationDialog::getLinkedPropertiesManager() const
+{
+  return linkedProperties;
+}
 
 bool SaveConfigurationDialog::TransferDataToWindow()
 {
@@ -340,7 +344,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   for( vector< string >::iterator it = traces.begin(); it != traces.end(); ++it )
   {
     // Append trace to widget
-    aux << wxString::FromAscii( (*it).c_str() );
+    aux << wxString::FromUTF8( (*it).c_str() );
     choiceTraceSelector->Append( aux );
     aux.clear();
 
@@ -367,10 +371,10 @@ bool SaveConfigurationDialog::TransferDataToWindow()
     if ( firstSelection == 0 ||
          initialTrace->getTraceNameNumbered() == (*it)->getTrace()->getTraceNameNumbered()  )
     {
-      items.Add( wxString::FromAscii(
+      items.Add( wxString::FromUTF8(
               (*it)->getName().c_str() ) +
               _( " @ " ) +
-              wxString::FromAscii( (*it)->getTrace()->getTraceNameNumbered().c_str() ) );
+              wxString::FromUTF8( (*it)->getTrace()->getTraceNameNumbered().c_str() ) );
     }
   }
   if( !items.empty() )
@@ -383,10 +387,10 @@ bool SaveConfigurationDialog::TransferDataToWindow()
     if ( firstSelection == 0 ||
          initialTrace->getTraceNameNumbered() == (*it)->getTrace()->getTraceNameNumbered()  )
     {
-      items.Add( wxString::FromAscii(
+      items.Add( wxString::FromUTF8(
               (*it)->getName().c_str() ) +
               _( " @ " ) +
-              wxString::FromAscii( (*it)->getTrace()->getTraceNameNumbered().c_str() ) );
+              wxString::FromUTF8( (*it)->getTrace()->getTraceNameNumbered().c_str() ) );
     }
   }
   if( !items.empty() )
@@ -411,10 +415,10 @@ Window *SaveConfigurationDialog::FindWindow( const wxString &windowName )
 
   for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
-    if ( wxString::FromAscii(
+    if ( wxString::FromUTF8(
                 (*it)->getName().c_str() ) +
                 _( " @ " ) +
-                wxString::FromAscii( (*it)->getTrace()->getTraceNameNumbered().c_str() ) ==
+                wxString::FromUTF8( (*it)->getTrace()->getTraceNameNumbered().c_str() ) ==
          windowName )
     {
       elem = (*it);
@@ -431,10 +435,10 @@ Histogram *SaveConfigurationDialog::FindHistogram( const wxString &windowName )
 
   for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
-    if ( wxString::FromAscii(
+    if ( wxString::FromUTF8(
                 (*it)->getName().c_str() ) +
                 _( " @ " ) +
-                wxString::FromAscii( (*it)->getTrace()->getTraceNameNumbered().c_str() ) ==
+                wxString::FromUTF8( (*it)->getTrace()->getTraceNameNumbered().c_str() ) ==
          windowName )
     {
       elem = (*it);
@@ -499,6 +503,7 @@ void SaveConfigurationDialog::OnSaveClick( wxCommandEvent& event )
       AdvancedSaveConfiguration tagEditorDialog( (wxWindow *)this, selectedTimelines, selectedHistograms );
       if ( tagEditorDialog.ShowModal() == wxID_OK )
       {
+        linkedProperties = tagEditorDialog.getLinkedPropertiesManager();
         EndModal( wxID_OK );
       }
     }
@@ -582,9 +587,9 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
     string currentTrace = (*it)->getTrace()->getTraceNameNumbered();
     if ( index == 0 || selectedTrace == currentTrace )
     {
-      items.Add( wxString::FromAscii( (*it)->getName().c_str() ) +
+      items.Add( wxString::FromUTF8( (*it)->getName().c_str() ) +
                                       _( " @ " ) +
-                                      wxString::FromAscii( currentTrace.c_str() ) );
+                                      wxString::FromUTF8( currentTrace.c_str() ) );
     }
   }
   if( !items.IsEmpty() )
@@ -598,9 +603,9 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
     string currentTrace = (*it)->getTrace()->getTraceNameNumbered();
     if ( index == 0 || selectedTrace == currentTrace )
     {
-      items.Add( wxString::FromAscii( (*it)->getName().c_str() ) +
+      items.Add( wxString::FromUTF8( (*it)->getName().c_str() ) +
                                       _( " @ " ) +
-                                      wxString::FromAscii( currentTrace.c_str() ) );
+                                      wxString::FromUTF8( currentTrace.c_str() ) );
     }
   }
   if( !items.IsEmpty() )
