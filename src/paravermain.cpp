@@ -854,7 +854,6 @@ bool paraverMain::DoLoadTrace( const string &path )
     paraverMain::dialogProgress->Show();
 
     tr = Trace::create( localKernel, tmpPath, false, progress );
-    tr->setShowProgressBar( traceSize / 1E6 > 10.0 );
     tr->setInstanceNumber( traceInstance[ std::string( tmpFileName.GetFullName().mb_str() ) ]++ );
 
     loadedTraces.push_back( tr );
