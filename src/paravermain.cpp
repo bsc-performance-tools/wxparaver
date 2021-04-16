@@ -218,6 +218,8 @@ Window *paraverMain::endDragWindow = NULL;
 
 bool paraverMain::disableUserMessages = false;
 bool paraverMain::validSessions = true;
+bool paraverMain::stopOnIdle = false;
+
 
 extern volatile bool sig1;
 extern volatile bool sig2;

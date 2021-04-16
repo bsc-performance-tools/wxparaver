@@ -628,6 +628,7 @@ public:
   static Window *beginDragWindow;
   static Window *endDragWindow;
   static bool disableUserMessages;
+  static bool stopOnIdle;
 
   static bool IsSessionValid();
   static void ValidateSession( bool setValidate );

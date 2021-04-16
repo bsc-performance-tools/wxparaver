@@ -1651,6 +1651,8 @@ void gTimeline::OnIdle( wxIdleEvent& event )
   if( IsActive() )
     drawZone->SetFocus();
 #endif*/
+  if( paraverMain::stopOnIdle )
+    return;
 
   if( myWindow->getDestroy() )
     return;

@@ -659,6 +659,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
     string fileName;
     Trace *currentTrace = NULL;
     paraverMain::disableUserMessages = true;
+    paraverMain::stopOnIdle = true;
 
     for ( unsigned int i = 0; i < paraverCommandLineParser.GetParamCount(); ++i )
     {
@@ -689,6 +690,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
         vector<Histogram *> newHistograms;
         SaveOptions options;
 
+
         if( CFGLoader::loadCFG( mainWindow->GetLocalKernel(), fileName, currentTrace,
                                 newWindows, newHistograms, options ) )
         {
@@ -699,7 +701,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             histo->setRedraw( false );
             string composedName = histo->getName() + " @ " +
                                   histo->getControlWindow()->getTrace()->getTraceName();
-                                  
+
             gHistogram* tmpGHisto = new gHistogram( mainWindow, 
                 wxID_ANY, 
                 wxString::FromUTF8( composedName.c_str() ) );

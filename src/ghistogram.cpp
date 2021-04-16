@@ -1034,6 +1034,9 @@ wxIcon gHistogram::GetIconResource( const wxString& name )
 
 void gHistogram::OnIdle( wxIdleEvent& event )
 {
+  if( paraverMain::stopOnIdle )
+    return;
+
   if( myHistogram->getDestroy() )
     return;
 
