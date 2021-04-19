@@ -3968,7 +3968,7 @@ void paraverMain::PrepareToExit()
     stringstream strPid;
     stringstream strStatus;
     strPid << sessionInfo.pid;
-    strStatus << sessionInfo.status;
+    strStatus << static_cast<int>( sessionInfo.status );
   #ifdef WIN32
 
     wxString file( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
@@ -4012,7 +4012,7 @@ void paraverMain::PrepareToExit()
                                             "_session" ).c_str(), wxConvUTF8 ) );
   #endif
     
-    sessionInfo.status = SessionInfo::CLOSED;
+    sessionInfo.status = StatusID::CLOSED;
 
     if ( wxFileExists( file ) && wxDirExists( folder ) )
     {
@@ -4027,7 +4027,7 @@ void paraverMain::PrepareToExit()
     }
 
     strStatus.str( std::string() ); //clear
-    strStatus << sessionInfo.status;
+    strStatus << static_cast<int>( sessionInfo.status );
   #ifdef WIN32
     file = wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                   "\\AutosavedSessions" +
@@ -4539,7 +4539,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     stringstream strPid;
     stringstream strStatus;
     strPid << sessionInfo.pid;
-    strStatus << sessionInfo.status;
+    strStatus << static_cast<int>( sessionInfo.status );
 
     #ifdef WIN32
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + strPid.str() + "_" + sessionInfo.sessionDate + "_" + strStatus.str() + ".session";
@@ -5312,7 +5312,7 @@ inline std::string ZeroTrail( int number )
 void paraverMain::initSessionInfo()
 {
   sessionInfo.pid = getpid();
-  sessionInfo.status = SessionInfo::OPEN;
+  sessionInfo.status = StatusID::OPEN;
 
   boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
   std::stringstream ss;

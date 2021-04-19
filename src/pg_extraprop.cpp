@@ -313,7 +313,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
                                             const wxString& name,
                                             const wxPGChoices& choices,
                                             Window *whichWindow,
-                                            prvEventInfoProperty::InfoType whichInfoType )
+                                            prvEventInfoType whichInfoType )
                                               : wxPGProperty( label, name )
 {
   m_choices.Assign( choices );
@@ -327,7 +327,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
   switch( whichInfoType )
   {
-    case TYPES:
+    case prvEventInfoType::TYPES:
       currentWindow->getFilter()->getEventType( typesSel );
       for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
       {
@@ -336,7 +336,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
       
       break;
 
-    case VALUES:
+    case prvEventInfoType::VALUES:
       currentWindow->getFilter()->getEventValue( valuesSel );
       for( vector<TSemanticValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
       {

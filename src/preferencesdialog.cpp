@@ -1726,8 +1726,8 @@ bool PreferencesDialog::TransferDataFromWindow()
   timelineDrawmodeTime = ( PRV_UINT32 )choiceTimelineDrawmodeTime->GetCurrentSelection();
   timelineDrawmodeObjects = ( PRV_UINT32 )choiceTimelineDrawmodeObjects->GetCurrentSelection();
   timelinePixelSize = ( PRV_UINT32 )choiceTimelinePixelSize->GetCurrentSelection();
-  timelineObjectLabels = ( TObjectLabels ) choiceTimelineLabels->GetCurrentSelection();
-  timelineObjectAxis = ( TObjectAxisSize ) choiceTimelineObjectAxis->GetCurrentSelection();
+  timelineObjectLabels = ( PRV_UINT32 )choiceTimelineLabels->GetCurrentSelection();
+  timelineObjectAxis = ( PRV_UINT32 )choiceTimelineObjectAxis->GetCurrentSelection();
 
   timelineWWSemantic = checkTimelineWWSemantic->IsChecked();
   timelineWWEvents = checkTimelineWWEvents->IsChecked();

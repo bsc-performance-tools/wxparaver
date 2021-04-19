@@ -185,6 +185,13 @@ enum class TExternalApp
  * RunScript class declaration
  */
 
+enum class TEnvironmentVar
+{
+  PATH = 0,
+  PARAVER_HOME,
+  DIMEMAS_HOME
+};
+
 class RunScript: public wxDialog
 {
   DECLARE_DYNAMIC_CLASS( RunScript )
@@ -441,12 +448,6 @@ private:
   wxString tagFoldingOutputDirectory;
   wxString foldingOutputDirectory;
 
-  enum class TEnvironmentVar
-  {
-    PATH = 0,
-    PARAVER_HOME,
-    DIMEMAS_HOME
-  };
   std::map< TEnvironmentVar, wxString > environmentVariable;
 
   // Selection

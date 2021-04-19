@@ -208,14 +208,14 @@ struct PropertyClientData
 };
 
 
+enum class StatusID
+{
+  OPEN   = 0,
+  CLOSED = 1
+};
+  
 struct SessionInfo
 {    
-  enum class StatusID
-  {
-    OPEN   = 0,
-    CLOSED = 1
-  };
-  
   unsigned int pid;
   StatusID status;
   std::string sessionDate;
