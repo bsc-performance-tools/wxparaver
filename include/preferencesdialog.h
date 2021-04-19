@@ -194,7 +194,7 @@ class PreferencesDialog: public wxPropertySheetDialog
   DECLARE_EVENT_TABLE()
 
 public:
-  enum ItemCheck { ITEM_SHOW_UNITS, ITEM_THOUSAND_SEPARATOR };
+  enum class ItemCheck { ITEM_SHOW_UNITS, ITEM_THOUSAND_SEPARATOR };
 
   /// Constructors
   PreferencesDialog();

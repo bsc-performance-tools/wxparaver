@@ -168,7 +168,7 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
   // Backup 
   switch ( editionMode )
   {
-    case HISTOGRAM_STATISTIC_TAGS:
+    case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
       // Recover previous tags for that histogram
       for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
       {
@@ -176,7 +176,7 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
       }
       break;
 
-    case PROPERTIES_TAGS:
+    case TEditorMode::PROPERTIES_TAGS:
       // Recover previous state for all windows and histograms
       for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
       {
@@ -251,7 +251,7 @@ void AdvancedSaveConfiguration::Init()
 ////@end AdvancedSaveConfiguration member initialisation
   isTimeline = true;
   currentItem = 0;
-  editionMode = PROPERTIES_TAGS;
+  editionMode = TEditorMode::PROPERTIES_TAGS;
 }
 
 
@@ -348,7 +348,7 @@ void AdvancedSaveConfiguration::CreateControls()
 
   choiceWindow->SetSelection( currentItem );
 
-  if ( editionMode == HISTOGRAM_STATISTIC_TAGS )
+  if ( editionMode == TEditorMode::HISTOGRAM_STATISTIC_TAGS )
   {
     buttonSave->SetLabel( _("Ok") );
     choiceWindow->Enable( false );
@@ -634,7 +634,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
 
     auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
 
-    if ( editionMode == PROPERTIES_TAGS )
+    if ( editionMode == TEditorMode::PROPERTIES_TAGS )
     {
       if( wxString::FromUTF8( it->first.c_str() ) == _( "Statistic" ) )
       {
@@ -722,7 +722,7 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow, const boo
   // Build renamedTag and enabledTag maps
   fullTagList = currentWindow->getCFG4DFullTagList();
   BuildTagMaps( currentWindow->getCFG4DAliasList(), showFullList );
-  if ( editionMode == PROPERTIES_TAGS )
+  if ( editionMode == TEditorMode::PROPERTIES_TAGS )
   {
     InsertParametersToTagMaps( currentWindow->getCFG4DCurrentSelectedFullParamList(),
                                currentWindow->getCFG4DParamAliasList(),
@@ -740,13 +740,13 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram, con
   // Build renamedTag and enabledTag maps
   switch ( editionMode )
   {
-    case HISTOGRAM_STATISTIC_TAGS:
+    case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
       selected = ( currentHistogram->isCommunicationStat( currentHistogram->getCurrentStat() ) )? 0 : 1;
       currentHistogram->getStatisticsLabels( fullTagList, selected );
       BuildTagMaps( currentHistogram->getCFG4DStatisticsAliasList(), showFullList );
       break;
 
-    case PROPERTIES_TAGS:
+    case TEditorMode::PROPERTIES_TAGS:
       fullTagList = currentHistogram->getCFG4DFullTagList();
       BuildTagMaps( currentHistogram->getCFG4DAliasList(), showFullList );
       break;
@@ -832,7 +832,7 @@ void AdvancedSaveConfiguration::OnCheckBoxPropertyClicked( wxCommandEvent& event
   if ( relatedButton != nullptr )
     relatedButton->Enable( currentCheckBox->GetValue() );
 
-  if( editionMode == PROPERTIES_TAGS )
+  if( editionMode == TEditorMode::PROPERTIES_TAGS )
   {
     string tmpOriginalName = std::string( currentTextCtrlName.mb_str() );
     if( currentCheckBox->GetValue() )
@@ -879,10 +879,10 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
   {
     switch ( editionMode )
     {
-      case HISTOGRAM_STATISTIC_TAGS:
+      case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
         auxMap = histograms[ currentItem ]->getCFG4DStatisticsAliasList();
         break;
-      case PROPERTIES_TAGS:
+      case TEditorMode::PROPERTIES_TAGS:
         auxMap = histograms[ currentItem ]->getCFG4DAliasList();
         break;
       default:
@@ -974,10 +974,10 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
 
     switch ( editionMode )
     {
-      case HISTOGRAM_STATISTIC_TAGS:
+      case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
         histograms[ currentItem ]->setCFG4DStatisticsAliasList( renamedTag );
         break;
-      case PROPERTIES_TAGS:
+      case TEditorMode::PROPERTIES_TAGS:
         histograms[ currentItem ]->setCFG4DAliasList( renamedTag );
       default:
         break;
@@ -1049,7 +1049,7 @@ void AdvancedSaveConfiguration::OnStatisticsButtonClick( wxCommandEvent& event )
           (wxWindow *)this,
           dummy,
           onlyCurrentHistogram,
-          AdvancedSaveConfiguration::HISTOGRAM_STATISTIC_TAGS,
+          TEditorMode::HISTOGRAM_STATISTIC_TAGS,
           wxID_ANY,
           _("Save Basic CFG - Statistics Editor"),
           wxPoint( GetPosition().x + 20 , GetPosition().y + 20 ) ); // doesn't reposition
@@ -1097,7 +1097,7 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
 {
   switch ( editionMode )
   {
-    case HISTOGRAM_STATISTIC_TAGS:
+    case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
       // Recover previous tags for that histogram
       for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
       {
@@ -1105,7 +1105,7 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
       }
       break;
 
-    case PROPERTIES_TAGS:
+    case TEditorMode::PROPERTIES_TAGS:
       // Recover previous state for all windows and histograms
       for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
       {

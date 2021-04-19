@@ -489,10 +489,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   wxMenuItem *tmpPuncWin = buildItem( popUpMenuColor, _( "Punctual Window..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctualWindow, ID_MENU_PUNCTUAL_WINDOW );
   popUpMenuColor->Enable( tmpPuncWin->GetId(), timeline->GetMyWindow()->isPunctualColorSet() );
 
-  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
-  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
-  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
-  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
+  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );
+  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::STEPS );
+  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::LOGARITHMIC );
+  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::EXPONENTIAL );
   wxMenuItem *tmpGradFunc = popUpMenuColor->AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
   popUpMenuColor->Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->isGradientColorSet() ||
                                                 timeline->GetMyWindow()->isNotNullGradientColorSet() ||
@@ -735,25 +735,25 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSubMenu( popUpMenuPixelSize, _( "Pixel Size" ));
 
   buildItem( popUpMenuLabels, _( "All" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsAll, ID_MENU_LABELS_ALL, 
-             timeline->GetMyWindow()->getObjectLabels() == Window::ALL_LABELS );
+             timeline->GetMyWindow()->getObjectLabels() == TObjectLabels::ALL_LABELS );
   buildItem( popUpMenuLabels, _( "Spaced" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsSpaced, ID_MENU_LABELS_SPACED, 
-             timeline->GetMyWindow()->getObjectLabels() == Window::SPACED_LABELS );
+             timeline->GetMyWindow()->getObjectLabels() ==  TObjectLabels::SPACED_LABELS );
   buildItem( popUpMenuLabels, _( "2^n" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsPower2, ID_MENU_LABELS_POWER2, 
-             timeline->GetMyWindow()->getObjectLabels() == Window::POWER2_LABELS );
+             timeline->GetMyWindow()->getObjectLabels() == TObjectLabels::POWER2_LABELS );
   AppendSubMenu( popUpMenuLabels, _( "Object Labels" ) );
 
   buildItem( popUpMenuObjectAxis, _( "Fit Current Level" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisCurrent, ID_MENU_OBJECT_AXIS_CURRENT, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::CURRENT_LEVEL );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::CURRENT_LEVEL );
   buildItem( popUpMenuObjectAxis, _( "Fit All Levels" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisAll, ID_MENU_OBJECT_AXIS_ALL, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::ALL_LEVELS );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::ALL_LEVELS );
   buildItem( popUpMenuObjectAxis, _( "0%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisZero, ID_MENU_OBJECT_AXIS_ZERO, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::ZERO_PERC );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::ZERO_PERC );
   buildItem( popUpMenuObjectAxis, _( "5%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisFive, ID_MENU_OBJECT_AXIS_FIVE, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::FIVE_PERC );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::FIVE_PERC );
   buildItem( popUpMenuObjectAxis, _( "10%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTen, ID_MENU_OBJECT_AXIS_TEN, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::TEN_PERC );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::TEN_PERC );
   buildItem( popUpMenuObjectAxis, _( "25%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTwentyFive, ID_MENU_OBJECT_AXIS_TWENTYFIVE, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::TWENTYFIVE_PERC );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::TWENTYFIVE_PERC );
   AppendSubMenu( popUpMenuObjectAxis, _( "Object Axis" ) );
 
   AppendSeparator();
@@ -904,15 +904,15 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
-  buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::COLOR );
-  buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::GRADIENT );
-  buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::NOT_NULL_GRADIENT );
+  buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::COLOR );
+  buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::GRADIENT );
+  buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::NOT_NULL_GRADIENT );
   AppendSubMenu( popUpMenuColor2D, _( "Color Mode" ) );
   
-  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
-  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
-  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
-  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
+  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );
+  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::STEPS );
+  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LOGARITHMIC );
+  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::EXPONENTIAL );
   AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function " ) );
   
   buildItem( popUpMenuDrawModeTime,
@@ -1927,15 +1927,15 @@ void gPopUpMenu::OnMenuAutoDataGradient( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuGradientFunction( wxCommandEvent& event )
 {
-  GradientColor::TGradientFunction gradFunc;
+  TGradientFunction gradFunc;
 
   switch( event.GetId() )
   {
-    case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = GradientColor::LINEAR; break;
-    case ID_MENU_GRADIENT_FUNCTION_STEPS: gradFunc = GradientColor::STEPS; break;
-    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC: gradFunc = GradientColor::LOGARITHMIC; break;
-    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL: gradFunc = GradientColor::EXPONENTIAL; break;
-    default: gradFunc = GradientColor::LINEAR;
+    case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = TGradientFunction::LINEAR; break;
+    case ID_MENU_GRADIENT_FUNCTION_STEPS: gradFunc = TGradientFunction::STEPS; break;
+    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC: gradFunc = TGradientFunction::LOGARITHMIC; break;
+    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL: gradFunc = TGradientFunction::EXPONENTIAL; break;
+    default: gradFunc = TGradientFunction::LINEAR;
   }
   
   if( timeline != nullptr )
@@ -2002,84 +2002,84 @@ void gPopUpMenu::OnMenuRemoveAllGroups( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuCodeColor2D( wxCommandEvent& event )
 {
-  histogram->GetHistogram()->setColorMode( SemanticColor::COLOR );
+  histogram->GetHistogram()->setColorMode( TColorFunction::COLOR );
   histogram->GetHistogram()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuGradientColor2D( wxCommandEvent& event )
 {
-  histogram->GetHistogram()->setColorMode( SemanticColor::GRADIENT );
+  histogram->GetHistogram()->setColorMode( TColorFunction::GRADIENT );
   histogram->GetHistogram()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuNotNullGradientColor2D( wxCommandEvent& event )
 {
-  histogram->GetHistogram()->setColorMode( SemanticColor::NOT_NULL_GRADIENT );
+  histogram->GetHistogram()->setColorMode( TColorFunction::NOT_NULL_GRADIENT );
   histogram->GetHistogram()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuLabelsAll( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectLabels( Window::ALL_LABELS );
+  timeline->GetMyWindow()->setObjectLabels( TObjectLabels::ALL_LABELS );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuLabelsSpaced( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectLabels( Window::SPACED_LABELS );
+  timeline->GetMyWindow()->setObjectLabels(  TObjectLabels::SPACED_LABELS );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuLabelsPower2( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectLabels( Window::POWER2_LABELS );
+  timeline->GetMyWindow()->setObjectLabels( TObjectLabels::POWER2_LABELS );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisCurrent( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::CURRENT_LEVEL );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::CURRENT_LEVEL );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisAll( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::ALL_LEVELS );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::ALL_LEVELS );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisZero( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::ZERO_PERC );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::ZERO_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisFive( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::FIVE_PERC );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::FIVE_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisTen( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::TEN_PERC );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::TEN_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisTwentyFive( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::TWENTYFIVE_PERC );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::TWENTYFIVE_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 

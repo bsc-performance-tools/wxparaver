@@ -39,7 +39,7 @@ class RunAppClusteringAction: public TraceToTraceAction
     ~RunAppClusteringAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const;
 
     virtual bool execute( std::string whichTrace );
 
@@ -61,7 +61,7 @@ class RunAppCutterAction: public TraceToTraceAction
     ~RunAppCutterAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const;
 
     virtual bool execute( std::string whichTrace );
 
@@ -83,7 +83,7 @@ class RunAppDimemasAction: public TraceToTraceAction
     ~RunAppDimemasAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const;
 
     virtual bool execute( std::string whichTrace );
 
@@ -105,7 +105,7 @@ class RunAppFoldingAction: public TraceToTraceAction
     ~RunAppFoldingAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const;
 
     virtual bool execute( std::string whichTrace );
 
@@ -127,7 +127,7 @@ class RunSpectralAction: public TraceToTraceAction
     ~RunSpectralAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const;
 
     virtual bool execute( std::string whichTrace );
 
@@ -149,7 +149,7 @@ class ExternalSortAction: public TraceToTraceAction
     ~ExternalSortAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const;
 
     virtual bool execute( std::string whichTrace );
 

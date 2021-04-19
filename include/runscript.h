@@ -164,6 +164,22 @@ class wxHtmlWindow;
 #define SYMBOL_RUNSCRIPT_POSITION wxDefaultPosition
 ////@end control identifiers
 
+enum class TExternalApp
+{
+  DEFAULT = -1,
+
+  // --- Called through choice selector widget --- 
+  DIMEMAS_WRAPPER,     // Dimemas      selected in choice widget
+  STATS_WRAPPER,       // Stats        selected in choice widget
+  CLUSTERING,          // Clustering   selected in choice widget
+  FOLDING,             // Folding      selected in choice widget
+                        // <-- add new apps here at most
+  USER_DEFINED,        // User defined selected in choice widget
+
+  // --- Called by different widget ---
+  DIMEMAS_GUI,         // DimemasGui   invoked through button
+  STATS                // stats binary invoked by help
+};
 
 /*!
  * RunScript class declaration
@@ -398,23 +414,7 @@ private:
 */
 
   static wxString clusteringXML;
-
-  enum TExternalApp
-  {
-    DEFAULT = -1,
-
-    // --- Called through choice selector widget --- 
-    DIMEMAS_WRAPPER,     // Dimemas      selected in choice widget
-    STATS_WRAPPER,       // Stats        selected in choice widget
-    CLUSTERING,          // Clustering   selected in choice widget
-    FOLDING,             // Folding      selected in choice widget
-                         // <-- add new apps here at most
-    USER_DEFINED,        // User defined selected in choice widget
-
-    // --- Called by different widget ---
-    DIMEMAS_GUI,         // DimemasGui   invoked through button
-    STATS                // stats binary invoked by help
-  };
+ 
 
   // Application list: labels and names
   std::map< TExternalApp, wxString > applicationLabel;
@@ -441,7 +441,7 @@ private:
   wxString tagFoldingOutputDirectory;
   wxString foldingOutputDirectory;
 
-  enum TEnvironmentVar
+  enum class TEnvironmentVar
   {
     PATH = 0,
     PARAVER_HOME,
@@ -461,8 +461,8 @@ private:
   wxString doubleQuote( const wxString& path );
   wxString expandVariables( wxString command );
 
-  wxString GetCommand( wxString &command, wxString &parameters, TExternalApp selectedApp = DEFAULT );
-  wxString GetReachableCommand( TExternalApp selectedApp = DEFAULT ); // adds path to the binary
+  wxString GetCommand( wxString &command, wxString &parameters, TExternalApp selectedApp = TExternalApp::DEFAULT );
+  wxString GetReachableCommand( TExternalApp selectedApp = TExternalApp::DEFAULT ); // adds path to the binary
 
   // Log related
   bool readFoldingTag( wxString rawLine );

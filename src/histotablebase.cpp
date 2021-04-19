@@ -354,7 +354,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       if( myHisto->GetHistogram()->getCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getSelectedPlane() ) && myHisto->GetHistogram()->getShowColor() )
       {
         rgb tmpCol;
-        if( myHisto->GetHistogram()->getColorMode() == SemanticColor::COLOR )
+        if( myHisto->GetHistogram()->getColorMode() == TColorFunction::COLOR )
         {
           tmpCol = myHisto->GetHistogram()->getDataWindow()->getCodeColor().calcColor( semValue,
                                                                        myHisto->GetHistogram()->getMinGradient(),
@@ -365,8 +365,8 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         }
         else
         {
-          if( myHisto->GetHistogram()->getColorMode() == SemanticColor::GRADIENT || 
-              ( myHisto->GetHistogram()->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && semValue != 0.0 ) )
+          if( myHisto->GetHistogram()->getColorMode() == TColorFunction::GRADIENT || 
+              ( myHisto->GetHistogram()->getColorMode() == TColorFunction::NOT_NULL_GRADIENT && semValue != 0.0 ) )
           {
             tmpCol = myHisto->GetHistogram()->calcGradientColor( semValue );
             tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );

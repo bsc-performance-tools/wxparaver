@@ -210,7 +210,7 @@ struct PropertyClientData
 
 struct SessionInfo
 {    
-  enum StatusID
+  enum class StatusID
   {
     OPEN   = 0,
     CLOSED = 1

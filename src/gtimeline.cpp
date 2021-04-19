@@ -300,7 +300,7 @@ void gTimeline::Init()
   lastMax = 15;
   lastValuesSize = semanticValuesToColor.size();
   codeColorSet = true;
-  gradientFunc = GradientColor::LINEAR;
+  gradientFunc = TGradientFunction::LINEAR;
   
 #ifdef WIN32
   wheelZoomObjects = false;
@@ -971,7 +971,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 
   switch( myWindow->getObjectAxisSize() )
   {
-    case Window::CURRENT_LEVEL:
+    case TObjectAxisSize::CURRENT_LEVEL:
       if( myWindow->isFusedLinesColorSet() )
       {
         objectExt = dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
@@ -995,7 +995,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       objectExt = dc.GetTextExtent( wxString::FromUTF8( tmpLongestLabel.c_str() ) );
       break;
 
-    case Window::ALL_LEVELS:
+    case TObjectAxisSize::ALL_LEVELS:
       if( myWindow->isFusedLinesColorSet() )
       {
         objectExt = dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
@@ -1026,19 +1026,19 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       objectExt = dc.GetTextExtent( wxString::FromUTF8( tmpLongestLabel.c_str() ) );
       break;
 
-    case Window::ZERO_PERC:
+    case TObjectAxisSize::ZERO_PERC:
       objectExt = wxSize( 0 , 0 );
       break;
 
-    case Window::FIVE_PERC:
+    case TObjectAxisSize::FIVE_PERC:
       objectExt = wxSize( dc.GetSize().GetWidth() * 0.05 , 0 );
       break;
 
-    case Window::TEN_PERC:
+    case TObjectAxisSize::TEN_PERC:
       objectExt = wxSize( dc.GetSize().GetWidth() * 0.10 , 0 );
       break;
 
-    case Window::TWENTYFIVE_PERC:
+    case TObjectAxisSize::TWENTYFIVE_PERC:
       objectExt = wxSize( dc.GetSize().GetWidth() * 0.25 , 0 );
       break;
 
@@ -1154,11 +1154,11 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 
       switch( myWindow->getObjectLabels() )
       {
-        case Window::ALL_LABELS:
+        case TObjectLabels::ALL_LABELS:
           drawLabel = true;
           break;
           
-        case Window::SPACED_LABELS:
+        case  TObjectLabels::SPACED_LABELS:
           if( ( printlast && ( obj % everyobj == 0 || obj == numObjects - 1 ) ) ||
               ( !printlast && obj == 0 ) )
             drawLabel = true;
@@ -1167,7 +1167,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
           //drawLabel = y > accumHeight;
           break;
           
-        case Window::POWER2_LABELS:
+        case TObjectLabels::POWER2_LABELS:
           if( obj == power2 - 1 )
           {
             drawLabel = true;
@@ -1181,7 +1181,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       }
 
       if( ( printall || drawLabel ) &&
-          !( myWindow->getObjectAxisSize() == Window::ZERO_PERC ) )
+          !( myWindow->getObjectAxisSize() == TObjectAxisSize::ZERO_PERC ) )
       {
         if( myWindow->getLevel() == CPU || myWindow->getLevel() == NODE || myWindow->getLevel() == SYSTEM )
           dc.DrawText( wxString::FromUTF8( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
@@ -3623,14 +3623,14 @@ wxString gTimeline::buildFormattedFileName() const
 void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 {
   wxString imagePath;
-  ParaverConfig::TImageFormat filterIndex;
+  TImageFormat filterIndex;
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    filterIndex = ParaverConfig::PNG;
+    filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -3658,11 +3658,11 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
       // Also build extensions vector -> FileDialogExtension
       wxString tmpWildcard;
       std::vector< wxString > extensions;
-      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
       {
         wxString currentFormat =
               wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      TImageFormat( i ) ).c_str() );
                       
         extensions.push_back( currentFormat );
 
@@ -3680,14 +3680,14 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
                                wxDefaultSize,
                                _( "filedlg" ),
                                extensions );
-      saveDialog.SetFilterIndex( filterIndex );
+      saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
       if ( saveDialog.ShowModal() != wxID_OK )
       {
         setEnableDestroyButton( true );
         return;
       }
 
-      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
   }
@@ -3773,16 +3773,16 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 #endif
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
@@ -3853,7 +3853,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
     wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
     wxString currentFormat =
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( filterIndex ) ).c_str() );
+                    TImageFormat( filterIndex ) ).c_str() );
     wxString tmpScaledTimelinePath = wxFileName( imagePath ).GetPathWithSep() +
                                      wxFileName( imagePath ).GetName() +
                                      wxString( _(".w_legend.") ) +
@@ -3884,7 +3884,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   defaultDir = _("./");
 #endif
 
-  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   tmpSuffix = _(".");
   if ( myWindow->isGradientColorSet() )
      tmpSuffix +=
@@ -3911,11 +3911,11 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     // Also build extensions vector -> FileDialogExtension
     wxString tmpWildcard;
     std::vector< wxString > extensions;
-    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
     {
       wxString currentFormat =
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( i ) ).c_str() );
+                    TImageFormat( i ) ).c_str() );
                     
       extensions.push_back( currentFormat );
       
@@ -3933,14 +3933,14 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                              wxDefaultSize,
                              _( "filedlg" ),
                              extensions );
-    saveDialog.SetFilterIndex( filterIndex );
+    saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
     if ( saveDialog.ShowModal() != wxID_OK )
     {
       setEnableDestroyButton( true );
       return;
     }
 
-    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetPath();
   }
   
@@ -3960,18 +3960,18 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   int backgroundMode = wxTRANSPARENT; // default
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       backgroundMode = wxSOLID;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       backgroundMode = wxSOLID;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
@@ -4050,7 +4050,7 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   wxFileName startingDir( wxString::FromUTF8( myWindow->getTrace()->getFileName().c_str() ) );
   wxString defaultDir = startingDir.GetPath();
 
-  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   
   wxString legendSuffix = _( "_code_legend" );
   if ( myWindow->isGradientColorSet() )
@@ -4065,7 +4065,7 @@ void gTimeline::saveImageDialog( wxString whichFileName )
     return;
   }
 
-  filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ); //ParaverConfig::PNG; //ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+  filterIndex = TImageFormat( saveDialog.GetFilterIndex() ); // TImageFormat::PNG; //TImageFormat( saveDialog.GetFilterIndex() );
   
 
   if ( saveDialog.DialogSavesImage() )
@@ -4080,17 +4080,17 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   }
 }
 
-void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
+void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, TImageFormat filterIndex )
 {
   wxString imagePath;
- /* ParaverConfig::TImageFormat filterIndex;*/
+ /* TImageFormat filterIndex;*/
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    //filterIndex = ParaverConfig::PNG;
+    //filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -4118,11 +4118,11 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
       // Also build extensions vector -> FileDialogExtension
       wxString tmpWildcard;
       std::vector< wxString > extensions;
-      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
       {
         wxString currentFormat =
               wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      TImageFormat( i ) ).c_str() );
                       
         extensions.push_back( currentFormat );
 
@@ -4147,7 +4147,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
         return;
       }
 
-      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
   }
@@ -4233,16 +4233,16 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
 #endif
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
@@ -4313,7 +4313,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
     wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
     wxString currentFormat =
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( filterIndex ) ).c_str() );
+                    TImageFormat( filterIndex ) ).c_str() );
     wxString tmpScaledTimelinePath = wxFileName( imagePath ).GetPathWithSep() +
                                      wxFileName( imagePath ).GetName() +
                                      wxString( _(".w_legend.") ) +
@@ -4328,7 +4328,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
 }
 
 
-void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
+void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, TImageFormat filterIndex )
 {
   wxString imageName;
   wxString tmpSuffix;
@@ -4348,7 +4348,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
   defaultDir = _("./");
 #endif
 
-  // ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  // TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   tmpSuffix = _(".");
   if ( myWindow->isGradientColorSet() )
      tmpSuffix +=
@@ -4375,11 +4375,11 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
     // Also build extensions vector -> FileDialogExtension
     wxString tmpWildcard;
     std::vector< wxString > extensions;
-    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
     {
       wxString currentFormat =
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( i ) ).c_str() );
+                    TImageFormat( i ) ).c_str() );
                     
       extensions.push_back( currentFormat );
       
@@ -4406,7 +4406,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
       return;
     }
 
-    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetPath();
   }
   // Get colors
@@ -4425,18 +4425,18 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
   int backgroundMode = wxTRANSPARENT; // default
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       backgroundMode = wxSOLID;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       backgroundMode = wxSOLID;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
@@ -5253,11 +5253,11 @@ void gTimeline::saveText()
   // Also fills extension
   wxString tmpWildcard;
   vector< wxString > extensions;
-  for ( PRV_UINT16 i = 0; i < PRV_UINT16( ParaverConfig::PLAIN ); ++i )
+  for ( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
     wxString currentFormat =
           wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
-                  ParaverConfig::TTextFormat( i ) ).c_str() );
+                  TTextFormat( i ) ).c_str() );
     tmpWildcard +=
             currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
 
@@ -5276,7 +5276,7 @@ void gTimeline::saveText()
                                   _( "filedlg" ),
                                   extensions );
                            
-  saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveTextFormat() );
+  saveDialog.SetFilterIndex( static_cast< int >( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ) );
   
   if ( saveDialog.ShowModal() == wxID_OK )
   {
@@ -5320,7 +5320,7 @@ void gTimeline::saveText()
     paraverMain::dialogProgress->Show();
   
     // Save timeline text
-    Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
+    Output *output = Output::createOutput( (TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
     
     // Clustering default options
@@ -5665,7 +5665,7 @@ void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
   checkWWHex->Enable( true );
 }
 
-void gTimeline::OnMenuGradientFunction( GradientColor::TGradientFunction function )
+void gTimeline::OnMenuGradientFunction( TGradientFunction function )
 {
   myWindow->getGradientColor().setGradientFunction( function );
   myWindow->setRedraw( true );

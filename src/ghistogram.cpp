@@ -864,7 +864,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       bool tmpDrawColor = false;
       rgb tmpColorToDraw;
       TSemanticValue tmpValueToDraw = DrawMode::selectValue( valuesObjects, myHistogram->getDrawModeObjects() );
-      if( myHistogram->getColorMode() == SemanticColor::COLOR )
+      if( myHistogram->getColorMode() == TColorFunction::COLOR )
       {
         tmpColorToDraw = myHistogram->getDataWindow()->getCodeColor().calcColor( tmpValueToDraw,
                                                                                  myHistogram->getMinGradient(), myHistogram->getMaxGradient(),
@@ -873,8 +873,8 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       }
       else
       {
-        if( myHistogram->getColorMode() == SemanticColor::GRADIENT ||
-            ( myHistogram->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && tmpValueToDraw != 0.0 ) )
+        if( myHistogram->getColorMode() == TColorFunction::GRADIENT ||
+            ( myHistogram->getColorMode() == TColorFunction::NOT_NULL_GRADIENT && tmpValueToDraw != 0.0 ) )
         {
           tmpColorToDraw = myHistogram->calcGradientColor( tmpValueToDraw );
           tmpDrawColor = true;
@@ -2786,7 +2786,7 @@ void gHistogram::OnLabelLeftClick( wxGridEvent& event )
 }
 
 
-void gHistogram::OnMenuGradientFunction( GradientColor::TGradientFunction function )
+void gHistogram::OnMenuGradientFunction( TGradientFunction function )
 {
   myHistogram->getGradientColor().setGradientFunction( function );
   myHistogram->setRedraw( true );
@@ -2836,11 +2836,11 @@ void gHistogram::saveText( bool onlySelectedPlane )
   // Builds following wildcard: _( "CSV (*.csv)|*.csv|GNUPlot (*.gnuplot)|*.gnuplot" )
   // Also fills extension
   wxString tmpWildcard;
-  for ( PRV_UINT16 i = 0; i < PRV_UINT16( ParaverConfig::PLAIN ); ++i )
+  for ( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
     wxString currentFormat =
           wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
-                  ParaverConfig::TTextFormat( i ) ).c_str() );
+                  TTextFormat( i ) ).c_str() );
     tmpWildcard +=
             currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
 
@@ -2859,11 +2859,11 @@ void gHistogram::saveText( bool onlySelectedPlane )
                                   _( "filedlg" ),
                                   extensions );
 
-  saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getHistogramSaveTextFormat() );
+  saveDialog.SetFilterIndex( static_cast< int > ( ParaverConfig::getInstance()->getHistogramSaveTextFormat() ) );
 
   if ( saveDialog.ShowModal() == wxID_OK )
   {
-    Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
+    Output *output = Output::createOutput( (TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
     
     // Set up progress controller
@@ -2926,14 +2926,14 @@ void gHistogram::saveText( bool onlySelectedPlane )
 void gHistogram::saveImageDialog( bool showSaveDialog,  wxString whichFileName )
 {
   wxString imagePath;
-  ParaverConfig::TImageFormat filterIndex;
+  TImageFormat filterIndex;
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    filterIndex = ParaverConfig::PNG;
+    filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -2970,7 +2970,7 @@ void gHistogram::saveImageDialog( bool showSaveDialog,  wxString whichFileName )
       return;
     }
 
-    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetImageFilePath();
   
     saveImage( false, imagePath, filterIndex );
@@ -2982,14 +2982,14 @@ void gHistogram::saveImageDialog( bool showSaveDialog,  wxString whichFileName )
 void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
 {
   wxString imagePath;
-  ParaverConfig::TImageFormat filterIndex;
+  TImageFormat filterIndex;
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    filterIndex = ParaverConfig::PNG;
+    filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -3018,11 +3018,11 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
       // Also build extensions vector -> FileDialogExtension
       wxString tmpWildcard;
       std::vector< wxString > extensions;
-      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
       {
         wxString currentFormat =
               wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      TImageFormat( i ) ).c_str() );
                       
         extensions.push_back( currentFormat );
                       
@@ -3041,7 +3041,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
                                _( "filedlg" ),
                                extensions );
 
-      saveDialog.SetFilterIndex( filterIndex );
+      saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
 
       if ( saveDialog.ShowModal() != wxID_OK )
       {
@@ -3049,23 +3049,23 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName )
         return;
       }
 
-      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
   }
 #else
 
-void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
+void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, TImageFormat filterIndex )
 {
   wxString imagePath;
-  //ParaverConfig::TImageFormat filterIndex;
+  //TImageFormat filterIndex;
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    //filterIndex = ParaverConfig::PNG;
+    //filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -3093,11 +3093,11 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, Paraver
       // Also build extensions vector -> FileDialogExtension
       wxString tmpWildcard;
       std::vector< wxString > extensions;
-      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
       {
         wxString currentFormat =
               wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      TImageFormat( i ) ).c_str() );
                       
         extensions.push_back( currentFormat );
                       
@@ -3124,7 +3124,7 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, Paraver
         return;
       }
 
-      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
   }
@@ -3207,16 +3207,16 @@ void gHistogram::saveImage( bool showSaveDialog, wxString whichFileName, Paraver
 #endif
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType =  wxBITMAP_TYPE_BMP;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType =  wxBITMAP_TYPE_JPEG;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType =  wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:

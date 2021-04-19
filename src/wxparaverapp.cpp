@@ -767,7 +767,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
     {
       mainWindow->SetTutorialsWindow( 
               HelpContents::createObject( 
-                      HelpContents::TUTORIAL,
+                      TContents::TUTORIAL,
                       mainWindow, 
                       wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
                       true, wxID_ANY, _("Tutorials") 

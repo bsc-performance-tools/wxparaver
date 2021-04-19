@@ -104,7 +104,7 @@ class prvEventInfoProperty: public wxPGProperty
 {
   WX_PG_DECLARE_PROPERTY_CLASS( prvEventInfoProperty )
   public:
-    enum InfoType{ TYPES = 0, VALUES };
+    enum class InfoType{ TYPES = 0, VALUES };
 
     prvEventInfoProperty( const wxString& label,
                           const wxString& name,

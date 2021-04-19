@@ -663,18 +663,18 @@ void paraverMain::refreshMenuHints()
     std::vector< std::pair< std::string, std::string > > currentHints;
     if( currentWorkspace < firstUserWorkspace[ getCurrentTrace() ] ) // Distributed workspaces
     {
-      currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getHintCFGs();
-      if( workspacesManager->existWorkspace( *it, WorkspaceManager::USER_DEFINED ) )
+      currentHints = workspacesManager->getWorkspace( *it, TWorkspaceSet::DISTRIBUTED ).getHintCFGs();
+      if( workspacesManager->existWorkspace( *it, TWorkspaceSet::USER_DEFINED ) )
       {
-        vector< WorkspaceValue > tmpDistAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::DISTRIBUTED ).getAutoTypes();
+        vector< WorkspaceValue > tmpDistAutoTypes = workspacesManager->getWorkspace( *it, TWorkspaceSet::DISTRIBUTED ).getAutoTypes();
         sort( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end() );
-        vector< WorkspaceValue > tmpUserAutoTypes = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getAutoTypes();
+        vector< WorkspaceValue > tmpUserAutoTypes = workspacesManager->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ).getAutoTypes();
         sort( tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() );
         if( includes( tmpDistAutoTypes.begin(), tmpDistAutoTypes.end(),
                       tmpUserAutoTypes.begin(), tmpUserAutoTypes.end() ) )
         {
           currentHints.push_back( std::pair< std::string, std::string >( "WXSEPARATOR", "WXSEPARATOR" ) );
-          std::vector< std::pair< std::string, std::string > > tmpHints = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getHintCFGs();
+          std::vector< std::pair< std::string, std::string > > tmpHints = workspacesManager->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ).getHintCFGs();
           currentHints.insert( currentHints.end(), tmpHints.begin(), tmpHints.end() );
         }
       }
@@ -686,9 +686,9 @@ void paraverMain::refreshMenuHints()
         menuHints->AppendSeparator();
         separator = true;
       }
-      if( workspacesManager->existWorkspace( *it, WorkspaceManager::DISTRIBUTED ) )
+      if( workspacesManager->existWorkspace( *it, TWorkspaceSet::DISTRIBUTED ) )
         currentWorkspaceName += wxT( "#2" );
-      currentHints = workspacesManager->getWorkspace( *it, WorkspaceManager::USER_DEFINED ).getHintCFGs();
+      currentHints = workspacesManager->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ).getHintCFGs();
     }
 
     for ( std::vector<std::pair<std::string,std::string> >::iterator it2 = currentHints.begin(); it2 != currentHints.end(); ++it2 )
@@ -3426,7 +3426,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetHistogramHideEmpty( !paraverConfig->getHistogramViewEmptyColumns() );
   preferences.SetHistogramShowGradient( paraverConfig->getHistogramViewGradientColors() );
   preferences.SetHistogramLabelsColor( paraverConfig->getHistogramViewFirstRowColored() );
-  preferences.SetHistogramGradientFunction( paraverConfig->getHistogramGradientFunction() );
+  preferences.SetHistogramGradientFunction( static_cast< PRV_UINT32 > ( paraverConfig->getHistogramGradientFunction() ) );
   preferences.SetHistogramDrawmodeSemantic( ( PRV_UINT32 ) paraverConfig->getHistogramDrawmodeSemantic() );
   preferences.SetHistogramDrawmodeObjects( ( PRV_UINT32 ) paraverConfig->getHistogramDrawmodeObjects() );
   preferences.SetHistogramScientificNotation( paraverConfig->getHistogramScientificNotation() );
@@ -3508,21 +3508,21 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setTimelineViewEventsLines( preferences.GetTimelineEventLines() );
     paraverConfig->setTimelineViewCommunicationsLines( preferences.GetTimelineCommunicationLines() );
     paraverConfig->setTimelineSemanticScaleMinAtZero( preferences.GetTimelineSemanticScaleMinAtZero() );
-    paraverConfig->setTimelineColor( (SemanticColor::TColorFunction)preferences.GetTimelineColor() );
-    paraverConfig->setTimelineGradientFunction( (GradientColor::TGradientFunction)preferences.GetTimelineGradientFunction() );
+    paraverConfig->setTimelineColor( (TColorFunction)preferences.GetTimelineColor() );
+    paraverConfig->setTimelineGradientFunction( (TGradientFunction)preferences.GetTimelineGradientFunction() );
     paraverConfig->setTimelineDrawmodeTime( (DrawModeMethod)preferences.GetTimelineDrawmodeTime() );
     paraverConfig->setTimelineDrawmodeObjects( (DrawModeMethod)preferences.GetTimelineDrawmodeObjects() );
     paraverConfig->setTimelinePixelSize( preferences.GetTimelinePixelSize() );
-    paraverConfig->setTimelineLabels( (Window::TObjectLabels)preferences.GetTimelineObjectLabels() );
-    paraverConfig->setTimelineObjectAxisSize( (Window::TObjectAxisSize)preferences.GetTimelineObjectAxis() );
+    paraverConfig->setTimelineLabels( (TObjectLabels)preferences.GetTimelineObjectLabels() );
+    paraverConfig->setTimelineObjectAxisSize( (TObjectAxisSize)preferences.GetTimelineObjectAxis() );
     paraverConfig->setTimelineWhatWhereSemantic( preferences.GetTimelineWWSemantic() );
     paraverConfig->setTimelineWhatWhereEvents( preferences.GetTimelineWWEvents() );
     paraverConfig->setTimelineWhatWhereCommunications( preferences.GetTimelineWWCommunications() );
     paraverConfig->setTimelineWhatWherePreviousNext( preferences.GetTimelineWWPreviousNext() );
     paraverConfig->setTimelineWhatWhereText( preferences.GetTimelineWWText() );
     paraverConfig->setTimelineWhatWhereEventPixels( preferences.GetTimelineWWEventPixels() );
-    paraverConfig->setTimelineSaveImageFormat( (ParaverConfig::TImageFormat)preferences.GetTimelineSaveImageFormat() );
-    paraverConfig->setTimelineSaveTextFormat( (ParaverConfig::TTextFormat)preferences.GetTimelineSaveTextFormat() );
+    paraverConfig->setTimelineSaveImageFormat( (TImageFormat)preferences.GetTimelineSaveImageFormat() );
+    paraverConfig->setTimelineSaveTextFormat( (TTextFormat)preferences.GetTimelineSaveTextFormat() );
 
     // HISTOGRAM
     //paraverConfig->setHistogramDefaultName( preferences.GetHistogramNameFormatPrefix() );
@@ -3532,7 +3532,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setHistogramViewEmptyColumns( !preferences.GetHistogramHideEmpty() );
     paraverConfig->setHistogramViewGradientColors( preferences.GetHistogramShowGradient() );
     paraverConfig->setHistogramViewFirstRowColored( preferences.GetHistogramLabelsColor() );
-    paraverConfig->setHistogramGradientFunction( (GradientColor::TGradientFunction)preferences.GetHistogramGradientFunction() );
+    paraverConfig->setHistogramGradientFunction( (TGradientFunction)preferences.GetHistogramGradientFunction() );
     paraverConfig->setHistogramDrawmodeSemantic( ( DrawModeMethod ) preferences.GetHistogramDrawmodeSemantic() );
     paraverConfig->setHistogramDrawmodeObjects( ( DrawModeMethod ) preferences.GetHistogramDrawmodeObjects() );
     paraverConfig->setHistogramScientificNotation( preferences.GetHistogramScientificNotation() );
@@ -3544,8 +3544,8 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setHistogramAutofitThirdDimensionScale( preferences.GetHistogramAutofit3DScale() );
     paraverConfig->setHistogramAutofitDataGradient( preferences.GetHistogramAutofitDataGradient() );
     paraverConfig->setHistogramNumColumns( preferences.GetHistogramNumColumns() );
-    paraverConfig->setHistogramSaveImageFormat( ( ParaverConfig::TImageFormat ) preferences.GetHistogramSaveImageFormat() );
-    paraverConfig->setHistogramSaveTextFormat( ( ParaverConfig::TTextFormat ) preferences.GetHistogramSaveTextFormat() );
+    paraverConfig->setHistogramSaveImageFormat( ( TImageFormat ) preferences.GetHistogramSaveImageFormat() );
+    paraverConfig->setHistogramSaveTextFormat( ( TTextFormat ) preferences.GetHistogramSaveTextFormat() );
     paraverConfig->setHistogramSkipCreateDialog( preferences.GetHistogramSkipCreateDialog() );
 
     // COLORS
@@ -4659,7 +4659,7 @@ void paraverMain::OnTutorialsClick( wxCommandEvent& event )
   if ( tutorialsWindow == nullptr )
   {
     tutorialsRoot = wxString( GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 );
-    tutorialsWindow = HelpContents::createObject( HelpContents::TUTORIAL, this, tutorialsRoot, 
+    tutorialsWindow = HelpContents::createObject( TContents::TUTORIAL, this, tutorialsRoot, 
                                                   true, wxID_ANY, _("Tutorials") );
   }
 
@@ -4810,7 +4810,7 @@ void paraverMain::createHelpContentsWindow(
   if ( helpContents == nullptr )
   {
     //helpContents = new HelpContents( nullptr, helpContentsAbsolutePath, lookForContents, wxID_ANY, _("Help Contents") );
-    helpContents = HelpContents::createObject( HelpContents::HELP, nullptr, helpContentsAbsolutePath, 
+    helpContents = HelpContents::createObject( TContents::HELP, nullptr, helpContentsAbsolutePath, 
                                                lookForContents, wxID_ANY, _("Help Contents") );
   }
 
@@ -4936,7 +4936,7 @@ void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
 {
-  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces( WorkspaceManager::ALL );
+  vector< string > tmpWorkspaces = workspacesManager->getWorkspaces( TWorkspaceSet::ALL );
 
   if( tmpWorkspaces.empty() )
   {
@@ -5004,7 +5004,7 @@ void paraverMain::setActiveWorkspacesText()
         tmpActive += wxString::FromUTF8( it->c_str() );
       else
       {
-        if( workspacesManager->existWorkspace( it->c_str(), WorkspaceManager::DISTRIBUTED ) )
+        if( workspacesManager->existWorkspace( it->c_str(), TWorkspaceSet::DISTRIBUTED ) )
           tmpActive += wxString::FromUTF8( it->c_str() ) + wxT( "#2" );
         else
           tmpActive += wxString::FromUTF8( it->c_str() );

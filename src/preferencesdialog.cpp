@@ -1574,28 +1574,28 @@ bool PreferencesDialog::TransferDataToWindow()
   checkTimelineCommunicationLines->SetValue( timelineCommunicationLines );
   checkSemanticScaleMinAtZero->SetValue( timelineSemanticScaleMinAtZero );
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::COLOR, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::COLOR, options );
   setLabelsChoiceBox( options, timelineColor, choiceTimelineColor );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::GRADIENT_FUNCTION, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::GRADIENT_FUNCTION, options );
   setLabelsChoiceBox( options, timelineGradientFunction, choiceTimelineGradientFunction );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::DRAWMODE, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::DRAWMODE, options );
   setLabelsChoiceBox( options, timelineDrawmodeTime, choiceTimelineDrawmodeTime );
   setLabelsChoiceBox( options, timelineDrawmodeObjects, choiceTimelineDrawmodeObjects );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::PIXEL_SIZE, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::PIXEL_SIZE, options );
   setLabelsChoiceBox( options, timelinePixelSize, choiceTimelinePixelSize );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::OBJECT_LABELS, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::OBJECT_LABELS, options );
   setLabelsChoiceBox( options, timelineObjectLabels, choiceTimelineLabels );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::OBJECT_AXIS, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::OBJECT_AXIS, options );
   setLabelsChoiceBox( options, timelineObjectAxis, choiceTimelineObjectAxis );
   
   checkTimelineWWSemantic->SetValue( timelineWWSemantic );
@@ -1607,11 +1607,11 @@ bool PreferencesDialog::TransferDataToWindow()
   txtTimelineWWEventPixels->SetValue( ( int ) timelineWWEventPixels );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::IMAGE_FORMAT, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::IMAGE_FORMAT, options );
   setLabelsChoiceBox( options, timelineSaveImageFormat, choiceTimelineSaveImageFormat );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::TEXT_FORMAT, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::TEXT_FORMAT, options );
   setLabelsChoiceBox( options, timelineSaveTextFormat, choiceTimelineSaveTextFormat );
 
   // HISTOGRAM
@@ -1625,11 +1625,11 @@ bool PreferencesDialog::TransferDataToWindow()
   checkHistogramLabelsColor->SetValue( histogramLabelsColor );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::GRADIENT_FUNCTION, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::GRADIENT_FUNCTION, options );
   setLabelsChoiceBox( options, histogramGradientFunction, choiceHistogramGradientFunction );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::DRAWMODE, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::DRAWMODE, options );
   setLabelsChoiceBox( options, histogramDrawmodeSemantic, choiceHistogramDrawmodeSemantic );
   setLabelsChoiceBox( options, histogramDrawmodeObjects, choiceHistogramDrawmodeObjects );
 
@@ -1645,11 +1645,11 @@ bool PreferencesDialog::TransferDataToWindow()
   txtHistogramNumColumns->SetValue( ( int )histogramNumColumns );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::IMAGE_FORMAT, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::IMAGE_FORMAT, options );
   setLabelsChoiceBox( options, histogramSaveImageFormat, choiceHistogramSaveImageFormat );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::TEXT_FORMAT, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::TEXT_FORMAT, options );
   setLabelsChoiceBox( options, histogramSaveTextFormat, choiceHistogramSaveTextFormat );
 
   checkHistogramSkipCreateDialog->SetValue( histogramSkipCreateDialog );
@@ -1679,12 +1679,12 @@ bool PreferencesDialog::TransferDataToWindow()
     listPDFReaders->InsertItems( pdfReaderOptions, 0 );
 
   // WORKSPACES
-  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( WorkspaceManager::USER_DEFINED );
+  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( TWorkspaceSet::USER_DEFINED );
   for( std::vector<std::string>::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
   {
     listWorkspaces->Append( wxString::FromUTF8( it->c_str() ) );
     workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromUTF8( it->c_str() ),
-                                                              WorkspaceManager::getInstance()->getWorkspace( *it, WorkspaceManager::USER_DEFINED ) ) );
+                                                              WorkspaceManager::getInstance()->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ) ) );
   }
   
   fileBrowserHintPath->SetPath( wxString::FromUTF8( cfgsPath.c_str() ) );
@@ -1726,8 +1726,8 @@ bool PreferencesDialog::TransferDataFromWindow()
   timelineDrawmodeTime = ( PRV_UINT32 )choiceTimelineDrawmodeTime->GetCurrentSelection();
   timelineDrawmodeObjects = ( PRV_UINT32 )choiceTimelineDrawmodeObjects->GetCurrentSelection();
   timelinePixelSize = ( PRV_UINT32 )choiceTimelinePixelSize->GetCurrentSelection();
-  timelineObjectLabels = ( Window::TObjectLabels ) choiceTimelineLabels->GetCurrentSelection();
-  timelineObjectAxis = ( Window::TObjectAxisSize ) choiceTimelineObjectAxis->GetCurrentSelection();
+  timelineObjectLabels = ( TObjectLabels ) choiceTimelineLabels->GetCurrentSelection();
+  timelineObjectAxis = ( TObjectAxisSize ) choiceTimelineObjectAxis->GetCurrentSelection();
 
   timelineWWSemantic = checkTimelineWWSemantic->IsChecked();
   timelineWWEvents = checkTimelineWWEvents->IsChecked();
@@ -2024,11 +2024,11 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
   while( listWorkspaces->FindString( workspaceName ) != wxNOT_FOUND )
     workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), ++n );
   listWorkspaces->Append( workspaceName );
-  WorkspaceValue::WorkspaceType tmpWorkspaceType;
+  WorkspaceType tmpWorkspaceType;
   if( radioStates->GetValue() )
-    tmpWorkspaceType = WorkspaceValue::STATE;
+    tmpWorkspaceType = WorkspaceType::STATE;
   else
-    tmpWorkspaceType = WorkspaceValue::EVENT;
+    tmpWorkspaceType = WorkspaceType::EVENT;
   workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace( std::string( workspaceName.mb_str() ), tmpWorkspaceType ) ) );
     
   // Focus in name text control  
@@ -2078,7 +2078,7 @@ void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
   txtWorkspaceName->ChangeValue( listWorkspaces->GetStringSelection() );
   Workspace& currentWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
   
-  if( currentWrk.getType() == WorkspaceValue::STATE )
+  if( currentWrk.getType() == WorkspaceType::STATE )
     radioStates->SetValue( true );
   else
     radioEventTypes->SetValue( true );
@@ -2316,9 +2316,9 @@ void PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& eve
     {
       WorkspaceValue tmpWorkSpaceValue;
       if( radioStates->GetValue() )
-        tmpWorkSpaceValue.myType = WorkspaceValue::STATE;
+        tmpWorkSpaceValue.myType = WorkspaceType::STATE;
       else
-        tmpWorkSpaceValue.myType = WorkspaceValue::EVENT;
+        tmpWorkSpaceValue.myType = WorkspaceType::EVENT;
       tmpWorkSpaceValue.UInfo.eventType = tmpEventType;
       tmpAutoTypes.push_back( tmpWorkSpaceValue );
     }
@@ -2390,7 +2390,7 @@ void PreferencesDialog::OnRadiostatesSelected( wxCommandEvent& event )
 {
   Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
 
-  tmpWrk.setType( WorkspaceValue::STATE );
+  tmpWrk.setType( WorkspaceType::STATE );
 }
 
 
@@ -2402,7 +2402,7 @@ void PreferencesDialog::OnRadioeventypesSelected( wxCommandEvent& event )
 {
   Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
 
-  tmpWrk.setType( WorkspaceValue::EVENT );
+  tmpWrk.setType( WorkspaceType::EVENT );
 }
 
 

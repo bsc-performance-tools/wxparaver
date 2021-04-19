@@ -565,7 +565,7 @@ public:
 
   void OnPopUpInfoPanel();
   
-  void OnMenuGradientFunction( GradientColor::TGradientFunction function );
+  void OnMenuGradientFunction( TGradientFunction function );
   
   void drawTimeMarks( std::vector< TRecordTime> times,
                       std::vector<TObjectOrder> &selectedObjects,
@@ -594,8 +594,8 @@ public:
   void saveImageLegend( bool showSaveDialog = true  );
   void saveImageDialog( wxString whichFileName );
 #else  
-  void saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
-  void saveImageLegend( bool showSaveDialog = true, wxString whichFileName = _( "" ), ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
+  void saveImage( bool showSaveDialog, wxString whichFileName, TImageFormat filterIndex =  TImageFormat::PNG );
+  void saveImageLegend( bool showSaveDialog = true, wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
   void saveImageDialog( wxString whichFileName );
 #endif
 
@@ -730,7 +730,7 @@ private:
   TSemanticValue lastMax;
   size_t lastValuesSize;
   bool codeColorSet;
-  GradientColor::TGradientFunction gradientFunc;
+  TGradientFunction gradientFunc;
   TSemanticValue selectedCustomValue;
   wxPanel *selectedItemColor;
 
@@ -855,7 +855,7 @@ private:
 #else
       wxBitmapType& imageType;
 #endif
-      ParaverConfig::TImageFormat filterIndex;
+      TImageFormat filterIndex;
       wxString tmpSuffix;
       TSemanticValue currentMin;
       TSemanticValue currentMax;

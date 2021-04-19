@@ -68,7 +68,7 @@ BEGIN_EVENT_TABLE( RunningProcess, wxProcess )
   EVT_TIMER( ID_TIMER_MESSAGE, RunningProcess::OnTimerMessage )
 END_EVENT_TABLE()
 
-wxString RunScript::clusteringXML = wxString( wxT("") );
+wxString TExternalApp::CLUSTERINGXML = wxString( wxT("") );
 
 void RunningProcess::OnTerminate( int pid, int status )
 {
@@ -354,27 +354,27 @@ void RunScript::Init()
   environmentVariable[ DIMEMAS_HOME ] = wxString( wxT("DIMEMAS_HOME") );
 
   // Labels to construct selector & warning dialogs
-  applicationLabel[ DIMEMAS_WRAPPER ]= wxString( wxT("Dimemas") );
-  applicationLabel[ STATS_WRAPPER ]  = wxString( wxT("Stats") );
-  applicationLabel[ CLUSTERING ]     = wxString( wxT("Clustering") );
-  applicationLabel[ FOLDING ]        = wxString( wxT("Folding") );
-  applicationLabel[ USER_DEFINED ]   = wxString( wxT("User defined") );
+  applicationLabel[ TExternalApp::DIMEMAS_WRAPPER ]= wxString( wxT("Dimemas") );
+  applicationLabel[ TExternalApp::STATS_WRAPPER ]  = wxString( wxT("Stats") );
+  applicationLabel[ TExternalApp::CLUSTERING ]     = wxString( wxT("Clustering") );
+  applicationLabel[ TExternalApp::FOLDING ]        = wxString( wxT("Folding") );
+  applicationLabel[ TExternalApp::USER_DEFINED ]   = wxString( wxT("User defined") );
   // Following only for warning dialogs
-  applicationLabel[ DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
-  applicationLabel[ STATS ]          = wxString( wxT("Stats") );
+  applicationLabel[ TExternalApp::DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
+  applicationLabel[ TExternalApp::STATS ]          = wxString( wxT("Stats") );
 
   // application names
-  application[ DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );
+  application[ TExternalApp::DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );
 #ifdef WIN32
-  application[ STATS_WRAPPER ]       = wxString( wxT("stats.exe") );
+  application[ TExternalApp::STATS_WRAPPER ]       = wxString( wxT("stats.exe") );
 #else
-  application[ STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );
+  application[ TExternalApp::STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );
 #endif
-  application[ CLUSTERING ]          = wxString( wxT("BurstClustering") );
-  application[ FOLDING ]             = wxString( wxT("rri-auto") );
-  application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED
-  application[ DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
-  application[ STATS ]               = wxString( wxT("stats") );
+  application[ TExternalApp::CLUSTERING ]          = wxString( wxT("BurstClustering") );
+  application[ TExternalApp::FOLDING ]             = wxString( wxT("rri-auto") );
+  application[ TExternalApp::USER_DEFINED ]        = wxString( wxT("") ); // NOT USED
+  application[ TExternalApp::DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
+  application[ TExternalApp::STATS ]               = wxString( wxT("stats") );
 
   tagFoldingOutputDirectory = wxString( wxT("Output directory:") );
 
@@ -1410,7 +1410,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case USER_DEFINED:
+    TWorkspaceSet::USER_DEFINED:
       
       tmpParams = expandVariables( textCtrlDefaultParameters->GetValue() );
       command = tmpParams.BeforeFirst( ' ' );
@@ -1542,7 +1542,7 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
 
       case CLUSTERING:
       case FOLDING:
-      case USER_DEFINED:
+      TWorkspaceSet::USER_DEFINED:
       default:
         pathToProgram = getEnvironmentPath( PATH, program );
         if ( !pathToProgram.IsEmpty() )
@@ -1651,7 +1651,7 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();      
       break;
 
-    case USER_DEFINED:
+    TWorkspaceSet::USER_DEFINED:
       active &= !textCtrlDefaultParameters->GetValue().IsEmpty();
       break;
 
@@ -1819,7 +1819,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case USER_DEFINED:
+    TWorkspaceSet::USER_DEFINED:
     default:
       toolTip = wxString( wxT( "Command and parameters to execute\n"
                                "%TRACE refers to input trace" ) );
