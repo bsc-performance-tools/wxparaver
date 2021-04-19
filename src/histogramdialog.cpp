@@ -759,13 +759,13 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
   button3DTimelineAutoFit->Enable( false );
 
   txtBeginTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].first ),
+    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].first ),
                                                       current->getTimeUnit(),
                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
   );
 
   txtEndTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].second ),
+    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].second ),
                                                       current->getTimeUnit(),
                                                       ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
   );
@@ -783,15 +783,15 @@ void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
   Window *current = controlTimelineSelected;
 
   txtBeginTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].first ),
-                                                      current->getTimeUnit(),
-                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].first ),
+                                                     current->getTimeUnit(),
+                                                     ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
   );
 
   txtEndTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ WINDOW_RANGE ].second ),
-                                                      current->getTimeUnit(),
-                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].second ),
+                                                     current->getTimeUnit(),
+                                                     ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
   );
 }
 
@@ -805,15 +805,15 @@ void HistogramDialog::OnRadiobuttonAlltraceSelected( wxCommandEvent& event )
   Window *current = controlTimelineSelected;
 
   txtBeginTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ TRACE_RANGE ].first ),
-                                                      current->getTimeUnit(),
-                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::TRACE_RANGE ) ].first ),
+                                                     current->getTimeUnit(),
+                                                     ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
   );
 
   txtEndTime->SetValue(
-    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ TRACE_RANGE ].second ),
-                                                      current->getTimeUnit(),
-                                                      ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
+    wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::TRACE_RANGE ) ].second ),
+                                                     current->getTimeUnit(),
+                                                     ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() )
   );
 }
 

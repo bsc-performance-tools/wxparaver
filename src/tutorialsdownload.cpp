@@ -168,7 +168,7 @@ class client
       }
       else
       {
-        throw ParaverKernelException( ParaverKernelException::downloadFailed, err.message().c_str() );
+        throw ParaverKernelException( TErrorCode::downloadFailed, err.message().c_str() );
       }
     }
 
@@ -201,7 +201,7 @@ class client
       }
       else
       {
-        throw ParaverKernelException( ParaverKernelException::downloadFailed, err.message().c_str() );
+        throw ParaverKernelException( TErrorCode::downloadFailed, err.message().c_str() );
       }
     }
 
@@ -218,7 +218,7 @@ class client
       }
       else
       {
-        throw ParaverKernelException( ParaverKernelException::downloadFailed, err.message().c_str() );
+        throw ParaverKernelException( TErrorCode::downloadFailed, err.message().c_str() );
       }
     }
 
@@ -238,7 +238,7 @@ class client
       }
       else
       {
-        throw ParaverKernelException( ParaverKernelException::downloadFailed, err.message().c_str() );
+        throw ParaverKernelException( TErrorCode::downloadFailed, err.message().c_str() );
       }
     }
 
@@ -256,13 +256,13 @@ class client
         std::getline( response_stream, status_message );
         if ( !response_stream || http_version.substr( 0, 5 ) != "HTTP/" )
         {
-          throw ParaverKernelException( ParaverKernelException::downloadFailed, "Invalid response" );
+          throw ParaverKernelException( TErrorCode::downloadFailed, "Invalid response" );
         }
         if ( status_code != 200 )
         {
           stringstream tmpStr;
           tmpStr << status_code;
-          throw ParaverKernelException( ParaverKernelException::downloadFailed, string( "Response returned with status code " + tmpStr.str() ).c_str() );
+          throw ParaverKernelException( TErrorCode::downloadFailed, string( "Response returned with status code " + tmpStr.str() ).c_str() );
         }
 
         // Read the response headers, which are terminated by a blank line.
@@ -275,7 +275,7 @@ class client
       }
       else
       {
-        throw ParaverKernelException( ParaverKernelException::downloadFailed, err.message().c_str() );
+        throw ParaverKernelException( TErrorCode::downloadFailed, err.message().c_str() );
       }
     }
 
@@ -310,7 +310,7 @@ class client
       }
       else
       {
-        throw ParaverKernelException( ParaverKernelException::downloadFailed, err.message().c_str() );
+        throw ParaverKernelException( TErrorCode::downloadFailed, err.message().c_str() );
       }
     }
 
@@ -334,7 +334,7 @@ class client
       }
       else if ( err != boost::asio::error::eof )
       {
-        throw ParaverKernelException( ParaverKernelException::downloadFailed, err.message().c_str() );
+        throw ParaverKernelException( TErrorCode::downloadFailed, err.message().c_str() );
       }
     }
 

@@ -2860,7 +2860,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime,
   whatWhereSelectedTimeEventLines = 0;
   whatWhereSelectedTimeCommunicationLines = 0;
 
-  whatWhereLines.push_back( make_pair( BEGIN_OBJECT_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_OBJECT_SECTION, _( "" )));
 
   wxString txt;
 
@@ -2881,9 +2881,9 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime,
   }
   txt << _( "\t  Click time: " ) << formatTime( whichTime, showDate );
   txt << _( "\n" );
-  whatWhereLines.push_back( make_pair( RAW_LINE, txt ) );
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, txt ) );
 
-  whatWhereLines.push_back( make_pair( END_OBJECT_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_OBJECT_SECTION, _( "" )));
 
   if( myWindow->isFusedLinesColorSet() )
     return;
@@ -2946,43 +2946,43 @@ void gTimeline::printWhatWhere( )
 
   whatWhereText->BeginFontSize( fontSize );
 
-  for ( vector< pair< TWWLine, wxString > >::iterator it = whatWhereLines.begin(); 
+  for ( vector< pair< TWhatWhereLine, wxString > >::iterator it = whatWhereLines.begin(); 
         it != whatWhereLines.end(); ++it )
   {
     // Is that section allowed?
     switch( it->first )
     {
-      case BEGIN_OBJECT_SECTION:
+      case TWhatWhereLine::BEGIN_OBJECT_SECTION:
         allowedSection = true;
         break;
-      case BEGIN_PREVNEXT_SECTION:
+      case TWhatWhereLine::BEGIN_PREVNEXT_SECTION:
         allowedSection = checkWWPreviousNext->IsChecked();
         whatWhereText->BeginTextColour( wxColour( 0xb0b0b0 ) ); // GREY
         break;
-      case END_PREVNEXT_SECTION:
+      case TWhatWhereLine::END_PREVNEXT_SECTION:
         whatWhereText->EndTextColour();
         break;
-      case BEGIN_CURRENT_SECTION:
+      case TWhatWhereLine::BEGIN_CURRENT_SECTION:
         allowedSection = true;
         whatWhereText->BeginTextColour( *wxBLACK );
         break;
-      case END_CURRENT_SECTION:
+      case TWhatWhereLine::END_CURRENT_SECTION:
         whatWhereText->EndTextColour();
         break;
-      case BEGIN_RECORDS_SECTION:
+      case TWhatWhereLine::BEGIN_RECORDS_SECTION:
         allowedSection = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
         whatWhereText->BeginFontSize( fontSize - 1 );
         whatWhereText->BeginItalic();
         break;
-      case END_RECORDS_SECTION:
+      case TWhatWhereLine::END_RECORDS_SECTION:
         whatWhereText->EndItalic();
         whatWhereText->EndFontSize();
         break;
-      case BEGIN_SEMANTIC_SECTION:
+      case TWhatWhereLine::BEGIN_SEMANTIC_SECTION:
         allowedSection = checkWWSemantic->IsChecked();
         whatWhereText->BeginBold();
         break;
-      case END_SEMANTIC_SECTION:
+      case TWhatWhereLine::END_SEMANTIC_SECTION:
         whatWhereText->EndBold();
         break;
 
@@ -2992,7 +2992,7 @@ void gTimeline::printWhatWhere( )
           // Is that line allowed?
           switch( it->first )
           {
-            case EVENT_LINE:
+            case TWhatWhereLine::EVENT_LINE:
               if( recordsCount >= 100 )
                 allowedLine = false;
               else
@@ -3001,7 +3001,7 @@ void gTimeline::printWhatWhere( )
                 if( allowedLine ) ++recordsCount;
               }
               break;
-            case COMMUNICATION_LINE:
+            case TWhatWhereLine::COMMUNICATION_LINE:
               if( recordsCount >= 100 )
                 allowedLine = false;
               else
@@ -3011,12 +3011,12 @@ void gTimeline::printWhatWhere( )
               }
               break;
 
-            case SEMANTIC_LINE:
+            case TWhatWhereLine::SEMANTIC_LINE:
               recordsCount = 0;
               allowedLine = checkWWSemantic->IsChecked();
               break;
 
-            case MARK_LINE:
+            case TWhatWhereLine::MARK_LINE:
               allowedLine = (( checkWWEvents->IsChecked() && whatWhereSelectedTimeEventLines > 0 ) ||
                              ( checkWWCommunications->IsChecked() && whatWhereSelectedTimeCommunicationLines > 0 ));
               break;
@@ -3055,12 +3055,12 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool 
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( BEGIN_SEMANTIC_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_SEMANTIC_SECTION, _( "" )));
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( BEGIN_CURRENT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" )));
 
   if ( !textMode )
     onString << _("Semantic value: ");
@@ -3072,14 +3072,14 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool 
                                                                 myWindow->getTimeUnit(), 
                                                                 ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
   onString << _( "\n" );
-  whatWhereLines.push_back( make_pair( SEMANTIC_LINE, onString ));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::SEMANTIC_LINE, onString ));
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( END_CURRENT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( END_PREVNEXT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" )));
 
-  whatWhereLines.push_back( make_pair( END_SEMANTIC_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_SEMANTIC_SECTION, _( "" )));
 }
 
 
@@ -3088,7 +3088,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( BEGIN_RECORDS_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_RECORDS_SECTION, _( "" )));
 
   RecordList *rl = myWindow->getRecordList( whichRow );
   RecordList::iterator it = rl->begin();
@@ -3101,9 +3101,9 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   }
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( BEGIN_CURRENT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" )));
 
   TRecordTime timePerPixel = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                              ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
@@ -3130,7 +3130,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
                                                                      textMode ).c_str() );
       onString << wxT( "\n" );
 
-      whatWhereLines.push_back( make_pair( EVENT_LINE, onString ));
+      whatWhereLines.push_back( make_pair( TWhatWhereLine::EVENT_LINE, onString ));
       onString.clear();
       
       if ( clickedValue )
@@ -3182,7 +3182,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
                   wxT( ", tag: " ) << (*it).getCommTag() << wxT( ")" );
       onString << wxT( "\n" );
 
-      whatWhereLines.push_back( make_pair( COMMUNICATION_LINE, onString ));
+      whatWhereLines.push_back( make_pair( TWhatWhereLine::COMMUNICATION_LINE, onString ));
       onString.clear();
 
       if ( clickedValue )
@@ -3194,12 +3194,12 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   rl->erase( rl->begin(), it );
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( END_CURRENT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( END_PREVNEXT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" )));
 
-  whatWhereLines.push_back( make_pair( END_RECORDS_SECTION, _( "" )));
-  whatWhereLines.push_back( make_pair( RAW_LINE, _( "\n" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_RECORDS_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, _( "\n" )));
 }
 
 

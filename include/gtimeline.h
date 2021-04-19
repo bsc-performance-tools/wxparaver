@@ -140,6 +140,26 @@ class ProgressController;
 #define ID_TIMER_WHEEL 40002
 
 
+enum class TWhatWhereLine
+{
+  RAW_LINE = 0,
+  BEGIN_OBJECT_SECTION,
+  END_OBJECT_SECTION,
+  BEGIN_PREVNEXT_SECTION,
+  END_PREVNEXT_SECTION,
+  BEGIN_CURRENT_SECTION,
+  END_CURRENT_SECTION,
+  BEGIN_SEMANTIC_SECTION,
+  SEMANTIC_LINE,
+  END_SEMANTIC_SECTION,
+  BEGIN_RECORDS_SECTION,
+  MARK_LINE,
+  EVENT_LINE,
+  COMMUNICATION_LINE,
+  END_RECORDS_SECTION
+};
+
+
 /*!
  * gTimeline class declaration
  */
@@ -604,22 +624,6 @@ public:
 
   void setEnableDestroyButton( bool value );
 
-  typedef enum {  RAW_LINE = 0,
-                  BEGIN_OBJECT_SECTION,
-                  END_OBJECT_SECTION,
-                  BEGIN_PREVNEXT_SECTION,
-                  END_PREVNEXT_SECTION,
-                  BEGIN_CURRENT_SECTION,
-                  END_CURRENT_SECTION,
-                  BEGIN_SEMANTIC_SECTION,
-                  SEMANTIC_LINE,
-                  END_SEMANTIC_SECTION,
-                  BEGIN_RECORDS_SECTION,
-                  MARK_LINE,
-                  EVENT_LINE,
-                  COMMUNICATION_LINE,
-                  END_RECORDS_SECTION } TWWLine;
-
   static wxProgressDialog *dialogProgress;
   
   
@@ -745,7 +749,7 @@ private:
   
   static const wxCoord drawBorder = 5;
 
-  vector< pair< TWWLine, wxString > > whatWhereLines;
+  vector< pair< TWhatWhereLine, wxString > > whatWhereLines;
   int whatWhereSelectedTimeEventLines;
   int whatWhereSelectedTimeCommunicationLines;
   TRecordTime    whatWhereTime;

@@ -1372,7 +1372,7 @@ void gHistogram::OnPopUpClone()
                              getAllTracesTree()->GetRootItem(),
                              getSelectedTraceTree( clonedHistogram->getControlWindow()->getTrace() )->GetRootItem() );
   else
-    throw new ParaverKernelException( ParaverKernelException::undefined, "ERROR! NOT FOUND ORIGINAL CONTROL WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
+    throw new ParaverKernelException( TErrorCode::undefined, "ERROR! NOT FOUND ORIGINAL CONTROL WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
     
   if ( GetHistogram()->getDataWindow() != GetHistogram()->getControlWindow() )
   {
@@ -1386,7 +1386,7 @@ void gHistogram::OnPopUpClone()
                             getAllTracesTree()->GetRootItem(),
                             getSelectedTraceTree( clonedHistogram->getDataWindow()->getTrace() )->GetRootItem() );
     else
-      throw new ParaverKernelException( ParaverKernelException::undefined, "ERROR! NOT FOUND ORIGINAL DATA WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
+      throw new ParaverKernelException( TErrorCode::undefined, "ERROR! NOT FOUND ORIGINAL DATA WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
   }
 
   if ( GetHistogram()->getExtraControlWindow() != nullptr &&
@@ -1403,7 +1403,7 @@ void gHistogram::OnPopUpClone()
                                     getAllTracesTree()->GetRootItem(),
                                     getSelectedTraceTree( clonedHistogram->getExtraControlWindow()->getTrace() )->GetRootItem() );
     else
-      throw new ParaverKernelException( ParaverKernelException::undefined, "ERROR! NOT FOUND ORIGINAL EXTRA CONTROL WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
+      throw new ParaverKernelException( TErrorCode::undefined, "ERROR! NOT FOUND ORIGINAL EXTRA CONTROL WINDOW OF HISTOGRAM!", __FILE__, __LINE__ );
   }
 
   // Finally, execute
