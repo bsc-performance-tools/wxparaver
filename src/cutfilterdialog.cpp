@@ -53,6 +53,7 @@
 #include "histogram.h"
 #include "filedialogext.h"
 #include "gtimeline.h"
+#include "labelconstructor.h"
 
 ////@begin XPM images
 #include "../icons/arrow_up.xpm"
@@ -275,7 +276,7 @@ void CutFilterDialog::Init()
   reRangeOfTypes = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[-]" ) ) + reType + wxString( wxT( ")$" ) );
   reValuesSepByCommaForType = wxString( wxT( "^(" ) ) + reType + wxString( wxT( "[:]" ) ) + reValuesSepByComma + wxString( wxT( ")$" ) );
 
-  cutterUsesOriginalTime = true;
+  cutterByTimePreviouslyChecked = true;
 }
 
 
@@ -955,15 +956,21 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
 {
   if( waitingGlobalTiming )
   {
-    stringstream tmpsstr;
-    
-    tmpsstr << fixed;
-    tmpsstr << wxGetApp().GetGlobalTimingBegin();
-    textCutterBeginCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
+    Trace *tmpTrace = nullptr;
+    if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
+      tmpTrace = paraverMain::myParaverMain->GetCurrentTimeline()->getTrace();
+    else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
+      tmpTrace = paraverMain::myParaverMain->GetCurrentHisto()->getTrace();
 
-    tmpsstr.str( "" );
-    tmpsstr << wxGetApp().GetGlobalTimingEnd();
-    textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(),  wxConvUTF8 ) );
+    textCutterBeginCut->SetValue(
+            LabelConstructor::timeLabel( wxGetApp().GetGlobalTimingBegin(),
+                                         tmpTrace->getTimeUnit(),
+                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
+
+    textCutterEndCut->SetValue(
+            LabelConstructor::timeLabel( wxGetApp().GetGlobalTimingEnd(),
+                                         tmpTrace->getTimeUnit(),
+                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
 
     // Avoid [ max, min ] times
     double auxBeginTime, auxEndTime;
@@ -1027,7 +1034,7 @@ wxString CutFilterDialog::formatNumber( double value )
   auxSStr << value;
   auxNumber << wxString::FromUTF8( auxSStr.str().c_str() );
 
-  return auxNumber;
+ return auxNumber;
 }
 
 
@@ -1039,7 +1046,9 @@ void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
 {
   // if timeline is not on visible, show it
   gTimeline * timeline = paraverMain::myParaverMain->GetSelectedTimeline();
-  if ( timeline->GetMyWindow() == paraverMain::myParaverMain->GetCurrentTimeline() && !timeline->IsShown() )  
+  if ( timeline != nullptr && 
+       timeline->GetMyWindow() == paraverMain::myParaverMain->GetCurrentTimeline() &&
+       !timeline->IsShown() )  
   {
     Window *tmpWin = timeline->GetMyWindow();
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
@@ -1051,7 +1060,7 @@ void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
   radioCutterCutByTime->SetValue( true );
   wxGetApp().ActivateGlobalTiming( this );
   waitingGlobalTiming = true;
-  cutterUsesOriginalTime = true;
+  cutterByTimePreviouslyChecked = true;
 }
 
 
@@ -1063,6 +1072,8 @@ void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
 void CutFilterDialog::OnButtonCutterAllTraceClick( wxCommandEvent& event )
 {
   radioCutterCutByTimePercent->SetValue( true );
+  cutterByTimePreviouslyChecked = false;
+
   textCutterBeginCut->SetValue( formatNumber( 0 ));
   textCutterEndCut->SetValue( formatNumber( 100 ));
 }
@@ -1419,13 +1430,6 @@ void CutFilterDialog::CheckStatesList( TraceOptions::TStateNames statesList )
     CheckStatesList( oldMaxStates, !( checkListFilterStates->GetCount() == 0 ) );
   }
 }
-
-
-
-
-
-
-
 
 
 /*!
@@ -2902,27 +2906,31 @@ void CutFilterDialog::OnButtonCutterAllWindowClick( wxCommandEvent& event )
 {
   if( paraverMain::myParaverMain->GetCurrentTimeline() != NULL )
   {
-    stringstream tmpsstr;
-    tmpsstr << fixed;
+    textCutterBeginCut->SetValue(
+            LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentTimeline()->getWindowBeginTime(),
+                                         paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getTimeUnit(),
+                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
+    textCutterEndCut->SetValue(
+            LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime(),
+                                         paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getTimeUnit(),
+                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
 
     radioCutterCutByTime->SetValue( true );
-    tmpsstr << paraverMain::myParaverMain->GetCurrentTimeline()->getWindowBeginTime();
-    textCutterBeginCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
-    tmpsstr.str( "" );
-    tmpsstr << paraverMain::myParaverMain->GetCurrentTimeline()->getWindowEndTime();
-    textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
+    cutterByTimePreviouslyChecked = true;
   }
   else if( paraverMain::myParaverMain->GetCurrentHisto() != NULL )
   {
-    stringstream tmpsstr;
-    tmpsstr << fixed;
+    textCutterBeginCut->SetValue(
+            LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentHisto()->getBeginTime(),
+                                         paraverMain::myParaverMain->GetCurrentHisto()->getTrace()->getTimeUnit(),
+                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
+    textCutterEndCut->SetValue(
+            LabelConstructor::timeLabel( paraverMain::myParaverMain->GetCurrentHisto()->getEndTime(),
+                                         paraverMain::myParaverMain->GetCurrentHisto()->getTrace()->getTimeUnit(),
+                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
 
     radioCutterCutByTime->SetValue( true );
-    tmpsstr << paraverMain::myParaverMain->GetCurrentHisto()->getBeginTime();
-    textCutterBeginCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
-    tmpsstr.str( "" );
-    tmpsstr << paraverMain::myParaverMain->GetCurrentHisto()->getEndTime();
-    textCutterEndCut->SetValue( wxString( tmpsstr.str().c_str(), wxConvUTF8 ) );
+    cutterByTimePreviouslyChecked = true;
   }
 }
 
@@ -2939,31 +2947,83 @@ void CutFilterDialog::OnButtonCutterAllWindowUpdate( wxUpdateUIEvent& event )
 }
 
 
+void CutFilterDialog::swapTimeAndPercent()
+{
+  Trace *tmpTrace = nullptr;
+
+  if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
+    tmpTrace = paraverMain::myParaverMain->GetCurrentTimeline()->getTrace();
+  else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
+    tmpTrace = paraverMain::myParaverMain->GetCurrentHisto()->getTrace();
+
+  if ( tmpTrace != nullptr &&
+       !textCutterBeginCut->GetValue().IsEmpty() &&
+       !textCutterEndCut->GetValue().IsEmpty() )
+  {
+    // Get times
+    TTime maxTraceTime = tmpTrace->getEndTime();
+
+    TTime auxBeginTime, auxEndTime;
+    if ( radioCutterCutByTime->GetValue() )
+    {
+      // Percent to time: no format expected
+      textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
+      textCutterEndCut->GetValue().ToDouble( &auxEndTime );
+    }
+    else
+    {
+      // Time to percent
+      bool done = LabelConstructor::getTimeValue( std::string( textCutterBeginCut->GetValue() ),
+                                                  tmpTrace->getTimeUnit(),
+                                                  ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                  auxBeginTime );
+      if( !done )
+        textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
+
+      done = LabelConstructor::getTimeValue( std::string( textCutterEndCut->GetValue() ),
+                                             tmpTrace->getTimeUnit(),
+                                             ParaverConfig::getInstance()->getTimelinePrecision(),
+                                             auxEndTime );
+      if( !done )
+        textCutterEndCut->GetValue().ToDouble( &auxEndTime );
+    }
+
+    // Transform
+    wxString beginValue;
+    wxString endValue;
+    if ( radioCutterCutByTime->GetValue() )
+    {
+      beginValue = LabelConstructor::timeLabel( ( auxBeginTime / 100.0 ) * maxTraceTime,
+                                                tmpTrace->getTimeUnit(),
+                                                ParaverConfig::getInstance()->getTimelinePrecision() );
+      endValue = LabelConstructor::timeLabel( ( auxEndTime / 100.0 ) * maxTraceTime,
+                                              tmpTrace->getTimeUnit(),
+                                              ParaverConfig::getInstance()->getTimelinePrecision() );
+    }
+    else
+    {
+      beginValue = formatNumber( 100 * ( auxBeginTime / maxTraceTime ) );
+      endValue = formatNumber( 100 * ( auxEndTime / maxTraceTime ) );
+    }
+
+    // Set
+    textCutterBeginCut->SetValue( beginValue );
+    textCutterEndCut->SetValue( endValue );
+  }
+}
+
+
+
 /*!
  * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_CUTTER_CUT_BY_TIME
  */
 
 void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& event )
 {
-  double auxBeginTime, auxEndTime, maxTraceTime;
-  maxTraceTime = (double) paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getEndTime();
+  if ( !cutterByTimePreviouslyChecked )
+    swapTimeAndPercent(); 
 
-  if ( !cutterUsesOriginalTime && (
-       !textCutterBeginCut->GetValue().IsEmpty() && !textCutterEndCut->GetValue().IsEmpty() ) )
-  {
-    textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
-    textCutterEndCut->GetValue().ToDouble( &auxEndTime );
-
-    
-    // convert from percentage to original time
-    wxString bTime = formatNumber( ( auxBeginTime/100.0f ) * maxTraceTime );
-    wxString eTime = formatNumber( ( auxEndTime/100.0f ) * maxTraceTime );
-
-    textCutterBeginCut->SetValue( bTime );
-    textCutterEndCut->SetValue( eTime );
-  }
-  cutterUsesOriginalTime = true;
-  event.Skip();
+  cutterByTimePreviouslyChecked = true;
 }
 
 
@@ -2973,24 +3033,10 @@ void CutFilterDialog::OnRadiobuttonCutterCutByTimeSelected( wxCommandEvent& even
 
 void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& event )
 {
-  double auxBeginTime, auxEndTime, maxTraceTime;
-  maxTraceTime = (double) paraverMain::myParaverMain->GetCurrentTimeline()->getTrace()->getEndTime();
+  if ( cutterByTimePreviouslyChecked )
+    swapTimeAndPercent(); 
 
-  if ( cutterUsesOriginalTime && (
-       !textCutterBeginCut->GetValue().IsEmpty() && !textCutterEndCut->GetValue().IsEmpty() ) )
-  {
-    textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
-    textCutterEndCut->GetValue().ToDouble( &auxEndTime );
-
-    // convert from original time to percentage
-    wxString bPercentTime = formatNumber( 100*( auxBeginTime / maxTraceTime ) );
-    wxString ePercentTime = formatNumber( 100*( auxEndTime / maxTraceTime ) );
-
-    textCutterBeginCut->SetValue( bPercentTime );
-    textCutterEndCut->SetValue( ePercentTime );
-  }
-  cutterUsesOriginalTime = false;
-  event.Skip();
+  cutterByTimePreviouslyChecked = false;
 }
 
 
