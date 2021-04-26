@@ -140,7 +140,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   
 END_EVENT_TABLE()
 
-wxProgressDialog *gTimeline::dialogProgress = NULL;
+wxProgressDialog *gTimeline::dialogProgress = nullptr;
 
 /*!
  * gTimeline constructors
@@ -151,7 +151,7 @@ gTimeline::gTimeline() :
         gWindow()
 {
   Init();
-  parent = NULL;
+  parent = nullptr;
 }
 
 gTimeline::gTimeline( wxWindow* whichParent,
@@ -223,7 +223,7 @@ void gTimeline::Init()
   lastEventFoundTime = 0;
   lastFoundObject = 0;
   lastSemanticFoundTime = 0;
-  myWindow = NULL;
+  myWindow = nullptr;
   objectHeight = 1;
   redoColors = false;
   redrawStopWatch = new wxStopWatch();
@@ -238,44 +238,44 @@ void gTimeline::Init()
   wheelZoomEndTime = 0;
   wheelZoomFactor = 1;
   zooming = false;
-  splitter = NULL;
-  drawZone = NULL;
-  infoZone = NULL;
-  whatWherePanel = NULL;
-  checkWWSemantic = NULL;
-  checkWWEvents = NULL;
-  checkWWCommunications = NULL;
-  checkWWPreviousNext = NULL;
-  checkWWText = NULL;
-  checkWWShowDate = NULL;
-  checkWWHex = NULL;
-  whatWhereText = NULL;
-  timingZone = NULL;
-  initialTimeText = NULL;
-  initialSemanticLabel = NULL;
-  initialSemanticText = NULL;
-  finalTimeText = NULL;
-  finalSemanticLabel = NULL;
-  finalSemanticText = NULL;
-  durationText = NULL;
-  slopeLabel = NULL;
-  slopeText = NULL;
-  colorsPanelGlobal = NULL;
-  checkboxCustomPalette = NULL;
-  buttonCustomPaletteApply = NULL;
-  colorsPanel = NULL;
-  colorsSizer = NULL;
-  sizerSelectedColor = NULL;
-  panelSelectedColor = NULL;
-  labelSelectedColorRed = NULL;
-  sliderSelectedRed = NULL;
-  textSelectedRed = NULL;
-  labelSelectedColorGreen = NULL;
-  sliderSelectedGreen = NULL;
-  textSelectedGreen = NULL;
-  labelSelectedColorBlue = NULL;
-  sliderSelectedBlue = NULL;
-  textSelectedBlue = NULL;
+  splitter = nullptr;
+  drawZone = nullptr;
+  infoZone = nullptr;
+  whatWherePanel = nullptr;
+  checkWWSemantic = nullptr;
+  checkWWEvents = nullptr;
+  checkWWCommunications = nullptr;
+  checkWWPreviousNext = nullptr;
+  checkWWText = nullptr;
+  checkWWShowDate = nullptr;
+  checkWWHex = nullptr;
+  whatWhereText = nullptr;
+  timingZone = nullptr;
+  initialTimeText = nullptr;
+  initialSemanticLabel = nullptr;
+  initialSemanticText = nullptr;
+  finalTimeText = nullptr;
+  finalSemanticLabel = nullptr;
+  finalSemanticText = nullptr;
+  durationText = nullptr;
+  slopeLabel = nullptr;
+  slopeText = nullptr;
+  colorsPanelGlobal = nullptr;
+  checkboxCustomPalette = nullptr;
+  buttonCustomPaletteApply = nullptr;
+  colorsPanel = nullptr;
+  colorsSizer = nullptr;
+  sizerSelectedColor = nullptr;
+  panelSelectedColor = nullptr;
+  labelSelectedColorRed = nullptr;
+  sliderSelectedRed = nullptr;
+  textSelectedRed = nullptr;
+  labelSelectedColorGreen = nullptr;
+  sliderSelectedGreen = nullptr;
+  textSelectedGreen = nullptr;
+  labelSelectedColorBlue = nullptr;
+  sliderSelectedBlue = nullptr;
+  textSelectedBlue = nullptr;
 ////@end gTimeline member initialisation
 
   zoomXY = false;
@@ -300,13 +300,13 @@ void gTimeline::Init()
   lastMax = 15;
   lastValuesSize = semanticValuesToColor.size();
   codeColorSet = true;
-  gradientFunc = GradientColor::LINEAR;
+  gradientFunc = TGradientFunction::LINEAR;
   
 #ifdef WIN32
   wheelZoomObjects = false;
 #endif
 
-  selectedItemColor = NULL;
+  selectedItemColor = nullptr;
   selectedCustomValue = 0;
 }
 
@@ -493,17 +493,17 @@ void gTimeline::CreateControls()
   splitter->SplitHorizontally(drawZone, infoZone, wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
 
   // Connect events and objects
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), nullptr, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -635,7 +635,7 @@ void gTimeline::redraw()
   wxString winTitle = GetTitle();
   SetTitle( _("(Working...) ") + winTitle );
 
-  ProgressController *progress = NULL;
+  ProgressController *progress = nullptr;
   if ( myWindow->getShowProgressBar() )
   {
     progress = ProgressController::create( myWindow->getKernel() );
@@ -644,7 +644,7 @@ void gTimeline::redraw()
   // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
   // Waiting for wxwidgets 3 code adaptation to prove that its solved.
 #ifndef WIN32
-    if( gTimeline::dialogProgress == NULL )
+    if( gTimeline::dialogProgress == nullptr )
       gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                         wxT(""),
                                                         numeric_limits<int>::max(),
@@ -765,17 +765,17 @@ void gTimeline::redraw()
   PRV_INT32 timePos = objectAxisPos + 1;
 
   vector< vector< TSemanticValue > > valuesToDraw;
-  vector< hash_set< PRV_INT32 > > eventsToDraw;
+  vector< unordered_set< PRV_INT32 > > eventsToDraw;
 #ifdef _MSC_VER
-  vector< hash_set< commCoord > > commsToDraw;
+  vector< unordered_set< commCoord > > commsToDraw;
 #else
-  vector< hash_set< commCoord, hashCommCoord > > commsToDraw;
+  vector< unordered_set< commCoord, hashCommCoord > > commsToDraw;
 #endif
 
   vector< vector< vector< pair<TSemanticValue,TSemanticValue> > > > valuesToDrawPunctual;
   if( myWindow->isPunctualColorSet() )
   {
-    if( myWindow->getPunctualColorWindow() != NULL )
+    if( myWindow->getPunctualColorWindow() != nullptr )
       myWindow->getPunctualColorWindow()->init( myWindow->getWindowBeginTime(), NOCREATE );
 
     myWindow->computeSemanticPunctualParallel( selectedSet, selected,
@@ -901,14 +901,14 @@ void gTimeline::redraw()
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 #endif
 
-  if( gTimeline::dialogProgress != NULL )
+  if( gTimeline::dialogProgress != nullptr )
   {
     gTimeline::dialogProgress->Show( false );
     delete gTimeline::dialogProgress;
-    gTimeline::dialogProgress = NULL;
+    gTimeline::dialogProgress = nullptr;
   }
 
-  if ( progress != NULL )
+  if ( progress != nullptr )
     delete progress;
 
 #if wxMAJOR_VERSION>=3
@@ -971,7 +971,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 
   switch( myWindow->getObjectAxisSize() )
   {
-    case Window::CURRENT_LEVEL:
+    case TObjectAxisSize::CURRENT_LEVEL:
       if( myWindow->isFusedLinesColorSet() )
       {
         objectExt = dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
@@ -995,7 +995,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       objectExt = dc.GetTextExtent( wxString::FromUTF8( tmpLongestLabel.c_str() ) );
       break;
 
-    case Window::ALL_LEVELS:
+    case TObjectAxisSize::ALL_LEVELS:
       if( myWindow->isFusedLinesColorSet() )
       {
         objectExt = dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
@@ -1026,19 +1026,19 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       objectExt = dc.GetTextExtent( wxString::FromUTF8( tmpLongestLabel.c_str() ) );
       break;
 
-    case Window::ZERO_PERC:
+    case TObjectAxisSize::ZERO_PERC:
       objectExt = wxSize( 0 , 0 );
       break;
 
-    case Window::FIVE_PERC:
+    case TObjectAxisSize::FIVE_PERC:
       objectExt = wxSize( dc.GetSize().GetWidth() * 0.05 , 0 );
       break;
 
-    case Window::TEN_PERC:
+    case TObjectAxisSize::TEN_PERC:
       objectExt = wxSize( dc.GetSize().GetWidth() * 0.10 , 0 );
       break;
 
-    case Window::TWENTYFIVE_PERC:
+    case TObjectAxisSize::TWENTYFIVE_PERC:
       objectExt = wxSize( dc.GetSize().GetWidth() * 0.25 , 0 );
       break;
 
@@ -1154,11 +1154,11 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
 
       switch( myWindow->getObjectLabels() )
       {
-        case Window::ALL_LABELS:
+        case TObjectLabels::ALL_LABELS:
           drawLabel = true;
           break;
           
-        case Window::SPACED_LABELS:
+        case  TObjectLabels::SPACED_LABELS:
           if( ( printlast && ( obj % everyobj == 0 || obj == numObjects - 1 ) ) ||
               ( !printlast && obj == 0 ) )
             drawLabel = true;
@@ -1167,7 +1167,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
           //drawLabel = y > accumHeight;
           break;
           
-        case Window::POWER2_LABELS:
+        case TObjectLabels::POWER2_LABELS:
           if( obj == power2 - 1 )
           {
             drawLabel = true;
@@ -1181,7 +1181,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       }
 
       if( ( printall || drawLabel ) &&
-          !( myWindow->getObjectAxisSize() == Window::ZERO_PERC ) )
+          !( myWindow->getObjectAxisSize() == TObjectAxisSize::ZERO_PERC ) )
       {
         if( myWindow->getLevel() == CPU || myWindow->getLevel() == NODE || myWindow->getLevel() == SYSTEM )
           dc.DrawText( wxString::FromUTF8( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
@@ -1275,8 +1275,8 @@ template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
                          vector< ValuesType >& valuesToDraw,
-                         hash_set< PRV_INT32 >& eventsToDraw,
-                         hash_set< commCoord >& commsToDraw,
+                         unordered_set< PRV_INT32 >& eventsToDraw,
+                         unordered_set< commCoord >& commsToDraw,
                          wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
 #else
@@ -1284,8 +1284,8 @@ template<typename ValuesType>
 void gTimeline::drawRow( wxDC& dc,
                          TObjectOrder firstRow,
                          vector< ValuesType >& valuesToDraw,
-                         hash_set< PRV_INT32 >& eventsToDraw,
-                         hash_set< commCoord, hashCommCoord >& commsToDraw,
+                         unordered_set< PRV_INT32 >& eventsToDraw,
+                         unordered_set< commCoord, hashCommCoord >& commsToDraw,
                          wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                          wxMemoryDC& commdc, wxMemoryDC& commmaskdc )
 #endif
@@ -1508,7 +1508,7 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
                                                             true );
     int currentPos = floor( ( (double)objectHeight / (double)magnify ) * normalizedSemanticValue ) * magnify;
     
-    if( myWindow->getPunctualColorWindow() != NULL )
+    if( myWindow->getPunctualColorWindow() != nullptr )
     {
       TSemanticValue valueToColor = (*itValues).second;
       rgb colorToDraw = myWindow->getPunctualColorWindow()->calcColor( valueToColor, *( myWindow->getPunctualColorWindow() ) );
@@ -1528,9 +1528,9 @@ void gTimeline::drawRowPunctual( wxDC& dc, vector< pair<TSemanticValue,TSemantic
 }
 
 
-void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw )
+void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, unordered_set< PRV_INT32 >& eventsToDraw )
 {
-  for( hash_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
+  for( unordered_set< PRV_INT32 >::iterator it = eventsToDraw.begin(); it != eventsToDraw.end(); ++it )
   {
     eventdc.DrawLine( *it, rowPos - 6, *it, rowPos );
     eventdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
@@ -1550,15 +1550,15 @@ void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder ro
 
 
 #ifdef _MSC_VER
-void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw )
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set< commCoord >& commsToDraw )
 #else
-void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord, hashCommCoord >& commsToDraw )
+void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, unordered_set< commCoord, hashCommCoord >& commsToDraw )
 #endif
 {
 #ifdef _MSC_VER
-  for( hash_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set<commCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #else
-  for( hash_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
+  for( unordered_set<commCoord,hashCommCoord>::iterator it = commsToDraw.begin(); it != commsToDraw.end(); ++it )
 #endif
   {
     if( it->recType & LOG )
@@ -1982,7 +1982,7 @@ void gTimeline::OnPopUpCopy()
 }
 
 
-// simple windows can let this method do the entire work passing a NULL clonedWindow
+// simple windows can let this method do the entire work passing a nullptr clonedWindow
 // derived windows must pass existing clonedWindow, because Window::clone is recursive
 gTimeline *gTimeline::clone( Window *clonedWindow,
                              wxWindow *parent,
@@ -1990,7 +1990,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
                              wxTreeItemId idRoot2,
                              bool mustRedraw )
 {
-  if ( clonedWindow == NULL )
+  if ( clonedWindow == nullptr )
     clonedWindow = myWindow->clone(); // recursive clone
 
   // Create empty gTimeline and assign window with same dimensions.
@@ -2076,7 +2076,7 @@ gTimeline *gTimeline::clone( Window *clonedWindow,
 
 void gTimeline::OnPopUpClone()
 {
-  clone( NULL, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
+  clone( nullptr, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
 }
 
 void gTimeline::OnPopUpRename()
@@ -2159,7 +2159,7 @@ void gTimeline::OnPopUpPunctualColorWindow()
   if ( dialog->ShowModal() == wxID_OK )
   {
     if( dialog->GetSelection() == 0 )
-      myWindow->setPunctualColorWindow( NULL );
+      myWindow->setPunctualColorWindow( nullptr );
     else
       myWindow->setPunctualColorWindow( compatWindows[ dialog->GetSelection() - 1 ] );
     myWindow->setRedraw( true );
@@ -2537,7 +2537,7 @@ void gTimeline::OnPopUpUndoZoom()
     else
     {
       wxString tmpMsg( wxT( "Unable to browse current objects in previous zoom!\n\nPlease select objects." ) );
-      wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
+      wxMessageDialog tmpDialog( nullptr, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
       if ( tmpDialog.ShowModal() == wxID_OK )
       {
         OnPopUpRowSelection();
@@ -2568,7 +2568,7 @@ void gTimeline::OnPopUpRedoZoom()
     else
     {
       wxString tmpMsg( wxT( "Unable to browse current objects in next zoom!\n\nPlease select objects." ) );
-      wxMessageDialog tmpDialog( NULL, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
+      wxMessageDialog tmpDialog( nullptr, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
       if ( tmpDialog.ShowModal() == wxID_OK )
       {
         OnPopUpRowSelection();
@@ -2604,7 +2604,7 @@ void gTimeline::OnScrolledWindowRightDown( wxMouseEvent& event )
  */
 void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 {
-  if( gTimeline::dialogProgress != NULL )
+  if( gTimeline::dialogProgress != nullptr )
     return;
 
   if( wheelZoomFactor != 1.0 )
@@ -2812,7 +2812,7 @@ void gTimeline::OnRightDown( wxMouseEvent& event )
 
 void gTimeline::OnNotebookInfoPageChanging( wxNotebookEvent& event )
 {
-  if( myWindow == NULL )
+  if( myWindow == nullptr )
     return;
   canRedraw = false;
   infoZone->ChangeSelection( event.GetSelection() );
@@ -2862,7 +2862,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime,
   whatWhereSelectedTimeEventLines = 0;
   whatWhereSelectedTimeCommunicationLines = 0;
 
-  whatWhereLines.push_back( make_pair( BEGIN_OBJECT_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_OBJECT_SECTION, _( "" )));
 
   wxString txt;
 
@@ -2883,9 +2883,9 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime,
   }
   txt << _( "\t  Click time: " ) << formatTime( whichTime, showDate );
   txt << _( "\n" );
-  whatWhereLines.push_back( make_pair( RAW_LINE, txt ) );
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, txt ) );
 
-  whatWhereLines.push_back( make_pair( END_OBJECT_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_OBJECT_SECTION, _( "" )));
 
   if( myWindow->isFusedLinesColorSet() )
     return;
@@ -2948,43 +2948,43 @@ void gTimeline::printWhatWhere( )
 
   whatWhereText->BeginFontSize( fontSize );
 
-  for ( vector< pair< TWWLine, wxString > >::iterator it = whatWhereLines.begin(); 
+  for ( vector< pair< TWhatWhereLine, wxString > >::iterator it = whatWhereLines.begin(); 
         it != whatWhereLines.end(); ++it )
   {
     // Is that section allowed?
     switch( it->first )
     {
-      case BEGIN_OBJECT_SECTION:
+      case TWhatWhereLine::BEGIN_OBJECT_SECTION:
         allowedSection = true;
         break;
-      case BEGIN_PREVNEXT_SECTION:
+      case TWhatWhereLine::BEGIN_PREVNEXT_SECTION:
         allowedSection = checkWWPreviousNext->IsChecked();
         whatWhereText->BeginTextColour( wxColour( 0xb0b0b0 ) ); // GREY
         break;
-      case END_PREVNEXT_SECTION:
+      case TWhatWhereLine::END_PREVNEXT_SECTION:
         whatWhereText->EndTextColour();
         break;
-      case BEGIN_CURRENT_SECTION:
+      case TWhatWhereLine::BEGIN_CURRENT_SECTION:
         allowedSection = true;
         whatWhereText->BeginTextColour( *wxBLACK );
         break;
-      case END_CURRENT_SECTION:
+      case TWhatWhereLine::END_CURRENT_SECTION:
         whatWhereText->EndTextColour();
         break;
-      case BEGIN_RECORDS_SECTION:
+      case TWhatWhereLine::BEGIN_RECORDS_SECTION:
         allowedSection = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
         whatWhereText->BeginFontSize( fontSize - 1 );
         whatWhereText->BeginItalic();
         break;
-      case END_RECORDS_SECTION:
+      case TWhatWhereLine::END_RECORDS_SECTION:
         whatWhereText->EndItalic();
         whatWhereText->EndFontSize();
         break;
-      case BEGIN_SEMANTIC_SECTION:
+      case TWhatWhereLine::BEGIN_SEMANTIC_SECTION:
         allowedSection = checkWWSemantic->IsChecked();
         whatWhereText->BeginBold();
         break;
-      case END_SEMANTIC_SECTION:
+      case TWhatWhereLine::END_SEMANTIC_SECTION:
         whatWhereText->EndBold();
         break;
 
@@ -2994,7 +2994,7 @@ void gTimeline::printWhatWhere( )
           // Is that line allowed?
           switch( it->first )
           {
-            case EVENT_LINE:
+            case TWhatWhereLine::EVENT_LINE:
               if( recordsCount >= 100 )
                 allowedLine = false;
               else
@@ -3003,7 +3003,7 @@ void gTimeline::printWhatWhere( )
                 if( allowedLine ) ++recordsCount;
               }
               break;
-            case COMMUNICATION_LINE:
+            case TWhatWhereLine::COMMUNICATION_LINE:
               if( recordsCount >= 100 )
                 allowedLine = false;
               else
@@ -3013,12 +3013,12 @@ void gTimeline::printWhatWhere( )
               }
               break;
 
-            case SEMANTIC_LINE:
+            case TWhatWhereLine::SEMANTIC_LINE:
               recordsCount = 0;
               allowedLine = checkWWSemantic->IsChecked();
               break;
 
-            case MARK_LINE:
+            case TWhatWhereLine::MARK_LINE:
               allowedLine = (( checkWWEvents->IsChecked() && whatWhereSelectedTimeEventLines > 0 ) ||
                              ( checkWWCommunications->IsChecked() && whatWhereSelectedTimeCommunicationLines > 0 ));
               break;
@@ -3057,12 +3057,12 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool 
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( BEGIN_SEMANTIC_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_SEMANTIC_SECTION, _( "" )));
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( BEGIN_CURRENT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" )));
 
   if ( !textMode )
     onString << _("Semantic value: ");
@@ -3074,14 +3074,14 @@ void gTimeline::printWWSemantic( TObjectOrder whichRow, bool clickedValue, bool 
                                                                 myWindow->getTimeUnit(), 
                                                                 ParaverConfig::getInstance()->getTimelinePrecision() ).c_str() );
   onString << _( "\n" );
-  whatWhereLines.push_back( make_pair( SEMANTIC_LINE, onString ));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::SEMANTIC_LINE, onString ));
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( END_CURRENT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( END_PREVNEXT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" )));
 
-  whatWhereLines.push_back( make_pair( END_SEMANTIC_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_SEMANTIC_SECTION, _( "" )));
 }
 
 
@@ -3090,7 +3090,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
 {
   wxString onString;
 
-  whatWhereLines.push_back( make_pair( BEGIN_RECORDS_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_RECORDS_SECTION, _( "" )));
 
   RecordList *rl = myWindow->getRecordList( whichRow );
   RecordList::iterator it = rl->begin();
@@ -3103,9 +3103,9 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   }
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( BEGIN_CURRENT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( BEGIN_PREVNEXT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::BEGIN_PREVNEXT_SECTION, _( "" )));
 
   TRecordTime timePerPixel = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
                              ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
@@ -3132,7 +3132,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
                                                                      textMode ).c_str() );
       onString << wxT( "\n" );
 
-      whatWhereLines.push_back( make_pair( EVENT_LINE, onString ));
+      whatWhereLines.push_back( make_pair( TWhatWhereLine::EVENT_LINE, onString ));
       onString.clear();
       
       if ( clickedValue )
@@ -3184,7 +3184,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
                   wxT( ", tag: " ) << (*it).getCommTag() << wxT( ")" );
       onString << wxT( "\n" );
 
-      whatWhereLines.push_back( make_pair( COMMUNICATION_LINE, onString ));
+      whatWhereLines.push_back( make_pair( TWhatWhereLine::COMMUNICATION_LINE, onString ));
       onString.clear();
 
       if ( clickedValue )
@@ -3196,12 +3196,12 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
   rl->erase( rl->begin(), it );
 
   if( clickedValue )
-    whatWhereLines.push_back( make_pair( END_CURRENT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_CURRENT_SECTION, _( "" )));
   else
-    whatWhereLines.push_back( make_pair( END_PREVNEXT_SECTION, _( "" )));
+    whatWhereLines.push_back( make_pair( TWhatWhereLine::END_PREVNEXT_SECTION, _( "" )));
 
-  whatWhereLines.push_back( make_pair( END_RECORDS_SECTION, _( "" )));
-  whatWhereLines.push_back( make_pair( RAW_LINE, _( "\n" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::END_RECORDS_SECTION, _( "" )));
+  whatWhereLines.push_back( make_pair( TWhatWhereLine::RAW_LINE, _( "\n" )));
 }
 
 
@@ -3625,14 +3625,14 @@ wxString gTimeline::buildFormattedFileName() const
 void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 {
   wxString imagePath;
-  ParaverConfig::TImageFormat filterIndex;
+  TImageFormat filterIndex;
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    filterIndex = ParaverConfig::PNG;
+    filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -3660,11 +3660,11 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
       // Also build extensions vector -> FileDialogExtension
       wxString tmpWildcard;
       std::vector< wxString > extensions;
-      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
       {
         wxString currentFormat =
               wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      TImageFormat( i ) ).c_str() );
                       
         extensions.push_back( currentFormat );
 
@@ -3682,14 +3682,14 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
                                wxDefaultSize,
                                _( "filedlg" ),
                                extensions );
-      saveDialog.SetFilterIndex( filterIndex );
+      saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
       if ( saveDialog.ShowModal() != wxID_OK )
       {
         setEnableDestroyButton( true );
         return;
       }
 
-      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
   }
@@ -3775,16 +3775,16 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
 #endif
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
@@ -3855,7 +3855,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName )
     wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
     wxString currentFormat =
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( filterIndex ) ).c_str() );
+                    TImageFormat( filterIndex ) ).c_str() );
     wxString tmpScaledTimelinePath = wxFileName( imagePath ).GetPathWithSep() +
                                      wxFileName( imagePath ).GetName() +
                                      wxString( _(".w_legend.") ) +
@@ -3886,7 +3886,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   defaultDir = _("./");
 #endif
 
-  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   tmpSuffix = _(".");
   if ( myWindow->isGradientColorSet() )
      tmpSuffix +=
@@ -3913,11 +3913,11 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
     // Also build extensions vector -> FileDialogExtension
     wxString tmpWildcard;
     std::vector< wxString > extensions;
-    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
     {
       wxString currentFormat =
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( i ) ).c_str() );
+                    TImageFormat( i ) ).c_str() );
                     
       extensions.push_back( currentFormat );
       
@@ -3935,14 +3935,14 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
                              wxDefaultSize,
                              _( "filedlg" ),
                              extensions );
-    saveDialog.SetFilterIndex( filterIndex );
+    saveDialog.SetFilterIndex( static_cast< int >( filterIndex ) );
     if ( saveDialog.ShowModal() != wxID_OK )
     {
       setEnableDestroyButton( true );
       return;
     }
 
-    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetPath();
   }
   
@@ -3962,18 +3962,18 @@ void gTimeline::saveImageLegend( bool showSaveDialog )
   int backgroundMode = wxTRANSPARENT; // default
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       backgroundMode = wxSOLID;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       backgroundMode = wxSOLID;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
@@ -4052,7 +4052,7 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   wxFileName startingDir( wxString::FromUTF8( myWindow->getTrace()->getFileName().c_str() ) );
   wxString defaultDir = startingDir.GetPath();
 
-  ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   
   wxString legendSuffix = _( "_code_legend" );
   if ( myWindow->isGradientColorSet() )
@@ -4067,7 +4067,7 @@ void gTimeline::saveImageDialog( wxString whichFileName )
     return;
   }
 
-  filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() ); //ParaverConfig::PNG; //ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+  filterIndex = TImageFormat( saveDialog.GetFilterIndex() ); // TImageFormat::PNG; //TImageFormat( saveDialog.GetFilterIndex() );
   
 
   if ( saveDialog.DialogSavesImage() )
@@ -4082,17 +4082,17 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   }
 }
 
-void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
+void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, TImageFormat filterIndex )
 {
   wxString imagePath;
- /* ParaverConfig::TImageFormat filterIndex;*/
+ /* TImageFormat filterIndex;*/
 
   setEnableDestroyButton( false );
 
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    //filterIndex = ParaverConfig::PNG;
+    //filterIndex =  TImageFormat::PNG;
   }
   else
   {
@@ -4120,11 +4120,11 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
       // Also build extensions vector -> FileDialogExtension
       wxString tmpWildcard;
       std::vector< wxString > extensions;
-      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+      for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
       {
         wxString currentFormat =
               wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                      ParaverConfig::TImageFormat( i ) ).c_str() );
+                      TImageFormat( i ) ).c_str() );
                       
         extensions.push_back( currentFormat );
 
@@ -4149,7 +4149,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
         return;
       }
 
-      filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+      filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
       imagePath = saveDialog.GetPath();
     }
   }
@@ -4235,16 +4235,16 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
 #endif
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
@@ -4315,7 +4315,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
     wxImage tmpScaledTimeline( tmpScaledTimelineBitmap.ConvertToImage() );
     wxString currentFormat =
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( filterIndex ) ).c_str() );
+                    TImageFormat( filterIndex ) ).c_str() );
     wxString tmpScaledTimelinePath = wxFileName( imagePath ).GetPathWithSep() +
                                      wxFileName( imagePath ).GetName() +
                                      wxString( _(".w_legend.") ) +
@@ -4330,7 +4330,7 @@ void gTimeline::saveImage( bool showSaveDialog, wxString whichFileName, ParaverC
 }
 
 
-void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex )
+void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, TImageFormat filterIndex )
 {
   wxString imageName;
   wxString tmpSuffix;
@@ -4350,7 +4350,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
   defaultDir = _("./");
 #endif
 
-  // ParaverConfig::TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
+  // TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   tmpSuffix = _(".");
   if ( myWindow->isGradientColorSet() )
      tmpSuffix +=
@@ -4377,11 +4377,11 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
     // Also build extensions vector -> FileDialogExtension
     wxString tmpWildcard;
     std::vector< wxString > extensions;
-    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( ParaverConfig::XPM ); ++i )
+    for ( PRV_UINT16 i = 0; i <= PRV_UINT16( TImageFormat::XPM ); ++i )
     {
       wxString currentFormat =
             wxString::FromUTF8( LabelConstructor::getImageFileSuffix(
-                    ParaverConfig::TImageFormat( i ) ).c_str() );
+                    TImageFormat( i ) ).c_str() );
                     
       extensions.push_back( currentFormat );
       
@@ -4408,7 +4408,7 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
       return;
     }
 
-    filterIndex = ParaverConfig::TImageFormat( saveDialog.GetFilterIndex() );
+    filterIndex = TImageFormat( saveDialog.GetFilterIndex() );
     imagePath = saveDialog.GetPath();
   }
   // Get colors
@@ -4427,18 +4427,18 @@ void gTimeline::saveImageLegend( bool showSaveDialog, wxString whichFileName, Pa
   int backgroundMode = wxTRANSPARENT; // default
   switch( filterIndex )
   {
-    case ParaverConfig::BMP:
+    case  TImageFormat::BMP:
       imageType = wxBITMAP_TYPE_BMP;
       backgroundMode = wxSOLID;
       break;
-    case ParaverConfig::JPG:
+    case  TImageFormat::JPG:
       imageType = wxBITMAP_TYPE_JPEG;
       backgroundMode = wxSOLID;
       break;
-    case ParaverConfig::PNG:
+    case  TImageFormat::PNG:
       imageType = wxBITMAP_TYPE_PNG;
       break;
-    case ParaverConfig::XPM:
+    case TImageFormat::XPM:
       imageType = wxBITMAP_TYPE_XPM;
       break;
     default:
@@ -5255,11 +5255,11 @@ void gTimeline::saveText()
   // Also fills extension
   wxString tmpWildcard;
   vector< wxString > extensions;
-  for ( PRV_UINT16 i = 0; i < PRV_UINT16( ParaverConfig::PLAIN ); ++i )
+  for ( PRV_UINT16 i = 0; i < PRV_UINT16( TTextFormat::PLAIN ); ++i )
   {
     wxString currentFormat =
           wxString::FromUTF8( LabelConstructor::getDataFileSuffix(
-                  ParaverConfig::TTextFormat( i ) ).c_str() );
+                  TTextFormat( i ) ).c_str() );
     tmpWildcard +=
             currentFormat.Upper() + _(" (*.") + currentFormat + _(")|*.") + currentFormat + _("|");
 
@@ -5278,7 +5278,7 @@ void gTimeline::saveText()
                                   _( "filedlg" ),
                                   extensions );
                            
-  saveDialog.SetFilterIndex( ParaverConfig::getInstance()->getTimelineSaveTextFormat() );
+  saveDialog.SetFilterIndex( static_cast< int >( ParaverConfig::getInstance()->getTimelineSaveTextFormat() ) );
   
   if ( saveDialog.ShowModal() == wxID_OK )
   {
@@ -5286,7 +5286,7 @@ void gTimeline::saveText()
     ProgressController *progress = ProgressController::create( paraverMain::myParaverMain->GetLocalKernel() );
     progress->setHandler( progressFunction, this );
 
-    if( paraverMain::dialogProgress == NULL )
+    if( paraverMain::dialogProgress == nullptr )
       paraverMain::dialogProgress = new wxProgressDialog( wxT("Save Timeline Text"),
                                                           wxT(""),
                                                           numeric_limits<int>::max(),
@@ -5322,7 +5322,7 @@ void gTimeline::saveText()
     paraverMain::dialogProgress->Show();
   
     // Save timeline text
-    Output *output = Output::createOutput( (Output::TOutput)saveDialog.GetFilterIndex() );
+    Output *output = Output::createOutput( (TOutput)saveDialog.GetFilterIndex() );
     output->setMultipleFiles( false );
     
     // Clustering default options
@@ -5336,7 +5336,7 @@ void gTimeline::saveText()
     // Delete progress controller
     paraverMain::dialogProgress->Show( false );
     delete paraverMain::dialogProgress;
-    paraverMain::dialogProgress = NULL;
+    paraverMain::dialogProgress = nullptr;
     delete progress;
   }
 
@@ -5369,7 +5369,7 @@ void gTimeline::setEnableDestroyParents( bool value )
 {
   gWindow::setEnableDestroyButton( value );
 
-  if ( myWindow->getParent( 0 ) != NULL )
+  if ( myWindow->getParent( 0 ) != nullptr )
   {
     for( int i = 0; i < 2; ++i )
     {
@@ -5383,7 +5383,7 @@ void gTimeline::setEnableDestroyParents( bool value )
 
 void gTimeline::setEnableDestroyButton( bool value )
 {
-  if ( myWindow->getChild() != NULL )
+  if ( myWindow->getChild() != nullptr )
   {
     // I'm inside a derived window => recursively navigate descendants looking for "final" child window
     bool dummyFound;
@@ -5467,7 +5467,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   {
     TSemanticValue firstValue, secondValue;
     Window *winToUse = myWindow;
-    if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != NULL )
+    if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != nullptr )
       winToUse = myWindow->getPunctualColorWindow();
 
     if( !myWindow->isFunctionLineColorSet() )
@@ -5667,7 +5667,7 @@ void gTimeline::OnCheckWhatWhere( wxCommandEvent& event )
   checkWWHex->Enable( true );
 }
 
-void gTimeline::OnMenuGradientFunction( GradientColor::TGradientFunction function )
+void gTimeline::OnMenuGradientFunction( TGradientFunction function )
 {
   myWindow->getGradientColor().setGradientFunction( function );
   myWindow->setRedraw( true );
@@ -5774,7 +5774,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
       string lineStr = valueStr.substr( 0, valueStr.find_first_of( ' ', 0 ) );
       string fileStr = valueStr.substr( valueStr.find_first_of( '(', 0 ) + 1,
                                            valueStr.length() - valueStr.find_first_of( '(', 0 ) - 2 );
-      wxDirDialog dirDialog( NULL, _( "Choose the directory to find to source files" ) );
+      wxDirDialog dirDialog( nullptr, _( "Choose the directory to find to source files" ) );
       if( dirDialog.ShowModal() == wxID_OK )
       {
         wxString path = dirDialog.GetPath();
@@ -6296,7 +6296,7 @@ void gTimeline::OnFindDialog()
 
 void progressFunctionTimeline( ProgressController *progress, void *callerWindow )
 {
-  if( gTimeline::dialogProgress != NULL )
+  if( gTimeline::dialogProgress != nullptr )
   {
     gTimeline::dialogProgress->Refresh();
     gTimeline::dialogProgress->Update();
@@ -6318,7 +6318,7 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
 // Disabled because some window managers can't show the dialog later
 /*  if( ( (gTimeline*)callerWindow )->GetRedrawStopWatch()->Time() >= 750 )
   {
-    if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->IsShown() )
+    if( gTimeline::dialogProgress != nullptr && !gTimeline::dialogProgress->IsShown() )
     {
       gTimeline::dialogProgress->Show();
       gTimeline::dialogProgress->Raise();
@@ -6328,7 +6328,7 @@ void progressFunctionTimeline( ProgressController *progress, void *callerWindow 
   }
 */
   
-  if( gTimeline::dialogProgress != NULL && !gTimeline::dialogProgress->Update( p, newMessage ) )
+  if( gTimeline::dialogProgress != nullptr && !gTimeline::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 }
 
@@ -6792,7 +6792,7 @@ void gTimeline::OnCheckboxCustomPaletteUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnStaticSelectedColorUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != nullptr );
 }
 
 
@@ -6802,7 +6802,7 @@ void gTimeline::OnStaticSelectedColorUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnSliderSelectedColorUpdateUI( wxUpdateUIEvent& event )
 {
-  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != nullptr );
 }
 
 
@@ -6816,7 +6816,7 @@ void gTimeline::OnCheckboxCustomPaletteClick( wxCommandEvent& event )
   if ( !event.IsChecked() )
   {
     enableApplyButton = false;
-    selectedItemColor = NULL;
+    selectedItemColor = nullptr;
     sliderSelectedRed->SetValue( 0 );
     sliderSelectedGreen->SetValue( 0 );
     sliderSelectedBlue->SetValue( 0 );
@@ -6858,7 +6858,7 @@ void gTimeline::OnButtonCustomPaletteApplyUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnTextSelectedColorUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != NULL );
+  event.Enable( myWindow->isCodeColorSet() && checkboxCustomPalette->IsChecked() && selectedItemColor != nullptr );
 }
 
 

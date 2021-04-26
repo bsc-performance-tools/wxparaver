@@ -65,7 +65,7 @@ void SessionSaver::SaveSession( wxString onFile, const vector<Trace *>& traces )
 
     for( vector<Window *>::iterator it = tmpVTimelines.begin(); it != tmpVTimelines.end(); ++it )
     {
-      if( !(*it)->getUsedByHistogram() && (*it)->getChild() == NULL )
+      if( !(*it)->getUsedByHistogram() && (*it)->getChild() == nullptr )
         vTimelines.push_back( *it );
     }
     CFGLoader::saveCFG( string( cfgFileName.GetFullPath().mb_str() ), SaveOptions(), vTimelines, vHistograms );
@@ -102,7 +102,7 @@ void SessionSaver::SaveSession_v2( wxString onFile, const vector<Trace *>& trace
     // Delete timelines belonging to derived windows
     for( vector<Window *>::iterator itWin = tmpVTimelines.begin(); itWin != tmpVTimelines.end(); ++itWin )
     {
-      if( !(*itWin)->getUsedByHistogram() && (*itWin)->getChild() == NULL )
+      if( !(*itWin)->getUsedByHistogram() && (*itWin)->getChild() == nullptr )
         vTimelines.push_back( *itWin );
     }
 

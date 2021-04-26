@@ -1168,7 +1168,7 @@
           <string name="variable-1">"globalTiming|bool|GlobalTiming|false|2|0|"</string>
           <string name="variable-2">"globalTimingBegin|TTime|GlobalTimingBegin|0|2|0|"</string>
           <string name="variable-3">"globalTimingBeginIsSet|bool|GlobalTimingBeginIsSet|false|2|0|"</string>
-          <string name="variable-4">"globalTimingCallDialog|wxDialog*|GlobalTimingCallDialog|NULL|2|0|"</string>
+          <string name="variable-4">"globalTimingCallDialog|wxDialog*|GlobalTimingCallDialog|nullptr|2|0|"</string>
           <string name="variable-5">"globalTimingEnd|TTime|GlobalTimingEnd|0|2|0|"</string>
           <long name="working-mode">0</long>
         </document>
@@ -1265,36 +1265,36 @@
           <string name="variable-14">"tracePath|wxString|TracePath||2|0|"</string>
           <string name="variable-15">"traceWorkspaces|std::map&lt; Trace*, std::vector&lt; std::string &gt; &gt;|TraceWorkspaces||2|0|"</string>
           <string name="variable-16">"firstUserWorkspace|std::map&lt;Trace *, size_t&gt;|FirstUserWorkspace||2|0|"</string>
-          <string name="variable-17">"tutorialsWindow|HelpContents *|TutorialsWindow|NULL|2|0|"</string>
+          <string name="variable-17">"tutorialsWindow|HelpContents *|TutorialsWindow|nullptr|2|0|"</string>
           <string name="variable-18">"workspacesManager|WorkspaceManager *|WorkspacesManager|WorkspaceManager::getInstance()|2|0|"</string>
           <string name="variable-19">"someWinIsRedraw|bool|SomeWinIsRedraw|false|2|0|"</string>
           <string name="variable-2">"previousCutFilteredTraces|PreviousFiles *|PreviousCutFilteredTraces|PreviousFiles::createPreviousTreatedTraces()|2|0|"</string>
           <string name="variable-20">"activeWindows|std::set&lt;wxWindow *&gt;|ActiveWindows||2|0|"</string>
           <string name="variable-21">"canServeSignal|bool|CanServeSignal|true|2|0|"</string>
-          <string name="variable-22">"clusteringWindow|Window *|ClusteringWindow|NULL|2|0|"</string>
+          <string name="variable-22">"clusteringWindow|Window *|ClusteringWindow|nullptr|2|0|"</string>
           <string name="variable-23">"numNewDerived|int|NumNewDerived|0|2|0|"</string>
-          <string name="variable-24">"currentHisto|Histogram *|CurrentHisto|NULL|2|0|"</string>
-          <string name="variable-25">"currentTimeline|Window *|CurrentTimeline|NULL|2|0|"</string>
+          <string name="variable-24">"currentHisto|Histogram *|CurrentHisto|nullptr|2|0|"</string>
+          <string name="variable-25">"currentTimeline|Window *|CurrentTimeline|nullptr|2|0|"</string>
           <string name="variable-26">"currentTrace|PRV_INT16|CurrentTrace|-1|2|0|"</string>
-          <string name="variable-27">"helpContents|HelpContents *|HelpContents|NULL|2|0|"</string>
+          <string name="variable-27">"helpContents|HelpContents *|HelpContents|nullptr|2|0|"</string>
           <string name="variable-28">"imageList|wxImageList*|ImageList||2|0|"</string>
-          <string name="variable-29">"lastHisto|Histogram *|LastHisto|NULL|2|0|"</string>
+          <string name="variable-29">"lastHisto|Histogram *|LastHisto|nullptr|2|0|"</string>
           <string name="variable-3">"previousSessions|PreviousFiles *|PreviousSessions|PreviousFiles::createPreviousSessions()|0|0|"</string>
-          <string name="variable-30">"lastTimeline|Window *|LastTimeline|NULL|2|0|"</string>
+          <string name="variable-30">"lastTimeline|Window *|LastTimeline|nullptr|2|0|"</string>
           <string name="variable-31">"loadFilesQueue|std::queue&lt;std::string&gt;|LoadFilesQueue||2|0|"</string>
           <string name="variable-32">"loadedTraces|std::vector&lt;Trace *&gt;|LoadedTraces||2|0|"</string>
           <string name="variable-33">"XMLLoadedBefore|bool|XMLLoadedBefore|false|2|0|"</string>
           <string name="variable-34">"numNewHistograms|int|NumNewHistograms|0|2|0|"</string>
           <string name="variable-35">"numNewWindows|int|NumNewWindows|0|2|0|"</string>
-          <string name="variable-36">"openedPropertyDialog|wxDialog *|OpenedPropertyDialog|NULL|2|0|"</string>
+          <string name="variable-36">"openedPropertyDialog|wxDialog *|OpenedPropertyDialog|nullptr|2|0|"</string>
           <string name="variable-37">"paraverConfig|ParaverConfig*|ParaverConfig|ParaverConfig::getInstance()|2|0|"</string>
           <string name="variable-38">"previousCFGs|PreviousFiles *|PreviousCFGs|PreviousFiles::createPreviousCFGs()|2|0|"</string>
-          <string name="variable-4">"currentWindow|wxWindow *|CurrentWindow|NULL|2|0|"</string>
+          <string name="variable-4">"currentWindow|wxWindow *|CurrentWindow|nullptr|2|0|"</string>
           <string name="variable-5">"previousTraces|PreviousFiles *|PreviousTraces|PreviousFiles::createPreviousTraces()|2|0|"</string>
           <string name="variable-6">"propertiesClientData|std::vector&lt; PropertyClientData * &gt;|PropertiesClientData||2|0|"</string>
           <string name="variable-7">"raiseCurrentWindow|bool|RaiseCurrentWindow|true|2|0|"</string>
           <string name="variable-8">"XMLPath|std::string|XMLPath||2|0|"</string>
-          <string name="variable-9">"runApplication|RunScript *|RunApplication|NULL|2|0|"</string>
+          <string name="variable-9">"runApplication|RunScript *|RunApplication|nullptr|2|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbMenuBarProxy"</string>
@@ -3071,12 +3071,12 @@
           <string name="variable-0">"drawImage|wxBitmap|DrawImage||2|0|"</string>
           <string name="variable-1">"escapePressed|bool|EscapePressed|false|2|0|"</string>
           <string name="variable-10">"lastPosZoomY|double|LastPosZoomY|0|2|0|"</string>
-          <string name="variable-11">"myHistogram|Histogram*|Histogram|NULL|2|0|"</string>
+          <string name="variable-11">"myHistogram|Histogram*|Histogram|nullptr|2|0|"</string>
           <string name="variable-12">"openControlActivated|bool|OpenControlActivated|false|2|0|"</string>
           <string name="variable-13">"ready|bool|Ready|false|2|0|"</string>
           <string name="variable-14">"redrawStopWatch|wxStopWatch *|RedrawStopWatch|new wxStopWatch()|2|0|"</string>
           <string name="variable-15">"selectedRows|vector&lt;TObjectOrder&gt;|SelectedRows||2|0|"</string>
-          <string name="variable-16">"tableBase|HistoTableBase*|TableBase|NULL|2|0|"</string>
+          <string name="variable-16">"tableBase|HistoTableBase*|TableBase|nullptr|2|0|"</string>
           <string name="variable-2">"timerZoom|wxTimer *|TimerZoom|new wxTimer( this )|2|0|"</string>
           <string name="variable-3">"zoomCellHeight|double|ZommCellHeight||2|0|"</string>
           <string name="variable-4">"zoomCellWidth|double|ZoomCellWidth||2|0|"</string>
@@ -4474,7 +4474,7 @@
           <string name="variable-22">"logicalColour|wxColour|LogicalColour||2|0|"</string>
           <string name="variable-23">"logicalPen|wxPen|LogicalPen||2|0|"</string>
           <string name="variable-24">"motionEvent|wxMouseEvent|MotionEvent||2|0|"</string>
-          <string name="variable-25">"myWindow|Window*|MyWindow|NULL|2|0|"</string>
+          <string name="variable-25">"myWindow|Window*|MyWindow|nullptr|2|0|"</string>
           <string name="variable-26">"objectAxisPos|PRV_INT32|ObjectAxisPos||2|0|"</string>
           <string name="variable-27">"objectFont|wxFont|ObjectFont||2|0|"</string>
           <string name="variable-28">"objectHeight|int|ObjectHeight|1|2|0|"</string>
@@ -7914,7 +7914,7 @@
           <bool name="use-id-suffix">0</bool>
           <long name="use-xrc">0</long>
           <string name="variable-0">"histograms|std::vector&lt;Histogram *&gt;|Histograms||2|0|"</string>
-          <string name="variable-1">"initialTrace|Trace *|InitialTrace|NULL|2|0|"</string>
+          <string name="variable-1">"initialTrace|Trace *|InitialTrace|nullptr|2|0|"</string>
           <string name="variable-2">"options|SaveOptions|Options||2|0|"</string>
           <string name="variable-3">"selectedHistograms|std::vector&lt; Histogram * &gt;|SelectedHistograms||2|0|"</string>
           <string name="variable-4">"selectedTimelines|std::vector&lt; Window * &gt;|SelectedTimelines||2|0|"</string>
@@ -9859,8 +9859,8 @@ In normal mode all properties are showed in main window."</string>
           <bool name="use-id-prefix">0</bool>
           <bool name="use-id-suffix">0</bool>
           <long name="use-xrc">0</long>
-          <string name="variable-0">"currentWindow1|Window *|CurrentWindow1|NULL|2|0|"</string>
-          <string name="variable-1">"currentWindow2|Window *|CurrentWindow2|NULL|2|0|"</string>
+          <string name="variable-0">"currentWindow1|Window *|CurrentWindow1|nullptr|2|0|"</string>
+          <string name="variable-1">"currentWindow2|Window *|CurrentWindow2|nullptr|2|0|"</string>
           <string name="variable-10">"minCompose1|TParamValue|MinCompose1||2|0|"</string>
           <string name="variable-11">"minCompose2|TParamValue|MinCompose2||2|0|"</string>
           <string name="variable-12">"operations|std::vector&lt; std::string &gt;|Operations||2|0|"</string>
@@ -13087,16 +13087,16 @@ In normal mode all properties are showed in main window."</string>
           <long name="use-xrc">0</long>
           <string name="variable-0">"controlTimelineAutofit|bool|ControlTimelineAutofit|true|2|0|"</string>
           <string name="variable-1">"controlTimelineDelta|double|ControlTimelineDelta||2|0|"</string>
-          <string name="variable-10">"extraControlTimelineSelected|Window *|ExtraControlTimelineSelected|NULL|2|0|"</string>
+          <string name="variable-10">"extraControlTimelineSelected|Window *|ExtraControlTimelineSelected|nullptr|2|0|"</string>
           <string name="variable-11">"extraControlTimelines|std::vector&lt;TWindowID&gt;|ExtraControlTimelines||2|0|"</string>
           <string name="variable-12">"timeRange|std::vector&lt;std::pair&lt;TRecordTime,TRecordTime&gt; &gt;|TimeRange||2|0|"</string>
           <string name="variable-13">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
           <string name="variable-14">"controlTimelineMax|double|ControlTimelineMax||2|0|"</string>
           <string name="variable-15">"controlTimelineMin|double|ControlTimelineMin||2|0|"</string>
-          <string name="variable-16">"controlTimelineSelected|Window *|ControlTimelineSelected|NULL|2|0|"</string>
+          <string name="variable-16">"controlTimelineSelected|Window *|ControlTimelineSelected|nullptr|2|0|"</string>
           <string name="variable-2">"controlTimelines|std::vector&lt;TWindowID&gt;|ControlTimelines||2|0|"</string>
-          <string name="variable-3">"currentWindow|Window *|CurrentWindow|NULL|2|0|"</string>
-          <string name="variable-4">"dataTimelineSelected|Window *|DataTimelineSelected|NULL|2|0|"</string>
+          <string name="variable-3">"currentWindow|Window *|CurrentWindow|nullptr|2|0|"</string>
+          <string name="variable-4">"dataTimelineSelected|Window *|DataTimelineSelected|nullptr|2|0|"</string>
           <string name="variable-5">"dataTimelines|std::vector&lt;TWindowID&gt;|DataTimelines||2|0|"</string>
           <string name="variable-6">"extraControlTimelineAutofit|bool|ExtraControlTimelineAutofit|true|2|0|"</string>
           <string name="variable-7">"extraControlTimelineDelta|double|ExtraControlTimelineDelta||2|0|"</string>
@@ -30382,7 +30382,7 @@ Example: 50000001;50000002[;type] "</string>
           <string name="variable-5">"waitingGlobalTiming|bool|WaitingGlobalTiming|false|2|0|"</string>
           <string name="variable-6">"globalXMLsPath|std::string|GlobalXMLsPath|&quot;&quot;|2|0|"</string>
           <string name="variable-7">"loadResultingTrace|bool|LoadResultingTrace|true|2|0|"</string>
-          <string name="variable-8">"localKernel|KernelConnection *|LocalKernel|NULL|2|0|"</string>
+          <string name="variable-8">"localKernel|KernelConnection *|LocalKernel|nullptr|2|0|"</string>
           <string name="variable-9">"nameDestinyTrace|std::string|NameDestinyTrace||2|0|"</string>
           <long name="working-mode">0</long>
           <document>
@@ -39983,7 +39983,7 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="use-id-prefix">0</bool>
           <bool name="use-id-suffix">0</bool>
           <long name="use-xrc">0</long>
-          <string name="variable-0">"myWindow|Window *|MyWindow|NULL|2|0|"</string>
+          <string name="variable-0">"myWindow|Window *|MyWindow|nullptr|2|0|"</string>
           <long name="working-mode">0</long>
           <document>
             <string name="proxy-type">"wbBoxSizerProxy"</string>
@@ -42946,7 +42946,7 @@ Example: 50000001;50000002[;type] "</string>
           <bool name="use-id-prefix">0</bool>
           <bool name="use-id-suffix">0</bool>
           <long name="use-xrc">0</long>
-          <string name="variable-0">"myProcess|RunningProcess *|MyProcess|NULL|2|0|"</string>
+          <string name="variable-0">"myProcess|RunningProcess *|MyProcess|nullptr|2|0|"</string>
           <string name="variable-1">"myProcessPid|long|MyProcessPid|0|2|0|"</string>
           <long name="working-mode">0</long>
           <document>

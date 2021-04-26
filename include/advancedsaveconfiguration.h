@@ -75,18 +75,18 @@ class wxToggleButton;
  * AdvancedSaveConfiguration class declaration
  */
 
+enum class TEditorMode
+{
+  PROPERTIES_TAGS,
+  HISTOGRAM_STATISTIC_TAGS
+};
+
 class AdvancedSaveConfiguration: public wxDialog
 {    
   DECLARE_DYNAMIC_CLASS( AdvancedSaveConfiguration )
   DECLARE_EVENT_TABLE()
 
 public:
-
-  enum TEditorMode
-  {
-    PROPERTIES_TAGS,
-    HISTOGRAM_STATISTIC_TAGS
-  };
 
   /// Constructors
   AdvancedSaveConfiguration();
@@ -99,7 +99,7 @@ public:
   AdvancedSaveConfiguration( wxWindow* parent,
                              const std::vector< Window * > &whichTimelines,
                              const std::vector< Histogram * > &whichHistograms,
-                             TEditorMode mode = PROPERTIES_TAGS,
+                             TEditorMode mode = TEditorMode::PROPERTIES_TAGS,
                              wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
                              const wxString& caption = SYMBOL_ADVANCEDSAVECONFIGURATION_TITLE,
                              const wxPoint& pos = SYMBOL_ADVANCEDSAVECONFIGURATION_POSITION,

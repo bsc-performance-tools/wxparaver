@@ -101,7 +101,7 @@ public:
 
   bool DialogSavesImage();
   bool DialogSavesLegend();
-  int GetFilterIndex(); // Should it be ParaverConfig::TImageFormat ???
+  int GetFilterIndex(); // Should it be TImageFormat ???
 
 ////@begin SaveImageDialog event handler declarations
 

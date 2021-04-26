@@ -91,7 +91,7 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   Init();
   Create( parent, id, caption, pos, size, style );
 
-  myHistogram = NULL;
+  myHistogram = nullptr;
   myLevel = myTimeline->getLevel();
   myTrace = myTimeline->getTrace();
   lockedByUpdate = false;
@@ -133,7 +133,7 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   vector< TObjectOrder > rowsel;
   sm.getSelected(rowsel, myHistogram->getControlWindow()->getLevel());
 
-  myTimeline = NULL;
+  myTimeline = nullptr;
   myLevel = myHistogram->getControlWindow()->getLevel();
   myTrace = myHistogram->getTrace();
   lockedByUpdate = false;
@@ -244,7 +244,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   auxCheckList->Connect(
           wxEVT_COMMAND_LISTBOX_SELECTED,
           wxCommandEventHandler( RowsSelectionDialog::OnCheckListBoxSelected ),
-          NULL,
+          nullptr,
           this );
   levelCheckList.push_back( auxCheckList );
 
@@ -269,7 +269,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   selectionButtons.push_back( auxButton );
   auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                       wxCommandEventHandler( RowsSelectionDialog:: OnSelectAllButtonClicked ),
-                      NULL,
+                      nullptr,
                       this ); 
   buttonsSizer->Add( auxButton, 1, wxGROW | wxALL, 5 );
 
@@ -277,7 +277,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   selectionButtons.push_back( auxButton );
   auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                       wxCommandEventHandler( RowsSelectionDialog::OnUnselectAllButtonClicked ),
-                      NULL,
+                      nullptr,
                       this ); 
   buttonsSizer->Add( auxButton, 1, wxGROW | wxALL, 5 );
 
@@ -285,7 +285,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   selectionButtons.push_back( auxButton );
   auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                       wxCommandEventHandler( RowsSelectionDialog::OnInvertButtonClicked ),
-                      NULL,
+                      nullptr,
                       this ); 
   buttonsSizer->Add( auxButton, 1, wxGROW | wxALL, 5 );
 
@@ -311,7 +311,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   auxTextCtrl->Connect(
           wxEVT_COMMAND_TEXT_ENTER ,
           wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionApply ),
-          NULL,
+          nullptr,
           this );
   auxTextCtrl->SetToolTip( getMyToolTip( initialCheckState ) );
   textCtrlRegularExpr.push_back( auxTextCtrl );
@@ -326,7 +326,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   auxButton = new wxButton( myPanel, wxID_ANY, _("Apply") );
   auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                       wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionApply ),
-                      NULL,
+                      nullptr,
                       this );
   auxButton->Enable( true );
   applyButtons.push_back( auxButton );
@@ -342,7 +342,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   auxButtonBMP->SetToolTip(_("Regular expressions help."));
   auxButtonBMP->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                       wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionHelp ),
-                      NULL,
+                      nullptr,
                       this );
   auxButtonBMP->Enable( true );
   helpRE.push_back( auxButtonBMP );
@@ -353,7 +353,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
   wxCheckBox *auxCheckBox = new wxCheckBox( myPanel, wxID_ANY, _("Match as Posix Basic Regular Expression"), wxDefaultPosition, wxDefaultSize, 0 );
   auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
                         wxCommandEventHandler( RowsSelectionDialog::OnCheckBoxMatchPosixRegExpClicked ),
-                        NULL,
+                        nullptr,
                         this );
   auxCheckBox->SetValue( initialCheckState );
   auxCheckBox->SetToolTip( getMyToolTip( initialCheckState ) );
@@ -421,9 +421,9 @@ RowsSelectionDialog::~RowsSelectionDialog()
                        wxCommandEventHandler( RowsSelectionDialog::OnRegularExpressionHelp ) );
   }
 
-  /*if ( myTimeline != NULL )
+  /*if ( myTimeline != nullptr )
     TWindowLevel myLevel = myTimeline->getLevel();
-  else if ( myHistogram != NULL )
+  else if ( myHistogram != nullptr )
     TWindowLevel myLevel = myHistogram->getControlWindow()->getLevel();*/
   
   TWindowLevel beginLevel, endLevel;
@@ -503,7 +503,7 @@ wxIcon RowsSelectionDialog::GetIconResource( const wxString& name )
 int RowsSelectionDialog::GetSelections( TWindowLevel whichLevel, wxArrayInt &selections )
 {
   int selected = 0;  
-  if (levelCheckList[ whichLevel - minLevel ] != NULL)
+  if (levelCheckList[ whichLevel - minLevel ] != nullptr)
   for ( unsigned int i = 0; i < levelCheckList[ whichLevel - minLevel ]->GetCount(); ++i )
   {
     if ( levelCheckList[ whichLevel - minLevel ]->IsChecked( i ) )
@@ -854,11 +854,11 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
     {
     }
   }
-  else if ( parentIsGtimeline && myTimeline != NULL )
+  else if ( parentIsGtimeline && myTimeline != nullptr )
   {
     ZoomAwareTransferData( dialogSelections, ((gTimeline *)GetParent())->getCurrentZoomRange() );
   }
-  else if ( parentIsGtimeline && myHistogram != NULL )
+  else if ( parentIsGtimeline && myHistogram != nullptr )
   {
     std::vector< TObjectOrder > selection;
     mySelectedRows->getSelected( selection, myLevel );

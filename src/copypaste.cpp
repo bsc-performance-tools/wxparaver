@@ -30,7 +30,7 @@
 //using namespace std;
 //IDEA undo copy, undo paste
 
-gPasteWindowProperties* gPasteWindowProperties::pasteWindowProperties = NULL;
+gPasteWindowProperties* gPasteWindowProperties::pasteWindowProperties = nullptr;
 
 
 void gPasteWindowProperties::commonMenuSettings( )
@@ -45,7 +45,7 @@ void gPasteWindowProperties::commonMenuSettings( )
       }
 
   // Timeline/sourceHistogram different Menu properties
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
   {
   }
   else
@@ -59,7 +59,7 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
   TRecordTime sourceBeginTime;
   int source;
 
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
   {
     sourceBeginTime = sourceTimeline->GetMyWindow()->getWindowBeginTime();
     source          = TIMELINE;
@@ -86,7 +86,7 @@ void gPasteWindowProperties::commonTimeSettings( TRecordTime destinyEndTime )
 
 void gPasteWindowProperties::commonFilterSettings( gTimeline *destinyTimeline )
 {
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
   {
     if ( sourceTimeline->GetMyWindow()->isDerivedWindow() ||
          destinyTimeline->GetMyWindow()->isDerivedWindow() )
@@ -116,7 +116,7 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gT
 {
   Trace *destinyTrace = destinyTimeline->GetMyWindow()->getTrace();
 
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
   {
     bool isProcessModel = sourceTimeline->GetMyWindow()->isLevelProcessModel();
     if ( sourceTimeline->GetMyWindow()->getTrace() == destinyTrace ||
@@ -148,7 +148,7 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gH
 {
   Trace *destinyTrace = destinyHistogram->GetHistogram()->getControlWindow()->getTrace();
 
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
   {
     bool isProcessModel = sourceTimeline->GetMyWindow()->isLevelProcessModel();
     if ( sourceTimeline->GetMyWindow()->getTrace() == destinyTrace ||
@@ -179,8 +179,8 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gH
 
 gPasteWindowProperties::gPasteWindowProperties()
 {
-  sourceTimeline = NULL;
-  sourceHistogram = NULL;
+  sourceTimeline = nullptr;
+  sourceHistogram = nullptr;
 
   vector< bool > destiny( 2 , false );
   vector < vector< bool > > source( 2, destiny );
@@ -254,7 +254,7 @@ gPasteWindowProperties::~gPasteWindowProperties()
 
 gPasteWindowProperties *gPasteWindowProperties::getInstance()
 {
-  if ( gPasteWindowProperties::pasteWindowProperties == NULL )
+  if ( gPasteWindowProperties::pasteWindowProperties == nullptr )
     gPasteWindowProperties::pasteWindowProperties = new gPasteWindowProperties();
   return gPasteWindowProperties::pasteWindowProperties;
 }
@@ -263,20 +263,20 @@ gPasteWindowProperties *gPasteWindowProperties::getInstance()
 void gPasteWindowProperties::copy( gTimeline *whichTimeline )
 {
   sourceTimeline = whichTimeline;
-  sourceHistogram = NULL;
+  sourceHistogram = nullptr;
 }
 
 
 void gPasteWindowProperties::copy( gHistogram *whichHistogram )
 {
-  sourceTimeline = NULL;
+  sourceTimeline = nullptr;
   sourceHistogram = whichHistogram;
 }
 
 
 void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string property )
 {
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
   {
     // paste sourceTimeline -> destinyTimeline
     if ( property == STR_TIME )
@@ -414,7 +414,7 @@ void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string pro
 
 void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string property )
 {
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
   {
     // paste sourceTimeline -> destinyHistogram
     if ( property == STR_TIME )
@@ -533,7 +533,7 @@ void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string p
 
 bool gPasteWindowProperties::isAllowed( gTimeline *destinyTimeline, const string property )
 {
-  if ( sourceTimeline == NULL && sourceHistogram == NULL )
+  if ( sourceTimeline == nullptr && sourceHistogram == nullptr )
     return false;
 
   /*if ( property == STR_TIME )
@@ -554,7 +554,7 @@ bool gPasteWindowProperties::isAllowed( gTimeline *destinyTimeline, const string
 bool gPasteWindowProperties::isAllowed( gHistogram *destinyHistogram, const string property )
 {
 
-  if ( sourceTimeline == NULL && sourceHistogram == NULL )
+  if ( sourceTimeline == nullptr && sourceHistogram == nullptr )
     return false;
 
   if ( property == STR_TIME )
@@ -568,7 +568,7 @@ bool gPasteWindowProperties::isAllowed( gHistogram *destinyHistogram, const stri
 
 TRecordTime gPasteWindowProperties::getBeginTime()
 {
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
     return sourceTimeline->GetMyWindow()->getWindowBeginTime();
 
   return sourceHistogram->GetHistogram()->getBeginTime();
@@ -576,7 +576,7 @@ TRecordTime gPasteWindowProperties::getBeginTime()
 
 TRecordTime gPasteWindowProperties::getEndTime()
 {
-  if ( sourceTimeline != NULL )
+  if ( sourceTimeline != nullptr )
     return sourceTimeline->GetMyWindow()->getWindowEndTime();
 
   return sourceHistogram->GetHistogram()->getEndTime();
@@ -585,11 +585,11 @@ TRecordTime gPasteWindowProperties::getEndTime()
 void gPasteWindowProperties::verifyRemove( gTimeline *destinyTimeline )
 {
   if( destinyTimeline == sourceTimeline )
-    sourceTimeline = NULL;
+    sourceTimeline = nullptr;
 }
 
 void gPasteWindowProperties::verifyRemove( gHistogram *destinyHistogram )
 {
   if( destinyHistogram == sourceHistogram )
-    sourceHistogram = NULL;
+    sourceHistogram = nullptr;
 }

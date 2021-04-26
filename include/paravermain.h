@@ -145,10 +145,10 @@ class TreeBrowserItemData: public wxTreeItemData
 {
   public:
     TreeBrowserItemData( const wxString& whichDesc, gTimeline* whichWin ) :
-      desc( whichDesc ), myTimeline( whichWin ), myHisto( NULL )
+      desc( whichDesc ), myTimeline( whichWin ), myHisto( nullptr )
     {}
     TreeBrowserItemData( const wxString& whichDesc, gHistogram* whichHisto ) :
-      desc( whichDesc ), myTimeline( NULL ), myHisto( whichHisto )
+      desc( whichDesc ), myTimeline( nullptr ), myHisto( whichHisto )
     {}
     
     const wxString& GetDesc() const
@@ -208,14 +208,14 @@ struct PropertyClientData
 };
 
 
+enum class StatusID
+{
+  OPEN   = 0,
+  CLOSED = 1
+};
+  
 struct SessionInfo
 {    
-  enum StatusID
-  {
-    OPEN   = 0,
-    CLOSED = 1
-  };
-  
   unsigned int pid;
   StatusID status;
   std::string sessionDate;

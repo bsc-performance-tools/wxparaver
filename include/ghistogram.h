@@ -392,13 +392,13 @@ public:
 
   void OnPopUpPixelSize( PRV_UINT16 whichPixelSize );
   
-  void OnMenuGradientFunction( GradientColor::TGradientFunction function );
+  void OnMenuGradientFunction( TGradientFunction function );
   
   void saveCFG();
 #ifdef DEFAULT_IMAGE_DIALOG
   void saveImage( bool showSaveDialog, wxString whichFileName );
 #else
-  void saveImage( bool showSaveDialog, wxString whichFileName = _( "" ), ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
+  void saveImage( bool showSaveDialog, wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
 #endif
   void saveText( bool onlySelectedPlane = false );
 

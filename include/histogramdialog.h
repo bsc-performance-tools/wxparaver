@@ -86,6 +86,14 @@ class wxToggleButton;
 ////@end control identifiers
 
 
+// Radio Button
+enum class TTimeRangeSource
+{
+  WINDOW_RANGE = 0,
+  TRACE_RANGE,
+  SELECTION_RANGE
+};
+
 /*!
  * HistogramDialog class declaration
  */
@@ -96,14 +104,6 @@ class HistogramDialog: public wxDialog
   DECLARE_EVENT_TABLE()
 
 public:
-  // Radio Button
-  typedef enum
-  {
-    WINDOW_RANGE = 0,
-    TRACE_RANGE,
-    SELECTION_RANGE
-  } TTimeRangeSource;
-
   /// Constructors
   HistogramDialog();
   HistogramDialog( wxWindow* parent, wxWindowID id = SYMBOL_HISTOGRAMDIALOG_IDNAME, const wxString& caption = SYMBOL_HISTOGRAMDIALOG_TITLE, const wxPoint& pos = SYMBOL_HISTOGRAMDIALOG_POSITION, const wxSize& size = SYMBOL_HISTOGRAMDIALOG_SIZE, long style = SYMBOL_HISTOGRAMDIALOG_STYLE );

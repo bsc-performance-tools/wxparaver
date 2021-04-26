@@ -38,7 +38,7 @@ wxTreeCtrl * createTree( wxImageList *imageList )
   newTree->SetWindowStyle( wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_SINGLE );
 #endif
   newTree->SetImageList( imageList );
-  newTree->AddRoot( wxT( "Root" ), -1, -1, new TreeBrowserItemData( _( "Root" ), (gTimeline *)NULL ) );
+  newTree->AddRoot( wxT( "Root" ), -1, -1, new TreeBrowserItemData( _( "Root" ), (gTimeline *)nullptr ) );
   
   return newTree;
 }
@@ -91,12 +91,12 @@ wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool 
   while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
     gTimeline *tmpTimeline = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline();
-    if ( tmpTimeline != NULL && tmpTimeline == wanted )
+    if ( tmpTimeline != nullptr && tmpTimeline == wanted )
     {
       root = itemCurrent;
       found = true;
     }
-    else if ( tmpTimeline != NULL )
+    else if ( tmpTimeline != nullptr )
     {
       root = getItemIdFromGTimeline( itemCurrent, wanted, found );
     }
@@ -124,7 +124,7 @@ wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool 
 // TODO: Separate recursion function to remove bool from parameters in main definition
 gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found )
 {
-  gTimeline *retgt = NULL;
+  gTimeline *retgt = nullptr;
   wxTreeItemIdValue cookie;
 
   found = false;
@@ -135,12 +135,12 @@ gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &foun
   while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
     gTimeline *tmpTimeline = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline();
-    if ( tmpTimeline != NULL && tmpTimeline->GetMyWindow() == wanted )
+    if ( tmpTimeline != nullptr && tmpTimeline->GetMyWindow() == wanted )
     {
       retgt = tmpTimeline;
       found = true;
     }
-    else if ( tmpTimeline != NULL )
+    else if ( tmpTimeline != nullptr )
     {
       retgt = getGTimelineFromWindow( itemCurrent, wanted, found );
     }
@@ -167,7 +167,7 @@ gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &foun
 
 gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted )
 {
-  gHistogram *retgh = NULL;
+  gHistogram *retgh = nullptr;
   wxTreeItemIdValue cookie;
 
   bool found = false;
@@ -178,7 +178,7 @@ gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted )
   while( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
     gHistogram *tmpHistogram = ( (TreeBrowserItemData *)( getAllTracesTree()->GetItemData( itemCurrent ) ) )->getHistogram();
-    if( tmpHistogram != NULL && tmpHistogram->GetHistogram() == wanted )
+    if( tmpHistogram != nullptr && tmpHistogram->GetHistogram() == wanted )
     {
       retgh = tmpHistogram;
       found = true;
@@ -213,12 +213,12 @@ wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found
   while ( !found && itemCurrent.IsOk() && itemCurrent != itemLast )
   {
     gTimeline *tmpTimeline = ((TreeBrowserItemData *)(getAllTracesTree()->GetItemData( itemCurrent )))->getTimeline();
-    if ( tmpTimeline != NULL && tmpTimeline->GetMyWindow() == wanted )
+    if ( tmpTimeline != nullptr && tmpTimeline->GetMyWindow() == wanted )
     {
       retItemId = itemCurrent;
       found = true;
     }
-    else if ( tmpTimeline != NULL )
+    else if ( tmpTimeline != nullptr )
     {
       retItemId = getItemIdFromWindow( itemCurrent, wanted, found );
     }
@@ -301,7 +301,7 @@ void BuildTree( paraverMain *parent,
   currentWindowId1 = root1->AppendItem( idRoot1, wxString::FromUTF8( window->getName().c_str() ), iconNumber, -1, currentData );
   currentWindowId2 = root2->AppendItem( idRoot2, wxString::FromUTF8( window->getName().c_str() ), iconNumber, -1, new TreeBrowserItemData( *currentData ) );
 
-  if ( window->getParent( 0 ) != NULL )
+  if ( window->getParent( 0 ) != nullptr )
   {
     BuildTree( parent, root1, currentWindowId1, root2, currentWindowId2, window->getParent( 0 ) );
     BuildTree( parent, root1, currentWindowId1, root2, currentWindowId2, window->getParent( 1 ) );
@@ -350,21 +350,21 @@ bool updateTreeItem( wxTreeCtrl *tree,
     {
       if( paraverMain::myParaverMain->GetCurrentTimeline() == tmpWindow )
       {
-        paraverMain::myParaverMain->SetCurrentTimeline( NULL );
+        paraverMain::myParaverMain->SetCurrentTimeline( nullptr );
         paraverMain::myParaverMain->clearProperties();
       }
       if( !allTracesTree )
         tmpTimeline->Destroy();
       Window *parent1 = tmpWindow->getParent( 0 );
-      if( parent1 != NULL )
+      if( parent1 != nullptr )
       {
-        parent1->setChild( NULL );
+        parent1->setChild( nullptr );
         parent1->setDestroy( true );
       }
       Window *parent2 = tmpWindow->getParent( 1 );
-      if( parent2 != NULL )
+      if( parent2 != nullptr )
       {
-        parent2->setChild( NULL );
+        parent2->setChild( nullptr );
         parent2->setDestroy( true );
       }
       destroy = true;
@@ -397,7 +397,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
     {
       if( paraverMain::myParaverMain->GetCurrentHisto() == tmpHisto )
       {
-        paraverMain::myParaverMain->SetCurrentHisto( NULL );
+        paraverMain::myParaverMain->SetCurrentHisto( nullptr );
         paraverMain::myParaverMain->clearProperties();
       }
       if( !allTracesTree )

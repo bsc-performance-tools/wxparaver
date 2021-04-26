@@ -126,12 +126,12 @@ LoadCFGDialog::~LoadCFGDialog()
 void LoadCFGDialog::Init()
 {
 ////@begin LoadCFGDialog member initialisation
-  searchBar = NULL;
-  treeDirs = NULL;
-  listDirs = NULL;
-  textDescription = NULL;
-  buttonCancel = NULL;
-  buttonLoad = NULL;
+  searchBar = nullptr;
+  treeDirs = nullptr;
+  listDirs = nullptr;
+  textDescription = nullptr;
+  buttonCancel = nullptr;
+  buttonLoad = nullptr;
 ////@end LoadCFGDialog member initialisation
 }
 
@@ -191,7 +191,7 @@ void LoadCFGDialog::CreateControls()
  
 void LoadCFGDialog::OnDirctrlSelChanged( wxTreeEvent& event )
 {
-  if ( treeDirs == NULL ) return; 
+  if ( treeDirs == nullptr ) return; 
   wxString myPath = treeDirs->GetPath();
   wxFileName fName;
   
