@@ -1384,12 +1384,12 @@ string getPropertyName( Window *whichWindow,
 {
   if( whichWindow != nullptr )
   {
-    if( whichWindow->isDerivedWindow() )
+    if( whichWindow->isDerivedWindow() && derivedIndex != DERIVED_NULL )
       return DerivedTimelinePropertyLabels[ derivedIndex ];
-    else
+    else if( singleIndex != SINGLE_NULL )
       return SingleTimelinePropertyLabels[ singleIndex ];
   }
-  else if( whichHistogram != nullptr )
+  else if( whichHistogram != nullptr && histogramIndex != HISTOGRAM_NULL )
     return HistogramPropertyLabels[ histogramIndex ];
 
   return "";
