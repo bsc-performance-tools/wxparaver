@@ -1261,7 +1261,7 @@ void AdvancedSaveConfiguration::buildWindowsSetWidgets( const string& propertyNa
 
 void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& event )
 {
-  string tmpOriginalName = string( ( (wxCheckBox *)event.GetEventObject() )->GetLabel().mb_str() );
+  string tmpOriginalName = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
 
   if( event.IsChecked() )
   {
@@ -1280,8 +1280,8 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
       linkedManager.insertLink( tmpOriginalName, *it );
       if ( (*it) == timelines[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
-      else
-        (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
+
+      (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
 
     THistogramsSet tmpHistoSet;
@@ -1292,8 +1292,8 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
       linkedManager.insertLink( tmpOriginalName, *it ); 
       if ( (*it) == histograms[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
-      else
-        (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
+
+      (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
 
     if( !existsCustomName )
@@ -1346,7 +1346,7 @@ void AdvancedSaveConfiguration::updateAliasForLinkedWindows( std::string whichOr
 
 void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &event )
 {
-  string tmpOriginalName  = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
+  string tmpOriginalName = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
   string tmpCustomName = string( event.GetString().mb_str() );
   
   unlinkedManager.setCustomName( tmpOriginalName, tmpCustomName );
@@ -1386,6 +1386,8 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
     wxBoxSizer *boxSizerOriginalName = new wxBoxSizer( wxHORIZONTAL );
 
     wxString originalNameLabel = wxString::FromUTF8( (*it).c_str() );
+    OriginalNameData *tmpDataCheck = new OriginalNameData();
+    tmpDataCheck->myOriginalName = *it;
     wxString fullOriginalNameLabel = originalNameLabel;
     if ( originalNameLabel.AfterLast( KParamSeparator[0] ) != originalNameLabel )
        originalNameLabel = originalNameLabel.AfterLast( KParamSeparator[0] );
@@ -1402,7 +1404,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
     auxCheckBox->SetToolTip( wxT( "Link/Unlink all windows" ) );
     auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
                           wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked ),
-                          nullptr,
+                          tmpDataCheck,
                           this ); 
 
     boxSizerOriginalName->Add( auxCheckBox, 1, wxEXPAND | wxALL, 2 );
@@ -1426,11 +1428,11 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
                                                  0,
                                                  excludeVerticalBar );
     customNameText->SetToolTip( wxT( "Custom name for linked property" ) );
-    OriginalNameData *tmpData = new OriginalNameData();
-    tmpData->myOriginalName = *it;
+    OriginalNameData *tmpDataText = new OriginalNameData();
+    tmpDataText->myOriginalName = *it;
     customNameText->Connect( wxEVT_COMMAND_TEXT_UPDATED,
                              wxCommandEventHandler( AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged ),
-                             tmpData,
+                             tmpDataText,
                              this ); 
 
     boxSizerOriginalName->Add( customNameText, 2, wxEXPAND | wxALL, 2 );
