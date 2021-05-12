@@ -1821,7 +1821,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName ==  getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
     Filter *filter = whichTimeline->getFilter();
     filter->clearEventValues();

@@ -436,6 +436,19 @@ void AdvancedSaveConfiguration::BuildTagMaps( const map< string, string > &renam
 }
 
 
+void AdvancedSaveConfiguration::parseSemanticParameterTag( const wxString& whichTag,
+                                                           string& onSemanticLevel,
+                                                           string& onFunction,
+                                                           TParamIndex& onNumParameter )
+{
+  onSemanticLevel = whichTag.BeforeFirst( KParamSeparator[0] ).mb_str();
+  onFunction = whichTag.AfterLast( KParamSeparator[0] ).BeforeFirst( wxChar('.') ).mb_str();
+  istringstream tmpValue(
+          string( whichTag.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() ) );
+  tmpValue >> onNumParameter;
+}
+
+
 void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window::TParamAliasKey > &fullParamList, // maybe not needed, but window
                                                            const Window::TParamAlias &renamedParamAlias,
                                                            const bool showFullList )
@@ -914,7 +927,6 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
   }
 }
 
-
 void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
 {
   map< string, string > auxActivePropertyTags;
@@ -939,11 +951,7 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
       {
         if ( isTimeline )  // by construction, this the only possibility
         {
-          semanticLevel = currentTagName.BeforeFirst( KParamSeparator[0] ).mb_str();
-          function = currentTagName.AfterLast( KParamSeparator[0] ).BeforeFirst( wxChar('.') ).mb_str();
-          istringstream tmpValue(
-                  string( currentTagName.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() ) );
-          tmpValue >> numParameter;
+          parseSemanticParameterTag( currentTagName, semanticLevel, function, numParameter );
 
           auxParamKey = timelines[ currentItem ]->buildCFG4DParamAliasKey( semanticLevel, function, numParameter );
           newAlias = GetTextCtrlByName( currentTagName )->GetValue().mb_str();
@@ -1154,7 +1162,9 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
       if ( tmpWin == timelines[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
       else
-        tmpWin->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
+      {
+        setTimelineCFG4DAlias( tmpWin, tmpData->getPropertyName(), tmpCustomName );
+      }
     }
     else
     {
@@ -1280,8 +1290,10 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
       linkedManager.insertLink( tmpOriginalName, *it );
       if ( (*it) == timelines[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
-
-      (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
+      else
+      {
+        setTimelineCFG4DAlias( *it, tmpOriginalName, tmpCustomName );
+      }
     }
 
     THistogramsSet tmpHistoSet;
@@ -1292,8 +1304,8 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
       linkedManager.insertLink( tmpOriginalName, *it ); 
       if ( (*it) == histograms[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
-
-      (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
+      else
+        (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
     }
 
     if( !existsCustomName )
@@ -1325,6 +1337,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
   updateLinkPropertiesWidgets();
 }
 
+
 void AdvancedSaveConfiguration::updateAliasForLinkedWindows( std::string whichOriginalName, 
                                                              std::string whichCustomName )
 {
@@ -1332,14 +1345,14 @@ void AdvancedSaveConfiguration::updateAliasForLinkedWindows( std::string whichOr
   linkedManager.getLinks( whichOriginalName, tmpWin );
   for( TWindowsSet::iterator it = tmpWin.begin(); it != tmpWin.end(); ++it )
   {
-    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName);
+    setTimelineCFG4DAlias( *it, whichOriginalName, whichCustomName );
   }
 
   THistogramsSet tmpHisto;
   linkedManager.getLinks( whichOriginalName, tmpHisto );
   for( THistogramsSet::iterator it = tmpHisto.begin(); it != tmpHisto.end(); ++it )
   {
-    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName);
+    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName );
   }
 }
 
@@ -1447,4 +1460,22 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
 
   scrolledLinkProperties->SetSizer( boxSizerLinks );
   scrolledLinkProperties->FitInside();
+}
+
+
+void AdvancedSaveConfiguration::setTimelineCFG4DAlias( Window *whichWindow,
+                                                       const string& whichOriginalName,
+                                                       const string& whichCustomName )
+{
+  if ( whichOriginalName.find( PARAM_SEPARATOR ) != string::npos )
+  {
+    string semanticLevel;
+    string function;
+    TParamIndex numParameter;
+
+    parseSemanticParameterTag( whichOriginalName, semanticLevel, function, numParameter );
+    whichWindow->setCFG4DParamAlias( semanticLevel, function, numParameter, whichCustomName );
+  }
+  else
+    whichWindow->setCFG4DAlias( whichOriginalName, whichCustomName );
 }
