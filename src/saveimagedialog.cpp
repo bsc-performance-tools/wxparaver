@@ -257,7 +257,7 @@ void SaveImageDialog::CreateControls()
     imageToSaveSizer->Hide( (wxSizer*) legendSizer, true );
     Layout();
   }
-  fileNameBar->WriteText( defaultFileName );
+  fileNameBar->SetValue( defaultFileName );
   treeDirs->SetPath( directoryStartingPath );
   updateFileNamesAndPaths();
 }
@@ -328,7 +328,7 @@ void SaveImageDialog::updateFileNamesAndPaths()
     }
   }
   searchBar->Clear();
-  searchBar->WriteText( myPath );
+  searchBar->ChangeValue( myPath );
   directoryStartingPath = myPath;
 }
 
@@ -348,7 +348,7 @@ void SaveImageDialog::OnSavelistboxSelected( wxCommandEvent& event )
     selectedImageFilePath = myPath;
     
     fileNameBar->Clear();
-    fileNameBar->WriteText( defaultFileName );
+    fileNameBar->ChangeValue( defaultFileName );
   }
 }
 
@@ -377,7 +377,7 @@ void SaveImageDialog::OnSaveimagecheckboxClick( wxCommandEvent& event )
   imageFileName->Clear();
   selectedImageFilePath = fileNameBar->GetValue() + fileTypeText;
   if ( imageCheckbox->IsChecked() && !fileNameBar->IsEmpty() )
-    imageFileName->WriteText( selectedImageFilePath ); // is [   + _( "_IMAGE" )   ] necessary?
+    imageFileName->ChangeValue( selectedImageFilePath ); // is [   + _( "_IMAGE" )   ] necessary?
     
 }
 
@@ -392,7 +392,7 @@ void SaveImageDialog::OnSavelegendcheckboxClick( wxCommandEvent& event )
 
   selectedLegendFilePath = fileNameBar->GetValue() + legendSuffix + fileTypeText;
   if ( legendCheckbox->IsChecked() && !fileNameBar->IsEmpty() ) 
-    legendFileName->WriteText( selectedLegendFilePath );
+    legendFileName->ChangeValue( selectedLegendFilePath );
   
   
 }

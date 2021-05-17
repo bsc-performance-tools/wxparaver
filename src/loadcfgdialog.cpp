@@ -103,7 +103,7 @@ bool LoadCFGDialog::Create( wxWindow* parent, wxWindowID id, const wxString& cap
 
   treeDirs->SetPath( directoryStartingPath );
   searchBar->Clear();
-  searchBar->WriteText( directoryStartingPath );
+  searchBar->SetValue( directoryStartingPath );
   return true;
 }
 
@@ -214,7 +214,7 @@ void LoadCFGDialog::OnDirctrlSelChanged( wxTreeEvent& event )
     textDescription->SetValue( cfgDescription );
   }
   searchBar->Clear();
-  searchBar->WriteText( myPath );
+  searchBar->ChangeValue( myPath );
   event.Skip();
 }
 
