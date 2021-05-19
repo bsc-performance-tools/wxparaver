@@ -36,6 +36,7 @@
 ////@begin includes
 ////@end includes
 #include "advancedsaveconfiguration.h"
+#include "labelconstructor.h"
 #include <wx/statline.h>
 
 ////@begin XPM images
@@ -118,7 +119,6 @@ BEGIN_EVENT_TABLE( AdvancedSaveConfiguration, wxDialog )
 
 END_EVENT_TABLE()
 
-#define PARAM_SEPARATOR "|"
 const wxString AdvancedSaveConfiguration::KParamSeparator = _( PARAM_SEPARATOR );
 const wxString AdvancedSaveConfiguration::KSuffixSeparator = _( "_" );
 const wxString AdvancedSaveConfiguration::KTextCtrlSuffix = AdvancedSaveConfiguration::KSuffixSeparator +
@@ -460,7 +460,6 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
   string semanticLevel, function, paramAlias;
   string innerKey;
   TParamIndex numParameter;
-  string nameParameter;
   bool enabled;
   Window *currentWindow = timelines[ currentItem ]; // TRY to set this static
   vector< Window::TParamAliasKey > semanticLevelParamKeys;
@@ -478,15 +477,12 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
       // And then insert its parameters if they exist.
       semanticLevelParamKeys = currentWindow->getCFG4DParamKeysBySemanticLevel( *it, fullParamList );
 
-      TParamIndex curP = 0;
+      TParamIndex currentParam = 0;
       for( vector< Window::TParamAliasKey >::const_iterator it2 = semanticLevelParamKeys.begin();
            it2 != semanticLevelParamKeys.end(); ++it2 )
       {
         // Tag with parameters!
         currentWindow->splitCFG4DParamAliasKey( *it2, semanticLevel, function, numParameter );
-
-        stringstream auxStr;
-        auxStr << numParameter;
 
         int iSemLevel;
         for( iSemLevel = 0; iSemLevel < DERIVED; ++iSemLevel )
@@ -494,8 +490,7 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
           if( TimelineLevelLabels[ iSemLevel ] == semanticLevel )
             break;
         }
-        nameParameter = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
-        innerKey = *it + string( PARAM_SEPARATOR ) + auxStr.str() + string( PARAM_SEPARATOR ) + function + string(".") + nameParameter;
+        innerKey = LabelConstructor::getCFG4DParameterOriginalName( currentWindow, TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
 
         if ( renamedParamAlias.find( *it2 ) != renamedParamAlias.end() )
         {
@@ -507,14 +502,14 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
         {
           // No alias; insert something, like the original name.
           enabled = false;
-          paramAlias = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), curP );
+          paramAlias = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), currentParam );
         }
 
         auxFullTagList.push_back( innerKey );
         auxEnabledFullTagsList[ innerKey ] = enabled;
         auxRenamedFullTagsList[ innerKey ] = paramAlias;
 
-        curP++;
+        currentParam++;
       }
     }
   }
