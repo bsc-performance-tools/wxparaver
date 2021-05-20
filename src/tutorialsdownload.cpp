@@ -39,7 +39,7 @@
 #include <ostream>
 #include <string>
 #include <sstream>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/asio/ssl.hpp>
 
 #include <wx/uri.h>
@@ -54,6 +54,7 @@
 #include "wxparaverapp.h"
 
 using boost::asio::ip::tcp;
+using namespace boost::placeholders;
 using std::stringstream;
 
 std::string TutorialsDownload::tutorialsListFile = "tutorials_list.xml";

@@ -1238,7 +1238,7 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
       axisColour = wxColour( rgbAxisColour.red - 1, rgbAxisColour.green ,rgbAxisColour.blue );
     else
       axisColour = wxColour( rgbAxisColour.red, rgbAxisColour.green ,rgbAxisColour.blue );
-    dc.SetPen( wxPen( axisColour, 1, wxLONG_DASH ) );
+    dc.SetPen( wxPen( axisColour, 1, wxPENSTYLE_LONG_DASH ) );
     
     TSemanticValue relativeZero = Normalizer::calculate( 0.0,
                                                          myWindow->getMinimumY(),
@@ -6047,7 +6047,7 @@ void gTimeline::drawTimeMarks( std::vector< TRecordTime > times,
       }
       
       // draw found time line
-      bufferDraw.SetPen( wxPen( *wxRED, 2, wxSHORT_DASH ) );
+      bufferDraw.SetPen( wxPen( *wxRED, 2, wxPENSTYLE_SHORT_DASH ) );
       bufferDraw.DrawLine( xTime + 1, 0, xTime + 1, drawZone->GetSize().GetHeight() );
     }
   }
