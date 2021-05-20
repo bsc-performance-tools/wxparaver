@@ -200,6 +200,10 @@ public:
 
     void BuildTagMaps( const std::map< std::string, std::string > &renamedTagMap,
                        const bool showFullList );
+    void parseSemanticParameterTag( const wxString& whichTag,
+                                    std::string& onSemanticLevel,
+                                    std::string& onFunction,
+                                    TParamIndex& onNumParameter );
     void InsertParametersToTagMaps( const std::vector< Window::TParamAliasKey > &fullParamList,
                                     const Window::TParamAlias &renamedParamAlias,
                                     const bool showFullList );
@@ -237,6 +241,11 @@ public:
 
     void OnCheckBoxLinkPropertyClicked( wxCommandEvent& event );
     void OnLinkedPropertiesNameChanged( wxCommandEvent& event );
+
+    void setTimelineCFG4DAlias( Window *whichWindow,
+                                const std::string& whichOriginalName,
+                                const std::string& whichCustomName );
+
 };
 
 #endif

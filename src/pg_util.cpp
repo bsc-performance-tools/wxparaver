@@ -473,12 +473,12 @@ void fillPropertyClientData( Window* whichWindow,
 class CFGS4DLinkedPropertyShown
 {
   public:
-    TCFGS4DIndexLink indexLink;
+    TCFGS4DGroup groupLink;
     string propertyName;
 
     bool operator<( const CFGS4DLinkedPropertyShown& other ) const
     {
-      if( indexLink < other.indexLink )
+      if( groupLink < other.groupLink )
         return true;
       
       return propertyName < other.propertyName;
@@ -498,15 +498,15 @@ bool insertLinkedPropertyShown( Window* whichWindow,
       tmpLinked.propertyName = DerivedTimelinePropertyLabels[ propertyIndex ];
     else
       tmpLinked.propertyName = SingleTimelinePropertyLabels[ propertyIndex ];
-    tmpLinked.indexLink = whichWindow->getCFGS4DIndexLink( tmpLinked.propertyName );
+    tmpLinked.groupLink = whichWindow->getCFGS4DGroupLink( tmpLinked.propertyName );
   }
   else if( whichHistogram != nullptr )
   {
     tmpLinked.propertyName = HistogramPropertyLabels[ propertyIndex ];
-    tmpLinked.indexLink = whichHistogram->getCFGS4DIndexLink( tmpLinked.propertyName );
+    tmpLinked.groupLink = whichHistogram->getCFGS4DGroupLink( tmpLinked.propertyName );
   }
 
-  if( tmpLinked.indexLink == NO_INDEX_LINK )
+  if( tmpLinked.groupLink == NO_GROUP_LINK )
     return true;
 
   return linkedPropertiesShown.insert( tmpLinked ).second;

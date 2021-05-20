@@ -36,6 +36,7 @@
 ////@begin includes
 ////@end includes
 #include "advancedsaveconfiguration.h"
+#include "labelconstructor.h"
 #include <wx/statline.h>
 
 ////@begin XPM images
@@ -118,7 +119,6 @@ BEGIN_EVENT_TABLE( AdvancedSaveConfiguration, wxDialog )
 
 END_EVENT_TABLE()
 
-#define PARAM_SEPARATOR "|"
 const wxString AdvancedSaveConfiguration::KParamSeparator = _( PARAM_SEPARATOR );
 const wxString AdvancedSaveConfiguration::KSuffixSeparator = _( "_" );
 const wxString AdvancedSaveConfiguration::KTextCtrlSuffix = AdvancedSaveConfiguration::KSuffixSeparator +
@@ -436,6 +436,19 @@ void AdvancedSaveConfiguration::BuildTagMaps( const map< string, string > &renam
 }
 
 
+void AdvancedSaveConfiguration::parseSemanticParameterTag( const wxString& whichTag,
+                                                           string& onSemanticLevel,
+                                                           string& onFunction,
+                                                           TParamIndex& onNumParameter )
+{
+  onSemanticLevel = whichTag.BeforeFirst( KParamSeparator[0] ).mb_str();
+  onFunction = whichTag.AfterLast( KParamSeparator[0] ).BeforeFirst( wxChar('.') ).mb_str();
+  istringstream tmpValue(
+          string( whichTag.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() ) );
+  tmpValue >> onNumParameter;
+}
+
+
 void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window::TParamAliasKey > &fullParamList, // maybe not needed, but window
                                                            const Window::TParamAlias &renamedParamAlias,
                                                            const bool showFullList )
@@ -447,7 +460,6 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
   string semanticLevel, function, paramAlias;
   string innerKey;
   TParamIndex numParameter;
-  string nameParameter;
   bool enabled;
   Window *currentWindow = timelines[ currentItem ]; // TRY to set this static
   vector< Window::TParamAliasKey > semanticLevelParamKeys;
@@ -465,15 +477,12 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
       // And then insert its parameters if they exist.
       semanticLevelParamKeys = currentWindow->getCFG4DParamKeysBySemanticLevel( *it, fullParamList );
 
-      TParamIndex curP = 0;
+      TParamIndex currentParam = 0;
       for( vector< Window::TParamAliasKey >::const_iterator it2 = semanticLevelParamKeys.begin();
            it2 != semanticLevelParamKeys.end(); ++it2 )
       {
         // Tag with parameters!
         currentWindow->splitCFG4DParamAliasKey( *it2, semanticLevel, function, numParameter );
-
-        stringstream auxStr;
-        auxStr << numParameter;
 
         int iSemLevel;
         for( iSemLevel = 0; iSemLevel < DERIVED; ++iSemLevel )
@@ -481,8 +490,7 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
           if( TimelineLevelLabels[ iSemLevel ] == semanticLevel )
             break;
         }
-        nameParameter = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
-        innerKey = *it + string( PARAM_SEPARATOR ) + auxStr.str() + string( PARAM_SEPARATOR ) + function + string(".") + nameParameter;
+        innerKey = LabelConstructor::getCFG4DParameterOriginalName( currentWindow, TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
 
         if ( renamedParamAlias.find( *it2 ) != renamedParamAlias.end() )
         {
@@ -494,14 +502,14 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
         {
           // No alias; insert something, like the original name.
           enabled = false;
-          paramAlias = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), curP );
+          paramAlias = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), currentParam );
         }
 
         auxFullTagList.push_back( innerKey );
         auxEnabledFullTagsList[ innerKey ] = enabled;
         auxRenamedFullTagsList[ innerKey ] = paramAlias;
 
-        curP++;
+        currentParam++;
       }
     }
   }
@@ -914,7 +922,6 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
   }
 }
 
-
 void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
 {
   map< string, string > auxActivePropertyTags;
@@ -939,11 +946,7 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
       {
         if ( isTimeline )  // by construction, this the only possibility
         {
-          semanticLevel = currentTagName.BeforeFirst( KParamSeparator[0] ).mb_str();
-          function = currentTagName.AfterLast( KParamSeparator[0] ).BeforeFirst( wxChar('.') ).mb_str();
-          istringstream tmpValue(
-                  string( currentTagName.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() ) );
-          tmpValue >> numParameter;
+          parseSemanticParameterTag( currentTagName, semanticLevel, function, numParameter );
 
           auxParamKey = timelines[ currentItem ]->buildCFG4DParamAliasKey( semanticLevel, function, numParameter );
           newAlias = GetTextCtrlByName( currentTagName )->GetValue().mb_str();
@@ -1154,7 +1157,9 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
       if ( tmpWin == timelines[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
       else
-        tmpWin->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
+      {
+        setTimelineCFG4DAlias( tmpWin, tmpData->getPropertyName(), tmpCustomName );
+      }
     }
     else
     {
@@ -1261,7 +1266,7 @@ void AdvancedSaveConfiguration::buildWindowsSetWidgets( const string& propertyNa
 
 void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& event )
 {
-  string tmpOriginalName = string( ( (wxCheckBox *)event.GetEventObject() )->GetLabel().mb_str() );
+  string tmpOriginalName = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
 
   if( event.IsChecked() )
   {
@@ -1281,7 +1286,9 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
       if ( (*it) == timelines[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
       else
-        (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
+      {
+        setTimelineCFG4DAlias( *it, tmpOriginalName, tmpCustomName );
+      }
     }
 
     THistogramsSet tmpHistoSet;
@@ -1325,6 +1332,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
   updateLinkPropertiesWidgets();
 }
 
+
 void AdvancedSaveConfiguration::updateAliasForLinkedWindows( std::string whichOriginalName, 
                                                              std::string whichCustomName )
 {
@@ -1332,21 +1340,21 @@ void AdvancedSaveConfiguration::updateAliasForLinkedWindows( std::string whichOr
   linkedManager.getLinks( whichOriginalName, tmpWin );
   for( TWindowsSet::iterator it = tmpWin.begin(); it != tmpWin.end(); ++it )
   {
-    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName);
+    setTimelineCFG4DAlias( *it, whichOriginalName, whichCustomName );
   }
 
   THistogramsSet tmpHisto;
   linkedManager.getLinks( whichOriginalName, tmpHisto );
   for( THistogramsSet::iterator it = tmpHisto.begin(); it != tmpHisto.end(); ++it )
   {
-    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName);
+    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName );
   }
 }
 
 
 void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &event )
 {
-  string tmpOriginalName  = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
+  string tmpOriginalName = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
   string tmpCustomName = string( event.GetString().mb_str() );
   
   unlinkedManager.setCustomName( tmpOriginalName, tmpCustomName );
@@ -1386,6 +1394,8 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
     wxBoxSizer *boxSizerOriginalName = new wxBoxSizer( wxHORIZONTAL );
 
     wxString originalNameLabel = wxString::FromUTF8( (*it).c_str() );
+    OriginalNameData *tmpDataCheck = new OriginalNameData();
+    tmpDataCheck->myOriginalName = *it;
     wxString fullOriginalNameLabel = originalNameLabel;
     if ( originalNameLabel.AfterLast( KParamSeparator[0] ) != originalNameLabel )
        originalNameLabel = originalNameLabel.AfterLast( KParamSeparator[0] );
@@ -1402,7 +1412,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
     auxCheckBox->SetToolTip( wxT( "Link/Unlink all windows" ) );
     auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
                           wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked ),
-                          nullptr,
+                          tmpDataCheck,
                           this ); 
 
     boxSizerOriginalName->Add( auxCheckBox, 1, wxEXPAND | wxALL, 2 );
@@ -1426,11 +1436,11 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
                                                  0,
                                                  excludeVerticalBar );
     customNameText->SetToolTip( wxT( "Custom name for linked property" ) );
-    OriginalNameData *tmpData = new OriginalNameData();
-    tmpData->myOriginalName = *it;
+    OriginalNameData *tmpDataText = new OriginalNameData();
+    tmpDataText->myOriginalName = *it;
     customNameText->Connect( wxEVT_COMMAND_TEXT_UPDATED,
                              wxCommandEventHandler( AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged ),
-                             tmpData,
+                             tmpDataText,
                              this ); 
 
     boxSizerOriginalName->Add( customNameText, 2, wxEXPAND | wxALL, 2 );
@@ -1445,4 +1455,22 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
 
   scrolledLinkProperties->SetSizer( boxSizerLinks );
   scrolledLinkProperties->FitInside();
+}
+
+
+void AdvancedSaveConfiguration::setTimelineCFG4DAlias( Window *whichWindow,
+                                                       const string& whichOriginalName,
+                                                       const string& whichCustomName )
+{
+  if ( whichOriginalName.find( PARAM_SEPARATOR ) != string::npos )
+  {
+    string semanticLevel;
+    string function;
+    TParamIndex numParameter;
+
+    parseSemanticParameterTag( whichOriginalName, semanticLevel, function, numParameter );
+    whichWindow->setCFG4DParamAlias( semanticLevel, function, numParameter, whichCustomName );
+  }
+  else
+    whichWindow->setCFG4DAlias( whichOriginalName, whichCustomName );
 }

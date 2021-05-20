@@ -1289,6 +1289,20 @@ void paraverMain::OnPropertyGridChanging( wxPropertyGridEvent& event )
   propertyPrevValue = event.GetProperty()->GetValue();
 }
 
+std::string getCFG4DParameterOriginalName( Window *whichWindow, TWindowLevel whichLevel, TParamIndex whichParam )
+{
+  return LabelConstructor::getCFG4DParameterOriginalName( whichWindow,
+                                                          whichLevel,
+                                                          whichParam );
+}
+
+// Dummy function: no sense for histograms because they don't have semantic function parameters,
+//                 but needed for templated function linkedSetPropertyValue.
+std::string getCFG4DParameterOriginalName( Histogram *whichWindow, TWindowLevel whichLevel, TParamIndex whichParam )
+{
+  return "";
+}
+
 template< typename T >
 bool paraverMain::linkedSetPropertyValue( T *whichWindow,
                                           wxPropertyGridEvent& event,
@@ -1297,10 +1311,19 @@ bool paraverMain::linkedSetPropertyValue( T *whichWindow,
                                           PropertyClientData *whichClientData )
 {
   bool isLinkedProperty = false;
+  string propOriginalName = propName;
 
+  if( propName == SingleTimelinePropertyLabels[ SINGLE_FUNCTIONPARAMETERS ] ||
+      propName == DerivedTimelinePropertyLabels[ DERIVED_FUNCTIONPARAMETERS ] )
+  {
+    propOriginalName = getCFG4DParameterOriginalName( whichWindow,
+                                                      whichClientData->semanticLevel,
+                                                      whichClientData->numParameter );
+  }
+    
   TWindowsSet timelines;
-  CFGS4DGlobalManager::getInstance()->getLinks( whichWindow->getCFGS4DIndexLink( propName ),
-                                                propName,
+  CFGS4DGlobalManager::getInstance()->getLinks( whichWindow->getCFGS4DIndexLink(),
+                                                whichWindow->getCFGS4DGroupLink( propOriginalName ),
                                                 timelines );
   if( timelines.size() > 0 )
   {
@@ -1310,8 +1333,8 @@ bool paraverMain::linkedSetPropertyValue( T *whichWindow,
   }
 
   THistogramsSet histograms;
-  CFGS4DGlobalManager::getInstance()->getLinks( whichWindow->getCFGS4DIndexLink( propName ),
-                                                propName,
+  CFGS4DGlobalManager::getInstance()->getLinks( whichWindow->getCFGS4DIndexLink(), 
+                                                whichWindow->getCFGS4DGroupLink( propName ),
                                                 histograms );
   if( histograms.size() > 0 )
   {
@@ -1821,7 +1844,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
-  else if( propName ==  getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EVENTVALUEVALUES, DERIVED_NULL, HISTOGRAM_NULL ) )
   {
     Filter *filter = whichTimeline->getFilter();
     filter->clearEventValues();
