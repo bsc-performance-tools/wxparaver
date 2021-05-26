@@ -1659,7 +1659,10 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
   }
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DPLANE ) )
   {
-    whichHistogram->setSelectedPlane( property->GetValue().GetLong() );
+    if( whichHistogram->isCommunicationStat( whichHistogram->getCurrentStat() ) )
+      whichHistogram->setCommSelectedPlane( property->GetValue().GetLong() );
+    else
+      whichHistogram->setSelectedPlane( property->GetValue().GetLong() );
     whichHistogram->setRedraw( true );
   }
 

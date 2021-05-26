@@ -2845,16 +2845,25 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   arrayInt.Clear();
   pos = 0;
   selected = -1;
-  for( THistogramColumn i = 0; i < whichHisto->getNumPlanes(); i++ )
+  bool tmpIsCommStat = whichHisto->isCommunicationStat( whichHisto->getCurrentStat() );
+
+  for( THistogramColumn i = 0; i < whichHisto->getNumPlanes(); ++i )
   {
-    if( whichHisto->planeWithValues( i ) )
+    bool tmpPlaneWithValues;
+    if( tmpIsCommStat )
+      tmpPlaneWithValues = whichHisto->planeCommWithValues( i );
+    else
+      tmpPlaneWithValues = whichHisto->planeWithValues( i );
+
+    if( tmpPlaneWithValues )
     {
       arrayStr.Add( wxString::FromUTF8( whichHisto->getPlaneLabel( i ).c_str() ) );
       arrayInt.Add( pos );
-      if( pos == whichHisto->getSelectedPlane() )
+      if( (  tmpIsCommStat && pos == whichHisto->getCommSelectedPlane() ) ||
+          ( !tmpIsCommStat && pos == whichHisto->getSelectedPlane() ) )
         selected = pos;
     }
-    pos++;
+    ++pos;
   }
 
   wxPGId thirdWinPlane = AppendCFG4DEnumPropertyHistogram( windowProperties,
