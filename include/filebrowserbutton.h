@@ -45,7 +45,7 @@ class BrowserButton : public wxButton
                    const wxSize& size = wxDefaultSize,
                    long style = 0,
 
-                   wxTextCtrl *whichTextCtrl = NULL, // associated text control
+                   wxTextCtrl *whichTextCtrl = nullptr, // associated text control
                    const wxString& whichDialogMessage = wxT( "Choose a file" ),
                    const wxString& whichDialogDefaultDir = wxT( "" ),
                    long whichDialogStyle = wxFD_DEFAULT_STYLE, // set wxFileDialog style
@@ -105,7 +105,7 @@ class FileBrowserButton : public BrowserButton
                        const wxSize& size = wxDefaultSize,
                        long style = 0,
 
-                       wxTextCtrl *whichTextCtrl = NULL, // associated text control
+                       wxTextCtrl *whichTextCtrl = nullptr, // associated text control
                        const wxString& whichDialogMessage = wxT( "Choose a file" ),
                        const wxString& whichDialogDefaultDir = wxT( "" ),
                        const wxString& whichFileDialogDefaultFile = wxT( "" ),
@@ -152,7 +152,7 @@ class DirBrowserButton : public BrowserButton
                        const wxSize& size = wxDefaultSize,
                        long style = 0,
 
-                       wxTextCtrl *whichTextCtrl = NULL, // associated text control
+                       wxTextCtrl *whichTextCtrl = nullptr, // associated text control
                        const wxString& whichDialogMessage = wxT( "Choose a file" ),
                        const wxString& whichDialogDefaultDir = wxT( "" ),
                        long whichDialogStyle = wxFD_DEFAULT_STYLE, // set wxFileDialog style

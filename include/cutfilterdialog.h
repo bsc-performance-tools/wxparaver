@@ -475,7 +475,7 @@ private:
 
   wxString reValuesSepByCommaForType;
 
-  bool cutterUsesOriginalTime;
+  bool cutterByTimePreviouslyChecked;
 
 
   bool isFileSelected( FileBrowserButton *fpc );
@@ -486,6 +486,8 @@ private:
   const std::vector< std::string > changeToolsIDsToNames( const std::vector< std::string >& listToolIDs );
   bool globalEnable();
   bool globalEnable( const std::string& auxInputTrace );
+
+  void swapTimeAndPercent();
 
   void UpdateOutputTraceName();
 

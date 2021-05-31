@@ -71,6 +71,11 @@ class wxStaticLine;
  * HelpContents class declaration
  */
 
+enum class TContents 
+{
+  HELP,
+  TUTORIAL
+};
 
 class HelpContents: public wxDialog
 {
@@ -78,11 +83,6 @@ class HelpContents: public wxDialog
   DECLARE_EVENT_TABLE()
 
 public:
-  enum TContents 
-  {
-    HELP,
-    TUTORIAL
-  };
 
   /// Constructors
   HelpContents();

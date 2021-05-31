@@ -253,84 +253,84 @@ RunScript::~RunScript()
 void RunScript::Init()
 {
 ////@begin RunScript member initialisation
-  myProcess = NULL;
+  myProcess = nullptr;
   myProcessPid = 0;
-  choiceApplication = NULL;
-  buttonEditApplication = NULL;
-  textCtrlTrace = NULL;
-  fileBrowserButtonTrace = NULL;
-  boxSizerParameters = NULL;
-  labelTextCtrlDefaultParameters = NULL;
-  textCtrlDefaultParameters = NULL;
-  dimemasSection = NULL;
-  labelFilePickerDimemasCFG = NULL;
-  textCtrlDimemasCFG = NULL;
-  fileBrowserButtonDimemasCFG = NULL;
-  buttonDimemasGUI = NULL;
-  labelTextCtrlOutputTrace = NULL;
-  textCtrlOutputTrace = NULL;
-  checkBoxReuseDimemasTrace = NULL;
-  checkBoxDontTranslateIdleStates = NULL;
-  checkBoxDimemasVerbose = NULL;
-  textCtrlDimemasBandwidth = NULL;
-  textCtrlDimemasLatency = NULL;
-  radioButtonDimemasDefaultTasksMapping = NULL;
-  radioButtonDimemasFillNodes = NULL;
-  radioButtonDimemasInterleaved = NULL;
-  radioButtonDimemasTasksPerNode = NULL;
-  spinCtrlDimemasTasksPerNode = NULL;
-  statsSection = NULL;
-  statsLabelTextCtrlOutputName = NULL;
-  statsTextCtrlOutputName = NULL;
-  statsCheckBoxShowBurstsHistogram = NULL;
-  statsCheckBoxShowCommsHistogram = NULL;
-  statsCheckBoxOnlyDatFile = NULL;
-  statsCheckBoxExclusiveTimes = NULL;
-  clusteringSection = NULL;
-  textCtrlClusteringXML = NULL;
-  fileBrowserButtonClusteringXML = NULL;
-  buttonClusteringXML = NULL;
-  textCtrlClusteringOutputTrace = NULL;
-  checkBoxClusteringUseSemanticWindow = NULL;
-  checkBoxClusteringCSVValueAsDimension = NULL;
-  checkBoxClusteringNormalize = NULL;
-  checkBoxClusteringNumberOfSamples = NULL;
-  clusteringTextBoxNumberOfSamples = NULL;
-  checkBoxClusteringGenerateSeq = NULL;
-  clusteringRadioGenerateSeqNumbered = NULL;
-  clusteringRadioGenerateSeqFASTA = NULL;
-  clusteringSizerAlgorithm = NULL;
-  clusteringRadioXMLDefined = NULL;
-  clusteringRadioDBScan = NULL;
-  clusteringRadioRefinement = NULL;
-  clusteringAlgorithmLineSeparator = NULL;
-  clusteringSizerDBScan = NULL;
-  clusteringTextBoxDBScanEpsilon = NULL;
-  clusteringTextBoxDBScanMinPoints = NULL;
-  clusteringSizerRefinement = NULL;
-  clusteringCheckBoxRefinementPrintData = NULL;
-  clusteringCheckBoxRefinementTune = NULL;
-  clusteringLabelRefinementEpsilon = NULL;
-  clusteringLabelRefinementEpsilonMin = NULL;
-  clusteringTextBoxRefinementEpsilonMin = NULL;
-  clusteringLabelRefinementEpsilonMax = NULL;
-  clusteringTextBoxRefinementEpsilonMax = NULL;
-  clusteringLabelRefinementSteps = NULL;
-  clusteringTextBoxRefinementSteps = NULL;
-  clusteringLabelRefinementMinPoints = NULL;
-  clusteringTextBoxRefinementMinPoints = NULL;
-  foldingSection = NULL;
-  checkboxFoldingOnly = NULL;
-  checkboxFoldingReuseFiles = NULL;
-  checkboxFoldingUseSemanticValues = NULL;
-  comboboxFoldingModel = NULL;
-  labelCommandPreview = NULL;
-  buttonHelpScript = NULL;
-  buttonRun = NULL;
-  buttonKill = NULL;
-  buttonClearLog = NULL;
-  listboxRunLog = NULL;
-  buttonExit = NULL;
+  choiceApplication = nullptr;
+  buttonEditApplication = nullptr;
+  textCtrlTrace = nullptr;
+  fileBrowserButtonTrace = nullptr;
+  boxSizerParameters = nullptr;
+  labelTextCtrlDefaultParameters = nullptr;
+  textCtrlDefaultParameters = nullptr;
+  dimemasSection = nullptr;
+  labelFilePickerDimemasCFG = nullptr;
+  textCtrlDimemasCFG = nullptr;
+  fileBrowserButtonDimemasCFG = nullptr;
+  buttonDimemasGUI = nullptr;
+  labelTextCtrlOutputTrace = nullptr;
+  textCtrlOutputTrace = nullptr;
+  checkBoxReuseDimemasTrace = nullptr;
+  checkBoxDontTranslateIdleStates = nullptr;
+  checkBoxDimemasVerbose = nullptr;
+  textCtrlDimemasBandwidth = nullptr;
+  textCtrlDimemasLatency = nullptr;
+  radioButtonDimemasDefaultTasksMapping = nullptr;
+  radioButtonDimemasFillNodes = nullptr;
+  radioButtonDimemasInterleaved = nullptr;
+  radioButtonDimemasTasksPerNode = nullptr;
+  spinCtrlDimemasTasksPerNode = nullptr;
+  statsSection = nullptr;
+  statsLabelTextCtrlOutputName = nullptr;
+  statsTextCtrlOutputName = nullptr;
+  statsCheckBoxShowBurstsHistogram = nullptr;
+  statsCheckBoxShowCommsHistogram = nullptr;
+  statsCheckBoxOnlyDatFile = nullptr;
+  statsCheckBoxExclusiveTimes = nullptr;
+  clusteringSection = nullptr;
+  textCtrlClusteringXML = nullptr;
+  fileBrowserButtonClusteringXML = nullptr;
+  buttonClusteringXML = nullptr;
+  textCtrlClusteringOutputTrace = nullptr;
+  checkBoxClusteringUseSemanticWindow = nullptr;
+  checkBoxClusteringCSVValueAsDimension = nullptr;
+  checkBoxClusteringNormalize = nullptr;
+  checkBoxClusteringNumberOfSamples = nullptr;
+  clusteringTextBoxNumberOfSamples = nullptr;
+  checkBoxClusteringGenerateSeq = nullptr;
+  clusteringRadioGenerateSeqNumbered = nullptr;
+  clusteringRadioGenerateSeqFASTA = nullptr;
+  clusteringSizerAlgorithm = nullptr;
+  clusteringRadioXMLDefined = nullptr;
+  clusteringRadioDBScan = nullptr;
+  clusteringRadioRefinement = nullptr;
+  clusteringAlgorithmLineSeparator = nullptr;
+  clusteringSizerDBScan = nullptr;
+  clusteringTextBoxDBScanEpsilon = nullptr;
+  clusteringTextBoxDBScanMinPoints = nullptr;
+  clusteringSizerRefinement = nullptr;
+  clusteringCheckBoxRefinementPrintData = nullptr;
+  clusteringCheckBoxRefinementTune = nullptr;
+  clusteringLabelRefinementEpsilon = nullptr;
+  clusteringLabelRefinementEpsilonMin = nullptr;
+  clusteringTextBoxRefinementEpsilonMin = nullptr;
+  clusteringLabelRefinementEpsilonMax = nullptr;
+  clusteringTextBoxRefinementEpsilonMax = nullptr;
+  clusteringLabelRefinementSteps = nullptr;
+  clusteringTextBoxRefinementSteps = nullptr;
+  clusteringLabelRefinementMinPoints = nullptr;
+  clusteringTextBoxRefinementMinPoints = nullptr;
+  foldingSection = nullptr;
+  checkboxFoldingOnly = nullptr;
+  checkboxFoldingReuseFiles = nullptr;
+  checkboxFoldingUseSemanticValues = nullptr;
+  comboboxFoldingModel = nullptr;
+  labelCommandPreview = nullptr;
+  buttonHelpScript = nullptr;
+  buttonRun = nullptr;
+  buttonKill = nullptr;
+  buttonClearLog = nullptr;
+  listboxRunLog = nullptr;
+  buttonExit = nullptr;
 ////@end RunScript member initialisation
 
   //executionStatus = -2;
@@ -349,32 +349,32 @@ void RunScript::Init()
   extensionsDimemas.Remove(_(".cfg")); // None of the extensions with _ may happen
 
   // Names of environment variables
-  environmentVariable[ PATH ]         = wxString( wxT("PATH") );
-  environmentVariable[ PARAVER_HOME ] = wxString( wxT("PARAVER_HOME") );
-  environmentVariable[ DIMEMAS_HOME ] = wxString( wxT("DIMEMAS_HOME") );
+  environmentVariable[ TEnvironmentVar::PATH ]         = wxString( wxT("PATH") );
+  environmentVariable[ TEnvironmentVar::PARAVER_HOME ] = wxString( wxT("PARAVER_HOME") );
+  environmentVariable[ TEnvironmentVar::DIMEMAS_HOME ] = wxString( wxT("DIMEMAS_HOME") );
 
   // Labels to construct selector & warning dialogs
-  applicationLabel[ DIMEMAS_WRAPPER ]= wxString( wxT("Dimemas") );
-  applicationLabel[ STATS_WRAPPER ]  = wxString( wxT("Stats") );
-  applicationLabel[ CLUSTERING ]     = wxString( wxT("Clustering") );
-  applicationLabel[ FOLDING ]        = wxString( wxT("Folding") );
-  applicationLabel[ USER_DEFINED ]   = wxString( wxT("User defined") );
+  applicationLabel[ TExternalApp::DIMEMAS_WRAPPER ]= wxString( wxT("Dimemas") );
+  applicationLabel[ TExternalApp::STATS_WRAPPER ]  = wxString( wxT("Stats") );
+  applicationLabel[ TExternalApp::CLUSTERING ]     = wxString( wxT("Clustering") );
+  applicationLabel[ TExternalApp::FOLDING ]        = wxString( wxT("Folding") );
+  applicationLabel[ TExternalApp::USER_DEFINED ]   = wxString( wxT("User defined") );
   // Following only for warning dialogs
-  applicationLabel[ DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
-  applicationLabel[ STATS ]          = wxString( wxT("Stats") );
+  applicationLabel[ TExternalApp::DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
+  applicationLabel[ TExternalApp::STATS ]          = wxString( wxT("Stats") );
 
   // application names
-  application[ DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );
+  application[ TExternalApp::DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );
 #ifdef WIN32
-  application[ STATS_WRAPPER ]       = wxString( wxT("stats.exe") );
+  application[ TExternalApp::STATS_WRAPPER ]       = wxString( wxT("stats.exe") );
 #else
-  application[ STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );
+  application[ TExternalApp::STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );
 #endif
-  application[ CLUSTERING ]          = wxString( wxT("BurstClustering") );
-  application[ FOLDING ]             = wxString( wxT("rri-auto") );
-  application[ USER_DEFINED ]        = wxString( wxT("") ); // NOT USED
-  application[ DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
-  application[ STATS ]               = wxString( wxT("stats") );
+  application[ TExternalApp::CLUSTERING ]          = wxString( wxT("BurstClustering") );
+  application[ TExternalApp::FOLDING ]             = wxString( wxT("rri-auto") );
+  application[ TExternalApp::USER_DEFINED ]        = wxString( wxT("") ); // NOT USED
+  application[ TExternalApp::DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
+  application[ TExternalApp::STATS ]               = wxString( wxT("stats") );
 
   tagFoldingOutputDirectory = wxString( wxT("Output directory:") );
 
@@ -409,7 +409,7 @@ wxString RunScript::getEnvironmentPath( TEnvironmentVar envVar, wxString command
 
   switch( envVar )
   {
-    case PATH:
+    case TEnvironmentVar::PATH:
       currentPathEnv.AddEnvList( environmentVariable[ envVar ] );
       pathToBin = currentPathEnv.FindAbsoluteValidPath( command );
       auxName   = wxFileName( pathToBin );
@@ -417,8 +417,8 @@ wxString RunScript::getEnvironmentPath( TEnvironmentVar envVar, wxString command
 
       break;
 
-    case PARAVER_HOME:
-    case DIMEMAS_HOME:
+    case TEnvironmentVar::PARAVER_HOME:
+    case TEnvironmentVar::DIMEMAS_HOME:
 
       if ( wxGetEnv( environmentVariable[ envVar ], &tmpEnv ) )
       {
@@ -1002,9 +1002,9 @@ void RunScript::CreateControls()
   listboxRunLog->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
 #endif
 
-  for ( int i = DIMEMAS_WRAPPER; i <= USER_DEFINED; i++ )
+  for ( int i = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); i <= static_cast<int>( TExternalApp::USER_DEFINED ); ++i )
   {
-    choiceApplication->Append( applicationLabel[ TExternalApp(i) ] );
+    choiceApplication->Append( applicationLabel[ TExternalApp( i ) ] );
   }
 
   // Trace browser
@@ -1038,7 +1038,7 @@ void RunScript::CreateControls()
   clusteringTextBoxRefinementEpsilonMax->SetValidator( validator );
   clusteringTextBoxNumberOfSamples->SetValidator( validator );
 
-  int appNumber = DIMEMAS_WRAPPER; // Default is 0
+  int appNumber = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); // Default is 0
   choiceApplication->Select( appNumber );
 
   adaptWindowToApplicationSelection();
@@ -1097,7 +1097,7 @@ wxIcon RunScript::GetIconResource( const wxString& name )
  */
 void RunScript::OnButtonExitClick( wxCommandEvent& event )
 {
-  paraverMain::myParaverMain->SetRunApplication( NULL );
+  paraverMain::myParaverMain->SetRunApplication( nullptr );
   Destroy();
 }
 
@@ -1115,15 +1115,15 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
   command.Clear();
   parameters.Clear();
 
-  if ( selectedApp == DEFAULT )
+  if ( selectedApp == TExternalApp::DEFAULT )
   {
-    selectedApp = (TExternalApp)choiceApplication->GetSelection();
+    selectedApp = static_cast< TExternalApp >( choiceApplication->GetSelection() );
   }
 
   switch ( selectedApp )
   {
-    case DIMEMAS_WRAPPER:
-      command = application[ DIMEMAS_WRAPPER ];
+    case TExternalApp::DIMEMAS_WRAPPER:
+      command = application[ TExternalApp::DIMEMAS_WRAPPER ];
 
       parameters = doubleQuote( fileBrowserButtonTrace->GetPath() ); // Source trace
       parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonDimemasCFG->GetPath() ); // Dimemas cfg
@@ -1191,26 +1191,26 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case DIMEMAS_GUI:
-      command = application[ DIMEMAS_GUI ];
+    case TExternalApp::DIMEMAS_GUI:
+      command = application[ TExternalApp::DIMEMAS_GUI ];
       if ( !fileBrowserButtonDimemasCFG->GetPath().IsEmpty() )
         parameters = doubleQuote( fileBrowserButtonDimemasCFG->GetPath() );
 
       break;
 
-    case STATS_WRAPPER:
-    case STATS:
+    case TExternalApp::STATS_WRAPPER:
+    case TExternalApp::STATS:
 
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
       {
-        command  = application[ STATS ];
+        command  = application[ TExternalApp::STATS ];
         parameters = textCtrlDefaultParameters->GetValue();
         helpOption = true;
       }
       else
       {
         // TODO: DEFAULT VALUES?
-        command  = application[ STATS_WRAPPER ];
+        command  = application[ TExternalApp::STATS_WRAPPER ];
 
         parameters = doubleQuote( fileBrowserButtonTrace->GetPath() ); // Source trace
         parameters += wxString( wxT( " -o " ) ) + doubleQuote( statsTextCtrlOutputName->GetValue() ); // Final name
@@ -1236,8 +1236,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case CLUSTERING:
-      command = application[ CLUSTERING ];
+    case TExternalApp::CLUSTERING:
+      command = application[ TExternalApp::CLUSTERING ];
 
       parameters = wxString( wxT( " -p" ) );
       
@@ -1338,8 +1338,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case FOLDING:
-      command = application[ FOLDING ];
+    case TExternalApp::FOLDING:
+      command = application[ TExternalApp::FOLDING ];
 
       /* // Only FOLDING
       
@@ -1410,7 +1410,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case USER_DEFINED:
+    case TExternalApp::USER_DEFINED:
       
       tmpParams = expandVariables( textCtrlDefaultParameters->GetValue() );
       command = tmpParams.BeforeFirst( ' ' );
@@ -1447,7 +1447,7 @@ void RunScript::ShowWarningUnreachableProgram( wxString program, TEnvironmentVar
 {
   wxString auxMessage;
 
-  if ( envVar == PATH && alsoPrintPath )
+  if ( envVar == TEnvironmentVar::PATH && alsoPrintPath )
   {
     alsoPrintPath = false;
   }
@@ -1478,80 +1478,80 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
   }
   else
   {
-    if ( selectedApp == DEFAULT )
+    if ( selectedApp == TExternalApp::DEFAULT )
     {
       selectedApp = (TExternalApp)choiceApplication->GetSelection();
     }
 
     switch ( selectedApp )
     {
-      case DIMEMAS_GUI:
-        pathToProgram = getEnvironmentPath( DIMEMAS_HOME );
+      case TExternalApp::DIMEMAS_GUI:
+        pathToProgram = getEnvironmentPath( TEnvironmentVar::DIMEMAS_HOME );
         if ( !pathToProgram.IsEmpty() )
         {
           readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
-          ShowWarningUnreachableProgram( program, DIMEMAS_HOME );
+          ShowWarningUnreachableProgram( program, TEnvironmentVar::DIMEMAS_HOME );
         }
 
         break;
 
-      case DIMEMAS_WRAPPER:
-        pathToProgram = getEnvironmentPath( PATH, program );
+      case TExternalApp::DIMEMAS_WRAPPER:
+        pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
           readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
-          pathToProgram = getEnvironmentPath( PARAVER_HOME );
+          pathToProgram = getEnvironmentPath( TEnvironmentVar::PARAVER_HOME );
           if ( !pathToProgram.IsEmpty() )
           {
             readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
           }
           else
           {
-            ShowWarningUnreachableProgram( program, PARAVER_HOME, true );
+            ShowWarningUnreachableProgram( program, TEnvironmentVar::PARAVER_HOME, true );
           }
         }
 
         break;
 
-      case STATS_WRAPPER:
-        pathToProgram = getEnvironmentPath( PATH, program );
+      case TExternalApp::STATS_WRAPPER:
+        pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
           readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
-          pathToProgram = getEnvironmentPath( PARAVER_HOME );
+          pathToProgram = getEnvironmentPath( TEnvironmentVar::PARAVER_HOME );
           if ( !pathToProgram.IsEmpty() )
           {
             readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
           }
           else
           {
-            ShowWarningUnreachableProgram( program, PARAVER_HOME, true );
+            ShowWarningUnreachableProgram( program, TEnvironmentVar::PARAVER_HOME, true );
           }
         }
 
         break;
 
-      case CLUSTERING:
-      case FOLDING:
-      case USER_DEFINED:
+      case TExternalApp::CLUSTERING:
+      case TExternalApp::FOLDING:
+      case TExternalApp::USER_DEFINED:
       default:
-        pathToProgram = getEnvironmentPath( PATH, program );
+        pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
           readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
-          ShowWarningUnreachableProgram( program, PATH );
+          ShowWarningUnreachableProgram( program, TEnvironmentVar::PATH );
         }
 
         break;
@@ -1574,7 +1574,7 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
   wxString readyCommand = GetReachableCommand();
   if ( !readyCommand.IsEmpty() )
   {
-    if ( choiceApplication->GetSelection() == CLUSTERING )
+    if ( choiceApplication->GetSelection() == static_cast< int >( TExternalApp::CLUSTERING ) )
     {
       // Check the output trace path
       if ( !textCtrlClusteringOutputTrace->IsEmpty() )
@@ -1625,33 +1625,33 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
 void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
 {
   // Check parameters
-  bool active = ( myProcess == NULL );
+  bool active = ( myProcess == nullptr );
 
   TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
 
   switch ( selectedApp )
   {
-    case DIMEMAS_WRAPPER:
+    case TExternalApp::DIMEMAS_WRAPPER:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       active &= !fileBrowserButtonDimemasCFG->GetPath().IsEmpty();
       active &= !textCtrlOutputTrace->GetValue().IsEmpty();      
       break;
 
-    case STATS_WRAPPER:
+    case TExternalApp::STATS_WRAPPER:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();      
       break;
       
-    case CLUSTERING:
+    case TExternalApp::CLUSTERING:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       active &= !fileBrowserButtonClusteringXML->GetPath().IsEmpty();
       active &= !textCtrlClusteringOutputTrace->IsEmpty();
       break;
 
-    case FOLDING:
+    case TExternalApp::FOLDING:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();      
       break;
 
-    case USER_DEFINED:
+    case TExternalApp::USER_DEFINED:
       active &= !textCtrlDefaultParameters->GetValue().IsEmpty();
       break;
 
@@ -1671,7 +1671,7 @@ void RunScript::OnProcessTerminated( int pid )
     pidDimemasGUI = 0;
 
   delete myProcess;
-  myProcess = NULL;
+  myProcess = nullptr;
 }
 
 
@@ -1683,7 +1683,7 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
 
     switch ( selectedApp )
     {
- //     case DIMEMAS_WRAPPER:
+ //     case TExternalApp::DIMEMAS_WRAPPER:
  //       msg = insertLog( msg, extensionsDimemas );
  //       break;
 
@@ -1712,7 +1712,7 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
  */
 void RunScript::OnIdle( wxIdleEvent& event )
 {
-  if ( myProcess != NULL && myProcess->HasInput() )
+  if ( myProcess != nullptr && myProcess->HasInput() )
   {
     event.RequestMore();
   }
@@ -1737,14 +1737,14 @@ wxString RunScript::doubleQuote( const wxString& path )
 void RunScript::adaptWindowToApplicationSelection()
 {
   wxString toolTip( wxT( "" ) );
-  int currentChoice = choiceApplication->GetSelection();
+  TExternalApp currentChoice = static_cast<TExternalApp>( choiceApplication->GetSelection() );
 
   textCtrlDefaultParameters->Clear();
   labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
   switch ( currentChoice )
   {
-    case DIMEMAS_WRAPPER:
+    case TExternalApp::DIMEMAS_WRAPPER:
       toolTip = wxString( wxT( "Extra parameters passed to the script\n"
                                "%TRACE refers to input trace" ) );
 
@@ -1758,7 +1758,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case STATS_WRAPPER:
+    case TExternalApp::STATS_WRAPPER:
       toolTip = wxString( wxT( "Extra parameters passed to 'stats'\n"
                                "-events_histo[:type1[-type2],...]\n"
                                "-thread_calls[:type1[-type2],...]\n" ) );
@@ -1775,7 +1775,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case CLUSTERING:
+    case TExternalApp::CLUSTERING:
       labelTextCtrlDefaultParameters->Hide();
       textCtrlDefaultParameters->Hide();
 
@@ -1800,7 +1800,7 @@ void RunScript::adaptWindowToApplicationSelection()
         checkBoxClusteringUseSemanticWindow->Enable( true );
       break;
 
-    case FOLDING:
+    case TExternalApp::FOLDING:
       toolTip = wxString( wxT( "Event type that determines the folded regions."
                                " Allowed formats include either numerical or string"
                                " (i.e. 90000001 or 'Cluster ID')." ) );
@@ -1819,7 +1819,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case USER_DEFINED:
+    case TExternalApp::USER_DEFINED:
     default:
       toolTip = wxString( wxT( "Command and parameters to execute\n"
                                "%TRACE refers to input trace" ) );
@@ -1835,13 +1835,13 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
   }
 
-  tunePrvLinksForFolding = ( currentChoice == FOLDING );
+  tunePrvLinksForFolding = ( currentChoice == TExternalApp::FOLDING );
 
-  dimemasSection->Show( currentChoice == DIMEMAS_WRAPPER );
-  statsSection->Show( currentChoice == STATS_WRAPPER );
-  clusteringSection->Show( currentChoice == CLUSTERING );
+  dimemasSection->Show( currentChoice == TExternalApp::DIMEMAS_WRAPPER );
+  statsSection->Show( currentChoice == TExternalApp::STATS_WRAPPER );
+  clusteringSection->Show( currentChoice == TExternalApp::CLUSTERING );
   adaptClusteringAlgorithmParameters();
-  foldingSection->Show( currentChoice == FOLDING );
+  foldingSection->Show( currentChoice == TExternalApp::FOLDING );
 
   Layout();
 }
@@ -2203,7 +2203,7 @@ wxString RunScript::insertLog( wxString rawLine, wxArrayString extensions )
   {
     formattedLine = insertTimeMarkLink( rawLine, tagPosition );
   }
-  else if (( choiceApplication->GetSelection() == FOLDING ) && readFoldingTag( rawLine ) )
+  else if (( choiceApplication->GetSelection() == static_cast< int >( TExternalApp::FOLDING ) ) && readFoldingTag( rawLine ) )
   {
     formattedLine = rawFormat( rawLine );
   }
@@ -2253,7 +2253,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 //  if ( tunePrvLinksForClustering && matchHrefExtension( event, wxT(".clustered.prv") ) )
   if ( tunePrvLinksForClustering && matchHrefExtension( event, extensions[ 10 ] ) ) // _link_to_clustered_trace
   {
-    // Trick used to distinguish "analyse ClusterId" link inserted to log if clustering
+    // Trick used to distinguish "analyse ClusterId" link inserted to log if TExternalApp::CLUSTERING
     wxString tmpSuffixToErase = extensions[ 10 ]; // _link_to_clustered_trace
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event, tmpSuffixToErase ) );
     std::vector< Trace * > loadedTraces = paraverMain::myParaverMain->GetLoadedTraces();
@@ -2385,7 +2385,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     if ( i >= pdfReaders.size() )
     {
       wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT( "pdf" ) );
-      if( filetype != NULL )
+      if( filetype != nullptr )
       {
         command.Clear();
         command = filetype->GetOpenCommand( tmpFile );
@@ -2471,7 +2471,7 @@ void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
     ShowWarning( wxT( "Unable to execute command. Please check it and rerun" ) );
 
     delete localProcess;
-    localProcess = NULL;
+    localProcess = nullptr;
   }
   else
   {
@@ -2491,7 +2491,7 @@ void RunScript::runDetachedProcess( wxString command, bool checkPidDimemasGUI )
  */
 void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
 {
-  wxString command = GetReachableCommand( DIMEMAS_GUI );
+  wxString command = GetReachableCommand( TExternalApp::DIMEMAS_GUI );
   if( !command.IsEmpty() && pidDimemasGUI == 0 )
   {  
     bool checkPidDimemasGUI = true;
@@ -2505,7 +2505,7 @@ void RunScript::OnButtonDimemasGuiClick( wxCommandEvent& event )
  */
 void RunScript::OnButtonDimemasGuiUpdate( wxUpdateUIEvent& event )
 {
-  // bool active = ( myProcess == NULL );
+  // bool active = ( myProcess == nullptr );
   bool active = ( pidDimemasGUI == 0 );
   
   if ( active && !buttonDimemasGUI->IsEnabled() )
@@ -2561,7 +2561,7 @@ void RunScript::setTrace( wxString whichTrace )
 
 void RunScript::setApp( TExternalApp whichApp )
 {
-  choiceApplication->Select( whichApp ); 
+  choiceApplication->Select( static_cast< int >( whichApp ) ); 
   adaptWindowToApplicationSelection();
 }
 
@@ -2571,7 +2571,7 @@ void RunScript::setDimemas()
   tunePrvLinksForClustering = false;
   tunePrvLinksForFolding = false;
 
-  setApp( DIMEMAS_WRAPPER );
+  setApp( TExternalApp::DIMEMAS_WRAPPER );
 }
 
 
@@ -2580,7 +2580,7 @@ void RunScript::setStats()
   tunePrvLinksForClustering = false;
   tunePrvLinksForFolding = false;
 
-  setApp( STATS_WRAPPER );
+  setApp( TExternalApp::STATS_WRAPPER );
 }
 
 
@@ -2590,7 +2590,7 @@ void RunScript::setClustering( wxString whichClusteringCSV )
   tunePrvLinksForClustering = true;
   tunePrvLinksForFolding = false;
 
-  setApp( CLUSTERING );
+  setApp( TExternalApp::CLUSTERING );
 }
 
 
@@ -2600,7 +2600,7 @@ void RunScript::setFolding( wxString whichFoldingCSV )
   tunePrvLinksForClustering = false;
   tunePrvLinksForFolding = true;
 
-  setApp( FOLDING );
+  setApp( TExternalApp::FOLDING );
 }
 
 
@@ -2609,7 +2609,7 @@ void RunScript::setUserDefined()
   tunePrvLinksForClustering = false;
   tunePrvLinksForFolding = false;
 
-  setApp( USER_DEFINED );
+  setApp( TExternalApp::USER_DEFINED );
 }
 
 
@@ -2627,7 +2627,7 @@ void RunScript::adaptClusteringAlgorithmParameters()
   clusteringLabelRefinementMinPoints->Enable( tuneByHand );
   clusteringTextBoxRefinementMinPoints->Enable( tuneByHand );
 
-  bool clusteringSelected = ( choiceApplication->GetSelection() == CLUSTERING );
+  bool clusteringSelected = ( choiceApplication->GetSelection() == static_cast< int >( TExternalApp::CLUSTERING ) );
   clusteringSizerDBScan->Show( clusteringSelected && clusteringRadioDBScan->GetValue() );
   clusteringSizerRefinement->Show( clusteringSelected && clusteringRadioRefinement->GetValue() );
   clusteringAlgorithmLineSeparator->Show( clusteringSelected && !clusteringRadioXMLDefined->GetValue() );
@@ -2670,7 +2670,7 @@ void RunScript::OnCheckboxClusteringRefinementTuneClick( wxCommandEvent& event )
  */
 void RunScript::OnButtonKillUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myProcess != NULL );
+  event.Enable( myProcess != nullptr );
 }
 
 
@@ -2694,17 +2694,17 @@ void RunScript::OnButtonKillClick( wxCommandEvent& event )
  */
 void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
 {
-  if ( choiceApplication->GetSelection() == STATS_WRAPPER )
+  if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::STATS_WRAPPER ) )
   {
     statsTextCtrlOutputName->SetValue( fileBrowserButtonTrace->GetPath() );
   }
-  else if ( choiceApplication->GetSelection() == DIMEMAS_WRAPPER )
+  else if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ) )
   {
     textCtrlOutputTrace->SetValue( wxString( (
             LocalKernel::composeName( std::string( event.GetString().mb_str() ),
                                       std::string( "sim" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
-  else if ( choiceApplication->GetSelection() == CLUSTERING )
+  else if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::CLUSTERING ) )
   {
     /*tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
     tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
@@ -2830,7 +2830,7 @@ void RunScript::OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event 
  */
 void RunScript::OnButtonExitUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( myProcess == NULL );
+  event.Enable( myProcess == nullptr );
 }
 
 
@@ -2849,7 +2849,7 @@ void RunScript::OnTextctrlClusteringNumberOfSamplesUpdate( wxUpdateUIEvent& even
 
 void RunScript::OnCloseWindow( wxCloseEvent& event )
 {
-  paraverMain::myParaverMain->SetRunApplication( NULL );
+  paraverMain::myParaverMain->SetRunApplication( nullptr );
   Destroy();
 }
 

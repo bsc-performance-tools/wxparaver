@@ -244,116 +244,116 @@ void PreferencesDialog::Init()
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
   timelineSemanticScaleMinAtZero = false;
-  panelGlobal = NULL;
-  checkGlobalFillStateGaps = NULL;
-  checkGlobalFullTracePath = NULL;
-  txtMaximumTraceSize = NULL;
-  textCtrlTrace = NULL;
-  dirBrowserButtonTrace = NULL;
-  textCtrlCFG = NULL;
-  dirBrowserButtonCFG = NULL;
-  textCtrlXML = NULL;
-  dirBrowserButtonXML = NULL;
-  textCtrlTutorials = NULL;
-  dirBrowserButtonTutorials = NULL;
-  textCtrlTmp = NULL;
-  dirBrowserButtonTmp = NULL;
-  checkGlobalSingleInstance = NULL;
-  spinSessionTime = NULL;
-  checkGlobalAskForPrevSessionLoad = NULL;
-  checkGlobalHelpOnBrowser = NULL;
-  checkDisableTimelineZoomMouseWheel = NULL;
-  panelTimeline = NULL;
-  txtTimelineNameFormatPrefix = NULL;
-  txtTimelineNameFormatFull = NULL;
-  checkTimelineCommunicationLines = NULL;
-  checkTimelineEventLines = NULL;
-  checkSemanticScaleMinAtZero = NULL;
-  choiceTimelineColor = NULL;
-  choiceTimelineGradientFunction = NULL;
-  choiceTimelineDrawmodeTime = NULL;
-  choiceTimelineDrawmodeObjects = NULL;
-  choiceTimelinePixelSize = NULL;
-  choiceTimelineLabels = NULL;
-  choiceTimelineObjectAxis = NULL;
-  checkTimelineWWSemantic = NULL;
-  checkTimelineWWEvents = NULL;
-  checkTimelineWWCommunications = NULL;
-  checkTimelineWWPreviousNext = NULL;
-  checkTimelineWWText = NULL;
-  txtTimelineWWPrecision = NULL;
-  txtTimelineWWEventPixels = NULL;
-  choiceTimelineSaveImageFormat = NULL;
-  choiceTimelineSaveTextFormat = NULL;
-  panelHistogram = NULL;
-  checkHistogramSkipCreateDialog = NULL;
-  txtHistogramNameFormatPrefix = NULL;
-  txtHistogramNameFormatFull = NULL;
-  checkHistogramZoom = NULL;
-  checkHistogramHorizontal = NULL;
-  checkHistogramHideEmpty = NULL;
-  checkHistogramShowGradient = NULL;
-  checkHistogramLabelsColor = NULL;
-  choiceHistogramGradientFunction = NULL;
-  choiceHistogramDrawmodeSemantic = NULL;
-  choiceHistogramDrawmodeObjects = NULL;
-  checkHistogramScientificNotation = NULL;
-  checkHistogramThousandsSeparator = NULL;
-  checkHistogramShowUnits = NULL;
-  txtHistogramPrecision = NULL;
-  checkHistogramAutofitControlScale = NULL;
-  checkHistogramAutofitControlScaleZero = NULL;
-  checkHistogramAutofit3DScale = NULL;
-  checkHistogramAutofitDataGradient = NULL;
-  txtHistogramNumColumns = NULL;
-  choiceHistogramSaveImageFormat = NULL;
-  choiceHistogramSaveTextFormat = NULL;
-  panelColor = NULL;
-  colourPickerBackground = NULL;
-  colourPickerAxis = NULL;
-  checkZero = NULL;
-  colourPickerZero = NULL;
-  colourPickerPunctual = NULL;
-  colourPickerLogical = NULL;
-  colourPickerPhysical = NULL;
-  colourPickerGradientBegin = NULL;
-  colourPickerGradientEnd = NULL;
-  colourPickerNegativeGradientBegin = NULL;
-  colourPickerNegativeGradientEnd = NULL;
-  colourPickerGradientLow = NULL;
-  colourPickerGradientTop = NULL;
-  panelWorkspaces = NULL;
-  listWorkspaces = NULL;
-  buttonAddWorkspace = NULL;
-  buttonDeleteWorkspace = NULL;
-  buttonUpWorkspace = NULL;
-  buttonDownWorkspace = NULL;
-  buttonImportWorkspace = NULL;
-  buttonExportWorkspace = NULL;
-  txtWorkspaceName = NULL;
-  radioStates = NULL;
-  radioEventTypes = NULL;
-  txtAutoTypes = NULL;
-  listHintsWorkspace = NULL;
-  buttonAddHint = NULL;
-  buttonDeleteHint = NULL;
-  buttonUpHint = NULL;
-  buttonDownHint = NULL;
-  txtHintPath = NULL;
-  fileBrowserHintPath = NULL;
-  txtHintDescription = NULL;
-  panelExternal = NULL;
-  listTextEditors = NULL;
-  buttonAddTextEditor = NULL;
-  buttonDeleteTextEditor = NULL;
-  buttonUpTextEditor = NULL;
-  buttonDownTextEditor = NULL;
-  listPDFReaders = NULL;
-  buttonAddPDFReader = NULL;
-  buttonDeletePDFReader = NULL;
-  buttonUpPDFReader = NULL;
-  buttonDownPDFReader = NULL;
-  panelFilters = NULL;
+  panelGlobal = nullptr;
+  checkGlobalFillStateGaps = nullptr;
+  checkGlobalFullTracePath = nullptr;
+  txtMaximumTraceSize = nullptr;
+  textCtrlTrace = nullptr;
+  dirBrowserButtonTrace = nullptr;
+  textCtrlCFG = nullptr;
+  dirBrowserButtonCFG = nullptr;
+  textCtrlXML = nullptr;
+  dirBrowserButtonXML = nullptr;
+  textCtrlTutorials = nullptr;
+  dirBrowserButtonTutorials = nullptr;
+  textCtrlTmp = nullptr;
+  dirBrowserButtonTmp = nullptr;
+  checkGlobalSingleInstance = nullptr;
+  spinSessionTime = nullptr;
+  checkGlobalAskForPrevSessionLoad = nullptr;
+  checkGlobalHelpOnBrowser = nullptr;
+  checkDisableTimelineZoomMouseWheel = nullptr;
+  panelTimeline = nullptr;
+  txtTimelineNameFormatPrefix = nullptr;
+  txtTimelineNameFormatFull = nullptr;
+  checkTimelineCommunicationLines = nullptr;
+  checkTimelineEventLines = nullptr;
+  checkSemanticScaleMinAtZero = nullptr;
+  choiceTimelineColor = nullptr;
+  choiceTimelineGradientFunction = nullptr;
+  choiceTimelineDrawmodeTime = nullptr;
+  choiceTimelineDrawmodeObjects = nullptr;
+  choiceTimelinePixelSize = nullptr;
+  choiceTimelineLabels = nullptr;
+  choiceTimelineObjectAxis = nullptr;
+  checkTimelineWWSemantic = nullptr;
+  checkTimelineWWEvents = nullptr;
+  checkTimelineWWCommunications = nullptr;
+  checkTimelineWWPreviousNext = nullptr;
+  checkTimelineWWText = nullptr;
+  txtTimelineWWPrecision = nullptr;
+  txtTimelineWWEventPixels = nullptr;
+  choiceTimelineSaveImageFormat = nullptr;
+  choiceTimelineSaveTextFormat = nullptr;
+  panelHistogram = nullptr;
+  checkHistogramSkipCreateDialog = nullptr;
+  txtHistogramNameFormatPrefix = nullptr;
+  txtHistogramNameFormatFull = nullptr;
+  checkHistogramZoom = nullptr;
+  checkHistogramHorizontal = nullptr;
+  checkHistogramHideEmpty = nullptr;
+  checkHistogramShowGradient = nullptr;
+  checkHistogramLabelsColor = nullptr;
+  choiceHistogramGradientFunction = nullptr;
+  choiceHistogramDrawmodeSemantic = nullptr;
+  choiceHistogramDrawmodeObjects = nullptr;
+  checkHistogramScientificNotation = nullptr;
+  checkHistogramThousandsSeparator = nullptr;
+  checkHistogramShowUnits = nullptr;
+  txtHistogramPrecision = nullptr;
+  checkHistogramAutofitControlScale = nullptr;
+  checkHistogramAutofitControlScaleZero = nullptr;
+  checkHistogramAutofit3DScale = nullptr;
+  checkHistogramAutofitDataGradient = nullptr;
+  txtHistogramNumColumns = nullptr;
+  choiceHistogramSaveImageFormat = nullptr;
+  choiceHistogramSaveTextFormat = nullptr;
+  panelColor = nullptr;
+  colourPickerBackground = nullptr;
+  colourPickerAxis = nullptr;
+  checkZero = nullptr;
+  colourPickerZero = nullptr;
+  colourPickerPunctual = nullptr;
+  colourPickerLogical = nullptr;
+  colourPickerPhysical = nullptr;
+  colourPickerGradientBegin = nullptr;
+  colourPickerGradientEnd = nullptr;
+  colourPickerNegativeGradientBegin = nullptr;
+  colourPickerNegativeGradientEnd = nullptr;
+  colourPickerGradientLow = nullptr;
+  colourPickerGradientTop = nullptr;
+  panelWorkspaces = nullptr;
+  listWorkspaces = nullptr;
+  buttonAddWorkspace = nullptr;
+  buttonDeleteWorkspace = nullptr;
+  buttonUpWorkspace = nullptr;
+  buttonDownWorkspace = nullptr;
+  buttonImportWorkspace = nullptr;
+  buttonExportWorkspace = nullptr;
+  txtWorkspaceName = nullptr;
+  radioStates = nullptr;
+  radioEventTypes = nullptr;
+  txtAutoTypes = nullptr;
+  listHintsWorkspace = nullptr;
+  buttonAddHint = nullptr;
+  buttonDeleteHint = nullptr;
+  buttonUpHint = nullptr;
+  buttonDownHint = nullptr;
+  txtHintPath = nullptr;
+  fileBrowserHintPath = nullptr;
+  txtHintDescription = nullptr;
+  panelExternal = nullptr;
+  listTextEditors = nullptr;
+  buttonAddTextEditor = nullptr;
+  buttonDeleteTextEditor = nullptr;
+  buttonUpTextEditor = nullptr;
+  buttonDownTextEditor = nullptr;
+  listPDFReaders = nullptr;
+  buttonAddPDFReader = nullptr;
+  buttonDeletePDFReader = nullptr;
+  buttonUpPDFReader = nullptr;
+  buttonDownPDFReader = nullptr;
+  panelFilters = nullptr;
 ////@end PreferencesDialog member initialisation
 }
 
@@ -1381,10 +1381,10 @@ void PreferencesDialog::CreateControls()
   GetBookCtrl()->AddPage(panelFilters, _("Filters"));
 
   // Connect events and objects
-  txtWorkspaceName->Connect(ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), NULL, this);
+  txtWorkspaceName->Connect(ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), nullptr, this);
 ////@end PreferencesDialog content construction
     
-  itemPropertySheetDialog1 = NULL;
+  itemPropertySheetDialog1 = nullptr;
   
   dirBrowserButtonTrace->SetTextBox( textCtrlTrace );
   dirBrowserButtonTrace->SetDialogMessage( wxT( "Select Traces Default Directory" ) );
@@ -1574,28 +1574,28 @@ bool PreferencesDialog::TransferDataToWindow()
   checkTimelineCommunicationLines->SetValue( timelineCommunicationLines );
   checkSemanticScaleMinAtZero->SetValue( timelineSemanticScaleMinAtZero );
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::COLOR, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::COLOR, options );
   setLabelsChoiceBox( options, timelineColor, choiceTimelineColor );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::GRADIENT_FUNCTION, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::GRADIENT_FUNCTION, options );
   setLabelsChoiceBox( options, timelineGradientFunction, choiceTimelineGradientFunction );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::DRAWMODE, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::DRAWMODE, options );
   setLabelsChoiceBox( options, timelineDrawmodeTime, choiceTimelineDrawmodeTime );
   setLabelsChoiceBox( options, timelineDrawmodeObjects, choiceTimelineDrawmodeObjects );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::PIXEL_SIZE, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::PIXEL_SIZE, options );
   setLabelsChoiceBox( options, timelinePixelSize, choiceTimelinePixelSize );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::OBJECT_LABELS, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::OBJECT_LABELS, options );
   setLabelsChoiceBox( options, timelineObjectLabels, choiceTimelineLabels );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::OBJECT_AXIS, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::OBJECT_AXIS, options );
   setLabelsChoiceBox( options, timelineObjectAxis, choiceTimelineObjectAxis );
   
   checkTimelineWWSemantic->SetValue( timelineWWSemantic );
@@ -1607,11 +1607,11 @@ bool PreferencesDialog::TransferDataToWindow()
   txtTimelineWWEventPixels->SetValue( ( int ) timelineWWEventPixels );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::IMAGE_FORMAT, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::IMAGE_FORMAT, options );
   setLabelsChoiceBox( options, timelineSaveImageFormat, choiceTimelineSaveImageFormat );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::TEXT_FORMAT, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::TEXT_FORMAT, options );
   setLabelsChoiceBox( options, timelineSaveTextFormat, choiceTimelineSaveTextFormat );
 
   // HISTOGRAM
@@ -1625,11 +1625,11 @@ bool PreferencesDialog::TransferDataToWindow()
   checkHistogramLabelsColor->SetValue( histogramLabelsColor );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::GRADIENT_FUNCTION, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::GRADIENT_FUNCTION, options );
   setLabelsChoiceBox( options, histogramGradientFunction, choiceHistogramGradientFunction );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::DRAWMODE, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::DRAWMODE, options );
   setLabelsChoiceBox( options, histogramDrawmodeSemantic, choiceHistogramDrawmodeSemantic );
   setLabelsChoiceBox( options, histogramDrawmodeObjects, choiceHistogramDrawmodeObjects );
 
@@ -1645,11 +1645,11 @@ bool PreferencesDialog::TransferDataToWindow()
   txtHistogramNumColumns->SetValue( ( int )histogramNumColumns );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::IMAGE_FORMAT, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::IMAGE_FORMAT, options );
   setLabelsChoiceBox( options, histogramSaveImageFormat, choiceHistogramSaveImageFormat );
 
   options.clear();
-  LabelConstructor::getGUIGroupLabels( LabelConstructor::TEXT_FORMAT, options );
+  LabelConstructor::getGUIGroupLabels( TGroupID::TEXT_FORMAT, options );
   setLabelsChoiceBox( options, histogramSaveTextFormat, choiceHistogramSaveTextFormat );
 
   checkHistogramSkipCreateDialog->SetValue( histogramSkipCreateDialog );
@@ -1679,12 +1679,12 @@ bool PreferencesDialog::TransferDataToWindow()
     listPDFReaders->InsertItems( pdfReaderOptions, 0 );
 
   // WORKSPACES
-  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( WorkspaceManager::USER_DEFINED );
+  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( TWorkspaceSet::USER_DEFINED );
   for( std::vector<std::string>::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
   {
     listWorkspaces->Append( wxString::FromUTF8( it->c_str() ) );
     workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromUTF8( it->c_str() ),
-                                                              WorkspaceManager::getInstance()->getWorkspace( *it, WorkspaceManager::USER_DEFINED ) ) );
+                                                              WorkspaceManager::getInstance()->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ) ) );
   }
   
   fileBrowserHintPath->SetPath( wxString::FromUTF8( cfgsPath.c_str() ) );
@@ -1726,8 +1726,8 @@ bool PreferencesDialog::TransferDataFromWindow()
   timelineDrawmodeTime = ( PRV_UINT32 )choiceTimelineDrawmodeTime->GetCurrentSelection();
   timelineDrawmodeObjects = ( PRV_UINT32 )choiceTimelineDrawmodeObjects->GetCurrentSelection();
   timelinePixelSize = ( PRV_UINT32 )choiceTimelinePixelSize->GetCurrentSelection();
-  timelineObjectLabels = ( Window::TObjectLabels ) choiceTimelineLabels->GetCurrentSelection();
-  timelineObjectAxis = ( Window::TObjectAxisSize ) choiceTimelineObjectAxis->GetCurrentSelection();
+  timelineObjectLabels = ( PRV_UINT32 )choiceTimelineLabels->GetCurrentSelection();
+  timelineObjectAxis = ( PRV_UINT32 )choiceTimelineObjectAxis->GetCurrentSelection();
 
   timelineWWSemantic = checkTimelineWWSemantic->IsChecked();
   timelineWWEvents = checkTimelineWWEvents->IsChecked();
@@ -1793,7 +1793,7 @@ bool PreferencesDialog::TransferDataFromWindow()
   // WORKSPACES
   if( wxWindow::FindFocus() == txtWorkspaceName )
   {
-    Disconnect( ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), NULL, this );
+    Disconnect( ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), nullptr, this );
     wxFocusEvent dummyEvent;
     OnTextWorkspaceNameKillFocus( dummyEvent );
   }
@@ -2024,11 +2024,11 @@ void PreferencesDialog::OnButtonWorkspacesAddClick( wxCommandEvent& event )
   while( listWorkspaces->FindString( workspaceName ) != wxNOT_FOUND )
     workspaceName = wxString( _( "New Workspace " ) ) + wxString::Format( _( "%d" ), ++n );
   listWorkspaces->Append( workspaceName );
-  WorkspaceValue::WorkspaceType tmpWorkspaceType;
+  WorkspaceType tmpWorkspaceType;
   if( radioStates->GetValue() )
-    tmpWorkspaceType = WorkspaceValue::STATE;
+    tmpWorkspaceType = WorkspaceType::STATE;
   else
-    tmpWorkspaceType = WorkspaceValue::EVENT;
+    tmpWorkspaceType = WorkspaceType::EVENT;
   workspaceContainer.insert( std::pair<wxString,Workspace>( workspaceName, Workspace( std::string( workspaceName.mb_str() ), tmpWorkspaceType ) ) );
     
   // Focus in name text control  
@@ -2078,7 +2078,7 @@ void PreferencesDialog::OnListboxWorkspacesSelected( wxCommandEvent& event )
   txtWorkspaceName->ChangeValue( listWorkspaces->GetStringSelection() );
   Workspace& currentWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
   
-  if( currentWrk.getType() == WorkspaceValue::STATE )
+  if( currentWrk.getType() == WorkspaceType::STATE )
     radioStates->SetValue( true );
   else
     radioEventTypes->SetValue( true );
@@ -2316,9 +2316,9 @@ void PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& eve
     {
       WorkspaceValue tmpWorkSpaceValue;
       if( radioStates->GetValue() )
-        tmpWorkSpaceValue.myType = WorkspaceValue::STATE;
+        tmpWorkSpaceValue.myType = WorkspaceType::STATE;
       else
-        tmpWorkSpaceValue.myType = WorkspaceValue::EVENT;
+        tmpWorkSpaceValue.myType = WorkspaceType::EVENT;
       tmpWorkSpaceValue.UInfo.eventType = tmpEventType;
       tmpAutoTypes.push_back( tmpWorkSpaceValue );
     }
@@ -2390,7 +2390,7 @@ void PreferencesDialog::OnRadiostatesSelected( wxCommandEvent& event )
 {
   Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
 
-  tmpWrk.setType( WorkspaceValue::STATE );
+  tmpWrk.setType( WorkspaceType::STATE );
 }
 
 
@@ -2402,7 +2402,7 @@ void PreferencesDialog::OnRadioeventypesSelected( wxCommandEvent& event )
 {
   Workspace& tmpWrk = workspaceContainer[ listWorkspaces->GetStringSelection() ];
 
-  tmpWrk.setType( WorkspaceValue::EVENT );
+  tmpWrk.setType( WorkspaceType::EVENT );
 }
 
 

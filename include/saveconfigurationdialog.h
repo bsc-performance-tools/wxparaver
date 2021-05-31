@@ -181,10 +181,9 @@ private:
   std::vector<Window *> timelines;
 ////@end SaveConfigurationDialog member variables
   std::vector< std::string > traces;
+  std::vector< Window * > displayedTimelines;
+  std::vector< Histogram * > displayedHistograms;
   CFGS4DLinkedPropertiesManager linkedProperties;
-
-  Window    *FindWindow( const wxString &windowName );
-  Histogram *FindHistogram( const wxString &windowName );
 
 };
 

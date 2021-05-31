@@ -46,7 +46,6 @@ class stConnection: public wxConnection
     bool OnExecute( const wxString& topic,      wxChar *data, int size, wxIPCFormat format );
 #endif
 
-    bool OnPoke( const wxString& topic, const wxString& item, const void *data, size_t size, wxIPCFormat format );
 };
 
 class stClient: public wxClient

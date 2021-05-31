@@ -123,7 +123,7 @@ public:
   wxString GetFilePath();
 
 
-////@begin LoadCFGDialog member funhttps://docs.wxwidgets.org/3.0/classwx_text_file.htmlction declarations
+////@begin LoadCFGDialog member function declarations
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 

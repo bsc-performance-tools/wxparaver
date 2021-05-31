@@ -36,6 +36,7 @@
 ////@begin includes
 ////@end includes
 #include "advancedsaveconfiguration.h"
+#include "labelconstructor.h"
 #include <wx/statline.h>
 
 ////@begin XPM images
@@ -66,12 +67,12 @@ class CheckboxLinkData : public wxObject
     void setData( Window *whichWindow )
     {
       myWindow = whichWindow;
-      myHistogram = NULL;
+      myHistogram = nullptr;
     }
 
     void setData( Histogram *whichHistogram )
     {
-      myWindow = NULL;
+      myWindow = nullptr;
       myHistogram = whichHistogram;
     }
 
@@ -118,7 +119,6 @@ BEGIN_EVENT_TABLE( AdvancedSaveConfiguration, wxDialog )
 
 END_EVENT_TABLE()
 
-#define PARAM_SEPARATOR "|"
 const wxString AdvancedSaveConfiguration::KParamSeparator = _( PARAM_SEPARATOR );
 const wxString AdvancedSaveConfiguration::KSuffixSeparator = _( "_" );
 const wxString AdvancedSaveConfiguration::KTextCtrlSuffix = AdvancedSaveConfiguration::KSuffixSeparator +
@@ -168,7 +168,7 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
   // Backup 
   switch ( editionMode )
   {
-    case HISTOGRAM_STATISTIC_TAGS:
+    case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
       // Recover previous tags for that histogram
       for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
       {
@@ -176,7 +176,7 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
       }
       break;
 
-    case PROPERTIES_TAGS:
+    case TEditorMode::PROPERTIES_TAGS:
       // Recover previous state for all windows and histograms
       for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
       {
@@ -243,15 +243,15 @@ AdvancedSaveConfiguration::~AdvancedSaveConfiguration()
 void AdvancedSaveConfiguration::Init()
 {
 ////@begin AdvancedSaveConfiguration member initialisation
-  choiceWindow = NULL;
-  scrolledWindow = NULL;
-  scrolledLinkProperties = NULL;
-  toggleOnlySelected = NULL;
-  buttonSave = NULL;
+  choiceWindow = nullptr;
+  scrolledWindow = nullptr;
+  scrolledLinkProperties = nullptr;
+  toggleOnlySelected = nullptr;
+  buttonSave = nullptr;
 ////@end AdvancedSaveConfiguration member initialisation
   isTimeline = true;
   currentItem = 0;
-  editionMode = PROPERTIES_TAGS;
+  editionMode = TEditorMode::PROPERTIES_TAGS;
 }
 
 
@@ -348,7 +348,7 @@ void AdvancedSaveConfiguration::CreateControls()
 
   choiceWindow->SetSelection( currentItem );
 
-  if ( editionMode == HISTOGRAM_STATISTIC_TAGS )
+  if ( editionMode == TEditorMode::HISTOGRAM_STATISTIC_TAGS )
   {
     buttonSave->SetLabel( _("Ok") );
     choiceWindow->Enable( false );
@@ -391,7 +391,7 @@ void AdvancedSaveConfiguration::DisconnectWidgetsTagsPanel( bool showFullList )
       GetCheckBoxByName( currentCheckBoxName )->Disconnect(
               wxEVT_COMMAND_CHECKBOX_CLICKED,
               wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxPropertyClicked ),
-              NULL,
+              nullptr,
               this );
     }
   }
@@ -436,6 +436,19 @@ void AdvancedSaveConfiguration::BuildTagMaps( const map< string, string > &renam
 }
 
 
+void AdvancedSaveConfiguration::parseSemanticParameterTag( const wxString& whichTag,
+                                                           string& onSemanticLevel,
+                                                           string& onFunction,
+                                                           TParamIndex& onNumParameter )
+{
+  onSemanticLevel = whichTag.BeforeFirst( KParamSeparator[0] ).mb_str();
+  onFunction = whichTag.AfterLast( KParamSeparator[0] ).BeforeFirst( wxChar('.') ).mb_str();
+  istringstream tmpValue(
+          string( whichTag.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() ) );
+  tmpValue >> onNumParameter;
+}
+
+
 void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window::TParamAliasKey > &fullParamList, // maybe not needed, but window
                                                            const Window::TParamAlias &renamedParamAlias,
                                                            const bool showFullList )
@@ -447,7 +460,6 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
   string semanticLevel, function, paramAlias;
   string innerKey;
   TParamIndex numParameter;
-  string nameParameter;
   bool enabled;
   Window *currentWindow = timelines[ currentItem ]; // TRY to set this static
   vector< Window::TParamAliasKey > semanticLevelParamKeys;
@@ -465,15 +477,12 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
       // And then insert its parameters if they exist.
       semanticLevelParamKeys = currentWindow->getCFG4DParamKeysBySemanticLevel( *it, fullParamList );
 
-      TParamIndex curP = 0;
+      TParamIndex currentParam = 0;
       for( vector< Window::TParamAliasKey >::const_iterator it2 = semanticLevelParamKeys.begin();
            it2 != semanticLevelParamKeys.end(); ++it2 )
       {
         // Tag with parameters!
         currentWindow->splitCFG4DParamAliasKey( *it2, semanticLevel, function, numParameter );
-
-        stringstream auxStr;
-        auxStr << numParameter;
 
         int iSemLevel;
         for( iSemLevel = 0; iSemLevel < DERIVED; ++iSemLevel )
@@ -481,8 +490,7 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
           if( TimelineLevelLabels[ iSemLevel ] == semanticLevel )
             break;
         }
-        nameParameter = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
-        innerKey = *it + string( PARAM_SEPARATOR ) + auxStr.str() + string( PARAM_SEPARATOR ) + function + string(".") + nameParameter;
+        innerKey = LabelConstructor::getCFG4DParameterOriginalName( currentWindow, TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
 
         if ( renamedParamAlias.find( *it2 ) != renamedParamAlias.end() )
         {
@@ -494,14 +502,14 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
         {
           // No alias; insert something, like the original name.
           enabled = false;
-          paramAlias = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), curP );
+          paramAlias = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), currentParam );
         }
 
         auxFullTagList.push_back( innerKey );
         auxEnabledFullTagsList[ innerKey ] = enabled;
         auxRenamedFullTagsList[ innerKey ] = paramAlias;
 
-        curP++;
+        currentParam++;
       }
     }
   }
@@ -575,8 +583,8 @@ bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
 wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >::iterator it,
                                                            bool showFullList )
 {
-  wxBoxSizer *auxBoxSizer = NULL;
-  wxBoxSizer *auxBoxSizerLeft = NULL;
+  wxBoxSizer *auxBoxSizer = nullptr;
+  wxBoxSizer *auxBoxSizerLeft = nullptr;
   wxCheckBox *auxCheckBox;
   wxTextCtrl *auxTextCtrl;
   wxButton   *auxButton;
@@ -634,7 +642,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
 
     auxBoxSizer->Add( auxTextCtrl, 2, wxEXPAND | wxGROW | wxALL, 2 );
 
-    if ( editionMode == PROPERTIES_TAGS )
+    if ( editionMode == TEditorMode::PROPERTIES_TAGS )
     {
       if( wxString::FromUTF8( it->first.c_str() ) == _( "Statistic" ) )
       {
@@ -651,7 +659,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
 
         auxButton->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
                             wxCommandEventHandler( AdvancedSaveConfiguration::OnStatisticsButtonClick ),
-                            NULL,
+                            nullptr,
                             this ); 
 
       }
@@ -663,7 +671,7 @@ wxBoxSizer *AdvancedSaveConfiguration::BuildTagRowWidgets( map< string, string >
 
     auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
                           wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxPropertyClicked ),
-                          NULL,
+                          nullptr,
                           this ); 
   }
 
@@ -705,7 +713,7 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const bool showFullList )
       it = renamedTag.find( *itOrd );
 
       auxBoxSizer = BuildTagRowWidgets( it, showFullList );
-      if ( auxBoxSizer != NULL )
+      if ( auxBoxSizer != nullptr )
       {
         boxSizerCurrentItem->Add( auxBoxSizer, 0, wxGROW|wxALL, 2 );
       }
@@ -722,7 +730,7 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow, const boo
   // Build renamedTag and enabledTag maps
   fullTagList = currentWindow->getCFG4DFullTagList();
   BuildTagMaps( currentWindow->getCFG4DAliasList(), showFullList );
-  if ( editionMode == PROPERTIES_TAGS )
+  if ( editionMode == TEditorMode::PROPERTIES_TAGS )
   {
     InsertParametersToTagMaps( currentWindow->getCFG4DCurrentSelectedFullParamList(),
                                currentWindow->getCFG4DParamAliasList(),
@@ -740,13 +748,13 @@ void AdvancedSaveConfiguration::BuildTagsPanel( Histogram *currentHistogram, con
   // Build renamedTag and enabledTag maps
   switch ( editionMode )
   {
-    case HISTOGRAM_STATISTIC_TAGS:
+    case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
       selected = ( currentHistogram->isCommunicationStat( currentHistogram->getCurrentStat() ) )? 0 : 1;
       currentHistogram->getStatisticsLabels( fullTagList, selected );
       BuildTagMaps( currentHistogram->getCFG4DStatisticsAliasList(), showFullList );
       break;
 
-    case PROPERTIES_TAGS:
+    case TEditorMode::PROPERTIES_TAGS:
       fullTagList = currentHistogram->getCFG4DFullTagList();
       BuildTagMaps( currentHistogram->getCFG4DAliasList(), showFullList );
       break;
@@ -829,10 +837,10 @@ void AdvancedSaveConfiguration::OnCheckBoxPropertyClicked( wxCommandEvent& event
   GetTextCtrlByName( currentTextCtrlName )->Enable( currentCheckBox->GetValue() );
 
   wxButton *relatedButton = GetButtonByName( currentTextCtrlName );
-  if ( relatedButton != NULL )
+  if ( relatedButton != nullptr )
     relatedButton->Enable( currentCheckBox->GetValue() );
 
-  if( editionMode == PROPERTIES_TAGS )
+  if( editionMode == TEditorMode::PROPERTIES_TAGS )
   {
     string tmpOriginalName = std::string( currentTextCtrlName.mb_str() );
     if( currentCheckBox->GetValue() )
@@ -879,10 +887,10 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
   {
     switch ( editionMode )
     {
-      case HISTOGRAM_STATISTIC_TAGS:
+      case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
         auxMap = histograms[ currentItem ]->getCFG4DStatisticsAliasList();
         break;
-      case PROPERTIES_TAGS:
+      case TEditorMode::PROPERTIES_TAGS:
         auxMap = histograms[ currentItem ]->getCFG4DAliasList();
         break;
       default:
@@ -914,7 +922,6 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
   }
 }
 
-
 void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
 {
   map< string, string > auxActivePropertyTags;
@@ -939,11 +946,7 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
       {
         if ( isTimeline )  // by construction, this the only possibility
         {
-          semanticLevel = currentTagName.BeforeFirst( KParamSeparator[0] ).mb_str();
-          function = currentTagName.AfterLast( KParamSeparator[0] ).BeforeFirst( wxChar('.') ).mb_str();
-          istringstream tmpValue(
-                  string( currentTagName.BeforeLast( KParamSeparator[0] ).AfterFirst( KParamSeparator[0] ).mb_str() ) );
-          tmpValue >> numParameter;
+          parseSemanticParameterTag( currentTagName, semanticLevel, function, numParameter );
 
           auxParamKey = timelines[ currentItem ]->buildCFG4DParamAliasKey( semanticLevel, function, numParameter );
           newAlias = GetTextCtrlByName( currentTagName )->GetValue().mb_str();
@@ -974,10 +977,10 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
 
     switch ( editionMode )
     {
-      case HISTOGRAM_STATISTIC_TAGS:
+      case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
         histograms[ currentItem ]->setCFG4DStatisticsAliasList( renamedTag );
         break;
-      case PROPERTIES_TAGS:
+      case TEditorMode::PROPERTIES_TAGS:
         histograms[ currentItem ]->setCFG4DAliasList( renamedTag );
       default:
         break;
@@ -1049,7 +1052,7 @@ void AdvancedSaveConfiguration::OnStatisticsButtonClick( wxCommandEvent& event )
           (wxWindow *)this,
           dummy,
           onlyCurrentHistogram,
-          AdvancedSaveConfiguration::HISTOGRAM_STATISTIC_TAGS,
+          TEditorMode::HISTOGRAM_STATISTIC_TAGS,
           wxID_ANY,
           _("Save Basic CFG - Statistics Editor"),
           wxPoint( GetPosition().x + 20 , GetPosition().y + 20 ) ); // doesn't reposition
@@ -1097,7 +1100,7 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
 {
   switch ( editionMode )
   {
-    case HISTOGRAM_STATISTIC_TAGS:
+    case TEditorMode::HISTOGRAM_STATISTIC_TAGS:
       // Recover previous tags for that histogram
       for( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
       {
@@ -1105,7 +1108,7 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
       }
       break;
 
-    case PROPERTIES_TAGS:
+    case TEditorMode::PROPERTIES_TAGS:
       // Recover previous state for all windows and histograms
       for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
       {
@@ -1147,19 +1150,21 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
       tmpCustomName = linkedManager.getCustomName( tmpData->getPropertyName() );
 
     tmpData->getData( tmpWin );
-    if( tmpWin != NULL )
+    if( tmpWin != nullptr )
     {
       unlinkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
       linkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
       if ( tmpWin == timelines[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpData->getPropertyName().c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
       else
-        tmpWin->setCFG4DAlias( tmpData->getPropertyName(), tmpCustomName );
+      {
+        setTimelineCFG4DAlias( tmpWin, tmpData->getPropertyName(), tmpCustomName );
+      }
     }
     else
     {
       tmpData->getData( tmpHisto );
-      if( tmpHisto != NULL )
+      if( tmpHisto != nullptr )
       {
         unlinkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
         linkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
@@ -1179,7 +1184,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
     string tmpCustomName = linkedManager.getCustomName( tmpData->getPropertyName() );
 
     tmpData->getData( tmpWin );
-    if( tmpWin != NULL )
+    if( tmpWin != nullptr )
     {
       linkedManager.removeLink( tmpData->getPropertyName(), tmpWin );
       unlinkedManager.insertLink( tmpData->getPropertyName(), tmpWin );
@@ -1187,7 +1192,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& eve
     else
     {
       tmpData->getData( tmpHisto );
-      if( tmpHisto != NULL )
+      if( tmpHisto != nullptr )
       {
         linkedManager.removeLink( tmpData->getPropertyName(), tmpHisto );
         unlinkedManager.insertLink( tmpData->getPropertyName(), tmpHisto );
@@ -1261,7 +1266,7 @@ void AdvancedSaveConfiguration::buildWindowsSetWidgets( const string& propertyNa
 
 void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& event )
 {
-  string tmpOriginalName = string( ( (wxCheckBox *)event.GetEventObject() )->GetLabel().mb_str() );
+  string tmpOriginalName = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
 
   if( event.IsChecked() )
   {
@@ -1281,7 +1286,9 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
       if ( (*it) == timelines[ currentItem ] )
         GetTextCtrlByName( wxString::FromUTF8( tmpOriginalName.c_str() ) )->ChangeValue( wxString::FromUTF8( tmpCustomName.c_str() ) );
       else
-        (*it)->setCFG4DAlias( tmpOriginalName, tmpCustomName );
+      {
+        setTimelineCFG4DAlias( *it, tmpOriginalName, tmpCustomName );
+      }
     }
 
     THistogramsSet tmpHistoSet;
@@ -1325,6 +1332,7 @@ void AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked( wxCommandEvent& e
   updateLinkPropertiesWidgets();
 }
 
+
 void AdvancedSaveConfiguration::updateAliasForLinkedWindows( std::string whichOriginalName, 
                                                              std::string whichCustomName )
 {
@@ -1332,21 +1340,21 @@ void AdvancedSaveConfiguration::updateAliasForLinkedWindows( std::string whichOr
   linkedManager.getLinks( whichOriginalName, tmpWin );
   for( TWindowsSet::iterator it = tmpWin.begin(); it != tmpWin.end(); ++it )
   {
-    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName);
+    setTimelineCFG4DAlias( *it, whichOriginalName, whichCustomName );
   }
 
   THistogramsSet tmpHisto;
   linkedManager.getLinks( whichOriginalName, tmpHisto );
   for( THistogramsSet::iterator it = tmpHisto.begin(); it != tmpHisto.end(); ++it )
   {
-    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName);
+    (*it)->setCFG4DAlias( whichOriginalName, whichCustomName );
   }
 }
 
 
 void AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged( wxCommandEvent &event )
 {
-  string tmpOriginalName  = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
+  string tmpOriginalName = ( ( OriginalNameData *)event.m_callbackUserData )->myOriginalName;
   string tmpCustomName = string( event.GetString().mb_str() );
   
   unlinkedManager.setCustomName( tmpOriginalName, tmpCustomName );
@@ -1386,6 +1394,8 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
     wxBoxSizer *boxSizerOriginalName = new wxBoxSizer( wxHORIZONTAL );
 
     wxString originalNameLabel = wxString::FromUTF8( (*it).c_str() );
+    OriginalNameData *tmpDataCheck = new OriginalNameData();
+    tmpDataCheck->myOriginalName = *it;
     wxString fullOriginalNameLabel = originalNameLabel;
     if ( originalNameLabel.AfterLast( KParamSeparator[0] ) != originalNameLabel )
        originalNameLabel = originalNameLabel.AfterLast( KParamSeparator[0] );
@@ -1402,7 +1412,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
     auxCheckBox->SetToolTip( wxT( "Link/Unlink all windows" ) );
     auxCheckBox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED,
                           wxCommandEventHandler( AdvancedSaveConfiguration::OnCheckBoxLinkPropertyClicked ),
-                          NULL,
+                          tmpDataCheck,
                           this ); 
 
     boxSizerOriginalName->Add( auxCheckBox, 1, wxEXPAND | wxALL, 2 );
@@ -1426,11 +1436,11 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
                                                  0,
                                                  excludeVerticalBar );
     customNameText->SetToolTip( wxT( "Custom name for linked property" ) );
-    OriginalNameData *tmpData = new OriginalNameData();
-    tmpData->myOriginalName = *it;
+    OriginalNameData *tmpDataText = new OriginalNameData();
+    tmpDataText->myOriginalName = *it;
     customNameText->Connect( wxEVT_COMMAND_TEXT_UPDATED,
                              wxCommandEventHandler( AdvancedSaveConfiguration::OnLinkedPropertiesNameChanged ),
-                             tmpData,
+                             tmpDataText,
                              this ); 
 
     boxSizerOriginalName->Add( customNameText, 2, wxEXPAND | wxALL, 2 );
@@ -1445,4 +1455,22 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
 
   scrolledLinkProperties->SetSizer( boxSizerLinks );
   scrolledLinkProperties->FitInside();
+}
+
+
+void AdvancedSaveConfiguration::setTimelineCFG4DAlias( Window *whichWindow,
+                                                       const string& whichOriginalName,
+                                                       const string& whichCustomName )
+{
+  if ( whichOriginalName.find( PARAM_SEPARATOR ) != string::npos )
+  {
+    string semanticLevel;
+    string function;
+    TParamIndex numParameter;
+
+    parseSemanticParameterTag( whichOriginalName, semanticLevel, function, numParameter );
+    whichWindow->setCFG4DParamAlias( semanticLevel, function, numParameter, whichCustomName );
+  }
+  else
+    whichWindow->setCFG4DAlias( whichOriginalName, whichCustomName );
 }

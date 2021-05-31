@@ -113,8 +113,8 @@ void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, cons
   wxTreeItemId root = timelineTree->AddRoot( wxT( "root" ) );
   if( needNoneElement )
   {
-    wxTreeItemId noneId = timelineTree->AppendItem( root, wxT( "None" ), -1, -1, new TimelineSelectorItemData( wxT( "None" ), NULL ) );
-    if( currentWindow == NULL )
+    wxTreeItemId noneId = timelineTree->AppendItem( root, wxT( "None" ), -1, -1, new TimelineSelectorItemData( wxT( "None" ), nullptr ) );
+    if( currentWindow == nullptr )
       timelineTree->SelectItem( noneId );
   }
   wxTreeItemId currentTraceId = timelineTree->AppendItem( root, wxString( currentTrace->getFileNameNumbered().c_str(), wxConvUTF8 ) );
@@ -123,7 +123,7 @@ void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, cons
   for( vector<TWindowID>::const_iterator it = windows.begin(); it != windows.end(); ++it )
   {
     Window *currentWin = LoadedWindows::getInstance()->getWindow( *it );
-    if( currentWin->getChild() != NULL )
+    if( currentWin->getChild() != nullptr )
       continue;
 
     if( currentWin->getTrace() == currentTrace )

@@ -139,8 +139,8 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
     wxCMD_LINE_PARAM_OPTIONAL },
 
    { wxCMD_LINE_PARAM, 
-    NULL,
-    NULL,
+    nullptr,
+    nullptr,
     wxT( "(trace.prv | trace.prv.gz) (configuration.cfg) | saved_session.session" ),
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
@@ -193,8 +193,8 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
     wxCMD_LINE_PARAM_OPTIONAL },
 
    { wxCMD_LINE_PARAM, 
-    NULL,
-    NULL,
+    nullptr,
+    nullptr,
     "(trace.prv | trace.prv.gz) (configuration.cfg) | saved_session.session",
     wxCMD_LINE_VAL_STRING,
     wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
@@ -225,7 +225,7 @@ void wxparaverApp::Init()
 	globalTiming = false;
 	globalTimingBegin = 0;
 	globalTimingBeginIsSet = false;
-	globalTimingCallDialog = NULL;
+	globalTimingCallDialog = nullptr;
 	globalTimingEnd = 0;
 ////@end wxparaverApp member initialisation
   m_locale.Init();
@@ -239,7 +239,7 @@ void wxparaverApp::Init()
  * Initialisation for wxparaverApp
  */
 
-paraverMain* wxparaverApp::mainWindow = NULL;
+paraverMain* wxparaverApp::mainWindow = nullptr;
 
 
 #ifndef WIN32
@@ -266,8 +266,8 @@ void wxparaverApp::handler( int signalNumber )
 
   sigaddset( &act.sa_mask, SIGUSR1 );
   sigaddset( &act.sa_mask, SIGUSR2 );
-  sigaction( SIGUSR1, &act, NULL );
-  sigaction( SIGUSR2, &act, NULL );
+  sigaction( SIGUSR1, &act, nullptr );
+  sigaction( SIGUSR2, &act, nullptr );
 }
 
 
@@ -292,12 +292,12 @@ void wxparaverApp::presetUserSignals()
     /* Handle error */
   }
 
-  if ( sigaction( SIGUSR1, &act, NULL ) != 0 )
+  if ( sigaction( SIGUSR1, &act, nullptr ) != 0 )
   {
     /* Handle error */
   }
 
-  if ( sigaction( SIGUSR2, &act, NULL ) != 0 )
+  if ( sigaction( SIGUSR2, &act, nullptr ) != 0 )
   {
     /* Handle error */
   }
@@ -477,7 +477,7 @@ bool wxparaverApp::OnInit()
                 hostName, 
                 currentService, 
                 wxT( "wxparaver" ) );
-            if ( connection == NULL )
+            if ( connection == nullptr )
             {
               wxRemoveFile( currentService );
               invalidateNoConnect = true;
@@ -499,7 +499,7 @@ bool wxparaverApp::OnInit()
             hostName, 
             currentService, 
             wxT( "wxparaver" ) );
-          if ( connection == NULL )
+          if ( connection == nullptr )
             wxRemoveFile( currentService );
           delete connection;
           
@@ -602,7 +602,7 @@ bool wxparaverApp::OnInit()
   wxSize mainWindowSize( ParaverConfig::getInstance()->getMainWindowWidth(),
                          ParaverConfig::getInstance()->getMainWindowHeight() );
                          
-  mainWindow = new paraverMain( NULL, 
+  mainWindow = new paraverMain( nullptr, 
                                 SYMBOL_PARAVERMAIN_IDNAME, 
                                 SYMBOL_PARAVERMAIN_TITLE, 
                                 SYMBOL_PARAVERMAIN_POSITION, 
@@ -638,7 +638,7 @@ bool wxparaverApp::OnInit()
 
 int wxparaverApp::OnRun()
 {
-  if( mainWindow != NULL )
+  if( mainWindow != nullptr )
     return wxApp::OnRun();
   return 0;
 }
@@ -657,8 +657,9 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
   if ( paraverCommandLineParser.Found( wxT( "i" ) ) )
   {
     string fileName;
-    Trace *currentTrace = NULL;
+    Trace *currentTrace = nullptr;
     paraverMain::disableUserMessages = true;
+    paraverMain::stopOnIdle = true;
 
     for ( unsigned int i = 0; i < paraverCommandLineParser.GetParamCount(); ++i )
     {
@@ -666,7 +667,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
 
       if ( mainWindow->GetLocalKernel()->isTraceFile( fileName ) )
       {
-        if( currentTrace != NULL )
+        if( currentTrace != nullptr )
           delete currentTrace;
 
         wxFileName tmpFileName( wxString( fileName.c_str(), wxConvUTF8 ) );
@@ -681,13 +682,14 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
 
         string tmpPath = std::string( tmpFileName.GetFullPath().mb_str() );
       
-        currentTrace = Trace::create( mainWindow->GetLocalKernel(), tmpPath, false, NULL );
+        currentTrace = Trace::create( mainWindow->GetLocalKernel(), tmpPath, false, nullptr );
       }
-      else if ( CFGLoader::isCFGFile( fileName ) && currentTrace != NULL )
+      else if ( CFGLoader::isCFGFile( fileName ) && currentTrace != nullptr )
       {
         vector<Window *> newWindows;
         vector<Histogram *> newHistograms;
         SaveOptions options;
+
 
         if( CFGLoader::loadCFG( mainWindow->GetLocalKernel(), fileName, currentTrace,
                                 newWindows, newHistograms, options ) )
@@ -699,7 +701,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             histo->setRedraw( false );
             string composedName = histo->getName() + " @ " +
                                   histo->getControlWindow()->getTrace()->getTraceName();
-                                  
+
             gHistogram* tmpGHisto = new gHistogram( mainWindow, 
                 wxID_ANY, 
                 wxString::FromUTF8( composedName.c_str() ) );
@@ -763,11 +765,11 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
   wxString tmpTutorial;    
   if ( paraverCommandLineParser.Found( wxT( "t" ), &tmpTutorial ) )
   {
-    if ( mainWindow->GetTutorialsWindow() == NULL )
+    if ( mainWindow->GetTutorialsWindow() == nullptr )
     {
       mainWindow->SetTutorialsWindow( 
               HelpContents::createObject( 
-                      HelpContents::TUTORIAL,
+                      TContents::TUTORIAL,
                       mainWindow, 
                       wxString( paraverMain::myParaverMain->GetParaverConfig()->getGlobalTutorialsPath().c_str(), wxConvUTF8 ),
                       true, wxID_ANY, _("Tutorials") 
@@ -798,7 +800,7 @@ int wxparaverApp::OnExit()
 //            wxparaverApp::mainWindow->GetAuiManager().GetPanel( wxparaverApp::mainWindow->choiceWindowBrowser ) ).mb_str()<<endl;
 
   
-  if ( mainWindow != NULL && paraverMain::IsSessionValid() && !invalidateNoConnect ) 
+  if ( mainWindow != nullptr && paraverMain::IsSessionValid() && !invalidateNoConnect ) 
   {
     ParaverConfig::getInstance()->closeCompleteSessionFile();
   }
@@ -815,10 +817,10 @@ int wxparaverApp::OnExit()
   
 //// Code that deletes PID from the sessions map ends here  ////
 
-  if( m_checker != NULL )
+  if( m_checker != nullptr )
     delete m_checker;
     
-  if( m_server != NULL )
+  if( m_server != nullptr )
     delete m_server;
 
 #ifdef TRACING_ENABLED

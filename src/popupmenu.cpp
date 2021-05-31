@@ -185,7 +185,7 @@ wxMenuItem *gPopUpMenu::buildItem( wxMenu *popUp,
   if ( tmp->IsCheckable() )
     tmp->Check( checked );
     
-  if( handler != NULL )
+  if( handler != nullptr )
 #ifdef WIN32
     Connect( id,
 #else
@@ -193,7 +193,7 @@ wxMenuItem *gPopUpMenu::buildItem( wxMenu *popUp,
 #endif
                     wxEVT_COMMAND_MENU_SELECTED, 
                     handler,
-                    NULL,
+                    nullptr,
                     this );
                     
   return tmp;
@@ -258,7 +258,7 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
   Enable( FindItem( _( STR_CONTROL_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE ) );
   Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS ) );
   if( whichHistogram->GetHistogram()->getThreeDimensions() &&
-      histogram != NULL && histogram->GetHistogram()->getThreeDimensions() )
+      histogram != nullptr && histogram->GetHistogram()->getThreeDimensions() )
     Enable( FindItem( _( STR_3D_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_3D_SCALE) );
   else
     Enable( FindItem( _( STR_3D_SCALE ) ), false );
@@ -411,7 +411,7 @@ RowsSelectionDialog *gPopUpMenu::createRowSelectionDialog( gHistogram *histogram
 gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 {
   timeline = whichTimeline;
-  histogram = NULL;
+  histogram = nullptr;
 
   popUpMenuView = new wxMenu;
   popUpMenuColor = new wxMenu;
@@ -432,9 +432,9 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuSyncRemove = new wxMenu;
 
 #ifdef __WXMAC__
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
+  buildItem( this, _( STR_COPY ), ITEMNORMAL, nullptr, ID_MENU_COPY );
 #else
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, wxID_COPY );
+  buildItem( this, _( STR_COPY ), ITEMNORMAL, nullptr, wxID_COPY );
 #endif
   buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
   popUpMenuPaste->AppendSeparator();
@@ -454,22 +454,22 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
-  buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
-  buildItem( this, _( STR_RENAME ), ITEMNORMAL, NULL, ID_MENU_RENAME );
+  buildItem( this, _( STR_CLONE ), ITEMNORMAL, nullptr, ID_MENU_CLONE );
+  buildItem( this, _( STR_RENAME ), ITEMNORMAL, nullptr, ID_MENU_RENAME );
 
   AppendSeparator();
 
-  buildItem( this, _( STR_UNDO_ZOOM ), ITEMNORMAL, NULL, wxID_UNDO );
-  buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, NULL, wxID_REDO );
+  buildItem( this, _( STR_UNDO_ZOOM ), ITEMNORMAL, nullptr, wxID_UNDO );
+  buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, nullptr, wxID_REDO );
 
-  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, wxID_ZOOM_100 );
+  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, nullptr, wxID_ZOOM_100 );
   buildItem( popUpMenuFitSemantic, _( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
   buildItem( popUpMenuFitSemantic, _( "Fit Maximum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
   buildItem( popUpMenuFitSemantic, _( "Fit Both" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
   AppendSubMenu( popUpMenuFitSemantic, _( STR_FIT_SEMANTIC ) );
 
-  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
-  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
+  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, nullptr, ID_MENU_FIT_OBJECTS );
+  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, nullptr, ID_MENU_ROW_SELECTION );
 
   AppendSeparator();
 
@@ -489,10 +489,10 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   wxMenuItem *tmpPuncWin = buildItem( popUpMenuColor, _( "Punctual Window..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctualWindow, ID_MENU_PUNCTUAL_WINDOW );
   popUpMenuColor->Enable( tmpPuncWin->GetId(), timeline->GetMyWindow()->isPunctualColorSet() );
 
-  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
-  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
-  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
-  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
+  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );
+  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::STEPS );
+  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::LOGARITHMIC );
+  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::EXPONENTIAL );
   wxMenuItem *tmpGradFunc = popUpMenuColor->AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
   popUpMenuColor->Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->isGradientColorSet() ||
                                                 timeline->GetMyWindow()->isNotNullGradientColorSet() ||
@@ -705,7 +705,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuDrawMode->AppendSubMenu( popUpMenuDrawModeBoth, _( "Both" ));
   wxMenuItem *tmpDrawModeSubMenu = AppendSubMenu( popUpMenuDrawMode, _( "Drawmode" ));
   Enable( tmpDrawModeSubMenu->GetId(), !timeline->GetMyWindow()->isPunctualColorSet() || 
-                                       timeline->GetMyWindow()->getPunctualColorWindow() != NULL );
+                                       timeline->GetMyWindow()->getPunctualColorWindow() != nullptr );
 
   buildItem( popUpMenuPixelSize,
              _( "x1" ),
@@ -735,25 +735,25 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   AppendSubMenu( popUpMenuPixelSize, _( "Pixel Size" ));
 
   buildItem( popUpMenuLabels, _( "All" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsAll, ID_MENU_LABELS_ALL, 
-             timeline->GetMyWindow()->getObjectLabels() == Window::ALL_LABELS );
+             timeline->GetMyWindow()->getObjectLabels() == TObjectLabels::ALL_LABELS );
   buildItem( popUpMenuLabels, _( "Spaced" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsSpaced, ID_MENU_LABELS_SPACED, 
-             timeline->GetMyWindow()->getObjectLabels() == Window::SPACED_LABELS );
+             timeline->GetMyWindow()->getObjectLabels() ==  TObjectLabels::SPACED_LABELS );
   buildItem( popUpMenuLabels, _( "2^n" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsPower2, ID_MENU_LABELS_POWER2, 
-             timeline->GetMyWindow()->getObjectLabels() == Window::POWER2_LABELS );
+             timeline->GetMyWindow()->getObjectLabels() == TObjectLabels::POWER2_LABELS );
   AppendSubMenu( popUpMenuLabels, _( "Object Labels" ) );
 
   buildItem( popUpMenuObjectAxis, _( "Fit Current Level" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisCurrent, ID_MENU_OBJECT_AXIS_CURRENT, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::CURRENT_LEVEL );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::CURRENT_LEVEL );
   buildItem( popUpMenuObjectAxis, _( "Fit All Levels" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisAll, ID_MENU_OBJECT_AXIS_ALL, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::ALL_LEVELS );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::ALL_LEVELS );
   buildItem( popUpMenuObjectAxis, _( "0%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisZero, ID_MENU_OBJECT_AXIS_ZERO, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::ZERO_PERC );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::ZERO_PERC );
   buildItem( popUpMenuObjectAxis, _( "5%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisFive, ID_MENU_OBJECT_AXIS_FIVE, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::FIVE_PERC );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::FIVE_PERC );
   buildItem( popUpMenuObjectAxis, _( "10%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTen, ID_MENU_OBJECT_AXIS_TEN, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::TEN_PERC );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::TEN_PERC );
   buildItem( popUpMenuObjectAxis, _( "25%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTwentyFive, ID_MENU_OBJECT_AXIS_TWENTYFIVE, 
-             timeline->GetMyWindow()->getObjectAxisSize() == Window::TWENTYFIVE_PERC );
+             timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::TWENTYFIVE_PERC );
   AppendSubMenu( popUpMenuObjectAxis, _( "Object Axis" ) );
 
   AppendSeparator();
@@ -824,7 +824,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
 gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 {
-  timeline = NULL;
+  timeline = nullptr;
   histogram = whichHistogram;
 
   popUpMenuView = new wxMenu;
@@ -845,9 +845,9 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuSyncRemove = new wxMenu;
   
 #ifdef __WXMAC__
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, ID_MENU_COPY );
+  buildItem( this, _( STR_COPY ), ITEMNORMAL, nullptr, ID_MENU_COPY );
 #else
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, NULL, wxID_COPY );
+  buildItem( this, _( STR_COPY ), ITEMNORMAL, nullptr, wxID_COPY );
 #endif
   buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
   popUpMenuPaste->AppendSeparator();
@@ -863,18 +863,18 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
-  buildItem( this, _( STR_CLONE ), ITEMNORMAL, NULL, ID_MENU_CLONE );
-  buildItem( this, _( STR_RENAME ), ITEMNORMAL, NULL, ID_MENU_RENAME );
+  buildItem( this, _( STR_CLONE ), ITEMNORMAL, nullptr, ID_MENU_CLONE );
+  buildItem( this, _( STR_RENAME ), ITEMNORMAL, nullptr, ID_MENU_RENAME );
 
   AppendSeparator();
 
-  buildItem( this, _( STR_UNDO_ZOOM), ITEMNORMAL, NULL, wxID_UNDO );
-  buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, NULL, wxID_REDO );
+  buildItem( this, _( STR_UNDO_ZOOM), ITEMNORMAL, nullptr, wxID_UNDO );
+  buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, nullptr, wxID_REDO );
 
   
-  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, NULL, wxID_ZOOM_100 );
-  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, NULL, ID_MENU_FIT_OBJECTS );
-  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, NULL, ID_MENU_ROW_SELECTION );
+  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, nullptr, wxID_ZOOM_100 );
+  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, nullptr, ID_MENU_FIT_OBJECTS );
+  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, nullptr, ID_MENU_ROW_SELECTION );
 
   buildItem( this, 
              _( "Auto Fit Control Scale" ),
@@ -904,15 +904,15 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
-  buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::COLOR );
-  buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::GRADIENT );
-  buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == SemanticColor::NOT_NULL_GRADIENT );
+  buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::COLOR );
+  buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::GRADIENT );
+  buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::NOT_NULL_GRADIENT );
   AppendSubMenu( popUpMenuColor2D, _( "Color Mode" ) );
   
-  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LINEAR );
-  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::STEPS );
-  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::LOGARITHMIC );
-  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, histogram->GetHistogram()->getGradientColor().getGradientFunction() == GradientColor::EXPONENTIAL );
+  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );
+  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::STEPS );
+  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LOGARITHMIC );
+  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::EXPONENTIAL );
   AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function " ) );
   
   buildItem( popUpMenuDrawModeTime,
@@ -1205,7 +1205,7 @@ gPopUpMenu::~gPopUpMenu()
 
 void gPopUpMenu::enablePaste( const string tag, bool checkPaste )
 {
-  if ( timeline == NULL )
+  if ( timeline == nullptr )
   {
     if ( checkPaste )
     {
@@ -1266,7 +1266,7 @@ string gPopUpMenu::getOption( wxArrayString& choices, int position )
 
 void gPopUpMenu::OnMenuCopy( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpCopy();
   else
     histogram->OnPopUpCopy();
@@ -1275,7 +1275,7 @@ void gPopUpMenu::OnMenuCopy( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuTime( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteTime();
   else
     histogram->OnPopUpPasteTime();
@@ -1284,7 +1284,7 @@ void gPopUpMenu::OnMenuTime( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuObjects( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteObjects();
   else
     histogram->OnPopUpPasteObjects();
@@ -1293,7 +1293,7 @@ void gPopUpMenu::OnMenuObjects( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuSize( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteSize();
   else
     histogram->OnPopUpPasteSize();
@@ -1302,7 +1302,7 @@ void gPopUpMenu::OnMenuSize( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuDuration( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteDuration();
   else
     histogram->OnPopUpPasteDuration();
@@ -1311,7 +1311,7 @@ void gPopUpMenu::OnMenuDuration( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuSemanticScale( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteSemanticScale();
   else
     histogram->OnPopUpPasteSemanticScale();
@@ -1320,21 +1320,21 @@ void gPopUpMenu::OnMenuSemanticScale( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuFilterAll( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteFilterAll();
 }
 
 
 void gPopUpMenu::OnMenuFilterComms( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteFilterCommunications();
 }
 
 
 void gPopUpMenu::OnMenuFilterEvents( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteFilterEvents();
 }
 
@@ -1359,7 +1359,7 @@ void gPopUpMenu::OnMenuPasteControlDimensions( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuPasteDefaultSpecial( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteDefaultSpecial();
   else
     histogram->OnPopUpPasteDefaultSpecial();
@@ -1368,7 +1368,7 @@ void gPopUpMenu::OnMenuPasteDefaultSpecial( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuPasteSpecial( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPasteSpecial();
   else
     histogram->OnPopUpPasteSpecial();
@@ -1377,7 +1377,7 @@ void gPopUpMenu::OnMenuPasteSpecial( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuClone( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpClone();
   else
     histogram->OnPopUpClone();
@@ -1386,7 +1386,7 @@ void gPopUpMenu::OnMenuClone( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuRename( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpRename();
   else
     histogram->OnPopUpRename();
@@ -1395,7 +1395,7 @@ void gPopUpMenu::OnMenuRename( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuUndoZoom( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpUndoZoom();
   else
     histogram->OnPopUpUndoZoom();
@@ -1404,7 +1404,7 @@ void gPopUpMenu::OnMenuUndoZoom( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuRedoZoom( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpRedoZoom();
   else
     histogram->OnPopUpRedoZoom();
@@ -1413,7 +1413,7 @@ void gPopUpMenu::OnMenuRedoZoom( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuFitTime( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpFitTimeScale();
   else
     histogram->OnPopUpFitTimeScale();
@@ -1422,28 +1422,28 @@ void gPopUpMenu::OnMenuFitTime( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuFitSemanticMin( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpFitSemanticScaleMin();
 }
 
 
 void gPopUpMenu::OnMenuFitSemanticMax( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpFitSemanticScaleMax();
 }
 
 
 void gPopUpMenu::OnMenuFitSemanticBoth( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpFitSemanticScale();
 }
 
 
 void gPopUpMenu::OnMenuFitObjects( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpFitObjects();
   else
     histogram->OnPopUpFitObjects();
@@ -1452,340 +1452,340 @@ void gPopUpMenu::OnMenuFitObjects( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuViewCommunicationLines( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->drawCommunicationLines( event.IsChecked() );
 }
 
 
 void gPopUpMenu::OnMenuViewEventFlags( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->drawEventFlags( event.IsChecked() );
 }
 
 
 void gPopUpMenu::OnMenuViewFunctionLine( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->drawFunctionLineColor();
 }
 
 
 void gPopUpMenu::OnMenuViewFusedLines( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->drawFusedLinesColor();
 }
 
 
 void gPopUpMenu::OnMenuPunctual( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpPunctualColor();
 }
 
 
 void gPopUpMenu::OnMenuPunctualWindow( wxCommandEvent& event )
 {
-  if( timeline != NULL )
+  if( timeline != nullptr )
     timeline->OnPopUpPunctualColorWindow();
 }
 
 
 void gPopUpMenu::OnMenuCodeColor( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpCodeColor();
 }
 
 
 void gPopUpMenu::OnMenuGradientColor( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpGradientColor();
 }
 
 
 void gPopUpMenu::OnMenuNotNullGradientColor( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpNotNullGradientColor();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeLast( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeLast();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticLast();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeRandom( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeRandom();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticRandom();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeRandomNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeRandomNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticRandomNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeMaximum( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeMaximum();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticMaximum();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeMinimumNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticMinimumNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeAbsoluteMaximum( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeAbsoluteMaximum();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticAbsoluteMaximum();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeAbsoluteMinimumNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticAbsoluteMinimumNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeAverage( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeAverage();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticAverage();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeAverageNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeAverageNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticAverageNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeTimeMode( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeTimeMode();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeSemanticMode();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsLast( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsLast();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsLast();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsRandom( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsRandom();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsRandom();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsRandomNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsRandomNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsMaximum( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsMaximum();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsMaximum();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsMinimumNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsMinimumNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsAbsoluteMaximum();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsAbsoluteMaximum();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsAbsoluteMinimumNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsAbsoluteMinimumNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsAverage( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsAverage();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsAverage();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsAverageNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsAverageNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeObjectsMode( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeObjectsMode();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeObjectsMode();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothLast( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothLast();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothLast();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothRandom( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothRandom();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothRandom();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothRandomNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothRandomNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothRandomNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothMaximum( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothMaximum();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothMaximum();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothMinimumNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothMinimumNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothMinimumNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothAbsoluteMaximum( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothAbsoluteMaximum();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothAbsoluteMaximum();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothAbsoluteMinimumNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothAbsoluteMinimumNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothAverage( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothAverage();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothAverage();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothAverageNotZero( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothAverageNotZero();
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnPopUpDrawModeBothAverageNotZero();
 }
 
 
 void gPopUpMenu::OnMenuDrawModeBothMode( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpDrawModeBothMode();
-  else if ( histogram != NULL )
+  else if ( histogram != nullptr )
     histogram->OnPopUpDrawModeBothMode();
 }
 
 
 void gPopUpMenu::OnMenuPixelSize( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
   {
     PRV_UINT32 pixelSize; 
 
@@ -1800,7 +1800,7 @@ void gPopUpMenu::OnMenuPixelSize( wxCommandEvent& event )
 
     timeline->OnPopUpPixelSize( pixelSize );
   }
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
   {
     PRV_UINT16 pixelSize;
 
@@ -1820,9 +1820,9 @@ void gPopUpMenu::OnMenuPixelSize( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuRowSelection( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->OnPopUpRowSelection();
-  else if ( histogram != NULL )
+  else if ( histogram != nullptr )
     histogram->OnPopUpRowSelection();
 }
 
@@ -1836,14 +1836,14 @@ void gPopUpMenu::OnMenuSaveHistogramAsCFG( wxCommandEvent& event )
 void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 {
 #ifdef DEFAULT_IMAGE_DIALOG
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->saveImage( true, wxT( "" ) );
-  else if ( histogram != NULL )
+  else if ( histogram != nullptr )
     histogram->saveImage( true, wxT( "" ) );
 #else 
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->saveImageDialog( wxT( "" ) );
-  else if ( histogram != NULL )
+  else if ( histogram != nullptr )
     histogram->saveImageDialog( wxT( "" ) );
     //histogram->saveImage( true, wxT( "" ) );
 #endif
@@ -1851,7 +1851,7 @@ void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuSaveImageLegend( wxCommandEvent& event )
 {
-  if ( timeline != NULL )
+  if ( timeline != nullptr )
     timeline->saveImageLegend();
 }
 
@@ -1885,62 +1885,62 @@ void gPopUpMenu::OnMenuSaveAllPlanesAsText( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuTiming( wxCommandEvent& event )
 {
-  if( timeline != NULL )
+  if( timeline != nullptr )
     timeline->OnPopUpTiming( event.IsChecked() );
 }
 
 
 void gPopUpMenu::OnMenuInfoPanel( wxCommandEvent& event )
 {
-  if( timeline != NULL )
+  if( timeline != nullptr )
     timeline->OnPopUpInfoPanel();
 }
 
 
 void gPopUpMenu::OnMenuAutoControlScale( wxCommandEvent& event )
 {
-  if( histogram != NULL )
+  if( histogram != nullptr )
     histogram->OnPopUpAutoControlScale( event.IsChecked() );
 }
 
 
 void gPopUpMenu::OnMenuAutoControlScaleZero( wxCommandEvent& event )
 {
-  if( histogram != NULL )
+  if( histogram != nullptr )
     histogram->OnPopUpAutoControlScaleZero( event.IsChecked() );
 }
 
 
 void gPopUpMenu::OnMenuAuto3DScale( wxCommandEvent& event )
 {
-  if( histogram != NULL )
+  if( histogram != nullptr )
     histogram->OnPopUpAuto3DScale( event.IsChecked() );
 }
 
 
 void gPopUpMenu::OnMenuAutoDataGradient( wxCommandEvent& event )
 {
-  if( histogram != NULL )
+  if( histogram != nullptr )
     histogram->OnPopUpAutoDataGradient( event.IsChecked() );
 }
 
 
 void gPopUpMenu::OnMenuGradientFunction( wxCommandEvent& event )
 {
-  GradientColor::TGradientFunction gradFunc;
+  TGradientFunction gradFunc;
 
   switch( event.GetId() )
   {
-    case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = GradientColor::LINEAR; break;
-    case ID_MENU_GRADIENT_FUNCTION_STEPS: gradFunc = GradientColor::STEPS; break;
-    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC: gradFunc = GradientColor::LOGARITHMIC; break;
-    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL: gradFunc = GradientColor::EXPONENTIAL; break;
-    default: gradFunc = GradientColor::LINEAR;
+    case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = TGradientFunction::LINEAR; break;
+    case ID_MENU_GRADIENT_FUNCTION_STEPS: gradFunc = TGradientFunction::STEPS; break;
+    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC: gradFunc = TGradientFunction::LOGARITHMIC; break;
+    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL: gradFunc = TGradientFunction::EXPONENTIAL; break;
+    default: gradFunc = TGradientFunction::LINEAR;
   }
   
-  if( timeline != NULL )
+  if( timeline != nullptr )
     timeline->OnMenuGradientFunction( gradFunc );
-  else if( histogram != NULL )
+  else if( histogram != nullptr )
     histogram->OnMenuGradientFunction( gradFunc );
 }
 
@@ -1956,9 +1956,9 @@ void gPopUpMenu::OnMenuSynchronize( wxCommandEvent& event )
 {
   if( event.GetId() == ID_MENU_NEWGROUP )
   {
-    if( timeline != NULL )
+    if( timeline != nullptr )
       timeline->GetMyWindow()->addToSyncGroup( SyncWindows::getInstance()->newGroup() );
-    else if( histogram != NULL )
+    else if( histogram != nullptr )
       histogram->GetHistogram()->addToSyncGroup( SyncWindows::getInstance()->newGroup() );
   }
   else
@@ -1967,14 +1967,14 @@ void gPopUpMenu::OnMenuSynchronize( wxCommandEvent& event )
     SyncWindows::getInstance()->getGroups( tmpGroups );
     
     TGroupId group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
-    if( timeline != NULL )
+    if( timeline != nullptr )
     {
       if( timeline->GetMyWindow()->isSync() && group == timeline->GetMyWindow()->getSyncGroup() )
         timeline->GetMyWindow()->removeFromSync();
       else
         timeline->GetMyWindow()->addToSyncGroup( group );
     }
-    else if( histogram != NULL )
+    else if( histogram != nullptr )
     {
       if( histogram->GetHistogram()->isSync() && group == histogram->GetHistogram()->getSyncGroup() )
         histogram->GetHistogram()->removeFromSync();
@@ -2002,84 +2002,84 @@ void gPopUpMenu::OnMenuRemoveAllGroups( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuCodeColor2D( wxCommandEvent& event )
 {
-  histogram->GetHistogram()->setColorMode( SemanticColor::COLOR );
+  histogram->GetHistogram()->setColorMode( TColorFunction::COLOR );
   histogram->GetHistogram()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuGradientColor2D( wxCommandEvent& event )
 {
-  histogram->GetHistogram()->setColorMode( SemanticColor::GRADIENT );
+  histogram->GetHistogram()->setColorMode( TColorFunction::GRADIENT );
   histogram->GetHistogram()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuNotNullGradientColor2D( wxCommandEvent& event )
 {
-  histogram->GetHistogram()->setColorMode( SemanticColor::NOT_NULL_GRADIENT );
+  histogram->GetHistogram()->setColorMode( TColorFunction::NOT_NULL_GRADIENT );
   histogram->GetHistogram()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuLabelsAll( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectLabels( Window::ALL_LABELS );
+  timeline->GetMyWindow()->setObjectLabels( TObjectLabels::ALL_LABELS );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuLabelsSpaced( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectLabels( Window::SPACED_LABELS );
+  timeline->GetMyWindow()->setObjectLabels(  TObjectLabels::SPACED_LABELS );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuLabelsPower2( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectLabels( Window::POWER2_LABELS );
+  timeline->GetMyWindow()->setObjectLabels( TObjectLabels::POWER2_LABELS );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisCurrent( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::CURRENT_LEVEL );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::CURRENT_LEVEL );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisAll( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::ALL_LEVELS );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::ALL_LEVELS );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisZero( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::ZERO_PERC );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::ZERO_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisFive( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::FIVE_PERC );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::FIVE_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisTen( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::TEN_PERC );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::TEN_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 
 
 void gPopUpMenu::OnMenuObjectAxisTwentyFive( wxCommandEvent& event )
 {
-  timeline->GetMyWindow()->setObjectAxisSize( Window::TWENTYFIVE_PERC );
+  timeline->GetMyWindow()->setObjectAxisSize( TObjectAxisSize::TWENTYFIVE_PERC );
   timeline->GetMyWindow()->setRedraw( true );
 }
 

@@ -181,7 +181,7 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
                                  _("Make a selection:"),
                                  m_label,
                                  choiceCount,
-                                 choiceCount?&labels[0]:NULL,
+                                 choiceCount?&labels[0]:nullptr,
                                  wxCHOICEDLG_STYLE );
 
         dlg.Move( propgrid->GetGoodEditorDialogPosition(this,dlg.GetSize()) );
@@ -313,7 +313,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
                                             const wxString& name,
                                             const wxPGChoices& choices,
                                             Window *whichWindow,
-                                            prvEventInfoProperty::InfoType whichInfoType )
+                                            prvEventInfoType whichInfoType )
                                               : wxPGProperty( label, name )
 {
   m_choices.Assign( choices );
@@ -327,7 +327,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
   switch( whichInfoType )
   {
-    case TYPES:
+    case prvEventInfoType::TYPES:
       currentWindow->getFilter()->getEventType( typesSel );
       for( vector<TEventType>::iterator it = typesSel.begin(); it != typesSel.end(); ++it )
       {
@@ -336,7 +336,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
       
       break;
 
-    case VALUES:
+    case prvEventInfoType::VALUES:
       currentWindow->getFilter()->getEventValue( valuesSel );
       for( vector<TSemanticValue>::iterator it = valuesSel.begin(); it != valuesSel.end(); ++it )
       {
@@ -480,7 +480,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
       if ( eventsDialog.ChangedEventTypesFunction() )
       {
-        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEFUNCTION ] ),
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DGroupLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEFUNCTION ] ),
                                                       SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEFUNCTION ],
                                                       timelines );
         if( timelines.size() == 0 )
@@ -498,7 +498,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         wxArrayInt tmpEventTypes = eventsDialog.GetEventTypesSelection();
 
         timelines.clear();
-        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUES ] ),
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DGroupLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUES ] ),
                                                       SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUES ],
                                                       timelines );
         if( timelines.size() == 0 )
@@ -523,7 +523,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         int func = eventsDialog.GetIndexOperatorTypeValue();
 
         timelines.clear();
-        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUESOP ] ),
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DGroupLink( SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUESOP ] ),
                                                       SingleTimelinePropertyLabels[ SINGLE_EVENTTYPEVALUESOP ],
                                                       timelines );
         if( timelines.size() == 0 )
@@ -543,7 +543,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
       if ( eventsDialog.ChangedEventValuesFunction() )
       {
         timelines.clear();
-        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEFUNCTION ] ),
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DGroupLink( SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEFUNCTION ] ),
                                                       SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEFUNCTION ],
                                                       timelines );
         if( timelines.size() == 0 )
@@ -561,7 +561,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
         wxArrayDouble tmpEventValues = eventsDialog.GetEventValues();
 
         timelines.clear();
-        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DIndexLink( SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEVALUES ] ),
+        CFGS4DGlobalManager::getInstance()->getLinks( currentWindow->getCFGS4DGroupLink( SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEVALUES ] ),
                                                       SingleTimelinePropertyLabels[ SINGLE_EVENTVALUEVALUES ],
                                                       timelines );
         if( timelines.size() == 0 )
@@ -588,12 +588,12 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
       }
       wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
 
-      wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+      wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
 
       return true;
     }
 
-    wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
   }
 
   return false;
@@ -675,7 +675,7 @@ SemanticMenu::SemanticMenu( const vector<string>& levels,
     }
     subMenus[ i ]->Connect( wxEVT_COMMAND_MENU_SELECTED, 
                             wxCommandEventHandler( SemanticMenu::OnMenu ),
-                            NULL,
+                            nullptr,
                             this );
     Append( i, wxString::FromUTF8( levels[ i ].c_str() ), subMenus[ i ] );
   }
@@ -693,7 +693,7 @@ void SemanticMenu::OnMenu( wxCommandEvent& event )
   for( vector<wxMenu *>::iterator it = subMenus.begin();
        it != subMenus.end(); ++it )
   {
-    if( ( lastItem = (*it)->FindItem( currentItemID ) ) != NULL )
+    if( ( lastItem = (*it)->FindItem( currentItemID ) ) != nullptr )
     {
       if( !lastItem->IsChecked() )
         lastItem->Check( true );
@@ -860,7 +860,7 @@ bool prvRowsSelectionProperty::OnEvent( wxPropertyGrid* propgrid,
       SetValueInEvent( tmp );
     }
   
-    wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+    wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
     delete dialog;
   }
   
@@ -1099,23 +1099,23 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
     {
       if( selectedWindow == timelineSelector.getSelection() )
       {
-        wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+        wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
         return false;
       }
       selectedWindow = timelineSelector.getSelection();
-      if( selectedWindow != NULL )
+      if( selectedWindow != nullptr )
         SetValueInEvent( wxString( selectedWindow->getName().c_str(), wxConvUTF8 ) );
       else
         SetValueInEvent( wxT( "None" ) );
     }
     else
     {
-      wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+      wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
       return false;
     }    
   }
 
-  wxparaverApp::mainWindow->SetOpenedPropertyDialog( NULL );
+  wxparaverApp::mainWindow->SetOpenedPropertyDialog( nullptr );
   return true;
 }
 

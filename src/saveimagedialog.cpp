@@ -133,20 +133,20 @@ SaveImageDialog::~SaveImageDialog()
 void SaveImageDialog::Init()
 {
 ////@begin SaveImageDialog member initialisation
-  fileNameBar = NULL;
-  searchBar = NULL;
-  treeDirs = NULL;
-  listDirs = NULL;
-  fileTypeChoice = NULL;
-  imageToSaveSizer = NULL;
-  imageSizer = NULL;
-  imageCheckbox = NULL;
-  imageFileName = NULL;
-  legendSizer = NULL;
-  legendCheckbox = NULL;
-  legendFileName = NULL;
-  buttonSave = NULL;
-  buttonCancel = NULL;
+  fileNameBar = nullptr;
+  searchBar = nullptr;
+  treeDirs = nullptr;
+  listDirs = nullptr;
+  fileTypeChoice = nullptr;
+  imageToSaveSizer = nullptr;
+  imageSizer = nullptr;
+  imageCheckbox = nullptr;
+  imageFileName = nullptr;
+  legendSizer = nullptr;
+  legendCheckbox = nullptr;
+  legendFileName = nullptr;
+  buttonSave = nullptr;
+  buttonCancel = nullptr;
 ////@end SaveImageDialog member initialisation
 }
 
@@ -257,7 +257,7 @@ void SaveImageDialog::CreateControls()
     imageToSaveSizer->Hide( (wxSizer*) legendSizer, true );
     Layout();
   }
-  fileNameBar->WriteText( defaultFileName );
+  fileNameBar->SetValue( defaultFileName );
   treeDirs->SetPath( directoryStartingPath );
   updateFileNamesAndPaths();
 }
@@ -307,7 +307,7 @@ void SaveImageDialog::OnSavedirctrlSelChanged( wxTreeEvent& event )
 
 void SaveImageDialog::updateFileNamesAndPaths() 
 {
-  if ( treeDirs == NULL ) return; 
+  if ( treeDirs == nullptr ) return; 
   wxString myPath = treeDirs->GetPath();
   wxFileName fName;
   
@@ -328,7 +328,7 @@ void SaveImageDialog::updateFileNamesAndPaths()
     }
   }
   searchBar->Clear();
-  searchBar->WriteText( myPath );
+  searchBar->ChangeValue( myPath );
   directoryStartingPath = myPath;
 }
 
@@ -348,7 +348,7 @@ void SaveImageDialog::OnSavelistboxSelected( wxCommandEvent& event )
     selectedImageFilePath = myPath;
     
     fileNameBar->Clear();
-    fileNameBar->WriteText( defaultFileName );
+    fileNameBar->ChangeValue( defaultFileName );
   }
 }
 
@@ -377,7 +377,7 @@ void SaveImageDialog::OnSaveimagecheckboxClick( wxCommandEvent& event )
   imageFileName->Clear();
   selectedImageFilePath = fileNameBar->GetValue() + fileTypeText;
   if ( imageCheckbox->IsChecked() && !fileNameBar->IsEmpty() )
-    imageFileName->WriteText( selectedImageFilePath ); // is [   + _( "_IMAGE" )   ] necessary?
+    imageFileName->ChangeValue( selectedImageFilePath ); // is [   + _( "_IMAGE" )   ] necessary?
     
 }
 
@@ -392,7 +392,7 @@ void SaveImageDialog::OnSavelegendcheckboxClick( wxCommandEvent& event )
 
   selectedLegendFilePath = fileNameBar->GetValue() + legendSuffix + fileTypeText;
   if ( legendCheckbox->IsChecked() && !fileNameBar->IsEmpty() ) 
-    legendFileName->WriteText( selectedLegendFilePath );
+    legendFileName->ChangeValue( selectedLegendFilePath );
   
   
 }

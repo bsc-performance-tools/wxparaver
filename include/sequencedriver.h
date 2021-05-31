@@ -39,9 +39,9 @@ class RunAppClusteringAction: public TraceToTraceAction
     ~RunAppClusteringAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const override;
 
-    virtual bool execute( std::string whichTrace );
+    virtual bool execute( std::string whichTrace ) override;
 
   protected:
 
@@ -61,9 +61,9 @@ class RunAppCutterAction: public TraceToTraceAction
     ~RunAppCutterAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const override;
 
-    virtual bool execute( std::string whichTrace );
+    virtual bool execute( std::string whichTrace ) override;
 
   protected:
 
@@ -83,9 +83,9 @@ class RunAppDimemasAction: public TraceToTraceAction
     ~RunAppDimemasAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const override;
 
-    virtual bool execute( std::string whichTrace );
+    virtual bool execute( std::string whichTrace ) override;
 
   protected:
 
@@ -105,9 +105,9 @@ class RunAppFoldingAction: public TraceToTraceAction
     ~RunAppFoldingAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const override;
 
-    virtual bool execute( std::string whichTrace );
+    virtual bool execute( std::string whichTrace ) override;
 
   protected:
 
@@ -127,9 +127,9 @@ class RunSpectralAction: public TraceToTraceAction
     ~RunSpectralAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const override;
 
-    virtual bool execute( std::string whichTrace );
+    virtual bool execute( std::string whichTrace ) override;
 
   protected:
 
@@ -149,9 +149,9 @@ class ExternalSortAction: public TraceToTraceAction
     ~ExternalSortAction()
     {}
 
-    virtual vector<TraceEditSequence::TSequenceStates> getStateDependencies() const;
+    virtual vector<TSequenceStates> getStateDependencies() const override;
 
-    virtual bool execute( std::string whichTrace );
+    virtual bool execute( std::string whichTrace ) override;
 
   protected:
 

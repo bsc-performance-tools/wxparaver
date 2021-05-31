@@ -36,7 +36,7 @@
 #ifdef _MSC_VER
 #include <hash_set>
 #else
-#include <ext/hash_set>
+#include  <unordered_set>
 #endif
 
 #ifdef _MSC_VER
@@ -138,6 +138,26 @@ class ProgressController;
 #define ID_TIMER_SIZE 40000
 #define ID_TIMER_MOTION 40001
 #define ID_TIMER_WHEEL 40002
+
+
+enum class TWhatWhereLine
+{
+  RAW_LINE = 0,
+  BEGIN_OBJECT_SECTION,
+  END_OBJECT_SECTION,
+  BEGIN_PREVNEXT_SECTION,
+  END_PREVNEXT_SECTION,
+  BEGIN_CURRENT_SECTION,
+  END_CURRENT_SECTION,
+  BEGIN_SEMANTIC_SECTION,
+  SEMANTIC_LINE,
+  END_SEMANTIC_SECTION,
+  BEGIN_RECORDS_SECTION,
+  MARK_LINE,
+  EVENT_LINE,
+  COMMUNICATION_LINE,
+  END_RECORDS_SECTION
+};
 
 
 /*!
@@ -458,8 +478,8 @@ public:
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
                 vector< ValuesType >& valuesToDraw,
-                hash_set< PRV_INT32 >& eventsToDraw,
-                hash_set< commCoord >& commsToDraw,
+                std::unordered_set< PRV_INT32 >& eventsToDraw,
+                std::unordered_set< commCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                 wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
 #else
@@ -467,8 +487,8 @@ public:
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
                 vector< ValuesType >& valuesToDraw,
-                hash_set< PRV_INT32 >& eventsToDraw,
-                hash_set< commCoord, hashCommCoord >& commsToDraw,
+                std::unordered_set< PRV_INT32 >& eventsToDraw,
+                std::unordered_set< commCoord, hashCommCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
                 wxMemoryDC& commdc, wxMemoryDC& commmaskdc );
 #endif
@@ -485,11 +505,11 @@ public:
   template<typename ValuesType>
   void drawRowFusedLines( wxDC& dc, ValuesType valueToDraw, int& lineLastPos, TObjectOrder whichObject, wxCoord timePos, float magnify );
 
-  void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, hash_set< PRV_INT32 >& eventsToDraw );
+  void drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder rowPos, std::unordered_set< PRV_INT32 >& eventsToDraw );
 #ifdef _MSC_VER
-  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord >& commsToDraw );
+  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set< commCoord >& commsToDraw );
 #else
-  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, hash_set< commCoord, hashCommCoord >& commsToDraw );
+  void drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPos, std::unordered_set< commCoord, hashCommCoord >& commsToDraw );
 #endif
   
   void drawCommunicationLines( bool draw );
@@ -565,7 +585,7 @@ public:
 
   void OnPopUpInfoPanel();
   
-  void OnMenuGradientFunction( GradientColor::TGradientFunction function );
+  void OnMenuGradientFunction( TGradientFunction function );
   
   void drawTimeMarks( std::vector< TRecordTime> times,
                       std::vector<TObjectOrder> &selectedObjects,
@@ -594,8 +614,8 @@ public:
   void saveImageLegend( bool showSaveDialog = true  );
   void saveImageDialog( wxString whichFileName );
 #else  
-  void saveImage( bool showSaveDialog, wxString whichFileName, ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
-  void saveImageLegend( bool showSaveDialog = true, wxString whichFileName = _( "" ), ParaverConfig::TImageFormat filterIndex = ParaverConfig::PNG );
+  void saveImage( bool showSaveDialog, wxString whichFileName, TImageFormat filterIndex =  TImageFormat::PNG );
+  void saveImageLegend( bool showSaveDialog = true, wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
   void saveImageDialog( wxString whichFileName );
 #endif
 
@@ -603,22 +623,6 @@ public:
   void saveCFG();
 
   void setEnableDestroyButton( bool value );
-
-  typedef enum {  RAW_LINE = 0,
-                  BEGIN_OBJECT_SECTION,
-                  END_OBJECT_SECTION,
-                  BEGIN_PREVNEXT_SECTION,
-                  END_PREVNEXT_SECTION,
-                  BEGIN_CURRENT_SECTION,
-                  END_CURRENT_SECTION,
-                  BEGIN_SEMANTIC_SECTION,
-                  SEMANTIC_LINE,
-                  END_SEMANTIC_SECTION,
-                  BEGIN_RECORDS_SECTION,
-                  MARK_LINE,
-                  EVENT_LINE,
-                  COMMUNICATION_LINE,
-                  END_RECORDS_SECTION } TWWLine;
 
   static wxProgressDialog *dialogProgress;
   
@@ -730,7 +734,7 @@ private:
   TSemanticValue lastMax;
   size_t lastValuesSize;
   bool codeColorSet;
-  GradientColor::TGradientFunction gradientFunc;
+  TGradientFunction gradientFunc;
   TSemanticValue selectedCustomValue;
   wxPanel *selectedItemColor;
 
@@ -745,7 +749,7 @@ private:
   
   static const wxCoord drawBorder = 5;
 
-  vector< pair< TWWLine, wxString > > whatWhereLines;
+  vector< pair< TWhatWhereLine, wxString > > whatWhereLines;
   int whatWhereSelectedTimeEventLines;
   int whatWhereSelectedTimeCommunicationLines;
   TRecordTime    whatWhereTime;
@@ -855,7 +859,7 @@ private:
 #else
       wxBitmapType& imageType;
 #endif
-      ParaverConfig::TImageFormat filterIndex;
+      TImageFormat filterIndex;
       wxString tmpSuffix;
       TSemanticValue currentMin;
       TSemanticValue currentMax;

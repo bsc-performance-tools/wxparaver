@@ -130,37 +130,35 @@ DerivedTimelineDialog::~DerivedTimelineDialog()
 void DerivedTimelineDialog::Init()
 {
 ////@begin DerivedTimelineDialog member initialisation
-  currentWindow1 = NULL;
-  currentWindow2 = NULL;
+  currentWindow1 = nullptr;
+  currentWindow2 = nullptr;
   factorTimeline1 = 1.0;
   factorTimeline2 = 1.0;
   lastTimeline1 = 0;
   lastTimeline2 = 0;
   shiftTimeline1 = 0;
   shiftTimeline2 = 0;
-  widgetName = NULL;
-  widgetTopCompose1 = NULL;
-  widgetLabelMinCompose1 = NULL;
-  widgetMinCompose1 = NULL;
-  widgetLabelMaxCompose1 = NULL;
-  widgetMaxCompose1 = NULL;
-  widgetTopCompose2 = NULL;
-  widgetLabelMinCompose2 = NULL;
-  widgetMinCompose2 = NULL;
-  widgetLabelMaxCompose2 = NULL;
-  widgetMaxCompose2 = NULL;
-  widgetLabelTimelines1 = NULL;
-  widgetLabelTimelines2 = NULL;
-  widgetFactorTimeline1 = NULL;
-  spinShiftTimeline1 = NULL;
-  txtTimelines1 = NULL;
-  buttonTimelines1 = NULL;
-  widgetOperations = NULL;
-  txtTimelines2 = NULL;
-  buttonTimelines2 = NULL;
-  spinShiftTimeline2 = NULL;
-  widgetFactorTimeline2 = NULL;
-  swapWindowsButton = NULL;
+  widgetName = nullptr;
+  widgetTopCompose1 = nullptr;
+  widgetLabelMinCompose1 = nullptr;
+  widgetMinCompose1 = nullptr;
+  widgetLabelMaxCompose1 = nullptr;
+  widgetMaxCompose1 = nullptr;
+  widgetTopCompose2 = nullptr;
+  widgetLabelMinCompose2 = nullptr;
+  widgetMinCompose2 = nullptr;
+  widgetLabelMaxCompose2 = nullptr;
+  widgetMaxCompose2 = nullptr;
+  widgetLabelTimelines1 = nullptr;
+  widgetLabelTimelines2 = nullptr;
+  widgetFactorTimeline1 = nullptr;
+  txtTimelines1 = nullptr;
+  buttonTimelines1 = nullptr;
+  widgetOperations = nullptr;
+  txtTimelines2 = nullptr;
+  buttonTimelines2 = nullptr;
+  widgetFactorTimeline2 = nullptr;
+  swapWindowsButton = nullptr;
 ////@end DerivedTimelineDialog member initialisation
 }
 
@@ -423,9 +421,9 @@ bool DerivedTimelineDialog::ShowToolTips()
 
 bool DerivedTimelineDialog::TransferDataToWindow()
 {
-  if ( currentWindow1 == NULL )
+  if ( currentWindow1 == nullptr )
     currentWindow1 = LoadedWindows::getInstance()->getWindow( timelines1[ 0 ] );
-  if ( currentWindow2 == NULL )
+  if ( currentWindow2 == nullptr )
   {
     for( vector<TWindowID>::const_iterator it = timelines2.begin(); it != timelines2.end(); ++it )
     {

@@ -107,7 +107,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
 
   int w, h;
   wxFont tmpFont( GetView()->GetLabelFont() );
-  GetView()->GetTextExtent( label, &w, &h, NULL, NULL, &tmpFont );
+  GetView()->GetTextExtent( label, &w, &h, nullptr, nullptr, &tmpFont );
   if( !myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() && !myHisto->GetHistogram()->getOnlyTotals() )
     GetView()->SetRowLabelSize( 0 );
   else if( GetView()->GetRowLabelSize() == 0 || GetView()->GetRowLabelSize() - 5 < w )
@@ -341,20 +341,22 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
   if( ( myHisto->GetHistogram()->getHorizontal() && row < myHisto->GetHistogram()->getNumRows() ) ||
     ( !myHisto->GetHistogram()->getHorizontal() && col < (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) ) )
   {
-    if ( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) &&
-         myHisto->GetHistogram()->getCommCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getCommSelectedPlane() ) &&
-         myHisto->GetHistogram()->getShowColor() )
+    if ( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
     {
-      rgb tmpCol = myHisto->GetHistogram()->calcGradientColor( semValue );
-      tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-      tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+      if( myHisto->GetHistogram()->getCommCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getCommSelectedPlane() ) &&
+          myHisto->GetHistogram()->getShowColor() )
+      {
+        rgb tmpCol = myHisto->GetHistogram()->calcGradientColor( semValue );
+        tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
+        tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+      }
     }
     else if ( row < myHisto->GetHistogram()->getNumRows() && col < myHisto->GetHistogram()->getNumColumns() )
     {
       if( myHisto->GetHistogram()->getCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getSelectedPlane() ) && myHisto->GetHistogram()->getShowColor() )
       {
         rgb tmpCol;
-        if( myHisto->GetHistogram()->getColorMode() == SemanticColor::COLOR )
+        if( myHisto->GetHistogram()->getColorMode() == TColorFunction::COLOR )
         {
           tmpCol = myHisto->GetHistogram()->getDataWindow()->getCodeColor().calcColor( semValue,
                                                                        myHisto->GetHistogram()->getMinGradient(),
@@ -365,8 +367,8 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         }
         else
         {
-          if( myHisto->GetHistogram()->getColorMode() == SemanticColor::GRADIENT || 
-              ( myHisto->GetHistogram()->getColorMode() == SemanticColor::NOT_NULL_GRADIENT && semValue != 0.0 ) )
+          if( myHisto->GetHistogram()->getColorMode() == TColorFunction::GRADIENT || 
+              ( myHisto->GetHistogram()->getColorMode() == TColorFunction::NOT_NULL_GRADIENT && semValue != 0.0 ) )
           {
             tmpCol = myHisto->GetHistogram()->calcGradientColor( semValue );
             tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
