@@ -39,7 +39,11 @@
 #include <ostream>
 #include <string>
 #include <sstream>
+#ifdef __APPLE__
+#include <boost/bind.hpp>
+#else
 #include <boost/bind/bind.hpp>
+#endif
 #include <boost/asio/ssl.hpp>
 
 #include <wx/uri.h>
@@ -54,7 +58,9 @@
 #include "wxparaverapp.h"
 
 using boost::asio::ip::tcp;
+#ifndef __APPLE__
 using namespace boost::placeholders;
+#endif
 using std::stringstream;
 
 std::string TutorialsDownload::tutorialsListFile = "tutorials_list.xml";
