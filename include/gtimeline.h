@@ -41,8 +41,6 @@
 
 #ifdef _MSC_VER
 using namespace stdext;
-#else
-using namespace __gnu_cxx;
 #endif
 
 using boost::posix_time::ptime;
