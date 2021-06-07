@@ -1137,18 +1137,14 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       y = ( (wxCoord) ( inc * ( obj ) ) ) + drawBorder;
       if( ( inc * 0.25 ) >= 1.0 )
       {
-        if( obj > (TObjectOrder)0 )
-          objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 ?
-                         objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 :
-                         objectHeight = objectHeight;
+        if( obj > (TObjectOrder)0 && objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75 )
+          objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) * 0.75;
         y += (wxCoord)( inc * 0.25 );
       }
       else
       {
-        if( obj > (TObjectOrder)0 )
-          objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) ?
-                         objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] ) :
-                         objectHeight = objectHeight;
+        if( obj > (TObjectOrder)0 && objectHeight < ( y - objectPosList[ selected[ obj - 1 ] ] ) )
+          objectHeight = ( y - objectPosList[ selected[ obj - 1 ] ] );
       }
       objectPosList[ selected[ obj ] ] = y;
 
@@ -1916,7 +1912,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
 
     // Update window properties
     if( zoomXY && 
-        ( selected.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() ) 
+        ( selected.size() == 1 && ( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
           || myWindow->isFusedLinesColorSet() )
       )
     {

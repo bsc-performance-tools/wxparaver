@@ -2267,22 +2267,20 @@ void gHistogram::openControlGetParameters( int xBegin, int xEnd, int yBegin, int
   columnBegin = myHistogram->getHorizontal() ? floor( xBegin / zoomCellWidth ) :
                                                floor( yBegin / zoomCellHeight );
   if( columnBegin > 0 ) --columnBegin;
-  else if( columnBegin < 0 ) columnBegin = 0;
+
   columnEnd = myHistogram->getHorizontal() ? floor( xEnd / zoomCellWidth ) :
                                              floor( yEnd / zoomCellHeight );
   if( myHistogram->getControlDelta() == 1.0 && columnEnd > 0 ) --columnEnd;
-  else if( columnEnd < 0 ) columnEnd = 0;
 
   if( zoomxy )
   {
     objectBegin = myHistogram->getHorizontal() ? floor( yBegin / zoomCellHeight ) :
                                                  floor( xBegin / zoomCellWidth );
     if( objectBegin > 0 ) --objectBegin;
-    else if( objectBegin < 0 ) objectBegin = 0;
+
     objectEnd = myHistogram->getHorizontal() ? floor( yEnd / zoomCellHeight ) :
                                                floor( xEnd / zoomCellWidth );
     if( objectEnd > 0 ) --objectEnd;
-    else if( objectEnd < 0 ) objectEnd = 0;
   }
   else
   {
@@ -2441,7 +2439,6 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     else
       onLevel = extraControlCloned->getFirstFreeCompose();
     
-    extraLastPos;
     if( useExtraCompose )
     {
       extraControlCloned->addExtraCompose( TOPCOMPOSE1 );

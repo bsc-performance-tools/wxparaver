@@ -2378,7 +2378,7 @@ void paraverMain::OnPreviousSessionsClick( wxCommandEvent& event )
   wxMenuItemList& menuItems = menu->GetMenuItems();
   wxMenuItemList::iterator menuIt = menuItems.begin(); ++menuIt; ++menuIt; //begin + 2 (load autosave + separator)
 
-  for ( menuIt ; menuIt != menuItems.end(); ++menuIt )
+  for ( ; menuIt != menuItems.end(); ++menuIt )
   {
     wxMenuItem *tmp = *menuIt;
     int currentId = tmp->GetId();

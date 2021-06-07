@@ -137,7 +137,7 @@ wxArrayInt prvEventTypeProperty::GetValueAsIndices() const
     // Translate values to string indices.
     wxArrayInt selections;
 
-    if ( !m_choices.IsOk() || !m_choices.GetCount() || !(&valueArr) )
+    if ( !m_choices.IsOk() || !m_choices.GetCount() )
     {
         for ( i=0; i<valueArr.GetCount(); i++ )
             selections.Add(-1);
@@ -421,7 +421,7 @@ wxArrayInt prvEventInfoProperty::GetValueAsIndices() const
   // Translate values to string indices.
   wxArrayInt selections;
 
-  if ( !m_choices.IsOk() || !m_choices.GetCount() || !( &valueArr ) )
+  if ( !m_choices.IsOk() || !m_choices.GetCount() )
   {
     for ( i = 0; i < valueArr.GetCount(); ++i )
       selections.Add( -1 );
