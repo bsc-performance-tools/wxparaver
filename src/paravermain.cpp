@@ -1887,6 +1887,12 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_SHIFT1, HISTOGRAM_NULL ) )
+  {
+    whichTimeline->setShift( 0, property->GetValue().GetInteger() );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
+  }
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR1, HISTOGRAM_NULL ) )
   {
     whichTimeline->setFactor( 0, property->GetValue().GetDouble() );
@@ -1915,6 +1921,12 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR2, HISTOGRAM_NULL ) )
   {
     whichTimeline->setFactor( 1, property->GetValue().GetDouble() );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
+  }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_SHIFT2, HISTOGRAM_NULL ) )
+  {
+    whichTimeline->setShift( 1, property->GetValue().GetInteger() );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
