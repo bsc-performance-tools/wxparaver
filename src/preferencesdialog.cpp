@@ -2453,7 +2453,7 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
   {
     wxArrayString paths;
     myDialog.GetPaths( paths );
-    for ( int i = 0 ; i < paths.size() ; ++i )
+    for ( size_t i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
     #ifdef WIN32
@@ -2581,7 +2581,7 @@ void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
   {
     wxArrayString paths;
     myDialog.GetPaths( paths );
-    for ( int i = 0 ; i < paths.size() ; ++i )
+    for ( size_t i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
     #ifdef WIN32  
@@ -2693,7 +2693,7 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
   {
     wxArrayString paths;
     myDialog.GetPaths( paths );
-    for ( int i = 0 ; i < paths.size() ; ++i )
+    for ( size_t i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
       Workspace ws;

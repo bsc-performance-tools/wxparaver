@@ -1466,8 +1466,7 @@ void semanticExtraComposeFunctionParameter( wxPropertyGrid* windowProperties,
 
     wxString propLabel = wxString( _("   ") ) +
             wxString::FromUTF8( whichWindow->getExtraFunctionParamName( functionLevel, whichPos - 1, paramIdx ).c_str() );
-    wxPGId semanticFunctionParameterValue = (wxPGId)nullptr;
-    semanticFunctionParameterValue = AppendCFG4DParamPrvNumbersListPropertyWindow(
+    wxPGId semanticFunctionParameterValue = AppendCFG4DParamPrvNumbersListPropertyWindow(
             windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown,
             category,
             functionLevel, paramIdx,
@@ -1498,8 +1497,7 @@ void semanticFunctionParameter( wxPropertyGrid* windowProperties,
 
     wxString propLabel = wxString( _("   ") ) +
             wxString::FromUTF8( whichWindow->getFunctionParamName( functionLevel, paramIdx ).c_str() );
-    wxPGId semanticFunctionParameterValue = (wxPGId)nullptr;
-    semanticFunctionParameterValue = AppendCFG4DParamPrvNumbersListPropertyWindow(
+    wxPGId semanticFunctionParameterValue = AppendCFG4DParamPrvNumbersListPropertyWindow(
             windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, category,
             functionLevel, paramIdx,
             propLabel, (TSingleTimelineProperties) tmpPropertyIndex,

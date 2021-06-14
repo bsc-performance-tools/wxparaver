@@ -361,7 +361,8 @@ TutorialsDownload *TutorialsDownload::getInstance()
 {
   if( instance == nullptr )
     instance = new TutorialsDownload();
-    return instance;
+    
+  return instance;
 }
 
 TutorialsDownload::TutorialsDownload()
