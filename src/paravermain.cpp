@@ -1887,6 +1887,12 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_SHIFT1, HISTOGRAM_NULL ) )
+  {
+    whichTimeline->setShift( 0, property->GetValue().GetInteger() );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
+  }
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR1, HISTOGRAM_NULL ) )
   {
     whichTimeline->setFactor( 0, property->GetValue().GetDouble() );
@@ -1915,6 +1921,12 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_FACTOR2, HISTOGRAM_NULL ) )
   {
     whichTimeline->setFactor( 1, property->GetValue().GetDouble() );
+    spreadSetRedraw( whichTimeline );
+    spreadSetChanged( whichTimeline );
+  }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_SHIFT2, HISTOGRAM_NULL ) )
+  {
+    whichTimeline->setShift( 1, property->GetValue().GetInteger() );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
@@ -3089,6 +3101,9 @@ void paraverMain::ShowDerivedDialog()
 
     newWindow->setFactor( 0, derivedDialog.GetFactorTimeline1() );
     newWindow->setFactor( 1, derivedDialog.GetFactorTimeline2() );
+
+    newWindow->setShift( 0, derivedDialog.GetShiftTimeline1() );
+    newWindow->setShift( 1, derivedDialog.GetShiftTimeline2() );
 
     TParamValue auxParam = derivedDialog.GetMinCompose1();
     if ( auxParam.size() > 0 )

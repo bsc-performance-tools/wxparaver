@@ -811,6 +811,80 @@ wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
 
     retId = windowProperties->Append( auxProperty );
   }
+    
+// NOT WORKING PROPERLY
+/*
+#if wxMAJOR_VERSION>=3
+  windowProperties->SetPropertyEditor( auxProperty, spinButtonsEditor );
+#else
+  windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( SpinButtonsEditor ) );
+#endif
+*/
+
+  fillPropertyClientData( whichWindow, nullptr, auxProperty, widgetName, whichPropertiesClientData );
+
+  return retId;
+}
+
+
+wxPGId AppendCFG4DIntegerPropertyWindow( wxPropertyGrid* windowProperties,
+                                         Window* whichWindow,
+                                         std::vector< PropertyClientData * >& whichPropertiesClientData,
+                                         set< CFGS4DLinkedPropertyShown >& linkedPropertiesShown,
+                                         wxPGId fatherWidget,
+                                         const wxString &widgetLabel,
+                                         TSingleTimelineProperties propertyIndex,
+                                         const long int propertyValue )
+{
+  wxPGId retId = (wxPGId)nullptr;
+  wxIntProperty *auxProperty = nullptr;
+
+  wxString tmpWidgetName;
+  tmpWidgetName << propNameCounter++;
+
+  std::string widgetName;
+  if ( whichWindow->isDerivedWindow() ) 
+    widgetName = DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ];
+  else
+    widgetName = SingleTimelinePropertyLabels[ propertyIndex ];
+
+  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
+  {
+    // NORMAL mode
+    auxProperty = new wxIntProperty( widgetLabel, tmpWidgetName, propertyValue );
+
+    if ( fatherWidget )
+    {
+      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
+    }
+    else
+    {
+      retId = windowProperties->Append( auxProperty );
+    }
+  }
+  else if ( !whichWindow->isDerivedWindow() &&
+            whichWindow->existsCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ) &&
+            insertLinkedPropertyShown( whichWindow, nullptr, propertyIndex, linkedPropertiesShown ) )
+  {
+    // CFG4D mode (single timeline)
+    wxString auxTag = wxString::FromUTF8( 
+            whichWindow->getCFG4DAlias( SingleTimelinePropertyLabels[ propertyIndex ] ).c_str() );
+    auxProperty = new wxIntProperty( auxTag, tmpWidgetName, propertyValue );
+
+    retId = windowProperties->Append( auxProperty );
+  }
+  else if ( whichWindow->isDerivedWindow() &&
+            whichWindow->existsCFG4DAlias( DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ) &&
+            insertLinkedPropertyShown( whichWindow, nullptr, propertyIndex, linkedPropertiesShown ) )
+  {
+    // CFG4D mode (derived timeline)
+    wxString auxTag = wxString::FromUTF8( 
+            whichWindow->getCFG4DAlias( 
+                    DerivedTimelinePropertyLabels[ (TDerivedTimelineProperties)propertyIndex ] ).c_str() );
+    auxProperty = new wxIntProperty( auxTag, tmpWidgetName, propertyValue );
+
+    retId = windowProperties->Append( auxProperty );
+  }
   
   
 // NOT WORKING PROPERLY
@@ -2555,6 +2629,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
   
   if( whichWindow->isDerivedWindow() )
   {
+    AppendCFG4DIntegerPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
+            DerivedTimelinePropertyLabels[ DERIVED_SHIFT1 ], (TSingleTimelineProperties)DERIVED_SHIFT1,
+            whichWindow->getShift( 0 ) );
+
     AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
             wxT("Factor #1"), (TSingleTimelineProperties)DERIVED_FACTOR1,
             whichWindow->getFactor( 0 ) );
@@ -2583,6 +2661,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
             wxT("Factor #2"), (TSingleTimelineProperties)DERIVED_FACTOR2,
             whichWindow->getFactor( 1 ) );
+
+    AppendCFG4DIntegerPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
+            DerivedTimelinePropertyLabels[ DERIVED_SHIFT2 ], (TSingleTimelineProperties)DERIVED_SHIFT2,
+            whichWindow->getShift( 1 ) );
   }
   // END of Semantic related properties
   
