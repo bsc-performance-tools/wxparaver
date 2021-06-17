@@ -36,6 +36,7 @@
 #include "wx/imaglist.h"
 ////@end includes
 
+#include <cmath>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -956,11 +957,7 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
 {
   if( waitingGlobalTiming )
   {
-    Trace *tmpTrace = nullptr;
-    if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
-      tmpTrace = paraverMain::myParaverMain->GetCurrentTimeline()->getTrace();
-    else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
-      tmpTrace = paraverMain::myParaverMain->GetCurrentHisto()->getTrace();
+    Trace *tmpTrace = getTrace();
 
     textCutterBeginCut->SetValue(
             LabelConstructor::timeLabel( wxGetApp().GetGlobalTimingBegin(),
@@ -1293,6 +1290,19 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 }
 
 
+Trace *CutFilterDialog::getTrace()
+{
+  Trace *tmpTrace = nullptr;
+
+  if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
+    tmpTrace = paraverMain::myParaverMain->GetCurrentTimeline()->getTrace();
+  else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
+    tmpTrace = paraverMain::myParaverMain->GetCurrentHisto()->getTrace();
+
+  return tmpTrace;
+}
+
+
 void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
 {
   unsigned long long auxULong;
@@ -1302,14 +1312,31 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_max_trace_size( textCutterMaximumTraceSize->GetValue() );
     traceOptions->set_by_time( radioCutterCutByTime->GetValue() );
 
-    textCutterBeginCut->GetValue().ToULongLong( &auxULong );
-    traceOptions->set_min_cutting_time( (unsigned long long)auxULong );
+    TTimeUnit tmpTimeUnit = getTrace()->getTimeUnit();
+
+    TTime auxBeginTime;
+    bool done = LabelConstructor::getTimeValue( std::string( textCutterBeginCut->GetValue() ),
+                                                tmpTimeUnit,
+                                                ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                auxBeginTime );
+    if( !done )
+      textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
+
+    traceOptions->set_min_cutting_time( (unsigned long long) round( auxBeginTime ) );
     if( radioCutterCutByTime->GetValue() )
       auxULong = 0;
     traceOptions->set_minimum_time_percentage( (unsigned long long)auxULong );
 
-    textCutterEndCut->GetValue().ToULongLong( &auxULong );
-    traceOptions->set_max_cutting_time( (unsigned long long)auxULong );
+
+    TTime auxEndTime;
+    done = LabelConstructor::getTimeValue( std::string( textCutterEndCut->GetValue() ),
+                                           tmpTimeUnit,
+                                           ParaverConfig::getInstance()->getTimelinePrecision(),
+                                           auxEndTime );
+    if( !done )
+      textCutterEndCut->GetValue().ToDouble( &auxEndTime );
+
+    traceOptions->set_max_cutting_time( (unsigned long long) round( auxEndTime ) );
     if( radioCutterCutByTime->GetValue() )
       auxULong = 100;
     traceOptions->set_maximum_time_percentage( (unsigned long long)auxULong );
@@ -2949,12 +2976,7 @@ void CutFilterDialog::OnButtonCutterAllWindowUpdate( wxUpdateUIEvent& event )
 
 void CutFilterDialog::swapTimeAndPercent()
 {
-  Trace *tmpTrace = nullptr;
-
-  if( paraverMain::myParaverMain->GetCurrentTimeline() != nullptr )
-    tmpTrace = paraverMain::myParaverMain->GetCurrentTimeline()->getTrace();
-  else if( paraverMain::myParaverMain->GetCurrentHisto() != nullptr )
-    tmpTrace = paraverMain::myParaverMain->GetCurrentHisto()->getTrace();
+  Trace *tmpTrace = getTrace();
 
   if ( tmpTrace != nullptr &&
        !textCutterBeginCut->GetValue().IsEmpty() &&

@@ -506,6 +506,8 @@ private:
   void UpdateGlobalXMLPath( const wxString& whichPath );
   
   void TransferXMLFileToWindow(  const wxString& whichXMLFile );
+  
+  Trace *getTrace();
 };
 
 #endif
