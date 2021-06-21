@@ -230,8 +230,14 @@ wxString HistoTableBase::GetValue( int row, int col )
   {
     if( myHisto->GetHistogram()->getCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getSelectedPlane() ) )
     {
-      tmpStr = LabelConstructor::histoCellLabel( myHisto->GetHistogram(), semValue, true );
-      label = wxString::FromUTF8( tmpStr.c_str() );
+      if( !myHisto->GetHistogram()->isNotZeroStat( myHisto->GetHistogram()->getCurrentStat() ) ||
+          myHisto->GetHistogram()->getNotZeroValue( row, col, idStat, myHisto->GetHistogram()->getSelectedPlane() ) )
+      {
+        tmpStr = LabelConstructor::histoCellLabel( myHisto->GetHistogram(), semValue, true );
+        label = wxString::FromUTF8( tmpStr.c_str() );
+      }
+      else
+        label = wxString::FromUTF8( "-" );
     }
     else
       label = wxString::FromUTF8( "-" );
@@ -244,7 +250,8 @@ wxString HistoTableBase::GetValue( int row, int col )
         GetView()->SetRowSize( drawRow, 0 );
     }
   }
-  else label = wxString::FromUTF8( "-" );
+  else
+    label = wxString::FromUTF8( "-" );
 
   return label;
 }
