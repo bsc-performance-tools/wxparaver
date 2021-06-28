@@ -48,6 +48,7 @@
 #include <wx/object.h> 
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/editors.h>
+#include <wx/valnum.h>
 #if wxMAJOR_VERSION>=3
 #include <wx/artprov.h>
 #endif
@@ -2629,9 +2630,14 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
   
   if( whichWindow->isDerivedWindow() )
   {
-    AppendCFG4DIntegerPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
-            DerivedTimelinePropertyLabels[ DERIVED_SHIFT1 ], (TSingleTimelineProperties)DERIVED_SHIFT1,
-            whichWindow->getShift( 0 ) );
+    wxPGProperty *tmpShiftProperty = nullptr;
+    wxIntegerValidator<PRV_INT16> shiftValidator;
+    shiftValidator.SetRange( -10, 10 );
+
+    tmpShiftProperty = AppendCFG4DIntegerPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
+                                                         DerivedTimelinePropertyLabels[ DERIVED_SHIFT1 ], (TSingleTimelineProperties)DERIVED_SHIFT1,
+                                                         whichWindow->getShift( 0 ) );
+    tmpShiftProperty->SetValidator( shiftValidator );
 
     AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
             wxT("Factor #1"), (TSingleTimelineProperties)DERIVED_FACTOR1,
@@ -2662,9 +2668,10 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
             wxT("Factor #2"), (TSingleTimelineProperties)DERIVED_FACTOR2,
             whichWindow->getFactor( 1 ) );
 
-    AppendCFG4DIntegerPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
-            DerivedTimelinePropertyLabels[ DERIVED_SHIFT2 ], (TSingleTimelineProperties)DERIVED_SHIFT2,
-            whichWindow->getShift( 1 ) );
+    tmpShiftProperty = AppendCFG4DIntegerPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
+                                                         DerivedTimelinePropertyLabels[ DERIVED_SHIFT2 ], (TSingleTimelineProperties)DERIVED_SHIFT2,
+                                                         whichWindow->getShift( 1 ) );
+    tmpShiftProperty->SetValidator( shiftValidator );
   }
   // END of Semantic related properties
   
