@@ -517,6 +517,8 @@ int getIconNumber( Window *whichWindow )
       iconNumber = 11;
     else if ( derivedFunctionName == "controlled: enumerate" )
       iconNumber = 12;
+    else if ( derivedFunctionName == "controlled: average" )
+      iconNumber = 12; // TODO = 13
   }
   
   return iconNumber;
