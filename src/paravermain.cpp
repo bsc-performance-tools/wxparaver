@@ -117,6 +117,7 @@
 #include "derived_minimum.xpm"
 #include "derived_different.xpm"
 #include "derived_controlled_clear_by.xpm"
+#include "derived_controlled_average.xpm"
 #include "derived_controlled_maximum.xpm"
 #include "derived_controlled_add.xpm"
 #include "derived_controlled_enumerate.xpm"
@@ -257,6 +258,7 @@ wxImageList *paraverMain::getImageList()
   images->Add( wxIcon( derived_controlled_maximum_xpm ) );
   images->Add( wxIcon( derived_controlled_add_xpm ) );
   images->Add( wxIcon( derived_controlled_enumerate_xpm ) );
+  images->Add( wxIcon( derived_controlled_average_xpm ) );
 
   return images;
 }
@@ -427,23 +429,23 @@ void paraverMain::Init()
   raiseCurrentWindow = true;
   runApplication = nullptr;
   sessionTimer = new wxTimer( this, ID_TIMER_MAIN );
+  someWinIsRedraw = false;
   traceLoadedBefore = false;
   tutorialsWindow = nullptr;
   workspacesManager = WorkspaceManager::getInstance();
-  someWinIsRedraw = false;
-  menuFile = nullptr;
-  menuHints = nullptr;
-  menuHelp = nullptr;
-  tbarMain = nullptr;
-  choiceWindowBrowser = nullptr;
-  toolBookFilesProperties = nullptr;
-  dirctrlFiles = nullptr;
-  windowProperties = nullptr;
-  panelAutoRedraw = nullptr;
-  checkAutoRedraw = nullptr;
-  buttonForceRedraw = nullptr;
-  txtActiveWorkspaces = nullptr;
-  btnActiveWorkspaces = nullptr;
+  menuFile = NULL;
+  menuHints = NULL;
+  menuHelp = NULL;
+  tbarMain = NULL;
+  choiceWindowBrowser = NULL;
+  toolBookFilesProperties = NULL;
+  dirctrlFiles = NULL;
+  windowProperties = NULL;
+  panelAutoRedraw = NULL;
+  checkAutoRedraw = NULL;
+  buttonForceRedraw = NULL;
+  txtActiveWorkspaces = NULL;
+  btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
 
   if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 )

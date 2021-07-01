@@ -513,6 +513,9 @@ public:
   std::queue<SignalItem> GetSignalQueue() const { return signalQueue ; }
   void SetSignalQueue(std::queue<SignalItem> value) { signalQueue = value ; }
 
+  bool GetSomeWinIsRedraw() const { return someWinIsRedraw ; }
+  void SetSomeWinIsRedraw(bool value) { someWinIsRedraw = value ; }
+
   bool GetTraceLoadedBefore() const { return traceLoadedBefore ; }
   void SetTraceLoadedBefore(bool value) { traceLoadedBefore = value ; }
 
@@ -527,9 +530,6 @@ public:
 
   WorkspaceManager * GetWorkspacesManager() const { return workspacesManager ; }
   void SetWorkspacesManager(WorkspaceManager * value) { workspacesManager = value ; }
-
-  bool GetSomeWinIsRedraw() const { return someWinIsRedraw ; }
-  void SetSomeWinIsRedraw(bool value) { someWinIsRedraw = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -689,12 +689,12 @@ private:
   RunScript * runApplication;
   wxTimer * sessionTimer;
   std::queue<SignalItem> signalQueue;
+  bool someWinIsRedraw;
   bool traceLoadedBefore;
   wxString tracePath;
   std::map< Trace*, std::vector< std::string > > traceWorkspaces;
   HelpContents * tutorialsWindow;
   WorkspaceManager * workspacesManager;
-  bool someWinIsRedraw;
 ////@end paraverMain member variables
   SessionInfo sessionInfo;
   bool firstSave;

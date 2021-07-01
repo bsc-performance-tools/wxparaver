@@ -497,28 +497,28 @@ int getIconNumber( Window *whichWindow )
     // GUI should'nt know these tags -> add operation to kernel
     if ( derivedFunctionName == "add" )
       iconNumber = 2;
-    else if  ( derivedFunctionName == "product" )
+    else if ( derivedFunctionName == "product" )
       iconNumber = 3;
-    else if  ( derivedFunctionName == "substract" )
+    else if ( derivedFunctionName == "substract" )
       iconNumber = 4;
-    else if  ( derivedFunctionName == "divide" )
+    else if ( derivedFunctionName == "divide" )
       iconNumber = 5;
-    else if  ( derivedFunctionName == "maximum" )
+    else if ( derivedFunctionName == "maximum" )
       iconNumber = 6;
-    else if  ( derivedFunctionName == "minimum" )
+    else if ( derivedFunctionName == "minimum" )
       iconNumber = 7;
-    else if  ( derivedFunctionName == "different" )
+    else if ( derivedFunctionName == "different" )
       iconNumber = 8;
-    else if  ( derivedFunctionName == "controlled: clear by" )
+    else if ( derivedFunctionName == "controlled: clear by" )
       iconNumber = 9;
-    else if  ( derivedFunctionName == "controlled: maximum" )
+    else if ( derivedFunctionName == "controlled: maximum" )
       iconNumber = 10;
     else if ( derivedFunctionName == "controlled: add" )
       iconNumber = 11;
     else if ( derivedFunctionName == "controlled: enumerate" )
       iconNumber = 12;
     else if ( derivedFunctionName == "controlled: average" )
-      iconNumber = 12; // TODO = 13
+      iconNumber = 13;
   }
   
   return iconNumber;

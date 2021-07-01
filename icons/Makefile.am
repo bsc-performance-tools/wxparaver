@@ -12,6 +12,7 @@ noinst_HEADERS = \
               delete.xpm\
               derived_add.xpm\
               derived_controlled_add.xpm\
+              derived_controlled_average.xpm\
               derived_controlled_clear_by.xpm\
               derived_controlled_enumerate.xpm\
               derived_controlled_maximum.xpm\
