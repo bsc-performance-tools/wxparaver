@@ -61,6 +61,7 @@ using namespace std;
 #define STR_SYNC_REMOVE_ALL_GROUPS "Remove all groups"
 #define STR_SYNC_NEW_GROUP         "New group"
 #define STR_SAVE_IMAGE             "Save Image..."
+#define STR_SAVE_IMAGE_LEGEND      "Image Legend..."
 #define STR_UNDO_ZOOM              "Undo Zoom\tCTRL+U"
 #define STR_REDO_ZOOM              "Redo Zoom\tCTRL+R"
 #define STR_AUTOFIT_CONTROL_ZERO   "Auto Fit Control Scale Zeros"
