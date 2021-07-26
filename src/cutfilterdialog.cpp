@@ -957,29 +957,27 @@ void CutFilterDialog::OnIdle( wxIdleEvent& event )
 {
   if( waitingGlobalTiming )
   {
-    Trace *tmpTrace = getTrace();
-
-    textCutterBeginCut->SetValue(
-            LabelConstructor::timeLabel( wxGetApp().GetGlobalTimingBegin(),
-                                         tmpTrace->getTimeUnit(),
-                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
-
-    textCutterEndCut->SetValue(
-            LabelConstructor::timeLabel( wxGetApp().GetGlobalTimingEnd(),
-                                         tmpTrace->getTimeUnit(),
-                                         ParaverConfig::getInstance()->getTimelinePrecision() ) );
+    TTime auxBeginTime = wxGetApp().GetGlobalTimingBegin();
+    TTime auxEndTime = wxGetApp().GetGlobalTimingEnd();
 
     // Avoid [ max, min ] times
-    double auxBeginTime, auxEndTime;
-    textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
-    textCutterEndCut->GetValue().ToDouble( &auxEndTime );
-    
     if ( auxBeginTime > auxEndTime )
     {
       // Swap
-      wxString auxwxStrBegin = textCutterBeginCut->GetValue();
-      textCutterBeginCut->SetValue( textCutterEndCut->GetValue() );
-      textCutterEndCut->SetValue( auxwxStrBegin );
+      TTime tmpTime = auxBeginTime;
+      auxBeginTime = auxEndTime;
+      auxEndTime = tmpTime;
+    }
+
+    if ( radioCutterCutByTime->GetValue() )
+    {
+      textCutterBeginCut->SetValue( formatTime( auxBeginTime ) );
+      textCutterEndCut->SetValue( formatTime( auxEndTime ) );
+    }
+    else
+    {
+      textCutterBeginCut->SetValue( formatPercent( auxBeginTime ) );
+      textCutterEndCut->SetValue( formatPercent( auxEndTime ) );
     }
     
     if( !wxGetApp().GetGlobalTiming() )
@@ -1018,20 +1016,58 @@ void CutFilterDialog::OnInitDialog( wxInitDialogEvent& event )
 // **********************************************************************************
 // **********************************************************************************
 
-// This code is cut/paste from Histogram!!!!
-wxString CutFilterDialog::formatNumber( double value )
+// wxString( "98,76") --> double( 98.76 )
+double CutFilterDialog::formatPercent(const wxString whichPercent )
+{
+  TTime tmpTime;
+
+  bool done = LabelConstructor::getTimeValue( std::string( whichPercent ),
+                                              NS,                 // dummy
+                                              PERCENT_PRECISION,  // dummy
+                                              tmpTime );
+  if( !done )
+    whichPercent.ToDouble( &tmpTime );
+
+  return (double)tmpTime;
+}
+
+// double( 98.7654321 ) --> wxString( "98,76" )
+wxString CutFilterDialog::formatPercent( double value )
 {
   stringstream auxSStr;
   wxString auxNumber;
 
-  locale mylocale( "" );
-  auxSStr.imbue( mylocale );
-  auxSStr.precision( ParaverConfig::getInstance()->getHistogramPrecision() );
-  auxSStr << fixed;
+  LabelConstructor::presetBaseFormat( auxSStr );
+
   auxSStr << value;
   auxNumber << wxString::FromUTF8( auxSStr.str().c_str() );
 
  return auxNumber;
+}
+
+
+// wxString( "100,098.7654321" ) --> TTime( 100098.7654321 ) 
+TTime CutFilterDialog::formatTime( const wxString whichTime )
+{
+  TTime tmpTime;
+
+  bool done = LabelConstructor::getTimeValue( std::string( whichTime ),
+                                              getTrace()->getTimeUnit(),
+                                              ParaverConfig::getInstance()->getTimelinePrecision(),
+                                              tmpTime );
+  if( !done )
+    whichTime.ToDouble( &tmpTime );
+
+  return tmpTime;
+}
+
+
+// TTime( 100098.7654321 ) --> wxString( "100,098.7654" ) (using timeline precision)
+wxString CutFilterDialog::formatTime( TTime whichTime )
+{
+  return LabelConstructor::timeLabel( whichTime,
+                                      getTrace()->getTimeUnit(),
+                                      ParaverConfig::getInstance()->getTimelinePrecision() );
 }
 
 
@@ -1071,8 +1107,8 @@ void CutFilterDialog::OnButtonCutterAllTraceClick( wxCommandEvent& event )
   radioCutterCutByTimePercent->SetValue( true );
   cutterByTimePreviouslyChecked = false;
 
-  textCutterBeginCut->SetValue( formatNumber( 0 ));
-  textCutterEndCut->SetValue( formatNumber( 100 ));
+  textCutterBeginCut->SetValue( formatPercent( 0.0 ));
+  textCutterEndCut->SetValue( formatPercent( 100.0 ));
 }
 
 
@@ -1135,8 +1171,8 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     if ( message.ShowModal() == wxID_YES )
     {
       radioCutterCutByTimePercent->SetValue( true );
-      textCutterBeginCut->SetValue( formatNumber( 0 ));
-      textCutterEndCut->SetValue( formatNumber( 100 ));
+      textCutterBeginCut->SetValue( formatPercent( 0.0 ));
+      textCutterEndCut->SetValue( formatPercent( 100.0 ));
     }
     else
     {
@@ -1172,9 +1208,8 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
   }
 
   // Are times set properly?
-  double cutterBeginTime, cutterEndTime;
-  textCutterBeginCut->GetValue().ToDouble( &cutterBeginTime );
-  textCutterEndCut->GetValue().ToDouble( &cutterEndTime );
+  TTime cutterBeginTime, cutterEndTime;
+  readTimes( radioCutterCutByTime->GetValue(), cutterBeginTime, cutterEndTime );
 
   // negative times?
   if ( !previousWarning && cutterBeginTime < 0.0 )
@@ -1183,7 +1218,8 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     message.ShowModal();
     textCutterBeginCut->SetFocus();
     previousWarning = true;
-    textCutterBeginCut->SetValue( formatNumber( 0 ));
+
+    textCutterBeginCut->SetValue( formatTime( 0.0 ) );
   }
 
   if ( !previousWarning && cutterEndTime < 0.0 )
@@ -1192,7 +1228,8 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     message.ShowModal();
     textCutterEndCut->SetFocus();
     previousWarning = true;
-    textCutterEndCut->SetValue( formatNumber( 0 ));
+
+    textCutterEndCut->SetValue(  formatTime( 0.0 ) );
   }
 
   // percent out of range?
@@ -1202,7 +1239,8 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     message.ShowModal();
     radioCutterCutByTimePercent->SetFocus();
     previousWarning = true;
-    textCutterBeginCut->SetValue( formatNumber( 100 ));
+
+    textCutterBeginCut->SetValue( formatPercent( 100.0 ) );
   }
 
   if ( !previousWarning && radioCutterCutByTimePercent->GetValue() && cutterEndTime > 100.0 )
@@ -1211,7 +1249,8 @@ void CutFilterDialog::CheckCutterOptions( bool &previousWarning )
     message.ShowModal();
     radioCutterCutByTimePercent->SetFocus();
     previousWarning = true;
-    textCutterEndCut->SetValue( formatNumber( 100 ));
+
+    textCutterEndCut->SetValue( formatPercent( 100.0 ) );
   }
 
   // begin == end?
@@ -1249,23 +1288,13 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 
   if ( radioCutterCutByTime->GetValue() )
   {
-    aux.str("");
-    aux << traceOptions->get_min_cutting_time();
-    textCutterBeginCut->SetValue(  wxString::FromUTF8( aux.str().c_str() ) );
-
-    aux.str("");
-    aux << traceOptions->get_max_cutting_time();
-    textCutterEndCut->SetValue(  wxString::FromUTF8( aux.str().c_str() ) );
+    textCutterBeginCut->SetValue( formatTime( (TTime)traceOptions->get_min_cutting_time() ) );
+    textCutterEndCut->SetValue(  formatTime( (TTime)traceOptions->get_max_cutting_time() ) );
   }
   else
   {
-    aux.str("");
-    aux << traceOptions->get_minimum_time_percentage();
-    textCutterBeginCut->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
-
-    aux.str("");
-    aux << traceOptions->get_maximum_time_percentage();
-    textCutterEndCut->SetValue( wxString::FromUTF8( aux.str().c_str() ) );
+    textCutterBeginCut->SetValue( formatPercent( (TTime)traceOptions->get_minimum_time_percentage() ) );
+    textCutterEndCut->SetValue(  formatPercent( (TTime)traceOptions->get_maximum_time_percentage() ) );
   }
 
   checkCutterUseOriginalTime->SetValue( traceOptions->get_original_time() );
@@ -1303,43 +1332,54 @@ Trace *CutFilterDialog::getTrace()
 }
 
 
+void CutFilterDialog::readTimes( bool byTime, TTime &whichBeginTime, TTime &whichEndTime )
+{
+  if( byTime )
+  {
+    whichBeginTime = formatTime( textCutterBeginCut->GetValue() );
+    whichEndTime = formatTime( textCutterEndCut->GetValue() );
+  }
+  else
+  {
+    whichBeginTime = formatPercent( textCutterBeginCut->GetValue() );
+    whichEndTime = formatPercent( textCutterEndCut->GetValue() );
+  }
+}
+
+
 void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
 {
-  unsigned long long auxULong;
-
   if ( !previousWarning )
   {
+    TTime tmpBeginTime, tmpEndTime;
+
+    unsigned long long auxBeginTime, auxEndTime;
+    unsigned long long auxBeginPercent, auxEndPercent;
+
     traceOptions->set_max_trace_size( textCutterMaximumTraceSize->GetValue() );
     traceOptions->set_by_time( radioCutterCutByTime->GetValue() );
 
-    TTimeUnit tmpTimeUnit = getTrace()->getTimeUnit();
-
-    TTime auxBeginTime;
-    bool done = LabelConstructor::getTimeValue( std::string( textCutterBeginCut->GetValue() ),
-                                                tmpTimeUnit,
-                                                ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                auxBeginTime );
-    if( !done )
-      textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
-
-    traceOptions->set_min_cutting_time( (unsigned long long) round( auxBeginTime ) );
-    if( radioCutterCutByTime->GetValue() )
-      auxULong = 0;
-    traceOptions->set_minimum_time_percentage( (unsigned long long)auxULong );
-
-
-    TTime auxEndTime;
-    done = LabelConstructor::getTimeValue( std::string( textCutterEndCut->GetValue() ),
-                                           tmpTimeUnit,
-                                           ParaverConfig::getInstance()->getTimelinePrecision(),
-                                           auxEndTime );
-    if( !done )
-      textCutterEndCut->GetValue().ToDouble( &auxEndTime );
-
-    traceOptions->set_max_cutting_time( (unsigned long long) round( auxEndTime ) );
-    if( radioCutterCutByTime->GetValue() )
-      auxULong = 100;
-    traceOptions->set_maximum_time_percentage( (unsigned long long)auxULong );
+    // TODO: allow times with decimals in traceoptions
+    bool byTime = radioCutterCutByTime->GetValue();
+    readTimes( byTime, tmpBeginTime, tmpEndTime );
+    if( byTime )
+    {
+      auxBeginTime = (unsigned long long) round( tmpBeginTime );
+      auxEndTime = (unsigned long long) round( tmpEndTime );
+      auxBeginPercent = 0;
+      auxEndPercent = 0;
+    }
+    else
+    {
+      auxBeginTime = 0;
+      auxEndTime = 0;
+      auxBeginPercent = (unsigned long long) round( tmpBeginTime );
+      auxEndPercent = (unsigned long long) round( tmpEndTime );
+    }
+    traceOptions->set_min_cutting_time( auxBeginTime );
+    traceOptions->set_max_cutting_time( auxEndTime );
+    traceOptions->set_minimum_time_percentage( auxBeginPercent );
+    traceOptions->set_maximum_time_percentage( auxEndPercent );
 
     traceOptions->set_original_time( checkCutterUseOriginalTime->IsChecked() );
     traceOptions->set_break_states( !checkCutterDontBreakStates->IsChecked() );
@@ -2194,8 +2234,6 @@ void CutFilterDialog::TransferCommonDataToWindow( vector< string > order )
 }
 
 
-
-
 /*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_SAVE_XML
  */
@@ -2982,50 +3020,25 @@ void CutFilterDialog::swapTimeAndPercent()
        !textCutterBeginCut->GetValue().IsEmpty() &&
        !textCutterEndCut->GetValue().IsEmpty() )
   {
-    // Get times
-    TTime maxTraceTime = tmpTrace->getEndTime();
+    bool byTime = radioCutterCutByTime->GetValue();
 
+    // Get times or percents
     TTime auxBeginTime, auxEndTime;
-    if ( radioCutterCutByTime->GetValue() )
-    {
-      // Percent to time: no format expected
-      textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
-      textCutterEndCut->GetValue().ToDouble( &auxEndTime );
-    }
-    else
-    {
-      // Time to percent
-      bool done = LabelConstructor::getTimeValue( std::string( textCutterBeginCut->GetValue() ),
-                                                  tmpTrace->getTimeUnit(),
-                                                  ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                  auxBeginTime );
-      if( !done )
-        textCutterBeginCut->GetValue().ToDouble( &auxBeginTime );
-
-      done = LabelConstructor::getTimeValue( std::string( textCutterEndCut->GetValue() ),
-                                             tmpTrace->getTimeUnit(),
-                                             ParaverConfig::getInstance()->getTimelinePrecision(),
-                                             auxEndTime );
-      if( !done )
-        textCutterEndCut->GetValue().ToDouble( &auxEndTime );
-    }
+    readTimes( byTime, auxBeginTime, auxEndTime );
 
     // Transform
     wxString beginValue;
     wxString endValue;
-    if ( radioCutterCutByTime->GetValue() )
+    TTime maxTraceTime = tmpTrace->getEndTime();
+    if ( byTime )
     {
-      beginValue = LabelConstructor::timeLabel( ( auxBeginTime / 100.0 ) * maxTraceTime,
-                                                tmpTrace->getTimeUnit(),
-                                                ParaverConfig::getInstance()->getTimelinePrecision() );
-      endValue = LabelConstructor::timeLabel( ( auxEndTime / 100.0 ) * maxTraceTime,
-                                              tmpTrace->getTimeUnit(),
-                                              ParaverConfig::getInstance()->getTimelinePrecision() );
+      beginValue = formatTime( ( auxBeginTime / 100.0 ) * maxTraceTime );
+      endValue = formatTime( ( auxEndTime / 100.0 ) * maxTraceTime );
     }
     else
     {
-      beginValue = formatNumber( 100 * ( auxBeginTime / maxTraceTime ) );
-      endValue = formatNumber( 100 * ( auxEndTime / maxTraceTime ) );
+      beginValue = formatPercent( 100.0 * ( auxBeginTime / maxTraceTime ) );
+      endValue = formatPercent( 100.0 * ( auxEndTime / maxTraceTime ) );
     }
 
     // Set

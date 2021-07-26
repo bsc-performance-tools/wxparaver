@@ -321,7 +321,11 @@ public:
   static bool ShowToolTips();
 
   void UpdateExecutionChain();
-  wxString formatNumber( double value );
+
+  TTime formatTime( const wxString whichTime );
+  wxString formatTime( double value );
+  double formatPercent(const wxString whichPercent );
+  wxString formatPercent( double value );
 
   std::string GetTraceFileName();
   std::vector< int > GetToolsOrder();
@@ -353,6 +357,7 @@ public:
   void TransferWindowToSoftwareCountersData( bool previousWarning );
 
   void TransferCommonDataToWindow( std::vector< std::string > order );
+  void readTimes( bool byTime, TTime &whichBeginTime, TTime &whichEndTime );
   void TransferCutterDataToWindow( TraceOptions *traceOptions );
   void TransferFilterDataToWindow( TraceOptions *traceOptions );
   void TransferSoftwareCountersDataToWindow( TraceOptions *traceOptions );
