@@ -34,7 +34,6 @@
 #include <wx/dir.h>
 #include <map>
 ////@begin includes
-#include "wx/dirctrl.h"
 ////@end includes
 
 /*!
@@ -42,7 +41,7 @@
  */
 
 ////@begin forward declarations
-class wxGenericDirCtrl;
+class wxFileCtrl;
 class wxBoxSizer;
 ////@end forward declarations
 
@@ -54,14 +53,11 @@ class wxBoxSizer;
 #define ID_SAVEIMAGEDIALOG 10000
 #define ID_SAVESEARCHTEXTCTRL 10510
 #define ID_FILEPATHSAVEIMGCTRL 10501
-#define ID_SAVEDIRCTRL 10502
-#define ID_SAVELISTBOX 10503
-#define ID_FILETYPECHOICE 10001
+#define ID_FILENAVIGATOR 10002
 #define ID_SAVEIMAGECHECKBOX 10504
 #define ID_SAVEIMAGETEXTCTRL 10505
 #define ID_SAVELEGENDCHECKBOX 10506
 #define ID_SAVELEGENDTEXTCTRL 10507
-#define ID_FOREIGN 10002
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVEIMAGEDIALOG_TITLE _("Save Image Dialog")
 #define SYMBOL_SAVEIMAGEDIALOG_IDNAME ID_SAVEIMAGEDIALOG
@@ -115,18 +111,6 @@ public:
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_FILEPATHSAVEIMGCTRL
   void OnFilepathsaveimgctrlEnter( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_TREE_SEL_CHANGED event handler for ID_SAVEDIRCTRL
-  void OnSavedirctrlSelChanged( wxTreeEvent& event );
-
-  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_SAVELISTBOX
-  void OnSavelistboxSelected( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_SAVELISTBOX
-  void OnSavelistboxDoubleClicked( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_FILETYPECHOICE
-  void OnFiletypechoiceSelected( wxCommandEvent& event );
-
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVEIMAGECHECKBOX
   void OnSaveimagecheckboxClick( wxCommandEvent& event );
 
@@ -160,9 +144,7 @@ public:
 ////@begin SaveImageDialog member variables
   wxTextCtrl* fileNameBar;
   wxTextCtrl* searchBar;
-  wxGenericDirCtrl* treeDirs;
-  wxListBox* listDirs;
-  wxChoice* fileTypeChoice;
+  wxFileCtrl* fileNavigator;
   wxStaticBoxSizer* imageToSaveSizer;
   wxBoxSizer* imageSizer;
   wxCheckBox* imageCheckbox;
@@ -178,7 +160,6 @@ public:
   wxString selectedImageFilePath;
   wxString selectedLegendFilePath;
 
-  std::map< wxString, wxString > linksPerFileName;
   wxString fileTypeText;
   bool isHistogram;
   wxString legendSuffix;
