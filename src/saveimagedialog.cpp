@@ -36,6 +36,7 @@
 ////@end includes
 
 #include "saveimagedialog.h"
+#include <wx/filectrl.h>
 
 ////@begin XPM images
 ////@end XPM images
@@ -133,20 +134,20 @@ SaveImageDialog::~SaveImageDialog()
 void SaveImageDialog::Init()
 {
 ////@begin SaveImageDialog member initialisation
-  fileNameBar = nullptr;
-  searchBar = nullptr;
-  treeDirs = nullptr;
-  listDirs = nullptr;
-  fileTypeChoice = nullptr;
-  imageToSaveSizer = nullptr;
-  imageSizer = nullptr;
-  imageCheckbox = nullptr;
-  imageFileName = nullptr;
-  legendSizer = nullptr;
-  legendCheckbox = nullptr;
-  legendFileName = nullptr;
-  buttonSave = nullptr;
-  buttonCancel = nullptr;
+  fileNameBar = NULL;
+  searchBar = NULL;
+  treeDirs = NULL;
+  listDirs = NULL;
+  fileTypeChoice = NULL;
+  imageToSaveSizer = NULL;
+  imageSizer = NULL;
+  imageCheckbox = NULL;
+  imageFileName = NULL;
+  legendSizer = NULL;
+  legendCheckbox = NULL;
+  legendFileName = NULL;
+  buttonSave = NULL;
+  buttonCancel = NULL;
 ////@end SaveImageDialog member initialisation
 }
 
@@ -247,6 +248,9 @@ void SaveImageDialog::CreateControls()
   itemStdDialogButtonSizer1->AddButton(buttonCancel);
 
   itemStdDialogButtonSizer1->Realize();
+
+  wxFileCtrl* itemWindow1 = new wxFileCtrl( itemDialog1,ID_FOREIGN );
+  itemBoxSizer2->Add(itemWindow1, 0, wxGROW|wxALL, 5);
 
 ////@end SaveImageDialog content construction
   fileTypeText = _( ".png" );

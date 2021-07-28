@@ -4223,7 +4223,7 @@ void paraverMain::OnSignal()
 
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
-        tmpTimeline->saveImage( false, wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
+        tmpTimeline->saveImage( wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
     }
     else // Histogram
     {
@@ -4238,7 +4238,7 @@ void paraverMain::OnSignal()
 
       // Save image if needed
       if( !currentSignal.imageFileName.empty() )
-        tmpHistogram->saveImage( false, wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
+        tmpHistogram->saveImage( wxString::FromUTF8( currentSignal.imageFileName.c_str() ) );
     }
   }
 

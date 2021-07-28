@@ -36,8 +36,6 @@
 
 using namespace std;
 
-#define DEFAULT_IMAGE_DIALOG 1
-
 BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
 #ifdef __WXMAC__
   EVT_MENU( ID_MENU_COPY, gPopUpMenu::OnMenuCopy )
@@ -108,9 +106,6 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_PIXEL_SIZE_x8, gPopUpMenu::OnMenuPixelSize )
   EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
   EVT_MENU( ID_MENU_SAVE_IMAGE, gPopUpMenu::OnMenuSaveImage )
-#ifdef DEFAULT_IMAGE_DIALOG
-  EVT_MENU( ID_MENU_SAVE_IMAGE_LEGEND, gPopUpMenu::OnMenuSaveImageLegend )
-#endif
   EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_TEXT, gPopUpMenu::OnMenuSaveTimelineAsText )
   EVT_MENU( ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT, gPopUpMenu::OnMenuSaveCurrentPlaneAsText )
   EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_CFG, gPopUpMenu::OnMenuSaveTimelineAsCFG )
@@ -229,9 +224,6 @@ void gPopUpMenu::enableMenu( gTimeline *whichTimeline )
   Enable( FindItem( _( STR_FIT_TIME ) ), true );
   Enable( FindItem( _( STR_FIT_SEMANTIC ) ), true );
   Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
-
-  Enable( FindItem( _( STR_SAVE_IMAGE_LEGEND ) ), !whichTimeline->GetMyWindow()->isPunctualColorSet() &&
-                                                  !whichTimeline->GetMyWindow()->isFunctionLineColorSet() );
 }
 
 
@@ -800,9 +792,6 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   buildItem( popUpMenuSave, _( "Configuration..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsCFG, ID_MENU_SAVE_TIMELINE_AS_CFG );
   buildItem( popUpMenuSave, _( "Image..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
-#ifdef DEFAULT_IMAGE_DIALOG
-  buildItem( popUpMenuSave, _( STR_SAVE_IMAGE_LEGEND ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImageLegend, ID_MENU_SAVE_IMAGE_LEGEND );
-#endif
   buildItem( popUpMenuSave, _( "Text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsText, ID_MENU_SAVE_TIMELINE_AS_TEXT );
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
 
@@ -1838,26 +1827,11 @@ void gPopUpMenu::OnMenuSaveHistogramAsCFG( wxCommandEvent& event )
 
 void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 {
-#ifdef DEFAULT_IMAGE_DIALOG
-  if ( timeline != nullptr )
-    timeline->saveImage( true, wxT( "" ) );
-  else if ( histogram != nullptr )
-    histogram->saveImage( true, wxT( "" ) );
-#else 
   if ( timeline != nullptr )
     timeline->saveImageDialog( wxT( "" ) );
   else if ( histogram != nullptr )
     histogram->saveImageDialog( wxT( "" ) );
-    //histogram->saveImage( true, wxT( "" ) );
-#endif
 }
-
-void gPopUpMenu::OnMenuSaveImageLegend( wxCommandEvent& event )
-{
-  if ( timeline != nullptr )
-    timeline->saveImageLegend();
-}
-
 
 
 void gPopUpMenu::OnMenuSaveTimelineAsText( wxCommandEvent& event )

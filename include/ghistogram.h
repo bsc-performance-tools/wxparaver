@@ -93,7 +93,6 @@ class gWindow;
 #define SYMBOL_GHISTOGRAM_SIZE wxSize(400, 300)
 #define SYMBOL_GHISTOGRAM_POSITION wxDefaultPosition
 ////@end control identifiers
-#define DEFAULT_IMAGE_DIALOG 1
 
 /*!
  * gHistogram class declaration
@@ -395,11 +394,8 @@ public:
   void OnMenuGradientFunction( TGradientFunction function );
   
   void saveCFG();
-#ifdef DEFAULT_IMAGE_DIALOG
-  void saveImage( bool showSaveDialog, wxString whichFileName );
-#else
-  void saveImage( bool showSaveDialog, wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
-#endif
+  void saveImageDialog( wxString whichFileName );
+  void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
   void saveText( bool onlySelectedPlane = false );
 
   void rightDownManager();
