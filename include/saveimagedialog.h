@@ -29,10 +29,11 @@
  * Includes
  */
 
+#include <wx/filectrl.h>
 #include <wx/filename.h>
 #include <wx/textfile.h>
 #include <wx/dir.h>
-#include <map>
+
 ////@begin includes
 ////@end includes
 
@@ -61,7 +62,7 @@ class wxBoxSizer;
 #define SYMBOL_SAVEIMAGEDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_SAVEIMAGEDIALOG_TITLE _("Save Image Dialog")
 #define SYMBOL_SAVEIMAGEDIALOG_IDNAME ID_SAVEIMAGEDIALOG
-#define SYMBOL_SAVEIMAGEDIALOG_SIZE wxSize(800, 600)
+#define SYMBOL_SAVEIMAGEDIALOG_SIZE wxDefaultSize
 #define SYMBOL_SAVEIMAGEDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -127,6 +128,10 @@ public:
   void OnCancelClick( wxCommandEvent& event );
 
 ////@end SaveImageDialog event handler declarations
+
+  void OnFileNavigatorSelectionChanged( wxFileCtrlEvent& event );
+  void OnFileNavigatorFolderChanged( wxFileCtrlEvent& event );
+  void OnFileNavigatorFilterChanged( wxFileCtrlEvent& event );
 
   void updateFileNamesAndPaths();
 ////@begin SaveImageDialog member function declarations
