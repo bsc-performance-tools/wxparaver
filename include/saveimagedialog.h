@@ -134,6 +134,8 @@ public:
   void OnFileNavigatorFilterChanged( wxFileCtrlEvent& event );
 
   void updateFileNamesAndPaths();
+  void setImageFileName();
+
 ////@begin SaveImageDialog member function declarations
 
   /// Retrieves bitmap resources
