@@ -129,9 +129,7 @@ public:
 
 ////@end SaveImageDialog event handler declarations
 
-  void OnFileNavigatorSelectionChanged( wxFileCtrlEvent& event );
-  void OnFileNavigatorFolderChanged( wxFileCtrlEvent& event );
-  void OnFileNavigatorFilterChanged( wxFileCtrlEvent& event );
+  void OnFileNavigatorChanged( wxFileCtrlEvent& event );
 
   void updateFileNamesAndPaths();
   void setImageFileName();
