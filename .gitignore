@@ -28,13 +28,14 @@ src/wxparaver.bin
 src/*.o
 stamp-h1
 icons/*.prv.jpg
+wxparaver.bin.exe
 wxparaver.pjd.bak
 wxparaver.pjd.orig
+wxparaver-autosave.pjd
 VCRelease/
 libboost_serialization-vc90-mt-s-1_50.lib
 libboost_serialization-vc90-mt-sgd-1_50.lib
 makefile.vc
 vc90.idb
 vc90.pdb
-wxparaver-autosave.pjd
 .vscode/
