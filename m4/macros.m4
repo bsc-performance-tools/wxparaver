@@ -366,3 +366,21 @@ AC_DEFUN([AX_PROG_ENABLE_MINGW],
 ])
 
 
+# AX_PROG_ENABLE_WINDOWS_DEBUG_CONSOLE
+# ---------------------
+AC_DEFUN([AX_PROG_ENABLE_WINDOWS_DEBUG_CONSOLE],
+[
+   AC_ARG_ENABLE(windows-debug-console,
+      AC_HELP_STRING(
+         [--enable-windows-debug-console],
+         [enable microsoft windows debug console for std output (default: disabled)]
+      ),
+      [enable_windows_debug_console="${enableval}"],
+      [enable_windows_debug_console="no"]
+   )
+
+
+   if test "${enable_windows_debug_console}" = "yes" ; then
+      AC_DEFINE([DEBUG_CONSOLE_ENABLED], 1, [Microsoft windows debug console for std output.])
+   fi
+])
