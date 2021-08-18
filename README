@@ -1,8 +1,8 @@
 Library dependencies:
-	- wxWidgets >= 2.8.0 (www.wxwidgets.org)
-	- wxPropertyGrid >= 1.4.0 (wxpropgrid.sourceforge.net)
+	- wxWidgets >= 3.0.0 (www.wxwidgets.org)
 	- Boost >= 1.36 (www.boost.org)
 	- Boost Serialization (www.boost.org)
+  - OpenSSL (www.openssl.org)
 	- Paraver Kernel Library (www.bsc.es/paraver)
 	- Paraver Kernel API (www.bsc.es/paraver)
 
@@ -11,13 +11,13 @@ If you have installed these packages from a package manager, remember to install
 Read INSTALL file for installation instructions.
 
 LINUX ONLY!!!:
-wxWidgets best with GTK.
+  - wxWidgets best with GTK.
 
 WINDOWS ONLY!!!:
-modify wxGRAPHICS_CONTEXT variable to 1 in file [wxWidgets dir]\include\wx\msw\setup.h
+  - modify wxGRAPHICS_CONTEXT variable to 1 in file [wxWidgets dir]\include\wx\msw\setup.h
 
-MACOSX 10.9!!!:
-define the macro _WCHAR_H_CPLUSPLUS_98_CONFORMANCE_ in order to compile with wxWidgets 3
+MACOSX ONLY!!!:
+  - define the macro _WCHAR_H_CPLUSPLUS_98_CONFORMANCE_ in order to compile with wxWidgets 3
 
 Please send any question or suggestion to tools@bsc.es
 
