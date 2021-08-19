@@ -89,7 +89,7 @@ public:
 
     int FilterEvent(wxEvent& event);
 
-#ifndef WIN32
+#if !defined _MSC_VER && !defined __MINGW32__
     // Signal handling
     static void handler( int signum );
     void presetUserSignals();

@@ -242,7 +242,7 @@ void wxparaverApp::Init()
 paraverMain* wxparaverApp::mainWindow = nullptr;
 
 
-#ifndef WIN32
+#if !defined _MSC_VER && !defined __MINGW32__
 volatile bool sig1 = false;
 volatile bool sig2 = false;
 
@@ -359,6 +359,7 @@ bool wxparaverApp::OnInit()
 #ifdef TRACING_ENABLED
   Extrae_init();
 #endif
+
   wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
   if ( paraverCommandLineParser.Parse( false ) != 0 )
   {
@@ -675,7 +676,7 @@ bool wxparaverApp::OnInit()
   }  
 
 
-#ifndef WIN32
+#if !defined _MSC_VER && !defined __MINGW32__
   presetUserSignals();
 #endif
 

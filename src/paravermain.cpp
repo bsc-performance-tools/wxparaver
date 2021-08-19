@@ -4115,7 +4115,7 @@ void paraverMain::PrepareToExit()
 
 
 
-#ifndef WIN32
+#if !defined _MSC_VER && !defined __MINGW32__
 
 bool paraverMain::matchTraceNames( const string &fileName1,  // path1/name1 or name1
                                    const string &traceName1, // name1

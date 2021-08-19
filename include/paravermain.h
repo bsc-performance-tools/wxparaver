@@ -557,13 +557,13 @@ public:
   
   void enqueueFile( std::string whichFile );
   
-#ifndef WIN32
+#if !defined _MSC_VER && !defined __MINGW32__
   void OnSignal();
   bool matchTraceNames( const std::string &fileName1, 
                         const std::string &traceName1,
                         const std::string &fileName2 );
   void insertSignalItem( bool isSig1 );
-#endif // WIN32
+#endif
 
 #ifdef WIN32
   void OnKeyCopy();
