@@ -93,6 +93,7 @@ inline double rint( double nr )
 }
 #endif
 
+static const PRV_INT16 MAX_PROGRESS_BAR_VALUE = numeric_limits<PRV_INT16>::max();
 
 /*!
  * Control identifiers

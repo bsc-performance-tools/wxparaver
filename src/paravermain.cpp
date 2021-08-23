@@ -827,7 +827,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     if( paraverMain::dialogProgress == nullptr )
       paraverMain::dialogProgress = new wxProgressDialog( wxT("Loading trace..."),
                                                           wxT(""),
-                                                          numeric_limits<int>::max(),
+                                                          numeric_limits<PRV_INT16>::max(),
                                                           this,
                                                           wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                           wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
@@ -2570,9 +2570,9 @@ void progressFunction( ProgressController *progress, void *callerWindow )
 {
   int p;
   if ( progress->getCurrentProgress() > progress->getEndLimit() )
-    p = numeric_limits<int>::max();
+    p = MAX_PROGRESS_BAR_VALUE;
   else
-    p = (int)floor( ( progress->getCurrentProgress() * numeric_limits<int>::max() ) / progress->getEndLimit() );
+    p = (int)floor( ( progress->getCurrentProgress() * MAX_PROGRESS_BAR_VALUE ) / progress->getEndLimit() );
 
   wxString newMessage;
   if( progress->getMessageChanged() )
@@ -4341,7 +4341,7 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   if( paraverMain::dialogProgress == nullptr )
     paraverMain::dialogProgress = new wxProgressDialog( wxT("Processing trace..."),
                                                         wxT(""),
-                                                        numeric_limits<int>::max(),
+                                                        MAX_PROGRESS_BAR_VALUE,
                                                         this,
                                                         wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
