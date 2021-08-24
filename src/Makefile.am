@@ -35,5 +35,5 @@ wxparaver_bin_SOURCES = advancedsaveconfiguration.cpp \
                     wxparaverapp.cpp 
 
 
-wxparaver_bin_LDADD = @LIBS@ -lparaver-kernel -lparaver-api
+wxparaver_bin_LDADD = @LIBS@ -lparaver-api -lparaver-kernel
 
