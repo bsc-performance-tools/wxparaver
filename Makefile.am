@@ -6,21 +6,12 @@ SUBDIRS = \
 
 
 install-data-hook:
-	if test -f $(DESTDIR)$(bindir)/dimemas-wrapper.sh ; then \
-		cp -f $(DESTDIR)$(bindir)/dimemas-wrapper.sh $(DESTDIR)$(bindir)/old.dimemas-wrapper.sh ; \
-	fi
 	cp -f ./docs/dimemas-wrapper.sh $(DESTDIR)$(bindir)
 	chmod a+x $(DESTDIR)$(bindir)/dimemas-wrapper.sh
 
-	if test -f $(DESTDIR)$(bindir)/stats-wrapper.sh ; then \
-		cp -f $(DESTDIR)$(bindir)/stats-wrapper.sh $(DESTDIR)$(bindir)/old.stats-wrapper.sh ; \
-	fi
 	cp -f ./docs/stats-wrapper.sh $(DESTDIR)$(bindir)
 	chmod a+x $(DESTDIR)$(bindir)/stats-wrapper.sh
 
-	if test -f $(DESTDIR)$(bindir)/wxparaver ; then \
-		cp -f $(DESTDIR)$(bindir)/wxparaver $(DESTDIR)$(bindir)/old.wxparaver ; \
-	fi
 	if test "x${MINGW_CPPFLAGS}" != "x" ; then \
 		cp -f ./docs/wxparaver.bat $(DESTDIR)$(prefix) ; \
 	fi
@@ -109,11 +100,8 @@ endif
 
 uninstall-hook:
 	test -f "$(DESTDIR)$(bindir)/dimemas-wrapper.sh"       && rm  -fv $(DESTDIR)$(bindir)/dimemas-wrapper.sh
-	test -f "$(DESTDIR)$(bindir)/old.dimemas-wrapper.sh"   && rm  -fv $(DESTDIR)$(bindir)/old.dimemas-wrapper.sh
 	test -f "$(DESTDIR)$(bindir)/stats-wrapper.sh"         && rm  -fv $(DESTDIR)$(bindir)/stats-wrapper.sh
-	test -f "$(DESTDIR)$(bindir)/old.stats-wrapper.sh"     && rm  -fv $(DESTDIR)$(bindir)/old.stats-wrapper.sh
 	test -f "$(DESTDIR)$(bindir)/wxparaver"                && rm  -fv $(DESTDIR)$(bindir)/wxparaver
-	test -f "$(DESTDIR)$(bindir)/old.wxparaver"            && rm  -fv $(DESTDIR)$(bindir)/old.wxparaver
 
 	test -f "$(DESTDIR)$(prefix)/share/workspaces.xml"     && rm  -fv $(DESTDIR)$(prefix)/share/workspaces.xml
 	test -d "$(DESTDIR)$(prefix)/share/wxparaver-signals"  && rm -rfv $(DESTDIR)$(prefix)/share/wxparaver-signals
