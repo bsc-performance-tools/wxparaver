@@ -761,7 +761,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             histo->setRecalc( false );
             tmpGHisto->execute();
 
-            tmpGHisto->saveImage( false, wxT( "" ) );
+            tmpGHisto->saveImage( wxT( "" ) );
             
             delete tmpGHisto;
             newHistograms.pop_back();
@@ -783,8 +783,8 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
             
             tmpTimeline->redraw();
-            tmpTimeline->saveImage( false, wxT( "" ) );
-            tmpTimeline->saveImageLegend( false );
+            tmpTimeline->saveImage( wxT( "" ) );
+            tmpTimeline->saveImageLegend();
             
             delete tmpTimeline;
             newWindows.pop_back();
