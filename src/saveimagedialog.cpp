@@ -166,49 +166,49 @@ void SaveImageDialog::CreateControls()
   itemBoxSizer2->Add(itemBoxSizer4, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _("Filename:"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer4->Add(itemStaticText5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer4->Add(itemStaticText5, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   fileNameBar = new wxTextCtrl( itemDialog1, ID_SAVESEARCHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
   fileNameBar->SetHelpText(_("Write a filename..."));
   if (SaveImageDialog::ShowToolTips())
     fileNameBar->SetToolTip(_("Write a filename..."));
-  itemBoxSizer4->Add(fileNameBar, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer4->Add(fileNameBar, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP, 5);
 
   wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer1, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  itemBoxSizer2->Add(itemBoxSizer1, 0, wxGROW|wxALL, 5);
 
   wxStaticText* itemStaticText2 = new wxStaticText( itemDialog1, wxID_STATIC, _("Path:"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer1->Add(itemStaticText2, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer1->Add(itemStaticText2, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
 
   searchBar = new wxTextCtrl( itemDialog1, ID_FILEPATHSAVEIMGCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-  itemBoxSizer1->Add(searchBar, 5, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
+  itemBoxSizer1->Add(searchBar, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
-  fileNavigator = new wxFileCtrl( itemDialog1,ID_FILENAVIGATOR,wxEmptyString,wxEmptyString,"BMP (*.bmp)|*.bmp|JPG (*.jpg;*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|XPM (*.xpm)|*.xpm",wxSIMPLE_BORDER,wxDefaultPosition,wxSize(1000, -1) );
-  itemBoxSizer2->Add(fileNavigator, 1, wxGROW|wxALL, 5);
+  fileNavigator = new wxFileCtrl( itemDialog1,ID_FILENAVIGATOR,wxEmptyString,wxEmptyString,"BMP (*.bmp)|*.bmp|JPG (*.jpg;*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|XPM (*.xpm)|*.xpm",wxSIMPLE_BORDER,wxDefaultPosition,wxSize(600, 400) );
+  itemBoxSizer2->Add(fileNavigator, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
-  wxStaticBox* itemStaticBoxSizer4Static = new wxStaticBox(itemDialog1, wxID_ANY, _("Image to save"));
+  wxStaticBox* itemStaticBoxSizer4Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Image to save "));
   imageToSaveSizer = new wxStaticBoxSizer(itemStaticBoxSizer4Static, wxVERTICAL);
   itemBoxSizer2->Add(imageToSaveSizer, 0, wxGROW|wxLEFT|wxRIGHT, 5);
 
   imageSizer = new wxBoxSizer(wxHORIZONTAL);
-  imageToSaveSizer->Add(imageSizer, 0, wxGROW|wxALL, 5);
+  imageToSaveSizer->Add(imageSizer, 0, wxGROW, 5);
 
   imageCheckbox = new wxCheckBox( itemDialog1, ID_SAVEIMAGECHECKBOX, _("Timeline"), wxDefaultPosition, wxDefaultSize, 0 );
   imageCheckbox->SetValue(true);
-  imageSizer->Add(imageCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  imageSizer->Add(imageCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   imageFileName = new wxTextCtrl( itemDialog1, ID_SAVEIMAGETEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  imageSizer->Add(imageFileName, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  imageSizer->Add(imageFileName, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP, 5);
 
   legendSizer = new wxBoxSizer(wxHORIZONTAL);
-  imageToSaveSizer->Add(legendSizer, 0, wxGROW|wxALL, 5);
+  imageToSaveSizer->Add(legendSizer, 0, wxGROW, 5);
 
   legendCheckbox = new wxCheckBox( itemDialog1, ID_SAVELEGENDCHECKBOX, _("Legend"), wxDefaultPosition, wxDefaultSize, 0 );
   legendCheckbox->SetValue(false);
-  legendSizer->Add(legendCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  legendSizer->Add(legendCheckbox, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
 
   legendFileName = new wxTextCtrl( itemDialog1, ID_SAVELEGENDTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  legendSizer->Add(legendFileName, 4, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
+  legendSizer->Add(legendFileName, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
 
