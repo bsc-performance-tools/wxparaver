@@ -35,6 +35,7 @@
 ////@begin includes
 ////@end includes
 
+#include "wxparaverapp.h"
 #include "saveimagedialog.h"
 #include "labelconstructor.h"
 
@@ -389,12 +390,12 @@ wxIcon SaveImageDialog::GetIconResource( const wxString& name )
 
 wxString SaveImageDialog::GetImageFilePath()
 {
-  return directoryStartingPath + wxPATH_SEP + selectedImageFilePath;
+  return directoryStartingPath + PATH_SEP + selectedImageFilePath;
 }
 
 wxString SaveImageDialog::GetLegendFilePath()
 {
-  return directoryStartingPath + wxPATH_SEP + selectedLegendFilePath;
+  return directoryStartingPath + PATH_SEP + selectedLegendFilePath;
 }
 
 
