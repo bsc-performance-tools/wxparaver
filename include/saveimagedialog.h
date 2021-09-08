@@ -52,8 +52,8 @@ class wxFileCtrl;
 
 ////@begin control identifiers
 #define ID_SAVEIMAGEDIALOG 10000
-#define ID_SAVESEARCHTEXTCTRL 10510
-#define ID_FILEPATHSAVEIMGCTRL 10501
+#define ID_TEXTFILENAME 10510
+#define ID_TEXTPATH 10501
 #define ID_FILENAVIGATOR 10002
 #define ID_SAVEIMAGECHECKBOX 10504
 #define ID_SAVEIMAGETEXTCTRL 10505
@@ -103,14 +103,14 @@ public:
 
 ////@begin SaveImageDialog event handler declarations
 
-  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_SAVESEARCHTEXTCTRL
-  void OnSavesearchtextctrlTextUpdated( wxCommandEvent& event );
+  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTFILENAME
+  void OnTextfilenameTextUpdated( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_SAVESEARCHTEXTCTRL
-  void OnSavesearchtextctrlEnter( wxCommandEvent& event );
+  /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTFILENAME
+  void OnTextfilenameEnter( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_FILEPATHSAVEIMGCTRL
-  void OnFilepathsaveimgctrlEnter( wxCommandEvent& event );
+  /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTPATH
+  void OnTextpathEnter( wxCommandEvent& event );
 
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVEIMAGECHECKBOX
   void OnSaveimagecheckboxClick( wxCommandEvent& event );
@@ -148,9 +148,9 @@ public:
 
 ////@begin SaveImageDialog member variables
   wxBoxSizer* sizerMain;
-  wxTextCtrl* fileNameBar;
+  wxTextCtrl* textFilename;
   wxBoxSizer* sizerPath;
-  wxTextCtrl* searchBar;
+  wxTextCtrl* textPath;
   wxFileCtrl* fileNavigator;
   wxStaticBoxSizer* imageToSaveSizer;
   wxBoxSizer* imageSizer;
