@@ -241,6 +241,7 @@ void SaveImageDialog::CreateControls()
   Layout();
 
   textFilename->SetValue( defaultFileName );
+  textPath->ChangeValue( directoryStartingPath );
   fileNavigator->SetDirectory( directoryStartingPath );
   fileNavigator->SetFilterIndex( 2 );
 
@@ -252,8 +253,11 @@ void SaveImageDialog::updateFileNamesAndPaths()
 {
   wxFileName myPath = fileNavigator->GetPath();
 
-  textPath->ChangeValue( fileNavigator->GetDirectory() );
-  directoryStartingPath = fileNavigator->GetDirectory();
+  if( wxDir::Exists( fileNavigator->GetDirectory() ) )
+  {
+    textPath->ChangeValue( fileNavigator->GetDirectory() );
+    directoryStartingPath = fileNavigator->GetDirectory();
+  }
 
   fileTypeText = "." + LabelConstructor::getImageFileSuffix( static_cast< TImageFormat >( fileNavigator->GetFilterIndex() ) );
 
@@ -342,7 +346,7 @@ void SaveImageDialog::OnOkClick( wxCommandEvent& event )
 
   if ( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !textPath->IsEmpty() )
   {
-    directoryStartingPath = fileNavigator->GetDirectory();
+    directoryStartingPath = textPath->GetValue();
     EndModal( wxID_OK );
   }
 }
@@ -453,11 +457,15 @@ int SaveImageDialog::GetFilterIndex()
 
 void SaveImageDialog::OnOkUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && !textPath->IsEmpty() && !textFilename->IsEmpty() );
+  event.Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && wxDir::Exists( textPath->GetValue() ) && !textFilename->IsEmpty() );
 }
 
 
 void SaveImageDialog::OnFileNavigatorChanged( wxFileCtrlEvent& event )
 {
+  // With wxGenericFileCtrl the constructor emits events before the creation is done, so fileNavigator pointer is still NULL
+  if( fileNavigator == nullptr )
+    return;
+
   updateFileNamesAndPaths();
 }
