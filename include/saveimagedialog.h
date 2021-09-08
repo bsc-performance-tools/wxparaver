@@ -42,8 +42,8 @@
  */
 
 ////@begin forward declarations
-class wxFileCtrl;
 class wxBoxSizer;
+class wxFileCtrl;
 ////@end forward declarations
 
 /*!
@@ -147,7 +147,9 @@ public:
   static bool ShowToolTips();
 
 ////@begin SaveImageDialog member variables
+  wxBoxSizer* sizerMain;
   wxTextCtrl* fileNameBar;
+  wxBoxSizer* sizerPath;
   wxTextCtrl* searchBar;
   wxFileCtrl* fileNavigator;
   wxStaticBoxSizer* imageToSaveSizer;
