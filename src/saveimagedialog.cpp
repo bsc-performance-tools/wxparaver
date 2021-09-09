@@ -58,6 +58,7 @@ BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
 
 ////@begin SaveImageDialog event table entries
   EVT_TEXT_ENTER( ID_TEXTPATH, SaveImageDialog::OnTextpathEnter )
+  EVT_UPDATE_UI( ID_FILENAVIGATOR, SaveImageDialog::OnFilenavigatorUpdate )
   EVT_CHECKBOX( ID_SAVEIMAGECHECKBOX, SaveImageDialog::OnSaveimagecheckboxClick )
   EVT_CHECKBOX( ID_SAVELEGENDCHECKBOX, SaveImageDialog::OnSavelegendcheckboxClick )
   EVT_BUTTON( wxID_OK, SaveImageDialog::OnOkClick )
@@ -430,3 +431,14 @@ void SaveImageDialog::OnFileNavigatorChanged( wxFileCtrlEvent& event )
 
   updateFileNamesAndPaths();
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_FILENAVIGATOR
+ */
+
+void SaveImageDialog::OnFilenavigatorUpdate( wxUpdateUIEvent& event )
+{
+  setImageFileName();
+}
+

@@ -105,6 +105,9 @@ public:
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTPATH
   void OnTextpathEnter( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_FILENAVIGATOR
+  void OnFilenavigatorUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_CHECKBOX_CLICKED event handler for ID_SAVEIMAGECHECKBOX
   void OnSaveimagecheckboxClick( wxCommandEvent& event );
 
