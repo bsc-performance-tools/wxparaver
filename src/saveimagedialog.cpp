@@ -57,8 +57,6 @@ IMPLEMENT_DYNAMIC_CLASS( SaveImageDialog, wxDialog )
 BEGIN_EVENT_TABLE( SaveImageDialog, wxDialog )
 
 ////@begin SaveImageDialog event table entries
-  EVT_TEXT( ID_TEXTFILENAME, SaveImageDialog::OnTextfilenameTextUpdated )
-  EVT_TEXT_ENTER( ID_TEXTFILENAME, SaveImageDialog::OnTextfilenameEnter )
   EVT_TEXT_ENTER( ID_TEXTPATH, SaveImageDialog::OnTextpathEnter )
   EVT_CHECKBOX( ID_SAVEIMAGECHECKBOX, SaveImageDialog::OnSaveimagecheckboxClick )
   EVT_CHECKBOX( ID_SAVELEGENDCHECKBOX, SaveImageDialog::OnSavelegendcheckboxClick )
@@ -136,7 +134,6 @@ void SaveImageDialog::Init()
 {
 ////@begin SaveImageDialog member initialisation
   sizerMain = NULL;
-  textFilename = NULL;
   sizerPath = NULL;
   textPath = NULL;
   fileNavigator = NULL;
@@ -165,18 +162,6 @@ void SaveImageDialog::CreateControls()
   sizerMain = new wxBoxSizer(wxVERTICAL);
   itemDialog1->SetSizer(sizerMain);
 
-  wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-  sizerMain->Add(itemBoxSizer4, 0, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
-
-  wxStaticText* itemStaticText5 = new wxStaticText( itemDialog1, wxID_STATIC, _("Filename:"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer4->Add(itemStaticText5, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 5);
-
-  textFilename = new wxTextCtrl( itemDialog1, ID_TEXTFILENAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-  textFilename->SetHelpText(_("Write a filename..."));
-  if (SaveImageDialog::ShowToolTips())
-    textFilename->SetToolTip(_("Write a filename..."));
-  itemBoxSizer4->Add(textFilename, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP, 5);
-
   sizerPath = new wxBoxSizer(wxHORIZONTAL);
   sizerMain->Add(sizerPath, 0, wxGROW|wxALL, 5);
 
@@ -186,7 +171,7 @@ void SaveImageDialog::CreateControls()
   textPath = new wxTextCtrl( itemDialog1, ID_TEXTPATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
   sizerPath->Add(textPath, 5, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
-  fileNavigator = new wxFileCtrl( itemDialog1,ID_FILENAVIGATOR,wxEmptyString,wxEmptyString,"BMP (*.bmp)|*.bmp|JPG (*.jpg;*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|XPM (*.xpm)|*.xpm",wxSIMPLE_BORDER,wxDefaultPosition,wxSize(600, 400) );
+  fileNavigator = new wxFileCtrl( itemDialog1,ID_FILENAVIGATOR,wxEmptyString,wxEmptyString,"BMP (*.bmp)|*.bmp|JPG (*.jpg;*.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png|XPM (*.xpm)|*.xpm",wxSIMPLE_BORDER|wxFC_SAVE,wxDefaultPosition,wxSize(600, 400) );
   sizerMain->Add(fileNavigator, 1, wxGROW|wxLEFT|wxRIGHT|wxTOP, 5);
 
   wxStaticBox* itemStaticBoxSizer4Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Image to save "));
@@ -240,10 +225,10 @@ void SaveImageDialog::CreateControls()
 
   Layout();
 
-  textFilename->SetValue( defaultFileName );
   textPath->ChangeValue( directoryStartingPath );
   fileNavigator->SetDirectory( directoryStartingPath );
   fileNavigator->SetFilterIndex( 2 );
+  fileNavigator->SetFilename( defaultFileName );
 
   updateFileNamesAndPaths();
 }
@@ -260,9 +245,6 @@ void SaveImageDialog::updateFileNamesAndPaths()
   }
 
   fileTypeText = "." + LabelConstructor::getImageFileSuffix( static_cast< TImageFormat >( fileNavigator->GetFilterIndex() ) );
-
-  if( wxFile::Exists( fileNavigator->GetPath() ) )
-    textFilename->SetValue( myPath.GetName() );
 
   setImageFileName();
 }
@@ -286,13 +268,13 @@ void SaveImageDialog::OnTextpathEnter( wxCommandEvent& event )
 void SaveImageDialog::setImageFileName()
 {
   imageFileName->Clear();
-  selectedImageFilePath = textFilename->GetValue() + fileTypeText;
-  if ( imageCheckbox->IsChecked() && !textFilename->IsEmpty() )
+  selectedImageFilePath = fileNavigator->GetFilename() + fileTypeText;
+  if ( imageCheckbox->IsChecked() )
     imageFileName->ChangeValue( selectedImageFilePath );
 
   legendFileName->Clear();
-  selectedLegendFilePath = textFilename->GetValue() + legendSuffix + fileTypeText;
-  if ( legendCheckbox->IsChecked() && !textFilename->IsEmpty() ) 
+  selectedLegendFilePath = fileNavigator->GetFilename() + legendSuffix + fileTypeText;
+  if ( legendCheckbox->IsChecked() ) 
     legendFileName->ChangeValue( selectedLegendFilePath );
 }
 
@@ -411,29 +393,6 @@ wxString SaveImageDialog::GetLegendFilePath()
 }
 
 
-/*!
- * wxEVT_COMMAND_TEXT_ENTER event handler for ID_SAVESEARCHTEXTCTRL
- */
-
-void SaveImageDialog::OnTextfilenameEnter( wxCommandEvent& event )
-{
-////@begin wxEVT_COMMAND_TEXT_ENTER event handler for ID_SAVESEARCHTEXTCTRL in SaveImageDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_TEXT_ENTER event handler for ID_SAVESEARCHTEXTCTRL in SaveImageDialog. 
-}
-
-
-/*!
- * wxEVT_COMMAND_TEXT_UPDATED event handler for ID_SAVESEARCHTEXTCTRL
- */
-
-void SaveImageDialog::OnTextfilenameTextUpdated( wxCommandEvent& event )
-{ 
-  setImageFileName();
-}
-
-
 bool SaveImageDialog::DialogSavesImage()
 {
   return imageCheckbox->IsChecked();
@@ -457,7 +416,9 @@ int SaveImageDialog::GetFilterIndex()
 
 void SaveImageDialog::OnOkUpdate( wxUpdateUIEvent& event )
 {
-  event.Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) && wxDir::Exists( textPath->GetValue() ) && !textFilename->IsEmpty() );
+  event.Enable( ( imageCheckbox->IsChecked() || legendCheckbox->IsChecked() ) &&
+                wxDir::Exists( textPath->GetValue() ) &&
+                !fileNavigator->GetFilename().IsEmpty() );
 }
 
 

@@ -61,6 +61,8 @@
 #include "filedialogext.h"
 #include "progresscontroller.h"
 #include "paravermain.h"
+#include "saveimagedialog.h"
+
 
 #ifdef __WXMAC__
   #include <wx/rawbmp.h>

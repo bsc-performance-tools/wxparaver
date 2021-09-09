@@ -59,8 +59,8 @@
 #include "histotablebase.h"
 #include "filedialogext.h"
 //#include "progresscontroller.h"
+#include "saveimagedialog.h"
 
-#include <algorithm> // TODO: delete me
 
 #define wxTEST_GRAPHICS 1
 

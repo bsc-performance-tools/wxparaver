@@ -67,8 +67,6 @@ using boost::posix_time::ptime;
 #include "copypaste.h"
 #include "windows_tree.h"
 
-#include "saveimagedialog.h"
-
 /*!
  * Forward declarations
  */
