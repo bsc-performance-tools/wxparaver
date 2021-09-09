@@ -52,7 +52,6 @@ class wxFileCtrl;
 
 ////@begin control identifiers
 #define ID_SAVEIMAGEDIALOG 10000
-#define ID_TEXTFILENAME 10510
 #define ID_TEXTPATH 10501
 #define ID_FILENAVIGATOR 10002
 #define ID_SAVEIMAGECHECKBOX 10504
@@ -103,12 +102,6 @@ public:
 
 ////@begin SaveImageDialog event handler declarations
 
-  /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXTFILENAME
-  void OnTextfilenameTextUpdated( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTFILENAME
-  void OnTextfilenameEnter( wxCommandEvent& event );
-
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXTPATH
   void OnTextpathEnter( wxCommandEvent& event );
 
@@ -148,7 +141,6 @@ public:
 
 ////@begin SaveImageDialog member variables
   wxBoxSizer* sizerMain;
-  wxTextCtrl* textFilename;
   wxBoxSizer* sizerPath;
   wxTextCtrl* textPath;
   wxFileCtrl* fileNavigator;
