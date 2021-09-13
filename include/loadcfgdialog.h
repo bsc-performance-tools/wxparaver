@@ -28,7 +28,7 @@
 /*!
  * Includes
  */
-
+#include <wx/filectrl.h>
 #include <wx/filename.h>
 #include <wx/textfile.h>
 #include <wx/dir.h>
@@ -36,7 +36,6 @@
 #include "cfg.h"
 
 ////@begin includes
-#include "wx/dirctrl.h"
 ////@end includes
 
 /*!
@@ -44,7 +43,7 @@
  */
 
 ////@begin forward declarations
-class wxGenericDirCtrl;
+class wxFileCtrl;
 ////@end forward declarations
 
 /*!
@@ -54,11 +53,10 @@ class wxGenericDirCtrl;
 ////@begin control identifiers
 #define ID_LOADCFGDIALOG 10000
 #define ID_SEARCHCTRL 10004
-#define ID_DIRCTRL 10001
-#define ID_LISTBOX 10002
-#define ID_TEXTDESCRCFG 10003
+#define ID_FILE_NAVIGATOR 10001
+#define ID_TEXTDESCRIPTION 10003
 #define SYMBOL_LOADCFGDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
-#define SYMBOL_LOADCFGDIALOG_TITLE _("Load Configuration")
+#define SYMBOL_LOADCFGDIALOG_TITLE _("Load CFG Dialog")
 #define SYMBOL_LOADCFGDIALOG_IDNAME ID_LOADCFGDIALOG
 #define SYMBOL_LOADCFGDIALOG_SIZE wxSize(800, 600)
 #define SYMBOL_LOADCFGDIALOG_POSITION wxDefaultPosition
@@ -97,17 +95,8 @@ public:
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_SEARCHCTRL
   void OnSearchctrlEnter( wxCommandEvent& event );
 
-  /// wxEVT_COMMAND_TREE_SEL_CHANGED event handler for ID_DIRCTRL
-  void OnDirctrlSelChanged( wxTreeEvent& event );
-
-  /// wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL
-  void OnDirctrlItemActivated( wxTreeEvent& event );
-
-  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX
-  void OnListboxSelected( wxCommandEvent& event );
-
-  /// wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_LISTBOX
-  void OnListboxDoubleClicked( wxCommandEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_TEXTDESCRIPTION
+  void OnTextdescriptionUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
   void OnCancelClick( wxCommandEvent& event );
@@ -124,6 +113,7 @@ public:
 
 
 ////@begin LoadCFGDialog member function declarations
+
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
 
@@ -136,8 +126,7 @@ public:
 
 ////@begin LoadCFGDialog member variables
   wxTextCtrl* searchBar;
-  wxGenericDirCtrl* treeDirs;
-  wxListBox* listDirs;
+  wxFileCtrl* fileNavigator;
   wxTextCtrl* textDescription;
   wxButton* buttonCancel;
   wxButton* buttonLoad;

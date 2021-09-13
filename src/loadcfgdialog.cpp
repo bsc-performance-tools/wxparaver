@@ -57,10 +57,7 @@ BEGIN_EVENT_TABLE( LoadCFGDialog, wxDialog )
 
 ////@begin LoadCFGDialog event table entries
   EVT_TEXT_ENTER( ID_SEARCHCTRL, LoadCFGDialog::OnSearchctrlEnter )
-  EVT_TREE_SEL_CHANGED( wxID_TREECTRL, LoadCFGDialog::OnDirctrlSelChanged )
-  EVT_TREE_ITEM_ACTIVATED( wxID_TREECTRL, LoadCFGDialog::OnDirctrlItemActivated )
-  EVT_LISTBOX( ID_LISTBOX, LoadCFGDialog::OnListboxSelected )
-  EVT_LISTBOX_DCLICK( ID_LISTBOX, LoadCFGDialog::OnListboxDoubleClicked )
+  EVT_UPDATE_UI( ID_TEXTDESCRIPTION, LoadCFGDialog::OnTextdescriptionUpdate )
   EVT_BUTTON( wxID_CANCEL, LoadCFGDialog::OnCancelClick )
   EVT_BUTTON( wxID_OK, LoadCFGDialog::OnOkClick )
   EVT_UPDATE_UI( wxID_OK, LoadCFGDialog::OnOkUpdate )
@@ -101,9 +98,9 @@ bool LoadCFGDialog::Create( wxWindow* parent, wxWindowID id, const wxString& cap
   Centre();
 ////@end LoadCFGDialog creation
 
-  treeDirs->SetPath( directoryStartingPath );
-  searchBar->Clear();
-  searchBar->SetValue( directoryStartingPath );
+  searchBar->ChangeValue( directoryStartingPath );
+  fileNavigator->SetDirectory( directoryStartingPath );
+
   return true;
 }
 
@@ -126,12 +123,11 @@ LoadCFGDialog::~LoadCFGDialog()
 void LoadCFGDialog::Init()
 {
 ////@begin LoadCFGDialog member initialisation
-  searchBar = nullptr;
-  treeDirs = nullptr;
-  listDirs = nullptr;
-  textDescription = nullptr;
-  buttonCancel = nullptr;
-  buttonLoad = nullptr;
+  searchBar = NULL;
+  fileNavigator = NULL;
+  textDescription = NULL;
+  buttonCancel = NULL;
+  buttonLoad = NULL;
 ////@end LoadCFGDialog member initialisation
 }
 
@@ -151,21 +147,14 @@ void LoadCFGDialog::CreateControls()
   searchBar = new wxTextCtrl( itemDialog1, ID_SEARCHCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
   itemBoxSizer2->Add(searchBar, 0, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer3, 3, wxGROW|wxALL, 5);
-
-  treeDirs = new wxGenericDirCtrl( itemDialog1, ID_DIRCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_DIR_ONLY|wxDIRCTRL_SELECT_FIRST, wxT("All files (*.*)|*.*"), 0 );
-  itemBoxSizer3->Add(treeDirs, 1, wxGROW|wxALL, 5);
-
-  wxArrayString listDirsStrings;
-  listDirs = new wxListBox( itemDialog1, ID_LISTBOX, wxDefaultPosition, wxDefaultSize, listDirsStrings, wxLB_SINGLE );
-  itemBoxSizer3->Add(listDirs, 1, wxGROW|wxALL, 5);
+  fileNavigator = new wxFileCtrl( itemDialog1,ID_FILE_NAVIGATOR,wxEmptyString,wxEmptyString,"CFG (*.cfg)|*.cfg",wxSIMPLE_BORDER|wxFC_OPEN,wxDefaultPosition,wxDefaultSize );
+  itemBoxSizer2->Add(fileNavigator, 3, wxGROW|wxALL, 5);
 
   wxStaticBox* itemStaticBoxSizer6Static = new wxStaticBox(itemDialog1, wxID_STATIC, _("Description"));
   wxStaticBoxSizer* itemStaticBoxSizer6 = new wxStaticBoxSizer(itemStaticBoxSizer6Static, wxHORIZONTAL);
   itemBoxSizer2->Add(itemStaticBoxSizer6, 1, wxGROW|wxALL, 5);
 
-  textDescription = new wxTextCtrl( itemDialog1, ID_TEXTDESCRCFG, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER );
+  textDescription = new wxTextCtrl( itemDialog1, ID_TEXTDESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER );
   if (LoadCFGDialog::ShowToolTips())
     textDescription->SetToolTip(_("Shows the description of a configuration (.cfg) file."));
   itemStaticBoxSizer6->Add(textDescription, 1, wxGROW|wxALL, 5);
@@ -182,61 +171,10 @@ void LoadCFGDialog::CreateControls()
   itemStdDialogButtonSizer8->Realize();
 
 ////@end LoadCFGDialog content construction
+
+  searchBar->ChangeValue( directoryStartingPath );
+  fileNavigator->SetDirectory( directoryStartingPath );
 }
-
-
-/*!
- * wxEVT_COMMAND_TREE_SEL_CHANGED event handler for ID_DIRCTRL
- */
- 
-void LoadCFGDialog::OnDirctrlSelChanged( wxTreeEvent& event )
-{
-  if ( treeDirs == nullptr ) return; 
-  wxString myPath = treeDirs->GetPath();
-  wxFileName fName;
-  
-  if ( wxDirExists( myPath ) ) 
-  {
-    fName.AssignDir( myPath );
-    wxArrayString filesInDir;
-    wxDir::GetAllFiles( myPath, &filesInDir, wxT( "*.cfg" ), wxDIR_FILES );
-    
-    listDirs->Clear();
-    linksPerFileName.clear();
-    filesInDir.Sort();
-    for ( wxArrayString::iterator fullFilePath = filesInDir.begin(); fullFilePath != filesInDir.end(); ++fullFilePath ) 
-    {
-      wxString fileName = ( *fullFilePath ).AfterLast( '/' );
-      listDirs->Append( fileName );
-      linksPerFileName[ fileName ] = ( *fullFilePath );
-    }
-    wxString cfgDescription = wxT( "" );
-    textDescription->SetValue( cfgDescription );
-  }
-  searchBar->Clear();
-  searchBar->ChangeValue( myPath );
-  event.Skip();
-}
-
-
-/*!
- * wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL
- */
- 
-void LoadCFGDialog::OnDirctrlItemActivated( wxTreeEvent& event )
-{
-////@begin wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL in LoadCFGDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_TREE_ITEM_ACTIVATED event handler for ID_DIRCTRL in LoadCFGDialog. 
-
-}
-
-
-
-/*!
- * Should we show tooltips?
- */
 
 bool LoadCFGDialog::ShowToolTips()
 {
@@ -297,50 +235,13 @@ void LoadCFGDialog::OnOkClick( wxCommandEvent& event )
 
 
 /*!
- * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX
- */
-
-void LoadCFGDialog::OnListboxSelected( wxCommandEvent& event )
-{
-  wxString myPath = linksPerFileName[ listDirs->GetString( listDirs->GetSelection() ) ];
-  selectedCfgFilePath = myPath;
-  
-  // Description
-  std::string descrSTL = "";
-  wxString cfgDescription = wxT( "" );
-  CFGLoader *cfgl;
-  if ( cfgl->loadDescription( std::string( myPath.mb_str() ), descrSTL ) )
-    cfgDescription = wxString( descrSTL.c_str(), wxConvUTF8 );
-  else if ( wxFileExists( myPath ) && !cfgl->isCFGFile( std::string( myPath.mb_str() ) ) )
-    cfgDescription = wxT( "*Not a Paraver CFG file!*" );
-  else
-    cfgDescription = wxT( "*No description available*" );
-    
-    
-  textDescription->SetValue( cfgDescription );
-}
-
-
-/*!
- * wxEVT_COMMAND_LISTBOX_DOUBLECLICKED event handler for ID_LISTBOX
- */
-
-void LoadCFGDialog::OnListboxDoubleClicked( wxCommandEvent& event )
-{
-#if wxMAJOR_VERSION<3
-  MakeModal( false );
-#endif
-  EndModal( wxID_OK );
-}
-
-
-/*!
  * wxEVT_UPDATE_UI event handler for wxID_OK
  */
 
 void LoadCFGDialog::OnOkUpdate( wxUpdateUIEvent& event )
 {
-  buttonLoad->Enable( listDirs->GetSelection() != wxNOT_FOUND );
+  buttonLoad->Enable( !fileNavigator->GetFilename().IsEmpty() &&
+                      CFGLoader::isCFGFile( std::string( fileNavigator->GetPath().mb_str() ) ) );
 }
 
 
@@ -357,34 +258,32 @@ wxString LoadCFGDialog::GetFilePath()
 void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
 {
   wxString myPath = searchBar->GetValue();
-  CFGLoader *cfgl;
   if ( wxDirExists( myPath ) ) 
   {
-    wxFileName fName;
-    fName.AssignDir( myPath );
-    wxArrayString filesInDir;
-    wxDir myDir( myPath );
-
-    myDir.GetAllFiles( myPath, &filesInDir, wxT( "*.cfg" ), wxDIR_FILES );
-    listDirs->Clear();
-    linksPerFileName.clear();
-    filesInDir.Sort();
-    for ( wxArrayString::iterator fullFilePath = filesInDir.begin(); fullFilePath != filesInDir.end(); ++fullFilePath ) 
-    {
-      wxString fileName = ( *fullFilePath ).AfterLast( '/' );
-      listDirs->Append( fileName );
-      linksPerFileName[ fileName ] = ( *fullFilePath );
-    }
-    treeDirs->SetPath( myPath );
-    wxString cfgDescription = wxT( "" );
-    textDescription->SetValue( cfgDescription );
-  }
-  else if ( wxFileExists( myPath ) && cfgl->isCFGFile( std::string( myPath.mb_str() ) ) )
-  {
-    selectedCfgFilePath = myPath;
-    #if wxMAJOR_VERSION<3
-    MakeModal( false );
-    #endif
-    EndModal( wxID_OK );
+    fileNavigator->SetDirectory( myPath );
+    textDescription->Clear();
   }
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TEXTDESCRIPTION
+ */
+
+void LoadCFGDialog::OnTextdescriptionUpdate( wxUpdateUIEvent& event )
+{
+  wxString myPath = fileNavigator->GetPath();
+  selectedCfgFilePath = myPath;
+  
+  std::string description = "";
+  if ( !fileNavigator->GetFilename().IsEmpty() )
+  {
+    if ( !CFGLoader::isCFGFile( std::string( myPath.mb_str() ) ) )
+      description = "*Not a Paraver CFG file!*";
+    else if( !CFGLoader::loadDescription( std::string( myPath.mb_str() ), description ) )
+      description = "*No description available*";
+  }
+
+  textDescription->ChangeValue( description );
+}
+
