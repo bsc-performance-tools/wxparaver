@@ -2637,7 +2637,8 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     tmpShiftProperty = AppendCFG4DIntegerPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
                                                          DerivedTimelinePropertyLabels[ DERIVED_SHIFT1 ], (TSingleTimelineProperties)DERIVED_SHIFT1,
                                                          whichWindow->getShift( 0 ) );
-    tmpShiftProperty->SetValidator( shiftValidator );
+    if( tmpShiftProperty != nullptr )
+      tmpShiftProperty->SetValidator( shiftValidator );
 
     AppendCFG4DFloatPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
             wxT("Factor #1"), (TSingleTimelineProperties)DERIVED_FACTOR1,
@@ -2671,7 +2672,8 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Window
     tmpShiftProperty = AppendCFG4DIntegerPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
                                                          DerivedTimelinePropertyLabels[ DERIVED_SHIFT2 ], (TSingleTimelineProperties)DERIVED_SHIFT2,
                                                          whichWindow->getShift( 1 ) );
-    tmpShiftProperty->SetValidator( shiftValidator );
+    if( tmpShiftProperty != nullptr )
+      tmpShiftProperty->SetValidator( shiftValidator );
   }
   // END of Semantic related properties
   
