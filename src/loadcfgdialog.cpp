@@ -57,11 +57,13 @@ BEGIN_EVENT_TABLE( LoadCFGDialog, wxDialog )
 
 ////@begin LoadCFGDialog event table entries
   EVT_TEXT_ENTER( ID_SEARCHCTRL, LoadCFGDialog::OnSearchctrlEnter )
-  EVT_UPDATE_UI( ID_TEXTDESCRIPTION, LoadCFGDialog::OnTextdescriptionUpdate )
+  EVT_UPDATE_UI( ID_TEXTLOADDESCRIPTION, LoadCFGDialog::OnTextloaddescriptionUpdate )
   EVT_BUTTON( wxID_CANCEL, LoadCFGDialog::OnCancelClick )
   EVT_BUTTON( wxID_OK, LoadCFGDialog::OnOkClick )
   EVT_UPDATE_UI( wxID_OK, LoadCFGDialog::OnOkUpdate )
 ////@end LoadCFGDialog event table entries
+
+  EVT_FILECTRL_FILEACTIVATED( ID_FILE_NAVIGATOR, LoadCFGDialog::OnFileNavigatorDoubleClick )
 
 END_EVENT_TABLE()
 
@@ -154,7 +156,7 @@ void LoadCFGDialog::CreateControls()
   wxStaticBoxSizer* itemStaticBoxSizer6 = new wxStaticBoxSizer(itemStaticBoxSizer6Static, wxHORIZONTAL);
   itemBoxSizer2->Add(itemStaticBoxSizer6, 1, wxGROW|wxALL, 5);
 
-  textDescription = new wxTextCtrl( itemDialog1, ID_TEXTDESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER );
+  textDescription = new wxTextCtrl( itemDialog1, ID_TEXTLOADDESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER );
   if (LoadCFGDialog::ShowToolTips())
     textDescription->SetToolTip(_("Shows the description of a configuration (.cfg) file."));
   itemStaticBoxSizer6->Add(textDescription, 1, wxGROW|wxALL, 5);
@@ -171,6 +173,10 @@ void LoadCFGDialog::CreateControls()
   itemStdDialogButtonSizer8->Realize();
 
 ////@end LoadCFGDialog content construction
+
+#if !defined( __WXGTK3__ ) && !defined( __WXOSX__ ) && !defined( __WXMSW__ )
+  searchBar->Hide();
+#endif
 
   searchBar->ChangeValue( directoryStartingPath );
   fileNavigator->SetDirectory( directoryStartingPath );
@@ -270,7 +276,7 @@ void LoadCFGDialog::OnSearchctrlEnter( wxCommandEvent& event )
  * wxEVT_UPDATE_UI event handler for ID_TEXTDESCRIPTION
  */
 
-void LoadCFGDialog::OnTextdescriptionUpdate( wxUpdateUIEvent& event )
+void LoadCFGDialog::OnTextloaddescriptionUpdate( wxUpdateUIEvent& event )
 {
   wxString myPath = fileNavigator->GetPath();
   selectedCfgFilePath = myPath;
@@ -287,3 +293,14 @@ void LoadCFGDialog::OnTextdescriptionUpdate( wxUpdateUIEvent& event )
   textDescription->ChangeValue( description );
 }
 
+
+void LoadCFGDialog::OnFileNavigatorDoubleClick( wxFileCtrlEvent& event )
+{
+  if( !CFGLoader::isCFGFile( std::string( fileNavigator->GetPath().mb_str() ) ) )
+    return;
+
+#if wxMAJOR_VERSION<3
+  MakeModal( false );
+#endif
+  EndModal( wxID_OK );
+}

@@ -54,7 +54,7 @@ class wxFileCtrl;
 #define ID_LOADCFGDIALOG 10000
 #define ID_SEARCHCTRL 10004
 #define ID_FILE_NAVIGATOR 10001
-#define ID_TEXTDESCRIPTION 10003
+#define ID_TEXTLOADDESCRIPTION 10003
 #define SYMBOL_LOADCFGDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_LOADCFGDIALOG_TITLE _("Load CFG Dialog")
 #define SYMBOL_LOADCFGDIALOG_IDNAME ID_LOADCFGDIALOG
@@ -95,8 +95,8 @@ public:
   /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_SEARCHCTRL
   void OnSearchctrlEnter( wxCommandEvent& event );
 
-  /// wxEVT_UPDATE_UI event handler for ID_TEXTDESCRIPTION
-  void OnTextdescriptionUpdate( wxUpdateUIEvent& event );
+  /// wxEVT_UPDATE_UI event handler for ID_TEXTLOADDESCRIPTION
+  void OnTextloaddescriptionUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
   void OnCancelClick( wxCommandEvent& event );
@@ -108,6 +108,8 @@ public:
   void OnOkUpdate( wxUpdateUIEvent& event );
 
 ////@end LoadCFGDialog event handler declarations
+
+  void OnFileNavigatorDoubleClick( wxFileCtrlEvent& event );
 
   wxString GetFilePath();
 
