@@ -2798,7 +2798,7 @@ wxString gHistogram::buildFormattedFileName( bool onlySelectedPlane ) const
 {
   std::string histoNameNoSpaces = myHistogram->getName();
 
-  if ( onlySelectedPlane )
+  if ( myHistogram->getExtraControlWindow() != nullptr && onlySelectedPlane )
   {
     histoNameNoSpaces += "_";
     bool isCommStatistic = myHistogram->isCommunicationStat( myHistogram->getCurrentStat() );
@@ -2931,7 +2931,7 @@ void gHistogram::saveImageDialog( wxString whichFileName )
   if( !whichFileName.IsEmpty() )
   {
     imagePath = whichFileName;
-    filterIndex =  TImageFormat::PNG;
+    filterIndex = TImageFormat::PNG;
   }
   else
   {
@@ -2941,22 +2941,10 @@ void gHistogram::saveImageDialog( wxString whichFileName )
 
     imageName = buildFormattedFileName();
 
-  #ifdef WIN32
-    defaultDir = _(".\\");
-  #else
-    defaultDir = _("./");
-  #endif
-
-    imageName = buildFormattedFileName();
-
     wxFileName startingDir( wxString::FromUTF8( myHistogram->getTrace()->getFileName().c_str() ) );
     defaultDir = startingDir.GetPath();
 
-    //filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
-
-    tmpSuffix = _(".") +
-            wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-    imagePath = imageName + tmpSuffix;
+    // filterIndex = ParaverConfig::getInstance()->getHistogramSaveImageFormat();
 
     SaveImageDialog saveDialog( this, defaultDir, imageName, true );
  
