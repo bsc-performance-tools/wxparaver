@@ -991,7 +991,6 @@ bool paraverMain::DoLoadCFG( const string &path )
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
 #endif
         tmpHisto->SetHistogram( *it );
-        tmpHisto->updateSortOptions();
 
         appendHistogram2Tree( tmpHisto );
         LoadedWindows::getInstance()->add( (*it) );

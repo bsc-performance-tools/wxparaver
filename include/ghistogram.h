@@ -199,6 +199,9 @@ public:
   /// wxEVT_COMMAND_CHOICE_SELECTED event handler for ID_TOOL_CHOICE_SORTBY
   void OnToolChoiceSortbySelected( wxCommandEvent& event );
 
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_CHOICE_SORTBY
+  void OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event );
+
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_REVERSE
   void OnToolReverseClick( wxCommandEvent& event );
 
@@ -314,8 +317,6 @@ public:
   /// Retrieves icon resources
   wxIcon GetIconResource( const wxString& name );
 ////@end gHistogram member function declarations
-
-  void updateSortOptions();
 
   const SelectionManagement< THistogramColumn, int >& GetColumnSelection() const { return columnSelection; }
   void SetColumnSelection( const SelectionManagement< THistogramColumn, int >& value ) { columnSelection = value; }

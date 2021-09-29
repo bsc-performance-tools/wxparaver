@@ -133,6 +133,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_MENU( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveClick )
   EVT_UPDATE_UI( ID_TOOL_INCLUSIVE, gHistogram::OnToolInclusiveUpdate )
   EVT_CHOICE( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbySelected )
+  EVT_UPDATE_UI( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbyUpdate )
   EVT_MENU( ID_TOOL_REVERSE, gHistogram::OnToolReverseClick )
   EVT_UPDATE_UI( ID_TOOL_REVERSE, gHistogram::OnToolReverseUpdate )
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
@@ -235,17 +236,17 @@ void gHistogram::Init()
   tableBase = nullptr;
   timerZoom = new wxTimer( this );
   zoomDragging = false;
-  panelToolbar = nullptr;
-  tbarHisto = nullptr;
-  choiceSortBy = nullptr;
-  panelData = nullptr;
-  mainSizer = nullptr;
-  zoomHisto = nullptr;
-  gridHisto = nullptr;
-  warningSizer = nullptr;
-  controlWarning = nullptr;
-  xtraWarning = nullptr;
-  histoStatus = nullptr;
+  panelToolbar = NULL;
+  tbarHisto = NULL;
+  choiceSortBy = NULL;
+  panelData = NULL;
+  mainSizer = NULL;
+  zoomHisto = NULL;
+  gridHisto = NULL;
+  warningSizer = NULL;
+  controlWarning = NULL;
+  xtraWarning = NULL;
+  histoStatus = NULL;
 ////@end gHistogram member initialisation
   parent = nullptr;
 
@@ -375,13 +376,13 @@ void gHistogram::CreateControls()
   itemFrame1->SetStatusBar(histoStatus);
 
   // Connect events and objects
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_PAINT, wxPaintEventHandler(gHistogram::OnPaint), nullptr, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), nullptr, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), nullptr, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), nullptr, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), nullptr, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), nullptr, this);
-  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_KEY_DOWN, wxKeyEventHandler(gHistogram::OnZoomHistoKeyDown), nullptr, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_PAINT, wxPaintEventHandler(gHistogram::OnPaint), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gHistogram::OnEraseBackground), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnLeftDown), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_LEFT_UP, wxMouseEventHandler(gHistogram::OnLeftUp), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
+  zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_KEY_DOWN, wxKeyEventHandler(gHistogram::OnZoomHistoKeyDown), NULL, this);
 ////@end gHistogram content construction
 
 #ifdef __WXGTK__
@@ -397,7 +398,6 @@ void gHistogram::CreateControls()
 #else
   gridHisto->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
 #endif
-
 }
 
 
@@ -3409,11 +3409,15 @@ void gHistogram::OnToolReverseUpdate( wxUpdateUIEvent& event )
 }
 
 
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_CHOICE_SORTBY
+ */
 
-void gHistogram::updateSortOptions()
+void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
 {
   if( !myHistogram->getSemanticSortColumns() )
     choiceSortBy->SetSelection( 0 );
   else
     choiceSortBy->SetSelection( (int)myHistogram->getSemanticSortCriteria() + 1 );
 }
+
