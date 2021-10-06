@@ -56,8 +56,7 @@
 // CFG4D
 #include "cfg.h"
 
-using std::set;
-using std::stringstream;
+using namespace std;
 
 #if wxMAJOR_VERSION>=3
 typedef  wxPGProperty* wxPGId;

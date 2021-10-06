@@ -31,7 +31,6 @@
  */
 
 #include <vector>
-using namespace std;
 
 #include "paraverkerneltypes.h"
 #include "gtimeline.h"
@@ -126,10 +125,10 @@ class EventInfoManager
     int firstPosSelectedVisible;
     bool changedSelection;
 
-    vector< wxRegEx * > filterRegEx;
+    std::vector< wxRegEx * > filterRegEx;
 
     virtual void setChangedSelection() = 0;
-    bool matchesAllRegex( string whichName, string whichValue );
+    bool matchesAllRegex( std::string whichName, std::string whichValue );
     //bool matchesAllRegex( string whichName );
 };
 
@@ -174,10 +173,10 @@ class EventTypesInfoManager : public EventInfoManager
     virtual void setChangedSelection();
 
   private:
-    vector< TEventType > fullList; // eventTypes;         // FULL LIST of event types
-    wxArrayString        labels;   // labeledEventTypes;  // Labeled names of eventTypes
-    wxArrayInt           selected; // selectedEventTypes; // INDEX to eventTypes (Selected/checked events)
-    wxArrayInt           visible;  // visibleEventTypes;  // INDEX to all visible event types (matching reg. exps)
+    std::vector< TEventType > fullList; // eventTypes;         // FULL LIST of event types
+    wxArrayString             labels;   // labeledEventTypes;  // Labeled names of eventTypes
+    wxArrayInt                selected; // selectedEventTypes; // INDEX to eventTypes (Selected/checked events)
+    wxArrayInt                visible;  // visibleEventTypes;  // INDEX to all visible event types (matching reg. exps)
     
     TEventType currentType;
     wxArrayInt initialSelected;
@@ -253,8 +252,8 @@ public:
                          long style = SYMBOL_EVENTSSELECTIONDIALOG_STYLE );
 
   EventsSelectionDialog( wxWindow* parent,
-                         vector<TEventType> types,
-                         vector<TEventValue> values,
+                         std::vector<TEventType> types,
+                         std::vector<TEventValue> values,
                          bool hideOperatorsList = false,
                          wxWindowID id = SYMBOL_EVENTSSELECTIONDIALOG_IDNAME,
                          const wxString& caption = SYMBOL_EVENTSSELECTIONDIALOG_TITLE,
@@ -380,10 +379,10 @@ public:
   wxArrayInt GetEventTypesSelection() const;
 
   int GetIndexOperatorTypeValue() const;
-  std::string  GetNameOperatorTypeValue() const;
+  std::string GetNameOperatorTypeValue() const;
 
   int GetIndexEventValuesFunction() const;
-  std::string  GetNameEventValuesFunction() const;
+  std::string GetNameEventValuesFunction() const;
   wxArrayDouble GetEventValues() const;
 
   bool ChangedEventTypesFunction() const;

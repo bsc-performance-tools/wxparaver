@@ -60,6 +60,8 @@
 #include "windows_tree.h"
 #include "gtimeline.h"
 
+using namespace std;
+
 ////@begin XPM images
 #include "../icons/app_edit.xpm"
 ////@end XPM images

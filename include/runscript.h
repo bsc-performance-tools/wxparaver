@@ -469,12 +469,12 @@ private:
   bool readFoldingTag( wxString rawLine );
   wxString rawFormat( wxString rawLine );
   bool timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition );
-  wxString insertTimeMarkLink( wxString rawLine,  std::pair< int, wxString > tagPosition );
+  wxString insertTimeMarkLink( wxString rawLine, std::pair< int, wxString > tagPosition );
   wxString insertLinks( wxString rawLine, wxArrayString extensions );
   wxString insertLog( wxString rawLine, wxArrayString extensions );
 
   // TODO: This method's been copied from HelpContents; consider write new class
-  std::string getHrefFullPath( wxHtmlLinkEvent &event,  wxString whichSuffixToErase = wxT("") );
+  std::string getHrefFullPath( wxHtmlLinkEvent &event, wxString whichSuffixToErase = wxT("") );
   bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
 
   // Execution

@@ -46,6 +46,7 @@
 //#include "windows_tree.h"
 #include "paravermain.h" // for help
 
+using namespace std;
 
 ////@begin XPM images
 ////@end XPM images

@@ -37,6 +37,8 @@
 
 #include "sessionselectiondialog.h"
 
+using namespace std;
+
 ////@begin XPM images
 ////@end XPM images
 

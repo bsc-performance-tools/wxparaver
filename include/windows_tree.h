@@ -37,8 +37,6 @@ class Window;
 class Histogram;
 class Trace;
 
-using namespace std;
-
 // gTimeline and gHistogram ancestor
 // May absorb other methods.
 class gWindow
@@ -67,18 +65,18 @@ wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found );
 gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found );
 gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted );
-void getParentGTimeline( gTimeline *current, vector< gTimeline * > & children );
+void getParentGTimeline( gTimeline *current, std::vector< gTimeline * > & children );
 
 void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
                 Window *window,
-                string nameSuffix = string("") );
+                std::string nameSuffix = std::string("") );
 
 bool updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
-                     vector< Window * > &allWindows,
-                     vector< Histogram * > &allHistograms,
+                     std::vector< Window * > &allWindows,
+                     std::vector< Histogram * > &allHistograms,
                      wxWindow **currentWindow,
                      bool allTracesTree );
 

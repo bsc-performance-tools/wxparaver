@@ -29,21 +29,19 @@
 #include "wx/string.h"
 #include "trace.h"
 
-using namespace std;
-
-#define SESSION_FILE_SUFFIX ".session"
-#define SESSION_DIR_SUFFIX  "_session"
+constexpr char SESSION_FILE_SUFFIX[] = ".session";
+constexpr char SESSION_DIR_SUFFIX[] =  "_session";
 
 class SessionSaver
 {
   public:
-    static void SaveSession( wxString onFile, const vector<Trace *>& traces );
+    static void SaveSession( wxString onFile, const std::vector<Trace *>& traces );
     static void LoadSession( wxString whichFile );
   
   private:
     static std::string v2Label;
 
-    static void SaveSession_v2( wxString onFile, const vector<Trace *>& traces );
-    static void LoadSession_v2( ifstream& whichFile, wxString filename );
+    static void SaveSession_v2( wxString onFile, const std::vector<Trace *>& traces );
+    static void LoadSession_v2( std::ifstream& whichFile, wxString filename );
 
 };

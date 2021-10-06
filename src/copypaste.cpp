@@ -26,9 +26,12 @@
 #include "trace.h"
 #include "filter.h"
 
-//#include <iostream>
-//using namespace std;
-//IDEA undo copy, undo paste
+using namespace std;
+
+constexpr size_t SAME_TRACE = 0;
+constexpr size_t DIFF_TRACE = 1;
+constexpr size_t TIMELINE = 0;
+constexpr size_t HISTOGRAM = 1;
 
 gPasteWindowProperties* gPasteWindowProperties::pasteWindowProperties = nullptr;
 

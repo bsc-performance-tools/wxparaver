@@ -81,6 +81,8 @@
 #define wxUSE_GRAPHICS_CONTEXT 0
 #endif
 
+using namespace std;
+
 ////@begin XPM images
 ////@end XPM images
 
@@ -240,44 +242,44 @@ void gTimeline::Init()
   wheelZoomEndTime = 0;
   wheelZoomFactor = 1;
   zooming = false;
-  splitter = nullptr;
-  drawZone = nullptr;
-  infoZone = nullptr;
-  whatWherePanel = nullptr;
-  checkWWSemantic = nullptr;
-  checkWWEvents = nullptr;
-  checkWWCommunications = nullptr;
-  checkWWPreviousNext = nullptr;
-  checkWWText = nullptr;
-  checkWWShowDate = nullptr;
-  checkWWHex = nullptr;
-  whatWhereText = nullptr;
-  timingZone = nullptr;
-  initialTimeText = nullptr;
-  initialSemanticLabel = nullptr;
-  initialSemanticText = nullptr;
-  finalTimeText = nullptr;
-  finalSemanticLabel = nullptr;
-  finalSemanticText = nullptr;
-  durationText = nullptr;
-  slopeLabel = nullptr;
-  slopeText = nullptr;
-  colorsPanelGlobal = nullptr;
-  checkboxCustomPalette = nullptr;
-  buttonCustomPaletteApply = nullptr;
-  colorsPanel = nullptr;
-  colorsSizer = nullptr;
-  sizerSelectedColor = nullptr;
-  panelSelectedColor = nullptr;
-  labelSelectedColorRed = nullptr;
-  sliderSelectedRed = nullptr;
-  textSelectedRed = nullptr;
-  labelSelectedColorGreen = nullptr;
-  sliderSelectedGreen = nullptr;
-  textSelectedGreen = nullptr;
-  labelSelectedColorBlue = nullptr;
-  sliderSelectedBlue = nullptr;
-  textSelectedBlue = nullptr;
+  splitter = NULL;
+  drawZone = NULL;
+  infoZone = NULL;
+  whatWherePanel = NULL;
+  checkWWSemantic = NULL;
+  checkWWEvents = NULL;
+  checkWWCommunications = NULL;
+  checkWWPreviousNext = NULL;
+  checkWWText = NULL;
+  checkWWShowDate = NULL;
+  checkWWHex = NULL;
+  whatWhereText = NULL;
+  timingZone = NULL;
+  initialTimeText = NULL;
+  initialSemanticLabel = NULL;
+  initialSemanticText = NULL;
+  finalTimeText = NULL;
+  finalSemanticLabel = NULL;
+  finalSemanticText = NULL;
+  durationText = NULL;
+  slopeLabel = NULL;
+  slopeText = NULL;
+  colorsPanelGlobal = NULL;
+  checkboxCustomPalette = NULL;
+  buttonCustomPaletteApply = NULL;
+  colorsPanel = NULL;
+  colorsSizer = NULL;
+  sizerSelectedColor = NULL;
+  panelSelectedColor = NULL;
+  labelSelectedColorRed = NULL;
+  sliderSelectedRed = NULL;
+  textSelectedRed = NULL;
+  labelSelectedColorGreen = NULL;
+  sliderSelectedGreen = NULL;
+  textSelectedGreen = NULL;
+  labelSelectedColorBlue = NULL;
+  sliderSelectedBlue = NULL;
+  textSelectedBlue = NULL;
 ////@end gTimeline member initialisation
 
   zoomXY = false;
@@ -495,17 +497,17 @@ void gTimeline::CreateControls()
   splitter->SplitHorizontally(drawZone, infoZone, wxDLG_UNIT(itemFrame1, wxSize(0, -1)).x);
 
   // Connect events and objects
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), nullptr, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), nullptr, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );

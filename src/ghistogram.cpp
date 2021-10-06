@@ -75,6 +75,8 @@
 #define wxUSE_GRAPHICS_CONTEXT 0
 #endif
 
+using namespace std;
+
 ////@begin XPM images
 #include "../icons/opencontrol.xpm"
 #include "../icons/opendata.xpm"

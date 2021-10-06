@@ -202,6 +202,12 @@ public:
   /// wxEVT_PAINT event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowPaint( wxPaintEvent& event );
 
+  /// wxEVT_MIDDLE_UP event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowMiddleUp( wxMouseEvent& event );
+
+  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
+  void OnScrolledWindowRightDown( wxMouseEvent& event );
+
   /// wxEVT_MOTION event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowMotion( wxMouseEvent& event );
 
@@ -225,12 +231,6 @@ public:
 
   /// wxEVT_LEFT_DCLICK event handler for ID_SCROLLED_DRAW
   void OnScrolledWindowLeftDClick( wxMouseEvent& event );
-
-  /// wxEVT_MIDDLE_UP event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowMiddleUp( wxMouseEvent& event );
-
-  /// wxEVT_RIGHT_DOWN event handler for ID_SCROLLED_DRAW
-  void OnScrolledWindowRightDown( wxMouseEvent& event );
 
   /// wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING event handler for ID_NOTEBOOK_INFO
   void OnNotebookInfoPageChanging( wxNotebookEvent& event );
@@ -368,8 +368,8 @@ public:
   int GetObjectHeight() const { return objectHeight ; }
   void SetObjectHeight(int value) { objectHeight = value ; }
 
-  vector<PRV_INT32> GetObjectPosList() const { return objectPosList ; }
-  void SetObjectPosList(vector<PRV_INT32> value) { objectPosList = value ; }
+  std::vector<PRV_INT32> GetObjectPosList() const { return objectPosList ; }
+  void SetObjectPosList(std::vector<PRV_INT32> value) { objectPosList = value ; }
 
   wxColour GetPhysicalColour() const { return physicalColour ; }
   void SetPhysicalColour(wxColour value) { physicalColour = value ; }
@@ -465,8 +465,8 @@ public:
   void drawStackedImages( wxDC& dc );
 #endif
   void redraw();
-  bool drawAxis( wxDC& dc, vector<TObjectOrder>& selected );
-  void drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected );
+  bool drawAxis( wxDC& dc, std::vector<TObjectOrder>& selected );
+  void drawZeroAxis( wxDC& dc, std::vector<TObjectOrder>& selected );
   
 #ifdef _MSC_VER
   template<typename ValuesType>
@@ -481,7 +481,7 @@ public:
   template<typename ValuesType>
   void drawRow( wxDC& dc,
                 TObjectOrder firstRow,
-                vector< ValuesType >& valuesToDraw,
+                std::vector< ValuesType >& valuesToDraw,
                 std::unordered_set< PRV_INT32 >& eventsToDraw,
                 std::unordered_set< commCoord, hashCommCoord >& commsToDraw,
                 wxMemoryDC& eventdc, wxMemoryDC& eventmaskdc,
@@ -687,7 +687,7 @@ private:
   PRV_INT32 objectAxisPos;
   wxFont objectFont;
   int objectHeight;
-  vector<PRV_INT32> objectPosList;
+  std::vector<PRV_INT32> objectPosList;
   wxPen physicalPen;
   bool redoColors;
   wxStopWatch * redrawStopWatch;
@@ -738,7 +738,7 @@ private:
   
   static const wxCoord drawBorder = 5;
 
-  vector< pair< TWhatWhereLine, wxString > > whatWhereLines;
+  std::vector< std::pair< TWhatWhereLine, wxString > > whatWhereLines;
   int whatWhereSelectedTimeEventLines;
   int whatWhereSelectedTimeCommunicationLines;
   TRecordTime    whatWhereTime;

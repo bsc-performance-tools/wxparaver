@@ -28,6 +28,7 @@
 #include "paravermain.h"
 #include <wx/display.h>
 
+using namespace std;
 
 wxTreeCtrl * createTree( wxImageList *imageList )
 {

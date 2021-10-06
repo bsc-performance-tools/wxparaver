@@ -39,7 +39,7 @@ class RunAppClusteringAction: public TraceToTraceAction
     ~RunAppClusteringAction()
     {}
 
-    virtual vector<TSequenceStates> getStateDependencies() const override;
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
 
     virtual bool execute( std::string whichTrace ) override;
 
@@ -61,7 +61,7 @@ class RunAppCutterAction: public TraceToTraceAction
     ~RunAppCutterAction()
     {}
 
-    virtual vector<TSequenceStates> getStateDependencies() const override;
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
 
     virtual bool execute( std::string whichTrace ) override;
 
@@ -83,7 +83,7 @@ class RunAppDimemasAction: public TraceToTraceAction
     ~RunAppDimemasAction()
     {}
 
-    virtual vector<TSequenceStates> getStateDependencies() const override;
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
 
     virtual bool execute( std::string whichTrace ) override;
 
@@ -105,7 +105,7 @@ class RunAppFoldingAction: public TraceToTraceAction
     ~RunAppFoldingAction()
     {}
 
-    virtual vector<TSequenceStates> getStateDependencies() const override;
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
 
     virtual bool execute( std::string whichTrace ) override;
 
@@ -127,7 +127,7 @@ class RunSpectralAction: public TraceToTraceAction
     ~RunSpectralAction()
     {}
 
-    virtual vector<TSequenceStates> getStateDependencies() const override;
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
 
     virtual bool execute( std::string whichTrace ) override;
 
@@ -149,7 +149,7 @@ class ExternalSortAction: public TraceToTraceAction
     ~ExternalSortAction()
     {}
 
-    virtual vector<TSequenceStates> getStateDependencies() const override;
+    virtual std::vector<TSequenceStates> getStateDependencies() const override;
 
     virtual bool execute( std::string whichTrace ) override;
 

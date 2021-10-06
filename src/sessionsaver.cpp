@@ -42,7 +42,9 @@
 #include "wxparaverapp.h"
 #include "window.h"
 
-std::string SessionSaver::v2Label( "#Paraver session file v2" );
+using namespace std;
+
+string SessionSaver::v2Label( "#Paraver session file v2" );
 
 void SessionSaver::SaveSession( wxString onFile, const vector<Trace *>& traces )
 {

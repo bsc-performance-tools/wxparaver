@@ -26,45 +26,44 @@
 #define _COPYPASTE_H_
 
 #include <map>
-using namespace std;
 
 #include "window.h"
 #include "histogram.h"
 #include "gtimeline.h"
 #include "ghistogram.h"
 
-#define STR_COPY                   "Copy\tCTRL+C"
-#define STR_PASTE                  "Paste"
-#define STR_PASTE_DEFAULT_SPECIAL  "Default\tCTRL+V"
-#define STR_PASTE_SPECIAL          "Paste Special..."
-#define STR_TIME                   "Time"
-#define STR_SIZE                   "Size"
-#define STR_OBJECTS                "Objects"
-#define STR_DURATION               "Duration"
-#define STR_SEMANTIC_SCALE         "Semantic Scale"
-#define STR_FILTER                 "Filter"
-#define STR_FILTER_COMMS           "Communications"
-#define STR_FILTER_COMMS_XT        "Filter:Communications"
-#define STR_FILTER_EVENTS          "Events"
-#define STR_FILTER_EVENTS_XT       "Filter:Events"
-#define STR_FILTER_ALL             "All"
-#define STR_CLONE                  "Clone"
-#define STR_RENAME                 "Rename\tF2"
-#define STR_FIT_TIME               "Fit Time Scale"
-#define STR_FIT_SEMANTIC           "Fit Semantic Scale"
-#define STR_FIT_OBJECTS            "Fit Objects"
-#define STR_CONTROL_SCALE          "Control Scale"
-#define STR_CONTROL_DIMENSIONS     "Control Dimensions"
-#define STR_3D_SCALE               "3D scale"
-#define STR_SYNCHRONIZE            "Synchronize"
-#define STR_SYNC_REMOVE_GROUP      "Remove group"
-#define STR_SYNC_REMOVE_ALL_GROUPS "Remove all groups"
-#define STR_SYNC_NEW_GROUP         "New group"
-#define STR_SAVE_IMAGE             "Save Image..."
-#define STR_SAVE_IMAGE_LEGEND      "Image Legend..."
-#define STR_UNDO_ZOOM              "Undo Zoom\tCTRL+U"
-#define STR_REDO_ZOOM              "Redo Zoom\tCTRL+R"
-#define STR_AUTOFIT_CONTROL_ZERO   "Auto Fit Control Scale Zeros"
+constexpr char STR_COPY[] =                   "Copy\tCTRL+C";
+constexpr char STR_PASTE[] =                  "Paste";
+constexpr char STR_PASTE_DEFAULT_SPECIAL[] =  "Default\tCTRL+V";
+constexpr char STR_PASTE_SPECIAL[] =          "Paste Special...";
+constexpr char STR_TIME[] =                   "Time";
+constexpr char STR_SIZE[] =                   "Size";
+constexpr char STR_OBJECTS[] =                "Objects";
+constexpr char STR_DURATION[] =               "Duration";
+constexpr char STR_SEMANTIC_SCALE[] =         "Semantic Scale";
+constexpr char STR_FILTER[] =                 "Filter";
+constexpr char STR_FILTER_COMMS[] =           "Communications";
+constexpr char STR_FILTER_COMMS_XT[] =        "Filter:Communications";
+constexpr char STR_FILTER_EVENTS[] =          "Events";
+constexpr char STR_FILTER_EVENTS_XT[] =       "Filter:Events";
+constexpr char STR_FILTER_ALL[] =             "All";
+constexpr char STR_CLONE[] =                  "Clone";
+constexpr char STR_RENAME[] =                 "Rename\tF2";
+constexpr char STR_FIT_TIME[] =               "Fit Time Scale";
+constexpr char STR_FIT_SEMANTIC[] =           "Fit Semantic Scale";
+constexpr char STR_FIT_OBJECTS[] =            "Fit Objects";
+constexpr char STR_CONTROL_SCALE[] =          "Control Scale";
+constexpr char STR_CONTROL_DIMENSIONS[] =     "Control Dimensions";
+constexpr char STR_3D_SCALE[] =               "3D scale";
+constexpr char STR_SYNCHRONIZE[] =            "Synchronize";
+constexpr char STR_SYNC_REMOVE_GROUP[] =      "Remove group";
+constexpr char STR_SYNC_REMOVE_ALL_GROUPS[] = "Remove all groups";
+constexpr char STR_SYNC_NEW_GROUP[] =         "New group";
+constexpr char STR_SAVE_IMAGE[] =             "Save Image...";
+constexpr char STR_SAVE_IMAGE_LEGEND[] =      "Image Legend...";
+constexpr char STR_UNDO_ZOOM[] =              "Undo Zoom\tCTRL+U";
+constexpr char STR_REDO_ZOOM[] =              "Redo Zoom\tCTRL+R";
+constexpr char STR_AUTOFIT_CONTROL_ZERO[] =   "Auto Fit Control Scale Zeros";
 
 class gTimeline;
 class gHistogram;
@@ -81,11 +80,11 @@ class gPasteWindowProperties
     void copy( gTimeline *whichTimeline );
     void copy( gHistogram* whichHistogram );
 
-    void paste( gTimeline* destinyTimeline, const string property );
-    void paste( gHistogram* destinyHistogram, const string property );
+    void paste( gTimeline* destinyTimeline, const std::string property );
+    void paste( gHistogram* destinyHistogram, const std::string property );
 
-    bool isAllowed( gTimeline* destinyTimeline, const string tag );
-    bool isAllowed( gHistogram* destinyHistogram, const string tag );
+    bool isAllowed( gTimeline* destinyTimeline, const std::string tag );
+    bool isAllowed( gHistogram* destinyHistogram, const std::string tag );
 
     TRecordTime getBeginTime();
     TRecordTime getEndTime();
@@ -94,22 +93,17 @@ class gPasteWindowProperties
     void verifyRemove( gHistogram *destinyHistogram );
     
   private:
-    #define SAME_TRACE 0
-    #define DIFF_TRACE 1
-    #define TIMELINE 0
-    #define HISTOGRAM 1
-
     gTimeline  *sourceTimeline;
     gHistogram *sourceHistogram;
-    map < const string, vector< vector < vector< bool > > > > allowed;
+    std::map < const std::string, std::vector< std::vector < std::vector< bool > > > > allowed;
 
     gPasteWindowProperties();
 
     void commonMenuSettings( );
     void commonTimeSettings( TRecordTime destinyTraceEndTime );
     void commonFilterSettings( gTimeline *destinyTimeline );
-    bool seekAllowed( const string property, int destiny, gTimeline* destinyTimeline );
-    bool seekAllowed( const string property, int destiny, gHistogram* destinyHistogram );
+    bool seekAllowed( const std::string property, int destiny, gTimeline* destinyTimeline );
+    bool seekAllowed( const std::string property, int destiny, gHistogram* destinyHistogram );
 };
 
 #endif // _COPYPASTE_H_

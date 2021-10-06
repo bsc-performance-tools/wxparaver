@@ -93,7 +93,7 @@ inline double rint( double nr )
 }
 #endif
 
-static const PRV_INT16 MAX_PROGRESS_BAR_VALUE = numeric_limits<PRV_INT16>::max();
+constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits<PRV_INT16>::max();
 
 /*!
  * Control identifiers
@@ -579,9 +579,9 @@ public:
   
   void SaveConfigurationFile( wxWindow *parent,
                               SaveOptions options,
-                              vector< Window * > timelines,
-                              vector< Histogram * > histograms,
-                              const vector< CFGS4DLinkedPropertiesManager >& linkedProperties );
+                              std::vector< Window * > timelines,
+                              std::vector< Histogram * > histograms,
+                              const std::vector< CFGS4DLinkedPropertiesManager >& linkedProperties );
                                
 
   void ShowPreferences( wxWindowID whichPanelID = ID_PREFERENCES_GLOBAL );
@@ -749,11 +749,11 @@ private:
   bool linkedSetPropertyValue( T *whichWindow,
                                wxPropertyGridEvent& event,
                                wxPGProperty *property,
-                               const string& propName,
+                               const std::string& propName,
                                PropertyClientData *whichClientData );
   void SetPropertyValue( wxPropertyGridEvent& event,
                          wxPGProperty *property,
-                         const string& propName,
+                         const std::string& propName,
                          PropertyClientData *tmpClientData,
                          Window *whichTimeline,
                          Histogram *whichHistogram );

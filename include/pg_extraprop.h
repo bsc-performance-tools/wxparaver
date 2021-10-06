@@ -34,8 +34,6 @@
 #endif
 #include "loadedwindows.h"
 
-using namespace std;
-
 class Window;
 
 /**********************************************************
@@ -177,8 +175,8 @@ class SemanticMenu: public wxMenu
   public:
     SemanticMenu()
     {}
-    SemanticMenu( const vector<string>& levels,
-                  const vector<vector<string> >& functions,
+    SemanticMenu( const std::vector<std::string>& levels,
+                  const std::vector<std::vector<std::string> >& functions,
                   const wxString& value,
                   prvSemanticThreadProperty *prop );
     virtual ~SemanticMenu();
@@ -188,7 +186,7 @@ class SemanticMenu: public wxMenu
     
   private:
     prvSemanticThreadProperty *myProperty;
-    vector<wxMenu *> subMenus;
+    std::vector<wxMenu *> subMenus;
     int currentItemID;
 };
 
@@ -201,8 +199,8 @@ class prvSemanticThreadProperty: public wxPGProperty
     
     prvSemanticThreadProperty( const wxString& label,
                                const wxString& name,
-                               const vector<string>& levels,
-                               const vector<vector<string> >& choices,
+                               const std::vector<std::string>& levels,
+                               const std::vector<std::vector<std::string> >& choices,
                                const wxString& value );
     virtual ~prvSemanticThreadProperty();
 
@@ -236,7 +234,7 @@ class prvRowsSelectionProperty: public wxPGProperty
     prvRowsSelectionProperty( wxPropertyGrid *propgrid,
                               Window *whichWindow,
                               const wxString &windowName,
-                              vector<TObjectOrder> &whichSelection,
+                              std::vector<TObjectOrder> &whichSelection,
                               const wxString &label,
                               const wxString &name,
                               const wxString &value = wxEmptyString );
@@ -250,7 +248,7 @@ class prvRowsSelectionProperty: public wxPGProperty
 #endif
 
     void GetSelectionAsVector( TWindowLevel whichLevel,
-                               vector<TObjectOrder> &levelSelections );
+                               std::vector<TObjectOrder> &levelSelections );
                                
 #if wxMAJOR_VERSION<3
     WX_PG_DECLARE_EVENT_METHODS()
@@ -264,7 +262,7 @@ class prvRowsSelectionProperty: public wxPGProperty
     wxString myWindowName;
     SelectionManagement< TObjectOrder, TWindowLevel > mySelectedRows;
 
-    void GetStringValueFromVector( vector<TObjectOrder> &whichSelection,
+    void GetStringValueFromVector( std::vector<TObjectOrder> &whichSelection,
                                    wxString &onString );
 };
 

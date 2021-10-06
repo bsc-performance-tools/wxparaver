@@ -33,8 +33,6 @@
 
 #include <map>
 
-using namespace std;
-
 enum ItemType {ITEMNORMAL, ITEMRADIO, ITEMCHECK};
 
 class gTimeline;
@@ -162,10 +160,10 @@ class gPopUpMenu : public wxMenu
     gPopUpMenu( gHistogram *whichHistogram );
     virtual ~gPopUpMenu();
 
-    void enablePaste( const string tag, bool checkPaste );
-    void enable( const string tag, bool enable );
-    void enable( const string tag );
-    void disable( const string tag );
+    void enablePaste( const std::string tag, bool checkPaste );
+    void enable( const std::string tag, bool enable );
+    void enable( const std::string tag );
+    void disable( const std::string tag );
 
     void enableMenu( gTimeline *whichTimeline );
     void enableMenu( gHistogram *whichHistogram );
@@ -174,7 +172,7 @@ class gPopUpMenu : public wxMenu
     static wxMultiChoiceDialog *createPasteSpecialDialog( wxArrayString& choices, gTimeline *whichTimeline );
     static RowsSelectionDialog *createRowSelectionDialog( gTimeline *whichTimeline );
     static RowsSelectionDialog *createRowSelectionDialog( gHistogram *histogram );
-    static string getOption( wxArrayString& choices, int position );
+    static std::string getOption( wxArrayString& choices, int position );
 
     void OnMenuCopy( wxCommandEvent& event);
     void OnMenuTime( wxCommandEvent& event);

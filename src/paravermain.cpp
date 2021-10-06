@@ -124,7 +124,7 @@
 
 #include <algorithm>
 
-using std::string;
+using namespace std;
 
 class MenuHintFile : public wxObjectRefData
 {

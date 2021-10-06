@@ -32,7 +32,7 @@
 using std::vector;
 using std::map;
 
-#define ID_TIMELINETREE 10001
+constexpr wxWindowID ID_TIMELINETREE = 10001;
 
 BEGIN_EVENT_TABLE( TimelineTreeSelector, wxDialog )
   EVT_TREE_ITEM_ACTIVATED( ID_TIMELINETREE, TimelineTreeSelector::OnTreeItemActivated )

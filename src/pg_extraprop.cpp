@@ -47,6 +47,7 @@
 #include "timelinetreeselector.h"
 #include "paraverlabels.h"
 
+using namespace std;
 
 /**********************************************************
  **       prvEventTypeProperty
@@ -1054,7 +1055,7 @@ bool prvNumbersListProperty::OnEvent( wxPropertyGrid* propgrid,
 WX_PG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty,
                                 wxString, wxString&, TextCtrlAndButton )
 
-#define ID_TIMELINETREE 10001
+constexpr wxWindowID ID_TIMELINETREE = 10001;
 
 prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
                                                   const wxString& name,

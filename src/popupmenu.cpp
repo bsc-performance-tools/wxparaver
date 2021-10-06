@@ -275,46 +275,46 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
   
   if ( pasteActions->isAllowed( whichHistogram, STR_TIME ) )
   {
-    choices.Add( wxT( STR_TIME ) );
+    choices.Add( _( STR_TIME ) );
     sel.Add( i );
     ++i;
   }
 
   if ( pasteActions->isAllowed( whichHistogram, STR_OBJECTS ) )
   {
-    choices.Add( wxT( STR_OBJECTS ) );
+    choices.Add( _( STR_OBJECTS ) );
     sel.Add( i );
     ++i;
   }
 
   if ( pasteActions->isAllowed( whichHistogram, STR_SIZE ) )
   {
-    choices.Add( wxT( STR_SIZE ) );
+    choices.Add( _( STR_SIZE ) );
     sel.Add( i );
     ++i;
   }
 
   if ( pasteActions->isAllowed( whichHistogram, STR_DURATION ) )
-    choices.Add( wxT( STR_DURATION ) );
+    choices.Add( _( STR_DURATION ) );
 
   if ( pasteActions->isAllowed( whichHistogram, STR_SEMANTIC_SCALE ) )
-    choices.Add( wxT( STR_SEMANTIC_SCALE ) );
+    choices.Add( _( STR_SEMANTIC_SCALE ) );
 
   if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_SCALE ) )
-    choices.Add( wxT( STR_CONTROL_SCALE ) );
+    choices.Add( _( STR_CONTROL_SCALE ) );
 
   if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS ) )
-    choices.Add( wxT( STR_CONTROL_DIMENSIONS ) );
+    choices.Add( _( STR_CONTROL_DIMENSIONS ) );
 
   if( pasteActions->isAllowed( whichHistogram, STR_CONTROL_SCALE ) )
   {
     if( whichHistogram->GetHistogram()->getThreeDimensions() )
-      choices.Add( wxT( STR_3D_SCALE ) );
+      choices.Add( _( STR_3D_SCALE ) );
   }
   
   wxMultiChoiceDialog *tmpDialog = new wxMultiChoiceDialog( whichHistogram,
-                                                            wxT( "Select properties to paste:" ),
-                                                            wxT("Paste Special"),
+                                                            _( "Select properties to paste:" ),
+                                                            _("Paste Special"),
                                                             choices);
   tmpDialog->SetSelections( sel );
   
@@ -332,40 +332,40 @@ wxMultiChoiceDialog *gPopUpMenu::createPasteSpecialDialog( wxArrayString& choice
   
   if ( pasteActions->isAllowed( whichTimeline, STR_TIME ) )
   {
-    choices.Add( wxT( STR_TIME ) );
+    choices.Add( _( STR_TIME ) );
     sel.Add( i );
     ++i;
   }
 
   if ( pasteActions->isAllowed( whichTimeline, STR_OBJECTS ) )
   {
-    choices.Add( wxT( STR_OBJECTS ) );
+    choices.Add( _( STR_OBJECTS ) );
     sel.Add( i );
     ++i;
   }
 
   if ( pasteActions->isAllowed( whichTimeline, STR_SIZE ) )
   {
-    choices.Add( wxT( STR_SIZE ) );
+    choices.Add( _( STR_SIZE ) );
     sel.Add( i );
     ++i;
   }
 
   if ( pasteActions->isAllowed( whichTimeline, STR_DURATION ) )
-    choices.Add( wxT( STR_DURATION ) );
+    choices.Add( _( STR_DURATION ) );
 
   if ( pasteActions->isAllowed( whichTimeline, STR_SEMANTIC_SCALE ) )
-    choices.Add( wxT( STR_SEMANTIC_SCALE ) );
+    choices.Add( _( STR_SEMANTIC_SCALE ) );
 
   if ( pasteActions->isAllowed( whichTimeline, STR_FILTER_COMMS ) )
-    choices.Add( wxT( STR_FILTER_COMMS_XT ) );
+    choices.Add( _( STR_FILTER_COMMS_XT ) );
 
   if ( pasteActions->isAllowed( whichTimeline, STR_FILTER_EVENTS ) )
-    choices.Add( wxT( STR_FILTER_EVENTS_XT ) );
+    choices.Add( _( STR_FILTER_EVENTS_XT ) );
 
   wxMultiChoiceDialog *tmpDialog = new wxMultiChoiceDialog( whichTimeline,
-                                                            wxT( "Select properties to paste:" ),
-                                                            wxT("Paste Special"),
+                                                            _( "Select properties to paste:" ),
+                                                            _("Paste Special"),
                                                             choices );
   tmpDialog->SetSelections( sel );
   
@@ -1828,9 +1828,9 @@ void gPopUpMenu::OnMenuSaveHistogramAsCFG( wxCommandEvent& event )
 void gPopUpMenu::OnMenuSaveImage( wxCommandEvent& event )
 {
   if ( timeline != nullptr )
-    timeline->saveImageDialog( wxT( "" ) );
+    timeline->saveImageDialog( _( "" ) );
   else if ( histogram != nullptr )
-    histogram->saveImageDialog( wxT( "" ) );
+    histogram->saveImageDialog( _( "" ) );
 }
 
 

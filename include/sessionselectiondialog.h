@@ -38,7 +38,6 @@
 #include <map>
 #include <algorithm>
 #include "boost/date_time/posix_time/posix_time.hpp"
-using namespace std;
 
 /*!
  * Forward declarations

@@ -284,8 +284,8 @@ public:
   wxStopWatch * GetRedrawStopWatch() const { return redrawStopWatch ; }
   void SetRedrawStopWatch(wxStopWatch * value) { redrawStopWatch = value ; }
 
-  vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
-  void SetSelectedRows(vector<TObjectOrder> value) { selectedRows = value ; }
+  std::vector<TObjectOrder> GetSelectedRows() const { return selectedRows ; }
+  void SetSelectedRows(std::vector<TObjectOrder> value) { selectedRows = value ; }
 
   HistoTableBase* GetTableBase() const { return tableBase ; }
   void SetTableBase(HistoTableBase* value) { tableBase = value ; }
@@ -403,7 +403,7 @@ public:
 
   static wxProgressDialog *dialogProgress;
 
-  vector< TObjectOrder > getSelectedRows();
+  std::vector< TObjectOrder > getSelectedRows();
   virtual void setSelectedRows( std::vector< bool > &selected );
   virtual void setSelectedRows( std::vector< TObjectOrder > &selected );
     
@@ -430,7 +430,7 @@ private:
   bool openControlActivated;
   bool ready;
   wxStopWatch * redrawStopWatch;
-  vector<TObjectOrder> selectedRows;
+  std::vector<TObjectOrder> selectedRows;
   HistoTableBase* tableBase;
   wxTimer * timerZoom;
   double zoomCellHeight;
@@ -450,11 +450,11 @@ private:
   void updateHistogram();
 
   void OnTimerZoom( wxTimerEvent& event );
-  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const vector<THistogramColumn>& noVoidSemRanges ) const;
+  TSemanticValue getZoomSemanticValue( THistogramColumn column, TObjectOrder row, const std::vector<THistogramColumn>& noVoidSemRanges ) const;
 
-  THistogramColumn getSemanticSortedRealColumn( THistogramColumn whichCol, const vector<THistogramColumn>& noVoidSemRanges  ) const;
+  THistogramColumn getSemanticSortedRealColumn( THistogramColumn whichCol, const std::vector<THistogramColumn>& noVoidSemRanges  ) const;
   void drawColumn( THistogramColumn beginColumn, THistogramColumn endColumn, 
-                   vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
+                   std::vector<THistogramColumn>& selectedColumns, wxMemoryDC& bufferDraw );
 
   void openControlGetParameters( int xBegin, int xEnd, int yBegin, int yEnd,
                                  THistogramColumn& columnBegin, THistogramColumn& columnEnd,

@@ -58,6 +58,8 @@
 #include "ghistogram.h"
 #include "tutorialsdownload.h"
 
+using namespace std;
+
 ////@begin XPM images
 ////@end XPM images
 

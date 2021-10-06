@@ -41,7 +41,8 @@
 
 #include "eventsselectiondialog.h"
 #include "labelconstructor.h"
-//#include "semanticcolor.h"
+
+using namespace std;
 
 ////@begin XPM images
 ////@end XPM images
