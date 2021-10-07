@@ -3417,9 +3417,12 @@ void gHistogram::OnToolReverseUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
 {
-  if( !myHistogram->getSemanticSortColumns() )
-    choiceSortBy->SetSelection( 0 );
-  else
-    choiceSortBy->SetSelection( (int)myHistogram->getSemanticSortCriteria() + 1 );
+  int tmpSort = 0;
+
+  if( myHistogram->getSemanticSortColumns() )
+    tmpSort = static_cast<int>( myHistogram->getSemanticSortCriteria() ) + 1;
+
+  if( tmpSort != choiceSortBy->GetSelection() )
+    choiceSortBy->SetSelection( tmpSort );
 }
 

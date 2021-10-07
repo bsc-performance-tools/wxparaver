@@ -268,15 +268,17 @@ void SaveImageDialog::OnTextpathEnter( wxCommandEvent& event )
 
 void SaveImageDialog::setImageFileName()
 {
-  imageFileName->Clear();
   selectedImageFilePath = fileNavigator->GetFilename() + fileTypeText;
-  if ( imageCheckbox->IsChecked() )
+  if ( imageCheckbox->IsChecked() && imageFileName->GetValue() != selectedImageFilePath )
     imageFileName->ChangeValue( selectedImageFilePath );
+  else if( !imageCheckbox->IsChecked() && !imageFileName->IsEmpty() )
+    imageFileName->Clear();
 
-  legendFileName->Clear();
   selectedLegendFilePath = fileNavigator->GetFilename() + legendSuffix + fileTypeText;
-  if ( legendCheckbox->IsChecked() ) 
+  if ( legendCheckbox->IsChecked() && legendFileName->GetValue() != selectedLegendFilePath ) 
     legendFileName->ChangeValue( selectedLegendFilePath );
+  else if( !legendCheckbox->IsChecked() && !legendFileName->IsEmpty() )
+    legendFileName->Clear();
 }
 
 /*!
