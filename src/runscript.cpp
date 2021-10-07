@@ -2299,8 +2299,8 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     newWindow->setDrawCommLines( false );
     newWindow->setDrawFlags( false );
     newWindow->setCodeColorMode();
-    newWindow->setDrawModeObject( DRAW_MAXIMUM );
-    newWindow->setDrawModeTime( DRAW_MAXIMUM );
+    newWindow->setDrawModeObject( DrawModeMethod::DRAW_MAXIMUM );
+    newWindow->setDrawModeTime( DrawModeMethod::DRAW_MAXIMUM );
 
     newWindow->setWidth( sourceWindow->getWidth() ); 
     newWindow->setHeight( sourceWindow->getHeight() );

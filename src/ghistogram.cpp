@@ -1506,220 +1506,220 @@ void gHistogram::OnPopUpAutoDataGradient( bool state )
 
 void gHistogram::OnPopUpDrawModeSemanticLast()
 {
-  myHistogram->setDrawModeColumns( DRAW_LAST );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_LAST );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticRandom()
 {
-  myHistogram->setDrawModeColumns( DRAW_RANDOM );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_RANDOM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticRandomNotZero()
 {
-  myHistogram->setDrawModeColumns( DRAW_RANDNOTZERO );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_RANDNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticMaximum()
 {
-  myHistogram->setDrawModeColumns( DRAW_MAXIMUM );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticMinimumNotZero()
 {
-  myHistogram->setDrawModeColumns( DRAW_MINNOTZERO );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticAbsoluteMaximum()
 {
-  myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MAXIMUM );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticAbsoluteMinimumNotZero()
 {
-  myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MINNOTZERO );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticAverage()
 {
-  myHistogram->setDrawModeColumns( DRAW_AVERAGE );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_AVERAGE );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticAverageNotZero()
 {
-  myHistogram->setDrawModeColumns( DRAW_AVERAGENOTZERO );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeSemanticMode()
 {
-  myHistogram->setDrawModeColumns( DRAW_MODE );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MODE );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsLast()
 {
-  myHistogram->setDrawModeObjects( DRAW_LAST );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_LAST );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsRandom()
 {
-  myHistogram->setDrawModeObjects( DRAW_RANDOM );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_RANDOM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsRandomNotZero()
 {
-  myHistogram->setDrawModeObjects( DRAW_RANDNOTZERO );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_RANDNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsMaximum()
 {
-  myHistogram->setDrawModeObjects( DRAW_MAXIMUM );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsMinimumNotZero()
 {
-  myHistogram->setDrawModeObjects( DRAW_MINNOTZERO );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsAbsoluteMaximum()
 {
-  myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MAXIMUM );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero()
 {
-  myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MINNOTZERO );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsAverage()
 {
-  myHistogram->setDrawModeObjects( DRAW_AVERAGE );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_AVERAGE );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsAverageNotZero()
 {
-  myHistogram->setDrawModeObjects( DRAW_AVERAGENOTZERO );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeObjectsMode()
 {
-  myHistogram->setDrawModeObjects( DRAW_MODE );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MODE );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothLast()
 {
-  myHistogram->setDrawModeObjects( DRAW_LAST );
-  myHistogram->setDrawModeColumns( DRAW_LAST );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_LAST );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_LAST );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothRandom()
 {
-  myHistogram->setDrawModeObjects( DRAW_RANDOM );
-  myHistogram->setDrawModeColumns( DRAW_RANDOM );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_RANDOM );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_RANDOM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothRandomNotZero()
 {
-  myHistogram->setDrawModeObjects( DRAW_RANDNOTZERO );
-  myHistogram->setDrawModeColumns( DRAW_RANDNOTZERO );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_RANDNOTZERO );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_RANDNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothMaximum()
 {
-  myHistogram->setDrawModeObjects( DRAW_MAXIMUM );
-  myHistogram->setDrawModeColumns( DRAW_MAXIMUM );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MAXIMUM );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothMinimumNotZero()
 {
-  myHistogram->setDrawModeObjects( DRAW_MINNOTZERO );
-  myHistogram->setDrawModeColumns( DRAW_MINNOTZERO );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MINNOTZERO );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothAbsoluteMaximum()
 {
-  myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MAXIMUM );
-  myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MAXIMUM );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothAbsoluteMinimumNotZero()
 {
-  myHistogram->setDrawModeObjects( DRAW_ABSOLUTE_MINNOTZERO );
-  myHistogram->setDrawModeColumns( DRAW_ABSOLUTE_MINNOTZERO );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothAverage()
 {
-  myHistogram->setDrawModeObjects( DRAW_AVERAGE );
-  myHistogram->setDrawModeColumns( DRAW_AVERAGE );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_AVERAGE );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_AVERAGE );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothAverageNotZero()
 {
-  myHistogram->setDrawModeObjects( DRAW_AVERAGENOTZERO );
-  myHistogram->setDrawModeColumns( DRAW_AVERAGENOTZERO );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_AVERAGENOTZERO );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
 void gHistogram::OnPopUpDrawModeBothMode()
 {
-  myHistogram->setDrawModeObjects( DRAW_MODE );
-  myHistogram->setDrawModeColumns( DRAW_MODE );
+  myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MODE );
+  myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MODE );
   myHistogram->setRedraw( true );
 }
 

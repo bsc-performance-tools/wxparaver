@@ -230,7 +230,7 @@ static bool userMessage( UserMessageID message )
 {
   if( paraverMain::disableUserMessages )
     return true;
-  wxMessageDialog tmpDialog( nullptr, wxString::FromUTF8( userMessages[ message ].c_str() )  + 
+  wxMessageDialog tmpDialog( nullptr, wxString::FromUTF8( userMessages[ static_cast<size_t>( message ) ].c_str() ) +
         _( " Continue loading CFG file?" ), _( "Paraver question" ), wxYES_NO | wxICON_QUESTION );
   paraverMain::myParaverMain->SetRaiseCurrentWindow( false );
   int tmpResult = tmpDialog.ShowModal();
