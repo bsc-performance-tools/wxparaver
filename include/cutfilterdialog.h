@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _CUTFILTERDIALOG_H_
-#define _CUTFILTERDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -514,6 +514,3 @@ private:
   
   Trace *getTrace();
 };
-
-#endif
-  // _CUTFILTERDIALOG_H_

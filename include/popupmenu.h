@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _POPUPMENU_H_ 
-#define _POPUPMENU_H_
+#pragma once
+
 
 #include <wx/menu.h>
 #include <wx/choicdlg.h>
@@ -324,4 +324,4 @@ class gPopUpMenu : public wxMenu
                            bool checked = false );
 };
 
-#endif // _POPUPMENU_H_
+

@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _PARAVERMAIN_H_
-#define _PARAVERMAIN_H_
+#pragma once
+
 
 
 /*!
@@ -763,4 +763,4 @@ private:
 void progressFunction( ProgressController *progress, void *callerWindow );
   
 
-#endif // _PARAVERMAIN_H_
+

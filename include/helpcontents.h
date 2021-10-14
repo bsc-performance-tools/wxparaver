@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _HELPCONTENTS_H_
-#define _HELPCONTENTS_H_
+#pragma once
+
 
 /*!
  * Includes
@@ -232,4 +232,4 @@ class TutorialsBrowser: public HelpContents
     void helpMessage( wxString& htmlDoc );
 };
 
-#endif // _HELPCONTENTS_H_
+

@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _GTIMELINE_H_
-#define _GTIMELINE_H_
+#pragma once
+
 
 
 /*!
@@ -1003,4 +1003,4 @@ private:
 
 void progressFunctionTimeline( ProgressController *progress, void *callerWindow );
 
-#endif  // _GTIMELINE_H_
+

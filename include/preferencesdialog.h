@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _PREFERENCESDIALOG_H_
-#define _PREFERENCESDIALOG_H_
+#pragma once
+
 
 
 /*!P
@@ -835,6 +835,3 @@ private:
   wxColour RGBTowxColour( rgb colour );
   
 };
-
-#endif
-  // _PREFERENCESDIALOG_H_

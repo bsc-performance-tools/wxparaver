@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _COPYPASTE_H_ 
-#define _COPYPASTE_H_
+#pragma once
+
 
 #include <map>
 
@@ -106,4 +106,4 @@ class gPasteWindowProperties
     bool seekAllowed( const std::string property, int destiny, gHistogram* destinyHistogram );
 };
 
-#endif // _COPYPASTE_H_
+

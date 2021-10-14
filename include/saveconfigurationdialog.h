@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _SAVECONFIGURATIONDIALOG_H_
-#define _SAVECONFIGURATIONDIALOG_H_
+#pragma once
+
 
 /*!
  * Includes
@@ -186,6 +186,3 @@ private:
   CFGS4DLinkedPropertiesManager linkedProperties;
 
 };
-
-#endif
-  // _SAVECONFIGURATIONDIALOG_H_

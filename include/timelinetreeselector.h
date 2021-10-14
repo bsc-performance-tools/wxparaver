@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _TIMELINETREESELECTOR_H_ 
-#define _TIMELINETREESELECTOR_H_
+#pragma once
+
 
 #include <wx/dialog.h>
 #include <wx/treectrl.h>
@@ -67,4 +67,4 @@ class TimelineTreeSelector : public wxDialog
     wxTreeCtrl *timelineTree;
 };
 
-#endif //_TIMELINETREESELECTOR_H_
+

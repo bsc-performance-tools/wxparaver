@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _RUNSCRIPT_H_
-#define _RUNSCRIPT_H_
+#pragma once
+
 
 
 /*!
@@ -486,7 +486,7 @@ private:
   void runDetachedProcess( wxString command, bool checkPidDimemasGUI = false );
 };
 
-#endif // _RUNSCRIPT_H_
+
 
 
 

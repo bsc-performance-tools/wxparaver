@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _WXPARAVERAPP_H_
-#define _WXPARAVERAPP_H_
+#pragma once
+
 
 
 /*!
@@ -157,6 +157,3 @@ private:
 ////@begin declare app
 DECLARE_APP(wxparaverApp)
 ////@end declare app
-
-#endif
-    // _WXPARAVERAPP_H_

@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _CONNECTION_H_
-#define _CONNECTION_H_
+#pragma once
+
 
 #include "wx/ipc.h"
 //#include "autosessionmanager.h"
@@ -55,4 +55,3 @@ class stClient: public wxClient
     wxConnectionBase *OnMakeConnection() { return new stConnection; }
 };
 
-#endif // _CONNECTION_H_

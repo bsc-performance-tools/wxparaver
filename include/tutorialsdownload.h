@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _TUTORIALSDOWNLOAD_H_
-#define _TUTORIALSDOWNLOAD_H_
+#pragma once
+
 
 #include <string>
 #include <vector>
@@ -152,4 +152,3 @@ class TutorialsDownload
 
 BOOST_CLASS_VERSION( TutorialsDownload, 1 )
 
-#endif // _TUTORIALSDOWNLOAD_H_

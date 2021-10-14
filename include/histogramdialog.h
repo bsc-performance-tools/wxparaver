@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _HISTOGRAMDIALOG_H_
-#define _HISTOGRAMDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -301,4 +301,4 @@ private:
   void enable3DFields( bool autofit );
 };
 
-#endif // _HISTOGRAMDIALOG_H_
+

@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _GHISTOGRAM_H_
-#define _GHISTOGRAM_H_
+#pragma once
+
 
 
 /*!
@@ -470,6 +470,3 @@ private:
 };
 
 void progressFunctionHistogram( ProgressController *progress, void *callerWindow );
-
-#endif
-  // _GHISTOGRAM_H_

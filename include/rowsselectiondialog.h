@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _ROWSSELECTIONDIALOG_H_
-#define _ROWSSELECTIONDIALOG_H_
+#pragma once
+
 
 /*!
  * Includes
@@ -186,4 +186,4 @@ private:
   void OnOkClick( wxCommandEvent& event );
 };
 
-#endif // _ROWSSELECTIONDIALOG_H_
+

@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _ADVANCEDSAVECONFIGURATION_H_
-#define _ADVANCEDSAVECONFIGURATION_H_
+#pragma once
+
 
 /*!
  * Includes
@@ -247,6 +247,3 @@ public:
                                 const std::string& whichCustomName );
 
 };
-
-#endif
-  // _ADVANCEDSAVECONFIGURATION_H_

@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _SEQUENCEDRIVER_H_ 
-#define _SEQUENCEDRIVER_H_
+#pragma once
+
 
 #include "traceeditactions.h"
 
@@ -176,4 +176,4 @@ class SequenceDriver
     //                                    std::string timesFile );
 };
 
-#endif //_SEQUENCEDRIVER_H_
+

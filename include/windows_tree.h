@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _GWINDOWTREE_H_ 
-#define _GWINDOWTREE_H_
+#pragma once
+
 
 #include <wx/treectrl.h>
 #include <wx/choicebk.h>
@@ -86,4 +86,4 @@ void iconizeWindows( wxTreeCtrl *tree,
 
 int getIconNumber( Window *whichWindow );
 
-#endif // _GWINDOWTREE_H_
+

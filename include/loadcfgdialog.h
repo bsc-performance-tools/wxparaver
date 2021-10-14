@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _LOADCFGDIALOG_H_
-#define _LOADCFGDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -138,6 +138,3 @@ public:
   std::map< wxString, wxString > linksPerFileName;
   
 };
-
-#endif
-  // _LOADCFGDIALOG_H_

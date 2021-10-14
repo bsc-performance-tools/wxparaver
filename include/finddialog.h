@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _FINDDIALOG_H_
-#define _FINDDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -160,6 +160,3 @@ private:
   Window * myWindow;
 ////@end FindDialog member variables
 };
-
-#endif
-  // _FINDDIALOG_H_

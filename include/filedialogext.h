@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _FILEDIALOGEXT_H_
-#define _FILEDIALOGEXT_H_
+#pragma once
+
 
 #include <wx/window.h>
 #include <wx/filedlg.h>
@@ -65,4 +65,4 @@ class FileDialogExtension : public wxFileDialog
     bool canWriteFile( wxString whichFile );
 };
 
-#endif // _FILEDIALOGEXT_H_
+

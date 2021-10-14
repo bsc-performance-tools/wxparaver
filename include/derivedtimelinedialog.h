@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _DERIVEDTIMELINEDIALOG_H_
-#define _DERIVEDTIMELINEDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -268,6 +268,3 @@ private:
   bool getParameterComposeField( wxTextCtrl *field, TParamValue &values );
 
 };
-
-#endif
-  // _DERIVEDTIMELINEDIALOG_H_

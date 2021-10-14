@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _SESSIONSELECTIONDIALOG_H_
-#define _SESSIONSELECTIONDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -146,6 +146,3 @@ private:
   wxArrayString allFilesInDir;
   wxString FormatFileName( wxString fileName );
 };
-
-#endif
-  // _SESSIONSELECTIONDIALOG_H_

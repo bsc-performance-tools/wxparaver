@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _FILEBROWSERBUTTON_H_ 
-#define _FILEBROWSERBUTTON_H_
+#pragma once
+
 
 #include <wx/button.h>
 #include <wx/filedlg.h>
@@ -167,4 +167,4 @@ class DirBrowserButton : public BrowserButton
     void OnButton( wxMouseEvent& event );
 };
 
-#endif // _FILEBROWSERBUTTON_H_
+

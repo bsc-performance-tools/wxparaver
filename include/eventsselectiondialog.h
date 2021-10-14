@@ -22,8 +22,8 @@
 \*****************************************************************************/
 
 
-#ifndef _EVENTSSELECTIONDIALOG_H_
-#define _EVENTSSELECTIONDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -479,6 +479,3 @@ public:
   void TransferWindowToData();
   unsigned int GetSelections( wxCheckListBox *checkList, wxArrayInt &index ) const;
 };
-
-#endif
-  // _EVENTSSELECTIONDIALOG_H_

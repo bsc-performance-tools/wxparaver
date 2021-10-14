@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _EXITDIALOG_H_
-#define _EXITDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -113,6 +113,3 @@ public:
   wxButton* noSaveExitButton;
 ////@end ExitDialog member variables
 };
-
-#endif
-  // _EXITDIALOG_H_

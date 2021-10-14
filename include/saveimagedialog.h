@@ -21,8 +21,8 @@
  *   Barcelona Supercomputing Center - Centro Nacional de Supercomputacion   *
 \*****************************************************************************/
 
-#ifndef _SAVEIMAGEDIALOG_H_
-#define _SAVEIMAGEDIALOG_H_
+#pragma once
+
 
 
 /*!
@@ -166,6 +166,3 @@ public:
   bool isHistogram;
   wxString legendSuffix;
 };
-
-#endif
-  // _SAVEIMAGEDIALOG_H_
