@@ -814,7 +814,7 @@ private:
               wxBitmapType& whichImageType );
 #endif
 
-      ~ScaleImageVertical();
+      virtual ~ScaleImageVertical();
 
       void process();
       void save();
