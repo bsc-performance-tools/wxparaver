@@ -114,6 +114,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
   EVT_CHECKBOX( ID_CHECKBOX3, gTimeline::OnCheckWhatWhere )
   EVT_CHECKBOX( ID_CHECKBOX4, gTimeline::OnCheckWhatWhereText )
   EVT_CHECKBOX( ID_CHECKBOX5, gTimeline::OnCheckWhatWhereText )
+  EVT_UPDATE_UI( ID_CHECKBOX5, gTimeline::OnCheckWWShowDateUpdate )
   EVT_CHECKBOX( ID_CHECKBOX6, gTimeline::OnCheckWhatWhereText )
   EVT_UPDATE_UI( wxID_STATIC_SLOPE, gTimeline::OnStaticSlopeUpdate )
   EVT_CHECKBOX( ID_CHECKBOX_CUSTOM_PALETTE, gTimeline::OnCheckboxCustomPaletteClick )
@@ -499,15 +500,15 @@ void gTimeline::CreateControls()
   // Connect events and objects
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_SIZE, wxSizeEventHandler(gTimeline::OnScrolledWindowSize), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_PAINT, wxPaintEventHandler(gTimeline::OnScrolledWindowPaint), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
+  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MIDDLE_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowMiddleUp), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_RIGHT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowRightDown), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOTION, wxMouseEventHandler(gTimeline::OnScrolledWindowMotion), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_MOUSEWHEEL, wxMouseEventHandler(gTimeline::OnScrolledWindowMouseWheel), NULL, this);
   drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_KEY_DOWN, wxKeyEventHandler(gTimeline::OnScrolledWindowKeyDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(gTimeline::OnScrolledWindowEraseBackground), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDown), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_UP, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftUp), NULL, this);
-  drawZone->Connect(ID_SCROLLED_DRAW, wxEVT_LEFT_DCLICK, wxMouseEventHandler(gTimeline::OnScrolledWindowLeftDClick), NULL, this);
 ////@end gTimeline content construction
 
   SetMinSize( wxSize( 100, 50 ) );
@@ -2833,7 +2834,7 @@ wxString gTimeline::formatTime( TRecordTime whichTime, bool showDate )
   if ( !showDate )
   {
     formattedTime = wxString::FromUTF8( LabelConstructor::timeLabel( myWindow->traceUnitsToWindowUnits( whichTime ),
-                                                                      myWindow->getTimeUnit(), 0 ).c_str() );
+                                                                     myWindow->getTimeUnit(), 0 ).c_str() );
   }
   else
   {
@@ -6392,5 +6393,15 @@ void gTimeline::OnTextSelectedColorUpdated( wxCommandEvent& event )
   myWindow->getCodeColor().setCustomColor( selectedCustomValue, tmpRGBColor );
 
   enableApplyButton = true;
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_CHECKBOX5
+ */
+
+void gTimeline::OnCheckWWShowDateUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( !myWindow->getTrace()->getTraceTime().is_not_a_date_time() );
 }
 
