@@ -124,7 +124,7 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gT
     bool isProcessModel = sourceTimeline->GetMyWindow()->isLevelProcessModel();
     if ( sourceTimeline->GetMyWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           Window::compatibleLevels( sourceTimeline->GetMyWindow(), destinyTimeline->GetMyWindow() ) &&
+           Timeline::compatibleLevels( sourceTimeline->GetMyWindow(), destinyTimeline->GetMyWindow() ) &&
            sourceTimeline->GetMyWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
        )
       return allowed[property][SAME_TRACE][TIMELINE][destiny];
@@ -136,7 +136,7 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gT
     bool isProcessModel = sourceHistogram->GetHistogram()->getControlWindow()->isLevelProcessModel();
     if ( sourceHistogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-//           Window::compatibleLevels( sourceHistogram->GetHistogram()->getControlWindow(), destinyTimeline->GetMyWindow() ) &&
+//           Timeline::compatibleLevels( sourceHistogram->GetHistogram()->getControlWindow(), destinyTimeline->GetMyWindow() ) &&
            sourceHistogram->GetHistogram()->getControlWindow()->getLevel() == destinyTimeline->GetMyWindow()->getLevel() &&
            sourceHistogram->GetHistogram()->getControlWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
        )
@@ -156,7 +156,7 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gH
     bool isProcessModel = sourceTimeline->GetMyWindow()->isLevelProcessModel();
     if ( sourceTimeline->GetMyWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           //Window::compatibleLevels( sourceTimeline->GetMyWindow(), destinyHistogram->GetHistogram()->getControlWindow() ) &&
+           //Timeline::compatibleLevels( sourceTimeline->GetMyWindow(), destinyHistogram->GetHistogram()->getControlWindow() ) &&
            sourceTimeline->GetMyWindow()->getLevel() == destinyHistogram->GetHistogram()->getControlWindow()->getLevel() &&
            sourceTimeline->GetMyWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
        )
@@ -169,7 +169,7 @@ bool gPasteWindowProperties::seekAllowed( const string property, int destiny, gH
     bool isProcessModel = sourceHistogram->GetHistogram()->getControlWindow()->isLevelProcessModel();
     if ( sourceHistogram->GetHistogram()->getControlWindow()->getTrace() == destinyTrace ||
          ( property == STR_OBJECTS &&
-           //Window::compatibleLevels( sourceHistogram->GetHistogram()->getControlWindow(), destinyHistogram->GetHistogram()->getControlWindow() ) &&
+           //Timeline::compatibleLevels( sourceHistogram->GetHistogram()->getControlWindow(), destinyHistogram->GetHistogram()->getControlWindow() ) &&
            sourceHistogram->GetHistogram()->getControlWindow()->getLevel() == destinyHistogram->GetHistogram()->getControlWindow()->getLevel() &&
            sourceHistogram->GetHistogram()->getControlWindow()->getTrace()->isSubsetObjectStruct( destinyTrace, isProcessModel ) )
        )
@@ -403,7 +403,7 @@ void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string pro
     }
     else if ( property == STR_SEMANTIC_SCALE )
     {
-      Window *controlWin = sourceHistogram->GetHistogram()->getControlWindow();
+      Timeline *controlWin = sourceHistogram->GetHistogram()->getControlWindow();
       destinyTimeline->GetMyWindow()->setMinimumY( controlWin->getMinimumY() );
       destinyTimeline->GetMyWindow()->setMaximumY( controlWin->getMaximumY() );
     }

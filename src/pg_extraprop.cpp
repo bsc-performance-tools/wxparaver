@@ -313,7 +313,7 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
                                             const wxString& name,
                                             const wxPGChoices& choices,
-                                            Window *whichWindow,
+                                            Timeline *whichWindow,
                                             prvEventInfoType whichInfoType )
                                               : wxPGProperty( label, name )
 {
@@ -778,7 +778,7 @@ WX_PG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
                                 wxString, wxString&, TextCtrlAndButton )
 
 prvRowsSelectionProperty::prvRowsSelectionProperty( wxPropertyGrid *propgrid,
-                                                    Window *whichWindow,
+                                                    Timeline *whichWindow,
                                                     const wxString &windowName,
                                                     vector<TObjectOrder> &whichSelection,
                                                     const wxString &label,
@@ -1061,7 +1061,7 @@ prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
                                                   const wxString& name,
                                                   const wxString& value,
                                                   std::vector<TWindowID> windows,
-                                                  Window *currentWindow,
+                                                  Timeline *currentWindow,
                                                   const Trace *currentTrace,
                                                   bool needNoneElement )
                                                     : wxPGProperty(label,name), 
@@ -1132,7 +1132,7 @@ wxString prvTimelineTreeProperty::ValueToString( wxVariant & value, int argFlags
 }
 #endif
 
-Window *prvTimelineTreeProperty::getSelectedWindow() const
+Timeline *prvTimelineTreeProperty::getSelectedWindow() const
 {
   return selectedWindow;
 }

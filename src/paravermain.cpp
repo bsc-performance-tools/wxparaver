@@ -214,8 +214,8 @@ wxProgressDialog *paraverMain::dialogProgress = nullptr;
 
 wxSize paraverMain::defaultTitleBarSize = wxSize(0,0);
 
-Window *paraverMain::beginDragWindow = nullptr;
-Window *paraverMain::endDragWindow = nullptr;
+Timeline *paraverMain::beginDragWindow = nullptr;
+Timeline *paraverMain::endDragWindow = nullptr;
 
 bool paraverMain::disableUserMessages = false;
 bool paraverMain::validSessions = true;
@@ -915,7 +915,7 @@ bool paraverMain::DoLoadCFG( const string &path )
   }
   else
   {
-    vector<Window *> newWindows;
+    vector<Timeline *> newWindows;
     vector<Histogram *> newHistograms;
     SaveOptions options;
 
@@ -955,7 +955,7 @@ bool paraverMain::DoLoadCFG( const string &path )
       }
 
       wxTreeItemId child;
-      for( vector<Window *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
+      for( vector<Timeline *>::iterator it = newWindows.begin(); it != newWindows.end(); ++it )
       {
         wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
         wxTreeCtrl *currentPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( getTracePosition( tmpTraceToUse ) + 1 );
@@ -1238,7 +1238,7 @@ wxIcon paraverMain::GetIconResource( const wxString& name )
 }
 
 
-void paraverMain::spreadSetChangedRecursive( Window *whichWindow )
+void paraverMain::spreadSetChangedRecursive( Timeline *whichWindow )
 {
   whichWindow->setChanged( true );
 
@@ -1251,7 +1251,7 @@ void paraverMain::spreadSetChangedRecursive( Window *whichWindow )
 }
 
 
-void paraverMain::spreadSetChanged( Window *whichWindow )
+void paraverMain::spreadSetChanged( Timeline *whichWindow )
 {
   if ( isCFG4DModeDisabled() )
     whichWindow->setChanged( true );
@@ -1260,7 +1260,7 @@ void paraverMain::spreadSetChanged( Window *whichWindow )
 }
 
 
-void paraverMain::spreadSetRedrawRecursive( Window *whichWindow )
+void paraverMain::spreadSetRedrawRecursive( Timeline *whichWindow )
 {
   whichWindow->setRedraw( true );
 
@@ -1273,7 +1273,7 @@ void paraverMain::spreadSetRedrawRecursive( Window *whichWindow )
 }
 
 
-void paraverMain::spreadSetRedraw( Window *whichWindow )
+void paraverMain::spreadSetRedraw( Timeline *whichWindow )
 {
   if ( isCFG4DModeDisabled() )
     whichWindow->setRedraw( true );
@@ -1290,7 +1290,7 @@ void paraverMain::OnPropertyGridChanging( wxPropertyGridEvent& event )
   propertyPrevValue = event.GetProperty()->GetValue();
 }
 
-std::string getCFG4DParameterOriginalName( Window *whichWindow, TWindowLevel whichLevel, TParamIndex whichParam )
+std::string getCFG4DParameterOriginalName( Timeline *whichWindow, TWindowLevel whichLevel, TParamIndex whichParam )
 {
   return LabelConstructor::getCFG4DParameterOriginalName( whichWindow,
                                                           whichLevel,
@@ -1400,7 +1400,7 @@ void paraverMain::OnPropertyGridChange( wxPropertyGridEvent& event )
   wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
 }
 
-string getPropertyName( Window *whichWindow,
+string getPropertyName( Timeline *whichWindow,
                         Histogram *whichHistogram,
                         TSingleTimelineProperties singleIndex,
                         TDerivedTimelineProperties derivedIndex,
@@ -1423,7 +1423,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
                                     wxPGProperty *property,
                                     const string& propName,
                                     PropertyClientData *whichClientData,
-                                    Window *whichTimeline,
+                                    Timeline *whichTimeline,
                                     Histogram *whichHistogram )
 {
   if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NAME, DERIVED_NAME, HISTOGRAM_NAME ) )
@@ -1528,7 +1528,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     whichTimeline->setMaximumY( tmpValue );
     whichTimeline->setRedraw( true );
   }
-  // Control Window related properties
+  // Control Timeline related properties
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_CONTROLWINDOW ) )
   {
     whichHistogram->setControlWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
@@ -1575,7 +1575,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     whichHistogram->setCompute2DScale( false );
     whichHistogram->setRecalc( true );
   }
-  // Data Window related properties
+  // Data Timeline related properties
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_DATAWINDOW ) )
   {
     whichHistogram->setDataWindow( ( ( prvTimelineTreeProperty * )property )->getSelectedWindow() );
@@ -2119,7 +2119,7 @@ void paraverMain::OnTreeItemActivated( wxTreeEvent& event )
   }
   else if( gTimeline *timeline = itemData->getTimeline() )
   {
-    Window *tmpWin = timeline->GetMyWindow();
+    Timeline *tmpWin = timeline->GetMyWindow();
 
     beginDragWindow = timeline->GetMyWindow();
 
@@ -2228,7 +2228,7 @@ void paraverMain::renameTreeItem( )
 void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
 {
   // Get a copy of all Windows and Histograms from LoadedWindows
-  vector< Window * > allWindows;
+  vector< Timeline * > allWindows;
   LoadedWindows::getInstance()->getAll( allWindows );
   vector< Histogram * > allHistograms;
   bool destroyed = false;
@@ -2272,7 +2272,7 @@ void paraverMain::OnChoicewinbrowserUpdate( wxUpdateUIEvent& event )
   }
 
    // add pending window or histogram
-  for( vector<Window *>::iterator it = allWindows.begin(); it != allWindows.end(); ++it )
+  for( vector<Timeline *>::iterator it = allWindows.begin(); it != allWindows.end(); ++it )
   {
     if( (*it)->getDestroy() )
       continue;
@@ -2586,7 +2586,7 @@ void progressFunction( ProgressController *progress, void *callerWindow )
 }
 
 
-bool isWindowRelatedToOtherTraces( Window *whichWindow, Trace *whichTrace, Window *parentWindow, Window *childWindow )
+bool isWindowRelatedToOtherTraces( Timeline *whichWindow, Trace *whichTrace, Timeline *parentWindow, Timeline *childWindow )
 {
   bool isRelated = false;
 
@@ -2616,12 +2616,12 @@ bool isWindowRelatedToOtherTraces( Window *whichWindow, Trace *whichTrace, Windo
 }
 
 
-bool allWindowsRelatedToOtherTraces( vector<Window *> windows )
+bool allWindowsRelatedToOtherTraces( vector<Timeline *> windows )
 {
   if ( windows.empty() )
     return false;
     
-  for ( vector< Window * >::iterator it = windows.begin() ; it != windows.end() ; ++it )
+  for ( vector< Timeline * >::iterator it = windows.begin() ; it != windows.end() ; ++it )
   {
     if( !(*it)->isDerivedWindow() && (*it)->getChild() == nullptr )
       return false;
@@ -2670,7 +2670,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
     {
       if( (*it)->getUnload() )
       {
-        vector<Window *> windows;
+        vector<Timeline *> windows;
         vector<Histogram *> histograms;
 
         LoadedWindows::getInstance()->getAll( *it, windows );
@@ -2789,7 +2789,7 @@ void paraverMain::OnChoicewinbrowserPageChanged( wxChoicebookEvent& event )
 
 void paraverMain::SaveConfigurationFile( wxWindow *parent,
                                          SaveOptions options,
-                                         vector< Window * > timelines,
+                                         vector< Timeline * > timelines,
                                          vector< Histogram * > histograms,
                                          const vector<CFGS4DLinkedPropertiesManager>& linkedProperties )
 {
@@ -2828,7 +2828,7 @@ void paraverMain::SaveConfigurationFile( wxWindow *parent,
 void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
 {
   SaveOptions options;
-  vector<Window *> timelines;
+  vector<Timeline *> timelines;
   vector<Histogram *> histograms;
   SaveConfigurationDialog saveDialog( this );
 
@@ -2840,7 +2840,7 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
 
   // Find trace to put in the selector
   Trace *selectedTrace = nullptr;
-  vector<Window *> auxWindows;
+  vector<Timeline *> auxWindows;
   vector<Histogram *> auxHistograms;
 
   int currentPage = choiceWindowBrowser->GetSelection();
@@ -2867,7 +2867,7 @@ void paraverMain::OnMenusavecfgClick( wxCommandEvent& event )
     SaveConfigurationFile( (wxWindow *)this, options, timelines, histograms, propertiesList );
 
     // Disable CFG4D once it is saved
-    for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+    for( vector< Timeline * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
     {
       (*it)->setCFG4DEnabled( false );
     }
@@ -2907,10 +2907,10 @@ int paraverMain::initialPosX = 0;
 int paraverMain::initialPosY = 0;
 
 
-Window *paraverMain::createBaseWindow( wxString whichName )
+Timeline *paraverMain::createBaseWindow( wxString whichName )
 {
   // Create new window
-  Window *newWindow = Window::create( localKernel, getCurrentTrace() );
+  Timeline *newWindow = Timeline::create( localKernel, getCurrentTrace() );
   ++numNewWindows;
 
   if ( whichName.IsEmpty() )
@@ -2963,7 +2963,7 @@ Window *paraverMain::createBaseWindow( wxString whichName )
 }
 
 
-void paraverMain::insertInTree( Window *whichWindow )
+void paraverMain::insertInTree( Timeline *whichWindow )
 {
   // Build gtimeline and append new window to windows tree
   wxTreeCtrl *allTracesPage = (wxTreeCtrl *) choiceWindowBrowser->GetPage( 0 );
@@ -3040,7 +3040,7 @@ void paraverMain::ShowDerivedDialog()
     endDragWindow->setPosY( GetNextPosY() );
 
     // Create new derived window
-    Window *newWindow = Window::create( localKernel, beginDragWindow, endDragWindow );
+    Timeline *newWindow = Timeline::create( localKernel, beginDragWindow, endDragWindow );
     beginDragWindow->setChild( newWindow );
     endDragWindow->setChild( newWindow );
     newWindow->setPosX( GetNextPosX() );
@@ -3158,7 +3158,7 @@ void paraverMain::ShowHistogramDialog()
   histogramDialog.SetControlTimelines( timelines );
 
   vector< pair< TRecordTime, TRecordTime > > ranges;
-  // Window Times
+  // Timeline Times
   ranges.push_back( make_pair( currentTimeline->getWindowBeginTime(), currentTimeline->getWindowEndTime() ) );
   // Trace Times
   ranges.push_back( make_pair( 0.0, currentTimeline->getTrace()->getEndTime() ) );
@@ -3287,7 +3287,7 @@ void paraverMain::OnNewDerivedWindowUpdate( wxUpdateUIEvent& event )
 
   if ( loadedTraces.size() > 0 && currentTrace > -1 )
   {
-    vector<Window *> timelines;
+    vector<Timeline *> timelines;
     LoadedWindows::getInstance()->getAll( loadedTraces[ currentTrace ], timelines );
 
     event.Enable( ( timelines.size() > 0 ) && ( currentTimeline != nullptr ) );
@@ -3356,7 +3356,7 @@ void paraverMain::OnTreeEndDrag( wxTreeEvent& event )
     {
       endDragWindow = timeline->GetMyWindow();
       if( beginDragWindow->getTrace()->isSameObjectStruct( endDragWindow->getTrace(), endDragWindow->isLevelProcessModel() ) &&
-          Window::compatibleLevels( beginDragWindow, endDragWindow ) )
+          Timeline::compatibleLevels( beginDragWindow, endDragWindow ) )
       {
         ShowDerivedDialog();
       }
@@ -3385,7 +3385,7 @@ void paraverMain::OnNewHistogramUpdate( wxUpdateUIEvent& event )
 {
   if ( loadedTraces.size() > 0 )
   {
-    vector<Window *> timelines;
+    vector<Timeline *> timelines;
     if( currentTrace == -1 )
       LoadedWindows::getInstance()->getAll( timelines );
     else
@@ -3607,9 +3607,9 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setColorsLowGradient( preferences.GetGradientColourLow() );
     paraverConfig->setColorsTopGradient( preferences.GetGradientColourTop() );
 
-    vector<Window *> tmpWins;
+    vector<Timeline *> tmpWins;
     LoadedWindows::getInstance()->getAll( tmpWins );
-    for( vector<Window *>::iterator it = tmpWins.begin(); it != tmpWins.end(); ++it )
+    for( vector<Timeline *>::iterator it = tmpWins.begin(); it != tmpWins.end(); ++it )
     {
       (*it)->getGradientColor().setBeginGradientColor( preferences.GetGradientColourBegin() );
       (*it)->getGradientColor().setEndGradientColor( preferences.GetGradientColourEnd() );
@@ -3698,7 +3698,7 @@ PRV_UINT16 paraverMain::getTracePosition( Trace *trace )
 }
 
 
-bool paraverMain::getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete )
+bool paraverMain::getUsedBySomeHistogram( Timeline *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete )
 {
   if ( whichWindow->getUsedByHistogram() )
   {
@@ -3810,11 +3810,11 @@ void paraverMain::OnUnloadtraceClick( wxCommandEvent& event )
     wxArrayInt sel = dialog.GetSelections();
     for( size_t i = 0; i < sel.GetCount(); ++i )
     {
-      vector<Window *> windows;
+      vector<Timeline *> windows;
       LoadedWindows::getInstance()->getAll( loadedTraces[ sel.Item( i ) ], windows );
 
       bool isThereHistogramLinkedToWindow = false;
-      for( vector<Window *>::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
+      for( vector<Timeline *>::iterator it = windows.begin(); !isThereHistogramLinkedToWindow && it != windows.end(); ++it )
       {
         isThereHistogramLinkedToWindow = getUsedBySomeHistogram( (*it), true, sel );
         if( isThereHistogramLinkedToWindow )
@@ -3851,13 +3851,13 @@ void paraverMain::OnUnloadtraceUpdate( wxUpdateUIEvent& event )
 
 void paraverMain::UnloadTrace( int whichTrace )
 {
-  vector<Window *> windows;
+  vector<Timeline *> windows;
   vector<Histogram *> histograms;
 
   LoadedWindows::getInstance()->getAll( loadedTraces[ whichTrace ], windows );
   LoadedWindows::getInstance()->getAll( loadedTraces[ whichTrace ], histograms );
 
-  for( vector<Window *>::iterator it = windows.begin(); it != windows.end(); ++it )
+  for( vector<Timeline *>::iterator it = windows.begin(); it != windows.end(); ++it )
   {
     (*it)->setShowWindow( false );
     if( (*it)->getChild() == nullptr )

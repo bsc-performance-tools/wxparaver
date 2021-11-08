@@ -49,7 +49,7 @@
 /*!
  * Forward declarations
  */
-class Window;
+class Timeline;
 
 /*!
  * Control identifiers
@@ -76,7 +76,7 @@ public:
   /// Constructors
   RowsSelectionDialog();
   RowsSelectionDialog( wxWindow* parent,
-                       Window *whichWindow,
+                       Timeline *whichWindow,
                        SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
                        wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
                        const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
@@ -134,7 +134,7 @@ public:
   TObjectOrder GetNewEndZoom() const { return endZoom; }
 
 private:
-  Window *myTimeline;
+  Timeline *myTimeline;
   Histogram *myHistogram;
   
   SelectionManagement< TObjectOrder, TWindowLevel > *mySelectedRows;

@@ -1984,8 +1984,8 @@ void gTimeline::OnPopUpCopy()
 
 
 // simple windows can let this method do the entire work passing a nullptr clonedWindow
-// derived windows must pass existing clonedWindow, because Window::clone is recursive
-gTimeline *gTimeline::clone( Window *clonedWindow,
+// derived windows must pass existing clonedWindow, because Timeline::clone is recursive
+gTimeline *gTimeline::clone( Timeline *clonedWindow,
                              wxWindow *parent,
                              wxTreeItemId idRoot1,
                              wxTreeItemId idRoot2,
@@ -2136,7 +2136,7 @@ void gTimeline::OnPopUpPunctualColor()
 
 void gTimeline::OnPopUpPunctualColorWindow()
 {
-  vector<Window *> compatWindows;
+  vector<Timeline *> compatWindows;
   int selIndex = 0;
 
   setEnableDestroyButton( false );
@@ -2147,7 +2147,7 @@ void gTimeline::OnPopUpPunctualColorWindow()
   wxArrayString choices;
   choices.Add( _( "None" ) );
   int tmpIndex = 1;
-  for( vector<Window *>::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
+  for( vector<Timeline *>::iterator it = compatWindows.begin(); it != compatWindows.end(); ++it )
   {
     choices.Add( wxString::FromUTF8( (*it)->getName().c_str() ) );
     if( (*it) == myWindow->getPunctualColorWindow() )
@@ -4010,7 +4010,7 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
 // ScaleImage
 //
 gTimeline::ScaleImageVertical::ScaleImageVertical(
-        Window* whichMyWindow,
+        Timeline* whichMyWindow,
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
@@ -4300,7 +4300,7 @@ void gTimeline::ScaleImageVertical::destroyDC()
 // ScaleImageVerticalCodeColor
 //
 gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor(
-        Window* whichMyWindow, 
+        Timeline* whichMyWindow, 
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
@@ -4340,7 +4340,7 @@ void gTimeline::ScaleImageVerticalCodeColor::init()
 // ScaleImageVerticalGradientColor
 //
 gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor(
-        Window* whichMyWindow, 
+        Timeline* whichMyWindow, 
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
@@ -4428,7 +4428,7 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
 // ScaleImageVerticalFusedLines
 //
 gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines(
-        Window* whichMyWindow, 
+        Timeline* whichMyWindow, 
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
@@ -4497,7 +4497,7 @@ void gTimeline::ScaleImageVerticalFusedLines::computeMaxLabelSize()
 // ScaleImageHorizontalGradientColor
 //
 gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
-        Window* whichMyWindow, 
+        Timeline* whichMyWindow, 
         const std::map< TSemanticValue, rgb >& whichSemanticValues,
         wxColour whichBackground,
         wxColour whichForeground,
@@ -4846,7 +4846,7 @@ void gTimeline::saveText()
 
 void gTimeline::saveCFG()
 {
-  vector< Window * > timelines;
+  vector< Timeline * > timelines;
   timelines.push_back( GetMyWindow() );
 
   setEnableDestroyButton( false );
@@ -4966,7 +4966,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   else
   {
     TSemanticValue firstValue, secondValue;
-    Window *winToUse = myWindow;
+    Timeline *winToUse = myWindow;
     if( myWindow->isPunctualColorSet() && myWindow->getPunctualColorWindow() != nullptr )
       winToUse = myWindow->getPunctualColorWindow();
 

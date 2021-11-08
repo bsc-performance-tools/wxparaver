@@ -694,7 +694,7 @@ TSemanticValue HistogramDialog::computeDelta( TSemanticValue min, TSemanticValue
 }
 
 
-void HistogramDialog::computeColumns( Window *current, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta )
+void HistogramDialog::computeColumns( Timeline *current, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta )
 {
   min = current->getMinimumY();
   max = current->getMaximumY();
@@ -703,9 +703,9 @@ void HistogramDialog::computeColumns( Window *current, TSemanticValue &min, TSem
 }
 
 // if current = nullptr, PUT none
-PRV_UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listTimelines, wxChoice *listWidget )
+PRV_UINT32 HistogramDialog::fillList( Timeline *current, vector< TWindowID > listTimelines, wxChoice *listWidget )
 {
-  Window *aux;
+  Timeline *aux;
   int pos = 0;
   int posSelected = 0;
 
@@ -730,7 +730,7 @@ PRV_UINT32 HistogramDialog::fillList( Window *current, vector< TWindowID > listT
   return posSelected;
 }
 
-bool HistogramDialog::TransferDataToWindow( Window *current )
+bool HistogramDialog::TransferDataToWindow( Timeline *current )
 {
   PRV_UINT32 pos;
   currentWindow = current;
@@ -780,7 +780,7 @@ bool HistogramDialog::TransferDataToWindow( Window *current )
 
 void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
 {
-  Window *current = controlTimelineSelected;
+  Timeline *current = controlTimelineSelected;
 
   txtBeginTime->SetValue(
     wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::WINDOW_RANGE ) ].first ),
@@ -802,7 +802,7 @@ void HistogramDialog::OnRadiobuttonAllwindowSelected( wxCommandEvent& event )
 
 void HistogramDialog::OnRadiobuttonAlltraceSelected( wxCommandEvent& event )
 {
-  Window *current = controlTimelineSelected;
+  Timeline *current = controlTimelineSelected;
 
   txtBeginTime->SetValue(
     wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( timeRange[ static_cast< int >( TTimeRangeSource::TRACE_RANGE ) ].first ),
@@ -881,7 +881,7 @@ void HistogramDialog::OnIdle( wxIdleEvent& event )
 {
   if( waitingGlobalTiming )
   {
-    Window *current = controlTimelineSelected;
+    Timeline *current = controlTimelineSelected;
     txtBeginTime->SetValue(
       wxString::FromUTF8( LabelConstructor::timeLabel( current->traceUnitsToWindowUnits( wxGetApp().GetGlobalTimingBegin() ),
                                                         current->getTimeUnit(),

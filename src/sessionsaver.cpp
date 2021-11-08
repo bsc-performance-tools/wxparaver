@@ -60,12 +60,12 @@ void SessionSaver::SaveSession( wxString onFile, const vector<Trace *>& traces )
     wxFileName traceFileName( wxString::FromUTF8( (*it)->getFileName().c_str() ) );
     wxFileName cfgFileName( path.GetPathWithSep() + traceFileName.GetFullName() + wxT( ".cfg" ) );
     
-    vector<Window *> vTimelines, tmpVTimelines;
+    vector<Timeline *> vTimelines, tmpVTimelines;
     vector<Histogram *> vHistograms;
     LoadedWindows::getInstance()->getAll( *it, tmpVTimelines );
     LoadedWindows::getInstance()->getAll( *it, vHistograms );
 
-    for( vector<Window *>::iterator it = tmpVTimelines.begin(); it != tmpVTimelines.end(); ++it )
+    for( vector<Timeline *>::iterator it = tmpVTimelines.begin(); it != tmpVTimelines.end(); ++it )
     {
       if( !(*it)->getUsedByHistogram() && (*it)->getChild() == nullptr )
         vTimelines.push_back( *it );
@@ -96,13 +96,13 @@ void SessionSaver::SaveSession_v2( wxString onFile, const vector<Trace *>& trace
                             wxFileName::GetPathSeparator() +
                             traceFileName.GetFullName() + wxT( ".cfg" ) );
     
-    vector<Window *> vTimelines, tmpVTimelines;
+    vector<Timeline *> vTimelines, tmpVTimelines;
     vector<Histogram *> vHistograms;
     LoadedWindows::getInstance()->getAll( *it, tmpVTimelines );
     LoadedWindows::getInstance()->getAll( *it, vHistograms );
 
     // Delete timelines belonging to derived windows
-    for( vector<Window *>::iterator itWin = tmpVTimelines.begin(); itWin != tmpVTimelines.end(); ++itWin )
+    for( vector<Timeline *>::iterator itWin = tmpVTimelines.begin(); itWin != tmpVTimelines.end(); ++itWin )
     {
       if( !(*itWin)->getUsedByHistogram() && (*itWin)->getChild() == nullptr )
         vTimelines.push_back( *itWin );

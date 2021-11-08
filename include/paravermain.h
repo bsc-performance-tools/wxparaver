@@ -200,7 +200,7 @@ struct SignalItem
 // wxPropertyGrid 1.4.15 + wxWidgets 2.8.12 does not support SetClientObject
 struct PropertyClientData
 {
-  Window *ownerTimeline;
+  Timeline *ownerTimeline;
   Histogram *ownerHistogram;
   std::string propName;
   size_t extraTopComposeLevel;
@@ -397,10 +397,10 @@ public:
   void OnTreeBeginDrag( wxTreeEvent& event );
   void OnTreeEndDrag( wxTreeEvent& event );
   
-  void spreadSetChangedRecursive( Window *whichWindow );
-  void spreadSetRedrawRecursive( Window *whichWindow );
-  void spreadSetChanged( Window *whichWindow );
-  void spreadSetRedraw( Window *whichWindow );
+  void spreadSetChangedRecursive( Timeline *whichWindow );
+  void spreadSetRedrawRecursive( Timeline *whichWindow );
+  void spreadSetChanged( Timeline *whichWindow );
+  void spreadSetRedraw( Timeline *whichWindow );
   /// wxEVT_PG_CHANGED event handler for ID_FOREIGN
   void OnPropertyGridChange( wxPropertyGridEvent& event );
   void OnPropertyGridChanging( wxPropertyGridEvent& event );
@@ -433,14 +433,14 @@ public:
   bool GetCanServeSignal() const { return canServeSignal ; }
   void SetCanServeSignal(bool value) { canServeSignal = value ; }
 
-  Window * GetClusteringWindow() const { return clusteringWindow ; }
-  void SetClusteringWindow(Window * value) { clusteringWindow = value ; }
+  Timeline * GetClusteringWindow() const { return clusteringWindow ; }
+  void SetClusteringWindow(Timeline * value) { clusteringWindow = value ; }
 
   Histogram * GetCurrentHisto() const { return currentHisto ; }
   void SetCurrentHisto(Histogram * value) { currentHisto = value ; }
 
-  Window * GetCurrentTimeline() const { return currentTimeline ; }
-  void SetCurrentTimeline(Window * value) { currentTimeline = value ; }
+  Timeline * GetCurrentTimeline() const { return currentTimeline ; }
+  void SetCurrentTimeline(Timeline * value) { currentTimeline = value ; }
 
   PRV_INT16 GetCurrentTrace() const { return currentTrace ; }
   void SetCurrentTrace(PRV_INT16 value) { currentTrace = value ; }
@@ -460,8 +460,8 @@ public:
   Histogram * GetLastHisto() const { return lastHisto ; }
   void SetLastHisto(Histogram * value) { lastHisto = value ; }
 
-  Window * GetLastTimeline() const { return lastTimeline ; }
-  void SetLastTimeline(Window * value) { lastTimeline = value ; }
+  Timeline * GetLastTimeline() const { return lastTimeline ; }
+  void SetLastTimeline(Timeline * value) { lastTimeline = value ; }
 
   std::queue<std::string> GetLoadFilesQueue() const { return loadFilesQueue ; }
   void SetLoadFilesQueue(std::queue<std::string> value) { loadFilesQueue = value ; }
@@ -544,7 +544,7 @@ public:
 
   /// Should we show tooltips?
   bool ShowToolTips();
-  void refreshTree( gTimeline *whichTimeline, Window *window );
+  void refreshTree( gTimeline *whichTimeline, Timeline *window );
   
   int GetNextPosX();
   int GetNextPosY();
@@ -579,7 +579,7 @@ public:
   
   void SaveConfigurationFile( wxWindow *parent,
                               SaveOptions options,
-                              std::vector< Window * > timelines,
+                              std::vector< Timeline * > timelines,
                               std::vector< Histogram * > histograms,
                               const std::vector< CFGS4DLinkedPropertiesManager >& linkedProperties );
                                
@@ -608,8 +608,8 @@ public:
   // void ShowRunCommand( wxString app, wxString traceFile, wxString command, bool runNow );
   void ShowRunCommand( wxString traceFile );
 
-  Window *createBaseWindow( wxString whichName = wxString( wxT("") ) );
-  void insertInTree( Window *whichWindow );
+  Timeline *createBaseWindow( wxString whichName = wxString( wxT("") ) );
+  void insertInTree( Timeline *whichWindow );
 
   void createHelpContentsWindow( const wxString &helpContentsBaseRelativePath,
                                  const wxString &helpFile = wxString( wxT("") ),
@@ -626,8 +626,8 @@ public:
   static wxSize defaultWindowSize;
   static int initialPosX;
   static int initialPosY;
-  static Window *beginDragWindow;
-  static Window *endDragWindow;
+  static Timeline *beginDragWindow;
+  static Timeline *endDragWindow;
   static bool disableUserMessages;
   static bool stopOnIdle;
 
@@ -664,16 +664,16 @@ private:
   std::string XMLPath;
   std::set<wxWindow *> activeWindows;
   bool canServeSignal;
-  Window * clusteringWindow;
+  Timeline * clusteringWindow;
   Histogram * currentHisto;
-  Window * currentTimeline;
+  Timeline * currentTimeline;
   PRV_INT16 currentTrace;
   wxWindow * currentWindow;
   std::map<Trace *, size_t> firstUserWorkspace;
   HelpContents * helpContents;
   wxImageList* imageList;
   Histogram * lastHisto;
-  Window * lastTimeline;
+  Timeline * lastTimeline;
   std::queue<std::string> loadFilesQueue;
   std::vector<Trace *> loadedTraces;
   KernelConnection* localKernel;
@@ -715,7 +715,7 @@ private:
 /*
   void BuildTree( wxTreeCtrl *root1, wxTreeItemId idRoot1,
                   wxTreeCtrl *root2, wxTreeItemId idRoot2,
-                  Window *window );
+                  Timeline *window );
 */
   void ShowDerivedDialog();
   void ShowHistogramDialog();
@@ -743,7 +743,7 @@ private:
   void messageUndefinedParaverHome();
 
   Trace *getCurrentTrace() const;
-  bool getUsedBySomeHistogram( Window *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete );
+  bool getUsedBySomeHistogram( Timeline *whichWindow, bool deleteAllTraceWindows, wxArrayInt tracesToDelete );
 
   template< typename T >
   bool linkedSetPropertyValue( T *whichWindow,
@@ -755,7 +755,7 @@ private:
                          wxPGProperty *property,
                          const std::string& propName,
                          PropertyClientData *tmpClientData,
-                         Window *whichTimeline,
+                         Timeline *whichTimeline,
                          Histogram *whichHistogram );
 
 };

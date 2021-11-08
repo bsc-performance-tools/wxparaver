@@ -498,7 +498,7 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
   mySequence->pushbackAction( new RunSpectralAction( mySequence ) );
   
   // Clone timeline
-  Window *tmpWindow = whichTimeline->GetMyWindow()->clone();
+  Timeline *tmpWindow = whichTimeline->GetMyWindow()->clone();
   tmpWindow->setLevel( APPLICATION );
   tmpWindow->setTimeUnit( NS );
   

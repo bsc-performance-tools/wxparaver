@@ -738,7 +738,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
       }
       else if ( CFGLoader::isCFGFile( fileName ) && currentTrace != nullptr )
       {
-        vector<Window *> newWindows;
+        vector<Timeline *> newWindows;
         vector<Histogram *> newHistograms;
         SaveOptions options;
 
@@ -771,7 +771,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
           else
           {
             // save timeline image
-            Window *window = newWindows.back();
+            Timeline *window = newWindows.back();
             window->setRedraw( false );
             string composedName = window->getName() + " @ " +
                                   window->getTrace()->getTraceName();
@@ -797,7 +797,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
             delete (*it);
           newHistograms.clear();
 
-          for( vector<Window *>::iterator it = newWindows.begin();
+          for( vector<Timeline *>::iterator it = newWindows.begin();
                it != newWindows.end(); ++it )
             delete (*it);
           newWindows.clear();

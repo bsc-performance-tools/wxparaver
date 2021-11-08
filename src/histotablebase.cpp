@@ -270,7 +270,7 @@ bool HistoTableBase::IsEmptyCell( int row, int col )
 wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAttrKind kind )
 {
   wxGridCellAttr *tmpAttr = new wxGridCellAttr();
-  Window *controlWindow = myHisto->GetHistogram()->getControlWindow();
+  Timeline *controlWindow = myHisto->GetHistogram()->getControlWindow();
 
   if( myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() )
   {

@@ -135,11 +135,11 @@ public:
   std::vector< Histogram * > GetSelectedHistograms() const { return selectedHistograms ; }
   void SetSelectedHistograms(std::vector< Histogram * > value) { selectedHistograms = value ; }
 
-  std::vector< Window * > GetSelectedTimelines() const { return selectedTimelines ; }
-  void SetSelectedTimelines(std::vector< Window * > value) { selectedTimelines = value ; }
+  std::vector< Timeline * > GetSelectedTimelines() const { return selectedTimelines ; }
+  void SetSelectedTimelines(std::vector< Timeline * > value) { selectedTimelines = value ; }
 
-  std::vector<Window *> GetTimelines() const { return timelines ; }
-  void SetTimelines(std::vector<Window *> value) { timelines = value ; }
+  std::vector<Timeline *> GetTimelines() const { return timelines ; }
+  void SetTimelines(std::vector<Timeline *> value) { timelines = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -177,11 +177,11 @@ private:
   Trace * initialTrace;
   SaveOptions options;
   std::vector< Histogram * > selectedHistograms;
-  std::vector< Window * > selectedTimelines;
-  std::vector<Window *> timelines;
+  std::vector< Timeline * > selectedTimelines;
+  std::vector<Timeline *> timelines;
 ////@end SaveConfigurationDialog member variables
   std::vector< std::string > traces;
-  std::vector< Window * > displayedTimelines;
+  std::vector< Timeline * > displayedTimelines;
   std::vector< Histogram * > displayedHistograms;
   CFGS4DLinkedPropertiesManager linkedProperties;
 

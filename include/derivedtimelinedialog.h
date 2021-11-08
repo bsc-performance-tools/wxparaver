@@ -129,11 +129,11 @@ public:
 
 ////@begin DerivedTimelineDialog member function declarations
 
-  Window * GetCurrentWindow1() const { return currentWindow1 ; }
-  void SetCurrentWindow1(Window * value) { currentWindow1 = value ; }
+  Timeline * GetCurrentWindow1() const { return currentWindow1 ; }
+  void SetCurrentWindow1(Timeline * value) { currentWindow1 = value ; }
 
-  Window * GetCurrentWindow2() const { return currentWindow2 ; }
-  void SetCurrentWindow2(Window * value) { currentWindow2 = value ; }
+  Timeline * GetCurrentWindow2() const { return currentWindow2 ; }
+  void SetCurrentWindow2(Timeline * value) { currentWindow2 = value ; }
 
   double GetFactorTimeline1() const { return factorTimeline1 ; }
   void SetFactorTimeline1(double value) { factorTimeline1 = value ; }
@@ -221,8 +221,8 @@ public:
   wxTextCtrl* widgetFactorTimeline2;
   wxButton* swapWindowsButton;
 private:
-  Window * currentWindow1;
-  Window * currentWindow2;
+  Timeline * currentWindow1;
+  Timeline * currentWindow2;
   double factorTimeline1;
   double factorTimeline2;
   int lastTimeline1;
@@ -241,8 +241,8 @@ private:
   PRV_INT16 shiftTimeline2;
 ////@end DerivedTimelineDialog member variables
 
-  void presetTimelineComboBox( std::vector< Window * > timelines,
-                               Window *currentWindow,
+  void presetTimelineComboBox( std::vector< Timeline * > timelines,
+                               Timeline *currentWindow,
                                wxComboBox *comboBox,
                                int& currentSelection );
   void presetStringChoiceBox( std::vector< std::string > list, wxChoice *choiceBox );
@@ -250,7 +250,7 @@ private:
   void presetNameField( std::string whichName, wxTextCtrl *field );
 
   void getSelectedString( wxChoice *choiceBox, std::vector< std::string > &selection ) const;
-  void getSelectedWindow( wxComboBox *comboBox, std::vector< Window * > &selection ) const;
+  void getSelectedWindow( wxComboBox *comboBox, std::vector< Timeline * > &selection ) const;
   void getName( wxTextCtrl *field, std::string &whichName ) const;
   bool getFactorFields( double &whichFactor1,
                         double &whichFactor2 );

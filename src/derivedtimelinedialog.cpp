@@ -427,7 +427,7 @@ bool DerivedTimelineDialog::TransferDataToWindow()
   {
     for( vector<TWindowID>::const_iterator it = timelines2.begin(); it != timelines2.end(); ++it )
     {
-      if( Window::compatibleLevels( currentWindow1, LoadedWindows::getInstance()->getWindow( *it ) ) )
+      if( Timeline::compatibleLevels( currentWindow1, LoadedWindows::getInstance()->getWindow( *it ) ) )
       {
         currentWindow2 = LoadedWindows::getInstance()->getWindow( *it );
         break;
@@ -589,7 +589,7 @@ void DerivedTimelineDialog::OnSwapWindowsClick( wxCommandEvent& event )
     txtTimelines2->SetValue( wxString( currentWindow1->getName().c_str(), wxConvUTF8 ) );
     txtTimelines1->SetValue( wxString( currentWindow2->getName().c_str(), wxConvUTF8 ) );
     
-    Window *auxWin = currentWindow1;
+    Timeline *auxWin = currentWindow1;
     currentWindow1 = currentWindow2;
     currentWindow2 = auxWin;
   }
@@ -597,16 +597,16 @@ void DerivedTimelineDialog::OnSwapWindowsClick( wxCommandEvent& event )
 
 
 // Build first list of timelines and set the selected one
-void DerivedTimelineDialog::presetTimelineComboBox( vector< Window * > timelines,
-                                                    Window *currentWindow,
+void DerivedTimelineDialog::presetTimelineComboBox( vector< Timeline * > timelines,
+                                                    Timeline *currentWindow,
                                                     wxComboBox *comboBox,
                                                     int& currentSelection )
 {
-  for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
     comboBox->Append( wxString::FromUTF8( (*it)->getName().c_str() ) );
 
   currentSelection = 0;
-  for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
     if ( *it != currentWindow )
       ++currentSelection;
@@ -660,9 +660,9 @@ void DerivedTimelineDialog::getSelectedString( wxChoice *choiceBox,
 
 
 void DerivedTimelineDialog::getSelectedWindow( wxComboBox *comboBox,
-                                               vector< Window * > &selection ) const
+                                               vector< Timeline * > &selection ) const
 {
-  Window* tmp = selection[ comboBox->GetCurrentSelection() ];
+  Timeline * tmp = selection[ comboBox->GetCurrentSelection() ];
   selection.clear();
   selection.push_back( tmp );
 }
@@ -946,10 +946,10 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
 
 /*void DerivedTimelineDialog::OnTimelinesList1Selected( wxCommandEvent& event )
 {
-  Window *tmpTimeline1 = timelines1[ event.GetSelection() ];
-  Window *tmpTimeline2 = timelines2[ widgetTimelines2->GetSelection() ];
+  Timeline *tmpTimeline1 = timelines1[ event.GetSelection() ];
+  Timeline *tmpTimeline2 = timelines2[ widgetTimelines2->GetSelection() ];
   
-  if( Window::compatibleLevels( tmpTimeline1, tmpTimeline2 ) )
+  if( Timeline::compatibleLevels( tmpTimeline1, tmpTimeline2 ) )
   {
     lastTimeline1 = event.GetSelection();
     event.Skip();
@@ -968,10 +968,10 @@ void DerivedTimelineDialog::OnOperationsSelected( wxCommandEvent& event )
 
 /*void DerivedTimelineDialog::OnTimelinesList2Selected( wxCommandEvent& event )
 {
-  Window *tmpTimeline1 = timelines1[ widgetTimelines1->GetSelection() ];
-  Window *tmpTimeline2 = timelines2[ event.GetSelection() ];
+  Timeline *tmpTimeline1 = timelines1[ widgetTimelines1->GetSelection() ];
+  Timeline *tmpTimeline2 = timelines2[ event.GetSelection() ];
   
-  if( Window::compatibleLevels( tmpTimeline1, tmpTimeline2 ) )
+  if( Timeline::compatibleLevels( tmpTimeline1, tmpTimeline2 ) )
   {
     lastTimeline2 = event.GetSelection();
     event.Skip();

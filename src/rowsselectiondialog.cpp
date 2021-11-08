@@ -78,7 +78,7 @@ RowsSelectionDialog::RowsSelectionDialog()
 
 // Constructor for Timelines
 RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
-                                          Window *whichTimeline,
+                                          Timeline *whichTimeline,
                                           SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
                                           wxWindowID id,
                                           const wxString& caption,

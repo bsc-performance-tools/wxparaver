@@ -33,7 +33,7 @@
 class gTimeline;
 class gHistogram;
 class paraverMain;
-class Window;
+class Timeline;
 class Histogram;
 class Trace;
 
@@ -61,21 +61,21 @@ wxTreeCtrl *getSelectedTraceTree( Trace *trace );
 
 void appendHistogram2Tree( gHistogram *ghistogram );
 
-wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found );
+wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Timeline *wanted, bool &found );
 wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool &found );
-gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found );
+gTimeline *getGTimelineFromWindow( wxTreeItemId root, Timeline *wanted, bool &found );
 gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted );
 void getParentGTimeline( gTimeline *current, std::vector< gTimeline * > & children );
 
 void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
-                Window *window,
+                Timeline *window,
                 std::string nameSuffix = std::string("") );
 
 bool updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
-                     std::vector< Window * > &allWindows,
+                     std::vector< Timeline * > &allWindows,
                      std::vector< Histogram * > &allHistograms,
                      wxWindow **currentWindow,
                      bool allTracesTree );
@@ -84,6 +84,6 @@ void iconizeWindows( wxTreeCtrl *tree,
                      wxTreeItemId& id,
                      bool iconize );
 
-int getIconNumber( Window *whichWindow );
+int getIconNumber( Timeline *whichWindow );
 
 

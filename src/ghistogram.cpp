@@ -833,7 +833,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
         ++firstDrawRow;
           
       rgb tmpCol;
-      Window *controlWindow = myHistogram->getControlWindow();
+      Timeline *controlWindow = myHistogram->getControlWindow();
       
       THistogramColumn tmpBeginCol = getSemanticSortedRealColumn( beginColumn, noVoidSemRanges );
 
@@ -1092,7 +1092,7 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   Layout();
 }
 
-bool isSyncedWithGroup( Window *whichWindow, unsigned int whichGroup )
+bool isSyncedWithGroup( Timeline *whichWindow, unsigned int whichGroup )
 {
   return whichWindow != nullptr && whichWindow->isSync() && whichWindow->getSyncGroup() == whichGroup && whichWindow->getShowWindow();
 }
@@ -2360,7 +2360,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   openControlMinMaxParam( columnBegin, columnEnd, minParam, maxParam );
 
   gTimeline *openWindow = nullptr;
-  Window *controlCloned = myHistogram->getControlWindow()->clone();
+  Timeline *controlCloned = myHistogram->getControlWindow()->clone();
   controlCloned->unsetUsedByHistogram( myHistogram );
   controlCloned->removeFromSync();
   THistogramLimit min = myHistogram->getControlMin();
@@ -2425,7 +2425,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
   
   if( myHistogram->getThreeDimensions() )
   {
-    Window *extraControlCloned = myHistogram->getExtraControlWindow()->clone();
+    Timeline *extraControlCloned = myHistogram->getExtraControlWindow()->clone();
     extraControlCloned->unsetUsedByHistogram( myHistogram );
     extraControlCloned->removeFromSync();
 
@@ -2505,7 +2505,7 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
     controlCloned->setShowWindow( false );
     extraControlCloned->setShowWindow( false );
 
-    Window *productWin = Window::create( controlCloned->getKernel(), controlCloned, extraControlCloned );
+    Timeline *productWin = Timeline::create( controlCloned->getKernel(), controlCloned, extraControlCloned );
 
     productWin->setLevelFunction( DERIVED, "product" );
     name = controlCloned->getName();
@@ -3103,7 +3103,7 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
 void gHistogram::saveCFG()
 {
   vector< Histogram * > histograms;
-  vector< Window * > windows;
+  vector< Timeline * > windows;
 
   setEnableDestroyButton( false );
 

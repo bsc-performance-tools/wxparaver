@@ -326,7 +326,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   // Build selector of traces from list of windows/histograms ( we can have loaded traces without windows )
   set< string > auxTraces;
   
-  for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
     auxTraces.insert( (*it)->getTrace()->getTraceNameNumbered() );
   }
@@ -368,7 +368,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
   // Timelines
   wxArrayString items;
   displayedTimelines.clear();
-  for( vector<Window *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for( vector<Timeline *>::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
     if ( firstSelection == 0 ||
          initialTrace->getTraceNameNumbered() == (*it)->getTrace()->getTraceNameNumbered()  )
@@ -418,7 +418,7 @@ bool SaveConfigurationDialog::TransferDataToWindow()
 
 bool SaveConfigurationDialog::TransferDataFromWindow()
 {
-  vector<Window *> tmpTimelines;
+  vector<Timeline *> tmpTimelines;
   for( size_t i = 0; i < listTimelines->GetCount(); ++i )
   {
     if( listTimelines->IsChecked( i ) )
@@ -551,7 +551,7 @@ void SaveConfigurationDialog::OnChoiceTraceSelectorSelected( wxCommandEvent& eve
   // Timelines
   listTimelines->Clear();
   displayedTimelines.clear();
-  for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for( vector< Timeline * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
     string currentTrace = (*it)->getTrace()->getTraceNameNumbered();
     if ( index == 0 || selectedTrace == currentTrace )

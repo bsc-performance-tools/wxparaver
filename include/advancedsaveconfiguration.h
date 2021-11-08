@@ -97,7 +97,7 @@ public:
                              const wxSize& size = SYMBOL_ADVANCEDSAVECONFIGURATION_SIZE,
                              long style = SYMBOL_ADVANCEDSAVECONFIGURATION_STYLE );
   AdvancedSaveConfiguration( wxWindow* parent,
-                             const std::vector< Window * > &whichTimelines,
+                             const std::vector< Timeline * > &whichTimelines,
                              const std::vector< Histogram * > &whichHistograms,
                              TEditorMode mode = TEditorMode::PROPERTIES_TAGS,
                              wxWindowID id = SYMBOL_ADVANCEDSAVECONFIGURATION_IDNAME,
@@ -168,14 +168,14 @@ public:
   private:
     bool isTimeline;
     int currentItem;                   // Index to selected item in choice widget. Used to compute
-                                       // position of Window * or Histogram * in next vectors.
-    std::vector< Window * > timelines;
+                                       // position of Timeline * or Histogram * in next vectors.
+    std::vector< Timeline * > timelines;
     std::vector< Histogram * > histograms;
 
-    std::map< Window *, bool > backupTimelinesCFG4DEnabled;
-    std::map< Window *, bool > backupTimelinesCFG4DMode;
-    std::map< Window *, std::map< std::string, std::string > > backupTimelinesCFG4DAliasList;
-    std::map< Window *, Window::TParamAlias > backupTimelinesCFG4DParamAlias;
+    std::map< Timeline *, bool > backupTimelinesCFG4DEnabled;
+    std::map< Timeline *, bool > backupTimelinesCFG4DMode;
+    std::map< Timeline *, std::map< std::string, std::string > > backupTimelinesCFG4DAliasList;
+    std::map< Timeline *, Timeline::TParamAlias > backupTimelinesCFG4DParamAlias;
     std::map< Histogram *, bool > backupHistogramsCFG4DEnabled;
     std::map< Histogram *, bool > backupHistogramsCFG4DMode;
     std::map< Histogram *, std::map< std::string, std::string > > backupHistogramsCFG4DAliasList;
@@ -193,7 +193,7 @@ public:
 
     int GetSelectionIndexCorrected( int index, bool &isTimeline );
 
-    wxString BuildName( Window *current );
+    wxString BuildName( Timeline *current );
     wxString BuildName( Histogram *current );
 
     bool allowedLevel( const std::string &tag );
@@ -204,13 +204,13 @@ public:
                                     std::string& onSemanticLevel,
                                     std::string& onFunction,
                                     TParamIndex& onNumParameter );
-    void InsertParametersToTagMaps( const std::vector< Window::TParamAliasKey > &fullParamList,
-                                    const Window::TParamAlias &renamedParamAlias,
+    void InsertParametersToTagMaps( const std::vector< Timeline::TParamAliasKey > &fullParamList,
+                                    const Timeline::TParamAlias &renamedParamAlias,
                                     const bool showFullList );
     wxBoxSizer *BuildTagRowWidgets( std::map< std::string, std::string >::iterator it,
                                     bool showFullList );
     void BuildTagWidgets( const bool showFullList );
-    void BuildTagsPanel( Window *currentWindow, const bool showFullList );
+    void BuildTagsPanel( Timeline *currentWindow, const bool showFullList );
     void BuildTagsPanel( Histogram *currentHistogram, const bool showFullList );
 
     void PreparePanel( bool showFullList );
@@ -242,7 +242,7 @@ public:
     void OnCheckBoxLinkPropertyClicked( wxCommandEvent& event );
     void OnLinkedPropertiesNameChanged( wxCommandEvent& event );
 
-    void setTimelineCFG4DAlias( Window *whichWindow,
+    void setTimelineCFG4DAlias( Timeline *whichWindow,
                                 const std::string& whichOriginalName,
                                 const std::string& whichCustomName );
 

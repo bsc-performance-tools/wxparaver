@@ -23,7 +23,7 @@
 
 #include <vector>
 
-class Window;
+class Timeline;
 class Histogram;
 class wxPropertyGrid;
 struct PropertyClientData;
@@ -32,7 +32,7 @@ struct PropertyClientData;
 void initPG();
 
 void updateTimelineProperties( wxPropertyGrid* windowProperties,
-                               Window *whichWindow,
+                               Timeline *whichWindow,
                                std::vector< PropertyClientData * >& whichPropertiesClientData );
 void updateHistogramProperties( wxPropertyGrid* windowProperties,
                                 Histogram *whichHisto,

@@ -64,7 +64,7 @@ class CheckboxLinkData : public wxObject
       propertyName = whichName;
     }
 
-    void setData( Window *whichWindow )
+    void setData( Timeline *whichWindow )
     {
       myWindow = whichWindow;
       myHistogram = nullptr;
@@ -81,7 +81,7 @@ class CheckboxLinkData : public wxObject
       return propertyName;
     }
 
-    void getData( Window *&onWindow )
+    void getData( Timeline *&onWindow )
     {
       onWindow = myWindow;
     }
@@ -93,7 +93,7 @@ class CheckboxLinkData : public wxObject
 
   private:
     string propertyName;
-    Window *myWindow;
+    Timeline *myWindow;
     Histogram *myHistogram;
 };
 
@@ -150,7 +150,7 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
 
 // PRECOND: whichTimelines.size() > 0 || whichHistograms.size() > 0
 AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
-                                                      const vector< Window * > &whichTimelines,
+                                                      const vector< Timeline * > &whichTimelines,
                                                       const vector< Histogram * > &whichHistograms,
                                                       TEditorMode whichMode,
                                                       wxWindowID id,
@@ -178,7 +178,7 @@ AdvancedSaveConfiguration::AdvancedSaveConfiguration( wxWindow* parent,
 
     case TEditorMode::PROPERTIES_TAGS:
       // Recover previous state for all windows and histograms
-      for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+      for( vector< Timeline * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
       {
         backupTimelinesCFG4DEnabled[ *it ] = (*it)->getCFG4DEnabled();
         backupTimelinesCFG4DMode[ *it ] = (*it)->getCFG4DMode();
@@ -322,7 +322,7 @@ void AdvancedSaveConfiguration::CreateControls()
 
 
   // Build choice selector
-  for ( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+  for ( vector< Timeline * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
     choiceWindow->Append( BuildName( *it ) );
   }
@@ -360,7 +360,7 @@ void AdvancedSaveConfiguration::CreateControls()
 }
 
 
-wxString AdvancedSaveConfiguration::BuildName( Window *current )
+wxString AdvancedSaveConfiguration::BuildName( Timeline *current )
 {
   return  ( wxString::FromUTF8( current->getName().c_str() ) + _( " @ " ) +
             wxString::FromUTF8( current->getTrace()->getTraceNameNumbered().c_str() ) );
@@ -449,8 +449,8 @@ void AdvancedSaveConfiguration::parseSemanticParameterTag( const wxString& which
 }
 
 
-void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window::TParamAliasKey > &fullParamList, // maybe not needed, but window
-                                                           const Window::TParamAlias &renamedParamAlias,
+void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Timeline::TParamAliasKey > &fullParamList, // maybe not needed, but window
+                                                           const Timeline::TParamAlias &renamedParamAlias,
                                                            const bool showFullList )
 {
   vector< string > auxFullTagList;
@@ -461,8 +461,8 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
   string innerKey;
   TParamIndex numParameter;
   bool enabled;
-  Window *currentWindow = timelines[ currentItem ]; // TRY to set this static
-  vector< Window::TParamAliasKey > semanticLevelParamKeys;
+  Timeline *currentWindow = timelines[ currentItem ]; // TRY to set this static
+  vector< Timeline::TParamAliasKey > semanticLevelParamKeys;
 
   // For every given tag:
   for( vector< string >::const_iterator it = fullTagList.begin(); it != fullTagList.end(); ++it )
@@ -478,7 +478,7 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Window:
       semanticLevelParamKeys = currentWindow->getCFG4DParamKeysBySemanticLevel( *it, fullParamList );
 
       TParamIndex currentParam = 0;
-      for( vector< Window::TParamAliasKey >::const_iterator it2 = semanticLevelParamKeys.begin();
+      for( vector< Timeline::TParamAliasKey >::const_iterator it2 = semanticLevelParamKeys.begin();
            it2 != semanticLevelParamKeys.end(); ++it2 )
       {
         // Tag with parameters!
@@ -528,7 +528,7 @@ bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
 
   if ( isTimeline )
   {
-    Window *currentWindow = timelines[ currentItem ];
+    Timeline *currentWindow = timelines[ currentItem ];
     if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSEWORKLOAD ] ||
          tag == SingleTimelinePropertyLabels[ SINGLE_WORKLOAD ] )
     {
@@ -725,7 +725,7 @@ void AdvancedSaveConfiguration::BuildTagWidgets( const bool showFullList )
 }
 
 
-void AdvancedSaveConfiguration::BuildTagsPanel( Window *currentWindow, const bool showFullList )
+void AdvancedSaveConfiguration::BuildTagsPanel( Timeline *currentWindow, const bool showFullList )
 {
   // Build renamedTag and enabledTag maps
   fullTagList = currentWindow->getCFG4DFullTagList();
@@ -925,8 +925,8 @@ void AdvancedSaveConfiguration::PreparePanel( bool showFullList )
 void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
 {
   map< string, string > auxActivePropertyTags;
-  Window::TParamAliasKey auxParamKey;
-  Window::TParamAlias auxActiveParametersTags;
+  Timeline::TParamAliasKey auxParamKey;
+  Timeline::TParamAlias auxActiveParametersTags;
   string semanticLevel;
   string function;
   TParamIndex numParameter;
@@ -1043,7 +1043,7 @@ int AdvancedSaveConfiguration::GetSelectionIndexCorrected( int index, bool &isTi
 
 void AdvancedSaveConfiguration::OnStatisticsButtonClick( wxCommandEvent& event )
 {
-  vector< Window * > dummy;
+  vector< Timeline * > dummy;
   vector< Histogram * > onlyCurrentHistogram;
 
   onlyCurrentHistogram.push_back( histograms[ currentItem ] );
@@ -1110,7 +1110,7 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
 
     case TEditorMode::PROPERTIES_TAGS:
       // Recover previous state for all windows and histograms
-      for( vector< Window * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
+      for( vector< Timeline * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
       {
         (*it)->setCFG4DEnabled( backupTimelinesCFG4DEnabled[ *it ] );
         (*it)->setCFG4DMode( backupTimelinesCFG4DMode[ *it ] );
@@ -1136,7 +1136,7 @@ void AdvancedSaveConfiguration::OnCancelClick( wxCommandEvent& event )
 
 void AdvancedSaveConfiguration::OnCheckBoxLinkWindowClicked( wxCommandEvent& event )
 {
-  Window *tmpWin;
+  Timeline *tmpWin;
   Histogram *tmpHisto;
   CheckboxLinkData *tmpData = ( CheckboxLinkData *)event.m_callbackUserData;
 
@@ -1458,7 +1458,7 @@ void AdvancedSaveConfiguration::updateLinkPropertiesWidgets()
 }
 
 
-void AdvancedSaveConfiguration::setTimelineCFG4DAlias( Window *whichWindow,
+void AdvancedSaveConfiguration::setTimelineCFG4DAlias( Timeline *whichWindow,
                                                        const string& whichOriginalName,
                                                        const string& whichCustomName )
 {

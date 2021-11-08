@@ -2262,7 +2262,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     Trace *clusteredTrace = loadedTraces.back();
 
     // Create cluster id window: get sourceWindow
-    Window *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
+    Timeline *sourceWindow = paraverMain::myParaverMain->GetClusteringWindow();
 
     // Create cluster id window: avoid sourceWindow destruction
     bool dummyfound;
@@ -2270,7 +2270,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     currentWindow->setEnableDestroyButton( false );
 
     // Create cluster id window: create and fill newWindow with tuned sourceWindow properties
-    Window *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
+    Timeline *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
 
     TTime beginZoomTime;
     TTime endZoomTime;

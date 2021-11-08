@@ -1083,7 +1083,7 @@ void CutFilterDialog::OnButtonCutterSelectRegionClick( wxCommandEvent& event )
        timeline->GetMyWindow() == paraverMain::myParaverMain->GetCurrentTimeline() &&
        !timeline->IsShown() )  
   {
-    Window *tmpWin = timeline->GetMyWindow();
+    Timeline *tmpWin = timeline->GetMyWindow();
     tmpWin->setShowWindow( !tmpWin->getShowWindow() );
 
     if( tmpWin->getShowWindow() )

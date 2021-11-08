@@ -43,7 +43,7 @@ IMPLEMENT_DYNAMIC_CLASS( TimelineTreeSelector, wxDialog )
 class TimelineSelectorItemData: public wxTreeItemData
 {
   public:
-    TimelineSelectorItemData( const wxString& whichDesc, Window* whichWin ) :
+    TimelineSelectorItemData( const wxString& whichDesc, Timeline * whichWin ) :
       desc( whichDesc ), myTimeline( whichWin )
     {}
     
@@ -52,14 +52,14 @@ class TimelineSelectorItemData: public wxTreeItemData
       return desc;
     }
     
-    Window *getTimeline() const
+    Timeline *getTimeline() const
     {
       return myTimeline;
     }
     
   private:
     wxString desc;
-    Window* myTimeline;
+    Timeline * myTimeline;
 };
 
 
@@ -67,7 +67,7 @@ TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
                                             wxWindowID id,
                                             const wxString& title,
                                             const std::vector<TWindowID>& windows,
-                                            const Window *currentWindow,
+                                            const Timeline *currentWindow,
                                             const Trace *currentTrace,
                                             bool needNoneElement,
                                             const wxPoint& pos,
@@ -81,7 +81,7 @@ TimelineTreeSelector::TimelineTreeSelector( wxWindow* parent,
 }
 
 
-Window *TimelineTreeSelector::getSelection() const
+Timeline *TimelineTreeSelector::getSelection() const
 {
   TimelineSelectorItemData *currentItem = ( TimelineSelectorItemData* ) timelineTree->GetItemData( timelineTree->GetSelection() );
   return currentItem->getTimeline();
@@ -106,7 +106,7 @@ void TimelineTreeSelector::OnTreeItemActivated( wxTreeEvent& event )
 }
 
 
-void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, const Window *currentWindow, const Trace *currentTrace, bool needNoneElement )
+void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, const Timeline *currentWindow, const Trace *currentTrace, bool needNoneElement )
 {
   timelineTree->SetImageList( paraverMain::myParaverMain->GetImageList() );
   
@@ -122,7 +122,7 @@ void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, cons
   map< Trace *, wxTreeItemId > traceRoot;
   for( vector<TWindowID>::const_iterator it = windows.begin(); it != windows.end(); ++it )
   {
-    Window *currentWin = LoadedWindows::getInstance()->getWindow( *it );
+    Timeline *currentWin = LoadedWindows::getInstance()->getWindow( *it );
     if( currentWin->getChild() != nullptr )
       continue;
 
@@ -148,7 +148,7 @@ void TimelineTreeSelector::fillTree( const std::vector<TWindowID>& windows, cons
 }
 
 
-void TimelineTreeSelector::addTreeItem( Window *whichWindow, const Window *currentWindow, wxTreeItemId whichParent )
+void TimelineTreeSelector::addTreeItem( Timeline *whichWindow, const Timeline *currentWindow, wxTreeItemId whichParent )
 {
   wxTreeItemId tmpId = timelineTree->AppendItem( whichParent, wxString( whichWindow->getName().c_str(), wxConvUTF8 ), getIconNumber( whichWindow ), -1,
                                                  new TimelineSelectorItemData( wxString( whichWindow->getName().c_str(), wxConvUTF8 ), whichWindow ) );

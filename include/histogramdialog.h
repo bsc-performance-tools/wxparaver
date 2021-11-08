@@ -192,17 +192,17 @@ public:
   double GetControlTimelineMin() const { return controlTimelineMin ; }
   void SetControlTimelineMin(double value) { controlTimelineMin = value ; }
 
-  Window * GetControlTimelineSelected() const { return controlTimelineSelected ; }
-  void SetControlTimelineSelected(Window * value) { controlTimelineSelected = value ; }
+  Timeline * GetControlTimelineSelected() const { return controlTimelineSelected ; }
+  void SetControlTimelineSelected(Timeline * value) { controlTimelineSelected = value ; }
 
   std::vector<TWindowID> GetControlTimelines() const { return controlTimelines ; }
   void SetControlTimelines(std::vector<TWindowID> value) { controlTimelines = value ; }
 
-  Window * GetCurrentWindow() const { return currentWindow ; }
-  void SetCurrentWindow(Window * value) { currentWindow = value ; }
+  Timeline * GetCurrentWindow() const { return currentWindow ; }
+  void SetCurrentWindow(Timeline * value) { currentWindow = value ; }
 
-  Window * GetDataTimelineSelected() const { return dataTimelineSelected ; }
-  void SetDataTimelineSelected(Window * value) { dataTimelineSelected = value ; }
+  Timeline * GetDataTimelineSelected() const { return dataTimelineSelected ; }
+  void SetDataTimelineSelected(Timeline * value) { dataTimelineSelected = value ; }
 
   std::vector<TWindowID> GetDataTimelines() const { return dataTimelines ; }
   void SetDataTimelines(std::vector<TWindowID> value) { dataTimelines = value ; }
@@ -219,8 +219,8 @@ public:
   double GetExtraControlTimelineMin() const { return extraControlTimelineMin ; }
   void SetExtraControlTimelineMin(double value) { extraControlTimelineMin = value ; }
 
-  Window * GetExtraControlTimelineSelected() const { return extraControlTimelineSelected ; }
-  void SetExtraControlTimelineSelected(Window * value) { extraControlTimelineSelected = value ; }
+  Timeline * GetExtraControlTimelineSelected() const { return extraControlTimelineSelected ; }
+  void SetExtraControlTimelineSelected(Timeline * value) { extraControlTimelineSelected = value ; }
 
   std::vector<TWindowID> GetExtraControlTimelines() const { return extraControlTimelines ; }
   void SetExtraControlTimelines(std::vector<TWindowID> value) { extraControlTimelines = value ; }
@@ -238,7 +238,7 @@ public:
   wxIcon GetIconResource( const wxString& name );
 ////@end HistogramDialog member function declarations
 
-  bool TransferDataToWindow( Window *current );
+  bool TransferDataToWindow( Timeline *current );
   bool TransferDataFromWindow();
 
   /// Should we show tooltips?
@@ -276,16 +276,16 @@ private:
   double controlTimelineDelta;
   double controlTimelineMax;
   double controlTimelineMin;
-  Window * controlTimelineSelected;
+  Timeline * controlTimelineSelected;
   std::vector<TWindowID> controlTimelines;
-  Window * currentWindow;
-  Window * dataTimelineSelected;
+  Timeline * currentWindow;
+  Timeline * dataTimelineSelected;
   std::vector<TWindowID> dataTimelines;
   bool extraControlTimelineAutofit;
   double extraControlTimelineDelta;
   double extraControlTimelineMax;
   double extraControlTimelineMin;
-  Window * extraControlTimelineSelected;
+  Timeline * extraControlTimelineSelected;
   std::vector<TWindowID> extraControlTimelines;
   std::vector<std::pair<TRecordTime,TRecordTime> > timeRange;
   bool waitingGlobalTiming;
@@ -294,10 +294,10 @@ private:
   wxString formatNumber( double value );
 
   TSemanticValue computeDelta( TSemanticValue min, TSemanticValue max );
-  void computeColumns( Window *timeline, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta );
+  void computeColumns( Timeline *timeline, TSemanticValue &min, TSemanticValue &max, TSemanticValue &delta );
   void updateControlTimelineAutofit();
   void updateExtraControlTimelineAutofit();
-  PRV_UINT32 fillList( Window *current, std::vector< TWindowID > listTimelines, wxChoice *listWidget );
+  PRV_UINT32 fillList( Timeline *current, std::vector< TWindowID > listTimelines, wxChoice *listWidget );
   void enable3DFields( bool autofit );
 };
 

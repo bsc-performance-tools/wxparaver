@@ -123,7 +123,7 @@ wxTreeItemId getItemIdFromGTimeline( wxTreeItemId root, gTimeline *wanted, bool 
 
 
 // TODO: Separate recursion function to remove bool from parameters in main definition
-gTimeline *getGTimelineFromWindow( wxTreeItemId root, Window *wanted, bool &found )
+gTimeline *getGTimelineFromWindow( wxTreeItemId root, Timeline *wanted, bool &found )
 {
   gTimeline *retgt = nullptr;
   wxTreeItemIdValue cookie;
@@ -201,7 +201,7 @@ gHistogram *getGHistogramFromWindow( wxTreeItemId root, Histogram *wanted )
 }
 
 
-wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Window *wanted, bool &found )
+wxTreeItemId getItemIdFromWindow( wxTreeItemId root, Timeline *wanted, bool &found )
 {
   wxTreeItemId retItemId;
   wxTreeItemIdValue cookie;
@@ -261,7 +261,7 @@ void getParentGTimeline( gTimeline *current, vector< gTimeline * > & parents )
 void BuildTree( paraverMain *parent,
                 wxTreeCtrl *root1, wxTreeItemId idRoot1,
                 wxTreeCtrl *root2, wxTreeItemId idRoot2,
-                Window *window,
+                Timeline *window,
                 string nameSuffix )
 {
   wxTreeItemId currentWindowId1, currentWindowId2;
@@ -313,7 +313,7 @@ void BuildTree( paraverMain *parent,
 
 bool updateTreeItem( wxTreeCtrl *tree,
                      wxTreeItemId& id,
-                     vector< Window * > &allWindows,
+                     vector< Timeline * > &allWindows,
                      vector< Histogram * > &allHistograms,
                      wxWindow **currentWindow,
                      bool allTracesTree )
@@ -325,7 +325,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
   wxString tmpName;
   if( gTimeline *tmpTimeline = itemData->getTimeline() )
   {
-    Window *tmpWindow = tmpTimeline->GetMyWindow();
+    Timeline *tmpWindow = tmpTimeline->GetMyWindow();
     if( tmpWindow->isSync() )
       tree->SetItemBold( id, true );
     else
@@ -338,7 +338,7 @@ bool updateTreeItem( wxTreeCtrl *tree,
     }
     tmpName = wxString::FromUTF8( tmpWindow->getName().c_str() );
     
-    for ( vector<Window *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
+    for ( vector<Timeline *>::iterator it = allWindows.begin(); it != allWindows.end(); it++ )
     {
       if ( *it == tmpWindow )
       {
@@ -356,13 +356,13 @@ bool updateTreeItem( wxTreeCtrl *tree,
       }
       if( !allTracesTree )
         tmpTimeline->Destroy();
-      Window *parent1 = tmpWindow->getParent( 0 );
+      Timeline *parent1 = tmpWindow->getParent( 0 );
       if( parent1 != nullptr )
       {
         parent1->setChild( nullptr );
         parent1->setDestroy( true );
       }
-      Window *parent2 = tmpWindow->getParent( 1 );
+      Timeline *parent2 = tmpWindow->getParent( 1 );
       if( parent2 != nullptr )
       {
         parent2->setChild( nullptr );
@@ -488,7 +488,7 @@ void iconizeWindows( wxTreeCtrl *tree,
   }
 }
 
-int getIconNumber( Window *whichWindow )
+int getIconNumber( Timeline *whichWindow )
 {
   int iconNumber = 1; // number of timeline icon
   if ( whichWindow->isDerivedWindow() )

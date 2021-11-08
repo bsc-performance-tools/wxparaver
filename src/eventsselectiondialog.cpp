@@ -171,7 +171,7 @@ void EventsSelectionDialog::Init()
 }
 
 
-void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Window *whichWindow,
+void EventsSelectionDialog::TransferDataToWindowPreCreateControls( Timeline *whichWindow,
                                                                    bool whichHideOperatorsList )
 {
   currentWindow = whichWindow;
@@ -255,7 +255,7 @@ void EventsSelectionDialog::TransferDataToWindowPostCreateControls()
 
 
 EventsSelectionDialog::EventsSelectionDialog(  wxWindow* parent,
-                                               Window *whichWindow,
+                                               Timeline *whichWindow,
                                                bool whichHideOperatorsList,
                                                const wxString& caption,
                                                wxWindowID id,
@@ -1252,7 +1252,7 @@ void EventsSelectionDialog::OnTogglebuttonShortLabelsClick( wxCommandEvent& even
 }
 
 
-EventInfoManager::EventInfoManager( Window *whichWindow, Filter *whichFilter )
+EventInfoManager::EventInfoManager( Timeline *whichWindow, Filter *whichFilter )
 {
   currentWindow = whichWindow;
   currentFilter = whichFilter;
@@ -1315,7 +1315,7 @@ bool EventInfoManager::matchesAllRegex( string whichName, string whichValue )
 }
 
 
-EventTypesInfoManager::EventTypesInfoManager( Window *whichWindow, Filter *whichFilter )
+EventTypesInfoManager::EventTypesInfoManager( Timeline *whichWindow, Filter *whichFilter )
   : EventInfoManager( whichWindow, whichFilter )
 {
   init();
@@ -1625,7 +1625,7 @@ void EventTypesInfoManager::setChangedSelection()
 }
 
 
-EventValuesInfoManager::EventValuesInfoManager( Window *whichWindow, Filter *whichFilter, TEventType whichType )
+EventValuesInfoManager::EventValuesInfoManager( Timeline *whichWindow, Filter *whichFilter, TEventType whichType )
   : EventInfoManager( whichWindow, whichFilter )
 {
   currentType = whichType;

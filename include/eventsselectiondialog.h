@@ -92,7 +92,7 @@ class Filter;
 class EventInfoManager
 {
   public:
-    EventInfoManager( Window *whichWindow, Filter *whichFilter );
+    EventInfoManager( Timeline *whichWindow, Filter *whichFilter );
     virtual ~EventInfoManager();
 
     virtual void transferFrom( wxCheckListBox *whichList ) = 0;
@@ -119,7 +119,7 @@ class EventInfoManager
     void clearAllRegEx();
 
   protected:
-    Window *currentWindow;
+    Timeline *currentWindow;
     Filter *currentFilter;
 
     int firstPosSelectedVisible;
@@ -136,7 +136,7 @@ class EventInfoManager
 class EventTypesInfoManager : public EventInfoManager
 {
   public:
-    EventTypesInfoManager( Window *whichWindow, Filter *whichFilter );
+    EventTypesInfoManager( Timeline *whichWindow, Filter *whichFilter );
     virtual ~EventTypesInfoManager() {};
 
     void init();
@@ -186,7 +186,7 @@ class EventTypesInfoManager : public EventInfoManager
 class EventValuesInfoManager : public EventInfoManager
 {
   public:
-    EventValuesInfoManager( Window *whichWindow, Filter *whichFilter, TEventType whichType );
+    EventValuesInfoManager( Timeline *whichWindow, Filter *whichFilter, TEventType whichType );
     virtual ~EventValuesInfoManager() {};
     
     void init( TEventType whichType, bool shortVersion, bool keepSelected = false );
@@ -241,7 +241,7 @@ public:
   EventsSelectionDialog();
 
   EventsSelectionDialog( wxWindow* parent,
-                         Window *whichWindow,
+                         Timeline *whichWindow,
 //                         wxArrayString &whichSelectedEventTypes,
 //                         wxArrayString &whichSelectedEventValues,
                          bool hideOperatorsList = false,
@@ -422,7 +422,7 @@ public:
                           // ( TODO: please consider the alternative of inheritance design)
 
   // *** To ease access to the data of the filter ***
-  Window               *currentWindow;
+  Timeline               *currentWindow;
   Filter               *currentFilter;     // To set/get events info, and operator or/and
 
   EventValuesInfoManager *valuesHandler;
@@ -471,7 +471,7 @@ public:
                     bool copyStrings = false );
   void InsertValueFromTextCtrl();
 
-  void TransferDataToWindowPreCreateControls( Window *whichWindow,
+  void TransferDataToWindowPreCreateControls( Timeline *whichWindow,
                                               bool whichHideOperatorsList);
   void EnableApplyButton();
   void TransferDataToWindowPostCreateControls();

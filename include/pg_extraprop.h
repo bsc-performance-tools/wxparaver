@@ -34,7 +34,7 @@
 #endif
 #include "loadedwindows.h"
 
-class Window;
+class Timeline;
 
 /**********************************************************
  **       prvEventTypeProperty
@@ -108,7 +108,7 @@ class prvEventInfoProperty: public wxPGProperty
     prvEventInfoProperty( const wxString& label,
                           const wxString& name,
                           const wxPGChoices& choices,
-                          Window *whichWindow,
+                          Timeline *whichWindow,
                           prvEventInfoType whichInfoType  );
 
     prvEventInfoProperty( const wxString& label,
@@ -159,7 +159,7 @@ class prvEventInfoProperty: public wxPGProperty
     wxString            m_display; // Cache displayed text since generating it is relatively complicated.
     
   private:
-    Window *currentWindow;
+    Timeline *currentWindow;
 };
 
 
@@ -232,7 +232,7 @@ class prvRowsSelectionProperty: public wxPGProperty
     {}
 
     prvRowsSelectionProperty( wxPropertyGrid *propgrid,
-                              Window *whichWindow,
+                              Timeline *whichWindow,
                               const wxString &windowName,
                               std::vector<TObjectOrder> &whichSelection,
                               const wxString &label,
@@ -258,7 +258,7 @@ class prvRowsSelectionProperty: public wxPGProperty
                   wxEvent& event );
 #endif
   private:
-    Window *myTimeline;
+    Timeline *myTimeline;
     wxString myWindowName;
     SelectionManagement< TObjectOrder, TWindowLevel > mySelectedRows;
 
@@ -324,7 +324,7 @@ class prvTimelineTreeProperty: public wxPGProperty
                              const wxString& name,
                              const wxString& value,
                              std::vector<TWindowID> windows,
-                             Window *currentWindow,
+                             Timeline *currentWindow,
                              const Trace *currentTrace,
                              bool needNoneElement = false );
     virtual ~prvTimelineTreeProperty();
@@ -342,11 +342,11 @@ class prvTimelineTreeProperty: public wxPGProperty
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
 #endif
-    Window *getSelectedWindow() const;
+    Timeline *getSelectedWindow() const;
 
   private:
     std::vector<TWindowID> myWindows;
     const Trace *myCurrentTrace;
-    Window *selectedWindow;
+    Timeline *selectedWindow;
     bool myNeedNoneElement;
 };

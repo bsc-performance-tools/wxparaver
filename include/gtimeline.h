@@ -77,7 +77,7 @@ class wxNotebook;
 class wxRichTextCtrl;
 class wxBoxSizer;
 ////@end forward declarations
-class Window;
+class Timeline;
 class ProgressController;
 
 
@@ -359,8 +359,8 @@ public:
   wxMouseEvent GetMotionEvent() const { return motionEvent ; }
   void SetMotionEvent(wxMouseEvent value) { motionEvent = value ; }
 
-  Window* GetMyWindow() const { return myWindow ; }
-  void SetMyWindow(Window* value) { myWindow = value ; }
+  Timeline* GetMyWindow() const { return myWindow ; }
+  void SetMyWindow(Timeline* value) { myWindow = value ; }
 
   PRV_INT32 GetObjectAxisPos() const { return objectAxisPos ; }
   void SetObjectAxisPos(PRV_INT32 value) { objectAxisPos = value ; }
@@ -592,7 +592,7 @@ public:
                       TObjectOrder lastFoundObject = TObjectOrder(0) );
   void OnFindDialog();
 
-  gTimeline *clone( Window *clonedWindow,
+  gTimeline *clone( Timeline *clonedWindow,
                     wxWindow *parent,
                     wxTreeItemId idRoot1,
                     wxTreeItemId idRoot2,
@@ -686,7 +686,7 @@ private:
   wxColour logicalColour;
   wxPen logicalPen;
   wxMouseEvent motionEvent;
-  Window* myWindow;
+  Timeline* myWindow;
   PRV_INT32 objectAxisPos;
   wxFont objectFont;
   int objectHeight;
@@ -803,7 +803,7 @@ private:
   {
     public:
       ScaleImageVertical(
-              Window* whichMyWindow,
+              Timeline* whichMyWindow,
               const std::map< TSemanticValue, rgb >& whichSemanticValues,
               wxColour whichBackground,
               wxColour whichForeground,
@@ -838,7 +838,7 @@ private:
                                          bool drawIt = true );
       void destroyDC();
 
-      Window *myWindow;
+      Timeline *myWindow;
       std::map< TSemanticValue, rgb > semValues;
       wxColour background;
       wxColour foreground;
@@ -885,7 +885,7 @@ private:
   {
     public:
       ScaleImageVerticalCodeColor(
-              Window* whichMyWindow,
+              Timeline* whichMyWindow,
               const std::map< TSemanticValue, rgb >& whichSemanticValues,
               wxColour whichBackground,
               wxColour whichForeground,
@@ -910,7 +910,7 @@ private:
   {
     public:
       ScaleImageVerticalGradientColor(
-              Window* whichMyWindow,
+              Timeline* whichMyWindow,
               const std::map< TSemanticValue, rgb >& whichSemanticValues,
               wxColour whichBackground,
               wxColour whichForeground,
@@ -940,7 +940,7 @@ private:
   {
     public:
       ScaleImageVerticalFusedLines(
-              Window* whichMyWindow,
+              Timeline* whichMyWindow,
               const std::map< TSemanticValue, rgb >& whichSemanticValues,
               wxColour whichBackground,
               wxColour whichForeground,
@@ -967,7 +967,7 @@ private:
   {
     public:
       ScaleImageHorizontalGradientColor(
-              Window* whichMyWindow,
+              Timeline* whichMyWindow,
               const std::map< TSemanticValue, rgb >& whichSemanticValues,
               wxColour whichBackground,
               wxColour whichForeground,

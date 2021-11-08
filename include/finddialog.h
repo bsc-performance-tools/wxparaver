@@ -129,8 +129,8 @@ public:
 
 ////@begin FindDialog member function declarations
 
-  Window * GetMyWindow() const { return myWindow ; }
-  void SetMyWindow(Window * value) { myWindow = value ; }
+  Timeline * GetMyWindow() const { return myWindow ; }
+  void SetMyWindow(Timeline * value) { myWindow = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -157,6 +157,6 @@ public:
   wxSpinCtrl* spinSemanticDuration;
   wxBoxSizer* boxSizerOperatorsChoice;
 private:
-  Window * myWindow;
+  Timeline * myWindow;
 ////@end FindDialog member variables
 };
