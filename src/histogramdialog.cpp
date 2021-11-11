@@ -535,9 +535,6 @@ void HistogramDialog::OnOkClick( wxCommandEvent& event )
 {
   if ( TransferDataFromWindow() )
   {
-#if wxMAJOR_VERSION<3
-    MakeModal( false );
-#endif
     EndModal( wxID_OK );
   }
 }
@@ -866,9 +863,6 @@ void HistogramDialog::OnRadiobuttonManualUpdate( wxUpdateUIEvent& event )
 
 void HistogramDialog::OnCancelClick( wxCommandEvent& event )
 {
-#if wxMAJOR_VERSION<3
-    MakeModal( false );
-#endif
   EndModal( wxID_CANCEL );
 }
 

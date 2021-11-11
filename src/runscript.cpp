@@ -997,12 +997,7 @@ void RunScript::CreateControls()
   itemBoxSizer138->Add(buttonExit, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
 ////@end RunScript content construction
-
-#if wxMAJOR_VERSION<3
-  listboxRunLog->SetWindowStyleFlag( wxALWAYS_SHOW_SB|wxHW_SCROLLBAR_AUTO|wxHSCROLL|wxVSCROLL );
-#else
   listboxRunLog->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
-#endif
 
   for ( int i = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); i <= static_cast<int>( TExternalApp::USER_DEFINED ); ++i )
   {

@@ -49,18 +49,14 @@
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/editors.h>
 #include <wx/valnum.h>
-#if wxMAJOR_VERSION>=3
 #include <wx/artprov.h>
-#endif
 
 // CFG4D
 #include "cfg.h"
 
 using namespace std;
 
-#if wxMAJOR_VERSION>=3
 typedef  wxPGProperty* wxPGId;
-#endif
 
 static bool filterCatCollapsed        = true;
 static bool commFilterCatCollapsed    = true;
@@ -83,7 +79,6 @@ static unsigned int propNameCounter   = 0;
 /*
 class wxSpinButtonsEditor : public wxPGTextCtrlEditor
 {
-#if wxMAJOR_VERSION>=3
   wxDECLARE_DYNAMIC_CLASS( wxSpinButtonsEditor );
 #else
   WX_PG_DECLARE_EDITOR_CLASS( wxSpinButtonsEditor );
@@ -92,26 +87,18 @@ class wxSpinButtonsEditor : public wxPGTextCtrlEditor
   public:
     wxSpinButtonsEditor() {}
     virtual ~wxSpinButtonsEditor() {}
-#if wxMAJOR_VERSION>=3
     virtual wxString GetName() const { return wxT( "SpinButtonsEditor" ); }
     virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
                                            wxPGProperty* property,
                                            const wxPoint& pos,
                                            const wxSize& sz ) const;
-#else
-    wxPG_DECLARE_CREATECONTROLS
-#endif
     virtual bool OnEvent( wxPropertyGrid* propGrid,
                           wxPGProperty* property,
                           wxWindow* ctrl,
                           wxEvent& event ) const;
 };
 
-#if wxMAJOR_VERSION>=3
 wxIMPLEMENT_DYNAMIC_CLASS( wxSpinButtonsEditor, wxPGTextCtrlEditor );
-#else
-WX_PG_IMPLEMENT_EDITOR_CLASS( SpinButtonsEditor,wxSpinButtonsEditor, wxPGTextCtrlEditor )
-#endif
 
 wxPGWindowList wxSpinButtonsEditor::CreateControls( wxPropertyGrid* propGrid,
                                                     wxPGProperty* property,
@@ -125,11 +112,7 @@ wxPGWindowList wxSpinButtonsEditor::CreateControls( wxPropertyGrid* propGrid,
 
   wxPGWindowList wndList = wxPGTextCtrlEditor::CreateControls( propGrid, property, pos,
                                                                buttons->GetPrimarySize() );
-#if wxMAJOR_VERSION>=3
   buttons->Finalize( propGrid, pos );
-#else
-  buttons->FinalizePosition( pos );
-#endif
   wndList.SetSecondary( buttons );
 
   return wndList;
@@ -140,11 +123,7 @@ bool wxSpinButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
                                    wxWindow* ctrl,
                                    wxEvent& event ) const
 {
-#if wxMAJOR_VERSION>=3
   if ( event.GetEventType() == wxEVT_BUTTON )
-#else
-  if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
-#endif
   {
     wxPGMultiButton *buttons = ( wxPGMultiButton* ) propGrid->GetEditorControlSecondary();
 
@@ -183,37 +162,23 @@ enum ButtonType { NO_BUTTON = 0, PLUS_BUTTON, MINUS_BUTTON, BOTH_BUTTONS };
 
 class wxChoiceAndMinusButtonEditor : public wxPGChoiceEditor
 {
-#if wxMAJOR_VERSION>=3
   wxDECLARE_DYNAMIC_CLASS( wxChoiceAndMinusButtonEditor );
-#else
-  WX_PG_DECLARE_EDITOR_CLASS( wxChoiceAndMinusButtonEditor );
-#endif
     
   public:
     wxChoiceAndMinusButtonEditor() {}
     virtual ~wxChoiceAndMinusButtonEditor() {}
-#if wxMAJOR_VERSION>=3
     virtual wxString GetName() const { return wxT( "ChoiceAndMinusButtonEditor" ); }
     virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
                                            wxPGProperty* property,
                                            const wxPoint& pos,
                                            const wxSize& sz ) const;
-#else
-    wxPG_DECLARE_CREATECONTROLS
-#endif
     virtual bool OnEvent( wxPropertyGrid* propGrid,
                           wxPGProperty* property,
                           wxWindow* ctrl,
                           wxEvent& event ) const;
 };
 
-#if wxMAJOR_VERSION>=3
 wxIMPLEMENT_DYNAMIC_CLASS( wxChoiceAndMinusButtonEditor, wxPGChoiceEditor );
-#else
-WX_PG_IMPLEMENT_EDITOR_CLASS( ChoiceAndMinusButtonEditor,
-                              wxChoiceAndMinusButtonEditor,
-                              wxPGChoiceEditor )
-#endif
 
 wxPGWindowList wxChoiceAndMinusButtonEditor::CreateControls( wxPropertyGrid* propGrid,
                                                              wxPGProperty* property,
@@ -226,11 +191,7 @@ wxPGWindowList wxChoiceAndMinusButtonEditor::CreateControls( wxPropertyGrid* pro
 
   wxPGWindowList wndList = wxPGChoiceEditor::CreateControls( propGrid, property, pos,
                                                                buttons->GetPrimarySize() );
-#if wxMAJOR_VERSION>=3
   buttons->Finalize( propGrid, pos );
-#else
-  buttons->FinalizePosition( pos );
-#endif
   wndList.SetSecondary( buttons );
 
   return wndList;
@@ -241,11 +202,7 @@ bool wxChoiceAndMinusButtonEditor::OnEvent( wxPropertyGrid* propGrid,
                                             wxWindow* ctrl,
                                             wxEvent& event ) const
 {
-#if wxMAJOR_VERSION>=3
   if ( event.GetEventType() == wxEVT_BUTTON )
-#else
-  if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
-#endif
   {
   }
   
@@ -255,37 +212,23 @@ bool wxChoiceAndMinusButtonEditor::OnEvent( wxPropertyGrid* propGrid,
 
 class wxChoiceAndPlusButtonEditor : public wxPGChoiceEditor
 {
-#if wxMAJOR_VERSION>=3
   wxDECLARE_DYNAMIC_CLASS( wxChoiceAndPlusButtonEditor );
-#else
-  WX_PG_DECLARE_EDITOR_CLASS( wxChoiceAndPlusButtonEditor );
-#endif
     
   public:
     wxChoiceAndPlusButtonEditor() {}
     virtual ~wxChoiceAndPlusButtonEditor() {}
-#if wxMAJOR_VERSION>=3
     virtual wxString GetName() const { return wxT( "ChoiceAndPlusButtonEditor" ); }
     virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
                                            wxPGProperty* property,
                                            const wxPoint& pos,
                                            const wxSize& sz ) const;
-#else
-    wxPG_DECLARE_CREATECONTROLS
-#endif
     virtual bool OnEvent( wxPropertyGrid* propGrid,
                           wxPGProperty* property,
                           wxWindow* ctrl,
                           wxEvent& event ) const;
 };
 
-#if wxMAJOR_VERSION>=3
 wxIMPLEMENT_DYNAMIC_CLASS( wxChoiceAndPlusButtonEditor, wxPGChoiceEditor );
-#else
-WX_PG_IMPLEMENT_EDITOR_CLASS( ChoiceAndPlusButtonEditor,
-                              wxChoiceAndPlusButtonEditor,
-                              wxPGChoiceEditor )
-#endif
 
 wxPGWindowList wxChoiceAndPlusButtonEditor::CreateControls( wxPropertyGrid* propGrid,
                                                             wxPGProperty* property,
@@ -298,11 +241,7 @@ wxPGWindowList wxChoiceAndPlusButtonEditor::CreateControls( wxPropertyGrid* prop
 
   wxPGWindowList wndList = wxPGChoiceEditor::CreateControls( propGrid, property, pos,
                                                              buttons->GetPrimarySize() );
-#if wxMAJOR_VERSION>=3
   buttons->Finalize( propGrid, pos );
-#else
-  buttons->FinalizePosition( pos );
-#endif
   wndList.SetSecondary( buttons );
 
   return wndList;
@@ -313,11 +252,7 @@ bool wxChoiceAndPlusButtonEditor::OnEvent( wxPropertyGrid* propGrid,
                                            wxWindow* ctrl,
                                            wxEvent& event ) const
 {
-#if wxMAJOR_VERSION>=3
   if ( event.GetEventType() == wxEVT_BUTTON )
-#else
-  if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
-#endif
   {
   }
   
@@ -327,37 +262,23 @@ bool wxChoiceAndPlusButtonEditor::OnEvent( wxPropertyGrid* propGrid,
 
 class wxChoiceAndBothButtonsEditor : public wxPGChoiceEditor
 {
-#if wxMAJOR_VERSION>=3
   wxDECLARE_DYNAMIC_CLASS( wxChoiceAndBothButtonsEditor );
-#else
-  WX_PG_DECLARE_EDITOR_CLASS( wxChoiceAndBothButtonsEditor );
-#endif
     
   public:
     wxChoiceAndBothButtonsEditor() {}
     virtual ~wxChoiceAndBothButtonsEditor() {}
-#if wxMAJOR_VERSION>=3
     virtual wxString GetName() const { return wxT( "ChoiceAndBothButtonsEditor" ); }
     virtual wxPGWindowList CreateControls( wxPropertyGrid* propGrid,
                                            wxPGProperty* property,
                                            const wxPoint& pos,
                                            const wxSize& sz ) const;
-#else
-    wxPG_DECLARE_CREATECONTROLS
-#endif
     virtual bool OnEvent( wxPropertyGrid* propGrid,
                           wxPGProperty* property,
                           wxWindow* ctrl,
                           wxEvent& event ) const;
 };
 
-#if wxMAJOR_VERSION>=3
 wxIMPLEMENT_DYNAMIC_CLASS( wxChoiceAndBothButtonsEditor, wxPGChoiceEditor );
-#else
-WX_PG_IMPLEMENT_EDITOR_CLASS( ChoiceAndBothButtonsEditor,
-                              wxChoiceAndBothButtonsEditor,
-                              wxPGChoiceEditor )
-#endif
 
 wxPGWindowList wxChoiceAndBothButtonsEditor::CreateControls( wxPropertyGrid* propGrid,
                                                              wxPGProperty* property,
@@ -367,21 +288,12 @@ wxPGWindowList wxChoiceAndBothButtonsEditor::CreateControls( wxPropertyGrid* pro
   wxPGMultiButton* buttons = new wxPGMultiButton( propGrid, sz );
 
 
-#if wxMAJOR_VERSION>=3
   buttons->Add( wxArtProvider::GetBitmap( wxART_PLUS ) );
   buttons->Add( wxArtProvider::GetBitmap( wxART_MINUS ) );
-#else
-  buttons->Add( wxT( "+" ) );
-  buttons->Add( wxT( "-" ) );
-#endif
 
   wxPGWindowList wndList = wxPGChoiceEditor::CreateControls( propGrid, property, pos,
                                                              buttons->GetPrimarySize() );
-#if wxMAJOR_VERSION>=3
   buttons->Finalize( propGrid, pos );
-#else
-  buttons->FinalizePosition( pos );
-#endif
   wndList.SetSecondary( buttons );
 
   return wndList;
@@ -393,11 +305,7 @@ bool wxChoiceAndBothButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
                                             wxWindow* ctrl,
                                             wxEvent& event ) const
 {
-#if wxMAJOR_VERSION>=3
   if ( event.GetEventType() == wxEVT_BUTTON )
-#else
-  if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
-#endif
   {
     Timeline *tmpTimeline = ( ( PropertyClientData * )property->GetClientData() )->ownerTimeline;
     wxPGMultiButton *buttons = ( wxPGMultiButton* ) propGrid->GetEditorControlSecondary();
@@ -420,17 +328,14 @@ bool wxChoiceAndBothButtonsEditor::OnEvent( wxPropertyGrid* propGrid,
 }
 
 
-#if wxMAJOR_VERSION>=3
 //static wxSpinButtonsEditor *spinButtonsEditor = nullptr;
 static wxChoiceAndMinusButtonEditor *choiceAndMinusButtonEditor = nullptr;
 static wxChoiceAndPlusButtonEditor  *choiceAndPlusButtonEditor  = nullptr;
 static wxChoiceAndBothButtonsEditor *choiceAndBothButtonsEditor  = nullptr;
-#endif
 
 
 void initPG()
 {
-#if wxMAJOR_VERSION>=3
 /*
   spinButtonsEditor = new wxSpinButtonsEditor();
   wxPropertyGrid::RegisterEditorClass( spinButtonsEditor );
@@ -441,12 +346,6 @@ void initPG()
   wxPropertyGrid::RegisterEditorClass( choiceAndMinusButtonEditor );
   wxPropertyGrid::RegisterEditorClass( choiceAndPlusButtonEditor );
   wxPropertyGrid::RegisterEditorClass( choiceAndBothButtonsEditor );
-#else
-//  wxPGRegisterEditorClass( SpinButtonsEditor );
-  wxPGRegisterEditorClass( ChoiceAndMinusButtonEditor );
-  wxPGRegisterEditorClass( ChoiceAndPlusButtonEditor );
-  wxPGRegisterEditorClass( ChoiceAndBothButtonsEditor );
-#endif
 }
 
 
@@ -696,28 +595,16 @@ wxPGId AppendCFG4DEnumPropertyWindow( wxPropertyGrid* windowProperties,
     switch( addButton )
     {
       case PLUS_BUTTON:
-        #if wxMAJOR_VERSION>=3
           windowProperties->SetPropertyEditor( auxProperty, choiceAndPlusButtonEditor );
-        #else
-          windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( ChoiceAndPlusButtonEditor ));
-        #endif
         break;
 
       case MINUS_BUTTON:
-        #if wxMAJOR_VERSION>=3
           windowProperties->SetPropertyEditor( auxProperty, choiceAndMinusButtonEditor );
-        #else
-          windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( ChoiceAndMinusButtonEditor ));
-        #endif
 
         break;
       
       case BOTH_BUTTONS:
-        #if wxMAJOR_VERSION>=3
           windowProperties->SetPropertyEditor( auxProperty, choiceAndBothButtonsEditor );
-        #else
-          windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( ChoiceAndBothButtonsEditor ));
-        #endif
         break;
 
       default:
@@ -814,11 +701,7 @@ wxPGId AppendCFG4DFloatPropertyWindow( wxPropertyGrid* windowProperties,
     
 // NOT WORKING PROPERLY
 /*
-#if wxMAJOR_VERSION>=3
   windowProperties->SetPropertyEditor( auxProperty, spinButtonsEditor );
-#else
-  windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( SpinButtonsEditor ) );
-#endif
 */
 
   fillPropertyClientData( whichWindow, nullptr, auxProperty, widgetName, whichPropertiesClientData );
@@ -889,11 +772,7 @@ wxPGId AppendCFG4DIntegerPropertyWindow( wxPropertyGrid* windowProperties,
   
 // NOT WORKING PROPERLY
 /*
-#if wxMAJOR_VERSION>=3
   windowProperties->SetPropertyEditor( auxProperty, spinButtonsEditor );
-#else
-  windowProperties->SetPropertyEditor( auxProperty, wxPG_EDITOR( SpinButtonsEditor ) );
-#endif
 */
 
   fillPropertyClientData( whichWindow, nullptr, auxProperty, widgetName, whichPropertiesClientData );
@@ -1481,18 +1360,10 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
 
 inline void updateStateOf( wxPropertyGrid *windowProperties, bool& categoryStat, const wxString& catName )
 {
-#if wxMAJOR_VERSION<3
-  wxPGProperty *tmpProp = windowProperties->GetPropertyByLabel( catName );
-#else
   wxPGProperty *tmpProp = windowProperties->GetProperty( catName );
-#endif
 
   if( tmpProp != nullptr )
-#if wxMAJOR_VERSION<3
-    categoryStat = tmpProp->GetFlagsAsString( wxPG_PROP_COLLAPSED ) == _( "COLLAPSED" );
-#else
     categoryStat = !windowProperties->IsPropertyExpanded( tmpProp );
-#endif
 }
 
 
@@ -1777,16 +1648,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                                                    new wxStringProperty( wxT("Comm from"),
                                                                          wxT("Comm from"),
                                                                          wxT("<composed>") ) );
-#if wxMAJOR_VERSION<3
-      if( commFilterFromCollapsed )
-        commFilterFrom->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
-      else
-        commFilterFrom->SetFlagsFromString( _( "DISABLED" ) );
-#else
       if( commFilterFromCollapsed )
         commFilterFrom->SetFlagsFromString( _( "COLLAPSED" ) );
       commFilterFrom->Enable( false );
-#endif
     }
 
     pos = 0;
@@ -1818,11 +1682,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     {
       if( filter->getCommFromFunction() == "All" || filter->getCommFromFunction() == "None" )
       {
-#if wxMAJOR_VERSION<3
-        commFilterFromValues->SetFlagsFromString( _( "DISABLED" ) );
-#else
         commFilterFromValues->Enable( false );
-#endif
       }
     }
 
@@ -1849,16 +1709,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                                                  new wxStringProperty( wxT("Comm to"),
                                                                        wxT("Comm to"),
                                                                        wxT("<composed>") ) );
-#if wxMAJOR_VERSION<3
-      if( commFilterToCollapsed )
-        commFilterTo->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
-      else
-        commFilterTo->SetFlagsFromString( _( "DISABLED" ) );
-#else
       if( commFilterToCollapsed )
         commFilterTo->SetFlagsFromString( _( "COLLAPSED" ) );
       commFilterTo->Enable( false );
-#endif
     }
     pos = 0;
     selected = -1;
@@ -1889,11 +1742,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     {
       if( filter->getCommToFunction() == "All" || filter->getCommToFunction() == "None" )
       {
-#if wxMAJOR_VERSION<3
-        commFilterToValues->SetFlagsFromString( _( "DISABLED" ) );
-#else
         commFilterToValues->Enable( false );
-#endif
       }
     }
 
@@ -1905,16 +1754,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                                                   new wxStringProperty( wxT("Comm tag"),
                                                                         wxT("Comm tag"),
                                                                         wxT("<composed>") ) );
-#if wxMAJOR_VERSION<3
-      if( commFilterTagCollapsed )
-        commFilterTag->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
-      else
-        commFilterTag->SetFlagsFromString( _( "DISABLED" ) );
-#else
       if( commFilterTagCollapsed )
         commFilterTag->SetFlagsFromString( _( "COLLAPSED" ) );
       commFilterTag->Enable( false );
-#endif
     }
 
     pos = 0;
@@ -1946,11 +1788,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     if ( commFilterTagValues != (wxPGId)nullptr )
     {
       if( filter->getCommTagFunction() == "All" || filter->getCommTagFunction() == "None" )
-#if wxMAJOR_VERSION<3
-        commFilterTagValues->SetFlagsFromString( _( "DISABLED" ) );
-#else
         commFilterTagValues->Enable( false );
-#endif
     }
 
     arrayStr.Clear();
@@ -1974,16 +1812,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     {
       commFilterSize = windowProperties->AppendIn( commFilterCat,
                                                    new wxStringProperty( wxT("Comm size"), wxT("Comm size"),wxT("<composed>")));
-#if wxMAJOR_VERSION<3
-      if( commFilterSizeCollapsed )
-        commFilterSize->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
-      else
-        commFilterSize->SetFlagsFromString( _( "DISABLED" ) );
-#else
       if( commFilterSizeCollapsed )
         commFilterSize->SetFlagsFromString( _( "COLLAPSED" ) );
       commFilterSize->Enable( false );
-#endif
     }
 
     pos = 0;
@@ -2016,11 +1847,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     {
       if( filter->getCommSizeFunction() == "All" || filter->getCommSizeFunction() == "None" )
       {
-#if wxMAJOR_VERSION<3
-        commFilterSizeValues->SetFlagsFromString( _( "DISABLED" ) );
-#else
         commFilterSizeValues->Enable( false );
-#endif
       }
     }
 
@@ -2032,16 +1859,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                                                   new wxStringProperty( wxT("Comm bandwidth"), 
                                                                         wxT("Comm bandwidth"),
                                                                         wxT("<composed>") ) );
-#if wxMAJOR_VERSION<3
-      if( commFilterBWCollapsed )
-        commFilterBW->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
-      else
-        commFilterBW->SetFlagsFromString( _( "DISABLED" ) );
-#else
       if( commFilterBWCollapsed )
         commFilterBW->SetFlagsFromString( _( "COLLAPSED" ) );
       commFilterBW->Enable( false );
-#endif
     }
 
     pos = 0;
@@ -2074,11 +1894,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     {
       if( filter->getBandWidthFunction() == "All" || filter->getBandWidthFunction() == "None" )
       {
-#if wxMAJOR_VERSION<3
-        commFilterBandWidthValues->SetFlagsFromString( _( "DISABLED" ) );
-#else
         commFilterBandWidthValues->Enable( false );
-#endif
       }
     }
 
@@ -2099,16 +1915,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                                                     new wxStringProperty( wxT("Event type"), 
                                                                           wxT("Event type"),
                                                                           wxT("<composed>") ) );
-#if wxMAJOR_VERSION<3
-      if( eventFilterTypeCollapsed )
-        eventFilterType->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
-      else
-        eventFilterType->SetFlagsFromString( _( "DISABLED" ) );
-#else
       if( eventFilterTypeCollapsed )
         eventFilterType->SetFlagsFromString( _( "COLLAPSED" ) );
       eventFilterType->Enable( false );
-#endif
     }
 
     pos = 0;
@@ -2153,11 +1962,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
 
       if( filter->getEventTypeFunction() == "All" ||
           filter->getEventTypeFunction() == "None" )
-#if wxMAJOR_VERSION<3
-        eventFilterTypeValues->SetFlagsFromString( _( "DISABLED" ) );
-#else
         eventFilterTypeValues->Enable( false );
-#endif
     }
 
     arrayStr.Clear();
@@ -2183,16 +1988,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                                                      new wxStringProperty( wxT("Event value"), 
                                                                            wxT("Event value"),
                                                                            wxT("<composed>") ) );
-#if wxMAJOR_VERSION<3
-      if( eventFilterValueCollapsed )
-        eventFilterValue->SetFlagsFromString( _( "DISABLED|COLLAPSED" ) );
-      else
-        eventFilterValue->SetFlagsFromString( _( "DISABLED" ) );
-#else
       if( eventFilterValueCollapsed )
         eventFilterValue->SetFlagsFromString( _( "COLLAPSED" ) );
       eventFilterValue->Enable( false );
-#endif
     }
 
     pos = 0;
@@ -2221,11 +2019,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
 
       if( filter->getEventValueFunction() == "All" || filter->getEventValueFunction() == "None" )
       {
-#if wxMAJOR_VERSION<3
-        eventFilterValueValues->SetFlagsFromString( _( "DISABLED" ) );
-#else
         eventFilterValueValues->Enable( false );
-#endif
       }
     }
   }
@@ -2968,32 +2762,16 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   if( !whichHisto->getThreeDimensions() )
   {
     if ( thirdWinMinimum != nullptr )
-#if wxMAJOR_VERSION<3
-      thirdWinMinimum->SetFlagsFromString( _( "DISABLED" ) );
-#else
       thirdWinMinimum->Enable( false );
-#endif
 
     if ( thirdWinMaximum != nullptr )
-#if wxMAJOR_VERSION<3
-      thirdWinMaximum->SetFlagsFromString( _( "DISABLED" ) );
-#else
       thirdWinMaximum->Enable( false );
-#endif
 
     if ( thirdWinDelta != nullptr )
-#if wxMAJOR_VERSION<3
-      thirdWinDelta->SetFlagsFromString( _( "DISABLED" ) );
-#else
       thirdWinDelta->Enable( false );
-#endif
 
     if ( thirdWinPlane != nullptr )
-#if wxMAJOR_VERSION<3
-      thirdWinPlane->SetFlagsFromString( _( "DISABLED" ) );
-#else
       thirdWinPlane->Enable( false );
-#endif
   }
 
   if ( whichHisto->getCFG4DEnabled() && whichHisto->getCFG4DMode() )

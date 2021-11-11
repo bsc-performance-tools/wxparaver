@@ -45,21 +45,12 @@ wxConnectionBase *stServer::OnAcceptConnection( const wxString& topic )
     return nullptr;
 }
 
-#if wxMAJOR_VERSION >= 3
 bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
                               const void *data,
                               size_t WXUNUSED( size ),
                               wxIPCFormat WXUNUSED( format ) )
 {
   wxString dataStr( wxString::FromUTF8( (char *)data ));
-#else
-bool stConnection::OnExecute( const wxString& WXUNUSED( topic ),
-                              wxChar *data,
-                              int WXUNUSED( size ),
-                              wxIPCFormat WXUNUSED( format ) )
-{
-  wxString dataStr( data );
-#endif
   static wxString tmpCommand;
 
   if( dataStr.IsEmpty() )

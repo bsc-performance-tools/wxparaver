@@ -284,7 +284,7 @@ void BuildTree( paraverMain *parent,
     }
   }
   
-#if wxMAJOR_VERSION<3 || !__WXGTK__
+#if !__WXGTK__
   gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ), tmpPos );
 #else
   gTimeline* tmpTimeline = new gTimeline( parent, wxID_ANY, wxString::FromUTF8( composedName.c_str() ) );
@@ -292,7 +292,7 @@ void BuildTree( paraverMain *parent,
   LoadedWindows::getInstance()->add( window );
   tmpTimeline->SetMyWindow( window );
   tmpTimeline->SetClientSize( wxSize( window->getWidth(), window->getHeight() ) );
-#if !( wxMAJOR_VERSION<3 || !__WXGTK__ )
+#if __WXGTK__
   tmpTimeline->Move( tmpPos );
 #endif
 

@@ -811,11 +811,7 @@ private:
               wxFont whichTextFont,
               wxString& whichImagePath,
               const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-              long whichImageType );
-#else
               wxBitmapType& whichImageType );
-#endif
 
       virtual ~ScaleImageVertical();
 
@@ -846,11 +842,7 @@ private:
       wxFont textFont;
       wxString& imagePath;
       wxString imageInfix;
-#if wxMAJOR_VERSION<3
-      long imageType;
-#else
       wxBitmapType& imageType;
-#endif
       TImageFormat filterIndex;
       wxString tmpSuffix;
       TSemanticValue currentMin;
@@ -893,11 +885,7 @@ private:
               wxFont whichTextFont,
               wxString& whichImagePath,
               const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-              long whichImageType );
-#else
               wxBitmapType& whichImageType );
-#endif
 
       ~ScaleImageVerticalCodeColor()
       {}
@@ -918,11 +906,7 @@ private:
               wxFont whichTextFont,
               wxString& whichImagePath,
               const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-              long whichImageType );
-#else
               wxBitmapType& whichImageType );
-#endif
 
       ~ScaleImageVerticalGradientColor()
       {}
@@ -948,11 +932,7 @@ private:
               wxFont whichTextFont,
               wxString& whichImagePath,
               const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-              long whichImageType );
-#else
               wxBitmapType& whichImageType );
-#endif
 
       ~ScaleImageVerticalFusedLines()
       {}
@@ -975,11 +955,7 @@ private:
               wxFont whichTextFont,
               wxString& whichImagePath,
               const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-              long whichImageType,
-#else
               wxBitmapType& whichImageType,
-#endif
               int whichWantedWidth = 0 );
 
 

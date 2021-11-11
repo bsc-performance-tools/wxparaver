@@ -32,9 +32,7 @@
 #endif
 
 #include <wx/version.h>
-#if wxMAJOR_VERSION>=3
 #include <wx/dcgraph.h>
-#endif
 
 ////@begin includes
 #include "wx/imaglist.h"
@@ -694,19 +692,16 @@ void gTimeline::redraw()
   wxGCDC bufferDraw( tmpDC );
 #else
   wxMemoryDC bufferDraw( bufferImage );
-  #if wxMAJOR_VERSION>=3
   wxGraphicsContext *gc = wxGraphicsContext::Create( bufferDraw );
   gc->SetAntialiasMode( wxANTIALIAS_NONE );
-  #endif
 #endif
   wxMemoryDC commdc( commImage );
   wxMemoryDC eventdc( eventImage );
-#if wxMAJOR_VERSION>=3
   wxGraphicsContext *gcComm = wxGraphicsContext::Create( commdc );
   gcComm->SetAntialiasMode( wxANTIALIAS_NONE );
   wxGraphicsContext *gcEvent = wxGraphicsContext::Create( eventdc );
   gcEvent->SetAntialiasMode( wxANTIALIAS_NONE );
-#endif
+
   commdc.SetBackgroundMode( wxTRANSPARENT );
   commdc.SetBackground( *wxTRANSPARENT_BRUSH );
   commdc.Clear();
@@ -716,20 +711,20 @@ void gTimeline::redraw()
   wxBitmap commMask;
   commMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC commmaskdc( commMask );
-#if wxMAJOR_VERSION>=3
+
   wxGraphicsContext *gcCommMask = wxGraphicsContext::Create( commmaskdc );
   gcCommMask->SetAntialiasMode( wxANTIALIAS_NONE );
-#endif
+
   commmaskdc.SetBackground( *wxBLACK_BRUSH );
   commmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   commmaskdc.Clear();
   wxBitmap eventMask;
   eventMask.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight(), 1 );
   wxMemoryDC eventmaskdc( eventMask );
-#if wxMAJOR_VERSION>=3
+
   wxGraphicsContext *gcEventMask = wxGraphicsContext::Create( eventmaskdc );
   gcEventMask->SetAntialiasMode( wxANTIALIAS_NONE );
-#endif
+
   eventmaskdc.SetBackground( *wxBLACK_BRUSH );
   eventmaskdc.SetPen( wxPen( wxColour( 255, 255, 255 ), 1 ) );
   eventmaskdc.Clear();
@@ -916,7 +911,6 @@ void gTimeline::redraw()
   if ( progress != nullptr )
     delete progress;
 
-#if wxMAJOR_VERSION>=3
   delete gc;
   delete gcEvent;
   delete gcComm;
@@ -924,7 +918,6 @@ void gTimeline::redraw()
   delete gcCommMask;
   delete gcEventMask;
   #endif
-#endif
 // Disabled because some window managers can't show the progress dialog later
 //  redrawStopWatch->Pause();
 
@@ -3770,11 +3763,8 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
   imageDC.Blit( xdst, ydst, timelineWidth, timelineHeight, &timelineDC, xsrc, ysrc );
 
   // Get image type and save
-#if wxMAJOR_VERSION<3
-  long imageType;
-#else
   wxBitmapType imageType;
-#endif
+
   switch( filterIndex )
   {
     case  TImageFormat::BMP:
@@ -3920,11 +3910,8 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
   wxFont titleFont = semanticFont;
 
   // Get image type and save
-#if wxMAJOR_VERSION<3
-  long imageType;
-#else
   wxBitmapType imageType;
-#endif
+
   int backgroundMode = wxTRANSPARENT; // default
   switch( filterIndex )
   {
@@ -4018,11 +4005,7 @@ gTimeline::ScaleImageVertical::ScaleImageVertical(
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-        long whichImageType
-#else
         wxBitmapType& whichImageType 
-#endif
         ) : myWindow( whichMyWindow ),
             semValues( whichSemanticValues ),
             background( whichBackground ),
@@ -4308,11 +4291,7 @@ gTimeline::ScaleImageVerticalCodeColor::ScaleImageVerticalCodeColor(
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-        long whichImageType
-#else
         wxBitmapType& whichImageType 
-#endif
         ) : ScaleImageVertical( whichMyWindow,
                                 whichSemanticValues,
                                 whichBackground,
@@ -4348,11 +4327,7 @@ gTimeline::ScaleImageVerticalGradientColor::ScaleImageVerticalGradientColor(
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-        long whichImageType
-#else
         wxBitmapType& whichImageType 
-#endif
         ) : ScaleImageVertical( whichMyWindow,
                                 whichSemanticValues,
                                 whichBackground,
@@ -4436,11 +4411,7 @@ gTimeline::ScaleImageVerticalFusedLines::ScaleImageVerticalFusedLines(
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-        long whichImageType
-#else
         wxBitmapType& whichImageType 
-#endif
         ) : ScaleImageVertical( whichMyWindow,
                                 whichSemanticValues,
                                 whichBackground,
@@ -4505,11 +4476,7 @@ gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
         wxFont whichTextFont,
         wxString& whichImagePath,
         const wxString& whichImageInfix,
-#if wxMAJOR_VERSION<3
-        long whichImageType,
-#else
         wxBitmapType& whichImageType,
-#endif
         int whichWantedWidth
         ) : ScaleImageVerticalGradientColor( whichMyWindow,
                                              whichSemanticValues,
@@ -5078,11 +5045,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   paintDC.DrawBitmap( drawImage, 0, 0 );
   #endif
 #else
-  #if wxMAJOR_VERSION<3
-  wxPaintDC paintDC( drawZone );
-  #else
   wxClientDC paintDC( drawZone );
-  #endif
   paintDC.DrawBitmap( drawImage, 0, 0 );
 #endif
 
@@ -5981,17 +5944,16 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   wxCoord pixelBeginX = (double)pixelsWidth * ratioLeft;
   wxCoord pixelBeginY = (double)pixelsHeight * ratioUp;
 
-#if wxMAJOR_VERSION>=3 || !__WXGTK__
   // Source image to temp buffer
-  #ifdef __WXMAC__
+#ifdef __WXMAC__
   wxBitmap tmpDrawImage( drawImage.GetWidth(), drawImage.GetHeight() );
   wxMemoryDC srcDC( tmpDrawImage );
   srcDC.SetBrush( wxBrush( backgroundColour ) );
   srcDC.Clear();
   drawStackedImages( srcDC );
-  #else
+#else
   wxMemoryDC srcDC( drawImage );
-  #endif
+#endif
 
   tmpDC.Blit( 0,
               0,
@@ -6007,34 +5969,15 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     tmpDC.SetPen( wxPen( backgroundColour ) );
     tmpDC.SetBrush( wxBrush( backgroundColour ) );
     tmpDC.DrawRectangle( 0, 0, -pixelBeginX, tmpDC.DeviceToLogicalY( timeAxisPos - drawBorder + 1 ) );
-  #ifdef WIN32
+#ifdef WIN32
     if( wheelZoomObjects )
-  #else
+#else
     if( event.ControlDown() )
-  #endif
+#endif
     {
       tmpDC.DrawRectangle( 0, -pixelBeginY + timeAxisPos, tmpDC.DeviceToLogicalX( tmpBMP.GetWidth() ), tmpBMP.GetHeight() );
     }
   }
-#else
-  tmpDC.SelectObject( wxNullBitmap );
-  wxImage tmpImage = drawImage.ConvertToImage().GetSubImage( wxRect( wxPoint( objectAxisPos + 1, 0 ), wxSize( pixelsWidth, pixelsHeight ) ) );
-
-  if( newWheelFactor >= 1.0 )
-  {
-    wxCoord pixelEndX = (double)pixelsWidth * ratioRight;
-    wxCoord pixelEndY = (double)pixelsHeight * ratioDown;
-    wxRect tmpRect( wxPoint( pixelBeginX, pixelBeginY ),
-                    wxPoint( pixelsWidth - pixelEndX - 1, pixelsHeight - pixelEndY - 1 ) );
-    tmpImage = tmpImage.GetSubImage( tmpRect );
-    
-    tmpImage.Rescale( pixelsWidth, pixelsHeight );
-  }
-  else
-    tmpImage.Rescale( (double)tmpImage.GetWidth() * wheelZoomFactorX, (double)tmpImage.GetHeight() * wheelZoomFactorY );
-
-  tmpBMP = wxBitmap( tmpImage );
-#endif
 
   tmpDC.SelectObject( wxNullBitmap );
 
@@ -6043,19 +5986,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   dstDC.SetPen( wxPen( backgroundColour ) );
   dstDC.SetBrush( wxBrush( backgroundColour ) );
   dstDC.DrawRectangle( objectAxisPos + 1, 0, drawZone->GetClientSize().GetWidth() - objectAxisPos - 1, timeAxisPos );
-#if !( wxMAJOR_VERSION>=3 || !__WXGTK__ )
-  if( newWheelFactor >= 1.0 )
-  {
-#endif  
   dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1, 0 );
-#if !( wxMAJOR_VERSION>=3 || !__WXGTK__ )
-  }
-  else
-  {
-    dstDC.DrawBitmap( tmpBMP, objectAxisPos + 1 - (double)pixelBeginX * wheelZoomFactorX,
-                              -(double)pixelBeginY * wheelZoomFactorY );
-  }
-#endif
 
   timerWheel->Start( 750, true );
 }

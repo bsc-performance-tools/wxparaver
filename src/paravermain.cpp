@@ -621,10 +621,8 @@ void paraverMain::CreateControls()
   wxTreeCtrl* tmpTree = createTree( imageList );
   tmpTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), nullptr, this );
   choiceWindowBrowser->AddPage( tmpTree, _( "All Traces" ) );
-#if wxMAJOR_VERSION>=3
   choiceWindowBrowser->AddPage( createTree( imageList ), _( "Dummy Tree" ) );
   choiceWindowBrowser->DeletePage( 1 );
-#endif
 
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 1, wxT("Paraver Files") );
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 2, wxT("Window Properties") );
@@ -985,7 +983,7 @@ bool paraverMain::DoLoadCFG( const string &path )
             if( tmpPos.x != (*it)->getPosY() ) (*it)->setPosX( tmpPos.y );
           }
         }
-#if wxMAJOR_VERSION<3 || !__WXGTK__
+#if !__WXGTK__
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ), tmpPos );
 #else
         gHistogram* tmpHisto = new gHistogram( this, wxID_ANY, wxString::FromUTF8( (*it)->getName().c_str() ) );
@@ -998,7 +996,7 @@ bool paraverMain::DoLoadCFG( const string &path )
         tmpHisto->SetClientSize( wxSize( (*it)->getWidth(), (*it)->getHeight() ) );
         if( (*it)->getShowWindow() )
         {
-#if !( wxMAJOR_VERSION<3 || !__WXGTK__ )
+#if __WXGTK__
           tmpHisto->Move( tmpPos );
 #endif
           tmpHisto->Show();
@@ -4517,10 +4515,6 @@ bool paraverMain::ShowCutTraceWindow( const string& filename,
     tmpResult = true;
   }
 
-#if wxMAJOR_VERSION<3
-  cutFilterDialog->MakeModal( false );
-#endif
-
   delete traceOptions;
   delete cutFilterDialog;
 
@@ -4538,11 +4532,7 @@ void paraverMain::OnIconize( wxIconizeEvent& event )
   {
     wxTreeCtrl *currentTree = (wxTreeCtrl *) choiceWindowBrowser->GetPage( iPage );
     wxTreeItemId root = currentTree->GetRootItem();
-#if wxMAJOR_VERSION<3
-    iconizeWindows( currentTree, root, event.Iconized() );
-#else
     iconizeWindows( currentTree, root, event.IsIconized() );
-#endif
   }
 }
 

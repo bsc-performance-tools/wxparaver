@@ -108,17 +108,11 @@ void prvEventTypeProperty::OnSetValue()
     GenerateValueAsString();
 }
 
-#if wxMAJOR_VERSION<3
-wxString prvEventTypeProperty::GetValueAsString( int ) const
-{
-  return m_display;
-}
-#else
+
 wxString prvEventTypeProperty::ValueToString( wxVariant & value, int argFlags ) const
 {
   return value.GetString();
 }
-#endif
 
 void prvEventTypeProperty::GenerateValueAsString()
 {
@@ -128,11 +122,7 @@ void prvEventTypeProperty::GenerateValueAsString()
 
 wxArrayInt prvEventTypeProperty::GetValueAsIndices() const
 {
-#if wxMAJOR_VERSION<3
-    const wxArrayInt& valueArr = wxArrayIntFromVariant(GetValue());
-#else
     const wxArrayInt& valueArr = GetValueAsArrayInt();
-#endif
     unsigned int i;
 
     // Translate values to string indices.
@@ -163,11 +153,7 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
     if ( propgrid->IsMainButtonEvent(event) )
     {
         // Update the value
-#if wxMAJOR_VERSION<3
-        PrepareValueForDialogEditing(propgrid);
-#else
         propgrid->GetUncommittedPropertyValue();
-#endif
 
         wxArrayString labels = m_choices.GetLabels();
         unsigned int choiceCount;
@@ -244,15 +230,6 @@ bool prvEventTypeProperty::OnEvent( wxPropertyGrid* propgrid,
     }
     return false;
 }
-
-#if wxMAJOR_VERSION<3
-int prvEventTypeProperty::GetChoiceInfo( wxPGChoiceInfo* choiceinfo )
-{
-    if ( choiceinfo )
-        choiceinfo->m_choices = &m_choices;
-    return -1;
-}
-#endif
 
 bool prvEventTypeProperty::StringToValue( wxVariant& variant, const wxString& text, int ) const
 {
@@ -390,17 +367,10 @@ void prvEventInfoProperty::OnSetValue()
 }
 
 
-#if wxMAJOR_VERSION<3
-wxString prvEventInfoProperty::GetValueAsString( int ) const
-{
-  return m_display;
-}
-#else
 wxString prvEventInfoProperty::ValueToString( wxVariant & value, int argFlags ) const
 {
   return value.GetString();
 }
-#endif
 
 
 void prvEventInfoProperty::GenerateValueAsString()
@@ -412,11 +382,7 @@ void prvEventInfoProperty::GenerateValueAsString()
 
 wxArrayInt prvEventInfoProperty::GetValueAsIndices() const
 {
-#if wxMAJOR_VERSION<3
-  const wxArrayInt& valueArr = wxArrayIntFromVariant( GetValue() );
-#else
   const wxArrayInt& valueArr = GetValueAsArrayInt();
-#endif
   unsigned int i;
 
   // Translate values to string indices.
@@ -450,11 +416,7 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
     unsigned int numLabels = 0;
 
     // Update the value
-#if wxMAJOR_VERSION<3
-    PrepareValueForDialogEditing( propgrid );
-#else
     propgrid->GetUncommittedPropertyValue();
-#endif
 
     if ( m_choices.IsOk() )
     {
@@ -599,15 +561,6 @@ bool prvEventInfoProperty::OnEvent( wxPropertyGrid* propgrid,
 
   return false;
 }
-
-#if wxMAJOR_VERSION<3
-int prvEventInfoProperty::GetChoiceInfo( wxPGChoiceInfo* choiceinfo )
-{
-    if ( choiceinfo )
-        choiceinfo->m_choices = &m_choices;
-    return -1;
-}
-#endif
 
 bool prvEventInfoProperty::StringToValue( wxVariant& variant, const wxString& text, int ) const
 {
@@ -757,17 +710,10 @@ bool prvSemanticThreadProperty::OnEvent( wxPropertyGrid* propgrid,
   return true;
 }
 
-#if wxMAJOR_VERSION<3
-wxString prvSemanticThreadProperty::GetValueAsString( int ) const
-{
-  return GetValue().GetString();
-}
-#else
 wxString prvSemanticThreadProperty::ValueToString( wxVariant & value, int argFlags ) const
 {
   return value.GetString();
 }
-#endif
 
 
 /**********************************************************
@@ -809,17 +755,10 @@ prvRowsSelectionProperty::~prvRowsSelectionProperty()
 }
 
 
-#if wxMAJOR_VERSION<3
-wxString prvRowsSelectionProperty::GetValueAsString ( int ) const
-{
-  return GetValue().GetString();
-}
-#else
 wxString prvRowsSelectionProperty::ValueToString( wxVariant & value, int argFlags ) const
 {
   return value.GetString();
 }
-#endif
 
 void prvRowsSelectionProperty::GetSelectionAsVector( TWindowLevel whichLevel,
                                                      vector<TObjectOrder> &levelSelections )
@@ -940,18 +879,10 @@ void prvNumbersListProperty::OnSetValue()
   GenerateValueAsString();
 }
 
-
-#if wxMAJOR_VERSION<3
-wxString prvNumbersListProperty::GetValueAsString( int ) const
-{
-  return m_display;
-}
-#else
 wxString prvNumbersListProperty::ValueToString( wxVariant & value, int argFlags ) const
 {
   return value.GetString();
 }
-#endif
 
 
 void prvNumbersListProperty::GenerateValueAsString()
@@ -1120,17 +1051,10 @@ bool prvTimelineTreeProperty::OnEvent( wxPropertyGrid* propgrid,
   return true;
 }
 
-#if wxMAJOR_VERSION<3
-wxString prvTimelineTreeProperty::GetValueAsString( int ) const
-{
-  return GetValue().GetString();
-}
-#else
 wxString prvTimelineTreeProperty::ValueToString( wxVariant & value, int argFlags ) const
 {
   return value.GetString();
 }
-#endif
 
 Timeline *prvTimelineTreeProperty::getSelectedWindow() const
 {

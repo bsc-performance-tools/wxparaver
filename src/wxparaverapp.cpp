@@ -95,61 +95,6 @@ BEGIN_EVENT_TABLE( wxparaverApp, wxApp )
 
 END_EVENT_TABLE()
 
-#if wxMAJOR_VERSION<3
-wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
-{
-  { wxCMD_LINE_SWITCH, 
-    wxT("v"),
-    wxT("version"),
-    wxT("Show wxparaver version.") },
-
-  { wxCMD_LINE_SWITCH, 
-    wxT("h"),
-    wxT("help"),
-    wxT("Show this help."),
-    wxCMD_LINE_VAL_NONE,
-    wxCMD_LINE_OPTION_HELP },
-
-  { wxCMD_LINE_SWITCH, 
-    wxT("i"),
-    wxT("image"),
-    wxT("Save cfg last window as an image. Once done wxparaver will exit."),
-    wxCMD_LINE_VAL_NONE,
-    wxCMD_LINE_PARAM_OPTIONAL },
-
-  { wxCMD_LINE_OPTION, 
-    wxT("e"),
-    wxT("event"),
-    wxT("Event type to code linking."),
-    wxCMD_LINE_VAL_NUMBER,
-    wxCMD_LINE_PARAM_OPTIONAL },
-
-  { wxCMD_LINE_OPTION, 
-    wxT("t"),
-    wxT("tutorial"),
-    wxT("Load tutorial. <str> can be the path to the tutorial "
-        "containing the index.html file, or the whole url, like "
-        "path/file.html (then, other names than 'index' are allowed)."),
-    wxCMD_LINE_VAL_STRING,
-    wxCMD_LINE_PARAM_OPTIONAL },
-
-  { wxCMD_LINE_SWITCH, 
-    wxT("gtf"),
-    wxT("generate_tutorials_file"),
-    wxT(""),
-    wxCMD_LINE_VAL_NONE,
-    wxCMD_LINE_PARAM_OPTIONAL },
-
-   { wxCMD_LINE_PARAM, 
-    nullptr,
-    nullptr,
-    wxT( "(trace.prv | trace.prv.gz) (configuration.cfg) | saved_session.session" ),
-    wxCMD_LINE_VAL_STRING,
-    wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
-
-  { wxCMD_LINE_NONE }
-};
-#else
 wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
 {
   { wxCMD_LINE_SWITCH, 
@@ -203,7 +148,6 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
 
   { wxCMD_LINE_NONE }
 };
-#endif
 
 /*!
  * Constructor for wxparaverApp
@@ -592,11 +536,7 @@ bool wxparaverApp::OnInit()
                                                              wxT( "wxparaver" ) );
       if( connection )
       {
-        #if wxMAJOR_VERSION >= 3
         connection->Execute( "BEGIN" );
-        #else
-        connection->Execute( wxT( "BEGIN" ) );
-        #endif
         connection->Execute( argv[ 0 ] );
         for( int i = 1; i < argc; ++i )
         {
@@ -618,11 +558,7 @@ bool wxparaverApp::OnInit()
             }
           }          
         }
-#if wxMAJOR_VERSION >= 3
         connection->Execute( "END" );
-#else
-        connection->Execute( wxT( "END" ) );
-#endif
         connection->Disconnect();
         delete connection;
         delete client;
@@ -954,11 +890,6 @@ void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
 #ifndef __WXMAC__
   globalTimingCallDialog->Enable( false );
 #endif
-
-#if wxMAJOR_VERSION<3
-  globalTimingCallDialog->MakeModal( false );
-#endif
-
 #ifdef WIN32
   globalTimingCallDialog->Iconize( true );
 #endif
@@ -975,9 +906,6 @@ void wxparaverApp::DeactivateGlobalTiming()
   globalTimingBeginIsSet = false;
   globalTimingCallDialog->Enable( true );
 
-#if wxMAJOR_VERSION<3
-  globalTimingCallDialog->MakeModal( true );
-#endif
 
 #ifdef WIN32
   globalTimingCallDialog->Iconize( false );

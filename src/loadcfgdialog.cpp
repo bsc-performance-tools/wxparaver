@@ -233,9 +233,6 @@ void LoadCFGDialog::OnCancelClick( wxCommandEvent& event )
 
 void LoadCFGDialog::OnOkClick( wxCommandEvent& event )
 {
-#if wxMAJOR_VERSION<3
-  MakeModal( false );
-#endif
   EndModal( wxID_OK );
 }
 
@@ -299,8 +296,5 @@ void LoadCFGDialog::OnFileNavigatorDoubleClick( wxFileCtrlEvent& event )
   if( !CFGLoader::isCFGFile( std::string( fileNavigator->GetPath().mb_str() ) ) )
     return;
 
-#if wxMAJOR_VERSION<3
-  MakeModal( false );
-#endif
   EndModal( wxID_OK );
 }

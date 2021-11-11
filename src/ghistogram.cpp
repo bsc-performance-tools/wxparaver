@@ -36,9 +36,7 @@
 ////@end includes
 
 #include <wx/version.h>
-#if wxMAJOR_VERSION>=3
 #include <wx/dcgraph.h>
-#endif
 
 #include <wx/progdlg.h>
 #include <wx/clipbrd.h>
@@ -395,11 +393,7 @@ void gHistogram::CreateControls()
   gridHisto->CreateGrid( 0, 0 );
   gridHisto->EnableEditing( false );
   gridHisto->SetDefaultCellAlignment( wxALIGN_RIGHT, wxALIGN_CENTRE );
-#if wxMAJOR_VERSION<3
-  gridHisto->SetWindowStyleFlag( wxALWAYS_SHOW_SB|wxHSCROLL|wxVSCROLL );
-#else
   gridHisto->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
-#endif
 }
 
 
@@ -3069,11 +3063,7 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
   imageDC.Blit( xdst, ydst, histogramWidth, histogramHeight, &histogramDC, xsrc, ysrc );
 
   // Get extension and save
-#if wxMAJOR_VERSION<3
-  long imageType;
-#else
   wxBitmapType imageType;
-#endif
   switch( filterIndex )
   {
     case  TImageFormat::BMP:

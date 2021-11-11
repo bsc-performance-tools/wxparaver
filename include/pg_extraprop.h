@@ -27,11 +27,7 @@
 
 #include <wx/propgrid/propgrid.h>
 #include <wx/version.h>
-#if wxMAJOR_VERSION>=3
 #include <wx/propgrid/property.h>
-#else
-#include <wx/propgrid/propdev.h>
-#endif
 #include "loadedwindows.h"
 
 class Timeline;
@@ -60,21 +56,11 @@ class prvEventTypeProperty: public wxPGProperty
     virtual ~prvEventTypeProperty();
 
     virtual void OnSetValue();
-#if wxMAJOR_VERSION<3
-    virtual wxString GetValueAsString( int flags = 0 ) const;
-#else
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
-#endif
     virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
-#if wxMAJOR_VERSION<3
-    WX_PG_DECLARE_EVENT_METHODS()
-
-    virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
-#else
     bool OnEvent( wxPropertyGrid* propgrid,
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
-#endif
 
     wxArrayInt GetValueAsArrayInt() const;
 
@@ -128,21 +114,11 @@ class prvEventInfoProperty: public wxPGProperty
     virtual ~prvEventInfoProperty();
 
     virtual void OnSetValue();
-#if wxMAJOR_VERSION<3
-    virtual wxString GetValueAsString( int flags = 0 ) const;
-#else
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
-#endif
     virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
-#if wxMAJOR_VERSION<3
-    WX_PG_DECLARE_EVENT_METHODS()
-
-    virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
-#else
     bool OnEvent( wxPropertyGrid* propgrid,
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
-#endif
     wxArrayInt GetValueAsArrayInt() const;
 
   protected:
@@ -204,19 +180,11 @@ class prvSemanticThreadProperty: public wxPGProperty
                                const wxString& value );
     virtual ~prvSemanticThreadProperty();
 
-#if wxMAJOR_VERSION<3
-    virtual wxString GetValueAsString( int ) const;
-#else
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
-#endif
 
-#if wxMAJOR_VERSION<3
-    WX_PG_DECLARE_EVENT_METHODS()
-#else
     bool OnEvent( wxPropertyGrid* propgrid,
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
-#endif
   private:
     SemanticMenu *myMenu;
 };
@@ -241,22 +209,14 @@ class prvRowsSelectionProperty: public wxPGProperty
                                
     virtual ~prvRowsSelectionProperty();
 
-#if wxMAJOR_VERSION<3
-    virtual wxString GetValueAsString ( int ) const;
-#else
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
-#endif
 
     void GetSelectionAsVector( TWindowLevel whichLevel,
                                std::vector<TObjectOrder> &levelSelections );
                                
-#if wxMAJOR_VERSION<3
-    WX_PG_DECLARE_EVENT_METHODS()
-#else
     bool OnEvent( wxPropertyGrid* propgrid,
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
-#endif
   private:
     Timeline *myTimeline;
     wxString myWindowName;
@@ -284,21 +244,12 @@ class prvNumbersListProperty: public wxPGProperty
     virtual ~prvNumbersListProperty();
 
     virtual void OnSetValue();
-#if wxMAJOR_VERSION<3
-    virtual wxString GetValueAsString( int flags = 0 ) const;
-#else
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
-#endif
     virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
 
-#if wxMAJOR_VERSION<3
-    WX_PG_DECLARE_EVENT_METHODS()
-#else
     bool OnEvent( wxPropertyGrid* propgrid,
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
-
-#endif
 
   protected:
 
@@ -329,19 +280,11 @@ class prvTimelineTreeProperty: public wxPGProperty
                              bool needNoneElement = false );
     virtual ~prvTimelineTreeProperty();
 
-#if wxMAJOR_VERSION<3
-    virtual wxString GetValueAsString( int ) const;
-#else
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
-#endif
 
-#if wxMAJOR_VERSION<3
-    WX_PG_DECLARE_EVENT_METHODS()
-#else
     bool OnEvent( wxPropertyGrid* propgrid,
                   wxWindow* WXUNUSED(primary),
                   wxEvent& event );
-#endif
     Timeline *getSelectedWindow() const;
 
   private:

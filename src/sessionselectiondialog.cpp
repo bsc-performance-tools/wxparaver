@@ -208,9 +208,6 @@ void SessionSelectionDialog::OnSessionboxSelected( wxCommandEvent& event )
 
 void SessionSelectionDialog::OnSessionboxDoubleClicked( wxCommandEvent& event )
 {
-#if wxMAJOR_VERSION<3
-  MakeModal( false );
-#endif
   EndModal( wxID_OK );
 }
 

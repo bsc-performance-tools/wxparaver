@@ -171,10 +171,6 @@ bool RunAppCutterAction::execute( std::string whichTrace )
   {  
     wxparaverApp::mainWindow->OnOKCutFilterDialog( cutFilterDialog, toolOrder );
   }
-
-#if wxMAJOR_VERSION<3
-  cutFilterDialog->MakeModal( false );
-#endif
   
   delete traceOptions;
   delete cutFilterDialog;
