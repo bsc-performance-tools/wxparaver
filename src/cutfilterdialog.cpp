@@ -3081,10 +3081,11 @@ void CutFilterDialog::OnRadiobuttonCutterCutByPercentSelected( wxCommandEvent& e
 
 void CutFilterDialog::OnKeyDown( wxKeyEvent& event )
 {
-////@begin wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG in CutFilterDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_KEY_DOWN event handler for ID_CUTFILTERDIALOG in CutFilterDialog. 
+  if ( ( (wxKeyEvent&) event ).GetKeyCode() == WXK_ESCAPE )
+  {
+    if ( wxGetApp().GetGlobalTiming() )
+      wxGetApp().DeactivateGlobalTiming();
+  } 
 }
 
 

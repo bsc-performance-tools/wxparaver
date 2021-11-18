@@ -826,10 +826,14 @@ int wxparaverApp::FilterEvent(wxEvent& event)
 
   if ( event.GetEventType() == wxEVT_KEY_DOWN )
   {
-    if ( ( (wxKeyEvent&) event ).ControlDown() )
+    long keyCode = ( (wxKeyEvent&) event ).GetKeyCode();
+    if ( keyCode == WXK_ESCAPE )
     {
-      long keyCode = ( (wxKeyEvent&) event ).GetKeyCode();
- 
+      if ( GetGlobalTiming() )
+        DeactivateGlobalTiming();
+    }
+    else if ( ( (wxKeyEvent&) event ).ControlDown() )
+    {
       if ( keyCode == (long) 'S' )
       {
         wxFileDialog dialog( mainWindow, wxT( "Save session" ),

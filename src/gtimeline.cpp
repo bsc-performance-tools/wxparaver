@@ -1778,7 +1778,7 @@ void gTimeline::OnScrolledWindowLeftUp( wxMouseEvent& event )
     return;
   }
   
-  if( timing )
+  if( timing && !wxGetApp().GetGlobalTiming() )
   {
     zooming = false;
     return;
