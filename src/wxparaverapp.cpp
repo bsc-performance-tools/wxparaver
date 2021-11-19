@@ -827,10 +827,9 @@ int wxparaverApp::FilterEvent(wxEvent& event)
   if ( event.GetEventType() == wxEVT_KEY_DOWN )
   {
     long keyCode = ( (wxKeyEvent&) event ).GetKeyCode();
-    if ( keyCode == WXK_ESCAPE )
+    if ( keyCode == WXK_ESCAPE && GetGlobalTiming() )
     {
-      if ( GetGlobalTiming() )
-        DeactivateGlobalTiming();
+      DeactivateGlobalTiming();
     }
     else if ( ( (wxKeyEvent&) event ).ControlDown() )
     {
