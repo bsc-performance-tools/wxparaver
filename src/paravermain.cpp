@@ -1319,7 +1319,12 @@ bool paraverMain::linkedSetPropertyValue( T *whichWindow,
                                                       whichClientData->semanticLevel,
                                                       whichClientData->numParameter );
   }
-    
+  else if( propName == SingleTimelinePropertyLabels[ SINGLE_EXTRAFUNCTIONPARAMETERS ] ||
+           propName == DerivedTimelinePropertyLabels[ DERIVED_EXTRAFUNCTIONPARAMETERS ] )
+  {
+    // TODO: extra compose parameters for linked properties
+  }
+
   TWindowsSet timelines;
   CFGS4DGlobalManager::getInstance()->getLinks( whichWindow->getCFGS4DIndexLink(),
                                                 whichWindow->getCFGS4DGroupLink( propOriginalName ),
@@ -2017,6 +2022,24 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
   {
     TParamIndex paramIdx = whichClientData->numParameter;
     TWindowLevel functionLevel = whichClientData->semanticLevel;
+
+    wxArrayString valuesStr = property->GetValue().GetArrayString();
+    TParamValue values;
+    for( unsigned int idx = 0; idx < valuesStr.GetCount(); idx++ )
+    {
+      double tmpDouble;
+      valuesStr[ idx ].ToDouble( &tmpDouble );
+      values.push_back( tmpDouble );
+    }
+
+    whichTimeline->setFunctionParam( functionLevel, paramIdx, values );
+    
+    spreadSetRedraw( whichTimeline );
+  }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_EXTRAFUNCTIONPARAMETERS, DERIVED_EXTRAFUNCTIONPARAMETERS, HISTOGRAM_NULL ) )
+  {
+    TParamIndex paramIdx = whichClientData->numParameter;
+    TWindowLevel functionLevel = whichClientData->semanticLevel;
     size_t extraTopComposeLevel = whichClientData->extraTopComposeLevel;
 
     wxArrayString valuesStr = property->GetValue().GetArrayString();
@@ -2028,13 +2051,11 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
       values.push_back( tmpDouble );
     }
 
-    if( extraTopComposeLevel > 0 )
-      whichTimeline->setExtraFunctionParam( functionLevel, extraTopComposeLevel - 1, paramIdx, values );
-    else
-      whichTimeline->setFunctionParam( functionLevel, paramIdx, values );
+    whichTimeline->setExtraFunctionParam( functionLevel, extraTopComposeLevel - 1, paramIdx, values );
     
     spreadSetRedraw( whichTimeline );
   }
+
 }
 
 

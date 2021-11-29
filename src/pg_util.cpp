@@ -1398,9 +1398,9 @@ void semanticExtraComposeFunctionParameter( wxPropertyGrid* windowProperties,
 {
   int tmpPropertyIndex;
   if ( whichWindow->isDerivedWindow() ) 
-    tmpPropertyIndex = DERIVED_FUNCTIONPARAMETERS;
+    tmpPropertyIndex = DERIVED_EXTRAFUNCTIONPARAMETERS;
   else
-    tmpPropertyIndex = SINGLE_FUNCTIONPARAMETERS;
+    tmpPropertyIndex = SINGLE_EXTRAFUNCTIONPARAMETERS;
 
   for( TParamIndex paramIdx = 0; paramIdx < whichWindow->getExtraFunctionNumParam( functionLevel, whichPos - 1 ); ++paramIdx )
   {
