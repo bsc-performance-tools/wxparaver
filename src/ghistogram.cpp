@@ -141,11 +141,13 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
   EVT_GRID_LABEL_LEFT_CLICK( gHistogram::OnLabelLeftClick )
   EVT_GRID_LABEL_RIGHT_CLICK( gHistogram::OnLabelRightClick )
-  EVT_GRID_CMD_RANGE_SELECT( ID_GRIDHISTO, gHistogram::OnRangeSelect )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
   EVT_UPDATE_UI( wxID_CONTROLWARNING, gHistogram::OnControlWarningUpdate )
   EVT_UPDATE_UI( wxID_3DWARNING, gHistogram::On3dWarningUpdate )
 ////@end gHistogram event table entries
+#ifndef __WXMAC__
+  EVT_GRID_CMD_RANGE_SELECT( ID_GRIDHISTO, gHistogram::OnRangeSelect )
+#endif
   
   EVT_TIMER( wxID_ANY, gHistogram::OnTimerZoom )
   

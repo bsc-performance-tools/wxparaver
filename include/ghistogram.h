@@ -244,9 +244,6 @@ public:
   /// wxEVT_GRID_LABEL_RIGHT_CLICK event handler for ID_GRIDHISTO
   void OnLabelRightClick( wxGridEvent& event );
 
-  /// wxEVT_GRID_CMD_RANGE_SELECT event handler for ID_GRIDHISTO
-  void OnRangeSelect( wxGridRangeSelectEvent& event );
-
   /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
   void OnGridhistoUpdate( wxUpdateUIEvent& event );
 
@@ -257,6 +254,8 @@ public:
   void On3dWarningUpdate( wxUpdateUIEvent& event );
 
 ////@end gHistogram event handler declarations
+
+  void OnRangeSelect( wxGridRangeSelectEvent& event );
 
 ////@begin gHistogram member function declarations
 

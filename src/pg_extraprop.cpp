@@ -52,9 +52,13 @@ using namespace std;
 /**********************************************************
  **       prvEventTypeProperty
  **********************************************************/
-
+#if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvEventTypeProperty, wxPGProperty,
+                               TextCtrlAndButton )
+#else
 WX_PG_IMPLEMENT_PROPERTY_CLASS( prvEventTypeProperty, wxPGProperty,
                                 wxArrayInt, const wxArrayInt&, TextCtrlAndButton )
+#endif
 
 prvEventTypeProperty::prvEventTypeProperty( const wxString& label,
                                             const wxString& name,
@@ -267,8 +271,13 @@ wxArrayInt prvEventTypeProperty::GetValueAsArrayInt() const
  **       prvEventInfoProperty
  **********************************************************/
 
+#if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvEventInfoProperty, wxPGProperty,
+                               TextCtrlAndButton )
+#else
 WX_PG_IMPLEMENT_PROPERTY_CLASS( prvEventInfoProperty, wxPGProperty,
                                 wxArrayInt, const wxArrayInt&, TextCtrlAndButton )
+#endif
 
 prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
                                             const wxString& name,
@@ -680,8 +689,13 @@ void SemanticMenu::PopupMenu( wxWindow *onWindow )
 }
 
 
+#if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvSemanticThreadProperty, wxPGProperty,
+                               TextCtrlAndButton )
+#else
 WX_PG_IMPLEMENT_PROPERTY_CLASS( prvSemanticThreadProperty, wxPGProperty,
                                 wxString, wxString&, TextCtrlAndButton )
+#endif
 
 prvSemanticThreadProperty::prvSemanticThreadProperty( const wxString& label,
                                                       const wxString& name,
@@ -720,8 +734,13 @@ wxString prvSemanticThreadProperty::ValueToString( wxVariant & value, int argFla
  **       prvRowsSelectionProperty
  **********************************************************/
 
+#if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
+                               TextCtrlAndButton )
+#else
 WX_PG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
                                 wxString, wxString&, TextCtrlAndButton )
+#endif
 
 prvRowsSelectionProperty::prvRowsSelectionProperty( wxPropertyGrid *propgrid,
                                                     Timeline *whichWindow,
@@ -836,8 +855,13 @@ void prvRowsSelectionProperty::GetStringValueFromVector( vector<TObjectOrder> &w
  **       prvNumbersListProperty
  **********************************************************/
 
+#if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvNumbersListProperty, wxPGProperty,
+                               TextCtrl )
+#else
 WX_PG_IMPLEMENT_PROPERTY_CLASS( prvNumbersListProperty, wxPGProperty,
                                 wxArrayInt, const wxArrayInt&, TextCtrl )
+#endif
 
 prvNumbersListProperty::prvNumbersListProperty( const wxString& label,
                                                 const wxString& name,
@@ -983,8 +1007,13 @@ bool prvNumbersListProperty::OnEvent( wxPropertyGrid* propgrid,
 /**********************************************************
  **        prvTimelineTreeProperty
  **********************************************************/
+#if wxMAJOR_VERSION >= 3 && wxMINOR_VERSION >= 1
+wxPG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty,
+                               TextCtrlAndButton )
+#else
 WX_PG_IMPLEMENT_PROPERTY_CLASS( prvTimelineTreeProperty, wxPGProperty,
                                 wxString, wxString&, TextCtrlAndButton )
+#endif
 
 constexpr wxWindowID ID_TIMELINETREE = 10001;
 
