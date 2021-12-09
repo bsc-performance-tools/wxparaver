@@ -244,7 +244,7 @@ public:
   /// wxEVT_GRID_LABEL_RIGHT_CLICK event handler for ID_GRIDHISTO
   void OnLabelRightClick( wxGridEvent& event );
 
-  /// wxEVT_GRID_RANGE_SELECT event handler for ID_GRIDHISTO
+  /// wxEVT_GRID_CMD_RANGE_SELECT event handler for ID_GRIDHISTO
   void OnRangeSelect( wxGridRangeSelectEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for ID_GRIDHISTO
