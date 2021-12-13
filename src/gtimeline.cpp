@@ -837,7 +837,7 @@ void gTimeline::redraw()
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
 
-  doDrawCaution( dc );
+  doDrawCaution( bufferDraw );
 
   eventmaskdc.SetPen( *wxBLACK_PEN );
   eventmaskdc.SetBrush( *wxBLACK_BRUSH );
@@ -874,22 +874,14 @@ void gTimeline::redraw()
   delete gc;
   delete gcEvent;
   delete gcComm;
-  // #ifndef __WXMAC__
-  #if 1
   delete gcCommMask;
   delete gcEventMask;
-  #endif
 // Disabled because some window managers can't show the progress dialog later
 //  redrawStopWatch->Pause();
 
   SetTitle( winTitle );
 
   myWindow->setReady( true );
-  
-// #ifndef __WXMAC__
-#if 1
-  drawZone->Refresh();
-#endif
 
   SetFocus();
 }
