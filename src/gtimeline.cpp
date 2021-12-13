@@ -670,10 +670,6 @@ void gTimeline::redraw()
   myWindow->getSelectedRows( myWindow->getLevel(), selected, true );
   myWindow->getSelectedRows( myWindow->getLevel(), selectedSet, beginRow, endRow, true );
 
-//  vector<bool>         tmpSel;
-//  myWindow->getSelectedRows( THREAD, tmpSel );
-//    for (int i=0;i<tmpSel.size();++i)
-
   // To avoid empty zooms (probably due to other bug)
   TObjectOrder maxObj;
   if ( selectedSet.size() == 0 )
@@ -685,16 +681,11 @@ void gTimeline::redraw()
   drawImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   commImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
   eventImage.Create( drawZone->GetClientSize().GetWidth(), drawZone->GetClientSize().GetHeight() );
-#ifdef __WXMAC__
-  wxMemoryDC tmpDC( bufferImage );
-  wxGraphicsContext *gc = wxGraphicsContext::Create( tmpDC );
-  gc->SetAntialiasMode( wxANTIALIAS_NONE );
-  wxGCDC bufferDraw( tmpDC );
-#else
+
   wxMemoryDC bufferDraw( bufferImage );
   wxGraphicsContext *gc = wxGraphicsContext::Create( bufferDraw );
   gc->SetAntialiasMode( wxANTIALIAS_NONE );
-#endif
+
   wxMemoryDC commdc( commImage );
   wxMemoryDC eventdc( eventImage );
   wxGraphicsContext *gcComm = wxGraphicsContext::Create( commdc );
@@ -754,10 +745,8 @@ void gTimeline::redraw()
   eventdc.SetPen( *wxGREEN_PEN );
   eventdc.SetBrush( *wxGREEN_BRUSH );
   eventdc.SetBackgroundMode( wxTRANSPARENT );
-#ifndef __WXMAC__
   eventmaskdc.SetPen( *wxWHITE_PEN );
   eventmaskdc.SetBrush( *wxWHITE_BRUSH );
-#endif
 
   float magnify = float( myWindow->getPixelSize() );
   TTime timeStep = (( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() )  * magnify) /
@@ -844,38 +833,22 @@ void gTimeline::redraw()
     }
   }
   
-#ifdef __WXMAC__
-  dc.DrawBitmap( bufferImage, 0, 0, false );
-#else
   bufferDraw.SelectObject( wxNullBitmap );
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
-#endif
 
-#ifdef __WXMAC__
   doDrawCaution( dc );
-#else
-  doDrawCaution( bufferDraw );
-#endif
 
-#ifndef __WXMAC__
   eventmaskdc.SetPen( *wxBLACK_PEN );
   eventmaskdc.SetBrush( *wxBLACK_BRUSH );
   eventmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
-//  eventmaskdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder, 0, drawBorder, drawZone->GetSize().GetHeight() );
   eventmaskdc.SelectObject(wxNullBitmap);
   wxMask *mask = new wxMask( eventMask );
   eventImage.SetMask( mask );
-#endif
 
   if( myWindow->getDrawFlags() )
-#ifdef __WXMAC__
-    dc.DrawBitmap( eventImage, 0, 0, true );
-#else
     bufferDraw.DrawBitmap( eventImage, 0, 0, true );
-#endif
 
-#ifndef __WXMAC__
   commmaskdc.SetPen( *wxBLACK_PEN );
   commmaskdc.SetBrush( *wxBLACK_BRUSH );
   commmaskdc.DrawRectangle( 0, 0, objectAxisPos + 1, drawZone->GetSize().GetHeight() );
@@ -884,22 +857,9 @@ void gTimeline::redraw()
   commmaskdc.SelectObject(wxNullBitmap);
   mask = new wxMask( commMask );
   commImage.SetMask( mask );
-#else
-  commdc.SetBrush( *wxBLACK_BRUSH );
-  commdc.SetPen( *wxBLACK_PEN );
-  commdc.SetLogicalFunction( wxCLEAR );
-  commdc.DrawRectangle( 0, 0, objectAxisPos, drawZone->GetSize().GetHeight() );
-  commdc.DrawRectangle( drawZone->GetSize().GetWidth() - drawBorder + 1, 0, drawBorder, drawZone->GetSize().GetHeight() );
-  commdc.DrawRectangle( 0, timeAxisPos, drawZone->GetSize().GetWidth(), drawZone->GetSize().GetHeight() - timeAxisPos );
-  commdc.SetLogicalFunction( wxCOPY );
-#endif
 
   if( myWindow->getDrawCommLines() )
-#ifdef __WXMAC__
-    dc.DrawBitmap( commImage, 0, 0, true );
-#else
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
-#endif
 
   if( gTimeline::dialogProgress != nullptr )
   {
@@ -914,7 +874,8 @@ void gTimeline::redraw()
   delete gc;
   delete gcEvent;
   delete gcComm;
-  #ifndef __WXMAC__
+  // #ifndef __WXMAC__
+  #if 1
   delete gcCommMask;
   delete gcEventMask;
   #endif
@@ -925,7 +886,8 @@ void gTimeline::redraw()
 
   myWindow->setReady( true );
   
-#ifndef __WXMAC__
+// #ifndef __WXMAC__
+#if 1
   drawZone->Refresh();
 #endif
 
@@ -1531,13 +1493,12 @@ void gTimeline::drawRowEvents( wxDC& eventdc, wxDC& eventmaskdc, TObjectOrder ro
     eventdc.DrawLine( *it+2, rowPos - 6, *it+2, rowPos-3 );
     eventdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
     eventdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
-#ifndef __WXMAC__
+
     eventmaskdc.DrawLine( *it, rowPos - 6, *it, rowPos );
     eventmaskdc.DrawLine( *it+1, rowPos - 6, *it+1, rowPos-3 );
     eventmaskdc.DrawLine( *it+2, rowPos - 6, *it+2, rowPos-3 );
     eventmaskdc.DrawLine( *it+3, rowPos - 6, *it+3, rowPos-3 );
     eventmaskdc.DrawLine( *it+4, rowPos - 6, *it+4, rowPos-3 );
-#endif
   }
 
 }
@@ -1564,19 +1525,15 @@ void gTimeline::drawRowComms( wxDC& commdc, wxDC& commmaskdc, TObjectOrder rowPo
     {
       commdc.DrawLine( it->toTime, it->toRow,
                        it->fromTime, rowPos );
-#ifndef __WXMAC__
       commmaskdc.DrawLine( it->toTime, it->toRow,
                            it->fromTime, rowPos );
-#endif
     }
     else
     {
       commdc.DrawLine( it->toTime, it->toRow,
                        it->fromTime, rowPos + ( objectHeight / 2 ) );
-#ifndef __WXMAC__
       commmaskdc.DrawLine( it->toTime, it->toRow,
                            it->fromTime, rowPos + ( objectHeight / 2 ) );
-#endif
     }
   }
 }
