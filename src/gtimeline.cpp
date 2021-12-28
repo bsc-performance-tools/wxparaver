@@ -81,6 +81,12 @@
 
 using namespace std;
 
+#ifdef __WXMAC__
+constexpr int TIMER_SIZE_DURATION = 750;
+#else
+constexpr int TIMER_SIZE_DURATION = 250;
+#endif
+
 ////@begin XPM images
 ////@end XPM images
 
@@ -1580,8 +1586,10 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
 #ifndef WIN32
     }
 #endif
-    timerSize->Start( 250, true );
+    timerSize->StartOnce( TIMER_SIZE_DURATION );
   }
+
+  event.Skip();
 }
 
 
@@ -4820,6 +4828,7 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
   {
     if ( !wxparaverApp::mainWindow->GetSomeWinIsRedraw() )
     {
+      timerSize->Stop();
 #ifdef WIN32
       wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
       redraw();
@@ -4838,7 +4847,7 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
     }
     else
     {
-      timerSize->Start( 250, true );
+      timerSize->StartOnce( TIMER_SIZE_DURATION );
 #endif
     }
   }
