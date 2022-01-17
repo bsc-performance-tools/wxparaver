@@ -55,6 +55,7 @@
 #include "preferencesdialog.h"
 #include "loadcfgdialog.h"
 #include "sessionselectiondialog.h"
+#include "traceinformationdialog.h"
 #include "connection.h"
 
 // DATE TIME INCLUDES
@@ -118,6 +119,7 @@ constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits<PRV_INT16>::max
 #define ID_TOOLDELETE 10081
 #define ID_TOOL_CUT_TRACE 10100
 #define ID_TOOL_RUN_APPLICATION 10004
+#define ID_TRACE_INFORMATION 10291
 #define ID_CHOICEWINBROWSER 10002
 #define ID_TOOLBOOKFILESANDPROPERTIES 10159
 #define ID_DIRCTRLFILES 10160
@@ -356,6 +358,12 @@ public:
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_RUN_APPLICATION
   void OnToolRunApplicationClick( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TRACE_INFORMATION
+  void OnTraceInformationClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TRACE_INFORMATION
+  void OnTraceInformationUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_CHOICEBOOK_PAGE_CHANGED event handler for ID_CHOICEWINBROWSER
   void OnChoicewinbrowserPageChanged( wxChoicebookEvent& event );
