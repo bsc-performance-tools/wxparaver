@@ -839,6 +839,16 @@ void gTimeline::redraw()
     }
   }
   
+  if( gTimeline::dialogProgress != nullptr )
+  {
+    gTimeline::dialogProgress->Show( false );
+    delete gTimeline::dialogProgress;
+    gTimeline::dialogProgress = nullptr;
+  }
+
+  if ( progress != nullptr )
+    delete progress;
+
   bufferDraw.SelectObject( wxNullBitmap );
   bufferDraw.SelectObject( drawImage );
   bufferDraw.DrawBitmap( bufferImage, 0, 0, false );
@@ -867,16 +877,6 @@ void gTimeline::redraw()
   if( myWindow->getDrawCommLines() )
     bufferDraw.DrawBitmap( commImage, 0, 0, true );
 
-  if( gTimeline::dialogProgress != nullptr )
-  {
-    gTimeline::dialogProgress->Show( false );
-    delete gTimeline::dialogProgress;
-    gTimeline::dialogProgress = nullptr;
-  }
-
-  if ( progress != nullptr )
-    delete progress;
-
   delete gc;
   delete gcEvent;
   delete gcComm;
@@ -888,6 +888,8 @@ void gTimeline::redraw()
   SetTitle( winTitle );
 
   myWindow->setReady( true );
+
+  drawZone->Refresh();
 
   SetFocus();
 }
@@ -1557,12 +1559,12 @@ void gTimeline::OnScrolledWindowPaint( wxPaintEvent& event )
   if( !myWindow->getReady() )
     return;
 
-#ifdef __WXMAC__
-  drawStackedImages( dc );
-#else
+// #ifdef __WXMAC__
+//   drawStackedImages( dc );
+// #else
   if( drawImage.IsOk() )
     dc.DrawBitmap( drawImage, 0, 0, false );
-#endif
+// #endif
 }
 
 
@@ -2623,15 +2625,15 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
 
     if( endX - beginX > 3.0 )
     {
-#ifdef __WXMAC__
-      if( !zoomBMP.IsOk() ||
-          zoomBMP.GetHeight() != drawImage.GetHeight() ||
-          zoomBMP.GetWidth() != drawImage.GetWidth() )
-        zoomBMP = wxBitmap( drawImage.GetWidth(), drawImage.GetHeight() );
-      wxMemoryDC memdc( zoomBMP );
-#else
+// #ifdef __WXMAC__
+//       if( !zoomBMP.IsOk() ||
+//           zoomBMP.GetHeight() != drawImage.GetHeight() ||
+//           zoomBMP.GetWidth() != drawImage.GetWidth() )
+//         zoomBMP = wxBitmap( drawImage.GetWidth(), drawImage.GetHeight() );
+//       wxMemoryDC memdc( zoomBMP );
+// #else
       wxMemoryDC memdc( drawImage );
-#endif
+// #endif
       memdc.SetBackgroundMode( wxTRANSPARENT );
       memdc.SetBackground( *wxTRANSPARENT_BRUSH );
       memdc.Clear();
@@ -4995,24 +4997,24 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
     }
   }
 
-#ifndef __WXGTK__
+// #ifndef __WXGTK__
+//   wxClientDC paintDC( drawZone );
+//   #ifdef __WXMAC__
+//   drawStackedImages( paintDC );
+//   #else
+//   paintDC.DrawBitmap( drawImage, 0, 0 );
+//   #endif
+// #else
   wxClientDC paintDC( drawZone );
-  #ifdef __WXMAC__
-  drawStackedImages( paintDC );
-  #else
   paintDC.DrawBitmap( drawImage, 0, 0 );
-  #endif
-#else
-  wxClientDC paintDC( drawZone );
-  paintDC.DrawBitmap( drawImage, 0, 0 );
-#endif
+// #endif
 
   paintDC.SetFont( semanticFont );
   wxSize objectExt = paintDC.GetTextExtent( label );
 
   paintDC.SetPen( backgroundColour );
   paintDC.SetBrush( backgroundColour );
-//  paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 1, objectExt.GetWidth() + 30, bufferImage.GetHeight() - timeAxisPos );
+
   if( !( zooming || timing || wxGetApp().GetGlobalTiming() ) )
   {
     paintDC.SetBrush( tmpColor );

@@ -145,7 +145,9 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_UPDATE_UI( wxID_CONTROLWARNING, gHistogram::OnControlWarningUpdate )
   EVT_UPDATE_UI( wxID_3DWARNING, gHistogram::On3dWarningUpdate )
 ////@end gHistogram event table entries
-#ifndef __WXMAC__
+#if wxCHECK_VERSION( 3, 1, 5 )
+  EVT_GRID_CMD_RANGE_SELECTED( ID_GRIDHISTO, gHistogram::OnRangeSelect )
+#else
   EVT_GRID_CMD_RANGE_SELECT( ID_GRIDHISTO, gHistogram::OnRangeSelect )
 #endif
   
