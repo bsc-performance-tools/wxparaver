@@ -1,10 +1,25 @@
+Paraver is a performance analyzer based on event traces with a great
+flexibility to explore the collected data, supporting a detailed analysis of
+the variability and distribution of multiple metrics with the objective of
+understanding the application’s behavior. Paraver has two main views: The
+timeline view displays the application behavior over time, while the statistics
+view (histograms, profiles) complements the analysis with distribution
+of metrics.
+
+Website: https://tools.bsc.es/paraver
+Contact: tools@bsc.es
+
+HOW TO COMPILE
+==============
+C++ compiler compatible with C++14
+
 Library dependencies:
-	- wxWidgets >= 3.0.0 (www.wxwidgets.org)
-	- Boost >= 1.36 (www.boost.org)
-	- Boost Serialization (www.boost.org)
-  - OpenSSL (www.openssl.org)
-	- Paraver Kernel Library (www.bsc.es/paraver)
-	- Paraver Kernel API (www.bsc.es/paraver)
+  - wxWidgets >= 3.0.0 (https://www.wxwidgets.org)
+  - Boost >= 1.36 (https://www.boost.org)
+  - Boost Serialization (https://www.boost.org)
+  - OpenSSL (https://www.openssl.org)
+  - Paraver Kernel Library (https://tools.bsc.es/downloads)
+  - Paraver Kernel API (https://tools.bsc.es/downloads)
 
 If you have installed these packages from a package manager, remember to install devel packages too.
 
@@ -18,6 +33,4 @@ WINDOWS ONLY!!!:
 
 MACOSX ONLY!!!:
   - define the macro _WCHAR_H_CPLUSPLUS_98_CONFORMANCE_ in order to compile with wxWidgets 3
-
-Please send any question or suggestion to tools@bsc.es
 
