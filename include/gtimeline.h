@@ -733,7 +733,7 @@ private:
 #ifdef __WXMAC__
   wxBitmap zoomBMP;
 #endif
-#ifdef WIN32
+#ifdef _WIN32
   bool wheelZoomObjects;
 #endif
 

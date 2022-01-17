@@ -311,7 +311,7 @@ void gTimeline::Init()
   codeColorSet = true;
   gradientFunc = TGradientFunction::LINEAR;
   
-#ifdef WIN32
+#ifdef _WIN32
   wheelZoomObjects = false;
 #endif
 
@@ -652,7 +652,7 @@ void gTimeline::redraw()
 
   // Disabled progress dialog on windows. Causes blank image for semantic layer randomly (wxwidgets bug???)
   // Waiting for wxwidgets 3 code adaptation to prove that its solved.
-#ifndef WIN32
+#ifndef _WIN32
     if( gTimeline::dialogProgress == nullptr )
       gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                         wxT(""),
@@ -666,7 +666,7 @@ void gTimeline::redraw()
     //gTimeline::dialogProgress->Show( false );
     gTimeline::dialogProgress->Pulse( winTitle + _( "\t" ) );
     gTimeline::dialogProgress->Fit();
-#endif // WIN32
+#endif // _WIN32
   }
   // Get selected rows
   vector<bool>         selected;
@@ -1579,13 +1579,13 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
            ( event.GetSize().GetWidth() != myWindow->getWidth() ||
              event.GetSize().GetHeight() != myWindow->getHeight() ) )
   {
-#ifndef WIN32
+#ifndef _WIN32
     if( !splitChanged )
     {
 #endif
       myWindow->setWidth( event.GetSize().GetWidth() );
       myWindow->setHeight( event.GetSize().GetHeight() );
-#ifndef WIN32
+#ifndef _WIN32
     }
 #endif
     timerSize->StartOnce( TIMER_SIZE_DURATION );
@@ -1600,7 +1600,7 @@ void gTimeline::OnScrolledWindowSize( wxSizeEvent& event )
  */
 void gTimeline::OnIdle( wxIdleEvent& event )
 {
-/*#ifndef WIN32
+/*#ifndef _WIN32
   if( IsActive() )
     drawZone->SetFocus();
 #endif*/
@@ -1615,7 +1615,7 @@ void gTimeline::OnIdle( wxIdleEvent& event )
 
   this->SetTitle( wxString::FromUTF8( composedName.c_str() ) );
 
-#ifdef WIN32
+#ifdef _WIN32
   if( !firstUnsplit )
   {
     firstUnsplit = true;
@@ -3166,11 +3166,11 @@ void gTimeline::resizeDrawZone( int width, int height )
     this->SetClientSize( width, height );
   else
   {
-#ifdef WIN32
+#ifdef _WIN32
   this->SetClientSize( width, height + /*infoZone->GetClientSize().GetHeight()*/infoZoneLastSize + 5 );
 #endif
     splitter->SetSashPosition( height );
-#ifndef WIN32
+#ifndef _WIN32
     drawZone->SetClientSize( width, height );
     this->SetClientSize( width, height + infoZoneLastSize + 5 );
 #endif
@@ -3204,7 +3204,7 @@ void gTimeline::Unsplit()
   canRedraw = false;
   this->Freeze();
 
-/*#ifdef WIN32
+/*#ifdef _WIN32
   this->SetClientSize( this->GetClientSize().GetWidth(), this->GetClientSize().GetHeight() -
                                                          infoZone->GetClientSize().GetHeight() );
 #else*/
@@ -3636,7 +3636,7 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
 
     imageName = buildFormattedFileName();
  
-  #ifdef WIN32
+  #ifdef _WIN32
     defaultDir = _(".\\");
   #else
     defaultDir = _("./");
@@ -3835,7 +3835,7 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
   else
     imageName = buildFormattedFileName();
   
-#ifdef WIN32
+#ifdef _WIN32
   defaultDir = _(".\\");
 #else
   defaultDir = _("./");
@@ -4667,7 +4667,7 @@ void gTimeline::saveText()
 
   fileName = buildFormattedFileName();
 
-#ifdef WIN32
+#ifdef _WIN32
   defaultDir = _(".\\");
 #else
   defaultDir = _("./");
@@ -4831,7 +4831,7 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
     if ( !wxparaverApp::mainWindow->GetSomeWinIsRedraw() )
     {
       timerSize->Stop();
-#ifdef WIN32
+#ifdef _WIN32
       wxparaverApp::mainWindow->SetSomeWinIsRedraw( true );
       redraw();
       wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
@@ -5029,7 +5029,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
 
 void gTimeline::OnTimerWheel( wxTimerEvent& event )
 {
-#ifdef WIN32
+#ifdef _WIN32
   wheelZoomObjects = false;
 #endif
   wheelZoomFactor = 1.0;
@@ -5171,7 +5171,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
         //wxSetWorkingDirectory( myTraceDir );
 
         std::string absolutePathCurrentTrace = GetMyWindow()->getTrace()->getFileName();
-#ifdef WIN32
+#ifdef _WIN32
         _putenv_s( "PARAVER_ALIEN_TRACE_FULL_PATH", (const char *)absolutePathCurrentTrace.c_str() );
         wxExecute( command );
 #else
@@ -5208,7 +5208,7 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
         for (int idx = 0 ; !cmdExecuted && idx < textEditor.size(); ++idx)
         {
-#ifdef WIN32
+#ifdef _WIN32
           command << textEditor[ idx ] << path << _( "\\" ) << wxString::FromUTF8( fileStr.c_str() );
           cmdExecuted = ( wxExecute( command + wxT( " --version" ), wxEXEC_SYNC ) == 0 );
 #else
@@ -5805,14 +5805,14 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   if( zoomOut && myWindow->getWindowBeginTime() == 0 && myWindow->getWindowEndTime() == myWindow->getTrace()->getEndTime() )
     return;
 
-#ifdef WIN32
+#ifdef _WIN32
   if( event.ControlDown() )
     wheelZoomObjects = true;
 #endif
 
   double wheelZoomFactorX = newWheelFactor;
   double wheelZoomFactorY = 1;
-#ifdef WIN32
+#ifdef _WIN32
   if( wheelZoomObjects )
 #else
   if( event.ControlDown() )
@@ -5836,7 +5836,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   ratioUp = ratioUp * ( 1 - 1 / wheelZoomFactorY );
   ratioDown = ratioDown * ( 1 - 1 / wheelZoomFactorY );
   
-#ifdef WIN32
+#ifdef _WIN32
   if( wheelZoomObjects )
 #else
   if( event.ControlDown() )
@@ -5896,7 +5896,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
   wxMemoryDC tmpDC( tmpBMP );
   tmpDC.SetBrush( wxBrush( backgroundColour ) );
   tmpDC.Clear();
-#if __WXMAC__ || WIN32
+#if defined __WXMAC__ || defined _WIN32
   tmpDC.DrawRectangle( 0, 0, pixelsWidth, pixelsHeight );
 #endif
   tmpDC.SetUserScale( wheelZoomFactorX, wheelZoomFactorY );
@@ -5929,7 +5929,7 @@ void gTimeline::OnScrolledWindowMouseWheel( wxMouseEvent& event )
     tmpDC.SetPen( wxPen( backgroundColour ) );
     tmpDC.SetBrush( wxBrush( backgroundColour ) );
     tmpDC.DrawRectangle( 0, 0, -pixelBeginX, tmpDC.DeviceToLogicalY( timeAxisPos - drawBorder + 1 ) );
-#ifdef WIN32
+#ifdef _WIN32
     if( wheelZoomObjects )
 #else
     if( event.ControlDown() )

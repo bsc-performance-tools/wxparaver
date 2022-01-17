@@ -2435,7 +2435,7 @@ void PreferencesDialog::OnListboxTextEditorsSelected( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
 {
-#ifdef WIN32
+#ifdef _WIN32
   wxString dialogDefaultDir = wxT( "C:\\Program Files" );  
   wxString fileDialogWildcard = _( "*.exe" );  
 #else
@@ -2456,7 +2456,7 @@ void PreferencesDialog::OnButtonTxtAddClick( wxCommandEvent& event )
     for ( size_t i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
-    #ifdef WIN32
+    #ifdef _WIN32
       listTextEditors->Append( tmpFileName.GetFullPath() );
     #else
       listTextEditors->Append( tmpFileName.GetFullName() );
@@ -2563,7 +2563,7 @@ void PreferencesDialog::OnListboxPdfReadersSelected( wxCommandEvent& event )
 
 void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
 {
-#ifdef WIN32
+#ifdef _WIN32
   wxString dialogDefaultDir = wxT( "C:\\Program Files" );  
   wxString fileDialogWildcard = _( "*.exe" );  
 #else
@@ -2584,7 +2584,7 @@ void PreferencesDialog::OnButtonPdfAddClick( wxCommandEvent& event )
     for ( size_t i = 0 ; i < paths.size() ; ++i )
     {
       wxFileName tmpFileName = paths[ i ];
-    #ifdef WIN32  
+    #ifdef _WIN32  
       listPDFReaders->Append( tmpFileName.GetFullPath() );
     #else
       listPDFReaders->Append( tmpFileName.GetFullName() );
@@ -2698,7 +2698,7 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
       wxFileName tmpFileName = paths[ i ];
       Workspace ws;
       std::string wsPath( tmpFileName.GetPath().mb_str() );
-    #ifdef WIN32
+    #ifdef _WIN32
       wsPath.append( "\\" );
     #else
       wsPath.append( "/" );
@@ -2733,7 +2733,7 @@ void PreferencesDialog::OnButtonWorkspacesImportUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
 {
-#ifdef WIN32
+#ifdef _WIN32
   wxString dialogDefaultDir = _(".\\");
 #else
   wxString dialogDefaultDir = _("./");

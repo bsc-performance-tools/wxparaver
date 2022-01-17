@@ -42,7 +42,7 @@
 #endif
 
 // find a common place; moved from paravermain.cpp
-#ifdef WIN32
+#ifdef _WIN32
   const char PATH_SEP('\\');
 #else
   const char PATH_SEP('/');

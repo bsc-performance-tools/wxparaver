@@ -1819,7 +1819,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
       traceOptions->set_all_states( allStatesSelected );
       if ( allStatesSelected )
       {
-#ifdef WIN32
+#ifdef _WIN32
         auxNames[ 0 ] = _strdup( "All" );
 #else
         auxNames[ 0 ] = strdup( "All" );
@@ -1834,7 +1834,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
         {
           if ( checkListFilterStates->IsChecked( i ) )
           {
-#ifdef WIN32
+#ifdef _WIN32
             auxNames[ pos++ ] = _strdup( (char *)(checkListFilterStates->GetString( i ).mb_str().data() ));
 #elif defined UNICODE
             auxNames[ pos++ ] = strdup( (char *)(checkListFilterStates->GetString( i ).mb_str().data() ));
@@ -1846,7 +1846,7 @@ void CutFilterDialog::TransferWindowToFilterData( bool previousWarning )
 
         if( pos == 0 )
         {
-#ifdef WIN32
+#ifdef _WIN32
           auxNames[ 0 ] = _strdup( "Running" );
 #else
           auxNames[ 0 ] = strdup( "Running" );
@@ -2046,7 +2046,7 @@ char *CutFilterDialog::GetSoftwareCountersEventsListToString( wxListBox *selecte
       listStr += string(";");
   }
 
-#ifdef WIN32
+#ifdef _WIN32
   return _strdup( listStr.c_str() );
 #else
   return strdup( listStr.c_str() );

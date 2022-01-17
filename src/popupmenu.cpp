@@ -181,7 +181,7 @@ wxMenuItem *gPopUpMenu::buildItem( wxMenu *popUp,
     tmp->Check( checked );
     
   if( handler != nullptr )
-#ifdef WIN32
+#ifdef _WIN32
     Connect( id,
 #else
     popUp->Connect( id,

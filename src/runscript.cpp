@@ -36,7 +36,7 @@
 #include "wx/imaglist.h"
 ////@end includes
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <process.h>
 #endif
 
@@ -367,7 +367,7 @@ void RunScript::Init()
 
   // application names
   application[ TExternalApp::DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );
-#ifdef WIN32
+#ifdef _WIN32
   application[ TExternalApp::STATS_WRAPPER ]       = wxString( wxT("stats.exe") );
 #else
   application[ TExternalApp::STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );
@@ -392,7 +392,7 @@ void RunScript::Init()
   pidDimemasGUI = 0;
 
   std::stringstream tmpPID;
-#ifdef WIN32
+#ifdef _WIN32
   tmpPID << _getpid();
   _putenv_s( "PARAVER_LOADED", (const char *)std::string( tmpPID.str() ).c_str() );
 #else
@@ -2783,7 +2783,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   }
   if ( i >= editor.size() )
   {
-#ifdef WIN32
+#ifdef _WIN32
     command = _( "C:\\Windows\\system32\\NOTEPAD.EXE " ) + fileToEdit;
     wxExecute( command );
 #else

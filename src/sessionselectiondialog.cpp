@@ -277,7 +277,7 @@ bool SessionSelectionDialog::OnCreate()
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
     for ( size_t i = 0 ; i < filesInDir.size() ; ++i )
     {
-      #ifdef WIN32
+      #ifdef _WIN32
       wxString datetime = filesInDir[ i ].AfterLast( '\\' ).AfterFirst( '_' ).Left( 15 );
       #else
       wxString datetime = filesInDir[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );
@@ -320,7 +320,7 @@ bool SessionSelectionDialog::OnCreateNoDialog()
     map< boost::posix_time::ptime, wxString, std::greater< boost::posix_time::ptime > > dtToFile;
     for ( size_t i = 0 ; i < filesInDir.size() ; ++i )
     {
-      #ifdef WIN32
+      #ifdef _WIN32
       wxString datetime = filesInDir[ i ].AfterLast( '\\' ).AfterFirst( '_' ).Left( 15 );
       #else
       wxString datetime = filesInDir[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );

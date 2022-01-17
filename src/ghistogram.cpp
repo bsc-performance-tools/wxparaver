@@ -420,7 +420,7 @@ void gHistogram::execute()
     progress = ProgressController::create( myHistogram->getControlWindow()->getKernel() );
     progress->setHandler( progressFunctionHistogram, this );
 
-#ifndef WIN32
+#ifndef _WIN32
     if( gHistogram::dialogProgress == nullptr )
       gHistogram::dialogProgress = new wxProgressDialog( wxT("Computing window..."),
                                                          wxT(""),
@@ -435,7 +435,7 @@ void gHistogram::execute()
     gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
     gHistogram::dialogProgress->Fit();
     progress->setMessage( std::string( winTitle.mb_str() ) );
-#endif // WIN32
+#endif // _WIN32
   }
 
 
@@ -1040,7 +1040,7 @@ void gHistogram::OnIdle( wxIdleEvent& event )
   if( myHistogram->getDestroy() )
     return;
 
-#ifndef WIN32
+#ifndef _WIN32
 //  if( myHistogram->getZoom() )
   if( IsActive() )
     zoomHisto->SetFocus();
@@ -2822,7 +2822,7 @@ void gHistogram::saveText( bool onlySelectedPlane )
 
   fileName = buildFormattedFileName( onlySelectedPlane );
 
-#ifdef WIN32
+#ifdef _WIN32
   defaultDir = _(".\\");
 #else
   defaultDir = _("./");
@@ -2985,7 +2985,7 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
 
     imageName = buildFormattedFileName();
 
-  #ifdef WIN32
+  #ifdef _WIN32
     defaultDir = _(".\\");
   #else
     defaultDir = _("./");

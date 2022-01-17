@@ -561,7 +561,7 @@ bool TutorialsDownload::download( const TutorialData& whichTutorial, string& tut
   wxFileName outputFilePath( path );
   string downloadPath = ParaverConfig::getInstance()->getParaverConfigDir();
   tutorialFile = downloadPath + string( outputFilePath.GetFullName().mb_str() );
-#ifdef WIN32
+#ifdef _WIN32
   wxString tmpHome;
   if ( !wxparaverApp::mainWindow->getParaverHome( tmpHome ) )
     return false;
@@ -608,7 +608,7 @@ bool TutorialsDownload::install( const string& tutorialFile, TutorialsProgress& 
     wxMessageBox( wxT( "Failed creating directory " ) + wxString::FromUTF8( tutorialsPath.c_str() ), wxT( "Install failed" ), wxICON_ERROR );
     return false;
   }
-#ifdef WIN32
+#ifdef _WIN32
   wxString tmpHome;
   if ( !wxparaverApp::mainWindow->getParaverHome( tmpHome ) )
     return false;

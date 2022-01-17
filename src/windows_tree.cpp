@@ -35,7 +35,7 @@ wxTreeCtrl * createTree( wxImageList *imageList )
   wxChoicebook *choiceWindowBrowser = paraverMain::myParaverMain->choiceWindowBrowser;
   wxTreeCtrl *newTree =  new wxTreeCtrl( choiceWindowBrowser, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                          wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE );
-#ifndef WIN32
+#ifndef _WIN32
   newTree->SetWindowStyle( wxTR_HAS_BUTTONS|wxTR_HIDE_ROOT|wxTR_SINGLE );
 #endif
   newTree->SetImageList( imageList );

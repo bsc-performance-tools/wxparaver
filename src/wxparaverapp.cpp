@@ -63,7 +63,7 @@ using namespace std;
 ////@begin XPM images
 ////@end XPM images
 
-#ifndef WIN32
+#ifndef _WIN32
 struct sigaction act;
 #endif
 
@@ -379,7 +379,7 @@ bool wxparaverApp::OnInit()
   {
     m_server = new stServer;
   
-#ifdef WIN32
+#ifdef _WIN32
     // ToDo: port the unix code to Win32
     const wxString serviceFullName = wxT( "wxparaver_service-" ) + 
         wxGetUserId() + 
@@ -398,7 +398,7 @@ bool wxparaverApp::OnInit()
       stClient *client = new stClient;
       wxString hostName = wxT( "localhost" );
 
-  #ifdef WIN32
+  #ifdef _WIN32
       const wxString serviceName = wxT( "wxparaver_service-" ) + wxGetUserId();
 
       // Connectivity check for failing sessions
@@ -512,7 +512,7 @@ bool wxparaverApp::OnInit()
     {
       m_server = new stServer;
     
-    #ifdef WIN32
+    #ifdef _WIN32
       const wxString serviceName = wxT( "wxparaver_service-" ) + wxGetUserId();
     #else
       const wxString serviceName = wxT( "/tmp/wxparaver_service-" ) + wxGetUserId();
@@ -526,7 +526,7 @@ bool wxparaverApp::OnInit()
     
       stClient *client = new stClient;
       wxString hostName = wxT( "localhost" );
-    #ifdef WIN32
+    #ifdef _WIN32
       const wxString serviceName = wxT( "wxparaver_service-" ) + wxGetUserId();
     #else
       const wxString serviceName = wxT( "/tmp/wxparaver_service-" ) + wxGetUserId();
@@ -660,7 +660,7 @@ void wxparaverApp::ParseCommandLine( wxCmdLineParser& paraverCommandLineParser )
 
         wxFileName tmpFileName( wxString( fileName.c_str(), wxConvUTF8 ) );
           
-#ifdef WIN32
+#ifdef _WIN32
         tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
                                wxPATH_NORM_LONG );
 #else
@@ -860,7 +860,7 @@ int wxparaverApp::FilterEvent(wxEvent& event)
         mainWindow->OnOpenClick( dummyEvent );
       }
 
-#ifdef WIN32
+#ifdef _WIN32
       else if ( keyCode == (long) 'C' )
         mainWindow->OnKeyCopy();
       else if ( keyCode == (long) 'V' )
@@ -893,7 +893,7 @@ void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
 #ifndef __WXMAC__
   globalTimingCallDialog->Enable( false );
 #endif
-#ifdef WIN32
+#ifdef _WIN32
   globalTimingCallDialog->Iconize( true );
 #endif
 #ifdef __WXMAC__
@@ -910,7 +910,7 @@ void wxparaverApp::DeactivateGlobalTiming()
   globalTimingCallDialog->Enable( true );
 
 
-#ifdef WIN32
+#ifdef _WIN32
   globalTimingCallDialog->Iconize( false );
 #endif
   globalTimingCallDialog->Raise();

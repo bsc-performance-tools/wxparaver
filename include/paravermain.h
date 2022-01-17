@@ -61,7 +61,7 @@
 //#include <boost/date_time/gregorian/gregorian.hpp>
 #include "boost/date_time/posix_time/posix_time.hpp"
 
-#ifdef WIN32
+#ifdef _WIN32
 #undef VERSION
 #define VERSION "4.9.2"
 #endif
@@ -84,7 +84,7 @@ class CutFilterDialog;
 class TraceOptions;
 class RunScript;
 
-#ifdef WIN32
+#ifdef _WIN32
 inline double rint( double nr )
 {
   double f = floor( nr );
@@ -566,10 +566,10 @@ public:
   void insertSignalItem( bool isSig1 );
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
   void OnKeyCopy();
   void OnKeyPaste();
-#endif // WIN32
+#endif // _WIN32
   void OnFindDialog();
   
   void DoLoadSession( const std::string &whichFileName );

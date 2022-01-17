@@ -82,7 +82,7 @@
 #include <algorithm>
 //#include "connection.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <shlobj.h>
@@ -459,12 +459,12 @@ void paraverMain::Init()
   instChecker = nullptr;
 
   wxFileSystem::AddHandler( new wxMemoryFSHandler() );
-#ifdef WIN32
+#ifdef _WIN32
   wxBitmap bmp( logoBSC_xpm );
 #endif
 
   wxMemoryFSHandler::AddFile( wxT( "logoBSC.xpm" ),
-#ifdef WIN32
+#ifdef _WIN32
                               bmp,
 #else
                               wxBITMAP( logoBSC ),
@@ -735,7 +735,7 @@ void paraverMain::DoLoadSession( const string &whichFileName )
 {
   wxFileName tmpFileName( wxString( whichFileName.c_str(), wxConvUTF8 ) );
 
-#ifdef WIN32
+#ifdef _WIN32
   tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
                          wxPATH_NORM_LONG );
 #else
@@ -768,7 +768,7 @@ bool paraverMain::DoLoadTrace( const string &path )
   // Append whole path.
   wxFileName tmpFileName( wxString( path.c_str(), wxConvUTF8 ) );
 
-#ifdef WIN32
+#ifdef _WIN32
   tmpFileName.Normalize( wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE |
                          wxPATH_NORM_LONG );
 #else
@@ -1067,7 +1067,7 @@ void paraverMain::OnMenuloadcfgClick( wxCommandEvent& event )
 
 void paraverMain::OnMenuLoadAutoSavedSession( wxCommandEvent& event )
 {
-  #ifdef WIN32
+  #ifdef _WIN32
   string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
   #else
   string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
@@ -1079,7 +1079,7 @@ void paraverMain::OnMenuLoadAutoSavedSession( wxCommandEvent& event )
 void paraverMain::OnMenuLoadAutoSavedSessionSelect( wxCommandEvent& event )
 {
   //MultiSessionLoad( true );
-  #ifdef WIN32
+  #ifdef _WIN32
     wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 )  + _( "\\AutosavedSessions" ) );
   #else
     wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) + _( "/AutosavedSessions" ) );
@@ -2750,7 +2750,7 @@ void paraverMain::OnIdle( wxIdleEvent& event )
     }
   }
 
-#ifndef WIN32
+#ifndef _WIN32
   if( signalQueue.size() > 0 )
     OnSignal();
 #endif
@@ -3920,7 +3920,7 @@ void paraverMain::OnActivate( wxActivateEvent& event )
 
 void paraverMain::HandleMaxSessionFiles()
 {
-#ifdef WIN32
+#ifdef _WIN32
   wxString folder( 
         wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 ) +
         _( "\\AutosavedSessions" ) ) ;
@@ -3940,7 +3940,7 @@ void paraverMain::HandleMaxSessionFiles()
       map< boost::posix_time::ptime, wxString > dtToFile;
       for ( int i = 0 ; i < filesInFolder.size() ; ++i )
       {
-        #ifdef WIN32
+        #ifdef _WIN32
         wxString datetime = filesInFolder[ i ].AfterLast( '\\' ).AfterFirst( '_' ).Left( 15 );
         #else
         wxString datetime = filesInFolder[ i ].AfterLast( '/' ).AfterFirst( '_' ).Left( 15 );
@@ -3954,7 +3954,7 @@ void paraverMain::HandleMaxSessionFiles()
       // Remove >=10 oldest auto-saved session files EXCEPT those in execution
       if( !ParaverConfig::getInstance()->getGlobalSingleInstance() )
       {
-#ifdef WIN32
+#ifdef _WIN32
         // ST : Service Table
         wxDir wxd( wxT( "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\services\\" ) );
         wxString service, serviceFlag = wxT( "wxparaver_service*" );
@@ -4031,7 +4031,7 @@ void paraverMain::PrepareToExit()
     stringstream strStatus;
     strPid << sessionInfo.pid;
     strStatus << static_cast<int>( sessionInfo.status );
-  #ifdef WIN32
+  #ifdef _WIN32
 
     wxString file( wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                           "\\AutosavedSessions" +
@@ -4090,7 +4090,7 @@ void paraverMain::PrepareToExit()
 
     strStatus.str( std::string() ); //clear
     strStatus << static_cast<int>( sessionInfo.status );
-  #ifdef WIN32
+  #ifdef _WIN32
     file = wxString( std::string( ParaverConfig::getInstance()->getGlobalSessionPath() +
                                   "\\AutosavedSessions" +
                                   "\\ps" +
@@ -4284,7 +4284,7 @@ void paraverMain::enqueueFile( string whichFile )
 }
 
 
-#ifdef WIN32
+#ifdef _WIN32
 void paraverMain::OnKeyCopy()
 {
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
@@ -4577,7 +4577,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
   string file;
   if ( ParaverConfig::getInstance()->getGlobalSingleInstance() ) 
   {
-    #ifdef WIN32
+    #ifdef _WIN32
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session";
     #else
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session";
@@ -4595,7 +4595,7 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     strPid << sessionInfo.pid;
     strStatus << static_cast<int>( sessionInfo.status );
 
-    #ifdef WIN32
+    #ifdef _WIN32
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "\\AutosavedSessions" + "\\ps" + strPid.str() + "_" + sessionInfo.sessionDate + "_" + strStatus.str() + ".session";
     #else
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + strPid.str() + "_" + sessionInfo.sessionDate + "_" + strStatus.str() + ".session";
@@ -4687,7 +4687,7 @@ void paraverMain::OnAboutClick( wxCommandEvent& event )
   description << _( "\ntools@bsc.es\n" );
   info.SetDescription( description );
   developers.Add( _("Eloy Martinez Hortelano (eloy.martinez@bsc.es)") );
-#ifdef WIN32
+#ifdef _WIN32
   developers.Add( _("\nPedro Antonio Gonzalez Navarro (pedro.gonzalez@bsc.es)") );
   developers.Add( _("\nMiguel Moreno Gomez (miguel.moreno@bsc.es)") );
 #else
@@ -4768,7 +4768,7 @@ bool paraverMain::getParaverHome( wxString &paraverHome )
 
   //wxString paraverHome;
 
-#ifdef WIN32
+#ifdef _WIN32
   std::wstring baseDir;
 
   TCHAR myPath[ MAX_LEN_PATH ];
@@ -4871,7 +4871,7 @@ void paraverMain::createHelpContentsWindow(
   // If helpFile has no "html" at the end, use Help Content's Index as hCAP (which works)
   if ( helpFile.SubString( helpFile.size() - 4, helpFile.size() - 1) != wxT( "html" ) )
   {
-#ifdef WIN32
+#ifdef _WIN32
     helpContentsAbsolutePath = wxT( "file:///" ) + 
 #else
     helpContentsAbsolutePath = wxT( "file://" ) + 
@@ -4882,7 +4882,7 @@ void paraverMain::createHelpContentsWindow(
   }
   else // Otherwise use previous hCAP
   {
-#ifdef WIN32
+#ifdef _WIN32
     helpContentsAbsolutePath = wxT( "file:///" ) + paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
 #else
     helpContentsAbsolutePath = wxT( "file://" ) + paraverHome + helpContentsBaseRelativePath + helpFile + hRef;
@@ -5120,7 +5120,7 @@ bool paraverMain::isCFG4DModeDisabled() const
 }
 
 
-#ifndef WIN32
+#ifndef _WIN32
 void paraverMain::insertSignalItem( bool isSig1 )
 {
   SignalItem tmpSignalItem;
@@ -5255,13 +5255,13 @@ void paraverMain::insertSignalItem( bool isSig1 )
   wxIdleEvent tmpEvent;
   AddPendingEvent( tmpEvent );
 }
-#endif // WIN32
+#endif // _WIN32
 
 
 
 void paraverMain::LastSessionLoad( bool isSessionInitialized )
 {
-  #ifdef WIN32
+  #ifdef _WIN32
     wxString folder( wxString( ParaverConfig::getInstance()->getGlobalSessionPath().c_str(), wxConvUTF8 )  +
         _( "\\AutosavedSessions" ) );
   #else
@@ -5284,7 +5284,7 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
       wxString folderPath = path;
       folderPath.Replace( wxT( ".session" ), wxT( "_session" ) );
 
-#ifdef WIN32
+#ifdef _WIN32
       wxString folderPathSimple = folderPath.AfterLast( '\\' );
       wxString sessionPID = folderPathSimple.BeforeFirst( '_' ).AfterLast( 's' );
       sessionPID.Replace( wxT( "ps" ), wxT( "" ) );
@@ -5333,7 +5333,7 @@ void paraverMain::LastSessionLoad( bool isSessionInitialized )
 void paraverMain::checkIfPrevSessionLoad( bool prevSessionWasComplete )
 { 
   //to do : add alert popup
-  #ifdef WIN32
+  #ifdef _WIN32
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "\\paraver.session" );
   #else
     string file( ParaverConfig::getInstance()->getGlobalSessionPath() + "/paraver.session" );
@@ -5387,7 +5387,7 @@ void paraverMain::filterExternalApps()
   //Get WX variants and check
   wxArrayString newTxt;
 
-#ifdef WIN32
+#ifdef _WIN32
   wxMimeTypesManager mimeTypeMgr;
   wxFileType* tmpFT = mimeTypeMgr.GetFileTypeFromExtension( wxT( "txt" ) );
   wxString tmpCmd = tmpFT->GetOpenCommand( tmpCmd );
@@ -5422,7 +5422,7 @@ void paraverMain::filterExternalApps()
 
   wxArrayString newPDF;
 
-#ifdef WIN32
+#ifdef _WIN32
   tmpFT = mimeTypeMgr.GetFileTypeFromExtension( wxT( "pdf" ) );
   tmpCmd = wxT( "" );
 
