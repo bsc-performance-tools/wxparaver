@@ -39,6 +39,7 @@
  */
 
 ////@begin forward declarations
+class wxBoxSizer;
 class wxRichTextCtrl;
 ////@end forward declarations
 
@@ -48,8 +49,11 @@ class wxRichTextCtrl;
 
 ////@begin control identifiers
 #define ID_TRACEINFORMATIONDIALOG 10000
+#define wxID_GTI_STATIC 10298
 #define ID_GENERAL_RICHTEXTCTRL 10001
+#define wxID_PMI_STATIC 10296
 #define ID_PROCESS_RICHTEXTCTRL 10002
+#define wxID_RMI_STATIC 10297
 #define ID_RESOURCE_RICHTEXTCTRL 10003
 #define SYMBOL_TRACEINFORMATIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_TRACEINFORMATIONDIALOG_TITLE _("Trace Information Dialog")
@@ -102,12 +106,18 @@ public:
   static bool ShowToolTips();
 
 ////@begin TraceInformationDialog member variables
+  wxBoxSizer* GeneralInfoSizer;
   wxRichTextCtrl* TraceGeneralInfo;
+  wxBoxSizer* ProcessModelSizer;
   wxRichTextCtrl* ProcessModelInfo;
+  wxBoxSizer* ResourceModelSizer;
   wxRichTextCtrl* ResourceModelInfo;
 ////@end TraceInformationDialog member variables
 
   Trace* myTrace;
+
+private:
+  void DisplayTraceInformation();
 };
 
 #endif
