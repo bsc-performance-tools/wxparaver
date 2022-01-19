@@ -2065,11 +2065,13 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
 void paraverMain::OnTreeSelChanged( wxTreeEvent& event )
 {
   wxTreeCtrl *tmpTree = static_cast<wxTreeCtrl *>( event.GetEventObject() );
-  if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES )
+  if( tmpTree->GetParent()->GetId() == ID_DIRCTRLFILES ||
+      !event.GetItem().IsOk() )
   {
     event.Skip();
     return;
   }
+
   TreeBrowserItemData *itemData = static_cast<TreeBrowserItemData *>( tmpTree->GetItemData( event.GetItem() ) );
 
   endDragWindow = nullptr;
