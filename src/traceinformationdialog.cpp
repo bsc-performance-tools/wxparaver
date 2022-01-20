@@ -91,6 +91,8 @@ void TraceInformationDialog::DisplayTraceInformation()
   wxString formattedCreationTime = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime, 0 ).c_str() ).BeforeFirst( ',' );
   wxString formattedDurationTime = wxString::FromUTF8( LabelConstructor::timeLabel( myTrace->getEndTime(), myTrace->getTimeUnit(), 0 ).c_str() );
 
+  wxString traceSize = wxString::Format( wxT( "%.2f kB" ), double( myTrace->getTraceSize() )/1E3 );
+
 
   TraceGeneralInfo->WriteText( "Name: " );
   TraceGeneralInfo->BeginBold(); 
@@ -102,6 +104,11 @@ void TraceInformationDialog::DisplayTraceInformation()
   TraceGeneralInfo->WriteText( myTrace->getFileName() + "\n" );
   TraceGeneralInfo->EndBold();
   
+  TraceGeneralInfo->WriteText( "Size: " );
+  TraceGeneralInfo->BeginBold(); 
+  TraceGeneralInfo->WriteText( traceSize + "\n" );
+  TraceGeneralInfo->EndBold();
+  
   TraceGeneralInfo->WriteText( "Date of creation: " );
   TraceGeneralInfo->BeginBold(); 
   TraceGeneralInfo->WriteText( formattedCreationTime + "\n" );
@@ -109,9 +116,13 @@ void TraceInformationDialog::DisplayTraceInformation()
 
   TraceGeneralInfo->WriteText( "Duration: " );
   TraceGeneralInfo->BeginBold(); 
-  TraceGeneralInfo->WriteText( formattedDurationTime + "\n" );
+  TraceGeneralInfo->WriteText( formattedDurationTime /*+ "\n"*/ );
   TraceGeneralInfo->EndBold();
-
+  
+/*  
+  //TODO
+    // ADD: Trace filesize, num records state/evt/comms (not available today)
+    // RMV: state/evts?
   std::vector< TState > stateVec;
   std::vector< TEventType > eventVec;
   myTrace->getStateLabels().getStates( stateVec );
@@ -126,7 +137,7 @@ void TraceInformationDialog::DisplayTraceInformation()
   TraceGeneralInfo->BeginBold(); 
   TraceGeneralInfo->WriteText( wxString::Format( wxT( "%i" ), eventVec.size() ) );
   TraceGeneralInfo->EndBold();
-
+*/
 
 
   // Process Model
@@ -234,8 +245,8 @@ void TraceInformationDialog::CreateControls()
   wxStaticText* itemStaticText1 = new wxStaticText( itemDialog1, wxID_GTI_STATIC, _("General Information"), wxDefaultPosition, wxDefaultSize, 0 );
   GeneralInfoSizer->Add(itemStaticText1, 0, wxGROW|wxALL, 5);
 
-  TraceGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_GENERAL_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  GeneralInfoSizer->Add(TraceGeneralInfo, 2, wxGROW|wxALL, 5);
+  TraceGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_GENERAL_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(400, 140), wxTE_READONLY|wxWANTS_CHARS );
+  GeneralInfoSizer->Add(TraceGeneralInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
   ProcessModelSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer1->Add(ProcessModelSizer, 2, wxGROW|wxALL, 5);
@@ -243,8 +254,8 @@ void TraceInformationDialog::CreateControls()
   wxStaticText* itemStaticText2 = new wxStaticText( itemDialog1, wxID_PMI_STATIC, _("Process Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
   ProcessModelSizer->Add(itemStaticText2, 0, wxGROW|wxALL, 5);
 
-  ProcessModelInfo = new wxRichTextCtrl( itemDialog1, ID_PROCESS_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  ProcessModelSizer->Add(ProcessModelInfo, 1, wxGROW|wxALL, 5);
+  ProcessModelInfo = new wxRichTextCtrl( itemDialog1, ID_PROCESS_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 75), wxTE_READONLY|wxWANTS_CHARS );
+  ProcessModelSizer->Add(ProcessModelInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
   ResourceModelSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer1->Add(ResourceModelSizer, 2, wxGROW|wxALL, 5);
@@ -252,8 +263,8 @@ void TraceInformationDialog::CreateControls()
   wxStaticText* itemStaticText3 = new wxStaticText( itemDialog1, wxID_RMI_STATIC, _("Resource Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
   ResourceModelSizer->Add(itemStaticText3, 0, wxGROW|wxALL, 5);
 
-  ResourceModelInfo = new wxRichTextCtrl( itemDialog1, ID_RESOURCE_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  ResourceModelSizer->Add(ResourceModelInfo, 1, wxGROW|wxALL, 5);
+  ResourceModelInfo = new wxRichTextCtrl( itemDialog1, ID_RESOURCE_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 40), wxTE_READONLY|wxWANTS_CHARS );
+  ResourceModelSizer->Add(ResourceModelInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
 ////@end TraceInformationDialog content construction
 }
