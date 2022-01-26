@@ -655,17 +655,20 @@ void paraverMain::refreshMenuHints()
   if( currentTrace == -1 )
     return;
 
-  // Create updated one
+   // Create updated one
   size_t currentWorkspace = 0;
   for ( vector< string >::iterator it = traceWorkspaces[ getCurrentTrace() ].begin(); it != traceWorkspaces[ getCurrentTrace()  ].end(); ++it )
   {
     wxString currentWorkspaceName = wxString::FromUTF8( it->c_str() );
     wxMenu *currentWorkspaceMenu = new wxMenu();
+    wxMenu *discardedWorkspaceMenu = new wxMenu();
 
     std::vector< std::pair< std::string, std::string > > currentHints;
     if( currentWorkspace < firstUserWorkspace[ getCurrentTrace() ] ) // Distributed workspaces
     {
       currentHints = workspacesManager->getWorkspace( *it, TWorkspaceSet::DISTRIBUTED ).getHintCFGs();
+
+      // Add the hints of a user defined workspace if it has the same name and event types
       if( workspacesManager->existWorkspace( *it, TWorkspaceSet::USER_DEFINED ) )
       {
         vector< WorkspaceValue > tmpDistAutoTypes = workspacesManager->getWorkspace( *it, TWorkspaceSet::DISTRIBUTED ).getAutoTypes();
@@ -700,19 +703,40 @@ void paraverMain::refreshMenuHints()
         currentWorkspaceMenu->AppendSeparator();
         continue;
       }
+
       wxString tmpName = getHintComposed( *it2 );
-      wxMenuItem *currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
-
       MenuHintFile *tmpHintFile = new MenuHintFile();
-      tmpHintFile->fileName = (*it2).first;
-      currentHint->SetRefData( tmpHintFile );
+      wxMenuItem *currentHint;
 
-      currentWorkspaceMenu->Append( currentHint );
+      wxFileName tmpCFG( wxString::FromUTF8( (*it2).first.c_str() ) );
+      if ( tmpCFG.IsRelative() )
+      {
+        wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
+        tmpCFG.MakeAbsolute( tmpGlobalCFGs );
+      }
+
+      tmpHintFile->fileName = std::string( tmpCFG.GetFullPath().mb_str() );
+      
+      if ( CFGLoader::detectAnyEventTypeInCFG( tmpHintFile->fileName,
+                                               getCurrentTrace()->getLoadedEvents().begin(),
+                                               getCurrentTrace()->getLoadedEvents().end() ) )
+      {
+        currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
+        currentWorkspaceMenu->Append( currentHint );
+      }
+      else
+      {
+        currentHint = new wxMenuItem( discardedWorkspaceMenu, wxID_ANY, tmpName );
+        discardedWorkspaceMenu->Append( currentHint );
+      }
+      currentHint->SetRefData( tmpHintFile );
       Connect( currentHint->GetId(),
                wxEVT_COMMAND_MENU_SELECTED,
                (wxObjectEventFunction)&paraverMain::OnHintClick );
+
     }
 
+    currentWorkspaceMenu->AppendSubMenu( discardedWorkspaceMenu, _( "Discarded" ) );
     menuHints->AppendSubMenu( currentWorkspaceMenu, currentWorkspaceName );
 
     ++currentWorkspace;
@@ -4967,14 +4991,7 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
   int hintId = event.GetId();
   wxMenuItem *tmpMenuItem = menuHints->FindItem( hintId );
 
-  wxFileName tmpCFG( wxString::FromUTF8( ( (MenuHintFile *) tmpMenuItem->GetRefData() )->fileName.c_str() ) );
-  if ( tmpCFG.IsRelative() )
-  {
-    wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
-    tmpCFG.MakeAbsolute( tmpGlobalCFGs );
-  }
-
-  DoLoadCFG( std::string( tmpCFG.GetFullPath().mb_str() ) );
+  DoLoadCFG( ( (MenuHintFile *) tmpMenuItem->GetRefData() )->fileName );
 }
 
 
