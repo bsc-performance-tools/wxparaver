@@ -735,8 +735,11 @@ void paraverMain::refreshMenuHints()
       }
       else
       {
-        currentHint = new wxMenuItem( discardedWorkspaceMenu, wxID_ANY, tmpName );
-        discardedWorkspaceMenu->Append( currentHint );
+        currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
+        currentWorkspaceMenu->Append( currentHint );
+        // currentHint = new wxMenuItem( discardedWorkspaceMenu, wxID_ANY, tmpName );
+        // discardedWorkspaceMenu->Append( currentHint );
+        currentHint->Enable( false );
       }
       currentHint->SetRefData( tmpHintFile );
       Connect( currentHint->GetId(),
