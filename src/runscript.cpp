@@ -1689,6 +1689,8 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
  //       break;
 
       default:
+        msg.Replace( "<", "&lt;" );
+        msg.Replace( ">", "&gt;" );
         msg = insertLog( msg, extensions );
         break;
     }
@@ -1698,8 +1700,6 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
     listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT><BR>") );
   else
     listboxRunLog->AppendToPage( wxT("<TT>") + msg + wxT("</TT>") );
-
-  //std::cout << msg << std::endl;
 
   int x, y;
   listboxRunLog->GetVirtualSize( &x, &y );
