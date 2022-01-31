@@ -735,11 +735,17 @@ void paraverMain::refreshMenuHints()
       }
       else
       {
-        currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
-        currentWorkspaceMenu->Append( currentHint );
-        // currentHint = new wxMenuItem( discardedWorkspaceMenu, wxID_ANY, tmpName );
-        // discardedWorkspaceMenu->Append( currentHint );
-        currentHint->Enable( false );
+        if( paraverConfig->getWorkspacesHintsDiscardedSubmenu() )
+        {
+          currentHint = new wxMenuItem( discardedWorkspaceMenu, wxID_ANY, tmpName );
+          discardedWorkspaceMenu->Append( currentHint );
+        }
+        else
+        {
+          currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
+          currentWorkspaceMenu->Append( currentHint );
+          currentHint->Enable( false );
+        }
       }
       currentHint->SetRefData( tmpHintFile );
       Connect( currentHint->GetId(),
@@ -3573,6 +3579,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetGlobalExternalTextEditors( externalTextEditors );
   preferences.SetGlobalExternalPDFReaders( externalPDFReaders );
 
+  preferences.SetWorkspaceDiscardedSubmenu( paraverConfig->getWorkspacesHintsDiscardedSubmenu() );
 
   preferences.SetPanel( whichPanelID );
 
@@ -3691,6 +3698,8 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
 
     // WORKSPACES
     workspacesManager->saveXML();
+
+    paraverConfig->setWorkspacesHintsDiscardedSubmenu( preferences.GetWorkspaceDiscardedSubmenu() );
 
     for ( vector< Trace * >::iterator it = loadedTraces.begin(); it != loadedTraces.end(); ++it )
     {

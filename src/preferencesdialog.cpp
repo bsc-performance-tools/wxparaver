@@ -233,6 +233,7 @@ void PreferencesDialog::Init()
   timelinePixelSize = 0;
   timelineSaveImageFormat = 0;
   timelineSaveTextFormat = 0;
+  timelineSemanticScaleMinAtZero = false;
   timelineWWCommunications = true;
   timelineWWEvents = true;
   timelineWWPrecision = 2;
@@ -243,117 +244,118 @@ void PreferencesDialog::Init()
   tracesPath = "";
   tutorialsPath = "";
   whatWhereMaxPrecision = 10;
-  timelineSemanticScaleMinAtZero = false;
-  panelGlobal = nullptr;
-  checkGlobalFillStateGaps = nullptr;
-  checkGlobalFullTracePath = nullptr;
-  txtMaximumTraceSize = nullptr;
-  textCtrlTrace = nullptr;
-  dirBrowserButtonTrace = nullptr;
-  textCtrlCFG = nullptr;
-  dirBrowserButtonCFG = nullptr;
-  textCtrlXML = nullptr;
-  dirBrowserButtonXML = nullptr;
-  textCtrlTutorials = nullptr;
-  dirBrowserButtonTutorials = nullptr;
-  textCtrlTmp = nullptr;
-  dirBrowserButtonTmp = nullptr;
-  checkGlobalSingleInstance = nullptr;
-  spinSessionTime = nullptr;
-  checkGlobalAskForPrevSessionLoad = nullptr;
-  checkGlobalHelpOnBrowser = nullptr;
-  checkDisableTimelineZoomMouseWheel = nullptr;
-  panelTimeline = nullptr;
-  txtTimelineNameFormatPrefix = nullptr;
-  txtTimelineNameFormatFull = nullptr;
-  checkTimelineCommunicationLines = nullptr;
-  checkTimelineEventLines = nullptr;
-  checkSemanticScaleMinAtZero = nullptr;
-  choiceTimelineColor = nullptr;
-  choiceTimelineGradientFunction = nullptr;
-  choiceTimelineDrawmodeTime = nullptr;
-  choiceTimelineDrawmodeObjects = nullptr;
-  choiceTimelinePixelSize = nullptr;
-  choiceTimelineLabels = nullptr;
-  choiceTimelineObjectAxis = nullptr;
-  checkTimelineWWSemantic = nullptr;
-  checkTimelineWWEvents = nullptr;
-  checkTimelineWWCommunications = nullptr;
-  checkTimelineWWPreviousNext = nullptr;
-  checkTimelineWWText = nullptr;
-  txtTimelineWWPrecision = nullptr;
-  txtTimelineWWEventPixels = nullptr;
-  choiceTimelineSaveImageFormat = nullptr;
-  choiceTimelineSaveTextFormat = nullptr;
-  panelHistogram = nullptr;
-  checkHistogramSkipCreateDialog = nullptr;
-  txtHistogramNameFormatPrefix = nullptr;
-  txtHistogramNameFormatFull = nullptr;
-  checkHistogramZoom = nullptr;
-  checkHistogramHorizontal = nullptr;
-  checkHistogramHideEmpty = nullptr;
-  checkHistogramShowGradient = nullptr;
-  checkHistogramLabelsColor = nullptr;
-  choiceHistogramGradientFunction = nullptr;
-  choiceHistogramDrawmodeSemantic = nullptr;
-  choiceHistogramDrawmodeObjects = nullptr;
-  checkHistogramScientificNotation = nullptr;
-  checkHistogramThousandsSeparator = nullptr;
-  checkHistogramShowUnits = nullptr;
-  txtHistogramPrecision = nullptr;
-  checkHistogramAutofitControlScale = nullptr;
-  checkHistogramAutofitControlScaleZero = nullptr;
-  checkHistogramAutofit3DScale = nullptr;
-  checkHistogramAutofitDataGradient = nullptr;
-  txtHistogramNumColumns = nullptr;
-  choiceHistogramSaveImageFormat = nullptr;
-  choiceHistogramSaveTextFormat = nullptr;
-  panelColor = nullptr;
-  colourPickerBackground = nullptr;
-  colourPickerAxis = nullptr;
-  checkZero = nullptr;
-  colourPickerZero = nullptr;
-  colourPickerPunctual = nullptr;
-  colourPickerLogical = nullptr;
-  colourPickerPhysical = nullptr;
-  colourPickerGradientBegin = nullptr;
-  colourPickerGradientEnd = nullptr;
-  colourPickerNegativeGradientBegin = nullptr;
-  colourPickerNegativeGradientEnd = nullptr;
-  colourPickerGradientLow = nullptr;
-  colourPickerGradientTop = nullptr;
-  panelWorkspaces = nullptr;
-  listWorkspaces = nullptr;
-  buttonAddWorkspace = nullptr;
-  buttonDeleteWorkspace = nullptr;
-  buttonUpWorkspace = nullptr;
-  buttonDownWorkspace = nullptr;
-  buttonImportWorkspace = nullptr;
-  buttonExportWorkspace = nullptr;
-  txtWorkspaceName = nullptr;
-  radioStates = nullptr;
-  radioEventTypes = nullptr;
-  txtAutoTypes = nullptr;
-  listHintsWorkspace = nullptr;
-  buttonAddHint = nullptr;
-  buttonDeleteHint = nullptr;
-  buttonUpHint = nullptr;
-  buttonDownHint = nullptr;
-  txtHintPath = nullptr;
-  fileBrowserHintPath = nullptr;
-  txtHintDescription = nullptr;
-  panelExternal = nullptr;
-  listTextEditors = nullptr;
-  buttonAddTextEditor = nullptr;
-  buttonDeleteTextEditor = nullptr;
-  buttonUpTextEditor = nullptr;
-  buttonDownTextEditor = nullptr;
-  listPDFReaders = nullptr;
-  buttonAddPDFReader = nullptr;
-  buttonDeletePDFReader = nullptr;
-  buttonUpPDFReader = nullptr;
-  buttonDownPDFReader = nullptr;
-  panelFilters = nullptr;
+  workspaceDiscardedSubmenu = false;
+  panelGlobal = NULL;
+  checkGlobalFillStateGaps = NULL;
+  checkGlobalFullTracePath = NULL;
+  txtMaximumTraceSize = NULL;
+  textCtrlTrace = NULL;
+  dirBrowserButtonTrace = NULL;
+  textCtrlCFG = NULL;
+  dirBrowserButtonCFG = NULL;
+  textCtrlXML = NULL;
+  dirBrowserButtonXML = NULL;
+  textCtrlTutorials = NULL;
+  dirBrowserButtonTutorials = NULL;
+  textCtrlTmp = NULL;
+  dirBrowserButtonTmp = NULL;
+  checkGlobalSingleInstance = NULL;
+  spinSessionTime = NULL;
+  checkGlobalAskForPrevSessionLoad = NULL;
+  checkGlobalHelpOnBrowser = NULL;
+  checkDisableTimelineZoomMouseWheel = NULL;
+  panelTimeline = NULL;
+  txtTimelineNameFormatPrefix = NULL;
+  txtTimelineNameFormatFull = NULL;
+  checkTimelineCommunicationLines = NULL;
+  checkTimelineEventLines = NULL;
+  checkSemanticScaleMinAtZero = NULL;
+  choiceTimelineColor = NULL;
+  choiceTimelineGradientFunction = NULL;
+  choiceTimelineDrawmodeTime = NULL;
+  choiceTimelineDrawmodeObjects = NULL;
+  choiceTimelinePixelSize = NULL;
+  choiceTimelineLabels = NULL;
+  choiceTimelineObjectAxis = NULL;
+  checkTimelineWWSemantic = NULL;
+  checkTimelineWWEvents = NULL;
+  checkTimelineWWCommunications = NULL;
+  checkTimelineWWPreviousNext = NULL;
+  checkTimelineWWText = NULL;
+  txtTimelineWWPrecision = NULL;
+  txtTimelineWWEventPixels = NULL;
+  choiceTimelineSaveImageFormat = NULL;
+  choiceTimelineSaveTextFormat = NULL;
+  panelHistogram = NULL;
+  checkHistogramSkipCreateDialog = NULL;
+  txtHistogramNameFormatPrefix = NULL;
+  txtHistogramNameFormatFull = NULL;
+  checkHistogramZoom = NULL;
+  checkHistogramHorizontal = NULL;
+  checkHistogramHideEmpty = NULL;
+  checkHistogramShowGradient = NULL;
+  checkHistogramLabelsColor = NULL;
+  choiceHistogramGradientFunction = NULL;
+  choiceHistogramDrawmodeSemantic = NULL;
+  choiceHistogramDrawmodeObjects = NULL;
+  checkHistogramScientificNotation = NULL;
+  checkHistogramThousandsSeparator = NULL;
+  checkHistogramShowUnits = NULL;
+  txtHistogramPrecision = NULL;
+  checkHistogramAutofitControlScale = NULL;
+  checkHistogramAutofitControlScaleZero = NULL;
+  checkHistogramAutofit3DScale = NULL;
+  checkHistogramAutofitDataGradient = NULL;
+  txtHistogramNumColumns = NULL;
+  choiceHistogramSaveImageFormat = NULL;
+  choiceHistogramSaveTextFormat = NULL;
+  panelColor = NULL;
+  colourPickerBackground = NULL;
+  colourPickerAxis = NULL;
+  checkZero = NULL;
+  colourPickerZero = NULL;
+  colourPickerPunctual = NULL;
+  colourPickerLogical = NULL;
+  colourPickerPhysical = NULL;
+  colourPickerGradientBegin = NULL;
+  colourPickerGradientEnd = NULL;
+  colourPickerNegativeGradientBegin = NULL;
+  colourPickerNegativeGradientEnd = NULL;
+  colourPickerGradientLow = NULL;
+  colourPickerGradientTop = NULL;
+  panelWorkspaces = NULL;
+  checkDiscardedSubmenu = NULL;
+  listWorkspaces = NULL;
+  buttonAddWorkspace = NULL;
+  buttonDeleteWorkspace = NULL;
+  buttonUpWorkspace = NULL;
+  buttonDownWorkspace = NULL;
+  buttonImportWorkspace = NULL;
+  buttonExportWorkspace = NULL;
+  txtWorkspaceName = NULL;
+  radioStates = NULL;
+  radioEventTypes = NULL;
+  txtAutoTypes = NULL;
+  listHintsWorkspace = NULL;
+  buttonAddHint = NULL;
+  buttonDeleteHint = NULL;
+  buttonUpHint = NULL;
+  buttonDownHint = NULL;
+  txtHintPath = NULL;
+  fileBrowserHintPath = NULL;
+  txtHintDescription = NULL;
+  panelExternal = NULL;
+  listTextEditors = NULL;
+  buttonAddTextEditor = NULL;
+  buttonDeleteTextEditor = NULL;
+  buttonUpTextEditor = NULL;
+  buttonDownTextEditor = NULL;
+  listPDFReaders = NULL;
+  buttonAddPDFReader = NULL;
+  buttonDeletePDFReader = NULL;
+  buttonUpPDFReader = NULL;
+  buttonDownPDFReader = NULL;
+  panelFilters = NULL;
 ////@end PreferencesDialog member initialisation
 }
 
@@ -1167,133 +1169,143 @@ void PreferencesDialog::CreateControls()
   GetBookCtrl()->AddPage(panelColor, _("Color"));
 
   panelWorkspaces = new wxPanel( GetBookCtrl(), ID_PREFERENCES_WORKSPACES, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-  wxBoxSizer* itemBoxSizer177 = new wxBoxSizer(wxHORIZONTAL);
-  panelWorkspaces->SetSizer(itemBoxSizer177);
+  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+  panelWorkspaces->SetSizer(itemBoxSizer2);
 
-  wxBoxSizer* itemBoxSizer178 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer177->Add(itemBoxSizer178, 2, wxGROW|wxALL, 5);
+  wxStaticBox* itemStaticBoxSizer3Static = new wxStaticBox(panelWorkspaces, wxID_ANY, _("Options"));
+  wxStaticBoxSizer* itemStaticBoxSizer3 = new wxStaticBoxSizer(itemStaticBoxSizer3Static, wxVERTICAL);
+  itemBoxSizer2->Add(itemStaticBoxSizer3, 0, wxGROW|wxALL, 5);
+  checkDiscardedSubmenu = new wxCheckBox( panelWorkspaces, ID_CHECKBOX_DISCARDED_SUBMENU, _("Add disabled Hints in a \"Discarded\" submenu"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkDiscardedSubmenu->SetValue(false);
+  itemStaticBoxSizer3->Add(checkDiscardedSubmenu, 0, wxALIGN_LEFT|wxALL, 5);
+
+  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(panelWorkspaces, wxID_ANY, _("User workspaces"));
+  wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
+  itemBoxSizer2->Add(itemStaticBoxSizer1, 1, wxGROW|wxALL, 5);
+  wxBoxSizer* itemBoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer1->Add(itemBoxSizer16, 2, wxGROW|wxALL, 5);
   wxArrayString listWorkspacesStrings;
   listWorkspaces = new wxListBox( panelWorkspaces, ID_LISTBOX_WORKSPACES, wxDefaultPosition, wxDefaultSize, listWorkspacesStrings, wxLB_SINGLE|wxLB_HSCROLL );
-  itemBoxSizer178->Add(listWorkspaces, 1, wxGROW|wxALL, 5);
+  itemBoxSizer16->Add(listWorkspaces, 1, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer180 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer178->Add(itemBoxSizer180, 0, wxALIGN_TOP|wxALL, 0);
+  wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer16->Add(itemBoxSizer18, 0, wxALIGN_TOP|wxALL, 0);
   buttonAddWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonAddWorkspace->SetToolTip(_("Add workspaces..."));
-  itemBoxSizer180->Add(buttonAddWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer18->Add(buttonAddWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDeleteWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonDeleteWorkspace->SetToolTip(_("Delete selected workspace"));
-  itemBoxSizer180->Add(buttonDeleteWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer18->Add(buttonDeleteWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonUpWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonUpWorkspace->SetToolTip(_("Move workspace up"));
-  itemBoxSizer180->Add(buttonUpWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer18->Add(buttonUpWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDownWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonDownWorkspace->SetToolTip(_("Move workspace down"));
-  itemBoxSizer180->Add(buttonDownWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer18->Add(buttonDownWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonImportWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_IMPORT, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/report_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonImportWorkspace->SetToolTip(_("Import workspaces"));
-  itemBoxSizer180->Add(buttonImportWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer18->Add(buttonImportWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonExportWorkspace = new wxBitmapButton( panelWorkspaces, ID_BUTTON_WORKSPACES_EXPORT, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/report_disk.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonExportWorkspace->SetToolTip(_("Export workspaces"));
-  itemBoxSizer180->Add(buttonExportWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer18->Add(buttonExportWorkspace, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxStaticLine* itemStaticLine185 = new wxStaticLine( panelWorkspaces, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-  itemBoxSizer177->Add(itemStaticLine185, 0, wxGROW|wxTOP|wxBOTTOM, 10);
+  wxStaticLine* itemStaticLine28 = new wxStaticLine( panelWorkspaces, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+  itemStaticBoxSizer1->Add(itemStaticLine28, 0, wxGROW|wxTOP|wxBOTTOM, 10);
 
-  wxBoxSizer* itemBoxSizer186 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer177->Add(itemBoxSizer186, 4, wxGROW|wxALL, 0);
-  wxBoxSizer* itemBoxSizer187 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer186->Add(itemBoxSizer187, 0, wxGROW|wxLEFT|wxTOP, 5);
+  wxBoxSizer* itemBoxSizer29 = new wxBoxSizer(wxVERTICAL);
+  itemStaticBoxSizer1->Add(itemBoxSizer29, 4, wxGROW|wxALL, 0);
+  wxBoxSizer* itemBoxSizer30 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer29->Add(itemBoxSizer30, 0, wxGROW|wxLEFT|wxTOP, 5);
   txtWorkspaceName = new wxTextCtrl( panelWorkspaces, ID_TEXT_WORKSPACE_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     txtWorkspaceName->SetToolTip(_("Workspace name"));
-  itemBoxSizer187->Add(txtWorkspaceName, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+  itemBoxSizer30->Add(txtWorkspaceName, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer186->Add(itemBoxSizer2, 0, wxGROW|wxLEFT, 5);
+  wxBoxSizer* itemBoxSizer32 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer29->Add(itemBoxSizer32, 0, wxGROW|wxLEFT, 5);
   radioStates = new wxRadioButton( panelWorkspaces, ID_RADIOSTATES, _("States"), wxDefaultPosition, wxDefaultSize, 0 );
   radioStates->SetValue(false);
-  itemBoxSizer2->Add(radioStates, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer32->Add(radioStates, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   radioEventTypes = new wxRadioButton( panelWorkspaces, ID_RADIOEVENTYPES, _("Event Types"), wxDefaultPosition, wxDefaultSize, 0 );
   radioEventTypes->SetValue(true);
-  itemBoxSizer2->Add(radioEventTypes, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer32->Add(radioEventTypes, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer189 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer186->Add(itemBoxSizer189, 0, wxGROW|wxLEFT, 5);
+  wxBoxSizer* itemBoxSizer35 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer29->Add(itemBoxSizer35, 0, wxGROW|wxLEFT, 5);
   txtAutoTypes = new wxTextCtrl( panelWorkspaces, ID_TEXT_WORKSPACE_AUTOTYPES, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     txtAutoTypes->SetToolTip(_("States or event types list for automatic workspace selection\n\nExample: 50000001;50000002[;type] "));
-  itemBoxSizer189->Add(txtAutoTypes, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+  itemBoxSizer35->Add(txtAutoTypes, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
-  wxStaticBox* itemStaticBoxSizer192Static = new wxStaticBox(panelWorkspaces, wxID_ANY, _(" Hints "));
-  wxStaticBoxSizer* itemStaticBoxSizer192 = new wxStaticBoxSizer(itemStaticBoxSizer192Static, wxVERTICAL);
-  itemBoxSizer186->Add(itemStaticBoxSizer192, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
-  wxBoxSizer* itemBoxSizer193 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer192->Add(itemBoxSizer193, 4, wxGROW, 0);
+  wxStaticBox* itemStaticBoxSizer37Static = new wxStaticBox(panelWorkspaces, wxID_ANY, _(" Hints "));
+  wxStaticBoxSizer* itemStaticBoxSizer37 = new wxStaticBoxSizer(itemStaticBoxSizer37Static, wxVERTICAL);
+  itemBoxSizer29->Add(itemStaticBoxSizer37, 1, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+  wxBoxSizer* itemBoxSizer40 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer37->Add(itemBoxSizer40, 4, wxGROW, 0);
   wxArrayString listHintsWorkspaceStrings;
   listHintsWorkspace = new wxListBox( panelWorkspaces, ID_LISTBOX_HINTS_WORKSPACE, wxDefaultPosition, wxDefaultSize, listHintsWorkspaceStrings, wxLB_SINGLE );
-  itemBoxSizer193->Add(listHintsWorkspace, 1, wxGROW|wxALL, 5);
+  itemBoxSizer40->Add(listHintsWorkspace, 1, wxGROW|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer195 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer193->Add(itemBoxSizer195, 0, wxALIGN_TOP|wxALL, 0);
+  wxBoxSizer* itemBoxSizer42 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer40->Add(itemBoxSizer42, 0, wxALIGN_TOP|wxALL, 0);
   buttonAddHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_ADD, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/derived_add.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonAddHint->SetToolTip(_("Add hints..."));
-  itemBoxSizer195->Add(buttonAddHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer42->Add(buttonAddHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDeleteHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_DELETE, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/delete.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonDeleteHint->SetToolTip(_("Delete selected hints"));
-  itemBoxSizer195->Add(buttonDeleteHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer42->Add(buttonDeleteHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonUpHint = new wxBitmapButton( panelWorkspaces, ID_BITMAP_HINT_UP, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_up.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonUpHint->SetToolTip(_("Move hint up"));
-  itemBoxSizer195->Add(buttonUpHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer42->Add(buttonUpHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
   buttonDownHint = new wxBitmapButton( panelWorkspaces, ID_BUTTON_HINT_DOWN, itemPropertySheetDialog1->GetBitmapResource(wxT("icons/arrow_down.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   if (PreferencesDialog::ShowToolTips())
     buttonDownHint->SetToolTip(_("Move hint down"));
-  itemBoxSizer195->Add(buttonDownHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+  itemBoxSizer42->Add(buttonDownHint, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer200 = new wxBoxSizer(wxHORIZONTAL);
-  itemStaticBoxSizer192->Add(itemBoxSizer200, 0, wxGROW, 5);
-  wxBoxSizer* itemBoxSizer201 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer200->Add(itemBoxSizer201, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
-  wxStaticText* itemStaticText202 = new wxStaticText( panelWorkspaces, wxID_STATIC, _("Path"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer201->Add(itemStaticText202, 0, wxALIGN_LEFT|wxALL, 5);
+  wxBoxSizer* itemBoxSizer47 = new wxBoxSizer(wxHORIZONTAL);
+  itemStaticBoxSizer37->Add(itemBoxSizer47, 0, wxGROW, 5);
+  wxBoxSizer* itemBoxSizer48 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer47->Add(itemBoxSizer48, 1, wxALIGN_CENTER_VERTICAL|wxLEFT, 5);
+  wxStaticText* itemStaticText49 = new wxStaticText( panelWorkspaces, wxID_STATIC, _("Path"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer48->Add(itemStaticText49, 0, wxALIGN_LEFT|wxALL, 5);
 
-  itemBoxSizer201->Add(5, 5, 0, wxGROW|wxTOP|wxBOTTOM, 2);
+  itemBoxSizer48->Add(5, 5, 0, wxGROW|wxTOP|wxBOTTOM, 2);
 
-  wxStaticText* itemStaticText204 = new wxStaticText( panelWorkspaces, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer201->Add(itemStaticText204, 0, wxALIGN_LEFT|wxALL, 5);
+  wxStaticText* itemStaticText52 = new wxStaticText( panelWorkspaces, wxID_STATIC, _("Description"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer48->Add(itemStaticText52, 0, wxALIGN_LEFT|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer205 = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer200->Add(itemBoxSizer205, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
-  wxBoxSizer* itemBoxSizer206 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer205->Add(itemBoxSizer206, 0, wxGROW|wxALL, 0);
+  wxBoxSizer* itemBoxSizer54 = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer47->Add(itemBoxSizer54, 4, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
+  wxBoxSizer* itemBoxSizer55 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer54->Add(itemBoxSizer55, 0, wxGROW|wxALL, 0);
   txtHintPath = new wxTextCtrl( panelWorkspaces, ID_TEXTCTRL_WORKSPACE_HINT_PATH, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
-  itemBoxSizer206->Add(txtHintPath, 1, wxGROW|wxTOP|wxBOTTOM, 5);
+  itemBoxSizer55->Add(txtHintPath, 1, wxGROW|wxTOP|wxBOTTOM, 5);
 
   fileBrowserHintPath = new FileBrowserButton( panelWorkspaces, ID_FILE_BUTTON_WORKSPACE_HINT_PATH, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer206->Add(fileBrowserHintPath, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer55->Add(fileBrowserHintPath, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  wxBoxSizer* itemBoxSizer209 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer205->Add(itemBoxSizer209, 0, wxGROW|wxALL, 0);
+  wxBoxSizer* itemBoxSizer58 = new wxBoxSizer(wxHORIZONTAL);
+  itemBoxSizer54->Add(itemBoxSizer58, 0, wxGROW|wxALL, 0);
   txtHintDescription = new wxTextCtrl( panelWorkspaces, ID_TEXTCTRL_WORKSPACE_HINT_DESCRIPTION, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer209->Add(txtHintDescription, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
+  itemBoxSizer58->Add(txtHintDescription, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
 
   GetBookCtrl()->AddPage(panelWorkspaces, _("Workspaces"));
 
@@ -1381,7 +1393,7 @@ void PreferencesDialog::CreateControls()
   GetBookCtrl()->AddPage(panelFilters, _("Filters"));
 
   // Connect events and objects
-  txtWorkspaceName->Connect(ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), nullptr, this);
+  txtWorkspaceName->Connect(ID_TEXT_WORKSPACE_NAME, wxEVT_KILL_FOCUS, wxFocusEventHandler(PreferencesDialog::OnTextWorkspaceNameKillFocus), NULL, this);
 ////@end PreferencesDialog content construction
     
   itemPropertySheetDialog1 = nullptr;
@@ -1689,6 +1701,8 @@ bool PreferencesDialog::TransferDataToWindow()
   
   fileBrowserHintPath->SetPath( wxString::FromUTF8( cfgsPath.c_str() ) );
 
+  checkDiscardedSubmenu->SetValue( workspaceDiscardedSubmenu );
+
   return true;
 }
 
@@ -1801,7 +1815,9 @@ bool PreferencesDialog::TransferDataFromWindow()
   WorkspaceManager::getInstance()->clear();
   for( size_t i = 0; i < listWorkspaces->GetCount(); ++i )
     WorkspaceManager::getInstance()->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
-  
+
+  workspaceDiscardedSubmenu = checkDiscardedSubmenu->GetValue();
+
   return true;
 }
 
