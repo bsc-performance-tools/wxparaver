@@ -139,6 +139,7 @@ BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
   EVT_MENU( ID_MENU_FOLDING, gPopUpMenu::OnMenuFolding )
   EVT_MENU( ID_MENU_DIMEMAS, gPopUpMenu::OnMenuDimemas )
   EVT_MENU( ID_MENU_CUTTER, gPopUpMenu::OnMenuCutter )
+  EVT_MENU( ID_MENU_USER_COMMAND, gPopUpMenu::OnMenuUserCommand )
 
 END_EVENT_TABLE()
 
@@ -758,6 +759,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuRun, _( "Clustering" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuClustering, ID_MENU_CLUSTERING );
   buildItem( popUpMenuRun, _( "Folding" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFolding, ID_MENU_FOLDING );
   buildItem( popUpMenuRun, _( "Spectral" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSpectral, ID_MENU_SPECTRAL );
+  buildItem( popUpMenuRun, _( "User Command" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuUserCommand, ID_MENU_USER_COMMAND );
   AppendSubMenu( popUpMenuRun, _( "Run" ) );
   
   AppendSeparator();
@@ -2090,5 +2092,10 @@ void gPopUpMenu::OnMenuDimemas( wxCommandEvent& event )
 void gPopUpMenu::OnMenuCutter( wxCommandEvent& event )
 {
   SequenceDriver::sequenceCutter( timeline );
+}
+
+void gPopUpMenu::OnMenuUserCommand( wxCommandEvent& event )
+{
+  SequenceDriver::sequenceUserCommand( timeline );
 }
 

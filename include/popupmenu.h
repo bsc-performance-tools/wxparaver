@@ -143,6 +143,8 @@ class gHistogram;
 #define ID_MENU_AUTO_CONTROL_SCALE_ZERO                    30102
 #define ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO                 30103
 #define ID_MENU_SYNC_REMOVE_ALL_GROUPS                     30104
+#define ID_MENU_USER_COMMAND                               30105
+
 
 #define ID_MENU_SYNC_GROUP_BASE                            31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE                     32000
@@ -291,6 +293,8 @@ class gPopUpMenu : public wxMenu
     void OnMenuDimemas( wxCommandEvent& event );
     void OnMenuFolding( wxCommandEvent& event );
     void OnMenuSpectral( wxCommandEvent& event );
+    void OnMenuUserCommand( wxCommandEvent& event );
+
     
   private:
     gTimeline *timeline;
