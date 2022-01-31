@@ -30,6 +30,7 @@
  */
 
 ////@begin includes
+#include "include/filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -426,6 +427,8 @@ private:
   // Application list: labels and names
   std::map< TExternalApp, wxString > applicationLabel;
   std::map< TExternalApp, wxString > application;
+  
+  std::map< int, bool > appIsFound;
 
   // extensions to detect in log
   wxArrayString extensions;

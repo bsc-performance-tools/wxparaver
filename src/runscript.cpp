@@ -257,82 +257,82 @@ void RunScript::Init()
 ////@begin RunScript member initialisation
   myProcess = nullptr;
   myProcessPid = 0;
-  choiceApplication = nullptr;
-  buttonEditApplication = nullptr;
-  textCtrlTrace = nullptr;
-  fileBrowserButtonTrace = nullptr;
-  boxSizerParameters = nullptr;
-  labelTextCtrlDefaultParameters = nullptr;
-  textCtrlDefaultParameters = nullptr;
-  dimemasSection = nullptr;
-  labelFilePickerDimemasCFG = nullptr;
-  textCtrlDimemasCFG = nullptr;
-  fileBrowserButtonDimemasCFG = nullptr;
-  buttonDimemasGUI = nullptr;
-  labelTextCtrlOutputTrace = nullptr;
-  textCtrlOutputTrace = nullptr;
-  checkBoxReuseDimemasTrace = nullptr;
-  checkBoxDontTranslateIdleStates = nullptr;
-  checkBoxDimemasVerbose = nullptr;
-  textCtrlDimemasBandwidth = nullptr;
-  textCtrlDimemasLatency = nullptr;
-  radioButtonDimemasDefaultTasksMapping = nullptr;
-  radioButtonDimemasFillNodes = nullptr;
-  radioButtonDimemasInterleaved = nullptr;
-  radioButtonDimemasTasksPerNode = nullptr;
-  spinCtrlDimemasTasksPerNode = nullptr;
-  statsSection = nullptr;
-  statsLabelTextCtrlOutputName = nullptr;
-  statsTextCtrlOutputName = nullptr;
-  statsCheckBoxShowBurstsHistogram = nullptr;
-  statsCheckBoxShowCommsHistogram = nullptr;
-  statsCheckBoxOnlyDatFile = nullptr;
-  statsCheckBoxExclusiveTimes = nullptr;
-  clusteringSection = nullptr;
-  textCtrlClusteringXML = nullptr;
-  fileBrowserButtonClusteringXML = nullptr;
-  buttonClusteringXML = nullptr;
-  textCtrlClusteringOutputTrace = nullptr;
-  checkBoxClusteringUseSemanticWindow = nullptr;
-  checkBoxClusteringCSVValueAsDimension = nullptr;
-  checkBoxClusteringNormalize = nullptr;
-  checkBoxClusteringNumberOfSamples = nullptr;
-  clusteringTextBoxNumberOfSamples = nullptr;
-  checkBoxClusteringGenerateSeq = nullptr;
-  clusteringRadioGenerateSeqNumbered = nullptr;
-  clusteringRadioGenerateSeqFASTA = nullptr;
-  clusteringSizerAlgorithm = nullptr;
-  clusteringRadioXMLDefined = nullptr;
-  clusteringRadioDBScan = nullptr;
-  clusteringRadioRefinement = nullptr;
-  clusteringAlgorithmLineSeparator = nullptr;
-  clusteringSizerDBScan = nullptr;
-  clusteringTextBoxDBScanEpsilon = nullptr;
-  clusteringTextBoxDBScanMinPoints = nullptr;
-  clusteringSizerRefinement = nullptr;
-  clusteringCheckBoxRefinementPrintData = nullptr;
-  clusteringCheckBoxRefinementTune = nullptr;
-  clusteringLabelRefinementEpsilon = nullptr;
-  clusteringLabelRefinementEpsilonMin = nullptr;
-  clusteringTextBoxRefinementEpsilonMin = nullptr;
-  clusteringLabelRefinementEpsilonMax = nullptr;
-  clusteringTextBoxRefinementEpsilonMax = nullptr;
-  clusteringLabelRefinementSteps = nullptr;
-  clusteringTextBoxRefinementSteps = nullptr;
-  clusteringLabelRefinementMinPoints = nullptr;
-  clusteringTextBoxRefinementMinPoints = nullptr;
-  foldingSection = nullptr;
-  checkboxFoldingOnly = nullptr;
-  checkboxFoldingReuseFiles = nullptr;
-  checkboxFoldingUseSemanticValues = nullptr;
-  comboboxFoldingModel = nullptr;
-  labelCommandPreview = nullptr;
-  buttonHelpScript = nullptr;
-  buttonRun = nullptr;
-  buttonKill = nullptr;
-  buttonClearLog = nullptr;
-  listboxRunLog = nullptr;
-  buttonExit = nullptr;
+  choiceApplication = NULL;
+  buttonEditApplication = NULL;
+  textCtrlTrace = NULL;
+  fileBrowserButtonTrace = NULL;
+  boxSizerParameters = NULL;
+  labelTextCtrlDefaultParameters = NULL;
+  textCtrlDefaultParameters = NULL;
+  dimemasSection = NULL;
+  labelFilePickerDimemasCFG = NULL;
+  textCtrlDimemasCFG = NULL;
+  fileBrowserButtonDimemasCFG = NULL;
+  buttonDimemasGUI = NULL;
+  labelTextCtrlOutputTrace = NULL;
+  textCtrlOutputTrace = NULL;
+  checkBoxReuseDimemasTrace = NULL;
+  checkBoxDontTranslateIdleStates = NULL;
+  checkBoxDimemasVerbose = NULL;
+  textCtrlDimemasBandwidth = NULL;
+  textCtrlDimemasLatency = NULL;
+  radioButtonDimemasDefaultTasksMapping = NULL;
+  radioButtonDimemasFillNodes = NULL;
+  radioButtonDimemasInterleaved = NULL;
+  radioButtonDimemasTasksPerNode = NULL;
+  spinCtrlDimemasTasksPerNode = NULL;
+  statsSection = NULL;
+  statsLabelTextCtrlOutputName = NULL;
+  statsTextCtrlOutputName = NULL;
+  statsCheckBoxShowBurstsHistogram = NULL;
+  statsCheckBoxShowCommsHistogram = NULL;
+  statsCheckBoxOnlyDatFile = NULL;
+  statsCheckBoxExclusiveTimes = NULL;
+  clusteringSection = NULL;
+  textCtrlClusteringXML = NULL;
+  fileBrowserButtonClusteringXML = NULL;
+  buttonClusteringXML = NULL;
+  textCtrlClusteringOutputTrace = NULL;
+  checkBoxClusteringUseSemanticWindow = NULL;
+  checkBoxClusteringCSVValueAsDimension = NULL;
+  checkBoxClusteringNormalize = NULL;
+  checkBoxClusteringNumberOfSamples = NULL;
+  clusteringTextBoxNumberOfSamples = NULL;
+  checkBoxClusteringGenerateSeq = NULL;
+  clusteringRadioGenerateSeqNumbered = NULL;
+  clusteringRadioGenerateSeqFASTA = NULL;
+  clusteringSizerAlgorithm = NULL;
+  clusteringRadioXMLDefined = NULL;
+  clusteringRadioDBScan = NULL;
+  clusteringRadioRefinement = NULL;
+  clusteringAlgorithmLineSeparator = NULL;
+  clusteringSizerDBScan = NULL;
+  clusteringTextBoxDBScanEpsilon = NULL;
+  clusteringTextBoxDBScanMinPoints = NULL;
+  clusteringSizerRefinement = NULL;
+  clusteringCheckBoxRefinementPrintData = NULL;
+  clusteringCheckBoxRefinementTune = NULL;
+  clusteringLabelRefinementEpsilon = NULL;
+  clusteringLabelRefinementEpsilonMin = NULL;
+  clusteringTextBoxRefinementEpsilonMin = NULL;
+  clusteringLabelRefinementEpsilonMax = NULL;
+  clusteringTextBoxRefinementEpsilonMax = NULL;
+  clusteringLabelRefinementSteps = NULL;
+  clusteringTextBoxRefinementSteps = NULL;
+  clusteringLabelRefinementMinPoints = NULL;
+  clusteringTextBoxRefinementMinPoints = NULL;
+  foldingSection = NULL;
+  checkboxFoldingOnly = NULL;
+  checkboxFoldingReuseFiles = NULL;
+  checkboxFoldingUseSemanticValues = NULL;
+  comboboxFoldingModel = NULL;
+  labelCommandPreview = NULL;
+  buttonHelpScript = NULL;
+  buttonRun = NULL;
+  buttonKill = NULL;
+  buttonClearLog = NULL;
+  listboxRunLog = NULL;
+  buttonExit = NULL;
 ////@end RunScript member initialisation
 
   //executionStatus = -2;
@@ -443,8 +443,6 @@ wxString RunScript::getEnvironmentPath( TEnvironmentVar envVar, wxString command
 void RunScript::CreateControls()
 {    
 ////@begin RunScript content construction
-  // Generated by DialogBlocks, 19/11/2020 16:57:17 (unregistered)
-
   RunScript* itemDialog1 = this;
 
   wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
@@ -488,7 +486,7 @@ void RunScript::CreateControls()
     textCtrlTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(textCtrlTrace, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  fileBrowserButtonTrace = new FileBrowserButton( itemDialog1, ID_BUTTON_TRACE_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     fileBrowserButtonTrace->SetToolTip(_("Select the input trace read by the application"));
   itemBoxSizer8->Add(fileBrowserButtonTrace, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -520,7 +518,7 @@ void RunScript::CreateControls()
     textCtrlDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
   itemBoxSizer16->Add(textCtrlDimemasCFG, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonDimemasCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_DIMEMAS_CFG_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  fileBrowserButtonDimemasCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_DIMEMAS_CFG_BROWSER, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (RunScript::ShowToolTips())
     fileBrowserButtonDimemasCFG->SetToolTip(_("Select the Dimemas configuration file to apply"));
   itemBoxSizer16->Add(fileBrowserButtonDimemasCFG, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
@@ -705,7 +703,7 @@ void RunScript::CreateControls()
   textCtrlClusteringXML = new wxTextCtrl( itemDialog1, ID_TEXTCTRL_CLUSTERING_XML, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer60->Add(textCtrlClusteringXML, 9, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  fileBrowserButtonClusteringXML = new FileBrowserButton( itemDialog1, ID_BUTTON_CLUSTERING_XML, _("Browse"), wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+  fileBrowserButtonClusteringXML = new FileBrowserButton( itemDialog1, ID_BUTTON_CLUSTERING_XML, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer60->Add(fileBrowserButtonClusteringXML, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
   buttonClusteringXML = new wxBitmapButton( itemDialog1, ID_BITMAPBUTTON_CLUSTERING_XML, itemDialog1->GetBitmapResource(wxT("icons/app_edit.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
@@ -999,10 +997,15 @@ void RunScript::CreateControls()
 ////@end RunScript content construction
   listboxRunLog->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
 
-  for ( int i = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); i <= static_cast<int>( TExternalApp::USER_DEFINED ); ++i )
+  for ( int i = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); i < static_cast<int>( TExternalApp::USER_DEFINED ); ++i )
   {
     choiceApplication->Append( applicationLabel[ TExternalApp( i ) ] );
+    appIsFound[ i ] = existCommand( application[ TExternalApp( i + static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ) ) ] );
+    if ( !appIsFound[ i ] )
+      choiceApplication->SetString( i, applicationLabel[ TExternalApp( i ) ] + " [NOT FOUND]" );
   }
+  choiceApplication->Append( applicationLabel[ TExternalApp::USER_DEFINED ] );
+  appIsFound[ static_cast<int>( TExternalApp::USER_DEFINED ) ] = true;
 
   // Trace browser
   fileBrowserButtonTrace->SetTextBox( textCtrlTrace );
@@ -1625,17 +1628,18 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
   bool active = ( myProcess == nullptr );
 
   TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
+  active &= appIsFound[ static_cast<int>( selectedApp ) ];
 
   switch ( selectedApp )
   {
     case TExternalApp::DIMEMAS_WRAPPER:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       active &= !fileBrowserButtonDimemasCFG->GetPath().IsEmpty();
-      active &= !textCtrlOutputTrace->GetValue().IsEmpty();      
+      active &= !textCtrlOutputTrace->GetValue().IsEmpty();
       break;
 
     case TExternalApp::STATS_WRAPPER:
-      active &= !fileBrowserButtonTrace->GetPath().IsEmpty();      
+      active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
       
     case TExternalApp::CLUSTERING:
@@ -1645,7 +1649,7 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       break;
 
     case TExternalApp::FOLDING:
-      active &= !fileBrowserButtonTrace->GetPath().IsEmpty();      
+      active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
 
     case TExternalApp::USER_DEFINED:
