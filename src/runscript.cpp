@@ -1000,9 +1000,10 @@ void RunScript::CreateControls()
   for ( int i = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); i < static_cast<int>( TExternalApp::USER_DEFINED ); ++i )
   {
     choiceApplication->Append( applicationLabel[ TExternalApp( i ) ] );
-    appIsFound[ i ] = existCommand( application[ TExternalApp( i + static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ) ) ] );
-    if ( !appIsFound[ i ] )
-      choiceApplication->SetString( i, applicationLabel[ TExternalApp( i ) ] + " [NOT FOUND]" );
+    appIsFound[ i ] = true;
+    // appIsFound[ i ] = existCommand( application[ TExternalApp( i + static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ) ) ] );
+    // if ( !appIsFound[ i ] )
+    //   choiceApplication->SetString( i, applicationLabel[ TExternalApp( i ) ] + " [NOT FOUND]" );
   }
   choiceApplication->Append( applicationLabel[ TExternalApp::USER_DEFINED ] );
   appIsFound[ static_cast<int>( TExternalApp::USER_DEFINED ) ] = true;
