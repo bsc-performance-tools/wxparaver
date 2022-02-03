@@ -118,6 +118,8 @@ public:
 
 private:
   void DisplayTraceInformation();
+  wxString FormatTraceSize( double traceByteSize );
+  int getRackInformation();
 };
 
 #endif

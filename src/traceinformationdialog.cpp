@@ -31,6 +31,7 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+#include <wx/regex.h>
 
 ////@begin includes
 ////@end includes
@@ -81,6 +82,19 @@ TraceInformationDialog::TraceInformationDialog( wxWindow* parent, Trace* whichTr
   DisplayTraceInformation();
 }
 
+wxString TraceInformationDialog::FormatTraceSize( double traceByteSize )
+{
+  if ( traceByteSize > 1E12 )
+    return wxString::Format( wxT( "%.2f TB" ), double( traceByteSize ) / 1E12 );
+  else if ( traceByteSize > 1E9 )
+    return wxString::Format( wxT( "%.2f GB" ), double( traceByteSize ) / 1E9 );
+  else if ( traceByteSize > 1E6 )
+    return wxString::Format( wxT( "%.2f MB" ), double( traceByteSize ) / 1E6 );
+  else if ( traceByteSize > 1E3 )
+    return wxString::Format( wxT( "%.2f kB" ), double( traceByteSize ) / 1E3 );
+  
+  return wxString::Format( wxT( "%.2f Bytes" ), double( traceByteSize ) );
+}
 
 void TraceInformationDialog::DisplayTraceInformation()
 {
@@ -91,8 +105,7 @@ void TraceInformationDialog::DisplayTraceInformation()
   wxString formattedCreationTime = wxString::FromUTF8( LabelConstructor::timeLabel( clickTime, 0 ).c_str() ).BeforeFirst( ',' );
   wxString formattedDurationTime = wxString::FromUTF8( LabelConstructor::timeLabel( myTrace->getEndTime(), myTrace->getTimeUnit(), 0 ).c_str() );
 
-  wxString traceSize = wxString::Format( wxT( "%.2f kB" ), double( myTrace->getTraceSize() )/1E3 );
-
+  wxString traceSize = FormatTraceSize( myTrace->getTraceSize() );
 
   TraceGeneralInfo->WriteText( "Name: " );
   TraceGeneralInfo->BeginBold(); 
@@ -160,7 +173,16 @@ void TraceInformationDialog::DisplayTraceInformation()
 
   // Resource Model
   if ( myTrace->existResourceInfo() )
-  { 
+  {
+    int numRacks = getRackInformation();
+    if ( numRacks > 0 )
+    {
+      ResourceModelInfo->WriteText( "Racks: " );
+      ResourceModelInfo->BeginBold();
+      ResourceModelInfo->WriteText( wxString::Format( wxT( "%i\n" ), getRackInformation() ) );
+      ResourceModelInfo->EndBold();
+    }
+
     ResourceModelInfo->WriteText( "Nodes: " );
     ResourceModelInfo->BeginBold(); 
     ResourceModelInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->totalNodes() ) ); 
@@ -177,11 +199,48 @@ void TraceInformationDialog::DisplayTraceInformation()
   }
 }
 
+int TraceInformationDialog::getRackInformation()
+{
+
+  int numRack;
+  std::vector< std::string > NodeSet;
+  for ( TThreadOrder i = 0; i < myTrace->totalCPUs(); i += (myTrace->totalCPUs() / myTrace->totalNodes() ) )
+  {
+    TNodeOrder NID = myTrace->getNodeFromThread( i );
+    NodeSet.push_back( myTrace->getRowLabel( NODE, NID ) );
+  }
+
+  // regex time: from the set, sort them by racks
+  wxRegEx reMN4( "^s[0-9]+r[0-9]+b[0-9]+" );
+  int idx = 0;
+
+  std::set<long> rackSet;
+  for  (std::vector< std::string >::iterator it = NodeSet.begin(); it != NodeSet.end(); ++it )
+  {
+    wxString nodeName( ( *it ).c_str(), wxConvUTF8 );
+
+    long rackID;
+    if ( reMN4.Matches( nodeName ) )
+    {
+      //computerID = "MN4";
+      //nodeName.AfterFirst( 's' ).BeforeFirst( 'r' ).ToLong( &switchID );
+      nodeName.AfterFirst( 'r' ).BeforeFirst( 'b' ).ToLong( &rackID );
+      //nodeName.AfterFirst( 'b' ).ToLong( &nodeID );
+      rackSet.insert( rackID );
+      //rackID = rackID + ( 1000*switchID );
+    }
+    //else if ( reMT.Matches( nodeName ) ) {}
+
+  }
+
+  return 0;
+}
 /*!
  * TraceInformationDialog creator
  */
 
-bool TraceInformationDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, const wxSize& size, long style )
+    bool
+    TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxString &caption, const wxPoint &pos, const wxSize &size, long style)
 {
 ////@begin TraceInformationDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
