@@ -75,7 +75,8 @@ TraceInformationDialog::TraceInformationDialog( wxWindow* parent, Trace* whichTr
 {
   Init();
   myTrace = whichTrace;
-  Create(parent, id, caption, pos, size, style);
+  wxString myCaption = "Trace Information: " + myTrace->getTraceName();
+  Create(parent, id, myCaption, pos, size, style);
 
 
   // Writing text at constructor
@@ -106,15 +107,15 @@ void TraceInformationDialog::DisplayTraceInformation()
   wxString formattedDurationTime = wxString::FromUTF8( LabelConstructor::timeLabel( myTrace->getEndTime(), myTrace->getTimeUnit(), 0 ).c_str() );
 
   wxString traceSize = FormatTraceSize( myTrace->getTraceSize() );
-
+/*
   TraceGeneralInfo->WriteText( "Name: " );
   TraceGeneralInfo->BeginBold(); 
   TraceGeneralInfo->WriteText( myTrace->getTraceName() + "\n" );
   TraceGeneralInfo->EndBold();
-
-  TraceGeneralInfo->WriteText( "File: " );
+*/
+  TraceGeneralInfo->WriteText( "Path: " );
   TraceGeneralInfo->BeginBold(); 
-  TraceGeneralInfo->WriteText( myTrace->getFileName() + "\n" );
+  TraceGeneralInfo->WriteText( wxString( myTrace->getFileName() ).BeforeLast( '/' ) + "\n" );
   TraceGeneralInfo->EndBold();
   
   TraceGeneralInfo->WriteText( "Size: " );
@@ -152,7 +153,44 @@ void TraceInformationDialog::DisplayTraceInformation()
   TraceGeneralInfo->EndBold();
 */
 
+  // Metadata
+/*
+  MetadataInfo->BeginBold(); 
+  MetadataInfo->WriteText( "CUTTER\n" );
+  MetadataInfo->EndBold(); 
 
+  //MetadataInfo->BeginListStyle( ... ); 
+    MetadataInfo->WriteText( "Begin time: " );
+    MetadataInfo->BeginBold(); 
+    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterBeginTime() ) );
+    MetadataInfo->EndBold(); 
+
+    MetadataInfo->WriteText( "End time: " );
+    MetadataInfo->BeginBold(); 
+    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterEndTime() ) );
+    MetadataInfo->EndBold(); 
+
+    MetadataInfo->WriteText( "Offset: " );
+    MetadataInfo->BeginBold(); 
+    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterOffset() ) );
+    MetadataInfo->EndBold(); 
+
+    MetadataInfo->WriteText( "Last begin time: " );
+    MetadataInfo->BeginBold(); 
+    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastBeginTime() ) );
+    MetadataInfo->EndBold(); 
+
+    MetadataInfo->WriteText( "Last end time: " );
+    MetadataInfo->BeginBold(); 
+    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastEndTime() ) );
+    MetadataInfo->EndBold(); 
+
+    MetadataInfo->WriteText( "Last offset: " );
+    MetadataInfo->BeginBold(); 
+    MetadataInfo->WriteText( wxString::Format( wxT( "%i\n" ), myTrace->getCutterLastOffset() ) );
+    MetadataInfo->EndBold(); 
+  //MetadataInfo->EndListStyle(); 
+*/
   // Process Model
 
   ProcessModelInfo->WriteText( "Applications: " );
@@ -239,8 +277,7 @@ int TraceInformationDialog::getRackInformation()
  * TraceInformationDialog creator
  */
 
-    bool
-    TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxString &caption, const wxPoint &pos, const wxSize &size, long style)
+bool TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxString &caption, const wxPoint &pos, const wxSize &size, long style)
 {
 ////@begin TraceInformationDialog creation
   SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
@@ -277,6 +314,8 @@ void TraceInformationDialog::Init()
 ////@begin TraceInformationDialog member initialisation
   GeneralInfoSizer = NULL;
   TraceGeneralInfo = NULL;
+  MetadataInfoSizer = NULL;
+  MetadataInfo = NULL;
   ProcessModelSizer = NULL;
   ProcessModelInfo = NULL;
   ResourceModelSizer = NULL;
@@ -307,11 +346,20 @@ void TraceInformationDialog::CreateControls()
   TraceGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_GENERAL_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(400, 140), wxTE_READONLY|wxWANTS_CHARS );
   GeneralInfoSizer->Add(TraceGeneralInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
+  MetadataInfoSizer = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer1->Add(MetadataInfoSizer, 3, wxGROW|wxALL, 5);
+
+  wxStaticText* itemStaticText6 = new wxStaticText( itemDialog1, ID_MTI_STATIC, _("Metadata Information"), wxDefaultPosition, wxDefaultSize, 0 );
+  MetadataInfoSizer->Add(itemStaticText6, 0, wxGROW|wxALL, 5);
+
+  MetadataInfo = new wxRichTextCtrl( itemDialog1, ID_METADATA_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(400, 140), wxTE_READONLY|wxWANTS_CHARS );
+  MetadataInfoSizer->Add(MetadataInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
+
   ProcessModelSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer1->Add(ProcessModelSizer, 2, wxGROW|wxALL, 5);
 
-  wxStaticText* itemStaticText2 = new wxStaticText( itemDialog1, wxID_PMI_STATIC, _("Process Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
-  ProcessModelSizer->Add(itemStaticText2, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText4 = new wxStaticText( itemDialog1, wxID_PMI_STATIC, _("Process Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
+  ProcessModelSizer->Add(itemStaticText4, 0, wxGROW|wxALL, 5);
 
   ProcessModelInfo = new wxRichTextCtrl( itemDialog1, ID_PROCESS_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 75), wxTE_READONLY|wxWANTS_CHARS );
   ProcessModelSizer->Add(ProcessModelInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
@@ -319,8 +367,8 @@ void TraceInformationDialog::CreateControls()
   ResourceModelSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer1->Add(ResourceModelSizer, 2, wxGROW|wxALL, 5);
 
-  wxStaticText* itemStaticText3 = new wxStaticText( itemDialog1, wxID_RMI_STATIC, _("Resource Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
-  ResourceModelSizer->Add(itemStaticText3, 0, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText7 = new wxStaticText( itemDialog1, wxID_RMI_STATIC, _("Resource Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
+  ResourceModelSizer->Add(itemStaticText7, 0, wxGROW|wxALL, 5);
 
   ResourceModelInfo = new wxRichTextCtrl( itemDialog1, ID_RESOURCE_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 40), wxTE_READONLY|wxWANTS_CHARS );
   ResourceModelSizer->Add(ResourceModelInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);

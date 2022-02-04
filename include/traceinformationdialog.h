@@ -51,6 +51,8 @@ class wxRichTextCtrl;
 #define ID_TRACEINFORMATIONDIALOG 10000
 #define wxID_GTI_STATIC 10298
 #define ID_GENERAL_RICHTEXTCTRL 10001
+#define ID_MTI_STATIC 10004
+#define ID_METADATA_RICHTEXTCTRL 10005
 #define wxID_PMI_STATIC 10296
 #define ID_PROCESS_RICHTEXTCTRL 10002
 #define wxID_RMI_STATIC 10297
@@ -108,6 +110,8 @@ public:
 ////@begin TraceInformationDialog member variables
   wxBoxSizer* GeneralInfoSizer;
   wxRichTextCtrl* TraceGeneralInfo;
+  wxBoxSizer* MetadataInfoSizer;
+  wxRichTextCtrl* MetadataInfo;
   wxBoxSizer* ProcessModelSizer;
   wxRichTextCtrl* ProcessModelInfo;
   wxBoxSizer* ResourceModelSizer;
