@@ -145,6 +145,7 @@ class wxListBox;
 #define ID_COLOURPICKER_GRADTOP 10006
 #define ID_BUTTON_DEFAULT_GRADIENT 10009
 #define ID_PREFERENCES_WORKSPACES 10269
+#define ID_CHECKBOX_DISCARDED_SUBMENU 10045
 #define ID_LISTBOX_WORKSPACES 10270
 #define ID_BUTTON_WORKSPACES_ADD 10271
 #define ID_BUTTON_WORKSPACES_DELETE 10272
@@ -575,6 +576,9 @@ public:
   PRV_UINT32 GetTimelineSaveTextFormat() const { return timelineSaveTextFormat ; }
   void SetTimelineSaveTextFormat(PRV_UINT32 value) { timelineSaveTextFormat = value ; }
 
+  bool GetTimelineSemanticScaleMinAtZero() const { return timelineSemanticScaleMinAtZero ; }
+  void SetTimelineSemanticScaleMinAtZero(bool value) { timelineSemanticScaleMinAtZero = value ; }
+
   bool GetTimelineWWCommunications() const { return timelineWWCommunications ; }
   void SetTimelineWWCommunications(bool value) { timelineWWCommunications = value ; }
 
@@ -611,8 +615,8 @@ public:
   std::map<wxString,Workspace> GetWorkspaceContainer() const { return workspaceContainer ; }
   void SetWorkspaceContainer(std::map<wxString,Workspace> value) { workspaceContainer = value ; }
 
-  bool GetTimelineSemanticScaleMinAtZero() const { return timelineSemanticScaleMinAtZero ; }
-  void SetTimelineSemanticScaleMinAtZero(bool value) { timelineSemanticScaleMinAtZero = value ; }
+  bool GetWorkspaceDiscardedSubmenu() const { return workspaceDiscardedSubmenu ; }
+  void SetWorkspaceDiscardedSubmenu(bool value) { workspaceDiscardedSubmenu = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -713,6 +717,7 @@ public:
   wxColourPickerCtrl* colourPickerGradientLow;
   wxColourPickerCtrl* colourPickerGradientTop;
   wxPanel* panelWorkspaces;
+  wxCheckBox* checkDiscardedSubmenu;
   wxListBox* listWorkspaces;
   wxBitmapButton* buttonAddWorkspace;
   wxBitmapButton* buttonDeleteWorkspace;
@@ -807,6 +812,7 @@ private:
   PRV_UINT32 timelinePixelSize;
   PRV_UINT32 timelineSaveImageFormat;
   PRV_UINT32 timelineSaveTextFormat;
+  bool timelineSemanticScaleMinAtZero;
   bool timelineWWCommunications;
   PRV_INT16 timelineWWEventPixels;
   bool timelineWWEvents;
@@ -819,7 +825,7 @@ private:
   std::string tutorialsPath;
   PRV_UINT32 whatWhereMaxPrecision;
   std::map<wxString,Workspace> workspaceContainer;
-  bool timelineSemanticScaleMinAtZero;
+  bool workspaceDiscardedSubmenu;
 ////@end PreferencesDialog member variables
 
   // To keep the original name of the selected workspace
