@@ -1792,7 +1792,7 @@ void EventValuesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible
 
         if ( !foundFirst )
         {
-          tmpFirstPosSelectedVisible = visible[ i ]; // ?
+          tmpFirstPosSelectedVisible = i;
           foundFirst = true;
         }
       }
