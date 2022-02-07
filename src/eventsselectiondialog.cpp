@@ -1865,6 +1865,8 @@ bool EventValuesInfoManager::insert( double whichValue, wxString whichLabel )
 
   addedFullList.Add( whichValue );
 
+  setChangedSelection();
+
   return changed;
 }
 
