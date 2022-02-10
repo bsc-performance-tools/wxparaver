@@ -3497,6 +3497,9 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
     }
     colorsPanel->Layout();
     colorsPanel->FitInside();
+
+    selectedItemColor = nullptr;
+    panelSelectedColor->Enable( false );
   }
   forceRedoColors = false;
   redoColors = false;
