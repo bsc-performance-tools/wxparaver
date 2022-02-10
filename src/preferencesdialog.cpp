@@ -2349,11 +2349,23 @@ void PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& eve
 
 void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
 {
-  if ( originalWorkspaceName == txtWorkspaceName->GetValue() )
+  wxString tmpName = txtWorkspaceName->GetValue();
+
+  if( tmpName.empty() )
+  {
+    txtWorkspaceName->SetValue( originalWorkspaceName );
+    ::wxMessageBox( "Empty name for workspace not allowed.",
+                    "Empty name",
+                    wxICON_ERROR,
+                    this );
+    return;
+  }
+
+  if ( originalWorkspaceName == tmpName )
     return;
 
   bool nameEdited = false;
-  wxString tmpName = txtWorkspaceName->GetValue();
+
   while( workspaceContainer.find( tmpName ) != workspaceContainer.end())
   {
     nameEdited = true;
@@ -2374,7 +2386,8 @@ void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
   if( nameEdited )
     ::wxMessageBox( wxT( "Found duplicated workspace name.\nChanged to:\n\n" ) + tmpName,
                     wxT( "Duplicated name" ),
-                    wxICON_EXCLAMATION );
+                    wxICON_EXCLAMATION,
+                    this );
 }
 
 
