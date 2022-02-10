@@ -332,7 +332,7 @@ void gHistogram::CreateControls()
   tbarHisto->AddControl(choiceSortBy);
   wxBitmap itemtool20Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_reverse.xpm")));
   wxBitmap itemtool20BitmapDisabled;
-  tbarHisto->AddTool(ID_TOOL_REVERSE, wxEmptyString, itemtool20Bitmap, itemtool20BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
+  tbarHisto->AddTool(ID_TOOL_REVERSE, _("Reverse order"), itemtool20Bitmap, itemtool20BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
   tbarHisto->Realize();
 
   panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
