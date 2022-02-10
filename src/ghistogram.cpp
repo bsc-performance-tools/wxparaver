@@ -1193,13 +1193,13 @@ void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
 
 void gHistogram::OnPopUpCopy()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
+  gPasteWindowProperties::getInstance()->copy( this );
 }
 
 
 void gHistogram::OnPopUpPaste()
 {
-//  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this );
+//  gPasteWindowProperties::getInstance()->paste( this );
 }
 
 
@@ -1217,7 +1217,7 @@ void gHistogram::OnPopUpPasteSpecial()
       bool recalc = false;
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
-        gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+        gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
         if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
         {
           if ( gPopUpMenu::getOption( choices, selections[i] ) == "Time" )
@@ -1248,9 +1248,9 @@ void gHistogram::OnPopUpPasteSpecial()
 
 void gHistogram::OnPopUpPasteDefaultSpecial()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Time" );
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
+  gPasteWindowProperties::getInstance()->paste( this, "Time" );
+  gPasteWindowProperties::getInstance()->paste( this, "Objects" );
+  gPasteWindowProperties::getInstance()->paste( this, "Size" );
   myHistogram->setRecalc( true );
   updateHistogram();
 }
@@ -1258,7 +1258,7 @@ void gHistogram::OnPopUpPasteDefaultSpecial()
 
 void gHistogram::OnPopUpPasteTime()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Time" );
+  gPasteWindowProperties::getInstance()->paste( this, "Time" );
   myHistogram->setRecalc( true );
   updateHistogram();
 }
@@ -1266,7 +1266,7 @@ void gHistogram::OnPopUpPasteTime()
 
 void gHistogram::OnPopUpPasteObjects()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
+  gPasteWindowProperties::getInstance()->paste( this, "Objects" );
   myHistogram->setRecalc( true );
   updateHistogram();
 }
@@ -1274,7 +1274,7 @@ void gHistogram::OnPopUpPasteObjects()
 
 void gHistogram::OnPopUpPasteSize()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
+  gPasteWindowProperties::getInstance()->paste( this, "Size" );
   myHistogram->setRedraw( true );
   updateHistogram();
 }
@@ -1282,7 +1282,7 @@ void gHistogram::OnPopUpPasteSize()
 
 void gHistogram::OnPopUpPasteDuration()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Duration" );
+  gPasteWindowProperties::getInstance()->paste( this, "Duration" );
   myHistogram->setRecalc( true );
   updateHistogram();
 }
@@ -1291,7 +1291,7 @@ void gHistogram::OnPopUpPasteDuration()
 void gHistogram::OnPopUpPasteSemanticScale()
 {
   myHistogram->setComputeGradient( false );
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Semantic Scale" );
+  gPasteWindowProperties::getInstance()->paste( this, "Semantic Scale" );
   myHistogram->setChanged( true );
   myHistogram->setRedraw( true );
   updateHistogram();
@@ -1301,7 +1301,7 @@ void gHistogram::OnPopUpPasteSemanticScale()
 void gHistogram::OnPopUpPasteControlScale()
 {
   myHistogram->setCompute2DScale( false );
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, STR_CONTROL_SCALE );
+  gPasteWindowProperties::getInstance()->paste( this, STR_CONTROL_SCALE );
   Histogram::TZoomInfo tmpZoom1, tmpZoom2;
   tmpZoom1.begin = myHistogram->getControlMin();
   tmpZoom1.end   = myHistogram->getControlMax();
@@ -1316,7 +1316,7 @@ void gHistogram::OnPopUpPasteControlScale()
 void gHistogram::OnPopUpPaste3DScale()
 {
   myHistogram->setCompute3DScale( false );
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, STR_3D_SCALE );
+  gPasteWindowProperties::getInstance()->paste( this, STR_3D_SCALE );
   updateHistogram();
   myHistogram->setRecalc( true );
 }
@@ -1325,7 +1325,7 @@ void gHistogram::OnPopUpPaste3DScale()
 void gHistogram::OnPopUpPasteControlDimensions()
 {
   myHistogram->setCompute2DScale( false );
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, STR_CONTROL_DIMENSIONS );
+  gPasteWindowProperties::getInstance()->paste( this, STR_CONTROL_DIMENSIONS );
   Histogram::TZoomInfo tmpZoom1, tmpZoom2;
   tmpZoom1.begin = myHistogram->getControlMin();
   tmpZoom1.end   = myHistogram->getControlMax();
@@ -3161,7 +3161,7 @@ void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'V' )
   {
-    if( gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
+    if( gPasteWindowProperties::getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
       OnPopUpPasteDefaultSpecial();
     return;
   }

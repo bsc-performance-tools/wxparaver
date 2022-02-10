@@ -64,6 +64,7 @@ constexpr char STR_SAVE_IMAGE_LEGEND[] =      "Image Legend...";
 constexpr char STR_UNDO_ZOOM[] =              "Undo Zoom\tCTRL+U";
 constexpr char STR_REDO_ZOOM[] =              "Redo Zoom\tCTRL+R";
 constexpr char STR_AUTOFIT_CONTROL_ZERO[] =   "Auto Fit Control Scale Zeros";
+constexpr char STR_CUSTOM_PALETTE[] =         "Custom Palette";
 
 class gTimeline;
 class gHistogram;
@@ -71,11 +72,9 @@ class gHistogram;
 class gPasteWindowProperties
 {
   public:
-    static gPasteWindowProperties *pasteWindowProperties;
+    static gPasteWindowProperties *getInstance();
 
     ~gPasteWindowProperties();
-
-    static gPasteWindowProperties *getInstance();
 
     void copy( gTimeline *whichTimeline );
     void copy( gHistogram* whichHistogram );
@@ -93,6 +92,8 @@ class gPasteWindowProperties
     void verifyRemove( gHistogram *destinyHistogram );
     
   private:
+    static gPasteWindowProperties *pasteWindowProperties;
+
     gTimeline  *sourceTimeline;
     gHistogram *sourceHistogram;
     std::map < const std::string, std::vector< std::vector < std::vector< bool > > > > allowed;

@@ -234,6 +234,7 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[STR_FILTER_ALL] = option;
   allowed[STR_FILTER_COMMS] = option;
   allowed[STR_FILTER_EVENTS] = option;
+  allowed[STR_CUSTOM_PALETTE] = option;
   
   option[SAME_TRACE][TIMELINE][TIMELINE] = false;
   option[SAME_TRACE][TIMELINE][HISTOGRAM] = false;
@@ -357,6 +358,11 @@ void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string pro
     {
       destinyTimeline->GetMyWindow()->setMinimumY( sourceTimeline->GetMyWindow()->getMinimumY() );
       destinyTimeline->GetMyWindow()->setMaximumY( sourceTimeline->GetMyWindow()->getMaximumY() );
+    }
+    else if ( property == STR_CUSTOM_PALETTE )
+    {
+      destinyTimeline->GetMyWindow()->getCodeColor().setCustomPalette( sourceTimeline->GetMyWindow()->getCodeColor().getCustomPalette() );
+      destinyTimeline->GetMyWindow()->setUseCustomPalette( true );
     }
     else
     {
@@ -547,6 +553,9 @@ bool gPasteWindowProperties::isAllowed( gTimeline *destinyTimeline, const string
        property == STR_FILTER_EVENTS ||
        property == STR_FILTER_COMMS )
     commonFilterSettings( destinyTimeline );
+
+  if( property == STR_CUSTOM_PALETTE && sourceTimeline != nullptr && !sourceTimeline->GetMyWindow()->getCodeColor().existCustomColors() )
+    return false;
 
   commonMenuSettings();
 

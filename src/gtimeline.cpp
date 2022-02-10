@@ -1931,7 +1931,7 @@ void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
 
 void gTimeline::OnPopUpCopy()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->copy( this );
+  gPasteWindowProperties::getInstance()->copy( this );
 }
 
 
@@ -2132,7 +2132,7 @@ void gTimeline::OnPopUpCodeColor()
 
 void gTimeline::OnPopUpPasteDefaultSpecial()
 {
-  gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+  gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
 
   pasteActions->paste( this, "Time" );
   myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
@@ -2148,7 +2148,7 @@ void gTimeline::OnPopUpPasteDefaultSpecial()
 
 void gTimeline::OnPopUpPasteTime()
 {
-  gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+  gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
   pasteActions->paste( this, "Time" );
   myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
   myWindow->setRedraw( true );
@@ -2158,20 +2158,20 @@ void gTimeline::OnPopUpPasteTime()
 
 void gTimeline::OnPopUpPasteObjects()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Objects" );
+  gPasteWindowProperties::getInstance()->paste( this, "Objects" );
   myWindow->setRedraw( true );
 }
 
 
 void gTimeline::OnPopUpPasteSize()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Size" );
+  gPasteWindowProperties::getInstance()->paste( this, "Size" );
   myWindow->setRedraw( true );
 }
 
 void gTimeline::OnPopUpPasteDuration()
 {
-  gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+  gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
   pasteActions->paste( this, "Duration" );
   myWindow->addZoom( pasteActions->getBeginTime(), pasteActions->getEndTime() );
   myWindow->setRedraw( true );
@@ -2179,15 +2179,15 @@ void gTimeline::OnPopUpPasteDuration()
 
 void gTimeline::OnPopUpPasteSemanticScale()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Semantic Scale" );
+  gPasteWindowProperties::getInstance()->paste( this, "Semantic Scale" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
 void gTimeline::OnPopUpPasteFilterAll()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Events" );
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Communications" );
+  gPasteWindowProperties::getInstance()->paste( this, "Events" );
+  gPasteWindowProperties::getInstance()->paste( this, "Communications" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -2195,7 +2195,7 @@ void gTimeline::OnPopUpPasteFilterAll()
 
 void gTimeline::OnPopUpPasteFilterCommunications()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Communications" );
+  gPasteWindowProperties::getInstance()->paste( this, "Communications" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -2203,7 +2203,7 @@ void gTimeline::OnPopUpPasteFilterCommunications()
 
 void gTimeline::OnPopUpPasteFilterEvents()
 {
-  gPasteWindowProperties::pasteWindowProperties->getInstance()->paste( this, "Events" );
+  gPasteWindowProperties::getInstance()->paste( this, "Events" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
@@ -2222,7 +2222,7 @@ void gTimeline::OnPopUpPasteSpecial()
     {
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
-        gPasteWindowProperties* pasteActions = gPasteWindowProperties::pasteWindowProperties->getInstance();
+        gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
         if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
           pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );
       }
@@ -5245,7 +5245,7 @@ void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'V' )
   {
-    if( gPasteWindowProperties::pasteWindowProperties->getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
+    if( gPasteWindowProperties::getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
       OnPopUpPasteDefaultSpecial();
     return;
   }
