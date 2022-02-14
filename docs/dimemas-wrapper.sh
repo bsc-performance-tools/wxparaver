@@ -122,7 +122,7 @@ cd ${DIMEMAS_TRACE_DIR}
 
 # Translate from .prv to .dim
 if [ ${DIMEMAS_REUSE_TRACE} = "0" ] || \
-      [ ${DIMEMAS_REUSE_TRACE} = "1" ] && [ ! -f ${DIMEMAS_TRACE} ]; then
+     { [ ${DIMEMAS_REUSE_TRACE} = "1" ] && [ ! -f ${DIMEMAS_TRACE} ]; }; then
 
   if [ ${DIMEMAS_REUSE_TRACE} = "1" ]; then
     echo
