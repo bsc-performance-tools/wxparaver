@@ -453,6 +453,8 @@ private:
 
   std::map< TEnvironmentVar, wxString > environmentVariable;
 
+  wxProgressDialog *progressBar;
+
   // Selection
   void setApp( TExternalApp whichApp );
   void adaptClusteringAlgorithmParameters();

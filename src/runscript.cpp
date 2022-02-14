@@ -52,6 +52,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <regex>
 
 #include "wxparaverapp.h" // paraverMain
 #include "runscript.h"
@@ -85,47 +86,48 @@ void RunningProcess::OnTerminate( int pid, int status )
 bool RunningProcess::HasInput()
 {
   bool hasInput = false;
+  static bool clearOutMsg = false;
+
+  if( clearOutMsg )
+  {
+    clearOutMsg = false;
+    outMsg.Clear();
+  }
 
   if ( IsInputAvailable() )
   {
-      wxTextInputStream tis( *GetInputStream() );
+    wxTextInputStream tis( *GetInputStream() );
 
-//      wxString msg;
-//      msg << tis.ReadLine();
-//      parent->AppendToLog( msg );
-      wxChar tmpC;
-      tmpC = tis.GetChar();
-      if( tmpC == '\n' )
-      {
-        parent->AppendToLog( outMsg );
-        outMsg.Clear();
-      }
-      else
-      {
-        outMsg << tmpC;
-        msgTimer.Start( 500 );
-      }
+    wxChar tmpC;
+    tmpC = tis.GetChar();
+    if( tmpC == '\n' || tmpC == '\r' )
+    {
+      clearOutMsg = true;
+      parent->AppendToLog( outMsg );
+    }
+    else
+    {
+      outMsg << tmpC;
+      msgTimer.Start( 500 );
+    }
 
-      hasInput = true;
+    hasInput = true;
   }
 
   if ( IsErrorAvailable() )
   {
-      wxTextInputStream tis( *GetErrorStream() );
+    wxTextInputStream tis( *GetErrorStream() );
 
-//      wxString msg;
-//      msg << tis.ReadLine();
-//      parent->AppendToLog( msg );
-      wxChar tmpC;
-      tmpC = tis.GetChar();
-      errMsg << tmpC;
-      if( errMsg[ errMsg.Len() - 1 ] == '\n' )
-      {
-        parent->AppendToLog( errMsg );
-        errMsg.Clear();
-      }
+    wxChar tmpC;
+    tmpC = tis.GetChar();
+    errMsg << tmpC;
+    if( tmpC == '\n' )
+    {
+      parent->AppendToLog( errMsg );
+      errMsg.Clear();
+    }
 
-      hasInput = true;
+    hasInput = true;
   }
 
   return hasInput;
@@ -246,6 +248,8 @@ RunScript::~RunScript()
 {
 ////@begin RunScript destruction
 ////@end RunScript destruction
+  if( progressBar != nullptr )
+    delete progressBar;
 }
 
 
@@ -336,6 +340,8 @@ void RunScript::Init()
 ////@end RunScript member initialisation
 
   //executionStatus = -2;
+
+  progressBar = nullptr;
 
   wxString extensionsAllowed[] = { _(".prv"), _(".prv.gz"),
                                    _(".cfg"),
@@ -1616,6 +1622,12 @@ void RunScript::OnButtonRunClick( wxCommandEvent& event )
     }
   }
 
+  if( progressBar != nullptr )
+  {
+    delete progressBar;
+    progressBar = nullptr;
+  }
+
   buttonRun->Enable( true );
 }
 
@@ -1679,10 +1691,26 @@ void RunScript::OnProcessTerminated( int pid )
 
 void RunScript::AppendToLog( wxString msg, bool formatOutput )
 {
+  TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
+
+  // Bar width for progress is 30 by default
+  static regex progressRegex( R"(\[([#]{30}|[\s]{30}|[#]+[\s]+)\]\s+[0-9]+[.][0-9]%)" );
+  if( regex_match( msg.ToStdString(), progressRegex ) )
+  {
+    long newValue;
+    msg.AfterLast( ' ' ).BeforeFirst( '.' ).ToLong( &newValue );
+
+    if( progressBar == nullptr )
+      progressBar = new wxProgressDialog( "Running", applicationLabel[ selectedApp ], 100, this );
+
+    progressBar->Show();
+    progressBar->Update( (int) newValue );
+
+    return;
+  }
+
   if ( !helpOption || formatOutput )
   {
-    TExternalApp selectedApp = (TExternalApp)choiceApplication->GetSelection();
-
     switch ( selectedApp )
     {
  //     case TExternalApp::DIMEMAS_WRAPPER:
