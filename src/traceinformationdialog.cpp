@@ -57,6 +57,7 @@ IMPLEMENT_DYNAMIC_CLASS( TraceInformationDialog, wxDialog )
 BEGIN_EVENT_TABLE( TraceInformationDialog, wxDialog )
 
 ////@begin TraceInformationDialog event table entries
+  EVT_BUTTON( wxID_CANCEL, TraceInformationDialog::OnCancelClick )
 ////@end TraceInformationDialog event table entries
 
 END_EVENT_TABLE()
@@ -153,8 +154,10 @@ void TraceInformationDialog::DisplayTraceInformation()
   TraceGeneralInfo->EndBold();
 */
 
-  // Metadata
+  MetadataInfoSizer->Show( false );
+
 /*
+  // Metadata
   MetadataInfo->BeginBold(); 
   MetadataInfo->WriteText( "CUTTER\n" );
   MetadataInfo->EndBold(); 
@@ -233,13 +236,13 @@ void TraceInformationDialog::DisplayTraceInformation()
   }
   else
   {
-    ResourceModelInfo->Show( false );
+    ResourceModelSizer->Show( false );
   }
 }
 
 int TraceInformationDialog::getRackInformation()
 {
-
+/*
   int numRack;
   std::vector< std::string > NodeSet;
   for ( TThreadOrder i = 0; i < myTrace->totalCPUs(); i += (myTrace->totalCPUs() / myTrace->totalNodes() ) )
@@ -270,7 +273,7 @@ int TraceInformationDialog::getRackInformation()
     //else if ( reMT.Matches( nodeName ) ) {}
 
   }
-
+*/
   return 0;
 }
 /*!
@@ -284,10 +287,6 @@ bool TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxStr
   wxDialog::Create( parent, id, caption, pos, size, style );
 
   CreateControls();
-  if (GetSizer())
-  {
-    GetSizer()->SetSizeHints(this);
-  }
   Centre();
 ////@end TraceInformationDialog creation
   return true;
@@ -315,7 +314,7 @@ void TraceInformationDialog::Init()
   GeneralInfoSizer = NULL;
   TraceGeneralInfo = NULL;
   MetadataInfoSizer = NULL;
-  MetadataInfo = NULL;
+  MetadataGeneralInfo = NULL;
   ProcessModelSizer = NULL;
   ProcessModelInfo = NULL;
   ResourceModelSizer = NULL;
@@ -343,7 +342,7 @@ void TraceInformationDialog::CreateControls()
   wxStaticText* itemStaticText1 = new wxStaticText( itemDialog1, wxID_GTI_STATIC, _("General Information"), wxDefaultPosition, wxDefaultSize, 0 );
   GeneralInfoSizer->Add(itemStaticText1, 0, wxGROW|wxALL, 5);
 
-  TraceGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_GENERAL_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(400, 140), wxTE_READONLY|wxWANTS_CHARS );
+  TraceGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_GENERAL_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
   GeneralInfoSizer->Add(TraceGeneralInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
   MetadataInfoSizer = new wxBoxSizer(wxVERTICAL);
@@ -352,8 +351,8 @@ void TraceInformationDialog::CreateControls()
   wxStaticText* itemStaticText6 = new wxStaticText( itemDialog1, ID_MTI_STATIC, _("Metadata Information"), wxDefaultPosition, wxDefaultSize, 0 );
   MetadataInfoSizer->Add(itemStaticText6, 0, wxGROW|wxALL, 5);
 
-  MetadataInfo = new wxRichTextCtrl( itemDialog1, ID_METADATA_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(400, 140), wxTE_READONLY|wxWANTS_CHARS );
-  MetadataInfoSizer->Add(MetadataInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
+  MetadataGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_METADATA_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  MetadataInfoSizer->Add(MetadataGeneralInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
   ProcessModelSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer1->Add(ProcessModelSizer, 2, wxGROW|wxALL, 5);
@@ -361,7 +360,7 @@ void TraceInformationDialog::CreateControls()
   wxStaticText* itemStaticText4 = new wxStaticText( itemDialog1, wxID_PMI_STATIC, _("Process Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
   ProcessModelSizer->Add(itemStaticText4, 0, wxGROW|wxALL, 5);
 
-  ProcessModelInfo = new wxRichTextCtrl( itemDialog1, ID_PROCESS_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 75), wxTE_READONLY|wxWANTS_CHARS );
+  ProcessModelInfo = new wxRichTextCtrl( itemDialog1, ID_PROCESS_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
   ProcessModelSizer->Add(ProcessModelInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
   ResourceModelSizer = new wxBoxSizer(wxVERTICAL);
@@ -370,8 +369,16 @@ void TraceInformationDialog::CreateControls()
   wxStaticText* itemStaticText7 = new wxStaticText( itemDialog1, wxID_RMI_STATIC, _("Resource Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
   ResourceModelSizer->Add(itemStaticText7, 0, wxGROW|wxALL, 5);
 
-  ResourceModelInfo = new wxRichTextCtrl( itemDialog1, ID_RESOURCE_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxSize(-1, 40), wxTE_READONLY|wxWANTS_CHARS );
+  ResourceModelInfo = new wxRichTextCtrl( itemDialog1, ID_RESOURCE_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
   ResourceModelSizer->Add(ResourceModelInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
+
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
+
+  itemBoxSizer1->Add(itemStdDialogButtonSizer1, 0, wxALIGN_RIGHT|wxTOP|wxBOTTOM, 5);
+  wxButton* itemButton1 = new wxButton( itemDialog1, wxID_CANCEL, _("&Exit"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemStdDialogButtonSizer1->AddButton(itemButton1);
+
+  itemStdDialogButtonSizer1->Realize();
 
 ////@end TraceInformationDialog content construction
 }
@@ -411,3 +418,17 @@ wxIcon TraceInformationDialog::GetIconResource( const wxString& name )
   return wxNullIcon;
 ////@end TraceInformationDialog icon retrieval
 }
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
+ */
+
+void TraceInformationDialog::OnCancelClick( wxCommandEvent& event )
+{
+    ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in TraceInformationDialog.
+  // Before editing this code, remove the block markers.
+  event.Skip();
+    ////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in TraceInformationDialog. 
+}
+

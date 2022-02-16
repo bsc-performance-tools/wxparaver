@@ -60,7 +60,7 @@ class wxRichTextCtrl;
 #define SYMBOL_TRACEINFORMATIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_TRACEINFORMATIONDIALOG_TITLE _("Trace Information Dialog")
 #define SYMBOL_TRACEINFORMATIONDIALOG_IDNAME ID_TRACEINFORMATIONDIALOG
-#define SYMBOL_TRACEINFORMATIONDIALOG_SIZE wxDefaultSize
+#define SYMBOL_TRACEINFORMATIONDIALOG_SIZE wxSize(400, 500)
 #define SYMBOL_TRACEINFORMATIONDIALOG_POSITION wxDefaultPosition
 ////@end control identifiers
 
@@ -93,6 +93,9 @@ public:
 
 ////@begin TraceInformationDialog event handler declarations
 
+  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
+  void OnCancelClick( wxCommandEvent& event );
+
 ////@end TraceInformationDialog event handler declarations
 
 ////@begin TraceInformationDialog member function declarations
@@ -111,7 +114,7 @@ public:
   wxBoxSizer* GeneralInfoSizer;
   wxRichTextCtrl* TraceGeneralInfo;
   wxBoxSizer* MetadataInfoSizer;
-  wxRichTextCtrl* MetadataInfo;
+  wxRichTextCtrl* MetadataGeneralInfo;
   wxBoxSizer* ProcessModelSizer;
   wxRichTextCtrl* ProcessModelInfo;
   wxBoxSizer* ResourceModelSizer;

@@ -96,13 +96,13 @@
 #endif
 
 ////@begin XPM images
+#include "../icons/information.xpm"
 #include "../icons/new_window.xpm"
 #include "../icons/new_derived_window.xpm"
 #include "../icons/new_histogram.xpm"
 #include "../icons/delete.xpm"
 #include "../icons/cut_trace.xpm"
 #include "../icons/run_script.xpm"
-#include "../icons/information.xpm"
 #include "../icons/file_browser.xpm"
 #include "../icons/window_properties.xpm"
 ////@end XPM images
@@ -154,6 +154,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_IDLE( paraverMain::OnIdle )
   EVT_MENU( wxID_OPEN, paraverMain::OnOpenClick )
   EVT_UPDATE_UI( ID_RECENTTRACES, paraverMain::OnRecenttracesUpdate )
+  EVT_MENU( ID_MENUTRACEINFORMATION, paraverMain::OnTraceInformationClick )
+  EVT_UPDATE_UI( ID_MENUTRACEINFORMATION, paraverMain::OnTraceInformationUpdate )
   EVT_MENU( ID_UNLOADTRACE, paraverMain::OnUnloadtraceClick )
   EVT_UPDATE_UI( ID_UNLOADTRACE, paraverMain::OnUnloadtraceUpdate )
   EVT_MENU( ID_MENULOADCFG, paraverMain::OnMenuloadcfgClick )
@@ -170,6 +172,8 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( wxID_HELPCONTENTS, paraverMain::OnHelpcontentsClick )
   EVT_MENU( wxID_TUTORIALS, paraverMain::OnTutorialsClick )
   EVT_MENU( wxID_ABOUT, paraverMain::OnAboutClick )
+  EVT_MENU( ID_TOOL_TRACE_INFORMATION, paraverMain::OnTraceInformationClick )
+  EVT_UPDATE_UI( ID_TOOL_TRACE_INFORMATION, paraverMain::OnTraceInformationUpdate )
   EVT_MENU( ID_NEW_WINDOW, paraverMain::OnToolNewWindowClick )
   EVT_UPDATE_UI( ID_NEW_WINDOW, paraverMain::OnToolNewWindowUpdate )
   EVT_MENU( ID_NEW_DERIVED_WINDOW, paraverMain::OnNewDerivedWindowClick )
@@ -181,8 +185,6 @@ BEGIN_EVENT_TABLE( paraverMain, wxFrame )
   EVT_MENU( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceClick )
   EVT_UPDATE_UI( ID_TOOL_CUT_TRACE, paraverMain::OnToolCutTraceUpdate )
   EVT_MENU( ID_TOOL_RUN_APPLICATION, paraverMain::OnToolRunApplicationClick )
-  EVT_MENU( ID_TRACE_INFORMATION, paraverMain::OnTraceInformationClick )
-  EVT_UPDATE_UI( ID_TRACE_INFORMATION, paraverMain::OnTraceInformationUpdate )
   EVT_CHOICEBOOK_PAGE_CHANGED( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserPageChanged )
   EVT_UPDATE_UI( ID_CHOICEWINBROWSER, paraverMain::OnChoicewinbrowserUpdate )
   EVT_UPDATE_UI( ID_FOREIGN, paraverMain::OnForeignUpdate )
@@ -504,6 +506,7 @@ void paraverMain::CreateControls()
   menuFile->Append(wxID_OPEN, _("Load &Trace..."), wxEmptyString, wxITEM_NORMAL);
   wxMenu* itemMenu5 = new wxMenu;
   menuFile->Append(ID_RECENTTRACES, _("Previous Traces"), itemMenu5);
+  menuFile->Append(ID_MENUTRACEINFORMATION, _("Trace Information..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->Append(ID_UNLOADTRACE, _("Unload Traces..."), wxEmptyString, wxITEM_NORMAL);
   menuFile->AppendSeparator();
   menuFile->Append(ID_MENULOADCFG, _("Load &Configuration..."), wxEmptyString, wxITEM_NORMAL);
@@ -530,6 +533,9 @@ void paraverMain::CreateControls()
   itemFrame1->SetMenuBar(menuBar);
 
   tbarMain = new wxToolBar( itemFrame1, ID_TOOLBAR, wxDefaultPosition, wxDefaultSize, wxTB_FLAT|wxTB_HORIZONTAL|wxTB_NODIVIDER|wxWANTS_CHARS );
+  wxBitmap itemtool2Bitmap(itemFrame1->GetBitmapResource(wxT("icons/information.xpm")));
+  wxBitmap itemtool2BitmapDisabled;
+  tbarMain->AddTool(ID_TOOL_TRACE_INFORMATION, _("Trace Information"), itemtool2Bitmap, itemtool2BitmapDisabled, wxITEM_NORMAL, _("View Trace Information"), wxEmptyString);
   wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_window.xpm")));
   wxBitmap itemtool24BitmapDisabled;
   tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
@@ -553,9 +559,6 @@ void paraverMain::CreateControls()
   wxBitmap itemtool31Bitmap(itemFrame1->GetBitmapResource(wxT("icons/run_script.xpm")));
   wxBitmap itemtool31BitmapDisabled;
   tbarMain->AddTool(ID_TOOL_RUN_APPLICATION, _("Run Application"), itemtool31Bitmap, itemtool31BitmapDisabled, wxITEM_NORMAL, _("Run Application"), wxEmptyString);
-  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/information.xpm")));
-  wxBitmap itemtool1BitmapDisabled;
-  tbarMain->AddTool(ID_TRACE_INFORMATION, _("Trace Information"), itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_NORMAL, _("Trace Information"), wxEmptyString);
   tbarMain->Realize();
   itemFrame1->GetAuiManager().AddPane(tbarMain, wxAuiPaneInfo()
     .ToolbarPane().Name(wxT("auiTBarMain")).Top().Layer(10).CaptionVisible(false).CloseButton(false).DestroyOnClose(false).Resizable(false).Floatable(false).Gripper(true));
@@ -624,6 +627,8 @@ void paraverMain::CreateControls()
   GetAuiManager().Update();
 
 ////@end paraverMain content construction
+  tbarMain->RemoveTool( ID_TOOL_TRACE_INFORMATION );
+
   wxTreeCtrl* tmpTree = createTree( imageList );
   tmpTree->Connect( wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler( paraverMain::OnTreeKeyPress ), nullptr, this );
   choiceWindowBrowser->AddPage( tmpTree, _( "All Traces" ) );
@@ -1184,7 +1189,12 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin paraverMain bitmap retrieval
   wxUnusedVar(name);
-  if (name == wxT("icons/new_window.xpm"))
+  if (name == wxT("icons/information.xpm"))
+  {
+    wxBitmap bitmap(information);
+    return bitmap;
+  }
+  else if (name == wxT("icons/new_window.xpm"))
   {
     wxBitmap bitmap(application_star_xpm);
     return bitmap;
@@ -1212,11 +1222,6 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   else if (name == wxT("icons/run_script.xpm"))
   {
     wxBitmap bitmap(run_script_xpm);
-    return bitmap;
-  }
-  else if (name == wxT("icons/information.xpm"))
-  {
-    wxBitmap bitmap(information);
     return bitmap;
   }
   return wxNullBitmap;
@@ -4341,7 +4346,7 @@ void paraverMain::OnFindDialog()
  */
 void paraverMain::OnToolCutTraceClick( wxCommandEvent& event )
 {
-  if ( currentTrace == -1)
+  if ( currentTrace == -1 )
     ShowCutTraceWindow();
   else
     ShowCutTraceWindow( loadedTraces[ currentTrace ]->getFileName() );
@@ -5530,9 +5535,5 @@ void paraverMain::OnTraceInformationClick( wxCommandEvent& event )
 
 void paraverMain::OnTraceInformationUpdate( wxUpdateUIEvent& event )
 {
-  tbarMain->EnableTool( ID_NEW_HISTOGRAM, ( loadedTraces.size() > 0 && currentTrace > -1 ) );
-
-  if ( currentTimeline != nullptr or currentHisto != nullptr )
-    tbarMain->EnableTool( ID_NEW_HISTOGRAM, true );
+  event.Enable( choiceWindowBrowser->GetSelection() > 0 );
 }
-
