@@ -55,6 +55,7 @@
 #include "preferencesdialog.h"
 #include "loadcfgdialog.h"
 #include "sessionselectiondialog.h"
+#include "traceinformationdialog.h"
 #include "connection.h"
 
 // DATE TIME INCLUDES
@@ -102,6 +103,7 @@ constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits<PRV_INT16>::max
 ////@begin control identifiers
 #define ID_PARAVERMAIN 10000
 #define ID_RECENTTRACES 10008
+#define ID_MENUTRACEINFORMATION 10291
 #define ID_UNLOADTRACE 10082
 #define ID_MENULOADCFG 10006
 #define ID_RECENTCFGS 10009
@@ -112,6 +114,7 @@ constexpr PRV_INT16 MAX_PROGRESS_BAR_VALUE = std::numeric_limits<PRV_INT16>::max
 #define wxID_HELPCONTENTS 10005
 #define wxID_TUTORIALS 10196
 #define ID_TOOLBAR 10003
+#define ID_TOOL_TRACE_INFORMATION 10291
 #define ID_NEW_WINDOW 10030
 #define ID_NEW_DERIVED_WINDOW 10031
 #define ID_NEW_HISTOGRAM 10060
@@ -278,6 +281,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_RECENTTRACES
   void OnRecenttracesUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_MENUTRACEINFORMATION
+  void OnTraceInformationClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_MENUTRACEINFORMATION
+  void OnTraceInformationUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_UNLOADTRACE
   void OnUnloadtraceClick( wxCommandEvent& event );
