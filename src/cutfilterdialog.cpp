@@ -1311,7 +1311,7 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
 
   checkCutterRemoveFirstState->SetValue( traceOptions->get_remFirstStates() );
   checkCutterRemoveLastState->SetValue( traceOptions->get_remLastStates() );
-  checkCutterKeepEvents->SetValue( traceOptions->get_keep_events() );
+  checkCutterKeepEvents->SetValue( traceOptions->get_keep_boundary_events() );
 
   TraceOptions::TTasksList auxList;
   traceOptions->get_tasks_list( auxList );
@@ -1385,7 +1385,7 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_break_states( !checkCutterDontBreakStates->IsChecked() );
     traceOptions->set_remFirstStates( checkCutterRemoveFirstState->IsChecked() );
     traceOptions->set_remLastStates( checkCutterRemoveLastState->IsChecked() );
-    traceOptions->set_keep_events( checkCutterKeepEvents->IsChecked() );
+    traceOptions->set_keep_boundary_events( checkCutterKeepEvents->IsChecked() );
 
 #ifdef UNICODE
     traceOptions->set_tasks_list( (char *)textCutterTasks->GetValue().mb_str().data() );
