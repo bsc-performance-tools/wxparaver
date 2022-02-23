@@ -189,73 +189,74 @@ void CutFilterDialog::Init()
   newXMLsPath = false;
   runAppWithResultingTrace = false;
   waitingGlobalTiming = false;
-  textCtrlInputTrace = nullptr;
-  fileBrowserButtonInputTrace = nullptr;
-  txtOutputTrace = nullptr;
-  textCtrlOutputTrace = nullptr;
-  fileBrowserButtonOutputTrace = nullptr;
-  checkLoadResultingTrace = nullptr;
-  checkRunAppWithResultingTrace = nullptr;
-  textCtrlXML = nullptr;
-  fileBrowserButtonXML = nullptr;
-  boxSizerExecutionChain = nullptr;
-  txtExecutionChain = nullptr;
-  checkListExecutionChain = nullptr;
-  buttonUp = nullptr;
-  buttonDown = nullptr;
-  buttonSaveXml = nullptr;
-  notebookTools = nullptr;
-  radioCutterCutByTime = nullptr;
-  radioCutterCutByTimePercent = nullptr;
-  textCutterBeginCut = nullptr;
-  textCutterEndCut = nullptr;
-  textCutterTasks = nullptr;
-  buttonCutterSelectRegion = nullptr;
-  buttonCutterAllWindow = nullptr;
-  buttonCutterAllTrace = nullptr;
-  checkCutterUseOriginalTime = nullptr;
-  checkCutterRemoveFirstState = nullptr;
-  checkCutterDontBreakStates = nullptr;
-  checkCutterRemoveLastState = nullptr;
-  checkCutterKeepEvents = nullptr;
-  textCutterMaximumTraceSize = nullptr;
-  checkFilterDiscardStateRecords = nullptr;
-  checkFilterDiscardEventRecords = nullptr;
-  checkFilterDiscardCommunicationRecords = nullptr;
-  staticBoxSizerFilterStates = nullptr;
-  checkListFilterStates = nullptr;
-  buttonFilterSelectAll = nullptr;
-  buttonFilterUnselectAll = nullptr;
-  labelFilterMinBurstTime = nullptr;
-  textFilterMinBurstTime = nullptr;
-  staticBoxSizerFilterEvents = nullptr;
-  listboxFilterEvents = nullptr;
-  buttonFilterAdd = nullptr;
-  buttonFilterDelete = nullptr;
-  checkFilterDiscardListedEvents = nullptr;
-  staticBoxSizerFilterCommunications = nullptr;
-  staticTextFilterSize = nullptr;
-  textFilterSize = nullptr;
-  staticTextFilterSizeUnit = nullptr;
-  radioSCOnIntervals = nullptr;
-  radioSCOnStates = nullptr;
-  staticTextSCSamplingInterval = nullptr;
-  textSCSamplingInterval = nullptr;
-  staticTextSCMinimumBurstTime = nullptr;
-  textSCMinimumBurstTime = nullptr;
-  listSCSelectedEvents = nullptr;
-  buttonSCSelectedEventsAdd = nullptr;
-  buttonSCSelectedEventsDelete = nullptr;
-  radioSCCountEvents = nullptr;
-  radioSCAccumulateValues = nullptr;
-  checkSCRemoveStates = nullptr;
-  checkSCSummarizeUseful = nullptr;
-  checkSCGlobalCounters = nullptr;
-  checkSCOnlyInBurstsCounting = nullptr;
-  listSCKeepEvents = nullptr;
-  buttonSCKeepEventsAdd = nullptr;
-  buttonSCKeepEventsDelete = nullptr;
-  buttonApply = nullptr;
+  textCtrlInputTrace = NULL;
+  fileBrowserButtonInputTrace = NULL;
+  txtOutputTrace = NULL;
+  textCtrlOutputTrace = NULL;
+  fileBrowserButtonOutputTrace = NULL;
+  checkLoadResultingTrace = NULL;
+  checkRunAppWithResultingTrace = NULL;
+  textCtrlXML = NULL;
+  fileBrowserButtonXML = NULL;
+  boxSizerExecutionChain = NULL;
+  txtExecutionChain = NULL;
+  checkListExecutionChain = NULL;
+  buttonUp = NULL;
+  buttonDown = NULL;
+  buttonSaveXml = NULL;
+  notebookTools = NULL;
+  radioCutterCutByTime = NULL;
+  radioCutterCutByTimePercent = NULL;
+  textCutterBeginCut = NULL;
+  textCutterEndCut = NULL;
+  textCutterTasks = NULL;
+  buttonCutterSelectRegion = NULL;
+  buttonCutterAllWindow = NULL;
+  buttonCutterAllTrace = NULL;
+  checkCutterUseOriginalTime = NULL;
+  checkCutterRemoveFirstState = NULL;
+  checkCutterDontBreakStates = NULL;
+  checkCutterRemoveLastState = NULL;
+  checkCutterKeepEvents = NULL;
+  checkCutterKeepEventsWithoutStates = NULL;
+  textCutterMaximumTraceSize = NULL;
+  checkFilterDiscardStateRecords = NULL;
+  checkFilterDiscardEventRecords = NULL;
+  checkFilterDiscardCommunicationRecords = NULL;
+  staticBoxSizerFilterStates = NULL;
+  checkListFilterStates = NULL;
+  buttonFilterSelectAll = NULL;
+  buttonFilterUnselectAll = NULL;
+  labelFilterMinBurstTime = NULL;
+  textFilterMinBurstTime = NULL;
+  staticBoxSizerFilterEvents = NULL;
+  listboxFilterEvents = NULL;
+  buttonFilterAdd = NULL;
+  buttonFilterDelete = NULL;
+  checkFilterDiscardListedEvents = NULL;
+  staticBoxSizerFilterCommunications = NULL;
+  staticTextFilterSize = NULL;
+  textFilterSize = NULL;
+  staticTextFilterSizeUnit = NULL;
+  radioSCOnIntervals = NULL;
+  radioSCOnStates = NULL;
+  staticTextSCSamplingInterval = NULL;
+  textSCSamplingInterval = NULL;
+  staticTextSCMinimumBurstTime = NULL;
+  textSCMinimumBurstTime = NULL;
+  listSCSelectedEvents = NULL;
+  buttonSCSelectedEventsAdd = NULL;
+  buttonSCSelectedEventsDelete = NULL;
+  radioSCCountEvents = NULL;
+  radioSCAccumulateValues = NULL;
+  checkSCRemoveStates = NULL;
+  checkSCSummarizeUseful = NULL;
+  checkSCGlobalCounters = NULL;
+  checkSCOnlyInBurstsCounting = NULL;
+  listSCKeepEvents = NULL;
+  buttonSCKeepEventsAdd = NULL;
+  buttonSCKeepEventsDelete = NULL;
+  buttonApply = NULL;
 ////@end CutFilterDialog member initialisation
   outputPath = "";
   xmlConfigurationFile.Clear(); // paranoic
@@ -543,6 +544,10 @@ void CutFilterDialog::CreateControls()
   checkCutterKeepEvents->SetValue(false);
   itemBoxSizer67->Add(checkCutterKeepEvents, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
 
+  checkCutterKeepEventsWithoutStates = new wxCheckBox( itemScrolledWindow38, ID_CHECKBOX_CUTTER_KEEP_EVENTS_WITHOUT_STATES, _("Keep events for threads without states"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkCutterKeepEventsWithoutStates->SetValue(false);
+  itemBoxSizer67->Add(checkCutterKeepEventsWithoutStates, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP, 2);
+
   wxStaticBox* itemStaticBoxSizer69Static = new wxStaticBox(itemScrolledWindow38, wxID_STATIC, _(" Output Trace "));
   wxStaticBoxSizer* itemStaticBoxSizer69 = new wxStaticBoxSizer(itemStaticBoxSizer69Static, wxHORIZONTAL);
   itemBoxSizer39->Add(itemStaticBoxSizer69, 0, wxGROW|wxALL, 5);
@@ -816,7 +821,7 @@ void CutFilterDialog::CreateControls()
   itemStdDialogButtonSizer133->Realize();
 
   // Connect events and objects
-  buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), nullptr, this);
+  buttonCutterSelectRegion->Connect(ID_BUTTON_CUTTER_SELECT_REGION, wxEVT_KEY_DOWN, wxKeyEventHandler(CutFilterDialog::OnKeyDown), NULL, this);
 ////@end CutFilterDialog content construction
 
 
@@ -1312,6 +1317,7 @@ void CutFilterDialog::TransferCutterDataToWindow( TraceOptions *traceOptions )
   checkCutterRemoveFirstState->SetValue( traceOptions->get_remFirstStates() );
   checkCutterRemoveLastState->SetValue( traceOptions->get_remLastStates() );
   checkCutterKeepEvents->SetValue( traceOptions->get_keep_boundary_events() );
+  checkCutterKeepEventsWithoutStates->SetValue( traceOptions->get_keep_all_events() );
 
   TraceOptions::TTasksList auxList;
   traceOptions->get_tasks_list( auxList );
@@ -1386,6 +1392,7 @@ void CutFilterDialog::TransferWindowToCutterData( bool previousWarning )
     traceOptions->set_remFirstStates( checkCutterRemoveFirstState->IsChecked() );
     traceOptions->set_remLastStates( checkCutterRemoveLastState->IsChecked() );
     traceOptions->set_keep_boundary_events( checkCutterKeepEvents->IsChecked() );
+    traceOptions->set_keep_all_events( checkCutterKeepEventsWithoutStates->IsChecked() );
 
 #ifdef UNICODE
     traceOptions->set_tasks_list( (char *)textCutterTasks->GetValue().mb_str().data() );

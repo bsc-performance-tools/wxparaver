@@ -91,6 +91,7 @@ class wxSpinCtrl;
 #define ID_CHECKBOX_CUTTER_BREAK_STATES 10122
 #define ID_CHECKBOX_CUTTER_REMOVE_LAST_STATE 10123
 #define ID_CHECKBOX_CUTTER_KEEP_EVENTS 10216
+#define ID_CHECKBOX_CUTTER_KEEP_EVENTS_WITHOUT_STATES 10000
 #define ID_SPINCTRL_CUTTER_MAXIMUM_SIZE 10147
 #define ID_PANEL_FILTER 10112
 #define ID_CHECKBOX_FILTER_DISCARD_STATE 10124
@@ -407,6 +408,7 @@ public:
   wxCheckBox* checkCutterDontBreakStates;
   wxCheckBox* checkCutterRemoveLastState;
   wxCheckBox* checkCutterKeepEvents;
+  wxCheckBox* checkCutterKeepEventsWithoutStates;
   wxSpinCtrl* textCutterMaximumTraceSize;
   wxCheckBox* checkFilterDiscardStateRecords;
   wxCheckBox* checkFilterDiscardEventRecords;
