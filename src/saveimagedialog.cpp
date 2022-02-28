@@ -270,7 +270,26 @@ void SaveImageDialog::setImageFileName()
 {
   wxString fileName = fileNavigator->GetFilename();
   if ( fileName.Find( "." ) != wxNOT_FOUND )
-    fileName = fileNavigator->GetFilename().BeforeLast( '.' );
+  {
+    // Change file if matched current selected image extension
+    wxString selectedFileSuffix = wxString( LabelConstructor::getImageFileSuffix( static_cast< TImageFormat >( fileNavigator->GetFilterIndex() ) ) );
+    if ( fileNavigator->GetFilename().AfterLast( '.' ) == selectedFileSuffix )
+      fileName = fileNavigator->GetFilename().BeforeLast( '.' );
+    else
+    {
+      // Change filename and selector if matched some available image extensions
+      for( int tif = (int)TImageFormat::BMP; tif <= (int)TImageFormat::XPM ; ++tif )
+      {
+        wxString ext = wxString( LabelConstructor::getImageFileSuffix( static_cast< TImageFormat >( tif ) ) );
+        if ( fileNavigator->GetFilename().AfterLast( '.' ) == ext )
+        {
+          fileName = fileNavigator->GetFilename().BeforeLast( '.' );
+          fileNavigator->SetFilterIndex( tif );
+          break;
+        }
+      }
+    }
+  }
   
   selectedImageFilePath = fileName + fileTypeText;
   if ( imageCheckbox->IsChecked() && imageFileName->GetValue() != selectedImageFilePath )
