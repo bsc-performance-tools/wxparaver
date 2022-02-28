@@ -608,7 +608,9 @@ public:
   void OnTextColorLeftUp( wxMouseEvent& event );
 
   void saveImage( wxString whichFileName, TImageFormat filterIndex =  TImageFormat::PNG );
-  void saveImageLegend( wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
+  void saveImageLegend( wxString whichFileName = _( "" ),
+                        TImageFormat filterIndex =  TImageFormat::PNG,
+                        bool appendLegendSuffix = true );
   void saveImageDialog( wxString whichFileName );
 
   void saveText();

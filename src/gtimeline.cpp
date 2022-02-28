@@ -3590,11 +3590,11 @@ void gTimeline::saveImageDialog( wxString whichFileName )
 
   TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
   
-  wxString legendSuffix = _( "_code_legend" );
+  wxString legendSuffix = _( ".code_legend" );
   if ( myWindow->isGradientColorSet() )
-     legendSuffix= _( "_gradient_legend" );
+     legendSuffix= _( ".gradient_legend" );
   else if ( myWindow->isNotNullGradientColorSet() )
-     legendSuffix= _( "_nn_gradient_legend" ); 
+     legendSuffix= _( ".nn_gradient_legend" ); 
 
   SaveImageDialog saveDialog( this, defaultDir, imageName, false, legendSuffix );
   if ( saveDialog.ShowModal() != wxID_OK )
@@ -3615,7 +3615,8 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   if ( saveDialog.DialogSavesLegend() )
   {
     imageName = saveDialog.GetLegendFilePath(); // .GetPath();
-    saveImageLegend( imageName, filterIndex );
+    bool appendLegendSuffix = false;
+    saveImageLegend( imageName, filterIndex, appendLegendSuffix );
   }
 }
 
@@ -3824,12 +3825,11 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
 }
 
 
-void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterIndex )
+void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterIndex, bool appendLegendSuffix )
 {
   wxString imageName;
   wxString tmpSuffix;
   wxString defaultDir;
-
 
   setEnableDestroyButton( false );
 
@@ -3844,25 +3844,28 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
   defaultDir = _("./");
 #endif
 
-  // TImageFormat filterIndex = ParaverConfig::getInstance()->getTimelineSaveImageFormat();
-  tmpSuffix = _(".");
-  if ( myWindow->isGradientColorSet() )
-     tmpSuffix +=
-            wxString( _( "gradient" ) ) +
-            _(".") +
-            wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-  else if ( myWindow->isNotNullGradientColorSet() )
-     tmpSuffix +=
-            wxString( _( "nn_gradient" ) ) +
-            _(".") +
-            wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
-  else
-    tmpSuffix +=
-            wxString( _( "code" ) ) +
-            _(".") +
-            wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  tmpSuffix = _("");
+  if ( appendLegendSuffix )
+  {
+    tmpSuffix += _(".");
+    if ( myWindow->isGradientColorSet() )
+      tmpSuffix +=
+              wxString( _( "gradient_legend" ) ) +
+              _(".") +
+              wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    else if ( myWindow->isNotNullGradientColorSet() )
+      tmpSuffix +=
+              wxString( _( "nn_gradient_legend" ) ) +
+              _(".") +
+              wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    else
+      tmpSuffix +=
+              wxString( _( "code_legend" ) ) +
+              _(".") +
+              wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+  }
   
-  wxString imagePath = imageName ; //+ tmpSuffix;
+  wxString imagePath = imageName + tmpSuffix;
 
   // Get colors
   wxColour foregroundColour = GetForegroundColour();
