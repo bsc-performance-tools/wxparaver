@@ -204,6 +204,7 @@ void PreferencesDialog::Init()
   histogramGradientFunction = 0;
   histogramHideEmpty = false;
   histogramHorizontal = true;
+  histogramKeepSyncGroupClone = true;
   histogramLabelsColor = false;
   histogramMaxNumColumns = 100000;
   histogramMaxPrecision = 10;
@@ -226,6 +227,7 @@ void PreferencesDialog::Init()
   timelineDrawmodeTime = 0;
   timelineEventLines = false;
   timelineGradientFunction = 0;
+  timelineKeepSyncGroupClone = true;
   timelineNameFormatFull = "%W @ %T";
   timelineNameFormatPrefix = "New Window # %N";
   timelineObjectAxis = 0;
@@ -265,6 +267,7 @@ void PreferencesDialog::Init()
   checkGlobalHelpOnBrowser = NULL;
   checkDisableTimelineZoomMouseWheel = NULL;
   panelTimeline = NULL;
+  checkTimelineKeepSyncGroupClone = NULL;
   txtTimelineNameFormatPrefix = NULL;
   txtTimelineNameFormatFull = NULL;
   checkTimelineCommunicationLines = NULL;
@@ -288,6 +291,7 @@ void PreferencesDialog::Init()
   choiceTimelineSaveTextFormat = NULL;
   panelHistogram = NULL;
   checkHistogramSkipCreateDialog = NULL;
+  checkHistogramKeepSyncGroupClone = NULL;
   txtHistogramNameFormatPrefix = NULL;
   txtHistogramNameFormatFull = NULL;
   checkHistogramZoom = NULL;
@@ -405,12 +409,12 @@ void PreferencesDialog::CreateControls()
   textCtrlTrace = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_DEFAULT_TRACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     textCtrlTrace->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
-  itemBoxSizer11->Add(textCtrlTrace, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer11->Add(textCtrlTrace, 5, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   dirBrowserButtonTrace = new DirBrowserButton( panelGlobal, ID_BUTTON_DIR_BROWSER_TRACE, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonTrace->SetToolTip(_("Base path to traces files (.prv, .prv.gz, .pcf and .row)."));
-  itemBoxSizer11->Add(dirBrowserButtonTrace, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer11->Add(dirBrowserButtonTrace, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer10->Add(itemBoxSizer15, 0, wxGROW|wxALL, 5);
@@ -422,12 +426,12 @@ void PreferencesDialog::CreateControls()
   textCtrlCFG = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_DEFAULT_CFGS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     textCtrlCFG->SetToolTip(_("Base path to configuration files (.cfg)."));
-  itemBoxSizer15->Add(textCtrlCFG, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer15->Add(textCtrlCFG, 5, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   dirBrowserButtonCFG = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_CFGS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonCFG->SetToolTip(_("Base path to configuration files (.cfg)."));
-  itemBoxSizer15->Add(dirBrowserButtonCFG, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer15->Add(dirBrowserButtonCFG, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxBoxSizer* itemBoxSizer19 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer10->Add(itemBoxSizer19, 0, wxGROW|wxALL, 5);
@@ -439,12 +443,12 @@ void PreferencesDialog::CreateControls()
   textCtrlXML = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_DEFAULT_XMLS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     textCtrlXML->SetToolTip(_("Base path to Cut/Filters XML."));
-  itemBoxSizer19->Add(textCtrlXML, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer19->Add(textCtrlXML, 5, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   dirBrowserButtonXML = new DirBrowserButton( panelGlobal, ID_BUTTON_DEFAULT_XMLS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonXML->SetToolTip(_("Base path to Cut/Filters XML."));
-  itemBoxSizer19->Add(dirBrowserButtonXML, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer19->Add(dirBrowserButtonXML, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxBoxSizer* itemBoxSizer23 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer10->Add(itemBoxSizer23, 0, wxGROW|wxALL, 5);
@@ -456,12 +460,12 @@ void PreferencesDialog::CreateControls()
   textCtrlTutorials = new wxTextCtrl( panelGlobal, ID_TEXTCTRL_DEFAULT_TUTORIALS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     textCtrlTutorials->SetToolTip(_("Base path to wxparaver tutorials."));
-  itemBoxSizer23->Add(textCtrlTutorials, 5, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer23->Add(textCtrlTutorials, 5, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5);
 
   dirBrowserButtonTutorials = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_TUTORIALS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonTutorials->SetToolTip(_("Base path to wxparaver tutorials."));
-  itemBoxSizer23->Add(dirBrowserButtonTutorials, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer23->Add(dirBrowserButtonTutorials, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxBoxSizer* itemBoxSizer27 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer10->Add(itemBoxSizer27, 0, wxGROW|wxALL, 5);
@@ -478,37 +482,37 @@ void PreferencesDialog::CreateControls()
   dirBrowserButtonTmp = new DirBrowserButton( panelGlobal, ID_DIRBROWSERBUTTON_DEFAULT_TMP, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   if (PreferencesDialog::ShowToolTips())
     dirBrowserButtonTmp->SetToolTip(_("Working directory for results and logs."));
-  itemBoxSizer27->Add(dirBrowserButtonTmp, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer27->Add(dirBrowserButtonTmp, 1, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxStaticBox* itemStaticBoxSizer31Static = new wxStaticBox(panelGlobal, wxID_ANY, _("  Behaviour  "));
   wxStaticBoxSizer* itemStaticBoxSizer31 = new wxStaticBoxSizer(itemStaticBoxSizer31Static, wxVERTICAL);
   itemBoxSizer3->Add(itemStaticBoxSizer31, 0, wxGROW|wxALL, 5);
   checkGlobalSingleInstance = new wxCheckBox( panelGlobal, ID_PREFERENCES_GLOBAL_SINGLE_INSTANCE, _("Allow only one running instance"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalSingleInstance->SetValue(false);
-  itemStaticBoxSizer31->Add(checkGlobalSingleInstance, 1, wxGROW|wxALL, 2);
+  itemStaticBoxSizer31->Add(checkGlobalSingleInstance, 1, wxGROW|wxLEFT|wxRIGHT, 2);
 
   wxBoxSizer* itemBoxSizer33 = new wxBoxSizer(wxHORIZONTAL);
   itemStaticBoxSizer31->Add(itemBoxSizer33, 1, wxGROW|wxALL, 2);
   wxStaticText* itemStaticText34 = new wxStaticText( panelGlobal, wxID_STATIC, _("Automatically save session every"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemBoxSizer33->Add(itemStaticText34, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer33->Add(itemStaticText34, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   spinSessionTime = new wxSpinCtrl( panelGlobal, ID_PREFERENCES_GLOBAL_TIME_SESSION, wxT("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, 0 );
-  itemBoxSizer33->Add(spinSessionTime, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+  itemBoxSizer33->Add(spinSessionTime, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5);
 
   wxStaticText* itemStaticText36 = new wxStaticText( panelGlobal, wxID_STATIC, _("minutes"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer33->Add(itemStaticText36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   checkGlobalAskForPrevSessionLoad = new wxCheckBox( panelGlobal, ID_GLOBAL_ASK_FOR_PREV_SESSION, _("Show dialog for crashed auto-saved sessions on startup"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalAskForPrevSessionLoad->SetValue(true);
-  itemStaticBoxSizer31->Add(checkGlobalAskForPrevSessionLoad, 1, wxGROW|wxALL, 2);
+  itemStaticBoxSizer31->Add(checkGlobalAskForPrevSessionLoad, 1, wxGROW|wxLEFT|wxRIGHT, 2);
 
   checkGlobalHelpOnBrowser = new wxCheckBox( panelGlobal, ID_HELP_CONTENTS_IN_BROWSER, _("Show help contents on a browser"), wxDefaultPosition, wxDefaultSize, 0 );
   checkGlobalHelpOnBrowser->SetValue(false);
-  itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxALL, 2);
+  itemStaticBoxSizer31->Add(checkGlobalHelpOnBrowser, 1, wxGROW|wxLEFT|wxRIGHT, 2);
 
   checkDisableTimelineZoomMouseWheel = new wxCheckBox( panelGlobal, ID_DISABLE_TIMELINE_ZOOM_MOUSE_WHEEL, _("Disable timeline zoom with mouse wheel"), wxDefaultPosition, wxDefaultSize, 0 );
   checkDisableTimelineZoomMouseWheel->SetValue(false);
-  itemStaticBoxSizer31->Add(checkDisableTimelineZoomMouseWheel, 1, wxGROW|wxALL, 2);
+  itemStaticBoxSizer31->Add(checkDisableTimelineZoomMouseWheel, 1, wxGROW|wxLEFT|wxRIGHT, 2);
 
   GetBookCtrl()->AddPage(panelGlobal, _("Global"));
 
@@ -518,6 +522,13 @@ void PreferencesDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer39 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer38->Add(itemBoxSizer39, 3, wxGROW|wxTOP, 5);
+  wxStaticBox* itemStaticBoxSizer5Static = new wxStaticBox(panelTimeline, wxID_ANY, _("  Create Timeline  "));
+  wxStaticBoxSizer* itemStaticBoxSizer5 = new wxStaticBoxSizer(itemStaticBoxSizer5Static, wxVERTICAL);
+  itemBoxSizer39->Add(itemStaticBoxSizer5, 0, wxGROW|wxALL, 5);
+  checkTimelineKeepSyncGroupClone = new wxCheckBox( panelTimeline, ID_PREFERENCES_TIMELINE_CREATE_DIALOG_KEEP_SYNC_GROUP, _("Keep synchronization group in cloned timelines"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkTimelineKeepSyncGroupClone->SetValue(false);
+  itemStaticBoxSizer5->Add(checkTimelineKeepSyncGroupClone, 0, wxGROW|wxALL, 5);
+
   wxStaticBox* itemStaticBoxSizer40Static = new wxStaticBox(panelTimeline, wxID_STATIC, _("  Name Format  "));
   wxStaticBoxSizer* itemStaticBoxSizer40 = new wxStaticBoxSizer(itemStaticBoxSizer40Static, wxVERTICAL);
   itemStaticBoxSizer40Static->Enable(false);
@@ -774,7 +785,7 @@ void PreferencesDialog::CreateControls()
 
   wxBoxSizer* itemBoxSizer93 = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer92->Add(itemBoxSizer93, 3, wxGROW|wxTOP, 5);
-  wxStaticBox* itemStaticBoxSizer94Static = new wxStaticBox(panelHistogram, wxID_ANY, _(" Create Histogram Dialog"));
+  wxStaticBox* itemStaticBoxSizer94Static = new wxStaticBox(panelHistogram, wxID_ANY, _(" Create Histogram"));
   wxStaticBoxSizer* itemStaticBoxSizer94 = new wxStaticBoxSizer(itemStaticBoxSizer94Static, wxVERTICAL);
   itemBoxSizer93->Add(itemStaticBoxSizer94, 0, wxGROW|wxALL, 5);
   checkHistogramSkipCreateDialog = new wxCheckBox( panelHistogram, ID_PREFERENCES_HISTOGRAM_SKIP_CREATE_DIALOG, _("Skip dialog"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -783,6 +794,10 @@ void PreferencesDialog::CreateControls()
   if (PreferencesDialog::ShowToolTips())
     checkHistogramSkipCreateDialog->SetToolTip(_("Skips \"Create Histogram\" dialog after clicking the \"New Histogram\" button in the main window"));
   itemStaticBoxSizer94->Add(checkHistogramSkipCreateDialog, 0, wxGROW|wxALL, 5);
+
+  checkHistogramKeepSyncGroupClone = new wxCheckBox( panelHistogram, ID_PREFERENCES_HISTOGRAM_CREATE_DIALOG_KEEP_SYNC_GROUP, _("Keep synchronization group in cloned histograms"), wxDefaultPosition, wxDefaultSize, 0 );
+  checkHistogramKeepSyncGroupClone->SetValue(false);
+  itemStaticBoxSizer94->Add(checkHistogramKeepSyncGroupClone, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
   wxStaticBox* itemStaticBoxSizer96Static = new wxStaticBox(panelHistogram, wxID_STATIC, _("  Name Format  "));
   wxStaticBoxSizer* itemStaticBoxSizer96 = new wxStaticBoxSizer(itemStaticBoxSizer96Static, wxVERTICAL);
@@ -1626,6 +1641,8 @@ bool PreferencesDialog::TransferDataToWindow()
   LabelConstructor::getGUIGroupLabels( TGroupID::TEXT_FORMAT, options );
   setLabelsChoiceBox( options, timelineSaveTextFormat, choiceTimelineSaveTextFormat );
 
+  checkTimelineKeepSyncGroupClone->SetValue( timelineKeepSyncGroupClone );
+
   // HISTOGRAM
   txtHistogramNameFormatPrefix->SetValue( wxString::FromUTF8( histogramNameFormatPrefix.c_str() ) );
   txtHistogramNameFormatFull->SetValue( wxString::FromUTF8( histogramNameFormatFull.c_str() ) );
@@ -1665,6 +1682,8 @@ bool PreferencesDialog::TransferDataToWindow()
   setLabelsChoiceBox( options, histogramSaveTextFormat, choiceHistogramSaveTextFormat );
 
   checkHistogramSkipCreateDialog->SetValue( histogramSkipCreateDialog );
+  checkHistogramKeepSyncGroupClone->SetValue( histogramKeepSyncGroupClone );
+
 
   // COLORS
   colourPickerBackground->SetColour( RGBTowxColour( timelineColourBackground ) );
@@ -1754,6 +1773,8 @@ bool PreferencesDialog::TransferDataFromWindow()
   timelineSaveImageFormat = ( PRV_UINT32 )choiceTimelineSaveImageFormat->GetCurrentSelection();
   timelineSaveTextFormat = ( PRV_UINT32 )choiceTimelineSaveTextFormat->GetCurrentSelection();
 
+  timelineKeepSyncGroupClone = checkTimelineKeepSyncGroupClone->IsChecked();
+
   // HISTOGRAM
   histogramNameFormatPrefix = std::string( txtHistogramNameFormatPrefix->GetValue().mb_str() );
   histogramNameFormatFull = std::string( txtHistogramNameFormatFull->GetValue().mb_str() );
@@ -1781,7 +1802,9 @@ bool PreferencesDialog::TransferDataFromWindow()
 
   histogramSaveImageFormat = ( PRV_UINT32 )choiceHistogramSaveImageFormat->GetCurrentSelection();
   histogramSaveTextFormat = ( PRV_UINT32 )choiceHistogramSaveTextFormat->GetCurrentSelection();
+
   histogramSkipCreateDialog = checkHistogramSkipCreateDialog->GetValue();
+  histogramKeepSyncGroupClone = checkHistogramKeepSyncGroupClone->IsChecked();
 
   // COLORS
   timelineColourBackground = wxColourToRGB( colourPickerBackground->GetColour() );
@@ -1798,7 +1821,6 @@ bool PreferencesDialog::TransferDataFromWindow()
   gradientColourNegativeEnd   = wxColourToRGB( colourPickerNegativeGradientEnd->GetColour() );
   gradientColourLow           = wxColourToRGB( colourPickerGradientLow->GetColour() );
   gradientColourTop           = wxColourToRGB( colourPickerGradientTop->GetColour() );
-
 
   // EXTERNAL APPS
   textEditorOptions = listTextEditors->GetStrings();

@@ -3540,6 +3540,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetTimelineWWEventPixels( paraverConfig->getTimelineWhatWhereEventPixels() );
   preferences.SetTimelineSaveImageFormat( ( PRV_UINT32 )paraverConfig->getTimelineSaveImageFormat() );
   preferences.SetTimelineSaveTextFormat( ( PRV_UINT32 )paraverConfig->getTimelineSaveTextFormat() );
+  preferences.SetTimelineKeepSyncGroupClone( paraverConfig->getTimelineKeepSyncGroupClone() );
 
   // HISTOGRAM
   //preferences.SetHistogramNameFormatPrefix( paraverConfig->getHistogramDefaultName() );
@@ -3568,6 +3569,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
   preferences.SetHistogramSaveImageFormat( ( PRV_UINT32 )paraverConfig->getHistogramSaveImageFormat() );
   preferences.SetHistogramSaveTextFormat( ( PRV_UINT32 )paraverConfig->getHistogramSaveTextFormat() );
   preferences.SetHistogramSkipCreateDialog( paraverConfig->getHistogramSkipCreateDialog() );
+  preferences.SetHistogramKeepSyncGroupClone( paraverConfig->getHistogramKeepSyncGroupClone() );
 
   // COLORS
   preferences.SetTimelineColourBackground( paraverConfig->getColorsTimelineBackground() );
@@ -3649,6 +3651,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setTimelineWhatWhereEventPixels( preferences.GetTimelineWWEventPixels() );
     paraverConfig->setTimelineSaveImageFormat( (TImageFormat)preferences.GetTimelineSaveImageFormat() );
     paraverConfig->setTimelineSaveTextFormat( (TTextFormat)preferences.GetTimelineSaveTextFormat() );
+    paraverConfig->setTimelineKeepSyncGroupClone( preferences.GetTimelineKeepSyncGroupClone() );
 
     // HISTOGRAM
     //paraverConfig->setHistogramDefaultName( preferences.GetHistogramNameFormatPrefix() );
@@ -3673,6 +3676,7 @@ void paraverMain::ShowPreferences( wxWindowID whichPanelID )
     paraverConfig->setHistogramSaveImageFormat( ( TImageFormat ) preferences.GetHistogramSaveImageFormat() );
     paraverConfig->setHistogramSaveTextFormat( ( TTextFormat ) preferences.GetHistogramSaveTextFormat() );
     paraverConfig->setHistogramSkipCreateDialog( preferences.GetHistogramSkipCreateDialog() );
+    paraverConfig->setHistogramKeepSyncGroupClone( preferences.GetHistogramKeepSyncGroupClone() );
 
     // COLORS
     paraverConfig->setColorsTimelineBackground( preferences.GetTimelineColourBackground() );

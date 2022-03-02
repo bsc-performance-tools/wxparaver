@@ -35,7 +35,7 @@
 ////@begin includes
 #include "wx/propdlg.h"
 #include "wx/spinctrl.h"
-#include "include/filebrowserbutton.h"
+#include "filebrowserbutton.h"
 #include "wx/clrpicker.h"
 #include "wx/statline.h"
 ////@end includes
@@ -85,6 +85,7 @@ class wxListBox;
 #define ID_HELP_CONTENTS_IN_BROWSER 10159
 #define ID_DISABLE_TIMELINE_ZOOM_MOUSE_WHEEL 10043
 #define ID_PREFERENCES_TIMELINE 10072
+#define ID_PREFERENCES_TIMELINE_CREATE_DIALOG_KEEP_SYNC_GROUP 10033
 #define ID_PREFERENCES_TIMELINE_NAME_PREFIX 10098
 #define ID_PREFERENCES_TIMELINE_NAME_FULL 10099
 #define ID_PREFERENCES_TIMELINE_COMMUNICATION_LINES 10090
@@ -108,6 +109,7 @@ class wxListBox;
 #define ID_PREFERENCES_TIMELINE_SAVE_AS_TEXT 10017
 #define ID_PREFERENCES_HISTOGRAM 10071
 #define ID_PREFERENCES_HISTOGRAM_SKIP_CREATE_DIALOG 10033
+#define ID_PREFERENCES_HISTOGRAM_CREATE_DIALOG_KEEP_SYNC_GROUP 10033
 #define ID_PREFERENCES_HISTOGRAM_NAME_PREFIX 10018
 #define ID_PREFERENCES_HISTOGRAM_NAME_FULL 10019
 #define ID_PREFERENCES_HISTOGRAM_MATRIX_ZOOM 10092
@@ -459,6 +461,9 @@ public:
   bool GetHistogramHorizontal() const { return histogramHorizontal ; }
   void SetHistogramHorizontal(bool value) { histogramHorizontal = value ; }
 
+  bool GetHistogramKeepSyncGroupClone() const { return histogramKeepSyncGroupClone ; }
+  void SetHistogramKeepSyncGroupClone(bool value) { histogramKeepSyncGroupClone = value ; }
+
   bool GetHistogramLabelsColor() const { return histogramLabelsColor ; }
   void SetHistogramLabelsColor(bool value) { histogramLabelsColor = value ; }
 
@@ -554,6 +559,9 @@ public:
 
   PRV_UINT32 GetTimelineGradientFunction() const { return timelineGradientFunction ; }
   void SetTimelineGradientFunction(PRV_UINT32 value) { timelineGradientFunction = value ; }
+
+  bool GetTimelineKeepSyncGroupClone() const { return timelineKeepSyncGroupClone ; }
+  void SetTimelineKeepSyncGroupClone(bool value) { timelineKeepSyncGroupClone = value ; }
 
   std::string GetTimelineNameFormatFull() const { return timelineNameFormatFull ; }
   void SetTimelineNameFormatFull(std::string value) { timelineNameFormatFull = value ; }
@@ -658,6 +666,7 @@ public:
   wxCheckBox* checkGlobalHelpOnBrowser;
   wxCheckBox* checkDisableTimelineZoomMouseWheel;
   wxPanel* panelTimeline;
+  wxCheckBox* checkTimelineKeepSyncGroupClone;
   wxTextCtrl* txtTimelineNameFormatPrefix;
   wxTextCtrl* txtTimelineNameFormatFull;
   wxCheckBox* checkTimelineCommunicationLines;
@@ -681,6 +690,7 @@ public:
   wxChoice* choiceTimelineSaveTextFormat;
   wxPanel* panelHistogram;
   wxCheckBox* checkHistogramSkipCreateDialog;
+  wxCheckBox* checkHistogramKeepSyncGroupClone;
   wxTextCtrl* txtHistogramNameFormatPrefix;
   wxTextCtrl* txtHistogramNameFormatFull;
   wxCheckBox* checkHistogramZoom;
@@ -773,6 +783,7 @@ private:
   PRV_UINT32 histogramGradientFunction;
   bool histogramHideEmpty;
   bool histogramHorizontal;
+  bool histogramKeepSyncGroupClone;
   bool histogramLabelsColor;
   THistogramColumn histogramMaxNumColumns;
   PRV_UINT32 histogramMaxPrecision;
@@ -805,6 +816,7 @@ private:
   PRV_UINT32 timelineDrawmodeTime;
   bool timelineEventLines;
   PRV_UINT32 timelineGradientFunction;
+  bool timelineKeepSyncGroupClone;
   std::string timelineNameFormatFull;
   std::string timelineNameFormatPrefix;
   PRV_UINT32 timelineObjectAxis;
