@@ -33,6 +33,7 @@ noinst_HEADERS = \
               histo_zoom.xpm\
               inclusive.xpm\
               index.xpm\
+              information.xpm\
               logoBSC.xpm\
 							logout.xpm\
               new_derived_window.xpm\
