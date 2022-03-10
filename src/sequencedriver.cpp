@@ -525,7 +525,7 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
   
   // Clone timeline
   Timeline *tmpWindow = whichTimeline->GetMyWindow()->clone();
-  tmpWindow->setLevel( APPLICATION );
+  tmpWindow->setLevel( TTraceLevel::APPLICATION );
   tmpWindow->setTimeUnit( NS );
   
   // Trace options state

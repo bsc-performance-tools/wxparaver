@@ -277,7 +277,6 @@ void gPasteWindowProperties::copy( gHistogram *whichHistogram )
   sourceHistogram = whichHistogram;
 }
 
-
 void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string property )
 {
   if ( sourceTimeline != nullptr )
@@ -304,24 +303,24 @@ void gPasteWindowProperties::paste( gTimeline* destinyTimeline, const string pro
     else if ( property == STR_OBJECTS )
     {
       vector< TObjectOrder > auxRows;
-      int firstLevel;
-      int lastLevel;
+      TTraceLevel firstLevel;
+      TTraceLevel lastLevel;
 
-      if( sourceTimeline->GetMyWindow()->getLevel() >= WORKLOAD && sourceTimeline->GetMyWindow()->getLevel() <= THREAD )
+      if( sourceTimeline->GetMyWindow()->getLevel() >= TTraceLevel::WORKLOAD && sourceTimeline->GetMyWindow()->getLevel() <= TTraceLevel::THREAD )
       {
-        firstLevel = WORKLOAD;
-        lastLevel = THREAD;
+        firstLevel = TTraceLevel::WORKLOAD;
+        lastLevel = TTraceLevel::THREAD;
       }
       else
       {
-        firstLevel = NODE;
-        lastLevel = CPU;
+        firstLevel = TTraceLevel::NODE;
+        lastLevel = TTraceLevel::CPU;
       }
 
-      for( int iLevel = firstLevel; iLevel <= lastLevel; ++iLevel )
+      for( TTraceLevel iLevel = firstLevel; iLevel <= lastLevel; ++iLevel )
       {
-        sourceTimeline->GetMyWindow()->getSelectedRows( (TWindowLevel)iLevel, auxRows, true );
-        destinyTimeline->GetMyWindow()->setSelectedRows( (TWindowLevel)iLevel, auxRows );
+        sourceTimeline->GetMyWindow()->getSelectedRows( iLevel, auxRows, true );
+        destinyTimeline->GetMyWindow()->setSelectedRows( iLevel, auxRows );
       }
       destinyTimeline->GetMyWindow()->addZoom( destinyTimeline->GetMyWindow()->getWindowBeginTime(),
                                                destinyTimeline->GetMyWindow()->getWindowEndTime(),
@@ -440,9 +439,9 @@ void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string p
     else if ( property == STR_OBJECTS )
     {
       destinyHistogram->GetHistogram()->addZoom( sourceTimeline->GetMyWindow()->getZoomSecondDimension().first,
-                                               sourceTimeline->GetMyWindow()->getZoomSecondDimension().second );
+                                                 sourceTimeline->GetMyWindow()->getZoomSecondDimension().second );
       
-      SelectionManagement< TObjectOrder, TWindowLevel >* tSel = sourceTimeline->GetMyWindow()->getSelectedRows();
+      SelectionManagement< TObjectOrder, TTraceLevel >* tSel = sourceTimeline->GetMyWindow()->getSelectedRows();
       vector< TObjectOrder > auxRows;
       tSel->getSelected( auxRows, sourceTimeline->GetMyWindow()->getLevel() );
       destinyHistogram->GetHistogram()->setSelectedRows( auxRows );

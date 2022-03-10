@@ -1532,59 +1532,59 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
 
     AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
             wxT("Level"), SINGLE_LEVEL,
-            arrayLevels, arrayLevelsPos, whichWindow->getLevel() );
+            arrayLevels, arrayLevelsPos, static_cast<int>( whichWindow->getLevel() ) );
   }
   else
   {
     wxArrayString arrayLevels;
     wxArrayInt arrayLevelsPos;
     
-    if( whichWindow->getMinAcceptableLevel() >= SYSTEM &&
-        whichWindow->getMinAcceptableLevel() <= CPU )
+    if( whichWindow->getMinAcceptableLevel() >= TTraceLevel::SYSTEM &&
+        whichWindow->getMinAcceptableLevel() <= TTraceLevel::CPU )
     {
-      if( whichWindow->getMinAcceptableLevel() >= SYSTEM )
+      if( whichWindow->getMinAcceptableLevel() >= TTraceLevel::SYSTEM )
       {
         arrayLevels.Add( _( "System" ) );
-        arrayLevelsPos.Add( SYSTEM );
+        arrayLevelsPos.Add( static_cast<int>( SYSTEM ) );
       }
-      if( whichWindow->getMinAcceptableLevel() >= NODE )
+      if( whichWindow->getMinAcceptableLevel() >= TTraceLevel::NODE )
       {
         arrayLevels.Add( _( "Node" ) );
-        arrayLevelsPos.Add( NODE );
+        arrayLevelsPos.Add( static_cast<int>( NODE ) );
       }
-      if( whichWindow->getMinAcceptableLevel() >= CPU )
+      if( whichWindow->getMinAcceptableLevel() >= TTraceLevel::CPU )
       {
         arrayLevels.Add( _( "CPU" ) );
-        arrayLevelsPos.Add( CPU );
+        arrayLevelsPos.Add( static_cast<int>( CPU ) );
       }
     }
     else
     {
-      if( whichWindow->getMinAcceptableLevel() >= WORKLOAD )
+      if( whichWindow->getMinAcceptableLevel() >= TTraceLevel::WORKLOAD )
       {
         arrayLevels.Add( _( "Workload" ) );
-        arrayLevelsPos.Add( WORKLOAD );
+        arrayLevelsPos.Add( static_cast<int>( WORKLOAD ) );
       }
-      if( whichWindow->getMinAcceptableLevel() >= APPLICATION )
+      if( whichWindow->getMinAcceptableLevel() >= TTraceLevel::APPLICATION )
       {
         arrayLevels.Add( _( "Application" ) );
-        arrayLevelsPos.Add( APPLICATION );
+        arrayLevelsPos.Add( static_cast< int >( APPLICATION ) );
       }
-      if( whichWindow->getMinAcceptableLevel() >= TASK )
+      if( whichWindow->getMinAcceptableLevel() >= TTraceLevel::TASK )
       {
         arrayLevels.Add( _( "Task" ) );
-        arrayLevelsPos.Add( TASK );
+        arrayLevelsPos.Add( static_cast< int >( TASK ) );
       }
-      if( whichWindow->getMinAcceptableLevel() >= THREAD )
+      if( whichWindow->getMinAcceptableLevel() >= TTraceLevel::THREAD )
       {
         arrayLevels.Add( _( "Thread" ) );
-        arrayLevelsPos.Add( THREAD );
+        arrayLevelsPos.Add( static_cast< int >( THREAD ) );
       }
     }
 
     AppendCFG4DEnumPropertyWindow( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, dummyPGId,
             wxT("Level"), (TSingleTimelineProperties)DERIVED_LEVEL,
-            arrayLevels, arrayLevelsPos, whichWindow->getLevel() );
+            arrayLevels, arrayLevelsPos, static_cast<int>( whichWindow->getLevel() ) );
   }
 
   arrayStr.Clear();
@@ -2132,12 +2132,12 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     ++pos;
   }
 
-  TWindowLevel level = whichWindow->getLevel();
-  TWindowLevel minAcceptLevel = whichWindow->getMinAcceptableLevel();
+  TTraceLevel level = whichWindow->getLevel();
+  TTraceLevel minAcceptLevel = whichWindow->getMinAcceptableLevel();
   
-  if( level >= WORKLOAD && level <= THREAD )
+  if( level >= TTraceLevel::WORKLOAD && level <= TTraceLevel::THREAD )
   {
-    if( level == WORKLOAD )
+    if( level == TTraceLevel::WORKLOAD )
     {
       pos = 0;
       selected = -1;
@@ -2154,7 +2154,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, semanticCat, COMPOSEWORKLOAD );
 
-      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > WORKLOAD )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > TTraceLevel::WORKLOAD )
       {
         pos = 0;
         selected = -1;
@@ -2173,7 +2173,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
       }
     }
       
-    if( level <= APPLICATION && minAcceptLevel >= APPLICATION )
+    if( level <= TTraceLevel::APPLICATION && minAcceptLevel >= TTraceLevel::APPLICATION )
     {
       pos = 0;
       selected = -1;
@@ -2190,7 +2190,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, semanticCat, COMPOSEAPPLICATION );
 
-      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > APPLICATION )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > TTraceLevel::APPLICATION )
       {
         pos = 0;
         selected = -1;
@@ -2209,7 +2209,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
       }
     }
 
-    if( level <= TASK && minAcceptLevel >= TASK )
+    if( level <= TTraceLevel::TASK && minAcceptLevel >= TTraceLevel::TASK )
     {
       pos = 0;
       selected = -1;
@@ -2226,7 +2226,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, semanticCat, COMPOSETASK );
 
-      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > TASK )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > TTraceLevel::TASK )
       {
         pos = 0;
         selected = -1;
@@ -2245,7 +2245,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
       }
     }
     
-    if( whichWindow->isDerivedWindow() && minAcceptLevel >= THREAD )
+    if( whichWindow->isDerivedWindow() && minAcceptLevel >= TTraceLevel::THREAD )
     {
       pos = 0;
       selected = -1;
@@ -2263,9 +2263,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, semanticCat, COMPOSETHREAD );
     }
   }
-  else if( level >= SYSTEM && level <= CPU )
+  else if( level >= TTraceLevel::SYSTEM && level <= TTraceLevel::CPU )
   {
-    if( level == SYSTEM && minAcceptLevel >= SYSTEM )
+    if( level == TTraceLevel::SYSTEM && minAcceptLevel >= TTraceLevel::SYSTEM )
     {
       pos = 0;
       selected = -1;
@@ -2282,7 +2282,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, semanticCat, COMPOSESYSTEM );
 
-      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > SYSTEM )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > TTraceLevel::SYSTEM )
       {
         pos = 0;
         selected = -1;
@@ -2301,7 +2301,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
       }
     }
       
-    if( level <= NODE && minAcceptLevel >= NODE )
+    if( level <= TTraceLevel::NODE && minAcceptLevel >= TTraceLevel::NODE )
     {
       pos = 0;
       selected = -1;
@@ -2318,7 +2318,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                 arrayComposeFunctions, arrayComposeFunctionsPos, selected );
       semanticFunctionParameter( windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, semanticCat, COMPOSENODE );
 
-      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > NODE )
+      if ( !whichWindow->isDerivedWindow() || minAcceptLevel > TTraceLevel::NODE )
       {
         pos = 0;
         selected = -1;
@@ -2337,7 +2337,7 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
       }
     }
       
-    if( level <= CPU && minAcceptLevel >= CPU )
+    if( level <= TTraceLevel::CPU && minAcceptLevel >= TTraceLevel::CPU )
     {
       pos = 0;
       selected = -1;

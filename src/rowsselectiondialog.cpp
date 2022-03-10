@@ -79,7 +79,7 @@ RowsSelectionDialog::RowsSelectionDialog()
 // Constructor for Timelines
 RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
                                           Timeline *whichTimeline,
-                                          SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
+                                          SelectionManagement< TObjectOrder, TTraceLevel > *whichSelectedRows,
                                           wxWindowID id,
                                           const wxString& caption,
                                           bool whichParentIsGtimeline,
@@ -97,18 +97,18 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   myTrace = myTimeline->getTrace();
   lockedByUpdate = false;
 
-  if (( myLevel >= SYSTEM ) && ( myLevel <= CPU ))
+  if ( ( myLevel >= TTraceLevel::SYSTEM ) && ( myLevel <= TTraceLevel::CPU ) )
   {
-    minLevel = NODE;
-    buildPanel( wxT("Node"), NODE );
-    buildPanel( wxT("CPU"), CPU );
+    minLevel = TTraceLevel::NODE;
+    buildPanel( wxT("Node"), TTraceLevel::NODE );
+    buildPanel( wxT("CPU"), TTraceLevel::CPU );
   }
-  else if (( myLevel >= WORKLOAD ) && ( myLevel <= THREAD ))
+  else if ( ( myLevel >= TTraceLevel::WORKLOAD ) && ( myLevel <= TTraceLevel::THREAD ) )
   {
-    minLevel = APPLICATION;
-    buildPanel( _("Application"), APPLICATION );
-    buildPanel( _("Task"), TASK );
-    buildPanel( _("Thread"), THREAD );
+    minLevel = TTraceLevel::APPLICATION;
+    buildPanel( _("Application"), TTraceLevel::APPLICATION );
+    buildPanel( _("Task"), TTraceLevel::TASK );
+    buildPanel( _("Thread"), TTraceLevel::THREAD );
   }
   
   LayoutDialog();
@@ -118,7 +118,7 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
 // Constructor for Histograms
 RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
                                           Histogram* histogram,
-                                          SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
+                                          SelectionManagement< TObjectOrder, TTraceLevel > *whichSelectedRows,
                                           wxWindowID id,
                                           const wxString& caption,
                                           bool whichParentIsGtimeline,
@@ -130,27 +130,27 @@ RowsSelectionDialog::RowsSelectionDialog( wxWindow* parent,
   Init();
   Create( parent, id, caption, pos, size, style );
   
-  SelectionManagement< TObjectOrder, TWindowLevel > sm = ( *myHistogram->getRowSelectionManagement() );
+  SelectionManagement< TObjectOrder, TTraceLevel > sm = ( *myHistogram->getRowSelectionManagement() );
   vector< TObjectOrder > rowsel;
-  sm.getSelected(rowsel, myHistogram->getControlWindow()->getLevel());
+  sm.getSelected( rowsel, myHistogram->getControlWindow()->getLevel() );
 
   myTimeline = nullptr;
   myLevel = myHistogram->getControlWindow()->getLevel();
   myTrace = myHistogram->getTrace();
   lockedByUpdate = false;
 
-  if (( myLevel >= SYSTEM ) && ( myLevel <= CPU ))
+  if (( myLevel >= TTraceLevel::SYSTEM ) && ( myLevel <= TTraceLevel::CPU ))
   {
-    minLevel = NODE;
-    buildPanel( wxT("Node"), NODE );
-    buildPanel( wxT("CPU"), CPU );
+    minLevel = TTraceLevel::NODE;
+    buildPanel( wxT("Node"), TTraceLevel::NODE );
+    buildPanel( wxT("CPU"), TTraceLevel::CPU );
   }
-  else if (( myLevel >= WORKLOAD ) && ( myLevel <= THREAD ))
+  else if (( myLevel >= TTraceLevel::WORKLOAD ) && ( myLevel <= TTraceLevel::THREAD ))
   {
-    minLevel = APPLICATION;
-    buildPanel( wxT("Application"), APPLICATION );
-    buildPanel( wxT("Task"), TASK );
-    buildPanel( wxT("Thread"), THREAD );
+    minLevel = TTraceLevel::APPLICATION;
+    buildPanel( wxT("Application"), TTraceLevel::APPLICATION );
+    buildPanel( wxT("Task"), TTraceLevel::TASK );
+    buildPanel( wxT("Thread"), TTraceLevel::THREAD );
   }
   
   LayoutDialog();
@@ -206,7 +206,7 @@ void RowsSelectionDialog::OnRegularExpressionHelp( wxCommandEvent& event )
 /*
  * Dynamic panel building
  */
-void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichLevel )
+void RowsSelectionDialog::buildPanel( const wxString& title, TTraceLevel whichLevel )
 {
   wxPanel *myPanel;
 
@@ -228,7 +228,7 @@ void RowsSelectionDialog::buildPanel( const wxString& title, TWindowLevel whichL
 
   for ( size_t row = (size_t)0; row < myTrace->getLevelObjects( whichLevel ); ++row )
   {
-    if( whichLevel == CPU || whichLevel == NODE )
+    if( whichLevel == TTraceLevel::CPU || whichLevel == TTraceLevel::NODE )
       choices.Add( wxString::FromUTF8( LabelConstructor::objectLabel( (TObjectOrder)row + 1,
                                                                        whichLevel,
                                                                        myTrace ).c_str() ) );
@@ -427,28 +427,30 @@ RowsSelectionDialog::~RowsSelectionDialog()
   else if ( myHistogram != nullptr )
     TWindowLevel myLevel = myHistogram->getControlWindow()->getLevel();*/
   
-  TWindowLevel beginLevel, endLevel;
-  if (( myLevel >= SYSTEM ) && ( myLevel <= CPU ))
+  TTraceLevel beginLevel, endLevel;
+  if (( myLevel >= TTraceLevel::SYSTEM ) && ( myLevel <= TTraceLevel::CPU ))
   {
-    beginLevel = NODE;
-    endLevel = CPU;
+    beginLevel = TTraceLevel::NODE;
+    endLevel = TTraceLevel::CPU;
   }
-  else if (( myLevel >= WORKLOAD ) && ( myLevel <= THREAD ))
+  else if (( myLevel >= TTraceLevel::WORKLOAD ) && ( myLevel <= TTraceLevel::THREAD ))
   {
-    beginLevel = APPLICATION;
-    endLevel = THREAD;
+    beginLevel = TTraceLevel::APPLICATION;
+    endLevel = TTraceLevel::THREAD;
   }
 
-  for( int l = 0; l <= (int)endLevel - (int)beginLevel; ++l )
+  TTraceLevel levelDiff = static_cast<TTraceLevel>( static_cast<size_t>( endLevel ) - static_cast<size_t>( beginLevel ) );
+  for( TTraceLevel l = TTraceLevel::NONE; l <= levelDiff; ++l )
   {
-    delete selectionButtons[ l ];
-    delete levelCheckList[ l ];
-    delete messageMatchesFound[ l ];
-    delete checkBoxPosixBasicRegExp[ l ];
-    delete textCtrlRegularExpr[ l ];
-    delete applyButtons[ l ];
-    delete validRE[ l ];
-    delete helpRE[ l ];
+    size_t tmpL = static_cast<size_t>( l );
+    delete selectionButtons[ tmpL ];
+    delete levelCheckList[ tmpL ];
+    delete messageMatchesFound[ tmpL ];
+    delete checkBoxPosixBasicRegExp[ tmpL ];
+    delete textCtrlRegularExpr[ tmpL ];
+    delete applyButtons[ tmpL ];
+    delete validRE[ tmpL ];
+    delete helpRE[ tmpL ];
   }
 }
 
@@ -501,13 +503,14 @@ wxIcon RowsSelectionDialog::GetIconResource( const wxString& name )
 }
 
 
-int RowsSelectionDialog::GetSelections( TWindowLevel whichLevel, wxArrayInt &selections )
+int RowsSelectionDialog::GetSelections( TTraceLevel whichLevel, wxArrayInt &selections )
 {
-  int selected = 0;  
-  if (levelCheckList[ whichLevel - minLevel ] != nullptr)
-  for ( unsigned int i = 0; i < levelCheckList[ whichLevel - minLevel ]->GetCount(); ++i )
+  int selected = 0;
+  size_t levelDiff = static_cast<size_t>( whichLevel ) - static_cast<size_t>( minLevel );
+  if ( levelCheckList[ levelDiff ] != nullptr )
+  for ( unsigned int i = 0; i < levelCheckList[ levelDiff ]->GetCount(); ++i )
   {
-    if ( levelCheckList[ whichLevel - minLevel ]->IsChecked( i ) )
+    if ( levelCheckList[ levelDiff ]->IsChecked( i ) )
     {
       ++selected;
       selections.Add( i );
@@ -520,23 +523,23 @@ int RowsSelectionDialog::GetSelections( TWindowLevel whichLevel, wxArrayInt &sel
 
 bool RowsSelectionDialog::TransferDataFromWindow()
 {
-  TWindowLevel beginLevel;
-  TWindowLevel endLevel;
+  TTraceLevel beginLevel;
+  TTraceLevel endLevel;
 
   // Set range of levels for update loop
-  if (( myLevel >= WORKLOAD ) && ( myLevel <= THREAD ))
+  if (( myLevel >= TTraceLevel::WORKLOAD ) && ( myLevel <= TTraceLevel::THREAD ))
   {
-    beginLevel = APPLICATION;
-    endLevel = THREAD;
+    beginLevel = TTraceLevel::APPLICATION;
+    endLevel = TTraceLevel::THREAD;
   }
   else
   {
-    beginLevel = NODE;
-    endLevel = CPU;
+    beginLevel = TTraceLevel::NODE;
+    endLevel = TTraceLevel::CPU;
   }
 
   // Loop through levels to update gTimeline
-  for ( TWindowLevel whichLevel = beginLevel; whichLevel <= endLevel; whichLevel = TWindowLevel(whichLevel + 1) )
+  for ( TTraceLevel whichLevel = beginLevel; whichLevel <= endLevel; ++whichLevel )
   {
     wxArrayInt selections;
     int numberSelected = GetSelections( whichLevel, selections );
