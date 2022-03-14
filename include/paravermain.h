@@ -625,6 +625,7 @@ public:
                                  const wxString &hRef = wxString( wxT("") ),
                                  bool  isModal = false );
   bool getParaverHome( wxString &paraverHome );
+  std::string buildCfgFullPath( const std::string& cfgStr ) const;
 
   static wxString getHintComposed( const std::pair< std::string, std::string >& hint );
   static wxString buildFormattedFileName( std::string windowName, const std::string& traceName );
@@ -738,7 +739,7 @@ private:
   void PrepareToExit();
   
   void OnSessionTimer( wxTimerEvent& event );
-  
+
   void refreshMenuHints();
   void setTraceWorkspaces( Trace *whichTrace );
 

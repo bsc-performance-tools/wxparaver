@@ -649,6 +649,19 @@ void paraverMain::CreateControls()
 }
 
 
+std::string paraverMain::buildCfgFullPath( const std::string& cfgStr ) const
+{
+  wxFileName tmpCFG( wxString::FromUTF8( cfgStr.c_str() ) );
+  if ( tmpCFG.IsRelative() )
+  {
+    wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
+    tmpCFG.MakeAbsolute( tmpGlobalCFGs );
+  }
+
+  return std::string( tmpCFG.GetFullPath().mb_str() );
+}
+
+
 void paraverMain::refreshMenuHints()
 {
   bool separator = false;
@@ -721,14 +734,7 @@ void paraverMain::refreshMenuHints()
       MenuHintFile *tmpHintFile = new MenuHintFile();
       wxMenuItem *currentHint;
 
-      // Build cfg full path
-      wxFileName tmpCFG( wxString::FromUTF8( (*itHints).first.c_str() ) );
-      if ( tmpCFG.IsRelative() )
-      {
-        wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
-        tmpCFG.MakeAbsolute( tmpGlobalCFGs );
-      }
-      tmpHintFile->fileName = std::string( tmpCFG.GetFullPath().mb_str() );
+      tmpHintFile->fileName = buildCfgFullPath( (*itHints).first );
 
       // Build submenus
       bool isStatesWorkspace =

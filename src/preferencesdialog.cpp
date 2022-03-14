@@ -2755,7 +2755,7 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
       wsPath.append( "/" );
     #endif
       wsPath.append( tmpFileName.GetFullName().mb_str() );
-      ws.loadXML( wsPath );
+      ws.importWS( wsPath );
 
       wxString wsName( ws.getName().c_str(), wxConvUTF8 );
       workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
@@ -2790,7 +2790,7 @@ void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
   wxString dialogDefaultDir = _("./");
 #endif
 
-  wxString fileDialogWildcard = _( ".ws" ); 
+  wxString fileDialogWildcard = _( "Workspace file (*.ws)|*.ws" ); 
 
   wxString defaultFile = listWorkspaces->GetString( listWorkspaces->GetSelection() );  
   long whichDialogStyle = wxFD_SAVE | wxFD_CHANGE_DIR;
@@ -2806,7 +2806,11 @@ void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
     std::string chosenPath( myDialog.GetPath().mb_str() );
     if ( myDialog.GetPath().AfterLast( '.' ) != _( "ws" ) )
       chosenPath.append( ".ws" );
-    ws.saveXML( chosenPath );
+
+    ws.exportWS( chosenPath, []( const std::string& str )
+                             {
+                               return paraverMain::myParaverMain->buildCfgFullPath( str );
+                             } );
   }
 }
 
