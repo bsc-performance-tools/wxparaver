@@ -437,7 +437,7 @@ void paraverMain::Init()
   someWinIsRedraw = false;
   traceLoadedBefore = false;
   tutorialsWindow = nullptr;
-  workspacesManager = WorkspaceManager::getInstance();
+  workspacesManager = WorkspaceManager::getInstance( localKernel );
   menuFile = NULL;
   menuHints = NULL;
   menuHelp = NULL;
@@ -536,6 +536,7 @@ void paraverMain::CreateControls()
   wxBitmap itemtool2Bitmap(itemFrame1->GetBitmapResource(wxT("icons/information.xpm")));
   wxBitmap itemtool2BitmapDisabled;
   tbarMain->AddTool(ID_TOOL_TRACE_INFORMATION, _("Trace Information"), itemtool2Bitmap, itemtool2BitmapDisabled, wxITEM_NORMAL, _("View Trace Information"), wxEmptyString);
+  tbarMain->AddSeparator();
   wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_window.xpm")));
   wxBitmap itemtool24BitmapDisabled;
   tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);

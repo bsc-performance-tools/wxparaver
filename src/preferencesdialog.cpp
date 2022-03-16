@@ -1710,12 +1710,12 @@ bool PreferencesDialog::TransferDataToWindow()
     listPDFReaders->InsertItems( pdfReaderOptions, 0 );
 
   // WORKSPACES
-  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( TWorkspaceSet::USER_DEFINED );
+  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->getWorkspaces( TWorkspaceSet::USER_DEFINED );
   for( std::vector<std::string>::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
   {
     listWorkspaces->Append( wxString::FromUTF8( it->c_str() ) );
     workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromUTF8( it->c_str() ),
-                                                              WorkspaceManager::getInstance()->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ) ) );
+                                                              WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ) ) );
   }
   
   fileBrowserHintPath->SetPath( wxString::FromUTF8( cfgsPath.c_str() ) );
@@ -1834,9 +1834,9 @@ bool PreferencesDialog::TransferDataFromWindow()
     OnTextWorkspaceNameKillFocus( dummyEvent );
   }
 
-  WorkspaceManager::getInstance()->clear();
+  WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->clear();
   for( size_t i = 0; i < listWorkspaces->GetCount(); ++i )
-    WorkspaceManager::getInstance()->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
+    WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
 
   workspaceDiscardedSubmenu = checkDiscardedSubmenu->GetValue();
 
@@ -2755,13 +2755,15 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
       wsPath.append( "/" );
     #endif
       wsPath.append( tmpFileName.GetFullName().mb_str() );
-      ws.importWS( wsPath );
+      ws.importWS( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
 
       wxString wsName( ws.getName().c_str(), wxConvUTF8 );
+      // TODO: what happens if exist a workspace with the same name already?
+      // if( workspaceContainer.find( wsName ) != workspaceContainer.end() )
       workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
       
       listWorkspaces->Append( wsName );
-      WorkspaceManager::getInstance()->addWorkspace( ws );
+      WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->addWorkspace( ws );
     }
   }
 }
