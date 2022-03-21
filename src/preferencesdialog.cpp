@@ -2781,7 +2781,12 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
           return;
       }
 
-      ws.importWSCFGs( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
+      ws.importWSCFGs( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir(),
+                       []( const std::string& str )
+                       {
+                         wxFileName tmpFilename( str );
+                         return tmpFilename.GetFullName();
+                       } );
 
       workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
       
