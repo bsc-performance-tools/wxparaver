@@ -2755,11 +2755,34 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
       wsPath.append( "/" );
     #endif
       wsPath.append( tmpFileName.GetFullName().mb_str() );
-      ws.importWS( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
+      ws.importWSXML( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
 
       wxString wsName( ws.getName().c_str(), wxConvUTF8 );
-      // TODO: what happens if exist a workspace with the same name already?
-      // if( workspaceContainer.find( wsName ) != workspaceContainer.end() )
+      if( workspaceContainer.find( wsName ) != workspaceContainer.end() )
+      {
+        size_t nameNumber = 1;
+        wxString wsNewName = wsName + "#";
+
+        while( workspaceContainer.find( wxString( wsNewName ) << nameNumber ) != workspaceContainer.end() )
+          ++nameNumber;
+        wsNewName << nameNumber;
+
+        if( ::wxMessageBox( wxT( "Found duplicated workspace name: " ) + wsName +
+                            wxT( "\n\nDo you want to change it to: " ) + wsNewName,
+                            wxT( "Duplicated workspace name" ),   
+                            wxICON_EXCLAMATION | wxOK | wxCANCEL,
+                            this ) == wxOK )
+        {
+          std::string tmpNewName( wsNewName );
+          ws.setName( tmpNewName );
+          wsName = wsNewName;
+        }
+        else
+          return;
+      }
+
+      ws.importWSCFGs( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
+
       workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
       
       listWorkspaces->Append( wsName );
