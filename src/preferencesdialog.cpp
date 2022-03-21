@@ -2761,7 +2761,7 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
       if( workspaceContainer.find( wsName ) != workspaceContainer.end() )
       {
         size_t nameNumber = 1;
-        wxString wsNewName = wsName + "#";
+        wxString wsNewName = wsName + "_";
 
         while( workspaceContainer.find( wxString( wsNewName ) << nameNumber ) != workspaceContainer.end() )
           ++nameNumber;
