@@ -2767,8 +2767,8 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
           ++nameNumber;
         wsNewName << nameNumber;
 
-        if( ::wxMessageBox( wxT( "Found duplicated workspace name: " ) + wsName +
-                            wxT( "\n\nDo you want to change it to: " ) + wsNewName,
+        if( ::wxMessageBox( wxT( "Found another " ) + wsName +
+                            wxT( "\n\nDo you want to change it to " ) + wsNewName + wxT( "?" ),
                             wxT( "Duplicated workspace name" ),   
                             wxICON_EXCLAMATION | wxOK | wxCANCEL,
                             this ) == wxOK )
