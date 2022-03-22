@@ -761,7 +761,7 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuRun, _( "Dimemas" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDimemas, ID_MENU_DIMEMAS );
   buildItem( popUpMenuRun, _( "Clustering" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuClustering, ID_MENU_CLUSTERING );
   buildItem( popUpMenuRun, _( "Folding" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFolding, ID_MENU_FOLDING );
-  buildItem( popUpMenuRun, _( "Spectral" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSpectral, ID_MENU_SPECTRAL );
+  //buildItem( popUpMenuRun, _( "Spectral" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSpectral, ID_MENU_SPECTRAL );
   buildItem( popUpMenuRun, _( "User Command" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuUserCommand, ID_MENU_USER_COMMAND );
   AppendSubMenu( popUpMenuRun, _( "Run" ) );
   

@@ -175,7 +175,7 @@ enum class TExternalApp
   CLUSTERING,          // Clustering   selected in choice widget
   FOLDING,             // Folding      selected in choice widget
                         // <-- add new apps here at most
-  USER_DEFINED,        // User defined selected in choice widget
+  USER_COMMAND,        // User command selected in choice widget
 
   // --- Called by different widget ---
   DIMEMAS_GUI,         // DimemasGui   invoked through button
@@ -330,7 +330,7 @@ public:
   void setStats();
   void setClustering( wxString whichClusteringCSV );
   void setFolding( wxString whichFoldingCSV );
-  void setUserDefined();
+  void setUserCommand();
   
 ////@begin RunScript member variables
   wxChoice* choiceApplication;

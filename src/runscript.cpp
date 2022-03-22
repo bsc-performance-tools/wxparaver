@@ -366,7 +366,7 @@ void RunScript::Init()
   applicationLabel[ TExternalApp::STATS_WRAPPER ]  = wxString( wxT("Stats") );
   applicationLabel[ TExternalApp::CLUSTERING ]     = wxString( wxT("Clustering") );
   applicationLabel[ TExternalApp::FOLDING ]        = wxString( wxT("Folding") );
-  applicationLabel[ TExternalApp::USER_DEFINED ]   = wxString( wxT("User defined") );
+  applicationLabel[ TExternalApp::USER_COMMAND ]   = wxString( wxT("User command") );
   // Following only for warning dialogs
   applicationLabel[ TExternalApp::DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
   applicationLabel[ TExternalApp::STATS ]          = wxString( wxT("Stats") );
@@ -380,7 +380,7 @@ void RunScript::Init()
 #endif
   application[ TExternalApp::CLUSTERING ]          = wxString( wxT("BurstClustering") );
   application[ TExternalApp::FOLDING ]             = wxString( wxT("rri-auto") );
-  application[ TExternalApp::USER_DEFINED ]        = wxString( wxT("") ); // NOT USED
+  application[ TExternalApp::USER_COMMAND ]        = wxString( wxT("") ); // NOT USED
   application[ TExternalApp::DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
   application[ TExternalApp::STATS ]               = wxString( wxT("stats") );
 
@@ -1003,7 +1003,7 @@ void RunScript::CreateControls()
 ////@end RunScript content construction
   listboxRunLog->ShowScrollbars( wxSHOW_SB_ALWAYS, wxSHOW_SB_ALWAYS );
 
-  for ( int i = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); i < static_cast<int>( TExternalApp::USER_DEFINED ); ++i )
+  for ( int i = static_cast<int>( TExternalApp::DIMEMAS_WRAPPER ); i < static_cast<int>( TExternalApp::USER_COMMAND ); ++i )
   {
     choiceApplication->Append( applicationLabel[ TExternalApp( i ) ] );
     appIsFound[ i ] = true;
@@ -1011,8 +1011,8 @@ void RunScript::CreateControls()
     // if ( !appIsFound[ i ] )
     //   choiceApplication->SetString( i, applicationLabel[ TExternalApp( i ) ] + " [NOT FOUND]" );
   }
-  choiceApplication->Append( applicationLabel[ TExternalApp::USER_DEFINED ] );
-  appIsFound[ static_cast<int>( TExternalApp::USER_DEFINED ) ] = true;
+  choiceApplication->Append( applicationLabel[ TExternalApp::USER_COMMAND ] );
+  appIsFound[ static_cast<int>( TExternalApp::USER_COMMAND ) ] = true;
 
   // Trace browser
   fileBrowserButtonTrace->SetTextBox( textCtrlTrace );
@@ -1417,7 +1417,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case TExternalApp::USER_DEFINED:
+    case TExternalApp::USER_COMMAND:
       
       tmpParams = expandVariables( textCtrlDefaultParameters->GetValue() );
       command = tmpParams.BeforeFirst( ' ' );
@@ -1549,7 +1549,7 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
 
       case TExternalApp::CLUSTERING:
       case TExternalApp::FOLDING:
-      case TExternalApp::USER_DEFINED:
+      case TExternalApp::USER_COMMAND:
       default:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
@@ -1665,7 +1665,7 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
 
-    case TExternalApp::USER_DEFINED:
+    case TExternalApp::USER_COMMAND:
       active &= !textCtrlDefaultParameters->GetValue().IsEmpty();
       break;
 
@@ -1849,7 +1849,7 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case TExternalApp::USER_DEFINED:
+    case TExternalApp::USER_COMMAND:
     default:
       toolTip = wxString( wxT( "Command and parameters to execute\n"
                                "%TRACE refers to input trace" ) );
@@ -2634,12 +2634,12 @@ void RunScript::setFolding( wxString whichFoldingCSV )
 }
 
 
-void RunScript::setUserDefined()
+void RunScript::setUserCommand()
 {
   tunePrvLinksForClustering = false;
   tunePrvLinksForFolding = false;
 
-  setApp( TExternalApp::USER_DEFINED );
+  setApp( TExternalApp::USER_COMMAND );
 }
 
 

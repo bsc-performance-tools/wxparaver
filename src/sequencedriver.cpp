@@ -73,7 +73,7 @@ bool RunAppClusteringAction::execute( std::string whichTrace )
   }
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
   runAppDialog->setClustering( wxString::FromUTF8( tmpFileName.c_str() ) );
-
+  runAppDialog->choiceApplication->Enable( false );
   runAppDialog->Show();
   runAppDialog->Raise();
   
@@ -104,7 +104,7 @@ bool RunAppFoldingAction::execute( std::string whichTrace )
   }
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
   runAppDialog->setFolding( wxString::FromUTF8( tmpFileName.c_str() ) );
-
+  runAppDialog->choiceApplication->Enable( false );
   runAppDialog->Show();
   runAppDialog->Raise();
 
@@ -134,7 +134,7 @@ bool RunAppDimemasAction::execute( std::string whichTrace )
   }
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
   runAppDialog->setDimemas();
-
+  runAppDialog->choiceApplication->Enable( false );
   runAppDialog->Show();
   runAppDialog->Raise();
   
@@ -312,8 +312,8 @@ bool RunAppUserCommandAction::execute( std::string whichTrace )
     wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
   }
   runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
-  runAppDialog->setUserDefined();
-
+  runAppDialog->setUserCommand();
+  runAppDialog->choiceApplication->Enable( false );
   runAppDialog->Show();
   runAppDialog->Raise();
   
