@@ -2781,12 +2781,7 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
           return;
       }
 
-      ws.importWSCFGs( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir(),
-                       []( const std::string& str )
-                       {
-                         wxFileName tmpFilename( str );
-                         return tmpFilename.GetFullName();
-                       } );
+      ws.importWSCFGs( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
 
       workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
       
@@ -2840,6 +2835,11 @@ void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
     ws.exportWS( chosenPath, []( const std::string& str )
                              {
                                return paraverMain::myParaverMain->buildCfgFullPath( str );
+                             },
+                             []( const std::string& str )
+                             {
+                               wxFileName tmpFilename( str );
+                               return std::string( tmpFilename.GetFullName() );
                              } );
   }
 }
