@@ -437,7 +437,7 @@ void paraverMain::Init()
   someWinIsRedraw = false;
   traceLoadedBefore = false;
   tutorialsWindow = nullptr;
-  workspacesManager = WorkspaceManager::getInstance();
+  workspacesManager = WorkspaceManager::getInstance( localKernel );
   menuFile = NULL;
   menuHints = NULL;
   menuHelp = NULL;
@@ -536,6 +536,7 @@ void paraverMain::CreateControls()
   wxBitmap itemtool2Bitmap(itemFrame1->GetBitmapResource(wxT("icons/information.xpm")));
   wxBitmap itemtool2BitmapDisabled;
   tbarMain->AddTool(ID_TOOL_TRACE_INFORMATION, _("Trace Information"), itemtool2Bitmap, itemtool2BitmapDisabled, wxITEM_NORMAL, _("View Trace Information"), wxEmptyString);
+  tbarMain->AddSeparator();
   wxBitmap itemtool24Bitmap(itemFrame1->GetBitmapResource(wxT("icons/new_window.xpm")));
   wxBitmap itemtool24BitmapDisabled;
   tbarMain->AddTool(ID_NEW_WINDOW, _("Create new window"), itemtool24Bitmap, itemtool24BitmapDisabled, wxITEM_NORMAL, _("New single timeline window"), wxEmptyString);
@@ -649,6 +650,19 @@ void paraverMain::CreateControls()
 }
 
 
+std::string paraverMain::buildCfgFullPath( const std::string& cfgStr ) const
+{
+  wxFileName tmpCFG( wxString::FromUTF8( cfgStr.c_str() ) );
+  if ( tmpCFG.IsRelative() )
+  {
+    wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
+    tmpCFG.MakeAbsolute( tmpGlobalCFGs );
+  }
+
+  return std::string( tmpCFG.GetFullPath().mb_str() );
+}
+
+
 void paraverMain::refreshMenuHints()
 {
   bool separator = false;
@@ -721,14 +735,7 @@ void paraverMain::refreshMenuHints()
       MenuHintFile *tmpHintFile = new MenuHintFile();
       wxMenuItem *currentHint;
 
-      // Build cfg full path
-      wxFileName tmpCFG( wxString::FromUTF8( (*itHints).first.c_str() ) );
-      if ( tmpCFG.IsRelative() )
-      {
-        wxString tmpGlobalCFGs( localKernel->getDistributedCFGsPath().c_str(), wxConvUTF8 );
-        tmpCFG.MakeAbsolute( tmpGlobalCFGs );
-      }
-      tmpHintFile->fileName = std::string( tmpCFG.GetFullPath().mb_str() );
+      tmpHintFile->fileName = buildCfgFullPath( (*itHints).first );
 
       // Build submenus
       bool isStatesWorkspace =

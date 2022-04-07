@@ -1710,12 +1710,12 @@ bool PreferencesDialog::TransferDataToWindow()
     listPDFReaders->InsertItems( pdfReaderOptions, 0 );
 
   // WORKSPACES
-  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance()->getWorkspaces( TWorkspaceSet::USER_DEFINED );
+  std::vector<std::string> tmpWorkspaceList = WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->getWorkspaces( TWorkspaceSet::USER_DEFINED );
   for( std::vector<std::string>::iterator it = tmpWorkspaceList.begin(); it != tmpWorkspaceList.end(); ++it )
   {
     listWorkspaces->Append( wxString::FromUTF8( it->c_str() ) );
     workspaceContainer.insert( std::pair<wxString,Workspace>( wxString::FromUTF8( it->c_str() ),
-                                                              WorkspaceManager::getInstance()->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ) ) );
+                                                              WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->getWorkspace( *it, TWorkspaceSet::USER_DEFINED ) ) );
   }
   
   fileBrowserHintPath->SetPath( wxString::FromUTF8( cfgsPath.c_str() ) );
@@ -1834,9 +1834,9 @@ bool PreferencesDialog::TransferDataFromWindow()
     OnTextWorkspaceNameKillFocus( dummyEvent );
   }
 
-  WorkspaceManager::getInstance()->clear();
+  WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->clear();
   for( size_t i = 0; i < listWorkspaces->GetCount(); ++i )
-    WorkspaceManager::getInstance()->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
+    WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->addWorkspace( workspaceContainer[ listWorkspaces->GetString( i ) ] );
 
   workspaceDiscardedSubmenu = checkDiscardedSubmenu->GetValue();
 
@@ -2755,13 +2755,38 @@ void PreferencesDialog::OnButtonWorkspacesImportClick( wxCommandEvent& event )
       wsPath.append( "/" );
     #endif
       wsPath.append( tmpFileName.GetFullName().mb_str() );
-      ws.loadXML( wsPath );
+      ws.importWSXML( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
 
       wxString wsName( ws.getName().c_str(), wxConvUTF8 );
+      if( workspaceContainer.find( wsName ) != workspaceContainer.end() )
+      {
+        size_t nameNumber = 1;
+        wxString wsNewName = wsName + "_";
+
+        while( workspaceContainer.find( wxString( wsNewName ) << nameNumber ) != workspaceContainer.end() )
+          ++nameNumber;
+        wsNewName << nameNumber;
+
+        if( ::wxMessageBox( wxT( "Found another " ) + wsName +
+                            wxT( "\n\nDo you want to change it to " ) + wsNewName + wxT( "?" ),
+                            wxT( "Duplicated workspace name" ),   
+                            wxICON_EXCLAMATION | wxOK | wxCANCEL,
+                            this ) == wxOK )
+        {
+          std::string tmpNewName( wsNewName );
+          ws.setName( tmpNewName );
+          wsName = wsNewName;
+        }
+        else
+          return;
+      }
+
+      ws.importWSCFGs( wsPath, paraverMain::myParaverMain->GetLocalKernel()->getParaverUserDir() );
+
       workspaceContainer.insert( std::pair<wxString,Workspace>( wsName, ws ) );
       
       listWorkspaces->Append( wsName );
-      WorkspaceManager::getInstance()->addWorkspace( ws );
+      WorkspaceManager::getInstance( paraverMain::myParaverMain->GetLocalKernel() )->addWorkspace( ws );
     }
   }
 }
@@ -2790,7 +2815,7 @@ void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
   wxString dialogDefaultDir = _("./");
 #endif
 
-  wxString fileDialogWildcard = _( ".ws" ); 
+  wxString fileDialogWildcard = _( "Workspace file (*.ws)|*.ws" ); 
 
   wxString defaultFile = listWorkspaces->GetString( listWorkspaces->GetSelection() );  
   long whichDialogStyle = wxFD_SAVE | wxFD_CHANGE_DIR;
@@ -2806,7 +2831,16 @@ void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
     std::string chosenPath( myDialog.GetPath().mb_str() );
     if ( myDialog.GetPath().AfterLast( '.' ) != _( "ws" ) )
       chosenPath.append( ".ws" );
-    ws.saveXML( chosenPath );
+
+    ws.exportWS( chosenPath, []( const std::string& str )
+                             {
+                               return paraverMain::myParaverMain->buildCfgFullPath( str );
+                             },
+                             []( const std::string& str )
+                             {
+                               wxFileName tmpFilename( str );
+                               return std::string( tmpFilename.GetFullName() );
+                             } );
   }
 }
 

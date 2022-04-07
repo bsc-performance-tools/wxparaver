@@ -343,7 +343,7 @@ void TraceInformationDialog::CreateControls()
   GeneralInfoSizer->Add(itemStaticText1, 0, wxGROW|wxALL, 5);
 
   TraceGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_GENERAL_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  GeneralInfoSizer->Add(TraceGeneralInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
+  GeneralInfoSizer->Add(TraceGeneralInfo, 1, wxGROW|wxALL, 5);
 
   MetadataInfoSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer1->Add(MetadataInfoSizer, 3, wxGROW|wxALL, 5);
@@ -352,7 +352,7 @@ void TraceInformationDialog::CreateControls()
   MetadataInfoSizer->Add(itemStaticText6, 0, wxGROW|wxALL, 5);
 
   MetadataGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_METADATA_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  MetadataInfoSizer->Add(MetadataGeneralInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
+  MetadataInfoSizer->Add(MetadataGeneralInfo, 1, wxGROW|wxALL, 5);
 
   ProcessModelSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer1->Add(ProcessModelSizer, 2, wxGROW|wxALL, 5);
@@ -361,7 +361,7 @@ void TraceInformationDialog::CreateControls()
   ProcessModelSizer->Add(itemStaticText4, 0, wxGROW|wxALL, 5);
 
   ProcessModelInfo = new wxRichTextCtrl( itemDialog1, ID_PROCESS_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  ProcessModelSizer->Add(ProcessModelInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
+  ProcessModelSizer->Add(ProcessModelInfo, 1, wxGROW|wxALL, 5);
 
   ResourceModelSizer = new wxBoxSizer(wxVERTICAL);
   itemBoxSizer1->Add(ResourceModelSizer, 2, wxGROW|wxALL, 5);
@@ -370,7 +370,7 @@ void TraceInformationDialog::CreateControls()
   ResourceModelSizer->Add(itemStaticText7, 0, wxGROW|wxALL, 5);
 
   ResourceModelInfo = new wxRichTextCtrl( itemDialog1, ID_RESOURCE_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  ResourceModelSizer->Add(ResourceModelInfo, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
+  ResourceModelSizer->Add(ResourceModelInfo, 1, wxGROW|wxALL, 5);
 
   wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
 
