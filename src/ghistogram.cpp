@@ -75,6 +75,8 @@
 
 using namespace std;
 
+constexpr char STR_SORT_CUSTOM[] = "Custom";
+
 ////@begin XPM images
 #include "../icons/opencontrol.xpm"
 #include "../icons/opendata.xpm"
@@ -1293,6 +1295,15 @@ void gHistogram::OnPopUpPasteSemanticScale()
   myHistogram->setComputeGradient( false );
   gPasteWindowProperties::getInstance()->paste( this, "Semantic Scale" );
   myHistogram->setChanged( true );
+  myHistogram->setRedraw( true );
+  updateHistogram();
+}
+
+
+void gHistogram::OnPopUpPasteSemanticSort()
+{
+  gPasteWindowProperties::getInstance()->paste( this, STR_PASTE_SEMANTIC_SORT );
+
   myHistogram->setRedraw( true );
   updateHistogram();
 }
@@ -3414,9 +3425,17 @@ void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
   int tmpSort = 0;
 
   if( myHistogram->getSemanticSortColumns() )
+  {    
     tmpSort = static_cast<int>( myHistogram->getSemanticSortCriteria() ) + 1;
+  }
 
   if( tmpSort != choiceSortBy->GetSelection() )
     choiceSortBy->SetSelection( tmpSort );
 }
 
+
+void gHistogram::EnableCustomSortOption()
+{
+  if( choiceSortBy->FindString( STR_SORT_CUSTOM ) == wxNOT_FOUND )
+    choiceSortBy->Append( STR_SORT_CUSTOM );
+}

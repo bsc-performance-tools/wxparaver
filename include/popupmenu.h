@@ -143,7 +143,7 @@ class gHistogram;
 #define ID_MENU_SYNC_REMOVE_ALL_GROUPS                     30104
 #define ID_MENU_USER_COMMAND                               30105
 #define ID_MENU_PASTE_CUSTOM_PALETTE                       30106
-
+#define ID_MENU_PASTE_SEMANTIC_SORT                        30107
 
 #define ID_MENU_SYNC_GROUP_BASE                            31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE                     32000
@@ -184,6 +184,7 @@ class gPopUpMenu : public wxMenu
     void OnMenuFilterAll( wxCommandEvent& event);
     void OnMenuFilterComms( wxCommandEvent& event);
     void OnMenuFilterEvents( wxCommandEvent& event);
+    void OnMenuPasteSemanticSort( wxCommandEvent& event );
     void OnMenuPasteControlScale( wxCommandEvent& event );
     void OnMenuPaste3DScale( wxCommandEvent& event );
     void OnMenuPasteControlDimensions( wxCommandEvent& event );

@@ -40,6 +40,7 @@ constexpr char STR_TIME[] =                   "Time";
 constexpr char STR_SIZE[] =                   "Size";
 constexpr char STR_OBJECTS[] =                "Objects";
 constexpr char STR_DURATION[] =               "Duration";
+constexpr char STR_PASTE_SEMANTIC_SORT[] =    "Semantic Sort";
 constexpr char STR_SEMANTIC_SCALE[] =         "Semantic Scale";
 constexpr char STR_FILTER[] =                 "Filter";
 constexpr char STR_FILTER_COMMS[] =           "Communications";

@@ -46,14 +46,6 @@ void gPasteWindowProperties::commonMenuSettings( )
         allowed[STR_PASTE_DEFAULT_SPECIAL][trace][origin][destiny] = true;
         allowed[STR_PASTE_SPECIAL][trace][origin][destiny] = true;
       }
-
-  // Timeline/sourceHistogram different Menu properties
-  if ( sourceTimeline != nullptr )
-  {
-  }
-  else
-  {
-  }
 }
 
 
@@ -248,6 +240,7 @@ gPasteWindowProperties::gPasteWindowProperties()
   allowed[STR_CONTROL_SCALE] = option;
   allowed[STR_CONTROL_DIMENSIONS] = option;
   allowed[STR_3D_SCALE] = option;
+  allowed[STR_PASTE_SEMANTIC_SORT] = option;
 }
 
 
@@ -533,6 +526,14 @@ void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string p
               dstHisto->getControlMin() + ( srcHisto->getControlMax() - srcHisto->getControlMin() );
       dstHisto->setControlMax( newMax );
     }
+    else if( property == STR_PASTE_SEMANTIC_SORT )
+    {
+      Histogram *srcHisto = sourceHistogram->GetHistogram();
+      Histogram *dstHisto = destinyHistogram->GetHistogram();
+
+      dstHisto->setCurrentSemanticSort( srcHisto->getCurrentSemanticSort() );
+      destinyHistogram->EnableCustomSortOption();
+    }
     else
     {
     }
@@ -565,12 +566,18 @@ bool gPasteWindowProperties::isAllowed( gTimeline *destinyTimeline, const string
 
 bool gPasteWindowProperties::isAllowed( gHistogram *destinyHistogram, const string property )
 {
-
   if ( sourceTimeline == nullptr && sourceHistogram == nullptr )
     return false;
 
   if ( property == STR_TIME )
     commonTimeSettings( destinyHistogram->GetHistogram()->getControlWindow()->getTrace()->getEndTime() );
+  else if ( property == STR_PASTE_SEMANTIC_SORT && sourceHistogram != nullptr )
+  {
+    if( sourceHistogram->GetHistogram()->getControlMin() != destinyHistogram->GetHistogram()->getControlMin() ||
+        sourceHistogram->GetHistogram()->getControlMax() != destinyHistogram->GetHistogram()->getControlMax() ||
+        sourceHistogram->GetHistogram()->getControlDelta() != destinyHistogram->GetHistogram()->getControlDelta() )
+      return false;
+  }
     
   commonMenuSettings();
 

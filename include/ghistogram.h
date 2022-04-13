@@ -339,9 +339,11 @@ public:
   void OnPopUpPasteSize();
   void OnPopUpPasteDuration();
   void OnPopUpPasteSemanticScale();
+  void OnPopUpPasteSemanticSort();
   void OnPopUpPasteControlScale();
   void OnPopUpPaste3DScale();
   void OnPopUpPasteControlDimensions();
+
 
   void OnPopUpClone();
   void OnPopUpRename();
@@ -406,7 +408,7 @@ public:
   virtual void setSelectedRows( std::vector< bool > &selected );
   virtual void setSelectedRows( std::vector< TObjectOrder > &selected );
     
-  
+  void EnableCustomSortOption();
 
 ////@begin gHistogram member variables
   wxPanel* panelToolbar;
