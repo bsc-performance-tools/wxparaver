@@ -36,146 +36,17 @@
 
 using namespace std;
 
-BEGIN_EVENT_TABLE( gPopUpMenu, wxMenu )
-#ifdef __WXMAC__
-  EVT_MENU( ID_MENU_COPY, gPopUpMenu::OnMenuCopy )
-#else
-  EVT_MENU( wxID_COPY, gPopUpMenu::OnMenuCopy )
-#endif
-  EVT_MENU( ID_MENU_TIME, gPopUpMenu::OnMenuTime )
-  EVT_MENU( ID_MENU_OBJECTS, gPopUpMenu::OnMenuObjects )
-  EVT_MENU( ID_MENU_SIZE, gPopUpMenu::OnMenuSize )
-  EVT_MENU( ID_MENU_DURATION, gPopUpMenu::OnMenuDuration )
-  EVT_MENU( ID_MENU_SEMANTIC_SCALE, gPopUpMenu::OnMenuSemanticScale )
-  EVT_MENU( ID_MENU_FILTER_ALL, gPopUpMenu::OnMenuFilterAll )
-  EVT_MENU( ID_MENU_FILTER_COMMS, gPopUpMenu::OnMenuFilterComms )
-  EVT_MENU( ID_MENU_FILTER_EVENTS, gPopUpMenu::OnMenuFilterEvents )
-  EVT_MENU( ID_MENU_PASTE_DEFAULT_SPECIAL, gPopUpMenu::OnMenuPasteDefaultSpecial )
-  EVT_MENU( ID_MENU_PASTE_SPECIAL, gPopUpMenu::OnMenuPasteSpecial )
-  EVT_MENU( ID_MENU_CLONE, gPopUpMenu::OnMenuClone )
-  EVT_MENU( ID_MENU_RENAME, gPopUpMenu::OnMenuRename )
-  EVT_MENU( wxID_UNDO, gPopUpMenu::OnMenuUndoZoom )
-  EVT_MENU( wxID_REDO, gPopUpMenu::OnMenuRedoZoom )
-  EVT_MENU( wxID_ZOOM_100, gPopUpMenu::OnMenuFitTime )
-  EVT_MENU( ID_MENU_FIT_SEMANTIC_MIN, gPopUpMenu::OnMenuFitSemanticMin )
-  EVT_MENU( ID_MENU_FIT_SEMANTIC_MAX, gPopUpMenu::OnMenuFitSemanticMax )
-  EVT_MENU( ID_MENU_FIT_SEMANTIC_BOTH, gPopUpMenu::OnMenuFitSemanticBoth )
-  EVT_MENU( ID_MENU_FIT_OBJECTS, gPopUpMenu::OnMenuFitObjects )
-  EVT_MENU( ID_MENU_VIEW_COMMUNICATION_LINES, gPopUpMenu::OnMenuViewCommunicationLines )
-  EVT_MENU( ID_MENU_VIEW_EVENT_FLAGS, gPopUpMenu::OnMenuViewEventFlags )
-  EVT_MENU( ID_MENU_VIEW_FUNCTION_LINE, gPopUpMenu::OnMenuViewFunctionLine )
-  EVT_MENU( ID_MENU_VIEW_FUSED_LINES, gPopUpMenu::OnMenuViewFusedLines )
-  EVT_MENU( ID_MENU_CODE_COLOR, gPopUpMenu::OnMenuCodeColor )
-  EVT_MENU( ID_MENU_GRADIENT_COLOR, gPopUpMenu::OnMenuGradientColor )
-  EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR, gPopUpMenu::OnMenuNotNullGradientColor )
-  EVT_MENU( ID_MENU_PUNCTUAL, gPopUpMenu::OnMenuPunctual )
-  EVT_MENU( ID_MENU_PUNCTUAL_WINDOW, gPopUpMenu::OnMenuPunctualWindow )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_LAST, gPopUpMenu::OnMenuDrawModeTimeLast )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_MAXIMUM, gPopUpMenu::OnMenuDrawModeTimeMaximum )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_ABSOLUTE_MAXIMUM, gPopUpMenu::OnMenuDrawModeTimeAbsoluteMaximum )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_ABSOLUTE_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeAbsoluteMinimumNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_RANDOM, gPopUpMenu::OnMenuDrawModeTimeRandom )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeRandomNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_AVERAGE, gPopUpMenu::OnMenuDrawModeTimeAverage )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_AVERAGE_NOT_ZERO, gPopUpMenu::OnMenuDrawModeTimeAverageNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_TIME_MODE, gPopUpMenu::OnMenuDrawModeTimeMode )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_LAST, gPopUpMenu::OnMenuDrawModeObjectsLast )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_MAXIMUM, gPopUpMenu::OnMenuDrawModeObjectsMaximum )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MAXIMUM, gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMaximum )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMinimumNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_RANDOM, gPopUpMenu::OnMenuDrawModeObjectsRandom )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_AVERAGE, gPopUpMenu::OnMenuDrawModeObjectsAverage )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO, gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_OBJECTS_MODE, gPopUpMenu::OnMenuDrawModeObjectsMode )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_LAST, gPopUpMenu::OnMenuDrawModeBothLast )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_MAXIMUM, gPopUpMenu::OnMenuDrawModeBothMaximum )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothMinimumNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MAXIMUM, gPopUpMenu::OnMenuDrawModeBothAbsoluteMaximum )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothAbsoluteMinimumNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_RANDOM, gPopUpMenu::OnMenuDrawModeBothRandom )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothRandomNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_AVERAGE, gPopUpMenu::OnMenuDrawModeBothAverage )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO, gPopUpMenu::OnMenuDrawModeBothAverageNotZero )
-  EVT_MENU( ID_MENU_DRAWMODE_BOTH_MODE, gPopUpMenu::OnMenuDrawModeBothMode )
-  EVT_MENU( ID_MENU_PIXEL_SIZE_x1, gPopUpMenu::OnMenuPixelSize )
-  EVT_MENU( ID_MENU_PIXEL_SIZE_x2, gPopUpMenu::OnMenuPixelSize )
-  EVT_MENU( ID_MENU_PIXEL_SIZE_x4, gPopUpMenu::OnMenuPixelSize )
-  EVT_MENU( ID_MENU_PIXEL_SIZE_x8, gPopUpMenu::OnMenuPixelSize )
-  EVT_MENU( ID_MENU_ROW_SELECTION, gPopUpMenu::OnMenuRowSelection )
-  EVT_MENU( ID_MENU_SAVE_IMAGE, gPopUpMenu::OnMenuSaveImage )
-  EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_TEXT, gPopUpMenu::OnMenuSaveTimelineAsText )
-  EVT_MENU( ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT, gPopUpMenu::OnMenuSaveCurrentPlaneAsText )
-  EVT_MENU( ID_MENU_SAVE_TIMELINE_AS_CFG, gPopUpMenu::OnMenuSaveTimelineAsCFG )
-  EVT_MENU( ID_MENU_SAVE_ALL_PLANES_AS_TEXT, gPopUpMenu::OnMenuSaveAllPlanesAsText )
-  EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE, gPopUpMenu::OnMenuAutoControlScale )
-  EVT_MENU( ID_MENU_AUTO_CONTROL_SCALE_ZERO, gPopUpMenu::OnMenuAutoControlScaleZero )
-  EVT_MENU( ID_MENU_AUTO_3D_SCALE, gPopUpMenu::OnMenuAuto3DScale )
-  EVT_MENU( ID_MENU_AUTO_DATA_GRADIENT, gPopUpMenu::OnMenuAutoDataGradient )
-  EVT_MENU( ID_MENU_GRADIENT_FUNCTION_LINEAR, gPopUpMenu::OnMenuGradientFunction )
-  EVT_MENU( ID_MENU_GRADIENT_FUNCTION_STEPS, gPopUpMenu::OnMenuGradientFunction )
-  EVT_MENU( ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, gPopUpMenu::OnMenuGradientFunction )
-  EVT_MENU( ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, gPopUpMenu::OnMenuGradientFunction )
-  EVT_MENU( ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO, gPopUpMenu::OnMenuSemanticScaleMinAtZero )
-  EVT_MENU( ID_MENU_PASTE_CONTROL_SCALE, gPopUpMenu::OnMenuPasteControlScale )
-  EVT_MENU( ID_MENU_PASTE_3D_SCALE, gPopUpMenu::OnMenuPaste3DScale )
-  EVT_MENU( ID_MENU_NEWGROUP, gPopUpMenu::OnMenuSynchronize )
-  EVT_MENU( ID_MENU_REMOVE_GROUP, gPopUpMenu::OnMenuRemoveGroup )
-  EVT_MENU( ID_MENU_CODE_COLOR_2D, gPopUpMenu::OnMenuCodeColor2D )
-  EVT_MENU( ID_MENU_GRADIENT_COLOR_2D, gPopUpMenu::OnMenuGradientColor2D )
-  EVT_MENU( ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, gPopUpMenu::OnMenuNotNullGradientColor2D )
-  EVT_MENU( ID_MENU_LABELS_ALL, gPopUpMenu::OnMenuLabelsAll )
-  EVT_MENU( ID_MENU_LABELS_SPACED, gPopUpMenu::OnMenuLabelsSpaced )
-  EVT_MENU( ID_MENU_LABELS_POWER2, gPopUpMenu::OnMenuLabelsPower2 )
-  EVT_MENU( ID_MENU_OBJECT_AXIS_CURRENT, gPopUpMenu::OnMenuObjectAxisCurrent )
-  EVT_MENU( ID_MENU_OBJECT_AXIS_ALL, gPopUpMenu::OnMenuObjectAxisAll )
-  EVT_MENU( ID_MENU_OBJECT_AXIS_ZERO, gPopUpMenu::OnMenuObjectAxisZero )
-  EVT_MENU( ID_MENU_OBJECT_AXIS_FIVE, gPopUpMenu::OnMenuObjectAxisFive )
-  EVT_MENU( ID_MENU_OBJECT_AXIS_TEN, gPopUpMenu::OnMenuObjectAxisTen )
-  EVT_MENU( ID_MENU_OBJECT_AXIS_TWENTYFIVE, gPopUpMenu::OnMenuObjectAxisTwentyFive )
-  EVT_MENU( ID_MENU_CLUSTERING, gPopUpMenu::OnMenuClustering )
-  EVT_MENU( ID_MENU_FOLDING, gPopUpMenu::OnMenuFolding )
-  EVT_MENU( ID_MENU_DIMEMAS, gPopUpMenu::OnMenuDimemas )
-  EVT_MENU( ID_MENU_CUTTER, gPopUpMenu::OnMenuCutter )
-  EVT_MENU( ID_MENU_USER_COMMAND, gPopUpMenu::OnMenuUserCommand )
-
-END_EVENT_TABLE()
-
 
 wxMenuItem *gPopUpMenu::buildItem( wxMenu *popUp,
                                    const wxString &title,
-                                   ItemType itemType,
+                                   wxItemKind itemType,
                                    wxObjectEventFunction handler,
                                    wxWindowID id,
                                    bool checked )
 {
   wxMenuItem *tmp;
 
-  switch ( itemType )
-  {
-    case ITEMNORMAL:
-    {
-      tmp = new wxMenuItem( popUp, id, title, _( "" ), wxITEM_NORMAL );
-      break;
-    }
-    case ITEMRADIO:
-    {
-      tmp = new wxMenuItem( popUp, id, title, _( "" ), wxITEM_RADIO );
-      break;
-    }
-    case ITEMCHECK:
-    {
-      tmp = new wxMenuItem( popUp, id, title, _( "" ), wxITEM_CHECK );
-      break;
-    }
-    default:
-    {
-      tmp = new wxMenuItem( popUp, id, title, _( "" ), wxITEM_NORMAL );
-      break;
-    }
-  }
+  tmp = new wxMenuItem( popUp, id, title, _( "" ), itemType );
 
   popUp->Append( tmp );
   if ( tmp->IsCheckable() )
@@ -429,76 +300,76 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   popUpMenuSyncRemove = new wxMenu;
 
 #ifdef __WXMAC__
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, nullptr, ID_MENU_COPY );
+  buildItem( this, _( STR_COPY ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCopy, ID_MENU_COPY );
 #else
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, nullptr, wxID_COPY );
+  buildItem( this, _( STR_COPY ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCopy, wxID_COPY );
 #endif
-  buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
+  buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
   popUpMenuPaste->AppendSeparator();
-  buildItem( popUpMenuPaste, _( STR_TIME ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuTime, ID_MENU_TIME );
-  buildItem( popUpMenuPaste, _( STR_OBJECTS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjects, ID_MENU_OBJECTS );
-  buildItem( popUpMenuPaste, _( STR_SIZE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSize, ID_MENU_SIZE );
-  buildItem( popUpMenuPaste, _( STR_DURATION ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDuration, ID_MENU_DURATION );
+  buildItem( popUpMenuPaste, _( STR_TIME ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuTime, ID_MENU_PASTE_TIME );
+  buildItem( popUpMenuPaste, _( STR_OBJECTS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjects, ID_MENU_PASTE_OBJECTS );
+  buildItem( popUpMenuPaste, _( STR_SIZE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSize, ID_MENU_PASTE_SIZE );
+  buildItem( popUpMenuPaste, _( STR_DURATION ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDuration, ID_MENU_PASTE_DURATION );
 
-  buildItem( popUpMenuPaste, _( STR_SEMANTIC_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScale, ID_MENU_SEMANTIC_SCALE );
+  buildItem( popUpMenuPaste, _( STR_SEMANTIC_SCALE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScale, ID_MENU_PASTE_SEMANTIC_SCALE );
 
-  buildItem( popUpMenuPaste, _( STR_CUSTOM_PALETTE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCustomPalette, ID_MENU_CUSTOM_PALETTE );
+  buildItem( popUpMenuPaste, _( STR_CUSTOM_PALETTE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCustomPalette, ID_MENU_PASTE_CUSTOM_PALETTE );
 
-  buildItem( popUpMenuPasteFilter, _( STR_FILTER_ALL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterAll, ID_MENU_FILTER_ALL );
-  buildItem( popUpMenuPasteFilter, _( STR_FILTER_COMMS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterComms, ID_MENU_FILTER_COMMS );
-  buildItem( popUpMenuPasteFilter, _( STR_FILTER_EVENTS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterEvents, ID_MENU_FILTER_EVENTS );
+  buildItem( popUpMenuPasteFilter, _( STR_FILTER_ALL ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterAll, ID_MENU_PASTE_FILTER_ALL );
+  buildItem( popUpMenuPasteFilter, _( STR_FILTER_COMMS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterComms, ID_MENU_PASTE_FILTER_COMMS );
+  buildItem( popUpMenuPasteFilter, _( STR_FILTER_EVENTS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFilterEvents, ID_MENU_PASTE_FILTER_EVENTS );
   popUpMenuPaste->AppendSubMenu( popUpMenuPasteFilter, _( STR_FILTER ) );
 
-  buildItem( popUpMenuPaste, _( STR_PASTE_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteSpecial, ID_MENU_PASTE_SPECIAL );
+  buildItem( popUpMenuPaste, _( STR_PASTE_SPECIAL ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteSpecial, ID_MENU_PASTE_SPECIAL );
 
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
-  buildItem( this, _( STR_CLONE ), ITEMNORMAL, nullptr, ID_MENU_CLONE );
-  buildItem( this, _( STR_RENAME ), ITEMNORMAL, nullptr, ID_MENU_RENAME );
+  buildItem( this, _( STR_CLONE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuClone, ID_MENU_CLONE );
+  buildItem( this, _( STR_RENAME ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRename, ID_MENU_RENAME );
 
   AppendSeparator();
 
-  buildItem( this, _( STR_UNDO_ZOOM ), ITEMNORMAL, nullptr, wxID_UNDO );
-  buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, nullptr, wxID_REDO );
+  buildItem( this, _( STR_UNDO_ZOOM ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuUndoZoom, wxID_UNDO );
+  buildItem( this, _( STR_REDO_ZOOM ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRedoZoom, wxID_REDO );
 
-  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, nullptr, wxID_ZOOM_100 );
-  buildItem( popUpMenuFitSemantic, _( "Fit Minimum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
-  buildItem( popUpMenuFitSemantic, _( "Fit Maximum" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
-  buildItem( popUpMenuFitSemantic, _( "Fit Both" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
+  buildItem( this, _( STR_FIT_TIME ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitTime, wxID_ZOOM_100 );
+  buildItem( popUpMenuFitSemantic, _( "Fit Minimum" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMin, ID_MENU_FIT_SEMANTIC_MIN);
+  buildItem( popUpMenuFitSemantic, _( "Fit Maximum" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticMax, ID_MENU_FIT_SEMANTIC_MAX);
+  buildItem( popUpMenuFitSemantic, _( "Fit Both" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitSemanticBoth, ID_MENU_FIT_SEMANTIC_BOTH);
   AppendSubMenu( popUpMenuFitSemantic, _( STR_FIT_SEMANTIC ) );
 
-  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, nullptr, ID_MENU_FIT_OBJECTS );
-  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, nullptr, ID_MENU_ROW_SELECTION );
+  buildItem( this, _( STR_FIT_OBJECTS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitObjects, ID_MENU_FIT_OBJECTS );
+  buildItem( this, _( "Select Objects..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRowSelection, ID_MENU_ROW_SELECTION );
 
   AppendSeparator();
 
-  buildItem( popUpMenuView, _( "Communication Lines" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewCommunicationLines, ID_MENU_VIEW_COMMUNICATION_LINES, timeline->GetMyWindow()->getDrawCommLines() );
-  buildItem( popUpMenuView, _( "Event Flags" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewEventFlags, ID_MENU_VIEW_EVENT_FLAGS, timeline->GetMyWindow()->getDrawFlags() );
+  buildItem( popUpMenuView, _( "Communication Lines" ), wxITEM_CHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewCommunicationLines, ID_MENU_VIEW_COMMUNICATION_LINES, timeline->GetMyWindow()->getDrawCommLines() );
+  buildItem( popUpMenuView, _( "Event Flags" ), wxITEM_CHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewEventFlags, ID_MENU_VIEW_EVENT_FLAGS, timeline->GetMyWindow()->getDrawFlags() );
   AppendSubMenu( popUpMenuView, _( "View" ));
 
-  buildItem( popUpMenuColor, _( "Function Line" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFunctionLine, ID_MENU_VIEW_FUNCTION_LINE, timeline->GetMyWindow()->isFunctionLineColorSet() );
-  buildItem( popUpMenuColor, _( "Fused Lines" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFusedLines, ID_MENU_VIEW_FUSED_LINES, timeline->GetMyWindow()->isFusedLinesColorSet() );
-  buildItem( popUpMenuColor, _( "Punctual" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctual, ID_MENU_PUNCTUAL, timeline->GetMyWindow()->isPunctualColorSet() );
-  buildItem( popUpMenuColor, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->isCodeColorSet() );
-  buildItem( popUpMenuColor, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->isGradientColorSet() );
-  buildItem( popUpMenuColor, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->isNotNullGradientColorSet() );
+  buildItem( popUpMenuColor, _( "Function Line" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFunctionLine, ID_MENU_VIEW_FUNCTION_LINE, timeline->GetMyWindow()->isFunctionLineColorSet() );
+  buildItem( popUpMenuColor, _( "Fused Lines" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuViewFusedLines, ID_MENU_VIEW_FUSED_LINES, timeline->GetMyWindow()->isFusedLinesColorSet() );
+  buildItem( popUpMenuColor, _( "Punctual" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctual, ID_MENU_PUNCTUAL, timeline->GetMyWindow()->isPunctualColorSet() );
+  buildItem( popUpMenuColor, _( "Code Color" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor, ID_MENU_CODE_COLOR, timeline->GetMyWindow()->isCodeColorSet() );
+  buildItem( popUpMenuColor, _( "Gradient Color" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor,ID_MENU_GRADIENT_COLOR, timeline->GetMyWindow()->isGradientColorSet() );
+  buildItem( popUpMenuColor, _( "Not Null Gradient Color" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor,ID_MENU_NOT_NULL_GRADIENT_COLOR, timeline->GetMyWindow()->isNotNullGradientColorSet() );
 
   popUpMenuColor->AppendSeparator();
 
-  wxMenuItem *tmpPuncWin = buildItem( popUpMenuColor, _( "Punctual Window..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctualWindow, ID_MENU_PUNCTUAL_WINDOW );
+  wxMenuItem *tmpPuncWin = buildItem( popUpMenuColor, _( "Punctual Window..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPunctualWindow, ID_MENU_PUNCTUAL_WINDOW );
   popUpMenuColor->Enable( tmpPuncWin->GetId(), timeline->GetMyWindow()->isPunctualColorSet() );
 
-  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );
-  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::STEPS );
-  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::LOGARITHMIC );
-  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::EXPONENTIAL );
+  buildItem( popUpMenuGradientFunction, _( "Linear" ), wxITEM_RADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );
+  buildItem( popUpMenuGradientFunction, _( "Steps" ), wxITEM_RADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::STEPS );
+  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), wxITEM_RADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::LOGARITHMIC );
+  buildItem( popUpMenuGradientFunction, _( "Exponential" ), wxITEM_RADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, timeline->GetMyWindow()->getGradientColor().getGradientFunction() == TGradientFunction::EXPONENTIAL );
   wxMenuItem *tmpGradFunc = popUpMenuColor->AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
   popUpMenuColor->Enable( tmpGradFunc->GetId(), timeline->GetMyWindow()->isGradientColorSet() ||
                                                 timeline->GetMyWindow()->isNotNullGradientColorSet() ||
                                                 timeline->GetMyWindow()->isFunctionLineColorSet() ||
                                                 timeline->GetMyWindow()->isPunctualColorSet() );
 
-  wxMenuItem *tmpSemScaleMinZero = buildItem( popUpMenuColor, _( "Semantic scale min at 0" ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScaleMinAtZero, ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO, timeline->GetMyWindow()->getSemanticScaleMinAtZero() );
+  wxMenuItem *tmpSemScaleMinZero = buildItem( popUpMenuColor, _( "Semantic scale min at 0" ), wxITEM_CHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScaleMinAtZero, ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO, timeline->GetMyWindow()->getSemanticScaleMinAtZero() );
   popUpMenuColor->Enable( tmpSemScaleMinZero->GetId(), timeline->GetMyWindow()->isFunctionLineColorSet() ||
                                                        timeline->GetMyWindow()->isFusedLinesColorSet() ||
                                                        timeline->GetMyWindow()->isPunctualColorSet() );
@@ -508,192 +379,192 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_LAST ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeLast,
              ID_MENU_DRAWMODE_TIME_LAST,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_LAST );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMaximum,
              ID_MENU_DRAWMODE_TIME_MAXIMUM,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_MAXIMUM );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAbsoluteMaximum,
              ID_MENU_DRAWMODE_TIME_ABSOLUTE_MAXIMUM,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero,
              ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_MINNOTZERO );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAbsoluteMinimumNotZero,
              ID_MENU_DRAWMODE_TIME_ABSOLUTE_MINIMUM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO);
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_RANDOM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandom,
              ID_MENU_DRAWMODE_TIME_RANDOM,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_RANDOM );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_RANDOM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandomNotZero,
              ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_RANDNOTZERO );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_AVERAGE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverage,
              ID_MENU_DRAWMODE_TIME_AVERAGE,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_AVERAGE );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_AVERAGE_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverageNotZero,
              ID_MENU_DRAWMODE_TIME_AVERAGE_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_AVERAGENOTZERO );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_MODE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMode,
              ID_MENU_DRAWMODE_TIME_MODE,
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_MODE );
 
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_LAST ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsLast,
              ID_MENU_DRAWMODE_OBJECTS_LAST,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_LAST );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMaximum,
              ID_MENU_DRAWMODE_OBJECTS_MAXIMUM,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_MAXIMUM );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMaximum,
              ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MAXIMUM,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero,
              ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_MINNOTZERO );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMinimumNotZero,
              ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MINIMUM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_RANDOM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsRandom,
              ID_MENU_DRAWMODE_OBJECTS_RANDOM,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_RANDOM );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_RANDOM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero,
              ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_RANDNOTZERO );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_AVERAGE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverage,
              ID_MENU_DRAWMODE_OBJECTS_AVERAGE,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_AVERAGE );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_AVERAGE_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero,
              ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_AVERAGENOTZERO );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_MODE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMode,
              ID_MENU_DRAWMODE_OBJECTS_MODE,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_MODE );
 
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_LAST ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothLast,
              ID_MENU_DRAWMODE_BOTH_LAST,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_LAST &&
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_LAST );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothMaximum,
              ID_MENU_DRAWMODE_BOTH_MAXIMUM,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_MAXIMUM && 
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_MAXIMUM );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAbsoluteMaximum,
              ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MAXIMUM,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM &&
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothMinimumNotZero,
              ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_MINNOTZERO &&
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_MINNOTZERO );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAbsoluteMinimumNotZero,
              ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO &&
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_RANDOM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothRandom,
              ID_MENU_DRAWMODE_BOTH_RANDOM,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_RANDOM &&
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_RANDOM );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_RANDOM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothRandomNotZero,
              ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_RANDNOTZERO &&
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_RANDNOTZERO );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_AVERAGE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAverage,
              ID_MENU_DRAWMODE_BOTH_AVERAGE,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_AVERAGE &&
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_AVERAGE );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_AVERAGE_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAverageNotZero,
              ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_AVERAGENOTZERO &&
              timeline->GetMyWindow()->getDrawModeTime() == DrawModeMethod::DRAW_AVERAGENOTZERO );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_MODE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothMode,
              ID_MENU_DRAWMODE_BOTH_MODE,
              timeline->GetMyWindow()->getDrawModeObject() == DrawModeMethod::DRAW_MODE &&
@@ -708,61 +579,61 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   buildItem( popUpMenuPixelSize,
              _( "x1" ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x1,
              timeline->GetMyWindow()->getPixelSize() == 1 );
   buildItem( popUpMenuPixelSize,
              _( "x2" ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x2,
              timeline->GetMyWindow()->getPixelSize() == 2 );
   buildItem( popUpMenuPixelSize,
              _( "x4" ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x4,
              timeline->GetMyWindow()->getPixelSize() == 4 );
   buildItem( popUpMenuPixelSize,
              _( "x8" ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x8,
              timeline->GetMyWindow()->getPixelSize() == 8 );
 
   AppendSubMenu( popUpMenuPixelSize, _( "Pixel Size" ));
 
-  buildItem( popUpMenuLabels, _( "All" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsAll, ID_MENU_LABELS_ALL, 
+  buildItem( popUpMenuLabels, _( "All" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsAll, ID_MENU_LABELS_ALL, 
              timeline->GetMyWindow()->getObjectLabels() == TObjectLabels::ALL_LABELS );
-  buildItem( popUpMenuLabels, _( "Spaced" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsSpaced, ID_MENU_LABELS_SPACED, 
+  buildItem( popUpMenuLabels, _( "Spaced" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsSpaced, ID_MENU_LABELS_SPACED, 
              timeline->GetMyWindow()->getObjectLabels() ==  TObjectLabels::SPACED_LABELS );
-  buildItem( popUpMenuLabels, _( "2^n" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsPower2, ID_MENU_LABELS_POWER2, 
+  buildItem( popUpMenuLabels, _( "2^n" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuLabelsPower2, ID_MENU_LABELS_POWER2, 
              timeline->GetMyWindow()->getObjectLabels() == TObjectLabels::POWER2_LABELS );
   AppendSubMenu( popUpMenuLabels, _( "Object Labels" ) );
 
-  buildItem( popUpMenuObjectAxis, _( "Fit Current Level" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisCurrent, ID_MENU_OBJECT_AXIS_CURRENT, 
+  buildItem( popUpMenuObjectAxis, _( "Fit Current Level" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisCurrent, ID_MENU_OBJECT_AXIS_CURRENT, 
              timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::CURRENT_LEVEL );
-  buildItem( popUpMenuObjectAxis, _( "Fit All Levels" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisAll, ID_MENU_OBJECT_AXIS_ALL, 
+  buildItem( popUpMenuObjectAxis, _( "Fit All Levels" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisAll, ID_MENU_OBJECT_AXIS_ALL, 
              timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::ALL_LEVELS );
-  buildItem( popUpMenuObjectAxis, _( "0%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisZero, ID_MENU_OBJECT_AXIS_ZERO, 
+  buildItem( popUpMenuObjectAxis, _( "0%" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisZero, ID_MENU_OBJECT_AXIS_ZERO, 
              timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::ZERO_PERC );
-  buildItem( popUpMenuObjectAxis, _( "5%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisFive, ID_MENU_OBJECT_AXIS_FIVE, 
+  buildItem( popUpMenuObjectAxis, _( "5%" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisFive, ID_MENU_OBJECT_AXIS_FIVE, 
              timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::FIVE_PERC );
-  buildItem( popUpMenuObjectAxis, _( "10%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTen, ID_MENU_OBJECT_AXIS_TEN, 
+  buildItem( popUpMenuObjectAxis, _( "10%" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTen, ID_MENU_OBJECT_AXIS_TEN, 
              timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::TEN_PERC );
-  buildItem( popUpMenuObjectAxis, _( "25%" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTwentyFive, ID_MENU_OBJECT_AXIS_TWENTYFIVE, 
+  buildItem( popUpMenuObjectAxis, _( "25%" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjectAxisTwentyFive, ID_MENU_OBJECT_AXIS_TWENTYFIVE, 
              timeline->GetMyWindow()->getObjectAxisSize() == TObjectAxisSize::TWENTYFIVE_PERC );
   AppendSubMenu( popUpMenuObjectAxis, _( "Object Axis" ) );
 
   AppendSeparator();
   
-  buildItem( popUpMenuRun, _( "Cutter" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCutter, ID_MENU_CUTTER );
-  buildItem( popUpMenuRun, _( "Dimemas" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDimemas, ID_MENU_DIMEMAS );
-  buildItem( popUpMenuRun, _( "Clustering" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuClustering, ID_MENU_CLUSTERING );
-  buildItem( popUpMenuRun, _( "Folding" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFolding, ID_MENU_FOLDING );
-  //buildItem( popUpMenuRun, _( "Spectral" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSpectral, ID_MENU_SPECTRAL );
-  buildItem( popUpMenuRun, _( "User Command" ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuUserCommand, ID_MENU_USER_COMMAND );
+  buildItem( popUpMenuRun, _( "Cutter" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCutter, ID_MENU_CUTTER );
+  buildItem( popUpMenuRun, _( "Dimemas" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDimemas, ID_MENU_DIMEMAS );
+  buildItem( popUpMenuRun, _( "Clustering" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuClustering, ID_MENU_CLUSTERING );
+  buildItem( popUpMenuRun, _( "Folding" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFolding, ID_MENU_FOLDING );
+  //buildItem( popUpMenuRun, _( "Spectral" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSpectral, ID_MENU_SPECTRAL );
+  buildItem( popUpMenuRun, _( "User Command" ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuUserCommand, ID_MENU_USER_COMMAND );
   AppendSubMenu( popUpMenuRun, _( "Run" ) );
   
   AppendSeparator();
@@ -772,22 +643,22 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
   TGroupId i = 0;
   for( vector< TGroupId >::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
-    buildItem( popUpMenuSync, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
+    buildItem( popUpMenuSync, wxString::Format( _( "%u" ), *itGroup + 1 ), wxITEM_CHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
                ID_MENU_SYNC_GROUP_BASE + i, timeline->GetMyWindow()->isSync() && timeline->GetMyWindow()->getSyncGroup() == *itGroup );
     ++i;
   }
   popUpMenuSync->AppendSeparator();
-  buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
+  buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
              ID_MENU_NEWGROUP );
 
   i = 1;
   for( vector< TGroupId >::const_iterator itGroup = ++tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
-    buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
+    buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
     ++i;
   }
   popUpMenuSyncRemove->AppendSeparator();
-  buildItem( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_ALL_GROUPS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllGroups,
+  buildItem( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_ALL_GROUPS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllGroups,
              ID_MENU_SYNC_REMOVE_ALL_GROUPS );
   popUpMenuSync->AppendSubMenu( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_GROUP ) );
 
@@ -795,22 +666,22 @@ gPopUpMenu::gPopUpMenu( gTimeline *whichTimeline )
 
   AppendSeparator();
 
-  buildItem( popUpMenuSave, _( "Configuration..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsCFG, ID_MENU_SAVE_TIMELINE_AS_CFG );
-  buildItem( popUpMenuSave, _( "Image..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
-  buildItem( popUpMenuSave, _( "Text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsText, ID_MENU_SAVE_TIMELINE_AS_TEXT );
+  buildItem( popUpMenuSave, _( "Configuration..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsCFG, ID_MENU_SAVE_TIMELINE_AS_CFG );
+  buildItem( popUpMenuSave, _( "Image..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
+  buildItem( popUpMenuSave, _( "Text..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveTimelineAsText, ID_MENU_SAVE_TIMELINE_AS_TEXT );
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
 
   AppendSeparator();
 
   buildItem( this,
              _( "Timing\tCTRL+T" ),
-             ITEMCHECK,
+             wxITEM_CHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuTiming,
              ID_MENU_TIMING,
              timeline->GetTiming() );
   buildItem( this,
              _( "Info Panel" ),
-             ITEMCHECK,
+             wxITEM_CHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuInfoPanel,
              ID_MENU_INFO_PANEL,
              timeline->IsSplit() );
@@ -842,265 +713,265 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuSyncRemove = new wxMenu;
   
 #ifdef __WXMAC__
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, nullptr, ID_MENU_COPY );
+  buildItem( this, _( STR_COPY ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCopy, ID_MENU_COPY );
 #else
-  buildItem( this, _( STR_COPY ), ITEMNORMAL, nullptr, wxID_COPY );
+  buildItem( this, _( STR_COPY ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuCopy, wxID_COPY );
 #endif
-  buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
+  buildItem( popUpMenuPaste, _( STR_PASTE_DEFAULT_SPECIAL ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteDefaultSpecial, ID_MENU_PASTE_DEFAULT_SPECIAL );
   popUpMenuPaste->AppendSeparator();
-  buildItem( popUpMenuPaste, _( STR_TIME ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuTime, ID_MENU_TIME );
-  buildItem( popUpMenuPaste, _( STR_OBJECTS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjects, ID_MENU_OBJECTS );
-  buildItem( popUpMenuPaste, _( STR_SIZE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSize, ID_MENU_SIZE );
-  buildItem( popUpMenuPaste, _( STR_DURATION ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDuration, ID_MENU_DURATION );
-  buildItem( popUpMenuPaste, _( STR_SEMANTIC_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScale, ID_MENU_SEMANTIC_SCALE );
-  buildItem( popUpMenuPaste, _( STR_CONTROL_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlScale, ID_MENU_PASTE_CONTROL_SCALE );
-  buildItem( popUpMenuPaste, _( STR_CONTROL_DIMENSIONS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlDimensions, ID_MENU_PASTE_CONTROL_DIMENSIONS );
-  buildItem( popUpMenuPaste, _( STR_3D_SCALE ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPaste3DScale, ID_MENU_PASTE_3D_SCALE );
-  buildItem( popUpMenuPaste, _( STR_PASTE_SPECIAL ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteSpecial, ID_MENU_PASTE_SPECIAL );
+  buildItem( popUpMenuPaste, _( STR_TIME ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuTime, ID_MENU_PASTE_TIME );
+  buildItem( popUpMenuPaste, _( STR_OBJECTS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjects, ID_MENU_PASTE_OBJECTS );
+  buildItem( popUpMenuPaste, _( STR_SIZE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSize, ID_MENU_PASTE_SIZE );
+  buildItem( popUpMenuPaste, _( STR_DURATION ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDuration, ID_MENU_PASTE_DURATION );
+  buildItem( popUpMenuPaste, _( STR_SEMANTIC_SCALE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScale, ID_MENU_PASTE_SEMANTIC_SCALE );
+  buildItem( popUpMenuPaste, _( STR_CONTROL_SCALE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlScale, ID_MENU_PASTE_CONTROL_SCALE );
+  buildItem( popUpMenuPaste, _( STR_CONTROL_DIMENSIONS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlDimensions, ID_MENU_PASTE_CONTROL_DIMENSIONS );
+  buildItem( popUpMenuPaste, _( STR_3D_SCALE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPaste3DScale, ID_MENU_PASTE_3D_SCALE );
+  buildItem( popUpMenuPaste, _( STR_PASTE_SPECIAL ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteSpecial, ID_MENU_PASTE_SPECIAL );
 
   AppendSubMenu( popUpMenuPaste, _( STR_PASTE ) );
 
-  buildItem( this, _( STR_CLONE ), ITEMNORMAL, nullptr, ID_MENU_CLONE );
-  buildItem( this, _( STR_RENAME ), ITEMNORMAL, nullptr, ID_MENU_RENAME );
+  buildItem( this, _( STR_CLONE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuClone, ID_MENU_CLONE );
+  buildItem( this, _( STR_RENAME ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRename, ID_MENU_RENAME );
 
   AppendSeparator();
 
-  buildItem( this, _( STR_UNDO_ZOOM), ITEMNORMAL, nullptr, wxID_UNDO );
-  buildItem( this, _( STR_REDO_ZOOM ), ITEMNORMAL, nullptr, wxID_REDO );
+  buildItem( this, _( STR_UNDO_ZOOM), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuUndoZoom, wxID_UNDO );
+  buildItem( this, _( STR_REDO_ZOOM ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRedoZoom, wxID_REDO );
 
   
-  buildItem( this, _( STR_FIT_TIME ), ITEMNORMAL, nullptr, wxID_ZOOM_100 );
-  buildItem( this, _( STR_FIT_OBJECTS ), ITEMNORMAL, nullptr, ID_MENU_FIT_OBJECTS );
-  buildItem( this, _( "Select Objects..." ), ITEMNORMAL, nullptr, ID_MENU_ROW_SELECTION );
+  buildItem( this, _( STR_FIT_TIME ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitTime, wxID_ZOOM_100 );
+  buildItem( this, _( STR_FIT_OBJECTS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuFitObjects, ID_MENU_FIT_OBJECTS );
+  buildItem( this, _( "Select Objects..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRowSelection, ID_MENU_ROW_SELECTION );
 
   buildItem( this, 
              _( "Auto Fit Control Scale" ),
-             ITEMCHECK,
+             wxITEM_CHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoControlScale,
              ID_MENU_AUTO_CONTROL_SCALE,
              histogram->GetHistogram()->getCompute2DScale() );
   buildItem( this, 
              _( STR_AUTOFIT_CONTROL_ZERO ),
-             ITEMCHECK,
+             wxITEM_CHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoControlScaleZero,
              ID_MENU_AUTO_CONTROL_SCALE_ZERO,
              histogram->GetHistogram()->getCompute2DScaleZero() );
   if( histogram->GetHistogram()->getThreeDimensions() )
     buildItem( this, 
                _( "Auto Fit 3D Scale" ),
-               ITEMCHECK,
+               wxITEM_CHECK,
                (wxObjectEventFunction)&gPopUpMenu::OnMenuAuto3DScale,
                ID_MENU_AUTO_3D_SCALE,
                histogram->GetHistogram()->getCompute3DScale() );
   buildItem( this, 
              _( "Auto Fit Data Gradient" ),
-             ITEMCHECK,
+             wxITEM_CHECK,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuAutoDataGradient,
              ID_MENU_AUTO_DATA_GRADIENT,
              histogram->GetHistogram()->getComputeGradient() );
 
   AppendSeparator();
 
-  buildItem( popUpMenuColor2D, _( "Code Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::COLOR );
-  buildItem( popUpMenuColor2D, _( "Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::GRADIENT );
-  buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), ITEMRADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::NOT_NULL_GRADIENT );
+  buildItem( popUpMenuColor2D, _( "Code Color" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuCodeColor2D, ID_MENU_CODE_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::COLOR );
+  buildItem( popUpMenuColor2D, _( "Gradient Color" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuGradientColor2D, ID_MENU_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::GRADIENT );
+  buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), wxITEM_RADIO, (wxObjectEventFunction)&gPopUpMenu::OnMenuNotNullGradientColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, histogram->GetHistogram()->getColorMode() == TColorFunction::NOT_NULL_GRADIENT );
   AppendSubMenu( popUpMenuColor2D, _( "Color Mode" ) );
   
-  buildItem( popUpMenuGradientFunction, _( "Linear" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );
-  buildItem( popUpMenuGradientFunction, _( "Steps" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::STEPS );
-  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LOGARITHMIC );
-  buildItem( popUpMenuGradientFunction, _( "Exponential" ), ITEMRADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::EXPONENTIAL );
+  buildItem( popUpMenuGradientFunction, _( "Linear" ), wxITEM_RADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );
+  buildItem( popUpMenuGradientFunction, _( "Steps" ), wxITEM_RADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_STEPS, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::STEPS );
+  buildItem( popUpMenuGradientFunction, _( "Logarithmic" ), wxITEM_RADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LOGARITHMIC );
+  buildItem( popUpMenuGradientFunction, _( "Exponential" ), wxITEM_RADIO,(wxObjectEventFunction)&gPopUpMenu::OnMenuGradientFunction, ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL, histogram->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::EXPONENTIAL );
   AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function " ) );
   
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_LAST ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeLast,
              ID_MENU_DRAWMODE_TIME_LAST,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_LAST );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMaximum,
              ID_MENU_DRAWMODE_TIME_MAXIMUM,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_MAXIMUM );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAbsoluteMaximum,
              ID_MENU_DRAWMODE_TIME_ABSOLUTE_MAXIMUM,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMinimumNotZero,
              ID_MENU_DRAWMODE_TIME_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_MINNOTZERO );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAbsoluteMinimumNotZero,
              ID_MENU_DRAWMODE_TIME_ABSOLUTE_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
 //----------------------------
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_RANDOM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandom,
              ID_MENU_DRAWMODE_TIME_RANDOM,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_RANDOM );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_RANDOM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeRandomNotZero,
              ID_MENU_DRAWMODE_TIME_RANDOM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_RANDNOTZERO );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_AVERAGE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverage,
              ID_MENU_DRAWMODE_TIME_AVERAGE,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_AVERAGE );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_AVERAGE_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeAverageNotZero,
              ID_MENU_DRAWMODE_TIME_AVERAGE_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_AVERAGENOTZERO );
   buildItem( popUpMenuDrawModeTime,
              _( GUI_DRAWMODE_MODE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeTimeMode,
              ID_MENU_DRAWMODE_TIME_MODE,
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_MODE );
 
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_LAST ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsLast,
              ID_MENU_DRAWMODE_OBJECTS_LAST,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_LAST );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMaximum,
              ID_MENU_DRAWMODE_OBJECTS_MAXIMUM,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_MAXIMUM );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMaximum,
              ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MAXIMUM,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMinimumNotZero,
              ID_MENU_DRAWMODE_OBJECTS_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_MINNOTZERO );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAbsoluteMinimumNotZero,
              ID_MENU_DRAWMODE_OBJECTS_ABSOLUTE_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_RANDOM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsRandom,
              ID_MENU_DRAWMODE_OBJECTS_RANDOM,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_RANDOM );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_RANDOM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsRandomNotZero,
              ID_MENU_DRAWMODE_OBJECTS_RANDOM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_RANDNOTZERO );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_AVERAGE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverage,
              ID_MENU_DRAWMODE_OBJECTS_AVERAGE,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_AVERAGE );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_AVERAGE_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsAverageNotZero,
              ID_MENU_DRAWMODE_OBJECTS_AVERAGE_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_AVERAGENOTZERO );
   buildItem( popUpMenuDrawModeObjects,
              _( GUI_DRAWMODE_MODE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeObjectsMode,
              ID_MENU_DRAWMODE_OBJECTS_MODE,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_MODE );
 
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_LAST ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothLast,
              ID_MENU_DRAWMODE_BOTH_LAST,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_LAST &&
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_LAST );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothMaximum,
              ID_MENU_DRAWMODE_BOTH_MAXIMUM,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_MAXIMUM && 
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_MAXIMUM );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_ABSOLUTE_MAXIMUM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAbsoluteMaximum,
              ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MAXIMUM,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM &&
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothMinimumNotZero,
              ID_MENU_DRAWMODE_BOTH_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_MINNOTZERO &&
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_MINNOTZERO );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_ABSOLUTE_MINIMUM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAbsoluteMinimumNotZero,
              ID_MENU_DRAWMODE_BOTH_ABSOLUTE_MINIMUM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO &&
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_RANDOM ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothRandom,
              ID_MENU_DRAWMODE_BOTH_RANDOM,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_RANDOM &&
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_RANDOM );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_RANDOM_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothRandomNotZero,
              ID_MENU_DRAWMODE_BOTH_RANDOM_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_RANDNOTZERO &&
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_RANDNOTZERO );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_AVERAGE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAverage,
              ID_MENU_DRAWMODE_BOTH_AVERAGE,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_AVERAGE &&
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_AVERAGE );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_AVERAGE_NOT_ZERO ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothAverageNotZero,
              ID_MENU_DRAWMODE_BOTH_AVERAGE_NOT_ZERO,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_AVERAGENOTZERO &&
              histogram->GetHistogram()->getDrawModeColumns() == DrawModeMethod::DRAW_AVERAGENOTZERO );
   buildItem( popUpMenuDrawModeBoth,
              _( GUI_DRAWMODE_MODE ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuDrawModeBothMode,
              ID_MENU_DRAWMODE_BOTH_MODE,
              histogram->GetHistogram()->getDrawModeObjects() == DrawModeMethod::DRAW_MODE &&
@@ -1113,25 +984,25 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   buildItem( popUpMenuPixelSize,
              _( "x1" ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x1,
              histogram->GetHistogram()->getPixelSize() == 1 );
   buildItem( popUpMenuPixelSize,
              _( "x2" ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x2,
              histogram->GetHistogram()->getPixelSize() == 2 );
   buildItem( popUpMenuPixelSize,
              _( "x4" ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x4,
              histogram->GetHistogram()->getPixelSize() == 4 );
   buildItem( popUpMenuPixelSize,
              _( "x8" ),
-             ITEMRADIO,
+             wxITEM_RADIO,
              (wxObjectEventFunction)&gPopUpMenu::OnMenuPixelSize,
              ID_MENU_PIXEL_SIZE_x8,
              histogram->GetHistogram()->getPixelSize() == 8 );
@@ -1145,22 +1016,22 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   TGroupId i = 0;
   for( vector< TGroupId >::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
-    buildItem( popUpMenuSync, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMCHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
+    buildItem( popUpMenuSync, wxString::Format( _( "%u" ), *itGroup + 1 ), wxITEM_CHECK, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
                ID_MENU_SYNC_GROUP_BASE + i, histogram->GetHistogram()->isSync() && histogram->GetHistogram()->getSyncGroup() == *itGroup );
     ++i;
   }
   popUpMenuSync->AppendSeparator();
-  buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
+  buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSynchronize,
              ID_MENU_NEWGROUP );
   
   i = 1;
   for( vector< TGroupId >::const_iterator itGroup = ++tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
-    buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
+    buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
     ++i;
   }
   popUpMenuSyncRemove->AppendSeparator();
-  buildItem( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_ALL_GROUPS ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllGroups,
+  buildItem( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_ALL_GROUPS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuRemoveAllGroups,
              ID_MENU_SYNC_REMOVE_ALL_GROUPS );
 
   popUpMenuSync->AppendSubMenu( popUpMenuSyncRemove, _( STR_SYNC_REMOVE_GROUP ) );
@@ -1169,25 +1040,25 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
 
   AppendSeparator();
 
-  buildItem( popUpMenuSave, _( "Configuration..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveHistogramAsCFG, ID_MENU_SAVE_HISTOGRAM_AS_CFG );
-  buildItem( popUpMenuSave, _( "Image..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
+  buildItem( popUpMenuSave, _( "Configuration..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveHistogramAsCFG, ID_MENU_SAVE_HISTOGRAM_AS_CFG );
+  buildItem( popUpMenuSave, _( "Image..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveImage, ID_MENU_SAVE_IMAGE );
 
   if ( histogram->GetHistogram()->getThreeDimensions() )
   {
     buildItem( popUpMenuSaveAsText, 
                _( "Current Plane..." ),
-               ITEMNORMAL,
+               wxITEM_NORMAL,
                (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveCurrentPlaneAsText,
                ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT );
     buildItem( popUpMenuSaveAsText, _( "All Planes..." ),
-               ITEMNORMAL,
+               wxITEM_NORMAL,
                (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText,
                ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
     popUpMenuSave->AppendSubMenu( popUpMenuSaveAsText, _( "Text..." ) );
 
   }
   else
-    buildItem( popUpMenuSave, _( "Text..." ), ITEMNORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
+    buildItem( popUpMenuSave, _( "Text..." ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSaveAllPlanesAsText, ID_MENU_SAVE_ALL_PLANES_AS_TEXT );
 
   AppendSubMenu( popUpMenuSave, _( "Save" ) );
   

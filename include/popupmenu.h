@@ -33,20 +33,18 @@
 
 #include <map>
 
-enum ItemType {ITEMNORMAL, ITEMRADIO, ITEMCHECK};
-
 class gTimeline;
 class gHistogram;
 
 #define ID_MENU_COPY                                       30000
-#define ID_MENU_TIME                                       30001
-#define ID_MENU_OBJECTS                                    30002
-#define ID_MENU_SIZE                                       30003
-#define ID_MENU_DURATION                                   30004
-#define ID_MENU_SEMANTIC_SCALE                             30005
-#define ID_MENU_FILTER_ALL                                 30006
-#define ID_MENU_FILTER_COMMS                               30007
-#define ID_MENU_FILTER_EVENTS                              30008
+#define ID_MENU_PASTE_TIME                                 30001
+#define ID_MENU_PASTE_OBJECTS                              30002
+#define ID_MENU_PASTE_SIZE                                 30003
+#define ID_MENU_PASTE_DURATION                             30004
+#define ID_MENU_PASTE_SEMANTIC_SCALE                       30005
+#define ID_MENU_PASTE_FILTER_ALL                           30006
+#define ID_MENU_PASTE_FILTER_COMMS                         30007
+#define ID_MENU_PASTE_FILTER_EVENTS                        30008
 #define ID_MENU_PASTE_SPECIAL                              30009
 #define ID_MENU_CLONE                                      30010
 #define ID_MENU_UNDO_ZOOM                                  30011
@@ -144,7 +142,7 @@ class gHistogram;
 #define ID_MENU_SEMANTIC_SCALE_MIN_AT_ZERO                 30103
 #define ID_MENU_SYNC_REMOVE_ALL_GROUPS                     30104
 #define ID_MENU_USER_COMMAND                               30105
-#define ID_MENU_CUSTOM_PALETTE                             30106
+#define ID_MENU_PASTE_CUSTOM_PALETTE                       30106
 
 
 #define ID_MENU_SYNC_GROUP_BASE                            31000
@@ -152,7 +150,6 @@ class gHistogram;
 
 class gPopUpMenu : public wxMenu
 {
-  DECLARE_EVENT_TABLE()
 
   public:
     gPopUpMenu() 
@@ -324,7 +321,7 @@ class gPopUpMenu : public wxMenu
 
     wxMenuItem *buildItem( wxMenu *popUp,
                            const wxString &title,
-                           ItemType itemType,
+                           wxItemKind itemType,
                            wxObjectEventFunction handler,
                            wxWindowID id,
                            bool checked = false );
