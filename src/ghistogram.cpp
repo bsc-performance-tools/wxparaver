@@ -58,6 +58,7 @@
 #include "filedialogext.h"
 //#include "progresscontroller.h"
 #include "saveimagedialog.h"
+#include "popupmenu.h"
 
 
 #define wxTEST_GRAPHICS 1
@@ -1193,23 +1194,23 @@ void gHistogram::OnRangeSelect( wxGridRangeSelectEvent& event )
 }
 
 
-void gHistogram::OnPopUpCopy()
+void gHistogram::OnPopUpCopy( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->copy( this );
 }
 
 
-void gHistogram::OnPopUpPaste()
+void gHistogram::OnPopUpPaste( wxCommandEvent& event )
 {
 //  gPasteWindowProperties::getInstance()->paste( this );
 }
 
 
-void gHistogram::OnPopUpPasteSpecial()
+void gHistogram::OnPopUpPasteSpecial( wxCommandEvent& event )
 {
   wxArrayString choices;
   
-  wxMultiChoiceDialog *dialog = gPopUpMenu::createPasteSpecialDialog( choices, this );
+  wxMultiChoiceDialog *dialog = gPopUpMenu<gHistogram>::createPasteSpecialDialog( choices, this );
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -1220,21 +1221,21 @@ void gHistogram::OnPopUpPasteSpecial()
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
         gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
-        if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
+        if ( pasteActions->isAllowed( this, gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) ) )
         {
-          if ( gPopUpMenu::getOption( choices, selections[i] ) == "Time" )
+          if ( gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) == "Time" )
             recalc = true;
-          else if ( gPopUpMenu::getOption( choices, selections[i] ) == STR_CONTROL_SCALE )
+          else if ( gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) == STR_CONTROL_SCALE )
           {
             myHistogram->setCompute2DScale( false );
             recalc = true;
           }
-          else if ( gPopUpMenu::getOption( choices, selections[i] ) == STR_3D_SCALE )
+          else if ( gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) == STR_3D_SCALE )
           {
             myHistogram->setCompute3DScale( false );
             recalc = true;
           }
-          pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );
+          pasteActions->paste( this, gPopUpMenu<gHistogram>::getOption( choices, selections[i] ) );
         }
       }
 
@@ -1248,7 +1249,7 @@ void gHistogram::OnPopUpPasteSpecial()
 }
 
 
-void gHistogram::OnPopUpPasteDefaultSpecial()
+void gHistogram::OnPopUpPasteDefaultSpecial( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Time" );
   gPasteWindowProperties::getInstance()->paste( this, "Objects" );
@@ -1258,7 +1259,7 @@ void gHistogram::OnPopUpPasteDefaultSpecial()
 }
 
 
-void gHistogram::OnPopUpPasteTime()
+void gHistogram::OnPopUpPasteTime( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Time" );
   myHistogram->setRecalc( true );
@@ -1266,7 +1267,7 @@ void gHistogram::OnPopUpPasteTime()
 }
 
 
-void gHistogram::OnPopUpPasteObjects()
+void gHistogram::OnPopUpPasteObjects( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Objects" );
   myHistogram->setRecalc( true );
@@ -1274,7 +1275,7 @@ void gHistogram::OnPopUpPasteObjects()
 }
 
 
-void gHistogram::OnPopUpPasteSize()
+void gHistogram::OnPopUpPasteSize( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Size" );
   myHistogram->setRedraw( true );
@@ -1282,7 +1283,7 @@ void gHistogram::OnPopUpPasteSize()
 }
 
 
-void gHistogram::OnPopUpPasteDuration()
+void gHistogram::OnPopUpPasteDuration( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Duration" );
   myHistogram->setRecalc( true );
@@ -1290,7 +1291,7 @@ void gHistogram::OnPopUpPasteDuration()
 }
 
 
-void gHistogram::OnPopUpPasteSemanticScale()
+void gHistogram::OnPopUpPasteSemanticScale( wxCommandEvent& event )
 {
   myHistogram->setComputeGradient( false );
   gPasteWindowProperties::getInstance()->paste( this, "Semantic Scale" );
@@ -1300,7 +1301,7 @@ void gHistogram::OnPopUpPasteSemanticScale()
 }
 
 
-void gHistogram::OnPopUpPasteSemanticSort()
+void gHistogram::OnPopUpPasteSemanticSort( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, STR_PASTE_SEMANTIC_SORT );
 
@@ -1309,7 +1310,7 @@ void gHistogram::OnPopUpPasteSemanticSort()
 }
 
 
-void gHistogram::OnPopUpPasteControlScale()
+void gHistogram::OnPopUpPasteControlScale( wxCommandEvent& event )
 {
   myHistogram->setCompute2DScale( false );
   gPasteWindowProperties::getInstance()->paste( this, STR_CONTROL_SCALE );
@@ -1324,7 +1325,7 @@ void gHistogram::OnPopUpPasteControlScale()
 }
 
 
-void gHistogram::OnPopUpPaste3DScale()
+void gHistogram::OnPopUpPaste3DScale( wxCommandEvent& event )
 {
   myHistogram->setCompute3DScale( false );
   gPasteWindowProperties::getInstance()->paste( this, STR_3D_SCALE );
@@ -1333,7 +1334,7 @@ void gHistogram::OnPopUpPaste3DScale()
 }
 
 
-void gHistogram::OnPopUpPasteControlDimensions()
+void gHistogram::OnPopUpPasteControlDimensions( wxCommandEvent& event )
 {
   myHistogram->setCompute2DScale( false );
   gPasteWindowProperties::getInstance()->paste( this, STR_CONTROL_DIMENSIONS );
@@ -1348,7 +1349,7 @@ void gHistogram::OnPopUpPasteControlDimensions()
 }
 
 
-void gHistogram::OnPopUpClone()
+void gHistogram::OnPopUpClone( wxCommandEvent& event )
 {
   Histogram *clonedHistogram = myHistogram->clone();
   string clonedName = clonedHistogram->getName();
@@ -1425,13 +1426,13 @@ void gHistogram::OnPopUpClone()
 }
 
 
-void gHistogram::OnPopUpRename()
+void gHistogram::OnPopUpRename( wxCommandEvent& event )
 {
   paraverMain::myParaverMain->renameTreeItem( );
 }
 
 
-void gHistogram::OnPopUpFitTimeScale()
+void gHistogram::OnPopUpFitTimeScale( wxCommandEvent& event )
 {
   myHistogram->setWindowBeginTime( 0 );
   myHistogram->setWindowEndTime( myHistogram->getControlWindow()->getTrace()->getEndTime() );
@@ -1440,7 +1441,7 @@ void gHistogram::OnPopUpFitTimeScale()
 }
 
 
-void gHistogram::OnPopUpFitObjects()
+void gHistogram::OnPopUpFitObjects( wxCommandEvent& event )
 {
   HistogramProxy::TZoomInfo currentZoom1, currentZoom2;
   TObjectOrder beginRow, endRow;
@@ -1459,11 +1460,11 @@ void gHistogram::OnPopUpFitObjects()
 }
 
 
-void gHistogram::OnPopUpRowSelection()
+void gHistogram::OnPopUpRowSelection( wxCommandEvent& event )
 {
   setEnableDestroyButton( false );
 
-  RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
+  RowsSelectionDialog *dialog = gPopUpMenu<gHistogram>::createRowSelectionDialog( this );
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -1482,178 +1483,216 @@ void gHistogram::OnPopUpRowSelection()
 }
 
 
-void gHistogram::OnPopUpAutoControlScale( bool state )
+void gHistogram::OnPopUpAutoControlScale( wxCommandEvent& event )
 {
-  myHistogram->setCompute2DScale( state );
-  if( state )
+  myHistogram->setCompute2DScale( event.IsChecked() );
+  if( event.IsChecked() )
     myHistogram->setRecalc( true );
 }
 
 
-void gHistogram::OnPopUpAutoControlScaleZero( bool state )
+void gHistogram::OnPopUpAutoControlScaleZero( wxCommandEvent& event )
 {
-  myHistogram->setCompute2DScaleZero( state );
+  myHistogram->setCompute2DScaleZero( event.IsChecked() );
   myHistogram->setRecalc( true );
 }
 
 
-void gHistogram::OnPopUpAuto3DScale( bool state )
+void gHistogram::OnPopUpAuto3DScale( wxCommandEvent& event )
 {
-  myHistogram->setCompute3DScale( state );
-  if( state )
+  myHistogram->setCompute3DScale( event.IsChecked() );
+  if( event.IsChecked() )
     myHistogram->setRecalc( true );
 }
 
 
-void gHistogram::OnPopUpAutoDataGradient( bool state )
+void gHistogram::OnPopUpAutoDataGradient( wxCommandEvent& event )
 {
-  myHistogram->setComputeGradient( state );
-  if( state )
+  myHistogram->setComputeGradient( event.IsChecked() );
+  if( event.IsChecked() )
     myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticLast()
+void gHistogram::OnPopUpColor2D( wxCommandEvent& event )
+{
+  switch( event.GetId() )
+  {
+    case ID_MENU_CODE_COLOR_2D:
+      myHistogram->setColorMode( TColorFunction::COLOR );
+      break;
+    case ID_MENU_GRADIENT_COLOR_2D:
+      myHistogram->setColorMode( TColorFunction::GRADIENT );
+      break;
+    case ID_MENU_NOT_NULL_GRADIENT_COLOR_2D:
+      myHistogram->setColorMode( TColorFunction::NOT_NULL_GRADIENT );
+      break;
+    default:
+      break;
+  }
+
+  myHistogram->setRedraw( true );
+}
+
+
+void gHistogram::OnPopUpGradientFunction( wxCommandEvent& event )
+{
+  TGradientFunction gradFunc;
+
+  switch( event.GetId() )
+  {
+    case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = TGradientFunction::LINEAR; break;
+    case ID_MENU_GRADIENT_FUNCTION_STEPS: gradFunc = TGradientFunction::STEPS; break;
+    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC: gradFunc = TGradientFunction::LOGARITHMIC; break;
+    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL: gradFunc = TGradientFunction::EXPONENTIAL; break;
+    default: gradFunc = TGradientFunction::LINEAR;
+  }
+
+  OnMenuGradientFunction( gradFunc );
+}
+
+
+void gHistogram::OnPopUpDrawModeSemanticLast( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_LAST );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticRandom()
+void gHistogram::OnPopUpDrawModeSemanticRandom( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_RANDOM );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticRandomNotZero()
+void gHistogram::OnPopUpDrawModeSemanticRandomNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_RANDNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticMaximum()
+void gHistogram::OnPopUpDrawModeSemanticMaximum( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticMinimumNotZero()
+void gHistogram::OnPopUpDrawModeSemanticMinimumNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticAbsoluteMaximum()
+void gHistogram::OnPopUpDrawModeSemanticAbsoluteMaximum( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticAbsoluteMinimumNotZero()
+void gHistogram::OnPopUpDrawModeSemanticAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticAverage()
+void gHistogram::OnPopUpDrawModeSemanticAverage( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_AVERAGE );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticAverageNotZero()
+void gHistogram::OnPopUpDrawModeSemanticAverageNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeSemanticMode()
+void gHistogram::OnPopUpDrawModeSemanticMode( wxCommandEvent& event )
 {
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MODE );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsLast()
+void gHistogram::OnPopUpDrawModeObjectsLast( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_LAST );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsRandom()
+void gHistogram::OnPopUpDrawModeObjectsRandom( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_RANDOM );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsRandomNotZero()
+void gHistogram::OnPopUpDrawModeObjectsRandomNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_RANDNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsMaximum()
+void gHistogram::OnPopUpDrawModeObjectsMaximum( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsMinimumNotZero()
+void gHistogram::OnPopUpDrawModeObjectsMinimumNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsAbsoluteMaximum()
+void gHistogram::OnPopUpDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero()
+void gHistogram::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsAverage()
+void gHistogram::OnPopUpDrawModeObjectsAverage( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_AVERAGE );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsAverageNotZero()
+void gHistogram::OnPopUpDrawModeObjectsAverageNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeObjectsMode()
+void gHistogram::OnPopUpDrawModeObjectsMode( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MODE );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpDrawModeBothLast()
+void gHistogram::OnPopUpDrawModeBothLast( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_LAST );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_LAST );
@@ -1661,7 +1700,7 @@ void gHistogram::OnPopUpDrawModeBothLast()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothRandom()
+void gHistogram::OnPopUpDrawModeBothRandom( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_RANDOM );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_RANDOM );
@@ -1669,7 +1708,7 @@ void gHistogram::OnPopUpDrawModeBothRandom()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothRandomNotZero()
+void gHistogram::OnPopUpDrawModeBothRandomNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_RANDNOTZERO );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_RANDNOTZERO );
@@ -1677,7 +1716,7 @@ void gHistogram::OnPopUpDrawModeBothRandomNotZero()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothMaximum()
+void gHistogram::OnPopUpDrawModeBothMaximum( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MAXIMUM );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MAXIMUM );
@@ -1685,7 +1724,7 @@ void gHistogram::OnPopUpDrawModeBothMaximum()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothMinimumNotZero()
+void gHistogram::OnPopUpDrawModeBothMinimumNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MINNOTZERO );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MINNOTZERO );
@@ -1693,7 +1732,7 @@ void gHistogram::OnPopUpDrawModeBothMinimumNotZero()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothAbsoluteMaximum()
+void gHistogram::OnPopUpDrawModeBothAbsoluteMaximum( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
@@ -1701,7 +1740,7 @@ void gHistogram::OnPopUpDrawModeBothAbsoluteMaximum()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothAbsoluteMinimumNotZero()
+void gHistogram::OnPopUpDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
@@ -1709,7 +1748,7 @@ void gHistogram::OnPopUpDrawModeBothAbsoluteMinimumNotZero()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothAverage()
+void gHistogram::OnPopUpDrawModeBothAverage( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_AVERAGE );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_AVERAGE );
@@ -1717,7 +1756,7 @@ void gHistogram::OnPopUpDrawModeBothAverage()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothAverageNotZero()
+void gHistogram::OnPopUpDrawModeBothAverageNotZero( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_AVERAGENOTZERO );
@@ -1725,7 +1764,7 @@ void gHistogram::OnPopUpDrawModeBothAverageNotZero()
 }
 
 
-void gHistogram::OnPopUpDrawModeBothMode()
+void gHistogram::OnPopUpDrawModeBothMode( wxCommandEvent& event )
 {
   myHistogram->setDrawModeObjects( DrawModeMethod::DRAW_MODE );
   myHistogram->setDrawModeColumns( DrawModeMethod::DRAW_MODE );
@@ -1733,14 +1772,86 @@ void gHistogram::OnPopUpDrawModeBothMode()
 }
 
 
-void gHistogram::OnPopUpPixelSize( PRV_UINT16 whichPixelSize )
+void gHistogram::OnPopUpPixelSize( wxCommandEvent& event )
 {
-  myHistogram->setPixelSize( whichPixelSize );
+  PRV_UINT16 pixelSize;
+
+  switch( event.GetId() )
+  {
+    case ID_MENU_PIXEL_SIZE_x1: pixelSize = 1; break;
+    case ID_MENU_PIXEL_SIZE_x2: pixelSize = 2; break;
+    case ID_MENU_PIXEL_SIZE_x4: pixelSize = 4; break;
+    case ID_MENU_PIXEL_SIZE_x8: pixelSize = 8; break;
+    default:                    pixelSize = 1; break;
+  }
+
+  myHistogram->setPixelSize( pixelSize );
   myHistogram->setRedraw( true );
 }
 
 
-void gHistogram::OnPopUpUndoZoom()
+void gHistogram::OnPopUpSynchronize( wxCommandEvent& event )
+{
+  if( event.GetId() == ID_MENU_NEWGROUP )
+  {
+    myHistogram->addToSyncGroup( SyncWindows::getInstance()->newGroup() );
+  }
+  else
+  {
+    vector<TGroupId> tmpGroups;
+    SyncWindows::getInstance()->getGroups( tmpGroups );
+    
+    TGroupId group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
+    if( myHistogram->isSync() && group == myHistogram->getSyncGroup() )
+      myHistogram->removeFromSync();
+    else
+      myHistogram->addToSyncGroup( group );
+  }
+}
+
+
+void gHistogram::OnPopUpRemoveGroup( wxCommandEvent& event )
+{
+  vector< TGroupId > tmpGroups;
+  SyncWindows::getInstance()->getGroups( tmpGroups );
+  SyncWindows::getInstance()->removeAllWindows( tmpGroups[ event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE ] );
+}
+
+
+void gHistogram::OnPopUpRemoveAllGroups( wxCommandEvent& event )
+{
+  SyncWindows::getInstance()->removeAllGroups();
+}
+
+
+void gHistogram::OnPopUpSaveCFG( wxCommandEvent& event )
+{
+  saveCFG();
+}
+
+
+void gHistogram::OnPopUpSaveImageDialog( wxCommandEvent& event )
+{
+  saveImageDialog();
+}
+
+
+void gHistogram::OnPopUpSavePlaneAsText( wxCommandEvent& event )
+{
+  bool onlySelectedPlane = true;
+
+  switch( event.GetId() )
+  {
+    case ID_MENU_SAVE_CURRENT_PLANE_AS_TEXT: onlySelectedPlane = true;  break;
+    case ID_MENU_SAVE_ALL_PLANES_AS_TEXT:    onlySelectedPlane = false; break;
+    default: break;
+  }
+
+  saveText( onlySelectedPlane );
+}
+
+
+void gHistogram::OnPopUpUndoZoom( wxCommandEvent& event )
 {
   if ( !GetHistogram()->emptyPrevZoom() )
   {
@@ -1756,7 +1867,7 @@ void gHistogram::OnPopUpUndoZoom()
 }
 
 
-void gHistogram::OnPopUpRedoZoom()
+void gHistogram::OnPopUpRedoZoom( wxCommandEvent& event )
 {
   if ( !GetHistogram()->emptyNextZoom() )
   {
@@ -1776,7 +1887,7 @@ void gHistogram::rightDownManager()
 {
   paraverMain::myParaverMain->selectTrace( GetHistogram()->getControlWindow()->getTrace() );
 
-  gPopUpMenu popUpMenu( this );
+  gPopUpMenu<gHistogram> popUpMenu( this );
   popUpMenu.enable( "Undo Zoom", !GetHistogram()->emptyPrevZoom() );
   popUpMenu.enable( "Redo Zoom", !GetHistogram()->emptyNextZoom() );
 
@@ -3165,25 +3276,27 @@ void gHistogram::OnToolLabelColorsUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnZoomHistoKeyDown( wxKeyEvent& event )
 {
+  wxCommandEvent dummyEvent;
+
   if( event.ControlDown() && event.GetKeyCode() == (long) 'C' )
   {
-    OnPopUpCopy();
+    OnPopUpCopy( dummyEvent );
     return;
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'V' )
   {
     if( gPasteWindowProperties::getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
-      OnPopUpPasteDefaultSpecial();
+      OnPopUpPasteDefaultSpecial( dummyEvent );
     return;
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'U' )
   {
-    OnPopUpUndoZoom();
+    OnPopUpUndoZoom( dummyEvent );
     return;
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'R' )
   {
-    OnPopUpRedoZoom();
+    OnPopUpRedoZoom( dummyEvent );
     return;
   }
 

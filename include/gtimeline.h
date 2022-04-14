@@ -63,7 +63,6 @@ using boost::posix_time::ptime;
 
 #include "paraverkerneltypes.h"
 #include "recordlist.h"
-#include "popupmenu.h"
 #include "copypaste.h"
 #include "windows_tree.h"
 
@@ -518,73 +517,94 @@ public:
   void OnPopUpRightDown( void );
 
   // Pop Up Menu Methods
-  void OnPopUpCopy();
-  void OnPopUpPasteDefaultSpecial();
-  void OnPopUpPasteSpecial();
-  void OnPopUpPasteTime();
-  void OnPopUpPasteObjects();
-  void OnPopUpPasteSize();
-  void OnPopUpPasteDuration();
-  void OnPopUpPasteSemanticScale();
-  void OnPopUpPasteFilterAll();
-  void OnPopUpPasteFilterCommunications();
-  void OnPopUpPasteFilterEvents();
-  void OnPopUpClone();
-  void OnPopUpRename();
-  void OnPopUpFitTimeScale();
-  void OnPopUpFitSemanticScaleMin();
-  void OnPopUpFitSemanticScaleMax();
-  void OnPopUpFitSemanticScale();
-  void OnPopUpFitObjects();
-  void OnPopUpPunctualColor();
-  void OnPopUpPunctualColorWindow();
-  void OnPopUpCodeColor();
-  void OnPopUpGradientColor();
-  void OnPopUpNotNullGradientColor();
-  void OnPopUpUndoZoom();
-  void OnPopUpRedoZoom();
+  void OnPopUpCopy( wxCommandEvent& event );
+  void OnPopUpPasteDefaultSpecial( wxCommandEvent& event );
+  void OnPopUpPasteSpecial( wxCommandEvent& event );
+  void OnPopUpPasteTime( wxCommandEvent& event );
+  void OnPopUpPasteObjects( wxCommandEvent& event );
+  void OnPopUpPasteSize( wxCommandEvent& event );
+  void OnPopUpPasteDuration( wxCommandEvent& event );
+  void OnPopUpPasteSemanticScale( wxCommandEvent& event );
+  void OnPopUpPasteCustomPalette( wxCommandEvent& event );
+  void OnPopUpPasteFilterAll( wxCommandEvent& event );
+  void OnPopUpPasteFilterCommunications( wxCommandEvent& event );
+  void OnPopUpPasteFilterEvents( wxCommandEvent& event );
+  void OnPopUpClone( wxCommandEvent& event );
+  void OnPopUpRename( wxCommandEvent& event );
+  void OnPopUpFitTimeScale( wxCommandEvent& event );
+  void OnPopUpFitSemanticScaleMin( wxCommandEvent& event );
+  void OnPopUpFitSemanticScaleMax( wxCommandEvent& event );
+  void OnPopUpFitSemanticScale( wxCommandEvent& event );
+  void OnPopUpFitObjects( wxCommandEvent& event );
+  void OnPopUpViewCommunicationLines( wxCommandEvent& event );
+  void OnPopUpViewEventFlags( wxCommandEvent& event );
+  void OnPopUpFunctionLineColor( wxCommandEvent& event );
+  void OnPopUpFusedLinesColor( wxCommandEvent& event );
+  void OnPopUpPunctualColor( wxCommandEvent& event );
+  void OnPopUpPunctualColorWindow( wxCommandEvent& event );
+  void OnPopUpCodeColor( wxCommandEvent& event );
+  void OnPopUpGradientColor( wxCommandEvent& event );
+  void OnPopUpNotNullGradientColor( wxCommandEvent& event );
+  void OnPopUpGradientFunction( wxCommandEvent& event );
+  void OnPopUpSemanticScaleMinAtZero( wxCommandEvent& event );
+  void OnPopUpUndoZoom( wxCommandEvent& event );
+  void OnPopUpRedoZoom( wxCommandEvent& event );
   
-  void OnPopUpDrawModeTimeLast();
-  void OnPopUpDrawModeTimeRandom();
-  void OnPopUpDrawModeTimeRandomNotZero();
-  void OnPopUpDrawModeTimeMaximum();
-  void OnPopUpDrawModeTimeMinimumNotZero();
-  void OnPopUpDrawModeTimeAbsoluteMaximum();
-  void OnPopUpDrawModeTimeAbsoluteMinimumNotZero();
-  void OnPopUpDrawModeTimeAverage();
-  void OnPopUpDrawModeTimeAverageNotZero();
-  void OnPopUpDrawModeTimeMode();
+  void OnPopUpDrawModeTimeLast( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeRandom( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeRandomNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeMaximum( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeMinimumNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeAbsoluteMaximum( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeAverage( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeAverageNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeTimeMode( wxCommandEvent& event );
 
-  void OnPopUpDrawModeObjectsLast();
-  void OnPopUpDrawModeObjectsRandom();
-  void OnPopUpDrawModeObjectsRandomNotZero();
-  void OnPopUpDrawModeObjectsMaximum();
-  void OnPopUpDrawModeObjectsMinimumNotZero();
-  void OnPopUpDrawModeObjectsAbsoluteMaximum();
-  void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero();
-  void OnPopUpDrawModeObjectsAverage();
-  void OnPopUpDrawModeObjectsAverageNotZero();
-  void OnPopUpDrawModeObjectsMode();
+  void OnPopUpDrawModeObjectsLast( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsRandom( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsRandomNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsMaximum( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsMinimumNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsAverage( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsAverageNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeObjectsMode( wxCommandEvent& event );
 
-  void OnPopUpDrawModeBothLast();
-  void OnPopUpDrawModeBothRandom();
-  void OnPopUpDrawModeBothRandomNotZero();
-  void OnPopUpDrawModeBothMaximum();
-  void OnPopUpDrawModeBothMinimumNotZero();
-  void OnPopUpDrawModeBothAbsoluteMaximum();
-  void OnPopUpDrawModeBothAbsoluteMinimumNotZero();
-  void OnPopUpDrawModeBothAverage();
-  void OnPopUpDrawModeBothAverageNotZero();
-  void OnPopUpDrawModeBothMode();
+  void OnPopUpDrawModeBothLast( wxCommandEvent& event );
+  void OnPopUpDrawModeBothRandom( wxCommandEvent& event );
+  void OnPopUpDrawModeBothRandomNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeBothMaximum( wxCommandEvent& event );
+  void OnPopUpDrawModeBothMinimumNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeBothAbsoluteMaximum( wxCommandEvent& event );
+  void OnPopUpDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeBothAverage( wxCommandEvent& event );
+  void OnPopUpDrawModeBothAverageNotZero( wxCommandEvent& event );
+  void OnPopUpDrawModeBothMode( wxCommandEvent& event );
 
-  void OnPopUpPixelSize( PRV_UINT16 whichPixelSize );
+  void OnPopUpPixelSize( wxCommandEvent& event );
 
-  void OnPopUpRowSelection();
+  void OnPopUpLabels( wxCommandEvent& event );
 
-  void OnPopUpInfoPanel();
+  void OnPopUpObjectAxis( wxCommandEvent& event );
+
+  void OnPopUpRunApp( wxCommandEvent& event );
+
+  void OnPopUpSynchronize( wxCommandEvent& event );
+  void OnPopUpRemoveGroup( wxCommandEvent& event );
+  void OnPopUpRemoveAllGroups( wxCommandEvent& event );
+
+  void OnPopUpRowSelection( wxCommandEvent& event );
+
+  void OnPopUpInfoPanel( wxCommandEvent& event );
   
+  void OnPopUpSaveCFG( wxCommandEvent& event );
+  void OnPopUpSaveImageDialog( wxCommandEvent& event );
+  void OnPopUpSaveText( wxCommandEvent& event );
+
   void OnMenuGradientFunction( TGradientFunction function );
-  
+
   void drawTimeMarks( std::vector< TRecordTime> times,
                       std::vector<TObjectOrder> &selectedObjects,
                       bool drawXCross = false,
@@ -603,15 +623,16 @@ public:
   void resizeDrawZone( int width, int height );
   
   bool IsSplit() const;
-  void OnPopUpTiming( bool whichTiming );
+  void OnPopUpTiming( wxCommandEvent& event );
+  void EnableTiming( bool state );
   void OnItemColorLeftUp( wxMouseEvent& event );
   void OnTextColorLeftUp( wxMouseEvent& event );
 
-  void saveImage( wxString whichFileName, TImageFormat filterIndex =  TImageFormat::PNG );
+  void saveImage( wxString whichFileName = _( "" ), TImageFormat filterIndex =  TImageFormat::PNG );
   void saveImageLegend( wxString whichFileName = _( "" ),
                         TImageFormat filterIndex =  TImageFormat::PNG,
                         bool appendLegendSuffix = true );
-  void saveImageDialog( wxString whichFileName );
+  void saveImageDialog( wxString whichFileName = _( "" ) );
 
   void saveText();
   void saveCFG();

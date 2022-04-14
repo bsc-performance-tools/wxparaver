@@ -60,6 +60,8 @@
 #include "progresscontroller.h"
 #include "paravermain.h"
 #include "saveimagedialog.h"
+#include "sequencedriver.h"
+#include "popupmenu.h"
 
 
 #ifdef __WXMAC__
@@ -1709,7 +1711,10 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
       dialog.ShowModal();
     }
     else // hidden feature: clicking on botton left corner always fit the semantic scale, even if no caution is shown
-      OnPopUpFitSemanticScale();
+    {
+      wxCommandEvent dummyEvent;
+      OnPopUpFitSemanticScale( dummyEvent );
+    }
 
     return;
   }
@@ -1929,7 +1934,7 @@ void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
 }
 
 
-void gTimeline::OnPopUpCopy()
+void gTimeline::OnPopUpCopy( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->copy( this );
 }
@@ -2027,19 +2032,19 @@ gTimeline *gTimeline::clone( Timeline *clonedWindow,
 }
 
 
-void gTimeline::OnPopUpClone()
+void gTimeline::OnPopUpClone( wxCommandEvent& event )
 {
   clone( nullptr, parent, getAllTracesTree()->GetRootItem(), getSelectedTraceTree( myWindow->getTrace() )->GetRootItem());
 }
 
-void gTimeline::OnPopUpRename()
+void gTimeline::OnPopUpRename( wxCommandEvent& event )
 {
   ( (paraverMain *) parent )->renameTreeItem( );
 }
 
 
 
-void gTimeline::OnPopUpFitTimeScale()
+void gTimeline::OnPopUpFitTimeScale( wxCommandEvent& event )
 {
   myWindow->setWindowBeginTime( 0, true );
   myWindow->setWindowEndTime( myWindow->getTrace()->getEndTime(), true );
@@ -2049,28 +2054,28 @@ void gTimeline::OnPopUpFitTimeScale()
 }
 
 
-void gTimeline::OnPopUpFitSemanticScaleMin()
+void gTimeline::OnPopUpFitSemanticScaleMin( wxCommandEvent& event )
 {
   myWindow->computeYScaleMin();
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
-void gTimeline::OnPopUpFitSemanticScaleMax()
+void gTimeline::OnPopUpFitSemanticScaleMax( wxCommandEvent& event )
 {
   myWindow->computeYScaleMax();
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
-void gTimeline::OnPopUpFitSemanticScale()
+void gTimeline::OnPopUpFitSemanticScale( wxCommandEvent& event )
 {
   myWindow->computeYScale();
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
-void gTimeline::OnPopUpFitObjects()
+void gTimeline::OnPopUpFitObjects( wxCommandEvent& event )
 {
   // Doesn't work!!
   //myWindow->addZoom( TObjectOrder( 0 ), myWindow->getWindowLevelObjects() - 1 );
@@ -2080,13 +2085,36 @@ void gTimeline::OnPopUpFitObjects()
   myWindow->setChanged( true );
 }
 
-void gTimeline::OnPopUpPunctualColor()
+void gTimeline::OnPopUpViewCommunicationLines( wxCommandEvent& event )
+{
+  drawCommunicationLines( event.IsChecked() );
+}
+
+void gTimeline::OnPopUpViewEventFlags( wxCommandEvent& event )
+{
+  drawEventFlags( event.IsChecked() );
+}
+
+
+void gTimeline::OnPopUpFunctionLineColor( wxCommandEvent& event )
+{
+  drawFunctionLineColor();
+}
+
+
+void gTimeline::OnPopUpFusedLinesColor( wxCommandEvent& event )
+{
+  drawFusedLinesColor();
+}
+
+
+void gTimeline::OnPopUpPunctualColor( wxCommandEvent& event )
 {
   myWindow->setPunctualColorMode();
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpPunctualColorWindow()
+void gTimeline::OnPopUpPunctualColorWindow( wxCommandEvent& event )
 {
   vector<Timeline *> compatWindows;
   int selIndex = 0;
@@ -2123,14 +2151,14 @@ void gTimeline::OnPopUpPunctualColorWindow()
   setEnableDestroyButton( true );
 }
 
-void gTimeline::OnPopUpCodeColor()
+void gTimeline::OnPopUpCodeColor( wxCommandEvent& event )
 {
   myWindow->setCodeColorMode();
   myWindow->setRedraw( true );
 }
 
 
-void gTimeline::OnPopUpPasteDefaultSpecial()
+void gTimeline::OnPopUpPasteDefaultSpecial( wxCommandEvent& event )
 {
   gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
 
@@ -2146,7 +2174,7 @@ void gTimeline::OnPopUpPasteDefaultSpecial()
 }
 
 
-void gTimeline::OnPopUpPasteTime()
+void gTimeline::OnPopUpPasteTime( wxCommandEvent& event )
 {
   gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
   pasteActions->paste( this, "Time" );
@@ -2156,20 +2184,20 @@ void gTimeline::OnPopUpPasteTime()
 }
 
 
-void gTimeline::OnPopUpPasteObjects()
+void gTimeline::OnPopUpPasteObjects( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Objects" );
   myWindow->setRedraw( true );
 }
 
 
-void gTimeline::OnPopUpPasteSize()
+void gTimeline::OnPopUpPasteSize( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Size" );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpPasteDuration()
+void gTimeline::OnPopUpPasteDuration( wxCommandEvent& event )
 {
   gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
   pasteActions->paste( this, "Duration" );
@@ -2177,14 +2205,20 @@ void gTimeline::OnPopUpPasteDuration()
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpPasteSemanticScale()
+void gTimeline::OnPopUpPasteSemanticScale( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Semantic Scale" );
   myWindow->setRedraw( true );
   myWindow->setChanged( true );
 }
 
-void gTimeline::OnPopUpPasteFilterAll()
+void gTimeline::OnPopUpPasteCustomPalette( wxCommandEvent& event )
+{
+  gPasteWindowProperties::getInstance()->paste( this, STR_CUSTOM_PALETTE );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpPasteFilterAll( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Events" );
   gPasteWindowProperties::getInstance()->paste( this, "Communications" );
@@ -2193,7 +2227,7 @@ void gTimeline::OnPopUpPasteFilterAll()
 }
 
 
-void gTimeline::OnPopUpPasteFilterCommunications()
+void gTimeline::OnPopUpPasteFilterCommunications( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Communications" );
   myWindow->setRedraw( true );
@@ -2201,7 +2235,7 @@ void gTimeline::OnPopUpPasteFilterCommunications()
 }
 
 
-void gTimeline::OnPopUpPasteFilterEvents()
+void gTimeline::OnPopUpPasteFilterEvents( wxCommandEvent& event )
 {
   gPasteWindowProperties::getInstance()->paste( this, "Events" );
   myWindow->setRedraw( true );
@@ -2209,11 +2243,11 @@ void gTimeline::OnPopUpPasteFilterEvents()
 }
 
 
-void gTimeline::OnPopUpPasteSpecial()
+void gTimeline::OnPopUpPasteSpecial( wxCommandEvent& event )
 {
   wxArrayString choices;
 
-  wxMultiChoiceDialog *dialog = gPopUpMenu::createPasteSpecialDialog( choices, this );
+  wxMultiChoiceDialog *dialog = gPopUpMenu<gTimeline>::createPasteSpecialDialog( choices, this );
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -2223,8 +2257,8 @@ void gTimeline::OnPopUpPasteSpecial()
       for ( size_t i = 0; i < selections.GetCount(); i++ )
       {
         gPasteWindowProperties* pasteActions = gPasteWindowProperties::getInstance();
-        if ( pasteActions->isAllowed( this, gPopUpMenu::getOption( choices, selections[i] ) ) )
-          pasteActions->paste( this, gPopUpMenu::getOption( choices, selections[i] ) );
+        if ( pasteActions->isAllowed( this, gPopUpMenu<gTimeline>::getOption( choices, selections[i] ) ) )
+          pasteActions->paste( this, gPopUpMenu<gTimeline>::getOption( choices, selections[i] ) );
       }
 
       myWindow->setRedraw( true );
@@ -2236,11 +2270,11 @@ void gTimeline::OnPopUpPasteSpecial()
 }
 
 
-void gTimeline::OnPopUpRowSelection()
+void gTimeline::OnPopUpRowSelection( wxCommandEvent& event )
 {
   setEnableDestroyButton( false );
 
-  RowsSelectionDialog *dialog = gPopUpMenu::createRowSelectionDialog( this );
+  RowsSelectionDialog *dialog = gPopUpMenu<gTimeline>::createRowSelectionDialog( this );
 
   if ( dialog->ShowModal() == wxID_OK )
   {
@@ -2259,202 +2293,224 @@ void gTimeline::OnPopUpRowSelection()
 }
 
 
-void gTimeline::OnPopUpGradientColor()
+void gTimeline::OnPopUpGradientColor( wxCommandEvent& event )
 {
   myWindow->setGradientColorMode();
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpNotNullGradientColor()
+void gTimeline::OnPopUpNotNullGradientColor( wxCommandEvent& event )
 {
   myWindow->setNotNullGradientColorMode();
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeLast()
+void gTimeline::OnPopUpGradientFunction( wxCommandEvent& event )
+{
+  TGradientFunction gradFunc;
+
+  switch( event.GetId() )
+  {
+    case ID_MENU_GRADIENT_FUNCTION_LINEAR: gradFunc = TGradientFunction::LINEAR; break;
+    case ID_MENU_GRADIENT_FUNCTION_STEPS: gradFunc = TGradientFunction::STEPS; break;
+    case ID_MENU_GRADIENT_FUNCTION_LOGARITHMIC: gradFunc = TGradientFunction::LOGARITHMIC; break;
+    case ID_MENU_GRADIENT_FUNCTION_EXPONENTIAL: gradFunc = TGradientFunction::EXPONENTIAL; break;
+    default: gradFunc = TGradientFunction::LINEAR;
+  }
+  
+  OnMenuGradientFunction( gradFunc );
+}
+
+void gTimeline::OnPopUpSemanticScaleMinAtZero( wxCommandEvent& event )
+{
+  myWindow->setSemanticScaleMinAtZero( event.IsChecked() );
+  myWindow->setRedraw( true );
+}
+
+void gTimeline::OnPopUpDrawModeTimeLast( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_LAST );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeRandom()
+void gTimeline::OnPopUpDrawModeTimeRandom( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_RANDOM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeRandomNotZero()
+void gTimeline::OnPopUpDrawModeTimeRandomNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_RANDNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeMaximum()
+void gTimeline::OnPopUpDrawModeTimeMaximum( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_MAXIMUM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeMinimumNotZero()
+void gTimeline::OnPopUpDrawModeTimeMinimumNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_MINNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeAbsoluteMaximum()
+void gTimeline::OnPopUpDrawModeTimeAbsoluteMaximum( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeAbsoluteMinimumNotZero()
+void gTimeline::OnPopUpDrawModeTimeAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeAverage()
+void gTimeline::OnPopUpDrawModeTimeAverage( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_AVERAGE );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeAverageNotZero()
+void gTimeline::OnPopUpDrawModeTimeAverageNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeTimeMode()
+void gTimeline::OnPopUpDrawModeTimeMode( wxCommandEvent& event )
 {
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_MODE );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsLast()
+void gTimeline::OnPopUpDrawModeObjectsLast( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_LAST );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsRandom()
+void gTimeline::OnPopUpDrawModeObjectsRandom( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_RANDOM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsRandomNotZero()
+void gTimeline::OnPopUpDrawModeObjectsRandomNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_RANDNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsMaximum()
+void gTimeline::OnPopUpDrawModeObjectsMaximum( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_MAXIMUM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsMinimumNotZero()
+void gTimeline::OnPopUpDrawModeObjectsMinimumNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_MINNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsAbsoluteMaximum()
+void gTimeline::OnPopUpDrawModeObjectsAbsoluteMaximum( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero()
+void gTimeline::OnPopUpDrawModeObjectsAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsAverage()
+void gTimeline::OnPopUpDrawModeObjectsAverage( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_AVERAGE );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsAverageNotZero()
+void gTimeline::OnPopUpDrawModeObjectsAverageNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeObjectsMode()
+void gTimeline::OnPopUpDrawModeObjectsMode( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_MODE );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothLast()
+void gTimeline::OnPopUpDrawModeBothLast( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_LAST );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_LAST );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothRandom()
+void gTimeline::OnPopUpDrawModeBothRandom( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_RANDOM );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_RANDOM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothRandomNotZero()
+void gTimeline::OnPopUpDrawModeBothRandomNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_RANDNOTZERO );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_RANDNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothMaximum()
+void gTimeline::OnPopUpDrawModeBothMaximum( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_MAXIMUM );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_MAXIMUM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothMinimumNotZero()
+void gTimeline::OnPopUpDrawModeBothMinimumNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_MINNOTZERO );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_MINNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothAbsoluteMaximum()
+void gTimeline::OnPopUpDrawModeBothAbsoluteMaximum( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_ABSOLUTE_MAXIMUM );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothAbsoluteMinimumNotZero()
+void gTimeline::OnPopUpDrawModeBothAbsoluteMinimumNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_ABSOLUTE_MINNOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothAverage()
+void gTimeline::OnPopUpDrawModeBothAverage( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_AVERAGE );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_AVERAGE );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothAverageNotZero()
+void gTimeline::OnPopUpDrawModeBothAverageNotZero( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_AVERAGENOTZERO );
   myWindow->setRedraw( true );
 }
 
-void gTimeline::OnPopUpDrawModeBothMode()
+void gTimeline::OnPopUpDrawModeBothMode( wxCommandEvent& event )
 {
   myWindow->setDrawModeObject( DrawModeMethod::DRAW_MODE );
   myWindow->setDrawModeTime( DrawModeMethod::DRAW_MODE );
@@ -2462,14 +2518,138 @@ void gTimeline::OnPopUpDrawModeBothMode()
 }
 
 
-void gTimeline::OnPopUpPixelSize( PRV_UINT16 whichPixelSize )
+void gTimeline::OnPopUpPixelSize( wxCommandEvent& event )
 {
-  myWindow->setPixelSize( whichPixelSize );
+  PRV_UINT16 pixelSize; 
+
+  switch( event.GetId() )
+  {
+    case ID_MENU_PIXEL_SIZE_x1: pixelSize = 1; break;
+    case ID_MENU_PIXEL_SIZE_x2: pixelSize = 2; break;
+    case ID_MENU_PIXEL_SIZE_x4: pixelSize = 4; break;
+    case ID_MENU_PIXEL_SIZE_x8: pixelSize = 8; break;
+    default:                    pixelSize = 1; break;
+  }
+
+  myWindow->setPixelSize( pixelSize );
   myWindow->setRedraw( true );
 }
 
 
-void gTimeline::OnPopUpUndoZoom()
+void gTimeline::OnPopUpLabels( wxCommandEvent& event )
+{
+  switch( event.GetId() )
+  {
+    case ID_MENU_LABELS_SPACED:
+      myWindow->setObjectLabels( TObjectLabels::SPACED_LABELS );
+      break;
+    case ID_MENU_LABELS_POWER2:
+      myWindow->setObjectLabels( TObjectLabels::POWER2_LABELS );
+      break;
+    case ID_MENU_LABELS_ALL:
+    default:
+      myWindow->setObjectLabels( TObjectLabels::ALL_LABELS );
+      break;
+  }
+
+  myWindow->setRedraw( true );
+}
+
+
+void gTimeline::OnPopUpObjectAxis( wxCommandEvent& event )
+{
+  switch( event.GetId() )
+  {
+    case ID_MENU_OBJECT_AXIS_ALL:
+      myWindow->setObjectAxisSize( TObjectAxisSize::ALL_LEVELS );
+      break;
+    case ID_MENU_OBJECT_AXIS_ZERO:
+      myWindow->setObjectAxisSize( TObjectAxisSize::ZERO_PERC );
+      break;
+    case ID_MENU_OBJECT_AXIS_FIVE:
+      myWindow->setObjectAxisSize( TObjectAxisSize::FIVE_PERC );
+      break;
+    case ID_MENU_OBJECT_AXIS_TEN:
+      myWindow->setObjectAxisSize( TObjectAxisSize::TEN_PERC );
+      break;
+    case ID_MENU_OBJECT_AXIS_TWENTYFIVE:
+      myWindow->setObjectAxisSize( TObjectAxisSize::TWENTYFIVE_PERC );
+      break;
+    case ID_MENU_OBJECT_AXIS_CURRENT:
+    default:
+      myWindow->setObjectAxisSize( TObjectAxisSize::CURRENT_LEVEL );
+      break;
+  }
+
+  myWindow->setRedraw( true );
+}
+
+
+void gTimeline::OnPopUpRunApp( wxCommandEvent& event )
+{
+  switch( event.GetId() )
+  {
+    case ID_MENU_CUTTER:
+      SequenceDriver::sequenceCutter( this );
+      break;
+    case ID_MENU_DIMEMAS:
+      SequenceDriver::sequenceDimemas( this );
+      break;
+    case ID_MENU_CLUSTERING:
+      paraverMain::myParaverMain->SetClusteringWindow( myWindow );
+      SequenceDriver::sequenceClustering( this );
+      break;
+    case ID_MENU_FOLDING:
+      SequenceDriver::sequenceFolding( this );
+      break;
+    case ID_MENU_SPECTRAL:
+      SequenceDriver::sequenceSpectral( this );
+      break;
+    case ID_MENU_USER_COMMAND:
+      SequenceDriver::sequenceUserCommand( this );
+      break;
+    default:
+      break;
+  }
+}
+
+
+void gTimeline::OnPopUpSynchronize( wxCommandEvent& event )
+{
+  if( event.GetId() == ID_MENU_NEWGROUP )
+  {
+    myWindow->addToSyncGroup( SyncWindows::getInstance()->newGroup() );
+  }
+  else
+  {
+    vector<TGroupId> tmpGroups;
+    SyncWindows::getInstance()->getGroups( tmpGroups );
+    
+    TGroupId group = tmpGroups[ event.GetId() - ID_MENU_SYNC_GROUP_BASE ];
+    if( myWindow->isSync() && group == myWindow->getSyncGroup() )
+      myWindow->removeFromSync();
+    else
+      myWindow->addToSyncGroup( group );
+  }
+}
+
+
+void gTimeline::OnPopUpRemoveGroup( wxCommandEvent& event )
+{
+  vector< TGroupId > tmpGroups;
+  SyncWindows::getInstance()->getGroups( tmpGroups );
+  SyncWindows::getInstance()->removeAllWindows( tmpGroups[ event.GetId() - ID_MENU_SYNC_REMOVE_GROUP_BASE ] );
+}
+
+
+void gTimeline::OnPopUpRemoveAllGroups( wxCommandEvent& event )
+{
+  SyncWindows::getInstance()->removeAllGroups();
+}
+
+
+
+void gTimeline::OnPopUpUndoZoom( wxCommandEvent& event )
 {
   if ( !myWindow->emptyPrevZoom() )
   {
@@ -2493,14 +2673,15 @@ void gTimeline::OnPopUpUndoZoom()
       wxMessageDialog tmpDialog( nullptr, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
       if ( tmpDialog.ShowModal() == wxID_OK )
       {
-        OnPopUpRowSelection();
+        wxCommandEvent dummyEvent;
+        OnPopUpRowSelection( dummyEvent );
       }
     }
   }
 }
 
 
-void gTimeline::OnPopUpRedoZoom()
+void gTimeline::OnPopUpRedoZoom( wxCommandEvent& event )
 {
   if ( !myWindow->emptyNextZoom() )
   {
@@ -2524,7 +2705,8 @@ void gTimeline::OnPopUpRedoZoom()
       wxMessageDialog tmpDialog( nullptr, tmpMsg, _( "Warning" ), wxOK | wxICON_EXCLAMATION );
       if ( tmpDialog.ShowModal() == wxID_OK )
       {
-        OnPopUpRowSelection();
+        wxCommandEvent dummyEvent;
+        OnPopUpRowSelection( dummyEvent );
       }
     }
   }
@@ -2533,7 +2715,7 @@ void gTimeline::OnPopUpRedoZoom()
 
 void gTimeline::rightDownManager()
 {
-  gPopUpMenu popUpMenu( this );
+  gPopUpMenu<gTimeline> popUpMenu( this );
 
   popUpMenu.enable( "Undo Zoom", !myWindow->emptyPrevZoom() );
   popUpMenu.enable( "Redo Zoom", !myWindow->emptyNextZoom() );
@@ -3185,7 +3367,7 @@ bool gTimeline::IsSplit() const
   return splitter->IsSplit();
 }
 
-void gTimeline::OnPopUpInfoPanel()
+void gTimeline::OnPopUpInfoPanel( wxCommandEvent& event )
 {
   if( splitter->IsSplit() )
   {
@@ -3198,6 +3380,20 @@ void gTimeline::OnPopUpInfoPanel()
     Split();
 }
 
+void gTimeline::OnPopUpSaveCFG( wxCommandEvent& event )
+{
+  saveCFG();
+}
+
+void gTimeline::OnPopUpSaveImageDialog( wxCommandEvent& event )
+{
+  saveImageDialog();
+}
+
+void gTimeline::OnPopUpSaveText( wxCommandEvent& event )
+{
+  saveText();
+}
 
 void gTimeline::Unsplit()
 {
@@ -3231,9 +3427,14 @@ void gTimeline::Split()
 }
 
 
-void gTimeline::OnPopUpTiming( bool whichTiming )
+void gTimeline::OnPopUpTiming( wxCommandEvent& event )
 {
-  SetTiming( whichTiming );
+  EnableTiming( event.IsChecked() );
+}
+
+void gTimeline::EnableTiming( bool state )
+{
+  SetTiming( state );
   if( timing )
     drawZone->SetCursor( *wxCROSS_CURSOR );
   else
@@ -5244,30 +5445,32 @@ void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 
 void gTimeline::OnScrolledWindowKeyDown( wxKeyEvent& event )
 {
+  wxCommandEvent dummyEvent;
+
   if( event.ControlDown() && event.GetKeyCode() == (long) 'C' )
   {
-    OnPopUpCopy();
+    OnPopUpCopy( dummyEvent );
     return;
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'V' )
   {
     if( gPasteWindowProperties::getInstance()->isAllowed( this, STR_PASTE_SPECIAL ) )
-      OnPopUpPasteDefaultSpecial();
+      OnPopUpPasteDefaultSpecial( dummyEvent );
     return;
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'U' )
   {
-    OnPopUpUndoZoom();
+    OnPopUpUndoZoom( dummyEvent );
     return;
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'R' )
   {
-    OnPopUpRedoZoom();
+    OnPopUpRedoZoom( dummyEvent );
     return;
   }
   if( event.ControlDown() && event.GetKeyCode() == (long) 'T' )
   {
-    OnPopUpTiming( !timing );
+    EnableTiming( !timing );
     return;
   }
 
