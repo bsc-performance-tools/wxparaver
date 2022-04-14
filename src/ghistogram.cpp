@@ -3386,10 +3386,11 @@ void gHistogram::OnToolChoiceSortbySelected( wxCommandEvent& event )
     myHistogram->setRedraw( true );
   }
   else if( event.GetSelection() > 0 && 
-           ( !myHistogram->getSemanticSortColumns() || myHistogram->getSemanticSortCriteria() != event.GetSelection() - 1 ) )
+           ( !myHistogram->getSemanticSortColumns() || 
+             static_cast<int>( myHistogram->getSemanticSortCriteria() ) != event.GetSelection() - 1 ) )
   {
     myHistogram->setSemanticSortColumns( true );
-    myHistogram->setSemanticSortCriteria( (THistoTotals)( event.GetSelection() - 1 ) );
+    myHistogram->setSemanticSortCriteria( static_cast<THistoSortCriteria>( event.GetSelection() - 1 ) );
     myHistogram->setRedraw( true );
   }
 }
@@ -3438,4 +3439,6 @@ void gHistogram::EnableCustomSortOption()
 {
   if( choiceSortBy->FindString( STR_SORT_CUSTOM ) == wxNOT_FOUND )
     choiceSortBy->Append( STR_SORT_CUSTOM );
+
+  myHistogram->setSemanticSortCriteria( THistoSortCriteria::CUSTOM );
 }
