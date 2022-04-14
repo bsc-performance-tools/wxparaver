@@ -124,6 +124,7 @@ void gPopUpMenu::enableMenu( gHistogram *whichHistogram )
   Enable( FindItem( _( STR_FIT_OBJECTS ) ), true );
   
   Enable( FindItem( _( STR_CONTROL_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_SCALE ) );
+  Enable( FindItem( _( STR_PASTE_SEMANTIC_SORT ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_SEMANTIC_SORT ) );
   Enable( FindItem( _( STR_CONTROL_DIMENSIONS ) ), sharedProperties->isAllowed( whichHistogram, STR_CONTROL_DIMENSIONS ) );
   if( whichHistogram->GetHistogram()->getThreeDimensions() &&
       histogram != nullptr && histogram->GetHistogram()->getThreeDimensions() )
@@ -723,6 +724,7 @@ gPopUpMenu::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( popUpMenuPaste, _( STR_OBJECTS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuObjects, ID_MENU_PASTE_OBJECTS );
   buildItem( popUpMenuPaste, _( STR_SIZE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSize, ID_MENU_PASTE_SIZE );
   buildItem( popUpMenuPaste, _( STR_DURATION ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuDuration, ID_MENU_PASTE_DURATION );
+  buildItem( popUpMenuPaste, _( STR_PASTE_SEMANTIC_SORT ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteSemanticSort, ID_MENU_PASTE_SEMANTIC_SORT );
   buildItem( popUpMenuPaste, _( STR_SEMANTIC_SCALE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuSemanticScale, ID_MENU_PASTE_SEMANTIC_SCALE );
   buildItem( popUpMenuPaste, _( STR_CONTROL_SCALE ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlScale, ID_MENU_PASTE_CONTROL_SCALE );
   buildItem( popUpMenuPaste, _( STR_CONTROL_DIMENSIONS ), wxITEM_NORMAL, (wxObjectEventFunction)&gPopUpMenu::OnMenuPasteControlDimensions, ID_MENU_PASTE_CONTROL_DIMENSIONS );
@@ -1214,6 +1216,11 @@ void gPopUpMenu::OnMenuFilterEvents( wxCommandEvent& event )
     timeline->OnPopUpPasteFilterEvents();
 }
 
+
+void gPopUpMenu::OnMenuPasteSemanticSort( wxCommandEvent& event )
+{
+  histogram->OnPopUpPasteSemanticSort();
+}
 
 void gPopUpMenu::OnMenuPasteControlScale( wxCommandEvent& event )
 {
