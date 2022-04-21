@@ -53,8 +53,6 @@
 #include "drawmode.h"
 #include "loadedwindows.h"
 //#include "windows_tree.h" --> to .gtimeline.h
-#include "caution.xpm"
-#include "caution_yellow.xpm"
 #include "output.h"
 #include "filedialogext.h"
 #include "progresscontroller.h"
@@ -63,6 +61,9 @@
 #include "sequencedriver.h"
 #include "popupmenu.h"
 
+#include "autoredraw_refresh.xpm"
+#include "caution.xpm"
+#include "caution_yellow.xpm"
 
 #ifdef __WXMAC__
   #include <wx/rawbmp.h>
@@ -319,6 +320,8 @@ void gTimeline::Init()
 
   selectedItemColor = nullptr;
   selectedCustomValue = 0;
+
+  enabledAutoRedrawIcon = false;
 }
 
 
@@ -617,6 +620,7 @@ void gTimeline::redraw()
   myWindow->setReady( false );
   redoColors = true;
   enableApplyButton = false;
+  enabledAutoRedrawIcon = false;
 
   semanticValuesToColor.clear();
   semanticColorsToValue.clear();
@@ -1698,9 +1702,10 @@ void gTimeline::OnCloseWindow( wxCloseEvent& event )
  */
 void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
 {
-  wxBitmap tmpImage( caution_xpm );
-  if( event.GetX() < tmpImage.GetWidth() + drawBorder
-      && event.GetY() > drawZone->GetSize().GetHeight() - tmpImage.GetHeight() - drawBorder )
+  wxBitmap tmpImageCaution( caution_xpm );
+  wxBitmap tmpImageAutoRedraw( autoredraw_refresh_xpm );
+  if( event.GetX() < tmpImageCaution.GetWidth() + drawBorder &&
+      event.GetY() > drawZone->GetSize().GetHeight() - tmpImageCaution.GetHeight() - drawBorder )
   {
     if( drawCautionNegatives )
     {
@@ -1718,6 +1723,14 @@ void gTimeline::OnScrolledWindowLeftDown( wxMouseEvent& event )
 
     return;
   }
+  else if( enabledAutoRedrawIcon &&
+           event.GetX() < tmpImageAutoRedraw.GetWidth() + 2 * drawBorder &&
+           event.GetY() < tmpImageAutoRedraw.GetWidth() + 2 * drawBorder )
+  {
+    myWindow->setForceRedraw( true );
+    return;
+  }
+
   drawZone->SetFocus();
   zooming = true;
   firstMotionEvent = event;
@@ -1931,6 +1944,26 @@ void gTimeline::OnScrolledWindowUpdate( wxUpdateUIEvent& event )
     drawZone->Refresh();
     wxparaverApp::mainWindow->SetSomeWinIsRedraw( false );
   }
+  else if( myWindow->getRedraw() && !wxparaverApp::mainWindow->getAutoRedraw() && !enabledAutoRedrawIcon )
+  {
+    enabledAutoRedrawIcon = true;
+
+    wxMemoryDC bufferDraw;
+    bufferDraw.SelectObject(wxNullBitmap);
+    bufferDraw.SelectObject( drawImage );
+
+    wxBitmap refreshImage( autoredraw_refresh_xpm );
+    bufferDraw.SetPen( wxPen( backgroundColour ) );
+    bufferDraw.SetBrush( wxBrush( backgroundColour ) );
+    bufferDraw.DrawRectangle( 0, 0,
+                              refreshImage.GetWidth() + 2 * drawBorder, refreshImage.GetHeight() + 2 * drawBorder );
+    bufferDraw.DrawBitmap( refreshImage,
+                           drawBorder,
+                           drawBorder,
+                           true );
+    drawZone->Refresh();
+  }
+
 }
 
 
@@ -5065,15 +5098,25 @@ void gTimeline::OnTimerSize( wxTimerEvent& event )
 
 void gTimeline::OnTimerMotion( wxTimerEvent& event )
 {
-  if( motionEvent.GetX() < objectAxisPos + 1 || motionEvent.GetX() > bufferImage.GetWidth() - drawBorder ||
-      motionEvent.GetY() < drawBorder || motionEvent.GetY() > timeAxisPos - 1 )
-    return;
-
   wxMemoryDC dc( bufferImage );
   wxColour tmpColor;
-
   wxString label;
-  if( zooming || timing || wxGetApp().GetGlobalTiming() )
+  wxBitmap refreshImage( autoredraw_refresh_xpm );
+  bool autoRedrawText = false;
+
+  if( motionEvent.GetX() < refreshImage.GetWidth() + 2 * drawBorder &&
+      motionEvent.GetY() < refreshImage.GetHeight() + 2 * drawBorder &&
+      enabledAutoRedrawIcon )
+  {
+    autoRedrawText = true;
+    label = "Autoredraw disabled";
+  }
+  else if( motionEvent.GetX() < objectAxisPos + 1 || motionEvent.GetX() > bufferImage.GetWidth() - drawBorder ||
+           motionEvent.GetY() < drawBorder || motionEvent.GetY() > timeAxisPos - 1 )
+  {
+    return;
+  }
+  else if( zooming || timing || wxGetApp().GetGlobalTiming() )
   {
     long beginX;
     PRV_UINT32 precision = 0;
@@ -5222,7 +5265,7 @@ void gTimeline::OnTimerMotion( wxTimerEvent& event )
   paintDC.SetPen( backgroundColour );
   paintDC.SetBrush( backgroundColour );
 
-  if( !( zooming || timing || wxGetApp().GetGlobalTiming() ) )
+  if( !( autoRedrawText || zooming || timing || wxGetApp().GetGlobalTiming() ) )
   {
     paintDC.SetBrush( tmpColor );
     paintDC.DrawRectangle( ( bufferImage.GetWidth() - objectAxisPos ) / 2, timeAxisPos + 2, 10, bufferImage.GetHeight() - timeAxisPos - 3 );

@@ -94,6 +94,7 @@ constexpr char STR_SORT_CUSTOM[] = "Custom";
 #include "../icons/histo_sort.xpm"
 #include "../icons/arrow_reverse.xpm"
 #include "../icons/caution.xpm"
+#include "../icons/autoredraw_refresh.xpm"
 ////@end XPM images
 
 /*!
@@ -147,6 +148,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_UPDATE_UI( ID_GRIDHISTO, gHistogram::OnGridhistoUpdate )
   EVT_UPDATE_UI( wxID_CONTROLWARNING, gHistogram::OnControlWarningUpdate )
   EVT_UPDATE_UI( wxID_3DWARNING, gHistogram::On3dWarningUpdate )
+  EVT_UPDATE_UI( ID_AUTOREDRAW, gHistogram::OnAutoredrawUpdate )
 ////@end gHistogram event table entries
 #if wxCHECK_VERSION( 3, 1, 5 )
   EVT_GRID_CMD_RANGE_SELECTED( ID_GRIDHISTO, gHistogram::OnRangeSelect )
@@ -253,6 +255,7 @@ void gHistogram::Init()
   warningSizer = NULL;
   controlWarning = NULL;
   xtraWarning = NULL;
+  autoRedrawIcon = NULL;
   histoStatus = NULL;
 ////@end gHistogram member initialisation
   parent = nullptr;
@@ -372,9 +375,10 @@ void gHistogram::CreateControls()
     xtraWarning->SetToolTip(_("3D limits not fitted"));
   warningSizer->Add(xtraWarning, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(panelData, wxSize(5, -1)).x);
 
-  wxStaticBitmap* itemStaticBitmap29 = new wxStaticBitmap( panelData, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("caution.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(9, 9)), 0 );
-  itemStaticBitmap29->Show(false);
-  warningSizer->Add(itemStaticBitmap29, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(panelData, wxSize(5, -1)).x);
+  autoRedrawIcon = new wxStaticBitmap( panelData, ID_AUTOREDRAW, itemFrame1->GetBitmapResource(wxT("icons/autoredraw_refresh.xpm")), wxDefaultPosition, wxDLG_UNIT(panelData, wxSize(9, 9)), 0 );
+  if (gHistogram::ShowToolTips())
+    autoRedrawIcon->SetToolTip(_("Autoredraw disabled"));
+  warningSizer->Add(autoRedrawIcon, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxFIXED_MINSIZE, wxDLG_UNIT(panelData, wxSize(5, -1)).x);
 
   warningSizer->Add(wxDLG_UNIT(panelData, wxSize(10, -1)).x, wxDLG_UNIT(panelData, wxSize(-1, 10)).y, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, wxDLG_UNIT(panelData, wxSize(5, -1)).x);
 
@@ -390,6 +394,7 @@ void gHistogram::CreateControls()
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_MOTION, wxMouseEventHandler(gHistogram::OnMotion), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_CONTEXT_MENU, wxContextMenuEventHandler(gHistogram::OnZoomContextMenu), NULL, this);
   zoomHisto->Connect(ID_ZOOMHISTO, wxEVT_KEY_DOWN, wxKeyEventHandler(gHistogram::OnZoomHistoKeyDown), NULL, this);
+  autoRedrawIcon->Connect(ID_AUTOREDRAW, wxEVT_LEFT_DOWN, wxMouseEventHandler(gHistogram::OnAutoredrawLeftDown), NULL, this);
 ////@end gHistogram content construction
 
 #ifdef __WXGTK__
@@ -1008,9 +1013,9 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
     wxBitmap bitmap(caution_xpm);
     return bitmap;
   }
-  else if (name == wxT("caution.xpm"))
+  else if (name == wxT("icons/autoredraw_refresh.xpm"))
   {
-    wxBitmap bitmap(caution_xpm);
+    wxBitmap bitmap(autoredraw_refresh_xpm);
     return bitmap;
   }
   return wxNullBitmap;
@@ -3555,3 +3560,24 @@ void gHistogram::EnableCustomSortOption()
 
   myHistogram->setSemanticSortCriteria( THistoSortCriteria::CUSTOM );
 }
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_AUTOREDRAW
+ */
+
+void gHistogram::OnAutoredrawUpdate( wxUpdateUIEvent& event )
+{
+  event.Show( myHistogram->getRecalc() && !wxparaverApp::mainWindow->getAutoRedraw() );
+}
+
+
+/*!
+ * wxEVT_LEFT_DOWN event handler for ID_AUTOREDRAW
+ */
+
+void gHistogram::OnAutoredrawLeftDown( wxMouseEvent& event )
+{
+  myHistogram->setForceRecalc( true );
+}
+

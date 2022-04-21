@@ -83,6 +83,7 @@ class gWindow;
 #define ID_GRIDHISTO 10005
 #define wxID_CONTROLWARNING 10024
 #define wxID_3DWARNING 10057
+#define ID_AUTOREDRAW 10299
 #define ID_HISTOSTATUS 10028
 #define SYMBOL_GHISTOGRAM_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX|wxFRAME_NO_TASKBAR
 #define SYMBOL_GHISTOGRAM_TITLE _("gHistogram")
@@ -249,6 +250,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for wxID_3DWARNING
   void On3dWarningUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_AUTOREDRAW
+  void OnAutoredrawUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_LEFT_DOWN event handler for ID_AUTOREDRAW
+  void OnAutoredrawLeftDown( wxMouseEvent& event );
 
 ////@end gHistogram event handler declarations
 
@@ -429,6 +436,7 @@ public:
   wxBoxSizer* warningSizer;
   wxStaticBitmap* controlWarning;
   wxStaticBitmap* xtraWarning;
+  wxStaticBitmap* autoRedrawIcon;
   wxStatusBar* histoStatus;
 private:
   wxBitmap drawImage;

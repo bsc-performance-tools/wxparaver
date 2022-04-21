@@ -753,6 +753,8 @@ private:
   TSemanticValue selectedCustomValue;
   wxPanel *selectedItemColor;
 
+  bool enabledAutoRedrawIcon;
+
 #ifdef __WXMAC__
   wxBitmap zoomBMP;
 #endif

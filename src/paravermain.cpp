@@ -105,6 +105,7 @@
 #include "../icons/run_script.xpm"
 #include "../icons/file_browser.xpm"
 #include "../icons/window_properties.xpm"
+#include "../icons/autoredraw_refresh.xpm"
 ////@end XPM images
 
 #include "table.xpm"
@@ -597,6 +598,9 @@ void paraverMain::CreateControls()
 
   wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
   panelAutoRedraw->SetSizer(itemBoxSizer4);
+
+  wxStaticBitmap* itemStaticBitmap1 = new wxStaticBitmap( panelAutoRedraw, wxID_STATIC, itemFrame1->GetBitmapResource(wxT("icons/autoredraw_refresh.xpm")), wxDefaultPosition, wxDLG_UNIT(panelAutoRedraw, wxSize(8, 6)), 0 );
+  itemBoxSizer4->Add(itemStaticBitmap1, 0, wxALIGN_CENTER_VERTICAL|wxALL, wxDLG_UNIT(panelAutoRedraw, wxSize(2, -1)).x);
 
   checkAutoRedraw = new wxCheckBox( panelAutoRedraw, ID_CHECKBOX_AUTO_REDRAW, _("Automatic Redraw"), wxDefaultPosition, wxDefaultSize, 0 );
   checkAutoRedraw->SetValue(true);
@@ -1274,6 +1278,11 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   else if (name == wxT("icons/run_script.xpm"))
   {
     wxBitmap bitmap(run_script_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/autoredraw_refresh.xpm"))
+  {
+    wxBitmap bitmap(autoredraw_refresh_xpm);
     return bitmap;
   }
   return wxNullBitmap;
