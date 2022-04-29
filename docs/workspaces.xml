@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <!DOCTYPE boost_serialization>
-<boost_serialization signature="serialization::archive" version="15">
+<boost_serialization signature="serialization::archive" version="18">
 <workspace_manager class_id="0" tracking_level="0" version="0">
 	<workspaces class_id="1" tracking_level="0" version="0">
-		<count>12</count>
+		<count>14</count>
 		<item_version>0</item_version>
 		<item class_id="2" tracking_level="0" version="0">
 			<first>Burst mode</first>
@@ -38,6 +38,49 @@ AgAAAIb5NwM=
 					<item>
 						<first>burst_mode/MPI_p2p_BW.cfg</first>
 						<second>Bandwidth and bytes in MPI point to pint calls</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>CUDA</first>
+			<second>
+				<name>CUDA</name>
+				<type>2</type>
+				<autoTypes>
+					<count>2</count>
+					<item_version>1</item_version>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAGDUwgM=
+						</WorkspaceValue>
+					</item>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAMFNwQM=
+						</WorkspaceValue>
+					</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>4</count>
+					<item_version>0</item_version>
+					<item>
+						<first>CUDA/cuda_call.cfg</first>
+						<second>CUDA calls</second>
+					</item>
+					<item>
+						<first>CUDA/CUDA_profile.cfg</first>
+						<second>CUDA profile</second>
+					</item>
+					<item>
+						<first>CUDA/cuda_kernel.cfg</first>
+						<second>CUDA kernel</second>
+					</item>
+					<item>
+						<first>CUDA/size_memcopy.cfg</first>
+						<second>Memcopy size</second>
 					</item>
 				</hintCFGs>
 			</second>
@@ -125,6 +168,51 @@ AgAAAANaYgI=
 					<item>
 						<first>General/sanity_checks/flushing.cfg</first>
 						<second>Flushing trace buffer</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
+			<first>GASPI</first>
+			<second>
+				<name>GASPI</name>
+				<type>2</type>
+				<autoTypes>
+					<count>1</count>
+					<item_version>1</item_version>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAEDbHAQ=
+						</WorkspaceValue>
+					</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>6</count>
+					<item_version>0</item_version>
+					<item>
+						<first>GASPI/gaspi_profile.cfg</first>
+						<second>GASPI profile</second>
+					</item>
+					<item>
+						<first>GASPI/gaspi_caller.cfg</first>
+						<second>GASPI caller</second>
+					</item>
+					<item>
+						<first>GASPI/gaspi_rank.cfg</first>
+						<second>GASPI rank</second>
+					</item>
+					<item>
+						<first>GASPI/gaspi_size.cfg</first>
+						<second>GASPI size</second>
+					</item>
+					<item>
+						<first>GASPI/gaspi_notification_id.cfg</first>
+						<second>GASPI notification_id</second>
+					</item>
+					<item>
+						<first>GASPI/gaspi_queue.cfg</first>
+						<second>GASPI queue</second>
 					</item>
 				</hintCFGs>
 			</second>
@@ -419,7 +507,7 @@ AgAAABOHkwM=
 		</item>
 	</workspaces>
 	<workspacesOrder class_id="8" tracking_level="0" version="0">
-		<count>12</count>
+		<count>14</count>
 		<item_version>0</item_version>
 		<item>Useful</item>
 		<item>MPI</item>
@@ -433,6 +521,8 @@ AgAAABOHkwM=
 		<item>Clustering</item>
 		<item>Sampling</item>
 		<item>Burst mode</item>
+		<item>CUDA</item>
+		<item>GASPI</item>
 	</workspacesOrder>
 </workspace_manager>
 </boost_serialization>
