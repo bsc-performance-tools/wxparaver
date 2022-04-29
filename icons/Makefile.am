@@ -6,6 +6,7 @@ noinst_HEADERS = \
               arrow_reverse.xpm\
               arrow_right.xpm\
               arrow_up.xpm\
+							autoredraw_refresh.xpm\
               caution.xpm\
               caution_yellow.xpm\
               cut_trace.xpm\
