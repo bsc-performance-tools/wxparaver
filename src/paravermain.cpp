@@ -4373,27 +4373,31 @@ void paraverMain::enqueueFile( string whichFile )
 #ifdef _WIN32
 void paraverMain::OnKeyCopy()
 {
+  wxCommandEvent dummyEvent;
+
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
   if( !tree->GetSelection().IsOk() )
     return;
   TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
   if( item->getTimeline() != nullptr )
-    item->getTimeline()->OnPopUpCopy();
+    item->getTimeline()->OnPopUpCopy( dummyEvent );
   else if( item->getHistogram() != nullptr )
-    item->getHistogram()->OnPopUpCopy();
+    item->getHistogram()->OnPopUpCopy( dummyEvent );
 }
 
 
 void paraverMain::OnKeyPaste()
 {
+  wxCommandEvent dummyEvent;
+
   wxTreeCtrl *tree = (wxTreeCtrl *) choiceWindowBrowser->GetCurrentPage();
   if( !tree->GetSelection().IsOk() )
     return;
   TreeBrowserItemData *item = (TreeBrowserItemData *) tree->GetItemData( tree->GetSelection() );
   if( item->getTimeline() != nullptr )
-    item->getTimeline()->OnPopUpPasteDefaultSpecial();
+    item->getTimeline()->OnPopUpPasteDefaultSpecial( dummyEvent );
   else if( item->getHistogram() != nullptr )
-    item->getHistogram()->OnPopUpPasteDefaultSpecial();
+    item->getHistogram()->OnPopUpPasteDefaultSpecial( dummyEvent );
 }
 #endif
 
