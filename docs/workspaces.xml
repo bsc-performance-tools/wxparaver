@@ -512,7 +512,9 @@ AgAAABOHkwM=
 		<item>Useful</item>
 		<item>MPI</item>
 		<item>OpenMP</item>
+		<item>CUDA</item>
 		<item>OmpSs</item>
+		<item>GASPI</item>
 		<item>PAPI counters</item>
 		<item>User functions</item>
 		<item>Call stack references</item>
@@ -521,8 +523,6 @@ AgAAABOHkwM=
 		<item>Clustering</item>
 		<item>Sampling</item>
 		<item>Burst mode</item>
-		<item>CUDA</item>
-		<item>GASPI</item>
 	</workspacesOrder>
 </workspace_manager>
 </boost_serialization>
