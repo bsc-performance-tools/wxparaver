@@ -454,6 +454,8 @@ void paraverMain::Init()
   btnActiveWorkspaces = NULL;
 ////@end paraverMain member initialisation
 
+  cutFilterFinished = false;
+
   if ( ParaverConfig::getInstance()->getGlobalSessionSaveTime() > 0 )
   {
     sessionTimer->Start( ParaverConfig::getInstance()->getGlobalSessionSaveTime() * 60e3 );
@@ -864,8 +866,11 @@ bool paraverMain::DoLoadTrace( const string &path )
     switch( maxSizeDialog.ShowModal() )
     {
       case wxID_YES:
-        tmpResult = ShowCutTraceWindow( tmpPath, true );
-        canServeSignal = true;
+        //tmpResult = ShowCutTraceWindow( tmpPath, true );
+        ShowCutTraceWindow( tmpPath, true );
+
+
+        // canServeSignal = true;
         return tmpResult;
         break;
 
@@ -898,6 +903,7 @@ bool paraverMain::DoLoadTrace( const string &path )
                                                           wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                           wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     string reducePath;
+cout << tmpPath << endl;
 
     if( tmpPath.length() > 40 && tmpPath.find_last_of( PATH_SEP ) != string::npos )
     {
@@ -917,6 +923,7 @@ bool paraverMain::DoLoadTrace( const string &path )
     else
       reducePath = tmpPath;
     reducePath += "\t";
+cout << reducePath << endl;
 
     paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
@@ -2743,6 +2750,13 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   OnMenuloadcfgUpdate( tmpEvent );
 #endif
 
+  if ( cutFilterFinished )
+  {
+    cutFilterFinished = false;
+    canServeSignal = true;
+  }
+
+
   if( canServeSignal )
   {
     while( !loadFilesQueue.empty() )
@@ -4528,8 +4542,8 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
 
 
 void paraverMain::MainSettingsCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                                                const string& filename,
-                                                bool loadTrace )
+                                               const string& filename,
+                                               bool loadTrace )
 {
   cutFilterDialog->SetLocalKernel( localKernel );
   cutFilterDialog->SetLoadResultingTrace( loadTrace );
@@ -4582,12 +4596,11 @@ void paraverMain::OptionsSettingCutFilterDialog( CutFilterDialog *cutFilterDialo
 }
 
 
-void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                                        vector< string > filterToolOrder )
+void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog )
 {
-  filterToolOrder   = cutFilterDialog->GetFilterToolOrder();
-  string srcTrace   = cutFilterDialog->GetNameSourceTrace();
-  string dstTrace   = cutFilterDialog->GetNameDestinyTrace();
+  vector< string > filterToolOrder = cutFilterDialog->GetFilterToolOrder();
+  string srcTrace = cutFilterDialog->GetNameSourceTrace();
+  string dstTrace = cutFilterDialog->GetNameDestinyTrace();
 
   DoLoadFilteredTrace( srcTrace, dstTrace, cutFilterDialog->GetTraceOptions(), filterToolOrder );
 
@@ -4603,14 +4616,18 @@ void paraverMain::OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
     wxString auxTrace =  wxString::FromUTF8( dstTrace.c_str() );
     ShowRunCommand( auxTrace );
   }
+
+  cutFilterFinished = true;
 }
 
 
-bool paraverMain::ShowCutTraceWindow( const string& filename,
+void paraverMain::ShowCutTraceWindow( const string& filename,
                                       bool loadTrace,
                                       const string& xmlFile )
 {
-  bool tmpResult = false;
+  // bool tmpResult = false;
+  cutFilterFinished = false;
+
 
   CutFilterDialog *cutFilterDialog = new CutFilterDialog( this );
 
@@ -4620,16 +4637,19 @@ bool paraverMain::ShowCutTraceWindow( const string& filename,
   vector< string > filterToolOrder;
   OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, xmlFile, filterToolOrder );
 
-  if( cutFilterDialog->ShowModal() == wxID_OK )
-  {
-    OnOKCutFilterDialog( cutFilterDialog, filterToolOrder );
-    tmpResult = true;
-  }
+  // if( cutFilterDialog->ShowModal() == wxID_OK )
+  // {
+  //   OnOKCutFilterDialog( cutFilterDialog );
+  //   tmpResult = true;
+  // }
 
-  delete traceOptions;
-  delete cutFilterDialog;
+  // delete traceOptions;
 
-  return tmpResult;
+  cutFilterDialog->Show();
+
+  // delete cutFilterDialog;
+
+  //return tmpResult;
 }
 
 

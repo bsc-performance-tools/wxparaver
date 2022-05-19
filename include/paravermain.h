@@ -602,9 +602,8 @@ public:
                                       TraceOptions *traceOptions,
                                       const std::string& xmlFile,
                                       std::vector< std::string > &filterToolOrder );
-  void OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog,
-                            std::vector< std::string > filterToolOrder );
-  bool ShowCutTraceWindow( const std::string& filename = "",
+  void OnOKCutFilterDialog( CutFilterDialog *cutFilterDialog );
+  void ShowCutTraceWindow( const std::string& filename = "",
                            bool loadTrace = true,
                            const std::string& xmlFile = "" );
   
@@ -646,6 +645,8 @@ public:
 
   static wxArrayString FromVectorStringToWxArray( std::vector< std::string > vec, std::string fileType = "txt" );
   static std::vector< std::string > FromWxArrayToVectorString( wxArrayString arr );
+
+  bool cutFilterFinished;
   
   bool OnMenusavesession( );
   void helpQuestion();

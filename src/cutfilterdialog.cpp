@@ -169,8 +169,7 @@ bool CutFilterDialog::Create( wxWindow* parent, wxWindowID id, const wxString& c
 
 CutFilterDialog::~CutFilterDialog()
 {
-////@begin CutFilterDialog destruction
-////@end CutFilterDialog destruction
+  delete traceOptions;
 }
 
 
@@ -2737,13 +2736,13 @@ void CutFilterDialog::OnApplyClick( wxCommandEvent& event )
       }
     }
 
-    if( previousWarning )
-      return;
-    else
-      EndModal( wxID_OK );
+    if( !previousWarning )
+    {
+//      EndModal( wxID_OK );
+      paraverMain::myParaverMain->OnOKCutFilterDialog( this );
+      delete this;
+    }
   }
-  else
-    return;
 }
 
 
