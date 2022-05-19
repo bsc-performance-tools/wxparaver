@@ -887,19 +887,17 @@ int wxparaverApp::FilterEvent(wxEvent& event)
 void wxparaverApp::ActivateGlobalTiming( wxDialog* whichDialog )
 {
   globalTimingCallDialog = whichDialog;
-  wxSetCursor( *wxCROSS_CURSOR );
   globalTiming = true;
   globalTimingBeginIsSet = false;
-#ifndef __WXMAC__
   globalTimingCallDialog->Enable( false );
-#endif
 #ifdef _WIN32
   globalTimingCallDialog->Iconize( true );
-#endif
-#ifdef __WXMAC__
+#else
   globalTimingCallDialog->Lower();
 #endif
+
   mainWindow->Raise();
+  wxSetCursor( *wxCROSS_CURSOR );
 }
 
 void wxparaverApp::DeactivateGlobalTiming()
@@ -908,8 +906,6 @@ void wxparaverApp::DeactivateGlobalTiming()
   globalTiming = false;
   globalTimingBeginIsSet = false;
   globalTimingCallDialog->Enable( true );
-
-
 #ifdef _WIN32
   globalTimingCallDialog->Iconize( false );
 #endif
