@@ -903,7 +903,6 @@ bool paraverMain::DoLoadTrace( const string &path )
                                                           wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                           wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
     string reducePath;
-cout << tmpPath << endl;
 
     if( tmpPath.length() > 40 && tmpPath.find_last_of( PATH_SEP ) != string::npos )
     {
@@ -923,7 +922,6 @@ cout << tmpPath << endl;
     else
       reducePath = tmpPath;
     reducePath += "\t";
-cout << reducePath << endl;
 
     paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
     paraverMain::dialogProgress->Fit();
