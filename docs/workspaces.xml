@@ -48,18 +48,24 @@ AgAAAIb5NwM=
 				<name>CUDA</name>
 				<type>2</type>
 				<autoTypes>
-					<count>2</count>
+					<count>3</count>
 					<item_version>1</item_version>
 					<item>
 						<type>2</type>
 						<WorkspaceValue>
-AgAAAGDUwgM=
+AgAAAMBNwQM=
 						</WorkspaceValue>
 					</item>
 					<item>
 						<type>2</type>
 						<WorkspaceValue>
 AgAAAMFNwQM=
+						</WorkspaceValue>
+					</item>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAGDUwgM=
 						</WorkspaceValue>
 					</item>
 				</autoTypes>
