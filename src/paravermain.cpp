@@ -4623,7 +4623,6 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
                                       bool loadTrace,
                                       const string& xmlFile )
 {
-  // bool tmpResult = false;
   cutFilterFinished = false;
 
 
@@ -4635,19 +4634,7 @@ void paraverMain::ShowCutTraceWindow( const string& filename,
   vector< string > filterToolOrder;
   OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, xmlFile, filterToolOrder );
 
-  // if( cutFilterDialog->ShowModal() == wxID_OK )
-  // {
-  //   OnOKCutFilterDialog( cutFilterDialog );
-  //   tmpResult = true;
-  // }
-
-  // delete traceOptions;
-
   cutFilterDialog->Show();
-
-  // delete cutFilterDialog;
-
-  //return tmpResult;
 }
 
 

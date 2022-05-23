@@ -167,15 +167,7 @@ bool RunAppCutterAction::execute( std::string whichTrace )
   toolOrder.push_back( TraceCutter::getID() );
   wxparaverApp::mainWindow->OptionsSettingCutFilterDialog( cutFilterDialog, traceOptions, dummyXmlName, toolOrder );
 
-  // if( cutFilterDialog->ShowModal() == wxID_OK )
-  //{  
-    // wxparaverApp::mainWindow->OnOKCutFilterDialog( cutFilterDialog );
-  //}
   cutFilterDialog->Show();
-  // espera?
-  
-  // delete traceOptions;
-  // delete cutFilterDialog;
   
   return errorFound;
 }
