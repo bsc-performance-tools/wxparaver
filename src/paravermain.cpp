@@ -752,7 +752,8 @@ void paraverMain::refreshMenuHints()
       if ( isStatesWorkspace ||
            CFGLoader::detectAnyEventTypeInCFG( tmpHintFile->fileName,
                                                getCurrentTrace()->getLoadedEvents().begin(),
-                                               getCurrentTrace()->getLoadedEvents().end() ) )
+                                               getCurrentTrace()->getLoadedEvents().end(),
+                                               getCurrentTrace()->getEventLabels() ) )
       {
         currentHint = new wxMenuItem( currentWorkspaceMenu, wxID_ANY, tmpName );
         currentWorkspaceMenu->Append( currentHint );
