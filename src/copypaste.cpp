@@ -529,10 +529,14 @@ void gPasteWindowProperties::paste( gHistogram* destinyHistogram, const string p
     else if( property == STR_PASTE_SEMANTIC_SORT )
     {
       Histogram *srcHisto = sourceHistogram->GetHistogram();
-      Histogram *dstHisto = destinyHistogram->GetHistogram();
 
-      dstHisto->setCurrentSemanticSort( srcHisto->getCurrentSemanticSort() );
-      destinyHistogram->EnableCustomSortOption();
+      if ( srcHisto->getSemanticSortColumns() )
+      {
+        Histogram *dstHisto = destinyHistogram->GetHistogram();
+
+        dstHisto->setCurrentSemanticSort( srcHisto->getCurrentSemanticSort() );
+        destinyHistogram->EnableCustomSortOption();
+      }
     }
     else
     {
