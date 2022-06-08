@@ -54,7 +54,9 @@ void gPopUpMenu<gTimeline>::enableMenu( gTimeline *whichTimeline )
   popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( _( STR_FILTER_COMMS ) ), sharedProperties->isAllowed( whichTimeline, STR_FILTER_COMMS) );
   popUpMenuPasteFilter->Enable( popUpMenuPasteFilter->FindItem( _( STR_FILTER_EVENTS ) ), sharedProperties->isAllowed( whichTimeline, STR_FILTER_EVENTS) );
 
-  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), SyncWindows::getInstance()->getNumGroups() > 1 );
+  bool tmpEnableRemoveGroup = SyncWindows::getInstance()->getNumGroups() > 1 ||
+                              SyncWindows::getInstance()->getNumWindows( 0 ) > 0;
+  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), tmpEnableRemoveGroup );
   
   Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE ) );
   Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), sharedProperties->isAllowed( whichTimeline, STR_PASTE_DEFAULT_SPECIAL ) );
@@ -82,7 +84,11 @@ void gPopUpMenu<gHistogram>::enableMenu( gHistogram *whichHistogram )
   popUpMenuPaste->Enable( popUpMenuPaste->FindItem( _( STR_DURATION ) ), sharedProperties->isAllowed( whichHistogram, STR_DURATION )  );
   popUpMenuPaste->Enable( popUpMenuPaste->FindItem( _( STR_SEMANTIC_SCALE ) ), sharedProperties->isAllowed( whichHistogram, STR_SEMANTIC_SCALE)  );
 
-  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), SyncWindows::getInstance()->getNumGroups() > 1 );
+  vector< TGroupId > tmpGroups;
+  SyncWindows::getInstance()->getGroups( tmpGroups );
+  bool tmpEnableRemoveGroup = SyncWindows::getInstance()->getNumGroups() > 1 ||
+                              SyncWindows::getInstance()->getNumWindows( 0 ) > 0;
+  popUpMenuSync->Enable( popUpMenuSync->FindItem( _( STR_SYNC_REMOVE_GROUP ) ), tmpEnableRemoveGroup );
 
   Enable( FindItem( _( STR_PASTE ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE ) );
   Enable( FindItem( _( STR_PASTE_DEFAULT_SPECIAL ) ), sharedProperties->isAllowed( whichHistogram, STR_PASTE_DEFAULT_SPECIAL ) );
@@ -625,8 +631,8 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), wxITEM_NORMAL, &gTimeline::OnPopUpSynchronize,
              ID_MENU_NEWGROUP );
 
-  i = 1;
-  for( vector< TGroupId >::const_iterator itGroup = ++tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
+  i = 0;
+  for( vector< TGroupId >::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
     buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), wxITEM_NORMAL, &gTimeline::OnPopUpRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
     ++i;
@@ -997,8 +1003,8 @@ gPopUpMenu<gHistogram>::gPopUpMenu( gHistogram *whichHistogram )
   popUpMenuSync->AppendSeparator();
   buildItem( popUpMenuSync, _( STR_SYNC_NEW_GROUP ), wxITEM_NORMAL, &gHistogram::OnPopUpSynchronize, ID_MENU_NEWGROUP );
   
-  i = 1;
-  for( vector< TGroupId >::const_iterator itGroup = ++tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
+  i = 0;
+  for( vector< TGroupId >::const_iterator itGroup = tmpGroups.begin(); itGroup != tmpGroups.end(); ++itGroup )
   {
     buildItem( popUpMenuSyncRemove, wxString::Format( _( "%u" ), *itGroup + 1 ), wxITEM_NORMAL, &gHistogram::OnPopUpRemoveGroup, ID_MENU_SYNC_REMOVE_GROUP_BASE + i );
     ++i;
