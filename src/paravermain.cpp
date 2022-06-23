@@ -4417,12 +4417,6 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   string strOutputFile;
   vector< string > tmpFiles;
 
-#ifdef OLD_PCFPARSER
-  ParaverTraceConfig *myConfig;
-#else
-  UIParaverTraceConfig *myConfig;
-#endif
-
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction, this );
 
