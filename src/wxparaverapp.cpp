@@ -306,6 +306,8 @@ bool wxparaverApp::OnInit()
   Extrae_init();
 #endif
 
+  wxUnsetEnv( "LD_LIBRARY_PATH" );
+
   wxCmdLineParser paraverCommandLineParser( argumentsParseSyntax, argc, argv );
   if ( paraverCommandLineParser.Parse( false ) != 0 )
   {

@@ -2407,7 +2407,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     {
       if ( existCommand( pdfReaders[ i ] ) )
       {
-        runCommand( pdfReaders[ i ], tmpFile );
+        runCommandAsync( pdfReaders[ i ], tmpFile );
         break;
       }
     }
@@ -2787,10 +2787,10 @@ bool RunScript::existCommand( const wxString& program )
 }
 
 
-void RunScript::runCommand( const wxString& program, const wxString& parameter )
+void RunScript::runCommandAsync( const wxString& program, const wxString& parameter )
 {
   wxString command = program + _(" ") + parameter;
-  wxExecute( command ); // ASYNC
+  wxExecute( command );
 }
 
 
@@ -2810,7 +2810,7 @@ void RunScript::OnBitmapbuttonClusteringXmlClick( wxCommandEvent& event )
   {
     if ( existCommand( editor[ i ] ) )
     {
-      runCommand( editor[ i ], fileToEdit );
+      runCommandAsync( editor[ i ], fileToEdit );
       break;
     }
   }
