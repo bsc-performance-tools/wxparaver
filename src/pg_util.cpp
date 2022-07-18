@@ -385,23 +385,32 @@ class CFGS4DLinkedPropertyShown
 };
 
 
-bool insertLinkedPropertyShown( Timeline * whichWindow,
+bool insertLinkedPropertyShown( Timeline* whichWindow,
                                 Histogram* whichHistogram,
                                 PRV_UINT32 propertyIndex,
-                                set< CFGS4DLinkedPropertyShown >& linkedPropertiesShown )
+                                set< CFGS4DLinkedPropertyShown >& linkedPropertiesShown,
+                                std::string propertyName = "" )
 {
   CFGS4DLinkedPropertyShown tmpLinked;
+
   if( whichWindow != nullptr )
   {
-    if( whichWindow->isDerivedWindow() )
+    if ( propertyName != "" )
+       tmpLinked.propertyName = propertyName;
+    else if ( whichWindow->isDerivedWindow() )
       tmpLinked.propertyName = DerivedTimelinePropertyLabels[ propertyIndex ];
     else
       tmpLinked.propertyName = SingleTimelinePropertyLabels[ propertyIndex ];
+    
     tmpLinked.groupLink = whichWindow->getCFGS4DGroupLink( tmpLinked.propertyName );
   }
   else if( whichHistogram != nullptr )
   {
-    tmpLinked.propertyName = HistogramPropertyLabels[ propertyIndex ];
+    if ( propertyName != "" )
+      tmpLinked.propertyName = propertyName;
+    else
+      tmpLinked.propertyName = HistogramPropertyLabels[ propertyIndex ];
+
     tmpLinked.groupLink = whichHistogram->getCFGS4DGroupLink( tmpLinked.propertyName );
   }
 
@@ -1320,7 +1329,8 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
   else
   {
     // TODO: CFG4D extra compose parameters
-    if( isExtraCompose ) return retId;
+    if( isExtraCompose )
+      return retId;
     
     string currentSemanticLevelStr = TimelineLevelLabels[ currentSemanticLevel ];
     vector< Timeline::TParamAliasKey > paramAliasKey =
@@ -1328,8 +1338,22 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
     for( vector< Timeline::TParamAliasKey >::const_iterator it = paramAliasKey.begin(); 
          it != paramAliasKey.end(); ++it )
     {
-      // CFG4D mode
       whichWindow->splitCFG4DParamAliasKey( *it, kSemanticLevel, kFunction, kNumParameter );
+      int iSemLevel;
+      for( iSemLevel = 0; iSemLevel < DERIVED; ++iSemLevel )
+      {
+        if( TimelineLevelLabels[ iSemLevel ] == kSemanticLevel )
+          break;
+      }      
+
+      if ( !insertLinkedPropertyShown( whichWindow,
+                                       nullptr,
+                                       propertyIndex,
+                                       linkedPropertiesShown,
+                                       whichWindow->getCFG4DParameterOriginalName( TWindowLevel( iSemLevel ), kNumParameter ) ) )
+        continue;
+
+      // CFG4D mode
       string currentFunction;
       if( isExtraCompose )
         currentFunction = whichWindow->getExtraLevelFunction( currentSemanticLevel, extraComposePos );

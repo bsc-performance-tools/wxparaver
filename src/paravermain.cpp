@@ -1373,9 +1373,7 @@ void paraverMain::OnPropertyGridChanging( wxPropertyGridEvent& event )
 
 std::string getCFG4DParameterOriginalName( Timeline *whichWindow, TWindowLevel whichLevel, TParamIndex whichParam )
 {
-  return LabelConstructor::getCFG4DParameterOriginalName( whichWindow,
-                                                          whichLevel,
-                                                          whichParam );
+  return whichWindow->getCFG4DParameterOriginalName( whichLevel, whichParam );
 }
 
 // Dummy function: no sense for histograms because they don't have semantic function parameters,

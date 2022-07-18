@@ -474,7 +474,6 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Timelin
       auxRenamedFullTagsList[ *it ] = renamedTag[ *it ];
       auxEnabledFullTagsList[ *it ] = enabledTag[ *it ];
 
-      // And then insert its parameters if they exist.
       semanticLevelParamKeys = currentWindow->getCFG4DParamKeysBySemanticLevel( *it, fullParamList );
 
       TParamIndex currentParam = 0;
@@ -490,7 +489,7 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Timelin
           if( TimelineLevelLabels[ iSemLevel ] == semanticLevel )
             break;
         }
-        innerKey = LabelConstructor::getCFG4DParameterOriginalName( currentWindow, TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
+        innerKey = currentWindow->getCFG4DParameterOriginalName( TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
 
         if ( renamedParamAlias.find( *it2 ) != renamedParamAlias.end() )
         {
@@ -944,7 +943,7 @@ void AdvancedSaveConfiguration::TransferDataFromPanel( bool showFullList )
     {
       if ( currentTagName.AfterLast( KParamSeparator[0] ) != currentTagName )
       {
-        if ( isTimeline )  // by construction, this the only possibility
+        if ( isTimeline )  // by construction, this is the only possibility
         {
           parseSemanticParameterTag( currentTagName, semanticLevel, function, numParameter );
 
