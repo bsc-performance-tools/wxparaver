@@ -325,12 +325,16 @@ void AdvancedSaveConfiguration::CreateControls()
   for ( vector< Timeline * >::iterator it = timelines.begin(); it != timelines.end(); ++it )
   {
     choiceWindow->Append( BuildName( *it ) );
+    initLinks( *it );
   }
 
   for ( vector< Histogram * >::iterator it = histograms.begin(); it != histograms.end(); ++it )
   {
     choiceWindow->Append( BuildName( *it ) );
+    initLinks( *it );
   }
+
+  updateLinkPropertiesWidgets();
 
   // Build tags panel
   currentItem = 0;
@@ -357,6 +361,33 @@ void AdvancedSaveConfiguration::CreateControls()
     //SetPosition( wxPoint( GetParent()->GetPosition().x + 20 ,
     //                      GetParent()->GetPosition().y + 20 ));
   }
+}
+
+
+void AdvancedSaveConfiguration::initLinks( Timeline *whichTimeline )
+{
+  auto aliasList = whichTimeline->getCFG4DAliasList();
+  for( auto elem : aliasList )
+    insertLinkInUnlinkedManager( elem.first, elem.second, whichTimeline );
+
+  TWindowLevel semLevel;
+  string semFunction;
+  TParamIndex numParameter;
+  auto aliasParamList = whichTimeline->getCFG4DParamAliasList();
+  for( auto elem : aliasParamList )
+  {
+    whichTimeline->splitCFG4DParamAliasKey( elem.first, semLevel, semFunction, numParameter );
+
+    insertLinkInUnlinkedManager( whichTimeline->getCFG4DParameterOriginalName( semLevel, numParameter ), elem.second, whichTimeline );
+  }
+}
+
+
+void AdvancedSaveConfiguration::initLinks( Histogram *whichHistogram )
+{
+  auto aliasList = whichHistogram->getCFG4DAliasList();
+  for( auto elem : aliasList )
+    insertLinkInUnlinkedManager( elem.first, elem.second, whichHistogram );
 }
 
 
@@ -457,7 +488,8 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Timelin
   map< string, bool > auxEnabledFullTagsList;
   map< string, string > auxRenamedFullTagsList;
 
-  string semanticLevel, function, paramAlias;
+  TWindowLevel semanticLevel;
+  string function, paramAlias;
   string innerKey;
   TParamIndex numParameter;
   bool enabled;
@@ -483,13 +515,7 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Timelin
         // Tag with parameters!
         currentWindow->splitCFG4DParamAliasKey( *it2, semanticLevel, function, numParameter );
 
-        int iSemLevel;
-        for( iSemLevel = 0; iSemLevel < DERIVED; ++iSemLevel )
-        {
-          if( TimelineLevelLabels[ iSemLevel ] == semanticLevel )
-            break;
-        }
-        innerKey = currentWindow->getCFG4DParameterOriginalName( TWindowLevel( iSemLevel ), TParamIndex( numParameter ) );
+        innerKey = currentWindow->getCFG4DParameterOriginalName( semanticLevel, numParameter );
 
         if ( renamedParamAlias.find( *it2 ) != renamedParamAlias.end() )
         {
@@ -501,7 +527,7 @@ void AdvancedSaveConfiguration::InsertParametersToTagMaps( const vector< Timelin
         {
           // No alias; insert something, like the original name.
           enabled = false;
-          paramAlias = currentWindow->getFunctionParamName( TWindowLevel( iSemLevel ), currentParam );
+          paramAlias = currentWindow->getFunctionParamName( semanticLevel, currentParam );
         }
 
         auxFullTagList.push_back( innerKey );
@@ -829,12 +855,28 @@ wxButton *AdvancedSaveConfiguration::GetButtonByName( const wxString& widgetName
 }
 
 
+template< class T >
+void AdvancedSaveConfiguration::insertLinkInUnlinkedManager( const std::string& originalName, const std::string& newCustomName, T *whichWindow )
+{
+  // Previous to insert the link, save if it exists as unlinked or linked.
+  bool existsCustomName = ( unlinkedManager.getLinksSize( originalName ) + linkedManager.getLinksSize( originalName ) ) > 0;
+
+  unlinkedManager.insertLink( originalName, whichWindow );
+
+  if( !existsCustomName )
+    unlinkedManager.setCustomName( originalName, newCustomName );
+}
+
+
 void AdvancedSaveConfiguration::OnCheckBoxPropertyClicked( wxCommandEvent& event )
 {
   wxCheckBox *currentCheckBox = static_cast<wxCheckBox *>( event.GetEventObject() );
+
+  // Enable associated text control
   wxString currentTextCtrlName = currentCheckBox->GetName().BeforeLast( KSuffixSeparator[0] );
   GetTextCtrlByName( currentTextCtrlName )->Enable( currentCheckBox->GetValue() );
 
+  // Enable associated button, if it exists
   wxButton *relatedButton = GetButtonByName( currentTextCtrlName );
   if ( relatedButton != nullptr )
     relatedButton->Enable( currentCheckBox->GetValue() );
@@ -844,14 +886,10 @@ void AdvancedSaveConfiguration::OnCheckBoxPropertyClicked( wxCommandEvent& event
     string tmpOriginalName = std::string( currentTextCtrlName.mb_str() );
     if( currentCheckBox->GetValue() )
     {
-      bool existsCustomName = ( unlinkedManager.getLinksSize( tmpOriginalName ) + linkedManager.getLinksSize( tmpOriginalName ) ) > 0;
       if( isTimeline )
-        unlinkedManager.insertLink( tmpOriginalName, timelines[ currentItem ] );
+        insertLinkInUnlinkedManager( tmpOriginalName, std::string( GetTextCtrlByName( currentTextCtrlName )->GetValue().mb_str() ), timelines[ currentItem ] );
       else
-        unlinkedManager.insertLink( tmpOriginalName, histograms[ currentItem ] );
-
-      if( !existsCustomName )
-        unlinkedManager.setCustomName( tmpOriginalName, std::string( GetTextCtrlByName( currentTextCtrlName )->GetValue().mb_str() ) );
+        insertLinkInUnlinkedManager( tmpOriginalName, std::string( GetTextCtrlByName( currentTextCtrlName )->GetValue().mb_str() ), histograms[ currentItem ] );
     }
     else
     {

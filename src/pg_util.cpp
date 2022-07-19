@@ -1307,7 +1307,7 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
     widgetName = SingleTimelinePropertyLabels[ propertyIndex ];
 
   // Splitted Parameter alias key
-  string kSemanticLevel;
+  TWindowLevel kSemanticLevel;
   string kFunction;
   string currentFunction;
   TParamIndex kNumParameter;
@@ -1339,18 +1339,12 @@ wxPGId AppendCFG4DParamPrvNumbersListPropertyWindow( wxPropertyGrid* windowPrope
          it != paramAliasKey.end(); ++it )
     {
       whichWindow->splitCFG4DParamAliasKey( *it, kSemanticLevel, kFunction, kNumParameter );
-      int iSemLevel;
-      for( iSemLevel = 0; iSemLevel < DERIVED; ++iSemLevel )
-      {
-        if( TimelineLevelLabels[ iSemLevel ] == kSemanticLevel )
-          break;
-      }      
 
       if ( !insertLinkedPropertyShown( whichWindow,
                                        nullptr,
                                        propertyIndex,
                                        linkedPropertiesShown,
-                                       whichWindow->getCFG4DParameterOriginalName( TWindowLevel( iSemLevel ), kNumParameter ) ) )
+                                       whichWindow->getCFG4DParameterOriginalName( kSemanticLevel, kNumParameter ) ) )
         continue;
 
       // CFG4D mode

@@ -193,6 +193,9 @@ public:
 
     int GetSelectionIndexCorrected( int index, bool &isTimeline );
 
+    void initLinks( Timeline *whichTimeline );
+    void initLinks( Histogram *whichHistogram );
+
     wxString BuildName( Timeline *current );
     wxString BuildName( Histogram *current );
 
@@ -222,6 +225,9 @@ public:
     wxCheckBox *GetCheckBoxByName( const wxString& widgetName ) const;
     wxTextCtrl *GetTextCtrlByName( const wxString& widgetName ) const;
     wxButton *GetButtonByName( const wxString& widgetName ) const;
+
+    template< class T >
+    void insertLinkInUnlinkedManager( const std::string& originalName, const std::string& newCustomName, T *whichWindow );
 
     void OnCheckBoxPropertyClicked( wxCommandEvent& event );
     void OnCheckBoxLinkWindowClicked( wxCommandEvent& event );
