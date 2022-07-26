@@ -30,6 +30,7 @@
  */
 
 ////@begin includes
+#include "wx/notebook.h"
 #include "wx/richtext/richtextctrl.h"
 ////@end includes
 #include "trace.h"
@@ -49,7 +50,8 @@ class wxRichTextCtrl;
 
 ////@begin control identifiers
 #define ID_TRACEINFORMATIONDIALOG 10000
-#define wxID_GTI_STATIC 10298
+#define ID_NOTEBOOK 10006
+#define ID_PANEL_GENERAL 10007
 #define ID_GENERAL_RICHTEXTCTRL 10001
 #define ID_MTI_STATIC 10004
 #define ID_METADATA_RICHTEXTCTRL 10005
@@ -57,6 +59,9 @@ class wxRichTextCtrl;
 #define ID_PROCESS_RICHTEXTCTRL 10002
 #define wxID_RMI_STATIC 10297
 #define ID_RESOURCE_RICHTEXTCTRL 10003
+#define ID_PANEL_EVENTS 10008
+#define ID_LISTBOX_TYPES 10009
+#define ID_LISTBOX_VALUES 10010
 #define SYMBOL_TRACEINFORMATIONDIALOG_STYLE wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxTAB_TRAVERSAL
 #define SYMBOL_TRACEINFORMATIONDIALOG_TITLE _("Trace Information Dialog")
 #define SYMBOL_TRACEINFORMATIONDIALOG_IDNAME ID_TRACEINFORMATIONDIALOG
@@ -93,8 +98,8 @@ public:
 
 ////@begin TraceInformationDialog event handler declarations
 
-  /// wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
-  void OnCancelClick( wxCommandEvent& event );
+  /// wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TYPES
+  void OnListboxTypesSelected( wxCommandEvent& event );
 
 ////@end TraceInformationDialog event handler declarations
 
@@ -111,6 +116,7 @@ public:
   static bool ShowToolTips();
 
 ////@begin TraceInformationDialog member variables
+  wxBoxSizer* sizerMain;
   wxBoxSizer* GeneralInfoSizer;
   wxRichTextCtrl* TraceGeneralInfo;
   wxBoxSizer* MetadataInfoSizer;
@@ -119,6 +125,8 @@ public:
   wxRichTextCtrl* ProcessModelInfo;
   wxBoxSizer* ResourceModelSizer;
   wxRichTextCtrl* ResourceModelInfo;
+  wxListBox* listTypes;
+  wxListBox* listValues;
 ////@end TraceInformationDialog member variables
 
   Trace* myTrace;
@@ -127,6 +135,8 @@ private:
   void DisplayTraceInformation();
   wxString FormatTraceSize( double traceByteSize );
   int getRackInformation();
+
+  std::vector< TEventType > eventTypes;
 };
 
 #endif

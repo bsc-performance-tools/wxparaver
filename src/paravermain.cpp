@@ -54,14 +54,12 @@
 #include "histogram.h"
 #include "gtimeline.h"
 #include "ghistogram.h"
-//#include <wx/propgrid/advprops.h>
 #include "pg_extraprop.h"
 #include "progresscontroller.h"
 #include "loadedwindows.h"
 #include "filter.h"
 #include "pg_util.h"
 #include "saveconfigurationdialog.h"
-//#include "preferencesdialog.h"
 #include "windows_tree.h"
 #include "derivedtimelinedialog.h"
 #include "histogramdialog.h"
@@ -72,6 +70,9 @@
 #include "filedialogext.h"
 #include "exitdialog.h"
 #include "runscript.h"
+#include "sessionselectiondialog.h"
+#include "traceinformationdialog.h"
+
 #include <wx/display.h>
 #include <wx/process.h>
 #include <wx/mimetype.h>

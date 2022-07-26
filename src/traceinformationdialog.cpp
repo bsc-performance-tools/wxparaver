@@ -34,14 +34,16 @@
 #include <wx/regex.h>
 
 ////@begin includes
+#include "wx/imaglist.h"
 ////@end includes
 
-#include "../include/traceinformationdialog.h"
+#include "eventlabels.h"
+#include "labelconstructor.h"
+#include "traceinformationdialog.h"
 
 ////@begin XPM images
 ////@end XPM images
 
-#include "labelconstructor.h"
 
 /*!
  * TraceInformationDialog type definition
@@ -57,7 +59,7 @@ IMPLEMENT_DYNAMIC_CLASS( TraceInformationDialog, wxDialog )
 BEGIN_EVENT_TABLE( TraceInformationDialog, wxDialog )
 
 ////@begin TraceInformationDialog event table entries
-  EVT_BUTTON( wxID_CANCEL, TraceInformationDialog::OnCancelClick )
+  EVT_LISTBOX( ID_LISTBOX_TYPES, TraceInformationDialog::OnListboxTypesSelected )
 ////@end TraceInformationDialog event table entries
 
 END_EVENT_TABLE()
@@ -83,6 +85,202 @@ TraceInformationDialog::TraceInformationDialog( wxWindow* parent, Trace* whichTr
   // Writing text at constructor
   DisplayTraceInformation();
 }
+
+/*!
+ * TraceInformationDialog creator
+ */
+
+bool TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxString &caption, const wxPoint &pos, const wxSize &size, long style)
+{
+////@begin TraceInformationDialog creation
+  SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
+  wxDialog::Create( parent, id, caption, pos, size, style );
+
+  CreateControls();
+  if (GetSizer())
+  {
+    GetSizer()->SetSizeHints(this);
+  }
+  Centre();
+////@end TraceInformationDialog creation
+  return true;
+}
+
+
+/*!
+ * TraceInformationDialog destructor
+ */
+
+TraceInformationDialog::~TraceInformationDialog()
+{
+////@begin TraceInformationDialog destruction
+////@end TraceInformationDialog destruction
+}
+
+
+/*!
+ * Member initialisation
+ */
+
+void TraceInformationDialog::Init()
+{
+////@begin TraceInformationDialog member initialisation
+  sizerMain = NULL;
+  GeneralInfoSizer = NULL;
+  TraceGeneralInfo = NULL;
+  MetadataInfoSizer = NULL;
+  MetadataGeneralInfo = NULL;
+  ProcessModelSizer = NULL;
+  ProcessModelInfo = NULL;
+  ResourceModelSizer = NULL;
+  ResourceModelInfo = NULL;
+  listTypes = NULL;
+  listValues = NULL;
+////@end TraceInformationDialog member initialisation
+  myTrace = nullptr;
+}
+
+
+/*!
+ * Control creation for TraceInformationDialog
+ */
+
+void TraceInformationDialog::CreateControls()
+{    
+////@begin TraceInformationDialog content construction
+  TraceInformationDialog* itemDialog1 = this;
+
+  sizerMain = new wxBoxSizer(wxVERTICAL);
+  itemDialog1->SetSizer(sizerMain);
+
+  wxNotebook* itemNotebook2 = new wxNotebook( itemDialog1, ID_NOTEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT );
+
+  wxPanel* itemPanel3 = new wxPanel( itemNotebook2, ID_PANEL_GENERAL, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemPanel3->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+  wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+  itemPanel3->SetSizer(itemBoxSizer2);
+
+  GeneralInfoSizer = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(GeneralInfoSizer, 3, wxGROW|wxALL, 5);
+  TraceGeneralInfo = new wxRichTextCtrl( itemPanel3, ID_GENERAL_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  GeneralInfoSizer->Add(TraceGeneralInfo, 1, wxGROW|wxALL, 5);
+
+  MetadataInfoSizer = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(MetadataInfoSizer, 3, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText7 = new wxStaticText( itemPanel3, ID_MTI_STATIC, _("Metadata Information"), wxDefaultPosition, wxDefaultSize, 0 );
+  MetadataInfoSizer->Add(itemStaticText7, 0, wxALIGN_LEFT|wxALL, 5);
+
+  MetadataGeneralInfo = new wxRichTextCtrl( itemPanel3, ID_METADATA_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  MetadataInfoSizer->Add(MetadataGeneralInfo, 1, wxGROW|wxALL, 5);
+
+  ProcessModelSizer = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(ProcessModelSizer, 2, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText10 = new wxStaticText( itemPanel3, wxID_PMI_STATIC, _("Process Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
+  ProcessModelSizer->Add(itemStaticText10, 0, wxALIGN_LEFT|wxALL, 5);
+
+  ProcessModelInfo = new wxRichTextCtrl( itemPanel3, ID_PROCESS_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  ProcessModelSizer->Add(ProcessModelInfo, 1, wxGROW|wxALL, 5);
+
+  ResourceModelSizer = new wxBoxSizer(wxVERTICAL);
+  itemBoxSizer2->Add(ResourceModelSizer, 2, wxGROW|wxALL, 5);
+  wxStaticText* itemStaticText13 = new wxStaticText( itemPanel3, wxID_RMI_STATIC, _("Resource Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
+  ResourceModelSizer->Add(itemStaticText13, 0, wxALIGN_LEFT|wxALL, 5);
+
+  ResourceModelInfo = new wxRichTextCtrl( itemPanel3, ID_RESOURCE_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
+  ResourceModelSizer->Add(ResourceModelInfo, 1, wxGROW|wxALL, 5);
+
+  itemNotebook2->AddPage(itemPanel3, _("General"));
+
+  wxPanel* itemPanel17 = new wxPanel( itemNotebook2, ID_PANEL_EVENTS, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
+  itemPanel17->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
+  wxBoxSizer* itemBoxSizer15 = new wxBoxSizer(wxVERTICAL);
+  itemPanel17->SetSizer(itemBoxSizer15);
+
+  wxStaticText* itemStaticText1 = new wxStaticText( itemPanel17, wxID_STATIC, _("Types"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer15->Add(itemStaticText1, 0, wxALIGN_LEFT|wxALL, 5);
+
+  wxArrayString listTypesStrings;
+  listTypes = new wxListBox( itemPanel17, ID_LISTBOX_TYPES, wxDefaultPosition, wxDefaultSize, listTypesStrings, wxLB_SINGLE );
+  itemBoxSizer15->Add(listTypes, 1, wxGROW|wxALL, 5);
+
+  wxStaticText* itemStaticText3 = new wxStaticText( itemPanel17, wxID_STATIC, _("Values"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemBoxSizer15->Add(itemStaticText3, 0, wxALIGN_LEFT|wxALL, 5);
+
+  wxArrayString listValuesStrings;
+  listValues = new wxListBox( itemPanel17, ID_LISTBOX_VALUES, wxDefaultPosition, wxDefaultSize, listValuesStrings, wxLB_SINGLE );
+  itemBoxSizer15->Add(listValues, 1, wxGROW|wxALL, 5);
+
+  itemNotebook2->AddPage(itemPanel17, _("Events"));
+
+  sizerMain->Add(itemNotebook2, 1, wxGROW|wxALL, 5);
+
+  wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
+
+  sizerMain->Add(itemStdDialogButtonSizer1, 0, wxGROW|wxLEFT|wxBOTTOM, 5);
+  wxButton* itemButton2 = new wxButton( itemDialog1, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
+  itemButton2->SetDefault();
+  itemStdDialogButtonSizer1->AddButton(itemButton2);
+
+  itemStdDialogButtonSizer1->Realize();
+
+////@end TraceInformationDialog content construction
+
+  wxFont tmpFont = listTypes->GetFont();
+  tmpFont.SetFamily( wxFONTFAMILY_TELETYPE );
+  listTypes->SetFont( tmpFont );
+  listValues->SetFont( tmpFont );
+
+  wxString tmpStr;
+  myTrace->getEventLabels().getTypes(
+    [&]( TEventType type, const std::string& label )
+    {
+      tmpStr.Clear();
+      tmpStr << type << "   " << label;
+      listTypesStrings.Add( tmpStr );
+
+      eventTypes.push_back( type );
+    }
+  );
+  listTypes->InsertItems( listTypesStrings, 0 );
+
+}
+
+
+/*!
+ * Should we show tooltips?
+ */
+
+bool TraceInformationDialog::ShowToolTips()
+{
+  return true;
+}
+
+/*!
+ * Get bitmap resources
+ */
+
+wxBitmap TraceInformationDialog::GetBitmapResource( const wxString& name )
+{
+  // Bitmap retrieval
+////@begin TraceInformationDialog bitmap retrieval
+  wxUnusedVar(name);
+  return wxNullBitmap;
+////@end TraceInformationDialog bitmap retrieval
+}
+
+/*!
+ * Get icon resources
+ */
+
+wxIcon TraceInformationDialog::GetIconResource( const wxString& name )
+{
+  // Icon retrieval
+////@begin TraceInformationDialog icon retrieval
+  wxUnusedVar(name);
+  return wxNullIcon;
+////@end TraceInformationDialog icon retrieval
+}
+
 
 wxString TraceInformationDialog::FormatTraceSize( double traceByteSize )
 {
@@ -276,159 +474,28 @@ int TraceInformationDialog::getRackInformation()
 */
   return 0;
 }
+
+
 /*!
- * TraceInformationDialog creator
+ * wxEVT_COMMAND_LISTBOX_SELECTED event handler for ID_LISTBOX_TYPES
  */
 
-bool TraceInformationDialog::Create(wxWindow *parent, wxWindowID id, const wxString &caption, const wxPoint &pos, const wxSize &size, long style)
+void TraceInformationDialog::OnListboxTypesSelected( wxCommandEvent& event )
 {
-////@begin TraceInformationDialog creation
-  SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY|wxWS_EX_BLOCK_EVENTS);
-  wxDialog::Create( parent, id, caption, pos, size, style );
+  wxString tmpStr;
+  wxArrayString listValuesStrings;
 
-  CreateControls();
-  Centre();
-////@end TraceInformationDialog creation
-  return true;
+  listValues->Clear();
+
+  myTrace->getEventLabels().getValues( eventTypes[ event.GetSelection() ],
+    [&]( TEventValue value, const std::string& label )
+    {
+      tmpStr.Clear();
+      tmpStr << value << "   " << label;
+      listValuesStrings.Add( tmpStr );
+    }
+  );
+  listValues->Append( listValuesStrings );
 }
 
-
-/*!
- * TraceInformationDialog destructor
- */
-
-TraceInformationDialog::~TraceInformationDialog()
-{
-////@begin TraceInformationDialog destruction
-////@end TraceInformationDialog destruction
-}
-
-
-/*!
- * Member initialisation
- */
-
-void TraceInformationDialog::Init()
-{
-////@begin TraceInformationDialog member initialisation
-  GeneralInfoSizer = NULL;
-  TraceGeneralInfo = NULL;
-  MetadataInfoSizer = NULL;
-  MetadataGeneralInfo = NULL;
-  ProcessModelSizer = NULL;
-  ProcessModelInfo = NULL;
-  ResourceModelSizer = NULL;
-  ResourceModelInfo = NULL;
-////@end TraceInformationDialog member initialisation
-  myTrace = nullptr;
-}
-
-
-/*!
- * Control creation for TraceInformationDialog
- */
-
-void TraceInformationDialog::CreateControls()
-{    
-////@begin TraceInformationDialog content construction
-  TraceInformationDialog* itemDialog1 = this;
-
-  wxBoxSizer* itemBoxSizer1 = new wxBoxSizer(wxVERTICAL);
-  itemDialog1->SetSizer(itemBoxSizer1);
-
-  GeneralInfoSizer = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer1->Add(GeneralInfoSizer, 3, wxGROW|wxALL, 5);
-
-  wxStaticText* itemStaticText1 = new wxStaticText( itemDialog1, wxID_GTI_STATIC, _("General Information"), wxDefaultPosition, wxDefaultSize, 0 );
-  GeneralInfoSizer->Add(itemStaticText1, 0, wxGROW|wxALL, 5);
-
-  TraceGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_GENERAL_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  GeneralInfoSizer->Add(TraceGeneralInfo, 1, wxGROW|wxALL, 5);
-
-  MetadataInfoSizer = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer1->Add(MetadataInfoSizer, 3, wxGROW|wxALL, 5);
-
-  wxStaticText* itemStaticText6 = new wxStaticText( itemDialog1, ID_MTI_STATIC, _("Metadata Information"), wxDefaultPosition, wxDefaultSize, 0 );
-  MetadataInfoSizer->Add(itemStaticText6, 0, wxGROW|wxALL, 5);
-
-  MetadataGeneralInfo = new wxRichTextCtrl( itemDialog1, ID_METADATA_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  MetadataInfoSizer->Add(MetadataGeneralInfo, 1, wxGROW|wxALL, 5);
-
-  ProcessModelSizer = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer1->Add(ProcessModelSizer, 2, wxGROW|wxALL, 5);
-
-  wxStaticText* itemStaticText4 = new wxStaticText( itemDialog1, wxID_PMI_STATIC, _("Process Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
-  ProcessModelSizer->Add(itemStaticText4, 0, wxGROW|wxALL, 5);
-
-  ProcessModelInfo = new wxRichTextCtrl( itemDialog1, ID_PROCESS_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  ProcessModelSizer->Add(ProcessModelInfo, 1, wxGROW|wxALL, 5);
-
-  ResourceModelSizer = new wxBoxSizer(wxVERTICAL);
-  itemBoxSizer1->Add(ResourceModelSizer, 2, wxGROW|wxALL, 5);
-
-  wxStaticText* itemStaticText7 = new wxStaticText( itemDialog1, wxID_RMI_STATIC, _("Resource Model Information"), wxDefaultPosition, wxDefaultSize, 0 );
-  ResourceModelSizer->Add(itemStaticText7, 0, wxGROW|wxALL, 5);
-
-  ResourceModelInfo = new wxRichTextCtrl( itemDialog1, ID_RESOURCE_RICHTEXTCTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY|wxWANTS_CHARS );
-  ResourceModelSizer->Add(ResourceModelInfo, 1, wxGROW|wxALL, 5);
-
-  wxStdDialogButtonSizer* itemStdDialogButtonSizer1 = new wxStdDialogButtonSizer;
-
-  itemBoxSizer1->Add(itemStdDialogButtonSizer1, 0, wxALIGN_RIGHT|wxTOP|wxBOTTOM, 5);
-  wxButton* itemButton1 = new wxButton( itemDialog1, wxID_CANCEL, _("&Exit"), wxDefaultPosition, wxDefaultSize, 0 );
-  itemStdDialogButtonSizer1->AddButton(itemButton1);
-
-  itemStdDialogButtonSizer1->Realize();
-
-////@end TraceInformationDialog content construction
-}
-
-
-/*!
- * Should we show tooltips?
- */
-
-bool TraceInformationDialog::ShowToolTips()
-{
-  return true;
-}
-
-/*!
- * Get bitmap resources
- */
-
-wxBitmap TraceInformationDialog::GetBitmapResource( const wxString& name )
-{
-  // Bitmap retrieval
-////@begin TraceInformationDialog bitmap retrieval
-  wxUnusedVar(name);
-  return wxNullBitmap;
-////@end TraceInformationDialog bitmap retrieval
-}
-
-/*!
- * Get icon resources
- */
-
-wxIcon TraceInformationDialog::GetIconResource( const wxString& name )
-{
-  // Icon retrieval
-////@begin TraceInformationDialog icon retrieval
-  wxUnusedVar(name);
-  return wxNullIcon;
-////@end TraceInformationDialog icon retrieval
-}
-
-
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL
- */
-
-void TraceInformationDialog::OnCancelClick( wxCommandEvent& event )
-{
-    ////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in TraceInformationDialog.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-    ////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for wxID_CANCEL in TraceInformationDialog. 
-}
 

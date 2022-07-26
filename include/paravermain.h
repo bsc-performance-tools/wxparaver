@@ -49,13 +49,11 @@
 #include "trace.h"
 #include "localkernel.h"
 #include "paraverconfig.h"
+#include "preferencesdialog.h"
 #include "previousfiles.h"
 #include "cfg.h" // SaveOptions
 #include "workspacemanager.h"
-#include "preferencesdialog.h"
 #include "loadcfgdialog.h"
-#include "sessionselectiondialog.h"
-#include "traceinformationdialog.h"
 #include "connection.h"
 
 // DATE TIME INCLUDES
