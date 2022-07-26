@@ -557,19 +557,19 @@ bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
     if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSEWORKLOAD ] ||
          tag == SingleTimelinePropertyLabels[ SINGLE_WORKLOAD ] )
     {
-      if ( currentWindow->getLevel() == WORKLOAD )
+      if ( currentWindow->getLevel() == TTraceLevel::WORKLOAD )
         allowed = true;
     }
     else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSEAPPL ] ||
               tag == SingleTimelinePropertyLabels[ SINGLE_APPLICATION ] )
     {
-      if ( currentWindow->getLevel() >= WORKLOAD && currentWindow->getLevel() <= APPLICATION )
+      if ( currentWindow->getLevel() >= TTraceLevel::WORKLOAD && currentWindow->getLevel() <= TTraceLevel::APPLICATION )
         allowed = true;
     }
     else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSETASK ] ||
               tag == SingleTimelinePropertyLabels[ SINGLE_TASK ] )
     {
-      if ( currentWindow->getLevel() >= WORKLOAD && currentWindow->getLevel() <= TASK )
+      if ( currentWindow->getLevel() >= TTraceLevel::WORKLOAD && currentWindow->getLevel() <= TTraceLevel::TASK )
         allowed = true;
     }
     else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSETHREAD ] ||
@@ -580,19 +580,19 @@ bool AdvancedSaveConfiguration::allowedLevel( const string &tag )
     else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSESYSTEM ] ||
               tag == SingleTimelinePropertyLabels[ SINGLE_SYSTEM ] )
     {
-      if ( currentWindow->getLevel() == SYSTEM )
+      if ( currentWindow->getLevel() == TTraceLevel::SYSTEM )
         allowed = true;
     }
     else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSENODE ] ||
               tag == SingleTimelinePropertyLabels[ SINGLE_NODE ] )
     {
-      if ( currentWindow->getLevel() >= SYSTEM && currentWindow->getLevel() <= NODE )
+      if ( currentWindow->getLevel() >= TTraceLevel::SYSTEM && currentWindow->getLevel() <= TTraceLevel::NODE )
         allowed = true;
     }
     else if ( tag == SingleTimelinePropertyLabels[ SINGLE_COMPOSECPU ] ||
               tag == SingleTimelinePropertyLabels[ SINGLE_CPU ] )
     {
-      if ( currentWindow->getLevel() >= SYSTEM && currentWindow->getLevel() <= CPU )
+      if ( currentWindow->getLevel() >= TTraceLevel::SYSTEM && currentWindow->getLevel() <= TTraceLevel::CPU )
         allowed = true;
     }
     else

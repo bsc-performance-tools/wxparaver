@@ -1754,7 +1754,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
   // Timeline related properties
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_LEVEL, DERIVED_LEVEL, HISTOGRAM_NULL ) )
   {
-    whichTimeline->setLevel( (TWindowLevel)property->GetValue().GetLong() );
+    whichTimeline->setLevel( static_cast<TTraceLevel>( property->GetValue().GetLong() ) );
     spreadSetRedraw( whichTimeline );
     spreadSetChanged( whichTimeline );
   }
@@ -3187,19 +3187,19 @@ void paraverMain::ShowDerivedDialog()
       beginDragWindow->getGradientColor().getGradientFunction() );
     newWindow->setLevel( beginDragWindow->getLevel() );
     vector<bool> tmpSel;
-    for( int level = APPLICATION; level <= THREAD; ++level )
+    for( TTraceLevel level = TTraceLevel::APPLICATION; level <= TTraceLevel::THREAD; ++level )
     {
       tmpSel.clear();
-      beginDragWindow->getSelectedRows( (TWindowLevel)level, tmpSel );
-      newWindow->setSelectedRows( (TWindowLevel)level, tmpSel );
+      beginDragWindow->getSelectedRows( level, tmpSel );
+      newWindow->setSelectedRows( level, tmpSel );
     }
     if( beginDragWindow->getTrace()->existResourceInfo() )
     {
-      for( int level = NODE; level <= CPU; ++level )
+      for( TTraceLevel level = TTraceLevel::NODE; level <= TTraceLevel::CPU; ++level )
       {
         tmpSel.clear();
-        beginDragWindow->getSelectedRows( (TWindowLevel)level, tmpSel );
-        newWindow->setSelectedRows( (TWindowLevel)level, tmpSel );
+        beginDragWindow->getSelectedRows( level, tmpSel );
+        newWindow->setSelectedRows( level, tmpSel );
       }
     }
 
@@ -4447,12 +4447,6 @@ string paraverMain::DoLoadFilteredTrace( string traceSrcFileName,
   string tmpNameIn, tmpNameOut, tmpPathOut, tmpPathOutBackup;
   string strOutputFile;
   vector< string > tmpFiles;
-
-#ifdef OLD_PCFPARSER
-  ParaverTraceConfig *myConfig;
-#else
-  UIParaverTraceConfig *myConfig;
-#endif
 
   ProgressController *progress = ProgressController::create( localKernel );
   progress->setHandler( progressFunction, this );

@@ -779,7 +779,7 @@ wxString prvRowsSelectionProperty::ValueToString( wxVariant & value, int argFlag
   return value.GetString();
 }
 
-void prvRowsSelectionProperty::GetSelectionAsVector( TWindowLevel whichLevel,
+void prvRowsSelectionProperty::GetSelectionAsVector( TTraceLevel whichLevel,
                                                      vector<TObjectOrder> &levelSelections )
 {
   mySelectedRows.getSelected( levelSelections, whichLevel );
@@ -837,7 +837,7 @@ void prvRowsSelectionProperty::GetStringValueFromVector( vector<TObjectOrder> &w
       onString += _(", ");
     }
 
-    if( myTimeline->getLevel() == CPU )
+    if( myTimeline->getLevel() == TTraceLevel::CPU )
       onString += wxString::FromUTF8( LabelConstructor::objectLabel( *it + 1,
                                                                       myTimeline->getLevel(),
                                                                       myTimeline->getTrace(),

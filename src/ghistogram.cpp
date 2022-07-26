@@ -2680,19 +2680,19 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       controlCloned->getGradientColor().getGradientFunction() );
     productWin->setLevel( controlCloned->getLevel() );
     vector<bool> tmpSel;
-    for( int level = APPLICATION; level <= THREAD; ++level )
+    for( TTraceLevel level = TTraceLevel::APPLICATION; level <= TTraceLevel::THREAD; ++level )
     {
       tmpSel.clear();
-      controlCloned->getSelectedRows( (TWindowLevel)level, tmpSel );
-      productWin->setSelectedRows( (TWindowLevel)level, tmpSel );
+      controlCloned->getSelectedRows( level, tmpSel );
+      productWin->setSelectedRows( level, tmpSel );
     }
     if( controlCloned->getTrace()->existResourceInfo() )
     {
-      for( int level = NODE; level <= CPU; ++level )
+      for( TTraceLevel level = TTraceLevel::NODE; level <= TTraceLevel::CPU; ++level )
       {
         tmpSel.clear();
-        controlCloned->getSelectedRows( (TWindowLevel)level, tmpSel );
-        productWin->setSelectedRows( (TWindowLevel)level, tmpSel );
+        controlCloned->getSelectedRows( level, tmpSel );
+        productWin->setSelectedRows( level, tmpSel );
       }
     }
 

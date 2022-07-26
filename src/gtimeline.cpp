@@ -929,7 +929,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   dc.SetFont( objectFont );
   // +1!
   wxSize objectExt, tmpExt;
-  int endLevel = THREAD;
+  TTraceLevel endLevel = TTraceLevel::THREAD;
   string tmpLongestLabel;
   wxString tmpCurrentLabel;
   size_t tmpMaxLength = 0;
@@ -949,7 +949,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       }
 
       tmpCurrentMaxLength = LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( myWindow->getLevel() ) - 1,
-                                                           (TWindowLevel) myWindow->getLevel(),
+                                                           myWindow->getLevel(),
                                                            myWindow->getTrace() ).length();
 
       tmpMaxLength = myWindow->getTrace()->getMaxLengthRow( myWindow->getLevel() );
@@ -973,14 +973,14 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       }
 
       if( myWindow->getTrace()->existResourceInfo() )
-        endLevel = CPU;
+        endLevel = TTraceLevel::CPU;
     
-      for( int iLevel = WORKLOAD; iLevel <= endLevel; ++iLevel )
+      for( TTraceLevel iLevel = TTraceLevel::WORKLOAD; iLevel <= endLevel; ++iLevel )
       {
-        tmpCurrentMaxLength = myWindow->getTrace()->getMaxLengthRow( (TWindowLevel)iLevel );
-        tmpCurrentLabel = wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( (TWindowLevel) iLevel ) - 1,
-                                                                                            (TWindowLevel) iLevel,
-                                                                                            myWindow->getTrace() ).c_str() );
+        tmpCurrentMaxLength = myWindow->getTrace()->getMaxLengthRow( iLevel );
+        tmpCurrentLabel = wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->getTrace()->getLevelObjects( iLevel ) - 1,
+                                                                             iLevel,
+                                                                             myWindow->getTrace() ).c_str() );
         if ( tmpCurrentMaxLength < tmpCurrentLabel.Len() )
           tmpCurrentMaxLength = tmpCurrentLabel.Len();
           
@@ -1145,7 +1145,7 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       if( ( printall || drawLabel ) &&
           !( myWindow->getObjectAxisSize() == TObjectAxisSize::ZERO_PERC ) )
       {
-        if( myWindow->getLevel() == CPU || myWindow->getLevel() == NODE || myWindow->getLevel() == SYSTEM )
+        if( myWindow->getLevel() == TTraceLevel::CPU || myWindow->getLevel() == TTraceLevel::NODE || myWindow->getLevel() == TTraceLevel::SYSTEM )
           dc.DrawText( wxString::FromUTF8( LabelConstructor::objectLabel( *it + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() ),
                        drawBorder, y );
         else
@@ -3044,7 +3044,7 @@ void gTimeline::computeWhatWhere( TRecordTime whichTime,
   }
   else
   {
-    if( myWindow->getLevel() == CPU )
+    if( myWindow->getLevel() == TTraceLevel::CPU )
       txt << _( "Object: " ) << wxString::FromUTF8( LabelConstructor::objectLabel( whichRow + 1, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
     else
       txt << _( "Object: " ) << wxString::FromUTF8( LabelConstructor::objectLabel( whichRow, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
@@ -3324,7 +3324,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
         onString << wxT( " to " );
       else if( (*it).getType() & RECV )
         onString << wxT( " from " );
-      if ( myWindow->getLevel() >= WORKLOAD && myWindow->getLevel() <= THREAD )
+      if ( myWindow->getLevel() >= TTraceLevel::WORKLOAD && myWindow->getLevel() <= TTraceLevel::THREAD )
         onString << wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->threadObjectToWindowObject( (*it).getCommPartnerObject() ),
                                                                         myWindow->getLevel(),
                                                                         myWindow->getTrace() ).c_str() );
@@ -5353,7 +5353,7 @@ void gTimeline::OnMenuGradientFunction( TGradientFunction function )
 
 void gTimeline::OnScrolledWindowMiddleUp( wxMouseEvent& event )
 {
-  if( myWindow->getLevel() != THREAD )
+  if( myWindow->getLevel() != TTraceLevel::THREAD )
     return;
 
   wxMemoryDC dc( bufferImage );

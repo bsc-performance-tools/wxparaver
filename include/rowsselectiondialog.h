@@ -77,7 +77,7 @@ public:
   RowsSelectionDialog();
   RowsSelectionDialog( wxWindow* parent,
                        Timeline *whichWindow,
-                       SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
+                       SelectionManagement< TObjectOrder, TTraceLevel > *whichSelectedRows,
                        wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
                        const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
                        bool parentIsGtimeline = false,
@@ -87,7 +87,7 @@ public:
   
   RowsSelectionDialog( wxWindow* parent,
                        Histogram* histogram,
-                       SelectionManagement< TObjectOrder, TWindowLevel > *whichSelectedRows,
+                       SelectionManagement< TObjectOrder, TTraceLevel > *whichSelectedRows,
                        wxWindowID id = SYMBOL_ROWSSELECTIONDIALOG_IDNAME,
                        const wxString& caption = SYMBOL_ROWSSELECTIONDIALOG_TITLE,
                        bool parentIsGtimeline = false,
@@ -122,7 +122,7 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
-  int GetSelections( TWindowLevel whichLevel, wxArrayInt &selections );
+  int GetSelections( TTraceLevel whichLevel, wxArrayInt &selections );
 
   virtual bool TransferDataFromWindow();
   
@@ -137,10 +137,10 @@ private:
   Timeline *myTimeline;
   Histogram *myHistogram;
   
-  SelectionManagement< TObjectOrder, TWindowLevel > *mySelectedRows;
+  SelectionManagement< TObjectOrder, TTraceLevel > *mySelectedRows;
 
-  TWindowLevel minLevel; 
-  TWindowLevel myLevel;
+  TTraceLevel minLevel; 
+  TTraceLevel myLevel;
   std::vector< wxButton * > selectionButtons;
   std::vector< wxCheckListBox* > levelCheckList;
 
@@ -154,7 +154,7 @@ private:
 
   Trace *myTrace;
   
-  std::map< TWindowLevel , std::vector< TObjectOrder > >selectedIndex;
+  std::map< TTraceLevel , std::vector< TObjectOrder > >selectedIndex;
 
   // RE
   bool lockedByUpdate;
@@ -179,7 +179,7 @@ private:
   void OnSelectAllButtonClicked( wxCommandEvent& event );
   void OnUnselectAllButtonClicked( wxCommandEvent& event );
   void OnInvertButtonClicked( wxCommandEvent& event );
-  void buildPanel( const wxString& title, TWindowLevel level );
+  void buildPanel( const wxString& title, TTraceLevel level );
 
   void ZoomAwareTransferData( const wxArrayInt &dialogSelections,
                                const std::vector< TObjectOrder > &timelineZoomRange );

@@ -387,7 +387,7 @@ void FindDialog::InitControlsBeforeShow()
        it != selectedObjects.end(); ++it )
   {
     string strObject;
-    if( myWindow->getLevel() == CPU )
+    if( myWindow->getLevel() == TTraceLevel::CPU )
       strObject = LabelConstructor::objectLabel( *it + 1,
                                                  myWindow->getLevel(),
                                                  myWindow->getTrace() );

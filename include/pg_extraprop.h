@@ -211,7 +211,7 @@ class prvRowsSelectionProperty: public wxPGProperty
 
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
 
-    void GetSelectionAsVector( TWindowLevel whichLevel,
+    void GetSelectionAsVector( TTraceLevel whichLevel,
                                std::vector<TObjectOrder> &levelSelections );
                                
     bool OnEvent( wxPropertyGrid* propgrid,
@@ -220,7 +220,7 @@ class prvRowsSelectionProperty: public wxPGProperty
   private:
     Timeline *myTimeline;
     wxString myWindowName;
-    SelectionManagement< TObjectOrder, TWindowLevel > mySelectedRows;
+    SelectionManagement< TObjectOrder, TTraceLevel > mySelectedRows;
 
     void GetStringValueFromVector( std::vector<TObjectOrder> &whichSelection,
                                    wxString &onString );
