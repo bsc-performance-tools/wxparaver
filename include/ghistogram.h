@@ -326,6 +326,7 @@ public:
 
   void execute();
 
+  void initColumnSelection();
   void fillGrid();
   void fillZoom();
   

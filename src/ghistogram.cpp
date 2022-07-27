@@ -467,22 +467,6 @@ void gHistogram::execute()
 
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
 
-  PRV_UINT16 idStat;
-  THistogramColumn numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
-  THistogramColumn curPlane;
-
-  myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
-  if( myHistogram->isCommunicationStat( myHistogram->getCurrentStat() ) )
-  {
-    curPlane = myHistogram->getCommSelectedPlane();
-    columnSelection.init( myHistogram->getCommColumnTotals(), idStat, numCols, curPlane );
-  }
-  else
-  {
-    curPlane = myHistogram->getSelectedPlane();
-    columnSelection.init( myHistogram->getColumnTotals(), idStat, numCols, curPlane );
-  }
-
   if( myHistogram->getZoom() )
     fillZoom();
   else
@@ -517,9 +501,19 @@ void gHistogram::execute()
   }
 
   SetFocus();
+}
 
 
-  
+void gHistogram::initColumnSelection()
+{
+  THistogramColumn numCols = myHistogram->getNumColumns( myHistogram->getCurrentStat() );
+  PRV_UINT16 idStat;
+  myHistogram->getIdStat( myHistogram->getCurrentStat(), idStat );
+
+  if( myHistogram->isCommunicationStat( myHistogram->getCurrentStat() ) )
+    columnSelection.init( myHistogram->getCommColumnTotals(), idStat, numCols, myHistogram->getCommSelectedPlane() );
+  else
+    columnSelection.init( myHistogram->getColumnTotals(), idStat, numCols, myHistogram->getSelectedPlane() );
 }
 
 
@@ -534,6 +528,8 @@ void gHistogram::fillGrid()
   zoomHisto->Show( false );
   gridHisto->Show( true );
   mainSizer->Layout();
+
+  initColumnSelection();
 
   if( tableBase == nullptr )
     tableBase = new HistoTableBase( this );
@@ -612,7 +608,9 @@ void gHistogram::fillZoom()
   gridHisto->Show( false );
   zoomHisto->Show( true );
   mainSizer->Layout();
-  
+
+  initColumnSelection();
+
   ready = false;
   zoomImage.Create( zoomHisto->GetSize().GetWidth(), zoomHisto->GetSize().GetHeight() );
   drawImage.Create( zoomHisto->GetSize().GetWidth(), zoomHisto->GetSize().GetHeight() );
@@ -632,7 +630,7 @@ void gHistogram::fillZoom()
     myHistogram->recalcGradientLimits();
     myHistogram->setChanged( true );
   }
-    
+
   if( commStat )
     curPlane = myHistogram->getCommSelectedPlane();
   else
