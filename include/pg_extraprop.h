@@ -199,13 +199,11 @@ class prvRowsSelectionProperty: public wxPGProperty
     prvRowsSelectionProperty()
     {}
 
-    prvRowsSelectionProperty( wxPropertyGrid *propgrid,
+    prvRowsSelectionProperty( const wxString &label,
+                              const wxString &name,
                               Timeline *whichWindow,
                               const wxString &windowName,
-                              std::vector<TObjectOrder> &whichSelection,
-                              const wxString &label,
-                              const wxString &name,
-                              const wxString &value = wxEmptyString );
+                              std::vector<TObjectOrder> &whichSelection );
                                
     virtual ~prvRowsSelectionProperty();
 

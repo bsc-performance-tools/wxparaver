@@ -742,13 +742,11 @@ WX_PG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
                                 wxString, wxString&, TextCtrlAndButton )
 #endif
 
-prvRowsSelectionProperty::prvRowsSelectionProperty( wxPropertyGrid *propgrid,
+prvRowsSelectionProperty::prvRowsSelectionProperty( const wxString &label,
+                                                    const wxString &name,
                                                     Timeline *whichWindow,
                                                     const wxString &windowName,
-                                                    vector<TObjectOrder> &whichSelection,
-                                                    const wxString &label,
-                                                    const wxString &name,
-                                                    const wxString &value ) : wxPGProperty(label, name)
+                                                    vector<TObjectOrder> &whichSelection ) : wxPGProperty(label, name)
 {
   myTimeline = whichWindow;
   myWindowName = windowName;
