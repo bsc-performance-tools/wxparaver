@@ -613,6 +613,7 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuRun, _( "Clustering" ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_CLUSTERING );
   buildItem( popUpMenuRun, _( "Folding" ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_FOLDING );
   //buildItem( popUpMenuRun, _( "Spectral" ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_SPECTRAL );
+  buildItem( popUpMenuRun, _( "Profet" ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_PROFET );
   buildItem( popUpMenuRun, _( "User Command" ), wxITEM_NORMAL, &gTimeline::OnPopUpRunApp, ID_MENU_USER_COMMAND );
   AppendSubMenu( popUpMenuRun, _( "Run" ) );
   

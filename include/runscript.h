@@ -30,7 +30,7 @@
  */
 
 ////@begin includes
-#include "include/filebrowserbutton.h"
+#include "filebrowserbutton.h"
 #include "wx/notebook.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -151,6 +151,11 @@ class wxHtmlWindow;
 #define ID_CHECKBOX_FOLDING_REUSE_FILES 10006
 #define ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE 10153
 #define ID_COMBOBOX_FOLDING_MODEL 10284
+#define ID_TEXTCTRL_PROFET_OUTPUT_TRACE 10010
+#define ID_TEXTCTRL_PROFET_CONFIG_FILE 10011
+#define ID_BUTTON_PROFET_CONFIG_FILE 10012
+#define ID_RADIOBUTTON_PROFET_MEMORY_LEVEL 10013
+#define ID_RADIOBUTTON_PROFET_SOCKET 10014
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
@@ -174,6 +179,7 @@ enum class TExternalApp
   STATS_WRAPPER,       // Stats        selected in choice widget
   CLUSTERING,          // Clustering   selected in choice widget
   FOLDING,             // Folding      selected in choice widget
+  PROFET,
                         // <-- add new apps here at most
   USER_COMMAND,        // User command selected in choice widget
 
@@ -330,6 +336,7 @@ public:
   void setStats();
   void setClustering( wxString whichClusteringCSV );
   void setFolding( wxString whichFoldingCSV );
+  void setProfet();
   void setUserCommand();
   
 ////@begin RunScript member variables
@@ -402,6 +409,12 @@ public:
   wxCheckBox* checkboxFoldingReuseFiles;
   wxCheckBox* checkboxFoldingUseSemanticValues;
   wxComboBox* comboboxFoldingModel;
+  wxBoxSizer* profetSection;
+  wxTextCtrl* textCtrlProfetOutputTrace;
+  wxTextCtrl* textCtrlProfetCFG;
+  FileBrowserButton* fileBrowserButtonProfetCFG;
+  wxRadioButton* radioButtonMemoryMetricsByMemoryController;
+  wxRadioButton* radioButtonMemoryMetricsBySocket;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
