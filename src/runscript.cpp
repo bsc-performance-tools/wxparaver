@@ -177,6 +177,8 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
+  EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, RunScript::OnRadiobuttonProfetByMemoryControllerSelected )
+  EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_SOCKET, RunScript::OnRadiobuttonProfetBySocketSelected )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
@@ -335,8 +337,8 @@ void RunScript::Init()
   textCtrlProfetOutputTrace = NULL;
   textCtrlProfetCFG = NULL;
   fileBrowserButtonProfetCFG = NULL;
-  radioButtonMemoryMetricsByMemoryController = NULL;
-  radioButtonMemoryMetricsBySocket = NULL;
+  radioButtonProfetByMemoryController = NULL;
+  radioButtonProfetBySocket = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
@@ -373,7 +375,7 @@ void RunScript::Init()
   applicationLabel[ TExternalApp::STATS_WRAPPER ]  = wxString( wxT("Stats") );
   applicationLabel[ TExternalApp::CLUSTERING ]     = wxString( wxT("Clustering") );
   applicationLabel[ TExternalApp::FOLDING ]        = wxString( wxT("Folding") );
-  applicationLabel[ TExternalApp::PROFET ]         = wxString( wxT("Profet") );
+  applicationLabel[ TExternalApp::PROFET ]         = wxString( wxT("PROFET") );
   applicationLabel[ TExternalApp::USER_COMMAND ]   = wxString( wxT("User command") );
   // Following only for warning dialogs
   applicationLabel[ TExternalApp::DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
@@ -979,19 +981,19 @@ void RunScript::CreateControls()
   fileBrowserButtonProfetCFG = new FileBrowserButton( itemDialog1, ID_BUTTON_PROFET_CONFIG_FILE, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
   itemBoxSizer9->Add(fileBrowserButtonProfetCFG, 3, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Memory metrics "));
+  wxStaticBox* itemStaticBoxSizer1Static = new wxStaticBox(itemDialog1, wxID_ANY, _(" Memory metrics aggregated by: "));
   wxStaticBoxSizer* itemStaticBoxSizer1 = new wxStaticBoxSizer(itemStaticBoxSizer1Static, wxHORIZONTAL);
   profetSection->Add(itemStaticBoxSizer1, 0, wxGROW|wxALL, 2);
 
   itemStaticBoxSizer1->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  radioButtonMemoryMetricsByMemoryController = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_MEMORY_LEVEL, _("Memory controller"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioButtonMemoryMetricsByMemoryController->SetValue(true);
-  itemStaticBoxSizer1->Add(radioButtonMemoryMetricsByMemoryController, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  radioButtonProfetByMemoryController = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, _("Memory controller"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioButtonProfetByMemoryController->SetValue(true);
+  itemStaticBoxSizer1->Add(radioButtonProfetByMemoryController, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-  radioButtonMemoryMetricsBySocket = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_SOCKET, _("Aggregated by socket"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioButtonMemoryMetricsBySocket->SetValue(false);
-  itemStaticBoxSizer1->Add(radioButtonMemoryMetricsBySocket, 2, wxALIGN_CENTER_VERTICAL|wxALL, 2);
+  radioButtonProfetBySocket = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_SOCKET, _("Socket"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioButtonProfetBySocket->SetValue(false);
+  itemStaticBoxSizer1->Add(radioButtonProfetBySocket, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
@@ -1081,8 +1083,8 @@ void RunScript::CreateControls()
   fileBrowserButtonClusteringXML->Enable();
 
   fileBrowserButtonProfetCFG->SetTextBox( textCtrlProfetCFG );
-  fileBrowserButtonProfetCFG->SetDialogMessage( _( "Load Profet Configuration" ) );
-  tmpWildCard = wxT( "Profet configuration file (*.json)|*.json|All files (*.*)|*.*" );
+  fileBrowserButtonProfetCFG->SetDialogMessage( _( "Load PROFET Configuration" ) );
+  tmpWildCard = wxT( "PROFET configuration file (*.json)|*.json|All files (*.*)|*.*" );
   fileBrowserButtonProfetCFG->SetFileDialogWildcard( tmpWildCard );
   fileBrowserButtonProfetCFG->Enable();
 
@@ -1473,7 +1475,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case TExternalApp::PROFET:
       command = application[ TExternalApp::PROFET ];
 
-      if ( radioButtonMemoryMetricsBySocket->GetValue() )
+      if ( radioButtonProfetBySocket->GetValue() )
       {
         parameters = wxString( wxT( " --socket " ) );
       }
@@ -1949,7 +1951,10 @@ void RunScript::adaptWindowToApplicationSelection()
         wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
         wxString tmpPath = tmpFilename.GetPath( wxPATH_GET_SEPARATOR );
         wxString tmpNameWOExtension = tmpFilename.GetName();
-        textCtrlProfetOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".profet.prv" )));
+        if ( radioButtonProfetByMemoryController->GetValue() )
+          textCtrlProfetOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".profet.mc.prv" )));
+        else
+          textCtrlProfetOutputTrace->SetValue( tmpNameWOExtension + wxString( wxT( ".profet.skt.prv" )));
       }
       break;
 
@@ -2863,9 +2868,13 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
   }
   else if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::PROFET ) )
   {
-    textCtrlProfetOutputTrace->SetValue( wxString( (
-        LocalKernel::composeName( std::string( event.GetString().mb_str() ),
-                                  std::string( "profet" ) ) + PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
+    std::string tmpInfix = radioButtonProfetByMemoryController->GetValue()?
+                             std::string("profet.mc"):
+                             std::string("profet.skt");
+
+    textCtrlProfetOutputTrace->SetValue(
+            wxString( ( LocalKernel::composeName( std::string( event.GetString().mb_str() ), tmpInfix ) +
+                        PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
 }
 
@@ -3004,4 +3013,32 @@ void RunScript::OnCloseWindow( wxCloseEvent& event )
 }
 
 
+/*!
+ * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER
+ */
+
+void RunScript::OnRadiobuttonProfetByMemoryControllerSelected( wxCommandEvent& event )
+{
+  if ( !textCtrlProfetOutputTrace->IsEmpty() )
+  {
+    wxString tmpOutputTrace = textCtrlProfetOutputTrace->GetValue();
+    tmpOutputTrace.Replace( ".profet.skt.prv", ".profet.mc.prv" );
+    textCtrlProfetOutputTrace->SetValue( tmpOutputTrace );
+  }
+}
+
+
+/*!
+ * wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_SOCKET
+ */
+
+void RunScript::OnRadiobuttonProfetBySocketSelected( wxCommandEvent& event )
+{
+  if ( !textCtrlProfetOutputTrace->IsEmpty() )
+  {
+    wxString tmpOutputTrace = textCtrlProfetOutputTrace->GetValue();
+    tmpOutputTrace.Replace( ".profet.mc.prv", ".profet.skt.prv" );
+    textCtrlProfetOutputTrace->SetValue( tmpOutputTrace );
+  }
+}
 

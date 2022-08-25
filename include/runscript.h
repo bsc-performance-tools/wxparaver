@@ -154,8 +154,8 @@ class wxHtmlWindow;
 #define ID_TEXTCTRL_PROFET_OUTPUT_TRACE 10010
 #define ID_TEXTCTRL_PROFET_CONFIG_FILE 10011
 #define ID_BUTTON_PROFET_CONFIG_FILE 10012
-#define ID_RADIOBUTTON_PROFET_MEMORY_LEVEL 10013
-#define ID_RADIOBUTTON_PROFET_SOCKET 10014
+#define ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER 10013
+#define ID_RADIOBUTTON_PROFET_BY_SOCKET 10014
 #define wxID_LABELCOMMANDPREVIEW 10091
 #define ID_BUTTON_HELP_SCRIPT 10207
 #define ID_BUTTON_RUN 10203
@@ -278,6 +278,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE
   void OnCheckboxFoldingUseSemanticValueUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER
+  void OnRadiobuttonProfetByMemoryControllerSelected( wxCommandEvent& event );
+
+  /// wxEVT_COMMAND_RADIOBUTTON_SELECTED event handler for ID_RADIOBUTTON_PROFET_BY_SOCKET
+  void OnRadiobuttonProfetBySocketSelected( wxCommandEvent& event );
 
   /// wxEVT_UPDATE_UI event handler for wxID_LABELCOMMANDPREVIEW
   void OnLabelcommandpreviewUpdate( wxUpdateUIEvent& event );
@@ -413,8 +419,8 @@ public:
   wxTextCtrl* textCtrlProfetOutputTrace;
   wxTextCtrl* textCtrlProfetCFG;
   FileBrowserButton* fileBrowserButtonProfetCFG;
-  wxRadioButton* radioButtonMemoryMetricsByMemoryController;
-  wxRadioButton* radioButtonMemoryMetricsBySocket;
+  wxRadioButton* radioButtonProfetByMemoryController;
+  wxRadioButton* radioButtonProfetBySocket;
   wxTextCtrl* labelCommandPreview;
   wxButton* buttonHelpScript;
   wxButton* buttonRun;
