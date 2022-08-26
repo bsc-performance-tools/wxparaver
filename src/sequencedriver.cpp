@@ -627,7 +627,9 @@ void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
   tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
   tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
   tmpOptions->set_original_time( false );
-  tmpOptions->set_break_states( false );
+  tmpOptions->set_break_states( true );
+  tmpOptions->set_remLastStates( false );
+  tmpOptions->set_keep_boundary_events( true );
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
   mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );

@@ -1475,15 +1475,18 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case TExternalApp::PROFET:
       command = application[ TExternalApp::PROFET ];
 
+      // Flags
+      parameters = wxString( wxT( " -w " ) ); // Don't show warnings
+
       if ( radioButtonProfetBySocket->GetValue() )
       {
         parameters = wxString( wxT( " --socket " ) );
       }
 
-      parameters += doubleQuote( fileBrowserButtonTrace->GetPath() ); // Source trace
+      // Source Trace
+      parameters += doubleQuote( fileBrowserButtonTrace->GetPath() );
 
       // Output trace
-      //parameters += wxString( wxT( " " ) ) + doubleQuote( textCtrlProfetOutputTrace->GetValue() ); // Final trace
       if ( !textCtrlProfetOutputTrace->IsEmpty() )
       {
         if ( textCtrlProfetOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
@@ -1500,7 +1503,8 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
         }
       }
 
-      parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonProfetCFG->GetPath() ); // Profet cfg
+      // Profet CFG
+      parameters += wxString( wxT( " " ) ) + doubleQuote( fileBrowserButtonProfetCFG->GetPath() );
 
       break;
 
