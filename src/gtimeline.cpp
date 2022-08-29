@@ -3115,9 +3115,16 @@ void gTimeline::printWhatWhere( )
   bool allowedLine, allowedSection = false, tooMuchMessage = true;
   int recordsCount = 0;
 
+  // Detect open region to avoid wxRichTextCtrl warning "Debug: Too many EndStyle calls!"
+  bool boldOpen = false;
+  bool italicOpen = false;
+  bool fontSizeOpen = false;
+  bool textColourOpen = false;  
+
   whatWhereText->Clear();
 
   whatWhereText->BeginFontSize( fontSize );
+  fontSizeOpen = true;
 
   for ( vector< pair< TWhatWhereLine, wxString > >::iterator it = whatWhereLines.begin(); 
         it != whatWhereLines.end(); ++it )
@@ -3128,35 +3135,53 @@ void gTimeline::printWhatWhere( )
       case TWhatWhereLine::BEGIN_OBJECT_SECTION:
         allowedSection = true;
         break;
+      
       case TWhatWhereLine::BEGIN_PREVNEXT_SECTION:
         allowedSection = checkWWPreviousNext->IsChecked();
         whatWhereText->BeginTextColour( wxColour( 0xb0b0b0 ) ); // GREY
+        textColourOpen = true;
         break;
+      
       case TWhatWhereLine::END_PREVNEXT_SECTION:
         whatWhereText->EndTextColour();
+        textColourOpen = false;
         break;
+
       case TWhatWhereLine::BEGIN_CURRENT_SECTION:
         allowedSection = true;
         whatWhereText->BeginTextColour( *wxBLACK );
+        textColourOpen = true;
         break;
+
       case TWhatWhereLine::END_CURRENT_SECTION:
         whatWhereText->EndTextColour();
+        textColourOpen = false;
+
         break;
       case TWhatWhereLine::BEGIN_RECORDS_SECTION:
         allowedSection = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
         whatWhereText->BeginFontSize( fontSize - 1 );
+        fontSizeOpen = true;
         whatWhereText->BeginItalic();
+        italicOpen = true;
         break;
+
       case TWhatWhereLine::END_RECORDS_SECTION:
         whatWhereText->EndItalic();
         whatWhereText->EndFontSize();
+        fontSizeOpen = false;
+        italicOpen = false;
         break;
+
       case TWhatWhereLine::BEGIN_SEMANTIC_SECTION:
         allowedSection = checkWWSemantic->IsChecked();
         whatWhereText->BeginBold();
+        boldOpen = true;
         break;
+
       case TWhatWhereLine::END_SEMANTIC_SECTION:
         whatWhereText->EndBold();
+        boldOpen = false;
         break;
 
       default:
@@ -3214,10 +3239,18 @@ void gTimeline::printWhatWhere( )
     }
   }
 
-  whatWhereText->EndFontSize();
-  whatWhereText->EndBold();
-  whatWhereText->EndItalic();
-  whatWhereText->EndTextColour();
+  // Close opened regions (to avoid wxRichTextCtrl warning "Debug: Too many EndStyle calls!")
+  if ( fontSizeOpen )
+    whatWhereText->EndFontSize();
+
+  if ( boldOpen )
+    whatWhereText->EndBold();
+
+  if ( italicOpen )
+    whatWhereText->EndItalic();
+
+  if ( textColourOpen )
+    whatWhereText->EndTextColour();
 
   infoZone->ChangeSelection( 0 );
 }
