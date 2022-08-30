@@ -1480,7 +1480,7 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       if ( radioButtonProfetBySocket->GetValue() )
       {
-        parameters = wxString( wxT( " --socket " ) );
+        parameters += wxString( wxT( " --socket " ) );
       }
 
       // Source Trace
