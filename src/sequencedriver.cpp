@@ -618,34 +618,42 @@ void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
   TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
 
   // Define sequence
-  mySequence->pushbackAction( TSequenceActions::traceCutterAction );
+  if ( ( whichTimeline->GetMyWindow()->getWindowBeginTime() != 0 ) ||
+       ( whichTimeline->GetMyWindow()->getWindowEndTime() != whichTimeline->GetMyWindow()->getTrace()->getEndTime() ) )
+  {
+    mySequence->pushbackAction( TSequenceActions::traceCutterAction );
+  }
   mySequence->pushbackAction( new RunProfetAction( mySequence ) );
 
   // Trace options state
-  TraceOptions *tmpOptions = TraceOptions::create( myKernel );
-  tmpOptions->set_by_time( true );
-  tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
-  tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
-  tmpOptions->set_original_time( false );
-  tmpOptions->set_break_states( true );
-  tmpOptions->set_remLastStates( false );
-  tmpOptions->set_keep_boundary_events( true );
-  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
-  tmpOptionsState->setData( tmpOptions );
-  mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
-  
-  // Output dir: subdir profet
-  std::string tmpFileName;
-  wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
-  tmpTraceName.ClearExt();
-  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameProfet.c_str() ) );  
-  if( !tmpTraceName.DirExists() )
-    tmpTraceName.Mkdir();
-  
-  // Profet suffix
-  OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
-  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameProfet );
-  mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
+  if ( ( whichTimeline->GetMyWindow()->getWindowBeginTime() != 0 ) ||
+       ( whichTimeline->GetMyWindow()->getWindowEndTime() != whichTimeline->GetMyWindow()->getTrace()->getEndTime() ) )
+  {
+    TraceOptions *tmpOptions = TraceOptions::create( myKernel );
+    tmpOptions->set_by_time( true );
+    tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
+    tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
+    tmpOptions->set_original_time( false );
+    tmpOptions->set_break_states( true );
+    tmpOptions->set_remLastStates( false );
+    tmpOptions->set_keep_boundary_events( true );
+    TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
+    tmpOptionsState->setData( tmpOptions );
+    mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
+    
+    // Output dir: subdir profet
+    std::string tmpFileName;
+    wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
+    tmpTraceName.ClearExt();
+    tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameProfet.c_str() ) );  
+    if( !tmpTraceName.DirExists() )
+      tmpTraceName.Mkdir();
+    
+    // Profet suffix
+    OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
+    tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameProfet );
+    mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
+  }
 
   // Engage sequence
   vector<std::string> traces;
