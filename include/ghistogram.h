@@ -419,6 +419,7 @@ public:
   void rightDownManager();
 
   static wxProgressDialog *dialogProgress;
+  static int numInstancesOfDialogProgress;
 
   std::vector< TObjectOrder > getSelectedRows();
   virtual void setSelectedRows( std::vector< bool > &selected );

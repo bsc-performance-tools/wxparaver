@@ -1,3 +1,6 @@
+#ifndef __GHISTOGRAM_H__
+#define __GHISTOGRAM_H__
+
 /*****************************************************************************\
  *                        ANALYSIS PERFORMANCE TOOLS                         *
  *                                  wxparaver                                *
@@ -161,6 +164,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 END_EVENT_TABLE()
 
 wxProgressDialog *gHistogram::dialogProgress = nullptr;
+int gHistogram::numInstancesOfDialogProgress = 0;
 
 /*!
  * gHistogram constructors
@@ -430,6 +434,7 @@ void gHistogram::execute()
 
 #ifndef _WIN32
     if( gHistogram::dialogProgress == nullptr )
+    {
       gHistogram::dialogProgress = new wxProgressDialog( wxT("Computing window..."),
                                                          wxT(""),
                                                          MAX_PROGRESS_BAR_VALUE,
@@ -437,11 +442,15 @@ void gHistogram::execute()
                                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                          wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                          wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+      ++gHistogram::numInstancesOfDialogProgress;
+    }
 
   // Disabled because some window managers can't show the dialog later
     //gHistogram::dialogProgress->Show( false );
+
     gHistogram::dialogProgress->Pulse( winTitle + _( "\t" ) );
     gHistogram::dialogProgress->Fit();
+
     progress->setMessage( std::string( winTitle.mb_str() ) );
 #endif // _WIN32
   }
@@ -474,15 +483,20 @@ void gHistogram::execute()
 
   ready = true;
   
-  if( gHistogram::dialogProgress != nullptr )
+  if ( gHistogram::dialogProgress != nullptr )
   {
-    gHistogram::dialogProgress->Show( false );
-    delete gHistogram::dialogProgress;
-    gHistogram::dialogProgress = nullptr;
+    --gHistogram::numInstancesOfDialogProgress;
+    if ( gHistogram::numInstancesOfDialogProgress == 1 )
+    {
+      gHistogram::dialogProgress->Show( false );
+      delete gHistogram::dialogProgress;
+      gHistogram::dialogProgress = nullptr;
+    }
   }
-  
-  if ( progress != nullptr )
+ 
+  if ( progress != nullptr ) // Inside previous if?
     delete progress;
+ 
 
   redrawStopWatch->Pause();
 
@@ -3026,9 +3040,12 @@ void gHistogram::saveText( bool onlySelectedPlane )
       reducePath = fileName;
     reducePath += "\t";
 
-    paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
-    paraverMain::dialogProgress->Fit();
-    paraverMain::dialogProgress->Show();
+    if( paraverMain::dialogProgress != nullptr )
+    {
+      paraverMain::dialogProgress->Pulse( wxString::FromUTF8( reducePath.c_str() ) );
+      paraverMain::dialogProgress->Fit();
+      paraverMain::dialogProgress->Show();
+    }
 
     output->dumpHistogram( myHistogram, fileName, onlySelectedPlane, myHistogram->getHideColumns(),
                             true, true, false, progress );
@@ -3036,10 +3053,13 @@ void gHistogram::saveText( bool onlySelectedPlane )
     delete output;
 
     // Delete progress controller
-    paraverMain::dialogProgress->Show( false );
-    delete paraverMain::dialogProgress;
-    paraverMain::dialogProgress = nullptr;
-    delete progress;
+    if( paraverMain::dialogProgress != nullptr )
+    {
+      paraverMain::dialogProgress->Show( false );
+      delete paraverMain::dialogProgress;
+      paraverMain::dialogProgress = nullptr;
+      delete progress;
+    }
   }
 
   setEnableDestroyButton( true );
@@ -3579,3 +3599,5 @@ void gHistogram::OnAutoredrawLeftDown( wxMouseEvent& event )
   myHistogram->setForceRecalc( true );
 }
 
+
+#endif // __GHISTOGRAM_H__

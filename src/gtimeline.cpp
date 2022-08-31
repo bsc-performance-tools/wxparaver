@@ -153,6 +153,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 END_EVENT_TABLE()
 
 wxProgressDialog *gTimeline::dialogProgress = nullptr;
+int gTimeline::numInstancesOfDialogProgress = 0;
 
 /*!
  * gTimeline constructors
@@ -660,6 +661,7 @@ void gTimeline::redraw()
   // Waiting for wxwidgets 3 code adaptation to prove that its solved.
 #ifndef _WIN32
     if( gTimeline::dialogProgress == nullptr )
+    {
       gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                         wxT(""),
                                                         MAX_PROGRESS_BAR_VALUE,
@@ -667,6 +669,8 @@ void gTimeline::redraw()
                                                         wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+      ++gTimeline::numInstancesOfDialogProgress;
+    }
 
     // Disabled because some window managers can't show the progress dialog later
     //gTimeline::dialogProgress->Show( false );
@@ -846,13 +850,17 @@ void gTimeline::redraw()
   }
   
   if( gTimeline::dialogProgress != nullptr )
-  {
-    gTimeline::dialogProgress->Show( false );
-    delete gTimeline::dialogProgress;
-    gTimeline::dialogProgress = nullptr;
+  { 
+    --gTimeline::numInstancesOfDialogProgress;
+    if ( gTimeline::numInstancesOfDialogProgress == 1 )
+    {
+      gTimeline::dialogProgress->Show( false );
+      delete gTimeline::dialogProgress;
+      gTimeline::dialogProgress = nullptr;
+    }
   }
 
-  if ( progress != nullptr )
+  if ( progress != nullptr )  // Inside previous if?
     delete progress;
 
   bufferDraw.SelectObject( wxNullBitmap );
