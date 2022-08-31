@@ -393,7 +393,7 @@ void RunScript::Init()
   application[ TExternalApp::USER_COMMAND ]        = wxString( wxT("") ); // NOT USED
   application[ TExternalApp::DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
   application[ TExternalApp::STATS ]               = wxString( wxT("stats") );
-  application[ TExternalApp::PROFET ]              = wxString( wxT("prvparse") );
+  application[ TExternalApp::PROFET ]              = wxString( wxT("profet") );
 
   tagFoldingOutputDirectory = wxString( wxT("Output directory:") );
 
