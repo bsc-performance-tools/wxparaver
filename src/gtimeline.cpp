@@ -153,7 +153,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 END_EVENT_TABLE()
 
 wxProgressDialog *gTimeline::dialogProgress = nullptr;
-int gTimeline::numInstancesOfDialogProgress = 0;
+int gTimeline::numberOfProgressDialogUsers = 0;
 
 /*!
  * gTimeline constructors
@@ -669,8 +669,8 @@ void gTimeline::redraw()
                                                         wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
-      ++gTimeline::numInstancesOfDialogProgress;
     }
+    ++gTimeline::numberOfProgressDialogUsers;
 
     // Disabled because some window managers can't show the progress dialog later
     //gTimeline::dialogProgress->Show( false );
@@ -849,19 +849,20 @@ void gTimeline::redraw()
     }
   }
   
-  if( gTimeline::dialogProgress != nullptr )
+  if( ( myWindow->getShowProgressBar() ) && ( gTimeline::dialogProgress != nullptr ) )
   { 
-    --gTimeline::numInstancesOfDialogProgress;
-    if ( gTimeline::numInstancesOfDialogProgress == 1 )
+    --gTimeline::numberOfProgressDialogUsers;
+    if ( gTimeline::numberOfProgressDialogUsers == 0 )
     {
       gTimeline::dialogProgress->Show( false );
       delete gTimeline::dialogProgress;
       gTimeline::dialogProgress = nullptr;
+
+      if ( progress != nullptr )
+        delete progress;
     }
   }
 
-  if ( progress != nullptr )  // Inside previous if?
-    delete progress;
 
   bufferDraw.SelectObject( wxNullBitmap );
   bufferDraw.SelectObject( drawImage );

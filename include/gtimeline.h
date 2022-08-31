@@ -640,7 +640,7 @@ public:
   void setEnableDestroyButton( bool value );
 
   static wxProgressDialog *dialogProgress;
-  static int numInstancesOfDialogProgress;
+  static int numberOfProgressDialogUsers;
   
   
 //  void OnRightClick(wxMouseEvent& event);

@@ -164,7 +164,7 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
 END_EVENT_TABLE()
 
 wxProgressDialog *gHistogram::dialogProgress = nullptr;
-int gHistogram::numInstancesOfDialogProgress = 0;
+int gHistogram::numberOfProgressDialogUsers = 0;
 
 /*!
  * gHistogram constructors
@@ -442,8 +442,8 @@ void gHistogram::execute()
                                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                          wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                          wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
-      ++gHistogram::numInstancesOfDialogProgress;
     }
+    ++gHistogram::numberOfProgressDialogUsers;
 
   // Disabled because some window managers can't show the dialog later
     //gHistogram::dialogProgress->Show( false );
@@ -485,18 +485,18 @@ void gHistogram::execute()
   
   if ( gHistogram::dialogProgress != nullptr )
   {
-    --gHistogram::numInstancesOfDialogProgress;
-    if ( gHistogram::numInstancesOfDialogProgress == 1 )
+    --gHistogram::numberOfProgressDialogUsers;
+    if ( gHistogram::numberOfProgressDialogUsers == 0 )
     {
       gHistogram::dialogProgress->Show( false );
       delete gHistogram::dialogProgress;
       gHistogram::dialogProgress = nullptr;
+
+      if ( progress != nullptr )
+        delete progress;
     }
   }
- 
-  if ( progress != nullptr ) // Inside previous if?
-    delete progress;
- 
+
 
   redrawStopWatch->Pause();
 
