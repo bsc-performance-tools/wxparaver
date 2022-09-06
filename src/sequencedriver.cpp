@@ -635,7 +635,8 @@ void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
     tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
     tmpOptions->set_original_time( false );
     tmpOptions->set_break_states( false );
-    tmpOptions->set_remFirstStates( true );
+    tmpOptions->set_remFirstStates( false );
+    tmpOptions->set_remLastStates( true );
     tmpOptions->set_keep_all_events( true );
     TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
     tmpOptionsState->setData( tmpOptions );
