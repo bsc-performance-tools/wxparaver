@@ -267,6 +267,37 @@ bool RunSpectralAction::execute( std::string whichTrace )
 
 
 /****************************************************************************
+ ********                 RunProfetAction                            ********
+ ****************************************************************************/
+vector<TSequenceStates> RunProfetAction::getStateDependencies() const
+{
+  vector<TSequenceStates> tmpStates;
+  return tmpStates;
+}
+
+bool RunProfetAction::execute( std::string whichTrace )
+{
+  bool errorFound = false;
+
+  //TraceEditSequence *tmpSequence = (TraceEditSequence *)mySequence;
+  RunScript *runAppDialog = wxparaverApp::mainWindow->GetRunApplication();
+  if( runAppDialog == nullptr )
+  {
+    runAppDialog = new RunScript( wxparaverApp::mainWindow );
+    wxparaverApp::mainWindow->SetRunApplication( runAppDialog );
+  }
+  runAppDialog->setTrace( wxString::FromUTF8( whichTrace.c_str() ) );
+  runAppDialog->setProfet();
+  
+  runAppDialog->Show();
+  runAppDialog->Raise();
+  
+  return errorFound;
+}
+
+
+
+/****************************************************************************
  ********              ExternalSortAction                            ********
  ****************************************************************************/
 vector<TSequenceStates> ExternalSortAction::getStateDependencies() const
@@ -345,9 +376,9 @@ void SequenceDriver::sequenceClustering( gTimeline *whichTimeline )
   tmpOutputState->setData( output );
   mySequence->addState( TSequenceStates::csvOutputState, tmpOutputState );
   
-  CSVWindowState *tmpWindowState = new CSVWindowState( mySequence );
+  SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
   tmpWindowState->setData( whichTimeline->GetMyWindow() );
-  mySequence->addState( TSequenceStates::csvWindowState, tmpWindowState );
+  mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
 
   CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
   std::string tmpFileName;
@@ -423,9 +454,9 @@ void SequenceDriver::sequenceDimemas( gTimeline *whichTimeline )
   tmpOptionsState->setData( tmpOptions );
   mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
 
-  CSVWindowState *tmpWindowState = new CSVWindowState( mySequence );
+  SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
   tmpWindowState->setData( whichTimeline->GetMyWindow() );
-  mySequence->addState( TSequenceStates::csvWindowState, tmpWindowState );
+  mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
 
   std::string tmpFileName;
   wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
@@ -475,9 +506,9 @@ void SequenceDriver::sequenceFolding( gTimeline *whichTimeline )
   tmpOutputState->setData( output );
   mySequence->addState( TSequenceStates::csvOutputState, tmpOutputState );
   
-  CSVWindowState *tmpWindowState = new CSVWindowState( mySequence );
+  SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
   tmpWindowState->setData( whichTimeline->GetMyWindow() );
-  mySequence->addState( TSequenceStates::csvWindowState, tmpWindowState );
+  mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
 
   CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
   std::string tmpFileName;
@@ -545,9 +576,9 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
   mySequence->addState( TSequenceStates::csvOutputState, tmpOutputState );
 
   // CSV window state
-  CSVWindowState *tmpWindowState = new CSVWindowState( mySequence );
+  SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
   tmpWindowState->setData( tmpWindow );
-  mySequence->addState( TSequenceStates::csvWindowState, tmpWindowState );
+  mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
 
   // CSV file name state
   CSVFileNameState *tmpCSVFilenameState = new CSVFileNameState( mySequence );
@@ -580,6 +611,56 @@ void SequenceDriver::sequenceSpectral( gTimeline *whichTimeline )
 }
 
 
+void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
+{
+  // Create sequence
+  KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
+  TraceEditSequence *mySequence = TraceEditSequence::create( myKernel );
+
+  // Define sequence
+  mySequence->pushbackAction( TSequenceActions::traceCutterAction );
+  mySequence->pushbackAction( new RunProfetAction( mySequence ) );
+
+  // Trace options state
+  TraceOptions *tmpOptions = TraceOptions::create( myKernel );
+  tmpOptions->set_by_time( true );
+  tmpOptions->set_min_cutting_time( whichTimeline->GetMyWindow()->getWindowBeginTime() );
+  tmpOptions->set_max_cutting_time( whichTimeline->GetMyWindow()->getWindowEndTime() );
+  tmpOptions->set_original_time( false );
+  tmpOptions->set_break_states( false );
+  tmpOptions->set_remFirstStates( false );
+  tmpOptions->set_remLastStates( true );
+  tmpOptions->set_keep_all_events( true );
+  TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
+  tmpOptionsState->setData( tmpOptions );
+  mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
+  
+  SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
+  tmpWindowState->setData( whichTimeline->GetMyWindow() );
+  mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
+
+  // Output dir: subdir profet
+  std::string tmpFileName;
+  wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );
+  tmpTraceName.ClearExt();
+  tmpTraceName.AppendDir( wxString::FromUTF8( TraceEditSequence::dirNameProfet.c_str() ) );  
+  if( !tmpTraceName.DirExists() )
+    tmpTraceName.Mkdir();
+  
+  // Profet suffix
+  OutputDirSuffixState *tmpOutputDirSuffixState = new OutputDirSuffixState( mySequence );
+  tmpOutputDirSuffixState->setData( TraceEditSequence::dirNameProfet );
+  mySequence->addState( TSequenceStates::outputDirSuffixState, tmpOutputDirSuffixState );
+
+  // Engage sequence
+  vector<std::string> traces;
+  traces.push_back( whichTimeline->GetMyWindow()->getTrace()->getFileName() );
+  mySequence->execute( traces );
+  
+  delete mySequence;
+}
+
+
 void SequenceDriver::sequenceUserCommand( gTimeline *whichTimeline )
 {
   KernelConnection *myKernel =  whichTimeline->GetMyWindow()->getKernel();
@@ -601,9 +682,9 @@ void SequenceDriver::sequenceUserCommand( gTimeline *whichTimeline )
   tmpOptionsState->setData( tmpOptions );
   mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
 
-  CSVWindowState *tmpWindowState = new CSVWindowState( mySequence );
+  SourceTimelineState *tmpWindowState = new SourceTimelineState( mySequence );
   tmpWindowState->setData( whichTimeline->GetMyWindow() );
-  mySequence->addState( TSequenceStates::csvWindowState, tmpWindowState );
+  mySequence->addState( TSequenceStates::sourceTimelineState, tmpWindowState );
 
   std::string tmpFileName;
   wxFileName tmpTraceName( wxString::FromUTF8( whichTimeline->GetMyWindow()->getTrace()->getFileName().c_str() ) );

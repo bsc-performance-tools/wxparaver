@@ -153,6 +153,7 @@ BEGIN_EVENT_TABLE( gTimeline, wxFrame )
 END_EVENT_TABLE()
 
 wxProgressDialog *gTimeline::dialogProgress = nullptr;
+int gTimeline::numberOfProgressDialogUsers = 0;
 
 /*!
  * gTimeline constructors
@@ -660,6 +661,7 @@ void gTimeline::redraw()
   // Waiting for wxwidgets 3 code adaptation to prove that its solved.
 #ifndef _WIN32
     if( gTimeline::dialogProgress == nullptr )
+    {
       gTimeline::dialogProgress = new wxProgressDialog( wxT("Drawing window..."),
                                                         wxT(""),
                                                         MAX_PROGRESS_BAR_VALUE,
@@ -667,6 +669,8 @@ void gTimeline::redraw()
                                                         wxPD_CAN_ABORT|wxPD_AUTO_HIDE|\
                                                         wxPD_APP_MODAL|wxPD_ELAPSED_TIME|\
                                                         wxPD_ESTIMATED_TIME|wxPD_REMAINING_TIME );
+    }
+    ++gTimeline::numberOfProgressDialogUsers;
 
     // Disabled because some window managers can't show the progress dialog later
     //gTimeline::dialogProgress->Show( false );
@@ -845,15 +849,20 @@ void gTimeline::redraw()
     }
   }
   
-  if( gTimeline::dialogProgress != nullptr )
-  {
-    gTimeline::dialogProgress->Show( false );
-    delete gTimeline::dialogProgress;
-    gTimeline::dialogProgress = nullptr;
+  if( ( myWindow->getShowProgressBar() ) && ( gTimeline::dialogProgress != nullptr ) )
+  { 
+    --gTimeline::numberOfProgressDialogUsers;
+    if ( gTimeline::numberOfProgressDialogUsers == 0 )
+    {
+      gTimeline::dialogProgress->Show( false );
+      delete gTimeline::dialogProgress;
+      gTimeline::dialogProgress = nullptr;
+
+      if ( progress != nullptr )
+        delete progress;
+    }
   }
 
-  if ( progress != nullptr )
-    delete progress;
 
   bufferDraw.SelectObject( wxNullBitmap );
   bufferDraw.SelectObject( drawImage );
@@ -2638,6 +2647,9 @@ void gTimeline::OnPopUpRunApp( wxCommandEvent& event )
     case ID_MENU_SPECTRAL:
       SequenceDriver::sequenceSpectral( this );
       break;
+    case ID_MENU_PROFET:
+      SequenceDriver::sequenceProfet( this );
+      break;
     case ID_MENU_USER_COMMAND:
       SequenceDriver::sequenceUserCommand( this );
       break;
@@ -3112,9 +3124,16 @@ void gTimeline::printWhatWhere( )
   bool allowedLine, allowedSection = false, tooMuchMessage = true;
   int recordsCount = 0;
 
+  // Detect open region to avoid wxRichTextCtrl warning "Debug: Too many EndStyle calls!"
+  bool boldOpen = false;
+  bool italicOpen = false;
+  bool fontSizeOpen = false;
+  bool textColourOpen = false;  
+
   whatWhereText->Clear();
 
   whatWhereText->BeginFontSize( fontSize );
+  fontSizeOpen = true;
 
   for ( vector< pair< TWhatWhereLine, wxString > >::iterator it = whatWhereLines.begin(); 
         it != whatWhereLines.end(); ++it )
@@ -3125,35 +3144,53 @@ void gTimeline::printWhatWhere( )
       case TWhatWhereLine::BEGIN_OBJECT_SECTION:
         allowedSection = true;
         break;
+      
       case TWhatWhereLine::BEGIN_PREVNEXT_SECTION:
         allowedSection = checkWWPreviousNext->IsChecked();
         whatWhereText->BeginTextColour( wxColour( 0xb0b0b0 ) ); // GREY
+        textColourOpen = true;
         break;
+      
       case TWhatWhereLine::END_PREVNEXT_SECTION:
         whatWhereText->EndTextColour();
+        textColourOpen = false;
         break;
+
       case TWhatWhereLine::BEGIN_CURRENT_SECTION:
         allowedSection = true;
         whatWhereText->BeginTextColour( *wxBLACK );
+        textColourOpen = true;
         break;
+
       case TWhatWhereLine::END_CURRENT_SECTION:
         whatWhereText->EndTextColour();
+        textColourOpen = false;
+
         break;
       case TWhatWhereLine::BEGIN_RECORDS_SECTION:
         allowedSection = checkWWEvents->IsChecked() || checkWWCommunications->IsChecked();
         whatWhereText->BeginFontSize( fontSize - 1 );
+        fontSizeOpen = true;
         whatWhereText->BeginItalic();
+        italicOpen = true;
         break;
+
       case TWhatWhereLine::END_RECORDS_SECTION:
         whatWhereText->EndItalic();
         whatWhereText->EndFontSize();
+        fontSizeOpen = false;
+        italicOpen = false;
         break;
+
       case TWhatWhereLine::BEGIN_SEMANTIC_SECTION:
         allowedSection = checkWWSemantic->IsChecked();
         whatWhereText->BeginBold();
+        boldOpen = true;
         break;
+
       case TWhatWhereLine::END_SEMANTIC_SECTION:
         whatWhereText->EndBold();
+        boldOpen = false;
         break;
 
       default:
@@ -3211,10 +3248,18 @@ void gTimeline::printWhatWhere( )
     }
   }
 
-  whatWhereText->EndFontSize();
-  whatWhereText->EndBold();
-  whatWhereText->EndItalic();
-  whatWhereText->EndTextColour();
+  // Close opened regions (to avoid wxRichTextCtrl warning "Debug: Too many EndStyle calls!")
+  if ( fontSizeOpen )
+    whatWhereText->EndFontSize();
+
+  if ( boldOpen )
+    whatWhereText->EndBold();
+
+  if ( italicOpen )
+    whatWhereText->EndItalic();
+
+  if ( textColourOpen )
+    whatWhereText->EndTextColour();
 
   infoZone->ChangeSelection( 0 );
 }
