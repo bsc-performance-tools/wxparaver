@@ -631,6 +631,7 @@ void SequenceDriver::sequenceProfet( gTimeline *whichTimeline )
   tmpOptions->set_remFirstStates( false );
   tmpOptions->set_remLastStates( true );
   tmpOptions->set_keep_all_events( true );
+  tmpOptions->set_max_cut_time_to_finish_of_first_appl( true );
   TraceOptionsState *tmpOptionsState = new TraceOptionsState( mySequence );
   tmpOptionsState->setData( tmpOptions );
   mySequence->addState( TSequenceStates::traceOptionsState, tmpOptionsState );
