@@ -442,23 +442,39 @@ inline bool insertLinkedPropertyShown( W* whichWindow,
 }
 
 
-template<class PropertyType >
+template<class PropertyType, typename P >
 struct buildProperty
 {
   template<class W, typename... TArgs >
-  PropertyType *operator()( wxString widgetLabel, wxString widgetName, W *window, TArgs&&... argsValues )
+  PropertyType *operator()( wxString widgetLabel, wxString widgetName, W *window, P propertyIndex, TArgs&&... argsValues )
   {
     return new PropertyType( widgetLabel, widgetName, std::forward<TArgs>( argsValues )... );
   }
 };
 
-template<>
-struct buildProperty<prvRowsSelectionProperty>
+template<typename P>
+struct buildProperty<prvRowsSelectionProperty, P>
 {
   template<class W, typename... TArgs >
-  prvRowsSelectionProperty *operator()( wxString widgetLabel, wxString widgetName, W *window, TArgs&&... argsValues )
+  prvRowsSelectionProperty *operator()( wxString widgetLabel, wxString widgetName, W *window, P propertyIndex, TArgs&&... argsValues )
   {
     return new prvRowsSelectionProperty( widgetLabel, widgetName, window, std::forward<TArgs>( argsValues )... );
+  }
+};
+
+template<typename P>
+struct buildProperty<prvEventInfoProperty, P>
+{
+  template<class W, typename... TArgs >
+  prvEventInfoProperty *operator()( wxString widgetLabel, wxString widgetName, W *window, P propertyIndex, TArgs&&... argsValues )
+  {
+    prvEventInfoType infoType;
+    if ( propertyIndex == SINGLE_EVENTTYPEVALUES )
+      infoType = prvEventInfoType::TYPES;
+    else if ( propertyIndex == SINGLE_EVENTVALUEVALUES )
+      infoType = prvEventInfoType::VALUES;
+
+    return new prvEventInfoProperty( widgetLabel, widgetName, window, infoType, std::forward<TArgs>( argsValues )... );
   }
 };
 
@@ -491,7 +507,7 @@ wxPGId AppendCFG4DProperty( PropertyType *dummyObject, // dummyObject only for t
   if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
-    auxProperty = buildProperty<PropertyType>()( widgetLabel, tmpWidgetName, whichWindow, std::forward<TArgs>( argsValues )... );
+    auxProperty = buildProperty<PropertyType, P>()( widgetLabel, tmpWidgetName, whichWindow, propertyIndex, std::forward<TArgs>( argsValues )... );
 
     if ( fatherWidget )
     {
@@ -527,63 +543,12 @@ wxPGId AppendCFG4DProperty( PropertyType *dummyObject, // dummyObject only for t
   {
     wxString auxTag = wxString::FromUTF8( whichWindow->getCFG4DAlias( widgetName ).c_str() );
 
-    auxProperty = buildProperty<PropertyType>()( auxTag, tmpWidgetName, whichWindow, std::forward<TArgs>( argsValues )... );
+    auxProperty = buildProperty<PropertyType, P>()( auxTag, tmpWidgetName, whichWindow, propertyIndex, std::forward<TArgs>( argsValues )... );
 
     retId = windowProperties->Append( auxProperty );
   }
   
   fillPropertyClientData( whichWindow, auxProperty, widgetName, whichPropertiesClientData, propertyOptions.clientData );
-
-  return retId;
-}
-
-
-wxPGId AppendCFG4DprvEventInfoPropertyWindow( wxPropertyGrid* windowProperties,
-                                              Timeline * whichWindow,
-                                              std::vector< PropertyClientData * >& whichPropertiesClientData,
-                                              set< CFGS4DLinkedPropertyShown >& linkedPropertiesShown,
-                                              wxPGId fatherWidget,
-                                              const wxString &widgetLabel,
-                                              TSingleTimelineProperties propertyIndex,
-                                              const wxPGChoices &choices )
-{
-  wxPGId retId = (wxPGId)nullptr;
-  prvEventInfoProperty *auxProperty = nullptr;
-
-  wxString tmpWidgetName;
-  tmpWidgetName << propNameCounter++;
-  std::string widgetName = getWidgetNameFromPropertyIndex( whichWindow, propertyIndex );  
-  
-  prvEventInfoType infoType;
-  if ( propertyIndex == SINGLE_EVENTTYPEVALUES )
-    infoType = prvEventInfoType::TYPES;
-  else if ( propertyIndex == SINGLE_EVENTVALUEVALUES )
-    infoType = prvEventInfoType::VALUES;
-
-  if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
-  {
-    // NORMAL mode
-    auxProperty = new prvEventInfoProperty( widgetLabel, tmpWidgetName, choices, whichWindow, infoType );
-
-    if ( fatherWidget )
-    {
-      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
-    }
-    else
-    {
-      retId = windowProperties->Append( auxProperty );
-    }
-  }
-  else if ( whichWindow->existsCFG4DAlias( widgetName ) &&
-            insertLinkedPropertyShown( whichWindow, propertyIndex, linkedPropertiesShown ) )
-  {
-    wxString auxTag = wxString::FromUTF8( whichWindow->getCFG4DAlias( widgetName ).c_str() );
-
-    auxProperty = new prvEventInfoProperty( auxTag, tmpWidgetName, choices, whichWindow, infoType );
-    retId = windowProperties->Append( auxProperty );
-  }
-
-  fillPropertyClientData( whichWindow, auxProperty, widgetName, whichPropertiesClientData );
 
   return retId;
 }
@@ -1323,9 +1288,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
     wxPGChoices typeChoices( arrayStr, arrayInt );
 
     wxPGId eventFilterTypeValues = (wxPGId)nullptr;
-    eventFilterTypeValues = AppendCFG4DprvEventInfoPropertyWindow(
+    eventFilterTypeValues = AppendCFG4DProperty( (prvEventInfoProperty *)nullptr,
             windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, eventFilterType,
-            wxT("Types"), SINGLE_EVENTTYPEVALUES,
+            wxT("Types"), SINGLE_EVENTTYPEVALUES, CFG4DPropertyCustomOptions(),
             typeChoices );
 
     if ( eventFilterTypeValues != (wxPGId)nullptr )
@@ -1378,9 +1343,9 @@ void updateTimelinePropertiesRecursive( wxPropertyGrid* windowProperties, Timeli
                          wxT("Function"), SINGLE_EVENTVALUEFUNCTION, CFG4DPropertyCustomOptions(), arrayFilterFunctions, arrayFilterFunctionsPos, selected );
 
     wxPGId eventFilterValueValues = (wxPGId)nullptr;
-    eventFilterValueValues = AppendCFG4DprvEventInfoPropertyWindow(
+    eventFilterValueValues = AppendCFG4DProperty( (prvEventInfoProperty *)nullptr,
             windowProperties, whichWindow, whichPropertiesClientData, linkedPropertiesShown, eventFilterValue,
-            wxT("Values"), SINGLE_EVENTVALUEVALUES,
+            wxT("Values"), SINGLE_EVENTVALUEVALUES, CFG4DPropertyCustomOptions(),
             typeChoices );
 
     if ( eventFilterValueValues != (wxPGId) nullptr )

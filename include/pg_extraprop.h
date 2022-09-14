@@ -93,9 +93,9 @@ class prvEventInfoProperty: public wxPGProperty
 
     prvEventInfoProperty( const wxString& label,
                           const wxString& name,
-                          const wxPGChoices& choices,
                           Timeline *whichWindow,
-                          prvEventInfoType whichInfoType  );
+                          prvEventInfoType whichInfoType,
+                          const wxPGChoices& choices );
 
     prvEventInfoProperty( const wxString& label,
                           const wxString& name,
