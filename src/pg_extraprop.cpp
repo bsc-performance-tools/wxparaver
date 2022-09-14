@@ -1017,16 +1017,21 @@ constexpr wxWindowID ID_TIMELINETREE = 10001;
 
 prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
                                                   const wxString& name,
-                                                  const wxString& value,
-                                                  std::vector<TWindowID> windows,
                                                   Timeline *currentWindow,
                                                   const Trace *currentTrace,
-                                                  bool needNoneElement )
+                                                  bool needNoneElement,
+                                                  std::vector<TWindowID> windows )
                                                     : wxPGProperty(label,name), 
                                                       myWindows( windows ),
                                                       myCurrentTrace( currentTrace )
 {
-  SetValue( value );
+  wxString valueStr;
+  if( currentWindow == nullptr )
+    valueStr = wxT( "None" );
+  else
+    valueStr = wxString( currentWindow->getName().c_str(), wxConvUTF8 );
+
+  SetValue( valueStr );
   selectedWindow = currentWindow;
   myNeedNoneElement = needNoneElement;
 }

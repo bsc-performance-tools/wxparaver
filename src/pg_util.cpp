@@ -442,11 +442,25 @@ inline bool insertLinkedPropertyShown( W* whichWindow,
 }
 
 
+struct CFG4DPropertyCustomOptions
+{
+  ButtonType addButton = NO_BUTTON;
+  PropertyClientData *clientData = nullptr;
+  bool needNoneElement = false;
+  Timeline *currentWindow = nullptr;
+};
+
+
 template<class PropertyType, typename P >
 struct buildProperty
 {
   template<class W, typename... TArgs >
-  PropertyType *operator()( wxString widgetLabel, wxString widgetName, W *window, P propertyIndex, TArgs&&... argsValues )
+  PropertyType *operator()( wxString widgetLabel,
+                            wxString widgetName,
+                            W *window,
+                            P propertyIndex,
+                            const CFG4DPropertyCustomOptions& options,
+                            TArgs&&... argsValues )
   {
     return new PropertyType( widgetLabel, widgetName, std::forward<TArgs>( argsValues )... );
   }
@@ -456,7 +470,12 @@ template<typename P>
 struct buildProperty<prvRowsSelectionProperty, P>
 {
   template<class W, typename... TArgs >
-  prvRowsSelectionProperty *operator()( wxString widgetLabel, wxString widgetName, W *window, P propertyIndex, TArgs&&... argsValues )
+  prvRowsSelectionProperty *operator()( wxString widgetLabel,
+                                        wxString widgetName,
+                                        W *window,
+                                        P propertyIndex,
+                                        const CFG4DPropertyCustomOptions& options,
+                                        TArgs&&... argsValues )
   {
     return new prvRowsSelectionProperty( widgetLabel, widgetName, window, std::forward<TArgs>( argsValues )... );
   }
@@ -466,7 +485,12 @@ template<typename P>
 struct buildProperty<prvEventInfoProperty, P>
 {
   template<class W, typename... TArgs >
-  prvEventInfoProperty *operator()( wxString widgetLabel, wxString widgetName, W *window, P propertyIndex, TArgs&&... argsValues )
+  prvEventInfoProperty *operator()( wxString widgetLabel,
+                                    wxString widgetName,
+                                    W *window,
+                                    P propertyIndex,
+                                    const CFG4DPropertyCustomOptions& options,
+                                    TArgs&&... argsValues )
   {
     prvEventInfoType infoType;
     if ( propertyIndex == SINGLE_EVENTTYPEVALUES )
@@ -478,12 +502,27 @@ struct buildProperty<prvEventInfoProperty, P>
   }
 };
 
-
-struct CFG4DPropertyCustomOptions
+template<typename P>
+struct buildProperty<prvTimelineTreeProperty, P>
 {
-  ButtonType addButton = NO_BUTTON;
-  PropertyClientData *clientData = nullptr;
+  template<class W, typename... TArgs >
+  prvTimelineTreeProperty *operator()( wxString widgetLabel,
+                                       wxString widgetName,
+                                       W *window,
+                                       P propertyIndex,
+                                       const CFG4DPropertyCustomOptions& options,
+                                       TArgs&&... argsValues )
+  {
+    Trace *currentTrace;
+    if( options.currentWindow == nullptr )
+      currentTrace = window->getTrace();
+    else
+      currentTrace = options.currentWindow->getTrace();
+
+    return new prvTimelineTreeProperty( widgetLabel, widgetName, options.currentWindow, currentTrace, options.needNoneElement, std::forward<TArgs>( argsValues )... );
+  }
 };
+
 
 template< class PropertyType, class W, typename P, typename... TArgs >
 wxPGId AppendCFG4DProperty( PropertyType *dummyObject, // dummyObject only for type deduction purposes
@@ -507,7 +546,12 @@ wxPGId AppendCFG4DProperty( PropertyType *dummyObject, // dummyObject only for t
   if ( paraverMain::myParaverMain->isCFG4DModeDisabled() )
   {
     // NORMAL mode
-    auxProperty = buildProperty<PropertyType, P>()( widgetLabel, tmpWidgetName, whichWindow, propertyIndex, std::forward<TArgs>( argsValues )... );
+    auxProperty = buildProperty<PropertyType, P>()( widgetLabel,
+                                                    tmpWidgetName,
+                                                    whichWindow,
+                                                    propertyIndex,
+                                                    propertyOptions,
+                                                    std::forward<TArgs>( argsValues )... );
 
     if ( fatherWidget )
     {
@@ -543,84 +587,17 @@ wxPGId AppendCFG4DProperty( PropertyType *dummyObject, // dummyObject only for t
   {
     wxString auxTag = wxString::FromUTF8( whichWindow->getCFG4DAlias( widgetName ).c_str() );
 
-    auxProperty = buildProperty<PropertyType, P>()( auxTag, tmpWidgetName, whichWindow, propertyIndex, std::forward<TArgs>( argsValues )... );
+    auxProperty = buildProperty<PropertyType, P>()( auxTag,
+                                                    tmpWidgetName,
+                                                    whichWindow,
+                                                    propertyIndex,
+                                                    propertyOptions,
+                                                    std::forward<TArgs>( argsValues )... );
 
     retId = windowProperties->Append( auxProperty );
   }
   
   fillPropertyClientData( whichWindow, auxProperty, widgetName, whichPropertiesClientData, propertyOptions.clientData );
-
-  return retId;
-}
-
-
-wxPGId AppendCFG4DTimelineTreePropertyHistogram( wxPropertyGrid* windowProperties,
-                                                 Histogram* whichHisto,
-                                                 std::vector< PropertyClientData * >& whichPropertiesClientData,
-                                                 set< CFGS4DLinkedPropertyShown >& linkedPropertiesShown,
-                                                 wxPGId fatherWidget,
-                                                 const wxString &widgetLabel,
-                                                 THistogramProperties propertyIndex,
-                                                 vector<TWindowID> windowsList,
-                                                 Timeline *currentWindow,
-                                                 bool needNoneElement = false )
-{
-  wxPGId retId = (wxPGId)nullptr;
-  prvTimelineTreeProperty *auxProperty = nullptr;
-
-  wxString tmpWidgetName;
-  tmpWidgetName << propNameCounter++;
-  std::string widgetName = getWidgetNameFromPropertyIndex( whichHisto, propertyIndex );  
-
-  wxString valueStr;
-  if( currentWindow == nullptr )
-    valueStr = wxT( "None" );
-  else
-    valueStr = wxString( currentWindow->getName().c_str(), wxConvUTF8 );
-
-  Trace *currentTrace;
-  if( currentWindow == nullptr )
-    currentTrace = whichHisto->getTrace();
-  else
-    currentTrace = currentWindow->getTrace();
-
-  if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
-  {
-    // NORMAL mode
-    auxProperty = new prvTimelineTreeProperty( widgetLabel,
-                                               tmpWidgetName,
-                                               valueStr,
-                                               windowsList,
-                                               currentWindow,
-                                               currentTrace,
-                                               needNoneElement );
-
-    if ( fatherWidget )
-    {
-      retId = windowProperties->AppendIn( fatherWidget, auxProperty );
-    }
-    else
-    {
-      retId = windowProperties->Append( auxProperty );
-    }
-  }
-  else if ( whichHisto->existsCFG4DAlias( widgetName ) &&
-            insertLinkedPropertyShown( whichHisto, propertyIndex, linkedPropertiesShown ) )
-  {
-    // CFG4D mode
-    wxString auxTag = wxString::FromUTF8( whichHisto->getCFG4DAlias( widgetName ).c_str() );
-
-    auxProperty = new prvTimelineTreeProperty( auxTag,
-                                               tmpWidgetName,
-                                               valueStr,
-                                               windowsList,
-                                               currentWindow,
-                                               currentTrace,
-                                               needNoneElement );
-    retId = windowProperties->Append( auxProperty );
-  }
-
-  fillPropertyClientData( whichHisto, auxProperty, widgetName, whichPropertiesClientData );
 
   return retId;
 }
@@ -1939,8 +1916,9 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
                                                                  whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getExtraControlWindow(), validWin );
 
-  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
-          wxT("Window"), HISTOGRAM_CONTROLWINDOW, validWin, whichHisto->getControlWindow() );
+  CFG4DPropertyCustomOptions tmpOptions { NO_BUTTON, nullptr, false, whichHisto->getControlWindow() };
+  AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
+                       wxT("Window"), HISTOGRAM_CONTROLWINDOW, tmpOptions, validWin );
 
   AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
                        wxT("Minimum"), HISTOGRAM_CONTROLMINIMUM, CFG4DPropertyCustomOptions(), whichHisto->getControlMin() );
@@ -2028,8 +2006,9 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
                                                     whichHisto->getExtraControlWindow(),
                                                     validWin );
 
-  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, dataCat,
-           wxT("Window"), HISTOGRAM_DATAWINDOW, validWin, whichHisto->getDataWindow() );
+  tmpOptions = { NO_BUTTON, nullptr, false, whichHisto->getDataWindow() };
+  AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, dataCat,
+                       wxT("Window"), HISTOGRAM_DATAWINDOW, tmpOptions, validWin );
 
   // 3rd window related properties
   wxPGId thirdWinCat = (wxPGId)nullptr;
@@ -2045,8 +2024,9 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
                                                          whichHisto->getDataWindow();
   LoadedWindows::getInstance()->getValidControlWindow( dataWindow, whichHisto->getControlWindow(), validWin );
 
-  AppendCFG4DTimelineTreePropertyHistogram( windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
-           wxT("3rd Window"), HISTOGRAM_3D3RDWINDOW, validWin, whichHisto->getExtraControlWindow(), true );
+  tmpOptions = { NO_BUTTON, nullptr, true, whichHisto->getExtraControlWindow() };
+  AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
+                       wxT("3rd Window"), HISTOGRAM_3D3RDWINDOW, tmpOptions, validWin );
 
   wxPGId thirdWinMinimum = AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, thirdWinCat,
                                                 wxT("Minimum"), HISTOGRAM_3DMINIMUM, CFG4DPropertyCustomOptions(), whichHisto->getExtraControlMin() );

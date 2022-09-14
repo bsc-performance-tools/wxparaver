@@ -271,11 +271,10 @@ class prvTimelineTreeProperty: public wxPGProperty
     
     prvTimelineTreeProperty( const wxString& label,
                              const wxString& name,
-                             const wxString& value,
-                             std::vector<TWindowID> windows,
                              Timeline *currentWindow,
                              const Trace *currentTrace,
-                             bool needNoneElement = false );
+                             bool needNoneElement,
+                             std::vector<TWindowID> windows );
     virtual ~prvTimelineTreeProperty();
 
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
