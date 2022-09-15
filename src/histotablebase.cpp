@@ -250,13 +250,13 @@ wxString HistoTableBase::GetValue( int row, int col )
     else
       label = wxString::FromUTF8( "-" );
 
-    if( myHisto->GetHistogram()->getHideColumns() && !myHisto->GetHistogram()->getHorizontal() )
-    {
-      vector<bool> noVoidSemRanges;
-      myHisto->GetColumnSelection().getSelected( noVoidSemRanges );
-      if( !noVoidSemRanges[ myHisto->GetHistogram()->getSemanticSortedColumn( col ) ] )
-        GetView()->SetRowSize( drawRow, 0 );
-    }
+    // if( myHisto->GetHistogram()->getHideColumns() && !myHisto->GetHistogram()->getHorizontal() )
+    // {
+    //   vector<bool> noVoidSemRanges;
+    //   myHisto->GetColumnSelection().getSelected( noVoidSemRanges );
+    //   if( !noVoidSemRanges[ myHisto->GetHistogram()->getSemanticSortedColumn( col ) ] )
+    //     GetView()->SetRowSize( drawRow, 0 );
+    // }
   }
   else
     label = wxString::FromUTF8( "-" );
