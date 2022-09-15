@@ -476,6 +476,9 @@ void gHistogram::execute()
 
   myHistogram->execute( myHistogram->getBeginTime(), myHistogram->getEndTime(), selectedRows, progress );
 
+  initColumnSelection();
+  columnSelection.getSelected( noVoidSemRanges );
+
   if( myHistogram->getZoom() )
     fillZoom();
   else
@@ -543,11 +546,10 @@ void gHistogram::fillGrid()
   gridHisto->Show( true );
   mainSizer->Layout();
 
-  initColumnSelection();
-
   if( tableBase == nullptr )
     tableBase = new HistoTableBase( this );
   tableBase->setSelectedRows( &selectedRows );
+  tableBase->setNoVoidSemRanges( &noVoidSemRanges );
   cellFontBold.SetWeight( wxFONTWEIGHT_BOLD );
   tableBase->setDefaultFontBold( cellFontBold );
 
@@ -615,15 +617,12 @@ void gHistogram::fillZoom()
   bool horizontal = myHistogram->getHorizontal();
   double cellWidth;
   double cellHeight;
-  vector<THistogramColumn> noVoidSemRanges;
   vector<bool> selectedColumns;
   PRV_UINT16 pixelSize = myHistogram->getPixelSize();
   
   gridHisto->Show( false );
   zoomHisto->Show( true );
   mainSizer->Layout();
-
-  initColumnSelection();
 
   ready = false;
   zoomImage.Create( zoomHisto->GetSize().GetWidth(), zoomHisto->GetSize().GetHeight() );
@@ -654,7 +653,6 @@ void gHistogram::fillZoom()
 
   if( myHistogram->getHideColumns() )
   {
-    columnSelection.getSelected( noVoidSemRanges );
     if( horizontal )
     {
       numDrawCols = noVoidSemRanges.size();

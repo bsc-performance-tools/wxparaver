@@ -52,11 +52,13 @@ class HistoTableBase : public wxGridTableBase
     virtual wxGridCellAttr *GetAttr( int row, int col, wxGridCellAttr::wxAttrKind kind );
 
     void setSelectedRows( vector< TObjectOrder > *whichRows );
+    void setNoVoidSemRanges( vector< THistogramColumn > *whichCols );
     void setDefaultFontBold( wxFont& whichFont );
 
   private:
     gHistogram *myHisto;
     vector< TObjectOrder > *selectedRows;
+    vector< THistogramColumn > *noVoidSemRanges;
     wxFont cellFontBold;
 
     string tmpStr;

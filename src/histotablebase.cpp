@@ -52,6 +52,9 @@ int HistoTableBase::GetNumberRows()
   if( myHisto->GetHistogram()->getHorizontal() )
     return myHisto->GetHistogram()->getNumRows() + NUMTOTALS + 1 + extra;
 
+  if( myHisto->GetHistogram()->getHideColumns() )
+    return noVoidSemRanges->size() + NUMTOTALS + 1;
+
   return myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) + NUMTOTALS + 1;
 }
 
@@ -62,7 +65,12 @@ int HistoTableBase::GetNumberCols()
   if( myHisto->GetHistogram()->getFirstRowColored() && !myHisto->GetHistogram()->getOnlyTotals() ) ++extra;
 
   if( myHisto->GetHistogram()->getHorizontal() )
-    return myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() );
+  {
+    if( myHisto->GetHistogram()->getHideColumns() )
+      return noVoidSemRanges->size();
+    else
+      return myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() );
+  }
 
   return myHisto->GetHistogram()->getNumRows() + extra;
 }
@@ -207,11 +215,11 @@ wxString HistoTableBase::GetValue( int row, int col )
       }
       else
       {
-        if( myHisto->GetHistogram()->getHideColumns() )
-        {
-          if( myHisto->GetHistogram()->getHorizontal() )
-            GetView()->SetColSize( drawCol, 0 );
-        }
+        // if( myHisto->GetHistogram()->getHideColumns() )
+        // {
+        //   if( myHisto->GetHistogram()->getHorizontal() )
+        //     GetView()->SetColSize( drawCol, 0 );
+        // }
         label = wxString::FromUTF8( "-" );
       }
     }
@@ -392,6 +400,12 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
 void HistoTableBase::setSelectedRows( vector<TObjectOrder> *whichRows )
 {
   selectedRows = whichRows;
+}
+
+
+void HistoTableBase::setNoVoidSemRanges( vector< THistogramColumn > *whichCols )
+{
+  noVoidSemRanges = whichCols;
 }
 
 
