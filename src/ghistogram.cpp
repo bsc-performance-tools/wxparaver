@@ -1145,6 +1145,10 @@ void gHistogram::updateHistogram()
       Update();
       
       myHistogram->setRedraw( false );
+
+      initColumnSelection();
+      columnSelection.getSelected( noVoidSemRanges );
+
       if( myHistogram->getZoom() )
         fillZoom();
       else
