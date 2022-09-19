@@ -76,6 +76,15 @@ int HistoTableBase::GetNumberCols()
 }
 
 
+int HistoTableBase::getNumSemanticColumns() const
+{
+  if ( myHisto->GetHistogram()->getHideColumns() )
+    return noVoidSemRanges->size();
+
+  return (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() );
+}
+
+
 wxString HistoTableBase::GetRowLabelValue( int row )
 {
   label.Clear();
@@ -86,9 +95,7 @@ wxString HistoTableBase::GetRowLabelValue( int row )
     --row;
   }
 
-  int tmpNumColumns = (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() );
-  if (  myHisto->GetHistogram()->getHideColumns() )
-    tmpNumColumns = noVoidSemRanges->size();
+  int tmpNumColumns = getNumSemanticColumns();
 
   if( myHisto->GetHistogram()->getOnlyTotals() )
   {
@@ -177,8 +184,11 @@ wxString HistoTableBase::GetValue( int row, int col )
     col = tmp;
   }
 
-  col = myHisto->GetHistogram()->getSemanticRealColumn( col, *noVoidSemRanges );
+  int tmpNumColumns = getNumSemanticColumns();
 
+  if( myHisto->GetHistogram()->getHorizontal() && col >= tmpNumColumns )
+    return "";
+  
   PRV_UINT16 idStat;
   label.Clear();
   tmpStr.clear();
@@ -187,7 +197,7 @@ wxString HistoTableBase::GetValue( int row, int col )
 
   TSemanticValue semValue;
   if( ( myHisto->GetHistogram()->getHorizontal() && row >= myHisto->GetHistogram()->getNumRows() ) ||
-      ( !myHisto->GetHistogram()->getHorizontal() && col >= (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) ) ||
+      ( !myHisto->GetHistogram()->getHorizontal() && col >= tmpNumColumns ) ||
       myHisto->GetHistogram()->getOnlyTotals() )
   {
     int iTotal;
@@ -196,7 +206,7 @@ wxString HistoTableBase::GetValue( int row, int col )
     else if( myHisto->GetHistogram()->getHorizontal() && row >= myHisto->GetHistogram()->getNumRows() )
       iTotal = row - myHisto->GetHistogram()->getNumRows() - 1;
     else
-      iTotal = col - (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) - 1;
+      iTotal = col - tmpNumColumns - 1;
 
     if( iTotal == -1 )
       label = wxString::FromUTF8( "" );
@@ -207,7 +217,7 @@ wxString HistoTableBase::GetValue( int row, int col )
       if( !myHisto->GetHistogram()->getHorizontal() )
         col = row;
       else
-        col = myHisto->GetHistogram()->getSemanticSortedColumn( col );
+        col = myHisto->GetHistogram()->getSemanticSortedColumn( myHisto->GetHistogram()->getSemanticRealColumn( col, *noVoidSemRanges ) );
 
       if( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
         totals->getAll( vTotals, idStat, col, myHisto->GetHistogram()->getCommSelectedPlane() );
@@ -242,8 +252,10 @@ wxString HistoTableBase::GetValue( int row, int col )
     else
       label = wxString::FromUTF8( "-" );
   }
-  else if ( row < myHisto->GetHistogram()->getNumRows() && col < myHisto->GetHistogram()->getNumColumns() ) // the if is CKC's bug fix
+  else if ( row < myHisto->GetHistogram()->getNumRows() && col < tmpNumColumns ) // the if is CKC's bug fix
   {
+    col = myHisto->GetHistogram()->getSemanticRealColumn( col, *noVoidSemRanges );
+
     if( myHisto->GetHistogram()->getCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getSelectedPlane() ) )
     {
       if( !myHisto->GetHistogram()->isNotZeroStat( myHisto->GetHistogram()->getCurrentStat() ) ||
@@ -279,10 +291,8 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
 {
   wxGridCellAttr *tmpAttr = new wxGridCellAttr();
   Timeline *controlWindow = myHisto->GetHistogram()->getControlWindow();
-  if ( myHisto->GetHistogram()->getHorizontal() )
-    col = myHisto->GetHistogram()->getSemanticRealColumn( col, *noVoidSemRanges );
-  else
-    row = myHisto->GetHistogram()->getSemanticRealColumn( row, *noVoidSemRanges );
+
+  int tmpNumColumns = getNumSemanticColumns();
 
   if( myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() )
   {
@@ -291,6 +301,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
       tmpAttr->SetFont( cellFontBold );
 
+      col = myHisto->GetHistogram()->getSemanticRealColumn( col, *noVoidSemRanges );
       TSemanticValue tmpValue = ( myHisto->GetHistogram()->getSemanticSortedColumn( col ) * myHisto->GetHistogram()->getControlDelta() ) +
                                 myHisto->GetHistogram()->getControlMin();
       rgb tmpCol;
@@ -324,8 +335,9 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       tmpAttr->SetAlignment( wxALIGN_CENTRE, wxALIGN_CENTRE );
       tmpAttr->SetFont( cellFontBold );
 
-      if( row < (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) )
+      if( row < tmpNumColumns )
       {
+        row = myHisto->GetHistogram()->getSemanticRealColumn( row, *noVoidSemRanges );
         TSemanticValue tmpValue = ( myHisto->GetHistogram()->getSemanticSortedColumn( row ) * myHisto->GetHistogram()->getControlDelta() ) +
                                   myHisto->GetHistogram()->getControlMin();
         rgb tmpCol;
@@ -356,9 +368,11 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
   PRV_UINT16 idStat;
   if( !myHisto->GetHistogram()->getIdStat( myHisto->GetHistogram()->getCurrentStat(), idStat ) )
     throw( std::exception() );
+
   TSemanticValue semValue;
+
   if( ( myHisto->GetHistogram()->getHorizontal() && row < myHisto->GetHistogram()->getNumRows() ) ||
-    ( !myHisto->GetHistogram()->getHorizontal() && col < (int)myHisto->GetHistogram()->getNumColumns( myHisto->GetHistogram()->getCurrentStat() ) ) )
+      ( !myHisto->GetHistogram()->getHorizontal() && col < tmpNumColumns ) )
   {
     if ( myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
     {
@@ -370,8 +384,10 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
       }
     }
-    else if ( row < myHisto->GetHistogram()->getNumRows() && col < myHisto->GetHistogram()->getNumColumns() )
+    else if ( row < myHisto->GetHistogram()->getNumRows() && col < tmpNumColumns )
     {
+      col = myHisto->GetHistogram()->getSemanticRealColumn( col, *noVoidSemRanges );
+
       if( myHisto->GetHistogram()->getCellValue( semValue, row, col, idStat, myHisto->GetHistogram()->getSelectedPlane() ) && myHisto->GetHistogram()->getShowColor() )
       {
         rgb tmpCol;
