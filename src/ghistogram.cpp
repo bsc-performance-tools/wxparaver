@@ -100,6 +100,8 @@ constexpr char STR_SORT_CUSTOM[] = "Custom";
 #include "../icons/autoredraw_refresh.xpm"
 ////@end XPM images
 
+constexpr unsigned int MAX_CELLS_AUTOHIDE_COLUMNS = 1<<18;
+
 /*!
  * gHistogram type definition
  */
@@ -263,7 +265,7 @@ void gHistogram::Init()
   histoStatus = NULL;
 ////@end gHistogram member initialisation
   parent = nullptr;
-
+  forceAutohideColumns = true;
 }
 
 
@@ -545,6 +547,12 @@ void gHistogram::fillGrid()
   zoomHisto->Show( false );
   gridHisto->Show( true );
   mainSizer->Layout();
+
+  if ( forceAutohideColumns && 
+       MAX_CELLS_AUTOHIDE_COLUMNS <= selectedRows.size() * myHistogram->getNumColumns( myHistogram->getCurrentStat() ) )
+  {
+    myHistogram->setHideColumns( true );
+  }
 
   if( tableBase == nullptr )
     tableBase = new HistoTableBase( this );
@@ -2889,6 +2897,19 @@ void gHistogram::On3dWarningUpdate( wxUpdateUIEvent& event )
 
 void gHistogram::OnToolHideColumnsClick( wxCommandEvent& event )
 {
+  if ( !myHistogram->getZoom() && forceAutohideColumns && 
+       MAX_CELLS_AUTOHIDE_COLUMNS <= selectedRows.size() * myHistogram->getNumColumns( myHistogram->getCurrentStat() ) )
+  {
+    wxMessageDialog dialog( this,
+                            wxT( "The number of cells to render may take more time than usual.\n\nDo you want to show them anyway?" ),
+                            wxT( "Too many cells" ),
+                            wxYES_NO|wxICON_EXCLAMATION );
+    if ( dialog.ShowModal() == wxID_YES )
+      forceAutohideColumns = false;
+    else
+      return;
+  }
+
   myHistogram->setHideColumns( event.IsChecked() );
   myHistogram->setRedraw( true );
   if( !myHistogram->getZoom() )

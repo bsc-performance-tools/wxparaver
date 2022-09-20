@@ -460,6 +460,7 @@ private:
   wxPoint zoomPointEnd;
 ////@end gHistogram member variables
   wxWindow *parent; // for clone
+  bool forceAutohideColumns;
 
   std::vector<THistogramColumn> noVoidSemRanges;
 
