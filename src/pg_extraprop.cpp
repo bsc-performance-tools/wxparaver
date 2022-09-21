@@ -298,9 +298,9 @@ prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
 
 prvEventInfoProperty::prvEventInfoProperty( const wxString& label,
                                             const wxString& name,
-                                            const wxPGChoices& choices,
                                             Timeline *whichWindow,
-                                            prvEventInfoType whichInfoType )
+                                            prvEventInfoType whichInfoType,
+                                            const wxPGChoices& choices )
                                               : wxPGProperty( label, name )
 {
   m_choices.Assign( choices );
@@ -742,13 +742,11 @@ WX_PG_IMPLEMENT_PROPERTY_CLASS( prvRowsSelectionProperty, wxPGProperty,
                                 wxString, wxString&, TextCtrlAndButton )
 #endif
 
-prvRowsSelectionProperty::prvRowsSelectionProperty( wxPropertyGrid *propgrid,
+prvRowsSelectionProperty::prvRowsSelectionProperty( const wxString &label,
+                                                    const wxString &name,
                                                     Timeline *whichWindow,
                                                     const wxString &windowName,
-                                                    vector<TObjectOrder> &whichSelection,
-                                                    const wxString &label,
-                                                    const wxString &name,
-                                                    const wxString &value ) : wxPGProperty(label, name)
+                                                    vector<TObjectOrder> &whichSelection ) : wxPGProperty(label, name)
 {
   myTimeline = whichWindow;
   myWindowName = windowName;
@@ -1019,16 +1017,21 @@ constexpr wxWindowID ID_TIMELINETREE = 10001;
 
 prvTimelineTreeProperty::prvTimelineTreeProperty( const wxString& label,
                                                   const wxString& name,
-                                                  const wxString& value,
-                                                  std::vector<TWindowID> windows,
                                                   Timeline *currentWindow,
                                                   const Trace *currentTrace,
-                                                  bool needNoneElement )
+                                                  bool needNoneElement,
+                                                  std::vector<TWindowID> windows )
                                                     : wxPGProperty(label,name), 
                                                       myWindows( windows ),
                                                       myCurrentTrace( currentTrace )
 {
-  SetValue( value );
+  wxString valueStr;
+  if( currentWindow == nullptr )
+    valueStr = wxT( "None" );
+  else
+    valueStr = wxString( currentWindow->getName().c_str(), wxConvUTF8 );
+
+  SetValue( valueStr );
   selectedWindow = currentWindow;
   myNeedNoneElement = needNoneElement;
 }

@@ -93,9 +93,9 @@ class prvEventInfoProperty: public wxPGProperty
 
     prvEventInfoProperty( const wxString& label,
                           const wxString& name,
-                          const wxPGChoices& choices,
                           Timeline *whichWindow,
-                          prvEventInfoType whichInfoType  );
+                          prvEventInfoType whichInfoType,
+                          const wxPGChoices& choices );
 
     prvEventInfoProperty( const wxString& label,
                           const wxString& name,
@@ -199,13 +199,11 @@ class prvRowsSelectionProperty: public wxPGProperty
     prvRowsSelectionProperty()
     {}
 
-    prvRowsSelectionProperty( wxPropertyGrid *propgrid,
+    prvRowsSelectionProperty( const wxString &label,
+                              const wxString &name,
                               Timeline *whichWindow,
                               const wxString &windowName,
-                              std::vector<TObjectOrder> &whichSelection,
-                              const wxString &label,
-                              const wxString &name,
-                              const wxString &value = wxEmptyString );
+                              std::vector<TObjectOrder> &whichSelection );
                                
     virtual ~prvRowsSelectionProperty();
 
@@ -273,11 +271,10 @@ class prvTimelineTreeProperty: public wxPGProperty
     
     prvTimelineTreeProperty( const wxString& label,
                              const wxString& name,
-                             const wxString& value,
-                             std::vector<TWindowID> windows,
                              Timeline *currentWindow,
                              const Trace *currentTrace,
-                             bool needNoneElement = false );
+                             bool needNoneElement,
+                             std::vector<TWindowID> windows );
     virtual ~prvTimelineTreeProperty();
 
     virtual wxString ValueToString( wxVariant & value, int argFlags = 0 ) const;
