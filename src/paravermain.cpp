@@ -1652,11 +1652,41 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     }
     whichHistogram->setControlDelta( property->GetValue().GetDouble() );
 
+    whichHistogram->setUseCustomDelta( true );
+
     // modify current zoom directly
     pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = whichHistogram->getZoomFirstDimension();
     zoomInfo.second.begin = property->GetValue().GetDouble(); // delta
     whichHistogram->setZoomFirstDimension( zoomInfo );
 
+    whichHistogram->setCompute2DScale( false );
+    whichHistogram->setRecalc( true );
+  }
+  else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_NUMCOLUMNS ) )
+  {
+    unsigned long newNumColumns;
+    wxString numColumnsStr = property->GetValueAsString();
+
+    vector<wxString> listNumColumnsChoices;
+    NumColumnsChoices::createChoices( [&]( wxString el ) { listNumColumnsChoices.push_back( el ); } );
+
+    if( numColumnsStr == listNumColumnsChoices[ NumColumnsChoices::CUSTOM_DELTA ] )
+    {
+      whichHistogram->setUseCustomDelta( true );
+      return;
+    }
+    else if( numColumnsStr == listNumColumnsChoices[ NumColumnsChoices::DEFAULT ] )
+    {
+      newNumColumns = ParaverConfig::getInstance()->getHistogramNumColumns();
+    }
+    else if( !numColumnsStr.ToULong( &newNumColumns ) || numColumnsStr[ 0 ] == '-' )
+    {
+      property->SetValue( propertyPrevValue );
+      return;
+    }
+
+    whichHistogram->setUseCustomDelta( false );
+    whichHistogram->setNumColumns( newNumColumns );
     whichHistogram->setCompute2DScale( false );
     whichHistogram->setRecalc( true );
   }

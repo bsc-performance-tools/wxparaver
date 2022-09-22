@@ -23,11 +23,32 @@
 
 #include <vector>
 
+#include "paraverconfig.h"
+
 class Timeline;
 class Histogram;
 class wxPropertyGrid;
 struct PropertyClientData;
 
+class NumColumnsChoices
+{
+  public:
+    enum
+    {
+      DEFAULT = 1,
+      CUSTOM_DELTA = 2
+    };
+
+    template< typename F >
+    static void createChoices( F addFunction )
+    {
+      addFunction( "1" );
+      wxString tmpStr;
+      tmpStr << ParaverConfig::getInstance()->getHistogramNumColumns();
+      addFunction( tmpStr + " (default)" );
+      addFunction( "Custom delta" );
+    }
+};
 
 void initPG();
 

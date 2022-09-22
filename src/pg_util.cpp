@@ -1927,6 +1927,20 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
                        wxT("Delta"), HISTOGRAM_CONTROLDELTA, CFG4DPropertyCustomOptions(), whichHisto->getControlDelta() );
 
+  wxPGChoices tmpChoices;
+  NumColumnsChoices::createChoices( [&]( wxString el ) { tmpChoices.Add( el ); } );
+
+  wxString numColumnsSelected;
+  if( whichHisto->getUseCustomDelta() )
+    numColumnsSelected = tmpChoices[ NumColumnsChoices::CUSTOM_DELTA ].GetText();
+  else if( whichHisto->getNumColumns() == ParaverConfig::getInstance()->getHistogramNumColumns() )
+    numColumnsSelected = tmpChoices[ NumColumnsChoices::DEFAULT ].GetText();
+  else
+    numColumnsSelected << whichHisto->getNumColumns();
+
+  wxPGProperty *tmpNumColumnsProp =  AppendCFG4DProperty( (wxEditEnumProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, ctrlCat,
+                                                          wxT("Num Columns"), HISTOGRAM_NUMCOLUMNS, CFG4DPropertyCustomOptions(), tmpChoices, numColumnsSelected );
+
   // Statistic related properties
   wxPGId statCat = (wxPGId)nullptr;
   if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
