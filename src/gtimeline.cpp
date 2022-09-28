@@ -90,6 +90,8 @@ constexpr int TIMER_SIZE_DURATION = 750;
 constexpr int TIMER_SIZE_DURATION = 250;
 #endif
 
+constexpr size_t MAX_LEGEND_COLORS = 512;
+
 ////@begin XPM images
 ////@end XPM images
 
@@ -3626,29 +3628,11 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
     }
     else if( myWindow->isCodeColorSet() )
     {
-      int endLimit = ceil( lastMax );
-    
-      if( lastType != EVENTTYPE_TYPE )
-      {
-        if( lastType == APPL_TYPE )
-          endLimit = myWindow->getTrace()->totalApplications() - 1;
-        else if( lastType == TASK_TYPE )
-          endLimit = myWindow->getTrace()->totalTasks() - 1;
-        else if( lastType == THREAD_TYPE )
-          endLimit = myWindow->getTrace()->totalThreads() - 1;
-        else if( lastType == NODE_TYPE )
-          endLimit = myWindow->getTrace()->totalNodes() - 1;
-        else if( lastType == CPU_TYPE )
-          endLimit = myWindow->getTrace()->totalCPUs();
-        else if( lastMax - lastMin > 200 )
-          endLimit = 200 + floor( lastMin );
-      }
-      int typeEndLimit = 0;
+      int endLimit = 0;
 
-      for( int i = floor( lastMin ); i <= endLimit; ++i )
+      for( auto it = semanticValuesToColor.cbegin(); it != semanticValuesToColor.cend(); ++it )
       {
-        if( semanticValuesToColor.find( i ) == semanticValuesToColor.end() )
-          continue;
+        int i = std::ceil( it->first );
 
         if( lastType == EVENTTYPE_TYPE && !myWindow->getTrace()->eventLoaded( i ) )
           continue;
@@ -3660,14 +3644,11 @@ void gTimeline::OnScrolledColorsUpdate( wxUpdateUIEvent& event )
         if( lastType == EVENTVALUE_TYPE &&
             !myWindow->getTrace()->getEventLabels().getEventValueLabel( i, tmpstr ) )
           continue;
-          
-        if( ( lastType == EVENTTYPE_TYPE ||
-              lastType == EVENTVALUE_TYPE ||
-              lastType == STATE_TYPE )
-              && typeEndLimit > 200 )
+
+        if( endLimit > MAX_LEGEND_COLORS )
           break;
         else
-          ++typeEndLimit;
+          ++endLimit;
         
         itemSizer = new wxBoxSizer(wxHORIZONTAL);
 
