@@ -1,6 +1,3 @@
-#ifndef __GHISTOGRAM_H__
-#define __GHISTOGRAM_H__
-
 /*****************************************************************************\
  *                        ANALYSIS PERFORMANCE TOOLS                         *
  *                                  wxparaver                                *
@@ -3640,10 +3637,8 @@ void gHistogram::OnAutoredrawLeftDown( wxMouseEvent& event )
 
 void gHistogram::OnToolFixColumnsSortClick( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_FIX_COLUMNS_SORT in gHistogram.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_FIX_COLUMNS_SORT in gHistogram. 
+  myHistogram->setFixedSemanticSort( event.IsChecked() );
+  myHistogram->setRedraw( true );
 }
 
 
@@ -3653,9 +3648,7 @@ void gHistogram::OnToolFixColumnsSortClick( wxCommandEvent& event )
 
 void gHistogram::OnToolFixColumnsSortUpdate( wxUpdateUIEvent& event )
 {
-////@begin wxEVT_UPDATE_UI event handler for ID_TOOL_FIX_COLUMNS_SORT in gHistogram.
-  // Before editing this code, remove the block markers.
-  event.Skip();
-////@end wxEVT_UPDATE_UI event handler for ID_TOOL_FIX_COLUMNS_SORT in gHistogram. 
+  event.Enable( myHistogram->getSemanticSortColumns() );
+  event.Check( myHistogram->getFixedSemanticSort() );
 }
 
