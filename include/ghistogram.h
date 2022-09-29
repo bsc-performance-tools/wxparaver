@@ -78,6 +78,7 @@ class gWindow;
 #define ID_TOOL_INCLUSIVE 10105
 #define ID_TOOL_CHOICE_SORTBY 10002
 #define ID_TOOL_REVERSE 10285
+#define ID_TOOL_FIX_COLUMNS_SORT 10298
 #define HISTO_PANEL_DATA 10000
 #define ID_ZOOMHISTO 10023
 #define ID_GRIDHISTO 10005
@@ -205,6 +206,12 @@ public:
 
   /// wxEVT_UPDATE_UI event handler for ID_TOOL_REVERSE
   void OnToolReverseUpdate( wxUpdateUIEvent& event );
+
+  /// wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_FIX_COLUMNS_SORT
+  void OnToolFixColumnsSortClick( wxCommandEvent& event );
+
+  /// wxEVT_UPDATE_UI event handler for ID_TOOL_FIX_COLUMNS_SORT
+  void OnToolFixColumnsSortUpdate( wxUpdateUIEvent& event );
 
   /// wxEVT_PAINT event handler for ID_ZOOMHISTO
   void OnPaint( wxPaintEvent& event );
