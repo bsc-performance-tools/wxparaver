@@ -3547,6 +3547,9 @@ void gHistogram::OnToolShortLabelsClick( wxCommandEvent& event )
 
 void gHistogram::OnToolChoiceSortbySelected( wxCommandEvent& event )
 {
+  if( myHistogram->getFixedSemanticSort() )
+    myHistogram->setFixedSemanticSort( false );
+
   if( event.GetSelection() == 0 && myHistogram->getSemanticSortColumns() )
   {
     myHistogram->setSemanticSortColumns( false );
@@ -3637,7 +3640,18 @@ void gHistogram::OnAutoredrawLeftDown( wxMouseEvent& event )
 
 void gHistogram::OnToolFixColumnsSortClick( wxCommandEvent& event )
 {
+  static THistoSortCriteria lastSortCriteria = THistoSortCriteria::TOTAL;
+
   myHistogram->setFixedSemanticSort( event.IsChecked() );
+
+  if( event.IsChecked() )
+  {
+    lastSortCriteria = myHistogram->getSemanticSortCriteria();
+    EnableCustomSortOption();
+  }
+  else
+    myHistogram->setSemanticSortCriteria( lastSortCriteria );
+
   myHistogram->setRedraw( true );
 }
 
