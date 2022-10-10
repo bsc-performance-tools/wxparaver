@@ -3640,8 +3640,6 @@ void gHistogram::OnAutoredrawLeftDown( wxMouseEvent& event )
 
 void gHistogram::OnToolFixColumnsSortClick( wxCommandEvent& event )
 {
-  static THistoSortCriteria lastSortCriteria = THistoSortCriteria::TOTAL;
-
   myHistogram->setFixedSemanticSort( event.IsChecked() );
 
   if( event.IsChecked() )
