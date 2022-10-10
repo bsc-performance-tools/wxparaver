@@ -3598,6 +3598,8 @@ void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
   if( myHistogram->getSemanticSortColumns() )
   {    
     tmpSort = static_cast<int>( myHistogram->getSemanticSortCriteria() ) + 1;
+    if( myHistogram->getSemanticSortCriteria() == THistoSortCriteria::CUSTOM )
+      EnableCustomSortOption();
   }
 
   if( tmpSort != choiceSortBy->GetSelection() )
