@@ -976,10 +976,10 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       if( myWindow->isFusedLinesColorSet() )
       {
         objectExt = dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                                            myWindow->getMaximumY(),
-                                                                                            false,
-                                                                                            ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                                            false ).c_str() ) ) + wxSize( 5, 0 );
+                                                                                           myWindow->getMaximumY(),
+                                                                                           false,
+                                                                                           ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                                                           false ).c_str() ) ) + wxSize( 5, 0 );
         break;
       }
 
@@ -1039,36 +1039,36 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
   if( myWindow->isFusedLinesColorSet() )
   {
     dc.DrawText( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                       myWindow->getMaximumY(),
-                                                                       false,
-                                                                       ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                       false ).c_str() ),
+                                                                      myWindow->getMaximumY(),
+                                                                      false,
+                                                                      ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                                      false ).c_str() ),
                  drawBorder, drawBorder );
 
     dc.DrawText( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                       myWindow->getMinimumY(),
-                                                                       false,
-                                                                       ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                       false ).c_str() ),
+                                                                      myWindow->getMinimumY(),
+                                                                      false,
+                                                                      ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                                      false ).c_str() ),
                  drawBorder, timeAxisPos - objectExt.GetHeight() );
 
     if( myWindow->getMinimumY() < 0.0 && myWindow->getMaximumY() > 0.0 )
     {
       TSemanticValue relativeZero = myWindow->getMaximumY() / ( myWindow->getMaximumY() - myWindow->getMinimumY() );
       dc.DrawText( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                         0.0,
-                                                                         false,
-                                                                         ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                         false ).c_str() ),
+                                                                        0.0,
+                                                                        false,
+                                                                        ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                                        false ).c_str() ),
                    drawBorder, ( relativeZero * ( timeAxisPos - objectExt.GetHeight() ) ) + drawBorder + 1 );
     }
     else
     {
       dc.DrawText( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                         ( myWindow->getMaximumY() + myWindow->getMinimumY() ) / 2.0,
-                                                                         false,
-                                                                         ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                         false ).c_str() ),
+                                                                        ( myWindow->getMaximumY() + myWindow->getMinimumY() ) / 2.0,
+                                                                        false,
+                                                                        ParaverConfig::getInstance()->getTimelinePrecision(),
+                                                                        false ).c_str() ),
                    drawBorder, ( timeAxisPos - objectExt.GetHeight() ) / 2 );
     }
   }
@@ -1221,8 +1221,8 @@ void gTimeline::drawZeroAxis( wxDC& dc, vector<TObjectOrder>& selected )
 
     if( myWindow->isFusedLinesColorSet() )
     {
-      dc.DrawLine( objectAxisPos, ( relativeZero * ( timeAxisPos - drawBorder ) ) + drawBorder + 1,
-                   dc.GetSize().GetWidth() - drawBorder, ( relativeZero * ( timeAxisPos - drawBorder ) ) + drawBorder + 1 );
+      wxCoord zeroAxisHeight = ( timeAxisPos - drawBorder ) - ( relativeZero * ( timeAxisPos - drawBorder ) ) + drawBorder + 1;
+      dc.DrawLine( objectAxisPos, zeroAxisHeight, dc.GetSize().GetWidth() - drawBorder, zeroAxisHeight );
     }
     else if( myWindow->isFunctionLineColorSet() || myWindow->isPunctualColorSet() )
     {
