@@ -973,16 +973,6 @@ bool gTimeline::drawAxis( wxDC& dc, vector<TObjectOrder>& selected )
       break;
 
     case TObjectAxisSize::ALL_LEVELS:
-      if( myWindow->isFusedLinesColorSet() )
-      {
-        objectExt = dc.GetTextExtent( wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow,
-                                                                                           myWindow->getMaximumY(),
-                                                                                           false,
-                                                                                           ParaverConfig::getInstance()->getTimelinePrecision(),
-                                                                                           false ).c_str() ) ) + wxSize( 5, 0 );
-        break;
-      }
-
       if( myWindow->getTrace()->existResourceInfo() )
         endLevel = TTraceLevel::CPU;
     
