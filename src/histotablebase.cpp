@@ -44,7 +44,9 @@ HistoTableBase::~HistoTableBase()
 int HistoTableBase::GetNumberRows()
 {
   int extra = 0;
-  if( myHisto->GetHistogram()->getFirstRowColored() ) ++extra;
+  if( myHisto->GetHistogram()->getFirstRowColored() &&
+      !myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
+    ++extra;
 
   if( myHisto->GetHistogram()->getOnlyTotals() )
     return myHisto->GetHistogram()->getHorizontal() ? NUMTOTALS + extra : NUMTOTALS;
@@ -62,7 +64,11 @@ int HistoTableBase::GetNumberRows()
 int HistoTableBase::GetNumberCols()
 {
   int extra = 0;
-  if( myHisto->GetHistogram()->getFirstRowColored() && !myHisto->GetHistogram()->getOnlyTotals() ) ++extra;
+  if( ( myHisto->GetHistogram()->getFirstRowColored() && !myHisto->GetHistogram()->getOnlyTotals() ) ||
+      ( !myHisto->GetHistogram()->getHorizontal() &&
+        myHisto->GetHistogram()->getFirstRowColored() &&
+        !myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() )) ) 
+    ++extra;
 
   if( myHisto->GetHistogram()->getHorizontal() )
   {
@@ -89,7 +95,9 @@ wxString HistoTableBase::GetRowLabelValue( int row )
 {
   label.Clear();
 
-  if( myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() )
+  if( myHisto->GetHistogram()->getHorizontal() &&
+      myHisto->GetHistogram()->getFirstRowColored() &&
+      !myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
   {
     if( row == 0 ) return wxT( "" );
     --row;
@@ -161,7 +169,9 @@ wxString HistoTableBase::GetValue( int row, int col )
   int drawCol = col;
   int drawRow = row;
 
-  if( myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() )
+  if( myHisto->GetHistogram()->getHorizontal() &&
+      myHisto->GetHistogram()->getFirstRowColored() &&
+      !myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
   {
     if( row == 0 ) return GetColLabelValue( col );
     --row;
@@ -291,7 +301,9 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
 
   int tmpNumColumns = getNumSemanticColumns();
 
-  if( myHisto->GetHistogram()->getHorizontal() && myHisto->GetHistogram()->getFirstRowColored() )
+  if( myHisto->GetHistogram()->getHorizontal() &&
+      myHisto->GetHistogram()->getFirstRowColored() &&
+      !myHisto->GetHistogram()->isCommunicationStat( myHisto->GetHistogram()->getCurrentStat() ) )
   {
     if( row == 0 )
     {
