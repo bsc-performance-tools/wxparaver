@@ -219,17 +219,6 @@ wxMenuItem *gPopUpMenu<T>::buildItem( wxMenu *popUp,
   popUp->Append( tmp );
   if ( tmp->IsCheckable() )
     tmp->Check( checked );
-    
-//   if( handler != nullptr )
-// #ifdef _WIN32
-//     Connect( id,
-// #else
-//     popUp->Connect( id,
-// #endif
-//                     wxEVT_COMMAND_MENU_SELECTED, 
-//                     handler,
-//                     nullptr,
-//                     this );
 
 #ifdef _WIN32
   Bind( wxEVT_COMMAND_MENU_SELECTED, function, window, id );

@@ -93,6 +93,7 @@ BEGIN_EVENT_TABLE( PreferencesDialog, wxPropertySheetDialog )
   EVT_BUTTON( ID_BUTTON_WORKSPACES_EXPORT, PreferencesDialog::OnButtonWorkspacesExportClick )
   EVT_UPDATE_UI( ID_BUTTON_WORKSPACES_EXPORT, PreferencesDialog::OnButtonWorkspacesExportUpdate )
   EVT_TEXT( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameTextUpdated )
+  EVT_TEXT_ENTER( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameEnter )
   EVT_UPDATE_UI( ID_TEXT_WORKSPACE_NAME, PreferencesDialog::OnTextWorkspaceNameUpdate )
   EVT_RADIOBUTTON( ID_RADIOSTATES, PreferencesDialog::OnRadiostatesSelected )
   EVT_UPDATE_UI( ID_RADIOSTATES, PreferencesDialog::OnRadiostatesUpdate )
@@ -1242,7 +1243,7 @@ void PreferencesDialog::CreateControls()
   itemStaticBoxSizer1->Add(itemBoxSizer29, 4, wxGROW|wxALL, 0);
   wxBoxSizer* itemBoxSizer30 = new wxBoxSizer(wxHORIZONTAL);
   itemBoxSizer29->Add(itemBoxSizer30, 0, wxGROW|wxLEFT|wxTOP, 5);
-  txtWorkspaceName = new wxTextCtrl( panelWorkspaces, ID_TEXT_WORKSPACE_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+  txtWorkspaceName = new wxTextCtrl( panelWorkspaces, ID_TEXT_WORKSPACE_NAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
   if (PreferencesDialog::ShowToolTips())
     txtWorkspaceName->SetToolTip(_("Workspace name"));
   itemBoxSizer30->Add(txtWorkspaceName, 1, wxGROW|wxRIGHT|wxTOP|wxBOTTOM, 5);
@@ -2852,4 +2853,13 @@ void PreferencesDialog::OnButtonWorkspacesExportClick( wxCommandEvent& event )
 void PreferencesDialog::OnButtonWorkspacesExportUpdate( wxUpdateUIEvent& event )
 {
   event.Enable( listWorkspaces->GetSelection() != wxNOT_FOUND );
+}
+
+
+/*!
+ * wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXT_WORKSPACE_NAME
+ */
+
+void PreferencesDialog::OnTextWorkspaceNameEnter( wxCommandEvent& event )
+{
 }

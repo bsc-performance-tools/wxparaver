@@ -271,6 +271,9 @@ public:
   /// wxEVT_COMMAND_TEXT_UPDATED event handler for ID_TEXT_WORKSPACE_NAME
   void OnTextWorkspaceNameTextUpdated( wxCommandEvent& event );
 
+  /// wxEVT_COMMAND_TEXT_ENTER event handler for ID_TEXT_WORKSPACE_NAME
+  void OnTextWorkspaceNameEnter( wxCommandEvent& event );
+
   /// wxEVT_UPDATE_UI event handler for ID_TEXT_WORKSPACE_NAME
   void OnTextWorkspaceNameUpdate( wxUpdateUIEvent& event );
 
