@@ -1566,7 +1566,7 @@ void EventTypesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible,
       
       if (( !foundFirst ) && ( fullList[ visible[ i ] ] == currentType ))
       {
-        tmpFirstPosSelectedVisible = visible[ i ];
+        tmpFirstPosSelectedVisible = selectedPositionInGUI;
         foundFirst = true;
       }
 
@@ -1776,15 +1776,16 @@ void EventValuesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible
 
   for ( unsigned int i = 0; i < visible.GetCount(); ++i )
   {
-    int j = fullList.Index( visible[ i ] );
-    string tmpLabel( labels[ j ].mb_str() );
+    int fullListPos = fullList.Index( visible[ i ] );
+    string tmpLabel( labels[ fullListPos ].mb_str() );
 
     stringstream tmpValue;
-    tmpValue << fullList[ j ];
+    tmpValue << fullList[ fullListPos ];
     if ( matchesAllRegex( tmpLabel, tmpValue.str() ) )
     {
-      tmpVisible.Add( labels[ j ] );
-      tmpPosVisible.Add( visible[ i ] );
+      tmpVisible.Add( labels[ fullListPos ] );
+      tmpPosVisible.Add( fullListPos );
+
       if ( selected.Index( visible[ i ] ) != wxNOT_FOUND )
       {
         tmpGUISelection.Add( selectedPositionInGUI );
@@ -1792,7 +1793,7 @@ void EventValuesInfoManager::getSelectedFromVisible( wxArrayString& whichVisible
 
         if ( !foundFirst )
         {
-          tmpFirstPosSelectedVisible = i;
+          tmpFirstPosSelectedVisible = selectedPositionInGUI;
           foundFirst = true;
         }
       }
