@@ -2365,16 +2365,10 @@ void PreferencesDialog::OnTextWorkspaceAutotypesTextUpdated( wxCommandEvent& eve
   tmpWrk.setAutoTypes( tmpAutoTypes );
 }
 
- 
-/*!
- * wxEVT_KILL_FOCUS event handler for ID_TEXT_WORKSPACE_NAME
- */
 
-void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
+void PreferencesDialog::workSpaceNameKillFocus( const wxString& whichName )
 {
-  wxString tmpName = txtWorkspaceName->GetValue();
-
-  if( tmpName.empty() )
+  if( whichName.empty() )
   {
     txtWorkspaceName->SetValue( originalWorkspaceName );
     ::wxMessageBox( "Empty name for workspace not allowed.",
@@ -2384,11 +2378,11 @@ void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
     return;
   }
 
-  if ( originalWorkspaceName == tmpName )
+  if ( whichName == originalWorkspaceName )
     return;
-
+  
+  wxString tmpName = whichName;
   bool nameEdited = false;
-
   while( workspaceContainer.find( tmpName ) != workspaceContainer.end())
   {
     nameEdited = true;
@@ -2411,6 +2405,16 @@ void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
                     wxT( "Duplicated name" ),
                     wxICON_EXCLAMATION,
                     this );
+}
+
+
+/*!
+ * wxEVT_KILL_FOCUS event handler for ID_TEXT_WORKSPACE_NAME
+ */
+
+void PreferencesDialog::OnTextWorkspaceNameKillFocus( wxFocusEvent& event )
+{
+  workSpaceNameKillFocus( txtWorkspaceName->GetValue() );
 }
 
 
@@ -2862,4 +2866,5 @@ void PreferencesDialog::OnButtonWorkspacesExportUpdate( wxUpdateUIEvent& event )
 
 void PreferencesDialog::OnTextWorkspaceNameEnter( wxCommandEvent& event )
 {
+  workSpaceNameKillFocus( txtWorkspaceName->GetValue() );
 }

@@ -854,5 +854,7 @@ private:
                            wxChoice *choiceBox );
   rgb wxColourToRGB( wxColour colour ) ;
   wxColour RGBTowxColour( rgb colour );
-  
+
+  void workSpaceNameKillFocus( const wxString& whichName );
+ 
 };
