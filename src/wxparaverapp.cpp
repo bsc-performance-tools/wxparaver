@@ -67,6 +67,24 @@ using namespace std;
 struct sigaction act;
 #endif
 
+
+bool launchBrowser( const wxString& htmlFile )
+{
+// #if !defined _WIN32
+  return wxLaunchDefaultBrowser( htmlFile, wxBROWSER_NOBUSYCURSOR );
+// #else
+//   wxFileType* file_type = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT("html") );
+//   if ( file_type != nullptr )
+//   {
+//     wxString open_command = file_type->GetOpenCommand( htmlFile );
+//     wxExecute( open_command );
+//     return true;
+//   }
+//   return false;
+// #endif
+}
+
+
 /*!
  * Application instance implementation
  */
@@ -148,6 +166,9 @@ wxCmdLineEntryDesc wxparaverApp::argumentsParseSyntax[] =
 
   { wxCMD_LINE_NONE }
 };
+
+
+
 
 /*!
  * Constructor for wxparaverApp

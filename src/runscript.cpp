@@ -54,7 +54,7 @@
 #include <iostream>
 #include <regex>
 
-#include "wxparaverapp.h" // paraverMain
+#include "wxparaverapp.h"
 #include "runscript.h"
 #include "filter.h"
 #include "cfg.h"
@@ -259,6 +259,47 @@ RunScript::~RunScript()
 /*!
  * Member initialisation
  */
+void RunScript::InitOutputLinks()
+{
+  auto emptyF = [](auto f, auto g){ return false; };
+  
+  auto isCandidate = [this](const wxString &candidateName, const wxString& selectedTracePath )
+  {
+    bool candidateFound = false;
+
+    wxFileName candidateFile = wxFileName( candidateName );
+
+    if( tunePrvLinksForFolding )
+      candidateFound = candidateFile.MakeAbsolute( foldingOutputDirectory );
+    else
+      candidateFound = candidateFile.Normalize();
+
+    candidateFound = candidateFound && wxFileName::FileExists( candidateFile.GetFullPath().Trim( false ) );
+    if ( !candidateFound )
+    {
+      candidateFile = wxFileName( candidateName );
+      candidateFound = candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
+                       candidateFile.FileExists();
+    }
+
+    if ( candidateFound && 
+         CFGLoader::isDimemasCFGFile( std::string( candidateFile.GetFullPath().Trim( false ).mb_str() ) ) )
+      candidateFound = false;
+    
+    return candidateFound;
+  };
+
+  outputLinks =
+  {
+    { ".prv.gz", false, false, "",  isCandidate },
+    { ".prv",    false, false, "",  isCandidate },
+    { "http",    true,  false, "",  emptyF },
+    { ".cfg",    true,  false, "",  emptyF }
+  };
+}
+
+
+
 void RunScript::Init()
 {
 ////@begin RunScript member initialisation
@@ -362,8 +403,8 @@ void RunScript::Init()
                                    _("_link_to_clustered_trace")};
 
   extensions = wxArrayString( (size_t)11, extensionsAllowed );
-  extensionsDimemas = extensions;
-  extensionsDimemas.Remove(_(".cfg")); // None of the extensions with _ may happen
+
+  InitOutputLinks();
 
   // Names of environment variables
   environmentVariable[ TEnvironmentVar::PATH ]         = wxString( wxT("PATH") );
@@ -1645,7 +1686,7 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
-          readyCommand =  doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
+          readyCommand = doubleQuote( pathToProgram + program ) + wxT( " " ) + parameters;
         }
         else
         {
@@ -1808,18 +1849,9 @@ void RunScript::AppendToLog( wxString msg, bool formatOutput )
 
   if ( !helpOption || formatOutput )
   {
-    switch ( selectedApp )
-    {
- //     case TExternalApp::DIMEMAS_WRAPPER:
- //       msg = insertLog( msg, extensionsDimemas );
- //       break;
-
-      default:
-        msg.Replace( "<", "&lt;" );
-        msg.Replace( ">", "&gt;" );
-        msg = insertLog( msg, extensions );
-        break;
-    }
+    msg.Replace( "<", "&lt;" );
+    msg.Replace( ">", "&gt;" );
+    msg = insertLog( msg, extensions );
   }
   
   if( formatOutput )
@@ -2365,7 +2397,7 @@ std::string RunScript::getHrefFullPath( wxHtmlLinkEvent &event, wxString whichSu
 {
   std::string hrefFullPath = std::string( event.GetLinkInfo().GetHref().mb_str() );
 
-  if ( ! whichSuffixToErase.IsEmpty() )
+  if ( !whichSuffixToErase.IsEmpty() )
   {
     size_t lengthHref = hrefFullPath.size();
     size_t lengthSuffix = whichSuffixToErase.Len();
@@ -2381,9 +2413,15 @@ std::string RunScript::getHrefFullPath( wxHtmlLinkEvent &event, wxString whichSu
 }
 
 
-bool RunScript::matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension )
+bool RunScript::matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension ) const
 {
   return ( event.GetLinkInfo().GetHref().Right( extension.Len() ).Cmp( extension ) == 0 );
+}
+
+
+bool RunScript::matchHrefPrefix( wxHtmlLinkEvent &event, const wxString extension ) const
+{
+  return ( event.GetLinkInfo().GetHref().Left( extension.Len() ).Cmp( extension ) == 0 );
 }
 
 
@@ -2597,6 +2635,11 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 
     currentWindow->setEnableDestroyButton( true );
   }
+  else if ( matchHrefPrefix( event, _("http") ) )
+  {
+    if ( !launchBrowser( event.GetLinkInfo().GetHref() ) )
+      wxMessageBox( "Unable to find/open default browser.", "Warning", wxOK|wxICON_ERROR );
+  }  
   else
   {
     event.Skip();

@@ -63,6 +63,7 @@ class stServer;
 ////@begin control identifiers
 ////@end control identifiers
 
+bool launchBrowser( const wxString& htmlFile );
 
 /*!
  * wxparaverApp class declaration

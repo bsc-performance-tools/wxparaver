@@ -36,6 +36,7 @@
 #include "wx/statline.h"
 #include "wx/html/htmlwin.h"
 ////@end includes
+#include <wx/filename.h>
 
 #include <string>
 #include <map>
@@ -199,6 +200,18 @@ enum class TEnvironmentVar
   DIMEMAS_HOME
 };
 
+
+struct TOutputLinks
+{
+  std::string tag;
+  bool overrideFurtherSearch;
+  bool forwardSearch;
+  // string selectedTracePath; --> lo puede hacer mirando el choice ; eliminiar booleanos tuneX
+  std::string hrefSuffixToAppend;
+  std::function< bool ( const wxString &, const wxString & ) > isCandidate;
+};
+
+
 class RunScript: public wxDialog
 {
   DECLARE_DYNAMIC_CLASS( RunScript )
@@ -221,6 +234,7 @@ public:
   ~RunScript();
 
   /// Initialises member variables
+  void InitOutputLinks();
   void Init();
 
   /// Creates the controls and sizers
@@ -451,7 +465,8 @@ private:
 
   // extensions to detect in log
   wxArrayString extensions;
-  wxArrayString extensionsDimemas;
+
+  std::vector< TOutputLinks > outputLinks;
 
   // Tags to detect times
   wxString iterationTag;
@@ -499,7 +514,8 @@ private:
 
   // TODO: This method's been copied from HelpContents; consider write new class
   std::string getHrefFullPath( wxHtmlLinkEvent &event, wxString whichSuffixToErase = wxT("") );
-  bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension );
+  bool matchHrefExtension( wxHtmlLinkEvent &event, const wxString extension ) const;
+  bool matchHrefPrefix( wxHtmlLinkEvent &event, const wxString extension ) const;
 
   // Execution
   //void OnTerminateShellCommand( int pid, int status );

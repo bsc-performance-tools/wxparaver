@@ -44,6 +44,7 @@
 #include "helpcontents.h"
 #include "paravermain.h"
 #include "tutorialsdownload.h"
+#include "wxparaverapp.h"
 
 ////@begin XPM images
 #include "../icons/index.xpm"
@@ -522,29 +523,13 @@ bool HelpContents::isHtmlReferenceInDoc( const wxString& whichPath )
   return isHtmlReference;
 }
 
-bool launchApp( const wxString& htmlFile )
-{
-#if !defined _WIN32
-  return wxLaunchDefaultBrowser( htmlFile, wxBROWSER_NOBUSYCURSOR );
-#else
-  wxFileType* file_type = wxTheMimeTypesManager->GetFileTypeFromExtension( wxT("html") );
-  if ( file_type != nullptr )
-  {
-    wxString open_command = file_type->GetOpenCommand( htmlFile );
-    wxExecute( open_command );
-    return true;
-  }
-  return false;
-#endif
-}
-
 
 void HelpContents::LoadHtml( const wxString& htmlFile )
 {
   if ( paraverMain::myParaverMain->GetParaverConfig()->getGlobalHelpContentsUsesBrowser() && 
        dialogCaption == SYMBOL_HELPCONTENTS_TITLE )
   {
-    if( !launchApp( htmlFile ) )
+    if( !launchBrowser( htmlFile ) )
       htmlWindow->LoadPage( htmlFile );
     else if ( IsModal() )
       EndModal( wxID_OK );
@@ -554,6 +539,7 @@ void HelpContents::LoadHtml( const wxString& htmlFile )
   else
     htmlWindow->LoadPage( htmlFile );
 }
+
 
 // Change TutorialsRoot and load it
 // whichPath = [ relativepath/index.html | relativepath/index.html#reference | relativepath ]
@@ -676,7 +662,7 @@ void HelpContents::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
        event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
   {
-    if( !launchApp( event.GetLinkInfo().GetHref() ) )
+    if( !launchBrowser( event.GetLinkInfo().GetHref() ) )
     {
       wxMessageDialog message( this, wxT( "Unable to find/open default browser." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
@@ -914,7 +900,7 @@ void TutorialsBrowser::OnHtmlwindowLinkClicked( wxHtmlLinkEvent& event )
   else if ( event.GetLinkInfo().GetHref().SubString( 0, 4 ) ==  wxT( "https" ) ||
             event.GetLinkInfo().GetHref().SubString( 0, 5 ) ==  wxT( "mailto" ) )
   {
-    if( !launchApp( event.GetLinkInfo().GetHref() ) )
+    if( !launchBrowser( event.GetLinkInfo().GetHref() ) )
     {
       wxMessageDialog message( this, wxT( "Unable to find/open default browser." ), wxT( "Warning" ), wxOK );
       message.ShowModal();
