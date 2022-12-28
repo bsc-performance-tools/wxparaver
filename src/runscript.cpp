@@ -261,7 +261,7 @@ RunScript::~RunScript()
  */
 void RunScript::InitOutputLinks()
 {
-  auto emptyF = [](auto f, auto g){ return false; };
+  auto emptyF = [](auto f, auto g){ return true; };
   
   auto isCandidate = [this](const wxString &candidateName, const wxString& selectedTracePath )
   {
@@ -291,10 +291,10 @@ void RunScript::InitOutputLinks()
 
   outputLinks =
   {
-    { ".prv.gz", false, false, "",  isCandidate },
-    { ".prv",    false, false, "",  isCandidate },
-    { "http",    true,  false, "",  emptyF },
-    { ".cfg",    true,  false, "",  emptyF }
+    { ".prv.gz", SUFFIX, "",  isCandidate },
+    { ".prv",    SUFFIX, "",  isCandidate },
+    { "http",    PREFIX, "",  emptyF },
+    { ".cfg",    SUFFIX, "",  emptyF }
   };
 }
 
@@ -2071,6 +2071,52 @@ wxString RunScript::rawFormat( wxString rawLine )
   rawLine.Replace( wxT( " " ), wxT( "&nbsp;" ) );
 
   return rawLine;
+}
+
+
+wxString RunScript::insertLinksV2( wxString rawLine )
+{
+  wxString selectedTracePath = wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
+  if ( tunePrvLinksForClustering )
+  {
+    if ( !textCtrlClusteringOutputTrace->IsEmpty() )
+    {
+      selectedTracePath = textCtrlClusteringOutputTrace->GetValue();
+      if ( selectedTracePath.Find( PATH_SEP ) == wxNOT_FOUND )
+      {
+        wxString tmpPath = wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
+        selectedTracePath = tmpPath + selectedTracePath;
+      }
+    }
+  }
+
+  wxString resultString;
+  wxString candidateLink;
+  wxStringTokenizer rawLineTokens( rawLine, " \t" );
+  while( rawLineTokens.HasMoreTokens() )
+  {
+    candidateLink = rawLineTokens.GetNextToken();
+
+    auto f = [&candidateLink]( auto el )
+      {
+        if( el->position == TTagPosition::PREFIX )
+          return candidateLink.Left( el->tag.length() ) == el->tag;
+        else if( el->position == TTagPosition::SUFFIX )
+          return candidateLink.Right( el->tag.length() ) == el->tag;
+      };
+    auto itOutputLink = std::find_if( outputLinks.begin(), outputLinks.end(), f );
+
+    if( itOutputLink == outputLinks.end() ||
+        !itOutputLink->isCandidate( candidateLink, selectedTracePath ) )
+    {
+      resultString.Append( candidateLink + " " );
+      continue;
+    }
+
+
+  }
+
+
 }
 
 

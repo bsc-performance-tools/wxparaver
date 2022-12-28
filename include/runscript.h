@@ -200,13 +200,16 @@ enum class TEnvironmentVar
   DIMEMAS_HOME
 };
 
+enum class TTagPosition
+{
+  PREFIX,
+  SUFFIX
+};
 
-struct TOutputLinks
+struct TOutputLink
 {
   std::string tag;
-  bool overrideFurtherSearch;
-  bool forwardSearch;
-  // string selectedTracePath; --> lo puede hacer mirando el choice ; eliminiar booleanos tuneX
+  TTagPosition position;
   std::string hrefSuffixToAppend;
   std::function< bool ( const wxString &, const wxString & ) > isCandidate;
 };
@@ -466,7 +469,7 @@ private:
   // extensions to detect in log
   wxArrayString extensions;
 
-  std::vector< TOutputLinks > outputLinks;
+  std::vector< TOutputLink > outputLinks;
 
   // Tags to detect times
   wxString iterationTag;
@@ -510,6 +513,8 @@ private:
   bool timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition );
   wxString insertTimeMarkLink( wxString rawLine, std::pair< int, wxString > tagPosition );
   wxString insertLinks( wxString rawLine, wxArrayString extensions );
+  wxString insertLinksV2( wxString rawLine, wxArrayString extensions );
+
   wxString insertLog( wxString rawLine, wxArrayString extensions );
 
   // TODO: This method's been copied from HelpContents; consider write new class
