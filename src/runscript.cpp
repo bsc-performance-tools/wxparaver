@@ -44,6 +44,7 @@
 #include <wx/txtstrm.h>
 #include <wx/filefn.h> // wxPathList
 #include <wx/mimetype.h>
+#include <wx/tokenzr.h>
 
 // Validators
 #include <wx/arrstr.h>
@@ -261,21 +262,14 @@ RunScript::~RunScript()
  */
 void RunScript::InitOutputLinks()
 {
-  auto emptyF = [](auto f, auto g){ return true; };
-  
-  auto isCandidate = [this](const wxString &candidateName, const wxString& selectedTracePath )
+  auto makeLinkComponents = [this]( const wxString& candidateName,
+                                    const wxString& selectedTracePath,
+                                    wxString& linkURL,
+                                    wxString& linkName )
   {
     bool candidateFound = false;
-
     wxFileName candidateFile = wxFileName( candidateName );
-
-    if( tunePrvLinksForFolding )
-      candidateFound = candidateFile.MakeAbsolute( foldingOutputDirectory );
-    else
-      candidateFound = candidateFile.Normalize();
-
-    candidateFound = candidateFound && wxFileName::FileExists( candidateFile.GetFullPath().Trim( false ) );
-    if ( !candidateFound )
+    if ( !( candidateFile.Normalize() && candidateFile.FileExists() ) )
     {
       candidateFile = wxFileName( candidateName );
       candidateFound = candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
@@ -283,18 +277,80 @@ void RunScript::InitOutputLinks()
     }
 
     if ( candidateFound && 
-         CFGLoader::isDimemasCFGFile( std::string( candidateFile.GetFullPath().Trim( false ).mb_str() ) ) )
+         CFGLoader::isDimemasCFGFile( std::string( candidateFile.GetFullPath() ) ) )
       candidateFound = false;
-    
+
+    linkName = linkURL = candidateFile.GetFullPath();
+
     return candidateFound;
   };
 
+  auto makeLinkComponentsClustering = [this]( const wxString& candidateName,
+                                              const wxString& selectedTracePath,
+                                              wxString& linkURL,
+                                              wxString& linkName )
+  {
+    wxString tmpSelectedTracePath( selectedTracePath );
+
+    if ( !textCtrlClusteringOutputTrace->IsEmpty() )
+    {
+      wxFileName clusteringPath( textCtrlClusteringOutputTrace->GetValue() );
+
+      if( clusteringPath.IsAbsolute() )
+        tmpSelectedTracePath = clusteringPath.GetPath();
+      else
+        tmpSelectedTracePath.Append( clusteringPath.GetPath() );
+    }
+
+    if( !defaultLinkMaker( candidateName, tmpSelectedTracePath, linkURL, linkName ) )
+      return false;
+
+    if( candidateName.Right( 4 ) == ".prv" )
+    {
+      linkURL = linkURL + extensions[ 10 ];
+      linkName = linkName + " (analyze ClusterIds)";
+    }
+    
+    return true;
+  };
+
+  auto makeLinkComponentsFolding = [this]( const wxString& candidateName,
+                                           const wxString& selectedTracePath,
+                                           wxString& linkURL,
+                                           wxString& linkName )
+  {
+    wxFileName candidateFile = wxFileName( candidateName );
+
+    if ( !candidateFile.MakeAbsolute( foldingOutputDirectory ) )
+      return defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
+
+    return defaultLinkMaker( candidateFile.GetFullPath(), selectedTracePath, linkURL, linkName );
+  };
+
+  defaultLinkMaker = makeLinkComponents;
+
+  applicationLinkMaker[ TExternalApp::DIMEMAS_WRAPPER ] = makeLinkComponents;
+  applicationLinkMaker[ TExternalApp::STATS_WRAPPER ]   = makeLinkComponents;
+  applicationLinkMaker[ TExternalApp::CLUSTERING ]      = makeLinkComponentsClustering;
+  applicationLinkMaker[ TExternalApp::FOLDING ]         = makeLinkComponentsFolding;
+  applicationLinkMaker[ TExternalApp::PROFET ]          = makeLinkComponents;
+  applicationLinkMaker[ TExternalApp::USER_COMMAND ]    = makeLinkComponents;
+  
+  // These applications aren't executed by "Run" button, so will not generate links
+  // applicationLinkMaker[ DIMEMAS_GUI ]     = makeLinkComponents;
+  // applicationLinkMaker[ STATS ]           = makeLinkComponents;
+
   outputLinks =
   {
-    { ".prv.gz", SUFFIX, "",  isCandidate },
-    { ".prv",    SUFFIX, "",  isCandidate },
-    { "http",    PREFIX, "",  emptyF },
-    { ".cfg",    SUFFIX, "",  emptyF }
+    { "http",     TTagPosition::PREFIX },
+    { ".prv",     TTagPosition::SUFFIX },
+    { ".prv.gz",  TTagPosition::SUFFIX },
+    { ".cfg",     TTagPosition::SUFFIX },
+    { ".xml",     TTagPosition::SUFFIX },
+    { ".csv",     TTagPosition::SUFFIX },
+    { ".dat",     TTagPosition::SUFFIX },
+    { ".gnuplot", TTagPosition::SUFFIX },
+    { ".pdf",     TTagPosition::SUFFIX },
   };
 }
 
@@ -437,9 +493,6 @@ void RunScript::Init()
   application[ TExternalApp::PROFET ]              = wxString( wxT("profet") );
 
   tagFoldingOutputDirectory = wxString( wxT("Output directory:") );
-
-  tunePrvLinksForClustering = false;
-  tunePrvLinksForFolding = false;
 
   wxString tmpTimeMarkTags[] = { _("start @"), _("found @") };
   timeMarkTags = wxArrayString( (size_t)2, tmpTimeMarkTags );
@@ -1896,12 +1949,12 @@ wxString RunScript::doubleQuote( const wxString& path )
 void RunScript::adaptWindowToApplicationSelection()
 {
   wxString toolTip( wxT( "" ) );
-  TExternalApp currentChoice = static_cast<TExternalApp>( choiceApplication->GetSelection() );
+  currentApp = static_cast<TExternalApp>( choiceApplication->GetSelection() );
 
   textCtrlDefaultParameters->Clear();
   labelTextCtrlDefaultParameters->SetToolTip( toolTip );
 
-  switch ( currentChoice )
+  switch ( currentApp )
   {
     case TExternalApp::DIMEMAS_WRAPPER:
       toolTip = wxString( wxT( "Extra parameters passed to the script\n"
@@ -2010,14 +2063,12 @@ void RunScript::adaptWindowToApplicationSelection()
       break;
   }
 
-  tunePrvLinksForFolding = ( currentChoice == TExternalApp::FOLDING );
-
-  dimemasSection->Show( currentChoice == TExternalApp::DIMEMAS_WRAPPER );
-  statsSection->Show( currentChoice == TExternalApp::STATS_WRAPPER );
-  clusteringSection->Show( currentChoice == TExternalApp::CLUSTERING );
+  dimemasSection->Show( currentApp == TExternalApp::DIMEMAS_WRAPPER );
+  statsSection->Show( currentApp == TExternalApp::STATS_WRAPPER );
+  clusteringSection->Show( currentApp == TExternalApp::CLUSTERING );
   adaptClusteringAlgorithmParameters();
-  foldingSection->Show( currentChoice == TExternalApp::FOLDING );
-  profetSection->Show( currentChoice == TExternalApp::PROFET );
+  foldingSection->Show( currentApp == TExternalApp::FOLDING );
+  profetSection->Show( currentApp == TExternalApp::PROFET );
 
   Layout();
 }
@@ -2074,52 +2125,44 @@ wxString RunScript::rawFormat( wxString rawLine )
 }
 
 
-wxString RunScript::insertLinksV2( wxString rawLine )
+wxString RunScript::insertLinks( wxString rawLine )
 {
-  wxString selectedTracePath = wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
-  if ( tunePrvLinksForClustering )
-  {
-    if ( !textCtrlClusteringOutputTrace->IsEmpty() )
-    {
-      selectedTracePath = textCtrlClusteringOutputTrace->GetValue();
-      if ( selectedTracePath.Find( PATH_SEP ) == wxNOT_FOUND )
-      {
-        wxString tmpPath = wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
-        selectedTracePath = tmpPath + selectedTracePath;
-      }
-    }
-  }
-
   wxString resultString;
+
   wxString candidateLink;
   wxStringTokenizer rawLineTokens( rawLine, " \t" );
   while( rawLineTokens.HasMoreTokens() )
   {
     candidateLink = rawLineTokens.GetNextToken();
 
-    auto f = [&candidateLink]( auto el )
+    auto f = [&candidateLink]( const auto& el )
       {
-        if( el->position == TTagPosition::PREFIX )
-          return candidateLink.Left( el->tag.length() ) == el->tag;
-        else if( el->position == TTagPosition::SUFFIX )
-          return candidateLink.Right( el->tag.length() ) == el->tag;
+        if( el.position == TTagPosition::PREFIX )
+          return candidateLink.Left( el.tag.length() ) == el.tag;
+        else if( el.position == TTagPosition::SUFFIX )
+          return candidateLink.Right( el.tag.length() ) == el.tag;
+
+        return false;
       };
     auto itOutputLink = std::find_if( outputLinks.begin(), outputLinks.end(), f );
 
-    if( itOutputLink == outputLinks.end() ||
-        !itOutputLink->isCandidate( candidateLink, selectedTracePath ) )
+    wxString linkURL;
+    wxString linkLabel;
+    wxString selectedTracePath = wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
+    if( itOutputLink == outputLinks.end() &&
+        !applicationLinkMaker[ currentApp ]( candidateLink, selectedTracePath, linkURL, linkLabel ) )
     {
       resultString.Append( candidateLink + " " );
       continue;
     }
 
-
+    resultString.Append( "<A HREF=\"" + linkURL + "\">" + linkLabel +  "</A> " );
   }
 
-
+  return resultString;
 }
 
-
+#if 0
 wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
 {
   // Detect all the ocurrences of every given extension
@@ -2331,7 +2374,7 @@ wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
 
   return rawLine;
 }
-
+#endif
 
 // Check for presence of "Iteration_" && "found @ [" or "Iteration_" && "start @"
 bool RunScript::timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition )
@@ -2431,7 +2474,7 @@ wxString RunScript::insertLog( wxString rawLine, wxArrayString extensions )
   }
   else
   {
-    formattedLine = insertLinks( rawLine, extensions );
+    formattedLine = insertLinks( rawLine );
   }
 
   return formattedLine;
@@ -2478,8 +2521,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
 {
   wxString auxCommand;
   
-//  if ( tunePrvLinksForClustering && matchHrefExtension( event, wxT(".clustered.prv") ) )
-  if ( tunePrvLinksForClustering && matchHrefExtension( event, extensions[ 10 ] ) ) // _link_to_clustered_trace
+  if ( currentApp == TExternalApp::CLUSTERING && matchHrefExtension( event, extensions[ 10 ] ) ) // _link_to_clustered_trace
   {
     // Trick used to distinguish "analyse ClusterId" link inserted to log if TExternalApp::CLUSTERING
     wxString tmpSuffixToErase = extensions[ 10 ]; // _link_to_clustered_trace
@@ -2794,25 +2836,19 @@ void RunScript::setTrace( wxString whichTrace )
 
 void RunScript::setApp( TExternalApp whichApp )
 {
-  choiceApplication->Select( static_cast< int >( whichApp ) ); 
+  choiceApplication->Select( static_cast< int >( whichApp ) );
   adaptWindowToApplicationSelection();
 }
 
 
 void RunScript::setDimemas()
 {
-  tunePrvLinksForClustering = false;
-  tunePrvLinksForFolding = false;
-
   setApp( TExternalApp::DIMEMAS_WRAPPER );
 }
 
 
 void RunScript::setStats()
 {
-  tunePrvLinksForClustering = false;
-  tunePrvLinksForFolding = false;
-
   setApp( TExternalApp::STATS_WRAPPER );
 }
 
@@ -2820,9 +2856,6 @@ void RunScript::setStats()
 void RunScript::setClustering( wxString whichClusteringCSV )
 {
   clusteringCSV = whichClusteringCSV;
-  tunePrvLinksForClustering = true;
-  tunePrvLinksForFolding = false;
-
   setApp( TExternalApp::CLUSTERING );
 }
 
@@ -2830,27 +2863,18 @@ void RunScript::setClustering( wxString whichClusteringCSV )
 void RunScript::setFolding( wxString whichFoldingCSV )
 {
   foldingCSV = whichFoldingCSV;
-  tunePrvLinksForClustering = false;
-  tunePrvLinksForFolding = true;
-
   setApp( TExternalApp::FOLDING );
 }
 
 
 void RunScript::setProfet()
 {
-  tunePrvLinksForClustering = false;
-  tunePrvLinksForFolding = false;
-
   setApp( TExternalApp::PROFET );
 }
 
 
 void RunScript::setUserCommand()
 {
-  tunePrvLinksForClustering = false;
-  tunePrvLinksForFolding = false;
-
   setApp( TExternalApp::USER_COMMAND );
 }
 

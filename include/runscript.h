@@ -210,8 +210,7 @@ struct TOutputLink
 {
   std::string tag;
   TTagPosition position;
-  std::string hrefSuffixToAppend;
-  std::function< bool ( const wxString &, const wxString & ) > isCandidate;
+  
 };
 
 
@@ -458,11 +457,16 @@ private:
 */
 
   static wxString clusteringXML;
- 
+
+  TExternalApp currentApp;
 
   // Application list: labels and names
   std::map< TExternalApp, wxString > applicationLabel;
   std::map< TExternalApp, wxString > application;
+
+  using TMakeLinkFunction = std::function< bool( const wxString&, const wxString&, wxString&, wxString& ) >;
+  std::map< TExternalApp, TMakeLinkFunction > applicationLinkMaker;
+  TMakeLinkFunction defaultLinkMaker;
   
   std::map< int, bool > appIsFound;
 
@@ -482,8 +486,6 @@ private:
   wxString foldingCSV;
 
   bool helpOption; // delete?
-  bool tunePrvLinksForClustering;
-  bool tunePrvLinksForFolding;
 
   wxString tagFoldingOutputDirectory;
   wxString foldingOutputDirectory;
@@ -512,8 +514,8 @@ private:
   wxString rawFormat( wxString rawLine );
   bool timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition );
   wxString insertTimeMarkLink( wxString rawLine, std::pair< int, wxString > tagPosition );
-  wxString insertLinks( wxString rawLine, wxArrayString extensions );
-  wxString insertLinksV2( wxString rawLine, wxArrayString extensions );
+  //wxString insertLinks( wxString rawLine, wxArrayString extensions );
+  wxString insertLinks( wxString rawLine );
 
   wxString insertLog( wxString rawLine, wxArrayString extensions );
 
