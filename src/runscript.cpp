@@ -260,102 +260,6 @@ RunScript::~RunScript()
 /*!
  * Member initialisation
  */
-void RunScript::InitOutputLinks()
-{
-  auto makeLinkComponents = [this]( const wxString& candidateName,
-                                    const wxString& selectedTracePath,
-                                    wxString& linkURL,
-                                    wxString& linkName )
-  {
-    bool candidateFound = false;
-    wxFileName candidateFile = wxFileName( candidateName );
-    if ( !( candidateFile.Normalize() && candidateFile.FileExists() ) )
-    {
-      candidateFile = wxFileName( candidateName );
-      candidateFound = candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
-                       candidateFile.FileExists();
-    }
-
-    if ( candidateFound && 
-         CFGLoader::isDimemasCFGFile( std::string( candidateFile.GetFullPath() ) ) )
-      candidateFound = false;
-
-    linkName = linkURL = candidateFile.GetFullPath();
-
-    return candidateFound;
-  };
-
-  auto makeLinkComponentsClustering = [this]( const wxString& candidateName,
-                                              const wxString& selectedTracePath,
-                                              wxString& linkURL,
-                                              wxString& linkName )
-  {
-    wxString tmpSelectedTracePath( selectedTracePath );
-
-    if ( !textCtrlClusteringOutputTrace->IsEmpty() )
-    {
-      wxFileName clusteringPath( textCtrlClusteringOutputTrace->GetValue() );
-
-      if( clusteringPath.IsAbsolute() )
-        tmpSelectedTracePath = clusteringPath.GetPath();
-      else
-        tmpSelectedTracePath.Append( clusteringPath.GetPath() );
-    }
-
-    if( !defaultLinkMaker( candidateName, tmpSelectedTracePath, linkURL, linkName ) )
-      return false;
-
-    if( candidateName.Right( 4 ) == ".prv" )
-    {
-      linkURL = linkURL + extensions[ 10 ];
-      linkName = linkName + " (analyze ClusterIds)";
-    }
-    
-    return true;
-  };
-
-  auto makeLinkComponentsFolding = [this]( const wxString& candidateName,
-                                           const wxString& selectedTracePath,
-                                           wxString& linkURL,
-                                           wxString& linkName )
-  {
-    wxFileName candidateFile = wxFileName( candidateName );
-
-    if ( !candidateFile.MakeAbsolute( foldingOutputDirectory ) )
-      return defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
-
-    return defaultLinkMaker( candidateFile.GetFullPath(), selectedTracePath, linkURL, linkName );
-  };
-
-  defaultLinkMaker = makeLinkComponents;
-
-  applicationLinkMaker[ TExternalApp::DIMEMAS_WRAPPER ] = makeLinkComponents;
-  applicationLinkMaker[ TExternalApp::STATS_WRAPPER ]   = makeLinkComponents;
-  applicationLinkMaker[ TExternalApp::CLUSTERING ]      = makeLinkComponentsClustering;
-  applicationLinkMaker[ TExternalApp::FOLDING ]         = makeLinkComponentsFolding;
-  applicationLinkMaker[ TExternalApp::PROFET ]          = makeLinkComponents;
-  applicationLinkMaker[ TExternalApp::USER_COMMAND ]    = makeLinkComponents;
-  
-  // These applications aren't executed by "Run" button, so will not generate links
-  // applicationLinkMaker[ DIMEMAS_GUI ]     = makeLinkComponents;
-  // applicationLinkMaker[ STATS ]           = makeLinkComponents;
-
-  outputLinks =
-  {
-    { "http",     TTagPosition::PREFIX },
-    { ".prv",     TTagPosition::SUFFIX },
-    { ".prv.gz",  TTagPosition::SUFFIX },
-    { ".cfg",     TTagPosition::SUFFIX },
-    { ".xml",     TTagPosition::SUFFIX },
-    { ".csv",     TTagPosition::SUFFIX },
-    { ".dat",     TTagPosition::SUFFIX },
-    { ".gnuplot", TTagPosition::SUFFIX },
-    { ".pdf",     TTagPosition::SUFFIX },
-  };
-}
-
-
-
 void RunScript::Init()
 {
 ////@begin RunScript member initialisation
@@ -2125,6 +2029,116 @@ wxString RunScript::rawFormat( wxString rawLine )
 }
 
 
+void RunScript::InitOutputLinks()
+{
+  auto makeLinkComponents = [this]( const wxString& candidateName,
+                                    const wxString& selectedTracePath,
+                                    wxString& linkURL,
+                                    wxString& linkName )
+  {
+    wxFileName candidateFile = wxFileName( candidateName );
+    bool candidateFound = candidateFile.Normalize() && candidateFile.FileExists();
+    if ( !candidateFound )
+    {
+      candidateFile = wxFileName( candidateName );
+      candidateFound = candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
+                       candidateFile.FileExists();
+    }
+
+    if ( candidateFound && 
+         CFGLoader::isDimemasCFGFile( std::string( candidateFile.GetFullPath() ) ) )
+      candidateFound = false;
+
+    linkName = linkURL = candidateFile.GetFullPath();
+
+    return candidateFound;
+  };
+
+  auto makeLinkComponentsClustering = [this]( const wxString& candidateName,
+                                              const wxString& selectedTracePath,
+                                              wxString& linkURL,
+                                              wxString& linkName )
+  {
+    wxString tmpSelectedTracePath( selectedTracePath );
+
+    if ( !textCtrlClusteringOutputTrace->IsEmpty() )
+    {
+      wxFileName clusteringPath( textCtrlClusteringOutputTrace->GetValue() );
+
+      if( clusteringPath.IsAbsolute() )
+        tmpSelectedTracePath = clusteringPath.GetPath();
+      else
+        tmpSelectedTracePath.Append( clusteringPath.GetPath() );
+    }
+
+    if( !defaultLinkMaker( candidateName, tmpSelectedTracePath, linkURL, linkName ) )
+      return false;
+
+    if( candidateName.Right( 4 ) == ".prv" )
+    {
+      linkURL = linkURL + extensions[ 10 ];
+      linkName = linkName + " (analyze ClusterIds)";
+    }
+    
+    return true;
+  };
+
+  auto makeLinkComponentsFolding = [this]( const wxString& candidateName,
+                                           const wxString& selectedTracePath,
+                                           wxString& linkURL,
+                                           wxString& linkName )
+  {
+    wxFileName candidateFile = wxFileName( candidateName );
+
+    if ( !candidateFile.MakeAbsolute( foldingOutputDirectory ) )
+      return defaultLinkMaker( candidateName, selectedTracePath, linkURL, linkName );
+
+    return defaultLinkMaker( candidateFile.GetFullPath(), selectedTracePath, linkURL, linkName );
+  };
+
+  defaultLinkMaker = makeLinkComponents;
+
+  applicationLinkMaker[ TExternalApp::DIMEMAS_WRAPPER ] = makeLinkComponents;
+  applicationLinkMaker[ TExternalApp::STATS_WRAPPER ]   = makeLinkComponents;
+  applicationLinkMaker[ TExternalApp::CLUSTERING ]      = makeLinkComponentsClustering;
+  applicationLinkMaker[ TExternalApp::FOLDING ]         = makeLinkComponentsFolding;
+  applicationLinkMaker[ TExternalApp::PROFET ]          = makeLinkComponents;
+  applicationLinkMaker[ TExternalApp::USER_COMMAND ]    = makeLinkComponents;
+  
+  // These applications aren't executed by "Run" button, so will not generate links
+  // applicationLinkMaker[ DIMEMAS_GUI ]     = makeLinkComponents;
+  // applicationLinkMaker[ STATS ]           = makeLinkComponents;
+
+  auto skipLink = [this]( const wxString& candidateName,
+                          wxString& linkURL,
+                          wxString& linkName )
+  {
+    return false;
+  };
+
+  auto httpLink = [this]( const wxString& candidateName,
+                          wxString& linkURL,
+                          wxString& linkName )
+  {
+    linkURL = linkName = candidateName;
+    return true;
+  };
+
+  outputLinks =
+  {
+    { "http",     TTagPosition::PREFIX, httpLink },
+    { ".prv",     TTagPosition::SUFFIX, skipLink },
+    { ".prv.gz",  TTagPosition::SUFFIX, skipLink },
+    { ".cfg",     TTagPosition::SUFFIX, skipLink },
+    { ".xml",     TTagPosition::SUFFIX, skipLink },
+    { ".csv",     TTagPosition::SUFFIX, skipLink },
+    { ".dat",     TTagPosition::SUFFIX, skipLink },
+    { ".gnuplot", TTagPosition::SUFFIX, skipLink },
+    { ".pdf",     TTagPosition::SUFFIX, skipLink },
+  };
+}
+
+
 wxString RunScript::insertLinks( wxString rawLine )
 {
   wxString resultString;
@@ -2149,8 +2163,9 @@ wxString RunScript::insertLinks( wxString rawLine )
     wxString linkURL;
     wxString linkLabel;
     wxString selectedTracePath = wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
-    if( itOutputLink == outputLinks.end() &&
-        !applicationLinkMaker[ currentApp ]( candidateLink, selectedTracePath, linkURL, linkLabel ) )
+    if( itOutputLink == outputLinks.end() ||
+        !( itOutputLink->makeLink( candidateLink, linkURL, linkLabel ) ||
+           applicationLinkMaker[ currentApp ]( candidateLink, selectedTracePath, linkURL, linkLabel ) ) )
     {
       resultString.Append( candidateLink + " " );
       continue;
@@ -2162,219 +2177,6 @@ wxString RunScript::insertLinks( wxString rawLine )
   return resultString;
 }
 
-#if 0
-wxString RunScript::insertLinks( wxString rawLine, wxArrayString extensions )
-{
-  // Detect all the ocurrences of every given extension
-  std::vector< std::pair< int, wxString > > extensionsPositions; // {(4,.cfg),(6,.prv),(6.prv.gz)}
-
-  for ( size_t i = 0; i < extensions.Count(); ++i )
-  {
-    int endLine = rawLine.Len();
-    int initSubStr = 0; // Start from the begin
-    while ( initSubStr < endLine )
-    {
-      wxString subStr = rawLine.Mid( initSubStr, endLine - initSubStr );
-      int initSuffixPos = subStr.Find( extensions[i] );
-
-      if ( initSuffixPos != wxNOT_FOUND )
-      {
-        // Remember (position, extension)
-        int globalPos = initSubStr + initSuffixPos;
-
-        extensionsPositions.push_back( std::make_pair( globalPos, extensions[i] ) );
-
-        // Advance: compute new end of the substring 
-        initSubStr = globalPos + extensions[i].Len();
-      }
-      else
-      {
-        // No more current extensions; exit loop to try next extension
-        initSubStr = endLine;
-      }
-    }
-  }
-
-  if ( extensionsPositions.size() == 0 )
-  {
-    // No match found for any extension!!
-    rawLine = rawFormat( rawLine );
-  }
-  else
-  {
-    // Sort extensionsPosition by
-    //   1. position, descending
-    //   2. longest suffix first
-    // Ex:
-    //   Before :{ (4,.cfg), (6,.prv), (25,.prv), (6,.prv.gz) }
-    //   After  :{ (25,.prv), (6,.prv.gz), (6,.prv), (4,.cfg) }
-
-    std::sort( extensionsPositions.begin(), extensionsPositions.end(), greaterThan );
-
-    // Clean extensionsPosition
-    //   1. with unique positions, only longest suffix is kept (.prv.gz vs .prv)
-    // Ex:
-    //   Before :{ (25,.prv), (6,.prv.gz), (6,.prv), (4,.cfg) }
-    //   After  :{ (25,.prv), (6,.prv.gz), (4,.cfg) }
-    std::vector< std::pair< int, wxString > > auxExtensionsPositions;
-    for ( std::vector< std::pair< int, wxString > >::iterator it = extensionsPositions.begin();
-            it != extensionsPositions.end(); ++it )
-    {
-      if ( auxExtensionsPositions.empty() )
-      {
-        auxExtensionsPositions.push_back( *it );
-      }
-      else if ( it->first != auxExtensionsPositions.back().first )
-      {
-        auxExtensionsPositions.push_back( *it );
-      }
-    }
-
-    std::swap( extensionsPositions, auxExtensionsPositions );
-
-    // If available, get trace path from wxFilePickerCtrl
-    wxString selectedTracePath =
-        wxFileName( fileBrowserButtonTrace->GetPath() ).GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-    if ( tunePrvLinksForClustering )
-    {
-      if ( !textCtrlClusteringOutputTrace->IsEmpty() )
-      {
-        if ( textCtrlClusteringOutputTrace->GetValue().Find( PATH_SEP ) != wxNOT_FOUND )
-        {
-          selectedTracePath = textCtrlClusteringOutputTrace->GetValue(); // TODO: path exists?
-        }
-        else
-        {
-          wxFileName tmpFilename = wxFileName( fileBrowserButtonTrace->GetPath() );
-          wxString tmpPath = tmpFilename.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR );
-          
-          selectedTracePath = tmpPath + textCtrlClusteringOutputTrace->GetValue();
-        }
-      }
-    }
-
-    // Now, traverse rawLine using extensionPositions.
-    wxString auxLine;  // where output line is being built, starting from the tail.
-    int endLine = rawLine.Len();
-    int endSubStr = endLine;
-    int oldEndSubStr = endSubStr;
-    size_t i = 0;
-    while ( i < extensionsPositions.size() )
-    {
-      // New end of the substring
-      int currentEndSubStr = extensionsPositions[i].first + 
-                             extensionsPositions[i].second.Len();
-
-      // Anything after it must be nbspaced; for sure it doesn't belong to a link
-      wxString trashTail = rawFormat(
-              rawLine.Mid( currentEndSubStr, endSubStr - currentEndSubStr ) );
-
-      // Advance endSubStr, keeping the old one
-      oldEndSubStr = endSubStr;
-      endSubStr = currentEndSubStr;
-
-      // Find trace candidate
-      wxFileName candidateFile;
-      int currentPos = 0; // always start from the beginning
-      bool candidateFound = false;
-      int initSuffixPos = extensionsPositions[i].first;
-      wxString candidateName;
-      bool TRIM_LEFT = false;
-      while ( currentPos < initSuffixPos && !candidateFound )
-      {
-        // Normalize
-        candidateName = rawLine.Mid( currentPos, endSubStr - currentPos );
-        candidateFile = wxFileName( candidateName );
-        //candidateFound = ( candidateFile.Normalize() && candidateFile.FileExists() );
-
-        if ( tunePrvLinksForFolding )
-        {
-          candidateFound = candidateFile.MakeAbsolute( foldingOutputDirectory );
-        }
-        else
-        {
-          candidateFound = candidateFile.Normalize();
-        }
-
-        candidateFound = candidateFound &&
-                         wxFileName::FileExists( candidateFile.GetFullPath().Trim( TRIM_LEFT ) );
-
-        if ( !candidateFound )
-        {
-          candidateFile = wxFileName( candidateName );
-          candidateFound =
-              ( candidateFile.Normalize( wxPATH_NORM_ALL, selectedTracePath ) &&
-                candidateFile.FileExists() );
-        }
-
-        // At this moment, always filter cfgs from Dimemas
-        if ( candidateFound && 
-             CFGLoader::isDimemasCFGFile (
-                    std::string( candidateFile.GetFullPath().Trim( TRIM_LEFT ).mb_str() )))
-          candidateFound = false;
-
-        ++currentPos;
-      }
-
-      if ( candidateFound )
-      {
-        --currentPos;
-
-        wxString linkName = rawFormat( candidateName );
-        wxString linkFullPath = candidateFile.GetFullPath().Trim( TRIM_LEFT );
-
-        wxString currentLink;
-        if ( tunePrvLinksForClustering && 
-             extensionsPositions[i].second.Cmp( wxString( wxT( ".prv" ))) == 0 )
-        {
-          currentLink = linkName + wxString( wxT(" ") );
-          currentLink += wxT("<A HREF=\"") + linkFullPath + 
-                         extensions[ 10 ] + // _link_to_clustered_trace
-                         wxT("\">") +
-                         wxString( wxT("(analyze ClusterIds)") ) +
-                         wxT("</A>");
-        }
-        else
-        {
-          currentLink = wxT("<A HREF=\"") + linkFullPath + wxT("\">") + linkName + wxT("</A>");
-        }
-
-        auxLine = currentLink + trashTail + auxLine;
-        endSubStr = currentPos;
-
-        // Advance vector of positions-extensions to next useful (position, ext)
-        // Ex: After succesful detection of link, any extension inside must be ignored.
-        //   Good link:                    vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-        //   Dangerous line: (...) bla bla /home/user/traces/current.cfgs.chop.prv.gz
-        //   Extension to avoid!!:                                  ^^^^^
-        while ( i < extensionsPositions.size() && extensionsPositions[i].first > currentPos )
-        {
-          ++i;
-        }
-      }
-      else
-      {
-        // Advance vector positions-extensions to next useful (position, ext)
-        // It's the next one, because we didn't consume any rawLine character (no links!)
-        ++i;
-        endSubStr = oldEndSubStr;
-      }
-    }
-
-    if ( endSubStr > 0 )
-    {
-      wxString trashHead = rawLine.Mid( 0, endSubStr );
-      auxLine = rawFormat( trashHead ) + auxLine;
-    }
-
-    // Finally we copy it.
-    rawLine = auxLine;
-  }
-
-  return rawLine;
-}
-#endif
 
 // Check for presence of "Iteration_" && "found @ [" or "Iteration_" && "start @"
 bool RunScript::timeMarkTagFound( wxString rawLine, std::pair< int, wxString >  &tagPosition )

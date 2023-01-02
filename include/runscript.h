@@ -210,7 +210,7 @@ struct TOutputLink
 {
   std::string tag;
   TTagPosition position;
-  
+  std::function<bool(const wxString&, wxString&, wxString& )> makeLink;
 };
 
 
