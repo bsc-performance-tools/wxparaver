@@ -1152,16 +1152,6 @@ wxIcon RunScript::GetIconResource( const wxString& name )
 }
 
 
-/*!
- * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_EXIT
- */
-void RunScript::OnButtonExitClick( wxCommandEvent& event )
-{
-  paraverMain::myParaverMain->SetRunApplication( nullptr );
-  Destroy();
-}
-
-
 wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExternalApp selectedApp )
 {
   wxFileName tmpFilename;
@@ -2743,18 +2733,24 @@ void RunScript::OnButtonKillUpdate( wxUpdateUIEvent& event )
 }
 
 
+void RunScript::killRunningProcess( std::function<void(const wxString&)> messageLog )
+{
+  if( myProcessPid != 0 )
+  {
+    if( wxProcess::Kill( myProcessPid, wxSIGKILL, wxKILL_CHILDREN ) != wxKILL_OK )
+      messageLog( wxT( "Error: Process not killed" ) );
+    else
+      messageLog( wxT( "Process killed!" ) );
+  }
+}
+
+
 /*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_KILL
  */
 void RunScript::OnButtonKillClick( wxCommandEvent& event )
 {
-  if( myProcessPid != 0 )
-  {
-    if( wxProcess::Kill( myProcessPid, wxSIGKILL, wxKILL_CHILDREN ) != wxKILL_OK )
-      AppendToLog( wxT( "Error: Process not killed" ) );
-    else
-      AppendToLog( wxT( "Process killed!" ) );
-  }
+  killRunningProcess( [this]( const wxString& m ){ AppendToLog( m ); } );
 }
 
 
@@ -2922,14 +2918,30 @@ void RunScript::OnTextctrlClusteringNumberOfSamplesUpdate( wxUpdateUIEvent& even
 }
 
 
+void RunScript::closeWindow()
+{
+  killRunningProcess( [this]( const wxString& m ) { ::wxMessageBox( m, "Kill Running Process\t", wxICON_WARNING ); } );
+  paraverMain::myParaverMain->SetRunApplication( nullptr );  
+  Destroy();
+}
+
+
+/*!
+ * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_EXIT
+ */
+void RunScript::OnButtonExitClick( wxCommandEvent& event )
+{
+  closeWindow();
+}
+
+
 /*!
  * wxEVT_CLOSE_WINDOW event handler for ID_RUN_APPLICATION
  */
 
 void RunScript::OnCloseWindow( wxCloseEvent& event )
 {
-  paraverMain::myParaverMain->SetRunApplication( nullptr );
-  Destroy();
+  closeWindow();
 }
 
 

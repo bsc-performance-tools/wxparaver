@@ -360,6 +360,10 @@ public:
   void setFolding( wxString whichFoldingCSV );
   void setProfet();
   void setUserCommand();
+
+  void closeWindow();
+  void killRunningProcess( std::function<void(const wxString&)> messageLog );
+
   
 ////@begin RunScript member variables
   wxChoice* choiceApplication;
