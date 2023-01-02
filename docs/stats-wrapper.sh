@@ -6,7 +6,7 @@
 
 set -e
 
-function usage
+usage()
 {
   echo "Usage: $0  source_trace [extra_parameters]"
   echo "  source_trace: Paraver trace; it's ungzipped if needed."
