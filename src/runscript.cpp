@@ -2049,7 +2049,8 @@ void RunScript::InitOutputLinks()
          CFGLoader::isDimemasCFGFile( std::string( candidateFile.GetFullPath() ) ) )
       candidateFound = false;
 
-    linkName = linkURL = candidateFile.GetFullPath();
+    linkName = candidateName;
+    linkURL = candidateFile.GetFullPath();
 
     return candidateFound;
   };
@@ -2144,7 +2145,7 @@ wxString RunScript::insertLinks( wxString rawLine )
   wxString resultString;
 
   wxString candidateLink;
-  wxStringTokenizer rawLineTokens( rawLine, " \t" );
+  wxStringTokenizer rawLineTokens( rawLine, " \t\"" );
   while( rawLineTokens.HasMoreTokens() )
   {
     candidateLink = rawLineTokens.GetNextToken();
