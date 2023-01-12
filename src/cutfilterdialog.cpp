@@ -1054,11 +1054,13 @@ wxString CutFilterDialog::formatPercent( double value )
 TTime CutFilterDialog::formatTime( const wxString whichTime )
 {
   TTime tmpTime;
+  Trace *tmpTrace = getTrace();
 
   bool done = LabelConstructor::getTimeValue( std::string( whichTime ),
-                                              getTrace()->getTimeUnit(),
+                                              tmpTrace != nullptr ? tmpTrace->getTimeUnit() : NS,
                                               ParaverConfig::getInstance()->getTimelinePrecision(),
                                               tmpTime );
+
   if( !done )
     whichTime.ToDouble( &tmpTime );
 
@@ -1069,8 +1071,10 @@ TTime CutFilterDialog::formatTime( const wxString whichTime )
 // TTime( 100098.7654321 ) --> wxString( "100,098.7654" ) (using timeline precision)
 wxString CutFilterDialog::formatTime( TTime whichTime )
 {
+  Trace *tmpTrace = getTrace();
+
   return LabelConstructor::timeLabel( whichTime,
-                                      getTrace()->getTimeUnit(),
+                                      tmpTrace != nullptr ? tmpTrace->getTimeUnit() : NS,
                                       ParaverConfig::getInstance()->getTimelinePrecision() );
 }
 
