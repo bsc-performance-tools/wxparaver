@@ -68,7 +68,7 @@ BrowserButton::BrowserButton( wxWindow* parent,
 void BrowserButton::Init()
 {
   associatedTextCtrl = nullptr;
-  fullPath = wxT( "" );
+  fullPath = wxFileName( "" );
     
   dialogMessage = wxT( "Choose a file" );
   dialogDefaultDir = wxT( "" );

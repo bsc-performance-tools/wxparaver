@@ -219,7 +219,7 @@ RunScript::RunScript( wxWindow* parent,
   
   if ( !whichTrace.IsEmpty() )
   {
-     fileBrowserButtonTrace->SetPath( whichTrace );
+    fileBrowserButtonTrace->SetPath( whichTrace );
   }
 
   helpOption = false; 

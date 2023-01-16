@@ -27,6 +27,7 @@
 
 #include <wx/button.h>
 #include <wx/filedlg.h>
+#include <wx/filename.h>
 #include <wx/textctrl.h>
 
 class BrowserButton : public wxButton
@@ -55,23 +56,15 @@ class BrowserButton : public wxButton
     ~BrowserButton() {}
   
     void SetTextBox( wxTextCtrl *whichTextCtrl, bool readOnly = true );
-    
-    void SetDialogMessage( const wxString& whichDialogMessage )
-    { dialogMessage = whichDialogMessage; }
-    
-    void SetDialogDefaultDir( const wxString& defaultDir )
-    { dialogDefaultDir = defaultDir; }
-
-    void SetDialogStyle( long whichDialogStyle )
-    { dialogStyle = whichDialogStyle; }
-
-    void SetPath( const wxString& whichFullPath )
-    { fullPath = whichFullPath; }
+    void SetDialogMessage( const wxString& whichDialogMessage ) { dialogMessage = whichDialogMessage; }
+    void SetDialogDefaultDir( const wxString& defaultDir ) { dialogDefaultDir = defaultDir; }
+    void SetDialogStyle( long whichDialogStyle ) { dialogStyle = whichDialogStyle; }
+    void SetPath( const wxString& whichFullPath ) { fullPath = wxFileName( whichFullPath ); }
 
     // Mimics FilePicker
     wxString GetPath() const
     { 
-      return ( !fullPath.IsEmpty()? fullPath : wxString( wxT("") ) ); 
+      return ( fullPath.GetPath( wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR ) + fullPath.GetFullName() ); 
     }
 
     bool Enable( bool enable = true );
@@ -79,7 +72,6 @@ class BrowserButton : public wxButton
     void OnButton( wxMouseEvent& event ) {} // Can't be pure virtual
 
   protected:  
-    wxString fullPath; // Contains file name
     wxTextCtrl *associatedTextCtrl; // Will show only file name, path through tooltip
 
     // FileDialog common properties
@@ -88,6 +80,9 @@ class BrowserButton : public wxButton
     long dialogStyle;
 
     void Init();
+
+  private:
+    wxFileName fullPath;
 };
 
 
