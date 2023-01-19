@@ -41,6 +41,7 @@
 #include "timelinetreeselector.h"
 
 ////@begin XPM images
+#include "../icons/three_dots.xpm"
 ////@end XPM images
 
 using namespace std;
@@ -345,7 +346,7 @@ void DerivedTimelineDialog::CreateControls()
   txtTimelines1 = new wxTextCtrl( itemDialog1, ID_TIMELINES_TEXT1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer14->Add(txtTimelines1, 5, wxALIGN_CENTER_VERTICAL, 5);
 
-  buttonTimelines1 = new wxButton( itemDialog1, ID_TIMELINES_BUTTON1, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  buttonTimelines1 = new wxBitmapButton( itemDialog1, ID_TIMELINES_BUTTON1, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer14->Add(buttonTimelines1, 0, wxALIGN_CENTER_VERTICAL, 5);
 
   wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
@@ -361,7 +362,7 @@ void DerivedTimelineDialog::CreateControls()
   txtTimelines2 = new wxTextCtrl( itemDialog1, ID_TIMELINES_TEXT2, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer22->Add(txtTimelines2, 5, wxALIGN_CENTER_VERTICAL, 5);
 
-  buttonTimelines2 = new wxButton( itemDialog1, ID_TIMELINES_BUTTON2, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  buttonTimelines2 = new wxBitmapButton( itemDialog1, ID_TIMELINES_BUTTON2, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer22->Add(buttonTimelines2, 0, wxALIGN_CENTER_VERTICAL, 5);
 
   wxBoxSizer* itemBoxSizer29 = new wxBoxSizer(wxHORIZONTAL);
@@ -542,6 +543,11 @@ wxBitmap DerivedTimelineDialog::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin DerivedTimelineDialog bitmap retrieval
   wxUnusedVar(name);
+  if (name == wxT("icons/three_dots.xpm"))
+  {
+    wxBitmap bitmap(three_dots_xpm);
+    return bitmap;
+  }
   return wxNullBitmap;
 ////@end DerivedTimelineDialog bitmap retrieval
 }

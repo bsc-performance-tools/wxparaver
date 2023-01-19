@@ -664,7 +664,7 @@ public:
   wxCheckBox* checkAutoRedraw;
   wxButton* buttonForceRedraw;
   wxTextCtrl* txtActiveWorkspaces;
-  wxButton* btnActiveWorkspaces;
+  wxBitmapButton* btnActiveWorkspaces;
   PreviousFiles * previousSessions;
 private:
   bool CFGLoadedBefore;

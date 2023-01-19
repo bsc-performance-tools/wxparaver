@@ -107,6 +107,7 @@
 #include "../icons/file_browser.xpm"
 #include "../icons/window_properties.xpm"
 #include "../icons/autoredraw_refresh.xpm"
+#include "../icons/three_dots.xpm"
 ////@end XPM images
 
 #include "table.xpm"
@@ -625,7 +626,7 @@ void paraverMain::CreateControls()
   txtActiveWorkspaces = new wxTextCtrl( itemPanel36, ID_TEXT_ACTIVE_WORKSPACE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer37->Add(txtActiveWorkspaces, 1, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
-  btnActiveWorkspaces = new wxButton( itemPanel36, ID_BUTTON_ACTIVE_WORKSPACES, _(" ... "), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  btnActiveWorkspaces = new wxBitmapButton( itemPanel36, ID_BUTTON_ACTIVE_WORKSPACES, itemFrame1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   btnActiveWorkspaces->Show(false);
   itemBoxSizer37->Add(btnActiveWorkspaces, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0);
 
@@ -1290,6 +1291,11 @@ wxBitmap paraverMain::GetBitmapResource( const wxString& name )
   else if (name == wxT("icons/autoredraw_refresh.xpm"))
   {
     wxBitmap bitmap(autoredraw_refresh_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/three_dots.xpm"))
+  {
+    wxBitmap bitmap(three_dots_xpm);
     return bitmap;
   }
   return wxNullBitmap;

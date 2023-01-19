@@ -47,6 +47,7 @@
 //#include <wx/notebook.h>
 #include "preferencesdialog.h"
 ////@begin XPM images
+#include "../icons/three_dots.xpm"
 ////@end XPM images
 
 using namespace std;
@@ -205,7 +206,7 @@ void HistogramDialog::CreateControls()
   txtControlTimelines = new wxTextCtrl( itemDialog1, ID_HISTOGRAM_CONTROLTIMELINETEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer4->Add(txtControlTimelines, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  buttonControlTimelines = new wxButton( itemDialog1, ID_HISTOGRAM_CONTROLTIMELINEBUTTON, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  buttonControlTimelines = new wxBitmapButton( itemDialog1, ID_HISTOGRAM_CONTROLTIMELINEBUTTON, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer4->Add(buttonControlTimelines, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
   buttonControlTimelineAutoFit = new wxToggleButton( itemDialog1, ID_HISTOGRAM_CONTROLTIMELINEAUTOFIT, _("Auto Fit"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -251,7 +252,7 @@ void HistogramDialog::CreateControls()
   txtDataTimelines = new wxTextCtrl( itemDialog1, ID_HISTOGRAM_DATATIMELINETEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer16->Add(txtDataTimelines, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  buttonDataTimelines = new wxButton( itemDialog1, ID_HISTOGRAM_DATATIMELINEBUTTON, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  buttonDataTimelines = new wxBitmapButton( itemDialog1, ID_HISTOGRAM_DATATIMELINEBUTTON, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer16->Add(buttonDataTimelines, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
   itemBoxSizer16->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -268,7 +269,7 @@ void HistogramDialog::CreateControls()
   txt3DTimelines = new wxTextCtrl( itemDialog1, ID_HISTOGRAM_3DTIMELINETEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
   itemBoxSizer21->Add(txt3DTimelines, 2, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5);
 
-  button3DTimelines = new wxButton( itemDialog1, ID_HISTOGRAM_3DTIMELINEBUTTON, _("..."), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
+  button3DTimelines = new wxBitmapButton( itemDialog1, ID_HISTOGRAM_3DTIMELINEBUTTON, itemDialog1->GetBitmapResource(wxT("icons/three_dots.xpm")), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
   itemBoxSizer21->Add(button3DTimelines, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT, 5);
 
   button3DTimelineAutoFit = new wxToggleButton( itemDialog1, ID_HISTOGRAM_3DTIMELINEAUTOFIT, _("Auto Fit"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -392,6 +393,11 @@ wxBitmap HistogramDialog::GetBitmapResource( const wxString& name )
   // Bitmap retrieval
 ////@begin HistogramDialog bitmap retrieval
   wxUnusedVar(name);
+  if (name == wxT("icons/three_dots.xpm"))
+  {
+    wxBitmap bitmap(three_dots_xpm);
+    return bitmap;
+  }
   return wxNullBitmap;
 ////@end HistogramDialog bitmap retrieval
 }

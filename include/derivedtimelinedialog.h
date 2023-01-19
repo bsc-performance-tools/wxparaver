@@ -213,10 +213,10 @@ public:
   wxTextCtrl* widgetFactorTimeline1;
   wxSpinCtrl* spinShiftTimeline1;
   wxTextCtrl* txtTimelines1;
-  wxButton* buttonTimelines1;
+  wxBitmapButton* buttonTimelines1;
   wxChoice* widgetOperations;
   wxTextCtrl* txtTimelines2;
-  wxButton* buttonTimelines2;
+  wxBitmapButton* buttonTimelines2;
   wxSpinCtrl* spinShiftTimeline2;
   wxTextCtrl* widgetFactorTimeline2;
   wxButton* swapWindowsButton;

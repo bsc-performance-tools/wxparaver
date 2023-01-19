@@ -246,7 +246,7 @@ public:
 
 ////@begin HistogramDialog member variables
   wxTextCtrl* txtControlTimelines;
-  wxButton* buttonControlTimelines;
+  wxBitmapButton* buttonControlTimelines;
   wxToggleButton* buttonControlTimelineAutoFit;
   wxStaticText* labelControlTimelineMin;
   wxTextCtrl* txtControlTimelineMin;
@@ -255,9 +255,9 @@ public:
   wxStaticText* labelControlTimelineDelta;
   wxTextCtrl* txtControlTimelineDelta;
   wxTextCtrl* txtDataTimelines;
-  wxButton* buttonDataTimelines;
+  wxBitmapButton* buttonDataTimelines;
   wxTextCtrl* txt3DTimelines;
-  wxButton* button3DTimelines;
+  wxBitmapButton* button3DTimelines;
   wxToggleButton* button3DTimelineAutoFit;
   wxStaticText* label3DTimelineMin;
   wxTextCtrl* txt3DTimelineMin;
