@@ -6,7 +6,7 @@ noinst_HEADERS = \
               arrow_reverse.xpm\
               arrow_right.xpm\
               arrow_up.xpm\
-							autoredraw_refresh.xpm\
+              autoredraw_refresh.xpm\
               caution.xpm\
               caution_yellow.xpm\
               cut_trace.xpm\
@@ -23,9 +23,9 @@ noinst_HEADERS = \
               derived_minimum.xpm\
               derived_product.xpm\
               derived_substract.xpm\
-							download.xpm\
+              download.xpm\
               file_browser.xpm\
-							help.xpm\
+              help.xpm\
               hide_cols.xpm\
               histo_color.xpm\
               histo_horvert.xpm\
@@ -36,7 +36,7 @@ noinst_HEADERS = \
               index.xpm\
               information.xpm\
               logoBSC.xpm\
-							logout.xpm\
+              logout.xpm\
               new_derived_window.xpm\
               new_histogram.xpm\
               new_window.xpm\
@@ -44,12 +44,13 @@ noinst_HEADERS = \
               opencontrol.xpm\
               opendata.xpm\
               openfiltered.xpm\
-							report_add.xpm\
-							report_disk.xpm\
+              report_add.xpm\
+              report_disk.xpm\
               run_script.xpm\
               semantic_color.xpm\
               short_labels.xpm\
               table.xpm\
+              three_dots.xpm\
               timeline.xpm\
               window_properties.xpm
 
