@@ -128,17 +128,17 @@ void FindDialog::Init()
 {
 ////@begin FindDialog member initialisation
   myWindow = nullptr;
-  radioObjects = nullptr;
-  choiceObjects = nullptr;
-  choicePosition = nullptr;
-  checkNextObject = nullptr;
-  radioEvents = nullptr;
-  choiceEventType = nullptr;
-  radioSemantic = nullptr;
-  comboSemanticValue = nullptr;
-  choiceDurationFunction = nullptr;
-  spinSemanticDuration = nullptr;
-  boxSizerOperatorsChoice = nullptr;
+  radioObjects = NULL;
+  choiceObjects = NULL;
+  choicePosition = NULL;
+  checkNextObject = NULL;
+  radioEvents = NULL;
+  choiceEventType = NULL;
+  radioSemantic = NULL;
+  comboSemanticValue = NULL;
+  choiceDurationFunction = NULL;
+  spinSemanticDuration = NULL;
+  boxSizerOperatorsChoice = NULL;
 ////@end FindDialog member initialisation
 }
 

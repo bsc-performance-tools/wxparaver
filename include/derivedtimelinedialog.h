@@ -162,6 +162,12 @@ public:
   std::vector< std::string > GetOperations() const { return operations ; }
   void SetOperations(std::vector< std::string > value) { operations = value ; }
 
+  PRV_INT16 GetShiftTimeline1() const { return shiftTimeline1 ; }
+  void SetShiftTimeline1(PRV_INT16 value) { shiftTimeline1 = value ; }
+
+  PRV_INT16 GetShiftTimeline2() const { return shiftTimeline2 ; }
+  void SetShiftTimeline2(PRV_INT16 value) { shiftTimeline2 = value ; }
+
   std::string GetTimelineName() const { return timelineName ; }
   void SetTimelineName(std::string value) { timelineName = value ; }
 
@@ -176,12 +182,6 @@ public:
 
   std::vector< std::string > GetTopCompose2() const { return topCompose2 ; }
   void SetTopCompose2(std::vector< std::string > value) { topCompose2 = value ; }
-
-  PRV_INT16 GetShiftTimeline1() const { return shiftTimeline1 ; }
-  void SetShiftTimeline1(PRV_INT16 value) { shiftTimeline1 = value ; }
-
-  PRV_INT16 GetShiftTimeline2() const { return shiftTimeline2 ; }
-  void SetShiftTimeline2(PRV_INT16 value) { shiftTimeline2 = value ; }
 
   /// Retrieves bitmap resources
   wxBitmap GetBitmapResource( const wxString& name );
@@ -232,13 +232,13 @@ private:
   TParamValue minCompose1;
   TParamValue minCompose2;
   std::vector< std::string > operations;
+  PRV_INT16 shiftTimeline1;
+  PRV_INT16 shiftTimeline2;
   std::string timelineName;
   std::vector<TWindowID> timelines1;
   std::vector<TWindowID> timelines2;
   std::vector< std::string > topCompose1;
   std::vector< std::string > topCompose2;
-  PRV_INT16 shiftTimeline1;
-  PRV_INT16 shiftTimeline2;
 ////@end DerivedTimelineDialog member variables
 
   void presetTimelineComboBox( std::vector< Timeline * > timelines,
