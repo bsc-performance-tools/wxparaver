@@ -177,7 +177,7 @@ enum class TExternalApp
 
   // --- Called through choice selector widget --- 
   DIMEMAS_WRAPPER,     // Dimemas      selected in choice widget
-  STATS_WRAPPER,       // Stats        selected in choice widget
+  PRVSTATS_WRAPPER,    // prvstats        selected in choice widget
   CLUSTERING,          // Clustering   selected in choice widget
   FOLDING,             // Folding      selected in choice widget
   PROFET,
@@ -186,7 +186,7 @@ enum class TExternalApp
 
   // --- Called by different widget ---
   DIMEMAS_GUI,         // DimemasGui   invoked through button
-  STATS                // stats binary invoked by help
+  PRVSTATS                // prvstats binary invoked by help
 };
 
 /*!

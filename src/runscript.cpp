@@ -372,29 +372,29 @@ void RunScript::Init()
   environmentVariable[ TEnvironmentVar::DIMEMAS_HOME ] = wxString( wxT("DIMEMAS_HOME") );
 
   // Labels to construct selector & warning dialogs
-  applicationLabel[ TExternalApp::DIMEMAS_WRAPPER ]= wxString( wxT("Dimemas") );
-  applicationLabel[ TExternalApp::STATS_WRAPPER ]  = wxString( wxT("Stats") );
-  applicationLabel[ TExternalApp::CLUSTERING ]     = wxString( wxT("Clustering") );
-  applicationLabel[ TExternalApp::FOLDING ]        = wxString( wxT("Folding") );
-  applicationLabel[ TExternalApp::PROFET ]         = wxString( wxT("PROFET") );
-  applicationLabel[ TExternalApp::USER_COMMAND ]   = wxString( wxT("User command") );
+  applicationLabel[ TExternalApp::DIMEMAS_WRAPPER ]  = wxString( wxT("Dimemas") );
+  applicationLabel[ TExternalApp::PRVSTATS_WRAPPER ] = wxString( wxT("prvstats") );
+  applicationLabel[ TExternalApp::CLUSTERING ]       = wxString( wxT("Clustering") );
+  applicationLabel[ TExternalApp::FOLDING ]          = wxString( wxT("Folding") );
+  applicationLabel[ TExternalApp::PROFET ]           = wxString( wxT("PROFET") );
+  applicationLabel[ TExternalApp::USER_COMMAND ]     = wxString( wxT("User command") );
   // Following only for warning dialogs
-  applicationLabel[ TExternalApp::DIMEMAS_GUI ]    = wxString( wxT("DimemasGUI") );
-  applicationLabel[ TExternalApp::STATS ]          = wxString( wxT("Stats") );
-
+  applicationLabel[ TExternalApp::DIMEMAS_GUI ]      = wxString( wxT("DimemasGUI") );
+  applicationLabel[ TExternalApp::PRVSTATS ]         = wxString( wxT("prvstats") );
+  
   // application names
-  application[ TExternalApp::DIMEMAS_WRAPPER ]     = wxString( wxT("dimemas-wrapper.sh") );
+  application[ TExternalApp::DIMEMAS_WRAPPER ]       = wxString( wxT("dimemas-wrapper.sh") );
 #ifdef _WIN32
-  application[ TExternalApp::STATS_WRAPPER ]       = wxString( wxT("stats.exe") );
+  application[ TExternalApp::PRVSTATS_WRAPPER ]      = wxString( wxT("prvstats.exe") );
 #else
-  application[ TExternalApp::STATS_WRAPPER ]       = wxString( wxT("stats-wrapper.sh") );
+  application[ TExternalApp::PRVSTATS_WRAPPER ]      = wxString( wxT("prvstats-wrapper.sh") );
 #endif
-  application[ TExternalApp::CLUSTERING ]          = wxString( wxT("BurstClustering") );
-  application[ TExternalApp::FOLDING ]             = wxString( wxT("rri-auto") );
-  application[ TExternalApp::USER_COMMAND ]        = wxString( wxT("") ); // NOT USED
-  application[ TExternalApp::DIMEMAS_GUI ]         = wxString( wxT("DimemasGUI") );
-  application[ TExternalApp::STATS ]               = wxString( wxT("stats") );
-  application[ TExternalApp::PROFET ]              = wxString( wxT("profet") );
+  application[ TExternalApp::CLUSTERING ]            = wxString( wxT("BurstClustering") );
+  application[ TExternalApp::FOLDING ]               = wxString( wxT("rri-auto") );
+  application[ TExternalApp::USER_COMMAND ]          = wxString( wxT("") ); // NOT USED
+  application[ TExternalApp::DIMEMAS_GUI ]           = wxString( wxT("DimemasGUI") );
+  application[ TExternalApp::PRVSTATS ]              = wxString( wxT("prvstats") );
+  application[ TExternalApp::PROFET ]                = wxString( wxT("profet") );
 
   tagFoldingOutputDirectory = wxString( wxT("Output directory:") );
 
@@ -1248,19 +1248,19 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
 
       break;
 
-    case TExternalApp::STATS_WRAPPER:
-    case TExternalApp::STATS:
+    case TExternalApp::PRVSTATS_WRAPPER:
+    case TExternalApp::PRVSTATS:
 
       if ( textCtrlDefaultParameters->GetValue() == wxString( wxT( "--help" ) ))
       {
-        command  = application[ TExternalApp::STATS ];
+        command  = application[ TExternalApp::PRVSTATS ];
         parameters = textCtrlDefaultParameters->GetValue();
         helpOption = true;
       }
       else
       {
         // TODO: DEFAULT VALUES?
-        command  = application[ TExternalApp::STATS_WRAPPER ];
+        command  = application[ TExternalApp::PRVSTATS_WRAPPER ];
 
         parameters = doubleQuote( fileBrowserButtonTrace->GetPath() ); // Source trace
         parameters += wxString( wxT( " -o " ) ) + doubleQuote( statsTextCtrlOutputName->GetValue() ); // Final name
@@ -1605,7 +1605,7 @@ wxString RunScript::GetReachableCommand( TExternalApp selectedApp )
 
         break;
 
-      case TExternalApp::STATS_WRAPPER:
+      case TExternalApp::PRVSTATS_WRAPPER:
         pathToProgram = getEnvironmentPath( TEnvironmentVar::PATH, program );
         if ( !pathToProgram.IsEmpty() )
         {
@@ -1730,7 +1730,7 @@ void RunScript::OnButtonRunUpdate( wxUpdateUIEvent& event )
       active &= !textCtrlOutputTrace->GetValue().IsEmpty();
       break;
 
-    case TExternalApp::STATS_WRAPPER:
+    case TExternalApp::PRVSTATS_WRAPPER:
       active &= !fileBrowserButtonTrace->GetPath().IsEmpty();
       break;
       
@@ -1864,8 +1864,8 @@ void RunScript::adaptWindowToApplicationSelection()
       textCtrlDefaultParameters->Show();
       break;
 
-    case TExternalApp::STATS_WRAPPER:
-      toolTip = wxString( wxT( "Extra parameters passed to 'stats'\n"
+    case TExternalApp::PRVSTATS_WRAPPER:
+      toolTip = wxString( wxT( "Extra parameters passed to 'prvstats'\n"
                                "-events_histo[:type1[-type2],...]\n"
                                "-thread_calls[:type1[-type2],...]\n" ) );
 
@@ -1958,7 +1958,7 @@ void RunScript::adaptWindowToApplicationSelection()
   }
 
   dimemasSection->Show( currentApp == TExternalApp::DIMEMAS_WRAPPER );
-  statsSection->Show( currentApp == TExternalApp::STATS_WRAPPER );
+  statsSection->Show( currentApp == TExternalApp::PRVSTATS_WRAPPER );
   clusteringSection->Show( currentApp == TExternalApp::CLUSTERING );
   adaptClusteringAlgorithmParameters();
   foldingSection->Show( currentApp == TExternalApp::FOLDING );
@@ -2090,7 +2090,7 @@ void RunScript::InitOutputLinks()
   defaultLinkMaker = makeLinkComponents;
 
   applicationLinkMaker[ TExternalApp::DIMEMAS_WRAPPER ] = makeLinkComponents;
-  applicationLinkMaker[ TExternalApp::STATS_WRAPPER ]   = makeLinkComponents;
+  applicationLinkMaker[ TExternalApp::PRVSTATS_WRAPPER ]   = makeLinkComponents;
   applicationLinkMaker[ TExternalApp::CLUSTERING ]      = makeLinkComponentsClustering;
   applicationLinkMaker[ TExternalApp::FOLDING ]         = makeLinkComponentsFolding;
   applicationLinkMaker[ TExternalApp::PROFET ]          = makeLinkComponents;
@@ -2642,7 +2642,7 @@ void RunScript::setDimemas()
 
 void RunScript::setStats()
 {
-  setApp( TExternalApp::STATS_WRAPPER );
+  setApp( TExternalApp::PRVSTATS_WRAPPER );
 }
 
 
@@ -2759,7 +2759,7 @@ void RunScript::OnButtonKillClick( wxCommandEvent& event )
  */
 void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
 {
-  if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::STATS_WRAPPER ) )
+  if ( choiceApplication->GetSelection() == static_cast<int>( TExternalApp::PRVSTATS_WRAPPER ) )
   {
     statsTextCtrlOutputName->SetValue( fileBrowserButtonTrace->GetPath() );
   }

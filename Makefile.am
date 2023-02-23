@@ -9,8 +9,8 @@ install-data-hook:
 	cp -f ./docs/dimemas-wrapper.sh $(DESTDIR)$(bindir)
 	chmod a+x $(DESTDIR)$(bindir)/dimemas-wrapper.sh
 
-	cp -f ./docs/stats-wrapper.sh $(DESTDIR)$(bindir)
-	chmod a+x $(DESTDIR)$(bindir)/stats-wrapper.sh
+	cp -f ./docs/prvstats-wrapper.sh $(DESTDIR)$(bindir)
+	chmod a+x $(DESTDIR)$(bindir)/prvstats-wrapper.sh
 
 	if test "x${MINGW_CPPFLAGS}" != "x" ; then \
 		cp -f ./docs/wxparaver.bat $(DESTDIR)$(prefix) ; \
@@ -100,7 +100,7 @@ endif
 
 uninstall-hook:
 	test -f "$(DESTDIR)$(bindir)/dimemas-wrapper.sh"       && rm  -fv $(DESTDIR)$(bindir)/dimemas-wrapper.sh
-	test -f "$(DESTDIR)$(bindir)/stats-wrapper.sh"         && rm  -fv $(DESTDIR)$(bindir)/stats-wrapper.sh
+	test -f "$(DESTDIR)$(bindir)/prvstats-wrapper.sh"      && rm  -fv $(DESTDIR)$(bindir)/prvstats-wrapper.sh
 	test -f "$(DESTDIR)$(bindir)/wxparaver"                && rm  -fv $(DESTDIR)$(bindir)/wxparaver
 
 	test -f "$(DESTDIR)$(prefix)/share/workspaces.xml"     && rm  -fv $(DESTDIR)$(prefix)/share/workspaces.xml
@@ -110,13 +110,13 @@ uninstall-hook:
 
 dist-hook:
 	$(mkdir_p) $(distdir)/docs
-	cp -f ./docs/dimemas-wrapper.sh $(distdir)/docs
-	cp -f ./docs/stats-wrapper.sh   $(distdir)/docs
-	cp -f ./docs/wxparaver          $(distdir)/docs
-	cp -f ./docs/wxparaver.bat      $(distdir)/docs
-
-	cp -f ./docs/paraload.sig       $(distdir)/docs
-	cp -f ./docs/paraload-v1.0.sig  $(distdir)/docs
+	cp -f ./docs/dimemas-wrapper.sh   $(distdir)/docs
+	cp -f ./docs/prvstats-wrapper.sh  $(distdir)/docs
+	cp -f ./docs/wxparaver            $(distdir)/docs
+	cp -f ./docs/wxparaver.bat        $(distdir)/docs
+  
+	cp -f ./docs/paraload.sig         $(distdir)/docs
+	cp -f ./docs/paraload-v1.0.sig    $(distdir)/docs
 
 	if test -f ./docs/workspaces.xml ; then \
 		cp -f ./docs/workspaces.xml  $(distdir)/docs ; \
