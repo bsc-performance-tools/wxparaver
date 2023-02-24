@@ -2,7 +2,7 @@ INSTALL
 =======
 
 cd sphinx/2.paraver_toolset/
-make singlehtml
+./rst2html.sh   
 
 
 DIRECTORIES

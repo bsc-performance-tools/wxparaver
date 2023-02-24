@@ -1,5 +1,6 @@
 *~
 Makefile
+!docs/wxparaver_help_contents/sphinx/2.paraver_toolset/Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache/

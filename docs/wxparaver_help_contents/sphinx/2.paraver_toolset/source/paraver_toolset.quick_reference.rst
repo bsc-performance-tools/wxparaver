@@ -28,9 +28,9 @@ The main utilities are:
 
 * sort_ : detect unsorted traces, and sort them.
 
-* stats_ : gather useful trace statistics.
+* prvstats_ : gather useful trace statistics.
 
-Some of these utilities are integrated into *wxparaver* like the *paramedir* cut/filter options are in *Cut/Filter* window or like *stats* is in the *Run Application* window. Also, some scripts are intended to interconnect *wxparaver* with other BSC performance tools like *Dimemas* simulator.
+Some of these utilities are integrated into *wxparaver* like the *paramedir* cut/filter options are in *Cut/Filter* window or like *prvstats* is in the *Run Application* window. Also, some scripts are intended to interconnect *wxparaver* with other BSC performance tools like *Dimemas* simulator.
 
 
 .. :ref:`\<\< <my_contents>`
@@ -426,12 +426,12 @@ Drawbacks
 .. :ref:`\<\< <my_contents>`
 
 
-.. _stats:
+.. _prvstats:
 
-stats
-#####
+prvstats
+########
 
-**stats** is a tool that obtains some basic statistics from the trace. They are:
+**prvstats** is a tool that obtains some basic statistics from the trace. They are:
 
 * Bursts histogram: only for computational bursts
 
@@ -456,9 +456,9 @@ Usage
 
 The command syntax is as follows::
 
-  stats --help 
+  prvstats --help 
 
-  stats < trace_input.prv > < options > 
+  prvstats < trace_input.prv > < options > 
 
 .. :ref:`\<\< <my_contents>`
 
@@ -495,7 +495,7 @@ Options
 
 * .. option:: -thread_calls[:type1[-type2],...]
 
-  Shows stats of the calls made by thread, filtering by type or ranges of types. This info is generated in file <trace_in>.calls.info. 
+  Shows statistics of the calls made by thread, filtering by type or ranges of types. This info is generated in file <trace_in>.calls.info. 
 
 * .. option:: -exclusive_times
 
@@ -503,7 +503,7 @@ Options
 
 * .. option:: -o < file_name >
 
-  Generate stats in file <file_name>.dat and  <file_name>.gnuplot (default are <trace_in>.dat and <trace_in>.gnuplot).
+  Generate statistics in file <file_name>.dat and  <file_name>.gnuplot (default are <trace_in>.dat and <trace_in>.gnuplot).
   
 * .. option:: -only_dat_file
 
@@ -518,23 +518,23 @@ Examples
 
 For bursts histogram::
 
-  $ stats trace_input.prv -bursts_histo 
+  $ prvstats trace_input.prv -bursts_histo 
 
-  $ stats trace_input.prv -bursts_histo -o my_data -only_dat_file
+  $ prvstats trace_input.prv -bursts_histo -o my_data -only_dat_file
 
 
 For events histogram::
 
-  $ stats trace_input.prv -events_histo
+  $ prvstats trace_input.prv -events_histo
 
-  $ stats trace_input.prv -events_histo:50000001,50000002
+  $ prvstats trace_input.prv -events_histo:50000001,50000002
 
-  $ stats trace_input.prv -events_histo:50000001-50000003,42000001-42000100
+  $ prvstats trace_input.prv -events_histo:50000001-50000003,42000001-42000100
 
 
 For communications histogram::
 
-  $ stats trace_input.prv -comms_histo 
+  $ prvstats trace_input.prv -comms_histo 
 
 
 .. :ref:`\<\< <my_contents>`
