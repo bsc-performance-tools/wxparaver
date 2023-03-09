@@ -1804,7 +1804,7 @@ wxImage GLViewerCanvas::DrawNodeTexture( int size, unsigned num )
 
         // Dirty stuff: this should work with any gHistogram, so I use the one selected from the main windows
         // assuming the function isn't supposed to be overwritten... should it be static?
-        const wxColour *textCol = paraverMain::myParaverMain->GetSelectedHistogram()->GetTableBase()->getLuminance( cpuColour );
+        const wxColour *textCol = paraverMain::myParaverMain->GetSelectedHistogram()->GetTableBase()->getTextColorFromLuminance( cpuColour );
         dc.SetTextForeground( *textCol );
 
         // paint number
