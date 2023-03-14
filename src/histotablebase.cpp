@@ -324,7 +324,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
                                                               controlWindow->getMinimumY(),
                                                               controlWindow->getMaximumY() );
       tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-      tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+      tmpAttr->SetTextColour( *getTextColorFromLuminance( tmpCol ) );
         
       return tmpAttr;
     }
@@ -360,7 +360,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
                                                                 controlWindow->getMinimumY(),
                                                                 controlWindow->getMaximumY() );
         tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-        tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+        tmpAttr->SetTextColour( *getTextColorFromLuminance( tmpCol ) );
       }
       return tmpAttr;
     }
@@ -392,7 +392,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
       {
         rgb tmpCol = myHisto->GetHistogram()->calcGradientColor( semValue );
         tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-        tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+        tmpAttr->SetTextColour( *getTextColorFromLuminance( tmpCol ) );
       }
     }
     else if ( row < myHisto->GetHistogram()->getNumRows() && col < tmpNumColumns )
@@ -409,7 +409,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
                                                                        myHisto->GetHistogram()->getMaxGradient(),
                                                                        myHisto->GetHistogram()->getDataWindow()->getUseCustomPalette() );
           tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-          tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+          tmpAttr->SetTextColour( *getTextColorFromLuminance( tmpCol ) );
         }
         else
         {
@@ -418,7 +418,7 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
           {
             tmpCol = myHisto->GetHistogram()->calcGradientColor( semValue );
             tmpAttr->SetBackgroundColour( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) );
-            tmpAttr->SetTextColour( *getLuminance( wxColour( tmpCol.red, tmpCol.green, tmpCol.blue ) ) );
+            tmpAttr->SetTextColour( *getTextColorFromLuminance( tmpCol ) );
           }
         }
       }
@@ -446,11 +446,9 @@ void HistoTableBase::setDefaultFontBold( wxFont& whichFont )
 }
 
 
-const wxColour *HistoTableBase::getLuminance( wxColour fromColour ) const
+const wxColour *HistoTableBase::getTextColorFromLuminance( rgb fromColour ) const
 {
-  unsigned int BackColour_luminance = ( fromColour.Red()   * 30 ) / 100 +
-                                      ( fromColour.Green() * 59 ) / 100 +
-                                      ( fromColour.Blue()  * 11 ) / 100;
+  unsigned int BackColour_luminance = SemanticColor::getLuminance( fromColour.red, fromColour.green, fromColour.blue );
   if ( BackColour_luminance >= 128 )
     return wxBLACK;
   return wxWHITE;

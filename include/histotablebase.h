@@ -25,6 +25,7 @@
 #include <vector>
 #include <string>
 #include "paraverkerneltypes.h"
+#include "paravertypes.h"
 
 class gHistogram;
 
@@ -65,5 +66,5 @@ class HistoTableBase : public wxGridTableBase
     wxString label;
 
     int getNumSemanticColumns() const;
-    const wxColour *getLuminance( wxColour fromColour ) const;
+    const wxColour *getTextColorFromLuminance( rgb fromColour ) const;
 };
