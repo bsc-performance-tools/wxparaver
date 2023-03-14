@@ -967,13 +967,15 @@ void TutorialsBrowser::OnButtonDownloadClick(  wxCommandEvent& event )
   vector<TutorialData> tutorialsData;
   
   tutorialsData = TutorialsDownload::getInstance()->getTutorialsList();
+  if ( tutorialsData.empty() )
+    return;
+
   wxArrayString tutorialChoices;
   
-  for( vector<TutorialData>::const_iterator it = tutorialsData.begin(); it != tutorialsData.end(); ++it )
-    tutorialChoices.Add( wxString::FromUTF8( it->getName().c_str() ) );
+  for( auto it : tutorialsData )
+    tutorialChoices.Add( wxString::FromUTF8( it.getName().c_str() ) );
 
   wxMultiChoiceDialog selDialog( this, wxT( "Select tutorials to download and install:" ), wxT( "Tutorials download" ), tutorialChoices );
-  
   if( selDialog.ShowModal() == wxID_OK )
   {
     wxArrayInt selection = selDialog.GetSelections();

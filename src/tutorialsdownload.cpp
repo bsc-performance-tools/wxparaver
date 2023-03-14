@@ -398,30 +398,30 @@ vector<TutorialData> TutorialsDownload::getTutorialsList()
 {
   if( !tutorialsListUpdated )
   {
-    downloadTutorialsList();
-    loadXML( ParaverConfig::getInstance()->getParaverConfigDir() + TutorialsDownload::tutorialsListFile, this, "tutorials" );
-    tutorialsListUpdated = true;
+    tutorialsListUpdated = downloadTutorialsList();
+    if ( tutorialsListUpdated )
+      loadXML( ParaverConfig::getInstance()->getParaverConfigDir() + TutorialsDownload::tutorialsListFile,
+               this,
+               "tutorials" );
   }
 
-  vector<TutorialData> tutorialsListState = tutorialsList;
+  auto tutorialsListState = tutorialsList;
   vector<TutorialData> installedTutorials;
   loadXML( ParaverConfig::getInstance()->getGlobalTutorialsPath() + PATH_SEP + TutorialsDownload::tutorialsListFile,
            installedTutorials,
            "installed_tutorials" );
 
-  for( vector<TutorialData>::iterator it = tutorialsListState.begin(); it != tutorialsListState.end(); ++it )
+  for( auto& it : tutorialsListState )
   {
-    for( vector<TutorialData>::const_iterator itInstalled = installedTutorials.begin(); itInstalled != installedTutorials.end(); ++itInstalled )
+    auto itInstalled = std::find_if( installedTutorials.begin(),
+                                     installedTutorials.end(),
+                                     [ &it ]( const auto& el ){ return it.getId() == el.getId(); } ); 
+    if ( itInstalled != installedTutorials.end() )
     {
-      if( itInstalled->getId() == it->getId() )
-      {
-        if( itInstalled->getVersion() < it->getVersion() )
-          it->setName( "[NEW VERSION] " + it->getName() );
-        else
-          it->setName( "[INSTALLED] " + it->getName() );
-
-        break;
-      }
+      if( itInstalled->getVersion() < it.getVersion() )
+        it.setName( "[NEW VERSION] " + it.getName() );
+      else
+        it.setName( "[INSTALLED] "   + it.getName() );
     }
   }
 
@@ -523,6 +523,8 @@ void TutorialsDownload::loadXML( const std::string& whichFilename, vector<Tutori
 
 bool TutorialsDownload::downloadTutorialsList() const
 {
+  bool doneDownload = false;
+
   std::string path   = "/sites/default/files/documentation/" + TutorialsDownload::tutorialsListFile;
   std::string server = "tools.bsc.es";
 
@@ -537,18 +539,17 @@ bool TutorialsDownload::downloadTutorialsList() const
     boost::asio::io_service io_service;
     client c( io_service, ctx, server, path, storeFile, nullptr );
     io_service.run();
+
+    doneDownload = true;
   }
   catch ( ParaverKernelException& e )
   {
     wxMessageBox( wxString::FromUTF8( e.what() ), wxT( "Download failed" ), wxICON_ERROR );
-    storeFile.close();
-
-    return false;
   }
   
   storeFile.close();
 
-  return true;
+  return doneDownload;
 }
 
 
