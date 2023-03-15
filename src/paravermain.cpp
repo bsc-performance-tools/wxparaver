@@ -1781,6 +1781,10 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
   }
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_3DPLANE ) )
   {
+    // Disable fixed sort, because different planes couldn't have same columns
+    if( whichHistogram->getFixedSemanticSort() )
+      whichHistogram->setFixedSemanticSort( false );
+    
     if( whichHistogram->isCommunicationStat( whichHistogram->getCurrentStat() ) )
       whichHistogram->setCommSelectedPlane( property->GetValue().GetLong() );
     else

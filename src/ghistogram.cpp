@@ -1,6 +1,3 @@
-#ifndef __GHISTOGRAM_H__
-#define __GHISTOGRAM_H__
-
 /*****************************************************************************\
  *                        ANALYSIS PERFORMANCE TOOLS                         *
  *                                  wxparaver                                *
@@ -96,6 +93,7 @@ constexpr char STR_SORT_CUSTOM[] = "Custom";
 #include "../icons/inclusive.xpm"
 #include "../icons/histo_sort.xpm"
 #include "../icons/arrow_reverse.xpm"
+#include "../icons/fix_columns_sort.xpm"
 #include "../icons/caution.xpm"
 #include "../icons/autoredraw_refresh.xpm"
 ////@end XPM images
@@ -145,6 +143,8 @@ BEGIN_EVENT_TABLE( gHistogram, wxFrame )
   EVT_UPDATE_UI( ID_TOOL_CHOICE_SORTBY, gHistogram::OnToolChoiceSortbyUpdate )
   EVT_MENU( ID_TOOL_REVERSE, gHistogram::OnToolReverseClick )
   EVT_UPDATE_UI( ID_TOOL_REVERSE, gHistogram::OnToolReverseUpdate )
+  EVT_MENU( ID_TOOL_FIX_COLUMNS_SORT, gHistogram::OnToolFixColumnsSortClick )
+  EVT_UPDATE_UI( ID_TOOL_FIX_COLUMNS_SORT, gHistogram::OnToolFixColumnsSortUpdate )
   EVT_UPDATE_UI( ID_ZOOMHISTO, gHistogram::OnZoomhistoUpdate )
   EVT_GRID_CELL_LEFT_CLICK( gHistogram::OnCellLeftClick )
   EVT_GRID_CELL_RIGHT_CLICK( gHistogram::OnCellRightClick )
@@ -345,6 +345,9 @@ void gHistogram::CreateControls()
   wxBitmap itemtool20Bitmap(itemFrame1->GetBitmapResource(wxT("icons/arrow_reverse.xpm")));
   wxBitmap itemtool20BitmapDisabled;
   tbarHisto->AddTool(ID_TOOL_REVERSE, _("Reverse order"), itemtool20Bitmap, itemtool20BitmapDisabled, wxITEM_CHECK, _("Reverse order"), wxEmptyString);
+  wxBitmap itemtool1Bitmap(itemFrame1->GetBitmapResource(wxT("icons/fix_columns_sort.xpm")));
+  wxBitmap itemtool1BitmapDisabled;
+  tbarHisto->AddTool(ID_TOOL_FIX_COLUMNS_SORT, _("Fix columns sort"), itemtool1Bitmap, itemtool1BitmapDisabled, wxITEM_CHECK, _("Fix columns sort"), wxEmptyString);
   tbarHisto->Realize();
 
   panelData = new wxPanel( itemFrame1, HISTO_PANEL_DATA, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -1024,6 +1027,11 @@ wxBitmap gHistogram::GetBitmapResource( const wxString& name )
   else if (name == wxT("icons/arrow_reverse.xpm"))
   {
     wxBitmap bitmap(arrow_inverse_xpm);
+    return bitmap;
+  }
+  else if (name == wxT("icons/fix_columns_sort.xpm"))
+  {
+    wxBitmap bitmap(fix_columns_sort_xpm);
     return bitmap;
   }
   else if (name == wxT("icons/caution.xpm"))
@@ -3539,6 +3547,9 @@ void gHistogram::OnToolShortLabelsClick( wxCommandEvent& event )
 
 void gHistogram::OnToolChoiceSortbySelected( wxCommandEvent& event )
 {
+  if( myHistogram->getFixedSemanticSort() )
+    myHistogram->setFixedSemanticSort( false );
+
   if( event.GetSelection() == 0 && myHistogram->getSemanticSortColumns() )
   {
     myHistogram->setSemanticSortColumns( false );
@@ -3587,6 +3598,8 @@ void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
   if( myHistogram->getSemanticSortColumns() )
   {    
     tmpSort = static_cast<int>( myHistogram->getSemanticSortCriteria() ) + 1;
+    if( myHistogram->getSemanticSortCriteria() == THistoSortCriteria::CUSTOM )
+      EnableCustomSortOption();
   }
 
   if( tmpSort != choiceSortBy->GetSelection() )
@@ -3623,4 +3636,28 @@ void gHistogram::OnAutoredrawLeftDown( wxMouseEvent& event )
 }
 
 
-#endif // __GHISTOGRAM_H__
+/*!
+ * wxEVT_COMMAND_MENU_SELECTED event handler for ID_TOOL_FIX_COLUMNS_SORT
+ */
+
+void gHistogram::OnToolFixColumnsSortClick( wxCommandEvent& event )
+{
+  myHistogram->setFixedSemanticSort( event.IsChecked() );
+
+  if( event.IsChecked() )
+    EnableCustomSortOption();
+
+  myHistogram->setRedraw( true );
+}
+
+
+/*!
+ * wxEVT_UPDATE_UI event handler for ID_TOOL_FIX_COLUMNS_SORT
+ */
+
+void gHistogram::OnToolFixColumnsSortUpdate( wxUpdateUIEvent& event )
+{
+  event.Enable( myHistogram->getSemanticSortColumns() );
+  event.Check( myHistogram->getFixedSemanticSort() );
+}
+
