@@ -296,6 +296,9 @@ bool HistoTableBase::IsEmptyCell( int row, int col )
 
 wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAttrKind kind )
 {
+  if( col < 0 || row < 0 )
+    return nullptr;
+
   wxGridCellAttr *tmpAttr = new wxGridCellAttr();
   Timeline *controlWindow = myHisto->GetHistogram()->getControlWindow();
 
