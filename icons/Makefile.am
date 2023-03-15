@@ -25,6 +25,7 @@ noinst_HEADERS = \
               derived_substract.xpm\
               download.xpm\
               file_browser.xpm\
+              fix_columns_sort.xpm\
               help.xpm\
               hide_cols.xpm\
               histo_color.xpm\
