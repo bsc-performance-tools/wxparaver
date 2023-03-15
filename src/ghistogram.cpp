@@ -3645,12 +3645,7 @@ void gHistogram::OnToolFixColumnsSortClick( wxCommandEvent& event )
   myHistogram->setFixedSemanticSort( event.IsChecked() );
 
   if( event.IsChecked() )
-  {
-    lastSortCriteria = myHistogram->getSemanticSortCriteria();
     EnableCustomSortOption();
-  }
-  else
-    myHistogram->setSemanticSortCriteria( lastSortCriteria );
 
   myHistogram->setRedraw( true );
 }

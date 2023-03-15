@@ -469,8 +469,6 @@ private:
   wxWindow *parent; // for clone
   bool forceAutohideColumns;
 
-  THistoSortCriteria lastSortCriteria = THistoSortCriteria::TOTAL;
-
   std::vector<THistogramColumn> noVoidSemRanges;
 
   SelectionManagement<THistogramColumn,int> columnSelection;
