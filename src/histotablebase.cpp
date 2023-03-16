@@ -452,7 +452,6 @@ void HistoTableBase::setDefaultFontBold( wxFont& whichFont )
 const wxColour *HistoTableBase::getTextColorFromLuminance( rgb fromColour ) const
 {
   unsigned int BackColour_luminance = SemanticColor::getLuminance( fromColour.red, fromColour.green, fromColour.blue );
-  if ( BackColour_luminance >= 128 )
-    return wxBLACK;
-  return wxWHITE;
+
+  return ( BackColour_luminance >= 128 )? wxBLACK: wxWHITE;
 }

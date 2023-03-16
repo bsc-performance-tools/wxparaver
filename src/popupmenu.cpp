@@ -108,8 +108,6 @@ void gPopUpMenu<gHistogram>::enableMenu( gHistogram *whichHistogram )
     Enable( FindItem( _( STR_3D_SCALE ) ), false );
 
   Enable( FindItem( _( STR_AUTOFIT_CONTROL_ZERO ) ), whichHistogram->GetHistogram()->getCompute2DScale() );
-
-  Enable( FindItem( _( "Image..." ) ), whichHistogram->GetHistogram()->getZoom() );
 }
 
 

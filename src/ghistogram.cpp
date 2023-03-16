@@ -3191,19 +3191,41 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
 
   // Get dimensions
   wxImage img = drawImage.ConvertToImage();
+
   int histogramWidth = img.GetWidth();
   int histogramHeight = img.GetHeight();
 
   int titleMargin = 5; // used in 4 sides
-  int titleHeigth = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
+  int titleHeight = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
   int titleWidth = histogramWidth;
   int titleWritableWidth = titleWidth - ( 2 * titleMargin );
 
-  int imageHeigth = titleHeigth + histogramHeight;
-  int imageWidth = histogramWidth;
+  int imageHeight = 0;
+  int imageWidth = 0;
+  if ( GetHistogram()->getZoom() )
+  {
+    imageHeight = histogramHeight;
+    imageWidth = histogramWidth;
+  }
+  else
+  {
+    auto sumSize = []( const auto& sizes, auto numElems, auto& totalSize )
+      {
+        for( unsigned int c = 0; c < numElems; ++c )
+          totalSize += sizes.GetSize( c );
+      };
+
+    sumSize( gridHisto->GetColSizes(), gridHisto->GetNumberCols(), imageWidth );
+    sumSize( gridHisto->GetRowSizes(), gridHisto->GetNumberRows(), imageHeight );
+
+    imageWidth += gridHisto->GetRowLabelSize();
+    imageHeight += gridHisto->GetColLabelSize();
+  }
+
+  imageHeight += titleHeight;
 
   // Build DC for title
-  wxBitmap titleBitmap( titleWidth, titleHeigth );
+  wxBitmap titleBitmap( titleWidth, titleHeight );
   wxMemoryDC titleDC( titleBitmap );
 
   // Set font and check if using it the title will fit
@@ -3227,20 +3249,28 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
   // Compute title image size
   titleDC.DrawText( writtenTitle, titleMargin, titleMargin );
 
-  wxBitmap imageBitmap( imageWidth, imageHeigth );
+  wxBitmap imageBitmap( imageWidth, imageHeight );
   wxMemoryDC imageDC( imageBitmap );
   wxCoord xsrc = 0;
   wxCoord ysrc = 0;
   wxCoord xdst = 0;
   wxCoord ydst = 0;
-  imageDC.Blit( xdst, ydst, titleWidth, titleHeigth, &titleDC, xsrc, ysrc );
+  imageDC.Blit( xdst, ydst, titleWidth, titleHeight, &titleDC, xsrc, ysrc );
 
-  wxMemoryDC histogramDC( drawImage );
-  xsrc = 0;
-  ysrc = 0;
-  xdst = 0;
-  ydst = titleHeigth;
-  imageDC.Blit( xdst, ydst, histogramWidth, histogramHeight, &histogramDC, xsrc, ysrc );
+  if ( GetHistogram()->getZoom() )
+  {
+    wxMemoryDC histogramDC( drawImage );
+    xsrc = 0;
+    ysrc = 0;
+    xdst = 0;
+    ydst = titleHeight;
+    imageDC.Blit( xdst, ydst, histogramWidth, histogramHeight, &histogramDC, xsrc, ysrc );
+  }
+  else
+  {
+    wxMemoryDC imageDC( imageBitmap );
+    gridHisto->Render( imageDC, wxPoint( xdst, titleHeight ) );
+  }
 
   // Get extension and save
   wxBitmapType imageType;
