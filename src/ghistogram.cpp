@@ -3192,20 +3192,12 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
   // Get dimensions
   wxImage img = drawImage.ConvertToImage();
 
-  int histogramWidth = img.GetWidth();
-  int histogramHeight = img.GetHeight();
-
-  int titleMargin = 5; // used in 4 sides
-  int titleHeight = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
-  int titleWidth = histogramWidth;
-  int titleWritableWidth = titleWidth - ( 2 * titleMargin );
-
-  int imageHeight = 0;
   int imageWidth = 0;
+  int imageHeight = 0;
   if ( GetHistogram()->getZoom() )
   {
-    imageHeight = histogramHeight;
-    imageWidth = histogramWidth;
+    imageWidth = img.GetWidth();
+    imageHeight = img.GetHeight();
   }
   else
   {
@@ -3222,21 +3214,22 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
     imageHeight += gridHisto->GetColLabelSize();
   }
 
+  int titleWidth = imageWidth;
+  int titleMargin = 5; // used in 4 sides
+  int titleHeight = titleFont.GetPointSize() + ( 2 * titleMargin ); // up + down margins + text
+
   imageHeight += titleHeight;
 
   // Build DC for title
-  wxBitmap titleBitmap( titleWidth, titleHeight );
+  wxBitmap titleBitmap( imageWidth, titleHeight );
   wxMemoryDC titleDC( titleBitmap );
 
   // Set font and check if using it the title will fit
   titleDC.SetFont( titleFont );
-  wxSize titleSize = titleDC.GetTextExtent( writtenTitle );
+  const wxSize titleSize { titleDC.GetTextExtent( writtenTitle ) };
 
-  if ( titleSize.GetWidth() > titleWritableWidth )
-  {
-    titleSize = titleDC.GetTextExtent( shortTitle );
+  if ( titleSize.GetWidth() > imageWidth )
     writtenTitle = shortTitle;
-  }
 
   // Set colors
   titleDC.SetBackground( wxBrush( backgroundColour ) );
@@ -3251,6 +3244,12 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
 
   wxBitmap imageBitmap( imageWidth, imageHeight );
   wxMemoryDC imageDC( imageBitmap );
+
+  // Due to some bug in wxWidgets Render method, the Row headers renders with transparency
+  auto c = gridHisto->GetLabelBackgroundColour();
+  imageDC.SetBackground( wxBrush( c ) );
+  imageDC.Clear();
+
   wxCoord xsrc = 0;
   wxCoord ysrc = 0;
   wxCoord xdst = 0;
@@ -3264,11 +3263,10 @@ void gHistogram::saveImage( wxString whichFileName, TImageFormat filterIndex )
     ysrc = 0;
     xdst = 0;
     ydst = titleHeight;
-    imageDC.Blit( xdst, ydst, histogramWidth, histogramHeight, &histogramDC, xsrc, ysrc );
+    imageDC.Blit( xdst, ydst, imageWidth, imageHeight, &histogramDC, xsrc, ysrc );
   }
   else
   {
-    wxMemoryDC imageDC( imageBitmap );
     gridHisto->Render( imageDC, wxPoint( xdst, titleHeight ) );
   }
 
