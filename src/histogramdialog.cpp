@@ -671,8 +671,14 @@ wxString HistogramDialog::formatNumber( double value )
   stringstream auxSStr;
   wxString auxNumber;
 
-  locale mylocale( "" );
-  auxSStr.imbue( mylocale );
+  try
+  {
+    auxSStr.imbue( std::locale( "" ) );
+  }
+  catch(...)
+  {
+    auxSStr.imbue( std::locale::classic() );
+  }
   auxSStr.precision( ParaverConfig::getInstance()->getHistogramPrecision() );
   auxSStr << fixed;
   auxSStr << value;

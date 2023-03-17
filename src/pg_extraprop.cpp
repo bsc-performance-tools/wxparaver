@@ -868,8 +868,15 @@ prvNumbersListProperty::prvNumbersListProperty( const wxString& label,
 {
   // Get local chars for decimal and thousand separators
   // Actually having problems to read numbers with thousands sep like 60.000.001, so not allowed
-  locale mylocale( "" );
-  char decimalChar =  use_facet< numpunct< char > >( mylocale ).decimal_point();
+  char decimalChar;
+  try
+  {
+    decimalChar =  use_facet< numpunct< char > >( std::locale( "" ) ).decimal_point();
+  }
+  catch(...)
+  {
+    decimalChar =  use_facet< numpunct< char > >( std::locale::classic() ).decimal_point();
+  }
 
   wxString allowedChars[] = { _("0"), _("1"), _("2"), _("3"), _("4"),
                               _("5"), _("6"), _("7"), _("8"), _("9"),
