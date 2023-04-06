@@ -2339,6 +2339,12 @@ void gTimeline::OnPopUpNotNullGradientColor( wxCommandEvent& event )
   myWindow->setRedraw( true );
 }
 
+void gTimeline::OnPopUpAlternativeGradientColor( wxCommandEvent& event )
+{
+  myWindow->setAlternativeGradientColorMode();
+  myWindow->setRedraw( true );
+}
+
 void gTimeline::OnPopUpGradientFunction( wxCommandEvent& event )
 {
   TGradientFunction gradFunc;

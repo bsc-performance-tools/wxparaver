@@ -143,6 +143,7 @@
 #define ID_MENU_PASTE_CUSTOM_PALETTE                       30106
 #define ID_MENU_PASTE_SEMANTIC_SORT                        30107
 #define ID_MENU_PROFET                                     30108
+#define ID_MENU_ALTERNATIVE_GRADIENT_COLOR                 30109
 
 #define ID_MENU_SYNC_GROUP_BASE                            31000
 #define ID_MENU_SYNC_REMOVE_GROUP_BASE                     32000

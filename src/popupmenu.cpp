@@ -331,6 +331,7 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, _( "Code Color" ), wxITEM_RADIO, &gTimeline::OnPopUpCodeColor, ID_MENU_CODE_COLOR, window->GetMyWindow()->isCodeColorSet() );
   buildItem( popUpMenuColor, _( "Gradient Color" ), wxITEM_RADIO, &gTimeline::OnPopUpGradientColor, ID_MENU_GRADIENT_COLOR, window->GetMyWindow()->isGradientColorSet() );
   buildItem( popUpMenuColor, _( "Not Null Gradient Color" ), wxITEM_RADIO, &gTimeline::OnPopUpNotNullGradientColor, ID_MENU_NOT_NULL_GRADIENT_COLOR, window->GetMyWindow()->isNotNullGradientColorSet() );
+  buildItem( popUpMenuColor, _( "Alternative Gradient Color" ), wxITEM_RADIO, &gTimeline::OnPopUpAlternativeGradientColor, ID_MENU_ALTERNATIVE_GRADIENT_COLOR, window->GetMyWindow()->isAlternativeGradientColorSet() );
 
   popUpMenuColor->AppendSeparator();
 

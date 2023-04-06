@@ -545,6 +545,7 @@ public:
   void OnPopUpCodeColor( wxCommandEvent& event );
   void OnPopUpGradientColor( wxCommandEvent& event );
   void OnPopUpNotNullGradientColor( wxCommandEvent& event );
+  void OnPopUpAlternativeGradientColor( wxCommandEvent& event );
   void OnPopUpGradientFunction( wxCommandEvent& event );
   void OnPopUpSemanticScaleMinAtZero( wxCommandEvent& event );
   void OnPopUpUndoZoom( wxCommandEvent& event );
