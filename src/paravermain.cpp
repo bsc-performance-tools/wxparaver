@@ -3226,8 +3226,7 @@ void paraverMain::ShowDerivedDialog()
 
     newWindow->setDrawModeObject( beginDragWindow->getDrawModeObject() );
     newWindow->setDrawModeTime( beginDragWindow->getDrawModeTime() );
-    newWindow->getGradientColor().setGradientFunction(
-      beginDragWindow->getGradientColor().getGradientFunction() );
+    newWindow->getGradientColor().setGradientFunction( beginDragWindow->getGradientColor().getGradientFunction() );
     newWindow->setLevel( beginDragWindow->getLevel() );
     vector<bool> tmpSel;
     for( TTraceLevel level = TTraceLevel::APPLICATION; level <= TTraceLevel::THREAD; ++level )
