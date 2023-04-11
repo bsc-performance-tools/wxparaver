@@ -545,6 +545,7 @@ public:
   void OnPopUpCodeColor( wxCommandEvent& event );
   void OnPopUpGradientColor( wxCommandEvent& event );
   void OnPopUpNotNullGradientColor( wxCommandEvent& event );
+  void OnPopUpAlternativeGradientColor( wxCommandEvent& event );
   void OnPopUpGradientFunction( wxCommandEvent& event );
   void OnPopUpSemanticScaleMinAtZero( wxCommandEvent& event );
   void OnPopUpUndoZoom( wxCommandEvent& event );
@@ -873,7 +874,6 @@ private:
       wxString tmpSuffix;
       TSemanticValue currentMin;
       TSemanticValue currentMax;
-      std::vector< TSemanticValue > keys;
       PRV_UINT32 precision;
       wxString extraPrefixOutlier;
       std::map< TSemanticValue, wxString > semanticValueLabel;

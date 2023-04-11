@@ -331,6 +331,7 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
   buildItem( popUpMenuColor, _( "Code Color" ), wxITEM_RADIO, &gTimeline::OnPopUpCodeColor, ID_MENU_CODE_COLOR, window->GetMyWindow()->isCodeColorSet() );
   buildItem( popUpMenuColor, _( "Gradient Color" ), wxITEM_RADIO, &gTimeline::OnPopUpGradientColor, ID_MENU_GRADIENT_COLOR, window->GetMyWindow()->isGradientColorSet() );
   buildItem( popUpMenuColor, _( "Not Null Gradient Color" ), wxITEM_RADIO, &gTimeline::OnPopUpNotNullGradientColor, ID_MENU_NOT_NULL_GRADIENT_COLOR, window->GetMyWindow()->isNotNullGradientColorSet() );
+  buildItem( popUpMenuColor, _( "Alternative Gradient Color" ), wxITEM_RADIO, &gTimeline::OnPopUpAlternativeGradientColor, ID_MENU_ALTERNATIVE_GRADIENT_COLOR, window->GetMyWindow()->isAlternativeGradientColorSet() );
 
   popUpMenuColor->AppendSeparator();
 
@@ -344,6 +345,7 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
   wxMenuItem *tmpGradFunc = popUpMenuColor->AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
   popUpMenuColor->Enable( tmpGradFunc->GetId(), window->GetMyWindow()->isGradientColorSet() ||
                                                 window->GetMyWindow()->isNotNullGradientColorSet() ||
+                                                window->GetMyWindow()->isAlternativeGradientColorSet() ||
                                                 window->GetMyWindow()->isFunctionLineColorSet() ||
                                                 window->GetMyWindow()->isPunctualColorSet() );
 
@@ -754,6 +756,7 @@ gPopUpMenu<gHistogram>::gPopUpMenu( gHistogram *whichHistogram )
   buildItem( popUpMenuColor2D, _( "Code Color" ), wxITEM_RADIO, &gHistogram::OnPopUpColor2D, ID_MENU_CODE_COLOR_2D, window->GetHistogram()->getColorMode() == TColorFunction::COLOR );
   buildItem( popUpMenuColor2D, _( "Gradient Color" ), wxITEM_RADIO, &gHistogram::OnPopUpColor2D, ID_MENU_GRADIENT_COLOR_2D, window->GetHistogram()->getColorMode() == TColorFunction::GRADIENT );
   buildItem( popUpMenuColor2D, _( "Not Null Gradient Color" ), wxITEM_RADIO, &gHistogram::OnPopUpColor2D, ID_MENU_NOT_NULL_GRADIENT_COLOR_2D, window->GetHistogram()->getColorMode() == TColorFunction::NOT_NULL_GRADIENT );
+  buildItem( popUpMenuColor2D, _( "Alternative Gradient Color" ), wxITEM_RADIO, &gHistogram::OnPopUpColor2D, ID_MENU_ALTERNATIVE_GRADIENT_COLOR_2D, window->GetHistogram()->getColorMode() == TColorFunction::ALTERNATIVE_GRADIENT );
   AppendSubMenu( popUpMenuColor2D, _( "Color Mode" ) );
   
   buildItem( popUpMenuGradientFunction, _( "Linear" ), wxITEM_RADIO, &gHistogram::OnPopUpGradientFunction, ID_MENU_GRADIENT_FUNCTION_LINEAR, window->GetHistogram()->getGradientColor().getGradientFunction() == TGradientFunction::LINEAR );

@@ -416,7 +416,8 @@ wxGridCellAttr *HistoTableBase::GetAttr( int row, int col, wxGridCellAttr::wxAtt
         }
         else
         {
-          if( myHisto->GetHistogram()->getColorMode() == TColorFunction::GRADIENT || 
+          if( myHisto->GetHistogram()->getColorMode() == TColorFunction::GRADIENT ||
+              myHisto->GetHistogram()->getColorMode() == TColorFunction::ALTERNATIVE_GRADIENT ||
               ( myHisto->GetHistogram()->getColorMode() == TColorFunction::NOT_NULL_GRADIENT && semValue != 0.0 ) )
           {
             tmpCol = myHisto->GetHistogram()->calcGradientColor( semValue );

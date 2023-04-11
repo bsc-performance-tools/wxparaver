@@ -903,6 +903,7 @@ void gHistogram::drawColumn( THistogramColumn beginColumn, THistogramColumn endC
       else
       {
         if( myHistogram->getColorMode() == TColorFunction::GRADIENT ||
+            myHistogram->getColorMode() == TColorFunction::ALTERNATIVE_GRADIENT ||
             ( myHistogram->getColorMode() == TColorFunction::NOT_NULL_GRADIENT && tmpValueToDraw != 0.0 ) )
         {
           tmpColorToDraw = myHistogram->calcGradientColor( tmpValueToDraw );
@@ -1561,6 +1562,9 @@ void gHistogram::OnPopUpColor2D( wxCommandEvent& event )
       break;
     case ID_MENU_NOT_NULL_GRADIENT_COLOR_2D:
       myHistogram->setColorMode( TColorFunction::NOT_NULL_GRADIENT );
+      break;
+    case ID_MENU_ALTERNATIVE_GRADIENT_COLOR_2D:
+      myHistogram->setColorMode( TColorFunction::ALTERNATIVE_GRADIENT );
       break;
     default:
       break;
@@ -2701,13 +2705,14 @@ void gHistogram::openControlWindow( THistogramColumn columnBegin, THistogramColu
       productWin->setGradientColorMode();
     else if( controlCloned->isNotNullGradientColorSet() )
       productWin->setNotNullGradientColorMode();
+    else if( controlCloned->isAlternativeGradientColorSet() )
+      productWin->setAlternativeGradientColorMode();
     else if( controlCloned->isFunctionLineColorSet() )
       productWin->setFunctionLineColorMode();
       
     productWin->setDrawModeObject( controlCloned->getDrawModeObject() );
     productWin->setDrawModeTime( controlCloned->getDrawModeTime() );
-    productWin->getGradientColor().setGradientFunction(
-      controlCloned->getGradientColor().getGradientFunction() );
+    productWin->getGradientColor().setGradientFunction( controlCloned->getGradientColor().getGradientFunction() );
     productWin->setLevel( controlCloned->getLevel() );
     vector<bool> tmpSel;
     for( TTraceLevel level = TTraceLevel::APPLICATION; level <= TTraceLevel::THREAD; ++level )
