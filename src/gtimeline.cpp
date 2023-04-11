@@ -4394,18 +4394,18 @@ void gTimeline::ScaleImageVertical::computeMaxLabelSize()
   wxString maxLabel;
   size_t maxLengthLabel = 0;
   size_t curLengthLabel;
-  for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     // Get Labels
-    curLabel = wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, *it, symbolicDesc, precision, false ).c_str() );
-    semanticValueLabel[ *it ] = curLabel;
+    curLabel = wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, it->first, symbolicDesc, precision, false ).c_str() );
+    semanticValueLabel[ it->first ] = curLabel;
 
     // Get Longest label
     curLengthLabel = curLabel.Len();
     if ( maxLengthLabel < curLengthLabel )
     {
       maxLengthLabel = curLengthLabel;
-      semanticValueWithLongestLabel = *it;
+      semanticValueWithLongestLabel = it->first;
     }
   }
 
@@ -4419,13 +4419,7 @@ void gTimeline::ScaleImageVertical::computeMaxLabelSize()
 
 
 void gTimeline::ScaleImageVertical::sortSemanticValues()
-{
-  for ( std::map< TSemanticValue, rgb >::iterator it = semValues.begin(); it != semValues.end(); ++it )
-  {
-    keys.push_back( it->first );
-  }
-  std::sort( keys.begin(), keys.end() );
-}
+{}
 
 
 void gTimeline::ScaleImageVertical::computeImageSize()
@@ -4476,17 +4470,17 @@ void gTimeline::ScaleImageVertical::createDC()
 
 void gTimeline::ScaleImageVertical::draw()
 {
-  for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
-    drawLabeledRectangle( semValues[ *it ], semanticValueLabel[ *it ] );
+    drawLabeledRectangle( it->second, semanticValueLabel[ it->first ] );
     ydst += imageStepY;
   }
 }
 
 
 void gTimeline::ScaleImageVertical::drawLabeledRectangle( rgb semanticColour,
-                                                           wxString semanticValueLabel,
-                                                           bool drawIt )
+                                                          wxString semanticValueLabel,
+                                                          bool drawIt )
 {
   scaleDC->SetBrush( wxColour( semanticColour.red,
                                 semanticColour.green,
@@ -4584,8 +4578,8 @@ void gTimeline::ScaleImageVerticalGradientColor::init()
   symbolicDesc = false;
   
   numSquaresWithoutOutliers = 20;
-  if ( myWindow->isNotNullGradientColorSet() )
-    numSquaresWithoutOutliers++; // 0 black
+  if ( myWindow->isNotNullGradientColorSet() || myWindow->isAlternativeGradientColorSet() )
+    ++numSquaresWithoutOutliers; // 0 black
   totalSquares = numSquaresWithoutOutliers + 2; // gradient and outliers
 
   extraPrefixOutlier = wxT( "< " );
@@ -4599,10 +4593,11 @@ void gTimeline::ScaleImageVerticalGradientColor::sortSemanticValues()
   for( int i = 0; i < numSquaresWithoutOutliers; ++i )
   {
     TSemanticValue current = ( i * step ) + currentMin;
-    keys.push_back( current );
+    if ( current > currentMax )
+      current = currentMax;
+
     semValues[ current ] = myWindow->getGradientColor().calcColor( current, currentMin, currentMax );
   }
-  std::sort( keys.begin(), keys.end() );
 }
 
 
@@ -4612,14 +4607,14 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
   rgb tmprgb = myWindow->getGradientColor().getBelowOutlierColor();
   wxString tmpSemanticValueLabel =
            wxT( "< " ) +
-           wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, keys[0], symbolicDesc, precision, false ).c_str() );
+           wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, semValues.begin()->first, symbolicDesc, precision, false ).c_str() );
   drawLabeledRectangle( tmprgb, tmpSemanticValueLabel );
   ydst += imageStepY;
   
   // Values
-  for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
-    drawLabeledRectangle( semValues[ *it ], semanticValueLabel[ *it ] );   
+    drawLabeledRectangle( it->second, semanticValueLabel[ it->first ] );   
     ydst += imageStepY;
   }
 
@@ -4627,7 +4622,7 @@ void gTimeline::ScaleImageVerticalGradientColor::draw()
   tmprgb = myWindow->getGradientColor().getAboveOutlierColor();
   tmpSemanticValueLabel =
           wxT( "> " ) +
-          wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, keys.back(), symbolicDesc, precision, false ).c_str() );
+          wxString::FromUTF8( LabelConstructor::semanticLabel( myWindow, (--semValues.end())->first, symbolicDesc, precision, false ).c_str() );
   drawLabeledRectangle( tmprgb, tmpSemanticValueLabel );
   ydst += imageStepY;
 }
@@ -4675,18 +4670,18 @@ void gTimeline::ScaleImageVerticalFusedLines::computeMaxLabelSize()
   wxString maxLabel;
   size_t maxLengthLabel = 0;
   size_t curLengthLabel;
-  for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     // Get Labels
-    curLabel = wxString::FromUTF8( LabelConstructor::objectLabel( *it, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
-    semanticValueLabel[ *it ] = curLabel;
+    curLabel = wxString::FromUTF8( LabelConstructor::objectLabel( it->first, myWindow->getLevel(), myWindow->getTrace() ).c_str() );
+    semanticValueLabel[ it->first ] = curLabel;
 
     // Get Longest label
     curLengthLabel = curLabel.Len();
     if ( maxLengthLabel < curLengthLabel )
     {
       maxLengthLabel = curLengthLabel;
-      semanticValueWithLongestLabel = *it;
+      semanticValueWithLongestLabel = it->first;
     }
   }
 
@@ -4773,7 +4768,6 @@ void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
         numSquaresWithoutOutliers = totalSquares - 2;
     }
 
-    keys.clear();
     sortSemanticValues();
     computeMaxLabelSize();
   }
@@ -4782,7 +4776,7 @@ void gTimeline::ScaleImageHorizontalGradientColor::computeImageSize()
 }
 
 
-// Drawing's made in two rows and for every row from left to right
+// Both rows are drawn from left to right
 // First row is for colors, second row is for labels
 void gTimeline::ScaleImageHorizontalGradientColor::draw()
 {
@@ -4798,17 +4792,17 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
   // Colors
   int elem = 0;
   int MIDDLE_POS = rint( numSquaresWithoutOutliers / 2 ) + 1; // 11 
-  for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     ++elem;
-    if ( it == keys.begin() )
-      drawRectangle( semValues[ *it ], FIRST );
-    else if ( it == --keys.end() )
-      drawRectangle( semValues[ *it ], LAST  );
+    if ( it == semValues.begin() )
+      drawRectangle( it->second, FIRST );
+    else if ( it == --semValues.end() )
+      drawRectangle( it->second, LAST  );
     else if ( elem == MIDDLE_POS )
-      drawRectangle( semValues[ *it ], MIDDLE );
+      drawRectangle( it->second, MIDDLE );
     else
-      drawRectangle( semValues[ *it ], ANY );
+      drawRectangle( it->second, ANY );
 
     xdst += imageStepXRectangle;
   }
@@ -4831,21 +4825,21 @@ void gTimeline::ScaleImageHorizontalGradientColor::draw()
   // Labels
   bool drawIt;
   elem = 0;
-  for ( std::vector< TSemanticValue >::iterator it = keys.begin(); it != keys.end(); ++it )
+  for ( auto it = semValues.begin(); it != semValues.end(); ++it )
   {
     ++elem;
-    drawIt = it == keys.begin() || elem == MIDDLE_POS || it == --keys.end();
+    drawIt = it == semValues.begin() || elem == MIDDLE_POS || it == --semValues.end();
 
-    if ( it == keys.begin() )
-      drawLabel( semanticValueLabel[ *it ], drawIt, LEFT );
-    else if ( it == --keys.end() )
+    if ( it == semValues.begin() )
+      drawLabel( semanticValueLabel[ it->first ], drawIt, LEFT );
+    else if ( it == --semValues.end() )
     {
-      drawLabel( semanticValueLabel[ *it ], drawIt, RIGHT );
+      drawLabel( semanticValueLabel[ it->first ], drawIt, RIGHT );
     }
     else if ( elem == MIDDLE_POS )
-      drawLabel( semanticValueLabel[ *it ], drawIt, CENTER );
+      drawLabel( semanticValueLabel[ it->first ], drawIt, CENTER );
     else
-      drawLabel( semanticValueLabel[ *it ], drawIt, LEFT );
+      drawLabel( semanticValueLabel[ it->first ], drawIt, LEFT );
 
     xdst += imageStepXRectangle;
   }

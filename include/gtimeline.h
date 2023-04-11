@@ -874,7 +874,6 @@ private:
       wxString tmpSuffix;
       TSemanticValue currentMin;
       TSemanticValue currentMax;
-      std::vector< TSemanticValue > keys;
       PRV_UINT32 precision;
       wxString extraPrefixOutlier;
       std::map< TSemanticValue, wxString > semanticValueLabel;
