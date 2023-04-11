@@ -440,6 +440,7 @@ bool SaveConfigurationDialog::TransferDataFromWindow()
   options.windowScaleRelative = optRelativeEnd->GetValue();
   options.windowComputeYMaxOnLoad = optComputeSemantic->GetValue();
   options.histoAllTrace = radioAllTrace->GetValue();
+  options.histoComputeGradient = optComputeGradient->GetValue();
   options.description = std::string( textDescription->GetValue().mb_str() );
 
   // CFG4D
