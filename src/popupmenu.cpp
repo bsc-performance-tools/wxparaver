@@ -345,6 +345,7 @@ gPopUpMenu<gTimeline>::gPopUpMenu( gTimeline *whichTimeline )
   wxMenuItem *tmpGradFunc = popUpMenuColor->AppendSubMenu( popUpMenuGradientFunction, _( "Gradient Function" ) );
   popUpMenuColor->Enable( tmpGradFunc->GetId(), window->GetMyWindow()->isGradientColorSet() ||
                                                 window->GetMyWindow()->isNotNullGradientColorSet() ||
+                                                window->GetMyWindow()->isAlternativeGradientColorSet() ||
                                                 window->GetMyWindow()->isFunctionLineColorSet() ||
                                                 window->GetMyWindow()->isPunctualColorSet() );
 

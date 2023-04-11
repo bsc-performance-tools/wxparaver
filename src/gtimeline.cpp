@@ -1278,7 +1278,10 @@ void gTimeline::drawRow( wxDC& dc,
     {
       drawRowPunctual( dc, *it, objectPos, timePos, magnify );
     }
-    else if( myWindow->isCodeColorSet() || myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
+    else if( myWindow->isCodeColorSet() ||
+             myWindow->isGradientColorSet() ||
+             myWindow->isNotNullGradientColorSet() ||
+             myWindow->isAlternativeGradientColorSet() )
     {
       drawRowColor( dc, *it, objectPos, timePos, magnify );
     }
@@ -3850,7 +3853,9 @@ void gTimeline::saveImageDialog( wxString whichFileName )
   if ( myWindow->isGradientColorSet() )
      legendSuffix= _( ".gradient_legend" );
   else if ( myWindow->isNotNullGradientColorSet() )
-     legendSuffix= _( ".nn_gradient_legend" ); 
+     legendSuffix= _( ".nn_gradient_legend" );
+  else if ( myWindow->isAlternativeGradientColorSet() )
+     legendSuffix= _( ".alt_gradient_legend" );
 
   SaveImageDialog saveDialog( this, defaultDir, imageName, false, legendSuffix );
   if ( saveDialog.ShowModal() != wxID_OK )
@@ -4007,7 +4012,9 @@ void gTimeline::saveImage( wxString whichFileName, TImageFormat filterIndex )
   wxImage baseLayer = imageBitmap.ConvertToImage();
 
   // Save timeline with gradient scale
-  if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
+  if ( myWindow->isGradientColorSet() ||
+       myWindow->isNotNullGradientColorSet() ||
+       myWindow->isAlternativeGradientColorSet() )
   {
     ScaleImageVertical *tmpImage;
 
@@ -4114,6 +4121,11 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
               wxString( _( "nn_gradient_legend" ) ) +
               _(".") +
               wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
+    else if ( myWindow->isAlternativeGradientColorSet() )
+      tmpSuffix +=
+              wxString( _( "alt_gradient_legend" ) ) +
+              _(".") +
+              wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
     else
       tmpSuffix +=
               wxString( _( "code_legend" ) ) +
@@ -4156,7 +4168,9 @@ void gTimeline::saveImageLegend( wxString whichFileName, TImageFormat filterInde
   }
 
   ScaleImageVertical *tmpImage;
-  if ( myWindow->isGradientColorSet() || myWindow->isNotNullGradientColorSet() )
+  if ( myWindow->isGradientColorSet() ||
+       myWindow->isNotNullGradientColorSet() ||
+       myWindow->isAlternativeGradientColorSet() )
   {
     tmpImage = new ScaleImageHorizontalGradientColor( myWindow, semanticValuesToColor,
                                                        //backgroundColour, foregroundColour, backgroundMode,
@@ -4716,8 +4730,6 @@ gTimeline::ScaleImageHorizontalGradientColor::ScaleImageHorizontalGradientColor(
 void gTimeline::ScaleImageHorizontalGradientColor::init()
 {
   gTimeline::ScaleImageVerticalGradientColor::init();
-  //tmpSuffix = _("as_row.");
-  //tmpSuffix += wxString::FromUTF8( LabelConstructor::getImageFileSuffix( filterIndex ).c_str() );
 
   widthRect = 20;
   imageStepXRectangle = widthRect;
