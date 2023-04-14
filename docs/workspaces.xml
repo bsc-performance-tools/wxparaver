@@ -3,7 +3,7 @@
 <boost_serialization signature="serialization::archive" version="18">
 <workspace_manager class_id="0" tracking_level="0" version="0">
 	<workspaces class_id="1" tracking_level="0" version="0">
-		<count>14</count>
+		<count>15</count>
 		<item_version>0</item_version>
 		<item class_id="2" tracking_level="0" version="0">
 			<first>Burst mode</first>
@@ -388,6 +388,67 @@ AgAAALLegAI=
 			</second>
 		</item>
 		<item>
+			<first>PROFET</first>
+			<second>
+				<name>PROFET</name>
+				<type>2</type>
+				<autoTypes>
+					<count>7</count>
+					<item_version>1</item_version>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAIFTmgU=
+						</WorkspaceValue>
+					</item>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAIJTmgU=
+						</WorkspaceValue>
+					</item>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAINTmgU=
+						</WorkspaceValue>
+					</item>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAIRTmgU=
+						</WorkspaceValue>
+					</item>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAIVTmgU=
+						</WorkspaceValue>
+					</item>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAIZTmgU=
+						</WorkspaceValue>
+					</item>
+					<item>
+						<type>2</type>
+						<WorkspaceValue>
+AgAAAIdTmgU=
+						</WorkspaceValue>
+					</item>
+				</autoTypes>
+				<hintCFGs>
+					<count>1</count>
+					<item_version>0</item_version>
+					<item>
+						<first>PROFET/all_profet_metrics.cfg</first>
+						<second>Profet Metrics</second>
+					</item>
+				</hintCFGs>
+			</second>
+		</item>
+		<item>
 			<first>Resources</first>
 			<second>
 				<name>Resources</name>
@@ -513,7 +574,7 @@ AgAAABOHkwM=
 		</item>
 	</workspaces>
 	<workspacesOrder class_id="8" tracking_level="0" version="0">
-		<count>14</count>
+		<count>15</count>
 		<item_version>0</item_version>
 		<item>Useful</item>
 		<item>MPI</item>
@@ -529,6 +590,7 @@ AgAAABOHkwM=
 		<item>Clustering</item>
 		<item>Sampling</item>
 		<item>Burst mode</item>
+		<item>PROFET</item>
 	</workspacesOrder>
 </workspace_manager>
 </boost_serialization>
