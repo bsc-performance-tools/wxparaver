@@ -744,7 +744,6 @@ private:
 
   void updateActiveWorkspaces( Trace *whichTrace );
   void OnHintClick( wxCommandEvent& event );
-  void OnMenuHintUpdate( wxUpdateUIEvent& event );
   void setActiveWorkspacesText();
 
   bool isSessionFile( const std::string& filename );

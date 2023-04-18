@@ -530,6 +530,7 @@ void paraverMain::CreateControls()
   menuBar->Append(menuFile, _("&File"));
   menuHints = new wxMenu;
   menuBar->Append(menuHints, _("Hints"));
+  menuBar->EnableTop(1, false);
   menuHelp = new wxMenu;
   menuHelp->Append(wxID_HELPCONTENTS, _("&Help Contents..."), wxEmptyString, wxITEM_NORMAL);
   menuHelp->Append(wxID_TUTORIALS, _("&Tutorials..."), wxEmptyString, wxITEM_NORMAL);
@@ -650,11 +651,7 @@ void paraverMain::CreateControls()
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
 
   setActiveWorkspacesText();
-//  refreshMenuHints();
-
-  // These are here because no UpdateUI for MenuBar
-  wxUpdateUIEvent tmpEvent;
-  OnMenuHintUpdate( tmpEvent );
+  refreshMenuHints();
 }
 
 
@@ -789,6 +786,8 @@ void paraverMain::refreshMenuHints()
 
     ++currentWorkspace;
   }
+
+  GetMenuBar()->EnableTop( 1, !loadedTraces.empty() && !traceWorkspaces[ getCurrentTrace() ].empty() );
 }
 
 
@@ -968,10 +967,6 @@ bool paraverMain::DoLoadTrace( const string &path )
   refreshMenuHints();
 
   canServeSignal = true;
-
-  // These are here because no UpdateUI for MenuBar
-  wxUpdateUIEvent tmpEvent;
-  OnMenuHintUpdate( tmpEvent );
 
   return loaded;
 }
@@ -2814,7 +2809,6 @@ void paraverMain::OnIdle( wxIdleEvent& event )
   if( wxTheApp->IsActive() )
   {
     int iTrace = 0;
-    size_t prevSize = loadedTraces.size();
     vector<Trace *>::iterator it = loadedTraces.begin();
     while( it != loadedTraces.end() )
     {
@@ -2870,15 +2864,11 @@ void paraverMain::OnIdle( wxIdleEvent& event )
 
       ++it;
     }
-    if( currentTrace == -1 && loadedTraces.size() > 0 )
+    if( currentTrace == -1 && !loadedTraces.empty() )
       currentTrace = loadedTraces.size() - 1;
 
-    // These are here because no UpdateUI for MenuBar
-    if( loadedTraces.size() != prevSize )
-    {
-      wxUpdateUIEvent tmpEvent;
-      OnMenuHintUpdate( tmpEvent );
-    }
+    if ( loadedTraces.empty() )
+      GetMenuBar()->EnableTop( 1, false ); // disable MenuHints
   }
 
 #ifndef _WIN32
@@ -5099,14 +5089,6 @@ void paraverMain::OnHintClick( wxCommandEvent& event )
 }
 
 
-void paraverMain::OnMenuHintUpdate( wxUpdateUIEvent& event )
-{
-  GetMenuBar()->EnableTop( 1, 
-                           !loadedTraces.empty() && 
-                           !traceWorkspaces[ getCurrentTrace() ].empty() );
-}
-
-
 /*!
  * wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON_ACTIVE_WORKSPACES
  */
@@ -5154,10 +5136,6 @@ void paraverMain::OnButtonActiveWorkspacesClick( wxCommandEvent& event )
 
     setActiveWorkspacesText();
     refreshMenuHints();
-
-    // These are here because no UpdateUI for MenuBar
-    wxUpdateUIEvent tmpEvent;
-    OnMenuHintUpdate( tmpEvent );
   }
 }
 
