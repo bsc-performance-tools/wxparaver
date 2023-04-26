@@ -530,7 +530,6 @@ void paraverMain::CreateControls()
   menuBar->Append(menuFile, _("&File"));
   menuHints = new wxMenu;
   menuBar->Append(menuHints, _("Hints"));
-  menuBar->EnableTop(1, false);
   menuHelp = new wxMenu;
   menuHelp->Append(wxID_HELPCONTENTS, _("&Help Contents..."), wxEmptyString, wxITEM_NORMAL);
   menuHelp->Append(wxID_TUTORIALS, _("&Tutorials..."), wxEmptyString, wxITEM_NORMAL);
@@ -649,6 +648,8 @@ void paraverMain::CreateControls()
   toolBookFilesProperties->GetToolBar()->SetToolShortHelp( 2, wxT("Window Properties") );
 
   dirctrlFiles->SetPath( wxString( ParaverConfig::getInstance()->getGlobalCFGsPath().c_str(), wxConvUTF8 ));
+
+  GetMenuBar()->EnableTop( 1, false );
 
   setActiveWorkspacesText();
   refreshMenuHints();
