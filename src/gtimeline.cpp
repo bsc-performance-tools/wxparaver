@@ -3159,7 +3159,7 @@ void gTimeline::printWhatWhere( )
 
       case TWhatWhereLine::BEGIN_CURRENT_SECTION:
         allowedSection = true;
-        whatWhereText->BeginTextColour( *wxBLACK );
+        whatWhereText->BeginTextColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
         textColourOpen = true;
         break;
 
