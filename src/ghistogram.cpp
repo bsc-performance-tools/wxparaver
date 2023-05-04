@@ -2314,7 +2314,8 @@ void gHistogram::zoom( THistogramLimit newColumnBegin,
 
   GetHistogram()->setControlMin( min );
   GetHistogram()->setControlMax( max );
-  GetHistogram()->setControlDelta( delta );
+  if( !GetHistogram()->getUseFixedDelta() )
+    GetHistogram()->setControlDelta( delta );
   GetHistogram()->setCompute2DScale( false );
   std::pair<TObjectOrder, TObjectOrder> tmpZoomRow( newObjectBegin, newObjectEnd );
   GetHistogram()->setZoomSecondDimension( tmpZoomRow );

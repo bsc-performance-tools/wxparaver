@@ -1931,8 +1931,8 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   NumColumnsChoices::createChoices( [&]( wxString el ) { tmpChoices.Add( el ); } );
 
   wxString numColumnsSelected;
-  if( whichHisto->getUseCustomDelta() )
-    numColumnsSelected = tmpChoices[ NumColumnsChoices::CUSTOM_DELTA ].GetText();
+  if( whichHisto->getUseFixedDelta() )
+    numColumnsSelected = tmpChoices[ NumColumnsChoices::FIXED_DELTA ].GetText();
   else if( whichHisto->getNumColumns() == ParaverConfig::getInstance()->getHistogramNumColumns() )
     numColumnsSelected = tmpChoices[ NumColumnsChoices::DEFAULT ].GetText();
   else

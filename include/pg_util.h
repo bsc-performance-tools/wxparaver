@@ -36,7 +36,7 @@ class NumColumnsChoices
     enum
     {
       DEFAULT = 1,
-      CUSTOM_DELTA = 2
+      FIXED_DELTA = 2
     };
 
     template< typename F >
@@ -46,7 +46,7 @@ class NumColumnsChoices
       wxString tmpStr;
       tmpStr << ParaverConfig::getInstance()->getHistogramNumColumns();
       addFunction( tmpStr + " (default)" );
-      addFunction( "Custom delta" );
+      addFunction( "Fixed delta" );
     }
 };
 

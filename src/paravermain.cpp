@@ -1654,14 +1654,13 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     }
     whichHistogram->setControlDelta( property->GetValue().GetDouble() );
 
-    whichHistogram->setUseCustomDelta( true );
-
     // modify current zoom directly
     pair< HistogramProxy::TZoomInfo, HistogramProxy::TZoomInfo > zoomInfo = whichHistogram->getZoomFirstDimension();
     zoomInfo.second.begin = property->GetValue().GetDouble(); // delta
     whichHistogram->setZoomFirstDimension( zoomInfo );
 
     whichHistogram->setCompute2DScale( false );
+    whichHistogram->setUseFixedDelta( true );
     whichHistogram->setRecalc( true );
   }
   else if( propName == getPropertyName( whichTimeline, whichHistogram, SINGLE_NULL, DERIVED_NULL, HISTOGRAM_NUMCOLUMNS ) )
@@ -1672,9 +1671,9 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
     vector<wxString> listNumColumnsChoices;
     NumColumnsChoices::createChoices( [&]( wxString el ) { listNumColumnsChoices.push_back( el ); } );
 
-    if( numColumnsStr == listNumColumnsChoices[ NumColumnsChoices::CUSTOM_DELTA ] )
+    if( numColumnsStr == listNumColumnsChoices[ NumColumnsChoices::FIXED_DELTA ] )
     {
-      whichHistogram->setUseCustomDelta( true );
+      whichHistogram->setUseFixedDelta( true );
       return;
     }
     else if( numColumnsStr == listNumColumnsChoices[ NumColumnsChoices::DEFAULT ] )
@@ -1687,7 +1686,7 @@ void paraverMain::SetPropertyValue( wxPropertyGridEvent& event,
       return;
     }
 
-    whichHistogram->setUseCustomDelta( false );
+    whichHistogram->setUseFixedDelta( false );
     whichHistogram->setNumColumns( newNumColumns );
     whichHistogram->setCompute2DScale( false );
     whichHistogram->setRecalc( true );
