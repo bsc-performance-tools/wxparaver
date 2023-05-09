@@ -3336,7 +3336,7 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
          (*it).getTime() >= fromTime &&
          (*it).getTime() <= toTime )
   {
-    if( (*it).getType() & EVENT )
+    if( (*it).getRecordType() & EVENT )
     {
       onString << wxT( "User Event at " ) << formatTime( (*it).getTime(), showDate );
       onString << wxT( "    " );
@@ -3352,23 +3352,23 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
       if ( clickedValue )
         whatWhereSelectedTimeEventLines++;
     }
-    else if( (*it).getType() & COMM )
+    else if( (*it).getRecordType() & COMM )
     {
-      if( (*it).getType() & LOG )
+      if( (*it).getRecordType() & LOG )
         onString << wxT( "Logical " );
-      else if( (*it).getType() & PHY )
+      else if( (*it).getRecordType() & PHY )
         onString << wxT( "Physical " );
         
-      if( (*it).getType() & SEND )
+      if( (*it).getRecordType() & SEND )
         onString << wxT( "SEND " );
-      else if( (*it).getType() & RECV )
+      else if( (*it).getRecordType() & RECV )
         onString << wxT( "RECEIVE " );
         
       onString << wxT( "at " ) << formatTime( (*it).getTime(), showDate );
       
-      if( (*it).getType() & SEND )
+      if( (*it).getRecordType() & SEND )
         onString << wxT( " to " );
-      else if( (*it).getType() & RECV )
+      else if( (*it).getRecordType() & RECV )
         onString << wxT( " from " );
       if ( myWindow->getLevel() >= TTraceLevel::WORKLOAD && myWindow->getLevel() <= TTraceLevel::THREAD )
         onString << wxString::FromUTF8( LabelConstructor::objectLabel( myWindow->threadObjectToWindowObject( (*it).getCommPartnerObject() ),
@@ -3381,13 +3381,13 @@ void gTimeline::printWWRecords( TObjectOrder whichRow, bool clickedValue, bool t
 
       onString << wxT( " at " ) << formatTime( (*it).getCommPartnerTime(), showDate );
       
-      if( (*it).getType() & SEND )
+      if( (*it).getRecordType() & SEND )
         onString << wxT( ", Duration: " ) << wxString::FromUTF8( LabelConstructor::timeLabel(
                                                                     myWindow->traceUnitsToWindowUnits( (*it).getCommPartnerTime() 
                                                                                                        - (*it).getTime() ),
                                                                     myWindow->getTimeUnit(),
                                                                     0 ).c_str() );
-      else if( (*it).getType() & RECV )
+      else if( (*it).getRecordType() & RECV )
         onString << wxT( ", Duration: " ) << wxString::FromUTF8( LabelConstructor::timeLabel(
                                                                     myWindow->traceUnitsToWindowUnits( (*it).getTime()
                                                                                                        - (*it).getCommPartnerTime() ),
