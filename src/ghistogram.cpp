@@ -3636,6 +3636,9 @@ void gHistogram::OnToolChoiceSortbyUpdate( wxUpdateUIEvent& event )
       EnableCustomSortOption();
   }
 
+  if( myHistogram->getSemanticSortCriteria() != THistoSortCriteria::CUSTOM )
+    DisableCustomSortOption();
+
   if( tmpSort != choiceSortBy->GetSelection() )
     choiceSortBy->SetSelection( tmpSort );
 }
@@ -3649,6 +3652,12 @@ void gHistogram::EnableCustomSortOption()
   myHistogram->setSemanticSortCriteria( THistoSortCriteria::CUSTOM );
 }
 
+void gHistogram::DisableCustomSortOption()
+{
+  auto customPos = choiceSortBy->FindString( STR_SORT_CUSTOM );
+  if( customPos != wxNOT_FOUND )
+    choiceSortBy->Delete( customPos );
+}
 
 /*!
  * wxEVT_UPDATE_UI event handler for ID_AUTOREDRAW

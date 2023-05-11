@@ -433,6 +433,7 @@ public:
   virtual void setSelectedRows( std::vector< TObjectOrder > &selected );
     
   void EnableCustomSortOption();
+  void DisableCustomSortOption();
 
 ////@begin gHistogram member variables
   wxPanel* panelToolbar;
