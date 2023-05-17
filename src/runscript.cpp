@@ -178,8 +178,8 @@ BEGIN_EVENT_TABLE( RunScript, wxDialog )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_CLUSTERING_REFINEMENT, RunScript::OnRadiobuttonClusteringRefinementSelected )
   EVT_CHECKBOX( ID_CHECKBOX_CLUSTERING_REFINEMENT_TUNE, RunScript::OnCheckboxClusteringRefinementTuneClick )
   EVT_UPDATE_UI( ID_CHECKBOX_FOLDING_USE_SEMANTIC_VALUE, RunScript::OnCheckboxFoldingUseSemanticValueUpdate )
-  EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, RunScript::OnRadiobuttonProfetByMemoryControllerSelected )
   EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_SOCKET, RunScript::OnRadiobuttonProfetBySocketSelected )
+  EVT_RADIOBUTTON( ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, RunScript::OnRadiobuttonProfetByMemoryControllerSelected )
   EVT_UPDATE_UI( wxID_LABELCOMMANDPREVIEW, RunScript::OnLabelcommandpreviewUpdate )
   EVT_BUTTON( ID_BUTTON_RUN, RunScript::OnButtonRunClick )
   EVT_UPDATE_UI( ID_BUTTON_RUN, RunScript::OnButtonRunUpdate )
@@ -338,8 +338,8 @@ void RunScript::Init()
   textCtrlProfetOutputTrace = NULL;
   textCtrlProfetCFG = NULL;
   fileBrowserButtonProfetCFG = NULL;
-  radioButtonProfetByMemoryController = NULL;
   radioButtonProfetBySocket = NULL;
+  radioButtonProfetByMemoryController = NULL;
   labelCommandPreview = NULL;
   buttonHelpScript = NULL;
   buttonRun = NULL;
@@ -985,13 +985,13 @@ void RunScript::CreateControls()
 
   itemStaticBoxSizer1->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 2);
 
-  radioButtonProfetByMemoryController = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, _("Memory controller"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioButtonProfetByMemoryController->SetValue(true);
-  itemStaticBoxSizer1->Add(radioButtonProfetByMemoryController, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
   radioButtonProfetBySocket = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_SOCKET, _("Socket"), wxDefaultPosition, wxDefaultSize, 0 );
-  radioButtonProfetBySocket->SetValue(false);
+  radioButtonProfetBySocket->SetValue(true);
   itemStaticBoxSizer1->Add(radioButtonProfetBySocket, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+  radioButtonProfetByMemoryController = new wxRadioButton( itemDialog1, ID_RADIOBUTTON_PROFET_BY_MEMORY_CONTROLLER, _("Memory controller"), wxDefaultPosition, wxDefaultSize, 0 );
+  radioButtonProfetByMemoryController->SetValue(false);
+  itemStaticBoxSizer1->Add(radioButtonProfetByMemoryController, 2, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
   wxStaticLine* itemStaticLine127 = new wxStaticLine( itemDialog1, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
   itemBoxSizer2->Add(itemStaticLine127, 0, wxGROW|wxALL, 5);
@@ -1466,9 +1466,9 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
       // Flags
       parameters = wxString( wxT( " -w " ) ); // Don't show warnings
 
-      if ( radioButtonProfetBySocket->GetValue() )
+      if ( radioButtonProfetByMemoryController->GetValue() ) 
       {
-        parameters += wxString( wxT( " --socket " ) );
+        parameters += wxString( wxT( " --memory_channel " ) );
       }
 
       // Source Trace
