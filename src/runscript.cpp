@@ -2319,6 +2319,7 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     // Trick used to distinguish "analyse ClusterId" link inserted to log if TExternalApp::CLUSTERING
     wxString tmpSuffixToErase = extensions[ 10 ]; // _link_to_clustered_trace
     paraverMain::myParaverMain->DoLoadTrace( getHrefFullPath( event, tmpSuffixToErase ) );
+
     std::vector< Trace * > loadedTraces = paraverMain::myParaverMain->GetLoadedTraces();
     Trace *clusteredTrace = loadedTraces.back();
 
@@ -2328,25 +2329,21 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     // Create cluster id window: avoid sourceWindow destruction
     bool dummyfound;
     gTimeline *currentWindow = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), sourceWindow, dummyfound );
-    currentWindow->setEnableDestroyButton( false );
+    if( currentWindow != nullptr ) currentWindow->setEnableDestroyButton( false );
 
     // Create cluster id window: create and fill newWindow with tuned sourceWindow properties
     Timeline *newWindow = paraverMain::myParaverMain->createBaseWindow( wxString( wxT( "ClusterId" ) ) );
 
-    TTime beginZoomTime;
-    TTime endZoomTime;
-    if ( ( sourceWindow->getWindowBeginTime() == (TTime)0 ) &&
-         ( sourceWindow->getWindowEndTime() == sourceWindow->getTrace()->getEndTime() ))
-    {
-      beginZoomTime = (TTime)0 ;
-      endZoomTime   = sourceWindow->getTrace()->getEndTime();
-    }
-    else
+    TTime beginZoomTime = (TTime)0;
+    TTime endZoomTime = clusteredTrace->getEndTime();
+    if( sourceWindow != nullptr &&
+        ( sourceWindow->getWindowBeginTime() != (TTime)0 ||
+          sourceWindow->getWindowEndTime() != sourceWindow->getTrace()->getEndTime() ) )
     {
       beginZoomTime = sourceWindow->getWindowBeginTime() - clusteredTrace->getCutterLastOffset();
       endZoomTime   = beginZoomTime + ( sourceWindow->getWindowEndTime() - sourceWindow->getWindowBeginTime() );
     }
-
+    
     newWindow->setWindowBeginTime( beginZoomTime );
     newWindow->setWindowEndTime( endZoomTime );
     newWindow->addZoom( beginZoomTime, endZoomTime, 0, newWindow->getWindowLevelObjects() - 1 );
@@ -2363,18 +2360,21 @@ void RunScript::OnListboxRunLogLinkClicked( wxHtmlLinkEvent& event )
     newWindow->setDrawModeObject( DrawModeMethod::DRAW_MAXIMUM );
     newWindow->setDrawModeTime( DrawModeMethod::DRAW_MAXIMUM );
 
-    newWindow->setWidth( sourceWindow->getWidth() ); 
-    newWindow->setHeight( sourceWindow->getHeight() );
-    newWindow->setPosX( sourceWindow->getPosX() );
-    newWindow->setPosY( sourceWindow->getPosY() +
-                        sourceWindow->getHeight() +
-                        paraverMain::myParaverMain->GetDefaultTitleBarHeight() );
+    if( sourceWindow != nullptr )
+    {
+      newWindow->setWidth( sourceWindow->getWidth() ); 
+      newWindow->setHeight( sourceWindow->getHeight() );
+      newWindow->setPosX( sourceWindow->getPosX() );
+      newWindow->setPosY( sourceWindow->getPosY() +
+                          sourceWindow->getHeight() +
+                          paraverMain::myParaverMain->GetDefaultTitleBarHeight() );
+    }
 
     newWindow->setComputeYMaxOnInit( true );
 
     paraverMain::myParaverMain->insertInTree( newWindow );
 
-    currentWindow->setEnableDestroyButton( true );
+    if( currentWindow != nullptr ) currentWindow->setEnableDestroyButton( true );
   }
   else if ( matchHrefExtension( event, wxT(".prv") ) || matchHrefExtension( event, wxT(".prv.gz")))
   {
@@ -2793,37 +2793,6 @@ void RunScript::OnTextctrlTraceTextUpdated( wxCommandEvent& event )
                         PRV_SUFFIX ).c_str(), wxConvUTF8 ) );
   }
 }
-
-
-//bool RunScript::shellCommand( const wxString& program, const wxString& whichFile )
-//{
-  //wxString command = _( "/bin/sh -c '" ) + program + _(" ") + whichFile + _(" 1>&- 2>&- ; echo $?'");
-/*
-  wxString command = program + _(" ") + whichFile + _(" 1>&- 2>&- ; echo $?");
-
-  wxArrayString outputArray;
-  int executionPid = wxExecute( command, wxEXEC_ASYNC, outputArray );
-  
-  std::cout << command << " " << executionPid << std::endl;
-  for ( unsigned int i = 0; i < outputArray.GetCount(); ++i )
-  {
-    std::cout <<  "exit: " << outputArray[ i ] << std::endl;
-  }  
-  
-  return ( outputArray.Last() == _("0") );
-*/  
-  //wxString command = _( "/bin/sh -c '" ) + program + _(" ") + whichFile + _(" 1>&- 2>&-'");
-/*  wxString command = program + _(" ") + whichFile;
-  executionStatus = -2;
-  wxProcess* tmpmyProcess = new RunningProcess( this, command );
-  int tmpmyProcessPid = wxExecute( command, wxEXEC_ASYNC, tmpmyProcess );
-std::cout << "Pid: " << command << " " << tmpmyProcessPid 
-  << " executionStatus: " << executionStatus << std::endl;
-
-
-  //return ( executionStatus == 0 );
-  */
-//}
 
 
 bool RunScript::existCommand( const wxString& program )
