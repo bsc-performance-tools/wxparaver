@@ -1769,6 +1769,12 @@ void RunScript::OnProcessTerminated( int pid )
   if ( pid != 0 && pid == pidDimemasGUI )
     pidDimemasGUI = 0;
 
+  if( progressBar != nullptr )
+  {
+    delete progressBar;
+    progressBar = nullptr;
+  }
+
   delete myProcess;
   myProcess = nullptr;
 }
