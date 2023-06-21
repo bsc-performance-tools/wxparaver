@@ -2795,7 +2795,6 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
   if( !event.ShiftDown() )
     timerMotion->Start( 20, true );
 
-  wxMemoryDC dc( bufferImage );
   // PRV_UINT32 precision = ParaverConfig::getInstance()->getTimelinePrecision();
   PRV_UINT32 precision = 0;
 
@@ -2810,7 +2809,7 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
                                        rgbBackgroundColour.blue );
   
   TTime timeStep = ( myWindow->getWindowEndTime() - myWindow->getWindowBeginTime() ) /
-                   ( dc.GetSize().GetWidth() - objectAxisPos - drawBorder );
+                   ( bufferImage.GetWidth() - objectAxisPos - drawBorder );
 
   if( zooming )
   {
@@ -2890,8 +2889,8 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     else
       beginX -= objectAxisPos;
 
-    if( endX > dc.GetSize().GetWidth() - drawBorder )
-      endX = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
+    if( endX > bufferImage.GetWidth() - drawBorder )
+      endX = bufferImage.GetWidth() - drawBorder - objectAxisPos;
     else
       endX -= objectAxisPos;
 
@@ -2943,8 +2942,8 @@ void gTimeline::OnScrolledWindowMotion( wxMouseEvent& event )
     long beginX = event.GetX();
     if( beginX < objectAxisPos )
       beginX = 0;
-    else if( beginX > dc.GetSize().GetWidth() - drawBorder )
-      beginX = dc.GetSize().GetWidth() - drawBorder - objectAxisPos;
+    else if( beginX > bufferImage.GetWidth() - drawBorder )
+      beginX = bufferImage.GetWidth() - drawBorder - objectAxisPos;
     else
       beginX -= objectAxisPos;
     TTime time = ( timeStep * beginX ) + myWindow->getWindowBeginTime();
