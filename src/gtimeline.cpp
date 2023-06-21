@@ -578,17 +578,6 @@ wxIcon gTimeline::GetIconResource( const wxString& name )
 }
 
 
-std::vector< TObjectOrder > gTimeline::getCurrentZoomRange()
-{
-  vector< TObjectOrder > zoomRange;
-
-  zoomRange.push_back( myWindow->getZoomSecondDimension().first );
-  zoomRange.push_back( myWindow->getZoomSecondDimension().second );
-  
-  return zoomRange;
-}
-
-
 #ifdef __WXMAC__
 void gTimeline::drawStackedImages( wxDC& dc )
 {

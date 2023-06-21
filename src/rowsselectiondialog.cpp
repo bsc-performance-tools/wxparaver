@@ -860,7 +860,7 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
   }
   else if ( parentIsGtimeline && myTimeline != nullptr )
   {
-    ZoomAwareTransferData( dialogSelections, ((gTimeline *)GetParent())->getCurrentZoomRange() );
+    ZoomAwareTransferData( dialogSelections, myTimeline->getCurrentZoomRange() );
   }
   else if ( parentIsGtimeline && myHistogram != nullptr )
   {
@@ -870,16 +870,7 @@ void RowsSelectionDialog::OnOkClick( wxCommandEvent& event )
   }
   else
   {
-#if 0
-    bool foundGTimeline;
-    gTimeline *tmpTimeline = getGTimelineFromWindow( getAllTracesTree()->GetRootItem(), myTimeline, foundGTimeline );
-    if ( foundGTimeline )
-    {
-      TransferDataComputingZoom( tmpTimeline->getCurrentZoomRange() );
-    }
-#else
     if ( TransferDataFromWindow() )
       EndModal( wxID_OK );
-#endif
   }
 }

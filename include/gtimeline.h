@@ -461,8 +461,6 @@ public:
   /// Should we show tooltips?
   static bool ShowToolTips();
 
-  std::vector< TObjectOrder > getCurrentZoomRange();
-
 #ifdef __WXMAC__
   void drawStackedImages( wxDC& dc );
 #endif
