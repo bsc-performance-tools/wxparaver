@@ -2006,23 +2006,26 @@ void updateHistogramProperties( wxPropertyGrid* windowProperties,
   AppendCFG4DProperty( (wxFloatProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, statCat,
                        wxT("Maximum Gradient"), HISTOGRAM_MAXIMUMGRADIENT, CFG4DPropertyCustomOptions(), whichHisto->getMaxGradient() );
 
-  // Data Window related properties
-  wxPGId dataCat = (wxPGId)nullptr;
-  if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+  if( !whichHisto->isCommunicationStat( whichHisto->getCurrentStat() ) )
   {
-    dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data"), wxT("Data") ) );
-    if( dataCatCollapsed )
-      dataCat->SetFlagsFromString( _( "COLLAPSED" ) );
+    // Data Window related properties
+    wxPGId dataCat = (wxPGId)nullptr;
+    if ( !whichHisto->getCFG4DEnabled() || !whichHisto->getCFG4DMode() )
+    {
+      dataCat = windowProperties->Append( new wxPropertyCategory( wxT("Data"), wxT("Data") ) );
+      if( dataCatCollapsed )
+        dataCat->SetFlagsFromString( _( "COLLAPSED" ) );
+    }
+
+    validWin.clear();  //  vector<TWindowID> validWin;
+    LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
+                                                      whichHisto->getExtraControlWindow(),
+                                                      validWin );
+
+    tmpOptions = { NO_BUTTON, nullptr, false, whichHisto->getDataWindow() };
+    AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, dataCat,
+                        wxT("Window"), HISTOGRAM_DATAWINDOW, tmpOptions, validWin );
   }
-
-  validWin.clear();  //  vector<TWindowID> validWin;
-  LoadedWindows::getInstance()->getValidDataWindow( whichHisto->getControlWindow(),
-                                                    whichHisto->getExtraControlWindow(),
-                                                    validWin );
-
-  tmpOptions = { NO_BUTTON, nullptr, false, whichHisto->getDataWindow() };
-  AppendCFG4DProperty( (prvTimelineTreeProperty *)nullptr, windowProperties, whichHisto, whichPropertiesClientData, linkedPropertiesShown, dataCat,
-                       wxT("Window"), HISTOGRAM_DATAWINDOW, tmpOptions, validWin );
 
   // 3rd window related properties
   wxPGId thirdWinCat = (wxPGId)nullptr;
