@@ -4694,6 +4694,13 @@ void paraverMain::OnSize( wxSizeEvent& event )
 
 void paraverMain::OnSessionTimer( wxTimerEvent& event )
 {
+  static bool savingSession = false;
+
+  if ( GetSomeWinIsRedraw() || savingSession )
+    return;
+
+  savingSession = true;
+
   string file;
   if ( ParaverConfig::getInstance()->getGlobalSingleInstance() ) 
   {
@@ -4721,7 +4728,10 @@ void paraverMain::OnSessionTimer( wxTimerEvent& event )
     file = ParaverConfig::getInstance()->getGlobalSessionPath() + "/AutosavedSessions" +  "/ps" + strPid.str() + "_" + sessionInfo.sessionDate + "_" + strStatus.str() + ".session";
     #endif
   }
+  
   SessionSaver::SaveSession( wxString::FromUTF8( file.c_str() ), GetLoadedTraces() );
+  
+  savingSession = false;
 }
 
 
