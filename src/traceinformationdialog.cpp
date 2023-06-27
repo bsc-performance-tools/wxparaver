@@ -240,9 +240,9 @@ void TraceInformationDialog::CreateControls()
 
       eventTypes.push_back( type );
     }
-  );
-  listTypes->InsertItems( listTypesStrings, 0 );
-
+  );  
+  if ( !listTypesStrings.IsEmpty() )
+    listTypes->InsertItems( listTypesStrings, 0 );
 }
 
 
