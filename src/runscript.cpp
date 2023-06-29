@@ -1463,12 +1463,12 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case TExternalApp::PROFET:
       command = application[ TExternalApp::PROFET ];
 
-      // Flags
-      parameters = wxString( wxT( " -w " ) ); // Don't show warnings
+      // Default flags:  -w (don't show warnings) -I/--plot-interactive (visualize interactive plot)
+      parameters = wxString( wxT( " -w --plot-interactive " ) );
 
       if ( radioButtonProfetByMemoryController->GetValue() ) 
       {
-        parameters += wxString( wxT( " --memory_channel " ) );
+        parameters += wxString( wxT( " --memory-channel " ) );
       }
 
       // Source Trace
