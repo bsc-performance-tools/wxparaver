@@ -2718,6 +2718,9 @@ void progressFunction( ProgressController *progress, void *callerWindow )
     progress->clearMessageChanged();
   }
 
+  if( !paraverMain::dialogProgress->IsShown() && progress->getCurrentProgress() < progress->getEndLimit() )
+    paraverMain::dialogProgress->Show( true );
+
   if( !paraverMain::dialogProgress->Update( p, newMessage ) )
     progress->setStop( true );
 //  app->Yield();
