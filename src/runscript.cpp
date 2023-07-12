@@ -1463,8 +1463,11 @@ wxString RunScript::GetCommand( wxString &command, wxString &parameters, TExtern
     case TExternalApp::PROFET:
       command = application[ TExternalApp::PROFET ];
 
-      // Default flags:  -w (don't show warnings) -I/--plot-interactive (visualize interactive plot)
-      parameters = wxString( wxT( " -w --plot-interactive " ) );
+      // Default flags:
+      // -w: don't show warnings
+      // -I/--plot-interactive: visualize interactive plot
+      // --exclude-original: the output trace doesn't contain any info of the original trace
+      parameters = wxString( wxT( " -w --plot-interactive --exclude-original " ) );
 
       if ( radioButtonProfetByMemoryController->GetValue() ) 
       {
