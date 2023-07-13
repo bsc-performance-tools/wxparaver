@@ -2703,6 +2703,7 @@ void paraverMain::OnMenuloadcfgUpdate( wxUpdateUIEvent& event )
   }
 }
 
+
 void progressFunction( ProgressController *progress, void *callerWindow )
 {
   int p;
@@ -2721,9 +2722,14 @@ void progressFunction( ProgressController *progress, void *callerWindow )
   if( !paraverMain::dialogProgress->IsShown() && progress->getCurrentProgress() < progress->getEndLimit() )
     paraverMain::dialogProgress->Show( true );
 
-  if( !paraverMain::dialogProgress->Update( p, newMessage ) )
-    progress->setStop( true );
-//  app->Yield();
+  if ( progress->getCurrentProgress() == 0.0 ||
+       ( progress->getCurrentProgress() - progress->getLastUpdate() ) / progress->getEndLimit() >= 0.01 )
+  {
+    if( !paraverMain::dialogProgress->Update( p, newMessage ) )
+      progress->setStop( true );
+
+    progress->setLastUpdate( progress->getCurrentProgress() );
+  }
 }
 
 
